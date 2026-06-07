@@ -84,7 +84,7 @@ pwsh -NoProfile -File tools/validate-library.ps1 -ForbiddenAnchor "OldProductNam
 ### Planning And Workflow
 
 - `deep-task-planning`: execution-grade plans for complex work.
-- `next-step`: choose the next concrete spec/doc/code/validation step.
+- `next-step`: discover OpenSpec-backed workstreams, request approval for orchestrator fan-out, or choose one concrete serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
 - `orchestrator`: auto-enter master-orchestrator posture for broad independent work, coordinating concise task fan-out, report reconciliation, tests/review gates, and isolation only when worth the overhead.
