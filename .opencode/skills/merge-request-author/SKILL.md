@@ -8,6 +8,8 @@ license: MIT
 
 Use this skill when the user asks to create, update, polish, or prepare a merge request or pull request.
 
+For an existing MR/PR with reviewer feedback, failing checks, approvals, or review outcome handling, use `merge-request-review-loop` instead.
+
 Do not commit, push, create remote state, or merge unless the user explicitly requested that action and repository rules allow it.
 
 ## Workflow
@@ -18,6 +20,13 @@ Do not commit, push, create remote state, or merge unless the user explicitly re
 - Avoid file-list-only summaries and latest-commit changelogs.
 - Clearly separate scope, non-goals, validation, risks, and follow-up work.
 - If using a provider CLI, prefer the repository's configured provider and obey local remote-operation rules.
+
+## Completion Handoff
+
+- If no remote operation was requested, finish with local artifacts plus 2-4 self-contained next options via `question` when available.
+- Put the recommended option first and end its label with `(Recommended)`.
+- Reserve user decisions for creating/updating remote state, merge actions, scope changes, high-risk follow-up, and MR/PR review outcomes.
+- In read-only or no-question mode, return `Suggested Next Options` instead of asking directly.
 
 ## MR/PR Body Template
 

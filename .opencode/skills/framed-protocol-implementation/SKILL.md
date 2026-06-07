@@ -11,11 +11,16 @@ Use this skill for custom TCP/IPC/WebSocket/binary protocols or application prot
 ## Principles
 
 - Define wire format before implementation: magic/version, length, type, flags, correlation id, payload, checksum if any.
-- Write or update golden, boundary, partial-frame, or malformed-vector tests before protocol implementation changes.
+- Write or update golden, boundary, partial-frame, or malformed-vector tests before protocol implementation changes; if infeasible, state why and use the closest reproducible substitute evidence.
 - Parsing must be binary-safe, bounded, and resistant to partial frames, oversized frames, and malformed data.
 - Request/response correlation must be explicit for concurrent sessions.
 - Schema evolution needs compatibility rules and unknown-field behavior.
 - Cancellation, heartbeat, reconnect, and diagnostics are protocol features, not afterthoughts.
+
+## Safety
+
+- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- Do not exercise protocol changes against shared or production services unless the user approves the target environment, command, limits, and rollback expectations.
 
 ## Checks
 

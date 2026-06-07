@@ -246,6 +246,7 @@ Before final response, verify all items below are closed or explicitly skipped w
 - `Review`: reviewer/subagent gate was run when material and available, or skipped with rationale.
 - `Cleanup`: temporary worktrees were cleaned up after integration/discard, or retained with reason.
 - `Final`: residual risks and next actions are clear to the user.
+- `Final Handoff`: after non-trivial user-visible work, the main session offers 2-4 self-contained `question` options with `(Recommended)` first when available; in read-only/no-question contexts, return `Suggested Next Options`. Workers and reviewers never ask the user directly.
 
 ## Hard Rules
 

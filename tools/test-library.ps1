@@ -52,8 +52,25 @@ permission:
 You are a read-only demo reviewer.
 "@
     Write-Text (Join-Path $dir "instructions/example.md") "# Example`n"
+    Write-Text (Join-Path $dir "AGENTS.md") @"
+# Repository Instructions
+
+## Completion Handoff
+
+- After non-trivial user-visible work, the main session offers 2-4 self-contained next actions via ``question`` when available.
+- Put the recommended option first and end its label with ``(Recommended)``.
+- In read-only, no-question, or subagent contexts, return ``Suggested Next Options`` or ``Actionable Continuation Items`` instead of asking the user directly.
+"@
     Write-Text (Join-Path $dir "README.md") @"
 # Fixture
+
+## Routing Map
+
+- Default broad work -> ``adaptive-delivery``.
+
+## Reviewer Gate Map
+
+- Instruction artifacts -> ``instruction-artifact-reviewer``.
 
 ## Skill Catalog
 
@@ -108,6 +125,12 @@ function Assert-Success([object]$result, [string]$message) {
 function Assert-Failure([object]$result, [string]$message) {
     if ($result.ExitCode -eq 0) {
         throw "$message`nExpected failure but command succeeded.`nOutput:`n$($result.Output)"
+    }
+}
+
+function Assert-OutputContains([object]$result, [string]$needle, [string]$message) {
+    if (-not $result.Output.Contains($needle)) {
+        throw "$message`nExpected output to contain: $needle`nOutput:`n$($result.Output)"
     }
 }
 
@@ -196,6 +219,14 @@ You are a read-only demo reviewer.
             Write-Text (Join-Path $fixture "README.md") @"
 # Fixture
 
+## Routing Map
+
+- Default broad work -> ``adaptive-delivery``.
+
+## Reviewer Gate Map
+
+- Instruction artifacts -> ``instruction-artifact-reviewer``.
+
 ## Skill Catalog
 
 ## Agent Catalog
@@ -209,6 +240,80 @@ You are a read-only demo reviewer.
 ## Porting Notes
 "@
             Assert-Failure (Invoke-Validator $fixture) "README catalog drift should fail validation."
+        }
+    },
+    @{
+        Name = "validator rejects missing routing map"
+        Run = {
+            $fixture = New-LibraryFixture "missing-routing-map"
+            Write-Text (Join-Path $fixture "README.md") @"
+# Fixture
+
+## Reviewer Gate Map
+
+- Instruction artifacts -> ``instruction-artifact-reviewer``.
+
+## Skill Catalog
+
+- ``demo-skill``: Demo skill.
+
+## Agent Catalog
+
+- ``demo-reviewer``: Demo reviewer.
+
+## Instruction Templates
+
+- ``example.md``: Demo instruction.
+
+## Porting Notes
+"@
+            $result = Invoke-Validator $fixture
+            Assert-Failure $result "Missing routing map should fail validation."
+            Assert-OutputContains $result "Missing README section 'Routing Map'" "Missing routing map should explain the section gap."
+        }
+    },
+    @{
+        Name = "validator rejects empty reviewer gate map"
+        Run = {
+            $fixture = New-LibraryFixture "empty-reviewer-map"
+            Write-Text (Join-Path $fixture "README.md") @"
+# Fixture
+
+## Routing Map
+
+- Default broad work -> ``adaptive-delivery``.
+
+## Reviewer Gate Map
+
+## Skill Catalog
+
+- ``demo-skill``: Demo skill.
+
+## Agent Catalog
+
+- ``demo-reviewer``: Demo reviewer.
+
+## Instruction Templates
+
+- ``example.md``: Demo instruction.
+
+## Porting Notes
+"@
+            $result = Invoke-Validator $fixture
+            Assert-Failure $result "Empty reviewer gate map should fail validation."
+            Assert-OutputContains $result "README reviewer gate map must include at least one bullet" "Empty reviewer gate map should explain the bullet gap."
+        }
+    },
+    @{
+        Name = "validator rejects missing completion handoff"
+        Run = {
+            $fixture = New-LibraryFixture "missing-completion-handoff"
+            Write-Text (Join-Path $fixture "AGENTS.md") @"
+# Repository Instructions
+
+- Keep artifacts reusable.
+"@
+            Assert-Failure (Invoke-Validator $fixture) "Missing completion handoff should fail validation."
         }
     },
     @{

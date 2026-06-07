@@ -12,9 +12,15 @@ Use this skill when creating a Rust workspace, adding crates, defining module bo
 
 - Keep product crates in `crates/` and tooling/helper crates in `tools/` unless the repository uses another convention.
 - Start with a minimal compilable skeleton and tests that express the first contract.
+- For behavior-changing slices, add or update the smallest focused test/gate before implementation; if infeasible, state why and use the closest reproducible substitute evidence.
 - Prefer small cohesive crates over premature generic frameworks.
 - Make validation commands easy to run locally and in CI.
 - Avoid adding dependencies until there is a concrete need.
+
+## Safety
+
+- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- Do not add broad dependencies, generated files, formatting sweeps, or workspace-wide rewrites unless they are required by the scoped change and validated.
 
 ## Baseline Tasks
 

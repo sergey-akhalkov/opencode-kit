@@ -13,9 +13,14 @@ Use this skill when work touches configuration loading, schema shape, validation
 - Prefer explicit config over hidden defaults for production-critical behavior.
 - Validate early and fail with actionable diagnostics.
 - Keep schema, docs, generated examples, tests, and runtime behavior synchronized.
-- Add accepted/rejected fixtures plus default and boundary tests before schema or runtime config behavior changes.
+- Add accepted/rejected fixtures plus default and boundary tests before schema or runtime config behavior changes; if infeasible, state why and use the closest reproducible substitute evidence.
 - Treat unsafe defaults, duplicate aliases, ambiguous precedence, and silent truncation as material risks.
 - Do not add speculative roles, leases, auth, or dynamic policy fields unless the accepted spec requires them.
+
+## Safety
+
+- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- Do not write secrets or mutate deployment configuration outside the scoped workspace; prefer dry-run or repository-configured validation commands when available.
 
 ## Checks
 

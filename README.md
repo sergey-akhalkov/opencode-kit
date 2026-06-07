@@ -74,7 +74,7 @@ pwsh -NoProfile -File tools/validate-library.ps1
 pwsh -NoProfile -File tools/test-library.ps1
 ```
 
-The validator checks skill and agent frontmatter shape, README catalog sync, reusable reviewer permission policy, project-neutral anchors, trailing whitespace, and warning-level TDD guard findings for Markdown artifacts with implementation-related language that do not mention test-first, TDD, before-code fixtures/gates, or equivalent validation-first language.
+The validator checks skill and agent frontmatter shape, README catalog sync, README routing/reviewer gate sections, repo `AGENTS.md` completion handoff, reusable reviewer permission policy, project-neutral anchors, trailing whitespace, and warning-level TDD guard findings for Markdown artifacts with implementation-related language that do not mention test-first, TDD, before-code fixtures/gates, or equivalent validation-first language.
 
 For installer changes, also prove the no-write path before using a real config directory:
 
@@ -88,6 +88,28 @@ For ports from a project-local prompt set, pass anchors that must not remain in 
 pwsh -NoProfile -File tools/validate-library.ps1 -ForbiddenAnchor "OldProductName","D:/old/project/path"
 ```
 
+## Routing Map
+
+- Broad, unclear, high-risk, or process-sensitive delivery -> `adaptive-delivery`; let it choose direct execution, planning, OpenSpec, architecture, orchestration, or reviewer gates.
+- Explicit planning-only work -> `deep-task-planning`; if the request is broad delivery rather than planning-only, start with `adaptive-delivery`.
+- Existing OpenSpec continuation or "what next" work -> `next-step`; accepted OpenSpec implementation -> `openspec-apply-change`; new OpenSpec packages -> `openspec-propose`; consistency/archive work -> the matching OpenSpec review/archive skill.
+- Initial MR/PR title/body preparation -> `merge-request-author`; existing MR/PR checks, reviewer feedback, approvals, and outcome handling -> `merge-request-review-loop`.
+- Broad independent tracks -> `orchestrator` only after bounded workstreams, success criteria, validation evidence, and user-approved scope are clear.
+- Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; use `instruction-artifact-reviewer` as the read-only post-change gate.
+- Documentation review selection: use `documentation-learning-quest` for guided onboarding, `file-review-quest` for one-file block review, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
+
+## Reviewer Gate Map
+
+- Instruction artifacts, skills, agents, prompts, `AGENTS.md`, and README routing -> `instruction-artifact-reviewer`.
+- Implementation readiness, stable scope, blockers, validation path -> `implementation-readiness-reviewer`.
+- OpenSpec/design/architecture ownership and consistency -> `openspec-architecture-reviewer`.
+- Requirements-to-tests, weak assertions, missing gates -> `test-coverage-reviewer`.
+- Config, deployment, packaging, operational safety -> `deployment-config-reviewer`.
+- Latency, throughput, load isolation, recovery evidence -> `performance-reliability-reviewer`.
+- Rust async/concurrency/backpressure/shutdown -> `rust-concurrency-reviewer`.
+- Protocol/API semantics, schema evolution, correlation, reconnect -> `protocol-api-reviewer`; byte-level fixtures, framing, golden vectors -> `wire-protocol-reviewer`.
+- Legacy source evidence and compatibility behavior -> `legacy-evidence-reviewer`; legacy client/tool workflow compatibility -> `legacy-client-compatibility-reviewer`.
+
 ## Skill Catalog
 
 ### Planning And Workflow
@@ -96,6 +118,7 @@ pwsh -NoProfile -File tools/validate-library.ps1 -ForbiddenAnchor "OldProductNam
 - `deep-task-planning`: execution-grade plans for complex work.
 - `next-step`: discover OpenSpec-backed workstreams, request approval for orchestrator fan-out, require `deep-task-planning` for approved planning workers, or choose one concrete serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
+- `merge-request-review-loop`: autonomous MR/PR review follow-up for status checks, reviewer feedback, local fixes, revalidation, outcome handoff, and remote-action gates.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
 - `orchestrator`: auto-enter master-orchestrator posture for broad independent work, coordinating concise task fan-out, readable Markdown worker reports, report reconciliation, tests/review gates, and isolation only when worth the overhead.
 - `reflection-retro`: turn accumulated reflection files into workflow improvements.
@@ -148,6 +171,7 @@ pwsh -NoProfile -File tools/validate-library.ps1 -ForbiddenAnchor "OldProductNam
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
 - `legacy-client-compatibility-reviewer`: compatibility with legacy clients/tools/workflows.
+- `instruction-artifact-reviewer`: read-only review of skills, agents, prompts, `AGENTS.md`, README routing, autonomy handoff, and safety boundaries.
 
 ## Instruction Templates
 

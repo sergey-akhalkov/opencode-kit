@@ -56,6 +56,13 @@ Ask the user only for decisions that cannot be safely inferred from repository e
 - In no-questions or read-only mode, do not call interactive tools; return assumptions, blockers, and suggested continuation items.
 - Do not ask workers to question the user. Workers return `blocked` or `needs-review` with the exact decision needed.
 
+## Completion Handoff
+
+- After non-trivial user-visible work, the main session offers 2-4 self-contained next actions with the recommended option first and labeled `(Recommended)`.
+- Use `question` when available unless the user forbids questions or the mode is read-only/no-question.
+- In read-only/no-question mode, return `Suggested Next Options`; workers and reviewer agents return `Actionable Continuation Items` instead of asking the user directly.
+- Continue immediately when the user selects an actionable option that is within the current scope and safety boundaries.
+
 ## Business And Requirement Analysis
 
 For medium or larger work, capture just enough product context to prevent wrong implementation.

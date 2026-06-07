@@ -106,6 +106,22 @@ function Get-CatalogEntries([string]$readmeText, [string]$startHeading, [string]
     return @($entries)
 }
 
+function Get-RequiredHeadingSection([string]$readmeText, [string]$heading, [string]$readmePath) {
+    $pattern = '(?ms)^##\s+' + [regex]::Escape($heading) + '\s*$\r?\n(?<body>.*?)(?=^##\s+|\z)'
+    $match = [regex]::Match($readmeText, $pattern)
+    if (-not $match.Success) {
+        Add-Error "Missing README section '$heading': $readmePath"
+        return ""
+    }
+    return $match.Groups['body'].Value
+}
+
+function Require-BulletedSection([string]$body, [string]$label, [string]$file) {
+    if ($body -notmatch '(?m)^-\s+\S') {
+        Add-Error "$label must include at least one bullet: $file"
+    }
+}
+
 function Compare-Catalog([string]$label, [string[]]$expected, [string[]]$actual, [string]$readmePath) {
     $expectedSorted = @($expected | Sort-Object)
     $actualSorted = @($actual | Sort-Object)
@@ -118,6 +134,12 @@ function Compare-Catalog([string]$label, [string[]]$expected, [string[]]$actual,
         if ($expectedSorted -notcontains $name) {
             Add-Error "$label catalog references missing artifact '$name': $readmePath"
         }
+    }
+}
+
+function Require-TextContains([string]$text, [string]$needle, [string]$label, [string]$file) {
+    if (-not $text.Contains($needle)) {
+        Add-Error "$label must include '$needle': $file"
     }
 }
 
@@ -212,11 +234,25 @@ if ([System.IO.Directory]::Exists($instructionsDir)) {
 $readmePath = Join-Path $Root "README.md"
 if ([System.IO.File]::Exists($readmePath)) {
     $readmeText = Read-Text $readmePath
+    Require-BulletedSection (Get-RequiredHeadingSection $readmeText "Routing Map" $readmePath) "README routing map" $readmePath
+    Require-BulletedSection (Get-RequiredHeadingSection $readmeText "Reviewer Gate Map" $readmePath) "README reviewer gate map" $readmePath
     Compare-Catalog "Skill" @($skillNames) (Get-CatalogEntries $readmeText "Skill Catalog" "Agent Catalog" $readmePath) $readmePath
     Compare-Catalog "Agent" @($agentNames) (Get-CatalogEntries $readmeText "Agent Catalog" "Instruction Templates" $readmePath) $readmePath
     Compare-Catalog "Instruction template" @($instructionNames) (Get-CatalogEntries $readmeText "Instruction Templates" "Porting Notes" $readmePath) $readmePath
 } else {
     Add-Error "Missing README.md: $readmePath"
+}
+
+$agentsPath = Join-Path $Root "AGENTS.md"
+if ([System.IO.File]::Exists($agentsPath)) {
+    $agentsText = Read-Text $agentsPath
+    Require-TextContains $agentsText "## Completion Handoff" "AGENTS.md completion handoff contract" $agentsPath
+    Require-TextContains $agentsText '`question`' "AGENTS.md completion handoff contract" $agentsPath
+    Require-TextContains $agentsText "(Recommended)" "AGENTS.md completion handoff contract" $agentsPath
+    Require-TextContains $agentsText "Suggested Next Options" "AGENTS.md completion handoff contract" $agentsPath
+    Require-TextContains $agentsText "Actionable Continuation Items" "AGENTS.md completion handoff contract" $agentsPath
+} else {
+    Add-Error "Missing AGENTS.md: $agentsPath"
 }
 
 $markdownFiles = Get-MarkdownFiles $Root

@@ -11,4 +11,12 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 - Keep each artifact cohesive. Split artifacts when triggers, permissions, or output contracts differ materially.
 - Preserve OpenCode compatibility: skill folders must match `name` in `SKILL.md`; agent files must use valid frontmatter and least-privilege permissions.
 
+## Completion Handoff
+
+- After non-trivial user-visible work, the main session offers 2-4 self-contained next actions via `question` when available.
+- Put the recommended option first and end its label with `(Recommended)`.
+- In read-only, no-question, reviewer-agent, or subagent contexts, do not ask the user directly; return `Suggested Next Options` or `Actionable Continuation Items` for the main session instead.
+- If the user selects an actionable option, continue immediately in the current context instead of asking them to restate the task.
+- Prefer automation, validation, reviewer gates, and MR/PR-ready handoff so user input is reserved for scope direction, high-risk decisions, remote/destructive approvals, and MR/PR review outcomes.
+
 After changing skills or agents, review `README.md` and the relevant artifact frontmatter so the library remains discoverable.

@@ -11,11 +11,16 @@ Use this skill when tests need a fake TCP/HTTP/WebSocket/device/upstream service
 ## Principles
 
 - Simulators should be deterministic, scriptable, and easy to assert against.
-- Start harness work with scenario tests against the desired simulator API/behavior before implementing internals.
+- Start harness work with scenario tests against the desired simulator API/behavior before implementing internals; if infeasible, state why and use the closest reproducible substitute evidence.
 - Test the boundary behavior, not implementation internals.
 - Include slow, partial, malformed, disconnect, late-response, and overload scenarios when relevant.
 - Record all received requests and emitted responses for assertions.
 - Avoid sleeping blindly; use synchronization, deadlines, and deterministic scripts.
+
+## Safety
+
+- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- Keep fake services local and isolated by default; do not bind public interfaces, use shared external dependencies, or run long-lived listeners unless the user approves the target environment and stop criteria.
 
 ## Harness Features
 

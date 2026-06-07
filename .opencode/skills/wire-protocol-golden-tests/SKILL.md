@@ -14,6 +14,12 @@ Use this skill when a protocol codec, transport, fake server, or compatibility l
 - Include known-good, boundary, malformed, unsupported, and compatibility vectors.
 - Treat docs-only protocol claims as hypotheses until backed by source, captures, fixtures, schemas, or live output.
 - Keep fixtures small, named, and explain the contract they prove.
+- Before changing codec, transport, or compatibility behavior, add or update the smallest golden/manual gate first; if infeasible, state why and use the closest reproducible substitute evidence.
+
+## Safety
+
+- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- Do not exercise vectors against shared or production services unless the user approves the target environment, command, limits, and rollback expectations.
 
 ## Test Matrix
 

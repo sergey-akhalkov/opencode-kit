@@ -15,8 +15,13 @@ Use this skill for services that serialize or schedule operations against extern
 - Slow or failed resource A must not starve unrelated resource B unless the design accepts that trade-off.
 - Timeout before send and timeout after send are different states and need different recovery rules.
 - Recovery must account for stale bytes/messages/state from previous operations.
-- Add deterministic scheduler, recovery, cancellation, or simulator tests before scheduler logic changes.
+- Add deterministic scheduler, recovery, cancellation, or simulator tests before scheduler logic changes; if infeasible, state why and use the closest reproducible substitute evidence.
 - Backpressure should fail deterministically rather than allow unbounded memory growth.
+
+## Safety
+
+- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- Do not run load, recovery, or external-resource tests against shared or production dependencies unless the user approves the target environment, command, limits, and rollback expectations.
 
 ## Checks
 

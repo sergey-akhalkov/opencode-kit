@@ -14,8 +14,14 @@ Use this skill when work touches Windows service deployment, tray UI, installer,
 - Services must not depend on an interactive desktop session.
 - Installer behavior must be reversible: install, upgrade, repair, uninstall, rollback.
 - Startup, shutdown, crash recovery, logs, diagnostics, permissions, and firewall rules are part of the production contract.
-- Define automated lifecycle tests or manual gate checklists before service/installer behavior changes.
+- Define automated lifecycle tests or manual gate checklists before service/installer behavior changes; if infeasible, state why and use the closest reproducible substitute evidence.
 - Never assume admin privileges without documenting how they are requested and verified.
+
+## Safety
+
+- Default to artifact edits, dry-run validation, and manual gate checklists.
+- Do not run installers, service install/uninstall, service-control commands, registry edits, firewall changes, shortcut writes, scheduled task changes, or other host-mutating/admin-affecting commands unless the user explicitly approves the target environment, exact command, expected side effects, and rollback plan.
+- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
 
 ## Checks
 
