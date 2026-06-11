@@ -137,7 +137,7 @@ Copy only the reviewers that are useful for the target project. They are read-on
 
 ### Manual Plugins
 
-OpenCode project plugins are loaded from `.opencode/plugins/`. The prototype `openspec-autopilot.ts` plugin exposes the model-facing `autopilot_*` tools and depends on this repository's TypeScript ledger validator during MVP development.
+OpenCode project plugins are loaded from `.opencode/plugins/`. The prototype `openspec-autopilot.ts` plugin exposes the model-facing `autopilot_*` tools and depends on this repository's TypeScript Autopilot output helper and ledger validator during MVP development.
 
 For reusable installation, copy or package the full MVP bundle, then restart OpenCode so config-time plugin files are reloaded.
 
@@ -146,6 +146,7 @@ Autopilot MVP bundle:
 - `.opencode/skills/openspec-autopilot/SKILL.md`
 - `.opencode/plugins/openspec-autopilot.ts`
 - `.opencode/package.json`
+- `tools/openspec-autopilot-output.ts` or a bundled equivalent at the plugin's import path
 - `tools/autopilot-ledger.ts` or a bundled equivalent at the plugin's import path
 - `opencode.json` `command.autopilot` entry when `/autopilot` should be available
 

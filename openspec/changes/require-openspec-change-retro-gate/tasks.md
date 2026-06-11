@@ -11,6 +11,7 @@
 - [ ] Add tests for a future `openspec:retro-gate` helper that fail when `retrospective.md` is missing.
 - [ ] Add tests for approved skip handling with reason and approver.
 - [ ] Add tests for project-local finding routing and `opencode-dev-kit` finding routing.
+- [ ] Add tests that Autopilot no-progress, runtime-deferred, stale-evidence, and routing/escape-hatch friction are captured as retrospective evidence when present.
 - [ ] Add tests for concise `No findings` retrospectives.
 
 ## Future Implementation
@@ -23,6 +24,7 @@
 - [ ] Add `retrospective.md` template guidance to OpenSpec documentation or README after implementation is ready.
 - [ ] Add the deterministic TypeScript retro-gate helper and package script if test coverage proves the contract.
 - [ ] Integrate retrospective evidence sections into the future Autopilot evidence-pack workflow.
+- [ ] Integrate Autopilot routing/escape-hatch outcomes into retrospective templates and evidence-pack generated sections.
 
 ## Apply To Existing Active Changes
 

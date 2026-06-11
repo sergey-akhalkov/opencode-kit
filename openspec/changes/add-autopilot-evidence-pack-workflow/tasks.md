@@ -7,6 +7,8 @@
 - [ ] Add tests for validation planning without command execution.
 - [ ] Add tests for validation result summarization with fake command outputs.
 - [ ] Add tests for reviewer planning across task types and changed-file signals.
+- [ ] Add tests for freshness and active-change consistency evidence items, including unsupported inputs returning `unknown`.
+- [ ] Add tests for retrospective-ready evidence sections and candidate follow-up routing without claiming the retro gate passed.
 - [ ] Add tests for deterministic Markdown report rendering.
 - [ ] Add redaction tests for absolute paths and secret-like inputs.
 
@@ -18,6 +20,8 @@
 - [ ] Implement validation plan generation.
 - [ ] Implement optional validation execution with compact summaries.
 - [ ] Implement reviewer plan generation from deterministic signals.
+- [ ] Implement freshness and active-change consistency evidence collection by reusing or calling the contract-validation helper when available.
+- [ ] Implement retrospective evidence checklist and candidate follow-up routing sections.
 - [ ] Implement report rendering to an explicit approved path.
 - [ ] Keep raw output storage outside protected Autopilot paths unless plugin-owned.
 

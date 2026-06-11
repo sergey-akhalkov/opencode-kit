@@ -2,25 +2,22 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import {
+  autopilotMrStatuses,
+  autopilotProtectedPathPatterns,
+  autopilotTaskStatuses,
+  autopilotTaskTypes,
+  type AutopilotTaskStatus,
+  type AutopilotTaskType,
+} from "./autopilot-contract.ts";
+import { validateTypeSpecificEvidenceGate } from "./autopilot-ledger-type-gates.ts";
 
-export const taskTypes = [
-  "feature",
-  "bugfix",
-  "refactor",
-  "docs",
-  "typo",
-  "research",
-  "planning",
-  "tooling",
-  "config",
-  "performance",
-  "protocol",
-] as const;
+export const taskTypes = autopilotTaskTypes;
 
-export const taskStatuses = ["Ready", "Analyze", "Implementation", "Review", "Acceptance", "Done", "Blocked", "Failed", "Cancelled"] as const;
+export const taskStatuses = autopilotTaskStatuses;
 
-export type TaskType = (typeof taskTypes)[number];
-export type TaskStatus = (typeof taskStatuses)[number];
+export type TaskType = AutopilotTaskType;
+export type TaskStatus = AutopilotTaskStatus;
 
 export type ValidateTaskLedgerOptions = {
   sourcePath?: string;
@@ -36,6 +33,7 @@ type RecordValue = Record<string, unknown>;
 
 const taskTypeSet = new Set<string>(taskTypes);
 const taskStatusSet = new Set<string>(taskStatuses);
+const mrStatusSet = new Set<string>(autopilotMrStatuses);
 const terminalStatuses = new Set<string>(["Done", "Failed", "Cancelled"]);
 const nonTerminalStatuses = taskStatuses.filter((status) => !terminalStatuses.has(status));
 const testDecisionValues = new Set([
@@ -60,12 +58,7 @@ const legalTransitionTargets: Record<TaskStatus, Set<TaskStatus>> = {
   Cancelled: new Set(),
 };
 
-const protectedLedgerPathPatterns = [
-  "openspec/changes/*/automation/task.json",
-  "openspec/changes/*/automation/feedback/**",
-  "openspec/changes/*/automation/artifacts/**",
-  ".autopilot/**",
-];
+const protectedLedgerPathPatterns = autopilotProtectedPathPatterns;
 
 function isRecord(value: unknown): value is RecordValue {
   return typeof value === "object" && value != null && !Array.isArray(value);
@@ -153,6 +146,21 @@ function getEvidence(ledger: RecordValue, transition: RecordValue, phase: string
   const phaseEvidence = readRecord(ledger, "phaseEvidence");
   const phaseRecord = phaseEvidence ? readRecord(phaseEvidence, phase) : null;
   return phaseRecord ?? {};
+}
+
+function getEvidenceScopes(ledger: RecordValue, transition: RecordValue, phase: string): RecordValue[] {
+  const scopes: RecordValue[] = [];
+  const transitionEvidence = readRecord(transition, "evidence");
+  if (transitionEvidence) {
+    scopes.push(transitionEvidence);
+  }
+
+  const phaseEvidence = readRecord(ledger, "phaseEvidence");
+  const phaseRecord = phaseEvidence ? readRecord(phaseEvidence, phase) : null;
+  if (phaseRecord && phaseRecord !== transitionEvidence) {
+    scopes.push(phaseRecord);
+  }
+  return scopes;
 }
 
 function hasNonEmptyString(value: RecordValue, key: string): boolean {
@@ -338,7 +346,7 @@ function validateMr(ledger: RecordValue, errors: string[], options: ValidateTask
   if (!isNonEmptyString(mr.status)) {
     addError(errors, options, "mr.status", "non-empty string is required");
   }
-  if (mr.required === true && !["none", "created", "updated", "waiting-review", "merged", "not-required"].includes(String(mr.status))) {
+  if (mr.required === true && !mrStatusSet.has(String(mr.status))) {
     addError(errors, options, "mr.status", "must be a known MR lifecycle status");
   }
 }
@@ -482,6 +490,12 @@ function validateTransitionEvidence(
     if (!secretScan || !hasNonEmptyString(secretScan, "status")) {
       addError(errors, options, `history[${index}].evidence.secretScan`, "Implementation -> Review requires secret scan status or placeholder");
     }
+
+  }
+
+  const typeGateMessage = validateTypeSpecificEvidenceGate({ taskType, from, to, evidenceScopes: getEvidenceScopes(ledger, transition, from.toLowerCase()) });
+  if (typeGateMessage) {
+    addError(errors, options, `history[${index}].evidence`, typeGateMessage);
   }
 
   if (from === "Review" && to === "Acceptance") {
@@ -663,6 +677,7 @@ if (isMainModule()) {
 
 export const autopilotLedgerPolicy = {
   protectedLedgerPathPatterns,
+  mrStatuses: autopilotMrStatuses,
   nonTerminalStatuses,
   terminalStatuses: Array.from(terminalStatuses),
 };

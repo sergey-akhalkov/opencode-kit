@@ -6,12 +6,16 @@ The live regression confirmed that the Autopilot MVP tools load and inspect ledg
 
 The same regression found a state-validation UX gap: `autopilot_answer_blocker` accepts an arbitrary answer envelope without proving that a matching plugin-owned blocker question exists. It does not mutate state, but it can create false confidence that a blocker was applied.
 
+The runtime design also needs a safer concurrency contract before implementation. Autopilot should not automatically start several OpenSpec changes just because multiple ledgers are `Ready`; parallel implementation increases conflict, review, and recovery risk. The default should be one deterministic primary task, with parallelism used for read-only analysis, validation, and review unless an explicit guarded parallel mode proves independent scopes.
+
 ## What Changes
 
 - Add a plugin-owned e2e harness for Autopilot runtime states, including safe prototype ledgers or equivalent in-memory fixtures for tests.
 - Implement runtime tests for `autopilot_run_next`, `autopilot_status`, `autopilot_collect`, `autopilot_answer_blocker`, `autopilot_stop`, MR wait, and no-auto-merge behavior.
 - Make `autopilot_answer_blocker` verify a pending blocker question before accepting an answer, or return a clear blocked/failed result when no matching question exists.
-- Define the first non-MVP runtime slice for Ready-ledger advancement, worker dispatch/collect, blocker questions, MR wait, and parallel-ready queues.
+- Define deterministic Ready-ledger selection so `autopilot_run_next` chooses one primary task by explicit scope, dependency readiness, normalized priority, write-scope size, and stable tie-breakers instead of model preference.
+- Define the first non-MVP runtime slice for Ready-ledger advancement, worker dispatch/collect, blocker questions, MR wait, and parallel-ready queue visibility.
+- Make parallel implementation opt-in and guarded by independence checks, lock ownership, separate branches or worktrees, WIP limits, and explicit output explaining why each non-primary task was or was not started.
 
 ## Evidence
 
@@ -26,6 +30,7 @@ The same regression found a state-validation UX gap: `autopilot_answer_blocker` 
 
 - Small feature workflows cannot be meaningfully advanced by runtime Autopilot yet; direct `openspec-apply-change` remains more useful unless a future runtime can claim/dispatch work.
 - Large epic and parallel-workstream scenarios cannot be evaluated beyond static policy until a plugin-owned harness and dispatch/collect behavior exist.
+- Default single-task selection keeps normal `/autopilot` runs reviewable and recoverable; it should improve usability without surprising users with multiple simultaneous changes.
 - Blocker and MR scenarios remain partially blocked because safe state seeding is unavailable without writing protected paths manually.
 
 ## Validation

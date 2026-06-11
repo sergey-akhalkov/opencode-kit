@@ -20,7 +20,7 @@ One high-level call should advance as far as safely possible. Unless the user as
 { "tool": "autopilot_run_next" }
 ```
 
-Then follow the returned `nextRecommendedCall`, `questions`, `blockers`, and `mrsWaiting`. Do not manually advance ledger state when a tool is unavailable or returns an MVP no-op; report the limitation.
+Then prefer the returned `nextActions[]` guidance, using `nextRecommendedCall` only as a compatibility fallback. Ask only returned `questions`, summarize `blockers` and `mrsWaiting`, and do not manually advance ledger state when a tool is unavailable or returns an MVP no-op; report the limitation and `reasonCode`.
 
 ## Authority Boundary
 
@@ -43,7 +43,7 @@ Protected paths are plugin-owned: `openspec/changes/*/automation/task.json`, `op
 | `autopilot_answer_blocker` | Apply the user's selected blocker option, then continue only if recommended. |
 | `autopilot_stop` | Pause or cancel a run/task. |
 
-Expected `autopilot_run_next` output:
+Expected shared Autopilot tool output. Optional fields such as `taskSummaries[].mrStatus`, `nextActions[].tool`, and `nextActions[].args` may be omitted when they do not apply:
 
 ```json
 {
@@ -54,9 +54,42 @@ Expected `autopilot_run_next` output:
   "questions": [],
   "blockers": [],
   "nextRecommendedCall": "autopilot_status|autopilot_collect|autopilot_answer_blocker|null",
-  "summary": "..."
+  "summary": "...",
+  "reasonCode": "no_ledgers|invalid_ledgers|ready_runtime_deferred|waiting_for_mr|blocked_for_user|collect_deferred|stop_no_active_state|no_actionable_tasks|advanced",
+  "taskSummaries": [
+    {
+      "taskId": "...",
+      "path": "openspec/changes/<change>/automation/task.json",
+      "taskType": "feature|bugfix|refactor|docs|typo|research|planning|tooling|config|performance|protocol",
+      "status": "Ready|Analyze|Implementation|Review|Acceptance|Done|Blocked|Failed|Cancelled",
+      "valid": true,
+      "mrStatus": "none|created|updated|waiting-review|merged|not-required",
+      "actionability": "actionable|invalid|waiting_for_mr|blocked_for_user|runtime_deferred|terminal|not_selected",
+      "reasonCode": "..."
+    }
+  ],
+  "nextActions": [
+    {
+      "label": "...",
+      "kind": "tool|validation|report|wait|ask_user|manual_review",
+      "tool": "autopilot_run_next|autopilot_status|autopilot_collect|autopilot_answer_blocker|autopilot_stop",
+      "args": {},
+      "reason": "...",
+      "safety": "safe|requires_user|requires_credentials|not_available",
+      "expectedResult": "..."
+    }
+  ],
+  "loopGuard": {
+    "repeatedNoProgress": true,
+    "equivalentCall": "autopilot_run_next",
+    "suppressRepeatRecommendation": true
+  }
 }
 ```
+
+When `reasonCode` is `ready_runtime_deferred`, `collect_deferred`, `stop_no_active_state`, `no_ledgers`, or `no_actionable_tasks`, do not repeat the equivalent no-progress tool call unless `nextActions[]` explicitly says it is safe. Use `taskSummaries[]` to explain which discovered task is invalid, blocked, waiting for MR, terminal, or runtime-deferred without re-reading full ledgers.
+
+`advanced`, `actionable`, and `not_selected` are reserved for future runtime dispatch/selection behavior. Current MVP no-op output may document these values for compatibility but should not claim they occurred unless returned by the plugin.
 
 ## Task-Type Policy
 

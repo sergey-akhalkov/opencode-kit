@@ -35,8 +35,10 @@ type AutopilotEvidencePack = {
   validationPlan: ValidationPlanItem[];
   validationResults: ValidationResultItem[];
   reviewerPlan: ReviewerPlanItem[];
+  freshness: FreshnessEvidence[];
   scenarios: ScenarioEvidence[];
   findings: FindingEvidence[];
+  retrospective: RetrospectiveEvidence;
   residualRisks: string[];
 };
 ```
@@ -73,6 +75,8 @@ Markdown rendering should be deterministic and section-based:
 - Follow-up changes.
 - Validation results.
 - Reviewer gates.
+- Freshness and active-change consistency summary.
+- Retrospective evidence checklist and candidate follow-up routing.
 - Residual risks.
 - Ready-to-land status.
 

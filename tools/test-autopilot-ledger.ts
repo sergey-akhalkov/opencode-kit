@@ -11,6 +11,7 @@ type TestCase = {
   value?: () => unknown;
   valid: boolean;
   expected?: string[];
+  expectedErrorCount?: number;
 };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -19,10 +20,88 @@ const validator = path.join(root, "tools", "autopilot-ledger.ts");
 
 const tests: TestCase[] = [
   { name: "valid feature", fixture: "valid-feature.json", valid: true },
+  { name: "valid bugfix", fixture: "valid-bugfix.json", valid: true },
+  { name: "valid bugfix with infeasible reason", value: validBugfixInfeasibleReason, valid: true },
+  { name: "valid tooling", fixture: "valid-tooling.json", valid: true },
+  { name: "valid config", fixture: "valid-config.json", valid: true },
+  { name: "valid performance", fixture: "valid-performance.json", valid: true },
+  { name: "valid performance with infeasible reason", value: validPerformanceInfeasibleReason, valid: true },
+  { name: "valid protocol", fixture: "valid-protocol.json", valid: true },
+  { name: "valid protocol with infeasible reason", value: validProtocolInfeasibleReason, valid: true },
   { name: "valid typo", fixture: "valid-typo.json", valid: true },
   { name: "valid research", fixture: "valid-research.json", valid: true },
   { name: "valid feature Done after MR merge", value: validFeatureDoneMerged, valid: true },
   { name: "valid research Done with no-MR policy", value: validResearchDoneNoMrPolicy, valid: true },
+  {
+    name: "invalid bugfix missing reproduction gate",
+    fixture: "invalid-bugfix-missing-reproduction.json",
+    valid: false,
+    expected: ["bugfix Analyze -> Implementation requires structured reproduction"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid bugfix prose-only reproduction gate",
+    value: invalidBugfixProseOnlyReproductionGate,
+    valid: false,
+    expected: ["bugfix Analyze -> Implementation requires structured reproduction"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid tooling missing deterministic gate",
+    fixture: "invalid-tooling-missing-gate.json",
+    valid: false,
+    expected: ["tooling Implementation -> Review requires structured toolingGate"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid tooling summary-only deterministic gate",
+    value: invalidToolingSummaryOnlyGate,
+    valid: false,
+    expected: ["tooling Implementation -> Review requires structured toolingGate"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid config missing deterministic gate",
+    fixture: "invalid-config-missing-gate.json",
+    valid: false,
+    expected: ["config Implementation -> Review requires structured configGate"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid config infeasible reason does not satisfy gate",
+    value: invalidConfigInfeasibleReasonDoesNotSatisfyGate,
+    valid: false,
+    expected: ["config Implementation -> Review requires structured configGate"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid performance missing evidence gate",
+    fixture: "invalid-performance-missing-evidence.json",
+    valid: false,
+    expected: ["performance Implementation -> Review requires structured benchmark"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid performance prose-only evidence gate",
+    value: invalidPerformanceProseOnlyEvidenceGate,
+    valid: false,
+    expected: ["performance Implementation -> Review requires structured benchmark"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid protocol missing evidence gate",
+    fixture: "invalid-protocol-missing-evidence.json",
+    valid: false,
+    expected: ["protocol Implementation -> Review requires structured goldenVectors"],
+    expectedErrorCount: 1,
+  },
+  {
+    name: "invalid protocol empty infeasible reason",
+    value: invalidProtocolEmptyInfeasibleReason,
+    valid: false,
+    expected: ["protocol Implementation -> Review requires structured goldenVectors"],
+    expectedErrorCount: 1,
+  },
   {
     name: "invalid behavior task without testDecision",
     fixture: "invalid-behavior-missing-test-decision.json",
@@ -138,6 +217,30 @@ function validResearchDoneNoMrPolicy(): unknown {
   return ledger;
 }
 
+function validBugfixInfeasibleReason(): unknown {
+  const ledger = cloneFixture("invalid-bugfix-missing-reproduction.json");
+  const analyzeToImplementation = asRecord(historyOf(ledger)[1], "Expected Analyze -> Implementation transition.");
+  const evidence = asRecord(analyzeToImplementation.evidence, "Expected transition evidence.");
+  evidence.infeasibleReason = "The defect cannot be reproduced in this isolated validator fixture.";
+  return ledger;
+}
+
+function validPerformanceInfeasibleReason(): unknown {
+  const ledger = cloneFixture("invalid-performance-missing-evidence.json");
+  const implementationToReview = asRecord(historyOf(ledger)[2], "Expected Implementation -> Review transition.");
+  const evidence = asRecord(implementationToReview.evidence, "Expected transition evidence.");
+  evidence.infeasibleReason = "Benchmark runner is unavailable in this isolated validator fixture.";
+  return ledger;
+}
+
+function validProtocolInfeasibleReason(): unknown {
+  const ledger = cloneFixture("invalid-protocol-missing-evidence.json");
+  const implementationToReview = asRecord(historyOf(ledger)[2], "Expected Implementation -> Review transition.");
+  const evidence = asRecord(implementationToReview.evidence, "Expected transition evidence.");
+  evidence.infeasibleReason = "Golden vectors are infeasible for this isolated validator fixture.";
+  return ledger;
+}
+
 function invalidFeatureReadyImplementationWithoutAutoMinimalAnalyze(): unknown {
   const ledger = cloneFixture("valid-feature.json");
   ledger.status = "Implementation";
@@ -186,6 +289,46 @@ function invalidImplementationReviewMissingChangedFilesAndNoOpReason(): unknown 
     validation: { status: "passed", commands: ["<validation-command>"] },
     secretScan: { status: "placeholder", reason: "Scanner integration deferred." },
   };
+  return ledger;
+}
+
+function invalidBugfixProseOnlyReproductionGate(): unknown {
+  const ledger = cloneFixture("invalid-bugfix-missing-reproduction.json");
+  const analyzeToImplementation = asRecord(historyOf(ledger)[1], "Expected Analyze -> Implementation transition.");
+  const evidence = asRecord(analyzeToImplementation.evidence, "Expected transition evidence.");
+  evidence.reproduction = "Manual reproduction was attempted.";
+  return ledger;
+}
+
+function invalidToolingSummaryOnlyGate(): unknown {
+  const ledger = cloneFixture("invalid-tooling-missing-gate.json");
+  const implementationToReview = asRecord(historyOf(ledger)[2], "Expected Implementation -> Review transition.");
+  const evidence = asRecord(implementationToReview.evidence, "Expected transition evidence.");
+  evidence.toolingGate = { summary: "Tooling gate ran." };
+  return ledger;
+}
+
+function invalidConfigInfeasibleReasonDoesNotSatisfyGate(): unknown {
+  const ledger = cloneFixture("invalid-config-missing-gate.json");
+  const implementationToReview = asRecord(historyOf(ledger)[2], "Expected Implementation -> Review transition.");
+  const evidence = asRecord(implementationToReview.evidence, "Expected transition evidence.");
+  evidence.infeasibleReason = "Config gate skipped without schema, fixture, generated config, limits/defaults, or reload-policy evidence.";
+  return ledger;
+}
+
+function invalidPerformanceProseOnlyEvidenceGate(): unknown {
+  const ledger = cloneFixture("invalid-performance-missing-evidence.json");
+  const implementationToReview = asRecord(historyOf(ledger)[2], "Expected Implementation -> Review transition.");
+  const evidence = asRecord(implementationToReview.evidence, "Expected transition evidence.");
+  evidence.benchmark = "Benchmark looked faster.";
+  return ledger;
+}
+
+function invalidProtocolEmptyInfeasibleReason(): unknown {
+  const ledger = cloneFixture("invalid-protocol-missing-evidence.json");
+  const implementationToReview = asRecord(historyOf(ledger)[2], "Expected Implementation -> Review transition.");
+  const evidence = asRecord(implementationToReview.evidence, "Expected transition evidence.");
+  evidence.infeasibleReason = "   ";
   return ledger;
 }
 
@@ -256,6 +399,9 @@ for (const test of tests) {
       if (!result.errors.some((error) => error.includes(expected))) {
         throw new Error(`Expected error containing ${expected}.\nErrors:\n${result.errors.join("\n")}`);
       }
+    }
+    if (test.expectedErrorCount != null && result.errors.length !== test.expectedErrorCount) {
+      throw new Error(`Expected ${test.expectedErrorCount} error(s), got ${result.errors.length}.\nErrors:\n${result.errors.join("\n")}`);
     }
     console.log(`PASS ${test.name}`);
   } catch (error) {

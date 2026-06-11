@@ -52,6 +52,13 @@ The retrospective SHALL look for process problems that reduce quality or speed o
 - **WHEN** the retrospective evaluates the change
 - **THEN** it records the problem with evidence, impact, recommendation, confidence, and target owner
 
+#### Scenario: Autopilot routing or escape-hatch friction exists
+
+- **GIVEN** an Autopilot run over-triggered, looped on no-progress output, hit runtime-deferred work, encountered stale evidence, or required a manual escape hatch
+- **WHEN** the retrospective evaluates the change
+- **THEN** it records the Autopilot friction with evidence, impact, recommendation, confidence, and target owner
+- **AND** it routes durable improvements to the current project or reusable Autopilot/OpenCode follow-up changes
+
 ### Requirement: Findings Become Durable Follow-Ups
 
 Retrospective findings SHALL become durable follow-up artifacts unless explicitly dismissed with reason.
