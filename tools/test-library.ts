@@ -201,6 +201,7 @@ function newLibraryFixture(name: string): string {
     "    \"code-quality:inventory\": \"node tools/code-quality-inventory.ts\",",
     "    \"autopilot:validate\": \"node tools/autopilot-ledger.ts\",",
     "    \"autopilot:evidence\": \"node tools/autopilot-evidence.ts\",",
+    "    \"autopilot:check\": \"node tools/autopilot-check.ts\",",
     "    \"openspec:validate\": \"openspec validate --all\",",
     "    \"openspec:retro-gate\": \"node tools/openspec-retro-gate.ts\",",
     "    \"openspec:retro-followups\": \"node tools/openspec-retro-followups.ts\",",

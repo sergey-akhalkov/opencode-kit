@@ -3,11 +3,13 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { buildPrePushAutopilotFreshnessGates, buildPrePushAutopilotLedgerGate } from "./autopilot-check.ts";
 
 export type ValidationCommand = {
   label: string;
   command: string;
   args: string[];
+  skipReason?: string;
 };
 
 export type ValidationCommandResult = {
@@ -23,19 +25,50 @@ export type ValidationOutput = {
   error: (message: string) => void;
 };
 
+export type BuildPrePushValidationPlanOptions = {
+  changedFiles?: string[];
+};
+
 export type RunPrePushValidationOptions = {
   runner?: ValidationCommandRunner;
   output?: ValidationOutput;
+  changedFiles?: string[];
 };
 
-export function buildPrePushValidationPlan(root: string): ValidationCommand[] {
+function quoteWindowsCommandArg(value: string): string {
+  if (/^[A-Za-z0-9._/:\\=-]+$/.test(value)) {
+    return value;
+  }
+  return `"${value.replaceAll("\"", "\\\"")}"`;
+}
+
+function spawnValidationCommand(root: string, command: ValidationCommand): ReturnType<typeof spawnSync> {
+  if (command.command === "node") {
+    return spawnSync(process.execPath, command.args, { cwd: root, encoding: "utf8", stdio: "inherit", shell: false });
+  }
+  if (process.platform === "win32") {
+    const executable = process.env.ComSpec ?? "cmd.exe";
+    const commandLine = [command.command, ...command.args].map(quoteWindowsCommandArg).join(" ");
+    return spawnSync(executable, ["/d", "/s", "/c", commandLine], { cwd: root, encoding: "utf8", stdio: "inherit", shell: false });
+  }
+  return spawnSync(command.command, command.args, { cwd: root, encoding: "utf8", stdio: "inherit", shell: false });
+}
+
+export function buildPrePushValidationPlan(root: string, options: BuildPrePushValidationPlanOptions = {}): ValidationCommand[] {
   const plan: ValidationCommand[] = [
     { label: "Repository validation", command: "npm", args: ["run", "validate"] },
-    { label: "Repository tests", command: "npm", args: ["test"] },
   ];
 
   if (fs.existsSync(path.join(root, "openspec"))) {
+    const autopilotLedgerGate = buildPrePushAutopilotLedgerGate(root);
+    plan.push({ label: autopilotLedgerGate.label, command: autopilotLedgerGate.command, args: autopilotLedgerGate.args, skipReason: autopilotLedgerGate.skipReason });
+    plan.push({ label: "Repository tests", command: "npm", args: ["test"] });
     plan.push({ label: "OpenSpec validation", command: "openspec", args: ["validate", "--all"] });
+    for (const freshnessGate of buildPrePushAutopilotFreshnessGates(root, { changedFiles: options.changedFiles })) {
+      plan.push({ label: freshnessGate.label, command: freshnessGate.command, args: freshnessGate.args, skipReason: freshnessGate.skipReason });
+    }
+  } else {
+    plan.push({ label: "Repository tests", command: "npm", args: ["test"] });
   }
 
   return plan;
@@ -49,17 +82,15 @@ export function exitCodeFromSpawnResult(result: { status: number | null; signal?
 }
 
 function defaultCommandRunner(root: string, command: ValidationCommand): ValidationCommandResult {
-  const executable = process.platform === "win32" ? process.env.ComSpec ?? "cmd.exe" : command.command;
-  const args = process.platform === "win32" ? ["/d", "/s", "/c", [command.command, ...command.args].join(" ")] : command.args;
-  const result = spawnSync(executable, args, {
-    cwd: root,
-    encoding: "utf8",
-    stdio: "inherit",
-  });
+  const result = spawnValidationCommand(root, command);
   return { status: result.status, signal: result.signal, error: result.error ?? null };
 }
 
 function runCommand(root: string, command: ValidationCommand, runner: ValidationCommandRunner, output: ValidationOutput): number {
+  if (command.skipReason) {
+    output.log(`==> ${command.label}: not-applicable - ${command.skipReason}`);
+    return 0;
+  }
   output.log(`==> ${command.label}: ${command.command} ${command.args.join(" ")}`);
   const result = runner(root, command);
   if (result.error) {
@@ -79,7 +110,7 @@ function defaultRoot(): string {
 export function runPrePushValidation(root: string, options: RunPrePushValidationOptions = {}): number {
   const runner = options.runner ?? defaultCommandRunner;
   const output = options.output ?? { log: console.log, error: console.error };
-  for (const command of buildPrePushValidationPlan(root)) {
+  for (const command of buildPrePushValidationPlan(root, { changedFiles: options.changedFiles })) {
     const exitCode = runCommand(root, command, runner, output);
     if (exitCode !== 0) {
       output.error(`Pre-push validation failed at ${command.label}.`);

@@ -2,13 +2,13 @@
 
 ## Tests First
 
-- [ ] Add TypeScript tests for trigger event classification covering supported OpenSpec paths, unsupported paths, worker session events, blocker replies, permission replies, workspace/worktree events, and TUI command intent categories.
-- [ ] Add scheduler tests for debounce, single-flight execution, cooldowns, normalized scope keys, source tags, disposal cancellation, and recursion suppression.
+- [x] Add TypeScript tests for trigger event classification covering supported OpenSpec paths, unsupported paths, worker session events, blocker replies, permission replies, workspace/worktree events, and TUI command intent categories. Evidence: `tools/test-autopilot-programmatic-triggers.ts` covers active `tasks.md`, ledger/evidence paths, unsupported paths, owned/unknown worker idle, blocker replies, permission replies, workspace/worktree readiness, TUI status/check/run/stop intent, and autonomous run-next disabled-without-evidence cases.
+- [x] Add scheduler tests for debounce, single-flight execution, cooldowns, normalized scope keys, source tags, disposal cancellation, and recursion suppression. Evidence: `tools/test-autopilot-trigger-scheduler.ts` covers stable normalized job keys, debounce coalescing, cooldown suppression, single-flight joining, dispose cancellation/rejection, and recursive Autopilot-triggered source suppression.
 - [ ] Add tests proving passive events schedule only status or cheap checks and never call `autopilot_run_next` by default.
 - [ ] Add tests proving `triggerMode: off|observe|controlled|autonomous` gates behavior exactly as specified.
 - [ ] Add tests proving worker `session.status: idle` schedules `autopilot_collect` only for plugin-owned worker sessions and only once per unconsumed worker report id.
-- [ ] Add tests proving `message.updated` and `message.part.updated` report markers do not trigger collection until the worker is idle or report completion is proven.
-- [ ] Add tests proving `question.replied`, `question.rejected`, and `permission.replied` affect only plugin-owned pending blocker/action state.
+- [x] Add tests proving `message.updated` and `message.part.updated` report markers do not trigger collection until the worker is idle or report completion is proven. Evidence: `tools/test-autopilot-programmatic-triggers.ts` covers busy marker ignored, idle message without marker ignored, mismatched report marker ignored, and matching complete marker with idle owned worker scheduling collect.
+- [x] Add tests proving `question.replied`, `question.rejected`, and `permission.replied` affect only plugin-owned pending blocker/action state. Evidence: `tools/test-autopilot-programmatic-triggers.ts` covers owned blocker answer pass-through, rejected blocker status, permission alias handling, unknown/missing ids, and observe-mode disabled handling.
 - [ ] Add tests proving `tool.execute.after` schedules cheap checkpoints for `advanced` Autopilot outputs and suppresses no-progress loops.
 - [ ] Add protected-path guard tests for `apply_patch`, edit/write tools, and `bash` commands that target `.autopilot/**` or `openspec/changes/*/automation/**`.
 - [ ] Add source-equivalent plugin tests for server `event`, `tool.execute.before`, and `tool.execute.after` handlers with fake OpenCode event/tool envelopes.
@@ -16,8 +16,8 @@
 
 ## Implementation
 
-- [ ] Extract or wrap the existing Autopilot public tool logic behind a shared TypeScript controller without changing current tool output behavior.
-- [ ] Add a deterministic trigger scheduler module with debounce, single-flight, cooldown, source tagging, recursion guard, safe logging summaries, and disposal support.
+- [x] Extract or wrap the existing Autopilot public tool logic behind a shared TypeScript controller without changing current tool output behavior. Evidence: `.opencode/plugins/openspec-autopilot.ts` now delegates `autopilot_*` tools to `tools/openspec-autopilot-controller.ts`; `node tools/test-autopilot-contract.ts`, `node tools/test-openspec-autopilot-output.ts`, and `node tools/test-openspec-autopilot-control-output.ts` passed.
+- [x] Add a deterministic trigger scheduler module with debounce, single-flight, cooldown, source tagging, recursion guard, safe logging summaries, and disposal support. Evidence: `tools/autopilot-trigger-scheduler.ts` adds deterministic enqueue/flush/snapshot/dispose behavior with stable keys, source tags, recursion suppression, pending/in-flight/cooldown snapshots, and focused tests passed through `npm test`.
 - [ ] Add trigger configuration parsing with safe defaults for `off`, `observe`, `controlled`, and `autonomous` modes.
 - [ ] Implement observe-mode `event` hook handling for `file.watcher.updated` on `tasks.md`, `automation/task.json`, reports, and retrospectives.
 - [ ] Wire observe-mode file triggers to `autopilot_status` or `autopilot:check --level cheap` when the check helper exists, without protected writes.
@@ -61,7 +61,7 @@
 
 ## Acceptance Criteria
 
-- [ ] Existing `autopilot_*` tool output behavior remains compatible with current contract tests.
+- [x] Existing `autopilot_*` tool output behavior remains compatible with current contract tests. Evidence: `node tools/test-autopilot-contract.ts`, `npm test`, and `node tools/test-autopilot-bundle-smoke.ts` passed after controller extraction and README bundle dependency sync.
 - [ ] Passive events can refresh status or cheap checks but cannot start claim-capable work by default.
 - [ ] Controlled collect/blocker/permission/workspace triggers require plugin-owned runtime evidence and ignore unrelated OpenCode events.
 - [ ] Scheduler prevents event storms, duplicate in-flight jobs, and recursion from Autopilot-generated events.

@@ -28,6 +28,7 @@ const requiredScripts = {
   "code-quality:inventory": "node tools/code-quality-inventory.ts",
   "autopilot:validate": "node tools/autopilot-ledger.ts",
   "autopilot:evidence": "node tools/autopilot-evidence.ts",
+  "autopilot:check": "node tools/autopilot-check.ts",
   "openspec:validate": "openspec validate --all",
   "openspec:retro-gate": "node tools/openspec-retro-gate.ts",
   "openspec:retro-followups": "node tools/openspec-retro-followups.ts",
@@ -122,6 +123,17 @@ const tests: TestCase[] = [
         const result = invokeValidator(fixture);
         assertFailure(result, "Missing documented Autopilot evidence script should fail validation.");
         assertOutputContains(result, "autopilot:evidence", "Missing Autopilot evidence script should name the required script.");
+      });
+    },
+  },
+  {
+    name: "validator rejects missing documented Autopilot check script",
+    run: () => {
+      withTempDir("missing-autopilot-check-script", (fixture) => {
+        writePackageJson(fixture, withoutScript("autopilot:check"));
+        const result = invokeValidator(fixture);
+        assertFailure(result, "Missing documented Autopilot check script should fail validation.");
+        assertOutputContains(result, "autopilot:check", "Missing Autopilot check script should name the required script.");
       });
     },
   },

@@ -625,7 +625,7 @@ function validateDevKitContract(root: string): void {
   }
 
   const scripts = readPackageScripts(root);
-  for (const script of ["install:global", "init:project", "doctor", "project:inventory", "instruction:inventory", "code-quality:inventory", "autopilot:validate", "autopilot:evidence", "openspec:validate", "openspec:retro-gate", "openspec:retro-followups", "prepush:validate", "validate", "validate:strict", "test"]) {
+  for (const script of ["install:global", "init:project", "doctor", "project:inventory", "instruction:inventory", "code-quality:inventory", "autopilot:validate", "autopilot:evidence", "autopilot:check", "openspec:validate", "openspec:retro-gate", "openspec:retro-followups", "prepush:validate", "validate", "validate:strict", "test"]) {
     if (!scripts[script]) {
       addError(`package.json missing required opencode-dev-kit script '${script}'`);
     }
@@ -635,6 +635,9 @@ function validateDevKitContract(root: string): void {
   }
   if (scripts["autopilot:evidence"] && scripts["autopilot:evidence"] !== "node tools/autopilot-evidence.ts") {
     addError("package.json script 'autopilot:evidence' must run node tools/autopilot-evidence.ts.");
+  }
+  if (scripts["autopilot:check"] && scripts["autopilot:check"] !== "node tools/autopilot-check.ts") {
+    addError("package.json script 'autopilot:check' must run node tools/autopilot-check.ts.");
   }
   if (scripts["openspec:validate"] && scripts["openspec:validate"] !== "openspec validate --all") {
     addError("package.json script 'openspec:validate' must run openspec validate --all.");

@@ -368,6 +368,9 @@ const tests: TestCase[] = [
       if (scripts["autopilot:validate"] !== "node tools/autopilot-ledger.ts") {
         throw new Error("package.json must expose autopilot:validate as node tools/autopilot-ledger.ts.");
       }
+      if (scripts["autopilot:check"] !== "node tools/autopilot-check.ts") {
+        throw new Error("package.json must expose autopilot:check as node tools/autopilot-check.ts.");
+      }
       if (scripts["openspec:validate"] !== "openspec validate --all") {
         throw new Error("package.json must expose openspec:validate as openspec validate --all.");
       }

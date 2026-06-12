@@ -174,6 +174,14 @@ Critical evidence gates:
 - Parallel implementation worktrees need MR merged evidence plus archived-change evidence before cleanup; cleanup must be limited to owned `autopilot/...` worktrees.
 - Any transition to `Blocked` needs blocker reason and recommended options when user action is required.
 
+Executable checkpoint guidance when this repository exposes `npm run autopilot:check`:
+
+- After `autopilot_run_next` or `autopilot_collect` returns `advanced`, run `npm run autopilot:check -- --level cheap` before further dispatch or collection; do not require this checkpoint for status-only reads.
+- Before claiming `Implementation -> Review`, reviewer handoff, or MR/PR handoff for a scoped change, run `npm run autopilot:check -- --level standard --change <change-id>` unless a stricter gate already ran.
+- Before push, MR/PR handoff, or local ready-to-land evidence, run `npm run autopilot:check -- --level prepush` or the repository `npm run prepush:validate` gate.
+- Before archive-ready or final-closure claims, run `npm run autopilot:check -- --level final --change <change-id>` only when repository writes are authorized; final mode is not read-only because it may create/update OpenSpec follow-up changes, retro follow-ups, and retrospective outputs before the retro gate.
+- Treat `not-applicable` no-ledger output as a reported state, not a failure; treat blocking failures, stale evidence, or `--fail-on-warnings` failures as stop conditions.
+
 ## Retrospective Archive Gate
 
 Before archive or archive-ready acceptance, require `retrospective.md`, generated follow-up OpenSpec changes for actionable retrospective findings, and the repository retro gate when available. If a completed change lacks a passed `Archive Gate Decision`, `No findings` evidence, generated follow-up changes for `Target` `project-local` or `opencode-dev-kit`, or an approved skip with reason and approver, treat the missing retrospective/follow-up as an archive gate blocker and ask only blocker questions returned by the plugin/runtime.

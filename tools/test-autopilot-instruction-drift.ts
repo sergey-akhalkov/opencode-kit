@@ -174,6 +174,24 @@ function assertAutoParallelDocs(text: string, label: string): void {
   assert(/worktree[\s\S]{0,180}(MR|merged)[\s\S]{0,180}(archive|cleanup)|cleanup[\s\S]{0,180}(MR|merged)[\s\S]{0,180}archive/i.test(text), `${label} must document worktree cleanup after MR merged and archive evidence.`);
 }
 
+function assertAutopilotCheckDocs(text: string, label: string): void {
+  for (const phrase of [
+    "autopilot:check",
+    "--level cheap",
+    "--level standard",
+    "--level prepush",
+    "--level final",
+    "not-applicable",
+    "retro follow-ups",
+  ]) {
+    assert(text.toLowerCase().includes(phrase.toLowerCase()), `${label} must document Autopilot check phrase: ${phrase}.`);
+  }
+  assert(/autopilot_run_next[\s\S]{0,120}autopilot_collect[\s\S]{0,160}advanced|advanced[\s\S]{0,160}autopilot_run_next[\s\S]{0,120}autopilot_collect/i.test(text), `${label} must tie cheap checkpoints to advanced run_next/collect output.`);
+  assert(/status-only[\s\S]{0,80}(do not|not require)|do not[\s\S]{0,80}status-only/i.test(text), `${label} must not require cheap checkpoints after status-only reads.`);
+  assert(/final[\s\S]{0,160}(not read-only|write-authorized|may create\/update)|may create\/update[\s\S]{0,160}final/i.test(text), `${label} must warn that final checks can write follow-up/retrospective outputs.`);
+  assert(/prepush[\s\S]{0,180}ready-to-land|ready-to-land[\s\S]{0,180}prepush/i.test(text), `${label} must route routine ready-to-land evidence to prepush rather than final.`);
+}
+
 function extractLineContaining(text: string, needle: string, label: string): string {
   const line = text.split(/\r?\n/).find((candidate) => candidate.includes(needle));
   assert(line != null, `${label} must contain ${needle}.`);
@@ -261,6 +279,16 @@ const tests: TestCase[] = [
     run: () => {
       const skill = readText(".opencode/skills/openspec-autopilot/SKILL.md");
       assertAutoParallelDocs(extractMarkdownSection(skill, "## Public Tools"), "openspec-autopilot Public Tools auto-parallel docs");
+    },
+  },
+  {
+    name: "Autopilot validation checkpoints stay documented",
+    run: () => {
+      const skill = readText(".opencode/skills/openspec-autopilot/SKILL.md");
+      const readme = readText("README.md");
+      assertAutopilotCheckDocs(skill, "openspec-autopilot skill");
+      assertAutopilotCheckDocs(readme, "README");
+      assert(/pre-push gate[\s\S]{0,240}Autopilot ledger validation/i.test(readme), "README must document pre-push Autopilot ledger validation.");
     },
   },
   {

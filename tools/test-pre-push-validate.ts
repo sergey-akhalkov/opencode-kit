@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import crypto from "node:crypto";
+import { fileURLToPath } from "node:url";
 import { buildPrePushValidationPlan, exitCodeFromSpawnResult, runPrePushValidation, type ValidationCommand, type ValidationCommandResult } from "./pre-push-validate.ts";
 
 type TestCase = {
@@ -46,8 +47,43 @@ function withOpenSpecRoot(name: string, run: (root: string) => void): void {
   });
 }
 
+function validLedger(taskId: string): Record<string, unknown> {
+  const fixtureRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "fixtures", "autopilot-ledger");
+  const ledger = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "valid-research.json"), "utf8")) as Record<string, unknown>;
+  ledger.id = taskId;
+  return ledger;
+}
+
+function writeJson(filePath: string, value: unknown): void {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}
+
+function writeActiveChange(root: string, changeId: string): void {
+  const changeRoot = path.join(root, "openspec", "changes", changeId);
+  fs.mkdirSync(changeRoot, { recursive: true });
+  fs.writeFileSync(path.join(changeRoot, "tasks.md"), `# Tasks: ${changeId}\n\n- [ ] Do work.\n`, "utf8");
+}
+
+function writeLedger(root: string, changeId: string, taskId: string): void {
+  writeActiveChange(root, changeId);
+  writeJson(path.join(root, "openspec", "changes", changeId, "automation", "task.json"), validLedger(taskId));
+}
+
+function writeInvalidLedger(root: string, changeId: string): void {
+  writeJson(path.join(root, "openspec", "changes", changeId, "automation", "task.json"), { schemaVersion: 1, id: "invalid-ledger" });
+}
+
 function commandKey(command: ValidationCommand): string {
   return `${command.label}:${command.command} ${command.args.join(" ")}`;
+}
+
+function normalizePath(value: string): string {
+  return value.replaceAll("\\", "/");
+}
+
+function writePackageJson(root: string, scripts: Record<string, string>): void {
+  fs.writeFileSync(path.join(root, "package.json"), `${JSON.stringify({ name: "prepush-fixture", private: true, type: "module", scripts }, null, 2)}\n`, "utf8");
 }
 
 const tests: TestCase[] = [
@@ -64,9 +100,51 @@ const tests: TestCase[] = [
     name: "pre-push plan includes OpenSpec validation when present",
     run: () => withOpenSpecRoot("with-openspec", (root) => {
       const plan = buildPrePushValidationPlan(root);
-      assertEqual(plan.length, 3, "Plan with OpenSpec should include three gates.");
-      assertEqual(plan[2].command, "openspec", "Third gate should use OpenSpec CLI.");
-      assertArrayEqual(plan[2].args, ["validate", "--all"], "Third gate should validate all OpenSpec changes.");
+      assertEqual(plan.length, 4, "Plan with OpenSpec should include repository gates, Autopilot ledger gate, and OpenSpec validation.");
+      assertEqual(plan[1].label, "Autopilot ledger validation", "Second gate should be Autopilot ledger validation.");
+      assertEqual(plan[1].skipReason, "No active Autopilot ledgers discovered.", "No-ledger gate should be not-applicable.");
+      assertEqual(plan[3].command, "openspec", "Fourth gate should use OpenSpec CLI.");
+      assertArrayEqual(plan[3].args, ["validate", "--all"], "Fourth gate should validate all OpenSpec changes.");
+    }),
+  },
+  {
+    name: "pre-push plan includes active Autopilot ledgers in deterministic order",
+    run: () => withOpenSpecRoot("with-ledgers", (root) => {
+      writeLedger(root, "change-b", "task-b");
+      writeLedger(root, "change-a", "task-a");
+      const plan = buildPrePushValidationPlan(root);
+      const ledgerGate = plan.find((command) => command.label === "Autopilot ledger validation");
+
+      assertEqual(ledgerGate?.skipReason, undefined, "Active ledger gate should not be skipped.");
+      assertArrayEqual(ledgerGate?.args ?? [], [
+        "run",
+        "autopilot:validate",
+        "--",
+        "openspec/changes/change-a/automation/task.json",
+        "openspec/changes/change-b/automation/task.json",
+      ], "Active ledger gate should validate every active ledger in sorted order.");
+      assertArrayEqual(plan.map((command) => command.label), [
+        "Repository validation",
+        "Autopilot ledger validation",
+        "Repository tests",
+        "OpenSpec validation",
+      ], "Autopilot ledger validation should run before repository tests.");
+    }),
+  },
+  {
+    name: "pre-push plan includes freshness gate for changed active artifacts",
+    run: () => withOpenSpecRoot("with-freshness", (root) => {
+      writeActiveChange(root, "change-a");
+      const plan = buildPrePushValidationPlan(root, { changedFiles: ["openspec/changes/change-a/tasks.md"] });
+
+      assertArrayEqual(plan.map((command) => command.label), [
+        "Repository validation",
+        "Autopilot ledger validation",
+        "Repository tests",
+        "OpenSpec validation",
+        "Autopilot evidence freshness",
+      ], "Freshness gate should run after OpenSpec validation for changed active artifacts.");
+      assertArrayEqual(plan[4].args, ["tools/autopilot-report-freshness.ts", "change-a", "--mode", "archive-strict"], "Freshness gate should run archive-strict report freshness for changed active change.");
     }),
   },
   {
@@ -95,6 +173,81 @@ const tests: TestCase[] = [
         "Repository tests:npm test",
         "OpenSpec validation:openspec validate --all",
       ], "Fake runner should execute gates in deterministic order.");
+    }),
+  },
+  {
+    name: "pre-push fake runner reports no active ledgers as not-applicable",
+    run: () => withOpenSpecRoot("runner-no-ledgers", (root) => {
+      const logs: string[] = [];
+      const exitCode = runPrePushValidation(root, {
+        runner: () => ({ status: 0, signal: null }),
+        output: { log: (message: string) => logs.push(message), error: () => undefined },
+      });
+
+      assertEqual(exitCode, 0, "No active Autopilot ledgers should not fail pre-push.");
+      assertEqual(logs.some((message) => message.includes("Autopilot ledger validation") && message.includes("not-applicable")), true, "Pre-push output should report no-ledger Autopilot gate as not-applicable.");
+    }),
+  },
+  {
+    name: "pre-push fake runner short-circuits on invalid active ledger validation",
+    run: () => withOpenSpecRoot("runner-invalid-ledger", (root) => {
+      writeInvalidLedger(root, "change-a");
+      const calls: string[] = [];
+      const exitCode = runPrePushValidation(root, {
+        runner: (_root: string, command: ValidationCommand): ValidationCommandResult => {
+          calls.push(commandKey(command));
+          return command.label === "Autopilot ledger validation" ? { status: 9, signal: null } : { status: 0, signal: null };
+        },
+        output: { log: () => undefined, error: () => undefined },
+      });
+
+      assertEqual(exitCode, 9, "Autopilot ledger validation failure should propagate.");
+      assertArrayEqual(calls, [
+        "Repository validation:npm run validate",
+        "Autopilot ledger validation:npm run autopilot:validate -- openspec/changes/change-a/automation/task.json",
+      ], "Invalid active ledger should stop pre-push before repository tests and OpenSpec validation.");
+    }),
+  },
+  {
+    name: "pre-push fake runner short-circuits on freshness failure",
+    run: () => withOpenSpecRoot("runner-freshness-fails", (root) => {
+      writeActiveChange(root, "change-a");
+      const calls: string[] = [];
+      const exitCode = runPrePushValidation(root, {
+        changedFiles: ["openspec/changes/change-a/live-regression-report.md"],
+        runner: (_root: string, command: ValidationCommand): ValidationCommandResult => {
+          calls.push(commandKey(command));
+          return command.label === "Autopilot evidence freshness" ? { status: 5, signal: null } : { status: 0, signal: null };
+        },
+        output: { log: () => undefined, error: () => undefined },
+      });
+
+      assertEqual(exitCode, 5, "Freshness gate failure should propagate.");
+      assertArrayEqual(calls, [
+        "Repository validation:npm run validate",
+        "Repository tests:npm test",
+        "OpenSpec validation:openspec validate --all",
+        "Autopilot evidence freshness:node tools/autopilot-report-freshness.ts change-a --mode archive-strict",
+      ], "Freshness failure should stop after the labeled freshness gate.");
+    }),
+  },
+  {
+    name: "pre-push real runner propagates invalid Autopilot ledger validation",
+    run: () => withOpenSpecRoot("runner-real-invalid-ledger", (root) => {
+      writeInvalidLedger(root, "change-a");
+      writePackageJson(root, {
+        validate: "node -e \"process.exit(0)\"",
+        "autopilot:validate": `node ${normalizePath(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."), "tools", "autopilot-ledger.ts"))}`,
+        test: "node -e \"process.exit(99)\"",
+      });
+      const errors: string[] = [];
+      const logs: string[] = [];
+      const exitCode = runPrePushValidation(root, { output: { log: (message: string) => logs.push(message), error: (message: string) => errors.push(message) } });
+
+      assertEqual(exitCode, 1, "Real invalid Autopilot ledger validation command should fail with validator exit code.");
+      assertEqual(logs.some((message) => message.includes("Autopilot ledger validation") && message.includes("npm run autopilot:validate")), true, "Real run should invoke npm autopilot:validate gate.");
+      assertEqual(logs.some((message) => message.includes("Repository tests")), false, "Real invalid ledger run should stop before repository tests.");
+      assertEqual(errors.includes("Pre-push validation failed at Autopilot ledger validation."), true, "Real run should name the failed Autopilot ledger gate.");
     }),
   },
   {

@@ -148,6 +148,7 @@ The repository bundle smoke is source-equivalent: it verifies file presence, hel
 - `.opencode/skills/openspec-autopilot/SKILL.md`
 - `.opencode/plugins/openspec-autopilot.ts`
 - `.opencode/package.json`
+- `tools/openspec-autopilot-controller.ts` or a bundled equivalent at the plugin/helper import path
 - `tools/openspec-autopilot-output.ts` or a bundled equivalent at the plugin's import path
 - `tools/openspec-autopilot-active-change-queue.ts` or a bundled equivalent at the plugin/helper import path
 - `tools/openspec-autopilot-next-actions.ts` or a bundled equivalent at the plugin/helper import path
@@ -200,6 +201,17 @@ Validate OpenSpec Autopilot task ledgers with:
 ```sh
 npm run autopilot:validate -- <task-ledger.json>
 ```
+
+Run layered Autopilot validation checkpoints with:
+
+```sh
+npm run autopilot:check -- --level cheap
+npm run autopilot:check -- --level standard --change <change-id>
+npm run autopilot:check -- --level prepush
+npm run autopilot:check -- --level final --change <change-id>
+```
+
+Use `cheap` after `autopilot_run_next` or `autopilot_collect` returns `advanced`, after ledger edits, or before phase-transition checkpoints; do not require it for status-only reads. It validates scoped/discovered ledgers and reports no-ledger runs as not-applicable without running the full test suite. Use `standard` before reviewer or MR handoff for scoped evidence collect and freshness checks. Use `prepush` for repository push, MR handoff, or routine ready-to-land evidence. Use `final` only in write-authorized archive or final-closure contexts because it may create/update OpenSpec follow-up changes, retro follow-ups, and retrospective outputs before running the retro gate. Add `--fail-on-warnings` for strict CI or release flows.
 
 Collect deterministic Autopilot evidence packs for a change with:
 
@@ -263,7 +275,7 @@ Before pushing changes from this repository, run the pre-push gate:
 npm run prepush:validate
 ```
 
-The pre-push gate runs `npm run validate`, `npm test`, and, when `openspec/` exists, `openspec validate --all`.
+The pre-push gate runs `npm run validate`, active Autopilot ledger validation when ledgers exist, `npm test`, and, when `openspec/` exists, `openspec validate --all`. If no active Autopilot ledgers exist, the Autopilot ledger gate is reported as not-applicable and does not fail the push gate.
 
 To enable the tracked local git hook for this clone, run:
 

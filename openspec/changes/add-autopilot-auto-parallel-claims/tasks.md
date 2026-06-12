@@ -54,9 +54,9 @@
 
 ## Retrospective Before Archive
 
-- [ ] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, and token-heavy steps.
-- [ ] Write `retrospective.md` with evidence, problems, improvements, and archive gate decision.
-- [ ] Create or update project-local OpenSpec follow-up changes for project-local findings.
-- [ ] For reusable findings, create or update `opencode-dev-kit` OpenSpec proposals/changes only when the current repository owns them; otherwise record a local handoff and do not write cross-repo without explicit approval.
-- [ ] Run `npm run openspec:retro-followups -- add-autopilot-auto-parallel-claims` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
-- [ ] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded.
+- [x] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, and token-heavy steps. Evidence: `retrospective.md` reviews OpenSpec artifacts, validation, reviewer gates, and current `active_change_handoff` output.
+- [x] Write `retrospective.md` with evidence, problems, improvements, and archive gate decision. Evidence: `openspec/changes/add-autopilot-auto-parallel-claims/retrospective.md` added.
+- [x] Create or update project-local OpenSpec follow-up changes for project-local findings. Evidence: no `project-local` findings remained; `npm run openspec:retro-followups -- add-autopilot-auto-parallel-claims` returned `changes: []`.
+- [x] For reusable findings, create or update `opencode-dev-kit` OpenSpec proposals/changes only when the current repository owns them; otherwise record a local handoff and do not write cross-repo without explicit approval. Evidence: no `opencode-dev-kit` findings remained; follow-up generator returned `changes: []`.
+- [x] Run `npm run openspec:retro-followups -- add-autopilot-auto-parallel-claims` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive. Evidence: passed with `retrospectiveUpdated: false` and no generated changes.
+- [x] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded. Evidence: `npm run openspec:retro-gate -- add-autopilot-auto-parallel-claims` returned `valid: true` and `archiveAllowed: true`.
