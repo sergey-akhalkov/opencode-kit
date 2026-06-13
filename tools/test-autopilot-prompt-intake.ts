@@ -22,6 +22,10 @@ function assertNoRunNextArgs(result: AutopilotPromptIntakeResult): void {
   assert(result.claimCapableAction === false, "Unresolved prompt intake must not allow claim-capable advancement.");
 }
 
+function assertDoesNotInclude(value: unknown, forbidden: string, label: string): void {
+  assert(!JSON.stringify(value).includes(forbidden), `${label} must not echo raw prompt sentinel ${forbidden}.`);
+}
+
 function assertFamily(prompt: string, expected: AutopilotPromptFamily, workflow: string): void {
   const result = classifyAutopilotPromptIntake({ argumentsText: prompt, existingQueue: [] });
   assert(result.category === "freeform-prompt", `Expected freeform-prompt for ${prompt}, got ${result.category}.`);
@@ -116,12 +120,21 @@ const tests: TestCase[] = [
         assert(result.category === "ambiguous-scope", `Expected ambiguous-scope for ${argumentsText}, got ${result.category}.`);
         assertNoRunNextArgs(result);
       }
+
+      const sentinel = "__RAW_SCOPE_SENTINEL_9f3c__";
+      const plan = planAutopilotPromptIntake({ argumentsText: `--change ${sentinel}`, ...knownScopes, availableTools: ["autopilot_run_next", "autopilot_status"] });
+      assert(plan.firstTool == null, `Expected no first tool for unresolved explicit scope, got ${plan.firstTool}.`);
+      assert(plan.intake.recommendedWorkflow === "manual-review", `Expected manual-review for unresolved explicit scope, got ${plan.intake.recommendedWorkflow}.`);
+      assert(plan.intake.nextActions.some((action) => action.safety === "requires_user"), "Ambiguous explicit scope must require user resolution.");
+      assertNoRunNextArgs(plan.intake);
+      assertDoesNotInclude(plan, sentinel, "Ambiguous explicit scope plan");
     },
   },
   {
     name: "freeform prompt requires status when queue inventory is unknown",
     run: () => {
-      const prompt = "fix the login timeout bug";
+      const sentinel = "__RAW_PROMPT_SENTINEL_1a2b__";
+      const prompt = `fix the login timeout bug ${sentinel}`;
       const plan = planAutopilotPromptIntake({ argumentsText: prompt, ...knownScopes, availableTools: ["autopilot_status"] });
       assert(plan.intake.category === "freeform-prompt", `Expected freeform-prompt, got ${plan.intake.category}.`);
       assert(plan.intake.queueState === "unknown", `Expected unknown queue state, got ${plan.intake.queueState}.`);
@@ -129,7 +142,7 @@ const tests: TestCase[] = [
       assert(plan.intake.handoffWorkflow === "openspec-explore", `Expected explore handoff, got ${plan.intake.handoffWorkflow}.`);
       assert(plan.firstTool === "autopilot_status", `Expected first tool autopilot_status, got ${plan.firstTool}.`);
       assertNoRunNextArgs(plan.intake);
-      assert(!JSON.stringify(plan).includes(prompt), "Command-intake plan must not echo raw prompt text by default.");
+      assertDoesNotInclude(plan, sentinel, "Command-intake plan");
     },
   },
   {
@@ -152,19 +165,21 @@ const tests: TestCase[] = [
       assert(emptyPlan.intake.runNextArgs == null, `Unavailable run_next plan must clear runNextArgs, got ${JSON.stringify(emptyPlan.intake.runNextArgs)}.`);
       assert(emptyPlan.intake.nextActions.every((action) => action.safety === "not_available" && action.workflow !== "autopilot_run_next"), "Unavailable run_next plan must not keep nested safe run_next actions.");
 
-      const prompt = "fix the login timeout bug";
+      const sentinel = "__RAW_PROMPT_SENTINEL_3c4d__";
+      const prompt = `fix the login timeout bug ${sentinel}`;
       const statusPlan = planAutopilotPromptIntake({ argumentsText: prompt, ...knownScopes, availableTools: [] });
       assert(statusPlan.firstTool == null, `Expected no first tool for missing status, got ${statusPlan.firstTool}.`);
       assert(statusPlan.blockedTool === "autopilot_status", `Expected blocked status, got ${statusPlan.blockedTool}.`);
       assert(/not available/i.test(statusPlan.reason), `Expected unavailable status reason, got ${statusPlan.reason}.`);
       assert(statusPlan.intake.nextActions.every((action) => action.safety === "not_available" && action.workflow !== "autopilot_status"), "Unavailable status plan must not keep nested safe status actions.");
-      assert(!JSON.stringify(statusPlan).includes(prompt), "Unavailable-tool plan must not echo raw prompt text by default.");
+      assertDoesNotInclude(statusPlan, sentinel, "Unavailable-tool plan");
     },
   },
   {
     name: "freeform prompt separates unscheduled prompt from existing queue",
     run: () => {
-      const prompt = "fix the login timeout bug";
+      const sentinel = "__RAW_PROMPT_SENTINEL_5e6f__";
+      const prompt = `fix the login timeout bug ${sentinel}`;
       const result = classifyAutopilotPromptIntake({
         argumentsText: prompt,
         ...knownScopes,
@@ -179,7 +194,7 @@ const tests: TestCase[] = [
       assert(result.unrelatedQueuePolicy === "do_not_advance_without_scope_selection", `Expected queue separation policy, got ${result.unrelatedQueuePolicy}.`);
       assert(result.recommendedWorkflow === "openspec-explore", `Expected bug prompt to route to openspec-explore, got ${result.recommendedWorkflow}.`);
       assertNoRunNextArgs(result);
-      assert(!JSON.stringify(result).includes(prompt), "Prompt-intake output must not echo raw prompt text by default.");
+      assertDoesNotInclude(result, sentinel, "Prompt-intake output");
     },
   },
   {

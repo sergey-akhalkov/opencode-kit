@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import autopilotPlugin from "../.opencode/plugins/openspec-autopilot.ts";
-import { autopilotActionabilityValues, autopilotAutoConflictTolerances, autopilotAutoRiskClasses, autopilotMrStatuses, autopilotMrWaitStatuses, autopilotProtectedPathPatterns, autopilotReasonCodes, autopilotSelectionModes, autopilotParallelDecisions, autopilotSelectionReasons, autopilotTaskStatuses, autopilotTaskTypes, autopilotToolNames } from "./autopilot-contract.ts";
+import { autopilotActionabilityValues, autopilotAutoConflictTolerances, autopilotAutoRiskClasses, autopilotMrStatuses, autopilotMrWaitStatuses, autopilotProtectedPathPatterns, autopilotReasonCodes, autopilotSelectionModes, autopilotParallelDecisions, autopilotSelectionReasons, autopilotStandardOutputToolNames, autopilotTaskStatuses, autopilotTaskTypes, autopilotToolNames } from "./autopilot-contract.ts";
 import { autopilotLedgerPolicy, taskStatuses, taskTypes } from "./autopilot-ledger.ts";
 import { autopilotOutputContract } from "./openspec-autopilot-output.ts";
 
@@ -32,6 +32,7 @@ const expectedPluginToolArgs = {
   autopilot_collect: ["taskId"],
   autopilot_answer_blocker: ["questionId", "taskId", "selectedLabel", "action"],
   autopilot_stop: ["target", "id", "reason"],
+  autopilot_intake: ["argumentsText"],
 } satisfies Record<(typeof autopilotToolNames)[number], readonly string[]>;
 const ignoredAnswerTaskId = "__ignored_answer_task_id_sentinel__";
 const ignoredSelectedLabel = "__ignored_selected_label_sentinel__";
@@ -240,15 +241,20 @@ async function pluginTools(repo: string, options: Record<string, unknown> = {}):
   return pluginToolsWithContext({ directory: repo, worktree: repo }, options);
 }
 
-async function executePluginTool(tools: Record<string, PluginToolDefinition>, name: string, args: Record<string, unknown>): Promise<{ payload: Record<string, unknown>; metadata: Record<string, unknown> }> {
+async function executePluginToolRaw(tools: Record<string, PluginToolDefinition>, name: string, args: Record<string, unknown>): Promise<{ payload: Record<string, unknown>; metadata: Record<string, unknown>; text: string }> {
   const definition = tools[name];
   assert(definition != null, `Missing plugin tool ${name}.`);
   const result = await definition.execute(args, undefined);
   assert(typeof result === "object" && result != null && !Array.isArray(result), `${name} must return structured tool output.`);
   assert(typeof result.output === "string", `${name} must return a JSON output string.`);
   const payload = JSON.parse(result.output) as Record<string, unknown>;
+  return { payload, metadata: result.metadata ?? {}, text: result.output };
+}
+
+async function executePluginTool(tools: Record<string, PluginToolDefinition>, name: string, args: Record<string, unknown>): Promise<{ payload: Record<string, unknown>; metadata: Record<string, unknown> }> {
+  const { payload, metadata } = await executePluginToolRaw(tools, name, args);
   assertAutopilotOutputShape(payload, name);
-  return { payload, metadata: result.metadata ?? {} };
+  return { payload, metadata };
 }
 
 function taskIds(output: Record<string, unknown>): string[] {
@@ -286,6 +292,19 @@ function assertPluginToolArgKeys(tools: Record<string, PluginToolDefinition>): v
 function assertNoProgressClaims(output: Record<string, unknown>, label: string): void {
   assert(Array.isArray(output.tasksStarted) && output.tasksStarted.length === 0, `${label} must not claim started tasks.`);
   assert(Array.isArray(output.tasksAdvanced) && output.tasksAdvanced.length === 0, `${label} must not claim advanced tasks.`);
+}
+
+function assertPromptIntakeShape(output: Record<string, unknown>, label: string): Record<string, unknown> {
+  assert(output.schemaVersion === 1, `${label} must expose schemaVersion=1.`);
+  assert(typeof output.reason === "string" && output.reason.trim().length > 0, `${label} must explain routing reason.`);
+  assert(typeof output.intake === "object" && output.intake != null && !Array.isArray(output.intake), `${label} must include intake object.`);
+  const intake = output.intake as Record<string, unknown>;
+  assert(typeof intake.category === "string" && intake.category.length > 0, `${label} intake must include category.`);
+  assert(typeof intake.recommendedWorkflow === "string" && intake.recommendedWorkflow.length > 0, `${label} intake must include recommendedWorkflow.`);
+  assert(typeof intake.claimCapableAction === "boolean", `${label} intake must include claimCapableAction boolean.`);
+  assert(typeof intake.queueSummary === "object" && intake.queueSummary != null && !Array.isArray(intake.queueSummary), `${label} intake must include queueSummary object.`);
+  assert(Array.isArray(intake.nextActions), `${label} intake must include nextActions array.`);
+  return intake;
 }
 
 function assertStopEntry(actual: Record<string, unknown>, expected: Record<string, string>, label: string): void {
@@ -359,6 +378,7 @@ const tests: TestCase[] = [
       assertArrayEqual(autopilotOutputContract.selectionReasons, autopilotSelectionReasons, "output selection reasons");
       assertArrayEqual(autopilotOutputContract.autoRiskClasses, autopilotAutoRiskClasses, "output auto risk classes");
       assertArrayEqual(autopilotOutputContract.autoConflictTolerances, autopilotAutoConflictTolerances, "output auto conflict tolerances");
+      assertArrayEqual(autopilotOutputContract.toolNames, autopilotStandardOutputToolNames, "output standard tool names");
     },
   },
   {
@@ -383,11 +403,85 @@ const tests: TestCase[] = [
       assertArrayEqual(Object.keys(tools), autopilotToolNames, "plugin server tool map");
       assertPluginToolArgKeys(tools);
       for (const name of autopilotToolNames) {
+        if (name === "autopilot_intake") {
+          const rawPrompt = "fix private login timeout sentinel";
+          const { payload, metadata } = await executePluginToolRaw(tools, name, { argumentsText: rawPrompt });
+          assertPromptIntakeShape(payload, name);
+          assert(metadata.service === "openspec-autopilot", "autopilot_intake metadata must identify openspec-autopilot service.");
+          assertArgumentContext(metadata, { acknowledged: ["argumentsText"], ignored: [], mutation: "none" });
+          assert(!JSON.stringify({ payload, metadata }).includes(rawPrompt), "autopilot_intake must not echo raw prompt text.");
+          continue;
+        }
         const args = name === "autopilot_answer_blocker" ? { questionId: "question-1" } : {};
         const { payload, metadata } = await executePluginTool(tools, name, args);
         assert(metadata.service === "openspec-autopilot", `${name} metadata must identify openspec-autopilot service.`);
         assert(metadata.outcome === payload.outcome, `${name} metadata outcome must mirror payload outcome.`);
       }
+    }),
+  },
+  {
+    name: "plugin prompt intake is read-only and scope-safe",
+    run: () => withTempRepo("prompt-intake", async (repo) => {
+      writeTasks(repo, "active-change", "# Tasks\n\n- [ ] Active prompt-intake task\n");
+      writeLedger(repo, "ready-ledger-change", readyResearchLedger("ready-task"));
+      writeLedger(repo, "terminal-ledger-change", doneResearchLedger("task-ledger"));
+      writeLedger(repo, "ambiguous-ledger-change", invalidReadyLedger("shared-scope"));
+      writeTasks(repo, "active-change", "# Tasks\n\n- [ ] Active prompt-intake task\n");
+      writeTasks(repo, "shared-scope", "# Tasks\n\n- [ ] Shared active task\n");
+      const before = snapshotFiles(repo);
+      const runtimeState = { sentinel: "runtime-state-must-not-change" };
+      const beforeRuntimeState = JSON.stringify(runtimeState);
+      const tools = await pluginTools(repo, { runtimeState });
+
+      const byChange = await executePluginToolRaw(tools, "autopilot_intake", { argumentsText: "active-change" });
+      const changeIntake = assertPromptIntakeShape(byChange.payload, "change-scope intake");
+      assert(changeIntake.category === "change-scope", `Expected change-scope intake, got ${String(changeIntake.category)}.`);
+      assert(byChange.payload.firstTool === "autopilot_run_next", `Expected change-scope firstTool autopilot_run_next, got ${String(byChange.payload.firstTool)}.`);
+      assert((byChange.payload.firstToolArgs as Record<string, unknown> | undefined)?.changeId === "active-change", "Exact active change must become changeId guidance.");
+      assertArgumentContext(byChange.metadata, { acknowledged: ["argumentsText"], ignored: [], mutation: "none" });
+
+      const byTask = await executePluginToolRaw(tools, "autopilot_intake", { argumentsText: "task-ledger" });
+      const taskIntake = assertPromptIntakeShape(byTask.payload, "task-scope intake");
+      assert(taskIntake.category === "task-scope", `Expected task-scope intake, got ${String(taskIntake.category)}.`);
+      assert(byTask.payload.firstTool === "autopilot_run_next", `Expected task-scope firstTool autopilot_run_next, got ${String(byTask.payload.firstTool)}.`);
+      assert((byTask.payload.firstToolArgs as Record<string, unknown> | undefined)?.taskId === "task-ledger", "Exact ledger task must become taskId guidance.");
+      assertArgumentContext(byTask.metadata, { acknowledged: ["argumentsText"], ignored: [], mutation: "none" });
+
+      const combined = await executePluginToolRaw(tools, "autopilot_intake", { argumentsText: "--change terminal-ledger-change --task task-ledger" });
+      const combinedIntake = assertPromptIntakeShape(combined.payload, "combined-scope intake");
+      assert(combinedIntake.category === "combined-scope", `Expected combined-scope intake, got ${String(combinedIntake.category)}.`);
+      assert(combined.payload.firstTool === "autopilot_run_next", `Expected combined-scope firstTool autopilot_run_next, got ${String(combined.payload.firstTool)}.`);
+      assert((combined.payload.firstToolArgs as Record<string, unknown> | undefined)?.changeId === "terminal-ledger-change", "Combined scope must preserve changeId guidance.");
+      assert((combined.payload.firstToolArgs as Record<string, unknown> | undefined)?.taskId === "task-ledger", "Combined scope must preserve taskId guidance.");
+      assertArgumentContext(combined.metadata, { acknowledged: ["argumentsText"], ignored: [], mutation: "none" });
+
+      const incompatible = await executePluginToolRaw(tools, "autopilot_intake", { argumentsText: "--change active-change --task task-ledger" });
+      const incompatibleIntake = assertPromptIntakeShape(incompatible.payload, "incompatible-scope intake");
+      assert(incompatibleIntake.category === "ambiguous-scope", `Expected incompatible pair to block, got ${String(incompatibleIntake.category)}.`);
+      assert(incompatible.payload.firstTool == null, `Incompatible combined scope must not recommend firstTool, got ${String(incompatible.payload.firstTool)}.`);
+      assertArgumentContext(incompatible.metadata, { acknowledged: ["argumentsText"], ignored: [], mutation: "none" });
+
+      const ambiguous = await executePluginToolRaw(tools, "autopilot_intake", { argumentsText: "shared-scope" });
+      const ambiguousIntake = assertPromptIntakeShape(ambiguous.payload, "ambiguous intake");
+      assert(ambiguousIntake.category === "ambiguous-scope", `Expected ambiguous-scope intake, got ${String(ambiguousIntake.category)}.`);
+      assert(ambiguous.payload.firstTool == null, `Ambiguous intake must not recommend a first tool, got ${String(ambiguous.payload.firstTool)}.`);
+      assert(ambiguousIntake.claimCapableAction === false, "Ambiguous intake must not allow claim-capable action.");
+      assertArgumentContext(ambiguous.metadata, { acknowledged: ["argumentsText"], ignored: [], mutation: "none" });
+
+      const rawSentinel = "__PLUGIN_RAW_PROMPT_SENTINEL_7g8h__";
+      const rawPrompt = `fix private login timeout ${rawSentinel}`;
+      const freeform = await executePluginToolRaw(tools, "autopilot_intake", { argumentsText: rawPrompt });
+      const freeformIntake = assertPromptIntakeShape(freeform.payload, "freeform intake");
+      assert(freeformIntake.category === "freeform-prompt", `Expected freeform-prompt intake, got ${String(freeformIntake.category)}.`);
+      assert(freeformIntake.claimCapableAction === false, "Free-form intake must not allow claim-capable action.");
+      assert(freeform.payload.firstTool == null, `Free-form intake with queue inventory must not call run_next, got ${String(freeform.payload.firstTool)}.`);
+      assert((freeformIntake.queueSummary as Record<string, unknown>).total === 5, `Expected queue summary total 5, got ${String((freeformIntake.queueSummary as Record<string, unknown>).total)}.`);
+      assert(!JSON.stringify(freeform).includes(rawSentinel), "Free-form intake output must not echo raw prompt sentinel.");
+      assertArgumentContext(freeform.metadata, { acknowledged: ["argumentsText"], ignored: [], mutation: "none" });
+
+      const after = snapshotFiles(repo);
+      assert(JSON.stringify(after) === JSON.stringify(before), "autopilot_intake must not create, delete, or mutate repo files.");
+      assert(JSON.stringify(runtimeState) === beforeRuntimeState, "autopilot_intake must not mutate runtimeState options.");
     }),
   },
   {

@@ -56,7 +56,8 @@ export const autopilotAutoRiskClasses = ["serial_required", "standard_parallel",
 
 export const autopilotAutoConflictTolerances = ["none", "small"] as const;
 
-export const autopilotToolNames = ["autopilot_run_next", "autopilot_status", "autopilot_collect", "autopilot_answer_blocker", "autopilot_stop"] as const;
+export const autopilotStandardOutputToolNames = ["autopilot_run_next", "autopilot_status", "autopilot_collect", "autopilot_answer_blocker", "autopilot_stop"] as const;
+export const autopilotToolNames = [...autopilotStandardOutputToolNames, "autopilot_intake"] as const;
 
 export const autopilotProtectedPathPatterns = [
   "openspec/changes/*/automation/**",
@@ -75,3 +76,4 @@ export type AutopilotSelectionReason = (typeof autopilotSelectionReasons)[number
 export type AutopilotAutoRiskClass = (typeof autopilotAutoRiskClasses)[number];
 export type AutopilotAutoConflictTolerance = (typeof autopilotAutoConflictTolerances)[number];
 export type AutopilotToolName = (typeof autopilotToolNames)[number];
+export type AutopilotStandardOutputToolName = (typeof autopilotStandardOutputToolNames)[number];

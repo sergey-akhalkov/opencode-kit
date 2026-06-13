@@ -170,6 +170,14 @@ async function liveWorkerHooks(repo: string, logs: Array<Record<string, unknown>
   return hooks;
 }
 
+async function workerDispatchHooks(repo: string, logs: Array<Record<string, unknown>>, options: Record<string, unknown>, client: Record<string, unknown>): Promise<PluginHooks> {
+  const plugin = await importAutopilotPlugin();
+  assert(plugin.id === "openspec.autopilot" && typeof plugin.server === "function", "Autopilot plugin must expose server entrypoint.");
+  const hooks = await plugin.server({ directory: repo, worktree: repo, client }, options) as PluginHooks;
+  assert(typeof hooks.tool === "object" && hooks.tool != null, "Autopilot plugin must expose tools.");
+  return hooks;
+}
+
 const tests: TestCase[] = [
   {
     name: "source-equivalent live worker dispatch and durable idle collect use SDK-shaped requests",
@@ -310,6 +318,58 @@ const tests: TestCase[] = [
       } finally {
         fs.rmSync(failedRepo, { recursive: true, force: true });
       }
+    }),
+  },
+  {
+    name: "workerDispatch option diagnostics warn for invalid option shapes",
+    run: () => withTempRepo("worker-dispatch-option-diagnostics", async (repo) => {
+      writeLedger(repo, "worker-change", readyResearchLedger("worker-task", "high"));
+      const logs: Array<Record<string, unknown>> = [];
+      const client = { app: { log: async (entry: { body: Record<string, unknown> }) => logs.push(entry.body) } };
+      const hooks = await workerDispatchHooks(repo, logs, { workerDispatch: true, triggers: { triggerMode: "observe" } }, client);
+      const result = await hooks.tool!.autopilot_run_next.execute({ changeId: "worker-change" }, { sessionID: "parent-session" });
+      assert(typeof result === "object" && result != null, "run_next must return structured plugin output.");
+      const payload = JSON.parse(result.output) as Record<string, unknown>;
+      assert(payload.reasonCode === "ready_runtime_deferred", `Invalid workerDispatch options must keep safe deferred output, got ${String(payload.reasonCode)}.`);
+      assert(String(payload.summary).includes("Worker dispatch option diagnostics (fail-closed)"), `Tool summary must expose option diagnostics, got ${String(payload.summary)}.`);
+      assert(String(payload.summary).includes("workerDispatch must be an object"), `Tool summary must explain invalid shape, got ${String(payload.summary)}.`);
+      const diagnosticLog = logs.find((log) => log.message === "workerDispatch option diagnostics");
+      assert(diagnosticLog != null, `Invalid workerDispatch option shape must emit diagnostics, got logs ${JSON.stringify(logs)}.`);
+      const extra = diagnosticLog.extra as Record<string, unknown> | undefined;
+      assert(JSON.stringify(extra).includes("workerDispatch must be an object"), `Diagnostics must explain invalid shape, got ${JSON.stringify(extra)}.`);
+    }),
+  },
+  {
+    name: "workerDispatch unsupported keys fail closed before live dispatch",
+    run: () => withTempRepo("worker-dispatch-unknown-key", async (repo) => {
+      writeLedger(repo, "worker-change", readyResearchLedger("worker-task", "high"));
+      const logs: Array<Record<string, unknown>> = [];
+      const sdkCalls: Array<{ method: string; input: unknown }> = [];
+      const client = fakeLiveClient(repo, logs, sdkCalls);
+      const hooks = await workerDispatchHooks(repo, logs, { workerDispatch: { enabled: true, maxWorkers: 2 }, triggers: { triggerMode: "observe" } }, client);
+      const result = await hooks.tool!.autopilot_run_next.execute({ changeId: "worker-change" }, { sessionID: "parent-session" });
+      assert(typeof result === "object" && result != null, "run_next must return structured plugin output.");
+      const payload = JSON.parse(result.output) as Record<string, unknown>;
+      assert(payload.reasonCode === "ready_runtime_deferred", `Unsupported workerDispatch keys must fail closed to deferred output, got ${String(payload.reasonCode)}.`);
+      assert(sdkCalls.length === 0, `Unsupported workerDispatch keys must not dispatch workers, got calls ${JSON.stringify(sdkCalls)}.`);
+      assert(String(payload.summary).includes("workerDispatch.maxWorkers is unsupported"), `Summary must name unsupported key, got ${String(payload.summary)}.`);
+    }),
+  },
+  {
+    name: "workerDispatch live preflight summary names missing worker-session capability",
+    run: () => withTempRepo("worker-dispatch-preflight", async (repo) => {
+      writeLedger(repo, "worker-change", readyResearchLedger("worker-task", "high"));
+      const logs: Array<Record<string, unknown>> = [];
+      const client = { app: { log: async (entry: { body: Record<string, unknown> }) => logs.push(entry.body) } };
+      const hooks = await workerDispatchHooks(repo, logs, { workerDispatch: { enabled: true }, triggers: { triggerMode: "observe" } }, client);
+      const result = await hooks.tool!.autopilot_run_next.execute({ changeId: "worker-change" }, { sessionID: "parent-session" });
+      assert(typeof result === "object" && result != null, "run_next must return structured plugin output.");
+      const payload = JSON.parse(result.output) as Record<string, unknown>;
+      const summary = String(payload.summary);
+      assert(payload.reasonCode === "ready_runtime_deferred", `Unavailable worker-session capability must keep safe deferred output, got ${String(payload.reasonCode)}.`);
+      assert(summary.includes("Worker dispatch preflight failed"), `Summary must name preflight failure, got ${summary}.`);
+      assert(summary.includes("workerDispatch.enabled=true"), `Summary must include enabling option evidence, got ${summary}.`);
+      assert(summary.includes("session.create") && summary.includes("session.promptAsync"), `Summary must list missing SDK capabilities, got ${summary}.`);
     }),
   },
 ];

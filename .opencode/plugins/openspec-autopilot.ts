@@ -2,6 +2,7 @@ import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
 import path from "node:path";
 import { runAutopilotCheck } from "../../tools/autopilot-check.ts";
+import { planAutopilotPromptIntake } from "../../tools/autopilot-prompt-intake.ts";
 import { createFileAutopilotRuntimeStore, type AutopilotRunRecord, type AutopilotRuntimeStore } from "../../tools/autopilot-runtime-store.ts";
 import {
   classifyAutopilotEvent,
@@ -21,11 +22,17 @@ import {
 } from "../../tools/autopilot-trigger-scheduler.ts";
 import { completeAutopilotWorkerReportMarker } from "../../tools/autopilot-worker-report-marker.ts";
 import { createOpenCodeWorkerSessionAdapter } from "../../tools/autopilot-worker-session-adapter.ts";
-import type { AutopilotOptions } from "../../tools/openspec-autopilot-output.ts";
+import { readActiveChangeSummaries } from "../../tools/openspec-autopilot-active-change-queue.ts";
+import { changeIdForLedgerPath, readLedgerSummaries, type AutopilotOptions, type LedgerSummary } from "../../tools/openspec-autopilot-output.ts";
 import { createAutopilotController, toPluginToolOutput } from "../../tools/openspec-autopilot-controller.ts";
 
 type AutopilotPluginOptions = AutopilotOptions & {
   triggers?: unknown;
+};
+
+type WorkerDispatchOptionResolution = {
+  enabled: boolean;
+  diagnostics: string[];
 };
 
 type LogContext = {
@@ -200,8 +207,28 @@ function triggerOptions(options: AutopilotPluginOptions): ReturnType<typeof pars
   return parseAutopilotTriggerOptions(isRecord(options.triggers) ? options.triggers : undefined);
 }
 
-function workerDispatchEnabled(options: AutopilotPluginOptions): boolean {
-  return isRecord(options.workerDispatch) && options.workerDispatch.enabled === true;
+function resolveWorkerDispatchOptions(options: AutopilotPluginOptions): WorkerDispatchOptionResolution {
+  const raw = options.workerDispatch;
+  if (raw == null) {
+    return { enabled: false, diagnostics: [] };
+  }
+  if (!isRecord(raw)) {
+    return { enabled: false, diagnostics: ["workerDispatch must be an object with optional boolean enabled field."] };
+  }
+  const diagnostics: string[] = [];
+  for (const key of Object.keys(raw)) {
+    if (key !== "enabled") {
+      diagnostics.push(`workerDispatch.${key} is unsupported by this bundle.`);
+    }
+  }
+  if (raw.enabled == null) {
+    return { enabled: false, diagnostics };
+  }
+  if (typeof raw.enabled !== "boolean") {
+    diagnostics.push("workerDispatch.enabled must be boolean true or false.");
+    return { enabled: false, diagnostics };
+  }
+  return { enabled: diagnostics.length === 0 && raw.enabled, diagnostics };
 }
 
 function runtimeStatePath(root: string): string {
@@ -251,6 +278,36 @@ function outputTaskIds(items: unknown[]): string[] {
     const id = optionalString(item.taskId ?? item.runId);
     return id == null ? [] : [id];
   });
+}
+
+function intakeLedgerRoot(options: AutopilotOptions): string {
+  const raw = optionalNonEmptyString(options.ledgerRoot) ?? "openspec/changes";
+  const normalized = raw.replaceAll("\\", "/").replace(/^\.\//, "");
+  if (normalized.length === 0 || normalized.startsWith("/") || /^[A-Za-z]:\//.test(normalized) || normalized.split("/").includes("..")) {
+    throw new Error("Autopilot ledgerRoot must be a safe relative repository path.");
+  }
+  return normalized;
+}
+
+function promptIntakeQueue(root: string, options: AutopilotOptions): { queue: Array<{ id: string; sourceKind: "ledger" | "active-change"; changeId?: string }>; changeIds: string[]; taskIds: string[]; taskChangeIds: Record<string, string> } {
+  const summaries = [
+    ...readLedgerSummaries(root, options),
+    ...readActiveChangeSummaries(root, intakeLedgerRoot(options)),
+  ];
+  const taskChangeIds: Record<string, string> = {};
+  const queue = summaries.map((ledger) => {
+    const changeId = changeIdForLedgerPath(ledger);
+    if (ledger.sourceKind === "ledger" && changeId != null) {
+      taskChangeIds[ledger.id] = changeId;
+    }
+    return { id: ledger.id, sourceKind: ledger.sourceKind, ...(changeId == null ? {} : { changeId }) };
+  });
+  return {
+    queue,
+    changeIds: Array.from(new Set(queue.flatMap((item) => item.changeId == null ? item.sourceKind === "active-change" ? [item.id] : [] : [item.changeId]))).sort(),
+    taskIds: Array.from(new Set(queue.filter((item) => item.sourceKind === "ledger").map((item) => item.id))).sort(),
+    taskChangeIds,
+  };
 }
 
 function rememberRunNextOutput(runtimeState: unknown, payload: unknown): void {
@@ -324,11 +381,13 @@ export default {
   server: async (ctx, options?: AutopilotPluginOptions) => {
     const resolvedOptions = options ?? {};
     const root = repoRoot(ctx);
-    const runtimeStore = resolvedOptions.runtimeStore ?? (workerDispatchEnabled(resolvedOptions) ? createFileAutopilotRuntimeStore(runtimeStatePath(root)) : undefined);
+    const workerDispatch = resolveWorkerDispatchOptions(resolvedOptions);
+    const runtimeStore = resolvedOptions.runtimeStore ?? (workerDispatch.enabled ? createFileAutopilotRuntimeStore(runtimeStatePath(root)) : undefined);
     const controllerFor = (parentSessionId?: string) => createAutopilotController({ root }, {
       ...resolvedOptions,
       runtimeStore,
-      workerSessionAdapter: resolvedOptions.workerSessionAdapter ?? (workerDispatchEnabled(resolvedOptions)
+      workerDispatch: { enabled: workerDispatch.enabled, diagnostics: workerDispatch.diagnostics },
+      workerSessionAdapter: resolvedOptions.workerSessionAdapter ?? (workerDispatch.enabled
         ? createOpenCodeWorkerSessionAdapter({ client: ctx.client, parentSessionId, directory: ctx.directory, worktree: ctx.worktree })
         : undefined),
     });
@@ -345,6 +404,12 @@ export default {
       protectedPathGuard: resolvedTriggerOptions.protectedPathGuard?.enabled,
       runNextEvents: resolvedTriggerOptions.runNextEvents?.enabled,
     });
+    if (workerDispatch.diagnostics.length > 0) {
+      void log(ctx, "warn", "workerDispatch option diagnostics", {
+        enabled: workerDispatch.enabled,
+        diagnostics: workerDispatch.diagnostics,
+      });
+    }
     const timers = new Map<string, ReturnType<typeof setTimeout>>();
     async function mergedDurableEvidence(): Promise<AutopilotTriggerRuntimeEvidence> {
       const durable = await durableRuntimeEvidence(runtimeStore, pendingWorkerReportIds);
@@ -572,6 +637,27 @@ export default {
           },
           async execute(args, toolCtx?: { sessionID?: string }) {
             return toPluginToolOutput(await controllerFor(toolCtx?.sessionID).stop(args, { kind: "model-tool", name: "autopilot_stop" }));
+          },
+        }),
+        autopilot_intake: tool({
+          description: "Classify /autopilot arguments read-only before any claim-capable action; returns derived scope/workflow/queue guidance without echoing raw prompt text.",
+          args: {
+            argumentsText: tool.schema.string().optional().describe("Optional raw /autopilot argument string; output does not echo it."),
+          },
+          async execute(args) {
+            const queue = promptIntakeQueue(root, resolvedOptions);
+            const plan = planAutopilotPromptIntake({
+              argumentsText: args.argumentsText,
+              existingQueue: queue.queue,
+              knownChangeIds: queue.changeIds,
+              knownTaskIds: queue.taskIds,
+              taskChangeIds: queue.taskChangeIds,
+              availableTools: ["autopilot_run_next", "autopilot_status"],
+            });
+            return {
+              output: JSON.stringify({ schemaVersion: 1, ...plan }, null, 2),
+              metadata: { service: "openspec-autopilot", argumentContext: { acknowledged: ["argumentsText"], ignored: [], mutation: "none" } },
+            };
           },
         }),
       },

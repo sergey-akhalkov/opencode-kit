@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "changeId": "require-openspec-change-retro-gate",
+  "generatedAt": "2026-06-13T18:14:27.953Z",
+  "evidenceReviewed": [
+    {
+      "kind": "unknown",
+      "source": "OpenSpec artifacts: proposal, design, specs, traceability, tasks, helper tests, and workflow skill updates.",
+      "status": "unknown",
+      "summary": "OpenSpec artifacts: proposal, design, specs, traceability, tasks, helper tests, and workflow skill updates."
+    },
+    {
+      "kind": "unknown",
+      "source": "Tool outputs / validation: `npm run validate:strict`, `npm test`, `openspec validate --all`, and `npm run autopilot:validate -- openspec/changes/autopilot-live-regression/automation/task.json` passed on 2026-06-12.",
+      "status": "unknown",
+      "summary": "Tool outputs / validation: `npm run validate:strict`, `npm test`, `openspec validate --all`, and `npm run autopilot:validate -- openspec/changes/autopilot-live-regression/automation/task.json` passed on 2026-06-12."
+    },
+    {
+      "kind": "unknown",
+      "source": "Reviewer gates: `instruction-artifact-reviewer`, `test-coverage-reviewer`, `code-quality-reviewer`, and architecture consistency checks passed after fixes.",
+      "status": "unknown",
+      "summary": "Reviewer gates: `instruction-artifact-reviewer`, `test-coverage-reviewer`, `code-quality-reviewer`, and architecture consistency checks passed after fixes."
+    },
+    {
+      "kind": "unknown",
+      "source": "Autopilot/runtime events: active completed changes now include final retrospective sections and completed retrospectives; live regression remains blocked before archive by restart and first-turn `/autopilot` evidence.",
+      "status": "unknown",
+      "summary": "Autopilot/runtime events: active completed changes now include final retrospective sections and completed retrospectives; live regression remains blocked before archive by restart and first-turn `/autopilot` evidence."
+    }
+  ],
+  "problems": [
+    {
+      "problem": "Reusable task tail implied cross-repo writes",
+      "evidence": "Instruction review found mandatory `opencode-dev-kit` wording lacked approval guard",
+      "impact": "Agents in other repositories could write or imply writes across repos",
+      "rootCause": "The reusable template named a shared artifact owner without an explicit current-repository ownership guard",
+      "recommendation": "Keep the route but require current-repo ownership or local handoff without explicit cross-repo approval",
+      "confidence": "high",
+      "target": "none",
+      "followUpChangeId": null,
+      "noFollowUpReason": "Keep the route but require current-repo ownership or local handoff without explicit cross-repo approval"
+    },
+    {
+      "problem": "Evidence-pack determinism wording overclaimed",
+      "evidence": "Instruction review found README said deterministic output while timestamps are generated",
+      "impact": "Reviewers could expect byte-identical output across runs",
+      "rootCause": "Documentation conflated stable schema/order with byte-identical output despite generated timestamps",
+      "recommendation": "Reword to stable schema and ordering plus generated timestamp",
+      "confidence": "medium",
+      "target": "none",
+      "followUpChangeId": null,
+      "noFollowUpReason": "Reword to stable schema and ordering plus generated timestamp"
+    },
+    {
+      "problem": "Active task checkboxes drifted behind evidence",
+      "evidence": "Instruction review found validation and reviewer items unchecked after passing gates",
+      "impact": "Archive and next-step could surface completed work as incomplete",
+      "rootCause": "Task status updates were not synchronized immediately after validation and reviewer evidence was recorded",
+      "recommendation": "Synchronize tasks with validation and reviewer evidence",
+      "confidence": "high",
+      "target": "none",
+      "followUpChangeId": null,
+      "noFollowUpReason": "Synchronize tasks with validation and reviewer evidence"
+    },
+    {
+      "problem": "Follow-up creation was not algorithmically enforced",
+      "evidence": "User review caught that `retrospective.md` could be written without creating OpenSpec changes for actionable findings",
+      "impact": "Practical retro conclusions could remain prose and be forgotten before archive",
+      "rootCause": "The retrospective gate checked for prose evidence before a helper existed to materialize actionable follow-ups",
+      "recommendation": "Add `openspec:retro-followups` helper and make `openspec:retro-gate` verify referenced follow-up changes exist",
+      "confidence": "high",
+      "target": "none",
+      "followUpChangeId": null,
+      "noFollowUpReason": "Add `openspec:retro-followups` helper and make `openspec:retro-gate` verify referenced follow-up changes exist"
+    }
+  ],
+  "outputs": {
+    "projectFollowUpChanges": [],
+    "opencodeDevKitChanges": [],
+    "noFindingsReason": null
+  },
+  "archiveGate": {
+    "decision": "passed",
+    "reason": "Evidence reviewed, workflow wording and checklist drift fixed, reviewer rechecks clean, and validation passed",
+    "approver": null
+  }
+}

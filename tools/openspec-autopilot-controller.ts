@@ -358,23 +358,24 @@ async function maybeDispatchWorker(ledgers: LedgerSummary[], output: AutopilotOu
   if (output.reasonCode !== "ready_runtime_deferred" && output.reasonCode !== "no_actionable_tasks") {
     return null;
   }
-  if (options.runtimeStore == null || options.workerSessionAdapter == null) {
-    return {
-      ...output,
-      summary: `${output.summary} Worker dispatch is enabled but runtimeStore or workerSessionAdapter is unavailable.`,
-    };
-  }
-
   const candidate = dispatchCandidateFor(ledgers, output);
   if (candidate == null) {
     return null;
+  }
+
+  if (options.runtimeStore == null || options.workerSessionAdapter == null) {
+    const missing = [options.runtimeStore == null ? "runtimeStore" : null, options.workerSessionAdapter == null ? "workerSessionAdapter" : null].filter((item): item is string => item != null);
+    return {
+      ...output,
+      summary: `${output.summary} Worker dispatch preflight failed (workerDispatch.enabled=true): missing ${missing.join(", ")}. Safe deferred output remains active.`,
+    };
   }
 
   const capability = await options.workerSessionAdapter.capability();
   if (!capability.available) {
     return {
       ...output,
-      summary: `${output.summary} Worker dispatch capability unavailable: ${capability.reason ?? "unknown reason"}`,
+      summary: `${output.summary} Worker dispatch preflight failed (workerDispatch.enabled=true): ${capability.reason ?? "worker-session capability unavailable for an unknown reason"}. Safe deferred output remains active.`,
     };
   }
 
@@ -511,6 +512,17 @@ async function maybeDispatchWorker(ledgers: LedgerSummary[], output: AutopilotOu
     }],
     selection,
     loopGuard: { repeatedNoProgress: false, equivalentCall: "autopilot_run_next", suppressRepeatRecommendation: false },
+  };
+}
+
+function outputWithWorkerDispatchDiagnostics(output: AutopilotOutput, options: AutopilotOptions): AutopilotOutput {
+  const diagnostics = options.workerDispatch?.diagnostics?.filter((diagnostic) => diagnostic.trim().length > 0) ?? [];
+  if (diagnostics.length === 0) {
+    return output;
+  }
+  return {
+    ...output,
+    summary: `${output.summary} Worker dispatch option diagnostics (fail-closed): ${diagnostics.join(" ")} Safe deferred output remains active.`,
   };
 }
 
@@ -690,7 +702,7 @@ export function createAutopilotController(ctx: ControllerContext, options: Autop
       const runtimeSnapshot = options.runtimeStore == null ? null : await options.runtimeStore.load();
       const runtimeState = runtimeSnapshot == null ? options.runtimeState : { ...runtimeStateFromSnapshot(runtimeSnapshot.snapshot), ...(options.runtimeState ?? {}) };
       const queue = readAutopilotQueueSummaries(ctx.root, options, { changeId: scope.changeId, taskId: scope.taskId });
-      const output = createRunNextOutput(queue.ledgers, { dependencyGraph: queue.dependencyGraph, runtimeState });
+      const output = outputWithWorkerDispatchDiagnostics(createRunNextOutput(queue.ledgers, { dependencyGraph: queue.dependencyGraph, runtimeState }), options);
       if (runtimeSnapshot != null && runtimeLoadHasConflict(runtimeSnapshot)) {
         return result(runtimeRecoveryConflictOutput(output, runtimeSnapshot, "autopilot_run_next"), {}, source);
       }
@@ -723,7 +735,7 @@ export function createAutopilotController(ctx: ControllerContext, options: Autop
       const runtimeSnapshot = options.runtimeStore == null ? null : await options.runtimeStore.load();
       const runtimeState = runtimeSnapshot == null ? options.runtimeState : { ...runtimeStateFromSnapshot(runtimeSnapshot.snapshot), ...(options.runtimeState ?? {}) };
       const queue = readAutopilotQueueSummaries(ctx.root, options, { changeId: scope.changeId });
-      const output = outputWithRuntimeState(createStatusOutput(queue.ledgers, { dependencyGraph: queue.dependencyGraph, runtimeState }), runtimeState ?? {});
+      const output = outputWithWorkerDispatchDiagnostics(outputWithRuntimeState(createStatusOutput(queue.ledgers, { dependencyGraph: queue.dependencyGraph, runtimeState }), runtimeState ?? {}), options);
       if (runtimeSnapshot != null && runtimeLoadHasConflict(runtimeSnapshot)) {
         return result(runtimeRecoveryConflictOutput(output, runtimeSnapshot, "autopilot_status"), {}, source);
       }

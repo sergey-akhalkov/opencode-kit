@@ -7,6 +7,7 @@ import {
   createCollectOutput,
   createRunNextOutput,
   createStatusOutput,
+  readAutopilotQueueSummaries,
   readLedgerSummaries,
   type LedgerSummary,
   type AutopilotNextAction,
@@ -39,6 +40,12 @@ function writeLedger(repo: string, changeId: string, ledger: Record<string, unkn
   const filePath = path.join(repo, "openspec", "changes", changeId, "automation", "task.json");
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, `${JSON.stringify(ledger, null, 2)}\n`, "utf8");
+}
+
+function writeRepoFile(repo: string, relativePath: string, content: string): void {
+  const filePath = path.join(repo, ...relativePath.split("/"));
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, content, "utf8");
 }
 
 function historyOf(ledger: Record<string, unknown>): Array<Record<string, unknown>> {
@@ -178,6 +185,11 @@ function readSingleLedgerOutput(repo: string): AutopilotOutput {
   return createRunNextOutput(readLedgerSummaries(repo));
 }
 
+function readQueueOutput(repo: string): AutopilotOutput {
+  const queue = readAutopilotQueueSummaries(repo);
+  return createRunNextOutput(queue.ledgers, { dependencyGraph: queue.dependencyGraph });
+}
+
 function assert(condition: boolean, message: string): void {
   if (!condition) {
     throw new Error(message);
@@ -245,7 +257,7 @@ const tests: TestCase[] = [
   {
     name: "no ledgers return reason code and compact next action",
     run: () => withTempRepo("no-ledgers", (repo) => {
-      const output = readSingleLedgerOutput(repo);
+      const output = readQueueOutput(repo);
       assert(output.outcome === "idle", `Expected idle, got ${output.outcome}.`);
       assert(output.reasonCode === "no_ledgers", `Expected no_ledgers, got ${output.reasonCode}.`);
       assertNoProgressClaims(output);
@@ -259,7 +271,7 @@ const tests: TestCase[] = [
     name: "Ready ledger returns runtime-deferred actionability without repeat recommendation",
     run: () => withTempRepo("ready", (repo) => {
       writeLedger(repo, "ready-research", readyResearchLedger());
-      const output = readSingleLedgerOutput(repo);
+      const output = readQueueOutput(repo);
       assert(output.outcome === "idle", `Expected idle, got ${output.outcome}.`);
       assert(output.reasonCode === "ready_runtime_deferred", `Expected ready_runtime_deferred, got ${output.reasonCode}.`);
       assertNoProgressClaims(output);
@@ -284,6 +296,32 @@ const tests: TestCase[] = [
         selectedTaskId: "ready-research",
         candidates: [{ taskId: "ready-research", rank: 1, selected: true, selectionReason: "selected_primary", parallelDecision: "not_evaluated" }],
       });
+    }),
+  },
+  {
+    name: "completed tasks with stale Ready ledger are not selected as live work",
+    run: () => withTempRepo("stale-completed-ledger", (repo) => {
+      writeLedger(repo, "done-change", readyResearchLedger("stale-ready"));
+      writeRepoFile(repo, "openspec/changes/done-change/tasks.md", "# Tasks\n\n- [x] Done one.\n- [x] Done two.\n");
+      const output = readQueueOutput(repo);
+      assert(output.reasonCode === "no_actionable_tasks", `Stale completed ledger must not be ready, got ${output.reasonCode}.`);
+      assert(output.selection.selectedTaskId == null, `Stale completed ledger must not be selected, got ${JSON.stringify(output.selection)}.`);
+      assert(output.taskSummaries[0]?.checkedTasks === 2 && output.taskSummaries[0]?.uncheckedTasks === 0, `Stale ledger must include sibling tasks counts, got ${JSON.stringify(output.taskSummaries[0])}.`);
+      assert(JSON.stringify(output.blockers).includes("stale completed-change evidence"), `Output must report stale completed-change evidence, got ${JSON.stringify(output.blockers)}.`);
+      assert(output.nextActions.some((action) => action.label.includes("Reconcile stale completed ledger")), `Output must recommend stale reconciliation, got ${JSON.stringify(output.nextActions)}.`);
+    }),
+  },
+  {
+    name: "stale ledger does not hide unfinished active change fallback",
+    run: () => withTempRepo("stale-plus-active", (repo) => {
+      writeLedger(repo, "done-change", readyResearchLedger("stale-ready"));
+      writeRepoFile(repo, "openspec/changes/done-change/tasks.md", "# Tasks\n\n- [x] Done one.\n");
+      writeRepoFile(repo, "openspec/changes/unfinished-change/tasks.md", "# Tasks\n\n- [x] Done.\n- [ ] Still open.\n");
+      const output = readQueueOutput(repo);
+      assert(output.reasonCode === "active_change_handoff", `Unfinished active change must remain visible, got ${output.reasonCode}.`);
+      assert(output.selection.selectedTaskId === "unfinished-change", `Expected unfinished active change selection, got ${JSON.stringify(output.selection)}.`);
+      assert(output.taskSummaries.some((summary) => summary.taskId === "ready-research" && summary.reasonCode === "no_actionable_tasks"), `Stale ledger summary missing, got ${JSON.stringify(output.taskSummaries)}.`);
+      assert(output.taskSummaries.some((summary) => summary.taskId === "unfinished-change" && summary.reasonCode === "active_change_handoff"), `Active fallback summary missing, got ${JSON.stringify(output.taskSummaries)}.`);
     }),
   },
   {

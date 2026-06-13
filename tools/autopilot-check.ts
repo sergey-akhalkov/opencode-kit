@@ -6,6 +6,7 @@ import { pathToFileURL } from "node:url";
 import { redactText } from "./autopilot-evidence.ts";
 import { validateTaskLedger } from "./autopilot-ledger.ts";
 import { inspectAutopilotChangeFreshness } from "./autopilot-report-freshness.ts";
+import { countMarkdownChecklistItems } from "./openspec-autopilot-active-change-queue.ts";
 import { readLedgerSummaries, type LedgerSummary } from "./openspec-autopilot-output.ts";
 
 export type AutopilotCheckLevel = "cheap" | "standard" | "prepush" | "final";
@@ -113,6 +114,7 @@ type CliOptions = AutopilotCheckOptions & {
 
 const checkLevels = new Set<AutopilotCheckLevel>(["cheap", "standard", "prepush", "final"]);
 const outputFormats = new Set<AutopilotCheckFormat>(["json", "markdown"]);
+const terminalLedgerStatuses = new Set(["Done", "Failed", "Cancelled"]);
 
 function normalizePath(value: string): string {
   return value.replaceAll("\\", "/");
@@ -263,12 +265,19 @@ function readScopedLedger(root: string, absolutePath: string): LedgerSummary {
     const record = isRecord(parsed) ? parsed : {};
     const mr = isRecord(record.mr) ? record.mr : {};
     const scope = isRecord(record.scope) ? record.scope : {};
+    const changeRoot = path.dirname(path.dirname(absolutePath));
+    const tasksPath = path.join(changeRoot, "tasks.md");
+    const counts = fs.existsSync(tasksPath) && fs.statSync(tasksPath).isFile()
+      ? countMarkdownChecklistItems(fs.readFileSync(tasksPath, "utf8"))
+      : undefined;
+    const status = asString(record.status, "unknown");
+    const staleCompleted = counts != null && counts.total > 0 && counts.unchecked === 0 && !terminalLedgerStatuses.has(status);
     return {
       path: repoRelative(root, absolutePath),
       id: asString(record.id, path.basename(absolutePath, ".json")),
       sourceKind: "ledger",
       taskType: asString(record.taskType, "unknown"),
-      status: asString(record.status, "unknown"),
+      status,
       priority: asString(record.priority, ""),
       dependencies: asStringArray(record.dependencies),
       writeScope: asStringArray(scope.write),
@@ -277,6 +286,10 @@ function readScopedLedger(root: string, absolutePath: string): LedgerSummary {
       valid: result.valid,
       errors: result.errors,
       blockers: asRecordArray(record.blockers),
+      checkedTasks: counts?.checked,
+      uncheckedTasks: counts?.unchecked,
+      totalTasks: counts?.total,
+      staleCompleted,
       ledger: record,
       mr: {
         status: typeof mr.status === "string" ? mr.status : undefined,
@@ -424,16 +437,28 @@ function ledgerChecks(ledgers: LedgerSummary[]): AutopilotCheckItem[] {
       summary: "No active Autopilot task ledgers were discovered; absence is not a failure for unscoped checks.",
     }];
   }
-  return ledgers.map((ledger) => ({
-    id: `autopilot-ledger:${ledger.id}`,
-    label: "Autopilot ledger validation",
-    status: ledger.valid ? "passed" : "failed",
-    blocking: !ledger.valid,
-    source: ledger.path,
-    summary: ledger.valid
-      ? `${ledger.taskType} ledger ${ledger.id} is ${ledger.status}; write scopes=${ledger.writeScopeSize}.`
-      : `Invalid ledger ${ledger.id}: ${ledger.errors.join("; ")}`,
-  }));
+  return ledgers.map((ledger) => {
+    if (ledger.staleCompleted === true) {
+      return {
+        id: `autopilot-ledger:stale-completed:${ledger.id}`,
+        label: "Autopilot stale completed ledger",
+        status: "warning",
+        blocking: false,
+        source: ledger.path,
+        summary: `Ledger ${ledger.id} is ${ledger.status}, but sibling tasks.md checklist is complete (${ledger.checkedTasks ?? 0}/${ledger.totalTasks ?? 0}); reconcile before selecting as live work.`,
+      };
+    }
+    return {
+      id: `autopilot-ledger:${ledger.id}`,
+      label: "Autopilot ledger validation",
+      status: ledger.valid ? "passed" : "failed",
+      blocking: !ledger.valid,
+      source: ledger.path,
+      summary: ledger.valid
+        ? `${ledger.taskType} ledger ${ledger.id} is ${ledger.status}; write scopes=${ledger.writeScopeSize}.`
+        : `Invalid ledger ${ledger.id}: ${ledger.errors.join("; ")}`,
+    };
+  });
 }
 
 function freshnessCheck(root: string, level: AutopilotCheckLevel, changeId: string): AutopilotCheckItem {
@@ -675,9 +700,9 @@ function hasWarnings(checks: AutopilotCheckItem[]): boolean {
 
 function nextActions(checks: AutopilotCheckItem[], failOnWarnings = false): AutopilotCheckNextAction[] {
   return checks
-    .filter((check) => check.status === "failed" || check.status === "blocked" || (failOnWarnings && (check.status === "warning" || check.status === "unknown")))
+    .filter((check) => check.status === "failed" || check.status === "blocked" || check.id.startsWith("autopilot-ledger:stale-completed:") || (failOnWarnings && (check.status === "warning" || check.status === "unknown")))
     .map((check) => ({
-      label: `Fix ${check.label}`,
+      label: check.id.startsWith("autopilot-ledger:stale-completed:") ? "Reconcile stale completed ledger" : `Fix ${check.label}`,
       reason: check.summary,
       command: check.command,
     }));

@@ -2,18 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { expectedFollowUpId, readRetroArtifact, writeRetroArtifact } from "./openspec-retro-gate.ts";
+import type { RetroArtifact, RetroProblem } from "./openspec-retro-gate.ts";
 
 export type RetroFindingTarget = "project-local" | "opencode-dev-kit" | "none";
 
-export type RetroFinding = {
-  problem: string;
-  evidence: string;
-  impact: string;
-  rootCause: string;
-  recommendation: string;
-  confidence: string;
-  target: RetroFindingTarget;
-};
+export type RetroFinding = RetroProblem;
 
 export type RetroFollowUpChange = {
   id: string;
@@ -21,6 +15,7 @@ export type RetroFollowUpChange = {
   status: "created" | "existing" | "skipped";
   path: string;
   problem: string;
+  findingIndex: number;
 };
 
 export type RetroFollowUpResult = {
@@ -44,39 +39,6 @@ function safeChangeId(changeId: string): boolean {
   return /^[a-z0-9][a-z0-9._-]*$/i.test(changeId) && !changeId.includes("..") && !changeId.includes("/") && !changeId.includes("\\");
 }
 
-function slug(value: string): string {
-  const slugged = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  return slugged.length > 0 ? slugged.slice(0, 48).replace(/-+$/g, "") : "finding";
-}
-
-function section(text: string, heading: string): string | null {
-  const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = text.match(new RegExp(`^##\\s+${escaped}\\s*$\\n(?<body>[\\s\\S]*?)(?=^##\\s+|(?![\\s\\S]))`, "m"));
-  return match?.groups?.body ?? null;
-}
-
-function parseProblemRows(problemSection: string | null): RetroFinding[] {
-  if (problemSection == null) {
-    return [];
-  }
-  return problemSection
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith("|") && line.endsWith("|"))
-    .filter((line) => !/^\|\s*-+\s*\|/.test(line) && !/^\|\s*Problem\s*\|/i.test(line))
-    .flatMap((line): RetroFinding[] => {
-      const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
-      if (cells.length !== 7) {
-        return [];
-      }
-      const target = cells[6] as RetroFindingTarget;
-      if (target !== "project-local" && target !== "opencode-dev-kit" && target !== "none") {
-        return [];
-      }
-      return [{ problem: cells[0], evidence: cells[1], impact: cells[2], rootCause: cells[3], recommendation: cells[4], confidence: cells[5], target }];
-    });
-}
-
 function normalizedCell(value: string): string {
   return value.trim().toLowerCase().replace(/[.。]+$/, "");
 }
@@ -85,15 +47,15 @@ function isUnknownRootCause(value: string): boolean {
   return normalizedCell(value) === "unknown";
 }
 
-function taskTail(): string {
+function taskTail(sourceChangeId: string): string {
   return `## Retrospective Before Archive
 
 - [ ] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [ ] Write \`retrospective.md\` with evidence, problems, root causes, improvements, and archive gate decision.
+- [ ] Write \`openspec/changes/${sourceChangeId}/automation/retro.json\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
 - [ ] Create or update project-local OpenSpec follow-up changes for project-local findings.
 - [ ] For reusable findings, create or update \`opencode-dev-kit\` OpenSpec proposals/changes only when the current repository owns them; otherwise record a local handoff and do not write cross-repo without explicit approval.
-- [ ] Run \`npm run openspec:retro-followups -- <change-id>\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
-- [ ] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded.
+- [ ] Run \`npm run openspec:retro-followups -- ${sourceChangeId}\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
+- [ ] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in \`automation/retro.json\`.
 `;
 }
 
@@ -105,7 +67,7 @@ function proposalText(sourceChangeId: string, finding: RetroFinding): string {
 
 ## Why
 
-This follow-up was generated from \`${sourceChangeId}\` retrospective evidence.
+This follow-up was generated from \`${sourceChangeId}\` automation retrospective evidence.
 
 - Problem: ${finding.problem}
 - Evidence: ${finding.evidence}
@@ -149,7 +111,7 @@ function tasksText(sourceChangeId: string, finding: RetroFinding): string {
 - [ ] Run the focused validation command for this change.
 - [ ] Run \`openspec validate --all\`.
 
-${taskTail()}`;
+${taskTail(sourceChangeId)}`;
 }
 
 function specText(changeId: string, sourceChangeId: string, finding: RetroFinding): string {
@@ -175,57 +137,8 @@ This follow-up SHALL resolve, validate, or explicitly reject the retrospective f
 `;
 }
 
-function outputLineMarker(target: RetroFindingTarget): string | null {
-  if (target === "project-local") {
-    return "Project follow-up changes";
-  }
-  if (target === "opencode-dev-kit") {
-    return "opencode-dev-kit";
-  }
-  return null;
-}
-
-function replaceOutputLine(retrospective: string, marker: string, ids: string[]): string {
-  const renderedIds = ids.length > 0 ? ids.map((id) => `\`${id}\``).join(", ") : "none";
-  const lines = retrospective.split("\n");
-  const index = lines.findIndex((line) => line.toLowerCase().includes(marker.toLowerCase()) && line.includes(":"));
-  if (index >= 0) {
-    const prefix = lines[index].slice(0, lines[index].indexOf(":") + 1);
-    lines[index] = `${prefix} ${renderedIds}.`;
-  }
-  return lines.join("\n");
-}
-
-function replaceNoFindings(retrospective: string, createdCount: number): string {
-  if (createdCount === 0) {
-    return retrospective;
-  }
-  const lines = retrospective.split("\n");
-  const index = lines.findIndex((line) => line.toLowerCase().includes("no findings reason") && line.includes(":"));
-  if (index >= 0) {
-    const prefix = lines[index].slice(0, lines[index].indexOf(":") + 1);
-    lines[index] = `${prefix} n/a.`;
-  }
-  return lines.join("\n");
-}
-
-function updateRetrospectiveOutputs(retrospective: string, changes: RetroFollowUpChange[]): string {
-  let updated = retrospective;
-  for (const target of ["project-local", "opencode-dev-kit"] as const) {
-    const marker = outputLineMarker(target);
-    if (marker == null) {
-      continue;
-    }
-    const ids = changes.filter((change) => change.target === target && change.status !== "skipped").map((change) => change.id);
-    if (ids.length > 0) {
-      updated = replaceOutputLine(updated, marker, ids);
-    }
-  }
-  return replaceNoFindings(updated, changes.filter((change) => change.status !== "skipped").length);
-}
-
 function followUpId(sourceChangeId: string, finding: RetroFinding, index: number): string {
-  return `retro-${slug(sourceChangeId)}-${String(index + 1).padStart(2, "0")}-${slug(finding.problem)}`.slice(0, 96).replace(/-+$/g, "");
+  return finding.followUpChangeId ?? expectedFollowUpId(sourceChangeId, finding, index);
 }
 
 function fileNeedsWrite(filePath: string, expected: string, requiredFragments: string[]): boolean {
@@ -233,24 +146,59 @@ function fileNeedsWrite(filePath: string, expected: string, requiredFragments: s
     return true;
   }
   const current = normalizeText(fs.readFileSync(filePath, "utf8"));
-  return requiredFragments.some((fragment) => !current.includes(fragment)) || current !== expected;
+  return requiredFragments.some((fragment) => !current.includes(fragment));
+}
+
+function isMeaningful(value: string | null | undefined): boolean {
+  if (value == null) {
+    return false;
+  }
+  const normalized = value.trim().toLowerCase().replace(/[.。]+$/, "");
+  return !["", "none", "n/a", "na", "unknown", "unavailable", "-"].includes(normalized);
+}
+
+function relativePosix(root: string, target: string): string {
+  return path.relative(root, target).replaceAll("\\", "/");
+}
+
+function unique(values: string[]): string[] {
+  return Array.from(new Set(values));
+}
+
+function updatedArtifact(artifact: RetroArtifact, changes: RetroFollowUpChange[]): RetroArtifact {
+  if (changes.length === 0) {
+    return artifact;
+  }
+  const byIndex = new Map(changes.map((change) => [change.findingIndex, change]));
+  const problems = artifact.problems.map((problem, index) => {
+    const change = byIndex.get(index);
+    if (change == null) {
+      return problem;
+    }
+    return { ...problem, followUpChangeId: change.id, noFollowUpReason: null };
+  });
+  return {
+    ...artifact,
+    problems,
+    outputs: {
+      projectFollowUpChanges: unique([...artifact.outputs.projectFollowUpChanges, ...changes.filter((change) => change.target === "project-local").map((change) => change.id)]),
+      opencodeDevKitChanges: unique([...artifact.outputs.opencodeDevKitChanges, ...changes.filter((change) => change.target === "opencode-dev-kit").map((change) => change.id)]),
+      noFindingsReason: null,
+    },
+  };
 }
 
 export function createRetroFollowUps(root: string, changeId: string, options: { dryRun?: boolean } = {}): RetroFollowUpResult {
   if (!safeChangeId(changeId)) {
     throw new Error(`Invalid change id '${changeId}'.`);
   }
-  const changeRoot = path.join(root, "openspec", "changes", changeId);
-  const retrospectivePath = path.join(changeRoot, "retrospective.md");
-  if (!fs.existsSync(retrospectivePath) || !fs.statSync(retrospectivePath).isFile()) {
-    throw new Error(`Missing retrospective.md for ${changeId}.`);
-  }
-  const retrospective = normalizeText(fs.readFileSync(retrospectivePath, "utf8"));
-  const findings = parseProblemRows(section(retrospective, "Problems Found"));
-  const actionableFindings = findings.filter((finding) => finding.target !== "none");
+  const artifact = readRetroArtifact(root, changeId);
+  const actionableFindings = artifact.problems
+    .map((finding, findingIndex) => ({ finding, findingIndex }))
+    .filter((entry) => entry.finding.target !== "none" && !isMeaningful(entry.finding.noFollowUpReason));
   const changes: RetroFollowUpChange[] = [];
 
-  actionableFindings.forEach((finding, index) => {
+  actionableFindings.forEach(({ finding, findingIndex }, index) => {
     const id = followUpId(changeId, finding, index);
     const followUpRoot = path.join(root, "openspec", "changes", id);
     const proposalPath = path.join(followUpRoot, "proposal.md");
@@ -265,7 +213,7 @@ export function createRetroFollowUps(root: string, changeId: string, options: { 
     const tasksNeedsWrite = fileNeedsWrite(tasksPath, tasks, [taskRootCauseFragment, finding.recommendation]);
     const specNeedsWrite = fileNeedsWrite(specPath, spec, ["## ADDED Requirements", "#### Scenario:", specRootCauseFragment, finding.recommendation]);
     const needsWrite = proposalNeedsWrite || tasksNeedsWrite || specNeedsWrite;
-    changes.push({ id, target: finding.target, status: needsWrite ? "created" : "existing", path: normalizeText(path.relative(root, followUpRoot)).replaceAll("\\", "/"), problem: finding.problem });
+    changes.push({ id, target: finding.target, status: needsWrite ? "created" : "existing", path: relativePosix(root, followUpRoot), problem: finding.problem, findingIndex });
     if (needsWrite && options.dryRun !== true) {
       fs.mkdirSync(followUpRoot, { recursive: true });
       if (proposalNeedsWrite) {
@@ -281,10 +229,10 @@ export function createRetroFollowUps(root: string, changeId: string, options: { 
     }
   });
 
-  const updatedRetrospective = updateRetrospectiveOutputs(retrospective, changes);
-  const retrospectiveUpdated = updatedRetrospective !== retrospective;
+  const nextArtifact = updatedArtifact(artifact, changes);
+  const retrospectiveUpdated = JSON.stringify(nextArtifact) !== JSON.stringify(artifact);
   if (retrospectiveUpdated && options.dryRun !== true) {
-    fs.writeFileSync(retrospectivePath, updatedRetrospective, "utf8");
+    writeRetroArtifact(root, nextArtifact);
   }
   return { changeId, changes, retrospectiveUpdated };
 }
@@ -325,7 +273,7 @@ function parseArgs(args: string[]): CliOptions {
 }
 
 function renderText(result: RetroFollowUpResult): string {
-  const lines = [`changeId: ${result.changeId}`, `retrospectiveUpdated: ${String(result.retrospectiveUpdated)}`];
+  const lines = [`changeId: ${result.changeId}`, `retroJsonUpdated: ${String(result.retrospectiveUpdated)}`];
   for (const change of result.changes) {
     lines.push(`${change.status}: ${change.id} (${change.target})`);
   }

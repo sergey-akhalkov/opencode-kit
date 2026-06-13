@@ -9,7 +9,7 @@ import {
   autopilotReasonCodes,
   autopilotSelectionReasons,
   autopilotSelectionModes,
-  autopilotToolNames,
+  autopilotStandardOutputToolNames,
   type AutopilotActionability,
   type AutopilotAutoConflictTolerance,
   type AutopilotAutoRiskClass,
@@ -33,7 +33,7 @@ import {
 import type { AutopilotRuntimeState } from "./openspec-autopilot-runtime.ts";
 import type { AutopilotRuntimeStore } from "./autopilot-runtime-store.ts";
 import type { AutopilotWorkerSessionAdapter } from "./autopilot-worker-session-adapter.ts";
-import { readActiveChangeSummaries } from "./openspec-autopilot-active-change-queue.ts";
+import { countMarkdownChecklistItems, readActiveChangeSummaries } from "./openspec-autopilot-active-change-queue.ts";
 import {
   nextActionsAfterAnswerBlocker,
   nextActionsAfterRejectedAnswerBlocker,
@@ -66,7 +66,7 @@ export type AutopilotOptions = {
   prototypeLedgerRoot?: string;
   runtimeState?: AutopilotRuntimeState;
   runtimeStore?: AutopilotRuntimeStore;
-  workerDispatch?: { enabled?: boolean };
+  workerDispatch?: { enabled?: boolean; diagnostics?: string[] };
   workerSessionAdapter?: AutopilotWorkerSessionAdapter;
   now?: () => string;
 };
@@ -99,6 +99,7 @@ export type LedgerSummary = {
   checkedTasks?: number;
   uncheckedTasks?: number;
   totalTasks?: number;
+  staleCompleted?: boolean;
   ledger?: Record<string, unknown>;
   mr?: {
     status?: string;
@@ -121,6 +122,7 @@ export type TaskActionabilitySummary = {
   checkedTasks?: number;
   uncheckedTasks?: number;
   totalTasks?: number;
+  staleCompleted?: boolean;
 };
 export type AutopilotLoopGuard = {
   repeatedNoProgress: boolean;
@@ -179,7 +181,7 @@ export const autopilotOutputContract = {
   reasonCodes: autopilotReasonCodes,
   actionabilityValues: autopilotActionabilityValues,
   mrWaitStatuses: autopilotMrWaitStatuses,
-  toolNames: autopilotToolNames,
+  toolNames: autopilotStandardOutputToolNames,
   selectionModes: autopilotSelectionModes,
   parallelDecisions: autopilotParallelDecisions,
   selectionReasons: autopilotSelectionReasons,
@@ -285,13 +287,21 @@ export function readAutopilotQueueSummaries(root: string, options: AutopilotOpti
   const dependencyGraph = readLedgerSummaries(root, options);
   const ledgers = filterLedgerSummaries(dependencyGraph, normalizedFilter);
   if (ledgers.length > 0 || normalizedFilter.taskId != null) {
+    const hasLiveReadyLedger = ledgers.some((ledger) => ledger.sourceKind === "ledger" && ledger.valid && ledger.staleCompleted !== true && ledger.status === "Ready" && dependenciesSatisfied(ledger, dependencyGraph));
+    if (normalizedFilter.taskId == null && !hasLiveReadyLedger) {
+      const activeChanges = readActiveChangeSummaries(root, safeRelativeRoot(options.ledgerRoot, defaultLedgerRoot, "ledgerRoot"), normalizedFilter)
+        .filter((active) => !ledgers.some((ledger) => changeIdForLedgerPath(ledger) === active.id));
+      if (activeChanges.length > 0) {
+        return { ledgers: [...ledgers, ...activeChanges], dependencyGraph: [...dependencyGraph, ...activeChanges] };
+      }
+    }
     return { ledgers, dependencyGraph };
   }
   const activeChanges = readActiveChangeSummaries(root, safeRelativeRoot(options.ledgerRoot, defaultLedgerRoot, "ledgerRoot"), normalizedFilter);
   return { ledgers: activeChanges, dependencyGraph: activeChanges };
 }
 
-function changeIdForLedgerPath(ledger: LedgerSummary): string | undefined {
+export function changeIdForLedgerPath(ledger: LedgerSummary): string | undefined {
   if (ledger.sourceKind === "active-change") {
     return ledger.id;
   }
@@ -323,12 +333,19 @@ export function readLedgerSummaries(root: string, options: AutopilotOptions = {}
       const record = isRecord(parsed) ? parsed : {};
       const mr = isRecord(record.mr) ? record.mr : {};
       const scope = isRecord(record.scope) ? record.scope : {};
+      const changeRoot = path.dirname(path.dirname(filePath));
+      const tasksPath = path.join(changeRoot, "tasks.md");
+      const counts = fs.existsSync(tasksPath) && fs.statSync(tasksPath).isFile() && !isSymlinkPath(tasksPath) && realPathIsInside(root, tasksPath) && realPathIsInside(changeRoot, tasksPath)
+        ? countMarkdownChecklistItems(fs.readFileSync(tasksPath, "utf8"))
+        : undefined;
+      const status = asString(record.status, "unknown");
+      const staleCompleted = counts != null && counts.total > 0 && counts.unchecked === 0 && !terminalStatuses.has(status);
       return {
         path: toRelative(root, filePath),
         id: asString(record.id, path.basename(filePath, ".json")),
         sourceKind: "ledger",
         taskType: asString(record.taskType, "unknown"),
-        status: asString(record.status, "unknown"),
+        status,
         priority: asString(record.priority, ""),
         dependencies: asStringArray(record.dependencies),
         writeScope: asStringArray(scope.write),
@@ -337,6 +354,10 @@ export function readLedgerSummaries(root: string, options: AutopilotOptions = {}
         valid: result.valid,
         errors: result.errors,
         blockers: asRecordArray(record.blockers),
+        checkedTasks: counts?.checked,
+        uncheckedTasks: counts?.unchecked,
+        totalTasks: counts?.total,
+        staleCompleted,
         ledger: record,
         mr: {
           status: typeof mr.status === "string" ? mr.status : undefined,
@@ -424,6 +445,16 @@ function classifyLedger(ledger: LedgerSummary): LedgerClassification {
     };
   }
 
+  if (ledger.staleCompleted === true) {
+    return {
+      actionability: "terminal",
+      reasonCode: "no_actionable_tasks",
+      hasUserBlocker: false,
+      isReadyRuntimeDeferred: false,
+      isActiveChangeHandoff: false,
+    };
+  }
+
   if (ledger.status === "Blocked" || ledger.blockers.length > 0) {
     return {
       actionability: "blocked_for_user",
@@ -498,8 +529,32 @@ function taskSummaries(ledgers: LedgerSummary[]): TaskActionabilitySummary[] {
       checkedTasks: ledger.checkedTasks,
       uncheckedTasks: ledger.uncheckedTasks,
       totalTasks: ledger.totalTasks,
+      staleCompleted: ledger.staleCompleted,
     };
   });
+}
+
+function staleCompletedBlockers(ledgers: LedgerSummary[]): BlockerSummary[] {
+  return ledgers
+    .filter((ledger) => ledger.staleCompleted === true)
+    .map((ledger) => ({
+      taskId: ledger.id,
+      path: ledger.path,
+      reason: "stale completed-change evidence: tasks.md checklist is complete but automation/task.json is non-terminal",
+    }));
+}
+
+function staleCompletedNextActions(ledgers: LedgerSummary[]): AutopilotNextAction[] {
+  if (!ledgers.some((ledger) => ledger.staleCompleted === true)) {
+    return [];
+  }
+  return [{
+    label: "Reconcile stale completed ledger",
+    kind: "manual_review",
+    reason: "A completed OpenSpec tasks.md has a non-terminal Autopilot ledger, so it must not be selected as live work.",
+    safety: "safe",
+    expectedResult: "Archive the completed change, reconcile ledger status through plugin-owned flow, or remove stale automation state through an approved cleanup path.",
+  }];
 }
 
 function selectableLedgers(ledgers: LedgerSummary[]): LedgerSummary[] {
@@ -576,12 +631,12 @@ function outputFor(ledgers: LedgerSummary[], summary: string, reasonCode: Autopi
     tasksAdvanced: [],
     mrsWaiting: mrsWaiting(ledgers),
     questions: [],
-    blockers: [...invalidBlockers(ledgers), ...userBlockers(ledgers)],
+    blockers: [...invalidBlockers(ledgers), ...userBlockers(ledgers), ...staleCompletedBlockers(ledgers)],
     nextRecommendedCall,
     summary,
     reasonCode,
     taskSummaries: taskSummaries(ledgers),
-    nextActions: nextActionsFor(reasonCode),
+    nextActions: [...staleCompletedNextActions(ledgers), ...nextActionsFor(reasonCode)],
     loopGuard: loopGuardFor(reasonCode, equivalentCall),
     selection: selectionFor(ledgers, selectableLedgers(ledgers), reasonCode, dependencyGraph, outputOptions.runtimeState),
   };

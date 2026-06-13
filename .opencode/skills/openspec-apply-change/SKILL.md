@@ -29,7 +29,7 @@ If the change has an automation task ledger, the user invoked `/autopilot`, stri
 - Tests cover observable behavior and negative/recovery cases where relevant.
 - Docs/specs/tasks are synchronized.
 - Validation commands have been run or skipped with explicit reason and residual risk.
-- Before archive, hand off to the retrospective gate before archive: write or update `retrospective.md` with root causes for actionable problems, run `npm run openspec:retro-followups -- <change-id>` when available to create/update OpenSpec follow-up changes for actionable findings, then run `npm run openspec:retro-gate -- <change-id>`.
+- Before archive, hand off to the retrospective gate before archive: write or update `openspec/changes/<change-id>/automation/retro.json` with root causes and follow-up ids for actionable problems, run `npm run openspec:retro-followups -- <change-id>` when available to create/update OpenSpec follow-up changes for actionable findings, then run `npm run openspec:retro-gate -- <change-id>`.
 
 ## Output
 

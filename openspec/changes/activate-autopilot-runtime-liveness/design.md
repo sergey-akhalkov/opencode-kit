@@ -16,7 +16,7 @@ Rationale: protected ledger mutation is plugin-owned and should not happen as a 
 
 ### Prompt Intake Gets A Read-Only Plugin Surface
 
-The deterministic prompt-intake helper should be reachable through a plugin-owned read-only action, such as `autopilot_intake` or an equivalent command adapter. It should return derived classification fields and first-tool guidance without echoing or persisting raw prompt text by default.
+The deterministic prompt-intake helper is reachable through the public plugin-owned read-only `autopilot_intake` action. It returns derived classification fields and first-tool guidance without echoing or persisting raw prompt text by default.
 
 Rationale: `/autopilot <free-form prompt>` is too important to depend only on a long prompt template. The helper already encodes exact-scope and free-form safety rules.
 
@@ -67,5 +67,5 @@ Rationale: the repository is a reusable Autopilot kit; misleading public surface
 ## Open Questions
 
 - Should stale completed ledgers be blocking failures in `autopilot:check --level cheap`, or warning-level diagnostics until an archive/cleanup command exists?
-- Should prompt intake be exposed as a public `autopilot_intake` tool, or as command-level plugin/controller logic not shown to the model as a separate tool?
+- Resolved: prompt intake is exposed as public read-only `autopilot_intake`; missing `autopilot_intake` blocks non-empty `/autopilot` arguments instead of falling back to prose-only classification or `autopilot_status` as a substitute.
 - Should `advanced` profile remain skill/agent-only, or should a new explicit `autopilot-live` profile own plugin/command installation?

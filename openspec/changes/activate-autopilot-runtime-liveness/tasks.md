@@ -2,49 +2,49 @@
 
 ## Tests First: Queue Liveness
 
-- [ ] Add a focused fixture where `tasks.md` is fully checked but `automation/task.json` is non-terminal `Ready`; assert Autopilot does not select it as a live primary task.
-- [ ] Add a fixture where one stale ledger exists and another active OpenSpec change has unchecked tasks; assert unfinished active work is still visible and not hidden by the stale ledger.
-- [ ] Add an `autopilot:check --level cheap` test for stale ledger diagnostics and decide whether the result is warning-level or blocking.
+- [x] Add a focused fixture where `tasks.md` is fully checked but `automation/task.json` is non-terminal `Ready`; assert Autopilot does not select it as a live primary task.
+- [x] Add a fixture where one stale ledger exists and another active OpenSpec change has unchecked tasks; assert unfinished active work is still visible and not hidden by the stale ledger.
+- [x] Add an `autopilot:check --level cheap` test for stale ledger diagnostics and decide whether the result is warning-level or blocking.
 
 ## Implementation: Queue Liveness
 
-- [ ] Teach ledger summary reading to attach sibling `tasks.md` checklist counts for real `openspec/changes/<change>/automation/task.json` ledgers.
-- [ ] Classify all-checked `tasks.md` plus non-terminal ledger status as stale completed-change evidence.
-- [ ] Update queue selection so stale ledgers cannot be selected as `Ready` primary work.
-- [ ] Update active-change fallback so unfinished active changes are considered when existing ledgers are stale or non-actionable.
-- [ ] Add clear next actions for stale completed ledgers: archive, reconcile ledger status, or remove stale automation state through an approved path.
+- [x] Teach ledger summary reading to attach sibling `tasks.md` checklist counts for real `openspec/changes/<change>/automation/task.json` ledgers.
+- [x] Classify all-checked `tasks.md` plus non-terminal ledger status as stale completed-change evidence.
+- [x] Update queue selection so stale ledgers cannot be selected as `Ready` primary work.
+- [x] Update active-change fallback so unfinished active changes are considered when existing ledgers are stale or non-actionable.
+- [x] Add clear next actions for stale completed ledgers: archive, reconcile ledger status, or remove stale automation state through an approved path.
 
 ## Tests First: Prompt Intake Runtime
 
-- [ ] Add plugin/contract tests for a read-only prompt-intake surface that calls `planAutopilotPromptIntake()`.
-- [ ] Add tests proving exact `changeId` and `taskId` arguments produce scoped `autopilot_run_next` guidance.
-- [ ] Add tests proving free-form prompts require read-only `autopilot_status` or safe handoff and never call `autopilot_run_next` with prompt text.
-- [ ] Add tests proving ambiguous scopes block without advancement.
-- [ ] Add tests proving raw free-form prompt text is not echoed or persisted by default.
+- [x] Add plugin/contract tests for a read-only prompt-intake surface that calls `planAutopilotPromptIntake()`.
+- [x] Add tests proving exact `changeId` and `taskId` arguments produce scoped `autopilot_run_next` guidance.
+- [x] Add tests proving free-form prompts use read-only `autopilot_intake` first, allow `autopilot_status` only as helper-requested status, and never call `autopilot_run_next` with prompt text.
+- [x] Add tests proving ambiguous scopes block without advancement.
+- [x] Add tests proving raw free-form prompt text is not echoed or persisted by default.
 
 ## Implementation: Prompt Intake Runtime
 
-- [ ] Add a read-only plugin-owned prompt-intake action, such as `autopilot_intake`, or an equivalent command adapter.
-- [ ] Wire the action to `tools/autopilot-prompt-intake.ts` and safe queue inventory evidence.
-- [ ] Update shared Autopilot contract/tool-name tests if a public tool is added.
-- [ ] Update `/autopilot` command text to call the prompt-intake action for non-empty arguments before any claim-capable action.
-- [ ] Update README and `openspec-autopilot` skill guidance so prompt intake is code-backed rather than prose-only.
+- [x] Add public read-only plugin-owned `autopilot_intake` prompt-intake action.
+- [x] Wire the action to `tools/autopilot-prompt-intake.ts` and safe queue inventory evidence.
+- [x] Update shared Autopilot contract/tool-name tests if a public tool is added.
+- [x] Update `/autopilot` command text to call the prompt-intake action for non-empty arguments before any claim-capable action.
+- [x] Update README and `openspec-autopilot` skill guidance so prompt intake is code-backed rather than prose-only.
 
 ## Tests First: Live Worker Dispatch Bundle
 
-- [ ] Add installer dry-run tests for an opt-in Autopilot live bundle that includes plugin, command, dependency/package guidance, and nested plugin options.
-- [ ] Add tests proving skill-only install still warns or documents missing plugin tool surface for Autopilot.
-- [ ] Add config-shape tests for `workerDispatch.enabled`, nested `triggers`, and explicit plugin tuple/path behavior.
-- [ ] Add backup/no-overwrite tests for bundle installation into a temp OpenCode config directory.
+- [x] Add installer dry-run tests for an opt-in Autopilot live bundle that includes plugin, command, dependency/package guidance, and nested plugin options.
+- [x] Add tests proving skill-only install still warns or documents missing plugin tool surface for Autopilot.
+- [x] Add config-shape tests for `workerDispatch.enabled`, nested `triggers`, and explicit plugin tuple/path behavior.
+- [x] Add backup/no-overwrite tests for bundle installation into a temp OpenCode config directory.
 
 ## Implementation: Live Worker Dispatch Bundle
 
-- [ ] Add an explicit installer option or profile for the Autopilot live runtime bundle.
-- [ ] Package or copy the server plugin and required helper closure consistently with README bundle guidance.
-- [ ] Install or generate the `/autopilot` command only when the plugin tool surface will be available.
-- [ ] Emit or merge explicit plugin config options for `workerDispatch.enabled` and safe `triggerMode` defaults.
-- [ ] Preserve dry-run, backup, no-prune, and restart guidance behavior.
-- [ ] Document single OpenCode server/runtime ownership before enabling live dispatch.
+- [x] Add an explicit installer option or profile for the Autopilot live runtime bundle.
+- [x] Package or copy the server plugin and required helper closure consistently with README bundle guidance.
+- [x] Install or generate the `/autopilot` command only when the plugin tool surface will be available.
+- [x] Emit or merge explicit plugin config options for `workerDispatch.enabled` and safe `triggerMode` defaults.
+- [x] Preserve dry-run, backup, no-prune, and restart guidance behavior.
+- [x] Document single OpenCode server/runtime ownership before enabling live dispatch.
 
 ## Tests First: Durable Trigger Evidence
 
@@ -78,9 +78,9 @@
 
 ## Documentation, Discovery, And Routing
 
-- [ ] Update README routing so Autopilot live runtime, prompt intake, queue-liveness, and install modes are discoverable.
+- [x] Update README routing so Autopilot live runtime, prompt intake, queue-liveness, and install modes are discoverable.
 - [ ] Add a compact domain-skill routing bullet if technical domain skills remain under-routed.
-- [ ] Add validator checks for profile coverage and Autopilot bundle dependency or explicitly document skill-only behavior.
+- [x] Add validator checks for profile coverage and Autopilot bundle dependency or explicitly document skill-only behavior.
 - [ ] Decide whether repo-local `opencode.json` top-level `permission: "allow"` remains intentional; remove the validation warning or document the exception.
 
 ## Review Gates
@@ -93,10 +93,10 @@
 
 ## Validation
 
-- [ ] `npm run validate`
-- [ ] `npm test`
-- [ ] `npm run openspec:validate`
-- [ ] `npm run autopilot:check -- --level cheap`
+- [x] `npm run validate`
+- [x] `npm test`
+- [x] `npm run openspec:validate`
+- [x] `npm run autopilot:check -- --level cheap`
 - [ ] `npm run autopilot:check -- --level prepush`
 - [ ] `npm run prepush:validate`
 

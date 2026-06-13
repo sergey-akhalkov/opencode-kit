@@ -8,12 +8,12 @@
 ## Tests First For Future Implementation
 
 - [x] Add focused tests or fixtures proving new `tasks.md` templates include a final retrospective section.
-- [x] Add tests for a future `openspec:retro-gate` helper that fail when `retrospective.md` is missing.
+- [x] Add tests for a future `openspec:retro-gate` helper that fail when `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` is missing.
 - [x] Add tests for approved skip handling with reason and approver.
 - [x] Add tests for project-local finding routing and `opencode-dev-kit` finding routing.
 - [x] Add tests that Autopilot no-progress, runtime-deferred, stale-evidence, and routing/escape-hatch friction are captured as retrospective evidence when present.
 - [x] Add tests for concise `No findings` retrospectives.
-- [x] Add tests proving actionable retrospective findings create follow-up OpenSpec changes and update `retrospective.md` outputs.
+- [x] Add tests proving actionable retrospective findings create follow-up OpenSpec changes and update `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` outputs.
 
 ## Future Implementation
 
@@ -22,7 +22,7 @@
 - [x] Update `openspec-apply-change` so completed changes hand off to retrospective before archive.
 - [x] Update `openspec-autopilot` so acceptance/archive flow treats missing retro as a blocker and asks only returned blocker questions.
 - [x] Update `next-step` so completed-but-not-retroed OpenSpec changes appear as available work.
-- [x] Add `retrospective.md` template guidance to OpenSpec documentation or README after implementation is ready.
+- [x] Add `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` template guidance to OpenSpec documentation or README after implementation is ready.
 - [x] Add the deterministic TypeScript retro-gate helper and package script if test coverage proves the contract.
 - [x] Add the deterministic TypeScript retro-followups helper and package script so actionable findings create or reuse OpenSpec follow-up changes before archive.
 - [x] Integrate retrospective evidence sections into the future Autopilot evidence-pack workflow.
@@ -31,7 +31,7 @@
 ## Apply To Existing Active Changes
 
 - [x] Add final retrospective tasks to existing active OpenSpec changes when implementation of this gate is approved.
-- [x] Before archiving completed currently active changes, write `retrospective.md` and route findings according to this policy; live regression remains blocked before archive.
+- [x] Before archiving completed currently active changes, write `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` and route findings according to this policy; live regression remains blocked before archive.
 
 ## Review Gates For Future Implementation
 
@@ -50,8 +50,8 @@
 ## Retrospective Before Archive
 
 - [x] Review the completed work on this retrospective-gate change, including validation, reviewer gates, repeated operations, wait time, token-heavy steps, and likely root causes.
-- [x] Write `retrospective.md` for this change with evidence, problems, improvement ideas, and archive gate decision.
+- [x] Write `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` for this change with evidence, problems, improvement ideas, and archive gate decision.
 - [x] Create or update project-local OpenSpec follow-up changes for project-local findings; none required after fixed findings.
 - [x] Create or update reusable `opencode-dev-kit` OpenSpec proposals/changes for Autopilot, skill, agent, instruction, validator, or evidence-pack findings; none required after fixed findings.
 - [x] Run `npm run openspec:retro-followups -- require-openspec-change-retro-gate`; no additional follow-up changes were required after fixed findings.
-- [x] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded.
+- [x] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in `automation/retro.json`.

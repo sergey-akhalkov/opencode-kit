@@ -11,9 +11,9 @@ import {
   autopilotReasonCodes,
   autopilotSelectionReasons,
   autopilotSelectionModes,
+  autopilotStandardOutputToolNames,
   autopilotTaskStatuses,
   autopilotTaskTypes,
-  autopilotToolNames,
 } from "./autopilot-contract.ts";
 
 type TestCase = {
@@ -242,13 +242,15 @@ function assertWorkerDispatchRuntimeBoundary(text: string, label: string): void 
 }
 
 function assertAutopilotStatusOnlyBoundary(text: string, label: string): void {
+  assert(/autopilot_intake[\s\S]{0,180}(first|non-empty)|(?:first|non-empty)[\s\S]{0,180}autopilot_intake/i.test(text), `${label} must route non-empty prompt intake through autopilot_intake first.`);
   assert(/status-only[\s\S]{0,180}autopilot_status|autopilot_status[\s\S]{0,180}status-only/i.test(text), `${label} must route status-only inspection through read-only autopilot_status.`);
-  assert(/free-form prompt[\s\S]{0,220}autopilot_status|autopilot_status[\s\S]{0,220}free-form prompt/i.test(text), `${label} must route free-form prompt queue inventory through autopilot_status.`);
+  assert(/(helper-requested|firstTool)[\s\S]{0,220}autopilot_status|autopilot_status[\s\S]{0,220}(helper-requested|firstTool)/i.test(text), `${label} must keep autopilot_status scoped to helper-requested queue inventory.`);
   assert(/autopilot_run_next[\s\S]{0,180}(empty|exact)|(?:empty|exact)[\s\S]{0,180}autopilot_run_next/i.test(text), `${label} must scope autopilot_run_next continuation guidance to empty/exact scopes.`);
 }
 
 function assertAutopilotToolAvailabilityGate(text: string, label: string): void {
   assert(/(current|available|visible)[\s\S]{0,120}tool list|tool list[\s\S]{0,120}(current|available|visible)/i.test(text), `${label} must check the current available tool list before public Autopilot tool calls.`);
+  assert(/autopilot_intake[\s\S]{0,260}(unavailable|not available|absent|not visible|missing)[\s\S]{0,180}(non-empty|\/autopilot)|(?:non-empty|\/autopilot)[\s\S]{0,260}autopilot_intake[\s\S]{0,180}(unavailable|not available|absent|not visible|missing)/i.test(text), `${label} must block/report when autopilot_intake is unavailable for non-empty /autopilot arguments.`);
   assert(/autopilot_run_next[\s\S]{0,220}(available|visible|present)|(?:available|visible|present)[\s\S]{0,220}autopilot_run_next/i.test(text), `${label} must require autopilot_run_next to be available before instructing a call.`);
   assert(/autopilot_status[\s\S]{0,220}(available|visible|present)|(?:available|visible|present)[\s\S]{0,220}autopilot_status/i.test(text), `${label} must require autopilot_status to be available before read-only queue inspection.`);
   assert(/unavailable|not available|absent|not visible/i.test(text), `${label} must document the unavailable Autopilot tool path.`);
@@ -269,6 +271,7 @@ function assertPromptIntakeDocs(text: string, label: string): void {
   const normalized = text.toLowerCase();
   for (const phrase of [
     "/autopilot <free-form prompt>",
+    "autopilot_intake",
     "free-form prompt",
     "exact",
     "ambiguous",
@@ -293,6 +296,15 @@ function assertPromptIntakeDocs(text: string, label: string): void {
   assert(/free-form prompt[\s\S]{0,260}(not|never|do not)[\s\S]{0,180}(unrelated|queued|queue)[\s\S]{0,160}autopilot_run_next|unrelated[\s\S]{0,180}(not|never|do not)[\s\S]{0,180}autopilot_run_next/i.test(text), `${label} must state free-form prompts do not advance unrelated queued Autopilot work.`);
   assert(/read-only[\s\S]{0,180}(autopilot_status|status)|autopilot_status[\s\S]{0,180}read-only/i.test(text), `${label} must route free-form prompt queue inspection through read-only status evidence.`);
   assert(/raw[\s\S]{0,160}(prompt|free-form)[\s\S]{0,180}(not|never|do not)[\s\S]{0,120}(persist|echo)|do not[\s\S]{0,120}(persist|echo)[\s\S]{0,180}raw[\s\S]{0,120}(prompt|free-form)/i.test(text), `${label} must prohibit raw free-form prompt persistence or echo by default.`);
+}
+
+function assertAutopilotCommandIntakeOrder(template: string): void {
+  const intakeIndex = template.indexOf("For non-empty `$ARGUMENTS`, call read-only `autopilot_intake` first");
+  const runNextIndex = template.indexOf("empty or whitespace arguments may call `autopilot_run_next`");
+  assert(intakeIndex >= 0, "command.autopilot template must call autopilot_intake first for non-empty arguments.");
+  assert(runNextIndex > intakeIndex, "command.autopilot template must place non-empty autopilot_intake before empty/exact run_next guidance.");
+  assert(/Ambiguous exact scopes[\s\S]{0,180}do not call `autopilot_run_next` until resolved/i.test(template), "command.autopilot template must block ambiguous scopes before run_next.");
+  assert(/free-form prompt text[\s\S]{0,220}(autopilot_intake|autopilot_status)[\s\S]{0,220}must not advance unrelated queued work with `autopilot_run_next`/i.test(template), "command.autopilot template must route free-form prompts through read-only inventory and not run_next.");
 }
 
 function extractLineContaining(text: string, needle: string, label: string): string {
@@ -368,7 +380,8 @@ const tests: TestCase[] = [
       assertContainsAllValues(outputContractBlock, autopilotSelectionModes, "openspec-autopilot output contract selection mode list");
       assertContainsAllValues(outputContractBlock, autopilotParallelDecisions, "openspec-autopilot output contract parallel decision list");
       assertContainsAllValues(outputContractBlock, autopilotSelectionReasons, "openspec-autopilot output contract selection reason list");
-      assertContainsAllValues(outputContractBlock, autopilotToolNames, "openspec-autopilot output contract tool list");
+      assertContainsAllValues(outputContractBlock, autopilotStandardOutputToolNames, "openspec-autopilot output contract tool list");
+      assert(publicTools.includes("autopilot_intake") && /separate schema/i.test(publicTools), "openspec-autopilot Public Tools must document autopilot_intake as a separate read-only schema.");
       assert(outputContractBlock.includes("<ledgerRoot>/<change>/tasks.md"), "openspec-autopilot output contract must document active-change tasks.md paths with ledgerRoot.");
       assertAutopilotMaterialization(publicTools, "openspec-autopilot Public Tools materialization docs");
       assertContainsAllValues(extractMarkdownSection(skill, "## Authority Boundary"), autopilotProtectedPathPatterns, "openspec-autopilot protected path list");
@@ -522,6 +535,7 @@ const tests: TestCase[] = [
       assertAutopilotMaterialization(template, "opencode.json command.autopilot template");
       assertActiveChangeTriggerBoundary(template, "opencode.json command.autopilot template");
       assertPromptIntakeDocs(template, "opencode.json command.autopilot template prompt intake");
+      assertAutopilotCommandIntakeOrder(template);
       assertAutopilotToolAvailabilityGate(template, "opencode.json command.autopilot template tool availability gate");
       assert(!template.includes("handoffTarget"), "command.autopilot template must not document a public handoffTarget before the output contract exposes it.");
     },

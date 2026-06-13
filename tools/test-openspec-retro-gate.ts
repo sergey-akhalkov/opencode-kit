@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { evaluateRetroGate } from "./openspec-retro-gate.ts";
+import { evaluateRetroGate, migrateLegacyRetrospective } from "./openspec-retro-gate.ts";
 
 type TestCase = {
   name: string;
@@ -16,15 +16,24 @@ type FindingFixture = {
   impact: string;
   rootCause: string;
   recommendation: string;
+  confidence: "low" | "medium" | "high";
+  target: "project-local" | "opencode-dev-kit" | "none";
+  followUpChangeId: string | null;
+  noFollowUpReason: string | null;
 };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const generatedAt = "2026-06-13T00:00:00.000Z";
 const projectFinding: FindingFixture = {
   problem: "Project docs drift",
   evidence: "README section stale",
   impact: "Reviewers miss current commands",
   rootCause: "README routing was not updated with the changed command contract",
   recommendation: "Create follow-up",
+  confidence: "high",
+  target: "project-local",
+  followUpChangeId: "retro-example-01-project-docs-drift",
+  noFollowUpReason: null,
 };
 const devkitFinding: FindingFixture = {
   problem: "Autopilot escape friction",
@@ -32,6 +41,10 @@ const devkitFinding: FindingFixture = {
   impact: "Token waste",
   rootCause: "Escape-hatch guidance did not distinguish safe handoff from repeated no-progress calls",
   recommendation: "Improve reusable skill guidance",
+  confidence: "high",
+  target: "opencode-dev-kit",
+  followUpChangeId: "retro-example-02-autopilot-escape-friction",
+  noFollowUpReason: null,
 };
 const unknownFinding: FindingFixture = {
   problem: "Mystery failure",
@@ -39,6 +52,10 @@ const unknownFinding: FindingFixture = {
   impact: "Agents cannot pick a safe fix",
   rootCause: "unknown",
   recommendation: "Investigate root cause with instrumentation before implementing a fix",
+  confidence: "medium",
+  target: "project-local",
+  followUpChangeId: "retro-unknown-investigation-01-mystery-failure",
+  noFollowUpReason: null,
 };
 
 function withTempRepo(name: string, run: (repo: string) => void): void {
@@ -58,6 +75,63 @@ function writeChange(repo: string, changeId: string, files: Record<string, strin
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
     fs.writeFileSync(filePath, content, "utf8");
   }
+}
+
+function tasksWithJsonRetro(): string {
+  return `# Tasks: Example
+
+## Implementation
+
+- [x] Do the work.
+
+## Retrospective Before Archive
+
+- [x] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
+- [x] Write \`openspec/changes/example/automation/retro.json\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
+- [x] Create or update project-local OpenSpec follow-up changes for project-local findings.
+- [x] For reusable findings, create or update \`opencode-dev-kit\` OpenSpec proposals/changes only when the current repository owns them; otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [x] Run \`npm run openspec:retro-followups -- example\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
+- [x] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in \`automation/retro.json\`.
+`;
+}
+
+function legacyTasksWithRetro(): string {
+  return tasksWithJsonRetro().replace("openspec/changes/example/automation/retro.json", "retrospective.md").replace("JSON retro gate", "retro gate").replace(" in `automation/retro.json`", "");
+}
+
+function retroJson(changeId: string, problems: FindingFixture[] = [], overrides: Record<string, unknown> = {}): string {
+  return `${JSON.stringify({
+    schemaVersion: 1,
+    changeId,
+    generatedAt,
+    evidenceReviewed: [
+      {
+        kind: "command",
+        source: "npm test",
+        status: "passed",
+        summary: "Focused validation passed.",
+      },
+    ],
+    problems,
+    outputs: {
+      projectFollowUpChanges: problems.filter((problem) => problem.target === "project-local" && problem.followUpChangeId).map((problem) => problem.followUpChangeId),
+      opencodeDevKitChanges: problems.filter((problem) => problem.target === "opencode-dev-kit" && problem.followUpChangeId).map((problem) => problem.followUpChangeId),
+      noFindingsReason: problems.length === 0 ? "Evidence reviewed; no actionable findings." : null,
+    },
+    archiveGate: {
+      decision: "passed",
+      reason: problems.length === 0 ? "No findings with evidence reviewed." : "Findings routed to durable OpenSpec changes.",
+      approver: null,
+    },
+    ...overrides,
+  }, null, 2)}\n`;
+}
+
+function writeRetroJson(repo: string, changeId: string, json = retroJson(changeId)): void {
+  writeChange(repo, changeId, {
+    "tasks.md": tasksWithJsonRetro().replaceAll("example", changeId),
+    "automation/retro.json": json,
+  });
 }
 
 function findingForFollowUp(changeId: string): FindingFixture {
@@ -89,64 +163,6 @@ function writeFollowUp(repo: string, changeId: string, finding = findingForFollo
   fs.writeFileSync(specPath, `# ${changeId} Specification\n\n## ADDED Requirements\n\n### Requirement: Follow-Up Preserves Retrospective Evidence\n\nThe follow-up SHALL preserve the routed retrospective root cause and recommendation.\n\n#### Scenario: Routed evidence is available\n\n- **GIVEN** a retrospective finding references this follow-up\n- **WHEN** the archive gate checks routed findings\n- **THEN** the follow-up proposal, tasks, and spec delta preserve root cause: ${specRootCause}.\n- **AND** the follow-up implements or investigates: ${finding.recommendation}.\n`, "utf8");
 }
 
-function writeWeakSpecFollowUp(repo: string, changeId: string, finding = findingForFollowUp(changeId)): void {
-  writeFollowUpWithoutSpec(repo, changeId, finding);
-  const specPath = path.join(repo, "openspec", "changes", changeId, "specs", changeId, "spec.md");
-  fs.mkdirSync(path.dirname(specPath), { recursive: true });
-  fs.writeFileSync(specPath, `# Weak Spec\n\n## ADDED Requirements\n\nRoot cause: ${finding.rootCause}\n`, "utf8");
-}
-
-function tasksWithRetro(): string {
-  return `# Tasks: Example
-
-## Implementation
-
-- [x] Do the work.
-
-## Retrospective Before Archive
-
-- [x] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [x] Write \`retrospective.md\` with evidence, problems, root causes, improvements, and archive gate decision.
-- [x] Create or update project-local OpenSpec follow-up changes for project-local findings.
-- [x] Create or update reusable \`opencode-dev-kit\` OpenSpec proposals/changes for Autopilot, skill, agent, instruction, validator, or evidence-pack findings.
-- [x] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded.
-`;
-}
-
-function noFindingsRetro(): string {
-  return `# Retrospective: example
-
-## Scope
-
-- Change: \`example\`
-- Archive decision: ready
-
-## Evidence Reviewed
-
-- OpenSpec artifacts: proposal, tasks, spec.
-- Tool outputs / validation: npm test passed.
-- Reviewer gates: not required, docs-only.
-- Autopilot/runtime events: none.
-
-## Problems Found
-
-| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target |
-| --- | --- | --- | --- | --- | --- | --- |
-
-## Outputs
-
-- Project follow-up changes: none.
-- \`opencode-dev-kit\` proposals/changes: none.
-- No findings reason: Evidence reviewed; no actionable process or quality findings.
-
-## Archive Gate Decision
-
-- Decision: passed
-- Reason: No findings with evidence reviewed.
-- Approver, if skipped: none
-`;
-}
-
 function routedFindingsRetro(changeId = "example"): string {
   const projectFollowUp = `retro-${changeId}-01-project-docs-drift`;
   const devkitFollowUp = `retro-${changeId}-02-autopilot-escape-friction`;
@@ -156,8 +172,6 @@ function routedFindingsRetro(changeId = "example"): string {
 
 - OpenSpec artifacts: proposal, design, tasks.
 - Tool outputs / validation: npm test passed.
-- Reviewer gates: instruction-artifact-reviewer passed.
-- Autopilot/runtime events: ready_runtime_deferred, no_ledgers, no_actionable_tasks, stale evidence, evidence conflict.
 
 ## Problems Found
 
@@ -180,34 +194,6 @@ function routedFindingsRetro(changeId = "example"): string {
 `;
 }
 
-function unknownRootCauseRetro(changeId = "unknown-investigation"): string {
-  const projectFollowUp = `retro-${changeId}-01-mystery-failure`;
-  return `# Retrospective: unknown investigation
-
-## Evidence Reviewed
-
-- Tool outputs / validation: repeated failed validation without stable repro.
-
-## Problems Found
-
-| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target |
-| --- | --- | --- | --- | --- | --- | --- |
-| Mystery failure | Repeated failed validation without stable repro | Agents cannot pick a safe fix | unknown | Investigate root cause with instrumentation before implementing a fix | medium | project-local |
-
-## Outputs
-
-- Project follow-up changes: \`${projectFollowUp}\`.
-- \`opencode-dev-kit\` proposals/changes: none.
-- No findings reason: n/a.
-
-## Archive Gate Decision
-
-- Decision: passed
-- Reason: Unknown cause is routed to an investigation follow-up.
-- Approver, if skipped: none
-`;
-}
-
 function assert(condition: boolean, message: string): void {
   if (!condition) {
     throw new Error(message);
@@ -224,193 +210,109 @@ function readRepoText(relativePath: string): string {
 
 const tests: TestCase[] = [
   {
-    name: "retro gate fails when retrospective is missing",
-    run: () => withTempRepo("missing-retro", (repo) => {
-      writeChange(repo, "example", { "tasks.md": tasksWithRetro() });
+    name: "retro gate requires automation retro json",
+    run: () => withTempRepo("missing-json", (repo) => {
+      writeChange(repo, "example", { "tasks.md": tasksWithJsonRetro(), "retrospective.md": routedFindingsRetro() });
       const result = evaluateRetroGate(repo, "example");
-      assert(!result.valid, "Missing retrospective.md must fail the retro gate.");
-      assert(!result.archiveAllowed, "Missing retrospective.md must block archive.");
-      assertErrorIncludes(result.errors, "retrospective.md");
+      assert(!result.valid, "Missing automation/retro.json must fail.");
+      assert(!result.archiveAllowed, "Missing automation/retro.json must block archive.");
+      assertErrorIncludes(result.errors, "automation/retro.json");
     }),
   },
   {
-    name: "retro gate fails when tasks lack final retrospective section",
-    run: () => withTempRepo("missing-final-task", (repo) => {
-      writeChange(repo, "example", {
-        "tasks.md": "# Tasks\n\n## Implementation\n\n- [x] Do the work.\n",
-        "retrospective.md": noFindingsRetro(),
-      });
-      const result = evaluateRetroGate(repo, "example");
-      assert(!result.valid, "Missing final retrospective task section must fail the retro gate.");
-      assertErrorIncludes(result.errors, "Retrospective Before Archive");
-    }),
-  },
-  {
-    name: "retro gate accepts concise no-findings retrospective",
+    name: "retro gate accepts concise no-findings json retrospective",
     run: () => withTempRepo("no-findings", (repo) => {
-      writeChange(repo, "example", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": noFindingsRetro(),
-      });
+      writeRetroJson(repo, "example");
       const result = evaluateRetroGate(repo, "example");
-      assert(result.valid, `No-findings retrospective should pass, got ${JSON.stringify(result.errors)}.`);
-      assert(result.archiveAllowed, "No-findings retrospective should allow archive.");
+      assert(result.valid, `No-findings retro.json should pass, got ${JSON.stringify(result.errors)}.`);
+      assert(result.archiveAllowed, "No-findings retro.json should allow archive.");
     }),
   },
   {
     name: "retro gate validates approved skip reason and approver",
     run: () => withTempRepo("approved-skip", (repo) => {
-      writeChange(repo, "example", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": noFindingsRetro().replace("- Decision: passed", "- Decision: approved-skip").replace("- Approver, if skipped: none", "- Approver, if skipped: product-owner"),
-      });
+      writeRetroJson(repo, "example", retroJson("example", [], { archiveGate: { decision: "approved-skip", reason: "Product owner approved archive without findings.", approver: "product-owner" } }));
       const accepted = evaluateRetroGate(repo, "example");
       assert(accepted.valid && accepted.archiveAllowed, `Approved skip with reason and approver should pass, got ${JSON.stringify(accepted.errors)}.`);
 
-      writeChange(repo, "broken", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": noFindingsRetro().replace("- Decision: passed", "- Decision: approved-skip").replace("- Reason: No findings with evidence reviewed.", "- Reason: "),
-      });
+      writeRetroJson(repo, "broken", retroJson("broken", [], { archiveGate: { decision: "approved-skip", reason: "", approver: null } }));
       const rejected = evaluateRetroGate(repo, "broken");
       assert(!rejected.valid, "Approved skip without reason/approver must fail.");
       assertErrorIncludes(rejected.errors, "approved skip");
-
-      writeChange(repo, "missing-approver", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": noFindingsRetro().replace("- Decision: passed", "- Decision: approved-skip"),
-      });
-      const missingApprover = evaluateRetroGate(repo, "missing-approver");
-      assert(!missingApprover.valid, "Approved skip with missing approver must fail.");
-      assertErrorIncludes(missingApprover.errors, "approved skip");
     }),
   },
   {
-    name: "retro gate requires durable routing for findings",
+    name: "retro gate validates strict schema and routed findings",
     run: () => withTempRepo("finding-routing", (repo) => {
-      writeChange(repo, "example", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro(),
-      });
+      writeRetroJson(repo, "example", retroJson("example", [projectFinding, devkitFinding]));
       writeFollowUp(repo, "retro-example-01-project-docs-drift");
       writeFollowUp(repo, "retro-example-02-autopilot-escape-friction");
       const accepted = evaluateRetroGate(repo, "example");
       assert(accepted.valid && accepted.archiveAllowed, `Routed findings should pass, got ${JSON.stringify(accepted.errors)}.`);
 
-      writeChange(repo, "broken", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro("broken")
-          .replace("- Project follow-up changes: `retro-broken-01-project-docs-drift`.", "- Project follow-up changes: none.")
-          .replace("- `opencode-dev-kit` proposals/changes: `retro-broken-02-autopilot-escape-friction`.", "- `opencode-dev-kit` proposals/changes: none."),
-      });
-      const rejected = evaluateRetroGate(repo, "broken");
-      assert(!rejected.valid, "Unrouted findings must fail.");
-      assertErrorIncludes(rejected.errors, "Project-local retrospective findings");
-      assertErrorIncludes(rejected.errors, "opencode-dev-kit retrospective findings");
+      writeRetroJson(repo, "missing-schema", retroJson("missing-schema", []).replace('  "schemaVersion": 1,\n', ""));
+      assertErrorIncludes(evaluateRetroGate(repo, "missing-schema").errors, "schemaVersion");
 
-      writeChange(repo, "missing-follow-up", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro("missing-follow-up"),
-      });
-      const missingFollowUp = evaluateRetroGate(repo, "missing-follow-up");
-      assert(!missingFollowUp.valid, "Referenced follow-up changes must exist before archive.");
-      assertErrorIncludes(missingFollowUp.errors, "must exist with proposal.md, tasks.md, and a spec delta");
+      writeRetroJson(repo, "wrong-change", retroJson("other-change"));
+      assertErrorIncludes(evaluateRetroGate(repo, "wrong-change").errors, "changeId");
 
-      writeChange(repo, "missing-spec", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro("missing-spec"),
-      });
-      writeFollowUpWithoutSpec(repo, "retro-missing-spec-01-project-docs-drift");
-      writeFollowUpWithoutSpec(repo, "retro-missing-spec-02-autopilot-escape-friction");
-      const missingSpec = evaluateRetroGate(repo, "missing-spec");
-      assert(!missingSpec.valid, "Referenced follow-ups without spec deltas must fail.");
-      assertErrorIncludes(missingSpec.errors, "spec delta");
+      writeRetroJson(repo, "unknown-field", retroJson("unknown-field", [], { extra: true }));
+      assertErrorIncludes(evaluateRetroGate(repo, "unknown-field").errors, "Unknown field");
 
-      writeChange(repo, "weak-spec", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro("weak-spec"),
-      });
-      writeWeakSpecFollowUp(repo, "retro-weak-spec-01-project-docs-drift");
-      writeWeakSpecFollowUp(repo, "retro-weak-spec-02-autopilot-escape-friction", devkitFinding);
-      const weakSpec = evaluateRetroGate(repo, "weak-spec");
-      assert(!weakSpec.valid, "Weak follow-up specs without scenarios and recommendation evidence must fail.");
-      assertErrorIncludes(weakSpec.errors, "spec delta");
+      writeRetroJson(repo, "malformed-finding", retroJson("malformed-finding", [{ ...projectFinding, evidence: "" }]));
+      assertErrorIncludes(evaluateRetroGate(repo, "malformed-finding").errors, "problem entries must include");
 
-      writeChange(repo, "unknown-investigation", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": unknownRootCauseRetro("unknown-investigation"),
-      });
-      writeFollowUp(repo, "retro-unknown-investigation-01-mystery-failure", unknownFinding);
-      const acceptedUnknown = evaluateRetroGate(repo, "unknown-investigation");
-      assert(acceptedUnknown.valid && acceptedUnknown.archiveAllowed, `Unknown root cause routed to investigation should pass, got ${JSON.stringify(acceptedUnknown.errors)}.`);
+      writeRetroJson(repo, "missing-follow-up-id", retroJson("missing-follow-up-id", [{ ...projectFinding, followUpChangeId: null }]));
+      assertErrorIncludes(evaluateRetroGate(repo, "missing-follow-up-id").errors, "followUpChangeId");
 
-      writeChange(repo, "unknown-with-fix", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": unknownRootCauseRetro("unknown-with-fix").replace("Investigate root cause with instrumentation before implementing a fix", "Apply guessed fix immediately"),
-      });
+      writeRetroJson(repo, "missing-follow-up", retroJson("missing-follow-up", [{ ...projectFinding, followUpChangeId: "retro-missing-follow-up-01-project-docs-drift" }]));
+      assertErrorIncludes(evaluateRetroGate(repo, "missing-follow-up").errors, "must exist with proposal.md");
+
+      writeRetroJson(repo, "unknown-with-fix", retroJson("unknown-with-fix", [{ ...unknownFinding, followUpChangeId: "retro-unknown-with-fix-01-mystery-failure", recommendation: "Apply guessed fix immediately" }]));
       writeFollowUp(repo, "retro-unknown-with-fix-01-mystery-failure", { ...unknownFinding, recommendation: "Apply guessed fix immediately" });
-      const rejectedUnknown = evaluateRetroGate(repo, "unknown-with-fix");
-      assert(!rejectedUnknown.valid, "Unknown root cause without investigation routing must fail.");
-      assertErrorIncludes(rejectedUnknown.errors, "unknown root cause");
+      assertErrorIncludes(evaluateRetroGate(repo, "unknown-with-fix").errors, "unknown root cause");
 
-      writeChange(repo, "missing-row", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro("missing-row")
-          .replace("| Autopilot escape friction | ready_runtime_deferred repeated | Token waste | Escape-hatch guidance did not distinguish safe handoff from repeated no-progress calls | Improve reusable skill guidance | high | opencode-dev-kit |", "| More project drift | repeated manual report edits | Token waste | Report ownership was unclear | Create another project follow-up | high | project-local |")
-          .replace("- `opencode-dev-kit` proposals/changes: `retro-missing-row-02-autopilot-escape-friction`.", "- `opencode-dev-kit` proposals/changes: none."),
-      });
-      const missingRow = evaluateRetroGate(repo, "missing-row");
-      assert(!missingRow.valid, "Every actionable row must reference its generated follow-up change, not just one per target.");
-      assertErrorIncludes(missingRow.errors, "must reference generated follow-up");
+      writeRetroJson(repo, "bad-decision", retroJson("bad-decision", [], { archiveGate: { decision: "maybe", reason: "bad", approver: null } }));
+      assertErrorIncludes(evaluateRetroGate(repo, "bad-decision").errors, "Archive gate decision");
+    }),
+  },
+  {
+    name: "retro gate migrates supported legacy markdown and blocks malformed tables",
+    run: () => withTempRepo("migration", (repo) => {
+      writeChange(repo, "example", { "tasks.md": legacyTasksWithRetro(), "retrospective.md": routedFindingsRetro("example") });
+      const migrated = migrateLegacyRetrospective(repo, "example", { generatedAt });
+      assert(migrated.migrated, `Expected migrated result, got ${JSON.stringify(migrated)}.`);
+      writeFollowUp(repo, "retro-example-01-project-docs-drift");
+      writeFollowUp(repo, "retro-example-02-autopilot-escape-friction");
+      const accepted = evaluateRetroGate(repo, "example");
+      assert(accepted.valid && accepted.archiveAllowed, `Migrated retro.json should satisfy gate, got ${JSON.stringify(accepted.errors)}.`);
 
       writeChange(repo, "malformed", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro("malformed").replace("| Project docs drift | README section stale | Reviewers miss current commands | README routing was not updated with the changed command contract | Create follow-up | high | project-local |", "| Project docs drift |  | Reviewers miss current commands |  |  |  | project |"),
+        "tasks.md": legacyTasksWithRetro().replaceAll("example", "malformed"),
+        "retrospective.md": routedFindingsRetro("malformed").replace("| Autopilot escape friction | ready_runtime_deferred repeated | Token waste | Escape-hatch guidance did not distinguish safe handoff from repeated no-progress calls | Improve reusable skill guidance | high | opencode-dev-kit |", "| Autopilot escape friction | ready_runtime_deferred repeated | Token waste | opencode-dev-kit |"),
       });
-      const malformed = evaluateRetroGate(repo, "malformed");
-      assert(!malformed.valid, "Malformed finding rows and unknown targets must fail.");
-      assertErrorIncludes(malformed.errors, "problem rows");
-      assertErrorIncludes(malformed.errors, "finding target");
-
-      writeChange(repo, "wrong-columns", {
-        "tasks.md": tasksWithRetro(),
-        "retrospective.md": routedFindingsRetro("wrong-columns").replace("| Autopilot escape friction | ready_runtime_deferred repeated | Token waste | Escape-hatch guidance did not distinguish safe handoff from repeated no-progress calls | Improve reusable skill guidance | high | opencode-dev-kit |", "| Autopilot escape friction | ready_runtime_deferred repeated | Token waste | opencode-dev-kit |"),
-      });
-      const wrongColumns = evaluateRetroGate(repo, "wrong-columns");
-      assert(!wrongColumns.valid, "Structurally malformed finding rows must fail.");
-      assertErrorIncludes(wrongColumns.errors, "seven columns");
+      const blocked = migrateLegacyRetrospective(repo, "malformed", { dryRun: true, generatedAt });
+      assert(!blocked.migrated, "Malformed Markdown table must block migration.");
+      assert(blocked.errors.some((error) => error.includes("seven columns")), `Expected malformed table error, got ${JSON.stringify(blocked.errors)}.`);
     }),
   },
   {
-    name: "retro gate validates safe ids and final-section scoped wording",
-    run: () => withTempRepo("safe-id-and-final-section", (repo) => {
-      writeChange(repo, "example", {
-        "tasks.md": `# Tasks\n\n## Earlier\n\n- Mention retrospective.md, project-local OpenSpec, opencode-dev-kit, and archive gate here.\n\n## Retrospective Before Archive\n\n- [ ] Write \`retrospective.md\`.\n`,
-        "retrospective.md": noFindingsRetro(),
-      });
-      const unsafe = evaluateRetroGate(repo, "bad/../id");
-      assert(!unsafe.valid, "Unsafe change id must fail.");
-      assertErrorIncludes(unsafe.errors, "Invalid change id");
-      const scoped = evaluateRetroGate(repo, "example");
-      assert(!scoped.valid, "Required wording outside the final retro section must not satisfy the gate.");
-      assertErrorIncludes(scoped.errors, "project-local OpenSpec");
-      assertErrorIncludes(scoped.errors, "opencode-dev-kit");
-    }),
-  },
-  {
-    name: "OpenSpec workflow skills document retrospective gate",
+    name: "OpenSpec workflow skills document json retrospective gate",
     run: () => {
       const archive = readRepoText(".opencode/skills/openspec-archive-change/SKILL.md");
       const propose = readRepoText(".opencode/skills/openspec-propose/SKILL.md");
       const apply = readRepoText(".opencode/skills/openspec-apply-change/SKILL.md");
       const autopilot = readRepoText(".opencode/skills/openspec-autopilot/SKILL.md");
-      const nextStep = readRepoText(".opencode/skills/next-step/SKILL.md");
+      const readme = readRepoText("README.md");
 
-      assert(archive.includes("openspec:retro-followups") && archive.includes("openspec:retro-gate") && archive.includes("retrospective.md") && archive.toLowerCase().includes("root cause") && archive.includes("approved skip"), "openspec-archive-change must enforce follow-up generation, root-cause evidence, the retro gate, and approved skip path.");
-      assert(propose.includes("## Retrospective Before Archive") && propose.includes("Write `retrospective.md`") && propose.toLowerCase().includes("root cause"), "openspec-propose must include the final retrospective task template with root-cause analysis.");
-      assert(propose.includes("openspec:retro-followups"), "openspec-propose must include follow-up generation in the final retrospective task template.");
-      assert(apply.includes("retrospective.md") && apply.includes("openspec:retro-followups") && apply.includes("before archive"), "openspec-apply-change must hand completed changes to follow-up generation and the retrospective gate before archive.");
-      assert(autopilot.includes("retrospective.md") && autopilot.includes("openspec:retro-followups") && autopilot.includes("archive gate"), "openspec-autopilot must treat missing retrospectives/follow-ups as an acceptance/archive blocker.");
-      assert(nextStep.includes("completed-but-not-retroed") && nextStep.includes("Retrospective Before Archive"), "next-step must surface completed-but-not-retroed changes as available work.");
+      for (const [label, text] of Object.entries({ archive, propose, apply, autopilot, readme })) {
+        assert(text.includes("automation/retro.json"), `${label} must require automation/retro.json.`);
+        assert(!text.includes("Write `retrospective.md`"), `${label} must not instruct agents to write retrospective.md.`);
+      }
+      assert(archive.includes("openspec:retro-followups") && archive.includes("openspec:retro-gate") && archive.toLowerCase().includes("root cause") && archive.includes("approved skip"), "openspec-archive-change must enforce follow-up generation, root-cause evidence, the retro gate, and approved skip path.");
+      assert(propose.includes("## Retrospective Before Archive") && propose.includes("openspec:retro-followups"), "openspec-propose must include the final JSON retrospective task template.");
+      assert(apply.includes("openspec:retro-followups") && apply.includes("before archive"), "openspec-apply-change must hand completed changes to follow-up generation and the JSON retrospective gate before archive.");
+      assert(autopilot.includes("openspec:retro-followups") && autopilot.includes("archive gate"), "openspec-autopilot must treat missing JSON retrospectives/follow-ups as an acceptance/archive blocker.");
     },
   },
 ];

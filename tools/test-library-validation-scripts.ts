@@ -171,6 +171,21 @@ const tests: TestCase[] = [
       });
     },
   },
+  {
+    name: "validator rejects markdown automation wrapper artifacts",
+    run: () => {
+      withTempDir("markdown-automation-wrapper", (fixture) => {
+        writePackageJson(fixture, { ...requiredScripts });
+        const wrapper = path.join(fixture, "openspec", "changes", "example", "automation", "review.md");
+        fs.mkdirSync(path.dirname(wrapper), { recursive: true });
+        fs.writeFileSync(wrapper, "# Review\n\nMachine-read wrapper that should be JSON.\n", "utf8");
+        const result = invokeValidator(fixture);
+        assertFailure(result, "Markdown automation wrapper must fail validation.");
+        assertOutputContains(result, "automation wrapper Markdown artifact is not allowed", "Wrapper error should explain JSON-only rule.");
+        assertOutputContains(result, "automation/review.json", "Wrapper error should name canonical JSON replacement.");
+      });
+    },
+  },
 ];
 
 let failed = 0;

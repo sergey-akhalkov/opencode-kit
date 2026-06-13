@@ -8,7 +8,7 @@ type ActiveChangeFilter = {
   changeId?: string;
 };
 
-type ChecklistCounts = {
+export type ChecklistCounts = {
   checked: number;
   unchecked: number;
   total: number;
@@ -18,7 +18,7 @@ function toRelative(root: string, filePath: string): string {
   return path.relative(root, filePath).split(path.sep).join("/");
 }
 
-function countMarkdownChecklistItems(text: string): ChecklistCounts {
+export function countMarkdownChecklistItems(text: string): ChecklistCounts {
   let checked = 0;
   let unchecked = 0;
   for (const line of text.split(/\r?\n/)) {

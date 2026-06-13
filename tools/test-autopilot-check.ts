@@ -80,6 +80,11 @@ function writeLedger(repo: string, changeId: string, taskId = changeId): void {
   writeJson(path.join(repo, "openspec", "changes", changeId, "automation", "task.json"), validLedger(taskId));
 }
 
+function writeCompletedLedger(repo: string, changeId: string, taskId = changeId): void {
+  writeLedger(repo, changeId, taskId);
+  fs.writeFileSync(path.join(repo, "openspec", "changes", changeId, "tasks.md"), `# Tasks: ${changeId}\n\n- [x] Done.\n`, "utf8");
+}
+
 function writeInvalidLedger(repo: string, changeId: string): void {
   writeActiveChange(repo, changeId);
   writeJson(path.join(repo, "openspec", "changes", changeId, "automation", "task.json"), { schemaVersion: 1, id: "invalid-ledger" });
@@ -164,6 +169,20 @@ const tests: TestCase[] = [
         "openspec/changes/change-b/automation/task.json",
       ], "Planner should discover deterministic active ledger paths and exclude archive.");
       assertArrayEqual(commandLedgerArgs, ledgerPaths, "Pre-push ledger validation command should cover every active ledger in deterministic order.");
+    }),
+  },
+  {
+    name: "cheap check warns for stale completed non-terminal ledger",
+    run: () => withTempRepo("stale-completed-ledger", (repo) => {
+      writeCompletedLedger(repo, "done-change", "task-done");
+      const output = runAutopilotCheck(repo, { level: "cheap", generatedAt });
+
+      assertEqual(output.status, "warning", "Stale completed ledger should be warning-level at cheap level.");
+      assertEqual(output.exitCode, 0, "Warning-level stale ledger should not fail unless warnings are fatal.");
+      const stale = output.checks.find((check) => check.id === "autopilot-ledger:stale-completed:task-done");
+      assert(stale?.status === "warning" && stale.blocking === false, `Expected non-blocking stale warning, got ${JSON.stringify(stale)}.`);
+      assert(stale.summary.includes("tasks.md checklist is complete"), `Stale summary must explain completed checklist, got ${stale.summary}.`);
+      assert(output.nextActions.some((action) => action.label.includes("Reconcile stale completed ledger")), `Stale check must provide reconciliation next action, got ${JSON.stringify(output.nextActions)}.`);
     }),
   },
   {

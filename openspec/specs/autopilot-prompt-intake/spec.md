@@ -1,7 +1,7 @@
 # autopilot-prompt-intake Specification
 
 ## Purpose
-TBD - created by archiving change add-autopilot-prompt-intake-routing. Update Purpose after archive.
+Define how explicit `/autopilot` command arguments are classified before any claim-capable advancement: empty or exact scope may continue through scoped `autopilot_run_next`, non-empty free-form prompts use public read-only `autopilot_intake`, missing `autopilot_intake` blocks with a tool-surface error, and `autopilot_status` is not a substitute for code-backed non-empty prompt classification.
 ## Requirements
 ### Requirement: Command Arguments Are Resolved Before Autopilot Advancement
 
@@ -82,13 +82,13 @@ Autopilot SHALL route explicit free-form task prompts to a safe workflow instead
 - **THEN** the flow reports the existing queue separately from the new unscheduled prompt
 - **AND** it does not continue the queued item as the answer to the prompt unless the user explicitly chooses that queue work or the prompt is resolved to an exact scope
 
-#### Scenario: Free-form prompt requires queue inventory before final handoff
+#### Scenario: Free-form prompt uses code-backed queue inventory before final handoff
 
 - **GIVEN** the user invokes `/autopilot <free-form task prompt>`
-- **AND** no read-only queue inventory snapshot has been supplied
+- **AND** no read-only queue inventory snapshot has been supplied to the prompt-intake helper
 - **WHEN** intake evaluates the request
-- **THEN** queue state is reported as unknown rather than empty
-- **AND** the first recommended tool action is read-only `autopilot_status`
+- **THEN** the first public tool action is read-only `autopilot_intake`
+- **AND** `autopilot_status` is used only when intake/helper output requests a read-only status follow-up
 - **AND** no claim-capable `autopilot_run_next` action is recommended until queue state is known or an exact scope is selected
 
 #### Scenario: One obvious small edit is supplied through Autopilot
@@ -121,7 +121,16 @@ Autopilot SHALL treat prompt task family as routing evidence, not as authoritati
 
 Autopilot SHALL keep prompt-intake behavior synchronized across command, skill, README, helper, and tests.
 
-The prompt-flow command MVP is instruction-mediated: `/autopilot` enters a normal LLM turn whose contract is guarded by deterministic helper and drift tests. The plugin `autopilot_run_next` tool remains scoped to `changeId` and `taskId`; adding a raw-prompt plugin intake tool is outside this requirement.
+The prompt-flow command uses public read-only `autopilot_intake` for non-empty `/autopilot <arguments>` before any claim-capable action. The plugin `autopilot_run_next` tool remains scoped to `changeId` and `taskId`; if `autopilot_intake` is unavailable for non-empty arguments, the flow reports a missing plugin tool-surface blocker instead of falling back to CLI/script substitutes or advancing unrelated work.
+
+#### Scenario: Prompt-intake tool is unavailable
+
+- **GIVEN** the user invokes `/autopilot <free-form prompt>`
+- **AND** `autopilot_intake` is not available in the current tool list
+- **WHEN** the command evaluates tool availability
+- **THEN** it reports a missing Autopilot plugin tool-surface blocker
+- **AND** it does not use `autopilot_status` as a substitute for code-backed non-empty argument classification
+- **AND** it does not call `autopilot_run_next` with the raw prompt text
 
 #### Scenario: Routing wording drifts
 

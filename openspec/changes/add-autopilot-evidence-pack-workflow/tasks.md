@@ -43,8 +43,8 @@
 ## Retrospective Before Archive
 
 - [x] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [x] Write `retrospective.md` with evidence, problems, root causes, improvements, and archive gate decision.
+- [x] Write `openspec/changes/add-autopilot-evidence-pack-workflow/automation/retro.json` with evidence, problems, root causes, improvements, and archive gate decision.
 - [x] Create or update project-local OpenSpec follow-up changes for project-local findings; none required after fixed findings.
 - [x] Create or update reusable `opencode-dev-kit` OpenSpec proposals/changes for Autopilot, skill, agent, instruction, validator, or evidence-pack findings; none required after fixed findings.
 - [x] Run `npm run openspec:retro-followups -- add-autopilot-evidence-pack-workflow`; no additional follow-up changes were required after fixed findings.
-- [x] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded.
+- [x] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in `automation/retro.json`.
