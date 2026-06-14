@@ -4,8 +4,12 @@ import { fileURLToPath } from "node:url";
 import { runCliEntrypoint } from "./project-session-retro-ledger/cli.ts";
 
 export { createProjectSessionRetroProposals } from "./project-session-retro-ledger/openspec-proposals.ts";
+export { patchProjectSessionRetroSessions, summarizeProjectSessionRetroLedger } from "./project-session-retro-ledger/ledger-ops.ts";
+export type { PatchProjectSessionRetroSessionsResult, ProjectSessionRetroStatus } from "./project-session-retro-ledger/ledger-ops.ts";
 export { computeAnalysisProgress, refreshAnalysisProgress } from "./project-session-retro-ledger/progress.ts";
 export { initProjectSessionRetroLedger } from "./project-session-retro-ledger/sqlite-source.ts";
+export { readSessionTranscripts } from "./project-session-retro-ledger/transcript.ts";
+export type { ProjectSessionTranscriptResult, ReadSessionTranscriptsOptions } from "./project-session-retro-ledger/transcript.ts";
 export * from "./project-session-retro-ledger/types.ts";
 export { validateProjectSessionRetroLedger } from "./project-session-retro-ledger/validator.ts";
 

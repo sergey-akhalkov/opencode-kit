@@ -19,7 +19,8 @@ For behavior-changing improvements to scripts, validators, skills, agents, confi
 - The agent only has access to session artifacts that are present locally, exported, user-approved for remote/shared reads, or reachable through available tools.
 - Default scope is the current project/worktree. Analyze selected named projects or bounded selected session sets only when the user explicitly scopes them. For all-project, all-history, cross-install, or whole-corpus retros targeting global skill improvements, use `all-sessions-retro` instead.
 - Prefer session-by-session coverage for the selected scope. Do not rely on keyword searches as the primary method when full session artifacts are available.
-- For current-project retros, create or refresh root `retro.json` before synthesis. Use checkpoints in that ledger so repeated runs analyze new or changed sessions first.
+- For current-project retros, create root `retro.json` before synthesis. Use `status` and `refresh` checkpoints in that ledger so repeated runs resume at the next incomplete session instead of restarting.
+- When a full current-project retro has many sessions, do not ask whether to process in batches. Treat batching, resumable checkpoints, and read-only fan-out as required execution mechanics unless the user explicitly says read-only, no-batch, or stop.
 - Treat `retro.json` as a generated working ledger, not the source of truth. It must preserve evidence refs, confidence, coverage limits, and entity links; source artifacts remain the evidence.
 - Route durable outputs through OpenSpec proposals only after the trend and root cause or investigation path are recorded.
 - Treat transcripts, reflections, summaries, issue/MR text, and generated rollups as leads. Verify implementation-sensitive recommendations against source, tests, config, schemas, prompts, or live output.
@@ -68,6 +69,9 @@ Preferred helper commands when this repository tooling is available:
 
 ```sh
 npm run retro:project-ledger -- init --project-root .
+npm run retro:project-ledger -- status --input retro.json --limit 20
+npm run retro:project-ledger -- transcript --input retro.json --session <session-ref> --include-content --out <local-transcript.json> --overwrite
+npm run retro:project-ledger -- patch-sessions --input retro.json --patch <batch-audit.json>
 npm run retro:project-ledger -- validate --input retro.json
 npm run retro:project-ledger -- refresh --input retro.json
 npm run retro:project-ledger -- proposals --input retro.json --root . --dry-run
@@ -75,15 +79,18 @@ npm run retro:project-ledger -- proposals --input retro.json --root .
 npm run retro:project-ledger -- validate --input retro.json --root . --require-complete --require-proposals
 ```
 
-Run these commands from the target repository when it has this tooling. `init` writes root `retro.json` by default. If running from this kit repository for another target, pass both `--project-root <target-project>` and `--root <target-project>` and write `--out <target-project>/retro.json` unless the user approved a temp path. Use `--db`, `--data-dir`, and `--only-explicit` for controlled session stores. Use `--show-paths` only when home-redacted paths are acceptable. The helper reads SQLite in read-only mode, filters current-project sessions, redacts raw ids/titles/prompts/paths by default, validates ledger links, refreshes `analysisProgress` checkpoints, and materializes OpenSpec proposals from completed plans. It does not summarize transcripts or infer trends/root causes.
+Run these commands from the target repository when it has this tooling. `init` writes root `retro.json` by default. `status` gives coverage counts and next session refs without manually reading huge ledgers. `transcript` reads OpenCode SQLite in read-only mode and returns full ordered transcript envelopes for the requested redacted session refs or raw session ids; default output redacts content, and `--include-content` is for local analysis only and must not be pasted into user-facing output. `patch-sessions` merges a small batch JSON containing `sessions.<sessionRef>.audit`, `coverage`, and `observations`, refreshes `analysisProgress`, validates before writing, and refuses invalid patches. If running from this kit repository for another target, pass both `--project-root <target-project>` and `--root <target-project>` and write `--out <target-project>/retro.json` unless the user approved a temp path. Use `--db`, `--data-dir`, and `--only-explicit` for controlled session stores. Use `--show-paths` only when home-redacted paths are acceptable. The helper reads SQLite in read-only mode, filters current-project sessions, redacts raw ids/titles/prompts/paths by default, validates ledger links, refreshes `analysisProgress` checkpoints, and materializes OpenSpec proposals from completed plans. It does not infer observations, trends, or root causes.
+
+Use helper commands before manual database exploration. Do not spend retro time rediscovering the OpenCode schema or hand-editing large `retro.json` files unless the helper is missing, fails, or reports `unsupported`; if that happens, record the helper gap as a tooling observation and continue with the smallest safe fallback.
 
 ## Session-By-Session Algorithm
 
-1. Initialize or refresh root `retro.json` before synthesis. The ledger must include every reachable current-project session from OpenCode DB sources before any trend/root-cause synthesis starts. If root `retro.json` cannot be written because the user explicitly denied writes or the filesystem blocks it, stop and report `Project Ledger Status: blocked`; do not substitute an inline pseudo-ledger.
-2. Sort sessions chronologically, then split into stable batches when the archive is large.
-3. For large archives with independent batches, consider `orchestrator` read-only fan-out for session observation drafts; the main session owns global synthesis, privacy filtering, root-cause analysis, and output routing.
-4. Analyze each session independently before global synthesis. Do not promote trends until all in-scope sessions are processed or `retro.json` clearly records unprocessed coverage.
-5. For each session, read the full transcript from the source store and fill `sessions.<sessionRef>.audit` plus `sessions.<sessionRef>.observations[]`. Do not set `coverage.status` to `complete` until the validator-required audit fields are filled.
+1. Initialize root `retro.json` before synthesis, or reuse an existing root ledger only after `status` confirms the expected scope and next incomplete session. The ledger must include every reachable current-project session from OpenCode DB sources before any trend/root-cause synthesis starts. If root `retro.json` cannot be written because the user explicitly denied writes or the filesystem blocks it, stop and report `Project Ledger Status: blocked`; do not substitute an inline pseudo-ledger.
+2. Run `status` to get the next incomplete refs and split them into stable batches when the archive is large.
+3. For each batch, use `transcript --input retro.json --session <ref> --include-content --out <local-transcript.json> --overwrite` or repeat `--session` for several refs instead of manually probing SQLite. Keep transcript files local and do not paste raw content into user-facing output.
+4. For large archives with independent batches, use read-only fan-out for session observation drafts without asking whether batching is desired. The main session owns global synthesis, privacy filtering, root-cause analysis, and output routing.
+5. Analyze each session independently before global synthesis. Do not promote trends until all in-scope sessions are processed or `retro.json` clearly records unprocessed coverage.
+6. For each session, read the full transcript from the helper output and prepare a batch patch that fills `sessions.<sessionRef>.audit` plus `sessions.<sessionRef>.observations[]`. Apply it with `patch-sessions`. Do not set `coverage.status` to `complete` until the validator-required audit fields are filled.
 
 - Session id/title/date/project when available.
 - User goal and constraints.
@@ -98,15 +105,15 @@ Run these commands from the target repository when it has this tooling. `init` w
 - Evidence confidence: high, medium, or low.
 - Reviewer-learning flags: whether the issue was reported by the user, caught by a reviewer, should have been caught by a reviewer, and which reviewer contract should learn from it.
 
-6. Roll up observations into `trends` from session cards, not raw keyword counts.
-7. Promote a trend only when it appears in at least two independent sessions, or mark it `severe-singleton` when one session is severe with strong evidence. Do not call rare incidental findings popular.
-8. For each promoted positive or negative trend, trace the chain from trigger to missed guard to outcome. Separate proximate triggers, systemic root causes, and contributing factors.
-9. Record each root cause under `rootCauses` with `confirmed`, `likely`, or `unknown`. If evidence cannot support a cause, route an investigation/instrumentation plan instead of a guessed fix.
-10. For each root cause, create a deep plan under `plans` with `kind`, goal, approach, implementation slices, acceptance criteria, validation, and risks. Use `kind: investigation` for unknown root causes, `kind: remediation` for negative-trend fixes, and `kind: preservation` for positive-trend amplification.
-11. Preview proposal writes with `npm run retro:project-ledger -- proposals --input retro.json --root . --dry-run`, then materialize one OpenSpec proposal per completed plan with `npm run retro:project-ledger -- proposals --input retro.json --root .` when OpenSpec exists and write scope is approved. Avoid OpenSpec noise for isolated nits or explicitly non-actionable findings.
-12. Run `npm run retro:project-ledger -- refresh --input retro.json` after marking sessions complete so `analysisProgress.lastAnalyzedSessionRef` and `analysisProgress.nextSessionRef` show where to resume. Run `npm run retro:project-ledger -- validate --input retro.json` after filling sessions and after trend/root-cause synthesis. Run `npm run retro:project-ledger -- validate --input retro.json --root . --require-complete --require-proposals` after proposal generation. Fix broken references before handoff. If root `retro.json` exists, repository pre-push validation should run this complete gate and fail while any session, audit field, observation, trend, root cause, plan, or proposal stage is unfinished.
-13. Preserve successful recurring practices as well as problems.
-14. Reconcile proposed improvements against current source/tests/config/docs/prompts before recommending implementation-sensitive changes.
+7. Roll up observations into `trends` from session cards, not raw keyword counts.
+8. Promote a trend only when it appears in at least two independent sessions, or mark it `severe-singleton` when one session is severe with strong evidence. Do not call rare incidental findings popular.
+9. For each promoted positive or negative trend, trace the chain from trigger to missed guard to outcome. Separate proximate triggers, systemic root causes, and contributing factors.
+10. Record each root cause under `rootCauses` with `confirmed`, `likely`, or `unknown`. If evidence cannot support a cause, route an investigation/instrumentation plan instead of a guessed fix.
+11. For each root cause, create a deep plan under `plans` with `kind`, goal, approach, implementation slices, acceptance criteria, validation, and risks. Use `kind: investigation` for unknown root causes, `kind: remediation` for negative-trend fixes, and `kind: preservation` for positive-trend amplification.
+12. Preview proposal writes with `npm run retro:project-ledger -- proposals --input retro.json --root . --dry-run`, then materialize one OpenSpec proposal per completed plan with `npm run retro:project-ledger -- proposals --input retro.json --root .` when OpenSpec exists and write scope is approved. Avoid OpenSpec noise for isolated nits or explicitly non-actionable findings.
+13. Run `npm run retro:project-ledger -- refresh --input retro.json` after marking sessions complete so `analysisProgress.lastAnalyzedSessionRef` and `analysisProgress.nextSessionRef` show where to resume. Run `npm run retro:project-ledger -- validate --input retro.json` after filling sessions and after trend/root-cause synthesis. Run `npm run retro:project-ledger -- validate --input retro.json --root . --require-complete --require-proposals` after proposal generation. Fix broken references before handoff. If root `retro.json` exists, repository pre-push validation should run this complete gate and fail while any session, audit field, observation, trend, root cause, plan, or proposal stage is unfinished.
+14. Preserve successful recurring practices as well as problems.
+15. Reconcile proposed improvements against current source/tests/config/docs/prompts before recommending implementation-sensitive changes.
 
 ## Ledger Entity Chain
 

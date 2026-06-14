@@ -1,25 +1,31 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ProjectSessionRetroLedger, ProjectSessionRetroProposalResult, ProjectSessionRetroValidationResult } from "./types.ts";
+import { patchProjectSessionRetroSessions, summarizeProjectSessionRetroLedger } from "./ledger-ops.ts";
 import { createProjectSessionRetroProposals } from "./openspec-proposals.ts";
 import { refreshAnalysisProgress } from "./progress.ts";
 import { initProjectSessionRetroLedger } from "./sqlite-source.ts";
+import { readSessionTranscripts } from "./transcript.ts";
 import { readJsonFile, resolveInputPath, writeJsonFile } from "./utils.ts";
 import { validateProjectSessionRetroLedger } from "./validator.ts";
 
 type CliOptions = {
-  command: "init" | "validate" | "proposals" | "refresh" | "help";
+  command: "init" | "validate" | "proposals" | "refresh" | "status" | "transcript" | "patch-sessions" | "help";
   dataDirs: string[];
   dbPaths: string[];
   dryRun: boolean;
   format: "json" | "text";
+  includeContent: boolean;
   input: string | null;
+  limit: number;
   out: string | null;
   overwrite: boolean;
+  patch: string | null;
   projectRoot: string | null;
   requireComplete: boolean;
   requireProposals: boolean;
   root: string;
+  sessions: string[];
   showPaths: boolean;
   useDefaultPaths: boolean;
 };
@@ -30,6 +36,9 @@ function printUsage(): void {
   npm run retro:project-ledger -- validate --input <path> [--root <repo>] [--require-complete] [--require-proposals] [--format json|text]
   npm run retro:project-ledger -- proposals --input <path> [--root <repo>] [--dry-run] [--format json|text]
   npm run retro:project-ledger -- refresh --input <path>
+  npm run retro:project-ledger -- status --input <path> [--limit <n>] [--format json|text]
+  npm run retro:project-ledger -- transcript --session <session-ref-or-raw-id> [--input <path>] [--db <path>] [--include-content] [--out <path>] [--format json|text]
+  npm run retro:project-ledger -- patch-sessions --input <path> --patch <path> [--dry-run] [--format json|text]
 
 Options:
   --db <path>              Read an explicit OpenCode SQLite database. Repeatable.
@@ -38,6 +47,10 @@ Options:
   --project-root <path>    Current project root for session filtering.
   --input <path>           Read an existing retro ledger JSON.
   --out <path>             Write init output to this file. Default: <project-root>/retro.json.
+  --patch <path>           Read a per-session audit patch JSON for patch-sessions.
+  --session <id|ref>       Session raw id or redacted session ref. Repeatable.
+  --include-content        Transcript mode includes raw prompt/text/tool content; use only for local analysis.
+  --limit <n>              Limit status next-session refs. Default: 10.
   --overwrite              Allow init to replace an existing output file.
   --root <path>            Repository root for proposal file validation/generation. Default: current working directory.
   --require-complete       Validate every retro stage is complete before push/final handoff.
@@ -64,6 +77,13 @@ function parseFormat(value: string): "json" | "text" {
   throw new Error("--format must be json or text.");
 }
 
+function parseLimit(value: string): number {
+  if (!/^\d+$/.test(value)) {
+    throw new Error("--limit must be a non-negative integer.");
+  }
+  return Number.parseInt(value, 10);
+}
+
 function parseArgs(args: string[]): CliOptions {
   const command = args[0] as CliOptions["command"] | undefined;
   const options: CliOptions = {
@@ -72,13 +92,17 @@ function parseArgs(args: string[]): CliOptions {
     dbPaths: [],
     dryRun: false,
     format: "text",
+    includeContent: false,
     input: null,
+    limit: 10,
     out: null,
     overwrite: false,
+    patch: null,
     projectRoot: null,
     requireComplete: false,
     requireProposals: false,
     root: process.cwd(),
+    sessions: [],
     showPaths: false,
     useDefaultPaths: true,
   };
@@ -86,7 +110,7 @@ function parseArgs(args: string[]): CliOptions {
     options.command = "help";
     return options;
   }
-  if (!["init", "validate", "proposals", "refresh"].includes(command)) {
+  if (!["init", "validate", "proposals", "refresh", "status", "transcript", "patch-sessions"].includes(command)) {
     throw new Error(`Unknown command: ${command}`);
   }
   for (let index = 1; index < args.length; index++) {
@@ -113,6 +137,23 @@ function parseArgs(args: string[]): CliOptions {
       index++;
     } else if (arg.startsWith("--input=")) {
       options.input = resolveInputPath(arg.slice("--input=".length));
+    } else if (arg === "--patch") {
+      options.patch = resolveInputPath(readOptionValue(args, index, arg));
+      index++;
+    } else if (arg.startsWith("--patch=")) {
+      options.patch = resolveInputPath(arg.slice("--patch=".length));
+    } else if (arg === "--session") {
+      options.sessions.push(readOptionValue(args, index, arg));
+      index++;
+    } else if (arg.startsWith("--session=")) {
+      options.sessions.push(arg.slice("--session=".length));
+    } else if (arg === "--include-content") {
+      options.includeContent = true;
+    } else if (arg === "--limit") {
+      options.limit = parseLimit(readOptionValue(args, index, arg));
+      index++;
+    } else if (arg.startsWith("--limit=")) {
+      options.limit = parseLimit(arg.slice("--limit=".length));
     } else if (arg === "--out") {
       options.out = resolveInputPath(readOptionValue(args, index, arg));
       index++;
@@ -176,6 +217,60 @@ function renderProposalResult(result: ProjectSessionRetroProposalResult): string
   return `${lines.join("\n")}\n`;
 }
 
+function renderStatus(ledger: ProjectSessionRetroLedger, limit: number): string {
+  const status = summarizeProjectSessionRetroLedger(ledger, { limit });
+  const lines = [
+    `sessions: ${status.totals.sessions}`,
+    `coverage: complete=${status.coverage.complete} partial=${status.coverage.partial} blocked=${status.coverage.blocked}`,
+    `progress: completed=${status.progress.completedSessionCount} remaining=${status.progress.remainingSessionCount}`,
+    `next: ${status.nextSessionRefs.join(", ") || "none"}`,
+    `entities: observations=${status.totals.observations} trends=${status.totals.trends} rootCauses=${status.totals.rootCauses} plans=${status.totals.plans} proposals=${status.totals.openspecProposals}`,
+  ];
+  return `${lines.join("\n")}\n`;
+}
+
+function renderTranscript(result: ReturnType<typeof readSessionTranscripts>): string {
+  const lines = [`sessions: ${result.sessions.length}`];
+  for (const session of result.sessions) {
+    lines.push(`${session.sessionRef}: events=${session.events.length} inputs=${session.counts.inputs} messages=${session.counts.messages} parts=${session.counts.parts} todos=${session.counts.todos}`);
+  }
+  if (result.missingSessions.length > 0) {
+    lines.push(`missing: ${result.missingSessions.join(", ")}`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function renderPatchResult(result: ReturnType<typeof patchProjectSessionRetroSessions>, validation: ProjectSessionRetroValidationResult): string {
+  const lines = [
+    `changedSessions: ${result.changedSessions.length}`,
+    `progress: completed=${result.progress.completedSessionCount} remaining=${result.progress.remainingSessionCount}`,
+  ];
+  if (validation.errors.length > 0) {
+    lines.push("validation errors:");
+    for (const error of validation.errors) {
+      lines.push(`- ${error}`);
+    }
+  }
+  if (validation.warnings.length > 0) {
+    lines.push("validation warnings:");
+    for (const warning of validation.warnings) {
+      lines.push(`- ${warning}`);
+    }
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function writeTextFile(filePath: string, content: string, options: { overwrite?: boolean } = {}): void {
+  const parent = path.dirname(filePath);
+  if (!fs.existsSync(parent) || !fs.statSync(parent).isDirectory()) {
+    throw new Error(`Output parent directory does not exist: ${parent}`);
+  }
+  if (fs.existsSync(filePath) && options.overwrite !== true) {
+    throw new Error(`Output file already exists; pass --overwrite to replace it: ${filePath}`);
+  }
+  fs.writeFileSync(filePath, content, "utf8");
+}
+
 export function runCli(args = process.argv.slice(2)): void {
   const options = parseArgs(args);
   if (options.command === "help") {
@@ -231,6 +326,64 @@ export function runCli(args = process.argv.slice(2)): void {
     const ledger = refreshAnalysisProgress(readJsonFile(options.input) as ProjectSessionRetroLedger);
     fs.writeFileSync(options.input, `${JSON.stringify(ledger, null, 2)}\n`, "utf8");
     process.stdout.write(options.format === "json" ? `${JSON.stringify(ledger.analysisProgress, null, 2)}\n` : `refreshed ${options.input}\n`);
+    return;
+  }
+  if (options.command === "status") {
+    if (!options.input) {
+      throw new Error("status requires --input.");
+    }
+    const ledger = readJsonFile(options.input) as ProjectSessionRetroLedger;
+    const status = summarizeProjectSessionRetroLedger(ledger, { limit: options.limit });
+    process.stdout.write(options.format === "json" ? `${JSON.stringify(status, null, 2)}\n` : renderStatus(ledger, options.limit));
+    return;
+  }
+  if (options.command === "transcript") {
+    if (options.sessions.length === 0) {
+      throw new Error("transcript requires at least one --session.");
+    }
+    const inputLedger = options.input ? readJsonFile(options.input) as ProjectSessionRetroLedger : null;
+    const result = readSessionTranscripts({
+      dataDirs: options.dataDirs,
+      dbPaths: options.dbPaths,
+      includeContent: options.includeContent,
+      inputLedger,
+      sessionIds: options.sessions,
+      useDefaultPaths: options.useDefaultPaths,
+    });
+    const output = options.format === "json" ? `${JSON.stringify(result, null, 2)}\n` : renderTranscript(result);
+    if (options.out) {
+      if (options.format === "json") {
+        writeJsonFile(options.out, result, { overwrite: options.overwrite });
+      } else {
+        writeTextFile(options.out, output, { overwrite: options.overwrite });
+      }
+      process.stdout.write(`wrote ${options.out}\n`);
+    } else {
+      process.stdout.write(output);
+    }
+    if (result.missingSessions.length > 0) {
+      process.exitCode = 1;
+    }
+    return;
+  }
+  if (options.command === "patch-sessions") {
+    if (!options.input) {
+      throw new Error("patch-sessions requires --input.");
+    }
+    if (!options.patch) {
+      throw new Error("patch-sessions requires --patch.");
+    }
+    const result = patchProjectSessionRetroSessions(readJsonFile(options.input) as ProjectSessionRetroLedger, readJsonFile(options.patch));
+    const validation = validateProjectSessionRetroLedger(result.ledger, { root: options.root });
+    result.ledger.validation = { errors: validation.errors, warnings: validation.warnings };
+    const payload = { changedSessions: result.changedSessions, progress: result.progress, validation };
+    if (validation.errors.length === 0 && !options.dryRun) {
+      fs.writeFileSync(options.input, `${JSON.stringify(result.ledger, null, 2)}\n`, "utf8");
+    }
+    process.stdout.write(options.format === "json" ? `${JSON.stringify(payload, null, 2)}\n` : renderPatchResult(result, validation));
+    if (validation.errors.length > 0) {
+      process.exitCode = 1;
+    }
   }
 }
 

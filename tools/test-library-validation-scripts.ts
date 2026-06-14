@@ -36,7 +36,7 @@ const requiredScripts = {
   "prepush:validate": "node tools/pre-push-validate.ts",
   validate: "node tools/validate-library.ts",
   "validate:strict": "node tools/validate-library.ts --fail-on-warnings",
-  test: "node tools/test-library.ts && node tools/test-project-session-retro-ledger.ts",
+  test: "node tools/test-library.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts",
 } as const;
 
 function newTempDir(name: string): string {
@@ -58,6 +58,54 @@ function withTempDir(name: string, run: (fixture: string) => void): void {
 
 function writePackageJson(fixtureRoot: string, scripts: Record<string, string>): void {
   fs.writeFileSync(path.join(fixtureRoot, "package.json"), `${JSON.stringify({ name: "opencode-dev-kit-fixture", private: true, type: "module", scripts }, null, 2)}\n`, "utf8");
+}
+
+function writeText(filePath: string, content: string): void {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, content.replace(/\r?\n/g, os.EOL), "utf8");
+}
+
+function writeProjectRetroFixture(fixtureRoot: string, skillText: string): void {
+  writePackageJson(fixtureRoot, { ...requiredScripts });
+  writeText(path.join(fixtureRoot, ".opencode", "skills", "project-sessions-retro", "SKILL.md"), skillText);
+  writeText(path.join(fixtureRoot, "README.md"), [
+    "# opencode-dev-kit",
+    "",
+    "## Routing Map",
+    "",
+    "- Instruction artifacts -> `instruction-artifact-tuning`; broad audits use `instruction-artifact-audit-runbook.md`.",
+    "",
+    "## Reviewer Gate Map",
+    "",
+    "- Instruction artifacts -> `instruction-artifact-reviewer`.",
+    "",
+    "## Skill Catalog",
+    "",
+    "- `project-sessions-retro`: Project session retro.",
+    "",
+    "## Agent Catalog",
+    "",
+    "## Instruction Templates",
+    "",
+    "## Porting Notes",
+    "",
+  ].join("\n"));
+  writeText(path.join(fixtureRoot, "AGENTS.md"), [
+    "# Repository Instructions",
+    "",
+    "## Autonomous Work Contract",
+    "",
+    "Ask the user only for real blockers.",
+    "",
+    "## Completion Handoff",
+    "",
+    "Use `question` with (Recommended), Suggested Next Options, and Actionable Continuation Items when blocked.",
+    "",
+    "## TypeScript Development",
+    "",
+    "Use TypeScript. Do not add PowerShell, Python, or JavaScript source files.",
+    "",
+  ].join("\n"));
 }
 
 function invokeValidator(fixtureRoot: string): ProcessResult {
@@ -170,6 +218,7 @@ const tests: TestCase[] = [
         const result = invokeValidator(fixture);
         assertFailure(result, "Test script missing project retro ledger tests should fail validation.");
         assertOutputContains(result, "node tools/test-project-session-retro-ledger.ts", "Missing test wiring should name the required test command.");
+        assertOutputContains(result, "node tools/test-project-session-retro-ledger-cli.ts", "Missing CLI test wiring should name the required test command.");
       });
     },
   },
@@ -181,7 +230,28 @@ const tests: TestCase[] = [
         const result = invokeValidator(fixture);
         assertFailure(result, "Echoed project retro ledger test command should fail validation.");
         assertOutputContains(result, "node tools/test-project-session-retro-ledger.ts", "Echoed test wiring should name the required executable command.");
+        assertOutputContains(result, "node tools/test-project-session-retro-ledger-cli.ts", "Missing CLI test wiring should name the required executable command.");
       });
+    },
+  },
+  {
+    name: "validator rejects missing project retro helper commands and no-ask batching contract",
+    run: () => {
+      const baseSkill = fs.readFileSync(path.join(root, ".opencode", "skills", "project-sessions-retro", "SKILL.md"), "utf8");
+      const cases = [
+        { expected: "status --input retro.json", name: "missing-status-helper", text: baseSkill.replaceAll("status --input retro.json", "status helper omitted") },
+        { expected: "transcript --input retro.json", name: "missing-transcript-helper", text: baseSkill.replaceAll("transcript --input retro.json", "transcript helper omitted") },
+        { expected: "patch-sessions --input retro.json", name: "missing-patch-helper", text: baseSkill.replaceAll("patch-sessions --input retro.json", "patch helper omitted") },
+        { expected: "without asking whether batching is desired", name: "missing-no-ask-batching", text: baseSkill.replaceAll("without asking whether batching is desired", "without using the required no-ask batching phrase") },
+      ];
+      for (const item of cases) {
+        withTempDir(`project-retro-${item.name}`, (fixture) => {
+          writeProjectRetroFixture(fixture, item.text);
+          const result = invokeValidator(fixture);
+          assertFailure(result, `Project retro contract should fail for ${item.name}.`);
+          assertOutputContains(result, item.expected, `Project retro validator should name missing required fragment ${item.expected}.`);
+        });
+      }
     },
   },
   {

@@ -119,7 +119,7 @@ function walkMarkdown(root: string, current: string, files: string[]): void {
   for (const entry of entries) {
     const fullPath = path.join(current, entry.name);
     if (entry.isDirectory()) {
-      if ([".git", ".serena", "node_modules"].includes(entry.name)) {
+      if ([".git", "node_modules"].includes(entry.name)) {
         continue;
       }
       walkMarkdown(root, fullPath, files);

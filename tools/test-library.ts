@@ -82,7 +82,6 @@ function lines(values: string[]): string {
 
 function newLibraryFixture(name: string): string {
   const dir = newTempDir(name);
-  writeText(path.join(dir, ".gitignore"), lines([".serena/", ""]));
   writeText(path.join(dir, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
     "---",
     "name: demo-skill",
@@ -227,7 +226,7 @@ function newLibraryFixture(name: string): string {
     "    \"prepush:validate\": \"node tools/pre-push-validate.ts\",",
     "    \"validate\": \"node tools/validate-library.ts\",",
     "    \"validate:strict\": \"node tools/validate-library.ts --fail-on-warnings\",",
-    "    \"test\": \"node tools/test-library.ts && node tools/test-project-session-retro-ledger.ts\"",
+    "    \"test\": \"node tools/test-library.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts\"",
     "  }",
     "}",
     "",
@@ -1082,14 +1081,6 @@ const tests: TestCase[] = [
       const result = invokeValidator(fixture);
       assertFailure(result, "Self-improvement loops should fail validation.");
       assertOutputContains(result, "automatic self-improvement/self-edit loops", "Self-improvement loop should explain the autonomy regression.");
-    },
-  },
-  {
-    name: "validator ignores local serena markdown",
-    run: () => {
-      const fixture = newLibraryFixture("ignored-serena");
-      writeText(path.join(fixture, ".serena", "memory.md"), lines(["# Local Memory   ", ""]));
-      assertSuccess(invokeValidator(fixture), "Ignored .serena markdown should not affect validation.");
     },
   },
   {

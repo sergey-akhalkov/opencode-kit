@@ -249,13 +249,6 @@ const EDIT_TOOLS = new Set([
   "apply_patch",
   "edit",
   "write",
-  "serena_replace_content",
-  "serena_replace_symbol_body",
-  "serena_insert_after_symbol",
-  "serena_insert_before_symbol",
-  "serena_create_text_file",
-  "serena_rename_symbol",
-  "serena_safe_delete_symbol",
 ]);
 const VALIDATION_COMMAND_PATTERNS = [
   /\b(test|pytest|vitest|cargo test|go test|dotnet test|mvn test|gradle test)\b/i,

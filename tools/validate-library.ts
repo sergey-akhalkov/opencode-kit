@@ -207,7 +207,7 @@ function walkMarkdownFiles(root: string, current = root, result: string[] = []):
   for (const entry of entries) {
     const entryPath = path.join(current, entry.name);
     if (entry.isDirectory()) {
-      if ([".git", ".serena", "node_modules"].includes(entry.name)) {
+      if ([".git", "node_modules"].includes(entry.name)) {
         continue;
       }
       walkMarkdownFiles(root, entryPath, result);
@@ -223,7 +223,7 @@ function walkRepositoryFiles(root: string, current = root, result: string[] = []
   for (const entry of entries) {
     const entryPath = path.join(current, entry.name);
     if (entry.isDirectory()) {
-      if ([".git", ".serena", "node_modules"].includes(entry.name)) {
+      if ([".git", "node_modules"].includes(entry.name)) {
         continue;
       }
       walkRepositoryFiles(root, entryPath, result);
@@ -254,7 +254,6 @@ function getMarkdownFiles(root: string): string[] {
         .split(/\r?\n/)
         .filter((relative) => relative.trim() !== "")
         .map((relative) => toPosixPath(relative))
-        .filter((relative) => !/(^|\/)\.serena\//.test(relative))
         .map((relative) => path.join(root, relative))
         .filter((file) => fs.existsSync(file));
     }
@@ -690,6 +689,9 @@ function validateDevKitContract(root: string): void {
   if (scripts.test && !/(^|&&)\s*node\s+tools\/test-project-session-retro-ledger\.ts(\s|$|&&)/.test(scripts.test)) {
     addError("package.json script 'test' must include node tools/test-project-session-retro-ledger.ts.");
   }
+  if (scripts.test && !/(^|&&)\s*node\s+tools\/test-project-session-retro-ledger-cli\.ts(\s|$|&&)/.test(scripts.test)) {
+    addError("package.json script 'test' must include node tools/test-project-session-retro-ledger-cli.ts.");
+  }
   if (scripts["validate:strict"] && !scripts["validate:strict"].includes("--fail-on-warnings")) {
     addError("package.json script 'validate:strict' must pass --fail-on-warnings.");
   }
@@ -1033,6 +1035,10 @@ function validateMarkdownFile(root: string, file: string, forbiddenAnchors: stri
       "Partial Inventory",
       "coverage.status` to `complete`",
       "full transcript",
+      "status --input retro.json",
+      "transcript --input retro.json",
+      "patch-sessions --input retro.json",
+      "without asking whether batching is desired",
       "--require-complete --require-proposals",
     ]) {
       requireTextContains(text, required, "project-sessions-retro anti-false-completion contract", file);

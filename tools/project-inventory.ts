@@ -32,7 +32,7 @@ type ProjectInventory = {
   version: 1;
 };
 
-const ignoredDirectories = new Set([".git", ".serena", "node_modules", "dist", "build", "coverage", "target", ".next", ".nuxt", "vendor"]);
+const ignoredDirectories = new Set([".git", "node_modules", "dist", "build", "coverage", "target", ".next", ".nuxt", "vendor"]);
 const codeExtensions = new Set([".ts", ".tsx", ".js", ".jsx", ".mts", ".cts", ".go", ".rs", ".py", ".java", ".cs", ".cpp", ".c", ".h", ".rb", ".php", ".swift", ".kt", ".kts", ".vue", ".svelte"]);
 const buildFileNames = new Set(["package.json", "Cargo.toml", "pyproject.toml", "go.mod", "pom.xml", "build.gradle", "build.gradle.kts", "Makefile", "CMakeLists.txt", "deno.json", "bun.lockb", "pnpm-lock.yaml", "package-lock.json", "yarn.lock"]);
 const configFileNames = new Set(["opencode.json", "opencode.jsonc", "tsconfig.json", "eslint.config.js", "eslint.config.mjs", "biome.json", "prettier.config.js", "prettier.config.mjs", "vitest.config.ts", "jest.config.ts", "Dockerfile"]);
