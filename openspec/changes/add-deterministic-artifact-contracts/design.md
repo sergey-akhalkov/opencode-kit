@@ -62,7 +62,7 @@ Add `tools/reviewer-contract-check.ts` plus optional `reviewer-contracts.json` f
 Common contract:
 
 - `mode: subagent`.
-- `read`, `glob`, `grep`, and `list` are `allow`.
+- `read`, `glob`, and `grep` are `allow`; `permission.list` is omitted/rejected because directory listing is covered by `read` in the checked OpenCode source/docs.
 - `bash`, `edit`, `task`, `question`, `skill`, `webfetch`, `websearch`, `todowrite`, `external_directory`, `lsp`, and `doom_loop` are `deny`.
 - Output includes `Verdict`, `Confidence`, `Findings`, and `Actionable Continuation Items`.
 

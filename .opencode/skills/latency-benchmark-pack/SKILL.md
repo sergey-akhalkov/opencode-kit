@@ -18,7 +18,7 @@ Use this skill when performance claims, SLOs, load isolation, queue wait, watchd
 
 ## Safety
 
-- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 - Do not run load tests against shared, production, billable, or rate-limited services unless the user approves the target environment, command, limits, duration, and rollback/stop criteria.
 - If benchmark tooling changes behavior, add or update the smallest fixture/smoke gate before implementation; if infeasible, state why and use the closest reproducible substitute evidence.
 

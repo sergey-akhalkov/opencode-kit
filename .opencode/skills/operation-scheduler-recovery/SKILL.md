@@ -20,7 +20,7 @@ Use this skill for services that serialize or schedule operations against extern
 
 ## Safety
 
-- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 - Do not run load, recovery, or external-resource tests against shared or production dependencies unless the user approves the target environment, command, limits, and rollback expectations.
 
 ## Checks

@@ -34,5 +34,5 @@
     }
   },
   "lsp": true,
-  "permission": "allow"
+  "permission": "ask"
 }

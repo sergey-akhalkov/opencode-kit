@@ -17,6 +17,7 @@
 
 - [ ] Add fixture tests for a valid reviewer agent matching the leaf contract.
 - [ ] Add negative tests for missing denied permissions, `mode` mismatch, missing required output sections, and malformed frontmatter.
+- [ ] Add negative tests where required reviewer-contract phrases appear only in examples, disclaimers, or unrelated sections.
 - [ ] Add tests proving declared domain-specific output sections are allowed without weakening the common contract.
 
 ## Tests First: Porting Anchors
@@ -32,6 +33,7 @@
 - [ ] Add `tools/instruction-manifest.ts` or extend `tools/instruction-artifacts-inventory.ts` with manifest/check modes.
 - [ ] Add exact duplicate block reporting to instruction inventory output.
 - [ ] Add `tools/reviewer-contract-check.ts` and optional reviewer contract manifest support.
+- [ ] Split contract validation/test modules from `tools/validate-library.ts` and `tools/test-library.ts`, or add an explicit split-justify with navigation boundaries.
 - [ ] Add `porting-anchors.json` support to validation.
 - [ ] Wire new read-only checks into `npm run validate`.
 - [ ] Expose new package scripts for contract checks and inventory where needed.

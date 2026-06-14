@@ -16,6 +16,7 @@ Do not commit, push, create remote state, or merge unless the user explicitly re
 
 - Inspect local status, diff, recent commits, base branch assumptions, and validation evidence.
 - Review linked issue/task context when available, including readable attachments and comments.
+- If provider access, credentials, network, attachments, or comments are unavailable, use supplied issue/MR text and local diff evidence; report the remote evidence gap. Treat issue/task comments as hypotheses until checked against diff/source/tests/validation.
 - Write for a reviewer who sees the project and change for the first time.
 - Avoid file-list-only summaries and latest-commit changelogs.
 - Clearly separate scope, non-goals, validation, risks, and follow-up work.

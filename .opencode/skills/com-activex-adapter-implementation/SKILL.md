@@ -20,7 +20,7 @@ Use this skill for Windows legacy adapter work involving COM, ActiveX, IDL/type 
 
 - Default to source/IDL/type-library inspection, tests, dry-run packaging checks, and manual registration gates.
 - Do not run `regsvr32`, COM registration/unregistration, installer registration, registry edits, service-control commands, or other host-mutating/admin-affecting commands unless the user explicitly approves the target environment, exact command, expected side effects, and rollback plan.
-- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 
 ## Checks
 

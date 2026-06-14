@@ -1,7 +1,6 @@
 {
   "name": "advanced",
   "description": "Optional heavyweight workflows for retros, exhaustive audits, OpenSpec tracking, and domain-specific projects.",
-  "extends": "standard",
   "skills": [
     "adaptive-delivery",
     "codebase-audit-ledger",
@@ -48,6 +47,7 @@
     "performance-reliability-reviewer",
     "protocol-api-reviewer",
     "rust-concurrency-reviewer",
+    "session-delivery-reviewer",
     "test-coverage-reviewer",
     "wire-protocol-reviewer"
   ]

@@ -18,7 +18,7 @@ Use this skill when a protocol codec, transport, fake server, or compatibility l
 
 ## Safety
 
-- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 - Do not exercise vectors against shared or production services unless the user approves the target environment, command, limits, and rollback expectations.
 
 ## Test Matrix

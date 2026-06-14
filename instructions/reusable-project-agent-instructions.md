@@ -47,6 +47,7 @@ Use one process for all technologies: `Intake -> Evidence -> Baseline Proof -> S
 - Use a direct single-agent path for clear small edits and questions.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
+- Before final handoff for material/complex sessions, run `session-delivery-reviewer` with bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks; skip only for trivial/bounded work or unavailable inputs, and report why.
 
 ## Review And Evidence
 

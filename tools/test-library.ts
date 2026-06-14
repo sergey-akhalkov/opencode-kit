@@ -92,6 +92,12 @@ function newLibraryFixture(name: string): string {
     "",
     "# Demo Skill",
     "",
+    "Use this skill when testing reusable skill validation fixtures.",
+    "",
+    "## Output",
+    "",
+    "Return fixture validation evidence.",
+    "",
   ]));
   writeText(path.join(dir, ".opencode", "agents", "demo-reviewer.md"), lines([
     "---",
@@ -101,7 +107,6 @@ function newLibraryFixture(name: string): string {
     "  read: allow",
     "  glob: allow",
     "  grep: allow",
-    "  list: allow",
     "  bash: deny",
     "  edit: deny",
     "  task: deny",
@@ -116,6 +121,18 @@ function newLibraryFixture(name: string): string {
     "---",
     "",
     "You are a read-only demo reviewer.",
+    "",
+    "## Leaf Contract",
+    "",
+    "Read/search-only leaf reviewer. No edits, fixes, commits/amends, merges, pushes, remote/destructive actions, `question`, tasks, skills, or nested agents. Stay in scope. Missing evidence -> exact main-session command/manual gate in `Actionable Continuation Items`; external domain -> `Needs external reviewer: <agent-name> required|optional`.",
+    "",
+    "## Output",
+    "",
+    "Return:",
+    "",
+    "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
+    "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
+    "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
     "",
   ]));
   writeText(path.join(dir, "instructions", "example.md"), lines(["# Example", ""]));
@@ -142,6 +159,7 @@ function newLibraryFixture(name: string): string {
     "",
     "- Use Intake, Evidence, Baseline Proof, Small Slice, Test First, Focused Validation, Review Gate, Handoff, and Process Improvement.",
     "- For behavior changes, write tests before implementation.",
+    "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
     "",
   ]));
   writeText(path.join(dir, "templates", "project", "opencode.json"), lines(["{", "  \"$schema\": \"https://opencode.ai/config.json\"", "}", ""]));
@@ -539,7 +557,6 @@ const tests: TestCase[] = [
         "  read: allow",
         "  glob: allow",
         "  grep: allow",
-        "  list: allow",
         "  bash: ask",
         "  edit: deny",
         "  task: deny",
@@ -565,7 +582,6 @@ const tests: TestCase[] = [
         "  read: allow",
         "  glob: allow",
         "  grep: allow",
-        "  list: allow",
         "  bash: deny",
         "  edit: deny",
         "  task: deny",
@@ -582,6 +598,83 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "validator accepts reviewer permissions without obsolete list key",
+    run: () => {
+      const fixture = newLibraryFixture("reviewer-without-list-permission");
+      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+        "---",
+        "description: Reviews demo fixture behavior.",
+        "mode: subagent",
+        "permission:",
+        "  read: allow",
+        "  glob: allow",
+        "  grep: allow",
+        "  bash: deny",
+        "  edit: deny",
+        "  task: deny",
+        "  question: deny",
+        "  skill: deny",
+        "  webfetch: deny",
+        "  websearch: deny",
+        "  todowrite: deny",
+        "  external_directory: deny",
+        "  lsp: deny",
+        "  doom_loop: deny",
+        "---",
+        "",
+        "You are a read-only demo reviewer.",
+        "",
+        "## Leaf Contract",
+        "",
+        "Read/search-only leaf reviewer. No edits, fixes, commits/amends, merges, pushes, remote/destructive actions, `question`, tasks, skills, or nested agents. Stay in scope. Missing evidence -> exact main-session command/manual gate in `Actionable Continuation Items`; external domain -> `Needs external reviewer: <agent-name> required|optional`.",
+        "",
+        "## Output",
+        "",
+        "Return:",
+        "",
+        "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
+        "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
+        "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+        "",
+      ]));
+      assertSuccess(invokeValidator(fixture), "Reviewer permissions should not require obsolete list permission.");
+    },
+  },
+  {
+    name: "validator rejects obsolete reviewer list permission",
+    run: () => {
+      const fixture = newLibraryFixture("obsolete-list-permission");
+      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+        "---",
+        "description: Reviews demo fixture behavior.",
+        "mode: subagent",
+        "permission:",
+        "  read: allow",
+        "  glob: allow",
+        "  grep: allow",
+        "  list: allow",
+        "  bash: deny",
+        "  edit: deny",
+        "  task: deny",
+        "  question: deny",
+        "  skill: deny",
+        "  webfetch: deny",
+        "  websearch: deny",
+        "  todowrite: deny",
+        "  external_directory: deny",
+        "  lsp: deny",
+        "  doom_loop: deny",
+        "---",
+        "",
+        "You are a read-only demo reviewer.",
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Reviewer permissions should reject obsolete list permission.");
+      assertOutputContains(result, "permission.list", "Validation output should name obsolete list permission.");
+    },
+  },
+  {
     name: "validator rejects missing test-coverage reviewer task context contract",
     run: () => {
       const fixture = newLibraryFixture("test-coverage-context-contract");
@@ -593,7 +686,6 @@ const tests: TestCase[] = [
         "  read: allow",
         "  glob: allow",
         "  grep: allow",
-        "  list: allow",
         "  bash: deny",
         "  edit: deny",
         "  task: deny",
@@ -618,6 +710,44 @@ const tests: TestCase[] = [
       const result = invokeValidator(fixture);
       assertFailure(result, "Missing test-coverage reviewer task context contract should fail validation.");
       assertOutputContains(result, "test-coverage-reviewer must require task/repro/runtime-envelope coverage", "Validation output should name the missing reviewer contract.");
+    },
+  },
+  {
+    name: "validator rejects missing session-delivery reviewer control contract",
+    run: () => {
+      const fixture = newLibraryFixture("session-delivery-control-contract");
+      writeText(path.join(fixture, ".opencode", "agents", "session-delivery-reviewer.md"), lines([
+        "---",
+        "description: Reviews OpenCode session delivery.",
+        "mode: subagent",
+        "permission:",
+        "  read: allow",
+        "  glob: allow",
+        "  grep: allow",
+        "  bash: deny",
+        "  edit: deny",
+        "  task: deny",
+        "  question: deny",
+        "  skill: deny",
+        "  webfetch: deny",
+        "  websearch: deny",
+        "  todowrite: deny",
+        "  external_directory: deny",
+        "  lsp: deny",
+        "  doom_loop: deny",
+        "---",
+        "",
+        "You are a read-only session delivery reviewer.",
+        "",
+        "## Checks",
+        "",
+        "- Verify goal alignment.",
+        "",
+      ]));
+      appendReadmeAgentCatalogEntry(fixture, "- `session-delivery-reviewer`: Session delivery reviewer.");
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Missing session-delivery reviewer control contract should fail validation.");
+      assertOutputContains(result, "session-delivery-reviewer must require delivery-control safeguards", "Validation output should name the missing reviewer contract.");
     },
   },
   {
@@ -649,6 +779,18 @@ const tests: TestCase[] = [
         "",
       ]));
       assertFailure(invokeValidator(fixture), "README catalog drift should fail validation.");
+    },
+  },
+  {
+    name: "validator rejects duplicate catalog entries",
+    run: () => {
+      const fixture = newLibraryFixture("duplicate-catalog-entry");
+      const readmePath = path.join(fixture, "README.md");
+      const readme = fs.readFileSync(readmePath, "utf8");
+      writeText(readmePath, readme.replace("- `demo-skill`: Demo skill.", "- `demo-skill`: Demo skill.\n- `demo-skill`: Duplicate demo skill."));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Duplicate catalog entries should fail validation.");
+      assertOutputContains(result, "catalog has duplicate 'demo-skill'", "Duplicate catalog failure should name the duplicate entry.");
     },
   },
   {
@@ -971,12 +1113,44 @@ const tests: TestCase[] = [
         "",
         "# Demo Skill",
         "",
+        "Use this skill when testing implementation-language warnings.",
+        "",
         "This skill can implement code changes.",
+        "",
+        "## Output",
+        "",
+        "Return implementation notes.",
         "",
       ]));
       const result = invokeValidator(fixture);
       assertSuccess(result, "TDD warning should not fail validation.");
       assertOutputContains(result, "WARN:", "TDD warning should be visible.");
+    },
+  },
+  {
+    name: "validator ignores non-goal implementation language",
+    run: () => {
+      const fixture = newLibraryFixture("non-goal-implementation-language");
+      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+        "---",
+        "name: demo-skill",
+        "description: Use when testing non-goal wording.",
+        "---",
+        "",
+        "# Demo Skill",
+        "",
+        "Use this skill when testing instruction validation wording.",
+        "",
+        "Non-goals: plugin implementation is out of scope.",
+        "",
+        "## Output",
+        "",
+        "Return scope notes.",
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertSuccess(result, "Non-goal implementation wording should not warn.");
+      assertOutputContains(result, "warnings=0", "Non-goal implementation wording should emit no warnings.");
     },
   },
   {
@@ -1016,11 +1190,17 @@ const tests: TestCase[] = [
         "",
         "# Demo Skill",
         "",
+        "Use this skill for approved session retro privacy fixtures.",
+        "",
         "Default mode is read-only analysis. Write generated ledgers, fetch remote/shared URLs, or use authenticated remote sources only when the user explicitly grants that scope.",
         "",
         "- Exported transcripts, copied chat logs, user-approved shared URLs, or user-provided archives.",
         "",
         "1. Build a redacted evidence ledger for all sessions in scope. Keep it inline by default; write a generated ledger file only when the user approved the path and write scope.",
+        "",
+        "## Output",
+        "",
+        "Return retro evidence and residual risks.",
         "",
       ]));
       assertSuccess(invokeValidator(fixture), "Approved retro privacy boundaries should pass validation.");
@@ -1038,11 +1218,17 @@ const tests: TestCase[] = [
         "",
         "# Demo Skill",
         "",
+        "Use this skill for prohibited session retro privacy fixtures.",
+        "",
         "This skill reviews session history.",
         "",
         "Shared URLs are out of scope.",
         "",
         "Do not build a ledger for session history.",
+        "",
+        "## Output",
+        "",
+        "Return retro evidence and residual risks.",
         "",
       ]));
       assertSuccess(invokeValidator(fixture), "Explicitly prohibited shared URLs and ledgers should pass validation.");
@@ -1106,6 +1292,21 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "validator rejects unterminated JSONC comments",
+    run: () => {
+      const fixture = newLibraryFixture("unterminated-jsonc-comment");
+      writeText(path.join(fixture, "opencode.jsonc"), lines([
+        "{",
+        "  \"$schema\": \"https://opencode.ai/config.json\"",
+        "}",
+        "/* not closed",
+      ]));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Unterminated JSONC comments should fail validation.");
+      assertOutputContains(result, "Unterminated JSONC block comment", "JSONC failure should name unterminated block comments.");
+    },
+  },
+  {
     name: "validator strict mode rejects warnings",
     run: () => {
       const fixture = newLibraryFixture("strict-warning");
@@ -1117,7 +1318,13 @@ const tests: TestCase[] = [
         "",
         "# Demo Skill",
         "",
+        "Use this skill when testing strict implementation-language warnings.",
+        "",
         "This skill can implement code changes.",
+        "",
+        "## Output",
+        "",
+        "Return implementation notes.",
         "",
       ]));
       const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);

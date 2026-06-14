@@ -19,7 +19,7 @@ Use this skill when creating a Rust workspace, adding crates, defining module bo
 
 ## Safety
 
-- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 - Do not add broad dependencies, generated files, formatting sweeps, or workspace-wide rewrites unless they are required by the scoped change and validated.
 
 ## Baseline Tasks

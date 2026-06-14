@@ -19,7 +19,7 @@ Use this skill when tests need a fake TCP/HTTP/WebSocket/device/upstream service
 
 ## Safety
 
-- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 - Keep fake services local and isolated by default; do not bind public interfaces, use shared external dependencies, or run long-lived listeners unless the user approves the target environment and stop criteria.
 
 ## Harness Features

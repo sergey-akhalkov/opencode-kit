@@ -15,7 +15,7 @@ Apply the same process for every task, scaled to the size and risk of the change
 7. `Focused Validation`: run the nearest validation command first.
 8. `Review Gate`: use relevant read-only reviewers only when risk justifies them.
 9. `Final Validation`: broaden validation when boundaries, APIs, data, deployment, or compatibility are affected.
-10. `Handoff`: report changed files, evidence, validation, residual risks, and ready-to-land status.
+10. `Handoff`: for material/complex sessions, run `session-delivery-reviewer` with bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks. Skip only for trivial/bounded work or unavailable inputs, and report why. Then report changed files, evidence, validation, residual risks, and ready-to-land status.
 11. `Process Improvement`: convert repeated friction into helpers, validators, fixtures, reports, or templates.
 
 ## Project Adapter
@@ -28,6 +28,7 @@ Apply the same process for every task, scaled to the size and risk of the change
 
 - Continue autonomously when local evidence or a safe reversible default is enough.
 - Ask the user only for real blockers: credentials, missing external systems, destructive or remote actions, owner/product/security/legal decisions, or MR/PR outcomes.
+- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
 
 ## Process Control

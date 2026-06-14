@@ -13,7 +13,7 @@ Use this loop for AI-assisted development in any project. Technology adapters ma
 7. `Focused Validation`: run the narrowest relevant validation command first. If it cannot run, report the blocker and risk.
 8. `Review Gate`: run the relevant read-only reviewer only when risk justifies it, such as code quality, test coverage, readiness, security, performance, deployment, protocol, or compatibility.
 9. `Final Validation`: run broader validation when the change crosses module, public API, deployment, data, protocol, or compatibility boundaries.
-10. `Handoff`: report changed files, evidence, validation, reviewer findings, residual risks, and ready-to-land status. Ask the user only for real blockers or user-owned decisions.
+10. `Handoff`: for material/complex sessions, run `session-delivery-reviewer` with bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks. Skip only for trivial/bounded work or unavailable inputs, and report why. Then report changed files, evidence, validation, reviewer findings, residual risks, and ready-to-land status. Ask the user only for real blockers or user-owned decisions.
 11. `Process Improvement`: when repeated friction appears, prefer a deterministic helper, validator, fixture, report, or template over adding another prose reminder.
 
 ## Token And Time Rules

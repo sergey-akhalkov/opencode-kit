@@ -151,7 +151,7 @@ npm run validate
 npm test
 ```
 
-The validator checks skill and agent frontmatter shape, README catalog sync, README routing/reviewer gate sections, repo `AGENTS.md` autonomous handoff, TypeScript-only development policy, deterministic helper automation policy, reusable reviewer permission policy, OpenCode config warnings for broad mutation-capable wildcard `allow` permissions, optional project-neutral anchors passed via `--forbidden-anchor`, trailing whitespace, and warning-level TDD guard findings for Markdown artifacts with implementation-related language that do not mention test-first, TDD, before-code fixtures/gates, or equivalent validation-first language.
+The validator checks skill and agent frontmatter shape, skill trigger/output contracts, compact reviewer leaf contracts, README catalog/routing sync, repo/project-template autonomy and remote/destructive guards, TypeScript-only development policy, deterministic helper automation policy, reusable reviewer permission policy, OpenCode config warnings for broad mutation-capable wildcard `allow` permissions, optional project-neutral anchors passed via `--forbidden-anchor`, trailing whitespace, and warning-level TDD guard findings for Markdown artifacts with implementation-related language that do not mention test-first, TDD, before-code fixtures/gates, or equivalent validation-first language.
 
 For code maintainability reviews in this library, gather deterministic file-size/navigation bands with:
 
@@ -244,12 +244,15 @@ The analysis tool reads OpenCode SQLite stores in read-only mode and emits redac
 
 ## Routing Map
 
+Routing and reviewer maps assume all/advanced artifacts; restricted profiles use the closest installed core route or install `advanced`/all.
+
 - Broad, unclear, high-risk, or process-sensitive delivery -> `adaptive-delivery`; let it choose direct execution, planning, OpenSpec, architecture, orchestration, or reviewer gates.
 - Explicit planning-only work -> `deep-task-planning`; if the request is broad delivery rather than planning-only, start with `adaptive-delivery`.
 - Existing OpenSpec continuation or "what next" work -> `next-step` from the `advanced` profile; accepted OpenSpec implementation -> `openspec-apply-change`; new OpenSpec packages -> `openspec-propose`; consistency/archive work -> the matching OpenSpec review/archive skill.
 - Several session-scoped follow-ups from an audit, retro, reviewer gate, broad discovery, or validation failure -> group them into lightweight OpenSpec changes with `openspec-propose` when OpenSpec exists or is approved and the advanced profile is available; otherwise return grouped continuation candidates.
 - Initial MR/PR title/body preparation -> `merge-request-author`; existing MR/PR checks, reviewer feedback, approvals, and outcome handling -> `merge-request-review-loop`.
 - Broad independent tracks -> `orchestrator` from the `advanced` profile only after bounded workstreams, success criteria, and validation evidence are clear; if it is unavailable, use the Universal Development Loop serially or return an orchestration follow-up candidate.
+- Session delivery-control review for transcript/summary, compaction/resume continuity, user goal, changed files, and validation output -> `session-delivery-reviewer`.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; bounded/current-project/selected-project OpenCode session, transcript, reflection, and log retros -> `session-archive-retro`; all-history/cross-install/whole-corpus retros targeting global skills, agents, prompts, rules, validators, tools, and reusable instructions -> `opencode-total-session-retro`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `file-review-quest` for one-file block review, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
 - Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; use `code-quality-reviewer` as the read-only gate.
@@ -259,6 +262,7 @@ The analysis tool reads OpenCode SQLite stores in read-only mode and emits redac
 - Instruction artifacts, skills, agents, prompts, `AGENTS.md`, and README routing -> `instruction-artifact-reviewer`.
 - Code health, maintainability, readability, file navigation, duplication, boundaries, and pragmatic refactoring -> `code-quality-reviewer`.
 - Implementation readiness, stable scope, blockers, validation path -> `implementation-readiness-reviewer`.
+- Session delivery alignment, compaction continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff -> `session-delivery-reviewer`.
 - OpenSpec/design/architecture ownership and consistency -> `openspec-architecture-reviewer`.
 - Requirements-to-tests, weak assertions, missing gates -> `test-coverage-reviewer`.
 - Config, deployment, packaging, operational safety -> `deployment-config-reviewer`.
@@ -291,7 +295,7 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 
 - `adaptive-delivery`: adaptive entrypoint for broad, unclear, high-risk, or process-sensitive work; chooses the smallest useful lane across direct execution, planning, OpenSpec, architecture, orchestration, and reviewer gates.
 - `deep-task-planning`: execution-grade plans for complex work.
-- `next-step`: discover OpenSpec-backed workstreams and choose one concrete serial next step.
+- `next-step`: discover OpenSpec-backed workstreams, choose one serial next step, or hand bounded independent streams to `orchestrator` when safe.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
 - `merge-request-review-loop`: autonomous MR/PR review follow-up for status checks, reviewer feedback, local fixes, revalidation, outcome handoff, and remote-action gates.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
@@ -348,6 +352,7 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
 - `legacy-client-compatibility-reviewer`: compatibility with legacy clients/tools/workflows.
+- `session-delivery-reviewer`: session transcript/compaction delivery-control reviewer for goal alignment, continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff.
 - `instruction-artifact-reviewer`: read-only review of skills, agents, prompts, `AGENTS.md`, README routing, autonomy handoff, and safety boundaries.
 
 ## Instruction Templates
@@ -382,6 +387,6 @@ Overly narrow future-scope behavior that depended on one product domain was inte
 - Helper automation in skills or agents must be deterministic and contract-driven: explicit inputs/outputs, fixtures or schemas, stable ordering, privacy-safe output, and no hidden heuristics.
 - Implementation-capable artifacts should require TDD/test-first by default for behavior changes, or require an explicit infeasibility note plus the closest reproducible validation evidence.
 - Keep TDD proportional: require the smallest useful test/gate for the scoped behavior, not unrelated coverage expansion or speculative test suites.
-- Reviewer agents should remain leaf validators with `bash`, `edit`, `task`, `question`, `skill`, `webfetch`, `websearch`, `todowrite`, `external_directory`, `lsp`, and `doom_loop` denied unless a separate validation-enabled profile is intentionally created.
+- Reviewer agents should keep the compact `Leaf Contract`, ordered findings, residual risks, and `Actionable Continuation Items`; mutation-capable tools stay denied unless a separate validation-enabled profile is intentionally created.
 - Avoid hardcoded commands and paths. Use placeholders or say to use the repository's configured validation command.
 - If a target repository has stricter local instructions, local instructions win.

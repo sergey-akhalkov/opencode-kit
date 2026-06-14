@@ -21,7 +21,7 @@ Use this skill when work touches Windows service deployment, tray UI, installer,
 
 - Default to artifact edits, dry-run validation, and manual gate checklists.
 - Do not run installers, service install/uninstall, service-control commands, registry edits, firewall changes, shortcut writes, scheduled task changes, or other host-mutating/admin-affecting commands unless the user explicitly approves the target environment, exact command, expected side effects, and rollback plan.
-- Do not commit, push, merge, change remote state, delete source artifacts, or run destructive cleanup unless the user explicitly requested it and repository policy allows it.
+- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 
 ## Checks
 

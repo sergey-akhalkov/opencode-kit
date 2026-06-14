@@ -1,6 +1,6 @@
 {
   "name": "standard",
-  "description": "Default opencode-dev-kit install: one universal development loop, core skills, and core read-only reviewers.",
+  "description": "Core restricted profile: one universal development loop, core skills, and core read-only reviewers.",
   "skills": [
     "adaptive-delivery",
     "deep-task-planning",
@@ -15,6 +15,7 @@
     "code-quality-reviewer",
     "test-coverage-reviewer",
     "implementation-readiness-reviewer",
+    "session-delivery-reviewer",
     "instruction-artifact-reviewer"
   ]
 }

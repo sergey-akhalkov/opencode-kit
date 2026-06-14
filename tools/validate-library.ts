@@ -24,6 +24,22 @@ const forbiddenCodeExtensions = new Set([".cjs", ".js", ".mjs", ".ps1", ".psd1",
 const mutationCapablePermissionKeys = new Set(["bash", "edit", "task", "external_directory"]);
 const agentTextContracts: TextContract[] = [
   {
+    fileName: "session-delivery-reviewer.md",
+    label: "session-delivery-reviewer must require delivery-control safeguards",
+    requiredText: [
+      "Use after material or complex sessions",
+      "## Minimal Evidence Bundle",
+      "changed files or diffstat",
+      "reviewer findings/fixes",
+      "## Compaction Evidence Boundary",
+      "Root causes must cite evidence; use `unknown`",
+      "test-first evidence for behavior-changing work",
+      "Keep matrices terse",
+      "Required Next Actions",
+      "Actionable Continuation Items",
+    ],
+  },
+  {
     fileName: "test-coverage-reviewer.md",
     label: "test-coverage-reviewer must require task/repro/runtime-envelope coverage",
     requiredText: [
@@ -279,6 +295,15 @@ function requireBulletedSection(body: string, label: string, file: string): void
 }
 
 function compareCatalog(label: string, expected: string[], actual: string[], readmePath: string): void {
+  const actualCounts = new Map<string, number>();
+  for (const name of actual) {
+    actualCounts.set(name, (actualCounts.get(name) ?? 0) + 1);
+  }
+  for (const [name, count] of actualCounts) {
+    if (count > 1) {
+      addError(`${label} catalog has duplicate '${name}': ${readmePath}`);
+    }
+  }
   const expectedSorted = [...expected].sort();
   const actualSorted = [...actual].sort();
   for (const name of expectedSorted) {
@@ -394,6 +419,12 @@ function validateSkills(root: string): string[] {
     } else if (description.length > 1024) {
       addError(`Skill description exceeds 1024 chars: ${file}`);
     }
+    if (!/\bUse this (skill|helper)\b/i.test(text)) {
+      addError(`Skill must define explicit trigger text with 'Use this skill/helper': ${file}`);
+    }
+    if (!/(^## Output\b|^## Output Shapes\b|^## Minimal Ledger\b|^Workers return:|\bReturn:|\bReturn\s+)/m.test(text)) {
+      addError(`Skill must define an output or ledger contract: ${file}`);
+    }
   }
 
   return skillNames;
@@ -419,17 +450,26 @@ function validateAgents(root: string): string[] {
     if (mode !== "subagent") {
       addError(`Reusable reviewer agent must use mode: subagent: ${file}`);
     }
-    for (const permission of ["read", "glob", "grep", "list"]) {
+    for (const permission of ["read", "glob", "grep"]) {
       const key = `permission.${permission}`;
       if (frontmatter.get(key) !== "allow") {
         addError(`Agent permission must set ${permission}: allow: ${file}`);
       }
+    }
+    if (frontmatter.has("permission.list")) {
+      addError(`Agent permission must not set obsolete permission.list; directory listing is covered by read: ${file}`);
     }
     for (const permission of ["bash", "edit", "task", "question", "skill", "webfetch", "websearch", "todowrite", "external_directory", "lsp", "doom_loop"]) {
       const key = `permission.${permission}`;
       if (frontmatter.get(key) !== "deny") {
         addError(`Agent permission must set ${permission}: deny: ${file}`);
       }
+    }
+    for (const required of ["## Leaf Contract", "No edits", "Needs external reviewer", "`Findings`: ordered by severity", "`Residual Risks`", "`Actionable Continuation Items`"]) {
+      requireTextContains(text, required, "Reusable reviewer leaf contract", file);
+    }
+    if (text.includes("## Orchestration") || text.includes("Do not modify files.")) {
+      addError(`Reusable reviewer agent must use the compact Leaf Contract instead of old boilerplate: ${file}`);
     }
     validateTextContracts(file, text, agentTextContracts);
   }
@@ -591,7 +631,9 @@ function validateDevKitContract(root: string): void {
 
   const projectTemplate = path.join(root, "templates", "project", "AGENTS.md");
   if (fileExists(projectTemplate)) {
-    requireTextContains(readText(projectTemplate), "Universal Development Loop", "project AGENTS.md template", projectTemplate);
+    const projectTemplateText = readText(projectTemplate);
+    requireTextContains(projectTemplateText, "Universal Development Loop", "project AGENTS.md template", projectTemplate);
+    requireTextContains(projectTemplateText, "Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested", "project AGENTS.md remote/destructive guard", projectTemplate);
   }
 
   const adapterTemplate = path.join(root, "templates", "project", "adapter.json");
@@ -703,6 +745,8 @@ function validateProfiles(root: string, skillNames: string[], agentNames: string
     }
     if (profile.description != null && typeof profile.description !== "string") {
       addError(`Profile description must be a string: ${file}`);
+    } else if (name === "standard" && typeof profile.description === "string" && /\bdefault\b/i.test(profile.description)) {
+      addError(`Standard profile description must not claim to be the default installer set; installer default is all artifacts: ${file}`);
     }
     if (profile.extends != null) {
       if (typeof profile.extends !== "string" || profile.extends.trim() === "") {
@@ -738,23 +782,6 @@ function validateProfiles(root: string, skillNames: string[], agentNames: string
       seen.add(current);
       current = extendsMap.get(current);
     }
-  }
-
-  const resolvedSkills = (name: string, seen = new Set<string>()): string[] => {
-    if (seen.has(name)) {
-      return [];
-    }
-    seen.add(name);
-    const own = profileSkillsMap.get(name);
-    if (own !== undefined) {
-      return own;
-    }
-    const parent = extendsMap.get(name);
-    return parent ? resolvedSkills(parent, seen) : [];
-  };
-
-  for (const profile of profileNames) {
-    resolvedSkills(profile);
   }
 }
 
@@ -792,9 +819,17 @@ function stripJsonComments(text: string): string {
     }
     if (current === "/" && next === "*") {
       index += 2;
-      while (index < text.length && !(text[index] === "*" && text[index + 1] === "/")) {
+      let closed = false;
+      while (index < text.length) {
+        if (text[index] === "*" && text[index + 1] === "/") {
+          closed = true;
+          break;
+        }
         output += text[index] === "\n" ? "\n" : " ";
         index++;
+      }
+      if (!closed) {
+        throw new Error("Unterminated JSONC block comment.");
       }
       index++;
       continue;
@@ -946,7 +981,9 @@ function validateMarkdownFile(root: string, file: string, forbiddenAnchors: stri
     }
   }
 
-  const mentionsImplementation = /\b(implement|implementation|code changes?|behavior-changing|behavior changes?|fixes are allowed|edit workers?|write scope|make the smallest correct change)\b/i.test(text);
+  const implementationLanguage = /\b(implement|implementation|code changes?|behavior-changing|behavior changes?|fixes are allowed|edit workers?|write scope|make the smallest correct change)\b/i;
+  const negatedScopeLanguage = /\b(non-goals?|out of scope|not in scope|excluded|do not|must not|never)\b/i;
+  const mentionsImplementation = lines.some((line) => implementationLanguage.test(line) && !negatedScopeLanguage.test(line));
   const mentionsTdd = /\b(TDD|test-first|validation-first|tests? before|failing tests?[^.\n]{0,80}\bbefore\b|(?:tests?|benchmarks?|manual gates?|golden vectors?|fixtures?)[^.\n]{0,120}\bbefore\b|\bbefore\b[^.\n]{0,120}(?:tests?|benchmarks?|manual gates?|golden vectors?|fixtures?))\b/is.test(text);
 
   if (isInstructionArtifact && mentionsImplementation && !mentionsTdd) {

@@ -15,6 +15,12 @@ Use this skill when migrating or replacing legacy software and behavior must be 
 - Record when evidence is docs-only, ambiguous, untested, or blocked by missing hardware/access.
 - Distinguish compatibility requirements from implementation accidents.
 
+## Safety
+
+- Default to read-only source, test, schema, capture, and redacted log inspection.
+- Do not run legacy apps, clients, hardware/device probes, installers, network captures, or live/manual checks against shared systems unless the user approves target, command, limits, side effects, and stop/rollback criteria.
+- Redact secrets, credentials, private data, and unrelated log snippets from evidence and output.
+
 ## Workflow
 
 - Identify legacy sources and entry points.
