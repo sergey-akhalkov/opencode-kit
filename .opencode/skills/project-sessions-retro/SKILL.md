@@ -1,6 +1,6 @@
 ---
 name: project-sessions-retro
-description: Analyze bounded/current-project OpenCode sessions through a session-to-observation-to-trend-to-root-cause-to-plan-to-OpenSpec ledger.
+description: Analyze bounded/current-project OpenCode sessions for quality, speed, token economy, and root-cause-backed improvements through a durable ledger.
 license: MIT
 ---
 
@@ -16,6 +16,8 @@ For behavior-changing improvements to scripts, validators, skills, agents, confi
 
 - Work from evidence, not memory.
 - Treat observed problems as symptoms until the likely root cause is identified. Improvements should remove or reduce the cause that allowed the problem to happen, not merely restate the symptom.
+- Treat time, token use, and tool-chain efficiency as first-class retro dimensions alongside quality, validation, and collaboration. Look for avoidable token spend, slow operation chains, redundant reads/searches, missed parallelization, missed deterministic helpers, over-delegation, under-delegation, unnecessary summaries/plans/questions, repeated failed commands, and manual work that a safer faster command could have replaced.
+- For each efficiency issue, evaluate whether the same or better quality could have been achieved faster or with fewer tokens. Prefer fixes that improve quality, speed, and token economy together; do not recommend shortcuts that weaken evidence, validation, safety, or user outcomes.
 - The agent only has access to session artifacts that are present locally, exported, user-approved for remote/shared reads, or reachable through available tools.
 - Default scope is the current project/worktree. Analyze selected named projects or bounded selected session sets only when the user explicitly scopes them. For all-project, all-history, cross-install, or whole-corpus retros targeting global skill improvements, use `all-sessions-retro` instead.
 - Prefer session-by-session coverage for the selected scope. Do not rely on keyword searches as the primary method when full session artifacts are available.
@@ -56,6 +58,8 @@ If a source is unavailable, state it plainly and continue with remaining evidenc
 - Are there unreadable, binary, encrypted, truncated, or permission-blocked artifacts?
 - Are there retention gaps or current-session-only limits?
 - Is the task a full retro, read-only inventory only, or approved improvement work?
+- Which sessions show evidence of high tool counts, repeated reads/searches, long serial chains, avoidable transcript dumps, oversized context, missed batching/parallelization, missed helper usage, or slow validation loops?
+- Where is there a faster equivalent path that would preserve or improve quality, evidence, safety, and validation?
 
 Use read-only inspection for databases and logs. Never run database writes, migrations, vacuum, repair, or destructive cleanup against live session stores. If the user explicitly requires read-only/no-write mode, do not produce a full retro: return only source inventory, coverage limits, and the exact ledger command needed to continue.
 
@@ -96,6 +100,9 @@ Use helper commands before manual database exploration. Do not spend retro time 
 - User goal and constraints.
 - What the assistant did.
 - Tools used and tool failures.
+- Tool-chain efficiency: redundant tool calls, avoidable serial work, missed parallelization, missed deterministic helper, unnecessary broad reads, repeated failed commands, overlarge context, or needless agent/reviewer fan-out.
+- Faster-equivalent path: what could have reached equal or better quality sooner with fewer tokens, or `none/unknown` when evidence does not support a better path.
+- Record efficiency findings as normal observations with evidence refs and candidate lessons. If the ledger schema has no dedicated field, use existing audit lesson/symptom/root-cause notes rather than inventing unvalidated fields.
 - User corrections or dissatisfaction.
 - Validation performed or skipped.
 - Whether edits happened, and evidence for actual edit tools versus summary/diff metadata.
@@ -133,7 +140,7 @@ Broken links, missing completed-session audit fields, popular trends below the r
 ## Anti-False-Completion Gate
 
 - A source inventory, mechanical signal rollup, selected-session sample, or inline table is not a project retro.
-- Do not return `Findings`, `Recurring Patterns`, `Root-Cause Analysis`, `Improvement Backlog`, or `ready-to-land` language for a full retro until root `retro.json` exists and records coverage for every reachable current-project session.
+- Do not return `Findings`, `Efficiency And Token Economy`, `Recurring Patterns`, `Root-Cause Analysis`, `Improvement Backlog`, or `ready-to-land` language for a full retro until root `retro.json` exists and records coverage for every reachable current-project session.
 - If only partial work is possible, title the result `Partial Inventory` or `Partial Session Sample`, include `Project Ledger Status: blocked/partial`, and make the first continuation item the exact `retro.json` creation or resume command.
 - Do not mark a session complete from metadata, summary, keyword search, or a final answer alone. Completion requires full transcript review and populated `sessions.<sessionRef>.audit` plus observations.
 
@@ -154,6 +161,9 @@ Treat reviewer agents, worker agents, and user corrections as first-class retro 
 - Premature stopping or over-asking routine questions.
 - Underused parallel search/delegation.
 - Wrong tool choice or broken tool assumptions.
+- Excess token spend, overlarge context, repeated reads, or transcript dumps without a reusable evidence need.
+- Inefficient operation chains: avoidable serial tool calls, duplicate searches, repeated failed commands, missed batching, or missed deterministic helper opportunities.
+- Faster-equivalent paths that would improve quality, speed, and token economy together.
 - Prompt/instruction conflicts.
 - Repeated user corrections.
 - Scope creep or accidental refactors.
@@ -180,6 +190,7 @@ Return:
 - `Coverage Limits`: missing/inaccessible/truncated sources and confidence impact.
 - `Session Rollup`: concise batch/global summary.
 - `Findings`: severity, evidence, evidence type, impact, likely root cause, recommendation, confidence.
+- `Efficiency And Token Economy`: repeated avoidable time/token sinks, inefficient tool chains, missed faster-equivalent paths, expected quality impact of proposed improvements, and risks where faster work could reduce evidence quality.
 - `Recurring Patterns`: repeated problems and success patterns with representative session ids or artifacts.
 - `Root-Cause Analysis`: symptom -> likely root cause -> contributing factors -> recurrence path -> confidence.
 - `Improvement Backlog`: automation, instructions, skills, agents, prompts, docs, or validation changes, each naming the root cause it removes or the investigation needed to find it.
