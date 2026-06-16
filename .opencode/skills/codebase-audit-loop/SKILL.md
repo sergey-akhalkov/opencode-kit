@@ -45,6 +45,16 @@ Before deep work, define:
 - If fixes are allowed, add/update a focused regression or characterization test before behavior fixes when practical, then make the smallest fix, validate, and re-review.
 - Do not stop while scoped ledger items are unreviewed, fixable, validatable, or need re-review unless blocked by an external dependency.
 
+## Duplicate Discovery Gate
+
+Run this gate for broad or exhaustive audits when scope includes code, tests, docs, instructions, or helper/tooling logic, or when the user asks to avoid reinventing wheels.
+
+- Start with a deterministic first pass: `rg`/Glob inventories, repeated names, repeated test scenarios, repeated fixtures, repeated docs claims, duplicate helpers or wrappers, and dead or near-dead alternatives.
+- Classify candidates as `exact duplicate`, `near duplicate`, `overlapping responsibility`, `redundant wrapper`, `duplicate test intent`, `duplicate docs claim`, `keep separate by design`, or `not proven`.
+- Each material candidate needs evidence: `path:line`, snippet or summary, impact, and recommendation.
+- Do not auto-deduplicate code without behavior evidence and tests proving the merge/extract path is safe.
+- For material duplicate findings, use `code-quality-reviewer` or scoped read-only workers when useful; the main session owns final judgment and recommendations.
+
 ## Follow-Up Backlog Gate
 
 - If the audit produces several concrete fixes, validations, or investigation tasks that are related to this session but outside the current audit/fix scope, group them into OpenSpec follow-up changes instead of leaving a long untracked final list.
@@ -65,7 +75,7 @@ Return:
 - `Coverage`: what was reviewed and what was not.
 - `Findings`: severity, evidence, evidence type, impact, likely root cause, recommendation, confidence.
 - `Project Structure Ergonomics`: human navigability, agent navigability, folder taxonomy, dumping-ground candidates, canonical entrypoints, and tool/documentation discoverability.
-- `Redundancy Matrix`: duplicate/dead/merge/extract/keep candidates when in scope.
+- `Redundancy Matrix`: required for broad audits; include duplicate/dead/merge/extract/keep candidates with class, evidence, impact, and recommendation, or state `not run: <reason>`.
 - `Test Gap Matrix`: behavior -> evidence -> missing gate.
 - `Failure Mode Matrix`: scenario -> expected behavior -> evidence or blocker.
 - `Validation`: commands and reviewer gates run.
