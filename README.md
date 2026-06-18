@@ -181,14 +181,14 @@ npm run openspec:gate -- --operation prepush
 
 Use `--persist` only when a JSON evidence artifact should be written to `openspec/changes/<change-id>/automation/operation-gates/<operation>.json` from a write-authorized main session. Default operation-gate runs are read-only.
 
-Before archiving a completed OpenSpec change, create/update retrospective follow-ups with the mutating helper, then validate the read-only retrospective archive gate with:
+Before archiving a completed OpenSpec change, write `openspec/changes/<change-id>/retro.md`, create/update retrospective follow-ups with the mutating helper, then validate the read-only retrospective archive gate with:
 
 ```sh
 npm run openspec:retro-followups -- <change-id>
 npm run openspec:retro-gate -- <change-id>
 ```
 
-Use `npm run openspec:retro-followups -- <change-id> --dry-run` for read-only inspection. Without `--dry-run`, the follow-up helper reads actionable problem entries from `openspec/changes/<change-id>/automation/retro.json`, creates/updates OpenSpec follow-up changes before archive, and updates JSON follow-up ids. The retro gate then checks that `tasks.md` ends with `Retrospective Before Archive`, `automation/retro.json` exists, required schema fields are present, approved skips include reason and approver, actionable problems include `rootCause`, and actionable findings reference real follow-up changes with `proposal.md`, `tasks.md`, and `specs/<generated-id>/spec.md` that preserve the retrospective evidence and root cause.
+Use `npm run openspec:retro-followups -- <change-id> --dry-run` for read-only inspection. Without `--dry-run`, the follow-up helper reads actionable rows from `openspec/changes/<change-id>/retro.md`, creates/updates OpenSpec follow-up changes before archive, and updates the Markdown problem table plus `Outputs`. The retro gate then checks that `tasks.md` ends with `Retrospective Before Archive`, `retro.md` exists, required sections are present, approved skips include reason and approver, actionable problems include root cause, and actionable findings reference real follow-up changes with `proposal.md`, `tasks.md`, and `specs/<generated-id>/spec.md` that preserve the retrospective evidence and root cause.
 
 For installer changes, also prove the no-write path before using a real config directory:
 
@@ -349,9 +349,9 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 ## OpenSpec Retrospective Gate
 
-Before archiving a completed OpenSpec change, write `openspec/changes/<change-id>/automation/retro.json`, run `npm run openspec:retro-followups -- <change-id>` when available to create/update follow-up OpenSpec changes for actionable findings, then run `npm run openspec:retro-gate -- <change-id>`. New `tasks.md` files should end with `Retrospective Before Archive` so the final learning step is machine-checkable and includes root-cause review.
+Before archiving a completed OpenSpec change, write `openspec/changes/<change-id>/retro.md`, run `npm run openspec:retro-followups -- <change-id>` when available to create/update follow-up OpenSpec changes for actionable findings and update the Markdown, then run `npm run openspec:retro-gate -- <change-id>`. New `tasks.md` files should end with `Retrospective Before Archive` so the final learning step is machine-checkable and includes root-cause review.
 
-`automation/retro.json` should stay concise but evidence-backed. It includes `schemaVersion`, `changeId`, `evidenceReviewed`, `problems`, `outputs`, and `archiveGate`. Problem entries use `problem`, `evidence`, `impact`, `rootCause`, `recommendation`, `confidence`, `target`, `followUpChangeId`, and `noFollowUpReason`; actionable recommendations should address the cause or explicitly route an investigation/instrumentation follow-up when the cause is `unknown`. Actionable project-local or reusable skill/agent/instruction/validator findings must become real OpenSpec follow-up changes referenced from JSON outputs; otherwise use `target` `none` only for findings fixed in scope, intentionally non-actionable items, or justified no-follow-up decisions. Approved skips must include a reason and approver.
+`retro.md` should stay concise but evidence-backed and human-readable. Use sections for `Evidence Reviewed`, `Problems Found`, `Outputs`, and `Archive Gate Decision`; the `Problems Found` table records problem, evidence, impact, root cause, recommendation, confidence, target, follow-up change, and no-follow-up reason. Actionable recommendations should address the cause or explicitly route an investigation/instrumentation follow-up when the cause is `unknown`. Actionable project-local or reusable skill/agent/instruction/validator findings must become real OpenSpec follow-up changes referenced from `Outputs`; use target `none` only for findings fixed in scope, intentionally non-actionable items, or justified no-follow-up decisions. Approved skips must include a reason and approver.
 
 ## Skill Catalog
 
@@ -387,7 +387,7 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 - `openspec-propose`: draft proposal/design/spec/tasks, including lightweight follow-up backlog changes from audit/retro/reviewer evidence.
 - `openspec-apply-change`: implement accepted OpenSpec changes with TDD-first task execution.
 - `openspec-consistency-review`: review proposal/design/spec/tasks/docs/tests sync.
-- `openspec-archive-change`: archive completed changes after evidence gates.
+- `openspec-archive-change`: archive completed changes after evidence gates and the `retro.md` retrospective follow-up gate.
 - `production-service-openspec`: production-oriented service baseline change authoring.
 
 ### Technical Domains

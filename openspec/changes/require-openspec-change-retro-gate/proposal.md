@@ -10,7 +10,7 @@ Every completed OpenSpec change should produce a small, evidence-backed retrospe
 
 - Add an archive gate: an OpenSpec change cannot be archived until a change-specific retrospective is completed or an explicit approved skip reason is recorded.
 - Require every new OpenSpec `tasks.md` to end with a final retrospective task before archive.
-- Define a standard `retrospective.md` artifact for each change.
+- Define a standard `retro.md` artifact for each change.
 - Require retrospectives to inspect the full reachable context of the change: artifacts, task history, validation, reviewer outputs, tool outputs, blockers, waiting time, repeated operations, token-heavy steps, and handoff quality.
 - Require retrospectives to produce one of three outcomes: `No findings`, project-local OpenSpec follow-up changes, or reusable improvement proposals for `opencode-dev-kit`, with actionable findings backed by real generated OpenSpec changes before archive.
 - Add deterministic helper implementation for generating retrospective follow-up changes and checking the retro archive gate.

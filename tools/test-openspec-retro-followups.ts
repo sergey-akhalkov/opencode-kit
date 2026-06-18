@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createRetroFollowUps } from "./openspec-retro-followups.ts";
 import { evaluateRetroGate } from "./openspec-retro-gate.ts";
 
@@ -10,7 +12,9 @@ type TestCase = {
   run: () => void;
 };
 
-const generatedAt = "2026-06-13T00:00:00.000Z";
+const toolDir = path.dirname(fileURLToPath(import.meta.url));
+const retroFollowupsCli = path.join(toolDir, "openspec-retro-followups.ts");
+const retroGateCli = path.join(toolDir, "openspec-retro-gate.ts");
 
 function withTempRepo(name: string, run: (repo: string) => void): void {
   const repo = fs.mkdtempSync(path.join(os.tmpdir(), `openspec-retro-followups-${name}-`));
@@ -31,39 +35,60 @@ function tasksWithRetro(changeId: string): string {
 ## Retrospective Before Archive
 
 - [x] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [x] Write \`openspec/changes/${changeId}/automation/retro.json\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
-- [x] Create or update project-local OpenSpec follow-up changes for project-local findings.
-- [x] For reusable findings, create or update \`opencode-dev-kit\` OpenSpec proposals/changes only when the current repository owns them; otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [x] Write \`openspec/changes/${changeId}/retro.md\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
 - [x] Run \`npm run openspec:retro-followups -- ${changeId}\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
-- [x] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in \`automation/retro.json\`.
+- [x] If the helper is unavailable, manually create or update project-local OpenSpec follow-up changes for project-local findings; for reusable \`opencode-dev-kit\` findings, write only when the current repository owns the reusable artifact and current write scope includes it, otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [x] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded in \`retro.md\`.
 `;
 }
 
-function retroJson(changeId: string, problems = defaultProblems()): string {
-  return `${JSON.stringify({
-    schemaVersion: 1,
-    changeId,
-    generatedAt,
-    evidenceReviewed: [
-      {
-        kind: "command",
-        source: "npm test",
-        status: "passed",
-        summary: "Focused validation passed.",
-      },
-    ],
-    problems,
-    outputs: {
-      projectFollowUpChanges: [],
-      opencodeDevKitChanges: [],
-      noFindingsReason: problems.length === 0 ? "Evidence reviewed; no actionable findings." : "Evidence reviewed before routing.",
-    },
-    archiveGate: {
-      decision: "passed",
-      reason: problems.length === 0 ? "No findings with evidence reviewed." : "Findings routed to durable OpenSpec changes.",
-      approver: null,
-    },
-  }, null, 2)}\n`;
+function markdownId(value: unknown): string {
+  return typeof value === "string" && value.trim() !== "" ? `\`${value}\`` : "none";
+}
+
+function markdownText(value: unknown): string {
+  return typeof value === "string" && value.trim() !== "" ? value : "none";
+}
+
+function problemTable(problems: Record<string, unknown>[]): string {
+  const lines = [
+    "| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target | Follow-up Change | No Follow-up Reason |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+  ];
+  for (const problem of problems) {
+    lines.push(`| ${markdownText(problem.problem)} | ${markdownText(problem.evidence)} | ${markdownText(problem.impact)} | ${markdownText(problem.rootCause)} | ${markdownText(problem.recommendation)} | ${markdownText(problem.confidence)} | ${markdownText(problem.target)} | ${markdownId(problem.followUpChangeId)} | ${markdownText(problem.noFollowUpReason)} |`);
+  }
+  return lines.join("\n");
+}
+
+function outputIds(ids: unknown[]): string {
+  const textIds = ids.filter((id): id is string => typeof id === "string" && id.length > 0);
+  return textIds.length === 0 ? "none" : textIds.map((id) => `\`${id}\``).join(", ");
+}
+
+function retroMd(changeId: string, problems = defaultProblems()): string {
+  return `# Retro: ${changeId}
+
+## Evidence Reviewed
+
+- Tool outputs / validation: npm test passed.
+
+## Problems Found
+
+${problemTable(problems)}
+
+## Outputs
+
+- Project follow-up changes: ${outputIds(problems.filter((problem) => problem.target === "project-local").map((problem) => problem.followUpChangeId))}.
+- \`opencode-dev-kit\` proposals/changes: ${outputIds(problems.filter((problem) => problem.target === "opencode-dev-kit").map((problem) => problem.followUpChangeId))}.
+- No findings reason: ${problems.length === 0 ? "Evidence reviewed; no actionable findings." : "n/a"}.
+
+## Archive Gate Decision
+
+- Decision: passed
+- Reason: ${problems.length === 0 ? "No findings with evidence reviewed." : "Findings routed to durable OpenSpec changes."}
+- Approver, if skipped: none
+`;
 }
 
 function defaultProblems(): Record<string, unknown>[] {
@@ -120,11 +145,11 @@ function unknownCauseProblems(): Record<string, unknown>[] {
   ];
 }
 
-function writeChange(repo: string, changeId: string, json = retroJson(changeId)): void {
+function writeChange(repo: string, changeId: string, markdown = retroMd(changeId)): void {
   const base = path.join(repo, "openspec", "changes", changeId);
-  fs.mkdirSync(path.join(base, "automation"), { recursive: true });
+  fs.mkdirSync(base, { recursive: true });
   fs.writeFileSync(path.join(base, "tasks.md"), tasksWithRetro(changeId), "utf8");
-  fs.writeFileSync(path.join(base, "automation", "retro.json"), json, "utf8");
+  fs.writeFileSync(path.join(base, "retro.md"), markdown, "utf8");
 }
 
 function assert(condition: boolean, message: string): void {
@@ -135,7 +160,7 @@ function assert(condition: boolean, message: string): void {
 
 const tests: TestCase[] = [
   {
-    name: "follow-up helper creates changes and updates retro json outputs",
+    name: "follow-up helper creates changes and updates retro md outputs",
     run: () => withTempRepo("create", (repo) => {
       writeChange(repo, "example");
       const result = createRetroFollowUps(repo, "example");
@@ -148,10 +173,10 @@ const tests: TestCase[] = [
         const spec = fs.existsSync(specPath) ? fs.readFileSync(specPath, "utf8") : "";
         assert(spec.includes("## ADDED Requirements") && spec.includes("#### Scenario:"), `Missing valid spec delta for ${change.id}.`);
       }
-      const retro = JSON.parse(fs.readFileSync(path.join(repo, "openspec", "changes", "example", "automation", "retro.json"), "utf8")) as Record<string, unknown>;
-      assert(JSON.stringify(retro).includes("retro-example-01-project-docs-drift"), "Project output must reference generated follow-up change.");
-      assert(JSON.stringify(retro).includes("retro-example-02-workflow-routing-friction"), "Reusable output must reference generated follow-up change.");
-      assert((retro.outputs as { noFindingsReason?: unknown }).noFindingsReason === null, "No-findings reason must be cleared when findings create changes.");
+      const retro = fs.readFileSync(path.join(repo, "openspec", "changes", "example", "retro.md"), "utf8");
+      assert(retro.includes("`retro-example-01-project-docs-drift`"), "Project output must reference generated follow-up change.");
+      assert(retro.includes("`retro-example-02-workflow-routing-friction`"), "Reusable output must reference generated follow-up change.");
+      assert(retro.includes("No findings reason: n/a"), "No-findings reason must be cleared when findings create changes.");
       const gate = evaluateRetroGate(repo, "example");
       assert(gate.valid && gate.archiveAllowed, `Generated follow-ups should satisfy retro gate, got ${JSON.stringify(gate.errors)}.`);
     }),
@@ -159,7 +184,7 @@ const tests: TestCase[] = [
   {
     name: "follow-up helper routes unknown root causes to investigation wording",
     run: () => withTempRepo("unknown", (repo) => {
-      writeChange(repo, "investigate-case", retroJson("investigate-case", unknownCauseProblems()));
+      writeChange(repo, "investigate-case", retroMd("investigate-case", unknownCauseProblems()));
       const result = createRetroFollowUps(repo, "investigate-case");
       assert(result.changes.length === 1, `Expected one investigation follow-up, got ${JSON.stringify(result.changes)}.`);
       const proposal = fs.readFileSync(path.join(repo, "openspec", "changes", "retro-investigate-case-01-mystery-failure", "proposal.md"), "utf8");
@@ -187,10 +212,54 @@ const tests: TestCase[] = [
   {
     name: "follow-up helper reports no writes for no actionable findings",
     run: () => withTempRepo("none", (repo) => {
-      writeChange(repo, "example", retroJson("example", []));
+      writeChange(repo, "example", retroMd("example", []));
       const result = createRetroFollowUps(repo, "example");
       assert(result.changes.length === 0, `No actionable targets must create no changes, got ${JSON.stringify(result.changes)}.`);
-      assert(!result.retrospectiveUpdated, "No actionable targets must not update retro json outputs.");
+      assert(!result.retrospectiveUpdated, "No actionable targets must not update retro md outputs.");
+    }),
+  },
+  {
+    name: "follow-up helper rejects unsafe ids before writing",
+    run: () => withTempRepo("unsafe-id", (repo) => {
+      let unsafeSourceFailed = false;
+      try {
+        createRetroFollowUps(repo, "../escape");
+      } catch (error) {
+        unsafeSourceFailed = true;
+        const message = error instanceof Error ? error.message : String(error);
+        assert(message.includes("Invalid change id"), `Unsafe source change id error should be explicit, got ${message}.`);
+      }
+      assert(unsafeSourceFailed, "Unsafe source change id must fail before reads or writes.");
+
+      const [problem] = defaultProblems();
+      writeChange(repo, "example", retroMd("example", [{ ...problem, followUpChangeId: "../../escape" }]));
+      let failed = false;
+      try {
+        createRetroFollowUps(repo, "example");
+      } catch (error) {
+        failed = true;
+        const message = error instanceof Error ? error.message : String(error);
+        assert(message.includes("Unsafe follow-up change id"), `Unsafe id error should be explicit, got ${message}.`);
+      }
+      assert(failed, "Unsafe custom follow-up id must fail.");
+      assert(!fs.existsSync(path.join(repo, "openspec", "escape")), "Unsafe id must not write outside openspec/changes.");
+      assert(!fs.existsSync(path.join(repo, "escape")), "Unsafe id must not write outside the repository change tree.");
+    }),
+  },
+  {
+    name: "follow-up helper preflights all ids before any writes",
+    run: () => withTempRepo("unsafe-batch", (repo) => {
+      const [safeProblem, unsafeProblem] = defaultProblems();
+      writeChange(repo, "example", retroMd("example", [safeProblem, { ...unsafeProblem, followUpChangeId: "../../escape" }]));
+      let failed = false;
+      try {
+        createRetroFollowUps(repo, "example");
+      } catch {
+        failed = true;
+      }
+      assert(failed, "Unsafe id anywhere in the batch must fail.");
+      assert(!fs.existsSync(path.join(repo, "openspec", "changes", "retro-example-01-project-docs-drift")), "Safe earlier finding must not be written before later unsafe id fails.");
+      assert(!fs.existsSync(path.join(repo, "openspec", "escape")), "Unsafe later id must not write outside openspec/changes.");
     }),
   },
   {
@@ -212,6 +281,24 @@ const tests: TestCase[] = [
       assert(fs.readFileSync(path.join(existing, "proposal.md"), "utf8") === proposal, "Proposal with required fragments must remain unchanged.");
       assert(fs.readFileSync(path.join(existing, "tasks.md"), "utf8") === tasks, "Tasks with required fragments must remain unchanged.");
       assert(fs.readFileSync(path.join(existing, "specs", "retro-example-01-project-docs-drift", "spec.md"), "utf8") === spec, "Spec with required fragments must remain unchanged.");
+    }),
+  },
+  {
+    name: "follow-up helper skips partial existing files without overwriting",
+    run: () => withTempRepo("skip-partial", (repo) => {
+      writeChange(repo, "example");
+      const existing = path.join(repo, "openspec", "changes", "retro-example-01-project-docs-drift");
+      fs.mkdirSync(existing, { recursive: true });
+      const proposal = "# Human Proposal\n\nHuman-added context without generated fragments.\n";
+      fs.writeFileSync(path.join(existing, "proposal.md"), proposal, "utf8");
+
+      const result = createRetroFollowUps(repo, "example");
+      const project = result.changes.find((change) => change.id === "retro-example-01-project-docs-drift");
+      assert(project?.status === "skipped", `Partial existing follow-up must be skipped, got ${JSON.stringify(project)}.`);
+      assert(fs.readFileSync(path.join(existing, "proposal.md"), "utf8") === proposal, "Partial existing proposal must not be overwritten.");
+      assert(!fs.existsSync(path.join(existing, "tasks.md")), "Skipped partial follow-up must not receive generated tasks.");
+      const retro = fs.readFileSync(path.join(repo, "openspec", "changes", "example", "retro.md"), "utf8");
+      assert(!retro.includes("`retro-example-01-project-docs-drift`"), "Skipped partial follow-up must not be marked routed in retro.md.");
     }),
   },
   {
@@ -241,21 +328,49 @@ const tests: TestCase[] = [
           noFollowUpReason: null,
         },
       ];
-      writeChange(repo, "dupes", retroJson("dupes", duplicateProblems));
+      writeChange(repo, "dupes", retroMd("dupes", duplicateProblems));
       const result = createRetroFollowUps(repo, "dupes");
       assert(result.changes.length === 2, `Expected two duplicate-title follow-ups, got ${JSON.stringify(result.changes)}.`);
-      const retro = JSON.parse(fs.readFileSync(path.join(repo, "openspec", "changes", "dupes", "automation", "retro.json"), "utf8")) as { problems: Array<{ followUpChangeId: string | null }> };
-      assert(retro.problems[0]?.followUpChangeId === "retro-dupes-01-duplicate-problem", `First duplicate follow-up wrong: ${JSON.stringify(retro.problems)}.`);
-      assert(retro.problems[1]?.followUpChangeId === "retro-dupes-02-duplicate-problem", `Second duplicate follow-up wrong: ${JSON.stringify(retro.problems)}.`);
+      const retro = fs.readFileSync(path.join(repo, "openspec", "changes", "dupes", "retro.md"), "utf8");
+      assert(retro.includes("`retro-dupes-01-duplicate-problem`"), `First duplicate follow-up missing: ${retro}.`);
+      assert(retro.includes("`retro-dupes-02-duplicate-problem`"), `Second duplicate follow-up missing: ${retro}.`);
     }),
   },
   {
     name: "follow-up helper ignores whitespace noFollowUpReason",
     run: () => withTempRepo("blank-no-followup", (repo) => {
       const [problem] = defaultProblems();
-      writeChange(repo, "example", retroJson("example", [{ ...problem, noFollowUpReason: "   " }]));
+      writeChange(repo, "example", retroMd("example", [{ ...problem, noFollowUpReason: "   " }]));
       const result = createRetroFollowUps(repo, "example");
       assert(result.changes.length === 1, `Blank noFollowUpReason must still create follow-up, got ${JSON.stringify(result.changes)}.`);
+    }),
+  },
+  {
+    name: "retro CLI supports dry-run and gate command boundary",
+    run: () => withTempRepo("cli", (repo) => {
+      writeChange(repo, "example");
+      const retroPath = path.join(repo, "openspec", "changes", "example", "retro.md");
+      const beforeDryRun = fs.readFileSync(retroPath, "utf8");
+      const dryRun = spawnSync(process.execPath, [retroFollowupsCli, "example", "--root", repo, "--dry-run"], { encoding: "utf8" });
+      assert(dryRun.status === 0, `Dry-run CLI should pass, got ${dryRun.status}: ${dryRun.stderr || dryRun.stdout}`);
+      const dryRunPreview = JSON.parse(dryRun.stdout) as { changes: unknown[]; retrospectiveUpdated: boolean };
+      assert(dryRunPreview.changes.length === 2, `Dry-run CLI should preview two changes, got ${dryRun.stdout}.`);
+      assert(dryRunPreview.retrospectiveUpdated, "Dry-run CLI should report that retro.md would be updated.");
+      assert(fs.readFileSync(retroPath, "utf8") === beforeDryRun, "Dry-run CLI must not mutate retro.md.");
+      assert(!fs.existsSync(path.join(repo, "openspec", "changes", "retro-example-01-project-docs-drift")), "Dry-run CLI must not write follow-up changes.");
+
+      const followups = spawnSync(process.execPath, [retroFollowupsCli, "example", "--root", repo], { encoding: "utf8" });
+      assert(followups.status === 0, `Followups CLI should pass, got ${followups.status}: ${followups.stderr || followups.stdout}`);
+      const gate = spawnSync(process.execPath, [retroGateCli, "example", "--root", repo], { encoding: "utf8" });
+      assert(gate.status === 0, `Gate CLI should pass after followups, got ${gate.status}: ${gate.stderr || gate.stdout}`);
+
+      const missingChange = spawnSync(process.execPath, [retroGateCli, "--root", repo], { encoding: "utf8" });
+      assert(missingChange.status !== 0, "Gate CLI without change id must fail.");
+
+      const unsafeFollowups = spawnSync(process.execPath, [retroFollowupsCli, "../escape", "--root", repo], { encoding: "utf8" });
+      assert(unsafeFollowups.status !== 0 && (unsafeFollowups.stderr + unsafeFollowups.stdout).includes("Invalid change id"), "Followups CLI must reject unsafe source change id.");
+      const unsafeGate = spawnSync(process.execPath, [retroGateCli, "../escape", "--root", repo], { encoding: "utf8" });
+      assert(unsafeGate.status !== 0 && unsafeGate.stdout.includes("Invalid change id"), "Gate CLI must reject unsafe source change id.");
     }),
   },
 ];

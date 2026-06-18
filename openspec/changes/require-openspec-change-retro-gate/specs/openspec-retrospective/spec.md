@@ -10,12 +10,12 @@ An OpenSpec change SHALL NOT be archived until a change-specific retrospective i
 
 - **GIVEN** an OpenSpec change has completed implementation, validation, review, and acceptance work
 - **WHEN** archive is requested
-- **THEN** the archive workflow checks for `retrospective.md`
+- **THEN** the archive workflow checks for `retro.md`
 - **AND** archive proceeds only if the retrospective records a passed archive gate or an approved skip reason
 
 #### Scenario: Retrospective is missing
 
-- **GIVEN** an OpenSpec change has no `retrospective.md`
+- **GIVEN** an OpenSpec change has no `retro.md`
 - **WHEN** archive is requested
 - **THEN** archive is blocked
 - **AND** the user is told to run the change-specific retrospective first
@@ -28,7 +28,7 @@ Every new OpenSpec change task list SHALL include a final retrospective section 
 
 - **GIVEN** a new OpenSpec change is created
 - **WHEN** `tasks.md` is written
-- **THEN** the final task section requires reviewing completed context and likely root causes, writing `retrospective.md`, routing findings, and confirming the archive gate
+- **THEN** the final task section requires reviewing completed context and likely root causes, writing `retro.md`, routing findings, and confirming the archive gate
 
 ### Requirement: Retrospective Reviews Full Work Context
 
@@ -68,18 +68,18 @@ Retrospective findings SHALL become durable follow-up artifacts unless fixed in 
 - **GIVEN** a retrospective finding applies to the current project only
 - **WHEN** the finding is not fixed immediately in approved scope
 - **THEN** the retrospective follow-up helper creates or reuses a current-project OpenSpec follow-up change
-- **AND** `retrospective.md` references the generated change id in `Outputs`
+- **AND** `retro.md` references the generated change id in `Outputs`
 
 #### Scenario: Reusable workflow finding is confirmed
 
 - **GIVEN** a retrospective finding applies to reusable skills, agents, instructions, validators, evidence packs, or shared OpenCode workflow
 - **WHEN** the finding is not fixed immediately in approved scope
 - **THEN** the retrospective follow-up helper creates or reuses an `opencode-dev-kit` OpenSpec proposal/change when the current repository owns it, or a local handoff artifact when cross-repo writes are not approved
-- **AND** `retrospective.md` references the generated follow-up id in `Outputs`
+- **AND** `retro.md` references the generated follow-up id in `Outputs`
 
 #### Scenario: Follow-up output is referenced but missing
 
-- **GIVEN** `retrospective.md` has a finding with target `project-local` or `opencode-dev-kit`
+- **GIVEN** `retro.md` has a finding with target `project-local` or `opencode-dev-kit`
 - **AND** the finding records a root cause or explicit `unknown` cause requiring investigation or instrumentation
 - **AND** `Outputs` names a follow-up id
 - **WHEN** archive is requested
@@ -90,7 +90,7 @@ Retrospective findings SHALL become durable follow-up artifacts unless fixed in 
 
 - **GIVEN** the retrospective finds no actionable problems
 - **WHEN** archive is requested
-- **THEN** `retrospective.md` records `No findings` with evidence reviewed
+- **THEN** `retro.md` records `No findings` with evidence reviewed
 - **AND** archive may proceed
 
 ### Requirement: Retro Gate Is Machine-Checkable
@@ -102,7 +102,7 @@ The retrospective gate SHALL be enforceable by deterministic validation once the
 - **GIVEN** a change id
 - **WHEN** the retro gate helper runs
 - **THEN** it reports whether `tasks.md` includes a final retro task
-- **AND** whether `retrospective.md` exists and includes evidence, outputs, and archive decision
+- **AND** whether `retro.md` exists and includes evidence, outputs, and archive decision
 - **AND** whether actionable findings reference existing follow-up OpenSpec changes
 - **AND** whether actionable findings include root cause evidence or explicit investigation routing
 - **AND** whether archive is allowed

@@ -36,7 +36,7 @@ const requiredScripts = {
   "prepush:validate": "node tools/pre-push-validate.ts",
   validate: "node tools/validate-library.ts",
   "validate:strict": "node tools/validate-library.ts --fail-on-warnings",
-  test: "node tools/test-library.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts",
+  test: "node tools/test-library.ts && node tools/test-openspec-retro-gate.ts && node tools/test-openspec-retro-followups.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts",
 } as const;
 
 function newTempDir(name: string): string {
@@ -206,6 +206,30 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "validator rejects wrong documented OpenSpec retro gate script",
+    run: () => {
+      withTempDir("wrong-openspec-retro-gate-script", (fixture) => {
+        writePackageJson(fixture, withScript("openspec:retro-gate", "node tools/wrong-retro-gate.ts"));
+        const result = invokeValidator(fixture);
+        assertFailure(result, "Wrong OpenSpec retro gate script should fail validation.");
+        assertOutputContains(result, "openspec:retro-gate", "Wrong OpenSpec retro gate script should name the script.");
+        assertOutputContains(result, "node tools/openspec-retro-gate.ts", "Wrong OpenSpec retro gate script should name the required command.");
+      });
+    },
+  },
+  {
+    name: "validator rejects wrong documented OpenSpec retro followups script",
+    run: () => {
+      withTempDir("wrong-openspec-retro-followups-script", (fixture) => {
+        writePackageJson(fixture, withScript("openspec:retro-followups", "node tools/wrong-retro-followups.ts"));
+        const result = invokeValidator(fixture);
+        assertFailure(result, "Wrong OpenSpec retro followups script should fail validation.");
+        assertOutputContains(result, "openspec:retro-followups", "Wrong OpenSpec retro followups script should name the script.");
+        assertOutputContains(result, "node tools/openspec-retro-followups.ts", "Wrong OpenSpec retro followups script should name the required command.");
+      });
+    },
+  },
+  {
     name: "validator rejects missing project session retro ledger script",
     run: () => {
       withTempDir("missing-project-retro-ledger-script", (fixture) => {
@@ -237,6 +261,18 @@ const tests: TestCase[] = [
         assertFailure(result, "Test script missing project retro ledger tests should fail validation.");
         assertOutputContains(result, "node tools/test-project-session-retro-ledger.ts", "Missing test wiring should name the required test command.");
         assertOutputContains(result, "node tools/test-project-session-retro-ledger-cli.ts", "Missing CLI test wiring should name the required test command.");
+      });
+    },
+  },
+  {
+    name: "validator rejects test script missing OpenSpec retro tests",
+    run: () => {
+      withTempDir("test-script-missing-openspec-retro", (fixture) => {
+        writePackageJson(fixture, withScript("test", "node tools/test-library.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts"));
+        const result = invokeValidator(fixture);
+        assertFailure(result, "Test script missing OpenSpec retro tests should fail validation.");
+        assertOutputContains(result, "node tools/test-openspec-retro-gate.ts", "Missing retro gate test wiring should name the required test command.");
+        assertOutputContains(result, "node tools/test-openspec-retro-followups.ts", "Missing retro followups test wiring should name the required test command.");
       });
     },
   },

@@ -29,7 +29,7 @@ OpenSpec proposal and apply operations SHALL be checked before implementation st
 
 - **GIVEN** a new OpenSpec change exists
 - **WHEN** the propose gate runs
-- **THEN** it validates safe change id, required OpenSpec documents, spec deltas when behavior changes, test-first tasks, and JSON retrospective archive tail
+- **THEN** it validates safe change id, required OpenSpec documents, spec deltas when behavior changes, test-first tasks, and Markdown `retro.md` retrospective archive tail
 
 #### Scenario: Apply gate evaluates implementation readiness
 
@@ -78,7 +78,7 @@ Archive and post-archive operations SHALL validate retrospectives, follow-ups, f
 
 - **GIVEN** archive is requested for an OpenSpec change
 - **WHEN** the archive gate runs
-- **THEN** tasks are complete or routed, `automation/retro.json` passes, follow-up changes exist, freshness gates pass, and OpenSpec validation passes
+- **THEN** tasks are complete or routed, `retro.md` passes, follow-up changes exist, freshness gates pass, and OpenSpec validation passes
 
 #### Scenario: Post-archive gate runs
 
@@ -95,7 +95,7 @@ Pre-push validation SHALL include OpenSpec operation gates for changed OpenSpec 
 - **GIVEN** changed files include active OpenSpec documents or automation JSON
 - **WHEN** pre-push validation runs
 - **THEN** it runs scoped OpenSpec operation checks appropriate to the changed files
-- **AND** stale completed changes, missing JSON retros, and archive/post-archive inconsistencies block or warn according to the configured gate level
+- **AND** stale completed changes, missing Markdown retros, and archive/post-archive inconsistencies block or warn according to the configured gate level
 
 ### Requirement: Programmatic Triggers Use Operation Gates Safely
 
@@ -103,7 +103,7 @@ Programmatic triggers SHALL use operation gates as read-only checkpoints unless 
 
 #### Scenario: Passive file event changes OpenSpec state
 
-- **GIVEN** a passive file event updates `tasks.md`, spec deltas, `automation/retro.json`, or operation-gate JSON
+- **GIVEN** a passive file event updates `tasks.md`, spec deltas, `retro.md`, or operation-gate JSON
 - **WHEN** observe-mode triggers evaluate the event
 - **THEN** the workflow may schedule a cheap read-only operation gate or status check
 - **AND** it does not claim work from the passive event

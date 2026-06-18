@@ -51,11 +51,10 @@ function taskTail(sourceChangeId: string): string {
   return `## Retrospective Before Archive
 
 - [ ] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [ ] Write \`openspec/changes/${sourceChangeId}/automation/retro.json\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
-- [ ] Create or update project-local OpenSpec follow-up changes for project-local findings.
-- [ ] For reusable findings, create or update \`opencode-dev-kit\` OpenSpec proposals/changes only when the current repository owns them; otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [ ] Write \`openspec/changes/${sourceChangeId}/retro.md\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
 - [ ] Run \`npm run openspec:retro-followups -- ${sourceChangeId}\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
-- [ ] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in \`automation/retro.json\`.
+- [ ] If the helper is unavailable, manually create or update project-local OpenSpec follow-up changes for project-local findings; for reusable \`opencode-dev-kit\` findings, write only when the current repository owns the reusable artifact and current write scope includes it, otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [ ] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded in \`retro.md\`.
 `;
 }
 
@@ -67,7 +66,7 @@ function proposalText(sourceChangeId: string, finding: RetroFinding): string {
 
 ## Why
 
-This follow-up was generated from \`${sourceChangeId}\` automation retrospective evidence.
+This follow-up was generated from \`${sourceChangeId}\` \`retro.md\` retrospective evidence.
 
 - Problem: ${finding.problem}
 - Evidence: ${finding.evidence}
@@ -141,9 +140,17 @@ function followUpId(sourceChangeId: string, finding: RetroFinding, index: number
   return finding.followUpChangeId ?? expectedFollowUpId(sourceChangeId, finding, index);
 }
 
-function fileNeedsWrite(filePath: string, expected: string, requiredFragments: string[]): boolean {
+function fileNeedsWrite(filePath: string, requiredFragments: string[]): boolean {
   if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
     return true;
+  }
+  const current = normalizeText(fs.readFileSync(filePath, "utf8"));
+  return requiredFragments.some((fragment) => !current.includes(fragment));
+}
+
+function existingFileMissingFragments(filePath: string, requiredFragments: string[]): boolean {
+  if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+    return false;
   }
   const current = normalizeText(fs.readFileSync(filePath, "utf8"));
   return requiredFragments.some((fragment) => !current.includes(fragment));
@@ -166,10 +173,11 @@ function unique(values: string[]): string[] {
 }
 
 function updatedArtifact(artifact: RetroArtifact, changes: RetroFollowUpChange[]): RetroArtifact {
-  if (changes.length === 0) {
+  const routedChanges = changes.filter((change) => change.status !== "skipped");
+  if (routedChanges.length === 0) {
     return artifact;
   }
-  const byIndex = new Map(changes.map((change) => [change.findingIndex, change]));
+  const byIndex = new Map(routedChanges.map((change) => [change.findingIndex, change]));
   const problems = artifact.problems.map((problem, index) => {
     const change = byIndex.get(index);
     if (change == null) {
@@ -181,8 +189,8 @@ function updatedArtifact(artifact: RetroArtifact, changes: RetroFollowUpChange[]
     ...artifact,
     problems,
     outputs: {
-      projectFollowUpChanges: unique([...artifact.outputs.projectFollowUpChanges, ...changes.filter((change) => change.target === "project-local").map((change) => change.id)]),
-      opencodeDevKitChanges: unique([...artifact.outputs.opencodeDevKitChanges, ...changes.filter((change) => change.target === "opencode-dev-kit").map((change) => change.id)]),
+      projectFollowUpChanges: unique([...artifact.outputs.projectFollowUpChanges, ...routedChanges.filter((change) => change.target === "project-local").map((change) => change.id)]),
+      opencodeDevKitChanges: unique([...artifact.outputs.opencodeDevKitChanges, ...routedChanges.filter((change) => change.target === "opencode-dev-kit").map((change) => change.id)]),
       noFindingsReason: null,
     },
   };
@@ -196,10 +204,11 @@ export function createRetroFollowUps(root: string, changeId: string, options: { 
   const actionableFindings = artifact.problems
     .map((finding, findingIndex) => ({ finding, findingIndex }))
     .filter((entry) => entry.finding.target !== "none" && !isMeaningful(entry.finding.noFollowUpReason));
-  const changes: RetroFollowUpChange[] = [];
-
-  actionableFindings.forEach(({ finding, findingIndex }, index) => {
+  const prepared = actionableFindings.map(({ finding, findingIndex }, index) => {
     const id = followUpId(changeId, finding, index);
+    if (!safeChangeId(id)) {
+      throw new Error(`Unsafe follow-up change id '${id}' for retrospective finding '${finding.problem}'.`);
+    }
     const followUpRoot = path.join(root, "openspec", "changes", id);
     const proposalPath = path.join(followUpRoot, "proposal.md");
     const tasksPath = path.join(followUpRoot, "tasks.md");
@@ -209,25 +218,59 @@ export function createRetroFollowUps(root: string, changeId: string, options: { 
     const spec = specText(id, changeId, finding);
     const taskRootCauseFragment = isUnknownRootCause(finding.rootCause) ? "Investigate and document the root cause" : finding.rootCause;
     const specRootCauseFragment = isUnknownRootCause(finding.rootCause) ? "discovered root cause" : finding.rootCause;
-    const proposalNeedsWrite = fileNeedsWrite(proposalPath, proposal, [finding.problem, finding.evidence, finding.impact, finding.rootCause, finding.recommendation]);
-    const tasksNeedsWrite = fileNeedsWrite(tasksPath, tasks, [taskRootCauseFragment, finding.recommendation]);
-    const specNeedsWrite = fileNeedsWrite(specPath, spec, ["## ADDED Requirements", "#### Scenario:", specRootCauseFragment, finding.recommendation]);
+    const proposalFragments = [finding.problem, finding.evidence, finding.impact, finding.rootCause, finding.recommendation];
+    const taskFragments = [taskRootCauseFragment, finding.recommendation];
+    const specFragments = ["## ADDED Requirements", "#### Scenario:", specRootCauseFragment, finding.recommendation];
+    const hasPartialExistingFile = existingFileMissingFragments(proposalPath, proposalFragments) || existingFileMissingFragments(tasksPath, taskFragments) || existingFileMissingFragments(specPath, specFragments);
+    if (hasPartialExistingFile) {
+      return {
+        change: { id, target: finding.target, status: "skipped" as const, path: relativePosix(root, followUpRoot), problem: finding.problem, findingIndex },
+        proposalPath,
+        tasksPath,
+        specPath,
+        proposal,
+        tasks,
+        spec,
+        proposalNeedsWrite: false,
+        tasksNeedsWrite: false,
+        specNeedsWrite: false,
+      };
+    }
+    const proposalNeedsWrite = fileNeedsWrite(proposalPath, proposalFragments);
+    const tasksNeedsWrite = fileNeedsWrite(tasksPath, taskFragments);
+    const specNeedsWrite = fileNeedsWrite(specPath, specFragments);
     const needsWrite = proposalNeedsWrite || tasksNeedsWrite || specNeedsWrite;
-    changes.push({ id, target: finding.target, status: needsWrite ? "created" : "existing", path: relativePosix(root, followUpRoot), problem: finding.problem, findingIndex });
+    return {
+      change: { id, target: finding.target, status: needsWrite ? "created" as const : "existing" as const, path: relativePosix(root, followUpRoot), problem: finding.problem, findingIndex },
+      proposalPath,
+      tasksPath,
+      specPath,
+      proposal,
+      tasks,
+      spec,
+      proposalNeedsWrite,
+      tasksNeedsWrite,
+      specNeedsWrite,
+    };
+  });
+  const changes = prepared.map((item) => item.change);
+
+  for (const item of prepared) {
+    const needsWrite = item.proposalNeedsWrite || item.tasksNeedsWrite || item.specNeedsWrite;
     if (needsWrite && options.dryRun !== true) {
-      fs.mkdirSync(followUpRoot, { recursive: true });
-      if (proposalNeedsWrite) {
-        fs.writeFileSync(proposalPath, proposal, "utf8");
+      fs.mkdirSync(path.dirname(item.proposalPath), { recursive: true });
+      if (item.proposalNeedsWrite) {
+        fs.writeFileSync(item.proposalPath, item.proposal, "utf8");
       }
-      if (tasksNeedsWrite) {
-        fs.writeFileSync(tasksPath, tasks, "utf8");
+      if (item.tasksNeedsWrite) {
+        fs.writeFileSync(item.tasksPath, item.tasks, "utf8");
       }
-      if (specNeedsWrite) {
-        fs.mkdirSync(path.dirname(specPath), { recursive: true });
-        fs.writeFileSync(specPath, spec, "utf8");
+      if (item.specNeedsWrite) {
+        fs.mkdirSync(path.dirname(item.specPath), { recursive: true });
+        fs.writeFileSync(item.specPath, item.spec, "utf8");
       }
     }
-  });
+  }
 
   const nextArtifact = updatedArtifact(artifact, changes);
   const retrospectiveUpdated = JSON.stringify(nextArtifact) !== JSON.stringify(artifact);
@@ -273,7 +316,7 @@ function parseArgs(args: string[]): CliOptions {
 }
 
 function renderText(result: RetroFollowUpResult): string {
-  const lines = [`changeId: ${result.changeId}`, `retroJsonUpdated: ${String(result.retrospectiveUpdated)}`];
+  const lines = [`changeId: ${result.changeId}`, `retroMdUpdated: ${String(result.retrospectiveUpdated)}`];
   for (const change of result.changes) {
     lines.push(`${change.status}: ${change.id} (${change.target})`);
   }

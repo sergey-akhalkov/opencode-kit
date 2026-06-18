@@ -8,12 +8,12 @@
 ## Tests First For Future Implementation
 
 - [x] Add focused tests or fixtures proving new `tasks.md` templates include a final retrospective section.
-- [x] Add tests for a future `openspec:retro-gate` helper that fail when `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` is missing.
+- [x] Add tests for a future `openspec:retro-gate` helper that fail when `openspec/changes/require-openspec-change-retro-gate/retro.md` is missing.
 - [x] Add tests for approved skip handling with reason and approver.
 - [x] Add tests for project-local finding routing and `opencode-dev-kit` finding routing.
 - [x] Add tests that no-progress, stale-evidence, and routing friction are captured as retrospective evidence when present.
 - [x] Add tests for concise `No findings` retrospectives.
-- [x] Add tests proving actionable retrospective findings create follow-up OpenSpec changes and update `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` outputs.
+- [x] Add tests proving actionable retrospective findings create follow-up OpenSpec changes and update `openspec/changes/require-openspec-change-retro-gate/retro.md` outputs.
 
 ## Future Implementation
 
@@ -21,7 +21,7 @@
 - [x] Update `openspec-propose` so every new `tasks.md` includes a final retrospective section.
 - [x] Update `openspec-apply-change` so completed changes hand off to retrospective before archive.
 - [x] Update `next-step` so completed-but-not-retroed OpenSpec changes appear as available work.
-- [x] Add `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` template guidance to OpenSpec documentation or README after implementation is ready.
+- [x] Add `openspec/changes/require-openspec-change-retro-gate/retro.md` template guidance to OpenSpec documentation or README after implementation is ready.
 - [x] Add the deterministic TypeScript retro-gate helper and package script if test coverage proves the contract.
 - [x] Add the deterministic TypeScript retro-followups helper and package script so actionable findings create or reuse OpenSpec follow-up changes before archive.
 - [x] Integrate retrospective evidence sections into evidence-pack workflow.
@@ -30,7 +30,7 @@
 ## Apply To Existing Active Changes
 
 - [x] Add final retrospective tasks to existing active OpenSpec changes when implementation of this gate is approved.
-- [x] Before archiving completed currently active changes, write `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` and route findings according to this policy; live regression remains blocked before archive.
+- [x] Before archiving completed currently active changes, write `openspec/changes/require-openspec-change-retro-gate/retro.md` and route findings according to this policy; live regression remains blocked before archive.
 
 ## Review Gates For Future Implementation
 
@@ -49,8 +49,7 @@
 ## Retrospective Before Archive
 
 - [x] Review the completed work on this retrospective-gate change, including validation, reviewer gates, repeated operations, wait time, token-heavy steps, and likely root causes.
-- [x] Write `openspec/changes/require-openspec-change-retro-gate/automation/retro.json` for this change with evidence, problems, improvement ideas, and archive gate decision.
-- [x] Create or update project-local OpenSpec follow-up changes for project-local findings; none required after fixed findings.
-- [x] Create or update reusable `opencode-dev-kit` OpenSpec proposals/changes for skill, agent, instruction, validator, or evidence-pack findings; none required after fixed findings.
+- [x] Write `openspec/changes/require-openspec-change-retro-gate/retro.md` for this change with evidence, problems, improvement ideas, and archive gate decision.
 - [x] Run `npm run openspec:retro-followups -- require-openspec-change-retro-gate`; no additional follow-up changes were required after fixed findings.
-- [x] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in `automation/retro.json`.
+- [x] If the helper is unavailable, manually create or update project-local OpenSpec follow-up changes for project-local findings; for reusable `opencode-dev-kit` findings, write only when the current repository owns the reusable artifact and current write scope includes it, otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [x] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded in `retro.md`.

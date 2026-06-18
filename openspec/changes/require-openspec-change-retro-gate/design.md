@@ -22,13 +22,13 @@ This change covers the complete requested retro idea:
 Each change should produce:
 
 ```text
-openspec/changes/<change-id>/retrospective.md
+openspec/changes/<change-id>/retro.md
 ```
 
 The artifact should be concise but evidence-backed. Suggested sections:
 
 ```md
-# Retrospective: <change-id>
+# Retro: <change-id>
 
 ## Scope
 
@@ -51,8 +51,8 @@ The artifact should be concise but evidence-backed. Suggested sections:
 
 ## Problems Found
 
-| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target |
-| --- | --- | --- | --- | --- | --- | --- |
+| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target | Follow-up Change | No Follow-up Reason |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 ## Token And Command Efficiency
 
@@ -95,7 +95,7 @@ The retro should inspect available context proportionally:
 | Source | Purpose |
 | --- | --- |
 | `proposal.md`, `design.md`, `tasks.md`, `specs/**/spec.md` | Planned scope, acceptance criteria, and task quality. |
-| `retrospective.md` if rerun | Existing retro decisions and unresolved findings. |
+| `retro.md` if rerun | Existing retro decisions and unresolved findings. |
 | `live-regression-report.md`, reports, traces, logs | Durable evidence already produced during the change. |
 | Validation commands and results | Slow, repeated, flaky, skipped, or missing gates. |
 | Reviewer outputs | Missed reviewers, weak feedback loops, repeated findings. |
@@ -136,21 +136,21 @@ Retrospective findings should be routed by ownership and reuse value:
 
 When the current repository is already `opencode-dev-kit`, reusable findings can be tracked as active OpenSpec changes in this repository. In another project, the retro should create a local proposal artifact or handoff note for a future MR to `opencode-dev-kit`, unless cross-repo writes are explicitly approved.
 
-Actionable rows with `Target` `project-local` or `opencode-dev-kit` are not considered routed by prose alone. Before archive, they must be converted into OpenSpec follow-up changes with `proposal.md` and `tasks.md`, and `retrospective.md` `Outputs` must reference those change ids.
+Actionable rows with `Target` `project-local` or `opencode-dev-kit` are not considered routed by prose alone. Before archive, they must be converted into OpenSpec follow-up changes with `proposal.md` and `tasks.md`, and `retro.md` `Outputs` must reference those change ids.
 
 ## Archive Gate Semantics
 
 Archive is allowed only when one condition is true:
 
-1. `retrospective.md` exists and records `Archive Gate Decision: passed`.
-2. `retrospective.md` exists and records `No findings` with evidence reviewed.
-3. A user/owner explicitly approves a skip and `retrospective.md` records `Archive Gate Decision: approved-skip`, reason, and approver.
+1. `retro.md` exists and records `Archive Gate Decision: passed`.
+2. `retro.md` exists and records `No findings` with evidence reviewed.
+3. A user/owner explicitly approves a skip and `retro.md` records `Archive Gate Decision: approved-skip`, reason, and approver.
 
 Archive is blocked when:
 
-- `retrospective.md` is missing.
+- `retro.md` is missing.
 - Retro evidence sources are listed as pending without a reason.
-- Concrete actionable findings exist but no generated project follow-up change or `opencode-dev-kit` proposal/change exists and is referenced from `retrospective.md`.
+- Concrete actionable findings exist but no generated project follow-up change or `opencode-dev-kit` proposal/change exists and is referenced from `retro.md`.
 - The retro says it is blocked by missing context, unresolved validation, or unresolved reviewer gate.
 
 ## Task Template Rule
@@ -161,10 +161,9 @@ Every new OpenSpec `tasks.md` should end with a final section similar to:
 ## Retrospective Before Archive
 
 - [ ] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [ ] Write `retrospective.md` with evidence, problems, root causes, improvements, and archive gate decision.
-- [ ] Create or update project-local OpenSpec follow-up changes for project-local findings.
-- [ ] Create or update reusable `opencode-dev-kit` OpenSpec proposals/changes for skill, agent, instruction, validator, or evidence-pack findings.
+- [ ] Write `retro.md` with evidence, problems, root causes, improvements, and archive gate decision.
 - [ ] Run `npm run openspec:retro-followups -- <change-id>` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
+- [ ] If the helper is unavailable, manually create or update project-local OpenSpec follow-up changes for project-local findings; for reusable `opencode-dev-kit` findings, write only when the current repository owns the reusable artifact and current write scope includes it, otherwise record a local handoff and do not write cross-repo without explicit approval.
 - [ ] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded.
 ```
 
@@ -192,13 +191,13 @@ npm run openspec:retro-followups -- <change-id>
 npm run openspec:retro-gate -- <change-id>
 ```
 
-`openspec:retro-followups` reads actionable `Problems Found` rows from `retrospective.md`, including `Root Cause`, creates or reuses `openspec/changes/<generated-id>/proposal.md`, `tasks.md`, and `specs/<generated-id>/spec.md`, and updates `Outputs` with those ids. It does not mutate unrelated runtime state.
+`openspec:retro-followups` reads actionable `Problems Found` rows from `retro.md`, including `Root Cause`, creates or reuses `openspec/changes/<generated-id>/proposal.md`, `tasks.md`, and `specs/<generated-id>/spec.md`, and updates the Markdown table plus `Outputs` with those ids. It does not mutate unrelated runtime state.
 
 Implemented checks:
 
 - `openspec/changes/<change-id>/tasks.md` includes a final retrospective task or section.
-- `openspec/changes/<change-id>/retrospective.md` exists before archive.
-- `retrospective.md` includes evidence reviewed and archive decision.
+- `openspec/changes/<change-id>/retro.md` exists before archive.
+- `retro.md` includes evidence reviewed and archive decision.
 - Findings with `Target` `project-local` or `opencode-dev-kit` include root cause and reference existing OpenSpec follow-up changes with `proposal.md`, `tasks.md`, and a spec delta that preserve the retrospective evidence.
 - Findings with `Target` `none` are treated as fixed in scope, intentionally no-follow-up, or not actionable; they must still include evidence, root cause, and confidence.
 - Approved skips include reason and approver.
@@ -221,7 +220,7 @@ It should not use model-like summarization. If it cannot determine something, it
 
 When a retro identifies reusable improvements for `opencode-dev-kit`, the preferred flow is:
 
-1. Record the finding in `retrospective.md` with evidence and impact.
+1. Record the finding in `retro.md` with evidence and impact.
 2. Run `npm run openspec:retro-followups -- <change-id>` to create or update an OpenSpec proposal/change in the current `opencode-dev-kit` repository when already working there.
 3. If working in another project and cross-repo writes are not approved, create a local handoff proposal artifact that can be copied into a future MR.
 4. Use `merge-request-author` only after the user explicitly approves MR creation.

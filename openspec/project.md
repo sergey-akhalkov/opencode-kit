@@ -16,7 +16,8 @@ Use these files as needed:
 - `design.md`: decisions, test strategy, risks, rollout, or operational model.
 - `tasks.md`: implementation, validation, reviewer, and tracking checklist.
 - `specs/<capability>/spec.md`: normative requirements and scenarios.
-- `automation/*.json`: deterministic operation, retrospective, or validation reports when they are evidence for the change.
+- `retro.md`: human-readable retrospective evidence required before archive.
+- `automation/*.json`: deterministic operation or validation reports when they are evidence for the change.
 - Additional artifacts, prompts, or reports when they are evidence for the change.
 
 ## Tracking Rules

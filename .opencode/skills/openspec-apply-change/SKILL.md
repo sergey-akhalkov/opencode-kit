@@ -27,7 +27,7 @@ Use this skill when the user asks to implement, continue, or complete tasks from
 - Tests cover observable behavior and negative/recovery cases where relevant.
 - Docs/specs/tasks are synchronized.
 - Validation commands have been run or skipped with explicit reason and residual risk.
-- Before archive, hand off to the retrospective gate: write or update `openspec/changes/<change-id>/automation/retro.json` with root causes and follow-up ids for actionable problems, run the repository-configured retrospective follow-up command when available, e.g. `npm run openspec:retro-followups -- <change-id>`, to create/update in-scope OpenSpec follow-up changes, then run the repository-configured retrospective gate, e.g. `npm run openspec:retro-gate -- <change-id>`.
+- Before archive, hand off to the retrospective gate: write or update `openspec/changes/<change-id>/retro.md` with root causes and follow-up ids for actionable problems, run the repository-configured retrospective follow-up command when available, e.g. `npm run openspec:retro-followups -- <change-id>`, to create/update in-scope OpenSpec follow-up changes and update `retro.md`, then run the repository-configured retrospective gate, e.g. `npm run openspec:retro-gate -- <change-id>`.
 
 ## Output
 

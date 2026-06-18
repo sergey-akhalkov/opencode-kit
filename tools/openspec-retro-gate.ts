@@ -31,9 +31,7 @@ export type RetroProblem = {
 };
 
 export type RetroArtifact = {
-  schemaVersion: 1;
   changeId: string;
-  generatedAt: string;
   evidenceReviewed: RetroEvidence[];
   problems: RetroProblem[];
   outputs: {
@@ -48,15 +46,6 @@ export type RetroArtifact = {
   };
 };
 
-export type RetroMigrationResult = {
-  migrated: boolean;
-  changeId: string;
-  path: string;
-  errors: string[];
-  warnings: string[];
-  artifact?: RetroArtifact;
-};
-
 type ProblemRow = {
   problem: string;
   evidence: string;
@@ -65,35 +54,24 @@ type ProblemRow = {
   recommendation: string;
   confidence: string;
   target: string;
+  followUpChangeId: string | null;
+  noFollowUpReason: string | null;
 };
 
 type CliOptions = {
   root: string;
   format: "json" | "text";
   changeId?: string;
-  migrateLegacy: boolean;
-  dryRun: boolean;
 };
 
 const decisionValues = new Set(["passed", "blocked", "approved-skip"]);
-const evidenceKinds = new Set(["command", "file", "review", "tool-output", "manual-gate", "unknown"]);
-const evidenceStatuses = new Set(["passed", "failed", "blocked", "unknown", "not-applicable"]);
 const confidenceValues = new Set(["low", "medium", "high"]);
 const findingTargets = new Set(["project-local", "opencode-dev-kit", "none"]);
 const emptyValues = new Set(["", "none", "n/a", "na", "unknown", "unavailable", "-"]);
 const unknownRootCauseValues = new Set(["unknown"]);
-const retroTopLevelKeys = ["schemaVersion", "changeId", "generatedAt", "evidenceReviewed", "problems", "outputs", "archiveGate"];
-const evidenceKeys = ["kind", "source", "status", "summary"];
-const problemKeys = ["problem", "evidence", "impact", "rootCause", "recommendation", "confidence", "target", "followUpChangeId", "noFollowUpReason"];
-const outputsKeys = ["projectFollowUpChanges", "opencodeDevKitChanges", "noFindingsReason"];
-const archiveGateKeys = ["decision", "reason", "approver"];
 
 function normalizeText(text: string): string {
   return text.replace(/\r\n/g, "\n");
-}
-
-function isPlainRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value != null && !Array.isArray(value);
 }
 
 function isMeaningful(value: string | null | undefined): boolean {
@@ -138,6 +116,16 @@ function section(text: string, heading: string): string | null {
   return match?.groups?.body ?? null;
 }
 
+function replaceSection(text: string, heading: string, body: string): string {
+  const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const replacement = `## ${heading}\n\n${body.trimEnd()}\n\n`;
+  const pattern = new RegExp(`^##\\s+${escaped}\\s*$\\n[\\s\\S]*?(?=^##\\s+|(?![\\s\\S]))`, "m");
+  if (!pattern.test(text)) {
+    return `${text.trimEnd()}\n\n${replacement}`;
+  }
+  return text.replace(pattern, () => replacement);
+}
+
 function hasFinalRetroSection(tasks: string): boolean {
   const headings = Array.from(tasks.matchAll(/^##\s+(.+?)\s*$/gm), (match) => match[1].trim());
   return headings.length > 0 && headings[headings.length - 1] === "Retrospective Before Archive";
@@ -162,23 +150,78 @@ function parseDecision(decisionSection: string): string | undefined {
   return value?.trim().toLowerCase();
 }
 
+function splitMarkdownRow(line: string): string[] {
+  const trimmed = line.trim();
+  const inner = trimmed.startsWith("|") && trimmed.endsWith("|") ? trimmed.slice(1, -1) : trimmed;
+  const cells: string[] = [];
+  let current = "";
+  let escaping = false;
+  for (const char of inner) {
+    if (escaping) {
+      current += char === "|" ? "|" : `\\${char}`;
+      escaping = false;
+    } else if (char === "\\") {
+      escaping = true;
+    } else if (char === "|") {
+      cells.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  if (escaping) {
+    current += "\\";
+  }
+  cells.push(current.trim());
+  return cells;
+}
+
+function markdownTextCell(value: string): string | null {
+  const trimmed = value.trim();
+  return isMeaningful(trimmed) ? trimmed : null;
+}
+
+function markdownIdCell(value: string): string | null {
+  const match = value.match(/`([^`]+)`/);
+  const candidate = (match?.[1] ?? value.replace(/^`|`$/g, "")).trim().replace(/[.。]+$/, "");
+  return isMeaningful(candidate) ? candidate : null;
+}
+
 function parseProblemRows(problemSection: string | null): { rows: ProblemRow[]; malformedRows: number } {
   if (problemSection == null) {
     return { rows: [], malformedRows: 0 };
   }
   let malformedRows = 0;
-  const rows = problemSection
+  const contentLines = problemSection
     .split("\n")
     .map((line) => line.trim())
-    .filter((line) => line.startsWith("|") && line.endsWith("|"))
-    .filter((line) => !/^\|\s*-+\s*\|/.test(line) && !/^\|\s*Problem\s*\|/i.test(line))
+    .filter((line) => isMeaningful(line));
+  const tableLines = contentLines.filter((line) => line.startsWith("|") && line.endsWith("|"));
+  malformedRows += contentLines.length - tableLines.length;
+  const hasHeader = tableLines.some((line) => /^\|\s*Problem\s*\|/i.test(line) && /\|\s*Follow-up Change\s*\|/i.test(line) && /\|\s*No Follow-up Reason\s*\|/i.test(line));
+  const hasSeparator = tableLines.some((line) => /^\|\s*:?-+\s*\|/.test(line));
+  if (!hasHeader || !hasSeparator) {
+    malformedRows++;
+  }
+  const rows = tableLines
+    .filter((line) => !/^\|\s*:?-+\s*\|/.test(line) && !/^\|\s*Problem\s*\|/i.test(line))
     .flatMap((line): ProblemRow[] => {
-      const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
-      if (cells.length !== 7) {
+      const cells = splitMarkdownRow(line);
+      if (cells.length !== 9) {
         malformedRows++;
         return [];
       }
-      return [{ problem: cells[0], evidence: cells[1], impact: cells[2], rootCause: cells[3], recommendation: cells[4], confidence: cells[5], target: cells[6] }];
+      return [{
+        problem: cells[0],
+        evidence: cells[1],
+        impact: cells[2],
+        rootCause: cells[3],
+        recommendation: cells[4],
+        confidence: cells[5].trim().toLowerCase(),
+        target: cells[6].trim(),
+        followUpChangeId: markdownIdCell(cells[7]),
+        noFollowUpReason: markdownTextCell(cells[8]),
+      }];
     });
   return { rows, malformedRows };
 }
@@ -187,11 +230,25 @@ function outputChangeIds(outputs: string | null, marker: string): string[] {
   if (outputs == null) {
     return [];
   }
-  const value = lineValue(outputs, marker);
+  const escaped = marker === "opencode-dev-kit"
+    ? "`?opencode-dev-kit`?\\s+proposals/changes"
+    : marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = outputs.match(new RegExp(`^[-*]\\s+${escaped}\\s*:\\s*(?<value>.*)$`, "im"));
+  const value = match?.groups?.value;
   if (!isMeaningful(value)) {
     return [];
   }
   return Array.from(value.matchAll(/`([^`]+)`/g), (match) => match[1].trim()).filter((id) => id.length > 0);
+}
+
+function outputTextValue(outputs: string | null, label: string): string | null {
+  if (outputs == null) {
+    return null;
+  }
+  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = outputs.match(new RegExp(`^[-*]\\s+${escaped}\\s*:\\s*(?<value>.*)$`, "im"));
+  const value = match?.groups?.value;
+  return isMeaningful(value) ? value?.replace(/[.。]+$/, "") ?? null : null;
 }
 
 function parseEvidence(evidenceSection: string | null): RetroEvidence[] {
@@ -241,159 +298,91 @@ function defaultRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 }
 
-function exactKeys(value: Record<string, unknown>, keys: string[], label: string, errors: string[]): void {
-  const allowed = new Set(keys);
-  for (const key of Object.keys(value)) {
-    if (!allowed.has(key)) {
-      errors.push(`Unknown field '${key}' in ${label}.`);
+function rowsToProblems(changeId: string, rows: ProblemRow[], outputs: string | null, errors: string[]): RetroProblem[] {
+  const actionableRows = rows.filter((row) => row.target === "project-local" || row.target === "opencode-dev-kit");
+  const projectIds = outputChangeIds(outputs, "Project follow-up changes");
+  const devKitIds = outputChangeIds(outputs, "opencode-dev-kit");
+  return rows.map((row) => {
+    const actionableIndex = actionableRows.indexOf(row);
+    const target = findingTargets.has(row.target) ? row.target as RetroProblem["target"] : "none";
+    if (!findingTargets.has(row.target)) {
+      errors.push(`Retrospective finding '${row.problem}' target must be one of project-local, opencode-dev-kit, none.`);
     }
-  }
-  for (const key of keys) {
-    if (!(key in value)) {
-      errors.push(`${label} missing required field '${key}'.`);
+    if (!confidenceValues.has(row.confidence)) {
+      errors.push(`Retrospective finding '${row.problem}' confidence must be one of low, medium, high.`);
     }
-  }
+    const outputIds = target === "project-local" ? projectIds : target === "opencode-dev-kit" ? devKitIds : [];
+    const expectedId = actionableIndex >= 0 ? expectedFollowUpId(changeId, row, actionableIndex) : null;
+    const outputFollowUpId = expectedId != null && outputIds.includes(expectedId) ? expectedId : null;
+    return {
+      problem: row.problem,
+      evidence: row.evidence,
+      impact: row.impact,
+      rootCause: row.rootCause,
+      recommendation: row.recommendation,
+      confidence: confidenceValues.has(row.confidence) ? row.confidence as RetroProblem["confidence"] : "low",
+      target,
+      followUpChangeId: target === "none" ? null : row.followUpChangeId ?? outputFollowUpId,
+      noFollowUpReason: row.noFollowUpReason,
+    };
+  });
 }
 
-function stringArray(value: unknown, label: string, errors: string[]): string[] {
-  if (!Array.isArray(value) || value.some((item) => typeof item !== "string" || !isMeaningful(item))) {
-    errors.push(`${label} must be an array of non-empty strings.`);
-    return [];
-  }
-  return value;
-}
-
-function nullableString(value: unknown, label: string, errors: string[]): string | null {
-  if (value === null) {
-    return null;
-  }
-  if (typeof value !== "string") {
-    errors.push(`${label} must be a string or null.`);
-    return null;
-  }
-  return value;
-}
-
-function requireString(value: unknown, label: string, errors: string[], options: { allowUnknown?: boolean } = {}): string {
-  if (typeof value !== "string" || (!isMeaningful(value) && !(options.allowUnknown === true && isUnknownRootCause(value)))) {
-    errors.push(`${label} must be a non-empty string.`);
-    return "";
-  }
-  return value;
-}
-
-function requireEnumString(value: unknown, label: string, errors: string[]): string {
-  if (typeof value !== "string" || value.trim() === "") {
-    errors.push(`${label} must be a non-empty string.`);
-    return "";
-  }
-  return value;
-}
-
-function parseRetroArtifact(raw: unknown, changeId: string, errors: string[]): RetroArtifact | null {
-  if (!isPlainRecord(raw)) {
-    errors.push("automation/retro.json must contain a JSON object.");
-    return null;
-  }
-  exactKeys(raw, retroTopLevelKeys, "retro artifact", errors);
-  if (raw.schemaVersion !== 1) {
-    errors.push("automation/retro.json schemaVersion must be 1.");
-  }
-  if (raw.changeId !== changeId) {
-    errors.push(`automation/retro.json changeId must be '${changeId}'.`);
-  }
-  const generatedAt = requireString(raw.generatedAt, "automation/retro.json generatedAt", errors);
-  if (generatedAt !== "" && Number.isNaN(Date.parse(generatedAt))) {
-    errors.push("automation/retro.json generatedAt must be an ISO timestamp.");
+function parseRetroMarkdown(changeId: string, retrospective: string): { artifact?: RetroArtifact; errors: string[]; warnings: string[] } {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const heading = retrospective.match(/^#\s+(?:Retro|Retrospective):\s+(.+?)\s*$/m);
+  if (heading == null) {
+    errors.push("retro.md must start with '# Retro: <change-id>'.");
+  } else if (heading[1] !== changeId) {
+    errors.push(`retro.md heading change id must be '${changeId}'.`);
   }
 
-  const evidenceReviewed: RetroEvidence[] = [];
-  if (!Array.isArray(raw.evidenceReviewed) || raw.evidenceReviewed.length === 0) {
-    errors.push("automation/retro.json evidenceReviewed must include at least one evidence item.");
-  } else {
-    raw.evidenceReviewed.forEach((item, index) => {
-      if (!isPlainRecord(item)) {
-        errors.push(`evidenceReviewed[${index}] must be an object.`);
-        return;
-      }
-      exactKeys(item, evidenceKeys, `evidenceReviewed[${index}]`, errors);
-      const kind = requireEnumString(item.kind, `evidenceReviewed[${index}].kind`, errors);
-      const status = requireEnumString(item.status, `evidenceReviewed[${index}].status`, errors);
-      const source = requireString(item.source, `evidenceReviewed[${index}].source`, errors);
-      const summary = requireString(item.summary, `evidenceReviewed[${index}].summary`, errors);
-      if (!evidenceKinds.has(kind)) {
-        errors.push(`evidenceReviewed[${index}].kind must be one of ${Array.from(evidenceKinds).join(", ")}.`);
-      }
-      if (!evidenceStatuses.has(status)) {
-        errors.push(`evidenceReviewed[${index}].status must be one of ${Array.from(evidenceStatuses).join(", ")}.`);
-      }
-      evidenceReviewed.push({ kind: kind as RetroEvidence["kind"], source, status: status as RetroEvidence["status"], summary });
-    });
+  const evidence = section(retrospective, "Evidence Reviewed");
+  const problems = section(retrospective, "Problems Found");
+  const outputs = section(retrospective, "Outputs");
+  const archiveDecision = section(retrospective, "Archive Gate Decision");
+  if (evidence == null) {
+    errors.push("retro.md must include ## Evidence Reviewed.");
+  }
+  if (problems == null) {
+    errors.push("retro.md must include ## Problems Found.");
+  }
+  if (outputs == null) {
+    errors.push("retro.md must include ## Outputs.");
+  }
+  if (archiveDecision == null) {
+    errors.push("retro.md must include ## Archive Gate Decision.");
   }
 
-  const problems: RetroProblem[] = [];
-  if (!Array.isArray(raw.problems)) {
-    errors.push("automation/retro.json problems must be an array.");
-  } else {
-    raw.problems.forEach((item, index) => {
-      if (!isPlainRecord(item)) {
-        errors.push(`problems[${index}] must be an object.`);
-        return;
-      }
-      exactKeys(item, problemKeys, `problems[${index}]`, errors);
-      const problem = requireString(item.problem, `problems[${index}].problem`, errors);
-      const evidence = requireString(item.evidence, `problems[${index}].evidence`, errors);
-      const impact = requireString(item.impact, `problems[${index}].impact`, errors);
-      const rootCause = requireString(item.rootCause, `problems[${index}].rootCause`, errors, { allowUnknown: true });
-      const recommendation = requireString(item.recommendation, `problems[${index}].recommendation`, errors);
-      const confidence = requireEnumString(item.confidence, `problems[${index}].confidence`, errors);
-      const target = requireEnumString(item.target, `problems[${index}].target`, errors);
-      const followUpChangeId = nullableString(item.followUpChangeId, `problems[${index}].followUpChangeId`, errors);
-      const noFollowUpReason = nullableString(item.noFollowUpReason, `problems[${index}].noFollowUpReason`, errors);
-      if (!confidenceValues.has(confidence)) {
-        errors.push(`problems[${index}].confidence must be one of low, medium, high.`);
-      }
-      if (!findingTargets.has(target)) {
-        errors.push(`problems[${index}].target must be one of project-local, opencode-dev-kit, none.`);
-      }
-      problems.push({ problem, evidence, impact, rootCause, recommendation, confidence: confidence as RetroProblem["confidence"], target: target as RetroProblem["target"], followUpChangeId, noFollowUpReason });
-    });
+  const evidenceReviewed = parseEvidence(evidence);
+  if (evidenceReviewed.length === 0) {
+    errors.push("retro.md Evidence Reviewed must include at least one evidence item.");
   }
-
-  const outputsRecord = isPlainRecord(raw.outputs) ? raw.outputs : null;
-  if (outputsRecord == null) {
-    errors.push("automation/retro.json outputs must be an object.");
-  } else {
-    exactKeys(outputsRecord, outputsKeys, "outputs", errors);
+  const parsedProblems = parseProblemRows(problems);
+  if (parsedProblems.malformedRows > 0) {
+    errors.push("Retrospective problem rows must have exactly nine columns: Problem, Evidence, Impact, Root Cause, Recommendation, Confidence, Target, Follow-up Change, No Follow-up Reason.");
   }
-  const outputs = {
-    projectFollowUpChanges: stringArray(outputsRecord?.projectFollowUpChanges, "outputs.projectFollowUpChanges", errors),
-    opencodeDevKitChanges: stringArray(outputsRecord?.opencodeDevKitChanges, "outputs.opencodeDevKitChanges", errors),
-    noFindingsReason: nullableString(outputsRecord?.noFindingsReason, "outputs.noFindingsReason", errors),
-  };
-
-  const archiveGateRecord = isPlainRecord(raw.archiveGate) ? raw.archiveGate : null;
-  if (archiveGateRecord == null) {
-    errors.push("automation/retro.json archiveGate must be an object.");
-  } else {
-    exactKeys(archiveGateRecord, archiveGateKeys, "archiveGate", errors);
+  const decision = archiveDecision != null ? parseDecision(archiveDecision) : undefined;
+  if (!decisionValues.has(decision ?? "")) {
+    errors.push("Archive Gate Decision must be one of: passed, blocked, approved-skip.");
   }
-  const decision = requireEnumString(archiveGateRecord?.decision, "archiveGate.decision", errors);
-  const reason = requireString(archiveGateRecord?.reason, "archiveGate.reason", errors);
-  const approver = nullableString(archiveGateRecord?.approver, "archiveGate.approver", errors);
-  if (!decisionValues.has(decision)) {
-    errors.push("Archive gate decision must be one of: passed, blocked, approved-skip.");
-  }
-
-  return {
-    schemaVersion: 1,
+  const artifact: RetroArtifact = {
     changeId,
-    generatedAt,
     evidenceReviewed,
-    problems,
-    outputs,
-    archiveGate: { decision: decision as RetroArtifact["archiveGate"]["decision"], reason, approver },
+    problems: rowsToProblems(changeId, parsedProblems.rows, outputs, errors),
+    outputs: {
+      projectFollowUpChanges: outputChangeIds(outputs, "Project follow-up changes"),
+      opencodeDevKitChanges: outputChangeIds(outputs, "opencode-dev-kit"),
+      noFindingsReason: outputTextValue(outputs, "No findings reason"),
+    },
+    archiveGate: {
+      decision: decisionValues.has(decision ?? "") ? decision as RetroArtifact["archiveGate"]["decision"] : "blocked",
+      reason: archiveDecision != null ? lineValue(archiveDecision, "Reason")?.replace(/[.。]+$/, "") ?? "" : "",
+      approver: archiveDecision != null ? nullableLineValue(archiveDecision, "Approver") : null,
+    },
   };
+  return { artifact, errors, warnings };
 }
 
 function validateTasks(root: string, changeId: string, errors: string[]): void {
@@ -407,20 +396,20 @@ function validateTasks(root: string, changeId: string, errors: string[]): void {
   if (!hasFinalRetroSection(tasks)) {
     errors.push(`tasks.md must end with ## Retrospective Before Archive for ${changeId}.`);
   }
-  for (const required of ["automation/retro.json", "project-local OpenSpec", "opencode-dev-kit", "archive gate"]) {
+  for (const required of ["retro.md", "project-local OpenSpec", "opencode-dev-kit", "archive gate"]) {
     if (retroTasks == null || !retroTasks.toLowerCase().includes(required.toLowerCase())) {
       errors.push(`tasks.md Retrospective Before Archive section must mention ${required}.`);
     }
   }
 }
 
-function validateArtifactSemantics(root: string, changeId: string, artifact: RetroArtifact, errors: string[]): void {
+function validateArtifactSemantics(root: string, artifact: RetroArtifact, errors: string[]): void {
   const projectIds = new Set(artifact.outputs.projectFollowUpChanges);
   const devKitIds = new Set(artifact.outputs.opencodeDevKitChanges);
   if (artifact.problems.length === 0 && !isMeaningful(artifact.outputs.noFindingsReason)) {
-    errors.push("No-findings retrospectives must record outputs.noFindingsReason with evidence reviewed.");
+    errors.push("No-findings retrospectives must record Outputs No findings reason with evidence reviewed.");
   }
-  for (const [index, problem] of artifact.problems.entries()) {
+  for (const problem of artifact.problems) {
     if (![problem.problem, problem.evidence, problem.impact, problem.recommendation, problem.confidence].every(isMeaningful) || (!isMeaningful(problem.rootCause) && !isUnknownRootCause(problem.rootCause))) {
       errors.push("Retrospective problem entries must include problem, evidence, impact, root cause, recommendation, and confidence.");
     }
@@ -446,14 +435,14 @@ function validateArtifactSemantics(root: string, changeId: string, artifact: Ret
     const followUpId = problem.followUpChangeId as string;
     const outputIds = problem.target === "project-local" ? projectIds : devKitIds;
     if (!outputIds.has(followUpId)) {
-      errors.push(`Retrospective finding '${problem.problem}' followUpChangeId must be listed in outputs for ${problem.target}.`);
+      errors.push(`Retrospective finding '${problem.problem}' followUpChangeId must be listed in Outputs for ${problem.target}.`);
     }
     for (const followUpError of validateFollowUpChange(root, followUpId, problem)) {
       errors.push(`${problem.target} retrospective follow-up '${followUpId}' ${followUpError}`);
     }
-    if (index < 0) {
-      errors.push("Unreachable problem index.");
-    }
+  }
+  if (!isMeaningful(artifact.archiveGate.reason)) {
+    errors.push("Archive Gate Decision requires a reason.");
   }
   if (artifact.archiveGate.decision === "blocked") {
     errors.push("Archive Gate Decision is blocked.");
@@ -468,33 +457,99 @@ export function readRetroArtifact(root: string, changeId: string): RetroArtifact
   if (!safeChangeId(changeId)) {
     throw new Error(`Invalid change id '${changeId}'.`);
   }
-  const retroPath = path.join(root, "openspec", "changes", changeId, "automation", "retro.json");
+  const retroPath = path.join(root, "openspec", "changes", changeId, "retro.md");
   const text = fileText(retroPath);
   if (text == null) {
-    throw new Error(`Missing automation/retro.json for ${changeId}.`);
+    throw new Error(`Missing retro.md for ${changeId}.`);
   }
-  const parseErrors: string[] = [];
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Invalid automation/retro.json for ${changeId}: ${message}`);
+  const parsed = parseRetroMarkdown(changeId, text);
+  if (parsed.artifact == null || parsed.errors.length > 0) {
+    throw new Error(`Invalid retro.md for ${changeId}: ${parsed.errors.join("; ")}`);
   }
-  const artifact = parseRetroArtifact(parsed, changeId, parseErrors);
-  if (artifact == null || parseErrors.length > 0) {
-    throw new Error(`Invalid automation/retro.json for ${changeId}: ${parseErrors.join("; ")}`);
+  return parsed.artifact;
+}
+
+function markdownCell(value: string | null): string {
+  if (value == null || value.trim() === "") {
+    return "none";
   }
-  return artifact;
+  return value.replace(/\r?\n/g, " ").replace(/\|/g, "\\|");
+}
+
+function markdownId(value: string | null): string {
+  return isMeaningful(value) ? `\`${value}\`` : "none";
+}
+
+function renderProblemRows(problems: RetroProblem[]): string {
+  const lines = [
+    "| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target | Follow-up Change | No Follow-up Reason |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+  ];
+  for (const problem of problems) {
+    lines.push(`| ${markdownCell(problem.problem)} | ${markdownCell(problem.evidence)} | ${markdownCell(problem.impact)} | ${markdownCell(problem.rootCause)} | ${markdownCell(problem.recommendation)} | ${markdownCell(problem.confidence)} | ${markdownCell(problem.target)} | ${markdownId(problem.followUpChangeId)} | ${markdownCell(problem.noFollowUpReason)} |`);
+  }
+  return lines.join("\n");
+}
+
+function renderOutputIds(ids: string[]): string {
+  return ids.length === 0 ? "none" : ids.map((id) => `\`${id}\``).join(", ");
+}
+
+function renderOutputs(artifact: RetroArtifact): string {
+  return [
+    `- Project follow-up changes: ${renderOutputIds(artifact.outputs.projectFollowUpChanges)}.`,
+    `- \`opencode-dev-kit\` proposals/changes: ${renderOutputIds(artifact.outputs.opencodeDevKitChanges)}.`,
+    `- No findings reason: ${isMeaningful(artifact.outputs.noFindingsReason) ? artifact.outputs.noFindingsReason : "n/a"}.`,
+  ].join("\n");
+}
+
+function renderArchiveGate(artifact: RetroArtifact): string {
+  return [
+    `- Decision: ${artifact.archiveGate.decision}`,
+    `- Reason: ${artifact.archiveGate.reason}`,
+    `- Approver, if skipped: ${isMeaningful(artifact.archiveGate.approver) ? artifact.archiveGate.approver : "none"}`,
+  ].join("\n");
+}
+
+function renderRetroMarkdown(artifact: RetroArtifact): string {
+  const evidence = artifact.evidenceReviewed.length === 0
+    ? "- Evidence unavailable."
+    : artifact.evidenceReviewed.map((item) => `- ${item.source}`).join("\n");
+  return `# Retro: ${artifact.changeId}
+
+## Evidence Reviewed
+
+${evidence}
+
+## Problems Found
+
+${renderProblemRows(artifact.problems)}
+
+## Outputs
+
+${renderOutputs(artifact)}
+
+## Archive Gate Decision
+
+${renderArchiveGate(artifact)}
+`;
 }
 
 export function writeRetroArtifact(root: string, artifact: RetroArtifact): void {
   if (!safeChangeId(artifact.changeId)) {
     throw new Error(`Invalid change id '${artifact.changeId}'.`);
   }
-  const retroPath = path.join(root, "openspec", "changes", artifact.changeId, "automation", "retro.json");
+  const retroPath = path.join(root, "openspec", "changes", artifact.changeId, "retro.md");
   fs.mkdirSync(path.dirname(retroPath), { recursive: true });
-  fs.writeFileSync(retroPath, `${JSON.stringify(artifact, null, 2)}\n`, "utf8");
+  const current = fileText(retroPath);
+  const next = current == null
+    ? renderRetroMarkdown(artifact)
+    : replaceSection(
+      replaceSection(current, "Problems Found", renderProblemRows(artifact.problems)),
+      "Outputs",
+      renderOutputs(artifact),
+    );
+  fs.writeFileSync(retroPath, `${next.trimEnd()}\n`, "utf8");
 }
 
 export function evaluateRetroGate(root: string, changeId: string): RetroGateResult {
@@ -508,147 +563,26 @@ export function evaluateRetroGate(root: string, changeId: string): RetroGateResu
   }
 
   validateTasks(root, changeId, errors);
-  const changeRoot = path.join(root, "openspec", "changes", changeId);
-  const retroPath = path.join(changeRoot, "automation", "retro.json");
-  const legacyPath = path.join(changeRoot, "retrospective.md");
+  const retroPath = path.join(root, "openspec", "changes", changeId, "retro.md");
   const retroText = fileText(retroPath);
   if (retroText == null) {
-    const legacyHint = fileText(legacyPath) != null ? ` Legacy retrospective.md is transitional only; run npm run openspec:retro-gate -- ${changeId} --migrate-legacy or create automation/retro.json.` : "";
-    errors.push(`Missing automation/retro.json for ${changeId}.${legacyHint}`);
+    errors.push(`Missing retro.md for ${changeId}.`);
     return { valid: false, changeId, errors, warnings, archiveAllowed };
   }
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(retroText);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    errors.push(`Invalid automation/retro.json for ${changeId}: ${message}`);
-    return { valid: false, changeId, errors, warnings, archiveAllowed };
-  }
-
-  const artifact = parseRetroArtifact(parsed, changeId, errors);
-  if (artifact != null) {
-    validateArtifactSemantics(root, changeId, artifact, errors);
+  const parsed = parseRetroMarkdown(changeId, retroText);
+  errors.push(...parsed.errors);
+  warnings.push(...parsed.warnings);
+  if (parsed.artifact != null) {
+    validateArtifactSemantics(root, parsed.artifact, errors);
   }
 
   archiveAllowed = errors.length === 0;
   return { valid: errors.length === 0, changeId, errors, warnings, archiveAllowed };
 }
 
-function legacyRowsToProblems(changeId: string, rows: ProblemRow[], outputs: string | null): RetroProblem[] {
-  const actionableRows = rows.filter((row) => row.target === "project-local" || row.target === "opencode-dev-kit");
-  const projectIds = outputChangeIds(outputs, "Project follow-up changes");
-  const devKitIds = outputChangeIds(outputs, "opencode-dev-kit");
-  return rows.map((row) => {
-    const actionableIndex = actionableRows.indexOf(row);
-    const target = findingTargets.has(row.target) ? row.target as RetroProblem["target"] : "none";
-    const outputIds = target === "project-local" ? projectIds : target === "opencode-dev-kit" ? devKitIds : [];
-    const expectedId = actionableIndex >= 0 ? expectedFollowUpId(changeId, row, actionableIndex) : null;
-    const followUpChangeId = expectedId != null && outputIds.includes(expectedId) ? expectedId : outputIds[0] ?? null;
-    return {
-      problem: row.problem,
-      evidence: row.evidence,
-      impact: row.impact,
-      rootCause: row.rootCause,
-      recommendation: row.recommendation,
-      confidence: confidenceValues.has(row.confidence) ? row.confidence as RetroProblem["confidence"] : "low",
-      target,
-      followUpChangeId: target === "none" ? null : followUpChangeId,
-      noFollowUpReason: target === "none" ? row.recommendation || "No follow-up needed." : null,
-    };
-  });
-}
-
-function parseLegacyRetrospective(changeId: string, retrospective: string, generatedAt: string): { artifact?: RetroArtifact; errors: string[]; warnings: string[] } {
-  const errors: string[] = [];
-  const warnings: string[] = [];
-  const evidence = section(retrospective, "Evidence Reviewed");
-  const problems = section(retrospective, "Problems Found");
-  const outputs = section(retrospective, "Outputs");
-  const archiveDecision = section(retrospective, "Archive Gate Decision");
-  if (evidence == null) {
-    errors.push("retrospective.md must include ## Evidence Reviewed.");
-  }
-  if (problems == null) {
-    errors.push("retrospective.md must include ## Problems Found.");
-  }
-  if (outputs == null) {
-    errors.push("retrospective.md must include ## Outputs.");
-  }
-  if (archiveDecision == null) {
-    errors.push("retrospective.md must include ## Archive Gate Decision.");
-  }
-  const parsedProblems = parseProblemRows(problems);
-  if (parsedProblems.malformedRows > 0) {
-    errors.push("Retrospective problem rows must have exactly seven columns: Problem, Evidence, Impact, Root Cause, Recommendation, Confidence, Target.");
-  }
-  const decision = archiveDecision != null ? parseDecision(archiveDecision) : undefined;
-  const archiveGate = {
-    decision: decisionValues.has(decision ?? "") ? decision as RetroArtifact["archiveGate"]["decision"] : "blocked" as const,
-    reason: archiveDecision != null ? nullableLineValue(archiveDecision, "Reason") ?? "Legacy migration missing archive reason." : "Legacy migration missing archive decision.",
-    approver: archiveDecision != null ? nullableLineValue(archiveDecision, "Approver") : null,
-  };
-  const artifact: RetroArtifact = {
-    schemaVersion: 1,
-    changeId,
-    generatedAt,
-    evidenceReviewed: parseEvidence(evidence),
-    problems: legacyRowsToProblems(changeId, parsedProblems.rows, outputs),
-    outputs: {
-      projectFollowUpChanges: outputChangeIds(outputs, "Project follow-up changes"),
-      opencodeDevKitChanges: outputChangeIds(outputs, "opencode-dev-kit"),
-      noFindingsReason: outputs != null ? nullableLineValue(outputs, "No findings reason") : null,
-    },
-    archiveGate,
-  };
-  return { artifact, errors, warnings };
-}
-
-function migrateLegacyTaskTail(root: string, changeId: string): void {
-  const tasksPath = path.join(root, "openspec", "changes", changeId, "tasks.md");
-  const tasks = fileText(tasksPath);
-  if (tasks == null) {
-    return;
-  }
-  let updated = tasks.replace(/`retrospective\.md`/g, `\`openspec/changes/${changeId}/automation/retro.json\``);
-  updated = updated.replace(/after the retro gate passes/g, "after the JSON retro gate passes");
-  updated = updated.replace(/after the JSON retro gate passes or an approved skip reason is recorded(?! in `automation\/retro\.json`)/g, "after the JSON retro gate passes or an approved skip reason is recorded in `automation/retro.json`");
-  if (updated !== tasks) {
-    fs.writeFileSync(tasksPath, updated, "utf8");
-  }
-}
-
-export function migrateLegacyRetrospective(root: string, changeId: string, options: { dryRun?: boolean; generatedAt?: string } = {}): RetroMigrationResult {
-  const errors: string[] = [];
-  const warnings: string[] = [];
-  if (!safeChangeId(changeId)) {
-    errors.push(`Invalid change id '${changeId}'.`);
-    return { migrated: false, changeId, path: "", errors, warnings };
-  }
-  const changeRoot = path.join(root, "openspec", "changes", changeId);
-  const legacyPath = path.join(changeRoot, "retrospective.md");
-  const retroPath = path.join(changeRoot, "automation", "retro.json");
-  const retrospective = fileText(legacyPath);
-  if (retrospective == null) {
-    errors.push(`Missing retrospective.md for ${changeId}; create automation/retro.json directly.`);
-    return { migrated: false, changeId, path: retroPath, errors, warnings };
-  }
-  const parsed = parseLegacyRetrospective(changeId, retrospective, options.generatedAt ?? new Date().toISOString());
-  errors.push(...parsed.errors);
-  warnings.push(...parsed.warnings);
-  if (parsed.artifact == null || errors.length > 0) {
-    return { migrated: false, changeId, path: retroPath, errors, warnings, artifact: parsed.artifact };
-  }
-  if (options.dryRun !== true) {
-    writeRetroArtifact(root, parsed.artifact);
-    migrateLegacyTaskTail(root, changeId);
-  }
-  return { migrated: true, changeId, path: retroPath, errors, warnings, artifact: parsed.artifact };
-}
-
 function parseArgs(args: string[]): CliOptions {
-  const options: CliOptions = { root: process.cwd(), format: "json", migrateLegacy: false, dryRun: false };
+  const options: CliOptions = { root: process.cwd(), format: "json" };
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
     if (arg === "--root") {
@@ -665,10 +599,6 @@ function parseArgs(args: string[]): CliOptions {
       }
       options.format = value;
       index++;
-    } else if (arg === "--migrate-legacy") {
-      options.migrateLegacy = true;
-    } else if (arg === "--dry-run") {
-      options.dryRun = true;
     } else if (arg.startsWith("--")) {
       throw new Error(`Unknown option: ${arg}`);
     } else if (options.changeId == null) {
@@ -695,34 +625,11 @@ function renderText(result: RetroGateResult): string {
   return `${lines.join("\n")}\n`;
 }
 
-function renderMigrationText(result: RetroMigrationResult): string {
-  const lines = [`changeId: ${result.changeId}`, `migrated: ${String(result.migrated)}`, `path: ${result.path}`];
-  for (const error of result.errors) {
-    lines.push(`error: ${error}`);
-  }
-  for (const warning of result.warnings) {
-    lines.push(`warning: ${warning}`);
-  }
-  return `${lines.join("\n")}\n`;
-}
-
 function runCli(): void {
   try {
     const options = parseArgs(process.argv.slice(2));
     if (options.changeId == null) {
-      throw new Error("Usage: node tools/openspec-retro-gate.ts <change-id> [--root <repo>] [--format json|text] [--migrate-legacy] [--dry-run]");
-    }
-    if (options.migrateLegacy) {
-      const migration = migrateLegacyRetrospective(options.root || defaultRoot(), options.changeId, { dryRun: options.dryRun });
-      if (!migration.migrated) {
-        process.stdout.write(options.format === "json" ? `${JSON.stringify(migration, null, 2)}\n` : renderMigrationText(migration));
-        process.exitCode = 1;
-        return;
-      }
-      if (options.dryRun) {
-        process.stdout.write(options.format === "json" ? `${JSON.stringify(migration, null, 2)}\n` : renderMigrationText(migration));
-        return;
-      }
+      throw new Error("Usage: node tools/openspec-retro-gate.ts <change-id> [--root <repo>] [--format json|text]");
     }
     const result = evaluateRetroGate(options.root || defaultRoot(), options.changeId);
     process.stdout.write(options.format === "json" ? `${JSON.stringify(result, null, 2)}\n` : renderText(result));

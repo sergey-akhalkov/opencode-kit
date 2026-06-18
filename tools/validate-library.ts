@@ -777,6 +777,12 @@ function validateDevKitContract(root: string): void {
   if (scripts.test && !/(^|&&)\s*node\s+tools\/test-project-session-retro-ledger-cli\.ts(\s|$|&&)/.test(scripts.test)) {
     addError("package.json script 'test' must include node tools/test-project-session-retro-ledger-cli.ts.");
   }
+  if (scripts.test && !/(^|&&)\s*node\s+tools\/test-openspec-retro-gate\.ts(\s|$|&&)/.test(scripts.test)) {
+    addError("package.json script 'test' must include node tools/test-openspec-retro-gate.ts.");
+  }
+  if (scripts.test && !/(^|&&)\s*node\s+tools\/test-openspec-retro-followups\.ts(\s|$|&&)/.test(scripts.test)) {
+    addError("package.json script 'test' must include node tools/test-openspec-retro-followups.ts.");
+  }
   if (scripts["validate:strict"] && !scripts["validate:strict"].includes("--fail-on-warnings")) {
     addError("package.json script 'validate:strict' must pass --fail-on-warnings.");
   }

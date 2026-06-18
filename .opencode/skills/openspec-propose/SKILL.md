@@ -29,11 +29,10 @@ Every new OpenSpec `tasks.md` must end with:
 ## Retrospective Before Archive
 
 - [ ] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [ ] Write `openspec/changes/<change-id>/automation/retro.json` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
-- [ ] Create or update project-local OpenSpec follow-up changes for project-local findings.
-- [ ] For reusable findings, create or update follow-up changes only in the owning reusable-artifact repository and only when current write scope includes it; otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [ ] Write `openspec/changes/<change-id>/retro.md` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
 - [ ] Run the repository-configured retrospective follow-up command when available, e.g. `npm run openspec:retro-followups -- <change-id>`, so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
-- [ ] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in `automation/retro.json`.
+- [ ] If the helper is unavailable, manually create or update project-local OpenSpec follow-up changes for project-local findings; for reusable `opencode-dev-kit` findings, write only when the current repository owns the reusable artifact and current write scope includes it, otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [ ] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded in `retro.md`.
 ```
 
 Keep this section final because it depends on completed implementation, validation, reviewer, and handoff evidence.

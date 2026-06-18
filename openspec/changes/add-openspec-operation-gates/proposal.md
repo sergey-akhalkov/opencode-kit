@@ -17,7 +17,7 @@ The result is uneven trigger coverage: some OpenSpec operations are machine-chec
 
 ## Depends On
 
-- `require-openspec-change-retro-gate`: operation-gate reports and retrospectives must be JSON-backed. This change can start with internal JSON output, but archive/retro gates should align with `automation/retro.json` before full acceptance.
+- `require-openspec-change-retro-gate`: operation-gate reports may stay JSON-backed, but change retrospectives are Markdown-backed. Archive/retro gates should align with `retro.md` before full acceptance.
 
 ## Goals
 
@@ -36,12 +36,12 @@ The result is uneven trigger coverage: some OpenSpec operations are machine-chec
 
 ## Operations
 
-- `propose`: validates new change shape, safe id, required docs, spec deltas, and JSON retro task tail.
+- `propose`: validates new change shape, safe id, required docs, spec deltas, and Markdown `retro.md` task tail.
 - `apply`: validates accepted/safe implementation readiness, TDD plan, blockers, and task evidence.
 - `task-update`: validates task checkbox/evidence changes and prevents completed active changes from silently remaining unarchived or stale.
 - `review`: validates required reviewer gates, test coverage, code quality, docs/spec sync, and deployment/config reviewers when applicable.
 - `acceptance`: validates terminal readiness, MR policy, fan-in evidence, docs/spec sync, and no unresolved blockers.
-- `archive`: validates completed tasks, JSON retro, follow-up changes, freshness, and OpenSpec validation.
+- `archive`: validates completed tasks, Markdown `retro.md`, follow-up changes, freshness, and OpenSpec validation.
 - `post-archive`: validates moved archive state, follow-up changes still valid, and docs updated when needed.
 - `prepush`: composes repository validation, OpenSpec validation, operation-specific checks for changed files, and stale-state detection.
 

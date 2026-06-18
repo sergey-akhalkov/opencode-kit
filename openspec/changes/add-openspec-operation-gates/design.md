@@ -17,18 +17,18 @@ The gate should reuse existing validators wherever possible rather than duplicat
   "status": "passed|warning|failed|blocked|not-applicable",
   "checks": [
     {
-      "id": "archive:retro-json",
-      "label": "JSON retrospective gate",
+      "id": "archive:retro-md",
+      "label": "Markdown retrospective gate",
       "status": "passed|warning|failed|blocked|not-applicable|unknown",
       "blocking": true,
-      "source": "openspec/changes/<change>/automation/retro.json",
+      "source": "openspec/changes/<change>/retro.md",
       "summary": "<short deterministic summary>"
     }
   ],
   "nextActions": [
     {
-      "label": "Create automation/retro.json",
-      "reason": "Archive requires JSON retrospective evidence.",
+      "label": "Create retro.md",
+      "reason": "Archive requires Markdown retrospective evidence.",
       "command": "npm run openspec:retro-gate -- <change-id>"
     }
   ]
@@ -48,7 +48,7 @@ Each operation has a named set of checks. Checks should be deterministic functio
 
 ### Propose
 
-Validates safe id, required proposal/tasks/spec structure, test-first task ordering, `automation/retro.json` archive-tail wording, no duplicate active/archive change id, and `openspec validate <change> --strict` compatibility when available.
+Validates safe id, required proposal/tasks/spec structure, test-first task ordering, `retro.md` archive-tail wording, no duplicate active/archive change id, and `openspec validate <change> --strict` compatibility when available.
 
 ### Apply
 
@@ -56,7 +56,7 @@ Validates accepted or explicitly selected change, synchronized artifacts, no unr
 
 ### Task Update
 
-Validates checkbox changes, evidence notes for completed tasks, validation evidence for validation tasks, final JSON retrospective tail preservation, and stale all-checked active changes.
+Validates checkbox changes, evidence notes for completed tasks, validation evidence for validation tasks, final Markdown retrospective tail preservation, and stale all-checked active changes.
 
 ### Review
 
@@ -68,7 +68,7 @@ Validates terminal readiness, MR policy, fan-in evidence for parallel work, arch
 
 ### Archive
 
-Validates complete tasks, JSON retrospective, follow-up OpenSpec changes, freshness, and OpenSpec validation.
+Validates complete tasks, Markdown retrospective, follow-up OpenSpec changes, freshness, and OpenSpec validation.
 
 ### Post-Archive
 
@@ -80,7 +80,7 @@ Composes repository validation, tests, OpenSpec validation, stale completed-chan
 
 ## Trigger Integration
 
-- `file.watcher.updated` for active `tasks.md`, `proposal.md`, `design.md`, spec deltas, `automation/retro.json`, and operation-gate JSON may schedule cheap read-only gate checks.
+- `file.watcher.updated` for active `tasks.md`, `proposal.md`, `design.md`, spec deltas, `retro.md`, and operation-gate JSON may schedule cheap read-only gate checks.
 - Passive events must not claim work or mutate OpenSpec state by default.
 - Controlled local workflows may use operation gates as prerequisites before sensitive lifecycle actions.
 

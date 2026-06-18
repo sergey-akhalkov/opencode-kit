@@ -226,7 +226,7 @@ function newLibraryFixture(name: string): string {
     "    \"prepush:validate\": \"node tools/pre-push-validate.ts\",",
     "    \"validate\": \"node tools/validate-library.ts\",",
     "    \"validate:strict\": \"node tools/validate-library.ts --fail-on-warnings\",",
-    "    \"test\": \"node tools/test-library.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts\"",
+    "    \"test\": \"node tools/test-library.ts && node tools/test-openspec-retro-gate.ts && node tools/test-openspec-retro-followups.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts\"",
     "  }",
     "}",
     "",

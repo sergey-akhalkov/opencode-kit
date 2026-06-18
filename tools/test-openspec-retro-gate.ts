@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { evaluateRetroGate, migrateLegacyRetrospective } from "./openspec-retro-gate.ts";
+import { evaluateRetroGate } from "./openspec-retro-gate.ts";
 
 type TestCase = {
   name: string;
@@ -23,7 +23,6 @@ type FindingFixture = {
 };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const generatedAt = "2026-06-13T00:00:00.000Z";
 const projectFinding: FindingFixture = {
   problem: "Project docs drift",
   evidence: "README section stale",
@@ -77,7 +76,7 @@ function writeChange(repo: string, changeId: string, files: Record<string, strin
   }
 }
 
-function tasksWithJsonRetro(): string {
+function tasksWithRetroMd(changeId = "example"): string {
   return `# Tasks: Example
 
 ## Implementation
@@ -87,50 +86,72 @@ function tasksWithJsonRetro(): string {
 ## Retrospective Before Archive
 
 - [x] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [x] Write \`openspec/changes/example/automation/retro.json\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
-- [x] Create or update project-local OpenSpec follow-up changes for project-local findings.
-- [x] For reusable findings, create or update \`opencode-dev-kit\` OpenSpec proposals/changes only when the current repository owns them; otherwise record a local handoff and do not write cross-repo without explicit approval.
-- [x] Run \`npm run openspec:retro-followups -- example\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
-- [x] Confirm archive is allowed only after the JSON retro gate passes or an approved skip reason is recorded in \`automation/retro.json\`.
+- [x] Write \`openspec/changes/${changeId}/retro.md\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
+- [x] Run \`npm run openspec:retro-followups -- ${changeId}\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
+- [x] If the helper is unavailable, manually create or update project-local OpenSpec follow-up changes for project-local findings; for reusable \`opencode-dev-kit\` findings, write only when the current repository owns the reusable artifact and current write scope includes it, otherwise record a local handoff and do not write cross-repo without explicit approval.
+- [x] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded in \`retro.md\`.
 `;
 }
 
-function legacyTasksWithRetro(): string {
-  return tasksWithJsonRetro().replace("openspec/changes/example/automation/retro.json", "retrospective.md").replace("JSON retro gate", "retro gate").replace(" in `automation/retro.json`", "");
+function markdownId(value: string | null): string {
+  return value == null ? "none" : `\`${value}\``;
 }
 
-function retroJson(changeId: string, problems: FindingFixture[] = [], overrides: Record<string, unknown> = {}): string {
-  return `${JSON.stringify({
-    schemaVersion: 1,
-    changeId,
-    generatedAt,
-    evidenceReviewed: [
-      {
-        kind: "command",
-        source: "npm test",
-        status: "passed",
-        summary: "Focused validation passed.",
-      },
-    ],
-    problems,
-    outputs: {
-      projectFollowUpChanges: problems.filter((problem) => problem.target === "project-local" && problem.followUpChangeId).map((problem) => problem.followUpChangeId),
-      opencodeDevKitChanges: problems.filter((problem) => problem.target === "opencode-dev-kit" && problem.followUpChangeId).map((problem) => problem.followUpChangeId),
-      noFindingsReason: problems.length === 0 ? "Evidence reviewed; no actionable findings." : null,
-    },
-    archiveGate: {
-      decision: "passed",
-      reason: problems.length === 0 ? "No findings with evidence reviewed." : "Findings routed to durable OpenSpec changes.",
-      approver: null,
-    },
-    ...overrides,
-  }, null, 2)}\n`;
+function markdownText(value: string | null): string {
+  return value == null ? "none" : value;
 }
 
-function writeRetroJson(repo: string, changeId: string, json = retroJson(changeId)): void {
+function problemTable(problems: FindingFixture[]): string {
+  const lines = [
+    "| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target | Follow-up Change | No Follow-up Reason |",
+    "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+  ];
+  for (const problem of problems) {
+    lines.push(`| ${problem.problem} | ${problem.evidence} | ${problem.impact} | ${problem.rootCause} | ${problem.recommendation} | ${problem.confidence} | ${problem.target} | ${markdownId(problem.followUpChangeId)} | ${markdownText(problem.noFollowUpReason)} |`);
+  }
+  return lines.join("\n");
+}
+
+function outputIds(ids: Array<string | null>): string {
+  const nonNull = ids.filter((id): id is string => id != null);
+  return nonNull.length === 0 ? "none" : nonNull.map((id) => `\`${id}\``).join(", ");
+}
+
+function retroMd(changeId: string, problems: FindingFixture[] = [], options: { decision?: string; reason?: string; approver?: string | null; headingChangeId?: string; evidence?: string[] } = {}): string {
+  const evidence = options.evidence ?? ["OpenSpec artifacts: proposal, design, tasks.", "Tool outputs / validation: `npm test` passed."];
+  const projectIds = problems.filter((problem) => problem.target === "project-local").map((problem) => problem.followUpChangeId);
+  const devkitIds = problems.filter((problem) => problem.target === "opencode-dev-kit").map((problem) => problem.followUpChangeId);
+  const decision = options.decision ?? "passed";
+  const reason = options.reason ?? (problems.length === 0 ? "No findings with evidence reviewed." : "Findings routed to durable OpenSpec changes.");
+  const approver = options.approver ?? null;
+  return `# Retro: ${options.headingChangeId ?? changeId}
+
+## Evidence Reviewed
+
+${evidence.map((line) => `- ${line}`).join("\n")}
+
+## Problems Found
+
+${problemTable(problems)}
+
+## Outputs
+
+- Project follow-up changes: ${outputIds(projectIds)}.
+- \`opencode-dev-kit\` proposals/changes: ${outputIds(devkitIds)}.
+- No findings reason: ${problems.length === 0 ? "Evidence reviewed; no actionable findings." : "n/a"}.
+
+## Archive Gate Decision
+
+- Decision: ${decision}
+- Reason: ${reason}
+- Approver, if skipped: ${approver ?? "none"}
+`;
+}
+
+function writeRetroMd(repo: string, changeId: string, markdown = retroMd(changeId)): void {
   writeChange(repo, changeId, {
-    "tasks.md": tasksWithJsonRetro().replaceAll("example", changeId),
-    "automation/retro.json": json,
+    "tasks.md": tasksWithRetroMd(changeId),
+    "retro.md": markdown,
   });
 }
 
@@ -163,37 +184,6 @@ function writeFollowUp(repo: string, changeId: string, finding = findingForFollo
   fs.writeFileSync(specPath, `# ${changeId} Specification\n\n## ADDED Requirements\n\n### Requirement: Follow-Up Preserves Retrospective Evidence\n\nThe follow-up SHALL preserve the routed retrospective root cause and recommendation.\n\n#### Scenario: Routed evidence is available\n\n- **GIVEN** a retrospective finding references this follow-up\n- **WHEN** the archive gate checks routed findings\n- **THEN** the follow-up proposal, tasks, and spec delta preserve root cause: ${specRootCause}.\n- **AND** the follow-up implements or investigates: ${finding.recommendation}.\n`, "utf8");
 }
 
-function routedFindingsRetro(changeId = "example"): string {
-  const projectFollowUp = `retro-${changeId}-01-project-docs-drift`;
-  const devkitFollowUp = `retro-${changeId}-02-workflow-routing-friction`;
-  return `# Retrospective: example
-
-## Evidence Reviewed
-
-- OpenSpec artifacts: proposal, design, tasks.
-- Tool outputs / validation: npm test passed.
-
-## Problems Found
-
-| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target |
-| --- | --- | --- | --- | --- | --- | --- |
-| Project docs drift | README section stale | Reviewers miss current commands | README routing was not updated with the changed command contract | Create follow-up | high | project-local |
-| Workflow routing friction | No-progress handoff repeated | Token waste | Routing guidance did not distinguish safe handoff from repeated no-progress calls | Improve reusable skill guidance | high | opencode-dev-kit |
-
-## Outputs
-
-- Project follow-up changes: \`${projectFollowUp}\`.
-- \`opencode-dev-kit\` proposals/changes: \`${devkitFollowUp}\`.
-- No findings reason: n/a.
-
-## Archive Gate Decision
-
-- Decision: passed
-- Reason: Findings routed to durable OpenSpec changes.
-- Approver, if skipped: none
-`;
-}
-
 function assert(condition: boolean, message: string): void {
   if (!condition) {
     throw new Error(message);
@@ -210,107 +200,152 @@ function readRepoText(relativePath: string): string {
 
 const tests: TestCase[] = [
   {
-    name: "retro gate requires automation retro json",
-    run: () => withTempRepo("missing-json", (repo) => {
-      writeChange(repo, "example", { "tasks.md": tasksWithJsonRetro(), "retrospective.md": routedFindingsRetro() });
+    name: "retro gate requires retro md",
+    run: () => withTempRepo("missing-md", (repo) => {
+      const unsafe = evaluateRetroGate(repo, "../escape");
+      assert(!unsafe.valid && !unsafe.archiveAllowed, "Unsafe source change id must fail retro gate.");
+      assertErrorIncludes(unsafe.errors, "Invalid change id");
+
+      writeChange(repo, "example", { "tasks.md": tasksWithRetroMd(), "automation/retro.json": "{}\n" });
       const result = evaluateRetroGate(repo, "example");
-      assert(!result.valid, "Missing automation/retro.json must fail.");
-      assert(!result.archiveAllowed, "Missing automation/retro.json must block archive.");
-      assertErrorIncludes(result.errors, "automation/retro.json");
+      assert(!result.valid, "Missing retro.md must fail.");
+      assert(!result.archiveAllowed, "Missing retro.md must block archive.");
+      assertErrorIncludes(result.errors, "retro.md");
     }),
   },
   {
-    name: "retro gate accepts concise no-findings json retrospective",
+    name: "retro gate accepts concise no-findings markdown retro",
     run: () => withTempRepo("no-findings", (repo) => {
-      writeRetroJson(repo, "example");
+      writeRetroMd(repo, "example");
       const result = evaluateRetroGate(repo, "example");
-      assert(result.valid, `No-findings retro.json should pass, got ${JSON.stringify(result.errors)}.`);
-      assert(result.archiveAllowed, "No-findings retro.json should allow archive.");
+      assert(result.valid, `No-findings retro.md should pass, got ${JSON.stringify(result.errors)}.`);
+      assert(result.archiveAllowed, "No-findings retro.md should allow archive.");
     }),
   },
   {
     name: "retro gate validates approved skip reason and approver",
     run: () => withTempRepo("approved-skip", (repo) => {
-      writeRetroJson(repo, "example", retroJson("example", [], { archiveGate: { decision: "approved-skip", reason: "Product owner approved archive without findings.", approver: "product-owner" } }));
+      writeRetroMd(repo, "example", retroMd("example", [], { decision: "approved-skip", reason: "Product owner approved archive without findings.", approver: "product-owner" }));
       const accepted = evaluateRetroGate(repo, "example");
       assert(accepted.valid && accepted.archiveAllowed, `Approved skip with reason and approver should pass, got ${JSON.stringify(accepted.errors)}.`);
 
-      writeRetroJson(repo, "broken", retroJson("broken", [], { archiveGate: { decision: "approved-skip", reason: "", approver: null } }));
+      writeRetroMd(repo, "broken", retroMd("broken", [], { decision: "approved-skip", reason: "", approver: null }));
       const rejected = evaluateRetroGate(repo, "broken");
       assert(!rejected.valid, "Approved skip without reason/approver must fail.");
       assertErrorIncludes(rejected.errors, "approved skip");
     }),
   },
   {
-    name: "retro gate validates strict schema and routed findings",
+    name: "retro gate validates markdown contract and routed findings",
     run: () => withTempRepo("finding-routing", (repo) => {
-      writeRetroJson(repo, "example", retroJson("example", [projectFinding, devkitFinding]));
+      writeRetroMd(repo, "example", retroMd("example", [projectFinding, devkitFinding]));
       writeFollowUp(repo, "retro-example-01-project-docs-drift");
       writeFollowUp(repo, "retro-example-02-workflow-routing-friction");
       const accepted = evaluateRetroGate(repo, "example");
       assert(accepted.valid && accepted.archiveAllowed, `Routed findings should pass, got ${JSON.stringify(accepted.errors)}.`);
 
-      writeRetroJson(repo, "missing-schema", retroJson("missing-schema", []).replace('  "schemaVersion": 1,\n', ""));
-      assertErrorIncludes(evaluateRetroGate(repo, "missing-schema").errors, "schemaVersion");
+      writeRetroMd(repo, "wrong-change", retroMd("wrong-change", [], { headingChangeId: "other-change" }));
+      assertErrorIncludes(evaluateRetroGate(repo, "wrong-change").errors, "heading change id");
 
-      writeRetroJson(repo, "wrong-change", retroJson("other-change"));
-      assertErrorIncludes(evaluateRetroGate(repo, "wrong-change").errors, "changeId");
+      writeRetroMd(repo, "missing-evidence", retroMd("missing-evidence", [], { evidence: [] }));
+      assertErrorIncludes(evaluateRetroGate(repo, "missing-evidence").errors, "Evidence Reviewed");
 
-      writeRetroJson(repo, "unknown-field", retroJson("unknown-field", [], { extra: true }));
-      assertErrorIncludes(evaluateRetroGate(repo, "unknown-field").errors, "Unknown field");
+      writeRetroMd(repo, "escaped-pipe", `# Retro: escaped-pipe
 
-      writeRetroJson(repo, "malformed-finding", retroJson("malformed-finding", [{ ...projectFinding, evidence: "" }]));
+## Evidence Reviewed
+
+- Tool outputs / validation: npm test passed.
+
+## Problems Found
+
+| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target | Follow-up Change | No Follow-up Reason |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Pipe \\| problem | Evidence \\| detail | No remaining impact | Fixed root cause | No follow-up needed | high | none | none | Fixed in scope. |
+
+## Outputs
+
+- Project follow-up changes: none.
+- \`opencode-dev-kit\` proposals/changes: none.
+- No findings reason: n/a.
+
+## Archive Gate Decision
+
+- Decision: passed
+- Reason: Escaped pipe table parsed.
+- Approver, if skipped: none
+`);
+      assert(evaluateRetroGate(repo, "escaped-pipe").valid, "Escaped Markdown pipes in problem rows should parse.");
+
+      const sectionCases = [
+        { id: "missing-evidence-section", heading: "Evidence Reviewed" },
+        { id: "missing-problems-section", heading: "Problems Found" },
+        { id: "missing-outputs-section", heading: "Outputs" },
+        { id: "missing-decision-section", heading: "Archive Gate Decision" },
+      ];
+      for (const item of sectionCases) {
+        const markdown = retroMd(item.id).replace(new RegExp(`\\n## ${item.heading}\\n[\\s\\S]*?(?=\\n## |$)`), "");
+        writeRetroMd(repo, item.id, markdown);
+        const result = evaluateRetroGate(repo, item.id);
+        assert(!result.valid && !result.archiveAllowed, `${item.heading} omission must block archive.`);
+        assertErrorIncludes(result.errors, `## ${item.heading}`);
+      }
+
+      writeRetroMd(repo, "missing-outputs", retroMd("missing-outputs").replace(/\n## Outputs\n[\s\S]*?(?=\n## Archive Gate Decision)/, ""));
+      assertErrorIncludes(evaluateRetroGate(repo, "missing-outputs").errors, "## Outputs");
+
+      writeRetroMd(repo, "prose-finding", retroMd("prose-finding", []).replace("| Problem | Evidence | Impact | Root Cause | Recommendation | Confidence | Target | Follow-up Change | No Follow-up Reason |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |", "- Project docs drift: README section stale."));
+      assertErrorIncludes(evaluateRetroGate(repo, "prose-finding").errors, "nine columns");
+
+      writeChange(repo, "non-final-retro", { "tasks.md": `${tasksWithRetroMd("non-final-retro")}\n## Extra\n\n- [ ] Later work.\n`, "retro.md": retroMd("non-final-retro") });
+      assertErrorIncludes(evaluateRetroGate(repo, "non-final-retro").errors, "must end with ## Retrospective Before Archive");
+
+      writeChange(repo, "missing-tail-marker", { "tasks.md": tasksWithRetroMd("missing-tail-marker").replace("opencode-dev-kit", "reusable-artifact repository"), "retro.md": retroMd("missing-tail-marker") });
+      assertErrorIncludes(evaluateRetroGate(repo, "missing-tail-marker").errors, "opencode-dev-kit");
+
+      writeRetroMd(repo, "malformed-table", retroMd("malformed-table", [projectFinding]).replace("| Project docs drift | README section stale | Reviewers miss current commands | README routing was not updated with the changed command contract | Create follow-up | high | project-local | `retro-example-01-project-docs-drift` | none |", "| Project docs drift | README section stale | project-local |"));
+      assertErrorIncludes(evaluateRetroGate(repo, "malformed-table").errors, "nine columns");
+
+      writeRetroMd(repo, "bad-confidence", retroMd("bad-confidence", [{ ...projectFinding, confidence: "high" as const }]).replace("| high | project-local |", "| maybe | project-local |"));
+      assertErrorIncludes(evaluateRetroGate(repo, "bad-confidence").errors, "confidence");
+
+      writeRetroMd(repo, "bad-target", retroMd("bad-target", [projectFinding]).replace("| high | project-local |", "| high | elsewhere |"));
+      assertErrorIncludes(evaluateRetroGate(repo, "bad-target").errors, "target");
+
+      writeRetroMd(repo, "malformed-finding", retroMd("malformed-finding", [{ ...projectFinding, evidence: "" }]));
       assertErrorIncludes(evaluateRetroGate(repo, "malformed-finding").errors, "problem entries must include");
 
-      writeRetroJson(repo, "missing-follow-up-id", retroJson("missing-follow-up-id", [{ ...projectFinding, followUpChangeId: null }]));
+      writeRetroMd(repo, "missing-follow-up-id", retroMd("missing-follow-up-id", [{ ...projectFinding, followUpChangeId: null }]));
       assertErrorIncludes(evaluateRetroGate(repo, "missing-follow-up-id").errors, "followUpChangeId");
 
-      writeRetroJson(repo, "missing-follow-up", retroJson("missing-follow-up", [{ ...projectFinding, followUpChangeId: "retro-missing-follow-up-01-project-docs-drift" }]));
+      writeRetroMd(repo, "missing-follow-up", retroMd("missing-follow-up", [{ ...projectFinding, followUpChangeId: "retro-missing-follow-up-01-project-docs-drift" }]));
       assertErrorIncludes(evaluateRetroGate(repo, "missing-follow-up").errors, "must exist with proposal.md");
 
-      writeRetroJson(repo, "unknown-with-fix", retroJson("unknown-with-fix", [{ ...unknownFinding, followUpChangeId: "retro-unknown-with-fix-01-mystery-failure", recommendation: "Apply guessed fix immediately" }]));
+      writeRetroMd(repo, "unknown-with-fix", retroMd("unknown-with-fix", [{ ...unknownFinding, followUpChangeId: "retro-unknown-with-fix-01-mystery-failure", recommendation: "Apply guessed fix immediately" }]));
       writeFollowUp(repo, "retro-unknown-with-fix-01-mystery-failure", { ...unknownFinding, recommendation: "Apply guessed fix immediately" });
       assertErrorIncludes(evaluateRetroGate(repo, "unknown-with-fix").errors, "unknown root cause");
 
-      writeRetroJson(repo, "bad-decision", retroJson("bad-decision", [], { archiveGate: { decision: "maybe", reason: "bad", approver: null } }));
-      assertErrorIncludes(evaluateRetroGate(repo, "bad-decision").errors, "Archive gate decision");
+      writeRetroMd(repo, "bad-decision", retroMd("bad-decision", [], { decision: "maybe", reason: "bad", approver: null }));
+      assertErrorIncludes(evaluateRetroGate(repo, "bad-decision").errors, "Archive Gate Decision");
     }),
   },
   {
-    name: "retro gate migrates supported legacy markdown and blocks malformed tables",
-    run: () => withTempRepo("migration", (repo) => {
-      writeChange(repo, "example", { "tasks.md": legacyTasksWithRetro(), "retrospective.md": routedFindingsRetro("example") });
-      const migrated = migrateLegacyRetrospective(repo, "example", { generatedAt });
-      assert(migrated.migrated, `Expected migrated result, got ${JSON.stringify(migrated)}.`);
-      writeFollowUp(repo, "retro-example-01-project-docs-drift");
-      writeFollowUp(repo, "retro-example-02-workflow-routing-friction");
-      const accepted = evaluateRetroGate(repo, "example");
-      assert(accepted.valid && accepted.archiveAllowed, `Migrated retro.json should satisfy gate, got ${JSON.stringify(accepted.errors)}.`);
-
-      writeChange(repo, "malformed", {
-        "tasks.md": legacyTasksWithRetro().replaceAll("example", "malformed"),
-        "retrospective.md": routedFindingsRetro("malformed").replace("| Workflow routing friction | No-progress handoff repeated | Token waste | Routing guidance did not distinguish safe handoff from repeated no-progress calls | Improve reusable skill guidance | high | opencode-dev-kit |", "| Workflow routing friction | No-progress handoff repeated | Token waste | opencode-dev-kit |"),
-      });
-      const blocked = migrateLegacyRetrospective(repo, "malformed", { dryRun: true, generatedAt });
-      assert(!blocked.migrated, "Malformed Markdown table must block migration.");
-      assert(blocked.errors.some((error) => error.includes("seven columns")), `Expected malformed table error, got ${JSON.stringify(blocked.errors)}.`);
-    }),
-  },
-  {
-    name: "OpenSpec workflow skills document json retrospective gate",
+    name: "OpenSpec workflow skills document markdown retro gate",
     run: () => {
       const archive = readRepoText(".opencode/skills/openspec-archive-change/SKILL.md");
       const propose = readRepoText(".opencode/skills/openspec-propose/SKILL.md");
       const apply = readRepoText(".opencode/skills/openspec-apply-change/SKILL.md");
+      const nextStep = readRepoText(".opencode/skills/next-step/SKILL.md");
       const readme = readRepoText("README.md");
+      const projectGuide = readRepoText("openspec/project.md");
+      const readmeOpenSpecRetro = readme.slice(readme.indexOf("## OpenSpec Retrospective Gate"), readme.indexOf("## Skill Catalog"));
 
-      for (const [label, text] of Object.entries({ archive, propose, apply, readme })) {
-        assert(text.includes("automation/retro.json"), `${label} must require automation/retro.json.`);
-        assert(!text.includes("Write `retrospective.md`"), `${label} must not instruct agents to write retrospective.md.`);
+      for (const [label, text] of Object.entries({ archive, propose, apply, nextStep, readmeOpenSpecRetro, projectGuide })) {
+        assert(text.includes("retro.md"), `${label} must require retro.md.`);
+        assert(!text.includes("automation/retro.json"), `${label} must not require automation/retro.json.`);
       }
       assert(archive.includes("openspec:retro-followups") && archive.includes("openspec:retro-gate") && archive.toLowerCase().includes("root cause") && archive.includes("approved skip"), "openspec-archive-change must enforce follow-up generation, root-cause evidence, the retro gate, and approved skip path.");
-      assert(propose.includes("## Retrospective Before Archive") && propose.includes("openspec:retro-followups"), "openspec-propose must include the final JSON retrospective task template.");
-      assert(apply.includes("openspec:retro-followups") && apply.includes("before archive"), "openspec-apply-change must hand completed changes to follow-up generation and the JSON retrospective gate before archive.");
+      assert(propose.includes("## Retrospective Before Archive") && propose.includes("openspec:retro-followups"), "openspec-propose must include the final Markdown retrospective task template.");
+      assert(apply.includes("openspec:retro-followups") && apply.includes("before archive"), "openspec-apply-change must hand completed changes to follow-up generation and the Markdown retrospective gate before archive.");
     },
   },
 ];
