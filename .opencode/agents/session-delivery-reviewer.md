@@ -25,8 +25,6 @@ Use after material or complex sessions, or when the main session explicitly requ
 
 Determine whether the session stayed aligned with the user's goal, used proportional rigor for the task scale, preserved quality, and reached an acceptance-ready handoff.
 
-Project plugin may route this reviewer to local `llama.cpp` through an OpenAI-compatible endpoint at `http://127.0.0.1:8080/v1` when `/v1/models` returns OK JSON with at least one model id. If local model discovery fails, normal OpenCode model selection applies.
-
 ## Inputs
 
 Review the supplied materials when available:
