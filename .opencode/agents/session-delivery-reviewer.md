@@ -1,5 +1,5 @@
 ---
-description: "Reviews material/complex OpenCode session delivery or explicit delivery-review requests for current-session todos, user prompts/replies, goal alignment, risks, validation, reviews, and handoff readiness."
+description: "Use before final handoff of material/complex OpenCode sessions, or on explicit delivery-review requests, to audit goal alignment, proportional rigor, missed work, current-session todos/user replies, compaction continuity, risks, validation, reviewer gates, and acceptance-ready handoff."
 mode: subagent
 permission:
   read: allow
