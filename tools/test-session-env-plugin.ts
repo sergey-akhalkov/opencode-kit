@@ -48,9 +48,18 @@ function createDeliveryContextDb(dbPath: string, rawSessionId: string): void {
 
 const tests: TestCase[] = [
   {
+    name: "exposes canonical object-form server plugin shape",
+    run: () => {
+      assert(typeof plugin === "object" && plugin !== null, "Default export must be an object-form plugin, not a bare factory function.");
+      assert(typeof plugin.id === "string" && plugin.id.length > 0, "Object-form plugin must export a non-empty id for local path loading.");
+      assert(typeof plugin.server === "function", "Object-form plugin must expose a server factory function.");
+      assert(plugin.server !== (plugin as unknown), "server must be a named factory, not the plugin object itself (bare-function legacy form rejected).");
+    },
+  },
+  {
     name: "injects current session id into shell env",
     run: async () => {
-      const hooks = await plugin({} as never);
+      const hooks = await plugin.server({} as never);
       const output = { env: { EXISTING: "1" } };
       await hooks["shell.env"]?.({ callID: "call_fixture", cwd: process.cwd(), sessionID: "session_fixture" }, output);
       assert(output.env.EXISTING === "1", "shell.env hook must preserve existing env entries.");
@@ -60,7 +69,7 @@ const tests: TestCase[] = [
   {
     name: "registers session delivery context custom tool",
     run: async () => {
-      const hooks = await plugin({} as never);
+      const hooks = await plugin.server({} as never);
       assert(hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL] != null, "Plugin must register session_delivery_context tool.");
       assert(hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.description.includes("current OpenCode session"), "Custom tool description should scope evidence to current session.");
     },
@@ -73,7 +82,7 @@ const tests: TestCase[] = [
       const previousDataDir = process.env.OPENCODE_DATA_DIR;
       process.env.OPENCODE_DATA_DIR = dataDir;
       try {
-        const hooks = await plugin({} as never);
+        const hooks = await plugin.server({} as never);
         const metadataCalls: unknown[] = [];
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
@@ -126,7 +135,7 @@ const tests: TestCase[] = [
   {
     name: "config hook leaves reviewer model unchanged when local llama discovery fails",
     run: async () => {
-      const hooks = await plugin({} as never);
+      const hooks = await plugin.server({} as never);
       const previousFetch = globalThis.fetch;
       const config: { agent?: Record<string, Record<string, unknown>>; provider?: Record<string, Record<string, unknown>> } = {
         agent: {

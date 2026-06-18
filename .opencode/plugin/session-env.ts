@@ -106,47 +106,50 @@ export async function discoverLocalLlamaModel(fetchImpl: typeof fetch = fetch, t
   }
 }
 
-export default (async () => ({
-  config: async (config) => {
-    const modelID = await discoverLocalLlamaModel();
-    if (modelID != null) {
-      applyLocalLlamaSessionReviewerConfig(config as MutableConfig, modelID);
-    }
-  },
-  "shell.env": async (input, output) => {
-    if (typeof input.sessionID === "string" && input.sessionID !== "") {
-      output.env.OPENCODE_SESSION_ID = input.sessionID;
-    }
-  },
-  tool: {
-    [SESSION_DELIVERY_CONTEXT_TOOL]: {
-      args: {},
-      description: "Return redacted delivery-review context for the current OpenCode session: user prompts, question replies, permission replies, and todos.",
-      async execute(_args, context) {
-        const { readSessionDeliveryContext } = await loadSessionDeliveryContextModule();
-        const result = readSessionDeliveryContext({ sessionId: context.sessionID });
-        context.metadata({
-          metadata: {
-            missingSessions: result.missingSessions.length,
-            openTodos: result.session?.counts.openTodos ?? 0,
-            questionReplies: result.session?.counts.questionReplies ?? 0,
-            sessionRef: result.session?.sessionRef ?? null,
-            userMessages: result.session?.counts.userMessages ?? 0,
-            warnings: result.warnings.length,
-          },
-          title: "Session delivery context",
-        });
-        return {
-          metadata: {
-            missingSessions: result.missingSessions.length,
-            openTodos: result.session?.counts.openTodos ?? 0,
-            sessionRef: result.session?.sessionRef ?? null,
-            warnings: result.warnings.length,
-          },
-          output: `${JSON.stringify(result, null, 2)}\n`,
-          title: "Session delivery context",
-        };
+export default {
+  id: "opencode-dev-kit.session-env",
+  server: async () => ({
+    config: async (config) => {
+      const modelID = await discoverLocalLlamaModel();
+      if (modelID != null) {
+        applyLocalLlamaSessionReviewerConfig(config as MutableConfig, modelID);
+      }
+    },
+    "shell.env": async (input, output) => {
+      if (typeof input.sessionID === "string" && input.sessionID !== "") {
+        output.env.OPENCODE_SESSION_ID = input.sessionID;
+      }
+    },
+    tool: {
+      [SESSION_DELIVERY_CONTEXT_TOOL]: {
+        args: {},
+        description: "Return redacted delivery-review context for the current OpenCode session: user prompts, question replies, permission replies, and todos.",
+        async execute(_args, context) {
+          const { readSessionDeliveryContext } = await loadSessionDeliveryContextModule();
+          const result = readSessionDeliveryContext({ sessionId: context.sessionID });
+          context.metadata({
+            metadata: {
+              missingSessions: result.missingSessions.length,
+              openTodos: result.session?.counts.openTodos ?? 0,
+              questionReplies: result.session?.counts.questionReplies ?? 0,
+              sessionRef: result.session?.sessionRef ?? null,
+              userMessages: result.session?.counts.userMessages ?? 0,
+              warnings: result.warnings.length,
+            },
+            title: "Session delivery context",
+          });
+          return {
+            metadata: {
+              missingSessions: result.missingSessions.length,
+              openTodos: result.session?.counts.openTodos ?? 0,
+              sessionRef: result.session?.sessionRef ?? null,
+              warnings: result.warnings.length,
+            },
+            output: `${JSON.stringify(result, null, 2)}\n`,
+            title: "Session delivery context",
+          };
+        },
       },
     },
-  },
-})) satisfies Plugin;
+  }),
+} satisfies { id: string; server: Plugin };
