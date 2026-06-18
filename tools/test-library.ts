@@ -643,6 +643,100 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "validator rejects reviewer bash allow outside session delivery reviewer",
+    run: () => {
+      const fixture = newLibraryFixture("reviewer-bash-exception-scope");
+      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+        "---",
+        "description: Reviews demo fixture behavior.",
+        "mode: subagent",
+        "permission:",
+        "  read: allow",
+        "  glob: allow",
+        "  grep: allow",
+        "  bash:",
+        "    \"*\": deny",
+        "    \"npm run retro:project-ledger -- delivery-context --current --format json\": allow",
+        "  edit: deny",
+        "  task: deny",
+        "  question: deny",
+        "  skill: deny",
+        "  webfetch: deny",
+        "  websearch: deny",
+        "  todowrite: deny",
+        "  external_directory: deny",
+        "  lsp: deny",
+        "  doom_loop: deny",
+        "---",
+        "",
+        "You are a read-only demo reviewer.",
+        "",
+        "## Leaf Contract",
+        "",
+        "Read/search-only leaf reviewer. No edits, fixes, commits/amends, merges, pushes, remote/destructive actions, `question`, tasks, skills, or nested agents. Stay in scope. Missing evidence -> exact main-session command/manual gate in `Actionable Continuation Items`; external domain -> `Needs external reviewer: <agent-name> required|optional`.",
+        "",
+        "## Output",
+        "",
+        "Return:",
+        "",
+        "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
+        "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
+        "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Only session-delivery-reviewer should be allowed to run delivery-context.");
+      assertOutputContains(result, "bash: deny", "Unauthorized reviewer bash exception should explain expected deny policy.");
+      assertOutputExcludes(result, "Unsupported frontmatter syntax", "Validator should parse nested bash permission objects.");
+    },
+  },
+  {
+    name: "validator rejects session delivery context tool outside session delivery reviewer",
+    run: () => {
+      const fixture = newLibraryFixture("reviewer-custom-tool-exception-scope");
+      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+        "---",
+        "description: Reviews demo fixture behavior.",
+        "mode: subagent",
+        "permission:",
+        "  read: allow",
+        "  glob: allow",
+        "  grep: allow",
+        "  bash: deny",
+        "  session_delivery_context: allow",
+        "  edit: deny",
+        "  task: deny",
+        "  question: deny",
+        "  skill: deny",
+        "  webfetch: deny",
+        "  websearch: deny",
+        "  todowrite: deny",
+        "  external_directory: deny",
+        "  lsp: deny",
+        "  doom_loop: deny",
+        "---",
+        "",
+        "You are a read-only demo reviewer.",
+        "",
+        "## Leaf Contract",
+        "",
+        "Read/search-only leaf reviewer. No edits, fixes, commits/amends, merges, pushes, remote/destructive actions, `question`, tasks, skills, or nested agents. Stay in scope. Missing evidence -> exact main-session command/manual gate in `Actionable Continuation Items`; external domain -> `Needs external reviewer: <agent-name> required|optional`.",
+        "",
+        "## Output",
+        "",
+        "Return:",
+        "",
+        "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
+        "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
+        "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Only session-delivery-reviewer should be allowed to use session_delivery_context.");
+      assertOutputContains(result, "Only session-delivery-reviewer", "Custom-tool permission exception should be exclusive.");
+    },
+  },
+  {
     name: "validator rejects obsolete reviewer list permission",
     run: () => {
       const fixture = newLibraryFixture("obsolete-list-permission");
@@ -1510,6 +1604,7 @@ const tests: TestCase[] = [
       assertOutputContains(result, "Install profile: all", "Default installer run should install all repo artifacts without profile selection.");
       assertOutputContains(result, "skill all-sessions-retro", "Default installer run should include advanced skills.");
       assertOutputContains(result, "agent deployment-config-reviewer", "Default installer run should include advanced reviewers.");
+      assertOutputContains(result, "plugin session-env", "Default installer run should include session delivery context plugin.");
       if (fs.existsSync(configDir)) {
         throw new Error(`Installer dry-run created config directory: ${configDir}`);
       }
@@ -1648,6 +1743,30 @@ const tests: TestCase[] = [
       }
       if (!anyPathWithBasename(backupRoot, "stale-agent.md")) {
         throw new Error(`Stale agent was not backed up under: ${backupRoot}`);
+      }
+    },
+  },
+  {
+    name: "installer installs plugin support without pruning user plugins",
+    run: () => {
+      const configDir = path.join(newTempDir("installer-plugin-support"), "config");
+      const userPlugin = path.join(configDir, "plugin", "user-plugin.ts");
+      writeText(userPlugin, lines(["export default async () => ({})", ""]));
+      const result = invokeInstaller(["--config-dir", configDir, "--skip-agents-md"]);
+      assertSuccess(result, "Installer should install plugin support.");
+      assertOutputContains(result, "plugin session-env", "Installer should report session env plugin install.");
+      assertOutputContains(result, "support tool opencode-project-session-retro-ledger", "Installer should report support tool entrypoint install.");
+      if (!fs.existsSync(userPlugin)) {
+        throw new Error(`Installer pruned unrelated user plugin: ${userPlugin}`);
+      }
+      for (const expected of [
+        path.join(configDir, "plugin", "session-env.ts"),
+        path.join(configDir, "opencode-dev-kit", "tools", "opencode-project-session-retro-ledger.ts"),
+        path.join(configDir, "opencode-dev-kit", "tools", "project-session-retro-ledger", "delivery-context.ts"),
+      ]) {
+        if (!fs.existsSync(expected)) {
+          throw new Error(`Installer did not install expected plugin support file: ${expected}`);
+        }
       }
     },
   },

@@ -258,7 +258,7 @@ Key current-project retro rules:
 - The helper reads OpenCode SQLite stores in read-only mode, filters sessions to the project root, emits redacted session skeletons, and keeps raw ids, titles, prompts, project paths, and transcript text out by default.
 - `analysisProgress` records chronological session order, last analyzed session, and next session so future runs can resume instead of restarting.
 - Use `status --format json` to get counts, next refs, and bounded `nextSessions` batch metadata without opening huge JSON manually.
-- Use `transcript` to extract ordered full transcript envelopes for redacted session refs or raw ids, and `patch-sessions` to merge reviewed batch audit JSON back into `retro/` with progress refresh and validation.
+- Use `transcript` to extract ordered full transcript envelopes for redacted session refs or raw ids, `delivery-context` or the `session_delivery_context` plugin tool to extract current-session todos/user prompts/question replies for final handoff review, and `patch-sessions` to merge reviewed batch audit JSON back into `retro/` with progress refresh and validation.
 - For large archives, `project-sessions-retro` uses orchestrator-style parallel worker batches: `session-observation-worker` reviews local transcript JSON and returns sanitized patch drafts, while the main session is the only writer to `retro/`.
 - A successful batch is a checkpoint, not a stopping point; continue status/transcript/patch waves until all sessions are complete or a real blocker appears.
 - `transcript` redacts content by default. `--include-content` is explicit local-analysis mode. For worker batches, write JSON under a repo-local ignored scratch directory that `session-observation-worker` can read without `external_directory` permission; use OS temp only for main-session-only analysis or for a worker surface with explicit external-read permission. Delete raw transcript exports created by the run after their patches are applied, or report retained paths in `Privacy Notes`.
@@ -286,6 +286,7 @@ Fill audit fields/observations/trends/root causes/plans with human judgment, the
 ```sh
 npm run retro:project-ledger -- status --input retro --limit 50 --format json
 npm run retro:project-ledger -- transcript --input retro --session <session-ref> --include-content --format json --out <repo-local-ignored-scratch-transcript.json> --overwrite
+npm run retro:project-ledger -- delivery-context --current --format json
 npm run retro:project-ledger -- patch-sessions --input retro --patch <batch-audit.json>
 npm run retro:project-ledger -- refresh --input retro
 npm run retro:project-ledger -- validate --input retro
@@ -316,7 +317,7 @@ Routing and reviewer maps assume all/advanced artifacts; restricted profiles use
 - Initial MR/PR title/body preparation -> `merge-request-author`; existing MR/PR checks, reviewer feedback, approvals, and outcome handling -> `merge-request-review-loop`.
 - Broad independent tracks -> `orchestrator` from the `advanced` profile only after bounded workstreams, success criteria, and validation evidence are clear; if it is unavailable, use the Universal Development Loop serially or return an orchestration follow-up candidate.
 - Bounded first-pass helper work that benefits from cheap/offline local context, such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker` from the `advanced` profile when the target machine has a configured `qwen-local` provider.
-- Session delivery-control review for transcript/summary, compaction/resume continuity, user goal, changed files, and validation output -> `session-delivery-reviewer`.
+- Session delivery-control review for current-session todos/user prompts/question replies plus transcript/summary, compaction/resume continuity, changed files, and validation output -> `session-delivery-reviewer`.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; bounded/current-project/selected-project OpenCode session, transcript, reflection, and log retros -> `project-sessions-retro`. Full current-project retros require `retro:project-ledger`; large archives use `orchestrator` plus `session-observation-worker`; promoted trends use `root-cause-analysis`, plans use `deep-task-planning`, durable follow-ups use `openspec-propose`, and final material handoff uses `session-delivery-reviewer`. All-history/cross-install/whole-corpus retros targeting global skills, agents, prompts, rules, validators, tools, and reusable instructions -> `all-sessions-retro`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `file-review-quest` for one-file block review, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
 - Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; use `code-quality-reviewer` as the read-only gate.
@@ -326,7 +327,7 @@ Routing and reviewer maps assume all/advanced artifacts; restricted profiles use
 - Instruction artifacts, skills, agents, prompts, `AGENTS.md`, and README routing -> `instruction-artifact-reviewer`.
 - Code health, maintainability, readability, file navigation, duplication, boundaries, and pragmatic refactoring -> `code-quality-reviewer`.
 - Implementation readiness, stable scope, blockers, validation path -> `implementation-readiness-reviewer`.
-- Session delivery alignment, compaction continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff -> `session-delivery-reviewer`.
+- Session delivery alignment, current-session todos/user prompts/question replies, compaction continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff -> `session-delivery-reviewer`.
 - OpenSpec/design/architecture ownership and consistency -> `openspec-architecture-reviewer`.
 - Requirements-to-tests, weak assertions, missing gates -> `test-coverage-reviewer`.
 - Config, deployment, packaging, operational safety -> `deployment-config-reviewer`.
@@ -419,8 +420,12 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
 - `legacy-client-compatibility-reviewer`: compatibility with legacy clients/tools/workflows.
-- `session-delivery-reviewer`: session transcript/compaction delivery-control reviewer for goal alignment, continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff.
+- `session-delivery-reviewer`: session delivery-control reviewer that calls `session_delivery_context` for current-session todos/user prompts/question replies, then checks goal alignment, continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff.
 - `instruction-artifact-reviewer`: read-only review of skills, agents, prompts, `AGENTS.md`, README routing, autonomy handoff, and safety boundaries.
+
+Project plugin behavior:
+
+- `.opencode/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use, and when `http://127.0.0.1:8080/v1/models` returns OK JSON with at least one model id, registers `llama-local/<first-model-id>` through `@ai-sdk/openai-compatible` for `session-delivery-reviewer`. If local discovery fails, the reviewer keeps normal OpenCode model selection. `install:global` installs this plugin plus its `opencode-dev-kit/tools` support files under the target OpenCode config directory without pruning unrelated user plugins.
 
 ## Instruction Templates
 

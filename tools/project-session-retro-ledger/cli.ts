@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ProjectSessionRetroLedger, ProjectSessionRetroProposalResult, ProjectSessionRetroValidationResult } from "./types.ts";
+import { readSessionDeliveryContext } from "./delivery-context.ts";
 import { patchProjectSessionRetroSessions, summarizeProjectSessionRetroLedger } from "./ledger-ops.ts";
 import { createProjectSessionRetroProposals } from "./openspec-proposals.ts";
 import { refreshAnalysisProgress } from "./progress.ts";
@@ -11,7 +12,8 @@ import { readJsonFile, resolveInputPath, writeJsonFile } from "./utils.ts";
 import { validateProjectSessionRetroLedger } from "./validator.ts";
 
 type CliOptions = {
-  command: "init" | "validate" | "proposals" | "refresh" | "status" | "transcript" | "patch-sessions" | "split" | "assemble" | "help";
+  command: "init" | "validate" | "proposals" | "refresh" | "status" | "transcript" | "delivery-context" | "patch-sessions" | "split" | "assemble" | "help";
+  current: boolean;
   dataDirs: string[];
   dbPaths: string[];
   dryRun: boolean;
@@ -39,6 +41,8 @@ function printUsage(): void {
   npm run retro:project-ledger -- refresh --input <path>
   npm run retro:project-ledger -- status --input <path> [--limit <n>] [--format json|text]
   npm run retro:project-ledger -- transcript --session <session-ref-or-raw-id> [--input <path>] [--db <path>] [--include-content] [--out <path>] [--format json|text]
+  npm run retro:project-ledger -- delivery-context --current [--db <path>] [--format json|text]
+  npm run retro:project-ledger -- delivery-context --session <session-ref-or-raw-id> [--db <path>] [--format json|text]
   npm run retro:project-ledger -- patch-sessions --input <path> --patch <path> [--dry-run] [--format json|text]
   npm run retro:project-ledger -- split --input <retro.json> --out <retro-dir> [--overwrite]
   npm run retro:project-ledger -- assemble --input <retro-dir> [--out <retro.json>] [--overwrite]
@@ -52,6 +56,7 @@ Options:
   --out <path>             Write output. Init default: <project-root>/retro. Paths ending in .json write one file; other paths write sharded directories.
   --patch <path>           Read a per-session audit patch JSON for patch-sessions.
   --session <id|ref>       Session raw id or redacted session ref. Repeatable.
+  --current                Use OPENCODE_SESSION_ID as the session id for delivery-context.
   --include-content        Transcript mode includes raw prompt/text/tool content; use only for local analysis.
   --limit <n>              Limit status next-session refs. Default: 10.
   --overwrite              Allow init, split, or assemble to replace an existing output target.
@@ -91,6 +96,7 @@ function parseArgs(args: string[]): CliOptions {
   const command = args[0] as CliOptions["command"] | undefined;
   const options: CliOptions = {
     command: command ?? "help",
+    current: false,
     dataDirs: [],
     dbPaths: [],
     dryRun: false,
@@ -113,7 +119,7 @@ function parseArgs(args: string[]): CliOptions {
     options.command = "help";
     return options;
   }
-  if (!["init", "validate", "proposals", "refresh", "status", "transcript", "patch-sessions", "split", "assemble"].includes(command)) {
+  if (!["init", "validate", "proposals", "refresh", "status", "transcript", "delivery-context", "patch-sessions", "split", "assemble"].includes(command)) {
     throw new Error(`Unknown command: ${command}`);
   }
   for (let index = 1; index < args.length; index++) {
@@ -150,6 +156,8 @@ function parseArgs(args: string[]): CliOptions {
       index++;
     } else if (arg.startsWith("--session=")) {
       options.sessions.push(arg.slice("--session=".length));
+    } else if (arg === "--current") {
+      options.current = true;
     } else if (arg === "--include-content") {
       options.includeContent = true;
     } else if (arg === "--limit") {
@@ -239,6 +247,26 @@ function renderTranscript(result: ReturnType<typeof readSessionTranscripts>): st
   }
   if (result.missingSessions.length > 0) {
     lines.push(`missing: ${result.missingSessions.join(", ")}`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
+function renderDeliveryContext(result: ReturnType<typeof readSessionDeliveryContext>): string {
+  const lines = [
+    `session: ${result.session?.sessionRef ?? "missing"}`,
+    `todos: all=${result.todos.all.length} open=${result.todos.open.length}`,
+    `userMessages: ${result.userMessages.length}`,
+    `questionReplies: ${result.questionReplies.length}`,
+    `permissionReplies: ${result.permissionReplies.length}`,
+  ];
+  if (result.missingSessions.length > 0) {
+    lines.push(`missing: ${result.missingSessions.join(", ")}`);
+  }
+  if (result.warnings.length > 0) {
+    lines.push("warnings:");
+    for (const warning of result.warnings) {
+      lines.push(`- ${warning}`);
+    }
   }
   return `${lines.join("\n")}\n`;
 }
@@ -388,6 +416,35 @@ export function runCli(args = process.argv.slice(2)): void {
     } else {
       process.stdout.write(output);
     }
+    if (result.missingSessions.length > 0) {
+      process.exitCode = 1;
+    }
+    return;
+  }
+  if (options.command === "delivery-context") {
+    if (options.out) {
+      throw new Error("delivery-context does not support --out; it is read-only stdout evidence.");
+    }
+    if (options.includeContent) {
+      throw new Error("delivery-context always includes bounded user-facing content; do not pass --include-content.");
+    }
+    if (options.current && options.sessions.length > 0) {
+      throw new Error("delivery-context accepts either --current or one --session, not both.");
+    }
+    const sessionId = options.current ? process.env.OPENCODE_SESSION_ID : options.sessions[0];
+    if (options.current && (sessionId == null || sessionId.trim() === "")) {
+      throw new Error("delivery-context --current requires OPENCODE_SESSION_ID.");
+    }
+    if (!options.current && options.sessions.length !== 1) {
+      throw new Error("delivery-context requires exactly one --session, or --current.");
+    }
+    const result = readSessionDeliveryContext({
+      dataDirs: options.dataDirs,
+      dbPaths: options.dbPaths,
+      sessionId: sessionId!,
+      useDefaultPaths: options.useDefaultPaths,
+    });
+    process.stdout.write(options.format === "json" ? `${JSON.stringify(result, null, 2)}\n` : renderDeliveryContext(result));
     if (result.missingSessions.length > 0) {
       process.exitCode = 1;
     }

@@ -7,6 +7,8 @@ export { createProjectSessionRetroProposals } from "./project-session-retro-ledg
 export { patchProjectSessionRetroSessions, summarizeProjectSessionRetroLedger } from "./project-session-retro-ledger/ledger-ops.ts";
 export type { PatchProjectSessionRetroSessionsResult, ProjectSessionRetroStatus } from "./project-session-retro-ledger/ledger-ops.ts";
 export { computeAnalysisProgress, refreshAnalysisProgress } from "./project-session-retro-ledger/progress.ts";
+export { readSessionDeliveryContext } from "./project-session-retro-ledger/delivery-context.ts";
+export type { ReadSessionDeliveryContextOptions, SessionDeliveryContextResult } from "./project-session-retro-ledger/delivery-context.ts";
 export { initProjectSessionRetroLedger } from "./project-session-retro-ledger/sqlite-source.ts";
 export { isProjectSessionRetroShardedDirectory, readProjectSessionRetroLedgerStorage, writeProjectSessionRetroLedgerStorage } from "./project-session-retro-ledger/storage.ts";
 export type { ProjectSessionRetroStorageFormat, WriteProjectSessionRetroLedgerStorageOptions } from "./project-session-retro-ledger/storage.ts";

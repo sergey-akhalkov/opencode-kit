@@ -46,8 +46,8 @@ function assertDeepEqual(actual: unknown, expected: unknown, message: string): v
   assert(actualJson === expectedJson, `${message}\nExpected:\n${JSON.stringify(expected, null, 2)}\nActual:\n${actualJson}`);
 }
 
-function invokeCli(args: string[], cwd: string): { exitCode: number; output: string; stderr: string; stdout: string } {
-  const result = spawnSync("node", [cliPath, ...args], { cwd, encoding: "utf8", shell: false });
+function invokeCli(args: string[], cwd: string, env: Record<string, string> = {}): { exitCode: number; output: string; stderr: string; stdout: string } {
+  const result = spawnSync("node", [cliPath, ...args], { cwd, encoding: "utf8", env: { ...process.env, ...env }, shell: false });
   if (result.error) {
     throw result.error;
   }
@@ -67,6 +67,7 @@ function createOpenCodeDbFixture(dbPath: string, projectRoot: string, otherRoot:
       "create table part (id text primary key, message_id text, session_id text not null, time_created integer, time_updated integer, data text);",
       "create table session_input (id text primary key, session_id text not null, prompt text, delivery text, admitted_seq integer, promoted_seq integer, time_created integer);",
       "create table todo (session_id text not null, content text, status text, priority text, position integer, time_created integer, time_updated integer);",
+      "create table event (id text primary key, session_id text not null, time_created integer, type text, data text, properties text);",
     ].join("\n"));
     db.prepare("insert into project (id, worktree, name, time_created, time_updated) values (?, ?, ?, ?, ?)").run("project-current-secret", projectRoot, "Secret Current Project", 1700000000000, 1700000003000);
     db.prepare("insert into project (id, worktree, name, time_created, time_updated) values (?, ?, ?, ?, ?)").run("project-other-secret", otherRoot, "Secret Other Project", 1700000000000, 1700000003000);
@@ -84,8 +85,40 @@ function createOpenCodeDbFixture(dbPath: string, projectRoot: string, otherRoot:
     db.prepare("insert into part (id, message_id, session_id, time_created, time_updated, data) values (?, ?, ?, ?, ?, ?)").run("part-secret-2", "message-secret-1", rawSessionOne, 1700000001002, 1700000001002, JSON.stringify({ type: "tool", tool: "bash", state: { status: "completed", input: { command: `echo ${rawSessionOne}` }, output: `tool output ${rawSessionOne}` } }));
     db.prepare("insert into session_input (id, session_id, prompt, delivery, admitted_seq, promoted_seq, time_created) values (?, ?, ?, ?, ?, ?, ?)").run("input-secret-1", rawSessionOne, `raw session input prompt ${rawSessionOne}`, "user", 1, 1, 1700000000999);
     db.prepare("insert into todo (session_id, content, status, priority, position, time_created, time_updated) values (?, ?, ?, ?, ?, ?, ?)").run(rawSessionOne, `todo mentioning ${rawSessionOne}`, "pending", "high", 1, 1700000001003, 1700000001003);
+    db.prepare("insert into event (id, session_id, time_created, type, data, properties) values (?, ?, ?, ?, ?, ?)").run("event-question-asked-secret", rawSessionOne, 1700000001004, "question.asked", null, JSON.stringify({ id: "question-request-secret", sessionID: rawSessionOne, questions: [{ question: "Pick validation scope", options: [{ label: "Run npm test" }] }] }));
+    db.prepare("insert into event (id, session_id, time_created, type, data, properties) values (?, ?, ?, ?, ?, ?)").run("event-question-replied-secret", rawSessionOne, 1700000001005, "question.replied", null, JSON.stringify({ requestID: "question-request-secret", sessionID: rawSessionOne, answers: [[`Run npm test for ${rawSessionOne}`]] }));
+    db.prepare("insert into event (id, session_id, time_created, type, data, properties) values (?, ?, ?, ?, ?, ?)").run("event-permission-replied-secret", rawSessionOne, 1700000001006, "permission.replied", null, JSON.stringify({ requestID: "permission-request-secret", sessionID: rawSessionOne, reply: "once" }));
+    db.prepare("insert into event (id, session_id, time_created, type, data, properties) values (?, ?, ?, ?, ?, ?)").run("event-question-v2-asked-secret", rawSessionOne, 1700000001007, "question.v2.asked", null, JSON.stringify({ id: "question-v2-request-secret", sessionID: rawSessionOne, questions: [{ question: "Pick reviewer gate", header: "Reviewer", options: [{ label: "delivery", description: "Run delivery review" }] }] }));
+    db.prepare("insert into event (id, session_id, time_created, type, data, properties) values (?, ?, ?, ?, ?, ?)").run("event-question-v2-replied-secret", rawSessionOne, 1700000001008, "question.v2.replied", null, JSON.stringify({ requestID: "question-v2-request-secret", sessionID: rawSessionOne, answers: [[`delivery for ${rawSessionOne}`]] }));
+    db.prepare("insert into event (id, session_id, time_created, type, data, properties) values (?, ?, ?, ?, ?, ?)").run("event-permission-v2-replied-secret", rawSessionOne, 1700000001009, "permission.v2.replied", null, JSON.stringify({ requestID: "permission-v2-request-secret", sessionID: rawSessionOne, reply: "always" }));
     db.prepare("insert into message (id, session_id, time_created, time_updated, data) values (?, ?, ?, ?, ?)").run("message-other-secret", rawOtherSession, 1700000010000, 1700000010000, JSON.stringify({ role: "user", content: `out of scope content ${rawOtherSession}` }));
     db.prepare("insert into message (id, session_id, time_created, time_updated, data) values (?, ?, ?, ?, ?)").run("message-other-hash-secret", rawOtherHashLikeSession, 1700000012000, 1700000012000, JSON.stringify({ role: "user", content: `out of scope hash content ${rawOtherHashLikeSession}` }));
+  } finally {
+    db.close();
+  }
+}
+
+function createMinimalDeliveryContextDbFixture(dbPath: string): void {
+  const db = new DatabaseSync(dbPath);
+  try {
+    db.exec("create table session (id text primary key, time_created integer, time_updated integer);");
+    db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(rawSessionOne, 1700000001000, 1700000002000);
+  } finally {
+    db.close();
+  }
+}
+
+function createIncompleteDeliveryContextDbFixture(dbPath: string): void {
+  const db = new DatabaseSync(dbPath);
+  try {
+    db.exec([
+      "create table session (id text primary key, time_created integer, time_updated integer);",
+      "create table todo (session_id text not null, priority text);",
+      "create table session_input (session_id text not null, time_created integer);",
+      "create table message (session_id text not null, time_created integer);",
+      "create table event (session_id text not null, time_created integer);",
+    ].join("\n"));
+    db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(rawSessionOne, 1700000001000, 1700000002000);
   } finally {
     db.close();
   }
@@ -210,6 +243,68 @@ const tests: TestCase[] = [
       const outOfScopeParsed = JSON.parse(outOfScope.stdout) as { missingSessions?: string[]; sessions?: unknown[] };
       assert(outOfScopeParsed.sessions?.length === 0 && outOfScopeParsed.missingSessions?.length === 1, `Out-of-scope request should return no sessions, got ${outOfScope.stdout}`);
       assert(!outOfScope.output.includes(rawOtherHashLikeSession) && !outOfScope.output.includes("out of scope hash content"), "Out-of-scope transcript output must not expose raw id or content.");
+    }),
+  },
+  {
+    name: "delivery-context CLI returns current-session todos prompts and replies without raw leaks",
+    run: () => withTempRepo("delivery-context", (repo) => {
+      const { dbPath, firstRef, projectRoot } = prepareLedger(repo);
+      const missingCurrent = invokeCli(["delivery-context", "--db", dbPath, "--only-explicit", "--current", "--format", "json"], repo, { OPENCODE_SESSION_ID: "" });
+      assert(missingCurrent.exitCode !== 0 && missingCurrent.output.includes("OPENCODE_SESSION_ID"), `--current without OPENCODE_SESSION_ID should fail clearly, got ${missingCurrent.output}`);
+
+      const current = invokeCli(["delivery-context", "--db", dbPath, "--only-explicit", "--current", "--format", "json"], repo, { OPENCODE_SESSION_ID: rawSessionOne });
+      assert(current.exitCode === 0, `Delivery context should pass for current session, got ${current.output}`);
+      const parsed = JSON.parse(current.stdout) as {
+        permissionReplies?: Array<{ reply?: string }>;
+        questionReplies?: Array<{ answers?: string[][]; questions?: string[] }>;
+        session?: { counts?: Record<string, number>; sessionRef?: string };
+        todos?: { all?: Array<{ content?: string; status?: string }>; open?: Array<{ content?: string; status?: string }> };
+        userMessages?: Array<{ text?: string }>;
+      };
+
+      assert(parsed.session?.sessionRef === firstRef, `Delivery context should resolve raw current id to redacted ref, got ${current.stdout}`);
+      assert(parsed.session?.counts?.todos === 1 && parsed.session.counts.openTodos === 1, `Delivery context should count todos, got ${current.stdout}`);
+      assert(parsed.todos?.open?.[0]?.status === "pending", `Delivery context should expose open todo status, got ${current.stdout}`);
+      assert(parsed.todos?.open?.[0]?.content?.includes(firstRef), `Delivery context should redact raw session id inside todo content, got ${current.stdout}`);
+      assert(parsed.userMessages?.some((message) => message.text?.includes("raw session input prompt")) === true, `Delivery context should include session_input prompt, got ${current.stdout}`);
+      assert(parsed.userMessages?.some((message) => message.text?.includes("raw secret prompt")) === true, `Delivery context should include user message content, got ${current.stdout}`);
+      assert(parsed.questionReplies?.[0]?.questions?.includes("Pick validation scope") === true, `Delivery context should attach question text to reply, got ${current.stdout}`);
+      assert(parsed.questionReplies?.[0]?.answers?.[0]?.[0]?.includes(firstRef) === true, `Delivery context should redact raw session id inside question answers, got ${current.stdout}`);
+      assert(parsed.questionReplies?.some((reply) => reply.questions?.includes("Pick reviewer gate") && reply.answers?.[0]?.[0]?.includes(firstRef)) === true, `Delivery context should support question.v2 replies, got ${current.stdout}`);
+      assert(parsed.permissionReplies?.[0]?.reply === "once" && parsed.permissionReplies.some((reply) => reply.reply === "always"), `Delivery context should include legacy and v2 permission reply decisions, got ${current.stdout}`);
+      for (const secret of [rawSessionOne, projectRoot, dbPath, "question-request-secret", "permission-request-secret", "question-v2-request-secret", "permission-v2-request-secret", "out of scope content"]) {
+        assert(!current.stdout.includes(secret), `Delivery context output must not expose ${secret}.`);
+      }
+    }),
+  },
+  {
+    name: "delivery-context CLI reports unsupported partial schemas instead of silent absence",
+    run: () => withTempRepo("delivery-context-partial-schema", (repo) => {
+      const dbPath = path.join(repo, "opencode.db");
+      createMinimalDeliveryContextDbFixture(dbPath);
+      const result = invokeCli(["delivery-context", "--db", dbPath, "--only-explicit", "--session", rawSessionOne, "--format", "json"], repo);
+      assert(result.exitCode === 0, `Partial delivery context should return warnings without failing found session, got ${result.output}`);
+      const parsed = JSON.parse(result.stdout) as { warnings?: string[]; session?: { sessionRef?: string }; todos?: { all?: unknown[] }; userMessages?: unknown[] };
+      assert(parsed.session?.sessionRef != null, `Partial delivery context should still return session ref, got ${result.stdout}`);
+      assert(parsed.todos?.all?.length === 0 && parsed.userMessages?.length === 0, `Partial delivery context should keep unavailable arrays empty, got ${result.stdout}`);
+      for (const expected of ["todo table", "session_input table", "message table", "event table"]) {
+        assert(parsed.warnings?.some((warning) => warning.includes(expected)) === true, `Partial schema should warn about ${expected}, got ${result.stdout}`);
+      }
+      assert(!result.stdout.includes(rawSessionOne), "Partial delivery context output must not expose raw session id.");
+    }),
+  },
+  {
+    name: "delivery-context CLI reports present tables missing evidence columns",
+    run: () => withTempRepo("delivery-context-incomplete-schema", (repo) => {
+      const dbPath = path.join(repo, "opencode.db");
+      createIncompleteDeliveryContextDbFixture(dbPath);
+      const result = invokeCli(["delivery-context", "--db", dbPath, "--only-explicit", "--session", rawSessionOne, "--format", "json"], repo);
+      assert(result.exitCode === 0, `Incomplete delivery context schema should warn without failing found session, got ${result.output}`);
+      const parsed = JSON.parse(result.stdout) as { warnings?: string[] };
+      for (const expected of ["todo table missing content/status", "session_input table missing prompt", "message table missing data", "event table missing type/name/event", "event table missing data/properties/payload"]) {
+        assert(parsed.warnings?.some((warning) => warning.includes(expected)) === true, `Incomplete schema should warn about ${expected}, got ${result.stdout}`);
+      }
+      assert(!result.stdout.includes(rawSessionOne), "Incomplete delivery context output must not expose raw session id.");
     }),
   },
   {

@@ -172,6 +172,7 @@ function getFrontmatterMap(text: string, file: string): FrontmatterMap {
   }
 
   let currentMap: string | null = null;
+  let currentNestedMap: string | null = null;
   const lines = match.groups.body.split(/\r?\n/);
   for (let index = 0; index < lines.length; index++) {
     const lineNumber = index + 2;
@@ -183,6 +184,7 @@ function getFrontmatterMap(text: string, file: string): FrontmatterMap {
     const mapMatch = line.match(/^([A-Za-z_][A-Za-z0-9_-]*):\s*$/);
     if (mapMatch) {
       currentMap = mapMatch[1];
+      currentNestedMap = null;
       values.set(currentMap, {});
       continue;
     }
@@ -190,7 +192,31 @@ function getFrontmatterMap(text: string, file: string): FrontmatterMap {
     const scalarMatch = line.match(/^([A-Za-z_][A-Za-z0-9_-]*):\s*(.+?)\s*$/);
     if (scalarMatch) {
       currentMap = null;
+      currentNestedMap = null;
       values.set(scalarMatch[1], convertFromFrontmatterScalar(scalarMatch[2], file, lineNumber));
+      continue;
+    }
+
+    const nestedMapMatch = line.match(/^\s{2}([A-Za-z_][A-Za-z0-9_-]*):\s*$/);
+    if (nestedMapMatch) {
+      if (!currentMap) {
+        addError(`Nested frontmatter map without parent map: ${file}:${lineNumber}`);
+      } else {
+        currentNestedMap = `${currentMap}.${nestedMapMatch[1]}`;
+        values.set(currentNestedMap, {});
+      }
+      continue;
+    }
+
+    const doubleNestedScalarMatch = line.match(/^\s{4,}("[^"]+"|'[^']+'|[^:]+?):\s*(.+?)\s*$/);
+    if (doubleNestedScalarMatch) {
+      if (!currentNestedMap) {
+        addError(`Double-nested frontmatter value without parent map: ${file}:${lineNumber}`);
+      } else {
+        const rawKey = doubleNestedScalarMatch[1].trim();
+        const key = ((rawKey.startsWith('"') && rawKey.endsWith('"')) || (rawKey.startsWith("'") && rawKey.endsWith("'"))) ? rawKey.slice(1, -1) : rawKey;
+        values.set(`${currentNestedMap}.${key}`, convertFromFrontmatterScalar(doubleNestedScalarMatch[2], file, lineNumber));
+      }
       continue;
     }
 
@@ -199,6 +225,7 @@ function getFrontmatterMap(text: string, file: string): FrontmatterMap {
       if (!currentMap) {
         addError(`Nested frontmatter value without parent map: ${file}:${lineNumber}`);
       } else {
+        currentNestedMap = null;
         values.set(`${currentMap}.${nestedScalarMatch[1]}`, convertFromFrontmatterScalar(nestedScalarMatch[2], file, lineNumber));
       }
       continue;
@@ -496,6 +523,19 @@ function validateSkills(root: string): string[] {
   return skillNames;
 }
 
+function validateReviewerBashPermission(frontmatter: FrontmatterMap, file: string): void {
+  if (frontmatter.get("permission.bash") !== "deny") {
+    addError(`Agent permission must set bash: deny: ${file}`);
+  }
+  const isSessionDeliveryReviewer = path.basename(file) === "session-delivery-reviewer.md";
+  if (isSessionDeliveryReviewer && frontmatter.get("permission.session_delivery_context") !== "allow") {
+    addError(`session-delivery-reviewer must allow session_delivery_context custom tool: ${file}`);
+  }
+  if (!isSessionDeliveryReviewer && frontmatter.has("permission.session_delivery_context")) {
+    addError(`Only session-delivery-reviewer may set session_delivery_context permission: ${file}`);
+  }
+}
+
 function validateAgents(root: string): string[] {
   const agentsDir = path.join(root, ".opencode", "agents");
   if (!directoryExists(agentsDir)) {
@@ -525,7 +565,8 @@ function validateAgents(root: string): string[] {
     if (frontmatter.has("permission.list")) {
       addError(`Agent permission must not set obsolete permission.list; directory listing is covered by read: ${file}`);
     }
-    for (const permission of ["bash", "edit", "task", "question", "skill", "webfetch", "websearch", "todowrite", "external_directory", "lsp", "doom_loop"]) {
+    validateReviewerBashPermission(frontmatter, file);
+    for (const permission of ["edit", "task", "question", "skill", "webfetch", "websearch", "todowrite", "external_directory", "lsp", "doom_loop"]) {
       const key = `permission.${permission}`;
       if (frontmatter.get(key) !== "deny") {
         addError(`Agent permission must set ${permission}: deny: ${file}`);

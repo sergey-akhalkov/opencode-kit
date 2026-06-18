@@ -638,6 +638,9 @@ function run(): void {
   const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
   const sourceSkillsDir = path.join(repoRoot, ".opencode", "skills");
   const sourceAgentsDir = path.join(repoRoot, ".opencode", "agents");
+  const sourcePluginDir = path.join(repoRoot, ".opencode", "plugin");
+  const sourceRetroToolEntrypoint = path.join(repoRoot, "tools", "opencode-project-session-retro-ledger.ts");
+  const sourceRetroToolDir = path.join(repoRoot, "tools", "project-session-retro-ledger");
   const sourceAgentsMd = options.skipAgentsMd
     ? null
     : resolveSourcePath(options.agentsMdSource, repoRoot, path.join("instructions", "global-opencode-agent-instructions.md"));
@@ -652,6 +655,9 @@ function run(): void {
 
   assertDirectoryExists(sourceSkillsDir, "source skills");
   assertDirectoryExists(sourceAgentsDir, "source agents");
+  assertDirectoryExists(sourcePluginDir, "source plugin");
+  assertFileExists(sourceRetroToolEntrypoint, "source project session retro ledger tool");
+  assertDirectoryExists(sourceRetroToolDir, "source project session retro ledger support");
   if (fs.existsSync(configDir) && !fs.statSync(configDir).isDirectory()) {
     throw new Error(`OpenCode config path exists but is not a directory: ${configDir}`);
   }
@@ -666,12 +672,18 @@ function run(): void {
   const agentFiles = profile == null ? allAgentFiles : filterByProfile(allAgentFiles, (file) => path.basename(file, ".md"), profile.agents, "agent");
   const destinationSkillsDir = path.join(configDir, "skills");
   const destinationAgentsDir = path.join(configDir, "agents");
+  const destinationPluginDir = path.join(configDir, "plugin");
+  const destinationSupportToolsDir = path.join(configDir, "opencode-dev-kit", "tools");
   const destinationAgentsMd = path.join(configDir, "AGENTS.md");
 
   assertNoSourceOverlap(configDir, sourceSkillsDir, "--config-dir");
   assertNoSourceOverlap(configDir, sourceAgentsDir, "--config-dir");
+  assertNoSourceOverlap(configDir, sourcePluginDir, "--config-dir");
+  assertNoSourceOverlap(configDir, sourceRetroToolDir, "--config-dir");
   assertNoSourceOverlap(destinationSkillsDir, sourceSkillsDir, "destination skills directory");
   assertNoSourceOverlap(destinationAgentsDir, sourceAgentsDir, "destination agents directory");
+  assertNoSourceOverlap(destinationPluginDir, sourcePluginDir, "destination plugin directory");
+  assertNoSourceOverlap(destinationSupportToolsDir, sourceRetroToolDir, "destination support tools directory");
   if (sourceAgentsMd) {
     assertAgentsMdSourceSafe(sourceAgentsMd, destinationAgentsMd, destinationSkillsDir, destinationAgentsDir);
     validateAgentsMdMarkers(readExistingAgentsMd(destinationAgentsMd), destinationAgentsMd);
@@ -705,6 +717,13 @@ function run(): void {
   } else {
     installAgentsMd(sourceAgentsMd, destinationAgentsMd, context);
   }
+
+  console.log("Installing plugin support: session delivery context");
+  for (const pluginFile of listFiles(sourcePluginDir, ".ts")) {
+    installFile(pluginFile, path.join(destinationPluginDir, path.basename(pluginFile)), `plugin ${path.basename(pluginFile, ".ts")}`, context);
+  }
+  installFile(sourceRetroToolEntrypoint, path.join(destinationSupportToolsDir, "opencode-project-session-retro-ledger.ts"), "support tool opencode-project-session-retro-ledger", context);
+  installDirectory(sourceRetroToolDir, path.join(destinationSupportToolsDir, "project-session-retro-ledger"), "support tool project-session-retro-ledger", context);
 
   if (options.dryRun) {
     console.log("Dry run complete. No files were changed.");
