@@ -427,7 +427,7 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 
 Project plugin behavior:
 
-- `.opencode/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use, and when `http://127.0.0.1:8080/v1/models` returns OK JSON with at least one model id, registers `llama-local/<first-model-id>` through `@ai-sdk/openai-compatible` for `session-delivery-reviewer`. If local discovery fails, the reviewer keeps normal OpenCode model selection. `install:global` installs this plugin plus its `opencode-dev-kit/tools` support files under the target OpenCode config directory without pruning unrelated user plugins.
+- `.opencode/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. `session-delivery-reviewer` uses normal OpenCode model selection. `install:global` installs this plugin plus its `opencode-dev-kit/tools` support files under the target OpenCode config directory without pruning unrelated user plugins.
 
 ## Instruction Templates
 

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import plugin, { applyLocalLlamaSessionReviewerConfig, discoverLocalLlamaModel, LOCAL_LLAMA_BASE_URL, LOCAL_LLAMA_PROVIDER_ID, SESSION_DELIVERY_CONTEXT_TOOL, SESSION_DELIVERY_REVIEWER_AGENT } from "../.opencode/plugin/session-env.ts";
+import plugin, { SESSION_DELIVERY_CONTEXT_TOOL, SESSION_DELIVERY_REVIEWER_AGENT } from "../.opencode/plugin/session-env.ts";
 
 type TestCase = {
   name: string;
@@ -110,73 +110,6 @@ const tests: TestCase[] = [
         }
       }
     }),
-  },
-  {
-    name: "configures local llama only with discovered model",
-    run: () => {
-      const config: { agent?: Record<string, Record<string, unknown>>; provider?: Record<string, Record<string, unknown>> } = {
-        agent: {
-          [SESSION_DELIVERY_REVIEWER_AGENT]: { description: "Reviewer fixture" },
-        },
-        provider: {
-          openai: { options: { setCacheKey: true } },
-        },
-      };
-      assert(applyLocalLlamaSessionReviewerConfig(config, "llama-fixture") === true, "Config helper should report applied config for non-empty model id.");
-      const provider = config.provider?.[LOCAL_LLAMA_PROVIDER_ID] as { models?: Record<string, unknown>; npm?: string; options?: { baseURL?: string } } | undefined;
-      const agent = config.agent?.[SESSION_DELIVERY_REVIEWER_AGENT];
-      assert(provider?.npm === "@ai-sdk/openai-compatible", "Local llama provider must use OpenAI-compatible AI SDK package.");
-      assert(provider.options?.baseURL === LOCAL_LLAMA_BASE_URL, "Local llama provider must point to localhost /v1 endpoint.");
-      assert(provider.models?.["llama-fixture"] != null, "Local llama provider must include discovered model id.");
-      assert(agent?.model === `${LOCAL_LLAMA_PROVIDER_ID}/llama-fixture`, "Session delivery reviewer should use discovered local llama model.");
-      assert(config.provider?.openai?.options != null, "Config helper must preserve unrelated providers.");
-    },
-  },
-  {
-    name: "config hook leaves reviewer model unchanged when local llama discovery fails",
-    run: async () => {
-      const hooks = await plugin.server({} as never);
-      const previousFetch = globalThis.fetch;
-      const config: { agent?: Record<string, Record<string, unknown>>; provider?: Record<string, Record<string, unknown>> } = {
-        agent: {
-          [SESSION_DELIVERY_REVIEWER_AGENT]: { model: "openai/gpt-5.5" },
-        },
-        provider: {
-          openai: { options: { setCacheKey: true } },
-        },
-      };
-      globalThis.fetch = (async () => ({ ok: false, json: async () => ({ data: [{ id: "llama-fixture" }] }) }) as Response) as typeof fetch;
-      try {
-        await hooks.config?.(config as never);
-      } finally {
-        globalThis.fetch = previousFetch;
-      }
-      assert(config.provider?.[LOCAL_LLAMA_PROVIDER_ID] == null, "Failed discovery must not register local llama provider.");
-      assert(config.agent?.[SESSION_DELIVERY_REVIEWER_AGENT]?.model === "openai/gpt-5.5", "Failed discovery must preserve existing reviewer model.");
-      assert(config.provider?.openai?.options != null, "Failed discovery must preserve unrelated provider config.");
-    },
-  },
-  {
-    name: "skips empty local llama model id",
-    run: () => {
-      const config = {};
-      assert(applyLocalLlamaSessionReviewerConfig(config, " ") === false, "Empty model id should not mutate config.");
-      assert(Object.keys(config).length === 0, "Empty model id must leave config untouched.");
-    },
-  },
-  {
-    name: "discovers local llama model only from valid models response",
-    run: async () => {
-      const validFetch = async () => ({ ok: true, json: async () => ({ data: [{ id: "" }, { id: "llama-fixture" }] }) }) as Response;
-      const nonOkFetch = async () => ({ ok: false, json: async () => ({ data: [{ id: "llama-fixture" }] }) }) as Response;
-      const malformedFetch = async () => ({ ok: true, json: async () => { throw new Error("bad json"); } }) as Response;
-      const throwingFetch = async () => { throw new Error("offline"); };
-
-      assert(await discoverLocalLlamaModel(validFetch as typeof fetch) === "llama-fixture", "Discovery should return first non-empty model id.");
-      assert(await discoverLocalLlamaModel(nonOkFetch as typeof fetch) === null, "Discovery should ignore non-OK responses.");
-      assert(await discoverLocalLlamaModel(malformedFetch as typeof fetch) === null, "Discovery should ignore malformed JSON.");
-      assert(await discoverLocalLlamaModel(throwingFetch as typeof fetch) === null, "Discovery should ignore network failures.");
-    },
   },
 ];
 
