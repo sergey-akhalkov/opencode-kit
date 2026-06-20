@@ -82,14 +82,10 @@ This gate exists because parallel worktrees run as separate sessions and the use
 
 - Hand off to `openspec-apply-change` and keep its TDD-first, smallest-correct-change, focused-validation, and reviewer-gate rules authoritative.
 - Run `openspec-consistency-review` before implementation for material changes.
-- Update `tasks.md` so it ends with `Retrospective Before Archive`; add the section when continuing an older active change.
 - Continue until every scoped task has implementation evidence or an explicit blocker.
 
 ### Phase 8: Archive Plus MR
 
-- Write or update `openspec/changes/<change-id>/retro.md` with evidence, problems, root causes, follow-up ids, and archive-gate decision; route `unknown` causes as investigations, not guesses.
-- Run the repository-configured retrospective follow-up command when available, e.g. `npm run openspec:retro-followups -- <change-id>`, to create/update follow-up OpenSpec changes; otherwise create in-scope follow-ups by hand and return out-of-scope ones as `Actionable Continuation Items`.
-- Run the repository-configured retrospective gate when available, e.g. `npm run openspec:retro-gate -- <change-id>`; otherwise apply the same checks manually and lower confidence.
 - Hand off to `openspec-archive-change` to move the change to the archive using the repository's OpenSpec CLI/process.
 - Author the MR with `merge-request-author`, then run `merge-request-review-loop` for checks, reviewer feedback, and outcome handling. Merge only when the user pre-approved merges or explicitly approves this MR.
 
@@ -153,7 +149,7 @@ Return:
 - `Selected Change`: id and one-line rationale referencing the ROI table.
 - `Parallel Worktree Prompts`: one copy-paste prompt per parallel change, or `none`.
 - `Implementation Status`: tasks completed / in progress / blocked, with evidence.
-- `Archive`: archived yes/no with retro-gate evidence; follow-up change ids created.
+- `Archive`: archived yes/no with validation/reviewer evidence and follow-up status.
 - `MR`: id, target branch, checks/approvals state, and merge outcome.
 - `Blockers`: each blocker with the exact user decision required, or `none`.
 - `Suggested Next Options`: use when `question` is unavailable or in no-question/read-only mode.
@@ -162,7 +158,7 @@ Return:
 
 - Never merge, close, reopen, approve, dismiss reviewers, push, force-push, branch-delete, or change remote state without explicit user approval or a pre-approved batch command.
 - Never start Phase 7 implementation while the Phase 6 confirmation gate is unresolved when parallel candidates exist.
-- Never mark a change archived without retro-gate evidence.
+- Never mark a change archived with missing validation evidence or unresolved blockers hidden as done.
 - Never widen scope silently after the user confirms a lane, change, or worktree prompt set.
 - Never run parallel edits with unsafe write overlap; route overlaps to serial execution.
 - Never claim a parallel worktree prompt succeeded; the worktree session owns its own outcome.

@@ -134,6 +134,50 @@ function newLibraryFixture(name: string): string {
     "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
     "",
   ]));
+  writeText(path.join(dir, ".opencode", "agents", "just-in-time-process-improvement-worker.md"), lines([
+    "---",
+    "description: Implements one bounded just-in-time process improvement for fixture validation.",
+    "mode: subagent",
+    "permission:",
+    "  read: allow",
+    "  glob: allow",
+    "  grep: allow",
+    "  bash:",
+    "    \"*\": deny",
+    "    \"npm run instruction:feedback -- --claim-session-improvement*\": allow",
+    "    \"npm run validate*\": allow",
+    "    \"npm test*\": allow",
+    "    \"node tools/test-*.ts\": allow",
+    "    \"git status*\": allow",
+    "    \"git diff*\": allow",
+    "  edit: allow",
+    "  task: deny",
+    "  question: deny",
+    "  skill: deny",
+    "  webfetch: deny",
+    "  websearch: deny",
+    "  todowrite: deny",
+    "  external_directory: deny",
+    "  lsp: deny",
+    "  doom_loop: deny",
+    "---",
+    "",
+    "You are a fixture worker for one just-in-time process improvement.",
+    "",
+    "## Worker Contract",
+    "",
+    "- Do exactly one just-in-time process improvement.",
+    "- Run `npm run instruction:feedback -- --claim-session-improvement --session <session-ref> --source-ref <evidence-ref> --summary <summary>` before edits.",
+    "- No OpenSpec changes, no retro files, and no broad backlog.",
+    "- No commits, pushes, merges, or nested agents.",
+    "- Use TDD/test-first for behavior-changing tooling.",
+    "- Return reviewer needs such as `instruction-artifact-reviewer` to the main session.",
+    "",
+    "## Output",
+    "",
+    "Return `JIT_PROCESS_IMPROVEMENT_REPORT` with changed files, validation, residual risks, and continuation items.",
+    "",
+  ]));
   writeText(path.join(dir, "instructions", "example.md"), lines(["# Example", ""]));
   writeText(path.join(dir, "instructions", "universal-development-loop.md"), lines([
     "# Universal Development Loop",
@@ -179,7 +223,7 @@ function newLibraryFixture(name: string): string {
     "  \"name\": \"standard\",",
     "  \"description\": \"Fixture standard profile.\",",
     "  \"skills\": [\"demo-skill\"],",
-    "  \"agents\": [\"demo-reviewer\"]",
+    "  \"agents\": [\"demo-reviewer\", \"just-in-time-process-improvement-worker\"]",
     "}",
     "",
   ]));
@@ -196,7 +240,7 @@ function newLibraryFixture(name: string): string {
     "  \"name\": \"advanced\",",
     "  \"description\": \"Fixture advanced profile.\",",
     "  \"skills\": [\"demo-skill\"],",
-    "  \"agents\": [\"demo-reviewer\"]",
+    "  \"agents\": [\"demo-reviewer\", \"just-in-time-process-improvement-worker\"]",
     "}",
     "",
   ]));
@@ -222,12 +266,10 @@ function newLibraryFixture(name: string): string {
     "    \"retro:project-ledger\": \"node tools/opencode-project-session-retro-ledger.ts\",",
     "    \"openspec:validate\": \"openspec validate --all\",",
     "    \"openspec:gate\": \"node tools/openspec-operation-gate.ts\",",
-    "    \"openspec:retro-gate\": \"node tools/openspec-retro-gate.ts\",",
-    "    \"openspec:retro-followups\": \"node tools/openspec-retro-followups.ts\",",
     "    \"prepush:validate\": \"node tools/pre-push-validate.ts\",",
     "    \"validate\": \"node tools/validate-library.ts\",",
     "    \"validate:strict\": \"node tools/validate-library.ts --fail-on-warnings\",",
-    "    \"test\": \"node tools/test-library.ts && node tools/test-instruction-feedback-ledger.ts && node tools/test-install-opencode-global.ts && node tools/test-openspec-retro-gate.ts && node tools/test-openspec-retro-followups.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts\"",
+    "    \"test\": \"node tools/test-library.ts && node tools/test-instruction-feedback-ledger.ts && node tools/test-install-opencode-global.ts && node tools/test-project-session-retro-ledger.ts && node tools/test-project-session-retro-ledger-cli.ts\"",
     "  }",
     "}",
     "",
@@ -249,11 +291,13 @@ function newLibraryFixture(name: string): string {
     "- Do not encode fuzzy scoring, probabilistic classification, model-like summarization, or unstated inference in helper code.",
     "- If deterministic helper code cannot answer from inputs, report unknown, unreadable, unsupported, or blocked instead.",
     "",
-    "## Self-Improving Instruction Loop",
+    "## Just-In-Time Process Improvement",
     "",
-    "- Route reviewer `Prevention Feedback` through `instruction-feedback-loop` before editing instruction artifacts.",
-    "- Do not use instant edits for global `AGENTS.md`, files under `instructions/`, files under `templates/`, `new-skill-required`, medium/expensive cost, unknown root cause, or cross-repo ownership.",
-    "- Instant edits require a feedback entry from `npm run instruction:feedback -- --add ...`, then replay the same evidence and close only after `applied -> replayed -> resolved`.",
+    "- Route at most one concrete process improvement per session through `just-in-time-process-improvement-worker`.",
+    "- The worker owns the cap claim with `npm run instruction:feedback -- --claim-session-improvement --session <ref> --source-ref <ref> --summary <text>`.",
+    "- Do not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup for JIT process improvements.",
+    "- Prevention feedback can still be persisted with `npm run instruction:feedback -- --add ...` when reviewer output supplies it.",
+    "- Prevention edits require replay evidence and close only after `applied -> replayed -> resolved`.",
     "- Before final handoff for sessions with prevention feedback, run `npm run instruction:feedback -- --pending` and account for unresolved entries.",
     "",
     "## Completion Handoff",
@@ -311,6 +355,7 @@ function newLibraryFixture(name: string): string {
     "## Agent Catalog",
     "",
     "- `demo-reviewer`: Demo reviewer.",
+    "- `just-in-time-process-improvement-worker`: JIT process improvement worker.",
     "",
     "## Instruction Templates",
     "",
@@ -505,6 +550,18 @@ const tests: TestCase[] = [
     run: () => {
       const fixture = newLibraryFixture("valid");
       assertSuccess(invokeValidator(fixture), "Valid fixture should pass validation.");
+    },
+  },
+  {
+    name: "validator rejects unsupported JIT worker bash allow",
+    run: () => {
+      const fixture = newLibraryFixture("jit-worker-extra-bash");
+      const workerPath = path.join(fixture, ".opencode", "agents", "just-in-time-process-improvement-worker.md");
+      const worker = fs.readFileSync(workerPath, "utf8");
+      writeText(workerPath, worker.replace("    \"npm run validate*\": allow", "    \"npm run validate*\": allow\n    \"npm run install:global*\": allow"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "JIT worker must reject unsupported bash allow rules.");
+      assertOutputContains(result, "unsupported bash permission", "JIT worker permission failure should name unsupported bash permission.");
     },
   },
   {

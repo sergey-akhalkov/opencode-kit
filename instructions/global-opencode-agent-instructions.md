@@ -32,13 +32,14 @@
 - Keep judgment-heavy synthesis in the agent/reviewer layer; use helper code to gather, count, validate, redact, diff, inventory, or enforce explicit rules.
 - Deterministic helpers may surface root-cause signals, evidence chains, and missing data, but they must not infer root cause from fuzzy transcript content or hidden heuristics.
 
-## Self-Improving Instruction Loop
+## Just-In-Time Process Improvement
 
-- Route reviewer `Prevention Feedback` through `instruction-feedback-loop` when available; otherwise preserve the block in handoff and choose instant edit, OpenSpec follow-up, or investigation explicitly.
-- Do not instantly edit global `AGENTS.md`, `instructions/`, `templates/`, `new-skill-required`, medium/expensive feedback, unknown root cause, or cross-repo artifacts.
-- Cheap single skill/agent prevention edits require `instruction-artifact-reviewer` before edit, ledger persistence with `instruction:feedback`, and replay of the same evidence after edit.
-- Close prevention entries only after `applied -> replayed -> resolved`; if replay is `still-failing`, reopen and route the applied rule as a new finding.
-- Cost-band classification and draft-rule quality stay in the LLM/reviewer judgment layer, not deterministic helper code.
+- When concrete workflow friction appears during a session, the main session may delegate at most one atomic process improvement to `just-in-time-process-improvement-worker`.
+- The worker owns the session cap claim with `npm run instruction:feedback -- --claim-session-improvement --session <ref> --source-ref <ref> --summary <text>`; pass it the session ref and evidence instead of pre-claiming in the main session. If the worker reports `already-claimed`, do not make another process-improvement edit in the session.
+- Keep JIT improvements small: one skill, one agent, one instruction artifact, one focused validator/test pair, or one small docs correction tied to the friction evidence.
+- Do not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup for JIT process improvements.
+- Instruction-artifact JIT edits still need `instruction-artifact-reviewer` before final handoff; behavior-changing helper/tooling edits need the smallest TDD/test-first gate.
+- Prevention entries that use `npm run instruction:feedback -- --add ...` close only after `applied -> replayed -> resolved`; if replay is `still-failing`, reopen and route the applied rule as a new finding.
 
 ## Token Efficiency
 
@@ -65,7 +66,7 @@
 - Treat `(Recommended)` as presentation-only when interpreting the selected option.
 - If the user selects an actionable option, continue immediately in the current context.
 - Read-only reviewer subagents must not call `question` or ask the user directly; they return `Actionable Continuation Items` or `Suggested Next Options` for the main session.
-- When an audit, retro, reviewer gate, broad discovery, or validation failure produces several concrete tasks that are related to the current session but outside its approved scope, prefer grouping them into OpenSpec follow-up changes when the repository already uses OpenSpec or the user approved adding it; otherwise return grouped candidates instead of leaving a loose final-message backlog. Do not create OpenSpec ceremony for isolated nits, speculative polish, or one obvious next step.
+- When an audit, reviewer gate, broad discovery, or validation failure produces several concrete tasks that are related to the current session but outside its approved scope, prefer grouping them into OpenSpec follow-up changes when the repository already uses OpenSpec or the user approved adding it; otherwise return grouped candidates instead of leaving a loose final-message backlog. Do not create OpenSpec ceremony for isolated nits, speculative polish, or one obvious next step.
 - If no real blocker remains, report completed work, validation, residual risks, and ready-to-land status without an interactive handoff.
 - If a blocker remains and the question tool is unavailable, include a short `Next Steps` fallback with the same recommended-first ordering.
 

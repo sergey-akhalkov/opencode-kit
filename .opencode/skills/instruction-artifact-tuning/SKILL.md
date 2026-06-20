@@ -18,7 +18,7 @@ For broad audits that include multiple skills/agents, global config, installed c
 - Cohesion: one primary job, one output contract, and no unrelated duties hidden in one prompt.
 - Authority clarity: global, repository, skill, agent, and user instructions do not conflict.
 - Evidence discipline: docs and user claims are hypotheses until checked against source, tests, schemas, or live output.
-- Root-cause discipline: retro, audit, reviewer, and follow-up artifacts separate symptoms from likely root causes, and recommendations explain how recurrence is prevented or reduced.
+- Root-cause discipline: audits, reviewer findings, and follow-up artifacts separate symptoms from likely root causes, and recommendations explain how recurrence is prevented or reduced.
 - Verification: the artifact names concrete checks, commands, reviewer gates, or eval criteria where possible.
 - TDD discipline: implementation-capable artifacts require test-first behavior for code changes, or an explicit infeasibility path with substitute validation evidence.
 - Tool safety: edit/read-only boundaries, destructive-operation policy, remote-state policy, and permissions are explicit.
@@ -41,14 +41,15 @@ For broad audits that include multiple skills/agents, global config, installed c
 - Do not encode fuzzy scoring, probabilistic classification, model-like summarization, trigger-quality ranking, or unstated inference in helper code; unsupported inputs should produce `unknown`, `unreadable`, `unsupported`, or `blocked`.
 - Replace project-specific paths, tools, issue trackers, and product names with placeholders unless the artifact is intentionally project-local.
 - Remove obsolete instructions instead of adding override paragraphs.
-- If review or tuning exposes several concrete artifact follow-ups outside the approved scope, recommend grouping them into OpenSpec follow-up changes rather than expanding the current edit silently or leaving a loose backlog.
+- If review or tuning exposes several concrete artifact follow-ups outside the approved scope, return grouped continuation items rather than expanding the current edit silently or leaving a loose backlog.
 
-## Prevention Feedback Quick Path
+## Just-In-Time Improvement Quick Path
 
-Use this quick path only when `instruction-feedback-loop` routes a P0/P1 `Prevention Feedback` block to a cheap instant edit on exactly one `skill:<name>` or one `agent:<name>` file.
+Use this quick path only when `just-in-time-process-improvement-worker` or the main session routes a concrete friction signal to one atomic instruction-artifact edit.
 
-- Refuse instant edits for global `AGENTS.md`, files under `instructions/`, files under `templates/`, medium/expensive changes, `new-skill-required`, unknown root cause, or cross-repo ownership; route those through OpenSpec follow-up or investigation.
-- Require a persisted feedback entry from `npm run instruction:feedback -- --add ...` before editing and keep the entry id in handoff evidence.
+- The worker normally owns the session cap claim via `npm run instruction:feedback -- --claim-session-improvement --session <ref> --source-ref <ref> --summary <text>` before editing. If this skill is used directly, claim once before editing and stop when the command returns `already-claimed`.
+- Keep the edit to one skill, one agent, one instruction artifact, one focused validator/test pair, or one small docs correction. Do not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup.
+- Require a persisted prevention entry from `npm run instruction:feedback -- --add ...` only when routing reviewer `Prevention Feedback`; keep the entry id in handoff evidence.
 - Run `instruction-artifact-reviewer` before the edit with the target artifact, recurrence path, draft rule, and replay evidence; block on conflict, cohesion, scope, or replay-signal findings.
 - Apply the smallest rule edit that addresses the recurrence path; remove or merge stale overlapping guidance instead of adding a broad override.
 - Run the replay gate by sending the same replay evidence to the same reviewer after the edit. Close the feedback entry only after `applied -> replayed -> resolved`; if replay is `still-failing`, reopen and create a new entry against the applied rule.
@@ -64,6 +65,6 @@ For review-only work, return:
 - `Validation`: checks run or explicitly skipped with reason.
 - `Runtime/Installed Evidence`: installed drift, active config, loader docs/source/live checks, or explicit gaps when in scope.
 - `Residual Risks`: missing evals, unverified loader behavior, or model-version sensitivity.
-- `Actionable Continuation Items`: concrete follow-up tasks, including OpenSpec follow-up candidates when several session-scoped items remain, or `none`.
+- `Actionable Continuation Items`: concrete follow-up tasks or `none`.
 
 For implementation work, also return changed files and mention that running OpenCode sessions may need restart or a new session before changed skills/agents are loaded.

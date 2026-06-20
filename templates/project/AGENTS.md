@@ -46,9 +46,10 @@ Apply the same process for every task, scaled to the size and risk of the change
 - Prefer deterministic helpers, validators, fixtures, or generated reports over repeated manual inspection.
 - Reviewer agents are read-only leaf validators by default.
 
-## Self-Improving Instruction Loop
+## Just-In-Time Process Improvement
 
-- If reviewer output includes `Prevention Feedback`, route it to exactly one channel: cheap single skill/agent instant edit, OpenSpec follow-up, or unknown-root-cause investigation.
-- Do not instantly edit global `AGENTS.md`, `instructions/`, `templates/`, `new-skill-required`, medium/expensive feedback, unknown root cause, or cross-repo artifacts.
-- Instant prevention edits require a ledger entry, `instruction-artifact-reviewer` before edit, replay of the same evidence after edit, and closure only after `applied -> replayed -> resolved`.
-- Deterministic helpers must not classify cost bands or draft rules; they persist evidence, deduplicate exact matches, enforce transitions, and report `unknown` or `blocked`.
+- When concrete workflow friction appears during a session, delegate at most one atomic improvement to `just-in-time-process-improvement-worker` when available.
+- Let the worker claim the cap with `npm run instruction:feedback -- --claim-session-improvement --session <ref> --source-ref <ref> --summary <text>`; pass it the session ref and evidence. If the worker is unavailable and the main session handles the improvement directly, count that edit as the cap for the session.
+- Keep the improvement small and tied to evidence: one skill, one agent, one instruction artifact, one focused validator/test pair, or one small docs correction.
+- Do not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup for JIT process improvements.
+- Instruction-artifact edits need `instruction-artifact-reviewer` before final handoff; helper/tooling behavior changes need the smallest TDD/test-first gate.

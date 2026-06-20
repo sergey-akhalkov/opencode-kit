@@ -559,14 +559,12 @@ function artifactContent(target: string): string {
   return "unsupported";
 }
 
-function pullBackTaskTail(changeId: string): string {
-  return `## Retrospective Before Archive
+function pullBackTaskTail(): string {
+  return `## Archive Readiness
 
-- [ ] Review the completed change context, validation, reviewer gates, blockers, repeated work, wait time, token-heavy steps, and likely root causes.
-- [ ] Write \`openspec/changes/${changeId}/retro.md\` with evidence, problems, root causes, improvements, follow-up ids, and archive gate decision.
-- [ ] Run \`npm run openspec:retro-followups -- ${changeId}\` when available so actionable retrospective findings create or update follow-up OpenSpec changes before archive.
-- [ ] If the helper is unavailable, manually create or update project-local OpenSpec follow-up changes for project-local findings; for reusable \`opencode-dev-kit\` findings, write only when the current repository owns the reusable artifact and current write scope includes it, otherwise record a local handoff and do not write cross-repo without explicit approval.
-- [ ] Confirm archive is allowed only after the retro gate passes or an approved skip reason is recorded in \`retro.md\`.
+- [ ] Record the investigation decision: reusable source change, local-only customization, accidental drift, or blocked.
+- [ ] If source changes are needed, create or complete the smallest focused implementation with validation evidence.
+- [ ] Run \`openspec validate --all\` before archive.
 `;
 }
 
@@ -631,7 +629,7 @@ function pullBackTasks(changeId: string, drift: DriftEntry): string {
 - [ ] Run the focused validation command for the eventual source change, or record why no source change is needed.
 - [ ] Run \`openspec validate --all\` when this investigation changes OpenSpec artifacts.
 
-${pullBackTaskTail(changeId)}`;
+${pullBackTaskTail()}`;
 }
 
 function pullBackSpec(changeId: string, drift: DriftEntry): string {

@@ -1,6 +1,6 @@
 {
   "name": "advanced",
-  "description": "Optional heavyweight workflows for retros, exhaustive audits, OpenSpec tracking, and domain-specific projects.",
+  "description": "Optional heavyweight workflows for retros, exhaustive audits, OpenSpec tracking, JIT process improvements, and domain-specific projects.",
   "skills": [
     "adaptive-delivery",
     "codebase-audit-ledger",
@@ -15,7 +15,6 @@
     "external-service-simulator-harness",
     "file-review-quest",
     "framed-protocol-implementation",
-    "instruction-feedback-loop",
     "instruction-artifact-tuning",
     "latency-benchmark-pack",
     "legacy-contract-extract",
@@ -43,6 +42,7 @@
     "deployment-config-reviewer",
     "implementation-readiness-reviewer",
     "instruction-artifact-reviewer",
+    "just-in-time-process-improvement-worker",
     "legacy-client-compatibility-reviewer",
     "legacy-evidence-reviewer",
     "openspec-architecture-reviewer",

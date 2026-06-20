@@ -63,13 +63,13 @@ Use one process for all technologies: `Intake -> Evidence -> Baseline Proof -> S
 - If deterministic helper code cannot answer something from its inputs, report `unknown`, `unreadable`, `unsupported`, or `blocked` instead of guessing.
 - Keep judgment-heavy synthesis in the agent/reviewer layer; use helper code to gather, count, validate, redact, diff, inventory, or enforce explicit rules.
 
-## Self-Improving Instruction Loop
+## Just-In-Time Process Improvement
 
-- Route reviewer `Prevention Feedback` into one channel: instant edit for cheap single skill/agent fixes, OpenSpec follow-up for global or larger changes, or investigation when root cause is `unknown`.
-- Do not instantly edit global `AGENTS.md`, files under `instructions/`, files under `templates/`, `new-skill-required`, medium/expensive feedback, unknown root cause, or cross-repo artifacts.
-- Keep cost-band classification and draft-rule judgment out of deterministic helper code; helpers may persist, deduplicate, enforce transitions, and report explicit `unknown`/`blocked` states.
-- For instant edits, persist a ledger entry, run `instruction-artifact-reviewer` before the edit, replay the same evidence after the edit, and close only after `applied -> replayed -> resolved`.
-- For OpenSpec-backed repositories, group medium/expensive or broad prevention feedback into follow-up changes instead of leaving loose final-message backlog.
+- When concrete workflow friction appears during a session, delegate at most one atomic improvement to `just-in-time-process-improvement-worker` when available.
+- Let the worker claim the cap with `npm run instruction:feedback -- --claim-session-improvement --session <ref> --source-ref <ref> --summary <text>`; pass it the session ref and evidence. If the worker is unavailable and the main session handles the improvement directly, count that edit as the cap for the session.
+- Keep the improvement small: one skill, one agent, one instruction artifact, one focused validator/test pair, or one small docs correction tied to the friction evidence.
+- Do not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup for JIT process improvements.
+- For instruction-artifact edits, run `instruction-artifact-reviewer` before final handoff; for helper/tooling behavior changes, add or update the smallest TDD/test-first gate.
 
 ## Git And Remote State
 

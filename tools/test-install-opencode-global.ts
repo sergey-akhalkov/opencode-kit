@@ -85,21 +85,22 @@ function backupRoot(configDir: string): string {
 }
 
 function countInstallPullbackChanges(): number {
+  return listInstallPullbackChanges().length;
+}
+
+function listInstallPullbackChanges(): string[] {
   const changesRoot = path.join(root, "openspec", "changes");
   if (!fs.existsSync(changesRoot)) {
-    return 0;
+    return [];
   }
   return fs.readdirSync(changesRoot, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && entry.name.startsWith("install-pullback-"))
-    .length;
+    .map((entry) => entry.name)
+    .sort();
 }
 
 function latestPullbackChange(): string {
-  const changesRoot = path.join(root, "openspec", "changes");
-  const entries = fs.readdirSync(changesRoot, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && entry.name.startsWith("install-pullback-"))
-    .map((entry) => entry.name)
-    .sort();
+  const entries = listInstallPullbackChanges();
   if (entries.length === 0) {
     throw new Error("No install-pullback changes were generated.");
   }
@@ -152,30 +153,40 @@ const tests: TestCase[] = [
   {
     name: "pull-back writes deterministic investigation change without overwrite",
     run: () => {
-      const beforeCount = countInstallPullbackChanges();
+      const beforeIds = new Set(listInstallPullbackChanges());
       const configDir = installCleanConfig("pullback");
       const drifted = driftSkill(configDir);
       const before = fs.readFileSync(drifted, "utf8");
-      const first = invokeInstaller(["--config-dir", configDir, "--profile", "standard", "--skip-agents-md", "--pull-back"]);
-      assertSuccess(first, "Pull-back should succeed on drift.");
-      assertOutputContains(first, "install-pullback", "Pull-back should report generated investigation change.");
-      assert(fs.readFileSync(drifted, "utf8") === before, "Pull-back must not overwrite drifted destination.");
-      const changeId = latestPullbackChange();
-      assert(countInstallPullbackChanges() === beforeCount + 1, "Pull-back should create exactly one change for one drifted artifact.");
-      const changeRoot = path.join(root, "openspec", "changes", changeId);
-      const proposal = fs.readFileSync(path.join(changeRoot, "proposal.md"), "utf8");
-      const tasks = fs.readFileSync(path.join(changeRoot, "tasks.md"), "utf8");
-      const spec = fs.readFileSync(path.join(changeRoot, "specs", changeId, "spec.md"), "utf8");
-      assert(proposal.includes("## Destination Content") && proposal.includes("## Source Content") && proposal.includes("unknown"), "Pull-back proposal must preserve content and unknown root cause.");
-      assert(tasks.includes("## Retrospective Before Archive"), "Pull-back tasks must end with retrospective section.");
-      assert(spec.includes("## ADDED Requirements"), "Pull-back spec delta must be generated.");
+      try {
+        const first = invokeInstaller(["--config-dir", configDir, "--profile", "standard", "--skip-agents-md", "--pull-back"]);
+        assertSuccess(first, "Pull-back should succeed on drift.");
+        assertOutputContains(first, "install-pullback", "Pull-back should report generated investigation change.");
+        assert(fs.readFileSync(drifted, "utf8") === before, "Pull-back must not overwrite drifted destination.");
+        const changeId = latestPullbackChange();
+        assert(countInstallPullbackChanges() === beforeIds.size + 1, "Pull-back should create exactly one change for one drifted artifact.");
+        const changeRoot = path.join(root, "openspec", "changes", changeId);
+        const proposal = fs.readFileSync(path.join(changeRoot, "proposal.md"), "utf8");
+        const tasks = fs.readFileSync(path.join(changeRoot, "tasks.md"), "utf8");
+        const spec = fs.readFileSync(path.join(changeRoot, "specs", changeId, "spec.md"), "utf8");
+        assert(proposal.includes("## Destination Content") && proposal.includes("## Source Content") && proposal.includes("unknown"), "Pull-back proposal must preserve content and unknown root cause.");
+        assert(tasks.includes("## Archive Readiness"), "Pull-back tasks must include archive readiness section.");
+        const removedArchiveCommandPrefix = ["openspec", "retro"].join(":");
+        assert(!tasks.includes(removedArchiveCommandPrefix), "Pull-back tasks must not reference removed archive-learning commands.");
+        assert(spec.includes("## ADDED Requirements"), "Pull-back spec delta must be generated.");
 
-      const second = invokeInstaller(["--config-dir", configDir, "--profile", "standard", "--skip-agents-md", "--pull-back"]);
-      assertSuccess(second, "Second pull-back should succeed.");
-      assertOutputContains(second, "existing", "Second pull-back should report existing change.");
-      assert(countInstallPullbackChanges() === beforeCount + 1, "Second pull-back must not create a duplicate change.");
-      fs.rmSync(changeRoot, { recursive: true, force: true });
-      assert(countInstallPullbackChanges() === beforeCount, "Pull-back test must clean generated investigation change.");
+        const second = invokeInstaller(["--config-dir", configDir, "--profile", "standard", "--skip-agents-md", "--pull-back"]);
+        assertSuccess(second, "Second pull-back should succeed.");
+        assertOutputContains(second, "existing", "Second pull-back should report existing change.");
+        assert(countInstallPullbackChanges() === beforeIds.size + 1, "Second pull-back must not create a duplicate change.");
+      } finally {
+        const changesRoot = path.join(root, "openspec", "changes");
+        for (const changeId of listInstallPullbackChanges()) {
+          if (!beforeIds.has(changeId)) {
+            fs.rmSync(path.join(changesRoot, changeId), { recursive: true, force: true });
+          }
+        }
+      }
+      assert(countInstallPullbackChanges() === beforeIds.size, "Pull-back test must clean generated investigation change.");
     },
   },
   {

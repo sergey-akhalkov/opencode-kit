@@ -17,7 +17,6 @@ Use this skill when the user asks to implement, continue, or complete tasks from
 - Keep TDD proportional: stop at the smallest test/gate set that proves the scoped requirement unless the risk profile requires broader coverage.
 - Make the smallest correct code/doc changes that satisfy the scoped requirement.
 - Update tasks and traceability only when evidence exists.
-- Ensure `tasks.md` has a final `Retrospective Before Archive` section; add it when continuing an older active change that lacks the gate. The section must require likely root-cause review before archive.
 - Run the closest relevant validation after each meaningful slice.
 - Use reviewer agents for material code-quality/maintainability, architecture, concurrency, protocol, deployment, or test-coverage risks.
 
@@ -27,8 +26,8 @@ Use this skill when the user asks to implement, continue, or complete tasks from
 - Tests cover observable behavior and negative/recovery cases where relevant.
 - Docs/specs/tasks are synchronized.
 - Validation commands have been run or skipped with explicit reason and residual risk.
-- Before archive, hand off to the retrospective gate: write or update `openspec/changes/<change-id>/retro.md` with root causes and follow-up ids for actionable problems, run the repository-configured retrospective follow-up command when available, e.g. `npm run openspec:retro-followups -- <change-id>`, to create/update in-scope OpenSpec follow-up changes and update `retro.md`, then run the repository-configured retrospective gate, e.g. `npm run openspec:retro-gate -- <change-id>`.
+- Before archive, ensure unresolved follow-ups are either completed, recorded in `tasks.md` with owner/validation signal, or returned as `Actionable Continuation Items`. Do not create archive-time learning files or process gates.
 
 ## Output
 
-Return changed files, completed tasks, validation results, coverage/evidence notes, blockers, residual risks, retrospective/archive-gate status, and next implementation slice if any.
+Return changed files, completed tasks, validation results, coverage/evidence notes, blockers, residual risks, archive readiness, and next implementation slice if any.

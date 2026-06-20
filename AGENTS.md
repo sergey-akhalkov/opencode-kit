@@ -29,14 +29,14 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 - Deterministic helper output may support root-cause analysis with evidence and missing-data signals, but root-cause judgment remains in the agent/reviewer layer.
 - For OpenCode retro analytics in this repository, durable TypeScript helper scripts are allowed when they materially reduce analysis work; add or update a focused test first, expose reusable helpers through `package.json`, and update the relevant retro skill to call them.
 
-## Self-Improving Instruction Loop
+## Just-In-Time Process Improvement
 
-- Route reviewer `Prevention Feedback` through `instruction-feedback-loop` before editing instruction artifacts.
-- Keep cost-band classification and draft-rule judgment in the main session or reviewer layer; deterministic helpers only persist, deduplicate, surface explicit conflicts, enforce transitions, and report `unknown`, `unreadable`, `unsupported`, or `blocked`.
-- Cheap feedback targeting exactly one `skill:<name>` or one `agent:<name>` may use the instant-edit channel after `instruction-artifact-reviewer` checks cohesion, conflict, and replay evidence.
-- Do not use instant edits for global `AGENTS.md`, files under `instructions/`, files under `templates/`, `new-skill-required`, medium/expensive cost, unknown root cause, or cross-repo ownership; create an OpenSpec follow-up or investigation instead.
-- Instant edits require a ledger entry from `npm run instruction:feedback -- --add ...`, then replay the same evidence through the same reviewer and close only after `applied -> replayed -> resolved`.
-- Before final handoff for sessions that produced prevention feedback, run `npm run instruction:feedback -- --pending` and account for unresolved entries in follow-ups or `Actionable Continuation Items`.
+- When concrete workflow friction appears during a session, the main session may delegate at most one atomic process improvement to `just-in-time-process-improvement-worker`.
+- The worker owns the session cap claim with `npm run instruction:feedback -- --claim-session-improvement --session <ref> --source-ref <ref> --summary <text>`; pass it the session ref and evidence instead of pre-claiming in the main session. If the worker reports `already-claimed`, do not make another process-improvement edit in the session.
+- Keep JIT improvements small: one skill, one agent, one instruction artifact, one focused validator/test pair, or one small docs correction tied to the friction evidence.
+- Do not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup for JIT process improvements.
+- Instruction-artifact JIT edits still need `instruction-artifact-reviewer` before final handoff; behavior-changing helper/tooling edits need the smallest TDD/test-first gate.
+- Prevention entries that use `npm run instruction:feedback -- --add ...` close only after `applied -> replayed -> resolved`; if replay is `still-failing`, reopen and route the applied rule as a new finding.
 
 ## Token Efficiency
 

@@ -37,7 +37,7 @@ Read/search-only leaf reviewer. No edits, fixes, commits/amends, merges, pushes,
 - Authority clarity: global, repository, skill, agent, and user instructions do not conflict.
 - Autonomy handoff: real blockers or user-owned decisions use self-contained next options; completed work reports status, validation, and residual risks without routine questions.
 - Evidence discipline: claims route back to source, tests, schemas, validators, fixtures, docs, or supplied command output.
-- Root-cause discipline: audit/retro/reviewer outputs distinguish symptoms from likely causes, and recommendations explain how recurrence is prevented or route investigation when the cause is unknown.
+- Root-cause discipline: audit/reviewer outputs distinguish symptoms from likely causes, and recommendations explain how recurrence is prevented or route investigation when the cause is unknown.
 - Verification and TDD: behavior-changing work names a focused test/fixture/gate first, or an explicit infeasibility path with substitute evidence.
 - Tool safety: edit/read-only boundaries, destructive-operation policy, remote-state policy, host-mutation policy, and permissions are explicit.
 - Context efficiency: remove stale examples, repeated boilerplate, and project-specific anchors that should be placeholders.
@@ -45,7 +45,7 @@ Read/search-only leaf reviewer. No edits, fixes, commits/amends, merges, pushes,
 - Automation safety: flag fuzzy scoring, probabilistic classification, model-like summarization, trigger-quality ranking, or unstated inference when presented as helper-code evidence.
 - OpenCode compatibility: skill folder names match `name`, skill descriptions are discoverable, agent frontmatter uses `mode: subagent`, and reviewer permissions are least privilege.
 - README sync: catalogs, routing map, reviewer gate map, validation commands, and curation rules match current artifacts.
-- Prevention feedback routing: cheap instant edits are limited to one skill or one agent file; global `AGENTS.md`, `instructions/`, `templates/`, `new-skill-required`, medium/expensive cost, and unknown root cause must route through OpenSpec or investigation.
+- JIT improvement routing: process-improvement edits are limited to one atomic target per session, require a `--claim-session-improvement` cap claim, and must not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup.
 - Conflict surfacing: check the target artifact for overlapping or contradictory guidance, one-in-one-out concerns on broad artifacts, missing ledger evidence, and draft rules that generalize beyond the cited recurrence path.
 - Replay closure: a prevention entry is not closed unless replay evidence is present and the ledger records `applied -> replayed -> resolved`; `still-failing` replay must open a new entry against the applied rule.
 

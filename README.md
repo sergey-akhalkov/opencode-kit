@@ -4,7 +4,7 @@ Installable OpenCode development kit for reusable AI-assisted engineering workfl
 
 ## What This Is
 
-`opencode-dev-kit` packages reusable OpenCode skills, read-only reviewer and worker agents, project templates, instruction templates, and deterministic helper tools. Its purpose is to make work in other repositories faster, cheaper in tokens, and safer without creating a different workflow for every technology stack.
+`opencode-dev-kit` packages reusable OpenCode skills, read-only reviewer agents, bounded worker agents, project templates, instruction templates, and deterministic helper tools. Its purpose is to make work in other repositories faster, cheaper in tokens, and safer without creating a different workflow for every technology stack.
 
 The kit optimizes one process: gather evidence, prove current state, choose the smallest useful slice, work test-first when behavior changes, validate, run proportional reviewer gates, and hand off with residual risks.
 
@@ -21,7 +21,7 @@ Technology adapters may change commands and constraints, but not the loop.
 ## Contents
 
 - `.opencode/skills/`: reusable OpenCode skills.
-- `.opencode/agents/`: reusable read-only reviewer and worker agents.
+- `.opencode/agents/`: reusable read-only reviewers, bounded read-only workers, and the explicit write-capable JIT process-improvement worker.
 - `instructions/`: copyable instruction templates for global/project `AGENTS.md`, reviewer contracts, evidence discipline, and porting.
 - `templates/`: project bootstrap and CI templates for applying the Universal Development Loop to another repository.
 - `profiles/`: install manifests that choose artifacts without creating separate workflows.
@@ -36,7 +36,7 @@ Technology adapters may change commands and constraints, but not the loop.
 
 ### Global Install
 
-Install all repository skills, all reviewer agents, and a reusable global `AGENTS.md` block into OpenCode's global config directory:
+Install all repository skills, all repository agents, and a reusable global `AGENTS.md` block into OpenCode's global config directory:
 
 ```sh
 npm run install:global
@@ -139,7 +139,7 @@ OpenCode agents are loaded from project or global agent folders. Copy selected f
 - Project: `.opencode/agents/<name>.md`
 - Global: `~/.config/opencode/agents/<name>.md`
 
-Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default.
+Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default, except `just-in-time-process-improvement-worker`, which is intentionally write-capable and validation-bounded.
 
 ### Manual Commands
 
@@ -184,6 +184,14 @@ npm run instruction:feedback -- --replay-pending
 
 The helper persists entries, detects exact-match duplicates, enforces replay status transitions, reports stale open/applied entries, and checks one-in-one-out evidence for broad instruction rules. It does not classify prevention cost or draft rule quality.
 
+For one just-in-time process improvement per session, delegate the atomic edit to `just-in-time-process-improvement-worker` with a session ref and friction evidence. The worker owns the cap claim before edits:
+
+```sh
+npm run instruction:feedback -- --claim-session-improvement --session <session-ref> --source-ref <evidence-ref> --summary <summary>
+```
+
+If the worker reports `already-claimed`, keep later process ideas as continuation items. JIT improvements must stay small: one skill, one agent, one instruction artifact, one focused validator/test pair, or one small docs correction. Do not create OpenSpec changes, retro files, broad backlogs, or speculative cleanup for JIT improvements.
+
 Validate all OpenSpec changes with the first-class package gate:
 
 ```sh
@@ -199,15 +207,6 @@ npm run openspec:gate -- --operation prepush
 ```
 
 Use `--persist` only when a JSON evidence artifact should be written to `openspec/changes/<change-id>/automation/operation-gates/<operation>.json` from a write-authorized main session. Default operation-gate runs are read-only.
-
-Before archiving a completed OpenSpec change, write `openspec/changes/<change-id>/retro.md`, create/update retrospective follow-ups with the mutating helper, then validate the read-only retrospective archive gate with:
-
-```sh
-npm run openspec:retro-followups -- <change-id>
-npm run openspec:retro-gate -- <change-id>
-```
-
-Use `npm run openspec:retro-followups -- <change-id> --dry-run` for read-only inspection. Without `--dry-run`, the follow-up helper reads actionable rows from `openspec/changes/<change-id>/retro.md`, creates/updates OpenSpec follow-up changes before archive, and updates the Markdown problem table plus `Outputs`. The retro gate then checks that `tasks.md` ends with `Retrospective Before Archive`, `retro.md` exists, required sections are present, approved skips include reason and approver, actionable problems include root cause, and actionable findings reference real follow-up changes with `proposal.md`, `tasks.md`, and `specs/<generated-id>/spec.md` that preserve the retrospective evidence and root cause.
 
 For installer changes, also prove the no-write path before using a real config directory:
 
@@ -339,13 +338,13 @@ Routing and reviewer maps assume all/advanced artifacts; restricted profiles use
 - Broad independent tracks -> `orchestrator` from the `advanced` profile only after bounded workstreams, success criteria, and validation evidence are clear; if it is unavailable, use the Universal Development Loop serially or return an orchestration follow-up candidate.
 - Bounded first-pass helper work that benefits from cheap/offline local context, such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker` from the `advanced` profile when the target machine has a configured `qwen-local` provider.
 - Session delivery-control review for current-session todos/user prompts/question replies plus transcript/summary, compaction/resume continuity, changed files, and validation output -> `session-delivery-reviewer`.
-- Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; reviewer `Prevention Feedback` routing -> `instruction-feedback-loop`; bounded/current-project/selected-project OpenCode session, transcript, reflection, and log retros -> `project-sessions-retro`. Full current-project retros require `retro:project-ledger`; large archives use `orchestrator` plus `session-observation-worker`; promoted trends use `root-cause-analysis`, plans use `deep-task-planning`, durable follow-ups use `openspec-propose`, and final material handoff uses `session-delivery-reviewer`. All-history/cross-install/whole-corpus retros targeting global skills, agents, prompts, rules, validators, tools, and reusable instructions -> `all-sessions-retro`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
+- Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; concrete process friction -> `just-in-time-process-improvement-worker`, which claims the `instruction:feedback -- --claim-session-improvement` cap before edits; bounded/current-project/selected-project OpenCode session, transcript, reflection, and log retros -> `project-sessions-retro`. Full current-project retros require `retro:project-ledger`; large archives use `orchestrator` plus `session-observation-worker`; promoted trends use `root-cause-analysis`, plans use `deep-task-planning`, durable follow-ups use `openspec-propose`, and final material handoff uses `session-delivery-reviewer`. All-history/cross-install/whole-corpus retros targeting global skills, agents, prompts, rules, validators, tools, and reusable instructions -> `all-sessions-retro`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `file-review-quest` for one-file block review, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
 - Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; use `code-quality-reviewer` as the read-only gate.
 
 ## Reviewer Gate Map
 
-- Instruction artifacts, skills, agents, prompts, `AGENTS.md`, and README routing -> `instruction-artifact-reviewer`; reviewer `Prevention Feedback` routing and replay closure -> `instruction-feedback-loop` plus `npm run instruction:feedback`.
+- Instruction artifacts, skills, agents, prompts, `AGENTS.md`, and README routing -> `instruction-artifact-reviewer`; one-session process-friction improvements -> `just-in-time-process-improvement-worker` plus `npm run instruction:feedback -- --claim-session-improvement`.
 - Code health, maintainability, readability, file navigation, duplication, boundaries, and pragmatic refactoring -> `code-quality-reviewer`.
 - Implementation readiness, stable scope, blockers, validation path -> `implementation-readiness-reviewer`.
 - Session delivery alignment, current-session todos/user prompts/question replies, compaction continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff -> `session-delivery-reviewer`.
@@ -369,11 +368,9 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - Create or update OpenSpec files only when the repository already has an OpenSpec workflow or the user approved adding one; otherwise return grouped follow-up candidates as continuation items.
 - Reviewer agents remain read-only: they recommend OpenSpec follow-up tracking in `Actionable Continuation Items`; the main session owns any file writes and `next-step` continuation.
 
-## OpenSpec Retrospective Gate
+## Just-In-Time Process Improvement
 
-Before archiving a completed OpenSpec change, write `openspec/changes/<change-id>/retro.md`, run `npm run openspec:retro-followups -- <change-id>` when available to create/update follow-up OpenSpec changes for actionable findings and update the Markdown, then run `npm run openspec:retro-gate -- <change-id>`. New `tasks.md` files should end with `Retrospective Before Archive` so the final learning step is machine-checkable and includes root-cause review.
-
-`retro.md` should stay concise but evidence-backed and human-readable. Use sections for `Evidence Reviewed`, `Problems Found`, `Outputs`, and `Archive Gate Decision`; the `Problems Found` table records problem, evidence, impact, root cause, recommendation, confidence, target, follow-up change, and no-follow-up reason. Actionable recommendations should address the cause or explicitly route an investigation/instrumentation follow-up when the cause is `unknown`. Actionable project-local or reusable skill/agent/instruction/validator findings must become real OpenSpec follow-up changes referenced from `Outputs`; use target `none` only for findings fixed in scope, intentionally non-actionable items, or justified no-follow-up decisions. Approved skips must include a reason and approver.
+Do not add archive-time learning ceremony to OpenSpec. When a session exposes concrete process friction, delegate one bounded improvement to `just-in-time-process-improvement-worker`; the worker claims the session cap before edits. The worker edits only the approved atomic surface, runs focused validation, and returns a `JIT_PROCESS_IMPROVEMENT_REPORT`; the main session owns any reviewer gate before final handoff.
 
 ## Skill Catalog
 
@@ -385,7 +382,6 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
 - `merge-request-review-loop`: autonomous MR/PR review follow-up for status checks, reviewer feedback, local fixes, revalidation, outcome handoff, and remote-action gates.
 - `merge-then-openspec-roi`: one-shot loop that batch-merges every open MR/PR on the default branch, refreshes the trunk, then drives the highest-ROI OpenSpec change to archive plus MR while emitting worktree prompts for safe parallel changes.
-- `instruction-feedback-loop`: route reviewer Prevention Feedback into instant instruction edits, OpenSpec follow-ups, or unknown-root-cause investigations with ledger and replay gates.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
 - `orchestrator`: prompt-only master coordination for broad independent work, using bounded task fan-out, readable worker reports, report reconciliation, tests/review gates, and isolation only when worth the overhead.
 - `all-sessions-retro`: analyze all reachable OpenCode sessions across projects and installs, synthesize trends/root causes, and when authorized design/apply improvements to global skills, agents, prompts, rules, validators, tools, and reusable instructions.
@@ -408,10 +404,10 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 ### OpenSpec
 
 - `openspec-explore`: explore requirements/options before a change.
-- `openspec-propose`: draft proposal/design/spec/tasks, including lightweight follow-up backlog changes from audit/retro/reviewer evidence.
+- `openspec-propose`: draft proposal/design/spec/tasks, including lightweight follow-up backlog changes from audit/reviewer/validation evidence.
 - `openspec-apply-change`: implement accepted OpenSpec changes with TDD-first task execution.
 - `openspec-consistency-review`: review proposal/design/spec/tasks/docs/tests sync.
-- `openspec-archive-change`: archive completed changes after evidence gates and the `retro.md` retrospective follow-up gate.
+- `openspec-archive-change`: archive completed changes after task/spec/test/validation and reviewer evidence gates.
 - `production-service-openspec`: production-oriented service baseline change authoring.
 
 ### Technical Domains
@@ -439,6 +435,7 @@ Before archiving a completed OpenSpec change, write `openspec/changes/<change-id
 - `deployment-config-reviewer`: config/deployment readiness and operational safety.
 - `protocol-api-reviewer`: framed/client API, schema evolution, correlation, reconnect.
 - `qwen-local-worker`: optional local Qwen3.6 first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks; requires a configured `qwen-local` OpenAI-compatible provider.
+- `just-in-time-process-improvement-worker`: write-capable worker for one bounded process improvement per session; it claims the `instruction:feedback` cap before edits.
 - `session-observation-worker`: read-only project retro batch worker that reviews transcript JSON and returns sanitized audit/observation patch drafts for the main session to validate and apply.
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
@@ -478,10 +475,10 @@ Overly narrow future-scope behavior that depended on one product domain was inte
 - Keep artifacts project-neutral unless the artifact name explicitly scopes a reusable domain.
 - Prefer concrete evidence, validation, permissions, and output schemas over vague instructions.
 - For repetitive, evidence-heavy, or token-heavy workflows, consider a small deterministic helper before adding more prose process.
-- When several session-scoped follow-ups appear outside approved scope, prefer grouping them into OpenSpec changes when OpenSpec exists or is approved instead of leaving an untracked final-message backlog; avoid OpenSpec ceremony for isolated nits or one obvious next step.
+- When several session-scoped follow-ups appear outside approved scope, prefer grouping them into OpenSpec changes when OpenSpec exists or is approved instead of leaving an untracked final-message backlog; avoid OpenSpec ceremony for isolated nits, one obvious next step, or JIT process improvements.
 - Helper automation in skills or agents must be deterministic and contract-driven: explicit inputs/outputs, fixtures or schemas, stable ordering, privacy-safe output, and no hidden heuristics.
 - Implementation-capable artifacts should require TDD/test-first by default for behavior changes, or require an explicit infeasibility note plus the closest reproducible validation evidence.
 - Keep TDD proportional: require the smallest useful test/gate for the scoped behavior, not unrelated coverage expansion or speculative test suites.
-- Reviewer agents should keep the compact `Leaf Contract`, ordered findings, residual risks, and `Actionable Continuation Items`; mutation-capable tools stay denied unless a separate validation-enabled profile is intentionally created.
+- Reviewer agents should keep the compact `Leaf Contract`, ordered findings, residual risks, and `Actionable Continuation Items`; mutation-capable tools stay denied except for the bounded `just-in-time-process-improvement-worker`.
 - Avoid hardcoded commands and paths. Use placeholders or say to use the repository's configured validation command.
 - If a target repository has stricter local instructions, local instructions win.

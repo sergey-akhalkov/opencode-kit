@@ -165,7 +165,7 @@ const tests: TestCase[] = [
         "OpenSpec operation prepush gate",
         "Repository tests",
         "OpenSpec validation",
-      ], "Root retro gate should run before OpenSpec operation gate and tests.");
+      ], "Root retro ledger should run before OpenSpec operation gate and tests.");
     }),
   },
   {

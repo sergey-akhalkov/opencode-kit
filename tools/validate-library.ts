@@ -22,6 +22,7 @@ const errors: string[] = [];
 const warnings: string[] = [];
 const forbiddenCodeExtensions = new Set([".cjs", ".js", ".mjs", ".ps1", ".psd1", ".psm1", ".py", ".pyw"]);
 const mutationCapablePermissionKeys = new Set(["bash", "edit", "task", "external_directory"]);
+const jitProcessImprovementWorkerFile = "just-in-time-process-improvement-worker.md";
 const preventionFeedbackReviewerFiles = [
   "code-quality-reviewer.md",
   "deployment-config-reviewer.md",
@@ -564,6 +565,49 @@ function validateReviewerBashPermission(frontmatter: FrontmatterMap, file: strin
   }
 }
 
+function validateJitProcessImprovementWorker(frontmatter: FrontmatterMap, text: string, file: string): void {
+  const allowedBashRules = new Map([
+    ["permission.bash.*", "deny"],
+    ["permission.bash.npm run instruction:feedback -- --claim-session-improvement*", "allow"],
+    ["permission.bash.npm run validate*", "allow"],
+    ["permission.bash.npm test*", "allow"],
+    ["permission.bash.node tools/test-*.ts", "allow"],
+    ["permission.bash.git diff*", "allow"],
+    ["permission.bash.git status*", "allow"],
+  ]);
+  if (frontmatter.get("permission.edit") !== "allow") {
+    addError(`JIT process improvement worker must set edit: allow: ${file}`);
+  }
+  for (const [key, expected] of allowedBashRules) {
+    if (frontmatter.get(key) !== expected) {
+      addError(`JIT process improvement worker must set ${key.replace("permission.", "")}: ${expected}: ${file}`);
+    }
+  }
+  for (const [key, value] of frontmatter) {
+    if (key.startsWith("permission.bash.") && allowedBashRules.get(key) !== value) {
+      addError(`JIT process improvement worker has unsupported bash permission '${key.replace("permission.bash.", "")}: ${String(value)}': ${file}`);
+    }
+  }
+  for (const permission of ["task", "question", "skill", "webfetch", "websearch", "todowrite", "external_directory", "lsp", "doom_loop"]) {
+    const key = `permission.${permission}`;
+    if (frontmatter.get(key) !== "deny") {
+      addError(`JIT process improvement worker must set ${permission}: deny: ${file}`);
+    }
+  }
+  for (const required of [
+    "## Worker Contract",
+    "one just-in-time process improvement",
+    "--claim-session-improvement",
+    "No OpenSpec",
+    "No commits",
+    "TDD/test-first",
+    "instruction-artifact-reviewer",
+    "JIT_PROCESS_IMPROVEMENT_REPORT",
+  ]) {
+    requireTextContains(text, required, "JIT process improvement worker contract", file);
+  }
+}
+
 function validateAgents(root: string): string[] {
   const agentsDir = path.join(root, ".opencode", "agents");
   if (!directoryExists(agentsDir)) {
@@ -592,6 +636,10 @@ function validateAgents(root: string): string[] {
     }
     if (frontmatter.has("permission.list")) {
       addError(`Agent permission must not set obsolete permission.list; directory listing is covered by read: ${file}`);
+    }
+    if (path.basename(file) === jitProcessImprovementWorkerFile) {
+      validateJitProcessImprovementWorker(frontmatter, text, file);
+      continue;
     }
     validateReviewerBashPermission(frontmatter, file);
     for (const permission of ["edit", "task", "question", "skill", "webfetch", "websearch", "todowrite", "external_directory", "lsp", "doom_loop"]) {
@@ -689,12 +737,12 @@ function validateAgentsMd(root: string): void {
   for (const fallback of ["unknown", "unreadable", "unsupported", "blocked"]) {
     requireTextContains(agentsText, fallback, "AGENTS.md deterministic helper automation fallback policy", agentsPath);
   }
-  requireTextContains(agentsText, "## Self-Improving Instruction Loop", "AGENTS.md self-improving instruction loop policy", agentsPath);
-  requireTextContains(agentsText, "instruction-feedback-loop", "AGENTS.md self-improving instruction loop policy", agentsPath);
-  requireTextContains(agentsText, "Do not use instant edits for global `AGENTS.md`", "AGENTS.md instant-edit prohibition", agentsPath);
-  requireTextContains(agentsText, "npm run instruction:feedback -- --add", "AGENTS.md instruction feedback ledger handoff", agentsPath);
+  requireTextContains(agentsText, "## Just-In-Time Process Improvement", "AGENTS.md JIT process improvement policy", agentsPath);
+  requireTextContains(agentsText, "just-in-time-process-improvement-worker", "AGENTS.md JIT process improvement policy", agentsPath);
+  requireTextContains(agentsText, "npm run instruction:feedback -- --claim-session-improvement", "AGENTS.md JIT cap handoff", agentsPath);
+  requireTextContains(agentsText, "Do not create OpenSpec changes", "AGENTS.md JIT no-OpenSpec policy", agentsPath);
+  requireTextContains(agentsText, "npm run instruction:feedback -- --add", "AGENTS.md prevention feedback ledger handoff", agentsPath);
   requireTextContains(agentsText, "applied -> replayed -> resolved", "AGENTS.md replay gate policy", agentsPath);
-  requireTextContains(agentsText, "npm run instruction:feedback -- --pending", "AGENTS.md pending feedback handoff", agentsPath);
 
   if (/after (a )?non-trivial user-visible work( cycle)?,? (the main session offers|offer|use the built-in `?question`?|before stopping)/i.test(agentsText)) {
     addError(`AGENTS.md must not require routine post-task question handoff: ${agentsPath}`);
@@ -705,15 +753,17 @@ function validateInstructionFeedbackContracts(root: string): void {
   const helperPath = path.join(root, "tools", "instruction-feedback-ledger.ts");
   if (fileExists(helperPath)) {
     const helperText = readText(helperPath);
-    for (const required of ["--add", "--pending", "--decay-report", "--check-bloat", "--replay-pending", "duplicate", "routeRuleWrite", "unsupportedRequest"]) {
+  for (const required of ["--add", "--pending", "--decay-report", "--check-bloat", "--replay-pending", "--claim-session-improvement", "duplicate", "routeRuleWrite", "unsupportedRequest"]) {
       requireTextContains(helperText, required, "instruction-feedback ledger helper CLI surface", helperPath);
     }
   }
-  const skillPath = path.join(root, ".opencode", "skills", "instruction-feedback-loop", "SKILL.md");
-  if (fileExists(skillPath)) {
-    const skillText = readText(skillPath);
-    for (const required of ["## Routing Matrix", "Prevention Feedback", "Prevention Cost", "not helper code", "instruction-artifact-reviewer", "applied -> replayed -> resolved", "openspec-propose", "unknown"]) {
-      requireTextContains(skillText, required, "instruction-feedback-loop skill contract", skillPath);
+  const workerPath = path.join(root, ".opencode", "agents", jitProcessImprovementWorkerFile);
+  if (!fileExists(workerPath)) {
+    addError(`Missing JIT process improvement worker agent: ${workerPath}`);
+  } else {
+    const workerText = readText(workerPath);
+    for (const required of ["--claim-session-improvement", "one just-in-time process improvement", "No OpenSpec", "TDD/test-first", "JIT_PROCESS_IMPROVEMENT_REPORT"]) {
+      requireTextContains(workerText, required, "JIT process improvement worker agent contract", workerPath);
     }
   }
 }
@@ -908,7 +958,7 @@ function validateDevKitContract(root: string): void {
   }
 
   const scripts = readPackageScripts(root);
-  for (const script of ["install:global", "init:project", "doctor", "project:inventory", "instruction:inventory", "instruction:feedback", "code-quality:inventory", "retro:inventory", "retro:analyze", "retro:project-ledger", "openspec:validate", "openspec:gate", "openspec:retro-gate", "openspec:retro-followups", "prepush:validate", "validate", "validate:strict", "test"]) {
+  for (const script of ["install:global", "init:project", "doctor", "project:inventory", "instruction:inventory", "instruction:feedback", "code-quality:inventory", "retro:inventory", "retro:analyze", "retro:project-ledger", "openspec:validate", "openspec:gate", "prepush:validate", "validate", "validate:strict", "test"]) {
     if (!scripts[script]) {
       addError(`package.json missing required opencode-dev-kit script '${script}'`);
     }
@@ -918,12 +968,6 @@ function validateDevKitContract(root: string): void {
   }
   if (scripts["openspec:gate"] && scripts["openspec:gate"] !== "node tools/openspec-operation-gate.ts") {
     addError("package.json script 'openspec:gate' must run node tools/openspec-operation-gate.ts.");
-  }
-  if (scripts["openspec:retro-gate"] && scripts["openspec:retro-gate"] !== "node tools/openspec-retro-gate.ts") {
-    addError("package.json script 'openspec:retro-gate' must run node tools/openspec-retro-gate.ts.");
-  }
-  if (scripts["openspec:retro-followups"] && scripts["openspec:retro-followups"] !== "node tools/openspec-retro-followups.ts") {
-    addError("package.json script 'openspec:retro-followups' must run node tools/openspec-retro-followups.ts.");
   }
   if (scripts["retro:project-ledger"] && scripts["retro:project-ledger"] !== "node tools/opencode-project-session-retro-ledger.ts") {
     addError("package.json script 'retro:project-ledger' must run node tools/opencode-project-session-retro-ledger.ts.");
@@ -942,12 +986,6 @@ function validateDevKitContract(root: string): void {
   }
   if (scripts.test && !/(^|&&)\s*node\s+tools\/test-project-session-retro-ledger-cli\.ts(\s|$|&&)/.test(scripts.test)) {
     addError("package.json script 'test' must include node tools/test-project-session-retro-ledger-cli.ts.");
-  }
-  if (scripts.test && !/(^|&&)\s*node\s+tools\/test-openspec-retro-gate\.ts(\s|$|&&)/.test(scripts.test)) {
-    addError("package.json script 'test' must include node tools/test-openspec-retro-gate.ts.");
-  }
-  if (scripts.test && !/(^|&&)\s*node\s+tools\/test-openspec-retro-followups\.ts(\s|$|&&)/.test(scripts.test)) {
-    addError("package.json script 'test' must include node tools/test-openspec-retro-followups.ts.");
   }
   if (scripts["validate:strict"] && !scripts["validate:strict"].includes("--fail-on-warnings")) {
     addError("package.json script 'validate:strict' must pass --fail-on-warnings.");
