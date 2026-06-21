@@ -8,13 +8,24 @@ import { DatabaseSync } from "node:sqlite";
 type DateRange = { from: string | null; to: string | null };
 type DeliveryContextEventKind = "message" | "session_input";
 type DeliveryContextQuestionStatus = "replied" | "rejected";
+type DeliveryContextTodoSource = "current" | "todowrite";
 
 export type DeliveryContextTodo = {
   content?: string;
   eventRef: string;
+  firstSeen: string | null;
+  lastSeen: string | null;
   priority: string | null;
+  seenCount: number;
+  source: DeliveryContextTodoSource;
   status: string | null;
   time: string | null;
+};
+
+export type DeliveryContextTodoHistory = {
+  available: boolean;
+  source: "current_snapshot_only" | "todowrite_parts";
+  toolCalls: number;
 };
 
 export type DeliveryContextUserMessage = {
@@ -46,21 +57,28 @@ export type SessionDeliveryContextResult = {
   permissionReplies: DeliveryContextPermissionReply[];
   questionReplies: DeliveryContextQuestionReply[];
   session: {
-    counts: {
-      openTodos: number;
-      permissionReplies: number;
-      questionReplies: number;
-      todos: number;
-      userMessages: number;
-    };
+      counts: {
+        currentTodos: number;
+        everTodos: number;
+        openTodos: number;
+        permissionReplies: number;
+        questionReplies: number;
+        todoToolCalls: number;
+        todos: number;
+        unresolvedTodos: number;
+        userMessages: number;
+      };
     dateRange: DateRange;
     sessionRef: string;
     sourceRef: string;
   } | null;
   resolvedFromSessionRef: string | null;
   todos: {
-    all: DeliveryContextTodo[];
+    current: DeliveryContextTodo[];
+    ever: DeliveryContextTodo[];
+    history: DeliveryContextTodoHistory;
     open: DeliveryContextTodo[];
+    unresolved: DeliveryContextTodo[];
   };
   tool: "opencode-session-delivery-context";
   userMessages: DeliveryContextUserMessage[];
@@ -84,8 +102,32 @@ type RequestedSessionSelection = {
   missingRef: string;
   rawIds: Set<string>;
 };
+type TodoEvidence = {
+  content?: string;
+  eventRef: string;
+  millis: number | null;
+  priority: string | null;
+  source: DeliveryContextTodoSource;
+  status: string | null;
+};
+type TodoAccumulator = {
+  content?: string;
+  eventRefs: string[];
+  firstSeenMillis: number | null;
+  identity: string;
+  lastSeenMillis: number | null;
+  priority: string | null;
+  seenCount: number;
+  source: DeliveryContextTodoSource;
+  status: string | null;
+};
+type TodoHistoryEvidence = {
+  history: DeliveryContextTodoHistory;
+  todos: TodoEvidence[];
+};
 
 const SESSION_REF_PATTERN = /^session_[a-f0-9]{12}$/;
+const CLOSED_TODO_STATUSES = new Set(["cancelled", "completed"]);
 const OPEN_TODO_STATUSES = new Set(["pending", "in_progress"]);
 const QUESTION_ASKED_EVENTS = new Set(["question.asked", "question.v2.asked"]);
 const QUESTION_REPLIED_EVENTS = new Set(["question.replied", "question.v2.replied"]);
@@ -272,6 +314,14 @@ function eventTime(value: unknown): string | null {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
+function millisFromIso(value: string | null | undefined): number | null {
+  if (value == null) {
+    return null;
+  }
+  const millis = Date.parse(value);
+  return Number.isNaN(millis) ? null : millis;
+}
+
 function requestedSession(sessionId: string): RequestedSessionSelection {
   if (SESSION_REF_PATTERN.test(sessionId)) {
     return {
@@ -329,6 +379,19 @@ function redactKnownSessionId(value: unknown, rawSessionId: string): unknown {
   return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, nested]) => [key, redactKnownSessionId(nested, rawSessionId)]));
 }
 
+function redactSessionTokens(value: unknown, allowedRefs: Set<string>): unknown {
+  if (typeof value === "string") {
+    return value.replace(/session_[A-Za-z0-9][A-Za-z0-9_-]{5,}/g, (token) => allowedRefs.has(token) ? token : hashRef("session", token));
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => redactSessionTokens(item, allowedRefs));
+  }
+  if (value == null || typeof value !== "object") {
+    return value;
+  }
+  return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, nested]) => [key, redactSessionTokens(nested, allowedRefs)]));
+}
+
 function redactStructuralSecrets(value: unknown): unknown {
   if (Array.isArray(value)) {
     return value.map(redactStructuralSecrets);
@@ -347,7 +410,7 @@ function redactStructuralSecrets(value: unknown): unknown {
 }
 
 function transcriptContent(value: unknown, rawSessionId: string): unknown {
-  return redactKnownSessionId(redactStructuralSecrets(value), rawSessionId);
+  return redactSessionTokens(redactKnownSessionId(redactStructuralSecrets(value), rawSessionId), new Set([hashRef("session", rawSessionId)]));
 }
 
 function sanitizeText(value: string, rawSessionId: string): string {
@@ -364,17 +427,175 @@ function readTodoRows(db: InstanceType<typeof DatabaseSync>, schema: DbSchema, r
   if (!hasColumns(schema, "todo", ["session_id"])) {
     return [];
   }
-  const select = [selectColumnOrNull(schema, "todo", "content"), selectColumnOrNull(schema, "todo", "status"), selectColumnOrNull(schema, "todo", "priority"), selectColumnOrNull(schema, "todo", "position"), selectColumnOrNull(schema, "todo", "time_created")];
+  const select = [selectColumnOrNull(schema, "todo", "content"), selectColumnOrNull(schema, "todo", "status"), selectColumnOrNull(schema, "todo", "priority"), selectColumnOrNull(schema, "todo", "position"), selectColumnOrNull(schema, "todo", "time_created"), selectColumnOrNull(schema, "todo", "time_updated")];
   const todoColumns = schema.get("todo") ?? new Set<string>();
-  const orderBy = [todoColumns.has("position") ? "position" : null, todoColumns.has("time_created") ? "time_created" : null, "session_id"].filter((column): column is string => column != null).join(", ");
+  const orderBy = [todoColumns.has("position") ? "position" : null, todoColumns.has("time_updated") ? "time_updated" : null, todoColumns.has("time_created") ? "time_created" : null, "session_id"].filter((column): column is string => column != null).join(", ");
   const rows = db.prepare(`select ${select.join(", ")} from todo where session_id = ? order by ${orderBy}`).all(rawSessionId) as Array<Record<string, unknown>>;
-  return rows.map((row, index) => ({
-    content: typeof row.content === "string" ? sanitizeText(row.content, rawSessionId) : undefined,
-    eventRef: hashRef("todo", `${rawSessionId}:${String(row.position ?? index)}`),
-    priority: row.priority == null ? null : String(row.priority),
-    status: row.status == null ? null : String(row.status),
-    time: eventTime(row.time_created),
-  }));
+  return rows.map((row, index) => {
+    const firstSeenMillis = normalizeMillis(row.time_created);
+    const lastSeenMillis = normalizeMillis(row.time_updated) ?? firstSeenMillis;
+    const content = typeof row.content === "string" ? sanitizeText(row.content, rawSessionId) : undefined;
+    return {
+      content,
+      eventRef: hashRef("todo", `${rawSessionId}:current:${String(row.position ?? index)}:${content ?? ""}`),
+      firstSeen: isoTime(firstSeenMillis),
+      lastSeen: isoTime(lastSeenMillis),
+      priority: row.priority == null ? null : String(row.priority),
+      seenCount: 1,
+      source: "current" as const,
+      status: row.status == null ? null : String(row.status),
+      time: isoTime(lastSeenMillis),
+    };
+  });
+}
+
+function todoIdentity(todo: Pick<TodoEvidence, "content" | "eventRef">): string {
+  if (todo.content == null || todo.content.trim() === "") {
+    return `event:${todo.eventRef}`;
+  }
+  const normalizedContent = todo.content.trim().replace(/\s+/g, " ").toLowerCase();
+  return `content:${normalizedContent}`;
+}
+
+function todoEvidenceFromCurrent(todo: DeliveryContextTodo): TodoEvidence {
+  return {
+    content: todo.content,
+    eventRef: todo.eventRef,
+    millis: millisFromIso(todo.lastSeen ?? todo.time ?? todo.firstSeen),
+    priority: todo.priority,
+    source: "current",
+    status: todo.status,
+  };
+}
+
+function todoItems(value: unknown, rawSessionId: string): Array<Pick<TodoEvidence, "content" | "priority" | "status">> {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.flatMap((item) => {
+    const record = parseJsonRecord(item);
+    const content = stringValue(record?.content);
+    if (content == null) {
+      return [];
+    }
+    return [{
+      content: sanitizeText(content, rawSessionId),
+      priority: record?.priority == null ? null : String(record.priority),
+      status: record?.status == null ? null : String(record.status),
+    }];
+  });
+}
+
+function todoWriteState(parsed: Record<string, unknown>): Record<string, unknown> | null {
+  return parseJsonRecord(parsed.state);
+}
+
+function todoWriteItems(parsed: Record<string, unknown>, rawSessionId: string): Array<Pick<TodoEvidence, "content" | "priority" | "status">> {
+  const state = todoWriteState(parsed);
+  const input = parseJsonRecord(state?.input);
+  const metadata = parseJsonRecord(state?.metadata);
+  const inputTodos = todoItems(input?.todos, rawSessionId);
+  if (inputTodos.length > 0) {
+    return inputTodos;
+  }
+  return todoItems(metadata?.todos, rawSessionId);
+}
+
+function todoWriteMillis(row: Record<string, unknown>, parsed: Record<string, unknown>): number | null {
+  const rowMillis = normalizeMillis(row.time_updated) ?? normalizeMillis(row.time_created);
+  if (rowMillis != null) {
+    return rowMillis;
+  }
+  const state = todoWriteState(parsed);
+  const time = parseJsonRecord(state?.time);
+  return normalizeMillis(time?.end) ?? normalizeMillis(time?.start);
+}
+
+function readTodoWriteHistory(db: InstanceType<typeof DatabaseSync>, schema: DbSchema, rawSessionId: string, warnings: string[]): TodoHistoryEvidence {
+  const unavailable: TodoHistoryEvidence = { history: { available: false, source: "current_snapshot_only", toolCalls: 0 }, todos: [] };
+  if (!schema.has("part")) {
+    return unavailable;
+  }
+  if (!hasColumns(schema, "part", ["session_id", "data"])) {
+    warnings.push("part table missing session_id/data columns; historical todowrite todo evidence unavailable");
+    return unavailable;
+  }
+  const select = [selectColumnOrNull(schema, "part", "id"), selectColumnOrNull(schema, "part", "message_id"), selectColumnOrNull(schema, "part", "time_created"), selectColumnOrNull(schema, "part", "time_updated"), selectColumnOrNull(schema, "part", "data")];
+  const partColumns = schema.get("part") ?? new Set<string>();
+  const orderBy = [partColumns.has("time_created") ? "time_created" : null, partColumns.has("time_updated") ? "time_updated" : null, partColumns.has("id") ? "id" : null].filter((column): column is string => column != null).map(quoteIdent).join(", ");
+  const rows = db.prepare(`select ${select.join(", ")} from part where session_id = ? order by ${orderBy || "session_id"}`).all(rawSessionId) as Array<Record<string, unknown>>;
+  const todos: TodoEvidence[] = [];
+  let toolCalls = 0;
+  for (const [rowIndex, row] of rows.entries()) {
+    const parsed = parseJsonRecord(row.data);
+    if (parsed == null || stringValue(parsed.type) !== "tool" || stringValue(parsed.tool) !== "todowrite") {
+      continue;
+    }
+    toolCalls += 1;
+    const millis = todoWriteMillis(row, parsed);
+    const callRef = String(row.id ?? row.message_id ?? `${rawSessionId}:${rowIndex}`);
+    for (const [todoIndex, todo] of todoWriteItems(parsed, rawSessionId).entries()) {
+      todos.push({
+        content: todo.content,
+        eventRef: hashRef("todo", `${rawSessionId}:todowrite:${callRef}:${todoIndex}:${todo.content ?? ""}`),
+        millis,
+        priority: todo.priority,
+        source: "todowrite",
+        status: todo.status,
+      });
+    }
+  }
+  return { history: { available: toolCalls > 0, source: toolCalls > 0 ? "todowrite_parts" : "current_snapshot_only", toolCalls }, todos };
+}
+
+function mergeTodoEvidence(evidence: TodoEvidence[]): DeliveryContextTodo[] {
+  const byIdentity = new Map<string, TodoAccumulator>();
+  for (const item of evidence) {
+    const key = todoIdentity(item);
+    const existing = byIdentity.get(key);
+    if (existing == null) {
+      byIdentity.set(key, {
+        content: item.content,
+        eventRefs: [item.eventRef],
+        firstSeenMillis: item.millis,
+        identity: key,
+        lastSeenMillis: item.millis,
+        priority: item.priority,
+        seenCount: 1,
+        source: item.source,
+        status: item.status,
+      });
+      continue;
+    }
+    existing.eventRefs.push(item.eventRef);
+    existing.seenCount += 1;
+    if (item.millis != null && (existing.firstSeenMillis == null || item.millis < existing.firstSeenMillis)) {
+      existing.firstSeenMillis = item.millis;
+    }
+    const isLatest = item.millis == null || existing.lastSeenMillis == null || item.millis >= existing.lastSeenMillis;
+    if (isLatest) {
+      existing.content = item.content ?? existing.content;
+      existing.lastSeenMillis = item.millis ?? existing.lastSeenMillis;
+      existing.priority = item.priority;
+      existing.source = item.source;
+      existing.status = item.status;
+    }
+  }
+  return [...byIdentity.values()].map((todo) => {
+    const firstSeen = isoTime(todo.firstSeenMillis);
+    const lastSeen = isoTime(todo.lastSeenMillis);
+    return {
+      content: todo.content,
+      eventRef: hashRef("todo", todo.identity),
+      firstSeen,
+      lastSeen,
+      priority: todo.priority,
+      seenCount: todo.seenCount,
+      source: todo.source,
+      status: todo.status,
+      time: lastSeen,
+    };
+  }).sort((left, right) => (left.firstSeen ?? "").localeCompare(right.firstSeen ?? "") || left.eventRef.localeCompare(right.eventRef));
 }
 
 function textParts(value: unknown): string[] {
@@ -597,7 +818,7 @@ function emptyResult(options: ReadSessionDeliveryContextOptions, missingRef: str
     questionReplies: [],
     resolvedFromSessionRef: null,
     session: null,
-    todos: { all: [], open: [] },
+    todos: { current: [], ever: [], history: { available: false, source: "current_snapshot_only", toolCalls: 0 }, open: [], unresolved: [] },
     tool: "opencode-session-delivery-context",
     userMessages: [],
     warnings,
@@ -618,8 +839,11 @@ function contextForRow(db: InstanceType<typeof DatabaseSync>, schema: DbSchema, 
   if (hasColumns(schema, "message", ["session_id"]) && !hasColumns(schema, "message", ["data"])) {
     warnings.push("message table missing data column; message prompt evidence unavailable");
   }
-  const todos = readTodoRows(db, schema, rawSessionId);
-  const openTodos = todos.filter((todo) => todo.status != null && OPEN_TODO_STATUSES.has(todo.status));
+  const currentTodos = readTodoRows(db, schema, rawSessionId);
+  const todoHistory = readTodoWriteHistory(db, schema, rawSessionId, warnings);
+  const everTodos = mergeTodoEvidence([...todoHistory.todos, ...currentTodos.map(todoEvidenceFromCurrent)]);
+  const openTodos = currentTodos.filter((todo) => todo.status != null && OPEN_TODO_STATUSES.has(todo.status));
+  const unresolvedTodos = everTodos.filter((todo) => todo.status == null || !CLOSED_TODO_STATUSES.has(todo.status));
   const userMessages = [...readSessionInputs(db, schema, rawSessionId), ...readUserMessages(db, schema, rawSessionId)].sort((left, right) => (left.time ?? "").localeCompare(right.time ?? "") || left.eventRef.localeCompare(right.eventRef));
   const events = readQuestionAndPermissionEvents(db, schema, rawSessionId, warnings);
   return {
@@ -630,17 +854,21 @@ function contextForRow(db: InstanceType<typeof DatabaseSync>, schema: DbSchema, 
     resolvedFromSessionRef,
     session: {
       counts: {
+        currentTodos: currentTodos.length,
+        everTodos: everTodos.length,
         openTodos: openTodos.length,
         permissionReplies: events.permissionReplies.length,
         questionReplies: events.questionReplies.length,
-        todos: todos.length,
+        todoToolCalls: todoHistory.history.toolCalls,
+        todos: everTodos.length,
+        unresolvedTodos: unresolvedTodos.length,
         userMessages: userMessages.length,
       },
       dateRange: makeDateRange([normalizeMillis(row.time_created), normalizeMillis(row.time_updated)]),
       sessionRef: hashRef("session", rawSessionId),
       sourceRef,
     },
-    todos: { all: todos, open: openTodos },
+    todos: { current: currentTodos, ever: everTodos, history: todoHistory.history, open: openTodos, unresolved: unresolvedTodos },
     tool: "opencode-session-delivery-context",
     userMessages,
     warnings,

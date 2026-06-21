@@ -11,8 +11,12 @@ type SessionDeliveryContextResult = {
   resolvedFromSessionRef: string | null;
   session: {
     counts: {
+      currentTodos: number;
+      everTodos: number;
       openTodos: number;
       questionReplies: number;
+      todoToolCalls: number;
+      unresolvedTodos: number;
       userMessages: number;
     };
     sessionRef: string;
@@ -49,17 +53,21 @@ export default {
     tool: {
       [SESSION_DELIVERY_CONTEXT_TOOL]: {
         args: {},
-        description: "Return redacted delivery-review context for the OpenCode session being reviewed: user prompts, question replies, permission replies, and todos. When the reviewer runs as a subagent, resolves the root parent session so it audits the reviewed work session, not its own child session.",
+        description: "Return redacted delivery-review context for the OpenCode session being reviewed: user prompts, question replies, permission replies, current todos, and todowrite history. When the reviewer runs as a subagent, resolves the root parent session so it audits the reviewed work session, not its own child session.",
         async execute(_args, context) {
           const { readSessionDeliveryContext } = await loadSessionDeliveryContextModule();
           const result = readSessionDeliveryContext({ resolveRoot: true, sessionId: context.sessionID });
           context.metadata({
             metadata: {
               missingSessions: result.missingSessions.length,
+              currentTodos: result.session?.counts.currentTodos ?? 0,
+              everTodos: result.session?.counts.everTodos ?? 0,
               openTodos: result.session?.counts.openTodos ?? 0,
               questionReplies: result.session?.counts.questionReplies ?? 0,
               resolvedFromSessionRef: result.resolvedFromSessionRef,
               sessionRef: result.session?.sessionRef ?? null,
+              todoToolCalls: result.session?.counts.todoToolCalls ?? 0,
+              unresolvedTodos: result.session?.counts.unresolvedTodos ?? 0,
               userMessages: result.session?.counts.userMessages ?? 0,
               warnings: result.warnings.length,
             },
@@ -68,9 +76,13 @@ export default {
           return {
             metadata: {
               missingSessions: result.missingSessions.length,
+              currentTodos: result.session?.counts.currentTodos ?? 0,
+              everTodos: result.session?.counts.everTodos ?? 0,
               openTodos: result.session?.counts.openTodos ?? 0,
               resolvedFromSessionRef: result.resolvedFromSessionRef,
               sessionRef: result.session?.sessionRef ?? null,
+              todoToolCalls: result.session?.counts.todoToolCalls ?? 0,
+              unresolvedTodos: result.session?.counts.unresolvedTodos ?? 0,
               warnings: result.warnings.length,
             },
             output: `${JSON.stringify(result, null, 2)}\n`,

@@ -115,6 +115,100 @@ function createDeliveryContextDbWithParent(dbPath: string, rootSessionId: string
   }
 }
 
+function createDeliveryContextDbWithTodoHistory(dbPath: string, rawSessionId: string): void {
+  const db = new DatabaseSync(dbPath);
+  try {
+    db.exec([
+      "create table session (id text primary key, time_created integer, time_updated integer);",
+      "create table session_input (id text primary key, session_id text not null, prompt text, time_created integer);",
+      "create table message (id text primary key, session_id text not null, time_created integer, data text);",
+      "create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, time_updated integer, data text);",
+      "create table todo (session_id text not null, content text, status text, priority text, position integer, time_created integer, time_updated integer);",
+      "create table event (id text primary key, session_id text not null, time_created integer, type text, properties text);",
+    ].join("\n"));
+    db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(rawSessionId, 1700000000000, 1700000009000);
+    db.prepare("insert into session_input (id, session_id, prompt, time_created) values (?, ?, ?, ?)").run("input-history", rawSessionId, `implement all OpenSpec changes then archive blockers ${rawSessionId}`, 1700000000001);
+    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-history", rawSessionId, 1700000000002, JSON.stringify({ role: "user", content: `finish every relevant task ${rawSessionId}` }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, time_updated, data) values (?, ?, ?, ?, ?, ?)").run("todo-call-1", "message-history", rawSessionId, 1700000000003, 1700000000004, JSON.stringify({
+      type: "tool",
+      tool: "todowrite",
+      callID: "call-1",
+      state: {
+        status: "completed",
+        input: {
+          todos: [
+            { content: `Archive OpenSpec changes ${rawSessionId}`, status: "pending", priority: "high" },
+          ],
+        },
+        metadata: { todos: [], truncated: false },
+        time: { start: 1700000000003, end: 1700000000004 },
+      },
+    }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, time_updated, data) values (?, ?, ?, ?, ?, ?)").run("todo-call-2", "message-history", rawSessionId, 1700000000005, 1700000000006, JSON.stringify({
+      type: "tool",
+      tool: "todowrite",
+      callID: "call-2",
+      state: {
+        status: "completed",
+        input: {
+          todos: [
+            { content: `Implement OpenSpec change A ${rawSessionId}`, status: "completed", priority: "high" },
+            { content: `Implement OpenSpec change B ${rawSessionId}`, status: "pending", priority: "high" },
+          ],
+        },
+        metadata: { todos: [], truncated: false },
+        time: { start: 1700000000005, end: 1700000000006 },
+      },
+    }));
+    db.prepare("insert into todo (session_id, content, status, priority, position, time_created, time_updated) values (?, ?, ?, ?, ?, ?, ?)").run(rawSessionId, `Implement OpenSpec change A ${rawSessionId}`, "completed", "high", 0, 1700000000007, 1700000000008);
+    db.prepare("insert into todo (session_id, content, status, priority, position, time_created, time_updated) values (?, ?, ?, ?, ?, ?, ?)").run(rawSessionId, `Implement OpenSpec change B ${rawSessionId}`, "pending", "high", 1, 1700000000007, 1700000000008);
+  } finally {
+    db.close();
+  }
+}
+
+function createDeliveryContextDbWithTodoPriorityChange(dbPath: string, rawSessionId: string): void {
+  const db = new DatabaseSync(dbPath);
+  const unrelatedSessionId = "session_unrelated_secret";
+  const hexLikeSessionId = "session_deadbeefcafe";
+  try {
+    db.exec([
+      "create table session (id text primary key, time_created integer, time_updated integer);",
+      "create table message (id text primary key, session_id text not null, time_created integer, data text);",
+      "create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, time_updated integer, data text);",
+      "create table todo (session_id text not null, content text, status text, priority text, position integer, time_created integer, time_updated integer);",
+      "create table event (id text primary key, session_id text not null, time_created integer, type text, properties text);",
+    ].join("\n"));
+    db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(rawSessionId, 1700000000000, 1700000009000);
+    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-priority", rawSessionId, 1700000000001, JSON.stringify({ role: "user", content: `finish priority-shifted todo ${rawSessionId} while mentioning ${unrelatedSessionId} and ${hexLikeSessionId}` }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, time_updated, data) values (?, ?, ?, ?, ?, ?)").run("todo-priority-1", "message-priority", rawSessionId, 1700000000002, 1700000000003, JSON.stringify({
+      type: "tool",
+      tool: "todowrite",
+      callID: "call-priority-1",
+      state: {
+        input: { todos: [{ content: `Priority mutable todo ${rawSessionId}`, status: "pending", priority: "high" }] },
+        metadata: { todos: [], truncated: false },
+        status: "completed",
+        time: { start: 1700000000002, end: 1700000000003 },
+      },
+    }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, time_updated, data) values (?, ?, ?, ?, ?, ?)").run("todo-priority-2", "message-priority", rawSessionId, 1700000000004, 1700000000005, JSON.stringify({
+      type: "tool",
+      tool: "todowrite",
+      callID: "call-priority-2",
+      state: {
+        input: { todos: [{ content: `Priority mutable todo ${rawSessionId}`, status: "completed", priority: "medium" }] },
+        metadata: { todos: [], truncated: false },
+        status: "completed",
+        time: { start: 1700000000004, end: 1700000000005 },
+      },
+    }));
+    db.prepare("insert into todo (session_id, content, status, priority, position, time_created, time_updated) values (?, ?, ?, ?, ?, ?, ?)").run(rawSessionId, `Priority mutable todo ${rawSessionId}`, "completed", "medium", 0, 1700000000006, 1700000000007);
+  } finally {
+    db.close();
+  }
+}
+
 const tests: TestCase[] = [
   {
     name: "exposes canonical object-form server plugin shape",
@@ -165,8 +259,9 @@ const tests: TestCase[] = [
         });
         const output = typeof result === "string" ? result : result?.output;
         assert(typeof output === "string", "Custom tool should return JSON output string.");
-        const parsed = JSON.parse(output) as { questionReplies?: unknown[]; session?: { counts?: Record<string, number>; sessionRef?: string }; todos?: { open?: unknown[] }; userMessages?: unknown[] };
+        const parsed = JSON.parse(output) as { questionReplies?: unknown[]; session?: { counts?: Record<string, number>; sessionRef?: string }; todos?: { open?: unknown[]; unresolved?: unknown[] }; userMessages?: unknown[] };
         assert(parsed.session?.counts?.openTodos === 1, `Custom tool should report open todo, got ${output}`);
+        assert(parsed.session?.counts?.unresolvedTodos === 1, `Custom tool should report unresolved todo, got ${output}`);
         assert(parsed.session?.counts?.userMessages === 2, `Custom tool should report user messages, got ${output}`);
         assert(parsed.questionReplies?.length === 1, `Custom tool should report question reply, got ${output}`);
         assert(metadataCalls.length === 1, "Custom tool should publish metadata once.");
@@ -235,12 +330,13 @@ const tests: TestCase[] = [
         });
         const output = typeof result === "string" ? result : result?.output;
         assert(typeof output === "string", "Custom tool should return JSON output string.");
-        const parsed = JSON.parse(output) as { session?: { counts?: Record<string, number> }; userMessages?: Array<{ text?: string }>; todos?: { open?: unknown[] }; warnings?: unknown[] };
+        const parsed = JSON.parse(output) as { session?: { counts?: Record<string, number> }; userMessages?: Array<{ text?: string }>; todos?: { open?: unknown[]; unresolved?: unknown[] }; warnings?: unknown[] };
         assert(parsed.session?.counts?.userMessages === 2, `Custom tool should report all user messages from parts, got ${output}`);
         assert(parsed.userMessages?.some((message) => (message.text ?? "").includes("first requirement")) === true, `First user requirement part missing, got ${output}`);
         assert(parsed.userMessages?.some((message) => (message.text ?? "").includes("second requirement")) === true, `Second user requirement part missing, got ${output}`);
         assert(parsed.userMessages?.some((message) => (message.text ?? "").includes("assistant text")) !== true, `Assistant parts must not be counted as user messages, got ${output}`);
         assert(parsed.todos?.open?.length === 1, `Custom tool should retain open todos with part-based messages, got ${output}`);
+        assert(parsed.todos?.unresolved?.length === 1, `Custom tool should report unresolved todos with part-based messages, got ${output}`);
         assert(parsed.warnings?.length === 0, `Part-based message schema should not warn, got ${output}`);
         assert(!output.includes(rawSessionId), "Custom tool output must redact raw session id.");
       } finally {
@@ -274,13 +370,92 @@ const tests: TestCase[] = [
         });
         const output = typeof result === "string" ? result : result?.output;
         assert(typeof output === "string", "Custom tool should return JSON output string.");
-        const parsed = JSON.parse(output) as { questionReplies?: unknown[]; resolvedFromSessionRef?: string | null; session?: { counts?: Record<string, number>; sessionRef?: string }; todos?: { open?: unknown[] }; userMessages?: Array<{ text?: string }>; };
+        const parsed = JSON.parse(output) as { questionReplies?: unknown[]; resolvedFromSessionRef?: string | null; session?: { counts?: Record<string, number>; sessionRef?: string }; todos?: { open?: unknown[]; unresolved?: unknown[] }; userMessages?: Array<{ text?: string }>; };
         assert(parsed.session?.counts?.openTodos === 1, `Custom tool invoked from child must resolve root open todo, got ${output}`);
+        assert(parsed.session?.counts?.unresolvedTodos === 1, `Custom tool invoked from child must resolve root unresolved todo, got ${output}`);
         assert(parsed.session?.counts?.userMessages === 2, `Custom tool invoked from child must resolve root user messages, got ${output}`);
         assert(parsed.questionReplies?.length === 1, `Custom tool invoked from child must resolve root question reply, got ${output}`);
         assert(parsed.resolvedFromSessionRef != null && parsed.resolvedFromSessionRef !== "", "Custom tool must report resolvedFromSessionRef when it walks to root.");
         assert(parsed.userMessages?.some((message) => (message.text ?? "").includes("user request")) === true, "Custom tool invoked from child must return root session user messages.");
         assert(!output.includes(rootSessionId) && !output.includes(childSessionId), "Custom tool output must redact raw session ids (root and child).");
+      } finally {
+        if (previousDataDir == null) {
+          delete process.env.OPENCODE_DATA_DIR;
+        } else {
+          process.env.OPENCODE_DATA_DIR = previousDataDir;
+        }
+      }
+    }),
+  },
+  {
+    name: "session delivery context custom tool reconstructs historical todowrite todos",
+    run: async () => withTempDataDir("tool-todo-history", async (dataDir) => {
+      const rawSessionId = "session_history_secret";
+      createDeliveryContextDbWithTodoHistory(path.join(dataDir, "opencode.db"), rawSessionId);
+      const previousDataDir = process.env.OPENCODE_DATA_DIR;
+      process.env.OPENCODE_DATA_DIR = dataDir;
+      try {
+        const hooks = await plugin.server({} as never);
+        const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
+          abort: new AbortController().signal,
+          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          ask: async () => undefined,
+          directory: dataDir,
+          messageID: "message_fixture",
+          metadata: () => { /* ignore */ },
+          sessionID: rawSessionId,
+          worktree: dataDir,
+        });
+        const output = typeof result === "string" ? result : result?.output;
+        assert(typeof output === "string", "Custom tool should return JSON output string.");
+        const parsed = JSON.parse(output) as { session?: { counts?: Record<string, number> }; todos?: { current?: Array<{ content?: string }>; ever?: Array<{ content?: string; status?: string }>; history?: { toolCalls?: number; available?: boolean }; unresolved?: Array<{ content?: string; status?: string }> }; warnings?: unknown[] };
+        assert(parsed.todos?.history?.available === true, `Custom tool should mark todowrite history as available, got ${output}`);
+        assert(parsed.todos?.history?.toolCalls === 2, `Custom tool should count todowrite calls, got ${output}`);
+        assert(parsed.session?.counts?.currentTodos === 2, `Custom tool should keep current snapshot count, got ${output}`);
+        assert(parsed.session?.counts?.everTodos === 3, `Custom tool should reconstruct historical todo count, got ${output}`);
+        assert(parsed.session?.counts?.unresolvedTodos === 2, `Custom tool should report unresolved historical todos, got ${output}`);
+        assert(parsed.todos?.current?.some((todo) => (todo.content ?? "").includes("Archive OpenSpec changes")) !== true, `Current snapshot should not contain replaced parent todo in fixture, got ${output}`);
+        assert(parsed.todos?.ever?.some((todo) => (todo.content ?? "").includes("Archive OpenSpec changes")) === true, `Historical todo should be retained from todowrite history, got ${output}`);
+        assert(parsed.todos?.unresolved?.some((todo) => (todo.content ?? "").includes("Archive OpenSpec changes") && todo.status === "pending") === true, `Replaced unfinished todo should remain unresolved, got ${output}`);
+        assert(!output.includes(rawSessionId), "Custom tool output must redact raw session id.");
+      } finally {
+        if (previousDataDir == null) {
+          delete process.env.OPENCODE_DATA_DIR;
+        } else {
+          process.env.OPENCODE_DATA_DIR = previousDataDir;
+        }
+      }
+    }),
+  },
+  {
+    name: "session delivery context custom tool treats priority as mutable todo metadata",
+    run: async () => withTempDataDir("tool-todo-priority-change", async (dataDir) => {
+      const rawSessionId = "session_priority_secret";
+      createDeliveryContextDbWithTodoPriorityChange(path.join(dataDir, "opencode.db"), rawSessionId);
+      const previousDataDir = process.env.OPENCODE_DATA_DIR;
+      process.env.OPENCODE_DATA_DIR = dataDir;
+      try {
+        const hooks = await plugin.server({} as never);
+        const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
+          abort: new AbortController().signal,
+          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          ask: async () => undefined,
+          directory: dataDir,
+          messageID: "message_fixture",
+          metadata: () => { /* ignore */ },
+          sessionID: rawSessionId,
+          worktree: dataDir,
+        });
+        const output = typeof result === "string" ? result : result?.output;
+        assert(typeof output === "string", "Custom tool should return JSON output string.");
+        const parsed = JSON.parse(output) as { session?: { counts?: Record<string, number> }; todos?: { ever?: Array<{ priority?: string; status?: string }>; unresolved?: unknown[] } };
+        assert(parsed.session?.counts?.everTodos === 1, `Priority-only todo updates should merge into one historical todo, got ${output}`);
+        assert(parsed.session?.counts?.unresolvedTodos === 0, `Completed priority-updated todo should not remain unresolved, got ${output}`);
+        assert(parsed.todos?.ever?.[0]?.priority === "medium", `Latest priority should be retained, got ${output}`);
+        assert(parsed.todos?.ever?.[0]?.status === "completed", `Latest status should be retained, got ${output}`);
+        assert(!output.includes(rawSessionId), "Custom tool output must redact raw session id.");
+        assert(!output.includes("session_unrelated_secret"), "Custom tool output must redact unrelated session-like ids.");
+        assert(!output.includes("session_deadbeefcafe"), "Custom tool output must redact hex-shaped session-like ids.");
       } finally {
         if (previousDataDir == null) {
           delete process.env.OPENCODE_DATA_DIR;

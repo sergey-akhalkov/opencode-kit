@@ -61,7 +61,12 @@ const agentTextContracts: TextContract[] = [
       "changed files or diffstat",
       "reviewer findings/fixes",
       "## Compaction Evidence Boundary",
+      "every explicit delivery-review request",
       "Root causes must cite evidence; use `unknown`",
+      "todos.ever[]",
+      "todos.unresolved[]",
+      "Changed-file scope",
+      "P0 blocker",
       "test-first evidence for behavior-changing work",
       "Keep matrices terse",
       "Required Next Actions",
@@ -543,6 +548,9 @@ function validateReviewerBashPermission(frontmatter: FrontmatterMap, file: strin
   if (frontmatter.get("permission.bash") !== "deny") {
     addError(`Agent permission must set bash: deny: ${file}`);
   }
+}
+
+function validateSessionDeliveryContextPermission(frontmatter: FrontmatterMap, file: string): void {
   const isSessionDeliveryReviewer = path.basename(file) === "session-delivery-reviewer.md";
   if (isSessionDeliveryReviewer && frontmatter.get("permission.session_delivery_context") !== "allow") {
     addError(`session-delivery-reviewer must allow session_delivery_context custom tool: ${file}`);
@@ -678,6 +686,7 @@ function validateAgents(root: string): string[] {
     if (frontmatter.has("permission.list")) {
       addError(`Agent permission must not set obsolete permission.list; directory listing is covered by read: ${file}`);
     }
+    validateSessionDeliveryContextPermission(frontmatter, file);
     if (path.basename(file) === implementationWorkerFile) {
       validateImplementationWorker(frontmatter, text, file);
       continue;

@@ -527,6 +527,18 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "validator rejects session delivery context tool on implementation worker",
+    run: () => {
+      const fixture = newLibraryFixture("implementation-worker-session-delivery-tool");
+      const workerPath = addImplementationWorkerFixture(fixture);
+      const worker = fs.readFileSync(workerPath, "utf8");
+      writeText(workerPath, worker.replace("  edit: allow", "  edit: allow\n  session_delivery_context: allow"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Implementation worker must not allow session_delivery_context.");
+      assertOutputContains(result, "Only session-delivery-reviewer", "Custom-tool permission exception should include implementation-worker.");
+    },
+  },
+  {
     name: "validator rejects missing implementation worker base routing",
     run: () => {
       const fixture = newLibraryFixture("implementation-worker-missing-routing");
