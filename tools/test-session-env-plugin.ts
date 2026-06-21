@@ -46,6 +46,51 @@ function createDeliveryContextDb(dbPath: string, rawSessionId: string): void {
   }
 }
 
+function createDeliveryContextDbWithAggregateEvents(dbPath: string, rawSessionId: string): void {
+  const db = new DatabaseSync(dbPath);
+  try {
+    db.exec([
+      "create table session (id text primary key, time_created integer, time_updated integer);",
+      "create table session_input (id text primary key, session_id text not null, prompt text, time_created integer);",
+      "create table message (id text primary key, session_id text not null, time_created integer, data text);",
+      "create table todo (session_id text not null, content text, status text, priority text, position integer, time_created integer);",
+      "create table event (id text primary key, aggregate_id text not null, seq integer, type text, data text);",
+    ].join("\n"));
+    db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(rawSessionId, 1700000000000, 1700000001000);
+    db.prepare("insert into session_input (id, session_id, prompt, time_created) values (?, ?, ?, ?)").run("input-secret", rawSessionId, `user request ${rawSessionId}`, 1700000000001);
+    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-secret", rawSessionId, 1700000000002, JSON.stringify({ role: "user", content: `message request ${rawSessionId}` }));
+    db.prepare("insert into todo (session_id, content, status, priority, position, time_created) values (?, ?, ?, ?, ?, ?)").run(rawSessionId, `todo ${rawSessionId}`, "pending", "high", 1, 1700000000003);
+    db.prepare("insert into event (id, aggregate_id, seq, type, data) values (?, ?, ?, ?, ?)").run("question-asked-secret", rawSessionId, 1, "question.asked", JSON.stringify({ id: "question-secret", questions: [{ question: "Choose scope" }] }));
+    db.prepare("insert into event (id, aggregate_id, seq, type, data) values (?, ?, ?, ?, ?)").run("question-replied-secret", rawSessionId, 2, "question.replied", JSON.stringify({ requestID: "question-secret", answers: [[`Chosen ${rawSessionId}`]] }));
+  } finally {
+    db.close();
+  }
+}
+
+function createDeliveryContextDbWithPartMessages(dbPath: string, rawSessionId: string): void {
+  const db = new DatabaseSync(dbPath);
+  try {
+    db.exec([
+      "create table session (id text primary key, time_created integer, time_updated integer);",
+      "create table session_input (id text primary key, session_id text not null, prompt text, time_created integer);",
+      "create table message (id text primary key, session_id text not null, time_created integer, data text);",
+      "create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, data text);",
+      "create table todo (session_id text not null, content text, status text, priority text, position integer, time_created integer);",
+      "create table event (id text primary key, aggregate_id text not null, seq integer, type text, data text);",
+    ].join("\n"));
+    db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(rawSessionId, 1700000000000, 1700000001000);
+    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-user-1", rawSessionId, 1700000000001, JSON.stringify({ role: "user" }));
+    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-assistant", rawSessionId, 1700000000002, JSON.stringify({ role: "assistant" }));
+    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-user-2", rawSessionId, 1700000000003, JSON.stringify({ role: "user" }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, data) values (?, ?, ?, ?, ?)").run("part-user-1", "message-user-1", rawSessionId, 1700000000001, JSON.stringify({ type: "text", text: `first requirement ${rawSessionId}` }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, data) values (?, ?, ?, ?, ?)").run("part-assistant", "message-assistant", rawSessionId, 1700000000002, JSON.stringify({ type: "text", text: `assistant text ${rawSessionId}` }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, data) values (?, ?, ?, ?, ?)").run("part-user-2", "message-user-2", rawSessionId, 1700000000003, JSON.stringify({ type: "text", text: `second requirement ${rawSessionId}` }));
+    db.prepare("insert into todo (session_id, content, status, priority, position, time_created) values (?, ?, ?, ?, ?, ?)").run(rawSessionId, `todo ${rawSessionId}`, "pending", "high", 1, 1700000000004);
+  } finally {
+    db.close();
+  }
+}
+
 function createDeliveryContextDbWithParent(dbPath: string, rootSessionId: string, childSessionId: string): void {
   const db = new DatabaseSync(dbPath);
   try {
@@ -53,13 +98,15 @@ function createDeliveryContextDbWithParent(dbPath: string, rootSessionId: string
       "create table session (id text primary key, parent_id text, time_created integer, time_updated integer);",
       "create table session_input (id text primary key, session_id text not null, prompt text, time_created integer);",
       "create table message (id text primary key, session_id text not null, time_created integer, data text);",
+      "create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, data text);",
       "create table todo (session_id text not null, content text, status text, priority text, position integer, time_created integer);",
       "create table event (id text primary key, session_id text not null, time_created integer, type text, properties text);",
     ].join("\n"));
     db.prepare("insert into session (id, parent_id, time_created, time_updated) values (?, ?, ?, ?)").run(rootSessionId, null, 1700000000000, 1700000001000);
     db.prepare("insert into session (id, parent_id, time_created, time_updated) values (?, ?, ?, ?)").run(childSessionId, rootSessionId, 1700000002000, 1700000003000);
     db.prepare("insert into session_input (id, session_id, prompt, time_created) values (?, ?, ?, ?)").run("input-root", rootSessionId, `user request ${rootSessionId}`, 1700000000001);
-    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-root", rootSessionId, 1700000000002, JSON.stringify({ role: "user", content: `message request ${rootSessionId}` }));
+    db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)").run("message-root", rootSessionId, 1700000000002, JSON.stringify({ role: "user" }));
+    db.prepare("insert into part (id, message_id, session_id, time_created, data) values (?, ?, ?, ?, ?)").run("part-root", "message-root", rootSessionId, 1700000000002, JSON.stringify({ type: "text", text: `message request ${rootSessionId}` }));
     db.prepare("insert into todo (session_id, content, status, priority, position, time_created) values (?, ?, ?, ?, ?, ?)").run(rootSessionId, `todo ${rootSessionId}`, "pending", "high", 1, 1700000000003);
     db.prepare("insert into event (id, session_id, time_created, type, properties) values (?, ?, ?, ?, ?)").run("question-asked-root", rootSessionId, 1700000000004, "question.asked", JSON.stringify({ id: "question-root", questions: [{ question: "Choose scope" }] }));
     db.prepare("insert into event (id, session_id, time_created, type, properties) values (?, ?, ?, ?, ?)").run("question-replied-root", rootSessionId, 1700000000005, "question.replied", JSON.stringify({ requestID: "question-root", answers: [[`Chosen ${rootSessionId}`]] }));
@@ -123,6 +170,78 @@ const tests: TestCase[] = [
         assert(parsed.session?.counts?.userMessages === 2, `Custom tool should report user messages, got ${output}`);
         assert(parsed.questionReplies?.length === 1, `Custom tool should report question reply, got ${output}`);
         assert(metadataCalls.length === 1, "Custom tool should publish metadata once.");
+        assert(!output.includes(rawSessionId), "Custom tool output must redact raw session id.");
+      } finally {
+        if (previousDataDir == null) {
+          delete process.env.OPENCODE_DATA_DIR;
+        } else {
+          process.env.OPENCODE_DATA_DIR = previousDataDir;
+        }
+      }
+    }),
+  },
+  {
+    name: "session delivery context custom tool supports aggregate_id event schema",
+    run: async () => withTempDataDir("tool-aggregate-events", async (dataDir) => {
+      const rawSessionId = "session_aggregate_secret";
+      createDeliveryContextDbWithAggregateEvents(path.join(dataDir, "opencode.db"), rawSessionId);
+      const previousDataDir = process.env.OPENCODE_DATA_DIR;
+      process.env.OPENCODE_DATA_DIR = dataDir;
+      try {
+        const hooks = await plugin.server({} as never);
+        const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
+          abort: new AbortController().signal,
+          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          ask: async () => undefined,
+          directory: dataDir,
+          messageID: "message_fixture",
+          metadata: () => { /* ignore */ },
+          sessionID: rawSessionId,
+          worktree: dataDir,
+        });
+        const output = typeof result === "string" ? result : result?.output;
+        assert(typeof output === "string", "Custom tool should return JSON output string.");
+        const parsed = JSON.parse(output) as { questionReplies?: unknown[]; warnings?: unknown[] };
+        assert(parsed.questionReplies?.length === 1, `Custom tool should report aggregate_id question reply, got ${output}`);
+        assert(parsed.warnings?.length === 0, `Aggregate event schema should not warn, got ${output}`);
+        assert(!output.includes(rawSessionId), "Custom tool output must redact raw session id.");
+      } finally {
+        if (previousDataDir == null) {
+          delete process.env.OPENCODE_DATA_DIR;
+        } else {
+          process.env.OPENCODE_DATA_DIR = previousDataDir;
+        }
+      }
+    }),
+  },
+  {
+    name: "session delivery context custom tool extracts all user message parts",
+    run: async () => withTempDataDir("tool-message-parts", async (dataDir) => {
+      const rawSessionId = "session_parts_secret";
+      createDeliveryContextDbWithPartMessages(path.join(dataDir, "opencode.db"), rawSessionId);
+      const previousDataDir = process.env.OPENCODE_DATA_DIR;
+      process.env.OPENCODE_DATA_DIR = dataDir;
+      try {
+        const hooks = await plugin.server({} as never);
+        const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
+          abort: new AbortController().signal,
+          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          ask: async () => undefined,
+          directory: dataDir,
+          messageID: "message_fixture",
+          metadata: () => { /* ignore */ },
+          sessionID: rawSessionId,
+          worktree: dataDir,
+        });
+        const output = typeof result === "string" ? result : result?.output;
+        assert(typeof output === "string", "Custom tool should return JSON output string.");
+        const parsed = JSON.parse(output) as { session?: { counts?: Record<string, number> }; userMessages?: Array<{ text?: string }>; todos?: { open?: unknown[] }; warnings?: unknown[] };
+        assert(parsed.session?.counts?.userMessages === 2, `Custom tool should report all user messages from parts, got ${output}`);
+        assert(parsed.userMessages?.some((message) => (message.text ?? "").includes("first requirement")) === true, `First user requirement part missing, got ${output}`);
+        assert(parsed.userMessages?.some((message) => (message.text ?? "").includes("second requirement")) === true, `Second user requirement part missing, got ${output}`);
+        assert(parsed.userMessages?.some((message) => (message.text ?? "").includes("assistant text")) !== true, `Assistant parts must not be counted as user messages, got ${output}`);
+        assert(parsed.todos?.open?.length === 1, `Custom tool should retain open todos with part-based messages, got ${output}`);
+        assert(parsed.warnings?.length === 0, `Part-based message schema should not warn, got ${output}`);
         assert(!output.includes(rawSessionId), "Custom tool output must redact raw session id.");
       } finally {
         if (previousDataDir == null) {

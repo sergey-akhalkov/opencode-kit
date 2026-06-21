@@ -405,6 +405,38 @@ function messageText(parsed: Record<string, unknown> | null): string | null {
   return parts.length > 0 ? parts.join("\n") : null;
 }
 
+function messagePartText(parsed: Record<string, unknown> | null): string | null {
+  if (!parsed) {
+    return null;
+  }
+  return stringValue(parsed.text) ?? stringValue(parsed.content);
+}
+
+function readMessagePartTexts(db: InstanceType<typeof DatabaseSync>, schema: DbSchema, rawSessionId: string): Map<string, string[]> {
+  const result = new Map<string, string[]>();
+  if (!hasColumns(schema, "part", ["session_id", "message_id", "data"])) {
+    return result;
+  }
+  const select = [selectColumnOrNull(schema, "part", "id"), selectColumnOrNull(schema, "part", "message_id"), selectColumnOrNull(schema, "part", "time_created"), selectColumnOrNull(schema, "part", "data")];
+  const partColumns = schema.get("part") ?? new Set<string>();
+  const orderBy = [partColumns.has("time_created") ? "time_created" : null, partColumns.has("id") ? "id" : null].filter((column): column is string => column != null).map(quoteIdent).join(", ");
+  const rows = db.prepare(`select ${select.join(", ")} from part where session_id = ? order by ${orderBy || "message_id"}`).all(rawSessionId) as Array<Record<string, unknown>>;
+  for (const row of rows) {
+    const messageId = stringValue(row.message_id);
+    if (messageId == null) {
+      continue;
+    }
+    const text = messagePartText(parseJsonRecord(row.data));
+    if (text == null) {
+      continue;
+    }
+    const existing = result.get(messageId) ?? [];
+    existing.push(text);
+    result.set(messageId, existing);
+  }
+  return result;
+}
+
 function readSessionInputs(db: InstanceType<typeof DatabaseSync>, schema: DbSchema, rawSessionId: string): DeliveryContextUserMessage[] {
   if (!hasColumns(schema, "session_input", ["session_id"])) {
     return [];
@@ -424,15 +456,22 @@ function readUserMessages(db: InstanceType<typeof DatabaseSync>, schema: DbSchem
   if (!hasColumns(schema, "message", ["session_id"])) {
     return [];
   }
+  const partTextsByMessage = readMessagePartTexts(db, schema, rawSessionId);
   const select = [selectColumnOrNull(schema, "message", "id"), selectColumnOrNull(schema, "message", "time_created"), selectColumnOrNull(schema, "message", "data")];
   const orderBy = schema.get("message")?.has("time_created") === true ? "time_created, id" : "session_id";
   const rows = db.prepare(`select ${select.join(", ")} from message where session_id = ? order by ${orderBy}`).all(rawSessionId) as Array<Record<string, unknown>>;
   return rows.flatMap((row, index): DeliveryContextUserMessage[] => {
-    const text = messageText(parseJsonRecord(row.data));
+    const parsed = parseJsonRecord(row.data);
+    if (!parsed || parsed.role !== "user") {
+      return [];
+    }
+    const messageId = String(row.id ?? `${rawSessionId}:${index}`);
+    const partsText = partTextsByMessage.get(messageId)?.join("\n");
+    const text = partsText && partsText.length > 0 ? partsText : messageText(parsed);
     if (!text) {
       return [];
     }
-    return [{ eventRef: hashRef("message", String(row.id ?? `${rawSessionId}:${index}`)), kind: "message", text: sanitizeText(text, rawSessionId), time: eventTime(row.time_created) }];
+    return [{ eventRef: hashRef("message", messageId), kind: "message", text: sanitizeText(text, rawSessionId), time: eventTime(row.time_created) }];
   });
 }
 
@@ -475,13 +514,34 @@ function deliveryEventRef(row: EventRow, index: number, type: string | null, req
   return hashRef("event", id);
 }
 
+function eventSessionColumn(schema: DbSchema): string | null {
+  const columns = schema.get("event");
+  if (columns == null) {
+    return null;
+  }
+  if (columns.has("session_id")) {
+    return "session_id";
+  }
+  if (columns.has("aggregate_id")) {
+    return "aggregate_id";
+  }
+  return null;
+}
+
+function eventOrderBy(schema: DbSchema, sessionColumn: string): string {
+  const columns = schema.get("event") ?? new Set<string>();
+  const orderColumns = [columns.has("time_created") ? "time_created" : null, columns.has("seq") ? "seq" : null, columns.has("id") ? "id" : null].filter((column): column is string => column != null);
+  return orderColumns.length > 0 ? orderColumns.map(quoteIdent).join(", ") : quoteIdent(sessionColumn);
+}
+
 function readQuestionAndPermissionEvents(db: InstanceType<typeof DatabaseSync>, schema: DbSchema, rawSessionId: string, warnings: string[]): { permissionReplies: DeliveryContextPermissionReply[]; questionReplies: DeliveryContextQuestionReply[] } {
   if (!schema.has("event")) {
     warnings.push("event table missing; question and permission replies unavailable");
     return { permissionReplies: [], questionReplies: [] };
   }
-  if (!hasColumns(schema, "event", ["session_id"])) {
-    warnings.push("event table missing session_id column; question and permission replies unavailable");
+  const sessionColumn = eventSessionColumn(schema);
+  if (sessionColumn == null) {
+    warnings.push("event table missing session_id/aggregate_id column; question and permission replies unavailable");
     return { permissionReplies: [], questionReplies: [] };
   }
   if (!hasAnyColumn(schema, "event", ["type", "name", "event"])) {
@@ -491,8 +551,7 @@ function readQuestionAndPermissionEvents(db: InstanceType<typeof DatabaseSync>, 
     warnings.push("event table missing data/properties/payload columns; question and permission replies may be unavailable");
   }
   const select = [selectColumnOrNull(schema, "event", "id"), selectColumnOrNull(schema, "event", "time_created"), selectColumnOrNull(schema, "event", "type"), selectColumnOrNull(schema, "event", "name"), selectColumnOrNull(schema, "event", "event"), selectColumnOrNull(schema, "event", "data"), selectColumnOrNull(schema, "event", "properties"), selectColumnOrNull(schema, "event", "payload")];
-  const orderBy = schema.get("event")?.has("time_created") === true ? "time_created, id" : "session_id";
-  const rows = db.prepare(`select ${select.join(", ")} from event where session_id = ? order by ${orderBy}`).all(rawSessionId) as EventRow[];
+  const rows = db.prepare(`select ${select.join(", ")} from event where ${quoteIdent(sessionColumn)} = ? order by ${eventOrderBy(schema, sessionColumn)}`).all(rawSessionId) as EventRow[];
   const questionsByRequest = new Map<string, string[]>();
   const questionReplies: DeliveryContextQuestionReply[] = [];
   const permissionReplies: DeliveryContextPermissionReply[] = [];

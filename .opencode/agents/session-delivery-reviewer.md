@@ -99,9 +99,10 @@ Escalate task scale when there is persisted data, public API, irreversible or re
 ## Checks
 
 - Goal alignment: extract each explicit user request and verify it was addressed, intentionally deferred, or blocked with evidence.
-- Session user evidence: include every `userMessages[]` item from Session Delivery Context in the requirement inventory unless it is clearly duplicate transport for the same prompt.
+- Session user evidence: include every `userMessages[]` item from Session Delivery Context in the requirement inventory unless it is clearly duplicate transport for the same prompt. Treat broad prompts such as `implement all <change/spec/tasks>`, `archive when complete`, or `escalate blockers` as acceptance-driving requirements that need explicit completion, archive, or blocker evidence.
 - Question replies: treat every `questionReplies[]` answer as a user-owned decision or constraint and verify it survived into the final outcome.
-- Todo completion: include every `todos.open[]` item as a potential missed-work finding unless evidence shows it became obsolete, deferred with user-visible rationale, or intentionally superseded.
+- Todo completion: include every `todos.open[]` item from the reviewed root parent session as a potential missed-work finding unless evidence shows it became obsolete, deferred with user-visible rationale, or intentionally superseded. For material/complex tasks, unresolved root-session open todos are acceptance blockers when they map to user requirements or required validation/review/push/archive work.
+- Completion verdict: do not return `on plan`, `Blocking for Acceptance: no`, or `Required Next Actions: none` unless every root-session user request, question reply, and open/required todo has matching transcript, diff, validation, archive, push, or explicit blocker evidence.
 - Scope control: flag unapproved expansion, omitted constraints, or work that solved a different problem.
 - Requirements and decisions: verify the session gathered or inferred enough requirements for the task scale and surfaced real blockers instead of guessing.
 - Plan and progress control: verify the plan/todo/workflow matched the task scale, was updated as reality changed, and did not skip material steps.
