@@ -484,6 +484,29 @@ function addImplementationWorkerFixture(fixture: string): string {
   return workerPath;
 }
 
+const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding: if it returns `Blocking for Acceptance: yes`, `Verdict: blocked`, any `P0 blocker`, or non-empty `Required Next Actions`, do not present the session as complete or ready-to-land. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
+const sessionDeliveryBindingTokens = [
+  "Blocking for Acceptance: yes",
+  "Verdict: blocked",
+  "P0 blocker",
+  "Required Next Actions",
+  "do not present the session as complete",
+  "partial slice handoff must not end an unfinished root goal",
+];
+
+function addSessionDeliveryBindingFixture(fixture: string): void {
+  writeText(path.join(fixture, ".opencode", "agents", "session-delivery-reviewer.md"), fs.readFileSync(path.join(root, ".opencode", "agents", "session-delivery-reviewer.md"), "utf8"));
+  appendReadmeAgentCatalogEntry(fixture, "- `session-delivery-reviewer`: Session delivery reviewer.");
+  const profilePath = path.join(fixture, "profiles", "all.json");
+  const profile = fs.readFileSync(profilePath, "utf8");
+  writeText(profilePath, profile.replace('"demo-reviewer"]', '"demo-reviewer", "session-delivery-reviewer"]'));
+
+  for (const relative of ["AGENTS.md", path.join("instructions", "universal-development-loop.md"), path.join("templates", "project", "AGENTS.md")]) {
+    const file = path.join(fixture, relative);
+    writeText(file, `${fs.readFileSync(file, "utf8")}\n${sessionDeliveryBindingText}\n`);
+  }
+}
+
 const tests: TestCase[] = [
   {
     name: "validator accepts valid fixture",
@@ -924,6 +947,32 @@ const tests: TestCase[] = [
       assertOutputContains(result, "session-delivery-reviewer must require delivery-control safeguards", "Validation output should name the missing reviewer contract.");
     },
   },
+  {
+    name: "validator rejects missing session delivery binding handoff",
+    run: () => {
+      const fixture = newLibraryFixture("session-delivery-binding-handoff");
+      addSessionDeliveryBindingFixture(fixture);
+      assertSuccess(invokeValidator(fixture), "Session delivery binding fixture should pass before token removal.");
+      const agentsPath = path.join(fixture, "AGENTS.md");
+      writeText(agentsPath, fs.readFileSync(agentsPath, "utf8").replace("Blocking for Acceptance: yes", "Blocking for Acceptance: missing"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Missing binding session-delivery handoff instructions should fail validation.");
+      assertOutputContains(result, "session-delivery-reviewer binding handoff", "Validation output should name binding handoff contract.");
+      assertOutputContains(result, "Blocking for Acceptance: yes", "Validation output should name missing binding token.");
+    },
+  },
+  ...sessionDeliveryBindingTokens.map((token): TestCase => ({
+    name: `validator rejects missing session delivery binding token: ${token}`,
+    run: () => {
+      const fixture = newLibraryFixture(`session-delivery-binding-${token.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      addSessionDeliveryBindingFixture(fixture);
+      const agentsPath = path.join(fixture, "AGENTS.md");
+      writeText(agentsPath, fs.readFileSync(agentsPath, "utf8").replace(token, "[missing-binding-token]"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Missing binding token should fail validation: ${token}`);
+      assertOutputContains(result, token, `Validation output should name missing binding token: ${token}`);
+    },
+  })),
   {
     name: "validator rejects missing reviewer Prevention Feedback contract",
     run: () => {

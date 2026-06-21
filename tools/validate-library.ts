@@ -1430,6 +1430,33 @@ function validateImplementationWorkerRouting(root: string, agentNames: string[])
   }
 }
 
+function validateSessionDeliveryBinding(root: string, agentNames: string[]): void {
+  if (!agentNames.includes("session-delivery-reviewer")) {
+    return;
+  }
+
+  for (const relative of [
+    "AGENTS.md",
+    "instructions/global-opencode-agent-instructions.md",
+    "instructions/reusable-project-agent-instructions.md",
+    "instructions/universal-development-loop.md",
+    "templates/project/AGENTS.md",
+  ]) {
+    const file = path.join(root, relative);
+    if (!fileExists(file)) {
+      continue;
+    }
+    const text = readText(file);
+    requireTextContains(text, "session-delivery-reviewer", "session-delivery-reviewer binding handoff", file);
+    requireTextContains(text, "Blocking for Acceptance: yes", "session-delivery-reviewer binding handoff", file);
+    requireTextContains(text, "Verdict: blocked", "session-delivery-reviewer binding handoff", file);
+    requireTextContains(text, "P0 blocker", "session-delivery-reviewer binding handoff", file);
+    requireTextContains(text, "Required Next Actions", "session-delivery-reviewer binding handoff", file);
+    requireTextContains(text, "do not present the session as complete", "session-delivery-reviewer binding handoff", file);
+    requireTextContains(text, "partial slice handoff must not end an unfinished root goal", "session-delivery-reviewer binding handoff", file);
+  }
+}
+
 function main(): void {
   const options = parseArgs(process.argv.slice(2));
   const root = options.root;
@@ -1442,6 +1469,7 @@ function main(): void {
   validateDevKitContract(root);
   validateProfiles(root, skillNames, agentNames);
   validateImplementationWorkerRouting(root, agentNames);
+  validateSessionDeliveryBinding(root, agentNames);
   validateOpenCodeConfigFiles(root);
   validateReadme(root, skillNames, agentNames, instructionNames);
   validateAgentsMd(root);

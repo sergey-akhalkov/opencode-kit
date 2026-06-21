@@ -15,7 +15,7 @@ Apply the same process for every task, scaled to the size and risk of the change
 7. `Focused Validation`: run the nearest validation command first.
 8. `Review Gate`: use relevant read-only reviewers only when risk justifies them.
 9. `Final Validation`: broaden validation when boundaries, APIs, data, deployment, or compatibility are affected.
-10. `Handoff`: for material/complex sessions, run `session-delivery-reviewer` with bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks. Skip only for trivial/bounded work or unavailable inputs, and report why. Then report changed files, evidence, validation, residual risks, and ready-to-land status.
+10. `Handoff`: for material/complex sessions, run `session-delivery-reviewer` with bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks. Skip only for trivial/bounded work or unavailable inputs, and report why. Treat reviewer blocking output as binding: if it returns `Blocking for Acceptance: yes`, `Verdict: blocked`, any `P0 blocker`, or non-empty `Required Next Actions`, do not present the session as complete or ready-to-land. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal. Otherwise report changed files, evidence, validation, residual risks, and ready-to-land status.
 11. `Process Improvement`: capture current-session friction with `complain` in `docs/feedbacks/**`; convert accumulated patterns into helpers, validators, fixtures, reports, or templates.
 
 ## Project Adapter
