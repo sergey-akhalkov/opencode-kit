@@ -367,7 +367,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 Project plugin behavior:
 
-- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. `session-delivery-reviewer` uses normal OpenCode model selection. The plugin is auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; its `session-delivery-context.ts` support file is resolved relative to the plugin via `repo/tools/session-delivery-context.ts`.
+- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. `session-delivery-reviewer` uses normal OpenCode model selection. The plugin is auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; the implementation lives next to the plugin under `global/plugin/session-delivery-context/` and is reached via a static import, so the plugin does not need a `tools/` directory at runtime. A thin `tools/session-delivery-context.ts` CLI shim re-exports the same public API for tests and any future CLI consumer.
 
 ## Instruction Templates
 

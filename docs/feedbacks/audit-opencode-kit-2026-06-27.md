@@ -69,6 +69,7 @@
 - Evidence: `loadSessionDeliveryContextModule` (lines 51-63) reaches out to `../../tools/session-delivery-context.ts` because plugin dir is `global/plugin/` and target is `tools/`.
 - Impact: plugin is not self-contained; relocation or vendor install breaks; violates "self-discoverable plugin" intuition; complicates Windows path normalization.
 - Recommendation: move `tools/session-delivery-context.ts` content into `global/plugin/session-delivery-context.ts` (or split into `global/plugin/delivery-context/`), keep tool thin wrapper if needed for CLI consumers; document the `OPENCODE_CONFIG_DIR` lookup contract.
+- Resolution: addressed by `plugin-self-containment`. Reader split lives next to the plugin under `global/plugin/session-delivery-context/{db,requirements,redaction,projection,index}.ts`; `global/plugin/session-env.ts` imports it via a static `import { readSessionDeliveryContext } from "./session-delivery-context/index.ts"` and no longer resolves anything via `path.resolve`. `tools/session-delivery-context.ts` is a 12-line CLI shim that re-exports the public API. A new regression test copies `global/plugin/` into a scratch config dir and confirms `session_delivery_context` runs without any `tools/` directory present. Resolved 2026-06-27.
 - Confidence: high.
 
 ### F08 [P2] Hardcoded absolute user path in committed config

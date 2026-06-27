@@ -9,7 +9,7 @@ The library SHALL organize executable tools under `tools/` with the following di
 
 - `tools/validators/<domain>.ts` — one file per validation domain (frontmatter, skills, agents, profiles, opencode-config, markdown, devkit-contract, permission-policy, routing, binding).
 - `tools/test-helpers/{fixture-builder,assert-helpers,runner}.ts` — shared test helpers.
-- `tools/delivery-context/{db,requirements,redaction,projection}.ts` — the OpenCode session-delivery-context reader.
+- `tools/delivery-context/` is no longer canonical; the OpenCode session-delivery-context reader now lives next to its consumer under `global/plugin/session-delivery-context/{db,requirements,redaction,projection,index}.ts`. `tools/session-delivery-context.ts` is kept as a thin CLI shim that re-exports the public API from the plugin module.
 - `tools/contracts/<domain>.ts` — declarative required-text and permission-rule lists consumed by validators and tests.
 
 #### Scenario: monolithic file detected

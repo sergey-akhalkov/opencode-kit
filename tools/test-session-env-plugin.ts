@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { pathToFileURL } from "node:url";
 import plugin, { SESSION_DELIVERY_CONTEXT_TOOL, SESSION_DELIVERY_REVIEWER_AGENT } from "../global/plugin/session-env.ts";
 
 type TestCase = {
@@ -23,6 +24,15 @@ async function withTempDataDir(name: string, run: (dir: string) => Promise<void>
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+}
+
+async function importCopiedSessionEnvPlugin(configDir: string): Promise<typeof plugin> {
+  const sourcePluginDir = path.resolve("global", "plugin");
+  const targetPluginDir = path.join(configDir, "plugin");
+  fs.cpSync(sourcePluginDir, targetPluginDir, { recursive: true });
+  const moduleUrl = `${pathToFileURL(path.join(targetPluginDir, "session-env.ts")).href}?fixture=${Date.now()}`;
+  const module = await import(moduleUrl) as { default: typeof plugin };
+  return module.default;
 }
 
 function createDeliveryContextDb(dbPath: string, rawSessionId: string): void {
@@ -269,6 +279,41 @@ const tests: TestCase[] = [
       assert(hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL] != null, "Plugin must register session_delivery_context tool.");
       assert(hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.description.includes("root parent session"), "Custom tool description should document root parent session resolution for subagent reviewers.");
     },
+  },
+  {
+    name: "session delivery context custom tool executes from copied plugin directory without tools",
+    run: async () => withTempDataDir("self-contained-plugin", async (configDir) => {
+      const rawSessionId = "session_self_contained_secret";
+      createDeliveryContextDb(path.join(configDir, "opencode.db"), rawSessionId);
+      const previousDataDir = process.env.OPENCODE_DATA_DIR;
+      process.env.OPENCODE_DATA_DIR = configDir;
+      try {
+        const copiedPlugin = await importCopiedSessionEnvPlugin(configDir);
+        assert(!fs.existsSync(path.join(configDir, "tools")), "Self-contained fixture must not contain a tools directory.");
+        const hooks = await copiedPlugin.server({} as never);
+        const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
+          abort: new AbortController().signal,
+          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          ask: async () => undefined,
+          directory: configDir,
+          messageID: "message_fixture",
+          metadata: () => { /* ignore */ },
+          sessionID: rawSessionId,
+          worktree: configDir,
+        });
+        const output = typeof result === "string" ? result : result?.output;
+        assert(typeof output === "string", "Copied plugin custom tool should return JSON output string.");
+        const parsed = JSON.parse(output) as { session?: { counts?: Record<string, number> } };
+        assert(parsed.session?.counts?.openTodos === 1, `Copied plugin should execute delivery context without repo tools, got ${output}`);
+        assert(!output.includes(rawSessionId), "Copied plugin output must redact raw session id.");
+      } finally {
+        if (previousDataDir == null) {
+          delete process.env.OPENCODE_DATA_DIR;
+        } else {
+          process.env.OPENCODE_DATA_DIR = previousDataDir;
+        }
+      }
+    }),
   },
   {
     name: "session delivery context custom tool executes for current session",
