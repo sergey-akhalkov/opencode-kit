@@ -1,0 +1,55 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: validate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run strict validator
+        run: npm run validate:strict
+
+      - name: Run test suite
+        run: npm test
+
+      - name: Run code-quality inventory
+        run: npm run code-quality:inventory -- --root . --format markdown --fail-on-split-candidates --attention-lines 400 --split-lines 800
+
+      - name: Run instruction inventory
+        run: npm run instruction:inventory -- --format markdown
+
+      - name: Validate OpenSpec changes
+        if: hashFiles('openspec/changes/**/*.md') != ''
+        run: npm run openspec:validate
+
+      - name: Run OpenSpec prepush operation gate
+        if: hashFiles('openspec/changes/**/*.md') != ''
+        run: npm run openspec:gate -- --operation prepush
