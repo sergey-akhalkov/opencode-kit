@@ -1,1129 +1,251 @@
 #!/usr/bin/env node
-import crypto from "node:crypto";
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+type Mode = "set" | "check" | "print" | "unset";
+
 type Options = {
-  agentsMdSource: string | null;
-  configDir: string | null;
+  mode: Mode;
   dryRun: boolean;
-  audit: boolean;
-  pullBack: boolean;
-  forceOverwrite: boolean;
-  prune: boolean;
-  noBackup: boolean;
-  profile: string;
-  skipAgentsMd: boolean;
 };
 
-type InstallProfile = {
-  agents?: string[];
-  extends?: string;
-  name?: string;
-  skills?: string[];
-};
+const ENV_VAR = "OPENCODE_CONFIG_DIR";
+const GLOBAL_DIR_NAME = "global";
 
-type LoadedInstallProfile = Required<Pick<InstallProfile, "agents" | "skills">>;
-
-type InstallContext = {
-  backupRoot: string;
-  configDir: string;
-  dryRun: boolean;
-  noBackup: boolean;
-  runStamp: string;
-};
-
-type RelativeEntry =
-  | { relative: string; type: "file" }
-  | { relative: string; target: string; type: "symlink" };
-
-type DriftEntry = {
-  destination: string;
-  destinationHash: string;
-  label: string;
-  relative: string;
-  source: string;
-  sourceHash: string;
-  type: "file" | "directory";
-};
-
-type PullBackChange = {
-  id: string;
-  path: string;
-  status: "created" | "existing";
-  drift: DriftEntry;
-};
-
-type AgentsMdPlan = {
-  existing: string;
-  next: string;
-};
-
-const BEGIN_MARKER = "<!-- agents-and-skills:begin -->";
-const END_MARKER = "<!-- agents-and-skills:end -->";
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const globalDir = path.resolve(repoRoot, GLOBAL_DIR_NAME);
 
 function printUsage(): void {
   console.log(`Usage:
   npm run install:global -- [options]
 
-Options:
-  --config-dir <path>         OpenCode config directory. Default: ~/.config/opencode
-  --agents-md-source <path>   Source file to install into global AGENTS.md block.
-                              Default: instructions/global-opencode-agent-instructions.md
-  --profile <name>            Install profiles/<name>.json. Known: all. Default: all.
-  --skip-agents-md           Skip the managed AGENTS.md block; skills, agents, plugin, and support files still install.
-  --audit                    Report source-vs-destination drift without writing.
-  --pull-back                Create investigation OpenSpec changes for drift without overwriting.
-  --force-overwrite          Opt into legacy overwrite-with-backup behavior for drift.
-  --prune                    Delete destination skills/agents not present in this repository.
-  --no-prune                 Keep destination-only skills/agents (default; compatibility no-op).
-  --no-backup                Skip backups for authorized --force-overwrite or --prune writes.
-  --dry-run, --what-if       Preview changes without writing files.
-  --help                     Show this help.
+Point OpenCode at this repository as its single source of truth for global
+configuration. Instead of copying skills/agents/AGENTS.md into ~/.config/opencode,
+the installer sets the OPENCODE_CONFIG_DIR environment variable to the repository
+"global/" directory. OpenCode loads skills, agents, AGENTS.md, plugins, and
+opencode.json directly from there.
 
-Default install refuses drift in skills, agents, AGENTS.md, plugins, and support tools.
-Ask OpenCode to smart-merge drifted global artifacts, use --pull-back for investigation files,
-or use --force-overwrite only when discarding destination changes is intentional.
+Target: ${globalDir}
+
+Options:
+  (default)              Set OPENCODE_CONFIG_DIR persistently to the repo global/ dir.
+  --check, --audit       Exit 0 if OPENCODE_CONFIG_DIR already points at global/; 1 otherwise.
+  --print                Print the target path and the platform command without changing anything.
+  --unset                Remove the persisted OPENCODE_CONFIG_DIR value.
+  --dry-run, --what-if   Show what the default mode would do without setting anything.
+  --help, -h             Show this help.
+
+Platform behavior:
+  Windows: default mode runs "setx OPENCODE_CONFIG_DIR <path>" (writes HKCU\\Environment).
+  macOS/Linux: default mode prints the export line to add to your shell profile
+  (~/.zshrc or ~/.bashrc); it does not auto-edit the profile.
+
+Restart OpenCode after installing; the running process keeps the old environment
+until restarted. On Windows, GUI apps launched from Explorer may require logoff/logon
+to inherit the new user environment variable.
 `);
 }
 
-function readOptionValue(args: string[], index: number, name: string): string {
-  const value = args[index + 1];
-  if (!value || value.trim() === "" || value.startsWith("-")) {
-    throw new Error(`Missing value for ${name}.`);
-  }
-  return value;
-}
-
-function readInlineOptionValue(value: string, name: string): string {
-  if (!value || value.trim() === "") {
-    throw new Error(`Missing value for ${name}.`);
-  }
-  return value;
-}
-
 function parseArgs(args: string[]): Options {
-  const options: Options = {
-    agentsMdSource: null,
-    configDir: null,
-    dryRun: false,
-    audit: false,
-    pullBack: false,
-    forceOverwrite: false,
-    prune: false,
-    noBackup: false,
-    profile: "all",
-    skipAgentsMd: false,
-  };
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
+  const options: Options = { mode: "set", dryRun: false };
+  for (const arg of args) {
     if (arg === "--help" || arg === "-h") {
       printUsage();
       process.exit(0);
-    } else if (arg === "--config-dir" || arg === "-ConfigDir") {
-      options.configDir = readOptionValue(args, i, arg);
-      i++;
-    } else if (arg.startsWith("--config-dir=")) {
-      options.configDir = readInlineOptionValue(arg.slice("--config-dir=".length), "--config-dir");
-    } else if (arg === "--agents-md-source" || arg === "-AgentsMdSource") {
-      options.agentsMdSource = readOptionValue(args, i, arg);
-      i++;
-    } else if (arg.startsWith("--agents-md-source=")) {
-      options.agentsMdSource = readInlineOptionValue(arg.slice("--agents-md-source=".length), "--agents-md-source");
-    } else if (arg === "--profile") {
-      options.profile = readOptionValue(args, i, arg);
-      i++;
-    } else if (arg.startsWith("--profile=")) {
-      options.profile = readInlineOptionValue(arg.slice("--profile=".length), "--profile");
-    } else if (arg === "--skip-agents-md" || arg === "-SkipAgentsMd") {
-      options.skipAgentsMd = true;
-    } else if (arg === "--prune") {
-      options.prune = true;
-    } else if (arg === "--no-prune" || arg === "-NoPrune") {
-      options.prune = false;
-    } else if (arg === "--no-backup" || arg === "-NoBackup") {
-      options.noBackup = true;
-    } else if (arg === "--dry-run" || arg === "--what-if" || arg === "-WhatIf") {
+    } else if (arg === "--dry-run" || arg === "--what-if") {
       options.dryRun = true;
-    } else if (arg === "--audit") {
-      options.audit = true;
-    } else if (arg === "--pull-back") {
-      options.pullBack = true;
-    } else if (arg === "--force-overwrite") {
-      options.forceOverwrite = true;
+    } else if (arg === "--check" || arg === "--audit") {
+      options.mode = "check";
+    } else if (arg === "--print") {
+      options.mode = "print";
+    } else if (arg === "--unset") {
+      options.mode = "unset";
     } else {
       throw new Error(`Unknown option: ${arg}`);
     }
   }
-
-  const modeCount = [options.audit, options.pullBack, options.forceOverwrite].filter(Boolean).length;
-  if (modeCount > 1) {
-    throw new Error("Use only one of --audit, --pull-back, or --force-overwrite.");
+  if (options.dryRun && options.mode !== "set") {
+    throw new Error("--dry-run only applies to the default (set) mode.");
   }
-
   return options;
 }
 
-function isNodeError(error: unknown): error is NodeJS.ErrnoException {
-  return error instanceof Error && "code" in error;
-}
-
-function requireHome(): string {
-  const home = os.homedir();
-  if (!home) {
-    throw new Error("Home directory is not available; pass --config-dir explicitly.");
-  }
-  return home;
-}
-
-function expandHome(input: string | null): string | null {
-  if (!input) {
-    return input;
-  }
-  if (input === "~") {
-    return requireHome();
-  }
-  if (input.startsWith("~/") || input.startsWith("~\\")) {
-    return path.join(requireHome(), input.slice(2));
-  }
-  return input;
-}
-
-function resolveConfigDir(input: string | null): string {
-  if (input != null && input.trim() === "") {
-    throw new Error("Missing value for --config-dir.");
-  }
-  const configured = input == null ? path.join(requireHome(), ".config", "opencode") : input;
-  const expanded = expandHome(configured);
-  if (expanded == null) {
-    throw new Error("Missing value for --config-dir.");
-  }
-  return path.resolve(expanded);
-}
-
-function resolveSourcePath(input: string | null, repoRoot: string, defaultRelativePath: string): string {
-  if (input != null && input.trim() === "") {
-    throw new Error("Missing value for --agents-md-source.");
-  }
-  const configured = input == null ? defaultRelativePath : input;
-  const expanded = expandHome(configured);
-  if (expanded == null) {
-    throw new Error("Missing value for --agents-md-source.");
-  }
-  if (path.isAbsolute(expanded)) {
-    return path.resolve(expanded);
-  }
-  return path.resolve(repoRoot, expanded);
-}
-
-function assertDirectoryExists(target: string, label: string): void {
+function validateGlobalDir(target: string): string[] {
+  const errors: string[] = [];
   if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) {
-    throw new Error(`Missing ${label} directory: ${target}`);
+    errors.push(`Missing global config directory: ${target}`);
+    return errors;
   }
-}
-
-function assertFileExists(target: string, label: string): void {
-  if (!fs.existsSync(target) || !fs.statSync(target).isFile()) {
-    throw new Error(`Missing ${label} file: ${target}`);
-  }
-}
-
-function pathExists(target: string): boolean {
-  try {
-    fs.lstatSync(target);
-    return true;
-  } catch (error) {
-    if (isNodeError(error) && error.code === "ENOENT") {
-      return false;
-    }
-    throw error;
-  }
-}
-
-function isDirectoryFollowingSymlink(target: string): boolean {
-  try {
-    return fs.statSync(target).isDirectory();
-  } catch (error) {
-    if (isNodeError(error) && error.code === "ENOENT") {
-      return false;
-    }
-    throw error;
-  }
-}
-
-function ensureDirectory(target: string, context: InstallContext): void {
-  if (pathExists(target)) {
-    if (!isDirectoryFollowingSymlink(target)) {
-      const backup = createBackup(target, context);
-      const backupLabel = context.dryRun ? "would backup" : "backup";
-      const backupMessage = backup ? ` (${backupLabel}: ${backup})` : "";
-      if (context.dryRun) {
-        console.log(`would replace non-directory with directory: ${target}${backupMessage}`);
-        return;
-      }
-      removePath(target);
-      fs.mkdirSync(target, { recursive: true });
-      console.log(`replaced non-directory with directory: ${target}${backupMessage}`);
-    }
-    return;
-  }
-  if (context.dryRun) {
-    console.log(`would create directory: ${target}`);
-    return;
-  }
-  fs.mkdirSync(target, { recursive: true });
-}
-
-function listDirectories(root: string): string[] {
-  return fs
-    .readdirSync(root, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => path.join(root, entry.name))
-    .sort((a, b) => path.basename(a).localeCompare(path.basename(b)));
-}
-
-function listFiles(root: string, extension: string): string[] {
-  return fs
-    .readdirSync(root, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith(extension))
-    .map((entry) => path.join(root, entry.name))
-    .sort((a, b) => path.basename(a).localeCompare(path.basename(b)));
-}
-
-function readJsonFile(file: string): unknown {
-  try {
-    return JSON.parse(fs.readFileSync(file, "utf8")) as unknown;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Invalid JSON file ${file}: ${message}`);
-  }
-}
-
-function asStringArray(value: unknown, label: string): string[] | undefined {
-  if (value == null) {
-    return undefined;
-  }
-  if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
-    throw new Error(`${label} must be an array of strings.`);
-  }
-  return value;
-}
-
-function loadProfile(repoRoot: string, name: string, seen = new Set<string>()): LoadedInstallProfile {
-  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
-    throw new Error(`Invalid profile name: ${name}`);
-  }
-  if (seen.has(name)) {
-    throw new Error(`Profile inheritance cycle: ${[...seen, name].join(" -> ")}`);
-  }
-  seen.add(name);
-  const profilePath = path.join(repoRoot, "profiles", `${name}.json`);
-  if (!fs.existsSync(profilePath) || !fs.statSync(profilePath).isFile()) {
-    throw new Error(`Missing install profile: ${profilePath}`);
-  }
-  const raw = readJsonFile(profilePath);
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-    throw new Error(`Install profile must be a JSON object: ${profilePath}`);
-  }
-  const profile = raw as InstallProfile;
-  const base = typeof profile.extends === "string" ? loadProfile(repoRoot, profile.extends, seen) : { agents: [], skills: [] };
-  return {
-    agents: asStringArray(profile.agents, `${profilePath}: agents`) ?? base.agents,
-    skills: asStringArray(profile.skills, `${profilePath}: skills`) ?? base.skills,
-  };
-}
-
-function filterByProfile<T>(items: T[], getName: (item: T) => string, allowed: string[], label: string): T[] {
-  const allowedSet = new Set(allowed);
-  const filtered = items.filter((item) => allowedSet.has(getName(item)));
-  const available = new Set(items.map(getName));
-  for (const name of allowedSet) {
-    if (!available.has(name)) {
-      throw new Error(`Install profile references missing ${label}: ${name}`);
+  for (const required of ["skills", "agents", "AGENTS.md", "opencode.json.template"]) {
+    const candidate = path.join(target, required);
+    if (!fs.existsSync(candidate)) {
+      errors.push(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
     }
   }
-  return filtered;
+  return errors;
 }
 
-function toPosixRelative(relativePath: string): string {
-  return relativePath.split(path.sep).join("/");
-}
-
-function resolvePathThroughExistingAncestor(target: string): string {
-  const absolute = path.resolve(target);
-  let current = absolute;
-  const suffix: string[] = [];
-
-  while (!pathExists(current)) {
-    const parent = path.dirname(current);
-    if (parent === current) {
-      break;
-    }
-    suffix.unshift(path.basename(current));
-    current = parent;
-  }
-
-  let resolvedAncestor = current;
-  try {
-    resolvedAncestor = fs.realpathSync.native(current);
-  } catch (_error) {
-    resolvedAncestor = current;
-  }
-
-  return path.resolve(resolvedAncestor, ...suffix);
-}
-
-function normalizePathForContainment(target: string): string {
-  const resolved = resolvePathThroughExistingAncestor(target);
-  return process.platform === "win32" ? resolved.toLowerCase() : resolved;
-}
-
-function isPathInsideOrEqual(candidate: string, parent: string): boolean {
-  const relative = path.relative(normalizePathForContainment(parent), normalizePathForContainment(candidate));
-  return relative === "" || (!!relative && !relative.startsWith("..") && !path.isAbsolute(relative));
-}
-
-function assertNoSourceOverlap(target: string, source: string, label: string): void {
-  if (isPathInsideOrEqual(target, source) || isPathInsideOrEqual(source, target)) {
-    throw new Error(`${label} must not overlap source artifact directory: ${target} conflicts with ${source}`);
+function ensureLocalConfig(target: string): void {
+  const local = path.join(target, "opencode.json");
+  const template = path.join(target, "opencode.json.template");
+  if (!fs.existsSync(local) && fs.existsSync(template)) {
+    fs.copyFileSync(template, local);
+    console.log(`provisioned: global/opencode.json from opencode.json.template (portable default).`);
+    console.log(`Edit global/opencode.json for machine-specific provider/MCP overrides; it is gitignored.`);
   }
 }
 
-function isSamePath(left: string, right: string): boolean {
-  return normalizePathForContainment(left) === normalizePathForContainment(right);
+function isWindows(): boolean {
+  return process.platform === "win32";
 }
 
-function assertAgentsMdSourceSafe(source: string, destinationAgentsMd: string, destinationSkillsDir: string, destinationAgentsDir: string): void {
-  if (isSamePath(source, destinationAgentsMd)) {
-    throw new Error(`AGENTS.md source must not be the destination AGENTS.md: ${source}`);
-  }
-  if (isPathInsideOrEqual(source, destinationSkillsDir) || isPathInsideOrEqual(source, destinationAgentsDir)) {
-    throw new Error(`AGENTS.md source must not be inside destination skills or agents loader directories: ${source}`);
-  }
+function legacyPluginPath(): string {
+  return path.join(os.homedir(), ".config", "opencode", "plugin", "session-env.ts");
 }
 
-function listRelativeEntries(root: string, current = root, result: RelativeEntry[] = []): RelativeEntry[] {
-  const entries = fs.readdirSync(current, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
-  for (const entry of entries) {
-    const entryPath = path.join(current, entry.name);
-    if (entry.isDirectory()) {
-      listRelativeEntries(root, entryPath, result);
-    } else if (entry.isFile()) {
-      result.push({ relative: toPosixRelative(path.relative(root, entryPath)), type: "file" });
-    } else if (entry.isSymbolicLink()) {
-      result.push({ relative: toPosixRelative(path.relative(root, entryPath)), target: fs.readlinkSync(entryPath), type: "symlink" });
-    } else {
-      throw new Error(`Unsupported filesystem entry: ${entryPath}`);
-    }
-  }
-  return result;
-}
-
-function sha256(filePath: string): string {
-  return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
-}
-
-function directoryHash(root: string): string {
-  const hash = crypto.createHash("sha256");
-  for (const entry of listRelativeEntries(root)) {
-    hash.update(entry.relative);
-    hash.update("\0");
-    hash.update(entry.type);
-    hash.update("\0");
-    if (entry.type === "file") {
-      hash.update(sha256(path.join(root, entry.relative)));
-    } else {
-      hash.update(entry.target);
-    }
-    hash.update("\0");
-  }
-  return hash.digest("hex");
-}
-
-function artifactHash(target: string): string {
-  if (!pathExists(target)) {
-    return "missing";
-  }
-  const stat = fs.lstatSync(target);
-  if (stat.isFile()) {
-    return sha256(target);
-  }
-  if (stat.isDirectory()) {
-    return directoryHash(target);
-  }
-  if (stat.isSymbolicLink()) {
-    return `symlink:${fs.readlinkSync(target)}`;
-  }
-  return `unsupported:${stat.mode}`;
-}
-
-function isSameFile(source: string, destination: string): boolean {
-  if (!fs.existsSync(destination) || !fs.statSync(destination).isFile()) {
-    return false;
-  }
-  const sourceStat = fs.statSync(source);
-  const destinationStat = fs.statSync(destination);
-  return sourceStat.size === destinationStat.size && sha256(source) === sha256(destination);
-}
-
-function isSameDirectory(source: string, destination: string): boolean {
-  if (!fs.existsSync(destination) || !fs.statSync(destination).isDirectory()) {
-    return false;
-  }
-  const sourceEntries = listRelativeEntries(source);
-  const destinationEntries = listRelativeEntries(destination);
-  if (sourceEntries.length !== destinationEntries.length) {
-    return false;
-  }
-  for (let i = 0; i < sourceEntries.length; i++) {
-    const sourceEntry = sourceEntries[i];
-    const destinationEntry = destinationEntries[i];
-    if (sourceEntry.relative !== destinationEntry.relative || sourceEntry.type !== destinationEntry.type) {
-      return false;
-    }
-    if (sourceEntry.type === "file" && !isSameFile(path.join(source, sourceEntry.relative), path.join(destination, destinationEntry.relative))) {
-      return false;
-    }
-    if (sourceEntry.type === "symlink" && destinationEntry.type === "symlink" && sourceEntry.target !== destinationEntry.target) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function collectDrift(items: Array<{ destination: string; label: string; relative: string; source: string; type: "file" | "directory" }>): DriftEntry[] {
-  const drift: DriftEntry[] = [];
-  for (const item of items) {
-    if (!pathExists(item.destination)) {
-      continue;
-    }
-    const same = item.type === "file" ? isSameFile(item.source, item.destination) : isSameDirectory(item.source, item.destination);
-    if (same) {
-      continue;
-    }
-    drift.push({
-      ...item,
-      sourceHash: artifactHash(item.source),
-      destinationHash: artifactHash(item.destination),
-    });
-  }
-  return drift.sort((left, right) => left.relative.localeCompare(right.relative));
-}
-
-function printDriftReport(drift: DriftEntry[]): void {
-  if (drift.length === 0) {
-    console.log("No drift detected.");
-    return;
-  }
-  console.log(`drift detected: ${drift.length} artifact(s)`);
-  for (const entry of drift) {
-    console.log(`- ${entry.relative}: sourceHash=${entry.sourceHash} destinationHash=${entry.destinationHash}`);
+function warnLegacyPlugin(): void {
+  const legacy = legacyPluginPath();
+  if (fs.existsSync(legacy)) {
+    console.log("");
+    console.log(`note: a legacy copy of session-env.ts exists at ${legacy}`);
+    console.log("It was left by the previous copy-based installer and is still auto-discovered,");
+    console.log("so it duplicates the plugin now loaded from global/plugin/. Remove it to avoid a duplicate registration:");
+    console.log(`  rm "${legacy}"`);
   }
 }
 
-function printDriftRecovery(configDir: string, profile: string, skipAgentsMd: boolean): void {
-  const common = [`--config-dir "${configDir}"`, profile === "all" ? "" : `--profile ${profile}`, skipAgentsMd ? "--skip-agents-md" : ""].filter(Boolean).join(" ");
-  console.log(`Escalation: ask OpenCode to smart-merge the listed global artifacts in ${configDir}; preserve destination-only customizations and source improvements.`);
-  console.log(`Recovery: npm run install:global -- ${common} --pull-back`);
-  console.log(`Recovery: npm run install:global -- ${common} --force-overwrite`);
+function samePath(a: string, b: string): boolean {
+  if (isWindows()) {
+    return path.resolve(a).toLowerCase() === path.resolve(b).toLowerCase();
+  }
+  return path.resolve(a) === path.resolve(b);
 }
 
-function slug(value: string): string {
-  const slugged = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  return slugged.length > 0 ? slugged.slice(0, 56).replace(/-+$/g, "") : "artifact";
+function currentValue(): string | undefined {
+  return process.env[ENV_VAR];
 }
 
-function safeFenceContent(filePath: string): string {
-  try {
-    return fs.readFileSync(filePath, "utf8").replace(/\r\n/g, "\n");
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    return `unreadable: ${message}`;
+function runCheck(): void {
+  const current = currentValue();
+  if (current === undefined || current.trim() === "") {
+    console.log(`${ENV_VAR} is not set.`);
+    console.log(`Run "npm run install:global" to point it at ${globalDir}`);
+    process.exit(1);
   }
-}
-
-function artifactContent(target: string): string {
-  if (!pathExists(target)) {
-    return "missing";
+  if (samePath(current, globalDir)) {
+    console.log(`configured: ${ENV_VAR}=${current}`);
+    warnLegacyPlugin();
+    process.exit(0);
   }
-  const stat = fs.lstatSync(target);
-  if (stat.isFile()) {
-    return safeFenceContent(target);
-  }
-  if (stat.isDirectory()) {
-    const chunks: string[] = [];
-    for (const entry of listRelativeEntries(target)) {
-      chunks.push(`### ${entry.relative}`);
-      if (entry.type === "file") {
-        chunks.push(safeFenceContent(path.join(target, entry.relative)).trimEnd());
-      } else {
-        chunks.push(`symlink -> ${entry.target}`);
-      }
-    }
-    return chunks.join("\n\n");
-  }
-  if (stat.isSymbolicLink()) {
-    return `symlink -> ${fs.readlinkSync(target)}`;
-  }
-  return "unsupported";
-}
-
-function pullBackTaskTail(): string {
-  return `## Archive Readiness
-
-- [ ] Record the investigation decision: reusable source change, local-only customization, accidental drift, or blocked.
-- [ ] If source changes are needed, create or complete the smallest focused implementation with validation evidence.
-- [ ] Run \`openspec validate --all\` before archive.
-`;
-}
-
-function pullBackProposal(changeId: string, drift: DriftEntry): string {
-  return `# Proposal: Install Pull-Back Investigation For ${drift.relative}
-
-## Why
-
-\`install:global --pull-back\` found destination drift for an installed OpenCode artifact.
-
-- Artifact: ${drift.relative}
-- Source Hash: ${drift.sourceHash}
-- Destination Hash: ${drift.destinationHash}
-- Root Cause: unknown
-
-The source repository must decide whether the destination change is a reusable improvement, a local-only customization, or accidental drift before any source change is made.
-
-## What Changes
-
-- Investigate the destination drift and decide whether to open a separate implementation follow-up.
-- Preserve destination and source content for review.
-
-## Destination Content
-
-~~~~text
-${artifactContent(drift.destination).trimEnd()}
-~~~~
-
-## Source Content
-
-~~~~text
-${artifactContent(drift.source).trimEnd()}
-~~~~
-
-## Root Cause
-
-unknown. Investigate before adding or changing any reusable instruction rule.
-
-## Non-Goals
-
-- Do not write cross-repo artifacts unless this repository owns the artifact family.
-- Do not merge, classify severity, or extract prevention rules in this pull-back run.
-
-## Validation
-
-- Define focused validation in \`tasks.md\` before implementation.
-`;
-}
-
-function pullBackTasks(changeId: string, drift: DriftEntry): string {
-  return `# Tasks: Install Pull-Back Investigation For ${drift.relative}
-
-## Investigation
-
-- [ ] Confirm whether the destination change is reusable, project-specific, or accidental.
-- [ ] Investigate and document the root cause before designing any source change.
-- [ ] If reusable, open a separate follow-up change that modifies the source artifact with focused validation.
-- [ ] If local-only, close as \`approved-skip\` with evidence and reason.
-
-## Validation
-
-- [ ] Run the focused validation command for the eventual source change, or record why no source change is needed.
-- [ ] Run \`openspec validate --all\` when this investigation changes OpenSpec artifacts.
-
-${pullBackTaskTail()}`;
-}
-
-function pullBackSpec(changeId: string, drift: DriftEntry): string {
-  return `# ${changeId} Specification
-
-## ADDED Requirements
-
-### Requirement: Install Drift Investigation Is Routed Before Source Changes
-
-Destination drift for ${drift.relative} SHALL be investigated before any reusable source artifact is changed.
-
-#### Scenario: Unknown root cause is investigated before remediation
-
-- **GIVEN** \`install:global --pull-back\` generated this change with root cause unknown
-- **WHEN** the change is selected for implementation
-- **THEN** the implementer reviews destination content, source content, source hash, destination hash, and ownership
-- **AND** records the discovered root cause before opening or applying any source remediation.
-`;
-}
-
-function findExistingPullBack(changesRoot: string, drift: DriftEntry): string | null {
-  if (!pathExists(changesRoot) || !isDirectoryFollowingSymlink(changesRoot)) {
-    return null;
-  }
-  for (const dir of listDirectories(changesRoot)) {
-    const id = path.basename(dir);
-    if (!id.startsWith("install-pullback-")) {
-      continue;
-    }
-    const proposalPath = path.join(dir, "proposal.md");
-    if (!fs.existsSync(proposalPath)) {
-      continue;
-    }
-    const proposal = fs.readFileSync(proposalPath, "utf8");
-    if (proposal.includes(`- Artifact: ${drift.relative}`) && proposal.includes(`- Source Hash: ${drift.sourceHash}`) && proposal.includes(`- Destination Hash: ${drift.destinationHash}`)) {
-      return id;
-    }
-  }
-  return null;
-}
-
-function createPullBackChanges(repoRoot: string, drift: DriftEntry[], runStamp: string): PullBackChange[] {
-  const changesRoot = path.join(repoRoot, "openspec", "changes");
-  fs.mkdirSync(changesRoot, { recursive: true });
-  const changes: PullBackChange[] = [];
-  for (const entry of drift) {
-    const existing = findExistingPullBack(changesRoot, entry);
-    const id = existing ?? `install-pullback-${runStamp.toLowerCase()}-${slug(entry.relative)}`.slice(0, 96).replace(/-+$/g, "");
-    const changeRoot = path.join(changesRoot, id);
-    if (existing == null) {
-      fs.mkdirSync(path.join(changeRoot, "specs", id), { recursive: true });
-      fs.writeFileSync(path.join(changeRoot, "proposal.md"), pullBackProposal(id, entry), "utf8");
-      fs.writeFileSync(path.join(changeRoot, "tasks.md"), pullBackTasks(id, entry), "utf8");
-      fs.writeFileSync(path.join(changeRoot, "specs", id, "spec.md"), pullBackSpec(id, entry), "utf8");
-    }
-    changes.push({ id, path: changeRoot, status: existing == null ? "created" : "existing", drift: entry });
-  }
-  return changes;
-}
-
-function previewPullBackChanges(repoRoot: string, drift: DriftEntry[], runStamp: string): PullBackChange[] {
-  const changesRoot = path.join(repoRoot, "openspec", "changes");
-  return drift.map((entry) => {
-    const existing = findExistingPullBack(changesRoot, entry);
-    const id = existing ?? `install-pullback-${runStamp.toLowerCase()}-${slug(entry.relative)}`.slice(0, 96).replace(/-+$/g, "");
-    return { id, path: path.join(changesRoot, id), status: existing == null ? "created" : "existing", drift: entry };
-  });
-}
-
-function copyPath(source: string, destination: string): void {
-  const stat = fs.lstatSync(source);
-  if (stat.isDirectory()) {
-    fs.mkdirSync(destination, { recursive: true });
-    for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
-      copyPath(path.join(source, entry.name), path.join(destination, entry.name));
-    }
-  } else if (stat.isFile()) {
-    fs.mkdirSync(path.dirname(destination), { recursive: true });
-    fs.copyFileSync(source, destination);
-  } else if (stat.isSymbolicLink()) {
-    fs.mkdirSync(path.dirname(destination), { recursive: true });
-    fs.symlinkSync(fs.readlinkSync(source), destination);
-  } else {
-    throw new Error(`Unsupported filesystem entry: ${source}`);
-  }
-}
-
-function removePath(target: string): void {
-  fs.rmSync(target, { force: true, recursive: true });
-}
-
-function relativeUnderConfig(target: string, configDir: string): string | null {
-  const relative = path.relative(configDir, target);
-  if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
-    return null;
-  }
-  return toPosixRelative(relative);
-}
-
-function backupPathFor(target: string, context: InstallContext): string {
-  const relative = relativeUnderConfig(path.resolve(target), context.configDir) || path.basename(target);
-  const parts = relative.split("/").filter(Boolean);
-  let candidate = path.join(context.backupRoot, context.runStamp, ...parts);
-  let suffix = 1;
-  while (fs.existsSync(candidate)) {
-    candidate = `${path.join(context.backupRoot, context.runStamp, ...parts)}.${suffix}`;
-    suffix++;
-  }
-  return candidate;
-}
-
-function createBackup(target: string, context: InstallContext): string | null {
-  if (context.noBackup || !pathExists(target)) {
-    return null;
-  }
-  const destination = backupPathFor(target, context);
-  ensureDirectory(path.dirname(destination), context);
-  if (!context.dryRun) {
-    copyPath(target, destination);
-  }
-  return destination;
-}
-
-function installFile(source: string, destination: string, label: string, context: InstallContext): void {
-  if (isSameFile(source, destination)) {
-    console.log(`unchanged: ${label}`);
-    return;
-  }
-  ensureDirectory(path.dirname(destination), context);
-  const backup = createBackup(destination, context);
-  if (context.dryRun) {
-    const backupMessage = backup ? ` (would backup: ${backup})` : "";
-    console.log(`would install: ${label} -> ${destination}${backupMessage}`);
-    return;
-  }
-  if (pathExists(destination)) {
-    removePath(destination);
-  }
-  fs.copyFileSync(source, destination);
-  console.log(backup ? `installed: ${label} (backup: ${backup})` : `installed: ${label}`);
-}
-
-function installDirectory(source: string, destination: string, label: string, context: InstallContext): void {
-  if (isSameDirectory(source, destination)) {
-    console.log(`unchanged: ${label}`);
-    return;
-  }
-  ensureDirectory(path.dirname(destination), context);
-  const backup = createBackup(destination, context);
-  if (context.dryRun) {
-    const backupMessage = backup ? ` (would backup: ${backup})` : "";
-    console.log(`would install: ${label} -> ${destination}${backupMessage}`);
-    return;
-  }
-  removePath(destination);
-  copyPath(source, destination);
-  console.log(backup ? `installed: ${label} (backup: ${backup})` : `installed: ${label}`);
-}
-
-function prunePath(target: string, label: string, context: InstallContext): void {
-  const backup = createBackup(target, context);
-  if (context.dryRun) {
-    const backupMessage = backup ? ` (would backup: ${backup})` : "";
-    console.log(`would prune: ${label} -> ${target}${backupMessage}`);
-    return;
-  }
-  removePath(target);
-  console.log(backup ? `pruned: ${label} (backup: ${backup})` : `pruned: ${label}`);
-}
-
-function pruneStaleDirectories(destinationRoot: string, desiredNames: Set<string>, labelPrefix: string, context: InstallContext): void {
-  if (!pathExists(destinationRoot)) {
-    return;
-  }
-  if (!isDirectoryFollowingSymlink(destinationRoot)) {
-    throw new Error(`Destination ${labelPrefix} root exists but is not a directory: ${destinationRoot}`);
-  }
-  for (const dir of listDirectories(destinationRoot)) {
-    const name = path.basename(dir);
-    if (!desiredNames.has(name)) {
-      prunePath(dir, `stale ${labelPrefix} ${name}`, context);
-    }
-  }
-}
-
-function pruneStaleFiles(destinationRoot: string, desiredNames: Set<string>, extension: string, labelPrefix: string, context: InstallContext): void {
-  if (!pathExists(destinationRoot)) {
-    return;
-  }
-  if (!isDirectoryFollowingSymlink(destinationRoot)) {
-    throw new Error(`Destination ${labelPrefix} root exists but is not a directory: ${destinationRoot}`);
-  }
-  for (const file of listFiles(destinationRoot, extension)) {
-    const basename = path.basename(file);
-    if (!desiredNames.has(basename)) {
-      prunePath(file, `stale ${labelPrefix} ${path.basename(file, extension)}`, context);
-    }
-  }
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function countOccurrences(text: string, needle: string): number {
-  let count = 0;
-  let index = 0;
-  while ((index = text.indexOf(needle, index)) !== -1) {
-    count++;
-    index += needle.length;
-  }
-  return count;
-}
-
-function validateAgentsMdMarkers(existing: string, destination: string): void {
-  const pattern = new RegExp(`${escapeRegExp(BEGIN_MARKER)}[\\s\\S]*?${escapeRegExp(END_MARKER)}\\r?\\n?`);
-  const beginCount = countOccurrences(existing, BEGIN_MARKER);
-  const endCount = countOccurrences(existing, END_MARKER);
-  if (beginCount !== endCount) {
-    throw new Error(`Malformed AGENTS.md managed block markers in ${destination}: begin=${beginCount} end=${endCount}`);
-  }
-  if (beginCount > 1) {
-    throw new Error(`Multiple AGENTS.md managed blocks found in ${destination}; keep exactly one managed block before reinstalling.`);
-  }
-  if (beginCount === 1 && !pattern.test(existing)) {
-    throw new Error(`Malformed AGENTS.md managed block markers in ${destination}: begin marker must precede end marker.`);
-  }
-}
-
-function detectNewline(text: string): string {
-  return text.includes("\r\n") ? "\r\n" : "\n";
-}
-
-function agentsMdBlock(source: string, newline: string): string {
-  const sourceText = fs.readFileSync(source, "utf8").trimEnd().replace(/\r\n?/g, "\n").replace(/\n/g, newline);
-  return `${BEGIN_MARKER}${newline}${sourceText}${newline}${END_MARKER}${newline}`;
-}
-
-function readExistingAgentsMd(destination: string): string {
-  if (!pathExists(destination)) {
-    return "";
-  }
-  try {
-    if (!fs.statSync(destination).isFile()) {
-      return "";
-    }
-    return fs.readFileSync(destination, "utf8");
-  } catch (error) {
-    if (isNodeError(error) && error.code === "ENOENT") {
-      return "";
-    }
-    throw error;
-  }
-}
-
-function planAgentsMd(source: string, destination: string): AgentsMdPlan {
-  const existing = readExistingAgentsMd(destination);
-  validateAgentsMdMarkers(existing, destination);
-  const newline = existing ? detectNewline(existing) : "\n";
-  const block = agentsMdBlock(source, newline);
-  const pattern = new RegExp(`${escapeRegExp(BEGIN_MARKER)}[\\s\\S]*?${escapeRegExp(END_MARKER)}\\r?\\n?`);
-
-  let next: string;
-  if (pattern.test(existing)) {
-    next = existing.replace(pattern, block);
-  } else if (existing.trim() === "") {
-    next = block;
-  } else {
-    const separator = existing.endsWith(`${newline}${newline}`) ? "" : existing.endsWith(newline) ? newline : `${newline}${newline}`;
-    next = `${existing}${separator}${block}`;
-  }
-
-  return { existing, next };
-}
-
-function collectAgentsMdDrift(source: string, destination: string): DriftEntry[] {
-  if (!pathExists(destination)) {
-    return [];
-  }
-  const { existing, next } = planAgentsMd(source, destination);
-  if (existing === next) {
-    return [];
-  }
-  return [{
-    destination,
-    destinationHash: artifactHash(destination),
-    label: "AGENTS.md",
-    relative: "AGENTS.md",
-    source,
-    sourceHash: artifactHash(source),
-    type: "file",
-  }];
-}
-
-function installAgentsMd(source: string, destination: string, context: InstallContext): void {
-  const { existing, next } = planAgentsMd(source, destination);
-
-  if (existing === next) {
-    console.log("unchanged: AGENTS.md block");
-    return;
-  }
-  ensureDirectory(path.dirname(destination), context);
-  const backup = createBackup(destination, context);
-  if (context.dryRun) {
-    const backupMessage = backup ? ` (would backup: ${backup})` : "";
-    console.log(`would install: AGENTS.md block -> ${destination}${backupMessage}`);
-    return;
-  }
-  if (pathExists(destination)) {
-    removePath(destination);
-  }
-  fs.writeFileSync(destination, next, "utf8");
-  console.log(backup ? `installed: AGENTS.md block (backup: ${backup})` : "installed: AGENTS.md block");
-}
-
-function run(): void {
-  const options = parseArgs(process.argv.slice(2));
-  const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-  const sourceSkillsDir = path.join(repoRoot, ".opencode", "skills");
-  const sourceAgentsDir = path.join(repoRoot, ".opencode", "agents");
-  const sourcePluginDir = path.join(repoRoot, ".opencode", "plugin");
-  const sourceSessionDeliveryContextTool = path.join(repoRoot, "tools", "session-delivery-context.ts");
-  const sourceAgentsMd = options.skipAgentsMd
-    ? null
-    : resolveSourcePath(options.agentsMdSource, repoRoot, path.join("instructions", "global-opencode-agent-instructions.md"));
-  const configDir = resolveConfigDir(options.configDir);
-  const context: InstallContext = {
-    backupRoot: path.join(configDir, ".backups", "agents-and-skills"),
-    configDir,
-    dryRun: options.dryRun,
-    noBackup: options.noBackup,
-    runStamp: new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z"),
-  };
-
-  assertDirectoryExists(sourceSkillsDir, "source skills");
-  assertDirectoryExists(sourceAgentsDir, "source agents");
-  assertDirectoryExists(sourcePluginDir, "source plugin");
-  assertFileExists(sourceSessionDeliveryContextTool, "source session delivery context tool");
-  if (fs.existsSync(configDir) && !fs.statSync(configDir).isDirectory()) {
-    throw new Error(`OpenCode config path exists but is not a directory: ${configDir}`);
-  }
-  if (sourceAgentsMd) {
-    assertFileExists(sourceAgentsMd, "source AGENTS.md");
-  }
-
-  const allSkillDirs = listDirectories(sourceSkillsDir);
-  const allAgentFiles = listFiles(sourceAgentsDir, ".md");
-  const profile = loadProfile(repoRoot, options.profile);
-  const skillDirs = filterByProfile(allSkillDirs, (dir) => path.basename(dir), profile.skills, "skill");
-  const agentFiles = filterByProfile(allAgentFiles, (file) => path.basename(file, ".md"), profile.agents, "agent");
-  const destinationSkillsDir = path.join(configDir, "skills");
-  const destinationAgentsDir = path.join(configDir, "agents");
-  const destinationPluginDir = path.join(configDir, "plugin");
-  const destinationSupportToolsDir = path.join(configDir, "opencode-dev-kit", "tools");
-  const destinationAgentsMd = path.join(configDir, "AGENTS.md");
-
-  assertNoSourceOverlap(configDir, sourceSkillsDir, "--config-dir");
-  assertNoSourceOverlap(configDir, sourceAgentsDir, "--config-dir");
-  assertNoSourceOverlap(configDir, sourcePluginDir, "--config-dir");
-  assertNoSourceOverlap(destinationSkillsDir, sourceSkillsDir, "destination skills directory");
-  assertNoSourceOverlap(destinationAgentsDir, sourceAgentsDir, "destination agents directory");
-  assertNoSourceOverlap(destinationPluginDir, sourcePluginDir, "destination plugin directory");
-  assertNoSourceOverlap(destinationSupportToolsDir, path.dirname(sourceSessionDeliveryContextTool), "destination support tools directory");
-  if (sourceAgentsMd) {
-    assertAgentsMdSourceSafe(sourceAgentsMd, destinationAgentsMd, destinationSkillsDir, destinationAgentsDir);
-    validateAgentsMdMarkers(readExistingAgentsMd(destinationAgentsMd), destinationAgentsMd);
-  }
-
-  const drift = [
-    ...collectDrift([
-      ...skillDirs.map((skillDir) => ({
-        destination: path.join(destinationSkillsDir, path.basename(skillDir)),
-        label: `skill ${path.basename(skillDir)}`,
-        relative: `skills/${path.basename(skillDir)}`,
-        source: skillDir,
-        type: "directory" as const,
-      })),
-      ...agentFiles.map((agentFile) => ({
-        destination: path.join(destinationAgentsDir, path.basename(agentFile)),
-        label: `agent ${path.basename(agentFile, ".md")}`,
-        relative: `agents/${path.basename(agentFile)}`,
-        source: agentFile,
-        type: "file" as const,
-      })),
-      ...listFiles(sourcePluginDir, ".ts").map((pluginFile) => ({
-        destination: path.join(destinationPluginDir, path.basename(pluginFile)),
-        label: `plugin ${path.basename(pluginFile, ".ts")}`,
-        relative: `plugin/${path.basename(pluginFile)}`,
-        source: pluginFile,
-        type: "file" as const,
-      })),
-      {
-        destination: path.join(destinationSupportToolsDir, "session-delivery-context.ts"),
-        label: "support tool session-delivery-context",
-        relative: "opencode-dev-kit/tools/session-delivery-context.ts",
-        source: sourceSessionDeliveryContextTool,
-        type: "file" as const,
-      },
-    ]),
-    ...(sourceAgentsMd == null ? [] : collectAgentsMdDrift(sourceAgentsMd, destinationAgentsMd)),
-  ].sort((left, right) => left.relative.localeCompare(right.relative));
-
-  console.log(`OpenCode global config: ${configDir}`);
-  console.log(`Install profile: ${options.profile}`);
-  console.log(sourceAgentsMd ? `AGENTS.md source: ${sourceAgentsMd}` : "AGENTS.md source: skipped");
-  if (options.audit) {
-    printDriftReport(drift);
-    if (drift.length > 0) {
-      process.exitCode = 1;
-    }
-    return;
-  }
-  if (options.pullBack) {
-    printDriftReport(drift);
-    if (drift.length === 0) {
-      console.log("Pull-back no-op. No files were changed.");
-      return;
-    }
-    if (context.dryRun) {
-      for (const change of previewPullBackChanges(repoRoot, drift, context.runStamp)) {
-        const status = change.status === "existing" ? "existing" : "would create";
-        console.log(`${status}: ${change.id} (${change.drift.relative})`);
-      }
-      console.log("Pull-back dry run complete. No files were changed.");
-      return;
-    }
-    for (const change of createPullBackChanges(repoRoot, drift, context.runStamp)) {
-      console.log(`${change.status}: ${change.id} (${change.drift.relative})`);
-    }
-    console.log("Pull-back complete. Destination artifacts were not overwritten.");
-    return;
-  }
-  if (!options.forceOverwrite && drift.length > 0) {
-    printDriftReport(drift);
-    console.log("Default install refuses to overwrite drifted artifacts.");
-    printDriftRecovery(configDir, options.profile, options.skipAgentsMd);
-    process.exitCode = 1;
-    return;
-  }
-  console.log(`Installing skills: ${skillDirs.length}`);
-  for (const skillDir of skillDirs) {
-    installDirectory(skillDir, path.join(destinationSkillsDir, path.basename(skillDir)), `skill ${path.basename(skillDir)}`, context);
-  }
-  if (options.prune) {
-    pruneStaleDirectories(destinationSkillsDir, new Set(skillDirs.map((dir) => path.basename(dir))), "skill", context);
-  } else {
-    console.log("skipped: stale skill pruning (use --prune to delete destination-only skills)");
-  }
-
-  console.log(`Installing agents: ${agentFiles.length}`);
-  for (const agentFile of agentFiles) {
-    installFile(agentFile, path.join(destinationAgentsDir, path.basename(agentFile)), `agent ${path.basename(agentFile, ".md")}`, context);
-  }
-  if (options.prune) {
-    pruneStaleFiles(destinationAgentsDir, new Set(agentFiles.map((file) => path.basename(file))), ".md", "agent", context);
-  } else {
-    console.log("skipped: stale agent pruning (use --prune to delete destination-only agents)");
-  }
-
-  if (options.skipAgentsMd || sourceAgentsMd == null) {
-    console.log("skipped: AGENTS.md block");
-  } else {
-    installAgentsMd(sourceAgentsMd, destinationAgentsMd, context);
-  }
-
-  console.log("Installing plugin support: session delivery context");
-  for (const pluginFile of listFiles(sourcePluginDir, ".ts")) {
-    installFile(pluginFile, path.join(destinationPluginDir, path.basename(pluginFile)), `plugin ${path.basename(pluginFile, ".ts")}`, context);
-  }
-  installFile(sourceSessionDeliveryContextTool, path.join(destinationSupportToolsDir, "session-delivery-context.ts"), "support tool session-delivery-context", context);
-
-  if (options.dryRun) {
-    console.log("Dry run complete. No files were changed.");
-  } else {
-    console.log("Done. Restart OpenCode for newly installed global artifacts to be loaded.");
-  }
-}
-
-try {
-  run();
-} catch (error) {
-  const message = error instanceof Error ? error.message : String(error);
-  console.error(`ERROR: ${message}`);
+  console.log(`mismatch: ${ENV_VAR}=${current}`);
+  console.log(`expected: ${ENV_VAR}=${globalDir}`);
+  console.log(`Run "npm run install:global" to repoint it at this repository.`);
   process.exit(1);
 }
+
+function runPrint(): void {
+  console.log(globalDir);
+  console.log(`command (windows): setx ${ENV_VAR} "${globalDir}"`);
+  console.log(`command (posix):   export ${ENV_VAR}="${globalDir}"`);
+}
+
+function runSet(dryRun: boolean): void {
+  const errors = validateGlobalDir(globalDir);
+  if (errors.length > 0) {
+    for (const error of errors) {
+      console.error(error);
+    }
+    process.exit(1);
+  }
+  if (!dryRun) {
+    ensureLocalConfig(globalDir);
+  }
+
+  const previous = currentValue();
+  if (previous !== undefined && previous.trim() !== "" && !samePath(previous, globalDir)) {
+    console.log(`note: ${ENV_VAR} was previously ${previous}; repointing at this repository.`);
+  }
+
+  if (dryRun) {
+    console.log(`would set: ${ENV_VAR}=${globalDir}`);
+    if (isWindows()) {
+      console.log(`would run:  setx ${ENV_VAR} "${globalDir}"`);
+    } else {
+      console.log(`would print: export ${ENV_VAR}="${globalDir}"`);
+    }
+    console.log("Dry run complete. No environment variable was changed.");
+    return;
+  }
+
+  if (isWindows()) {
+    const result = spawnSync("setx", [ENV_VAR, globalDir], { encoding: "utf8" });
+    if (result.status !== 0) {
+      console.error(`setx failed (exit ${result.status}).`);
+      if (result.stderr) {
+        console.error(result.stderr);
+      }
+      process.exit(1);
+    }
+    console.log(`set: ${ENV_VAR}=${globalDir}`);
+  } else {
+    console.log(`Add the following line to your shell profile (~/.zshrc or ~/.bashrc):`);
+    console.log(`  export ${ENV_VAR}="${globalDir}"`);
+    console.log(`Then restart your shell.`);
+  }
+
+  console.log("");
+  console.log("Restart OpenCode so it loads the new global config directory.");
+  if (isWindows()) {
+    console.log("Windows GUI apps launched from Explorer may require logoff/logon to inherit the change.");
+  }
+  warnLegacyPlugin();
+}
+
+function runUnset(): void {
+  if (isWindows()) {
+    const result = spawnSync("reg", ["delete", "HKCU\\Environment", "/F", "/V", ENV_VAR], { encoding: "utf8" });
+    if (result.status === 0) {
+      console.log(`removed: ${ENV_VAR} (HKCU\\Environment)`);
+    } else {
+      const out = `${result.stdout}${result.stderr}`;
+      if (/unable to find|no such|cannot find/i.test(out)) {
+        console.log(`${ENV_VAR} was not set in HKCU\\Environment.`);
+      } else {
+        console.error(`reg delete failed (exit ${result.status}).`);
+        if (out) {
+          console.error(out);
+        }
+        process.exit(1);
+      }
+    }
+  } else {
+    console.log(`Remove the following line from your shell profile (~/.zshrc or ~/.bashrc):`);
+    console.log(`  export ${ENV_VAR}=...`);
+    console.log(`Then restart your shell.`);
+  }
+  console.log("");
+  console.log("Restart OpenCode so it stops using the repository global config directory.");
+}
+
+function main(): void {
+  const options = parseArgs(process.argv.slice(2));
+  switch (options.mode) {
+    case "check":
+      runCheck();
+      break;
+    case "print":
+      runPrint();
+      break;
+    case "unset":
+      runUnset();
+      break;
+    case "set":
+      runSet(options.dryRun);
+      break;
+  }
+}
+
+main();

@@ -379,8 +379,8 @@ function bloatExemption(proposal: string): boolean {
 function extractBloatTargets(proposal: string): string[] {
   const targets = new Set<string>();
   const patterns = [
-    /`(AGENTS\.md|\.opencode\/skills\/[a-z0-9-]+\/SKILL\.md|instructions\/[A-Za-z0-9._-]+\.md)`/g,
-    /(^|\s)(AGENTS\.md|\.opencode\/skills\/[a-z0-9-]+\/SKILL\.md|instructions\/[A-Za-z0-9._-]+\.md)(?=\s|$|[,.):])/gm,
+    /`((?:global|\.opencode)\/skills\/[a-z0-9-]+\/SKILL\.md|AGENTS\.md|instructions\/[A-Za-z0-9._-]+\.md)`/g,
+    /(^|\s)((?:global|\.opencode)\/skills\/[a-z0-9-]+\/SKILL\.md|AGENTS\.md|instructions\/[A-Za-z0-9._-]+\.md)(?=\s|$|[,.):])/gm,
   ];
   for (const pattern of patterns) {
     for (const match of proposal.matchAll(pattern)) {

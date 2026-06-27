@@ -130,11 +130,14 @@ function walkMarkdown(root: string, current: string, files: string[]): void {
 }
 
 function classify(relative: string): ArtifactKind | null {
-  if (/^\.opencode\/skills\/[^/]+\/SKILL\.md$/.test(relative)) {
+  if (/^global\/skills\/[^/]+\/SKILL\.md$/.test(relative)) {
     return "skill";
   }
-  if (/^\.opencode\/agents\/[^/]+\.md$/.test(relative)) {
+  if (/^global\/agents\/[^/]+\.md$/.test(relative)) {
     return "agent";
+  }
+  if (relative === "global/AGENTS.md") {
+    return "instruction";
   }
   if (/^instructions\/.+\.md$/.test(relative)) {
     return "instruction";

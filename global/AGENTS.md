@@ -8,6 +8,15 @@
 - If the requested memory is ambiguous, ask one concise clarification question before writing it down.
 - After updating the global instruction file, briefly tell the user what was added and where.
 
+## Global Artifact Location
+
+- Global artifacts (the global `AGENTS.md`, global skills, global agents, global commands, global plugins, and the global `opencode.json`) are loaded from the OpenCode global config directory, not a fixed path.
+- Before editing any global artifact, read `OPENCODE_CONFIG_DIR` to resolve the active global config directory:
+  - If `OPENCODE_CONFIG_DIR` is set, edit under that directory: `<CONFIG_DIR>/AGENTS.md`, `<CONFIG_DIR>/skills/<name>/SKILL.md`, `<CONFIG_DIR>/agents/<name>.md`, `<CONFIG_DIR>/commands/<name>.md`, `<CONFIG_DIR>/plugin/`, `<CONFIG_DIR>/opencode.json`.
+  - If `OPENCODE_CONFIG_DIR` is NOT set, the default global config directory is `~/.config/opencode`; edit there.
+- When `OPENCODE_CONFIG_DIR` is set, `~/.config/opencode` is bypassed and not loaded, so edits there have no effect. Never edit the bypassed default when a `OPENCODE_CONFIG_DIR` override is active.
+- When the user asks to change a global artifact, state which directory you resolved before editing, so the user knows where the change lands.
+
 ## Communication Preferences
 
 - Record the user's preferred response language explicitly. If no preference is known, follow the user's language in the current conversation.

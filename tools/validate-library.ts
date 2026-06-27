@@ -456,7 +456,7 @@ function listFiles(root: string, extension: string): string[] {
 }
 
 function validateSkills(root: string): string[] {
-  const skillsDir = path.join(root, ".opencode", "skills");
+  const skillsDir = path.join(root, "global", "skills");
   if (!directoryExists(skillsDir)) {
     addError(`Missing skills directory: ${skillsDir}`);
     return [];
@@ -503,7 +503,7 @@ function validateFeedbackLedgerArtifacts(root: string, skillNames: string[]): vo
   if (!skillNames.includes("complain")) {
     return;
   }
-  const skillPath = path.join(root, ".opencode", "skills", "complain", "SKILL.md");
+  const skillPath = path.join(root, "global", "skills", "complain", "SKILL.md");
   const readmePath = path.join(root, "docs", "feedbacks", "README.md");
   if (!fileExists(skillPath)) {
     addError(`Missing complain skill file: ${skillPath}`);
@@ -668,7 +668,7 @@ function validateImplementationWorker(frontmatter: FrontmatterMap, text: string,
 }
 
 function validateAgents(root: string): string[] {
-  const agentsDir = path.join(root, ".opencode", "agents");
+  const agentsDir = path.join(root, "global", "agents");
   if (!directoryExists(agentsDir)) {
     addError(`Missing agents directory: ${agentsDir}`);
     return [];
@@ -803,68 +803,28 @@ function validateInstructionFeedbackContracts(root: string): void {
   }
 }
 
-function hasInstallForceOverwriteExemption(root: string): boolean {
-  const changesRoot = path.join(root, "openspec", "changes");
-  if (!directoryExists(changesRoot)) {
-    return false;
-  }
-  for (const changeDir of listDirectories(changesRoot)) {
-    const proposalPath = path.join(changeDir, "proposal.md");
-    if (!fileExists(proposalPath)) {
-      continue;
-    }
-    if (readText(proposalPath).includes("<!-- install-force-overwrite-default-exemption:")) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function bodyOfFunction(text: string, functionName: string): string | null {
-  const startMatch = text.match(new RegExp(`function\\s+${escapeRegExp(functionName)}\\s*\\([^)]*\\)\\s*(?::\\s*[^\\{]+)?\\{`));
-  if (startMatch == null || startMatch.index == null) {
-    return null;
-  }
-  let depth = 0;
-  let bodyStart = -1;
-  for (let index = startMatch.index; index < text.length; index++) {
-    const char = text[index];
-    if (char === "{") {
-      depth++;
-      if (bodyStart < 0) {
-        bodyStart = index + 1;
-      }
-    } else if (char === "}") {
-      depth--;
-      if (depth === 0 && bodyStart >= 0) {
-        return text.slice(bodyStart, index);
-      }
-    }
-  }
-  return null;
-}
-
-function validateInstallForceOverwriteGuard(root: string): void {
+function validateInstallerConfigDirModel(root: string): void {
   const installerPath = path.join(root, "tools", "install-opencode-global.ts");
   if (!fileExists(installerPath)) {
     return;
   }
-  const installerText = readText(installerPath);
-  const runBody = bodyOfFunction(installerText, "run");
-  const parseBody = bodyOfFunction(installerText, "parseArgs") ?? "";
-  const hasExemption = hasInstallForceOverwriteExemption(root);
-  const defaultForceOverwrite = /forceOverwrite\s*:\s*true/.test(parseBody) || (runBody != null && /options\.forceOverwrite\s*=\s*true/.test(runBody.split("collectDrift(")[0] ?? runBody));
-  let bypassesDrift = false;
-  if (runBody == null) {
-    bypassesDrift = true;
-  } else {
-    const collectIndex = runBody.indexOf("collectDrift(");
-    const installCallMatches = Array.from(runBody.matchAll(/\b(installFile|installDirectory|installAgentsMd)\s*\(/g));
-    const firstInstallIndex = installCallMatches.length > 0 ? installCallMatches[0].index ?? -1 : -1;
-    bypassesDrift = collectIndex < 0 || (firstInstallIndex >= 0 && firstInstallIndex < collectIndex);
+  const text = readText(installerPath);
+  if (!text.includes("OPENCODE_CONFIG_DIR")) {
+    addError("install-opencode-global must point OPENCODE_CONFIG_DIR at the repository global/ directory (config-dir pointing model, not file copy).");
   }
-  if ((defaultForceOverwrite || bypassesDrift) && !hasExemption) {
-    addError(`install-opencode-global force-overwrite default guard failed: default path must call collectDrift before install and must not make force-overwrite default without <!-- install-force-overwrite-default-exemption: <reason> -->.`);
+  if (!text.includes('"global"') && !text.includes("'global'") && !text.includes("`global`")) {
+    addError("install-opencode-global must reference the repository global/ directory as the OPENCODE_CONFIG_DIR target.");
+  }
+  const globalDir = path.join(root, "global");
+  if (!directoryExists(globalDir)) {
+    addError(`Missing global config directory: ${globalDir}`);
+    return;
+  }
+  for (const required of ["skills", "agents", "AGENTS.md", "opencode.json.template"]) {
+    const candidate = path.join(globalDir, required);
+    if (!fileExists(candidate) && !directoryExists(candidate)) {
+      addError(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
+    }
   }
 }
 
@@ -1358,7 +1318,7 @@ function validateMarkdownFile(root: string, file: string, forbiddenAnchors: stri
     }
   }
 
-  const isInstructionArtifact = /^\.opencode\/(skills|agents)\//.test(relative) ||
+  const isInstructionArtifact = /^(?:global|\.opencode)\/(skills|agents)\//.test(relative) ||
     /^instructions\//.test(relative) ||
     ["AGENTS.md", "README.md"].includes(relative);
   if (isInstructionArtifact) {
@@ -1402,7 +1362,7 @@ function validateImplementationWorkerRouting(root: string, agentNames: string[])
 
   for (const relative of [
     "AGENTS.md",
-    "instructions/global-opencode-agent-instructions.md",
+    "global/AGENTS.md",
     "instructions/reusable-project-agent-instructions.md",
     "templates/project/AGENTS.md",
   ]) {
@@ -1420,7 +1380,7 @@ function validateImplementationWorkerRouting(root: string, agentNames: string[])
     }
   }
 
-  const orchestratorPath = path.join(root, ".opencode", "skills", "orchestrator", "SKILL.md");
+  const orchestratorPath = path.join(root, "global", "skills", "orchestrator", "SKILL.md");
   if (fileExists(orchestratorPath)) {
     const text = readText(orchestratorPath);
     requireTextContains(text, "implementation-worker", "orchestrator implementation-worker routing", orchestratorPath);
@@ -1437,7 +1397,7 @@ function validateSessionDeliveryBinding(root: string, agentNames: string[]): voi
 
   for (const relative of [
     "AGENTS.md",
-    "instructions/global-opencode-agent-instructions.md",
+    "global/AGENTS.md",
     "instructions/reusable-project-agent-instructions.md",
     "instructions/universal-development-loop.md",
     "templates/project/AGENTS.md",
@@ -1474,7 +1434,7 @@ function main(): void {
   validateReadme(root, skillNames, agentNames, instructionNames);
   validateAgentsMd(root);
   validateInstructionFeedbackContracts(root);
-  validateInstallForceOverwriteGuard(root);
+  validateInstallerConfigDirModel(root);
 
   const markdownFiles = getMarkdownFiles(root);
   for (const file of markdownFiles) {

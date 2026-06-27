@@ -79,7 +79,7 @@ function lines(values: string[]): string {
 
 function newLibraryFixture(name: string): string {
   const dir = newTempDir(name);
-  writeText(path.join(dir, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+  writeText(path.join(dir, "global", "skills", "demo-skill", "SKILL.md"), lines([
     "---",
     "name: demo-skill",
     "description: Use when testing a demo reusable skill.",
@@ -95,9 +95,9 @@ function newLibraryFixture(name: string): string {
     "Return fixture validation evidence.",
     "",
   ]));
-  writeText(path.join(dir, ".opencode", "skills", "complain", "SKILL.md"), fs.readFileSync(path.join(root, ".opencode", "skills", "complain", "SKILL.md"), "utf8"));
+  writeText(path.join(dir, "global", "skills", "complain", "SKILL.md"), fs.readFileSync(path.join(root, "global", "skills", "complain", "SKILL.md"), "utf8"));
   writeText(path.join(dir, "docs", "feedbacks", "README.md"), fs.readFileSync(path.join(root, "docs", "feedbacks", "README.md"), "utf8"));
-  writeText(path.join(dir, ".opencode", "agents", "demo-reviewer.md"), lines([
+  writeText(path.join(dir, "global", "agents", "demo-reviewer.md"), lines([
     "---",
     "description: Reviews demo fixture behavior.",
     "mode: subagent",
@@ -459,8 +459,8 @@ function findPathWithBasename(rootPath: string, basename: string): string | null
 }
 
 function addImplementationWorkerFixture(fixture: string): string {
-  const workerPath = path.join(fixture, ".opencode", "agents", "implementation-worker.md");
-  const sourcePath = path.join(root, ".opencode", "agents", "implementation-worker.md");
+  const workerPath = path.join(fixture, "global", "agents", "implementation-worker.md");
+  const sourcePath = path.join(root, "global", "agents", "implementation-worker.md");
   writeText(workerPath, fs.readFileSync(sourcePath, "utf8"));
 
   const profilePath = path.join(fixture, "profiles", "all.json");
@@ -495,7 +495,7 @@ const sessionDeliveryBindingTokens = [
 ];
 
 function addSessionDeliveryBindingFixture(fixture: string): void {
-  writeText(path.join(fixture, ".opencode", "agents", "session-delivery-reviewer.md"), fs.readFileSync(path.join(root, ".opencode", "agents", "session-delivery-reviewer.md"), "utf8"));
+  writeText(path.join(fixture, "global", "agents", "session-delivery-reviewer.md"), fs.readFileSync(path.join(root, "global", "agents", "session-delivery-reviewer.md"), "utf8"));
   appendReadmeAgentCatalogEntry(fixture, "- `session-delivery-reviewer`: Session delivery reviewer.");
   const profilePath = path.join(fixture, "profiles", "all.json");
   const profile = fs.readFileSync(profilePath, "utf8");
@@ -519,7 +519,7 @@ const tests: TestCase[] = [
     name: "validator rejects weakened complain feedback contract",
     run: () => {
       const fixture = newLibraryFixture("complain-contract");
-      const skillPath = path.join(fixture, ".opencode", "skills", "complain", "SKILL.md");
+      const skillPath = path.join(fixture, "global", "skills", "complain", "SKILL.md");
       const readmePath = path.join(fixture, "docs", "feedbacks", "README.md");
       writeText(readmePath, fs.readFileSync(path.join(root, "docs", "feedbacks", "README.md"), "utf8"));
       const skill = fs.readFileSync(skillPath, "utf8");
@@ -565,8 +565,8 @@ const tests: TestCase[] = [
     name: "validator rejects missing implementation worker base routing",
     run: () => {
       const fixture = newLibraryFixture("implementation-worker-missing-routing");
-      const workerPath = path.join(fixture, ".opencode", "agents", "implementation-worker.md");
-      const sourcePath = path.join(root, ".opencode", "agents", "implementation-worker.md");
+      const workerPath = path.join(fixture, "global", "agents", "implementation-worker.md");
+      const sourcePath = path.join(root, "global", "agents", "implementation-worker.md");
       writeText(workerPath, fs.readFileSync(sourcePath, "utf8"));
       const readmePath = path.join(fixture, "README.md");
       const readme = fs.readFileSync(readmePath, "utf8");
@@ -580,7 +580,7 @@ const tests: TestCase[] = [
     name: "validator rejects invalid YAML-like frontmatter",
     run: () => {
       const fixture = newLibraryFixture("invalid-frontmatter");
-      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "---",
         "name: demo-skill",
         "description: Invalid: unquoted colon-space scalar.",
@@ -597,7 +597,7 @@ const tests: TestCase[] = [
     name: "validator ignores body-only metadata",
     run: () => {
       const fixture = newLibraryFixture("body-metadata");
-      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "# Demo Skill",
         "",
         "name: demo-skill",
@@ -611,7 +611,7 @@ const tests: TestCase[] = [
     name: "validator rejects bare required scalars",
     run: () => {
       const fixture = newLibraryFixture("bare-description");
-      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "---",
         "name: demo-skill",
         "description:",
@@ -628,7 +628,7 @@ const tests: TestCase[] = [
     name: "validator rejects unsafe reviewer permissions",
     run: () => {
       const fixture = newLibraryFixture("unsafe-permissions");
-      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
         "---",
         "description: Reviews demo fixture behavior.",
         "mode: subagent",
@@ -653,7 +653,7 @@ const tests: TestCase[] = [
     name: "validator rejects incomplete reviewer permissions",
     run: () => {
       const fixture = newLibraryFixture("incomplete-reviewer-permissions");
-      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
         "---",
         "description: Reviews demo fixture behavior.",
         "mode: subagent",
@@ -684,7 +684,7 @@ const tests: TestCase[] = [
     name: "validator accepts reviewer permissions without obsolete list key",
     run: () => {
       const fixture = newLibraryFixture("reviewer-without-list-permission");
-      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
         "---",
         "description: Reviews demo fixture behavior.",
         "mode: subagent",
@@ -735,7 +735,7 @@ const tests: TestCase[] = [
     name: "validator rejects reviewer bash allow outside session delivery reviewer",
     run: () => {
       const fixture = newLibraryFixture("reviewer-bash-exception-scope");
-      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
         "---",
         "description: Reviews demo fixture behavior.",
         "mode: subagent",
@@ -791,7 +791,7 @@ const tests: TestCase[] = [
     name: "validator rejects session delivery context tool outside session delivery reviewer",
     run: () => {
       const fixture = newLibraryFixture("reviewer-custom-tool-exception-scope");
-      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
         "---",
         "description: Reviews demo fixture behavior.",
         "mode: subagent",
@@ -841,7 +841,7 @@ const tests: TestCase[] = [
     name: "validator rejects obsolete reviewer list permission",
     run: () => {
       const fixture = newLibraryFixture("obsolete-list-permission");
-      writeText(path.join(fixture, ".opencode", "agents", "demo-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
         "---",
         "description: Reviews demo fixture behavior.",
         "mode: subagent",
@@ -875,7 +875,7 @@ const tests: TestCase[] = [
     name: "validator rejects missing test-coverage reviewer task context contract",
     run: () => {
       const fixture = newLibraryFixture("test-coverage-context-contract");
-      writeText(path.join(fixture, ".opencode", "agents", "test-coverage-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "test-coverage-reviewer.md"), lines([
         "---",
         "description: Reviews acceptance and test coverage.",
         "mode: subagent",
@@ -913,7 +913,7 @@ const tests: TestCase[] = [
     name: "validator rejects missing session-delivery reviewer control contract",
     run: () => {
       const fixture = newLibraryFixture("session-delivery-control-contract");
-      writeText(path.join(fixture, ".opencode", "agents", "session-delivery-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "session-delivery-reviewer.md"), lines([
         "---",
         "description: Reviews OpenCode session delivery.",
         "mode: subagent",
@@ -977,7 +977,7 @@ const tests: TestCase[] = [
     name: "validator rejects missing reviewer Prevention Feedback contract",
     run: () => {
       const fixture = newLibraryFixture("reviewer-prevention-feedback-contract");
-      writeText(path.join(fixture, ".opencode", "agents", "code-quality-reviewer.md"), lines([
+      writeText(path.join(fixture, "global", "agents", "code-quality-reviewer.md"), lines([
         "---",
         "description: Reviews changed code quality.",
         "mode: subagent",
@@ -1303,35 +1303,19 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "validator rejects force-overwrite installer default bypass without exemption",
+    name: "validator enforces installer config-dir pointing model",
     run: () => {
-      const fixture = newLibraryFixture("installer-force-overwrite-guard");
-      writeText(path.join(fixture, "tools", "install-opencode-global.ts"), lines([
+      const fixture = newLibraryFixture("installer-config-dir-model");
+      const installerPath = path.join(fixture, "tools", "install-opencode-global.ts");
+      writeText(installerPath, lines([
         "#!/usr/bin/env node",
-        "function parseArgs() {",
-        "  const options = { forceOverwrite: false };",
-        "  options.forceOverwrite = true;",
-        "  return options;",
-        "}",
-        "function run() {",
-        "  const options = parseArgs();",
-        "  installFile(options);",
-        "}",
-        "function installFile(_options: unknown) {}",
-        "run();",
+        "// legacy copy/sync installer; does not point OPENCODE_CONFIG_DIR",
+        "console.log('copying files');",
         "",
       ]));
-      const rejected = invokeValidator(fixture);
-      assertFailure(rejected, "Force-overwrite default bypass should fail validation.");
-      assertOutputContains(rejected, "force-overwrite default", "Validation output should name force-overwrite default guard.");
-
-      writeText(path.join(fixture, "openspec", "changes", "guard-exemption", "proposal.md"), lines([
-        "# Proposal: guard-exemption",
-        "",
-        "<!-- install-force-overwrite-default-exemption: fixture proves explicit exemption path -->",
-        "",
-      ]));
-      assertSuccess(invokeValidator(fixture), "Explicit force-overwrite default exemption marker should pass validation.");
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Copy/sync installer without OPENCODE_CONFIG_DIR should fail validation.");
+      assertOutputContains(result, "OPENCODE_CONFIG_DIR", "Validation should require the config-dir pointing model.");
     },
   },
   {
@@ -1366,7 +1350,7 @@ const tests: TestCase[] = [
     name: "validator rejects self-improvement loops",
     run: () => {
       const fixture = newLibraryFixture("self-improvement-loop");
-      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "---",
         "name: demo-skill",
         "description: Use when testing a demo reusable skill.",
@@ -1402,7 +1386,7 @@ const tests: TestCase[] = [
     name: "validator warns on implementation language without TDD",
     run: () => {
       const fixture = newLibraryFixture("tdd-warning");
-      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "---",
         "name: demo-skill",
         "description: Use when testing a demo reusable skill.",
@@ -1428,7 +1412,7 @@ const tests: TestCase[] = [
     name: "validator ignores non-goal implementation language",
     run: () => {
       const fixture = newLibraryFixture("non-goal-implementation-language");
-      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "---",
         "name: demo-skill",
         "description: Use when testing non-goal wording.",
@@ -1526,7 +1510,7 @@ const tests: TestCase[] = [
     name: "validator strict mode rejects warnings",
     run: () => {
       const fixture = newLibraryFixture("strict-warning");
-      writeText(path.join(fixture, ".opencode", "skills", "demo-skill", "SKILL.md"), lines([
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "---",
         "name: demo-skill",
         "description: Use when testing a demo reusable skill.",
@@ -1700,241 +1684,6 @@ const tests: TestCase[] = [
       }
       const artifacts = asArray(report.artifacts, "Instruction inventory artifacts should be an array.");
       findBucket(artifacts, "path", "instructions/universal-development-loop.md");
-    },
-  },
-  {
-    name: "installer dry-run writes nothing",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-dry-run"), "config");
-      const result = invokeInstaller(["--dry-run", "--config-dir", configDir]);
-      assertSuccess(result, "Installer dry-run should succeed.");
-      assertOutputContains(result, "Install profile: all", "Default installer run should install all repo artifacts without profile selection.");
-      assertOutputContains(result, "skill adaptive-delivery", "Default installer run should include core skills.");
-      assertOutputContains(result, "skill wire-protocol-golden-tests", "Default installer run should include the full repository skill set.");
-      assertOutputContains(result, "agent deployment-config-reviewer", "Default installer run should include every reviewer.");
-      assertOutputContains(result, "plugin session-env", "Default installer run should include session delivery context plugin.");
-      if (fs.existsSync(configDir)) {
-        throw new Error(`Installer dry-run created config directory: ${configDir}`);
-      }
-    },
-  },
-  {
-    name: "installer supports only the all profile",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-profile-all"), "config");
-      const result = invokeInstaller(["--dry-run", "--config-dir", configDir, "--profile", "all"]);
-      assertSuccess(result, "Installer dry-run should support profile all.");
-      assertOutputContains(result, "Install profile: all", "Installer output should name profile all.");
-      assertOutputContains(result, "skill adaptive-delivery", "All profile should include the Universal Development Loop entrypoint.");
-      assertOutputContains(result, "skill wire-protocol-golden-tests", "All profile should include every repository skill.");
-      assertOutputContains(result, "agent deployment-config-reviewer", "All profile should include every reviewer.");
-
-      for (const profile of ["standard", "strict", "advanced"]) {
-        const rejected = invokeInstaller(["--dry-run", "--config-dir", path.join(newTempDir(`installer-profile-${profile}`), "config"), "--profile", profile]);
-        assertFailure(rejected, `Installer should reject removed profile ${profile}.`);
-        assertOutputContains(rejected, "Missing install profile", `Removed profile ${profile} should fail as missing.`);
-      }
-    },
-  },
-  {
-    name: "installer rejects missing profile",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-missing-profile"), "config");
-      const result = invokeInstaller(["--dry-run", "--config-dir", configDir, "--profile", "missing-profile"]);
-      assertFailure(result, "Installer should reject unknown profiles.");
-      assertOutputContains(result, "Missing install profile", "Missing profile error should explain the profile lookup failure.");
-    },
-  },
-  {
-    name: "installer rejects source-nested config dir",
-    run: () => {
-      const configDir = path.join(root, ".opencode", "skills", "adaptive-delivery", "install-target");
-      assertFailure(invokeInstaller(["--dry-run", "--config-dir", configDir]), "Installer should reject config paths nested inside source skills.");
-    },
-  },
-  {
-    name: "installer rejects source-parent config dirs",
-    run: () => {
-      assertFailure(invokeInstaller(["--dry-run", "--config-dir", path.join(root, ".opencode")]), "Installer should reject config paths that contain source artifacts.");
-      assertFailure(invokeInstaller(["--dry-run", "--config-dir", root]), "Installer should reject repository root as config path.");
-    },
-  },
-  {
-    name: "installer rejects symlinked source config dirs",
-    run: () => {
-      const fixture = newTempDir("installer-symlink-overlap");
-      const repoLink = path.join(fixture, "repo-link");
-      try {
-        fs.symlinkSync(root, repoLink, process.platform === "win32" ? "junction" : "dir");
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        console.log(`SKIP: installer rejects symlinked source config dirs (${message})`);
-        return;
-      }
-      const configDir = path.join(repoLink, ".opencode", "skills", "adaptive-delivery", "install-target");
-      const result = invokeInstaller(["--dry-run", "--config-dir", configDir]);
-      assertFailure(result, "Installer should reject config paths nested inside symlinked source skills.");
-      assertOutputContains(result, "overlap source artifact directory", "Symlink overlap rejection should explain the source overlap.");
-    },
-  },
-  {
-    name: "installer rejects destination AGENTS source",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-agents-source-self"), "config");
-      const agentsPath = path.join(configDir, "AGENTS.md");
-      writeText(agentsPath, lines(["# User Rules", ""]));
-      const result = invokeInstaller(["--dry-run", "--config-dir", configDir, "--agents-md-source", agentsPath]);
-      assertFailure(result, "Installer should reject using destination AGENTS.md as the source block.");
-      assertOutputContains(result, "must not be the destination AGENTS.md", "Destination AGENTS source failure should explain the self-source risk.");
-    },
-  },
-  {
-    name: "installer rejects loader-dir AGENTS source",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-agents-source-loader"), "config");
-      const sourcePath = path.join(configDir, "agents", "source.md");
-      writeText(sourcePath, lines(["# Source", ""]));
-      const result = invokeInstaller(["--dry-run", "--config-dir", configDir, "--agents-md-source", sourcePath]);
-      assertFailure(result, "Installer should reject AGENTS source paths inside destination loader directories.");
-      assertOutputContains(result, "must not be inside destination skills or agents", "Loader-dir source failure should explain prune/loader risk.");
-    },
-  },
-  {
-    name: "installer rejects duplicate AGENTS markers",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-markers"), "config");
-      writeText(path.join(configDir, "AGENTS.md"), lines([
-        "before",
-        "<!-- agents-and-skills:begin -->",
-        "old",
-        "<!-- agents-and-skills:end -->",
-        "middle",
-        "<!-- agents-and-skills:begin -->",
-        "older",
-        "<!-- agents-and-skills:end -->",
-        "",
-      ]));
-      assertFailure(invokeInstaller(["--dry-run", "--config-dir", configDir]), "Duplicate AGENTS.md markers should fail.");
-    },
-  },
-  {
-    name: "installer prunes stale skills and agents with prune opt-in",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-prune"), "config");
-      const staleSkillDir = path.join(configDir, "skills", "stale-skill");
-      const staleAgentFile = path.join(configDir, "agents", "stale-agent.md");
-      writeText(path.join(staleSkillDir, "SKILL.md"), lines([
-        "---",
-        "name: stale-skill",
-        "description: Stale installed skill.",
-        "---",
-        "",
-        "# Stale Skill",
-        "",
-      ]));
-      writeText(staleAgentFile, lines(["---", "description: Stale installed agent.", "mode: subagent", "---", ""]));
-      const result = invokeInstaller(["--config-dir", configDir, "--skip-agents-md", "--prune"]);
-      assertSuccess(result, "Installer should prune stale skills and agents with --prune.");
-      assertOutputContains(result, "pruned: stale skill stale-skill", "Installer should report stale skill pruning.");
-      assertOutputContains(result, "pruned: stale agent stale-agent", "Installer should report stale agent pruning.");
-      if (fs.existsSync(staleSkillDir)) {
-        throw new Error(`Stale skill directory still exists: ${staleSkillDir}`);
-      }
-      if (fs.existsSync(staleAgentFile)) {
-        throw new Error(`Stale agent file still exists: ${staleAgentFile}`);
-      }
-      const backupRoot = path.join(configDir, ".backups", "agents-and-skills");
-      if (!anyPathWithBasename(backupRoot, "stale-skill")) {
-        throw new Error(`Stale skill was not backed up under: ${backupRoot}`);
-      }
-      if (!anyPathWithBasename(backupRoot, "stale-agent.md")) {
-        throw new Error(`Stale agent was not backed up under: ${backupRoot}`);
-      }
-    },
-  },
-  {
-    name: "installer installs plugin support without pruning user plugins",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-plugin-support"), "config");
-      const userPlugin = path.join(configDir, "plugin", "user-plugin.ts");
-      writeText(userPlugin, lines(["export default async () => ({})", ""]));
-      const result = invokeInstaller(["--config-dir", configDir, "--skip-agents-md"]);
-      assertSuccess(result, "Installer should install plugin support.");
-      assertOutputContains(result, "plugin session-env", "Installer should report session env plugin install.");
-      assertOutputContains(result, "support tool session-delivery-context", "Installer should report support tool install.");
-      if (!fs.existsSync(userPlugin)) {
-        throw new Error(`Installer pruned unrelated user plugin: ${userPlugin}`);
-      }
-      for (const expected of [
-        path.join(configDir, "plugin", "session-env.ts"),
-        path.join(configDir, "opencode-dev-kit", "tools", "session-delivery-context.ts"),
-      ]) {
-        if (!fs.existsSync(expected)) {
-          throw new Error(`Installer did not install expected plugin support file: ${expected}`);
-        }
-      }
-    },
-  },
-  {
-    name: "installer dry-run does not prune stale artifacts",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-prune-dry-run"), "config");
-      const staleSkillDir = path.join(configDir, "skills", "stale-skill");
-      const staleAgentFile = path.join(configDir, "agents", "stale-agent.md");
-      writeText(path.join(staleSkillDir, "SKILL.md"), lines(["# Stale Skill", ""]));
-      writeText(staleAgentFile, lines(["# Stale Agent", ""]));
-      const result = invokeInstaller(["--dry-run", "--config-dir", configDir, "--skip-agents-md", "--prune"]);
-      assertSuccess(result, "Installer dry-run prune should succeed.");
-      assertOutputContains(result, "would prune: stale skill stale-skill", "Dry-run should report stale skill prune without deleting.");
-      assertOutputContains(result, "would prune: stale agent stale-agent", "Dry-run should report stale agent prune without deleting.");
-      if (!fs.existsSync(staleSkillDir)) {
-        throw new Error(`Dry-run removed stale skill directory: ${staleSkillDir}`);
-      }
-      if (!fs.existsSync(staleAgentFile)) {
-        throw new Error(`Dry-run removed stale agent file: ${staleAgentFile}`);
-      }
-    },
-  },
-  {
-    name: "installer no-backup prunes without backups",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-prune-no-backup"), "config");
-      const staleSkillDir = path.join(configDir, "skills", "stale-skill");
-      const staleAgentFile = path.join(configDir, "agents", "stale-agent.md");
-      writeText(path.join(staleSkillDir, "SKILL.md"), lines(["# Stale Skill", ""]));
-      writeText(staleAgentFile, lines(["# Stale Agent", ""]));
-      const result = invokeInstaller(["--config-dir", configDir, "--skip-agents-md", "--no-backup", "--prune"]);
-      assertSuccess(result, "Installer --no-backup prune should succeed.");
-      assertOutputContains(result, "pruned: stale skill stale-skill", "No-backup prune should still report stale skill pruning.");
-      assertOutputContains(result, "pruned: stale agent stale-agent", "No-backup prune should still report stale agent pruning.");
-      if (fs.existsSync(staleSkillDir)) {
-        throw new Error(`No-backup prune left stale skill directory: ${staleSkillDir}`);
-      }
-      if (fs.existsSync(staleAgentFile)) {
-        throw new Error(`No-backup prune left stale agent file: ${staleAgentFile}`);
-      }
-      const backupRoot = path.join(configDir, ".backups", "agents-and-skills");
-      if (fs.existsSync(backupRoot)) {
-        throw new Error(`--no-backup created backup root during prune: ${backupRoot}`);
-      }
-    },
-  },
-  {
-    name: "installer no-prune keeps stale artifacts",
-    run: () => {
-      const configDir = path.join(newTempDir("installer-no-prune"), "config");
-      const staleSkillDir = path.join(configDir, "skills", "stale-skill");
-      const staleAgentFile = path.join(configDir, "agents", "stale-agent.md");
-      writeText(path.join(staleSkillDir, "SKILL.md"), lines(["# Stale Skill", ""]));
-      writeText(staleAgentFile, lines(["# Stale Agent", ""]));
-      const result = invokeInstaller(["--config-dir", configDir, "--skip-agents-md", "--no-prune"]);
-      assertSuccess(result, "Installer --no-prune should succeed.");
-      if (!fs.existsSync(staleSkillDir)) {
-        throw new Error(`--no-prune removed stale skill directory: ${staleSkillDir}`);
-      }
-      if (!fs.existsSync(staleAgentFile)) {
-        throw new Error(`--no-prune removed stale agent file: ${staleAgentFile}`);
-      }
     },
   },
 ];

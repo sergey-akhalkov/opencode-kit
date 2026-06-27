@@ -18,9 +18,6 @@
     "max_lines": 1000,
     "max_bytes": 24000
   },
-  "plugin": [
-    "./.opencode/plugin/session-env.ts"
-  ],
   "mcp": {
     "headroom": {
       "type": "local",

@@ -29,8 +29,8 @@ Cover every lane that applies; mark non-applicable lanes explicitly.
 
 ## Inventory Checklist
 
-- List repo skills: `.opencode/skills/*/SKILL.md` with line counts and trigger summaries.
-- List repo agents: `.opencode/agents/*.md` with mode, permissions, and role boundaries.
+- List repo skills: `global/skills/*/SKILL.md` with line counts and trigger summaries.
+- List repo agents: `global/agents/*.md` with mode, permissions, and role boundaries.
 - List instruction templates: `instructions/*.md` and README catalog entries.
 - List global installed library copies: `~/.config/opencode/skills`, `~/.config/opencode/agents`, and marker block in `~/.config/opencode/AGENTS.md`.
 - List personal/global extra skills such as `~/.opencode/skills`, `~/.claude/skills`, or `~/.agents/skills` when loader-visible.

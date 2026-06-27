@@ -20,8 +20,7 @@ Technology adapters may change commands and constraints, but not the loop.
 
 ## Contents
 
-- `.opencode/skills/`: reusable OpenCode skills.
-- `.opencode/agents/`: reusable read-only reviewers, bounded read-only workers, and a bounded implementation worker. Reviewer/worker feedback writes are scoped to `docs/feedbacks/**` through `complain`.
+- `global/`: OpenCode global config directory pointed to by `OPENCODE_CONFIG_DIR`. Holds `skills/`, `agents/`, `plugin/`, `AGENTS.md`, and `opencode.json` as the single source of truth for global skills, agents, and instructions.
 - `docs/feedbacks/`: shared feedback ledger for agent and skill complaints, suggestions, and workflow-friction notes.
 - `instructions/`: copyable instruction templates for global/project `AGENTS.md`, reviewer contracts, evidence discipline, and porting.
 - `templates/`: project bootstrap and CI templates for applying the Universal Development Loop to another repository.
@@ -37,37 +36,27 @@ Technology adapters may change commands and constraints, but not the loop.
 
 ### Global Install
 
-Install all repository skills, all repository agents, and a reusable global `AGENTS.md` block into OpenCode's global config directory:
+Point OpenCode at this repository as the single source of truth for global configuration. The installer sets the `OPENCODE_CONFIG_DIR` environment variable to the repository `global/` directory instead of copying artifacts into `~/.config/opencode`:
 
 ```sh
 npm run install:global
 ```
 
-By default this installs into `~/.config/opencode`, syncs every repository skill to `skills/`, syncs every repository agent to `agents/`, and creates `~/.config/opencode/AGENTS.md` from `instructions/global-opencode-agent-instructions.md` only when doing so is lossless. Destination-only skill directories and agent `.md` files are kept unless `--prune` is explicit.
+`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed portable default (compaction, watcher, tool output, `permission: ask`); the installer provisions a local `global/opencode.json` from it on first run. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
 
-Default install detects source-vs-destination drift before writing. If an installed skill, agent, `AGENTS.md`, plugin, or support tool differs from source, the installer refuses to overwrite it and prints smart-merge escalation plus recovery commands. This protects local prevention-rule improvements from being silently discarded.
+Options:
 
-Useful options:
+- (default): set `OPENCODE_CONFIG_DIR` persistently to `<repo>/global`. On Windows it runs `setx`; on macOS/Linux it prints the `export` line to add to your shell profile.
+- `--check` or `--audit`: exit `0` if `OPENCODE_CONFIG_DIR` already points at `global/`, `1` otherwise.
+- `--print`: print the target path and the platform command without changing anything.
+- `--unset`: remove the persisted `OPENCODE_CONFIG_DIR` value.
+- `--dry-run` or `--what-if`: preview the default mode without setting anything.
 
-- `--dry-run` or `--what-if`: preview changes without writing files.
-- `--config-dir <path>`: install into a custom OpenCode config directory.
-- `--profile all`: install the full repository artifact set; this is the default.
-- `--agents-md-source <path>`: install a custom source file into the global `AGENTS.md` block.
-- `--skip-agents-md`: skip updating the managed `AGENTS.md` block; skills, agents, plugin, and support files still install.
-- `--audit`: report drift with source and destination hashes without writing, removing, or backing up.
-- `--pull-back`: generate one investigation OpenSpec change per drifted artifact under `openspec/changes/install-pullback-<run-stamp>-<slug>/` without overwriting destination files.
-- `--force-overwrite`: opt into the legacy overwrite-with-backup behavior when you intentionally want to discard local destination changes.
-- `--prune`: delete destination skills/agents not present in this repository.
-- `--no-prune`: keep destination skills/agents not present in this repository; this is the default and remains as a compatibility no-op.
-- `--no-backup`: skip backups for already-authorized `--force-overwrite` or `--prune` writes; it does not bypass default drift refusal.
+Restart OpenCode after installing; the running process keeps the old environment until restarted. On Windows, GUI apps launched from Explorer may require logoff/logon to inherit the new user environment variable.
 
-Use `--agents-md-source AGENTS.md` only if you intentionally want this repository's local maintenance rules in the global `AGENTS.md` block.
+Important: setting `OPENCODE_CONFIG_DIR` replaces OpenCode's entire global config directory. Anything currently in `~/.config/opencode` (other global agents, commands, skills, and `opencode.json`) stops loading. Put global provider/MCP/permission config in the local `global/opencode.json` (provisioned from the portable template) so the kit remains the complete global source of truth. If the previous copy-based installer left `~/.config/opencode/plugin/session-env.ts`, remove it after switching: it is still auto-discovered and would duplicate the plugin now loaded from `global/plugin/`.
 
-Restart OpenCode after installing; config-time files are loaded at startup.
-
-Migration note: CI or local scripts that depended on silent overwrite must add `--force-overwrite`, and scripts that depended on destination cleanup must add `--prune`. Safer automation should migrate to `--audit`/`--pull-back` and review generated investigation changes. Clean installs and identical destinations are unaffected.
-
-Keep project-specific skills out of global discovery unless their descriptions explicitly scope them to that project. Global skills are visible in unrelated repositories through the skill catalog, so broad or local-product triggers add avoidable routing noise.
+Keep project-specific skills out of `global/` unless their descriptions explicitly scope them to that project. Global skills are visible in unrelated repositories through the skill catalog, so broad or local-product triggers add avoidable routing noise.
 
 ## Bootstrap A Project
 
@@ -118,7 +107,7 @@ npm run instruction:inventory -- --format markdown
 
 ### Manual Skills
 
-OpenCode skills are loaded from project or global skill folders. Copy selected skill folders from `.opencode/skills/` into one of these locations:
+OpenCode skills are loaded from project or global skill folders. Copy selected skill folders from `global/skills/` into one of these locations:
 
 - Project: `.opencode/skills/<name>/SKILL.md`
 - Global: `~/.config/opencode/skills/<name>/SKILL.md`
@@ -128,7 +117,7 @@ Alternatively, add this repository's skills path to an OpenCode config:
 ```json
 {
   "skills": {
-    "paths": ["<path-to-agents-and-skills>/.opencode/skills"]
+    "paths": ["<path-to-agents-and-skills>/global/skills"]
   }
 }
 ```
@@ -137,7 +126,7 @@ Use an absolute path or a path relative to the config file that declares it.
 
 ### Manual Agents
 
-OpenCode agents are loaded from project or global agent folders. Copy selected files from `.opencode/agents/` into one of these locations:
+OpenCode agents are loaded from project or global agent folders. Copy selected files from `global/agents/` into one of these locations:
 
 - Project: `.opencode/agents/<name>.md`
 - Global: `~/.config/opencode/agents/<name>.md`
@@ -209,11 +198,11 @@ npm run openspec:gate -- --operation prepush
 
 Use `--persist` only when a JSON evidence artifact should be written to `openspec/changes/<change-id>/automation/operation-gates/<operation>.json` from a write-authorized main session. Default operation-gate runs are read-only.
 
-For installer changes, also prove the no-write path before using a real config directory:
+For installer changes, prove the no-write path before running the default mode:
 
 ```sh
-npm run install:global -- --dry-run --config-dir <temp-config-dir>
-npm run install:global -- --audit --config-dir <temp-config-dir>
+npm run install:global -- --dry-run
+npm run install:global -- --check
 ```
 
 For ports from a project-local prompt set, pass anchors that must not remain in reusable Markdown:
@@ -350,11 +339,12 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 Project plugin behavior:
 
-- `.opencode/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. `session-delivery-reviewer` uses normal OpenCode model selection. `install:global` installs this plugin plus its `opencode-dev-kit/tools/session-delivery-context.ts` support file under the target OpenCode config directory without pruning unrelated user plugins.
+- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. `session-delivery-reviewer` uses normal OpenCode model selection. The plugin is auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; its `session-delivery-context.ts` support file is resolved relative to the plugin via `repo/tools/session-delivery-context.ts`.
 
 ## Instruction Templates
 
-- `global-opencode-agent-instructions.md`: generic global `~/.config/opencode/AGENTS.md` baseline.
+Global OpenCode agent instructions live in `global/AGENTS.md` and are loaded live once `OPENCODE_CONFIG_DIR` points at `global/`. Project-scoped instruction templates live under `instructions/`:
+
 - `universal-development-loop.md`: one canonical AI-assisted engineering loop for every target project.
 - `reusable-project-agent-instructions.md`: project-level `AGENTS.md` baseline.
 - `leaf-reviewer-agent-contract.md`: reusable read-only reviewer subagent contract.
