@@ -32,12 +32,8 @@ export const ALLOWED_COMPLAIN_SKILL_RULES: ReadonlyMap<string, "deny" | "allow">
 ]);
 
 export const REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT: readonly string[] = [
-  "## Leaf Contract",
-  "No source/config/instruction edits",
-  "Needs external reviewer",
-  "## Feedback Ledger",
-  "docs/feedbacks",
-  "`complain`",
+  "## Contract Reference",
+  "instructions/leaf-reviewer-agent-contract.md",
   "`Findings`: ordered by severity",
   "`Residual Risks`",
   "Actionable Continuation Items",
@@ -46,4 +42,9 @@ export const REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT: readonly string[] = [
 export const REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE: readonly RegExp[] = [
   /## Orchestration/,
   /Do not modify files\./,
+];
+
+export const REUSABLE_REVIEWER_FORBIDDEN_INLINE_BLOCKS: readonly RegExp[] = [
+  /^## Leaf Contract(\r?\n|$)/m,
+  /^## Prevention Feedback(\r?\n|$)/m,
 ];

@@ -16,19 +16,15 @@ export const PREVENTION_FEEDBACK_REVIEWER_FILES: readonly string[] = [
   "wire-protocol-reviewer.md",
 ];
 
-export const PREVENTION_FEEDBACK_REQUIRED_TEXT: readonly string[] = [
-  "## Prevention Feedback",
-  "Recurrence Path",
-  "Prevention Target",
-  "Prevention Cost",
-  "Draft Rule",
-  "Replay Evidence",
+export const REVIEWER_CONTRACT_REFERENCE_TEXT: readonly string[] = [
+  "## Contract Reference",
+  "instructions/leaf-reviewer-agent-contract.md",
 ];
 
-export const PREVENTION_FEEDBACK_CONTRACTS: readonly TextContract[] = PREVENTION_FEEDBACK_REVIEWER_FILES.map((fileName) => ({
+export const REVIEWER_CONTRACT_REFERENCE_CONTRACTS: readonly TextContract[] = PREVENTION_FEEDBACK_REVIEWER_FILES.map((fileName) => ({
   fileName,
-  label: `${fileName} must define Prevention Feedback output contract`,
-  requiredText: [...PREVENTION_FEEDBACK_REQUIRED_TEXT],
+  label: `${fileName} must reference the shared reviewer contract via ## Contract Reference`,
+  requiredText: [...REVIEWER_CONTRACT_REFERENCE_TEXT],
 }));
 
 export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
@@ -87,7 +83,7 @@ export const SESSION_DELIVERY_BINDING_HANDOFF_TOKENS: readonly string[] = [
 ];
 
 export const AGENT_TEXT_CONTRACTS: readonly TextContract[] = [
-  ...PREVENTION_FEEDBACK_CONTRACTS,
+  ...REVIEWER_CONTRACT_REFERENCE_CONTRACTS,
   SESSION_DELIVERY_BINDING_CONTRACT,
   TEST_COVERAGE_REVIEWER_CONTRACT,
 ];
