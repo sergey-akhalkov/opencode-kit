@@ -6,29 +6,47 @@ OpenSpec archive does not require a separate learning file or archive-time proce
 
 ## Active Execution Plan
 
-The full audit ledger at `docs/feedbacks/audit-opencode-kit-2026-06-27.md` (commit `1af6e5b`) splits the audit findings into six independent OpenSpec changes. The recommended execution order and parallel decomposition:
+The full audit ledger at `docs/feedbacks/audit-opencode-kit-2026-06-27.md` (commit `1af6e5b`) splits the audit findings into six independent OpenSpec changes. The recommended execution is wave-based:
 
-### Phase 0 — Foundation (single track)
+### Wave 1 — Parallel (no cross-dependencies, no shared-file conflicts)
 
-- `refactor-tools-split-candidate` (45 tasks) — must land first. Splits `tools/validate-library.ts`, `tools/test-library.ts`, `tools/session-delivery-context.ts`; migrates to `node --test`; replaces hand-rolled JSONC and frontmatter parsers.
+Four changes can start in parallel:
 
-### Phase 1 — Parallel streams (3-4 concurrent workers)
+- `refactor-tools-split-candidate` (45 tasks) — foundation. Splits `tools/validate-library.ts`, `tools/test-*.ts`, `tools/session-delivery-context.ts`; migrates to `node --test`; replaces hand-rolled JSONC and frontmatter parsers. Critical path.
+- `deduplicate-instruction-artifacts` (37 tasks) — touches `docs/`, `instructions/`, `templates/`, `global/agents/*.md` only.
+- `kit-config-hygiene` (24 tasks) — touches `tools/install-opencode-global.ts`, `global/opencode*.json*`, README config-layering section.
+- `add-ci-workflow` (15 tasks) — isolated `.github/workflows/validate.yml` plus one README paragraph.
 
-- `add-ci-workflow` (15 tasks) — isolated `.github/workflows/validate.yml`; can start in week 1 alongside Phase 0 to provide a CI gate for subsequent changes.
-- `deduplicate-instruction-artifacts` (37 tasks) — touches `docs/`, `instructions/`, `templates/`, `global/agents/*.md`; no overlap with tools/.
-- `kit-config-hygiene` (24 tasks) — touches `tools/install-opencode-global.ts`, `global/opencode*.json*`, `README.md`.
-- `install-init-hardening` (22 tasks) — touches `tools/install-opencode-global.ts`, `tools/init-project.ts`, `tools/headroom-mcp-wrapper.ts`.
+### Wave 2 — Depends on Wave 1
+
+- `plugin-self-containment` (20 tasks) — depends on `refactor-tools-split-candidate` task group 5 producing `tools/delivery-context/{db,requirements,redaction,projection}.ts`. Without that split, `plugin-self-containment` has no files to move into `global/plugin/session-delivery-context/`.
+- `install-init-hardening` (22 tasks) — depends on `kit-config-hygiene` landing first because both modify `tools/install-opencode-global.ts`. The `machineOverride` marker introduced by `kit-config-hygiene` is the branch point `install-init-hardening` uses for its setx guard and `--persist-script` mode.
+
+### Wave 3 — Archive
+
+`openspec archive <change>` for each completed change after `npm run validate:strict`, `npm test`, and a session-delivery-reviewer pass are recorded.
+
+### File conflict matrix
+
+| File | refactor | dedup-instr | plugin | config | install-init | ci |
+| --- | :-: | :-: | :-: | :-: | :-: | :-: |
+| `tools/validate-library.ts` | ✏️ | | | | | |
+| `tools/validators/opencode-config.ts` | ✏️ | | | ✏️ | | |
+| `tools/test-*.ts` (9) | ✏️ | | | | | |
+| `tools/session-delivery-context.ts` | ✏️ | | ✏️ | | | |
+| `tools/delivery-context/*.ts` | ✏️ | | ✏️ | | | |
+| `tools/install-opencode-global.ts` | | | | ✏️ | ✏️ | |
+| `tools/init-project.ts` | | | | | ✏️ | |
+| `tools/headroom-mcp-wrapper.ts` | | | | | ✏️ | |
+| `global/opencode*.json*` | | | | ✏️ | | |
+| `docs/`, `instructions/`, `templates/` | | ✏️ | | | | |
+| `global/agents/*.md` (14) | | ✏️ | | | | |
+| `README.md` | | ✏️ | | ✏️ | ✏️ | ✏️ |
+| `.github/workflows/validate.yml` | | | | | | ✏️ |
 
 ### Conflict-resolution rules
 
-- Only one worker may write `tools/install-opencode-global.ts` at a time. `kit-config-hygiene` lands before `install-init-hardening`; the latter consumes the `machineOverride` marker the former introduces.
-- Only the Phase 0 worker may write `tools/validate-library.ts`. After Phase 0 the orchestrator is small enough that no other change should touch it.
-- `plugin-self-containment` (Phase 2) depends on Phase 0's `tools/delivery-context/*.ts` split.
-
-### Phase 2 — Plugin integration
-
-- `plugin-self-containment` (20 tasks) — moves `tools/delivery-context/*.ts` into `global/plugin/session-delivery-context/`; replaces `loadSessionDeliveryContextModule` dynamic loader with a static import.
-
-### Phase 3 — Archive
-
-`openspec archive <change>` for each completed change after `npm run validate:strict` and `npm test` pass and a session-delivery-reviewer pass is recorded.
+- `tools/validate-library.ts` is single-writer during Wave 1 (only `refactor-tools-split-candidate`); after Wave 1 the orchestrator is small enough that no other change should touch it.
+- `tools/install-opencode-global.ts` is single-writer across `kit-config-hygiene` and `install-init-hardening`; CHG-004 lands first, CHG-005 follows.
+- `tools/session-delivery-context.ts` is single-writer across `refactor-tools-split-candidate` and `plugin-self-containment`; CHG-001 splits it first, CHG-003 rewrites it as a CLI shim.
+- README.md has three sections touched by three different changes (`deduplicate-instruction-artifacts`, `kit-config-hygiene`, `add-ci-workflow`); each change touches a distinct section so merges stay trivial.
