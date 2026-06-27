@@ -1665,7 +1665,11 @@ const tests: TestCase[] = [
       ]));
       const result = invokeValidator(fixture);
       assertFailure(result, "Unterminated JSONC comments should fail validation.");
-      assertOutputContains(result, "Unterminated JSONC block comment", "JSONC failure should name unterminated block comments.");
+      assertOutputContains(
+        result,
+        "Invalid OpenCode config JSON",
+        "JSONC failure should name invalid opencode config JSON.",
+      );
     },
   },
   {
