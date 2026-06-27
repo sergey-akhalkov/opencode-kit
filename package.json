@@ -10,7 +10,7 @@
     "instruction:inventory": "node tools/instruction-artifacts-inventory.ts",
     "code-quality:inventory": "node tools/code-quality-inventory.ts",
     "instruction:feedback": "node tools/instruction-feedback-ledger.ts",
-    "test": "node tools/test-library.ts && node tools/test-library-validation-scripts.ts && node tools/test-code-quality-inventory.ts && node tools/test-headroom-mcp-wrapper.ts && node tools/test-session-env-plugin.ts && node tools/test-instruction-feedback-ledger.ts && node tools/test-install-opencode-global.ts && node tools/test-openspec-operation-gate.ts && node tools/test-pre-push-validate.ts",
+    "test": "node tools/test-library.ts && node tools/test-library-validation-scripts.ts && node tools/test-contracts.ts && node tools/test-code-quality-inventory.ts && node tools/test-headroom-mcp-wrapper.ts && node tools/test-session-env-plugin.ts && node tools/test-instruction-feedback-ledger.ts && node tools/test-install-opencode-global.ts && node tools/test-openspec-operation-gate.ts && node tools/test-pre-push-validate.ts",
     "openspec:validate": "openspec validate --all",
     "openspec:gate": "node tools/openspec-operation-gate.ts",
     "prepush:validate": "node tools/pre-push-validate.ts",
