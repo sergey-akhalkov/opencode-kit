@@ -51,9 +51,15 @@ Options:
 - `--check` or `--audit`: exit `0` if `OPENCODE_CONFIG_DIR` already points at `global/`, `1` otherwise.
 - `--print`: print the target path and the platform command without changing anything.
 - `--unset`: remove the persisted `OPENCODE_CONFIG_DIR` value.
+- `--persist-script <file>`: append an idempotent `export OPENCODE_CONFIG_DIR=...` line to `<file>` (POSIX profile). Re-runs are safe and do not duplicate the line.
+- `--unset-script <file>`: remove the matching `export OPENCODE_CONFIG_DIR=...` line from `<file>` (POSIX profile).
 - `--dry-run` or `--what-if`: preview the default mode without setting anything.
 
 Restart OpenCode after installing; the running process keeps the old environment until restarted. On Windows, GUI apps launched from Explorer may require logoff/logon to inherit the new user environment variable.
+
+Windows `setx` truncates user environment variables at 1024 characters. The installer measures the configured value (`<repo>/global`) and refuses to call `setx` when the resulting `OPENCODE_CONFIG_DIR=<value>` line exceeds 900 characters; in that case it prints a warning that points at `--print` so the user can apply the command manually. If your path is unusually deep, prefer `--print` + manual `setx` to a silent truncation.
+
+On macOS/Linux, the default mode still prints the `export` line for transparency. If you want the installer to apply the change for you, run `npm run install:global -- --persist-script ~/.bashrc` (or `~/.zshrc`, `~/.profile`, …); the helper is idempotent and safe to re-run. The matching `--unset-script <file>` removes the line.
 
 Important: setting `OPENCODE_CONFIG_DIR` replaces OpenCode's entire global config directory. Anything currently in `~/.config/opencode` (other global agents, commands, skills, and `opencode.json`) stops loading. Put global provider/MCP/permission config in the local `global/opencode.json` (provisioned from the portable template) so the kit remains the complete global source of truth. If the previous copy-based installer left `~/.config/opencode/plugin/session-env.ts`, remove it after switching: it is still auto-discovered and would duplicate the plugin now loaded from `global/plugin/`.
 
@@ -112,7 +118,7 @@ npm run project:inventory -- --root <project-path> --format markdown
 - Use `project:inventory`, `code-quality:inventory`, `glob`, and `grep` before broad file reads.
 - On native Windows, use `rtk <command>` explicitly for shell-heavy read-only commands; do not rely on hook auto-rewrite.
 - Use Headroom MCP tools only on demand for large logs, search results, JSON, or tool outputs; retrieve originals before trusting exact code, errors, or safety-critical details.
-- Route Headroom MCP through `tools/headroom-mcp-wrapper.ts` when OpenCode expects MCP prompts; the wrapper adds a small `headroom_usage_policy` prompt and proxies Headroom tools unchanged.
+- Route Headroom MCP through `tools/headroom-mcp-wrapper.ts` when OpenCode expects MCP prompts; the wrapper adds a small `headroom_usage_policy` prompt and proxies Headroom tools unchanged. Before spawning the child it probes `headroom --version`; when the binary is missing on `PATH` it prints `error: headroom binary not found on PATH` and exits `2`, and when the probe exits non-zero it prints `error: headroom binary not usable (exit <code>)` and exits `3`. The wrapper never relies on a buried child `error` event, so OpenCode startup fails fast with a deterministic code when Headroom is not usable.
 - Install the full kit by default, but load heavyweight skills/subagents only when they reduce total work.
 - Delegate implementation only when the slice has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate; use `implementation-worker` for those slices.
 - Run focused validation first; run broad validation when the change crosses boundaries.

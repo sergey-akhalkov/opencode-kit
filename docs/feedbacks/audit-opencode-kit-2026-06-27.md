@@ -9,6 +9,7 @@
 - Evidence policy: source/tests/schema/scripts > docs/comments > user claims
 - Validation baseline: `node tools/validate-library.ts` -> `OK: skills=33 agents=15 markdown=85 warnings=1` (warning only on `global/opencode.json` permission:allow); `npm test` -> 9 test files, 54+8+…+… all PASS
 - Resolution baseline (2026-06-27): `npm run validate:strict` -> `OK: skills=33 agents=15 markdown=115 warnings=0 infos=0`; `npm test` -> all suites PASS (library=61, install-opencode=8, plus unchanged suites); `npm run openspec:validate` -> 6/6 changes PASS.
+- install-init-hardening resolution baseline (2026-06-27): `npm run validate:strict` -> `OK: skills=33 agents=15 markdown=115 warnings=0 infos=0`; `npm test` -> all suites PASS, install-opencode-global=20 (was 8), headroom-mcp-wrapper=11 (was 7), init-project=3 (new), pre-push=8, openspec-operation-gate=8, plus unchanged suites (library=61, validation-scripts, contracts, code-quality-inventory, session-env-plugin, instruction-feedback-ledger). `npm run openspec:validate` -> 6/6 changes PASS.
 
 ## Block Coverage Summary
 
@@ -148,18 +149,21 @@
 - Impact: silent install failure with no error path; OpenCode will start with empty/old config and the user may not understand why.
 - Recommendation: measure the resulting path; if >900 chars, warn and suggest `--print` for manual setup or fallback to `.cmd` shim.
 - Confidence: medium.
+- Resolution: addressed by `install-init-hardening`. `tools/install-opencode-global.ts` exports `measuredValueLength()` (`globalDir.length + ENV_VAR.length + 1`) and `SETX_SAFE_LIMIT = 900`; `runSet` measures the value, prints `warning: OPENCODE_CONFIG_DIR value is N chars; setx truncates user env vars at 1024 chars (safety limit 900)` and points at `--print` before exiting `2` when the guard fires. `tools/test-install-opencode-global.ts` covers the helper and the source-level guard. Resolved 2026-06-27.
 
 ### F19 [P3] POSIX installer is asymmetric vs Windows
 - Evidence: `tools/install-opencode-global.ts:194-197` -> only prints an `export` line for POSIX; the Windows path runs `setx`. There is no shared abstraction and no regression test for POSIX behavior.
 - Impact: contributors on macOS/Linux must manually edit shell profile; no automation confirms persistence; `--unset` similarly only prints removal instructions.
 - Recommendation: extract `persistEnvVar(platform)` returning `{ status, mode: 'setx'|'export-line' }`; add a `--persist-script <file>` mode that appends idempotently; document the asymmetry in README.
 - Confidence: low.
+- Resolution: addressed by `install-init-hardening`. `tools/install-opencode-global.ts` exports `appendExportLine(file, envLine, envName)` and `removeExportLine(file, envName)` (idempotent helpers gated on `isExportLineFor`); new CLI modes `--persist-script <file>` and `--unset-script <file>` wire them in. README documents both modes and the setx safety limit. `tools/test-install-opencode-global.ts` covers idempotent append, idempotent unset, missing-file edge cases, and help-text coverage. Resolved 2026-06-27.
 
 ### F20 [P3] `init-project.ts` backup stamp collides within 1 second
 - Evidence: `tools/init-project.ts:89` -> `.replace(/[-:.TZ]/g, "").slice(0, 14)` -> `YYYYMMDDHHMMSS`. Two overwrites within 1 second would collide.
 - Impact: second overwrite overwrites the first backup.
 - Recommendation: append a short random suffix (e.g. UUID first 8 hex) or detect existing backup and increment.
 - Confidence: medium.
+- Resolution: addressed by `install-init-hardening`. `tools/init-project.ts` now imports `randomUUID` from `node:crypto`; `backupStamp()` returns `<14-char-timestamp>-<8-hex>` and `backupExisting` uses it. `tools/test-init-project.ts` calls `backupExisting` twice within the same second and asserts the resulting paths differ; existing pre-change backups remain untouched (no migration needed; old `<14-char>` directories coexist with the new format). Resolved 2026-06-27.
 
 ### F21 [P3] Validator's `git ls-files` fallback lacks tracked-vs-untracked distinction
 - Evidence: `tools/validate-library.ts:317-333` -> `getMarkdownFiles` prefers `git ls-files --cached --others --exclude-standard`; if not in a git repo, falls back to filesystem walk.
@@ -172,6 +176,7 @@
 - Impact: the wrapper fails silently for users without `headroom` on PATH, even though `opencode.json` enables the MCP.
 - Recommendation: pre-check binary availability; surface a deterministic error to stderr; treat it as `unknown` per the kit's helper policy rather than crash.
 - Confidence: medium.
+- Resolution: addressed by `install-init-hardening`. `tools/headroom-mcp-wrapper.ts` exports `probeHeadroom(bin, args, env)` that runs `spawnSync("headroom", ["--version"], { stdio: "ignore" })` and returns `{ available, exitCode, signal, error }`; `startHeadroomMcpWrapper` probes before spawn, prints `error: headroom binary not found on PATH` and exits `2` when the binary is missing, and prints `error: headroom binary not usable (exit <code>)` and exits `3` when the probe exits non-zero. `tools/test-headroom-mcp-wrapper.ts` covers all three probe outcomes (exit 0, exit 7, missing) and asserts the source-level ordering. Resolved 2026-06-27.
 
 ### F23 [P3] `validate-library.ts` text-contract arrays embedded inline
 - Evidence: `agentTextContracts` (lines 49-97) and `preventionFeedbackRequiredText` (lines 41-48) plus 30+ inline `for (const required of [...])` blocks (e.g. lines 650-666, 713, 912-914, 927, 956-958).
@@ -211,6 +216,7 @@
 | Id | Behavior | Existing Evidence | Missing Gate | Priority |
 | --- | --- | --- | --- | --- |
 | T01 | POSIX `install-opencode-global.ts` path is asymmetric with Windows | unit tests cover Windows `setx` and reg | no coverage for `--print` on POSIX path | medium |
+| T01 | POSIX `--persist-script` / `--unset-script` round-trip | `tools/test-install-opencode-global.ts` exercises both modes end-to-end plus `appendExportLine`/`removeExportLine`/`isExportLineFor` unit coverage | covered by `install-init-hardening` (tasks 2.1-2.6) | resolved |
 | T02 | `validate-library.ts` exact `<= 1024 char` setx path warning | none | no fixture with deeply-nested path | low |
 | T03 | `permission: allow` warning only on installed `global/opencode.json` | validator emits warning | no test asserts the warning text format | medium |
 | T04 | CI matrix (Node >=24) across platforms | none committed | no `.github/workflows/validate.yml` | high |
@@ -218,7 +224,9 @@
 | T05 | Cross-platform POSIX path normalization in fixtures | tests run on Windows | no CI matrix verification on Linux/macOS | medium |
 | T06 | Concurrent `npm test` invocations on shared `.opencode/state/instruction-feedback-ledger.json` | tests use tempdirs | no integration test for two parallel writers | low |
 | T07 | `headroom-mcp-wrapper.ts` behavior when `headroom` binary is missing | smoke test | no test for `error` event path | medium |
+| T07 | `headroom-mcp-wrapper.ts` `probeHeadroom` covers missing/exit-0/exit-7 paths and asserts source ordering of probe vs spawn | `tools/test-headroom-mcp-wrapper.ts` adds three probe unit tests plus a source-level ordering assertion (probe before spawn, exit codes 2/3) | covered by `install-init-hardening` (tasks 4.1-4.5) | resolved |
 | T08 | `init-project.ts` backup collision within 1 second | overwrite tested | no test for two overwrites in same second | low |
+| T08 | `init-project.ts` backup stamps differ within the same second after the random-suffix fix | `tools/test-init-project.ts` calls `backupExisting` twice within one second and asserts the resulting paths differ; covers stamp format `<14-char-timestamp>-<8-hex>` | covered by `install-init-hardening` (tasks 3.1-3.4) | resolved |
 | T09 | Negative test for `validateMarkdownFile` TDD-language warning | warning path covered | no test for `negatedScopeLanguage` exemption on positive line | low |
 
 ## Failure Mode Matrix
@@ -262,7 +270,7 @@ Recommended as one OpenSpec change group once the user confirms the scope:
 - **CHG: plugin self-containment** — F07
 - **CHG: kit-local config hygiene** — F08, F09, F13, F14 (D04)
 - **CHG: add CI workflow + node:test migration** — F16, F17, D05
-- **CHG: install/init hardening** — F18, F19, F20, F22
+- **CHG: install/init hardening** — F18, F19, F20, F22 — **resolved** by `openspec/changes/install-init-hardening`; tools/installer now measures the configured value against the 900-char safety limit, exposes idempotent `--persist-script`/`--unset-script`, init-project backups get an 8-hex random suffix, and the headroom wrapper pre-checks the binary with documented exit codes.
 
 Or keep as separate changes per outcome. None should become a single change unless the user wants to amortize review cost.
 

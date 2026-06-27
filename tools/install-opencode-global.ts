@@ -5,15 +5,17 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-type Mode = "set" | "check" | "print" | "unset";
+type Mode = "set" | "check" | "print" | "unset" | "persist-script" | "unset-script";
 
 type Options = {
   mode: Mode;
   dryRun: boolean;
+  scriptFile: string | null;
 };
 
 const ENV_VAR = "OPENCODE_CONFIG_DIR";
 const GLOBAL_DIR_NAME = "global";
+export const SETX_SAFE_LIMIT = 900;
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const globalDir = path.resolve(repoRoot, GLOBAL_DIR_NAME);
@@ -35,13 +37,17 @@ Options:
   --check, --audit       Exit 0 if OPENCODE_CONFIG_DIR already points at global/; 1 otherwise.
   --print                Print the target path and the platform command without changing anything.
   --unset                Remove the persisted OPENCODE_CONFIG_DIR value.
+  --persist-script <file>  Append an idempotent "export OPENCODE_CONFIG_DIR=..." line to <file>.
+  --unset-script <file>    Remove the matching "export OPENCODE_CONFIG_DIR=..." line from <file>.
   --dry-run, --what-if   Show what the default mode would do without setting anything.
   --help, -h             Show this help.
 
 Platform behavior:
   Windows: default mode runs "setx OPENCODE_CONFIG_DIR <path>" (writes HKCU\\Environment).
+    Values longer than ${SETX_SAFE_LIMIT} chars are rejected with a warning that points
+    at \`--print\` so the user can run \`setx\` manually.
   macOS/Linux: default mode prints the export line to add to your shell profile
-  (~/.zshrc or ~/.bashrc); it does not auto-edit the profile.
+  (~/.zshrc or ~/.bashrc); use --persist-script to append it idempotently.
 
 Restart OpenCode after installing; the running process keeps the old environment
 until restarted. On Windows, GUI apps launched from Explorer may require logoff/logon
@@ -49,9 +55,18 @@ to inherit the new user environment variable.
 `);
 }
 
+function readValue(args: string[], index: number, option: string): string {
+  const value = args[index + 1];
+  if (!value || value.trim() === "" || value.startsWith("--")) {
+    throw new Error(`Missing value for ${option}.`);
+  }
+  return value;
+}
+
 function parseArgs(args: string[]): Options {
-  const options: Options = { mode: "set", dryRun: false };
-  for (const arg of args) {
+  const options: Options = { mode: "set", dryRun: false, scriptFile: null };
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index];
     if (arg === "--help" || arg === "-h") {
       printUsage();
       process.exit(0);
@@ -63,6 +78,20 @@ function parseArgs(args: string[]): Options {
       options.mode = "print";
     } else if (arg === "--unset") {
       options.mode = "unset";
+    } else if (arg === "--persist-script") {
+      options.mode = "persist-script";
+      options.scriptFile = readValue(args, index, arg);
+      index++;
+    } else if (arg.startsWith("--persist-script=")) {
+      options.mode = "persist-script";
+      options.scriptFile = arg.slice("--persist-script=".length);
+    } else if (arg === "--unset-script") {
+      options.mode = "unset-script";
+      options.scriptFile = readValue(args, index, arg);
+      index++;
+    } else if (arg.startsWith("--unset-script=")) {
+      options.mode = "unset-script";
+      options.scriptFile = arg.slice("--unset-script=".length);
     } else {
       throw new Error(`Unknown option: ${arg}`);
     }
@@ -70,7 +99,106 @@ function parseArgs(args: string[]): Options {
   if (options.dryRun && options.mode !== "set") {
     throw new Error("--dry-run only applies to the default (set) mode.");
   }
+  if ((options.mode === "persist-script" || options.mode === "unset-script") && (options.scriptFile == null || options.scriptFile.trim() === "")) {
+    throw new Error(`${options.mode} requires a <file> argument.`);
+  }
   return options;
+}
+
+export function measuredValueLength(value: string): number {
+  return value.length + ENV_VAR.length + 1;
+}
+
+export function buildExportLine(value: string): string {
+  return `export ${ENV_VAR}="${value}"`;
+}
+
+export function isExportLineFor(line: string, envName: string): boolean {
+  const trimmed = line.trim();
+  const prefix = `export ${envName}=`;
+  if (!trimmed.startsWith(prefix)) {
+    return false;
+  }
+  const remainder = trimmed.slice(prefix.length);
+  if (!remainder.startsWith('"') || !remainder.endsWith('"')) {
+    return false;
+  }
+  if (remainder.includes("\n")) {
+    return false;
+  }
+  return true;
+}
+
+export function appendExportLine(file: string, envLine: string, envName: string): { appended: boolean; totalLines: number } {
+  let existing = "";
+  if (fs.existsSync(file)) {
+    existing = fs.readFileSync(file, "utf8");
+  }
+  const lines = existing.split(/\r?\n/);
+  const totalLines = lines.length;
+  for (const line of lines) {
+    if (isExportLineFor(line, envName)) {
+      return { appended: false, totalLines };
+    }
+  }
+  const separator = existing.length === 0 || existing.endsWith("\n") ? "" : "\n";
+  const block = `${separator}${envLine}\n`;
+  fs.writeFileSync(file, existing + block);
+  return { appended: true, totalLines };
+}
+
+export function removeExportLine(file: string, envName: string): { removed: boolean; totalLines: number } {
+  if (!fs.existsSync(file)) {
+    return { removed: false, totalLines: 0 };
+  }
+  const existing = fs.readFileSync(file, "utf8");
+  const lines = existing.split(/\r?\n/);
+  const kept: string[] = [];
+  let removed = false;
+  for (const line of lines) {
+    if (!removed && isExportLineFor(line, envName)) {
+      removed = true;
+      continue;
+    }
+    kept.push(line);
+  }
+  const totalLines = kept.length;
+  if (!removed) {
+    return { removed: false, totalLines };
+  }
+  const joined = kept.join("\n");
+  fs.writeFileSync(file, joined);
+  return { removed: true, totalLines };
+}
+
+function runPersistScript(file: string): void {
+  const errors = validateGlobalDir(globalDir);
+  if (errors.length > 0) {
+    for (const error of errors) {
+      console.error(error);
+    }
+    process.exit(1);
+  }
+  const envLine = buildExportLine(globalDir);
+  const result = appendExportLine(file, envLine, ENV_VAR);
+  if (result.appended) {
+    console.log(`persisted: appended ${envLine} to ${file}`);
+  } else {
+    console.log(`persisted: ${file} already contains an ${ENV_VAR} export line; no change.`);
+  }
+  console.log("Restart your shell so the new env var is loaded.");
+}
+
+function runUnsetScript(file: string): void {
+  const result = removeExportLine(file, ENV_VAR);
+  if (result.removed) {
+    console.log(`unset: removed ${ENV_VAR} export line from ${file}`);
+  } else if (!fs.existsSync(file)) {
+    console.log(`unset: ${file} did not exist; no change.`);
+  } else {
+    console.log(`unset: no ${ENV_VAR} export line found in ${file}; no change.`);
+  }
+  console.log("Restart your shell so the env var change takes effect.");
 }
 
 function validateGlobalDir(target: string): string[] {
@@ -202,6 +330,12 @@ function runSet(dryRun: boolean): void {
   }
 
   if (isWindows()) {
+    const measured = measuredValueLength(globalDir);
+    if (measured > SETX_SAFE_LIMIT) {
+      console.error(`warning: ${ENV_VAR} value is ${measured} chars; setx truncates user env vars at 1024 chars (safety limit ${SETX_SAFE_LIMIT}).`);
+      console.error(`Run \`node tools/install-opencode-global.ts --print\` and apply the setx command manually.`);
+      process.exit(2);
+    }
     const result = spawnSync("setx", [ENV_VAR, globalDir], { encoding: "utf8" });
     if (result.status !== 0) {
       console.error(`setx failed (exit ${result.status}).`);
@@ -263,10 +397,19 @@ function main(): void {
     case "unset":
       runUnset();
       break;
+    case "persist-script":
+      runPersistScript(options.scriptFile ?? "");
+      break;
+    case "unset-script":
+      runUnsetScript(options.scriptFile ?? "");
+      break;
     case "set":
       runSet(options.dryRun);
       break;
   }
 }
 
-main();
+const executedPath = process.argv[1] ? path.resolve(process.argv[1]) : "";
+if (executedPath === fileURLToPath(import.meta.url)) {
+  main();
+}

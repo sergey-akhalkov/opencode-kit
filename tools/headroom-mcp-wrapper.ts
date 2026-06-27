@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -175,7 +175,38 @@ function splitLines(buffer: string): { lines: string[]; remainder: string } {
   return { lines: parts.slice(0, -1), remainder: parts.at(-1) ?? "" };
 }
 
+export type HeadroomProbe = {
+  available: boolean;
+  exitCode: number | null;
+  signal: NodeJS.Signals | null;
+  error?: NodeJS.ErrnoException;
+};
+
+export function probeHeadroom(bin: string = "headroom", args: string[] = ["--version"], env: NodeJS.ProcessEnv = process.env): HeadroomProbe {
+  const result = spawnSync(bin, args, { stdio: "ignore", env });
+  if (result.error) {
+    return { available: false, exitCode: null, signal: null, error: result.error };
+  }
+  if (result.signal) {
+    return { available: true, exitCode: null, signal: result.signal };
+  }
+  if (result.status === 0) {
+    return { available: true, exitCode: 0, signal: null };
+  }
+  return { available: true, exitCode: result.status ?? null, signal: null };
+}
+
 export function startHeadroomMcpWrapper(): ChildProcessWithoutNullStreams {
+  const probe = probeHeadroom();
+  if (!probe.available) {
+    console.error(`error: headroom binary not found on PATH`);
+    process.exit(2);
+  }
+  if (probe.exitCode !== 0) {
+    console.error(`error: headroom binary not usable (exit ${probe.exitCode})`);
+    process.exit(3);
+  }
+
   const child = spawn("headroom", ["mcp", "serve"], {
     env: process.env,
     stdio: ["pipe", "pipe", "pipe"],

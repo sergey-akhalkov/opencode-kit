@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -85,8 +86,14 @@ function copyTextFile(source: string, destination: string): void {
   fs.copyFileSync(source, destination);
 }
 
-function backupExisting(destination: string, targetRoot: string): string {
-  const stamp = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
+export function backupStamp(): string {
+  const base = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
+  const suffix = randomUUID().replace(/-/g, "").slice(0, 8);
+  return `${base}-${suffix}`;
+}
+
+export function backupExisting(destination: string, targetRoot: string): string {
+  const stamp = backupStamp();
   const relative = path.relative(targetRoot, destination);
   const backup = path.join(targetRoot, ".backups", "opencode-dev-kit", stamp, relative);
   fs.mkdirSync(path.dirname(backup), { recursive: true });
@@ -153,7 +160,9 @@ function main(): void {
 }
 
 try {
-  main();
+  if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    main();
+  }
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
   process.exitCode = 1;
