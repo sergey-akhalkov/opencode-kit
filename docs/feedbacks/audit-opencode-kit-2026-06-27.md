@@ -127,6 +127,7 @@
 - Impact: CI does not run library tests or validators by default; the kit cannot enforce its own contracts.
 - Recommendation: add a `.github/workflows/validate.yml` that runs `npm ci && npm run validate:strict && npm test`; reference the existing `templates/ci/github-actions.yml`.
 - Confidence: high.
+- Status: resolved via `openspec/changes/add-ci-workflow` (`.github/workflows/validate.yml` committed; runs `npm ci`, `npm run validate:strict`, `npm test`, `npm run code-quality:inventory -- --fail-on-split-candidates`, `npm run instruction:inventory`, conditional `npm run openspec:validate` and `npm run openspec:gate -- --operation prepush`; trigger `pull_request` + `push: branches: [main]`; permissions scoped to `contents: read`).
 
 ### F17 [P2] Long sequential `npm test` chain
 - Evidence: `package.json:13` -> `node tools/test-library.ts && node tools/test-library-validation-scripts.ts && ... && node tools/test-pre-push-validate.ts`. 9 stages chained with `&&`.
@@ -203,6 +204,7 @@
 | T02 | `validate-library.ts` exact `<= 1024 char` setx path warning | none | no fixture with deeply-nested path | low |
 | T03 | `permission: allow` warning only on installed `global/opencode.json` | validator emits warning | no test asserts the warning text format | medium |
 | T04 | CI matrix (Node >=24) across platforms | none committed | no `.github/workflows/validate.yml` | high |
+| T04 | CI gate (Node 24 on ubuntu-latest) | `.github/workflows/validate.yml` | added via `openspec/changes/add-ci-workflow`; `actions/setup-node@v4` pins Node 24; matrix currently `ubuntu-latest` only — `windows-latest` deferred per design D2 | resolved (single-OS) |
 | T05 | Cross-platform POSIX path normalization in fixtures | tests run on Windows | no CI matrix verification on Linux/macOS | medium |
 | T06 | Concurrent `npm test` invocations on shared `.opencode/state/instruction-feedback-ledger.json` | tests use tempdirs | no integration test for two parallel writers | low |
 | T07 | `headroom-mcp-wrapper.ts` behavior when `headroom` binary is missing | smoke test | no test for `error` event path | medium |

@@ -1,5 +1,7 @@
 # opencode-dev-kit
 
+[![Validate CI](https://github.com/anomalyco/opencode-dev-kit/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/anomalyco/opencode-dev-kit/actions/workflows/validate.yml)
+
 Installable OpenCode development kit for reusable AI-assisted engineering workflows across projects.
 
 ## What This Is
@@ -224,6 +226,8 @@ To enable the tracked local git hook for this clone, run:
 ```sh
 git config core.hooksPath .githooks
 ```
+
+Continuous integration runs the same machine-checked gates on every pull request and on push to `main` through `.github/workflows/validate.yml`. CI enforces `npm run validate:strict`, `npm test`, `npm run code-quality:inventory -- --root . --format markdown --fail-on-split-candidates --attention-lines 400 --split-lines 800`, `npm run instruction:inventory -- --format markdown`, and the conditional OpenSpec steps (`npm run openspec:validate`, `npm run openspec:gate -- --operation prepush`) when `openspec/changes/` is non-empty. Downstream consumers can copy the user-facing template at `templates/ci/github-actions.yml` instead of the kit's own workflow.
 
 For broad instruction-artifact audits, use `instructions/instruction-artifact-audit-runbook.md` to prove repo source, installed state, runtime policy, context-cost metrics, permission semantics, reviewer gates, and non-repo changes. Capture before/after metrics such as global rules line count, top heavy skill line counts, installed-copy drift, validator test count, and reviewer findings.
 
