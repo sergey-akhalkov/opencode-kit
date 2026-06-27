@@ -1,0 +1,31 @@
+export const COMPLAIN_SHARED_REQUIRED_TEXT: readonly string[] = [
+  "Source: <agent-or-skill-name>",
+  "Role: main-agent | reviewer | worker | skill",
+  "Type: complaint | suggestion | automation-candidate | instruction-conflict | tooling-friction | context-friction",
+  "Severity: low | medium | high",
+  "Recurrence: current-session-once | current-session-repeated | ledger-match | unknown",
+  "Status: open",
+  "### Complaint",
+  "### Context",
+  "### Evidence From Current Session",
+  "### Impact",
+  "### Desired Future",
+  "### Proposed Direction",
+  "### OpenSpec Follow-Up",
+  "### Related Entries",
+  "raw private prompts",
+  "large logs",
+  "personal blame",
+  "Recurrence: unknown",
+];
+
+export const COMPLAIN_DIRECT_WRITE_CONTRACT_TEXT: readonly string[] = [
+  "## Direct Write Contract",
+  "docs/feedbacks/<source>.md",
+  "docs/feedbacks/**",
+  "parent directories",
+  "no shell command or project bootstrap is required",
+  "Feedback Candidate",
+  "Do not edit source, config, instructions, specs, code, or task artifacts",
+  "Secrets, credentials, tokens, raw private prompts, or unnecessary private paths",
+];

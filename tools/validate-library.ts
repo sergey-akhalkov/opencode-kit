@@ -3,6 +3,16 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  SKILL_DESCRIPTION_MAX_CHARS,
+  SKILL_NAME_PATTERN,
+  SKILL_OUTPUT_CONTRACT_PATTERN,
+  SKILL_TRIGGER_PATTERN,
+} from "./contracts/skills.ts";
+import {
+  COMPLAIN_DIRECT_WRITE_CONTRACT_TEXT,
+  COMPLAIN_SHARED_REQUIRED_TEXT,
+} from "./contracts/complain.ts";
 
 type FrontmatterValue = string | Record<string, never>;
 type FrontmatterMap = Map<string, FrontmatterValue>;
@@ -480,18 +490,18 @@ function validateSkills(root: string): string[] {
       addError(`Missing skill name: ${file}`);
     } else if (name !== folderName) {
       addError(`Skill name mismatch: folder=${folderName} name=${name}`);
-    } else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
+    } else if (!SKILL_NAME_PATTERN.test(name)) {
       addError(`Invalid skill name format: ${name}`);
     }
     if (!description || description.trim() === "") {
       addError(`Missing skill description: ${file}`);
-    } else if (description.length > 1024) {
-      addError(`Skill description exceeds 1024 chars: ${file}`);
+    } else if (description.length > SKILL_DESCRIPTION_MAX_CHARS) {
+      addError(`Skill description exceeds ${SKILL_DESCRIPTION_MAX_CHARS} chars: ${file}`);
     }
-    if (!/\bUse this (skill|helper)\b/i.test(text)) {
+    if (!SKILL_TRIGGER_PATTERN.test(text)) {
       addError(`Skill must define explicit trigger text with 'Use this skill/helper': ${file}`);
     }
-    if (!/(^## Output\b|^## Output Shapes\b|^## Minimal Ledger\b|^Workers return:|\bReturn:|\bReturn\s+)/m.test(text)) {
+    if (!SKILL_OUTPUT_CONTRACT_PATTERN.test(text)) {
       addError(`Skill must define an output or ledger contract: ${file}`);
     }
   }
@@ -516,40 +526,11 @@ function validateFeedbackLedgerArtifacts(root: string, skillNames: string[]): vo
 
   const skillText = readText(skillPath);
   const readmeText = readText(readmePath);
-  const sharedRequired = [
-    "Source: <agent-or-skill-name>",
-    "Role: main-agent | reviewer | worker | skill",
-    "Type: complaint | suggestion | automation-candidate | instruction-conflict | tooling-friction | context-friction",
-    "Severity: low | medium | high",
-    "Recurrence: current-session-once | current-session-repeated | ledger-match | unknown",
-    "Status: open",
-    "### Complaint",
-    "### Context",
-    "### Evidence From Current Session",
-    "### Impact",
-    "### Desired Future",
-    "### Proposed Direction",
-    "### OpenSpec Follow-Up",
-    "### Related Entries",
-    "raw private prompts",
-    "large logs",
-    "personal blame",
-    "Recurrence: unknown",
-  ];
-  for (const required of sharedRequired) {
+  for (const required of COMPLAIN_SHARED_REQUIRED_TEXT) {
     requireTextContains(skillText, required, "complain skill feedback template", skillPath);
     requireTextContains(readmeText, required, "feedback ledger README template", readmePath);
   }
-  for (const required of [
-    "## Direct Write Contract",
-    "docs/feedbacks/<source>.md",
-    "docs/feedbacks/**",
-    "parent directories",
-    "no shell command or project bootstrap is required",
-    "Feedback Candidate",
-    "Do not edit source, config, instructions, specs, code, or task artifacts",
-    "Secrets, credentials, tokens, raw private prompts, or unnecessary private paths",
-  ]) {
+  for (const required of COMPLAIN_DIRECT_WRITE_CONTRACT_TEXT) {
     requireTextContains(skillText, required, "complain skill direct-write contract", skillPath);
   }
 }
