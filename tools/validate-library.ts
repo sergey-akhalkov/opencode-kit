@@ -13,6 +13,29 @@ import {
   COMPLAIN_DIRECT_WRITE_CONTRACT_TEXT,
   COMPLAIN_SHARED_REQUIRED_TEXT,
 } from "./contracts/complain.ts";
+import {
+  ALLOWED_COMPLAIN_SKILL_RULES,
+  ALLOWED_REVIEWER_BASH_RULES,
+  ALLOWED_REVIEWER_EDIT_RULES,
+  REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE,
+  REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT,
+  REVIEWER_DENIED_PERMISSION_KEYS,
+  REVIEWER_OBSOLETE_PERMISSION_KEYS,
+} from "./contracts/agents.ts";
+import {
+  AGENT_TEXT_CONTRACTS,
+  PREVENTION_FEEDBACK_REVIEWER_FILES,
+  PREVENTION_FEEDBACK_REQUIRED_TEXT,
+  SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
+} from "./contracts/reviewer-binding.ts";
+import {
+  ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES,
+  IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS,
+  IMPLEMENTATION_WORKER_FILE,
+  IMPLEMENTATION_WORKER_HANDOFF_FIELDS,
+  IMPLEMENTATION_WORKER_REQUIRED_TEXT,
+  IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT,
+} from "./contracts/implementation-worker.ts";
 
 type FrontmatterValue = string | Record<string, never>;
 type FrontmatterMap = Map<string, FrontmatterValue>;
@@ -32,79 +55,6 @@ const errors: string[] = [];
 const warnings: string[] = [];
 const forbiddenCodeExtensions = new Set([".cjs", ".js", ".mjs", ".ps1", ".psd1", ".psm1", ".py", ".pyw"]);
 const mutationCapablePermissionKeys = new Set(["bash", "edit", "task", "external_directory"]);
-const implementationWorkerFile = "implementation-worker.md";
-const preventionFeedbackReviewerFiles = [
-  "code-quality-reviewer.md",
-  "deployment-config-reviewer.md",
-  "implementation-readiness-reviewer.md",
-  "instruction-artifact-reviewer.md",
-  "legacy-client-compatibility-reviewer.md",
-  "legacy-evidence-reviewer.md",
-  "openspec-architecture-reviewer.md",
-  "performance-reliability-reviewer.md",
-  "protocol-api-reviewer.md",
-  "rust-concurrency-reviewer.md",
-  "session-delivery-reviewer.md",
-  "test-coverage-reviewer.md",
-  "wire-protocol-reviewer.md",
-];
-const preventionFeedbackRequiredText = [
-  "## Prevention Feedback",
-  "Recurrence Path",
-  "Prevention Target",
-  "Prevention Cost",
-  "Draft Rule",
-  "Replay Evidence",
-];
-const agentTextContracts: TextContract[] = [
-  ...preventionFeedbackReviewerFiles.map((fileName) => ({
-    fileName,
-    label: `${fileName} must define Prevention Feedback output contract`,
-    requiredText: preventionFeedbackRequiredText,
-  })),
-  {
-    fileName: "session-delivery-reviewer.md",
-    label: "session-delivery-reviewer must require delivery-control safeguards",
-    requiredText: [
-      "Use after material or complex sessions",
-      "## Minimal Evidence Bundle",
-      "changed files or diffstat",
-      "reviewer findings/fixes",
-      "## Compaction Evidence Boundary",
-      "every explicit delivery-review request",
-      "Root causes must cite evidence; use `unknown`",
-      "requirementSignals[]",
-      "Root-session user messages, confirmed `requirementSignals[]`, and explicit `questionReplies[]` override supplied continuation summaries",
-      "openspec_all_changes",
-      "archive_when_complete",
-      "push_after_archive",
-      "blocker_escalation_gate",
-      "new_change_approval_required",
-      "push_all",
-      "Missing evidence for a confirmed signaled requirement is a P0 blocker",
-      "todos.ever[]",
-      "todos.unresolved[]",
-      "Changed-file scope",
-      "Current-slice framing",
-      "P0 blocker",
-      "test-first evidence for behavior-changing work",
-      "Keep matrices terse",
-      "Required Next Actions",
-      "Actionable Continuation Items",
-    ],
-  },
-  {
-    fileName: "test-coverage-reviewer.md",
-    label: "test-coverage-reviewer must require task/repro/runtime-envelope coverage",
-    requiredText: [
-      "## Review Inputs And Baseline Scenario",
-      "user task, acceptance criteria, logs, and reproduction",
-      "actual runtime envelope",
-      "fresh-session behavior",
-      "Task/Repro Coverage Matrix",
-    ],
-  },
-];
 const legacyToolingReferences = [
   "pwsh -NoProfile -File",
   "validate-library.ps1",
@@ -536,8 +486,10 @@ function validateFeedbackLedgerArtifacts(root: string, skillNames: string[]): vo
 }
 
 function validateReviewerBashPermission(frontmatter: FrontmatterMap, file: string): void {
-  if (frontmatter.get("permission.bash") !== "deny") {
-    addError(`Agent permission must set bash: deny: ${file}`);
+  for (const [key, expected] of ALLOWED_REVIEWER_BASH_RULES) {
+    if (frontmatter.get(key) !== expected) {
+      addError(`Agent permission must set ${key.replace("permission.", "")}: ${expected}: ${file}`);
+    }
   }
 }
 
@@ -552,17 +504,13 @@ function validateSessionDeliveryContextPermission(frontmatter: FrontmatterMap, f
 }
 
 function validateComplainSkillPermission(frontmatter: FrontmatterMap, file: string, owner: string): void {
-  const allowedSkillRules = new Map([
-    ["permission.skill.*", "deny"],
-    ["permission.skill.complain", "allow"],
-  ]);
-  for (const [key, expected] of allowedSkillRules) {
+  for (const [key, expected] of ALLOWED_COMPLAIN_SKILL_RULES) {
     if (frontmatter.get(key) !== expected) {
       addError(`${owner} must set ${key.replace("permission.", "")}: ${expected}: ${file}`);
     }
   }
   for (const [key, value] of frontmatter) {
-    if (key.startsWith("permission.skill.") && allowedSkillRules.get(key) !== value) {
+    if (key.startsWith("permission.skill.") && ALLOWED_COMPLAIN_SKILL_RULES.get(key) !== value) {
       addError(`${owner} has unsupported skill permission '${key.replace("permission.skill.", "")}: ${String(value)}': ${file}`);
     }
   }
@@ -572,17 +520,13 @@ function validateComplainSkillPermission(frontmatter: FrontmatterMap, file: stri
 }
 
 function validateReviewerFeedbackEditPermission(frontmatter: FrontmatterMap, file: string): void {
-  const allowedEditRules = new Map([
-    ["permission.edit.*", "deny"],
-    ["permission.edit.docs/feedbacks/**", "allow"],
-  ]);
-  for (const [key, expected] of allowedEditRules) {
+  for (const [key, expected] of ALLOWED_REVIEWER_EDIT_RULES) {
     if (frontmatter.get(key) !== expected) {
       addError(`Agent permission must set ${key.replace("permission.", "")}: ${expected}: ${file}`);
     }
   }
   for (const [key, value] of frontmatter) {
-    if (key.startsWith("permission.edit.") && allowedEditRules.get(key) !== value) {
+    if (key.startsWith("permission.edit.") && ALLOWED_REVIEWER_EDIT_RULES.get(key) !== value) {
       addError(`Agent has unsupported edit permission '${key.replace("permission.edit.", "")}: ${String(value)}': ${file}`);
     }
   }
@@ -592,58 +536,27 @@ function validateReviewerFeedbackEditPermission(frontmatter: FrontmatterMap, fil
 }
 
 function validateImplementationWorker(frontmatter: FrontmatterMap, text: string, file: string): void {
-  const allowedBashRules = new Map([
-    ["permission.bash.*", "deny"],
-    ["permission.bash.git status*", "allow"],
-    ["permission.bash.git diff*", "allow"],
-    ["permission.bash.npm test*", "allow"],
-    ["permission.bash.npm run test*", "allow"],
-    ["permission.bash.npm run validate*", "allow"],
-    ["permission.bash.npm run lint*", "allow"],
-    ["permission.bash.npm run typecheck*", "allow"],
-    ["permission.bash.node tools/test-*.ts", "allow"],
-    ["permission.bash.cargo test*", "allow"],
-    ["permission.bash.cargo check*", "allow"],
-    ["permission.bash.cargo clippy*", "allow"],
-    ["permission.bash.go test*", "allow"],
-    ["permission.bash.dotnet test*", "allow"],
-  ]);
   if (frontmatter.get("permission.edit") !== "allow") {
     addError(`Implementation worker must set edit: allow: ${file}`);
   }
-  for (const [key, expected] of allowedBashRules) {
+  for (const [key, expected] of ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES) {
     if (frontmatter.get(key) !== expected) {
       addError(`Implementation worker must set ${key.replace("permission.", "")}: ${expected}: ${file}`);
     }
   }
   for (const [key, value] of frontmatter) {
-    if (key.startsWith("permission.bash.") && allowedBashRules.get(key) !== value) {
+    if (key.startsWith("permission.bash.") && ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get(key) !== value) {
       addError(`Implementation worker has unsupported bash permission '${key.replace("permission.bash.", "")}: ${String(value)}': ${file}`);
     }
   }
   validateComplainSkillPermission(frontmatter, file, "Implementation worker");
-  for (const permission of ["task", "question", "webfetch", "websearch", "todowrite", "external_directory", "lsp", "doom_loop"]) {
+  for (const permission of IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS) {
     const key = `permission.${permission}`;
     if (frontmatter.get(key) !== "deny") {
       addError(`Implementation worker must set ${permission}: deny: ${file}`);
     }
   }
-  for (const required of [
-    "## Worker Contract",
-    "one bounded work slice",
-    "Write scope",
-    "Do not edit outside write scope",
-    "Do not ask the user questions",
-    "No commits",
-    "TDD/test-first",
-    "main-session validation gate",
-    "## Feedback Ledger",
-    "docs/feedbacks",
-    "`complain`",
-    "IMPLEMENTATION_WORKER_REPORT",
-    "Run:",
-    "Worker:",
-  ]) {
+  for (const required of IMPLEMENTATION_WORKER_REQUIRED_TEXT) {
     requireTextContains(text, required, "Implementation worker contract", file);
   }
 }
@@ -674,30 +587,33 @@ function validateAgents(root: string): string[] {
         addError(`Agent permission must set ${permission}: allow: ${file}`);
       }
     }
-    if (frontmatter.has("permission.list")) {
-      addError(`Agent permission must not set obsolete permission.list; directory listing is covered by read: ${file}`);
+    for (const obsolete of REVIEWER_OBSOLETE_PERMISSION_KEYS) {
+      const key = `permission.${obsolete}`;
+      if (frontmatter.has(key)) {
+        addError(`Agent permission must not set obsolete permission.${obsolete}; directory listing is covered by read: ${file}`);
+      }
     }
     validateSessionDeliveryContextPermission(frontmatter, file);
-    if (path.basename(file) === implementationWorkerFile) {
+    if (path.basename(file) === IMPLEMENTATION_WORKER_FILE) {
       validateImplementationWorker(frontmatter, text, file);
       continue;
     }
     validateReviewerBashPermission(frontmatter, file);
     validateReviewerFeedbackEditPermission(frontmatter, file);
     validateComplainSkillPermission(frontmatter, file, "Agent permission");
-    for (const permission of ["task", "question", "webfetch", "websearch", "todowrite", "external_directory", "lsp", "doom_loop"]) {
+    for (const permission of REVIEWER_DENIED_PERMISSION_KEYS) {
       const key = `permission.${permission}`;
       if (frontmatter.get(key) !== "deny") {
         addError(`Agent permission must set ${permission}: deny: ${file}`);
       }
     }
-    for (const required of ["## Leaf Contract", "No source/config/instruction edits", "Needs external reviewer", "## Feedback Ledger", "docs/feedbacks", "`complain`", "`Findings`: ordered by severity", "`Residual Risks`", "`Actionable Continuation Items`"]) {
+    for (const required of REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT) {
       requireTextContains(text, required, "Reusable reviewer leaf contract", file);
     }
-    if (text.includes("## Orchestration") || text.includes("Do not modify files.")) {
+    if (REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE.some((pattern) => pattern.test(text))) {
       addError(`Reusable reviewer agent must use the compact Leaf Contract instead of old boilerplate: ${file}`);
     }
-    validateTextContracts(file, text, agentTextContracts);
+    validateTextContracts(file, text, AGENT_TEXT_CONTRACTS);
   }
 
   return agentNames;
@@ -1353,10 +1269,11 @@ function validateImplementationWorkerRouting(root: string, agentNames: string[])
     }
     const text = readText(file);
     requireTextContains(text, "implementation-worker", "implementation-worker routing", file);
-    requireTextContains(text, "non-overlapping write scope", "implementation-worker routing", file);
-    requireTextContains(text, "clear acceptance criteria", "implementation-worker routing", file);
-    requireTextContains(text, "focused validation gate", "implementation-worker routing", file);
-    for (const field of ["Mission", "Read scope", "Write scope", "Forbidden", "Verification", "acceptance criteria"]) {
+    for (const required of IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT) {
+      if (required === "implementation-worker") continue;
+      requireTextContains(text, required, "implementation-worker routing", file);
+    }
+    for (const field of IMPLEMENTATION_WORKER_HANDOFF_FIELDS) {
       requireTextContains(text, field, "implementation-worker handoff fields", file);
     }
   }
@@ -1389,12 +1306,9 @@ function validateSessionDeliveryBinding(root: string, agentNames: string[]): voi
     }
     const text = readText(file);
     requireTextContains(text, "session-delivery-reviewer", "session-delivery-reviewer binding handoff", file);
-    requireTextContains(text, "Blocking for Acceptance: yes", "session-delivery-reviewer binding handoff", file);
-    requireTextContains(text, "Verdict: blocked", "session-delivery-reviewer binding handoff", file);
-    requireTextContains(text, "P0 blocker", "session-delivery-reviewer binding handoff", file);
-    requireTextContains(text, "Required Next Actions", "session-delivery-reviewer binding handoff", file);
-    requireTextContains(text, "do not present the session as complete", "session-delivery-reviewer binding handoff", file);
-    requireTextContains(text, "partial slice handoff must not end an unfinished root goal", "session-delivery-reviewer binding handoff", file);
+    for (const token of SESSION_DELIVERY_BINDING_HANDOFF_TOKENS) {
+      requireTextContains(text, token, "session-delivery-reviewer binding handoff", file);
+    }
   }
 }
 

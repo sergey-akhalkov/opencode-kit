@@ -1,12 +1,19 @@
 ## 1. Contracts extraction
 
-- [ ] 1.1 Create `tools/contracts/skills.ts` with the existing skill-name/description regex tokens and trigger-text patterns.
-- [ ] 1.2 Create `tools/contracts/agents.ts` with the reviewer permission keys, leaf-contract tokens, and feedback-ledger contract text.
-- [ ] 1.3 Create `tools/contracts/complain.ts` with the complain skill direct-write contract text.
-- [ ] 1.4 Create `tools/contracts/reviewer-binding.ts` with the 14 prevention-feedback tokens and 7 session-delivery binding tokens.
-- [ ] 1.5 Create `tools/contracts/implementation-worker.ts` with the implementation-worker handoff fields and bash permission list.
-- [ ] 1.6 Create `tools/contracts/openspec.ts` with the operation registry and per-operation artifact requirements.
-- [ ] 1.7 Add a regression test that asserts each extracted token list is byte-equal to the inline list it replaced.
+- [x] 1.1 Create `tools/contracts/skills.ts` with the existing skill-name/description regex tokens and trigger-text patterns.
+- [x] 1.2 Create `tools/contracts/agents.ts` with the reviewer permission keys, leaf-contract tokens, and feedback-ledger contract text.
+- [x] 1.3 Create `tools/contracts/complain.ts` with the complain skill direct-write contract text.
+- [x] 1.4 Create `tools/contracts/reviewer-binding.ts` with the 14 prevention-feedback tokens and 7 session-delivery binding tokens.
+- [x] 1.5 Create `tools/contracts/implementation-worker.ts` with the implementation-worker handoff fields and bash permission list.
+- [x] 1.6 Create `tools/contracts/openspec.ts` with the operation registry and per-operation artifact requirements.
+- [x] 1.7 Add a regression test that asserts each extracted token list is byte-equal to the inline list it replaced.
+
+Evidence:
+- 7 contract files in `tools/contracts/` (5+1 types): skills.ts (7), complain.ts (31), agents.ts (49), reviewer-binding.ts (93), implementation-worker.ts (62), openspec.ts (33), types.ts (5).
+- `tools/validate-library.ts` shrank from 1449 to 1363 lines (-86, -5.9%) by replacing inline lists with contract imports.
+- `tools/test-contracts.ts` (480 lines, 21 tests) asserts each exported contract value matches the expected literal from the original inline lists, plus a sanity check that the validator still passes against the real repo.
+- `npm test` runs 137 tests across 10 suites (was 54+ in baseline). 0 failures. 0 regressions in 54 library tests.
+- `npm run validate` and `npm run validate:strict` produce byte-equal output vs. baseline.
 
 ## 2. Validator split (orchestrator stays as entrypoint)
 
