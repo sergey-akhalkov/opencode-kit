@@ -1,38 +1,15 @@
 import { DatabaseSync } from "node:sqlite";
 import { hashRef, sanitizeText } from "./redaction.ts";
 import type { DeliveryContextTodo, DeliveryContextUserMessage } from "./projection.ts";
-
-type SessionRow = Record<string, unknown> & { id: unknown };
-type EventRow = Record<string, unknown> & { id: unknown };
-type DbSchema = Map<string, Set<string>>;
-type RequestedSessionSelection = {
-  candidateRefs: Set<string>;
-  missingRef: string;
-  rawIds: Set<string>;
-};
-type TodoEvidence = {
-  content?: string;
-  eventRef: string;
-  millis: number | null;
-  priority: string | null;
-  source: "current" | "todowrite";
-  status: string | null;
-};
-type TodoAccumulator = {
-  content?: string;
-  eventRefs: string[];
-  firstSeenMillis: number | null;
-  identity: string;
-  lastSeenMillis: number | null;
-  priority: string | null;
-  seenCount: number;
-  source: "current" | "todowrite";
-  status: string | null;
-};
-type TodoHistoryEvidence = {
-  history: { available: boolean; source: "current_snapshot_only" | "todowrite_parts"; toolCalls: number };
-  todos: TodoEvidence[];
-};
+import type {
+  DbSchema,
+  EventRow,
+  RequestedSessionSelection,
+  SessionRow,
+  TodoAccumulator,
+  TodoEvidence,
+  TodoHistoryEvidence,
+} from "./db-types.ts";
 
 const SESSION_REF_PATTERN = /^session_[a-f0-9]{12}$/;
 const CLOSED_TODO_STATUSES = new Set(["cancelled", "completed"]);
