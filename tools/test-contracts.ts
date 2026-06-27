@@ -9,7 +9,8 @@ import { fileURLToPath } from "node:url";
 import {
   AGENT_TEXT_CONTRACTS,
   PREVENTION_FEEDBACK_REVIEWER_FILES,
-  PREVENTION_FEEDBACK_REQUIRED_TEXT,
+  REVIEWER_CONTRACT_REFERENCE_CONTRACTS,
+  REVIEWER_CONTRACT_REFERENCE_TEXT,
   SESSION_DELIVERY_BINDING_CONTRACT,
   SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
   SESSION_DELIVERY_BINDING_REQUIRED_TEXT,
@@ -118,13 +119,9 @@ const EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES = [
   "wire-protocol-reviewer.md",
 ];
 
-const EXPECTED_PREVENTION_FEEDBACK_REQUIRED_TEXT = [
-  "## Prevention Feedback",
-  "Recurrence Path",
-  "Prevention Target",
-  "Prevention Cost",
-  "Draft Rule",
-  "Replay Evidence",
+const EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT = [
+  "## Contract Reference",
+  "instructions/leaf-reviewer-agent-contract.md",
 ];
 
 const EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT = [
@@ -173,12 +170,8 @@ const EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT = [
 ];
 
 const EXPECTED_REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT = [
-  "## Leaf Contract",
-  "No source/config/instruction edits",
-  "Needs external reviewer",
-  "## Feedback Ledger",
-  "docs/feedbacks",
-  "`complain`",
+  "## Contract Reference",
+  "instructions/leaf-reviewer-agent-contract.md",
   "`Findings`: ordered by severity",
   "`Residual Risks`",
   "Actionable Continuation Items",
@@ -255,12 +248,12 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "contracts: prevention feedback required text is byte-equal",
+    name: "contracts: reviewer contract reference text is byte-equal",
     run: () => {
       assertDeepEqual(
-        [...PREVENTION_FEEDBACK_REQUIRED_TEXT],
-        EXPECTED_PREVENTION_FEEDBACK_REQUIRED_TEXT,
-        "PREVENTION_FEEDBACK_REQUIRED_TEXT drifted from the inline list it replaced.",
+        [...REVIEWER_CONTRACT_REFERENCE_TEXT],
+        EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT,
+        "REVIEWER_CONTRACT_REFERENCE_TEXT drifted from the inline list it replaced.",
       );
     },
   },
@@ -305,17 +298,17 @@ const tests: TestCase[] = [
     name: "contracts: AGENT_TEXT_CONTRACTS aggregates reviewer contracts",
     run: () => {
       const expectedTotal = EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES.length + 2;
-      assertEqual(AGENT_TEXT_CONTRACTS.length, expectedTotal, "AGENT_TEXT_CONTRACTS must aggregate prevention + binding + test-coverage contracts.");
-      const preventionLike = AGENT_TEXT_CONTRACTS.filter(
-        (c) => c.requiredText.length === EXPECTED_PREVENTION_FEEDBACK_REQUIRED_TEXT.length
-          && c.requiredText[0] === EXPECTED_PREVENTION_FEEDBACK_REQUIRED_TEXT[0],
+      assertEqual(AGENT_TEXT_CONTRACTS.length, expectedTotal, "AGENT_TEXT_CONTRACTS must aggregate reviewer + binding + test-coverage contracts.");
+      const contractReference = AGENT_TEXT_CONTRACTS.filter(
+        (c) => c.requiredText.length === EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT.length
+          && c.requiredText[0] === EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT[0],
       );
-      assertEqual(preventionLike.length, EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES.length, "Prevention feedback contracts missing.");
-      const preventionFiles = preventionLike.map((c) => c.fileName).sort();
+      assertEqual(contractReference.length, EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES.length, "Reviewer contract reference contracts missing.");
+      const contractFiles = contractReference.map((c) => c.fileName).sort();
       assertDeepEqual(
-        preventionFiles,
+        contractFiles,
         [...EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES].sort(),
-        "Prevention feedback file list drifted.",
+        "Reviewer contract reference file list drifted.",
       );
     },
   },
