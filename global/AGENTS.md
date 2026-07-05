@@ -1,4 +1,4 @@
-# Global OpenCode Agent Instructions
+# OpenCode Global Instructions
 
 ## Remembering User Preferences
 
@@ -55,7 +55,6 @@
 - Keep responses compact by default: outcome, changed files, validation, blockers, and only necessary rationale.
 - Remove filler and repeated caveats from responses, but preserve exact commands, paths, errors, code, safety warnings, and user-facing decisions.
 - Prefer targeted searches, symbols, and bounded file reads over broad file or log dumps.
-- On native Windows, `rtk` filters work only when invoked explicitly; use `rtk <command>` for shell-heavy read-only commands instead of relying on hook auto-rewrite.
 - For validation output, report summaries and failures first; read full saved tool output only when the preview lacks the cause.
 - Preserve exact code, commands, paths, errors, protocol terms, and safety warnings; do not compress away meaning.
 
@@ -87,8 +86,17 @@
 - Trust but verify: documentation, examples, comments, generated summaries, issue descriptions, and user claims are navigation aids until checked against executable/source evidence.
 - If prose and implementation disagree, surface the conflict and trust implementation evidence until explicitly resolved.
 
+## Local OpenCode Model Environment
+
+- The local OpenCode Desktop/localServer on this machine has these authed, usable models: `openai/gpt-5.5`, `zai-coding-plan/glm-5.2`, `minimax/MiniMax-M3`. (Recurring reminder: do not waste time re-discovering this.)
+- `GET /api/model` (and `/api/model?directory=...`) returns `data: []` by default. Do NOT interpret an empty model list as "no models available / model unreachable". Models are present and authed even though that endpoint lists none for a directory.
+- Always pass the model explicitly through the OpenCode API / CLI: the `model` field on `POST /session`/`prompt_async`, or `--model <provider/id>` / `OPENCODE_REAL_MODEL=<provider/id>` for the dream-team review CLI/smoke. Never run a review or prompt against the local localServer without selecting a model explicitly.
+- If a probe shows no model, the fix is to pass one of the three IDs above — not to conclude the server is unusable. This has bitten us before on the dream-team review smokes (`packages/control-plane/test/temporal-review-opencode-smoke.test.ts` with `TEMPORAL_REVIEW_OPENCODE_E2E=1 OPENCODE_REAL_MODEL=...`).
+- The local `qwen-local` provider (llama.cpp @ `127.0.0.1:8080`) is usually NOT running; prefer the three cloud models above unless the user starts the local qwen server.
+
 ## Parallel Work And Delegation
 
+- **Subagent dispatch is BLOCKING — there is no background execution.** Spawning a single `task`/subagent and then doing other work yourself is NOT parallel: the main session waits for the subagent to finish before resuming. To actually parallelize, emit **multiple `task` tool calls in a single message** (fan-out); they run concurrently and OpenCode waits for all to report back. One subagent at a time = strictly serial; the main session must do its own share of the work either BEFORE dispatching or AFTER all subagents return, never "meanwhile".
 - Run independent read/search/tool calls in parallel whenever there is no data dependency.
 - Use subagents only when the work is broad enough to benefit from separate context, parallel coverage, or independent review; keep simple searches, single-file reads, and tightly coupled reasoning in the main session.
 - Use `implementation-worker` for bounded edit-mode implementation slices when the work has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.
@@ -109,6 +117,13 @@
 - Do not commit, push, merge, delete source artifacts, run destructive cleanup, or alter remote state unless explicitly requested and allowed by repository policy.
 - If a skill requires an unavailable tool, do not invent results or block solely on the missing tool. Use best available evidence, state the missing gate/tool, and downgrade confidence where appropriate.
 
+## Code Review Method
+
+- **Golden-rule default:** when a change warrants an independent review, use the `dream_team_review` MCP tool instead of self-reviewing or spawning an ad-hoc reviewer subagent. It returns a strict, structured merge verdict (`approved` / `approved_with_notes` / `changes_requested` / `blocked`) from an independent reviewer session, and on repeated reviews of the same repo+base+branch it resumes the same session — remembering prior findings and reusing context, so it consumes noticeably fewer tokens than a fresh-context review each time.
+- Preconditions to use it: pass `repo` (absolute path of a local Git repo on the same machine), `base`, and exactly one of `task`/`taskPath`. It is read-only and local/shared-filesystem only by design; the reviewed repo, Temporal, and a worker process must be reachable on the same host.
+- **Fall back to the old way** (manual self-review, a reviewer subagent, or a checklist) **without retrying the failing tool** when any of these hold: `dream_team_review` is not configured/available in the current environment; the repo is remote or not on the local filesystem; the tool errors (infrastructure, validation, or input); or a synchronous review would block an urgent fix. State the fallback reason in one line and continue; do not loop on a failing tool within one session.
+- When the tool is available and the review is non-urgent, prefer it even for your own work before declaring it done — it is the designated independent gate, not a last resort.
+
 ## Repository Changes
 
 - When making changes in a repository, complete relevant verification and report ready-to-land status.
@@ -119,3 +134,55 @@
 - When creating or updating a PR/MR description, write it for a reviewer who sees the project and change for the first time.
 - Start PR/MR descriptions with plain-language context, problem/purpose, scope, non-goals, main changes, validation, risks, and review focus.
 - Avoid unexplained internal jargon, file-list-only summaries, and latest-commit changelogs unless the user explicitly asks for commit-focused text.
+
+## OpenSpec Change Authoring
+
+- Author every OpenSpec change (proposal, design, spec deltas, `tasks.md`) to be implementation-ready for a less capable model or a "confident middle" engineer: as detailed and unambiguous as possible, with the hard thinking and decisions resolved during authoring, not deferred into implementation.
+- Analogy: write it the way a senior systems analyst hands work off to confident-mid engineers — the analysis, approach, trade-offs, and risk resolution are done up front; the implementer executes rather than re-derives.
+- Prefer concrete over abstract: name exact files/paths, symbols, signatures, data shapes, error and edge cases, and acceptance criteria. Spell out "how", not only "what"; add short code sketches or interface stubs when they remove ambiguity.
+- Make `tasks.md` small, safe, and sequentially executable: one bounded action per task, each independently verifiable with the exact validation command and its expected pass condition. Split anything that mixes concerns, touches many files at once, or hides non-trivial reasoning.
+- Pre-resolve every decision the implementer would otherwise have to make: approach, library choice, boundary placement, error model, compatibility, rollback. If a decision is genuinely user-owned, surface it as an explicit open question for the user — never leave it for the implementer to guess.
+- No vague placeholders ("TBD", "as appropriate", "handle errors") inside actionable parts. Keep unresolved items in the proposal's open-questions section and route them to the user, not to implementation.
+- Keep risk and complexity inside the resolved design, not inside the implementer's head: call out hazards, irreversible steps, and validation gates explicitly so a weaker model can execute the change safely with low risk.
+
+## Task Completion Honesty
+
+This is a hard rule. Violations make the rest of the verification gate a lie.
+
+- **Never check a checkbox you have not actually completed.** When a task
+  list, OpenSpec `tasks.md`, GitHub issue, todo, or sub-task is marked
+  `[x]` / done / completed, the work behind it must have actually been done
+  in this session or in a prior session whose evidence is in the change.
+- "Looks done", "covered by tests", "implicit", "partially done", or
+  "deferred but the goal is clear" do not count. If the test was not run, the
+  command was not actually executed, the credential was not used, the
+  contract was not verified — the box stays unchecked.
+- "Optional", "follow-up", "smoke" — are part of the change, not outside
+  it. If the spec says "real OpenCode smoke", "real CLI output", "with
+  credentials when available", the smoke must be run when the credentials
+  ARE available. Treat opt-in env-gated tests as required when the
+  gating env is reachable from the working environment.
+- Before checking the box, look back at the task description and confirm
+  every literal clause is satisfied. If any clause is unsatisfied, leave
+  the box unchecked and either complete it now, or split it into a real
+  follow-up change that is itself an OpenSpec change or a PR with a
+  blocker label — never silently check.
+- When verification evidence already exists in the repo (captured CLI
+  output, golden fixtures, real-process artifacts), prefer it over
+  re-running. When evidence does not exist, run the verification now
+  before declaring success. Synthesis without execution is not verification.
+- When you previously checked a box honestly and later discover it was
+  not actually completed, immediately mark it `[ ]` (or "Not done") in
+  the same file, append a one-line note pointing to this rule, and either
+  complete the work or route a follow-up — do not let the lie persist.
+- Applies equally to: OpenSpec tasks, PR description checkboxes, todo
+  lists, agent self-reports, and reviewer notes.
+
+## Concise Response Style
+
+- Default to compact, direct communication. Lead with outcome, then evidence, blockers, validation, and next action when useful.
+- Remove social filler, repeated caveats, obvious narration, boilerplate, and performative warmth.
+- Keep technical substance: exact paths, commands, errors, risks, uncertainty, confidence, requirements, and user-facing decisions.
+- Use fragments and short sentences when clear. Prefer "Bug in auth middleware. Fix:" over a polite preamble.
+- Be direct, not rude. If the user is confused, stakes are high, or the action is irreversible/security-sensitive, use full clarity over brevity.
+- Apply this to prose only. Keep code, tests, specs, commit messages, PR/MR descriptions, and required output schemas in normal professional form.
