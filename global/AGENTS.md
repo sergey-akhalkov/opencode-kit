@@ -19,6 +19,7 @@
 
 ## Communication Preferences
 
+- Communicate with Sergey in chat only and exclusively in Russian. Keep all non-chat artifacts and technical materials, including code, tests, documentation, comments, commit messages, PR/MR text, specs, prompts, tool-facing content, schemas, and generated files, exclusively in English unless Sergey explicitly asks otherwise.
 - Record the user's preferred response language explicitly. If no preference is known, follow the user's language in the current conversation.
 - Preserve exact names for APIs, commands, paths, filenames, protocol terms, product names, and established technical expressions.
 - When asking the user a question, provide concise answer options when useful. Put the recommended option first and explain why.
@@ -126,6 +127,15 @@
 
 ## Repository Changes
 
+- **NEVER discard, revert, reset, delete, or `git checkout HEAD --` / `git restore`
+  / `git reset --hard` any file or change you did not personally create.** If
+  `git status`, `git diff`, or `git add` surfaces working-tree or index changes
+  you do not recognize as your own work, STOP and ask the user what they are
+  before touching them. `git add -A` may stage your own work alongside other
+  changes, but never destroy unrecognized changes. Assume any unrecognized change
+  is intentional user/teammate work, NOT garbage to clean up. When in doubt, ask
+  first — recovery of destroyed uncommitted work is unreliable and often
+  impossible.
 - When making changes in a repository, complete relevant verification and report ready-to-land status.
 - For behavior-changing code, default to TDD/test-first: add or update the focused failing, acceptance, or characterization test before implementation. If that is impractical, record the blocker and substitute the closest reproducible proof before or alongside the change.
 - Keep TDD proportional: one smallest useful test/gate for the scoped behavior is enough unless risk evidence justifies broader coverage.
