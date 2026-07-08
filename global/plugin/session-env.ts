@@ -3,6 +3,11 @@ import { readSessionDeliveryContext, type SessionDeliveryContextResult } from ".
 
 export const SESSION_DELIVERY_CONTEXT_TOOL = "session_delivery_context";
 export const SESSION_DELIVERY_REVIEWER_AGENT = "session-delivery-reviewer";
+const DREAM_TEAM_REVIEW_TOOL = "dream_team_review";
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 function deliveryContextMetadata(result: SessionDeliveryContextResult): Record<string, unknown> {
   return {
@@ -28,6 +33,19 @@ export default {
     "shell.env": async (input, output) => {
       if (typeof input.sessionID === "string" && input.sessionID !== "") {
         output.env.OPENCODE_SESSION_ID = input.sessionID;
+      }
+    },
+    "tool.execute.before": async (input, output) => {
+      if (input.tool !== DREAM_TEAM_REVIEW_TOOL || typeof input.sessionID !== "string" || input.sessionID === "") {
+        return;
+      }
+
+      if (!isRecord(output.args)) {
+        output.args = {};
+      }
+
+      if (!("callerSessionId" in output.args)) {
+        output.args.callerSessionId = input.sessionID;
       }
     },
     tool: {

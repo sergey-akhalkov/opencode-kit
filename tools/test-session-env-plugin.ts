@@ -273,6 +273,37 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "injects caller session id into dream_team_review args",
+    run: async () => {
+      const hooks = await plugin.server({} as never);
+      const output: { args?: unknown } = {};
+      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "dream_team_review" }, output as never);
+      assert(typeof output.args === "object" && output.args !== null && !Array.isArray(output.args), "tool.execute.before hook must normalize dream_team_review args to an object.");
+      assert((output.args as Record<string, unknown>).callerSessionId === "session_fixture", "tool.execute.before hook must inject callerSessionId for dream_team_review.");
+    },
+  },
+  {
+    name: "preserves existing dream_team_review caller session id",
+    run: async () => {
+      const hooks = await plugin.server({} as never);
+      const output = { args: { callerSessionId: "session_existing", repo: "D:/repo" } };
+      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "dream_team_review" }, output as never);
+      assert(output.args.callerSessionId === "session_existing", "tool.execute.before hook must not overwrite an existing callerSessionId.");
+      assert(output.args.repo === "D:/repo", "tool.execute.before hook must preserve sibling args when callerSessionId already exists.");
+    },
+  },
+  {
+    name: "does not change args for other tools",
+    run: async () => {
+      const hooks = await plugin.server({} as never);
+      const args = { command: "npm test" };
+      const output = { args };
+      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "bash" }, output as never);
+      assert(output.args === args, "tool.execute.before hook must leave other tool args object unchanged.");
+      assert(!("callerSessionId" in output.args), "tool.execute.before hook must not inject callerSessionId for other tools.");
+    },
+  },
+  {
     name: "registers session delivery context custom tool",
     run: async () => {
       const hooks = await plugin.server({} as never);
