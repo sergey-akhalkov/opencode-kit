@@ -38,7 +38,7 @@ Before deep work, define:
 - Use `codebase-audit-ledger` for durable coverage when scope is large enough to risk skipped areas.
 - Before deep review at scale, decide whether a deterministic helper would reduce repeated counting, inventory, diffing, coverage bookkeeping, or validation effort without replacing reviewer judgment.
 - Inventory files, directories, entrypoints, tests, specs, commands, tool/documentation indexes, and critical flows.
-- For broad audits with independent file or subsystem ranges, consider `orchestrator` with read-only workers and ledger-assigned ranges; keep quick or non-shardable audits serial.
+- For broad audits with independent file or subsystem ranges, consider bounded read-only workers with ledger-assigned ranges; keep quick or non-shardable audits serial.
 - Delegate independent read-only reviewer agents when useful, but keep the main session responsible for synthesis and edits.
 - Use `code-quality-reviewer` for maintainability/readability, file-bloat, duplication, boundary, and overengineering findings that need an independent read-only gate.
 - Findings require evidence, impact, likely root cause, and a minimal recommendation. If the cause is unknown, recommend investigation or instrumentation rather than a guessed fix.

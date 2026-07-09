@@ -8,7 +8,7 @@ license: MIT
 
 Use this skill after non-trivial code changes, before acceptance/merge, or when the user asks about maintainability, readability, DRY, SOLID, YAGNI, Design Patterns, large files, code smells, or refactoring.
 
-Do not use this skill for pure documentation edits, generated/vendor code, tiny mechanical edits, or broad exhaustive audits. Use `codebase-audit-loop` for whole-codebase audits and `file-review-quest` for block-by-block explanation of one file.
+Do not use this skill for pure documentation edits, generated/vendor code, tiny mechanical edits, broad exhaustive audits, or block-by-block explanation of one file. Use `codebase-audit-loop` for whole-codebase audits.
 
 ## Core Standard
 

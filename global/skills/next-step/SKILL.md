@@ -1,6 +1,6 @@
 ---
 name: next-step
-description: Discover OpenSpec-backed available work and choose the next bounded Universal Development Loop slice, using orchestration only when it is safe and useful.
+description: Discover OpenSpec-backed available work and choose the next bounded Universal Development Loop slice.
 license: MIT
 ---
 
@@ -8,18 +8,17 @@ license: MIT
 
 Use this skill when the user asks what to do next, how to continue a change, or how to choose the next reviewable slice in a spec/doc-first workflow.
 
-This skill is an entrypoint, not an implementation skill. It inventories OpenSpec-backed work, chooses the next bounded Universal Development Loop slice, and hands broad independent work to `orchestrator` only when fan-out is safe and useful.
+This skill is an entrypoint, not an implementation skill. It inventories OpenSpec-backed work and chooses the next bounded Universal Development Loop slice.
 
-For a new broad task that is not yet tied to existing OpenSpec work, use `adaptive-delivery` first; this skill should not infer an implementation backlog from source alone. If the current session already produced OpenSpec follow-up changes from an audit, retro, reviewer gate, or validation failure, include those changes in the inventory.
+For a new broad task that is not yet tied to existing OpenSpec work, do not infer an implementation backlog from source alone. If the current session already produced OpenSpec follow-up changes from an audit, retro, reviewer gate, or validation failure, include those changes in the inventory.
 
 ## Routing
 
 - If the repository has OpenSpec artifacts or the user mentions OpenSpec/spec-first/spec changes, inspect all active OpenSpec work before recommending a next step.
 - If there is no OpenSpec evidence, or only one concrete next action is available, stay serial and use the single-step output contract below.
-- If two or more independent OpenSpec-backed workstreams are visible, prepare an orchestration proposal and ask for approval only when scope, risk, destructive/remote actions, dirty-state preservation, or acceptance policy is user-owned.
-- When workstreams are bounded, local, reversible, and already within the user's approved goal, orchestration may proceed under the `orchestrator` entry gate without a routine approval question.
+- If two or more independent OpenSpec-backed workstreams are visible, summarize the options and recommend the first safe serial slice unless the user explicitly asked to run multiple tracks.
 - Do not infer a backlog from source code alone. Source, tests, diffs, and validation output are evidence only when connected to OpenSpec changes, specs, tasks, or acceptance criteria.
-- Treat backlog-style OpenSpec follow-up changes as valid workstreams only when they have session evidence, a coherent outcome, and bounded tasks; loose final-response bullets should be routed through `adaptive-delivery` or `openspec-propose` before orchestration.
+- Treat backlog-style OpenSpec follow-up changes as valid workstreams only when they have session evidence, a coherent outcome, and bounded tasks; loose final-response bullets should be grouped into concrete continuation candidates before any work starts.
 
 ## Workflow
 
@@ -29,49 +28,48 @@ For a new broad task that is not yet tied to existing OpenSpec work, use `adapti
 - Surface archive-ready OpenSpec changes when implementation tasks are done but spec sync, validation evidence, reviewer evidence, or archive movement is missing.
 - Include lightweight follow-up changes whose primary artifact is `tasks.md`, especially changes created from audits, retros, reviewer gates, or validation failure triage.
 - Group items into independent workstreams, not low-level task lists. Each workstream should have a clear outcome, bounded scope, readiness state, and likely validation evidence.
-- Keep the user-facing discovery summary high-level. Do not include detailed file-by-file plans, worker prompts, implementation steps, or test matrices until orchestration is approved.
+- Keep the user-facing discovery summary high-level. Do not include detailed file-by-file plans, worker prompts, implementation steps, or test matrices until parallel coordination is approved.
 - Prefer steps that reduce uncertainty, unblock implementation, or produce a reviewable slice.
 - Avoid speculative polish and unrelated cleanup.
 
-## Orchestration Decision Gate
+## Multi-Workstream Decision Gate
 
 When two or more independent OpenSpec-backed workstreams are available:
 
 - Show `Available OpenSpec Workstreams` with concise, high-level descriptions only.
-- Recommend whether to run all visible streams or a smaller subset, with one-line rationale.
-- Ask the user for approval before launching parallel work only when a real blocker or user-owned decision remains. Use `question` when available.
-- If user approval is not required, record why the streams are bounded and safe, then use the `orchestrator` handoff.
-- If the user forbids questions and approval is genuinely required, return `Suggested Next Options` and do not launch orchestration until the user explicitly approves.
+- Recommend one serial next step by default, or a clearly bounded subset if the user explicitly requested parallel execution.
+- Ask the user for approval before launching parallel work when scope, risk, destructive/remote actions, dirty-state preservation, or acceptance policy is user-owned. Use `question` when available.
+- If the user forbids questions and approval is genuinely required, return `Suggested Next Options` and do not launch parallel work until the user explicitly approves.
 - Offer 2-4 self-contained options. Put the recommended option first and end its label with `(Recommended)`.
-- Include a stop/serial option when orchestration may be too broad, risky, or not what the user wants.
-- Limit one `orchestrator` run to 2-6 approved workstreams. If more than 6 workstreams are available, show all of them at a high level, recommend the first prioritized batch of at most 6, and require separate approval for later batches.
-- Treat approval, when required, as permission to enter `orchestrator` posture only for the approved streams and approved mode. If later detailed planning exposes overlapping write scopes, unstable acceptance criteria, missing dependencies, or unsafe ambiguity, pause that stream and report the blocker instead of widening scope silently.
+- Include a stop/serial option when parallel work may be too broad, risky, or not what the user wants.
+- Limit one parallel batch to 2-6 approved workstreams. If more than 6 workstreams are available, show all of them at a high level, recommend the first prioritized batch of at most 6, and require separate approval for later batches.
+- Treat approval, when required, as permission to coordinate only the approved streams and approved mode. If later detailed planning exposes overlapping write scopes, unstable acceptance criteria, missing dependencies, or unsafe ambiguity, pause that stream and report the blocker instead of widening scope silently.
 
 Example approval options:
 
-- `Run all streams with orchestrator (Recommended)`: run parallel detailed planning for every listed workstream, then continue with bounded execution, integration, validation, and review gates.
-- `Run selected streams`: ask the user to name the workstreams, then orchestrate only those.
+- `Start recommended step (Recommended)`: execute the single highest-priority serial slice.
+- `Run selected streams`: ask the user to name the workstreams, then coordinate only those.
 - `Plan first only`: run read-only detailed planning workers and stop before implementation.
-- `Stay single-step`: recommend one next action and avoid fan-out.
+- `Stay discovery-only`: return the inventory without starting work.
 
-## Orchestrator Handoff
+## Worker Handoff
 
 After approval when required, or after the safe autonomous decision gate passes:
 
-- Load/use `orchestrator` and keep this skill's OpenSpec inventory as the master intake evidence.
+- Keep this skill's OpenSpec inventory as the master intake evidence.
 - Carry the approved mode into the handoff. If the user chose plan-first only, run read-only planning workers, synthesize their reports, and stop before implementation until the user explicitly approves execution.
 - Start with parallel detailed planning workers, one per approved workstream, unless two streams are too coupled to plan independently.
 - Each planning worker should load/use `deep-task-planning` before doing planning work. If the worker cannot load that skill because the tool is unavailable, the worker uses the planning contract from the prompt, reports `Planning Skill: deep-task-planning unavailable; fallback contract used`, and lowers confidence instead of blocking solely on the missing skill.
 - Each planning worker receives one high-level workstream, exact OpenSpec artifacts to inspect, write scope `none`, expected planning evidence, relevant OpenSpec skill rules, and an explicit instruction to report `Planning Skill: deep-task-planning loaded` in its final report.
-- Synthesize planning reports into bounded implementation/review/test workers using the `orchestrator` contract.
-- For implementation workers, preserve `openspec-apply-change` TDD-first rule: tests/characterization before behavior-changing code unless a blocker is reported.
-- Continue through normal orchestrator phases: execution, integration, focused validation, final validation, relevant read-only reviewer gates including `code-quality-reviewer` for non-trivial code changes, cleanup, and final user-facing status.
+- Synthesize planning reports into bounded implementation/review/test workers with non-overlapping write scopes and focused validation.
+- For implementation workers, preserve the repository's TDD/test-first rule: tests/characterization before behavior-changing code unless a blocker is reported.
+- Continue through execution, integration, focused validation, final validation, relevant read-only reviewer gates including `code-quality-reviewer` for non-trivial code changes, cleanup, and final user-facing status.
 - The master session owns task tracking, integration decisions, validation, reviewer gates, residual risks, and final synthesis.
-- Workers must not ask the user questions, launch nested orchestration, commit, push, merge, delete worktrees, or edit outside assigned scope.
+- Workers must not ask the user questions, launch nested parallel coordination, commit, push, merge, delete worktrees, or edit outside assigned scope.
 
 ## Single-Step Output
 
-Use this when orchestration is not appropriate or the user chooses serial mode.
+Use this when parallel coordination is not appropriate or the user chooses serial mode.
 
 Return:
 
@@ -84,20 +82,20 @@ Return:
 
 ## Discovery Output
 
-Use this before orchestration approval.
+Use this before parallel coordination approval.
 
 Return:
 
 - `Available OpenSpec Workstreams`: high-level workstreams, each with status and outcome.
-- `Recommended Orchestration`: whether to run all, run a subset, stay serial, or block.
+- `Recommended Coordination`: whether to run one serial slice, run a subset, stay discovery-only, or block.
 - `Approval Needed`: the exact approval request and options.
 - `Not Starting Yet`: details intentionally withheld until approval, such as worker prompts, file-level plans, and implementation steps.
 
-## Approved Orchestration Output
+## Approved Worker Output
 
-Use this after the user approves orchestration and worker planning begins.
+Use this after the user approves parallel worker planning and work begins.
 
-Return progress and final status using the `orchestrator` output contracts, plus:
+Return progress and final status, plus:
 
 - `Approved Workstreams`: names from the user's approval.
 - `Planning Evidence`: worker reports or blockers.

@@ -24,4 +24,4 @@ Use this skill when shaping service architecture, design docs, specs, or impleme
 
 Return decisions, alternatives rejected, risk matrix, validation plan, implementation slices, and reviewer gates needed before acceptance.
 
-If the design yields multiple independent implementation, test, evidence, or reviewer tracks, consider `orchestrator` for execution; keep single-track design decisions in this skill.
+If the design yields multiple independent implementation, test, evidence, or reviewer tracks, recommend bounded worker fan-out only when the tracks are safe to coordinate; keep single-track design decisions in this skill.

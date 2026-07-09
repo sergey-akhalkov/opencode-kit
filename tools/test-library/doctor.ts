@@ -38,7 +38,7 @@ export const doctorTests: TestCase[] = [
     name: "doctor reports warnings for unbootstrapped project",
     run: () => {
       const project = newTempDir("doctor-warning-project");
-      const result = invokeDoctor(["--project", project, "--format", "json"]);
+      const result = invokeDoctor(["--project", project, "--format", "json"], { OPENCODE_CONFIG_DIR: undefined });
       assertSuccess(result, "Doctor warning status should remain machine-readable with exit 0.");
       const report = asRecord(parseJsonOutput(result), "Doctor JSON root should be an object.");
       assertEqual(report.status, "warn", "Doctor should report warn for a project missing bootstrap files.");
@@ -55,7 +55,7 @@ export const doctorTests: TestCase[] = [
     name: "doctor surfaces opencode config layering state",
     run: () => {
       const project = newTempDir("doctor-layering-project");
-      const result = invokeDoctor(["--project", project, "--format", "json"]);
+      const result = invokeDoctor(["--project", project, "--format", "json"], { OPENCODE_CONFIG_DIR: undefined });
       assertSuccess(result, "Doctor should run for layering check.");
       const report = asRecord(parseJsonOutput(result), "Doctor JSON root should be an object.");
       const checks = asArray(report.checks, "Doctor checks should be an array.");

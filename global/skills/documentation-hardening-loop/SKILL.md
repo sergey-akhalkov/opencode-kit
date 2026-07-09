@@ -24,7 +24,7 @@ Do not use it for quick wording edits, single small comments, or normal code rev
 - Before large doc/spec review, decide whether a deterministic helper would reduce repeated inventory, block tracking, link checking, duplicate detection, traceability checks, or validation-command effort.
 - Inventory docs in scope and identify canonical sources.
 - For non-trivial scopes, use `documentation-block-ledger` for continuous block coverage.
-- For large doc sets with independent files, sections, or evidence tracks, consider `orchestrator` before ledger assignment; keep single-doc or coupled narrative rewrites serial.
+- For large doc sets with independent files, sections, or evidence tracks, consider bounded worker fan-out before ledger assignment; keep single-doc or coupled narrative rewrites serial.
 - Check stale claims, broken navigation, duplicated concepts, oversized docs, missing traceability, and status words like implemented, supported, ready, blocked, planned, or tested.
 - Fix only material risks: incorrect claims, missing evidence, broken links, contradictory specs, duplicated normative text, or navigation that hides critical context.
 - Validate changed docs with available link checks, spec validation, grep/readback, tests, or review gates.

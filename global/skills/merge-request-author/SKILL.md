@@ -8,7 +8,7 @@ license: MIT
 
 Use this skill when the user asks to create, update, polish, or prepare a merge request or pull request.
 
-For an existing MR/PR with reviewer feedback, failing checks, approvals, or review outcome handling, use `merge-request-review-loop` instead.
+For an existing MR/PR with reviewer feedback, failing checks, approvals, or review outcome handling, inspect the remote state, review comments, checks, and local diff before updating the MR/PR description.
 
 Do not commit, push, create remote state, or merge unless the user explicitly requested that action and repository rules allow it.
 

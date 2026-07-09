@@ -259,16 +259,15 @@ For broad instruction-artifact audits, use `instructions/instruction-artifact-au
 
 Routing and reviewer maps assume the default `all` install profile.
 
-- Broad, unclear, high-risk, or process-sensitive delivery -> `adaptive-delivery`; let it choose direct execution, planning, OpenSpec, architecture, orchestration, or reviewer gates.
-- Explicit planning-only work -> `deep-task-planning`; if the request is broad delivery rather than planning-only, start with `adaptive-delivery`.
-- Existing OpenSpec continuation or "what next" work -> `next-step`; accepted OpenSpec implementation -> `openspec-apply-change`; new OpenSpec packages -> `openspec-propose`; consistency/archive work -> the matching OpenSpec review/archive skill.
-- Several session-scoped follow-ups from an audit, reviewer gate, broad discovery, or validation failure -> group them into lightweight OpenSpec changes with `openspec-propose` when OpenSpec exists or is approved; otherwise return grouped continuation candidates.
-- Initial MR/PR title/body preparation -> `merge-request-author`; existing MR/PR checks, reviewer feedback, approvals, and outcome handling -> `merge-request-review-loop`.
-- Broad independent tracks -> `orchestrator` only after bounded workstreams, success criteria, and validation evidence are clear; use `implementation-worker` for bounded non-overlapping edit slices when installed. If the worker or orchestration is unavailable, keep edit-mode work serial unless equivalent scoped permissions or isolated execution are explicitly configured.
+- Explicit planning-only work -> `deep-task-planning`.
+- Existing OpenSpec continuation or "what next" work -> `next-step`; consistency work -> `openspec-consistency-review`.
+- Several session-scoped follow-ups from an audit, reviewer gate, broad discovery, or validation failure -> group them into lightweight OpenSpec changes when OpenSpec exists or is approved; otherwise return grouped continuation candidates.
+- Initial MR/PR title/body preparation -> `merge-request-author`.
+- Bounded non-overlapping edit slices -> `implementation-worker` when installed. If the worker is unavailable, keep edit-mode work serial unless equivalent scoped permissions or isolated execution are explicitly configured.
 - Bounded first-pass helper work that benefits from cheap/offline local context, such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker` when the target machine has a configured `qwen-local` provider.
 - Session delivery-control review for historical/current todos, user prompts/detected candidate requirement signals/question replies, changed-file scope, transcript/summary, compaction/resume continuity, and validation output -> `session-delivery-reviewer`.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; current-session friction notes -> `complain`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
-- Documentation review selection: use `documentation-learning-quest` for guided onboarding, `file-review-quest` for one-file block review, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
+- Documentation review selection: use `documentation-learning-quest` for guided onboarding, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
 - Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; use `code-quality-reviewer` as the read-only gate.
 
 ## Reviewer Gate Map
@@ -301,19 +300,15 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 ### Planning And Workflow
 
-- `adaptive-delivery`: adaptive entrypoint for broad, unclear, high-risk, or process-sensitive work; chooses the smallest useful lane across direct execution, planning, OpenSpec, architecture, orchestration, and reviewer gates.
 - `deep-task-planning`: execution-grade plans for complex work.
-- `next-step`: discover OpenSpec-backed workstreams, choose one serial next step, or hand bounded independent streams to `orchestrator` when safe.
+- `next-step`: discover OpenSpec-backed workstreams and choose one serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
-- `merge-request-review-loop`: autonomous MR/PR review follow-up for status checks, reviewer feedback, local fixes, revalidation, outcome handoff, and remote-action gates.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
-- `orchestrator`: prompt-only master coordination for broad independent work, using bounded task fan-out, readable worker reports, report reconciliation, tests/review gates, and isolation only when worth the overhead.
 - `root-cause-analysis`: evidence-backed 5 Whys/causal-chain analysis for symptoms, recurrence paths, unknown-cause investigations, and remediation-ready cause records.
 - `complain`: record current-session workflow friction, instruction conflicts, tooling pain, validation noise, or reusable improvement opportunities in `docs/feedbacks/**`.
 
 ### Review And Learning
 
-- `file-review-quest`: block-by-block file review with coverage.
 - `documentation-learning-quest`: guided docs onboarding and lightweight review.
 
 ### Documentation And Audit
@@ -326,19 +321,13 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 ### OpenSpec
 
-- `openspec-explore`: explore requirements/options before a change.
-- `openspec-propose`: draft proposal/design/spec/tasks, including lightweight follow-up backlog changes from audit/reviewer/validation evidence.
-- `openspec-apply-change`: implement accepted OpenSpec changes with TDD-first task execution.
 - `openspec-consistency-review`: review proposal/design/spec/tasks/docs/tests sync.
-- `openspec-archive-change`: archive completed changes after task/spec/test/validation and reviewer evidence gates.
-- `production-service-openspec`: production-oriented service baseline change authoring.
 
 ### Technical Domains
 
 - `config-schema-validation`: config schema/defaults/limits/reload diagnostics.
 - `rust-workspace-bootstrap`: Rust workspace and crate bootstrap.
 - `windows-service-packaging`: Windows service/tray/installer lifecycle.
-- `operation-scheduler-recovery`: queues, admission, ownership, cancellation, recovery.
 - `latency-benchmark-pack`: latency/load/SLO benchmark evidence.
 - `legacy-contract-extract`: extract contracts from legacy sources.
 - `external-service-simulator-harness`: deterministic fake external services for tests.
@@ -389,7 +378,6 @@ These artifacts were generalized from project-local workflows. Project-specific 
 - Product wire-format review -> `wire-protocol-golden-tests` and `wire-protocol-reviewer`.
 - Device/upstream simulator -> `external-service-simulator-harness`.
 - Legacy UI/tool compatibility -> `legacy-client-compatibility-reviewer` and `legacy-evidence-reviewer`.
-- Production baseline spec authoring -> `production-service-openspec`.
 
 Overly narrow future-scope behavior that depended on one product domain was intentionally not ported.
 

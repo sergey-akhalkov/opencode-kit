@@ -252,7 +252,7 @@ export function newLibraryFixture(name: string): string {
     "",
     "## Routing Map",
     "",
-    "- Default broad work -> `adaptive-delivery`.",
+    "- Demo work -> `demo-skill`.",
     "- Instruction artifacts -> `instruction-artifact-tuning`; broad audits -> `instruction-artifact-audit-runbook.md`.",
     "",
     "## Reviewer Gate Map",

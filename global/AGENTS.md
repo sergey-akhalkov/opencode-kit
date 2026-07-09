@@ -103,9 +103,9 @@
 - Use `implementation-worker` for bounded edit-mode implementation slices when the work has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.
 - When delegating to `implementation-worker`, pass `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
 - Keep implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
-- Auto-enter master-orchestrator posture only for broad work with multiple independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead; stay serial for small, unclear, or tightly coupled work.
-- When entering master-orchestrator posture, the main session owns decomposition, dispatch, report reconciliation, integration, tests, reviewer gates, cleanup, user decisions, and final synthesis; it should not do substantial worker-assigned implementation directly.
-- Before finishing an orchestrated run, close or explicitly skip with reasons: worker report reconciliation, integration, focused/final validation, review gate, cleanup, residual risks, and next actions.
+- Use coordinated fan-out only for broad work with multiple independent bounded tracks where parallel planning, fan-in, validation gates, or isolation is worth the overhead; stay serial for small, unclear, or tightly coupled work.
+- When coordinating fan-out, the main session owns decomposition, dispatch, report reconciliation, integration, tests, reviewer gates, cleanup, user decisions, and final synthesis; it should not do substantial worker-assigned implementation directly.
+- Before finishing a coordinated fan-out run, close or explicitly skip with reasons: worker report reconciliation, integration, focused/final validation, review gate, cleanup, residual risks, and next actions.
 - Load relevant skills when a task clearly matches them; do not load skills speculatively.
 - When multiple skills apply, load only the directly relevant skills, deduplicate overlapping steps, apply the strictest safety guard, and report unresolved conflicts as blockers or assumptions.
 - Use reviewer/subagent groups for material cross-domain work, but keep them bounded. Default to 1-3 reviewers and normally one reviewer wave.

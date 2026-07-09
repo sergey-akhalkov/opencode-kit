@@ -36,7 +36,7 @@ For broad audits that include multiple skills/agents, global config, installed c
 - For behavior-changing instruction artifacts, add or update a minimal loader/schema/eval fixture or validation checklist before editing when feasible; document missing harnesses.
 - For retro/audit/reviewer artifacts, require `Likely Root Cause` or `Root Cause` in findings/backlogs, or explicitly route an investigation when the cause is unknown.
 - For broad audits, cover repo source, installed state, runtime policy, context-cost metrics, permission semantics, reviewer gates, and non-repo changes using the audit runbook.
-- For broad independent artifact inventories, consider `orchestrator` with bounded read-only workers; keep single-artifact or tightly coupled tuning serial.
+- For broad independent artifact inventories, consider bounded read-only workers; keep single-artifact or tightly coupled tuning serial.
 - When helper code would materially reduce repeated inspection or token use, require an explicit input/output contract, fixture or schema, stable ordering, privacy-safe output, and no hidden heuristics.
 - Do not encode fuzzy scoring, probabilistic classification, model-like summarization, trigger-quality ranking, or unstated inference in helper code; unsupported inputs should produce `unknown`, `unreadable`, `unsupported`, or `blocked`.
 - Replace project-specific paths, tools, issue trackers, and product names with placeholders unless the artifact is intentionally project-local.

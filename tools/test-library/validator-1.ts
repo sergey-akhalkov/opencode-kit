@@ -593,7 +593,7 @@ export const validatorTests1: TestCase[] = [
         "",
         "## Routing Map",
         "",
-        "- Default broad work -> `adaptive-delivery`.",
+        "- Demo work -> `demo-skill`.",
         "",
         "## Reviewer Gate Map",
         "",

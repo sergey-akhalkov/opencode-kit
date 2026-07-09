@@ -37,38 +37,6 @@ export function validateImplementationWorkerRouting(
     }
   }
 
-  const orchestratorPath = path.join(root, "global", "skills", "orchestrator", "SKILL.md");
-  if (fileExists(orchestratorPath)) {
-    const text = readText(orchestratorPath);
-    requireTextContains(
-      ctx,
-      text,
-      "implementation-worker",
-      "orchestrator implementation-worker routing",
-      orchestratorPath,
-    );
-    requireTextContains(
-      ctx,
-      text,
-      "IMPLEMENTATION_WORKER_REPORT",
-      "orchestrator implementation-worker report contract",
-      orchestratorPath,
-    );
-    requireTextContains(
-      ctx,
-      text,
-      "Run",
-      "orchestrator implementation-worker report contract",
-      orchestratorPath,
-    );
-    requireTextContains(
-      ctx,
-      text,
-      "Worker",
-      "orchestrator implementation-worker report contract",
-      orchestratorPath,
-    );
-  }
 }
 
 export function validateSessionDeliveryBinding(

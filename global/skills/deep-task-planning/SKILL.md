@@ -10,8 +10,6 @@ Use this skill when the user asks for a plan, when implementation would be risky
 
 Do not use it for routine single-file changes, simple questions, or tasks where the user clearly expects immediate implementation.
 
-If the user gives a broad or unclear end-to-end delivery task and has not already chosen planning-only mode, use `adaptive-delivery` first to decide whether planning, OpenSpec, architecture, orchestration, or direct execution is the smallest useful lane.
-
 ## Planning Contract
 
 - Define `Goal`, `Scope`, `Non-goals`, `Assumptions`, `Risks`, `Success Criteria`, and `Stop Line`.
@@ -22,7 +20,7 @@ If the user gives a broad or unclear end-to-end delivery task and has not alread
 - Add a `code-quality-reviewer` gate for slices likely to affect maintainability, file navigation, duplication, module boundaries, or public surface area.
 - Separate confirmed facts from assumptions and open questions.
 - Do not invent unavailable tools, APIs, or requirements.
-- If the plan exposes independent workstreams with bounded evidence and validation, recommend `orchestrator` for execution; keep tightly coupled or decision-blocked work serial.
+- If the plan exposes independent workstreams with bounded evidence and validation, recommend coordinated fan-out with bounded workers; keep tightly coupled or decision-blocked work serial.
 
 ## Plan Shape
 
