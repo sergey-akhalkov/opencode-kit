@@ -283,6 +283,17 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "absolutizes relative dream_team_review repo against project directory",
+    run: async () => {
+      const projectDir = path.resolve("fixtures", "other-project");
+      const hooks = await plugin.server({ directory: projectDir } as never);
+      const output = { args: { repo: ".", base: "main" } };
+      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "dream_team_review" }, output as never);
+      assert(output.args.repo === projectDir, `tool.execute.before hook must rewrite relative repo to ${projectDir}, got ${String(output.args.repo)}.`);
+      assert(output.args.base === "main", "tool.execute.before hook must preserve sibling args while rewriting repo.");
+    },
+  },
+  {
     name: "preserves existing dream_team_review caller session id",
     run: async () => {
       const hooks = await plugin.server({} as never);

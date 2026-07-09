@@ -284,6 +284,73 @@ export const validatorTests1: TestCase[] = [
     },
   },
   {
+    name: "validator accepts hidden Dream Team runtime agents outside reusable catalog",
+    run: () => {
+      const fixture = newLibraryFixture("hidden-dream-team-runtime-agent");
+      writeText(path.join(fixture, "global", "agents", "dream-team-reviewer.md"), lines([
+        "---",
+        "hidden: true",
+        "description: Runtime Dream Team reviewer fixture.",
+        "mode: subagent",
+        "permission:",
+        "  read: allow",
+        "  glob: allow",
+        "  grep: allow",
+        "  bash: deny",
+        "  edit:",
+        "    \"*\": deny",
+        "    \"docs/feedbacks/**\": allow",
+        "  task: deny",
+        "  question: deny",
+        "  skill:",
+        "    \"*\": deny",
+        "    complain: allow",
+        "  webfetch: deny",
+        "  websearch: deny",
+        "  todowrite: deny",
+        "  external_directory: deny",
+        "  lsp: deny",
+        "  doom_loop: deny",
+        "  dream_team_*: deny",
+        "---",
+        "",
+        "Runtime-only Dream Team reviewer fixture.",
+        "",
+      ]));
+
+      assertSuccess(
+        invokeValidator(fixture),
+        "Hidden dream-team runtime agents should not require reusable reviewer catalog/profile contracts.",
+      );
+    },
+  },
+  {
+    name: "validator rejects hidden Dream Team runtime agents without recursive tool deny",
+    run: () => {
+      const fixture = newLibraryFixture("hidden-dream-team-runtime-agent-missing-deny");
+      writeText(path.join(fixture, "global", "agents", "dream-team-reviewer.md"), lines([
+        "---",
+        "hidden: true",
+        "description: Runtime Dream Team reviewer fixture.",
+        "mode: subagent",
+        "permission:",
+        "  read: allow",
+        "---",
+        "",
+        "Runtime-only Dream Team reviewer fixture.",
+        "",
+      ]));
+
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Hidden dream-team runtime agents must deny recursive Dream Team tools.");
+      assertOutputContains(
+        result,
+        "must deny dream_team_* tools",
+        "Dream Team runtime-agent failure should name the recursive-tool deny contract.",
+      );
+    },
+  },
+  {
     name: "validator rejects reviewer bash allow outside session delivery reviewer",
     run: () => {
       const fixture = newLibraryFixture("reviewer-bash-exception-scope");

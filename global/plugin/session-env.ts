@@ -1,4 +1,5 @@
 import type { Plugin } from "@opencode-ai/plugin";
+import { isAbsolute, resolve } from "node:path";
 import { readSessionDeliveryContext, type SessionDeliveryContextResult } from "./session-delivery-context/index.ts";
 
 export const SESSION_DELIVERY_CONTEXT_TOOL = "session_delivery_context";
@@ -29,7 +30,7 @@ function deliveryContextMetadata(result: SessionDeliveryContextResult): Record<s
 
 export default {
   id: "opencode-dev-kit.session-env",
-  server: async () => ({
+  server: async ({ directory } = {}) => ({
     "shell.env": async (input, output) => {
       if (typeof input.sessionID === "string" && input.sessionID !== "") {
         output.env.OPENCODE_SESSION_ID = input.sessionID;
@@ -47,6 +48,7 @@ export default {
       if (!("callerSessionId" in output.args)) {
         output.args.callerSessionId = input.sessionID;
       }
+      absolutizeRelativeRepo(output.args, directory);
     },
     tool: {
       [SESSION_DELIVERY_CONTEXT_TOOL]: {
@@ -69,3 +71,10 @@ export default {
     },
   }),
 } satisfies { id: string; server: Plugin };
+
+function absolutizeRelativeRepo(args: Record<string, unknown>, directory: unknown): void {
+  const repo = typeof args.repo === "string" ? args.repo.trim() : "";
+  const base = typeof directory === "string" ? directory.trim() : "";
+  if (repo.length === 0 || base.length === 0 || isAbsolute(repo)) return;
+  args.repo = resolve(base, repo);
+}

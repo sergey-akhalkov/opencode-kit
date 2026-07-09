@@ -28,6 +28,22 @@ import {
 } from "./context.ts";
 import { getFrontmatterMap } from "./frontmatter.ts";
 
+const DREAM_TEAM_RUNTIME_AGENT_PREFIX = "dream-team-";
+
+function isDreamTeamRuntimeAgent(agentName: string, frontmatter: FrontmatterMap): boolean {
+  return agentName.startsWith(DREAM_TEAM_RUNTIME_AGENT_PREFIX) && frontmatter.get("hidden") === "true";
+}
+
+function validateDreamTeamRuntimeAgent(
+  ctx: ValidationContext,
+  frontmatter: FrontmatterMap,
+  file: string,
+): void {
+  if (frontmatter.get("permission.dream_team_*") !== "deny") {
+    ctx.addError(`Dream Team runtime agent must deny dream_team_* tools: ${file}`);
+  }
+}
+
 function validateReviewerBashPermission(
   ctx: ValidationContext,
   frontmatter: FrontmatterMap,
@@ -167,9 +183,11 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
 
   const agentNames: string[] = [];
   for (const file of listFiles(agentsDir, ".md")) {
-    agentNames.push(path.basename(file, ".md"));
+    const agentName = path.basename(file, ".md");
     const text = readText(file);
     const frontmatter = getFrontmatterMap(ctx, text, file);
+    const isDreamTeamRuntime = isDreamTeamRuntimeAgent(agentName, frontmatter);
+    if (!isDreamTeamRuntime) agentNames.push(agentName);
     const description = getRequiredScalar(ctx, frontmatter, "description", file);
     const mode = getRequiredScalar(ctx, frontmatter, "mode", file);
     if (!description || description.trim() === "") {
@@ -205,6 +223,10 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       if (frontmatter.get(key) !== "deny") {
         ctx.addError(`Agent permission must set ${permission}: deny: ${file}`);
       }
+    }
+    if (isDreamTeamRuntime) {
+      validateDreamTeamRuntimeAgent(ctx, frontmatter, file);
+      continue;
     }
     for (const required of REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT) {
       requireTextContains(ctx, text, required, "Reusable reviewer leaf contract", file);
