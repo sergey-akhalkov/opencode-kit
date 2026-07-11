@@ -1,6 +1,8 @@
 ---
 description: "Reviews wire-format and transport behavior: request codes, byte order, payload limits, binary safety, exact-size boundaries, concurrency ownership, and recovery handling."
 mode: subagent
+model: openai/gpt-5.6-sol
+variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -11,6 +13,7 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

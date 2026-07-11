@@ -1,6 +1,8 @@
 ---
 description: "Reviews config/deployment readiness: schema, aliases, limits, reload/restart policy, service/process model, installer assumptions, diagnostics, and operational safety."
 mode: subagent
+model: openai/gpt-5.6-sol
+variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -11,6 +13,7 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

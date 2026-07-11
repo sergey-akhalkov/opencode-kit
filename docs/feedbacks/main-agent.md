@@ -61,3 +61,33 @@ Remove the `machineOverride` contract from validators, installer, documentation,
 
 ### OpenSpec Follow-Up
 yes
+
+## FB-2026-07-11-dream-team-implement-generic-failure
+
+Source: main-agent
+Role: main-agent
+Type: tooling-friction
+Severity: medium
+Recurrence: current-session-repeated
+Status: open
+
+### Complaint
+`dream_team_implement` returned only a generic `implement tool failure`, forcing a manual fallback without actionable diagnosis.
+
+### Context
+Adding a bounded global OpenCode agent file should have been a straightforward implementation-tool pass, but the tool failed before producing a useful result object.
+
+### Evidence From Current Session
+Two implementation attempts returned `{"error":"implement tool failure"}` with no failing phase, logs, validation output, retry guidance, or environment precondition detail.
+
+### Impact
+The main session loses the intended implementation path and spends extra context on fallback work. Generic failures also make recurring infrastructure issues hard to classify.
+
+### Desired Future
+Implementation-tool failures should include a structured phase, cause category, minimal log excerpt or trace id, and whether fallback or retry is recommended.
+
+### Proposed Direction
+Return a diagnostic error envelope from `dream_team_implement` for infrastructure/input/validation failures, matching the structured result shape used on successful runs.
+
+### OpenSpec Follow-Up
+maybe

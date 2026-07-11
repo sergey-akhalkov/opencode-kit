@@ -1,6 +1,8 @@
 ---
 description: "Reviews compatibility with legacy clients/tools: public API shape, lifecycle, activation, polling, concurrency, error behavior, timing assumptions, and migration gaps."
 mode: subagent
+model: openai/gpt-5.6-sol
+variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -11,6 +13,7 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

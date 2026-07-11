@@ -19,6 +19,27 @@ import {
 
 const root = libraryRoot;
 
+function addTroubleshooterFixture(fixture: string): string {
+  const troubleshooterPath = path.join(fixture, "global", "agents", "troubleshooter.md");
+  writeText(troubleshooterPath, fs.readFileSync(path.join(root, "global", "agents", "troubleshooter.md"), "utf8"));
+
+  const profilePath = path.join(fixture, "profiles", "all.json");
+  const profile = fs.readFileSync(profilePath, "utf8");
+  writeText(profilePath, profile.replace('"demo-reviewer"]', '"demo-reviewer", "troubleshooter"]'));
+  appendReadmeAgentCatalogEntry(fixture, "- `troubleshooter`: Escalation-only troubleshooting agent.");
+  return troubleshooterPath;
+}
+
+function replaceTroubleshooterText(text: string, original: string, replacement: string): string {
+  const lineEnding = text.includes("\r\n") ? "\r\n" : "\n";
+  const normalizeLineEndings = (value: string) => value.replace(/\n/g, lineEnding);
+  const updated = text.replaceAll(normalizeLineEndings(original), normalizeLineEndings(replacement));
+  if (updated === text) {
+    throw new Error(`Troubleshooter fixture did not contain expected text: ${original}`);
+  }
+  return updated;
+}
+
 export const validatorTests1: TestCase[] = [
   {
     name: "validator accepts valid fixture",
@@ -135,6 +156,120 @@ export const validatorTests1: TestCase[] = [
     },
   },
   {
+    name: "validator accepts the complete hardened troubleshooter fixture",
+    run: () => {
+      const fixture = newLibraryFixture("valid-troubleshooter");
+      addTroubleshooterFixture(fixture);
+      assertSuccess(invokeValidator(fixture), "Complete hardened troubleshooter fixture should pass validation.");
+    },
+  },
+  ...[
+    {
+      name: "bash",
+      original: "  bash:\n    \"*\": ask\n    \"git add*\": deny",
+      replacement: "  bash:\n    \"git add*\": deny\n    \"*\": ask",
+      diagnostic: "Troubleshooter bash permission rule order drifted",
+    },
+    {
+      name: "edit",
+      original: "  edit:\n    \"*\": ask\n    \"*.test.*\": deny",
+      replacement: "  edit:\n    \"*.test.*\": deny\n    \"*\": ask",
+      diagnostic: "Troubleshooter edit permission rule order drifted",
+    },
+    {
+      name: "skill",
+      original: "  skill:\n    \"*\": deny\n    complain: allow",
+      replacement: "  skill:\n    complain: allow\n    \"*\": deny",
+      diagnostic: "Troubleshooter skill permission rule order drifted",
+    },
+  ].map((testCase): TestCase => ({
+    name: `validator rejects reordered troubleshooter ${testCase.name} rules with a last-match-wins diagnostic`,
+    run: () => {
+      const fixture = newLibraryFixture(`troubleshooter-${testCase.name}-order`);
+      const troubleshooterPath = addTroubleshooterFixture(fixture);
+      const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
+      writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, testCase.original, testCase.replacement));
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Reordered troubleshooter ${testCase.name} rules should fail validation.`);
+      assertOutputContains(result, testCase.diagnostic, `Troubleshooter ${testCase.name} order failure should be explicit.`);
+      assertOutputContains(result, "OpenCode resolves rules last-match-wins", "Troubleshooter order failure should explain OpenCode rule semantics.");
+    },
+  })),
+  ...[
+    {
+      name: "model",
+      original: "model: openai/gpt-5.6-sol",
+      replacement: "model: openai/gpt-5.5",
+      diagnostic: "Troubleshooter must use model: openai/gpt-5.6-sol",
+    },
+    {
+      name: "variant",
+      original: "variant: xhigh",
+      replacement: "variant: high",
+      diagnostic: "Troubleshooter must use variant: xhigh",
+    },
+  ].map((testCase): TestCase => ({
+    name: `validator rejects troubleshooter ${testCase.name} drift`,
+    run: () => {
+      const fixture = newLibraryFixture(`troubleshooter-${testCase.name}-drift`);
+      const troubleshooterPath = addTroubleshooterFixture(fixture);
+      const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
+      writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, testCase.original, testCase.replacement));
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Troubleshooter ${testCase.name} drift should fail validation.`);
+      assertOutputContains(result, testCase.diagnostic, `Troubleshooter ${testCase.name} failure should name the required value.`);
+    },
+  })),
+  {
+    name: "validator rejects a troubleshooter without explicit nested Dream Team denial",
+    run: () => {
+      const fixture = newLibraryFixture("troubleshooter-missing-dream-team-deny");
+      const troubleshooterPath = addTroubleshooterFixture(fixture);
+      const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
+      writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, "  dream_team_*: deny\n", ""));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Troubleshooter without explicit nested Dream Team denial should fail validation.");
+      assertOutputContains(result, "Troubleshooter must set dream_team_*: deny", "Troubleshooter Dream Team denial failure should be explicit.");
+    },
+  },
+  ...[
+    {
+      name: "bash",
+      original: "    \"git clean*\": deny",
+      replacement: "    \"git clean*\": deny\n    \"git cherry-pick*\": deny",
+      diagnostic: "Troubleshooter has unsupported bash permission 'git cherry-pick*: deny'",
+    },
+    {
+      name: "edit",
+      original: "    \"**/test_*.*\": deny",
+      replacement: "    \"**/test_*.*\": deny\n    \"scratch/**\": deny",
+      diagnostic: "Troubleshooter has unsupported edit permission 'scratch/**: deny'",
+    },
+  ].map((testCase): TestCase => ({
+    name: `validator rejects unsupported troubleshooter ${testCase.name} rule`,
+    run: () => {
+      const fixture = newLibraryFixture(`troubleshooter-unsupported-${testCase.name}`);
+      const troubleshooterPath = addTroubleshooterFixture(fixture);
+      const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
+      writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, testCase.original, testCase.replacement));
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Unsupported troubleshooter ${testCase.name} rule should fail validation.`);
+      assertOutputContains(result, testCase.diagnostic, `Unsupported troubleshooter ${testCase.name} rule failure should be explicit.`);
+    },
+  })),
+  {
+    name: "validator rejects a troubleshooter missing required escalation contract text",
+    run: () => {
+      const fixture = newLibraryFixture("troubleshooter-missing-contract-text");
+      const troubleshooterPath = addTroubleshooterFixture(fixture);
+      const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
+      writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, "TROUBLESHOOTER_REPORT", "ESCALATION_REPORT"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Troubleshooter missing required escalation contract text should fail validation.");
+      assertOutputContains(result, "Troubleshooter contract must include 'TROUBLESHOOTER_REPORT'", "Missing contract text failure should name the required escalation-report token.");
+    },
+  },
+  {
     name: "validator rejects invalid YAML-like frontmatter",
     run: () => {
       const fixture = newLibraryFixture("invalid-frontmatter");
@@ -225,6 +360,7 @@ export const validatorTests1: TestCase[] = [
         "    \"docs/feedbacks/**\": allow",
         "  task: deny",
         "  question: deny",
+        "  dream_team_*: deny",
         "  skill:",
         "    \"*\": deny",
         "    complain: allow",
@@ -256,6 +392,7 @@ export const validatorTests1: TestCase[] = [
         "    \"docs/feedbacks/**\": allow",
         "  task: deny",
         "  question: deny",
+        "  dream_team_*: deny",
         "  skill:",
         "    \"*\": deny",
         "    complain: allow",

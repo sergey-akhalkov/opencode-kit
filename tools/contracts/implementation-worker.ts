@@ -20,6 +20,7 @@ export const ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES: ReadonlyMap<string, "deny
 export const IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS: readonly string[] = [
   "task",
   "question",
+  "dream_team_*",
   "webfetch",
   "websearch",
   "todowrite",

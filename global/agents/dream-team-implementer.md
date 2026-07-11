@@ -2,7 +2,7 @@
 hidden: true
 description: Workspace-edit dream-team implementer invoked by the dream_team_implement MCP tool / Temporal activity. MUST NOT call dream_team_* tools; runs validation through the parent Temporal workflow only.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.6-terra
 variant: xhigh
 temperature: 0.2
 permission:

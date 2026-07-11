@@ -2,7 +2,7 @@
 hidden: true
 description: Read-only dream-team code reviewer invoked by the dream_team_review MCP tool / Temporal activity. MUST NOT call dream_team_* tools.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.6-sol
 variant: xhigh
 temperature: 0.1
 permission:

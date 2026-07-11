@@ -7,6 +7,7 @@ export const REVIEWER_ALLOWED_PERMISSION_KEYS = [
 export const REVIEWER_DENIED_PERMISSION_KEYS = [
   "task",
   "question",
+  "dream_team_*",
   "webfetch",
   "websearch",
   "todowrite",

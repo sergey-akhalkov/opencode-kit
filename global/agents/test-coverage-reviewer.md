@@ -1,6 +1,8 @@
 ---
 description: "Reviews acceptance/test coverage from task, repro, logs, runtime envelope, requirement-to-test matrix, inferred invariants, weak assertions, and missing gates."
 mode: subagent
+model: openai/gpt-5.6-sol
+variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -11,6 +13,7 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

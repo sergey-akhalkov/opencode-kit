@@ -1,6 +1,8 @@
 ---
 description: "Use before final handoff of material/complex OpenCode sessions, or on explicit delivery-review requests, to audit goal alignment, historical/current todos, user replies, changed-file scope, compaction continuity, risks, validation, reviewer gates, and acceptance-ready handoff."
 mode: subagent
+model: openai/gpt-5.6-sol
+variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -12,6 +14,7 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

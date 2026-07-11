@@ -1,6 +1,8 @@
 ---
 description: "Reviews requirements and design decisions against legacy source, tests, logs, schemas, IDL, captures, docs, and compatibility evidence, including ambiguous behavior and migration risks."
 mode: subagent
+model: openai/gpt-5.6-sol
+variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -11,6 +13,7 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

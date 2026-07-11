@@ -33,6 +33,14 @@ import {
   IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT,
 } from "./contracts/implementation-worker.ts";
 import {
+  ALLOWED_TROUBLESHOOTER_BASH_RULES,
+  ALLOWED_TROUBLESHOOTER_EDIT_RULES,
+  TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS,
+  TROUBLESHOOTER_DENIED_PERMISSION_KEYS,
+  TROUBLESHOOTER_FILE,
+  TROUBLESHOOTER_REQUIRED_TEXT,
+} from "./contracts/troubleshooter.ts";
+import {
   COMPLAIN_DIRECT_WRITE_CONTRACT_TEXT,
   COMPLAIN_SHARED_REQUIRED_TEXT,
 } from "./contracts/complain.ts";
@@ -181,6 +189,7 @@ const EXPECTED_REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT = [
 const EXPECTED_REVIEWER_DENIED_PERMISSION_KEYS = [
   "task",
   "question",
+  "dream_team_*",
   "webfetch",
   "websearch",
   "todowrite",
@@ -194,6 +203,7 @@ const EXPECTED_REVIEWER_OBSOLETE_PERMISSION_KEYS = ["list"];
 const EXPECTED_IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS = [
   "task",
   "question",
+  "dream_team_*",
   "webfetch",
   "websearch",
   "todowrite",
@@ -237,6 +247,106 @@ const EXPECTED_IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT = [
   "non-overlapping write scope",
   "clear acceptance criteria",
   "focused validation gate",
+];
+
+const EXPECTED_TROUBLESHOOTER_BASH_RULES = [
+  ["permission.bash.*", "ask"],
+  ["permission.bash.git add*", "deny"],
+  ["permission.bash.git commit*", "deny"],
+  ["permission.bash.git merge*", "deny"],
+  ["permission.bash.git rebase*", "deny"],
+  ["permission.bash.git push*", "deny"],
+  ["permission.bash.git pull*", "deny"],
+  ["permission.bash.git fetch*", "deny"],
+  ["permission.bash.git reset*", "deny"],
+  ["permission.bash.git restore*", "deny"],
+  ["permission.bash.git checkout*", "deny"],
+  ["permission.bash.git switch*", "deny"],
+  ["permission.bash.git clean*", "deny"],
+  ["permission.bash.npm install*", "deny"],
+  ["permission.bash.npm add*", "deny"],
+  ["permission.bash.npm publish*", "deny"],
+  ["permission.bash.pnpm install*", "deny"],
+  ["permission.bash.pnpm add*", "deny"],
+  ["permission.bash.pnpm publish*", "deny"],
+  ["permission.bash.yarn install*", "deny"],
+  ["permission.bash.yarn add*", "deny"],
+  ["permission.bash.yarn publish*", "deny"],
+  ["permission.bash.rm *", "deny"],
+  ["permission.bash.Remove-Item *", "deny"],
+  ["permission.bash.del *", "deny"],
+  ["permission.bash.rmdir *", "deny"],
+];
+
+const EXPECTED_TROUBLESHOOTER_EDIT_RULES = [
+  ["permission.edit.*", "ask"],
+  ["permission.edit.*.test.*", "deny"],
+  ["permission.edit.*.spec.*", "deny"],
+  ["permission.edit.__tests__/**", "deny"],
+  ["permission.edit.__snapshots__/**", "deny"],
+  ["permission.edit.testdata/**", "deny"],
+  ["permission.edit.__fixtures__/**", "deny"],
+  ["permission.edit.golden/**", "deny"],
+  ["permission.edit.*.golden", "deny"],
+  ["permission.edit.*.snap", "deny"],
+  ["permission.edit.*_test.*", "deny"],
+  ["permission.edit.test_*.*", "deny"],
+  ["permission.edit.test-*.*", "deny"],
+  ["permission.edit.**/*.test.*", "deny"],
+  ["permission.edit.**/*.spec.*", "deny"],
+  ["permission.edit.**/__tests__/**", "deny"],
+  ["permission.edit.**/__snapshots__/**", "deny"],
+  ["permission.edit.**/testdata/**", "deny"],
+  ["permission.edit.**/__fixtures__/**", "deny"],
+  ["permission.edit.**/golden/**", "deny"],
+  ["permission.edit.**/*.golden", "deny"],
+  ["permission.edit.**/*.snap", "deny"],
+  ["permission.edit.**/*_test.*", "deny"],
+  ["permission.edit.**/test_*.*", "deny"],
+  ["permission.edit.**/test/**", "deny"],
+  ["permission.edit.**/tests/**", "deny"],
+  ["permission.edit.**/e2e/**", "deny"],
+  ["permission.edit.**/fixtures/**", "deny"],
+  ["permission.edit.**/snapshots/**", "deny"],
+  ["permission.edit.**/test-library/**", "deny"],
+  ["permission.edit.**/test-helpers/**", "deny"],
+  ["permission.edit.**/test-*.*", "deny"],
+  ["permission.edit.test/**", "deny"],
+  ["permission.edit.tests/**", "deny"],
+  ["permission.edit.e2e/**", "deny"],
+  ["permission.edit.fixtures/**", "deny"],
+  ["permission.edit.snapshots/**", "deny"],
+  ["permission.edit.docs/feedbacks/**", "allow"],
+];
+
+const EXPECTED_TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS = [
+  ["permission.webfetch", "allow"],
+  ["permission.websearch", "allow"],
+  ["permission.lsp", "allow"],
+];
+
+const EXPECTED_TROUBLESHOOTER_DENIED_PERMISSION_KEYS = [
+  "task",
+  "question",
+  "dream_team_*",
+  "todowrite",
+  "external_directory",
+  "doom_loop",
+];
+
+const EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT = [
+  "## Runtime Preconditions",
+  "prior failed attempts",
+  "Allowed write scope",
+  "Forbidden paths",
+  "Validation gate",
+  "read-only triage",
+  "not a general developer",
+  "Do not write or modify tests",
+  "Use web research only",
+  "smallest targeted fix",
+  "TROUBLESHOOTER_REPORT",
+  "Continuation Items",
 ];
 
 const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
@@ -436,6 +546,110 @@ const tests: TestCase[] = [
         [...IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT],
         EXPECTED_IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT,
         "IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT drifted.",
+      );
+    },
+  },
+  {
+    name: "contracts: troubleshooter file, denied keys, and required text are byte-equal",
+    run: () => {
+      assertEqual(TROUBLESHOOTER_FILE, "troubleshooter.md", "TROUBLESHOOTER_FILE drifted.");
+      assertDeepEqual(
+        [...TROUBLESHOOTER_DENIED_PERMISSION_KEYS],
+        EXPECTED_TROUBLESHOOTER_DENIED_PERMISSION_KEYS,
+        "TROUBLESHOOTER_DENIED_PERMISSION_KEYS drifted.",
+      );
+      assertDeepEqual(
+        [...TROUBLESHOOTER_REQUIRED_TEXT],
+        EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT,
+        "TROUBLESHOOTER_REQUIRED_TEXT drifted.",
+      );
+    },
+  },
+  {
+    name: "contracts: troubleshooter bash rules preserve escalation safety gates",
+    run: () => {
+      assertDeepEqual(
+        [...ALLOWED_TROUBLESHOOTER_BASH_RULES],
+        EXPECTED_TROUBLESHOOTER_BASH_RULES,
+        "ALLOWED_TROUBLESHOOTER_BASH_RULES drifted.",
+      );
+      assertEqual(ALLOWED_TROUBLESHOOTER_BASH_RULES.get("permission.bash.*"), "ask", "Troubleshooter unknown bash commands must ask.");
+      assert(
+        [...ALLOWED_TROUBLESHOOTER_BASH_RULES.values()].every((action) => action !== "allow"),
+        "Troubleshooter must not auto-allow any Bash command.",
+      );
+      for (const key of [
+        "permission.bash.npm install*",
+        "permission.bash.npm add*",
+        "permission.bash.pnpm install*",
+        "permission.bash.pnpm add*",
+        "permission.bash.yarn install*",
+        "permission.bash.yarn add*",
+        "permission.bash.rm *",
+        "permission.bash.Remove-Item *",
+        "permission.bash.del *",
+        "permission.bash.rmdir *",
+      ]) {
+        assertEqual(ALLOWED_TROUBLESHOOTER_BASH_RULES.get(key), "deny", `Troubleshooter package/destructive command must deny: ${key}`);
+      }
+    },
+  },
+  {
+    name: "contracts: troubleshooter edit and research rules preserve bounded troubleshooting",
+    run: () => {
+      assertDeepEqual(
+        [...ALLOWED_TROUBLESHOOTER_EDIT_RULES],
+        EXPECTED_TROUBLESHOOTER_EDIT_RULES,
+        "ALLOWED_TROUBLESHOOTER_EDIT_RULES drifted.",
+      );
+      assertEqual(ALLOWED_TROUBLESHOOTER_EDIT_RULES.get("permission.edit.*"), "ask", "Troubleshooter unknown edits must ask.");
+      for (const key of [
+        "permission.edit.*.test.*",
+        "permission.edit.*.spec.*",
+        "permission.edit.__tests__/**",
+        "permission.edit.__snapshots__/**",
+        "permission.edit.testdata/**",
+        "permission.edit.__fixtures__/**",
+        "permission.edit.golden/**",
+        "permission.edit.*.golden",
+        "permission.edit.*.snap",
+        "permission.edit.*_test.*",
+        "permission.edit.test_*.*",
+        "permission.edit.test-*.*",
+        "permission.edit.**/*.test.*",
+        "permission.edit.**/*.spec.*",
+        "permission.edit.**/__tests__/**",
+        "permission.edit.**/__snapshots__/**",
+        "permission.edit.**/testdata/**",
+        "permission.edit.**/__fixtures__/**",
+        "permission.edit.**/golden/**",
+        "permission.edit.**/*.golden",
+        "permission.edit.**/*.snap",
+        "permission.edit.**/*_test.*",
+        "permission.edit.**/test_*.*",
+        "permission.edit.**/test/**",
+        "permission.edit.**/tests/**",
+        "permission.edit.**/e2e/**",
+        "permission.edit.fixtures/**",
+        "permission.edit.snapshots/**",
+        "permission.edit.**/fixtures/**",
+        "permission.edit.**/snapshots/**",
+        "permission.edit.**/test-library/**",
+        "permission.edit.**/test-helpers/**",
+        "permission.edit.**/test-*.*",
+      ]) {
+        assertEqual(ALLOWED_TROUBLESHOOTER_EDIT_RULES.get(key), "deny", `Troubleshooter test/fixture edit gate must deny: ${key}`);
+      }
+      assertEqual(ALLOWED_TROUBLESHOOTER_EDIT_RULES.get("permission.edit.docs/feedbacks/**"), "allow", "Troubleshooter feedback-ledger edit exception drifted.");
+      assertEqual(
+        [...ALLOWED_TROUBLESHOOTER_EDIT_RULES.keys()].at(-1),
+        "permission.edit.docs/feedbacks/**",
+        "Troubleshooter feedback-ledger exception must remain the final edit rule.",
+      );
+      assertDeepEqual(
+        [...TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS],
+        EXPECTED_TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS,
+        "TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS drifted.",
       );
     },
   },

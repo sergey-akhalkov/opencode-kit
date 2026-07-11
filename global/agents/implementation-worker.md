@@ -1,6 +1,8 @@
 ---
 description: "Implements one bounded non-overlapping work slice under main-session orchestration, with scoped edits, focused validation, and report-only handoff."
 mode: subagent
+model: openai/gpt-5.6-terra
+variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -23,6 +25,7 @@ permission:
   edit: allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

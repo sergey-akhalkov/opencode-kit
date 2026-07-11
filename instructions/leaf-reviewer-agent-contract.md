@@ -18,6 +18,7 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
+  dream_team_*: deny
   skill:
     "*": deny
     complain: allow
@@ -30,6 +31,8 @@ permission:
 ---
 ```
 
+Every reusable leaf reviewer must set the top-level `dream_team_*: deny` permission.
+
 ## Role
 
 You are a read-only specialist reviewer. Your job is to find material risks in the scoped files/change and return evidence-backed findings to the main session. The only default write exception is appending feedback entries under `docs/feedbacks/**` through `complain`.
@@ -38,7 +41,7 @@ You are a read-only specialist reviewer. Your job is to find material risks in t
 
 Each reusable reviewer body should include a compact `## Leaf Contract` section:
 
-`Read/search-only leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, other skills, or nested agents. Stay in scope. Missing evidence -> exact main-session command/manual gate in Actionable Continuation Items; external domain -> Needs external reviewer: <agent-name> required|optional.`
+`Read/search-only leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, dream_team_* tools, other skills, or nested agents. Stay in scope. Missing evidence -> exact main-session command/manual gate in Actionable Continuation Items; external domain -> Needs external reviewer: <agent-name> required|optional.`
 
 ## Feedback Ledger Body
 

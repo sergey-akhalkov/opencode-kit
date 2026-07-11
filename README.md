@@ -157,7 +157,7 @@ OpenCode agents are loaded from project or global agent folders. Copy selected f
 - Project: `.opencode/agents/<name>.md`
 - Global: `~/.config/opencode/agents/<name>.md`
 
-Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default with a scoped `docs/feedbacks/**` write exception through `complain`; `implementation-worker` is intentionally broader write-capable and validation-bounded.
+Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default with a scoped `docs/feedbacks/**` write exception through `complain`; `implementation-worker` and `troubleshooter` are intentionally broader, separately validated write-capable exceptions.
 
 OpenCode permissions enforce the `docs/feedbacks/**` path boundary; `complain` is the required model contract for entry shape and privacy checks. Use a semantic plugin/tool later if hard append-only or skill-mediated enforcement is required.
 
@@ -267,6 +267,7 @@ Routing and reviewer maps assume the default `all` install profile.
 - Initial MR/PR title/body preparation -> `merge-request-author`.
 - Bounded non-overlapping edit slices -> `implementation-worker` when installed. If the worker is unavailable, keep edit-mode work serial unless equivalent scoped permissions or isolated execution are explicitly configured.
 - Bounded first-pass helper work that benefits from cheap/offline local context, such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker` when the target machine has a configured `qwen-local` provider.
+- Exceptional hard blockers, complex bugs, or root-cause investigations where normal agents/tools already failed -> `troubleshooter`; provide prior failed attempts, allowed write scope, forbidden paths, and validation gate.
 - Session delivery-control review for historical/current todos, user prompts/detected candidate requirement signals/question replies, changed-file scope, transcript/summary, compaction/resume continuity, and validation output -> `session-delivery-reviewer`.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; current-session friction notes -> `complain`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
@@ -349,6 +350,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `deployment-config-reviewer`: config/deployment readiness and operational safety.
 - `protocol-api-reviewer`: framed/client API, schema evolution, correlation, reconnect.
 - `implementation-worker`: write-capable worker for one bounded non-overlapping production or test-only slice, with explicit role, scoped edits, happy-path evidence or fresh-context risk testing, focused validation, and report-only handoff.
+- `troubleshooter`: GPT 5.6 Sol Xhigh escalation-only problem solver for exceptional blockers, complex bugs, and root-cause investigations after normal agents/tools failed; can run safe experiments, web research, debugging, and permission-gated minimal fixes within supplied scope.
 - `qwen-local-worker`: optional local Qwen3.6 first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks; requires a configured `qwen-local` OpenAI-compatible provider.
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
@@ -392,6 +394,6 @@ Overly narrow future-scope behavior that depended on one product domain was inte
 - Helper automation in skills or agents must be deterministic and contract-driven: explicit inputs/outputs, fixtures or schemas, stable ordering, privacy-safe output, and no hidden heuristics.
 - Implementation-capable artifacts require observable proof of the smallest complete happy path before systematic test design, followed by independent fresh-context risk discovery and test authoring with production paths forbidden.
 - Test strategy targets realistic business and operational failures at real end-to-end boundaries; coverage metrics are diagnostic only, and justified mock exceptions must be explicit.
-- Reviewer agents should keep the compact `Leaf Contract`, ordered findings, residual risks, and `Actionable Continuation Items`; mutation-capable tools stay denied except scoped `docs/feedbacks/**` appends through `complain` and explicitly validated bounded worker exceptions such as `implementation-worker`.
+- Reviewer agents should keep the compact `Leaf Contract`, ordered findings, residual risks, and `Actionable Continuation Items`; mutation-capable tools stay denied except scoped `docs/feedbacks/**` appends through `complain` and explicitly validated bounded exceptions such as `implementation-worker` and `troubleshooter`.
 - Avoid hardcoded commands and paths. Use placeholders or say to use the repository's configured validation command.
 - If a target repository has stricter local instructions, local instructions win.

@@ -31,3 +31,33 @@ Add a narrowly scoped permission route for repository-native inventory commands 
 
 ### OpenSpec Follow-Up
 maybe
+
+## FB-2026-07-11-fixture-line-ending-replacement
+
+Source: implementation-worker
+Role: worker
+Type: tooling-friction
+Severity: low
+Recurrence: current-session-once
+Status: open
+
+### Complaint
+Multiline fixture mutations could silently do nothing when source and replacement strings used different line endings.
+
+### Context
+A fresh-context testing worker added validator rejection cases for reordered OpenCode permission rules.
+
+### Evidence From Current Session
+The initial replacement did not match a CRLF fixture. The helper now preserves the detected line ending and fails immediately when the expected source text is absent.
+
+### Impact
+Silent no-op mutations can produce false-positive validator tests or misleading failure diagnostics.
+
+### Desired Future
+Fixture mutation helpers should normalize line endings and prove that every requested mutation changed the fixture.
+
+### Proposed Direction
+Reuse a deterministic fail-fast replacement helper for multiline fixture mutations.
+
+### OpenSpec Follow-Up
+no

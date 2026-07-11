@@ -41,6 +41,7 @@
     "rust-concurrency-reviewer",
     "session-delivery-reviewer",
     "test-coverage-reviewer",
+    "troubleshooter",
     "wire-protocol-reviewer"
   ]
 }
