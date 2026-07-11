@@ -64,6 +64,14 @@ function rmTempDir(dir: string): void {
   fs.rmSync(dir, { recursive: true, force: true });
 }
 
+function writeCopiedInstaller(target: string): void {
+  const installerText = fs.readFileSync(installer, "utf8");
+  const portableText = installerText
+    .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`)
+    .replace('return process.platform === "win32";', "return false;");
+  fs.writeFileSync(target, portableText, "utf8");
+}
+
 const tests: { name: string; run: () => void }[] = [
   {
     name: "help documents the config-dir pointing model",
@@ -130,14 +138,123 @@ const tests: { name: string; run: () => void }[] = [
     },
   },
   {
-    name: "installer source marks provisioned config with machineOverride",
+    name: "installer provisions the template byte-equivalently without unsupported fields",
     run: () => {
-      const installerText = fs.readFileSync(installer, "utf8") as string;
-      assert(installerText.includes("machineOverride"), "Installer must mark the provisioned local config with the machineOverride field.");
-      assert(/machineOverride:\s*true/.test(installerText), "Installer must write machineOverride: true into the provisioned local config.");
-      const provisionMatch = installerText.match(/ensureLocalConfig[\s\S]{0,1500}/);
-      assert(provisionMatch != null, "Installer must define ensureLocalConfig.");
-      assert(provisionMatch[0].includes("machineOverride"), "ensureLocalConfig must set the machineOverride marker on the provisioned local config.");
+      const dir = makeTempDir();
+      try {
+        const toolsDir = path.join(dir, "tools");
+        const fixtureGlobal = path.join(dir, "global");
+        fs.mkdirSync(toolsDir, { recursive: true });
+        fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
+        fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
+        fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
+        const templateBytes = fs.readFileSync(path.join(root, "global", "opencode.json.template"));
+        fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateBytes);
+
+        const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
+        writeCopiedInstaller(copiedInstaller);
+        const result = spawnSync(process.execPath, [copiedInstaller], {
+          cwd: dir,
+          encoding: "utf8",
+          env: { ...process.env, [ENV_VAR]: undefined },
+        });
+        const captured = { exitCode: result.status ?? 0, output: `${result.stdout}${result.stderr}` };
+        assertSuccess(captured, "Copied installer should provision a machine-local config without altering host environment state.");
+        const localBytes = fs.readFileSync(path.join(fixtureGlobal, "opencode.json"));
+        assert(localBytes.equals(templateBytes), "Provisioned global/opencode.json must be byte-equivalent to opencode.json.template.");
+        assert(!localBytes.toString("utf8").includes("machineOverride"), "Provisioned config must not contain unsupported marker fields.");
+        const temporaryArtifacts = fs.readdirSync(fixtureGlobal).filter((name) => /^opencode\.json\..+\.tmp$/.test(name));
+        assert(temporaryArtifacts.length === 0, `Successful provisioning must not leave temporary artifacts: ${temporaryArtifacts.join(", ")}`);
+      } finally {
+        rmTempDir(dir);
+      }
+    },
+  },
+  {
+    name: "installer set, check, and audit reject an existing unsupported-marker config safely",
+    run: () => {
+      const dir = makeTempDir();
+      try {
+        const toolsDir = path.join(dir, "tools");
+        const fixtureGlobal = path.join(dir, "global");
+        fs.mkdirSync(toolsDir, { recursive: true });
+        fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
+        fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
+        fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
+        fs.copyFileSync(path.join(root, "global", "opencode.json.template"), path.join(fixtureGlobal, "opencode.json.template"));
+        const local = path.join(fixtureGlobal, "opencode.json");
+        const secretSentinel = "private-config-value-must-not-leak";
+        const originalBytes = Buffer.from(`{\n  \"machineOverride\": true,\n  \"provider\": \"${secretSentinel}\"\n}\n`);
+        fs.writeFileSync(local, originalBytes);
+        const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
+        writeCopiedInstaller(copiedInstaller);
+
+        for (const invocation of [
+          { args: [] as string[], envValue: undefined, label: "set" },
+          { args: ["--check"], envValue: fixtureGlobal, label: "check" },
+          { args: ["--audit"], envValue: fixtureGlobal, label: "audit" },
+        ]) {
+          const result = spawnSync(process.execPath, [copiedInstaller, ...invocation.args], {
+            cwd: dir,
+            encoding: "utf8",
+            env: { ...process.env, [ENV_VAR]: invocation.envValue },
+          });
+          const captured = { exitCode: result.status ?? 0, output: `${result.stdout}${result.stderr}` };
+          assertFailure(captured, `Installer ${invocation.label} mode must fail closed for an existing unsupported-marker config.`);
+          assertOutputContains(captured, "unsupported field 'machineOverride'", `Installer ${invocation.label} mode should identify the actionable legacy field.`);
+          assert(!captured.output.includes(secretSentinel), `Installer ${invocation.label} diagnostics must not expose existing config contents.`);
+          assert(fs.readFileSync(local).equals(originalBytes), `Installer ${invocation.label} failure must preserve every byte of the existing local config.`);
+          const temporaryArtifacts = fs.readdirSync(fixtureGlobal).filter((name) => /^opencode\.json\..+\.tmp$/.test(name));
+          assert(temporaryArtifacts.length === 0, `Rejected ${invocation.label} operation must not create provisioning temp artifacts.`);
+        }
+      } finally {
+        rmTempDir(dir);
+      }
+    },
+  },
+  {
+    name: "doctor recognizes an active markerless gitignored local config",
+    run: () => {
+      const dir = makeTempDir();
+      try {
+        const fixtureDoctor = path.join(dir, "tools", "doctor.ts");
+        const fixtureGlobal = path.join(dir, "global");
+        const project = path.join(dir, "project");
+        fs.mkdirSync(path.dirname(fixtureDoctor), { recursive: true });
+        fs.mkdirSync(fixtureGlobal, { recursive: true });
+        fs.mkdirSync(path.join(dir, "instructions"), { recursive: true });
+        fs.mkdirSync(path.join(dir, "profiles"), { recursive: true });
+        fs.mkdirSync(path.join(project, "opencode-dev-kit"), { recursive: true });
+        fs.mkdirSync(path.join(project, "docs", "feedbacks"), { recursive: true });
+        const doctorText = fs.readFileSync(path.join(root, "tools", "doctor.ts"), "utf8")
+          .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
+        fs.writeFileSync(fixtureDoctor, doctorText, "utf8");
+        fs.writeFileSync(path.join(dir, "instructions", "universal-development-loop.md"), "# Universal Development Loop\n", "utf8");
+        fs.writeFileSync(path.join(dir, "profiles", "all.json"), "{}\n", "utf8");
+        fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), "{\n  \"$schema\": \"https://opencode.ai/config.json\"\n}\n", "utf8");
+        fs.writeFileSync(path.join(fixtureGlobal, "opencode.json"), "{\n  \"permission\": \"ask\"\n}\n", "utf8");
+        fs.writeFileSync(path.join(project, "AGENTS.md"), "# Universal Development Loop\n", "utf8");
+        fs.writeFileSync(path.join(project, "opencode-dev-kit", "adapter.json"), "{}\n", "utf8");
+        fs.writeFileSync(path.join(project, "opencode-dev-kit", "validation.md"), "# Validation\n", "utf8");
+        fs.writeFileSync(path.join(project, "docs", "feedbacks", "README.md"), "# Feedback\n", "utf8");
+        fs.writeFileSync(path.join(project, "opencode.json"), "{}\n", "utf8");
+
+        const result = spawnSync(process.execPath, [fixtureDoctor, "--project", project, "--format", "json"], {
+          cwd: dir,
+          encoding: "utf8",
+          env: { ...process.env, [ENV_VAR]: fixtureGlobal },
+        });
+        const captured = { exitCode: result.status ?? 0, output: `${result.stdout}${result.stderr}` };
+        assertSuccess(captured, "Doctor should recognize the path-defined local config without marker fields.");
+        const report = JSON.parse(String(result.stdout)) as { checks?: Array<{ detail?: string; name?: string; status?: string }>; status?: string };
+        const layering = report.checks?.find((check) => check.name === "opencode config layering");
+        assert(report.status === "pass", `Doctor fixture should pass, got ${String(result.stdout)}`);
+        assert(layering?.status === "pass", "Doctor should report the active local config layer as pass.");
+        assert(layering.detail?.includes("gitignored global/opencode.json machine-local config") === true, "Doctor should identify global/opencode.json itself as the machine-local layer.");
+        assert(!fs.readFileSync(path.join(fixtureGlobal, "opencode.json"), "utf8").includes("machineOverride"), "Doctor fixture must prove no marker field is required.");
+      } finally {
+        rmTempDir(dir);
+      }
     },
   },
   {

@@ -5,8 +5,11 @@
 - Bias toward caution over speed on non-trivial work. For trivial, obvious one-liners, use judgment and avoid unnecessary ceremony.
 - Think before coding: do not assume, hide confusion, or silently choose between meaningful interpretations. If ambiguity affects outcome, risk, scope, data, or public API, stop and ask one concise question; if a safe reversible default exists, state the assumption and continue.
 - Simplicity first: implement the minimum code that solves the actual task. Do not add speculative features, single-use abstractions, configurability, compatibility layers, or impossible-case handling unless there is concrete evidence or an explicit requirement.
+- Process-first architecture: think as a Solution Architect before adding mechanisms. Ask whether changing the workflow, ownership boundary, isolation model, or integration process removes the root problem (for example, per-run workspaces, immutable inputs, single-writer ownership, or platform-native transactions). Prefer a simpler universal process that prevents the failure class over locks, recovery protocols, state machines, or validation code that compensates for a flawed process.
+- Complexity escalation requires consultation: when a proposed solution needs multiple new coordination, recovery, compatibility, or policy mechanisms, stop before implementation and present the user with the simpler process or architecture alternatives. Do not silently accept a complex design merely because an existing spec proposes it.
+- Reuse before building: prefer existing platform, framework, and repository capabilities over new entities, state stores, workflow layers, adapters, or abstractions. Add complexity only when a concrete requirement cannot be met more simply, and record that justification where the design decision is made.
 - Surgical changes: touch only what directly traces to the user request. Do not refactor, reformat, rename, reorder, or "improve" adjacent code unless required for the task; clean up only unused code created by your own change.
-- Goal-driven execution: turn tasks into verifiable success criteria, then loop until those criteria are met or a real blocker remains. Prefer `reproduce -> fix -> verify` for bugs and `focused test/check -> implementation -> validation` for behavior changes.
+- Goal-driven execution: turn tasks into verifiable success criteria, then loop until those criteria are met or a real blocker remains. Prefer `requirements -> reproduce -> minimal fix -> happy-path proof -> risk discovery -> regression and negative-scenario tests -> hardening -> final validation` for bugs and `requirements -> minimal implementation -> happy-path proof -> risk discovery -> negative-scenario tests -> hardening -> final validation` for behavior changes.
 
 ## Evidence And Uncertainty
 
@@ -112,6 +115,7 @@
 ## OpenCode Feature Work
 
 - When editing OpenCode configuration, skills, agents, plugins, hooks, permissions, MCP servers, or integrations, verify implementation-sensitive claims against current OpenCode docs, schemas, source, or live loader behavior.
+- Never add `machineOverride` or `machineOverride: true` to any `opencode.json` or `opencode.jsonc` file. It is not part of the official OpenCode schema and can prevent OpenCode from starting. Treat repository validators, documentation, examples, or generated config that require this field as defective and fix or report those artifacts instead of changing the OpenCode config.
 - Use the official OpenCode documentation and schema as baseline references. If the organization keeps a local documentation mirror, record its path as a local customization such as `<local-opencode-docs-path>`.
 - Trust but verify: documentation, examples, comments, generated summaries, issue descriptions, and user claims are navigation aids until checked against executable/source evidence.
 - If prose and implementation disagree, surface the conflict and trust implementation evidence until explicitly resolved.
@@ -130,7 +134,7 @@
 - Run independent read/search/tool calls in parallel whenever there is no data dependency.
 - Use subagents only when the work is broad enough to benefit from separate context, parallel coverage, or independent review; keep simple searches, single-file reads, and tightly coupled reasoning in the main session.
 - Use `dream_team_implement` as the primary implementation path. Use `implementation-worker` only as a fallback or for explicitly coordinated bounded slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate after the main session has chosen the fallback/parallel workflow.
-- When delegating to `implementation-worker` under that fallback, pass `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
+- When delegating to `implementation-worker` under that fallback, pass `Role` (`production` or `testing`), `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
 - Keep direct/fallback implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
 - Use coordinated fan-out only for broad work with multiple independent bounded tracks where parallel planning, fan-in, validation gates, or isolation is worth the overhead; stay serial for small, unclear, or tightly coupled work.
 - When coordinating fan-out, the main session owns decomposition, dispatch, report reconciliation, integration, tests, reviewer gates, cleanup, user decisions, and final synthesis; it should not do substantial worker-assigned implementation directly.
@@ -178,13 +182,27 @@
 - Stage only intended paths. Do not use broad staging commands such as `git add -A`
   or `git add .` when unrecognized changes are present.
 - When making changes in a repository, complete relevant verification and report ready-to-land status.
-- For behavior-changing code, default to TDD/test-first: add or update the focused failing, acceptance, or characterization test before implementation. If that is impractical, record the blocker and substitute the closest reproducible proof before or alongside the change.
-- Keep TDD proportional: one smallest useful test/gate for the scoped behavior is enough unless risk evidence justifies broader coverage.
 - Commit, push, merge, or push to the default branch only when explicitly requested or clearly allowed by repository-local policy.
 - Always obey repository-specific remote-operation rules, branch rules, issue tracker rules, and validation gates.
 - When creating or updating a PR/MR description, write it for a reviewer who sees the project and change for the first time.
 - Start PR/MR descriptions with plain-language context, problem/purpose, scope, non-goals, main changes, validation, risks, and review focus.
 - Avoid unexplained internal jargon, file-list-only summaries, and latest-commit changelogs unless the user explicitly asks for commit-focused text.
+
+## Risk-Driven Test Workflow
+
+- This workflow supersedes generic pre-production test-authoring requirements. Follow a different ordering only when the user or repository explicitly requires it.
+- Before implementation, study the original requirements and supporting evidence in detail. Define the intended contract, business invariants, constraints, non-goals, observable happy path, and concrete acceptance evidence; do not derive intent from the implementation alone.
+- First implement the smallest complete happy path, then prove that it works through observable execution at the relevant boundary. A code inspection, compilation result, mocked helper test, or plausible explanation is not happy-path proof.
+- Begin systematic automated-test design only after the happy path has been demonstrated. Give a dedicated fresh-context testing subagent the original requirements, runtime constraints, implementation, and happy-path evidence, and require it to independently challenge assumptions rather than confirm the implementation's structure.
+- Only a dedicated testing subagent that did not author the production implementation may create or modify automated tests, test fixtures, snapshots, fake services, or test harnesses. The main session and production implementation agent may run, inspect, and debug tests, but must delegate all test-authoring changes, for example to an `implementation-worker` assigned only the testing scope.
+- Start test authoring in a new subagent session that has not authored production code. Give it the original requirements, runtime constraints, happy-path evidence, read scope, test-only write scope, forbidden production paths, and verification command; require it to report its risk matrix, tests changed, real boundaries exercised, mock exceptions, failures found, and residual risks.
+- If no eligible fresh-context testing subagent is available, do not let the main session or production agent author the tests. Record the exact blocker and residual production risk instead.
+- The goal of automated tests is not line, branch, or case-count coverage. Coverage metrics are diagnostic signals only. The acceptance goal is to find and preserve evidence for realistic holes in business logic and code that could cause defects, data loss, security failures, outages, degraded service, or operational incidents.
+- Build a risk-based scenario matrix from the requirements, business invariants, implementation boundaries, and production runtime. Consider realistic boundary values, invalid or missing data, dependency failures, timeouts, retries, partial completion, duplicate requests, concurrency, ordering, authorization, state recovery, resource pressure, and observability gaps when relevant; do not spend effort on impossible or purely theoretical cases.
+- Prioritize end-to-end tests at the real user-facing or system boundary, using real processes, protocols, persistence, and integrations whenever the environment permits. Use isolated production-like environments; never mutate production or remote state without explicit authorization. Use mocks only when a real dependency is unavailable, unsafe, non-deterministic, or impractical to exercise, and explicitly record the resulting confidence gap.
+- Every negative test must assert externally meaningful behavior, including safe failure, preserved invariants, useful diagnostics, and recovery as applicable. A test that merely mirrors implementation details or proves a mock interaction is insufficient.
+- Feed discovered failures back into production hardening, then let the testing subagent extend or adjust the tests and rerun the relevant happy-path and negative suites. Continue until all identified realistic high-impact scenarios are covered or an exact blocker and residual production risk are recorded.
+- Final handoff evidence for behavior changes and bug fixes must identify the original requirements, observable happy-path proof, testing subagent/session, risk matrix, mock exceptions, failures fed back into production code, final validation, and remaining risks.
 
 ## OpenSpec Change Authoring
 

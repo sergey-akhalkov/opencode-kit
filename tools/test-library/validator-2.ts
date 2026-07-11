@@ -336,9 +336,9 @@ export const validatorTests2: TestCase[] = [
     },
   },
   {
-    name: "validator warns on implementation language without TDD",
+    name: "validator warns when implementation guidance omits happy-path and risk-driven testing",
     run: () => {
-      const fixture = newLibraryFixture("tdd-warning");
+      const fixture = newLibraryFixture("missing-risk-driven-guidance");
       writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
         "---",
         "name: demo-skill",
@@ -357,8 +357,178 @@ export const validatorTests2: TestCase[] = [
         "",
       ]));
       const result = invokeValidator(fixture);
-      assertSuccess(result, "TDD warning should not fail validation.");
-      assertOutputContains(result, "WARN:", "TDD warning should be visible.");
+      assertSuccess(result, "Missing risk-driven guidance should remain warning-only.");
+      assertOutputContains(result, "WARN:", "Missing risk-driven guidance warning should be visible.");
+      assertOutputContains(result, "happy-path-first risk-driven testing guidance", "Warning should identify the missing workflow contract.");
+    },
+  },
+  {
+    name: "validator accepts implementation guidance with observable proof and independent risk discovery",
+    run: () => {
+      const fixture = newLibraryFixture("compliant-risk-driven-guidance");
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
+        "---",
+        "name: demo-skill",
+        "description: Use when testing compliant implementation guidance.",
+        "---",
+        "",
+        "# Demo Skill",
+        "",
+        "Use this skill when implementing a bounded behavior change.",
+        "",
+        "This skill can implement code changes.",
+        "",
+        "Prove the observable happy path, then give a fresh-context testing subagent the original requirements for risk discovery, negative tests, and hardening.",
+        "",
+        "## Output",
+        "",
+        "Return implementation and validation evidence.",
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertSuccess(result, "Compliant risk-driven implementation guidance should pass.");
+      assertOutputContains(result, "warnings=0", "Compliant implementation guidance should not warn.");
+    },
+  },
+  {
+    name: "validator rejects stale test ordering even when current happy-path guidance is present",
+    run: () => {
+      const fixture = newLibraryFixture("mixed-current-and-stale-test-ordering");
+      writeText(path.join(fixture, "global", "skills", "demo-skill", "SKILL.md"), lines([
+        "---",
+        "name: demo-skill",
+        "description: Use when checking mixed workflow guidance.",
+        "---",
+        "",
+        "# Demo Skill",
+        "",
+        "Use this skill when implementing a bounded behavior change.",
+        "",
+        "Implement and observably prove the smallest complete happy path, then delegate risk discovery to a fresh-context testing subagent.",
+        "Automated tests are authored before implementation begins.",
+        "",
+        "## Output",
+        "",
+        "Return implementation and validation evidence.",
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Current happy-path language must not mask stale automated-test ordering.");
+      assertOutputContains(result, "requires automated test work before observable happy-path proof", "Diagnostic should identify the unsafe ordering rather than a generic workflow warning.");
+    },
+  },
+  ...[
+    "global/AGENTS.md",
+    "templates/project/AGENTS.md",
+  ].map((relativePath): TestCase => ({
+    name: `validator rejects stale automated-test ordering in ${relativePath}`,
+    run: () => {
+      const fixture = newLibraryFixture(`stale-order-${relativePath.replace(/[^a-z0-9]+/gi, "-")}`);
+      const file = path.join(fixture, ...relativePath.split("/"));
+      const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "# Agent Instructions\n\nFollow the Universal Development Loop and prove the observable happy path.\n";
+      writeText(file, `${existing}\nAutomated test scenarios are authored before implementation begins.\n`);
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Stale automated-test ordering in ${relativePath} must fail validation.`);
+      assertOutputContains(result, "requires automated test work before observable happy-path proof", `Diagnostic should identify stale ordering in ${relativePath}.`);
+    },
+  })),
+  ...[
+    "global/AGENTS.md",
+    "templates/project/AGENTS.md",
+  ].map((relativePath): TestCase => ({
+    name: `validator accepts a superseding negative explanation in ${relativePath}`,
+    run: () => {
+      const fixture = newLibraryFixture(`superseded-order-${relativePath.replace(/[^a-z0-9]+/gi, "-")}`);
+      const file = path.join(fixture, ...relativePath.split("/"));
+      const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "# Agent Instructions\n\nFollow the Universal Development Loop and prove the observable happy path.\n";
+      writeText(file, `${existing}\nThe old rule \"automated tests are authored before implementation\" is superseded and must not be followed.\n`);
+      const result = invokeValidator(fixture);
+      assertSuccess(result, `A clearly superseded negative explanation in ${relativePath} must not fail validation.`);
+      assertOutputExcludes(result, "requires automated test work before observable happy-path proof", `Superseding language in ${relativePath} must not trigger stale-order diagnostics.`);
+    },
+  })),
+  {
+    name: "validator rejects prohibitive wording that still requires stale test ordering",
+    run: () => {
+      const fixture = newLibraryFixture("prohibitive-active-stale-order");
+      const file = path.join(fixture, "global", "AGENTS.md");
+      writeText(file, lines([
+        "# Agent Instructions",
+        "",
+        "Follow the Universal Development Loop and prove the observable happy path.",
+        "Do not proceed until automated tests are authored before implementation.",
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A prohibition on proceeding still actively requires stale test ordering.");
+      assertOutputContains(result, "requires automated test work before observable happy-path proof", "Broad negation must not exempt an active ordering requirement.");
+    },
+  },
+  ...[
+    {
+      fixtureName: "semicolon-separated-historical-bypass",
+      sentence: "Historical context is documented; automated tests are authored before implementation.",
+    },
+    {
+      fixtureName: "comma-separated-historical-bypass",
+      sentence: "Historical context is documented, automated tests are authored before implementation.",
+    },
+    {
+      fixtureName: "contrast-separated-historical-bypass",
+      sentence: "This guidance is historical but automated tests are authored before implementation.",
+    },
+  ].map(({ fixtureName, sentence }): TestCase => ({
+    name: `validator rejects detached historical-context bypass: ${fixtureName}`,
+    run: () => {
+      const fixture = newLibraryFixture(fixtureName);
+      const file = path.join(fixture, "global", "AGENTS.md");
+      writeText(file, lines(["# Agent Instructions", "", "Follow the Universal Development Loop and prove the observable happy path.", sentence, ""]));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Historical language in a separate clause must not exempt an active stale-order requirement.");
+      assertOutputContains(result, "requires automated test work before observable happy-path proof", "Clause-local supersession must preserve the active stale-order diagnostic.");
+    },
+  })),
+  ...[
+    {
+      fixtureName: "historical-stale-order-explanation",
+      sentence: "Historical note: automated tests were authored before implementation in the retired workflow.",
+    },
+    {
+      fixtureName: "inactive-stale-order-explanation",
+      sentence: "Automated tests authored before implementation is not an active rule.",
+    },
+    {
+      fixtureName: "direct-historical-superseded-explanation",
+      sentence: "The historical rule \"automated tests are authored before implementation\" is superseded and must not be followed.",
+    },
+  ].map(({ fixtureName, sentence }): TestCase => ({
+    name: `validator accepts explicit safe stale-order explanation: ${fixtureName}`,
+    run: () => {
+      const fixture = newLibraryFixture(fixtureName);
+      const file = path.join(fixture, "global", "AGENTS.md");
+      writeText(file, lines([
+        "# Agent Instructions",
+        "",
+        "Follow the Universal Development Loop and prove the observable happy path.",
+        sentence,
+        "",
+      ]));
+      const result = invokeValidator(fixture);
+      assertSuccess(result, "Explicit historical or inactive-rule language must not fail validation.");
+      assertOutputExcludes(result, "requires automated test work before observable happy-path proof", "Explicit safe explanatory predicates must suppress only their own stale-order match.");
+    },
+  })),
+  {
+    name: "validator accepts neutral implementation discussion in a read-only reviewer",
+    run: () => {
+      const fixture = newLibraryFixture("read-only-reviewer-language");
+      const reviewerPath = path.join(fixture, "global", "agents", "demo-reviewer.md");
+      const reviewer = fs.readFileSync(reviewerPath, "utf8");
+      writeText(reviewerPath, `${reviewer}\nThis read-only reviewer evaluates implementation choices and reports evidence without changing files.\n`);
+      const result = invokeValidator(fixture);
+      assertSuccess(result, "Neutral implementation discussion in a read-only reviewer should pass.");
+      assertOutputContains(result, "warnings=0", "Neutral read-only reviewer language should not emit implementation workflow warnings.");
+      assertOutputExcludes(result, "requires automated test work before observable happy-path proof", "Neutral reviewer discussion must not trigger stale-order diagnostics.");
     },
   },
   {
@@ -444,108 +614,78 @@ export const validatorTests2: TestCase[] = [
       assertOutputExcludes(safeResult, "OpenCode permission config", "Safe permission config should not emit permission warnings.");
     },
   },
-  {
-    name: "validator downgrades top-level permission allow under machineOverride",
+  ...[
+    "opencode.json",
+    path.join("nested", "opencode.jsonc"),
+    path.join("global", "opencode.json"),
+  ].map((relativeConfig): TestCase => ({
+    name: `validator rejects unsupported machineOverride in ${relativeConfig}`,
     run: () => {
-      const fixture = newLibraryFixture("machine-override-top-allow");
-      writeText(path.join(fixture, "opencode.jsonc"), lines([
+      const fixture = newLibraryFixture(`unsupported-marker-${relativeConfig.replace(/[^a-z0-9]+/gi, "-")}`);
+      writeText(path.join(fixture, relativeConfig), lines([
         "{",
         "  \"$schema\": \"https://opencode.ai/config.json\",",
-        "  \"machineOverride\": true,",
-        "  \"permission\": \"allow\"",
+        "  \"machineOverride\": true",
         "}",
       ]));
       const result = invokeValidator(fixture);
-      assertSuccess(result, "machineOverride + permission: allow should not warn.");
-      assertOutputContains(result, "INFO:", "machineOverride + permission: allow should emit an info note.");
-      assertOutputExcludes(result, "WARN: OpenCode permission config uses top-level allow", "machineOverride should not emit a WARN for top-level allow.");
+      assertFailure(result, "Unsupported OpenCode fields must fail validation in every config layer.");
+      assertOutputContains(result, "Unsupported OpenCode config field 'machineOverride'", "Diagnostic should name the unsupported field.");
+      assertOutputContains(result, "can prevent OpenCode startup", "Diagnostic should explain the user-visible startup risk.");
     },
-  },
+  })),
   {
-    name: "validator downgrades wildcard permission allow under machineOverride",
+    name: "validator reports broad permission in global/opencode.json as info and passes strict mode",
     run: () => {
-      const fixture = newLibraryFixture("machine-override-wildcard-allow");
-      writeText(path.join(fixture, "opencode.jsonc"), lines([
-        "{",
-        "  \"$schema\": \"https://opencode.ai/config.json\",",
-        "  \"machineOverride\": true,",
-        "  \"permission\": {",
-        "    \"*\": \"allow\",",
-        "    \"bash\": {",
-        "      \"*\": \"allow\"",
-        "    }",
-        "  }",
-        "}",
-      ]));
-      const result = invokeValidator(fixture);
-      assertSuccess(result, "machineOverride + wildcard permission allow should not warn.");
-      assertOutputContains(result, "INFO:", "machineOverride + wildcard allow should emit info notes.");
-      assertOutputExcludes(result, "WARN: OpenCode permission config", "machineOverride should not emit WARN for wildcard allow.");
-    },
-  },
-  {
-    name: "validator strict mode passes for machineOverride + permission allow",
-    run: () => {
-      const fixture = newLibraryFixture("machine-override-strict");
-      writeText(path.join(fixture, "opencode.jsonc"), lines([
-        "{",
-        "  \"$schema\": \"https://opencode.ai/config.json\",",
-        "  \"machineOverride\": true,",
-        "  \"permission\": \"allow\"",
-        "}",
-      ]));
-      const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
-      assertSuccess(result, "Strict mode should pass with machineOverride + permission: allow.");
-    },
-  },
-  {
-    name: "validator strict mode fails for top-level permission allow without machineOverride",
-    run: () => {
-      const fixture = newLibraryFixture("permission-allow-no-override-strict");
-      writeText(path.join(fixture, "opencode.jsonc"), lines([
-        "{",
-        "  \"$schema\": \"https://opencode.ai/config.json\",",
-        "  \"permission\": \"allow\"",
-        "}",
-      ]));
-      const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
-      assertFailure(result, "Strict mode should fail for permission: allow without machineOverride.");
-      assertOutputContains(result, "OpenCode permission config uses top-level allow", "Validator should warn about top-level allow when marker is absent.");
-    },
-  },
-  {
-    name: "validator strict mode fails for wildcard permission allow without machineOverride",
-    run: () => {
-      const fixture = newLibraryFixture("permission-wildcard-no-override-strict");
-      writeText(path.join(fixture, "opencode.jsonc"), lines([
+      const fixture = newLibraryFixture("machine-local-permission-info");
+      writeText(path.join(fixture, "global", "opencode.json"), lines([
         "{",
         "  \"$schema\": \"https://opencode.ai/config.json\",",
         "  \"permission\": {",
         "    \"*\": \"allow\",",
-        "    \"bash\": {",
-        "      \"*\": \"allow\"",
-        "    }",
+        "    \"bash\": { \"*\": \"allow\" }",
         "  }",
         "}",
       ]));
       const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
-      assertFailure(result, "Strict mode should fail for wildcard permission allow without machineOverride.");
+      assertSuccess(result, "Strict mode should accept informational diagnostics for the path-defined machine-local layer.");
+      assertOutputContains(result, "INFO: OpenCode permission config", "Machine-local broad permissions should remain visible as info.");
+      assertOutputContains(result, "warnings=0", "Machine-local broad permissions must not become strict-mode warnings.");
+      assertOutputContains(result, "infos=2", "Both realistic broad permission risks should be counted as informational diagnostics.");
+      assertOutputExcludes(result, "WARN: OpenCode permission config", "Machine-local permission diagnostics must not be warnings.");
     },
   },
   {
-    name: "validator reports info count in summary",
+    name: "validator treats nested/global/opencode.json as a workspace warning in strict mode",
     run: () => {
-      const fixture = newLibraryFixture("machine-override-summary");
-      writeText(path.join(fixture, "opencode.jsonc"), lines([
+      const fixture = newLibraryFixture("nested-global-permission-strict");
+      writeText(path.join(fixture, "nested", "global", "opencode.json"), lines([
         "{",
         "  \"$schema\": \"https://opencode.ai/config.json\",",
-        "  \"machineOverride\": true,",
         "  \"permission\": \"allow\"",
         "}",
       ]));
-      const result = invokeValidator(fixture);
-      assertSuccess(result, "machineOverride + permission: allow should pass validation.");
-      assertOutputContains(result, "infos=", "Validator summary should report info count.");
+      const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
+      assertFailure(result, "A near-miss nested global path must not receive machine-local INFO treatment.");
+      assertOutputContains(result, "WARN: OpenCode permission config uses top-level allow", "Nested global config should retain workspace warning severity.");
+      assertOutputContains(result, "Warnings are not allowed", "Strict mode should fail on the near-miss path warning.");
+      assertOutputExcludes(result, "INFO: OpenCode permission config uses top-level allow", "Near-miss path must not be downgraded to INFO.");
+    },
+  },
+  {
+    name: "validator strict mode fails for broad permission in workspace opencode.json",
+    run: () => {
+      const fixture = newLibraryFixture("workspace-permission-strict");
+      writeText(path.join(fixture, "opencode.json"), lines([
+        "{",
+        "  \"$schema\": \"https://opencode.ai/config.json\",",
+        "  \"permission\": \"allow\"",
+        "}",
+      ]));
+      const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
+      assertFailure(result, "Strict mode should reject broad workspace permissions.");
+      assertOutputContains(result, "WARN: OpenCode permission config uses top-level allow", "Workspace diagnostic should remain a warning.");
+      assertOutputContains(result, "Warnings are not allowed", "Strict-mode failure should explain the gate.");
     },
   },
   {

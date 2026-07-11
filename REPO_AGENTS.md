@@ -7,8 +7,8 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 - Keep artifacts project-neutral: do not hardcode repository names, company-internal paths, issue trackers, services, hardware, or validation commands unless the artifact is explicitly scoped to that ecosystem.
 - Prefer evidence-backed workflow contracts over reminders. If a check can be automated, document the command shape or validation hook instead of adding vague prose.
 - For retros, audits, reviewer gates, and follow-up backlogs, distinguish symptoms from likely root causes. Prefer fixes that remove or reduce the recurrence path; when evidence cannot identify the cause, route an investigation or instrumentation task instead of guessing.
-- For behavior-changing implementation work in skills, agents, templates, tools, or examples, default to TDD: add or update the focused failing test, acceptance check, fixture, or validation scenario before implementation; if infeasible, state why and use the closest reproducible evidence.
-- Keep TDD proportional: one smallest useful test/gate for the scoped behavior is enough; do not expand into unrelated coverage, broad suites, or speculative tests unless risk evidence warrants it.
+- For behavior-changing implementation work, study the original requirements, implement and observably prove the smallest complete happy path, then delegate risk discovery and all automated test authoring to a separate fresh-context testing subagent that did not write production code.
+- Optimize tests for realistic production failure discovery rather than coverage percentages. Prioritize real-boundary end-to-end scenarios, record justified mock exceptions, and continue until identified high-impact risks are covered or an exact blocker and residual risk are documented.
 - Skills and agents must be safe to reuse in unrelated repositories. Use placeholders such as `<project>`, `<change>`, `<service>`, `<legacy-source>`, and `<validation-command>` where local projects differ.
 - Reviewer agents are leaf validators by default: read-only except feedback-ledger appends under `docs/feedbacks/**`, no source/config/instruction edits, no commits, no pushes, no nested agents, no user questions.
 - Keep each artifact cohesive. Split artifacts when triggers, permissions, or output contracts differ materially.
@@ -63,7 +63,7 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 ## Delegation ROI
 
 - Use `implementation-worker` for bounded edit-mode implementation slices when the work has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.
-- When delegating to `implementation-worker`, pass `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
+- When delegating to `implementation-worker`, pass `Role` (`production` or `testing`), `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
 - Keep implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
 - The main session owns decomposition, worker prompts, integration, validation, reviewer gates, and final synthesis; workers return reports and never ask the user directly.
 

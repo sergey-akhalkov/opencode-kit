@@ -42,7 +42,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Recovery behavior covers timeout, retry, reconnect, stale state, partial response, and shutdown where relevant.
 - Metrics/logs expose latency, queue wait, errors, rejection reasons, and recovery state.
 - Benchmark evidence includes environment, p50/p95/p99/max, throughput, error counts, and profile.
-- Latency/reliability-affecting implementation changes have benchmark, load, recovery, or manual gate scenarios ready before code, or an explicit blocker.
+- Latency/reliability-affecting changes require observable happy-path proof first, followed by benchmark, load, overload, recovery, and isolation scenarios authored by a separate fresh-context testing subagent.
 
 ## Output
 

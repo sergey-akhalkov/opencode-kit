@@ -60,9 +60,11 @@ export function validateUniversalDevelopmentLoopSingleSource(
     "Evidence",
     "Baseline Proof",
     "Small Slice",
-    "Test First",
-    "Implement",
-    "Focused Validation",
+    "Happy Path",
+    "Happy-Path Proof",
+    "Risk Discovery",
+    "Negative Tests",
+    "Harden",
     "Review Gate",
     "Final Validation",
     "Handoff",
@@ -135,7 +137,13 @@ export function validateMarkdownFile(
   const isInstructionArtifact =
     /^(?:global|\.opencode)\/(skills|agents)\//.test(relative) ||
     /^instructions\//.test(relative) ||
-    ["AGENTS.md", "REPO_AGENTS.md", "README.md"].includes(relative);
+    [
+      "AGENTS.md",
+      "REPO_AGENTS.md",
+      "README.md",
+      "global/AGENTS.md",
+      "templates/project/AGENTS.md",
+    ].includes(relative);
   if (isInstructionArtifact) {
     for (const reference of legacyToolingReferences) {
       if (text.includes(reference)) {
@@ -145,19 +153,32 @@ export function validateMarkdownFile(
   }
 
   const implementationLanguage =
-    /\b(implement|implementation|code changes?|behavior-changing|behavior changes?|fixes are allowed|edit workers?|write scope|make the smallest correct change)\b/i;
+    /\b(implement|make code changes?|write code|fixes are allowed|edit workers?|write scope|make the smallest correct change)\b/i;
   const negatedScopeLanguage =
     /\b(non-goals?|out of scope|not in scope|excluded|do not|must not|never)\b/i;
   const mentionsImplementation = lines.some(
     (line) => implementationLanguage.test(line) && !negatedScopeLanguage.test(line),
   );
-  const mentionsTdd =
-    /\b(TDD|test-first|validation-first|tests? before|failing tests?[^.\n]{0,80}\bbefore\b|(?:tests?|benchmarks?|manual gates?|golden vectors?|fixtures?)[^.\n]{0,120}\bbefore\b|\bbefore\b[^.\n]{0,120}(?:tests?|benchmarks?|manual gates?|golden vectors?|fixtures?))\b/is.test(
-      text,
-    );
+  const mentionsRiskDrivenWorkflow =
+    /\b(Universal Development Loop|happy[- ]path|risk[- ]driven|risk discovery|fresh-context testing subagent|testing subagent|negative\/end-to-end|negative and end-to-end)\b/is.test(text);
 
-  if (isInstructionArtifact && mentionsImplementation && !mentionsTdd) {
-    ctx.addWarning(`Implementation-related artifact language lacks TDD/test-first language: ${file}`);
+  if (isInstructionArtifact && mentionsImplementation && !mentionsRiskDrivenWorkflow) {
+    ctx.addWarning(`Implementation-related artifact language lacks happy-path-first risk-driven testing guidance: ${file}`);
+  }
+  const staleTestOrdering =
+    /\b(tests?|fixtures?|harness(?:es)?|scenarios?|benchmarks?|golden vectors?)[^.\n]{0,160}\b(authored|updated|ready|written|added|created|put)?[^.\n]{0,80}\b(before|prior to|precede(?:s|d)?)\b[^.\n]{0,100}\b(implementation|code|coding|fix(?:es)?)\b/i;
+  const supersededStaleOrdering =
+    /\b(superseded|historical|obsolete|deprecated|must not be followed|do not follow (?:this|the) (?:old )?(?:rule|requirement|guidance)|not (?:an )?active (?:rule|requirement|guidance))\b/i;
+  const staleOrderingClauses = lines.flatMap((line) =>
+    line.split(/(?<=[.!?;])\s+|,\s+|\s+(?:but|however)\s+/i),
+  );
+  const hasActiveStaleTestOrdering = staleOrderingClauses.some(
+    (clause) => staleTestOrdering.test(clause) && !supersededStaleOrdering.test(clause),
+  );
+  if (isInstructionArtifact && hasActiveStaleTestOrdering) {
+    ctx.addError(
+      `Instruction artifact requires automated test work before observable happy-path proof: ${file}`,
+    );
   }
   if (
     isInstructionArtifact &&

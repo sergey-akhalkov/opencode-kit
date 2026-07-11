@@ -23,7 +23,7 @@ Apply the process defined at `instructions/universal-development-loop.md` to eve
 
 - Keep clear small tasks direct and cheap.
 - Use `implementation-worker` for bounded edit-mode implementation slices when the work has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.
-- When delegating to `implementation-worker`, pass `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
+- When delegating to `implementation-worker`, pass `Role` (`production` or `testing`), `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
 - Keep implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
@@ -32,7 +32,8 @@ Apply the process defined at `instructions/universal-development-loop.md` to eve
 ## Quality
 
 - Treat source, tests, schemas, scripts, generated artifacts, and live output as primary evidence.
-- Keep TDD proportional: one smallest useful test or gate is enough unless risk requires more. If test-first work is infeasible, state why and name the closest substitute evidence.
+- Implement and observably prove the smallest complete happy path before systematic automated-test design.
+- Only a separate fresh-context testing subagent that did not author production code may create or modify automated test artifacts. It must derive a realistic risk matrix from the original requirements and prioritize end-to-end behavior at real system boundaries over coverage percentages.
 - When Headroom MCP tools are available and a log, search result, JSON payload, validation output, or repeated tool output is likely to be reused and exceeds about 300 lines or 10 KB, call `headroom_compress`, keep the returned hash in working notes or final evidence when relevant, and call `headroom_retrieve` before exact claims.
 - Do not use Headroom MCP for small outputs, exact code under active edit, short errors already visible, or safety-critical details that must be quoted exactly.
 - Prefer deterministic helpers, validators, fixtures, or generated reports over repeated manual inspection.

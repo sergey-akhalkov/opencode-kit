@@ -20,6 +20,7 @@ Before deep work, define:
 - `Material Success Criteria`: what must be covered before stopping.
 - `Stop Line`: when remaining work is polish-only or diminishing returns.
 - `Mode`: review-only | audit-and-fix | audit-to-merge-confidence | forensic.
+- In `audit-and-fix` mode, production changes must first reach observable happy-path proof; only a separate fresh-context testing subagent may then author automated tests from the audit's realistic risk and failure-mode inventory.
 
 ## Default Audit Targets
 
@@ -42,7 +43,7 @@ Before deep work, define:
 - Delegate independent read-only reviewer agents when useful, but keep the main session responsible for synthesis and edits.
 - Use `code-quality-reviewer` for maintainability/readability, file-bloat, duplication, boundary, and overengineering findings that need an independent read-only gate.
 - Findings require evidence, impact, likely root cause, and a minimal recommendation. If the cause is unknown, recommend investigation or instrumentation rather than a guessed fix.
-- If fixes are allowed, add/update a focused regression or characterization test before behavior fixes when practical, then make the smallest fix, validate, and re-review.
+- If fixes are allowed, implement and observably prove the smallest complete happy path first, then route realistic regression, characterization, negative, and end-to-end test authoring to a separate fresh-context testing subagent before final hardening and re-review.
 - Do not stop while scoped ledger items are unreviewed, fixable, validatable, or need re-review unless blocked by an external dependency.
 
 ## Duplicate Discovery Gate

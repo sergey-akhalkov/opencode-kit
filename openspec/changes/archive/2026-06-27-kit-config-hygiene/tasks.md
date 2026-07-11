@@ -1,3 +1,5 @@
+> Superseded correction (2026-07-11): completed marker tasks below are historical and must not be replayed. The field is unsupported by OpenCode; current installer and validator behavior removes that contract.
+
 ## 1. Pre-flight investigation
 
 - [x] 1.1 Run `git ls-files global/package.json | wc -l`; record whether tracked. (Result: 0 — not tracked.)

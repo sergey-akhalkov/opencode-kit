@@ -31,11 +31,14 @@ export const IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS: readonly string[] = [
 export const IMPLEMENTATION_WORKER_REQUIRED_TEXT: readonly string[] = [
   "## Worker Contract",
   "one bounded work slice",
+  "Role",
   "Write scope",
   "Do not edit outside write scope",
   "Do not ask the user questions",
   "No commits",
-  "TDD/test-first",
+  "observable proof",
+  "fresh-context",
+  "test artifacts",
   "main-session validation gate",
   "## Feedback Ledger",
   "docs/feedbacks",
@@ -47,6 +50,7 @@ export const IMPLEMENTATION_WORKER_REQUIRED_TEXT: readonly string[] = [
 
 export const IMPLEMENTATION_WORKER_HANDOFF_FIELDS: readonly string[] = [
   "Mission",
+  "Role",
   "Read scope",
   "Write scope",
   "Forbidden",

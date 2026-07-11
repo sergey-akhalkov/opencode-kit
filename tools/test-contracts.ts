@@ -146,7 +146,8 @@ const EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT = [
   "Changed-file scope",
   "Current-slice framing",
   "P0 blocker",
-  "test-first evidence for behavior-changing work",
+  "observable happy-path proof",
+  "fresh-context testing subagent",
   "Keep matrices terse",
   "Required Next Actions",
   "Actionable Continuation Items",
@@ -204,11 +205,14 @@ const EXPECTED_IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS = [
 const EXPECTED_IMPLEMENTATION_WORKER_REQUIRED_TEXT = [
   "## Worker Contract",
   "one bounded work slice",
+  "Role",
   "Write scope",
   "Do not edit outside write scope",
   "Do not ask the user questions",
   "No commits",
-  "TDD/test-first",
+  "observable proof",
+  "fresh-context",
+  "test artifacts",
   "main-session validation gate",
   "## Feedback Ledger",
   "docs/feedbacks",
@@ -220,6 +224,7 @@ const EXPECTED_IMPLEMENTATION_WORKER_REQUIRED_TEXT = [
 
 const EXPECTED_IMPLEMENTATION_WORKER_HANDOFF_FIELDS = [
   "Mission",
+  "Role",
   "Read scope",
   "Write scope",
   "Forbidden",
@@ -234,9 +239,60 @@ const EXPECTED_IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT = [
   "focused validation gate",
 ];
 
+const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
+  "Intake",
+  "Evidence",
+  "Baseline Proof",
+  "Small Slice",
+  "Happy Path",
+  "Happy-Path Proof",
+  "Risk Discovery",
+  "Negative Tests",
+  "Harden",
+  "Review Gate",
+  "Final Validation",
+  "Handoff",
+  "Process Improvement",
+];
+
 type TestCase = { name: string; run: () => void };
 
 const tests: TestCase[] = [
+  {
+    name: "contracts: canonical workflow orders observable proof before independent risk-driven testing",
+    run: () => {
+      const workflow = fs.readFileSync(path.join(root, "instructions", "universal-development-loop.md"), "utf8");
+      const actualSteps = [...workflow.matchAll(/^\d+\. `([^`]+)`:/gm)].map((match) => match[1]);
+      assertDeepEqual(actualSteps, EXPECTED_CANONICAL_WORKFLOW_STEPS, "Canonical workflow step names or ordering drifted.");
+      for (const evidence of [
+        "smallest complete production path",
+        "observable execution",
+        "separate fresh-context testing subagent",
+        "independent matrix of realistic",
+        "Prioritize end-to-end tests",
+        "feed failures found by the testing subagent back into production fixes",
+        "original requirements, happy-path proof, testing subagent/session, risk matrix",
+      ]) {
+        assert(workflow.includes(evidence), `Canonical workflow is missing required risk-driven evidence: ${evidence}`);
+      }
+    },
+  },
+  {
+    name: "contracts: independent testing role and handoff evidence remain explicit",
+    run: () => {
+      const worker = fs.readFileSync(path.join(root, "global", "agents", "implementation-worker.md"), "utf8");
+      for (const evidence of [
+        "`Role` (`production` or `testing`)",
+        "fresh-context new session that did not author production code",
+        "Write only test artifacts",
+        "independently derive a realistic risk matrix",
+        "never edit production paths",
+        "risk matrix, real boundaries, and mock exceptions",
+      ]) {
+        assert(worker.includes(evidence), `Implementation worker is missing independent-testing evidence: ${evidence}`);
+      }
+    },
+  },
   {
     name: "contracts: prevention feedback reviewer file list is byte-equal",
     run: () => {
@@ -404,7 +460,7 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "contracts: implementation-worker bash rules preserves test/validate gates",
+    name: "contracts: implementation-worker bash rules preserve focused validation gates",
     run: () => {
       assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.*"), "deny", "Implementation worker bash wildcard deny drifted.");
       assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.git status*"), "allow", "git status allow drifted.");

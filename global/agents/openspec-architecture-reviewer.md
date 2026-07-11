@@ -42,7 +42,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Failure model covers dependency failure, partial IO, timeout, overload, shutdown, restart, and stale state where relevant.
 - API/protocol/config/deployment boundaries are consistent across docs/specs/tasks.
 - Traceability links requirements to tasks/tests.
-- Behavior-changing requirements have acceptance tests/gates authored, updated, or explicitly blocked before implementation tasks proceed.
+- Behavior-changing requirements define the observable happy path; tasks implement and prove it before separate fresh-context testing work authors acceptance, negative, and end-to-end evidence.
 - Diagrams and prose do not contradict normative specs.
 
 ## Output

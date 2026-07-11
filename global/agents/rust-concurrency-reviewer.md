@@ -44,7 +44,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Response/state ownership cannot mix across clients, sessions, tenants, or resources.
 - Error paths do not poison global state or leak tasks.
 - Tests cover cancellation, saturation, slow dependency, shutdown, and multi-entity overlap where relevant.
-- For concurrency-affecting implementation changes, the smallest useful test or harness is authored/updated before code, or infeasibility is explicit.
+- Concurrency-affecting changes require observable happy-path proof first, followed by separate fresh-context test/harness authoring for realistic races, cancellation, backpressure, starvation, and shutdown risks.
 
 ## Output
 

@@ -84,7 +84,7 @@
 - Impact: strict pre-push validation fails on a warning the developer cannot easily remove because the override is the desired local UX; `permission: ask` from template vs `permission: allow` from local override diverges silently.
 - Recommendation: distinguish "portable safe defaults" warnings from "local override" warnings via a marker field, or document that `validate:strict` is intended for CI only where template config is in place.
 - Confidence: medium.
-- Resolution: addressed by `kit-config-hygiene`. `tools/install-opencode-global.ts` writes `machineOverride: true` into the provisioned `global/opencode.json`; `tools/validate-library.ts` downgrades top-level, wildcard, and tool-wide `permission: allow` warnings to `INFO:` when the marker is present and prints an `infos=…` summary. Strict mode still fails without the marker. Resolved 2026-06-27.
+- Resolution correction (2026-07-11): the prior marker solution was invalid because the field is absent from the official OpenCode schema and can prevent startup. The installer now copies the template unchanged; the validator identifies the exact gitignored local path, reports its broad permissions as `INFO:`, and rejects the unsupported field.
 
 ### F10 [P1] Universal Development Loop defined in 4 places, slightly differently
 - Evidence:
@@ -206,7 +206,7 @@
 | D01 | `docs/universal-development-loop.md` vs `instructions/universal-development-loop.md` vs `templates/project/AGENTS.md` vs `instructions/reusable-project-agent-instructions.md` | overlapping responsibility | keep canonical in `instructions/`, replace others with reference | validate-library should detect duplicate step lists |
 | D02 | 14 reviewer agent bodies | duplicated Leaf Contract / Feedback Ledger / Prevention Feedback blocks | reference `instructions/leaf-reviewer-agent-contract.md` | validator already checks tokens; tighten to reference form |
 | D03 | `docs/feedbacks/README.md` vs `templates/project/docs/feedbacks/README.md` | near duplicate | one source; template copies at bootstrap | init-project already reads from template; align with kit |
-| D04 | `global/opencode.json` vs `global/opencode.json.template` vs root `opencode.json` | three config files | document the layering clearly; root = repo workspace; global/opencode.json.template = portable default; global/opencode.json = machine override (gitignored) | validator should allow `permission: allow` only with explicit override marker | Resolved 2026-06-27: layering documented in `README.md` -> "Configuration Layering" and `openspec/project.md`; installer writes `machineOverride: true` into the provisioned local config; validator downgrades `permission: allow` under the marker to `INFO:`; strict mode still fails without the marker. `tools/doctor.ts` reports the active layer. |
+| D04 | `global/opencode.json` vs `global/opencode.json.template` vs root `opencode.json` | three config files | document the layering clearly; root = repo workspace; global/opencode.json.template = portable default; global/opencode.json = machine-local config (gitignored) | validator treats only the exact root-local path as intentional and rejects unsupported fields | Corrected 2026-07-11: installer copies the schema-valid template unchanged; validator uses exact-path classification and doctor reports invalid legacy config as blocked. |
 | D05 | 9 `tools/test-*.ts` files each re-implement TestCase / assert / withTempDir | redundant wrapper code | replace with `node --test`; keep suite-specific helpers thin | count: 9 files, ~3500 lines |
 | D06 | Hand-rolled JSONC parser vs `jsonc-parser` package | reinvented dependency | adopt `jsonc-parser` | covered by unit test |
 | D07 | Frontmatter parser in `validate-library.ts` vs js-yaml/zod alternatives | reinvented dependency | consider adopting `js-yaml` or `zod` for `name`, `description` only | covered by validator tests |
@@ -228,7 +228,7 @@
 | T07 | `headroom-mcp-wrapper.ts` `probeHeadroom` covers missing/exit-0/exit-7 paths and asserts source ordering of probe vs spawn | `tools/test-headroom-mcp-wrapper.ts` adds three probe unit tests plus a source-level ordering assertion (probe before spawn, exit codes 2/3) | covered by `install-init-hardening` (tasks 4.1-4.5) | resolved |
 | T08 | `init-project.ts` backup collision within 1 second | overwrite tested | no test for two overwrites in same second | low |
 | T08 | `init-project.ts` backup stamps differ within the same second after the random-suffix fix | `tools/test-init-project.ts` calls `backupExisting` twice within one second and asserts the resulting paths differ; covers stamp format `<14-char-timestamp>-<8-hex>` | covered by `install-init-hardening` (tasks 3.1-3.4) | resolved |
-| T09 | Negative test for `validateMarkdownFile` TDD-language warning | warning path covered | no test for `negatedScopeLanguage` exemption on positive line | low |
+| T09 | Negative test for `validateMarkdownFile` risk-driven workflow warning | warning path covered | no test for `negatedScopeLanguage` exemption on positive line | low |
 
 ## Failure Mode Matrix
 
@@ -278,7 +278,7 @@ Or keep as separate changes per outcome. None should become a single change unle
 ## Actionable Continuation Items
 
 - Confirm `git ls-files global/node_modules | wc -l` and `git ls-files global/package.json global/package-lock.json | wc -l` to triage F14 / F13.
-- Decide whether to keep `permission: allow` as a permanent override marker (introduce `machineOverride: true` field) or document that `validate:strict` is CI-only.
+- Keep broad local permission diagnostics path-based and informational only for the exact gitignored `global/opencode.json`; never introduce unsupported OpenCode config fields.
 - Choose whether to switch the kit's own `npm test` to `node --test` (Node >=24 available) — this is the highest-leverage refactor and unblocks parallelism.
 - Decide whether the kit should ship a sample OpenSpec change so the gate has something to operate on.
 - Pick a canonical Universal Development Loop file and convert the others to one-line references; this removes the largest drift risk.

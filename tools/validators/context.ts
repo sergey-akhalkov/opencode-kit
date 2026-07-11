@@ -31,13 +31,6 @@ export function isPlainRecord(value: unknown): value is Record<string, unknown> 
   return typeof value === "object" && value != null && !Array.isArray(value);
 }
 
-export function hasMachineOverride(config: unknown): boolean {
-  if (!isPlainRecord(config)) {
-    return false;
-  }
-  return config.machineOverride === true;
-}
-
 export function readText(filePath: string): string {
   return fs.readFileSync(filePath, "utf8");
 }

@@ -15,28 +15,41 @@ The repository SHALL maintain exactly three OpenCode configuration files with di
 
 - **WHEN** a contributor needs to change default OpenCode behavior (provider, MCP, permission, compaction)
 - **THEN** the README SHALL name which of the three files to edit
-- **AND** the validator SHALL report which layer is currently active when run.
+- **AND** `tools/doctor.ts` SHALL report which layer is currently active when run.
 
 #### Scenario: template seeds the override
 
 - **WHEN** `tools/install-opencode-global.ts` runs in default mode and `global/opencode.json` does not exist
 - **THEN** the installer SHALL copy `global/opencode.json.template` to `global/opencode.json`
-- **AND** the new file SHALL include `"machineOverride": true`.
+- **AND** provisioning SHALL use a temporary file plus atomic rename
+- **AND** the new file SHALL be byte-equivalent to the template and contain only fields supported by the official OpenCode schema.
 
-### Requirement: machineOverride marker
+#### Scenario: existing legacy config
 
-A `global/opencode.json` file SHALL set `"machineOverride": true` to indicate it is a deliberate machine-local override. The validator SHALL recognize this marker and downgrade specific warnings (wildcard allow, tool-wide allow) to info-level diagnostics when the marker is present.
+- **WHEN** installer or doctor encounters an existing `global/opencode.json` containing the previously generated unsupported marker field
+- **THEN** it SHALL report a blocking diagnostic that instructs the user to remove the field
+- **AND** it SHALL NOT print, rewrite, or discard the user's remaining machine-local configuration.
 
-#### Scenario: marker present, permission: allow
+### Requirement: Schema-valid machine-local config
 
-- **WHEN** `global/opencode.json` contains both `"machineOverride": true` and `"permission": "allow"`
+The installer, validator, examples, and documentation SHALL NOT add or require fields absent from the official OpenCode schema. The validator SHALL identify only the exact root-relative gitignored `global/opencode.json` layer by path and downgrade broad-permission diagnostics for that machine-local file to info level.
+
+#### Scenario: machine-local permission allow
+
+- **WHEN** the gitignored `global/opencode.json` contains `"permission": "allow"`
 - **THEN** `npm run validate` SHALL emit an `INFO:` line instead of a `WARN:` line
 - **AND** `npm run validate:strict` SHALL NOT fail.
 
-#### Scenario: marker missing, permission: allow
+#### Scenario: near-miss path remains strict
 
-- **WHEN** `global/opencode.json` does not contain `"machineOverride": true`
-- **THEN** the existing warning behavior SHALL apply (WARN under default mode, ERROR under strict mode).
+- **WHEN** a config such as `nested/global/opencode.json` contains `"permission": "allow"`
+- **THEN** validation SHALL emit a warning
+- **AND** strict validation SHALL fail.
+
+#### Scenario: unsupported field
+
+- **WHEN** any OpenCode config contains a field that this repository previously invented as a local-override marker
+- **THEN** validation SHALL reject the config and instruct the contributor to remove the unsupported field.
 
 ### Requirement: No hardcoded user paths in shipped config
 
@@ -51,7 +64,8 @@ The committed `global/opencode.json` SHALL NOT contain absolute user paths. The 
 #### Scenario: overlay example
 
 - **WHEN** `global/opencode.local.json.example` exists in the repo
-- **THEN** it SHALL show a documented overlay snippet
+- **THEN** it SHALL contain only official OpenCode schema fields
+- **AND** README SHALL state that `OPENCODE_CONFIG` must explicitly load the copied overlay
 - **AND** `.gitignore` SHALL ignore `global/opencode.local.json`.
 
 ### Requirement: global/.gitignore consistency
@@ -69,18 +83,17 @@ The file `global/.gitignore` SHALL NOT ignore files that are intentionally track
 - **WHEN** the dependency files are NOT tracked
 - **THEN** this change SHALL either remove `global/package.json` and `global/package-lock.json` from the working tree, OR hoist the dependency into the root `package.json` and remove the files from `global/`.
 
-### Requirement: validator recognizes machineOverride
+### Requirement: validator recognizes machine-local path
 
-The validator SHALL read the `machineOverride` field from any `global/opencode.json` it encounters and SHALL downgrade specific warnings accordingly. The downgrade behavior SHALL be covered by a regression test.
+The validator SHALL recognize `global/opencode.json` as the machine-local layer by path and SHALL downgrade specific broad-permission warnings accordingly. It SHALL reject unsupported marker fields. Both behaviors SHALL be covered by regression tests.
 
-#### Scenario: regression test for marker behavior
+#### Scenario: regression test for local-path behavior
 
-- **WHEN** the fixture repo is constructed with a `global/opencode.json` containing `"permission": "allow"` and `"machineOverride": true`
+- **WHEN** the fixture repo is constructed with a `global/opencode.json` containing `"permission": "allow"`
 - **THEN** `npm run validate:strict` SHALL pass
-- **AND** the output SHALL include an `INFO:` line referencing the override.
+- **AND** the output SHALL include an `INFO:` line referencing the broad local permission.
 
-#### Scenario: regression test for missing marker
+#### Scenario: regression test for unsupported marker
 
-- **WHEN** the fixture repo is constructed with `global/opencode.json` containing `"permission": "allow"` but no `machineOverride` field
-- **THEN** `npm run validate:strict` SHALL fail.
-
+- **WHEN** a fixture OpenCode config contains an unsupported local-override marker field
+- **THEN** validation SHALL fail with a diagnostic that the field can prevent OpenCode startup.

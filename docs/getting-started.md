@@ -40,7 +40,7 @@ npm run doctor -- --project <project-path>
 In the target project, ask for work using the single loop defined at `instructions/universal-development-loop.md`:
 
 ```text
-Use the Universal Development Loop (see instructions/universal-development-loop.md) to implement <task>. Keep the slice small, prove current behavior first when feasible, work test-first for behavior changes, and run the nearest validation command.
+Use the Universal Development Loop (see instructions/universal-development-loop.md) to implement <task>. Keep the slice small, prove the happy path through observable execution, then use a separate fresh-context testing subagent to discover realistic risks and author negative/end-to-end tests.
 ```
 
 ## Before Broad Work

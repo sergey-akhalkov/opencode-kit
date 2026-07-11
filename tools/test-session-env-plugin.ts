@@ -273,45 +273,10 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "injects caller session id into dream_team_review args",
+    name: "does not own Dream Team or other tool execution context",
     run: async () => {
       const hooks = await plugin.server({} as never);
-      const output: { args?: unknown } = {};
-      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "dream_team_review" }, output as never);
-      assert(typeof output.args === "object" && output.args !== null && !Array.isArray(output.args), "tool.execute.before hook must normalize dream_team_review args to an object.");
-      assert((output.args as Record<string, unknown>).callerSessionId === "session_fixture", "tool.execute.before hook must inject callerSessionId for dream_team_review.");
-    },
-  },
-  {
-    name: "absolutizes relative dream_team_review repo against project directory",
-    run: async () => {
-      const projectDir = path.resolve("fixtures", "other-project");
-      const hooks = await plugin.server({ directory: projectDir } as never);
-      const output = { args: { repo: ".", base: "main" } };
-      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "dream_team_review" }, output as never);
-      assert(output.args.repo === projectDir, `tool.execute.before hook must rewrite relative repo to ${projectDir}, got ${String(output.args.repo)}.`);
-      assert(output.args.base === "main", "tool.execute.before hook must preserve sibling args while rewriting repo.");
-    },
-  },
-  {
-    name: "preserves existing dream_team_review caller session id",
-    run: async () => {
-      const hooks = await plugin.server({} as never);
-      const output = { args: { callerSessionId: "session_existing", repo: "D:/repo" } };
-      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "dream_team_review" }, output as never);
-      assert(output.args.callerSessionId === "session_existing", "tool.execute.before hook must not overwrite an existing callerSessionId.");
-      assert(output.args.repo === "D:/repo", "tool.execute.before hook must preserve sibling args when callerSessionId already exists.");
-    },
-  },
-  {
-    name: "does not change args for other tools",
-    run: async () => {
-      const hooks = await plugin.server({} as never);
-      const args = { command: "npm test" };
-      const output = { args };
-      await hooks["tool.execute.before"]?.({ callID: "call_fixture", sessionID: "session_fixture", tool: "bash" }, output as never);
-      assert(output.args === args, "tool.execute.before hook must leave other tool args object unchanged.");
-      assert(!("callerSessionId" in output.args), "tool.execute.before hook must not inject callerSessionId for other tools.");
+      assert(hooks["tool.execute.before"] == null, "session-env must not register tool.execute.before; Dream Team context has a single plugin owner.");
     },
   },
   {

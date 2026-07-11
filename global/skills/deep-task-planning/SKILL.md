@@ -15,8 +15,8 @@ Do not use it for routine single-file changes, simple questions, or tasks where 
 - Define `Goal`, `Scope`, `Non-goals`, `Assumptions`, `Risks`, `Success Criteria`, and `Stop Line`.
 - Identify primary evidence: source, tests, schemas, scripts, live output, product docs, external specs, or owner decisions.
 - Prefer the smallest reversible implementation slice that proves value.
-- Include TDD/test-first strategy before implementation strategy: each behavior-changing slice starts with the focused failing, acceptance, or characterization test, or an explicit infeasibility note plus substitute evidence.
-- Keep the test plan proportional: identify the smallest useful test/gate per slice before adding broader suites.
+- Order each behavior-changing slice as original requirements, minimal happy-path implementation, observable proof, independent fresh-context risk discovery, test-only negative/end-to-end authoring, hardening, and final validation.
+- Make the test plan risk-driven rather than coverage-driven: identify realistic business and operational failures, real boundaries, justified mock exceptions, and residual risks.
 - Add a `code-quality-reviewer` gate for slices likely to affect maintainability, file navigation, duplication, module boundaries, or public surface area.
 - Separate confirmed facts from assumptions and open questions.
 - Do not invent unavailable tools, APIs, or requirements.
@@ -28,7 +28,7 @@ Return:
 
 - `Goal`: one bounded outcome.
 - `Current Evidence`: what was checked and what remains unverified.
-- `Implementation Slices`: ordered steps with the test/fixture/gate first for each behavior-changing slice, then implementation, then validation.
+- `Implementation Slices`: ordered steps with happy-path implementation and observable proof before independent risk discovery and test-only authoring, followed by hardening and validation.
 - `Test Plan`: unit, integration, acceptance, negative, performance, or manual gates as applicable.
 - `Code Quality Gate`: when to run `code-quality-audit` or `code-quality-reviewer`, or why it is not needed.
 - `Risk Register`: risk, impact, mitigation, owner or blocker.

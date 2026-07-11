@@ -8,7 +8,7 @@ Follow the canonical Universal Development Loop defined at `instructions/univers
 
 - Technology-specific commands and constraints adapt the loop; they do not create separate workflows.
 - Start broad work with a deterministic project inventory, targeted search, or repository-native command before reading large file sets.
-- For behavior-changing work, prove current behavior and add/update the smallest useful failing, acceptance, or characterization test before implementation unless infeasible.
+- For behavior-changing work, study the original requirements, implement the smallest complete happy path, and prove it through observable execution before systematic automated-test design.
 - Run focused validation first, then broaden validation when boundaries, APIs, data, deployment, or compatibility are affected.
 - Use read-only reviewer gates only when the risk justifies them, and report skipped gates with the reason. Reviewer feedback-ledger writes under `docs/feedbacks/**` are the only default write exception.
 
@@ -24,8 +24,8 @@ Follow the canonical Universal Development Loop defined at `instructions/univers
 - Prefer the smallest correct change that satisfies the scoped task.
 - Do not perform unrelated cleanup, formatting, or refactors.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
-- For code or behavior changes, default to TDD: add or update the focused failing, acceptance, or characterization test before implementation. If skipped, state why and what validation substitutes for test-first evidence.
-- Keep TDD proportional: do not expand into unrelated coverage or speculative suites when one focused test/gate proves the scoped behavior.
+- Only a separate fresh-context testing subagent that did not author production code may create or modify automated test artifacts. Give it test-only write scope, forbid production paths, and require an independent realistic risk matrix.
+- Prioritize end-to-end behavior at real system boundaries and high-impact negative scenarios over coverage percentages. Record justified mock exceptions, failures fed back into production hardening, and residual risks.
 - After edits, run the closest relevant validation command or state why validation was skipped.
 
 ## Token Efficiency
@@ -46,7 +46,7 @@ Follow the canonical Universal Development Loop defined at `instructions/univers
 
 - Use a direct single-agent path for clear small edits and questions.
 - Use `implementation-worker` for bounded edit-mode implementation slices when the work has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.
-- When delegating to `implementation-worker`, pass `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
+- When delegating to `implementation-worker`, pass `Role` (`production` or `testing`), `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
 - Keep implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.

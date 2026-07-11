@@ -20,7 +20,7 @@ Use this skill when performance claims, SLOs, load isolation, queue wait, watchd
 
 - No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 - Do not run load tests against shared, production, billable, or rate-limited services unless the user approves the target environment, command, limits, duration, and rollback/stop criteria.
-- If benchmark tooling changes behavior, add or update the smallest fixture/smoke gate before implementation; if infeasible, state why and use the closest reproducible substitute evidence.
+- If benchmark tooling changes behavior, implement and observably prove its smallest happy path first, then use a separate fresh-context testing subagent to author fixture, smoke, overload, and failure scenarios.
 
 ## Benchmark Matrix
 

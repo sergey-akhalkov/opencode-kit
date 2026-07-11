@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parse as jsoncParse } from "jsonc-parser";
 
 type Mode = "set" | "check" | "print" | "unset" | "persist-script" | "unset-script";
 
@@ -219,51 +219,42 @@ function validateGlobalDir(target: string): string[] {
 function ensureLocalConfig(target: string): void {
   const local = path.join(target, "opencode.json");
   const template = path.join(target, "opencode.json.template");
+  if (fs.existsSync(local)) {
+    assertSupportedLocalConfig(local);
+    return;
+  }
   if (!fs.existsSync(local) && fs.existsSync(template)) {
     const templateText = fs.readFileSync(template, "utf8");
-    const provisioned = writeProvisionedLocalConfig(templateText);
-    fs.writeFileSync(local, provisioned);
+    const temporary = `${local}.${process.pid}.${Date.now()}.tmp`;
+    try {
+      fs.writeFileSync(temporary, templateText, { flag: "wx" });
+      fs.renameSync(temporary, local);
+    } finally {
+      if (fs.existsSync(temporary)) fs.rmSync(temporary, { force: true });
+    }
     console.log(`provisioned: global/opencode.json from opencode.json.template (portable default).`);
-    console.log(`Marked machineOverride: true so validators treat local provider/MCP/permission overrides as intentional.`);
     console.log(`Edit global/opencode.json for machine-specific provider/MCP overrides; it is gitignored.`);
   }
 }
 
-function writeProvisionedLocalConfig(templateText: string): string {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(templateText);
-  } catch {
-    return templateText;
+function assertSupportedLocalConfig(file: string): void {
+  const errors: jsoncParse.ParseError[] = [];
+  const parsed = jsoncParse(fs.readFileSync(file, "utf8"), errors, {
+    allowTrailingComma: true,
+    disallowComments: false,
+  });
+  if (errors.length > 0 || typeof parsed !== "object" || parsed == null || Array.isArray(parsed)) {
+    throw new Error(`Existing global/opencode.json is invalid; fix or remove it before reinstalling.`);
   }
-  if (typeof parsed !== "object" || parsed == null || Array.isArray(parsed)) {
-    return templateText;
+  if ("machineOverride" in parsed) {
+    throw new Error(
+      `Existing global/opencode.json contains unsupported field 'machineOverride'; remove it before restarting OpenCode or reinstalling.`,
+    );
   }
-  const record = parsed as Record<string, unknown>;
-  if (record.machineOverride === true) {
-    return templateText;
-  }
-  record.machineOverride = true;
-  return JSON.stringify(record, null, 2) + "\n";
 }
 
 function isWindows(): boolean {
   return process.platform === "win32";
-}
-
-function legacyPluginPath(): string {
-  return path.join(os.homedir(), ".config", "opencode", "plugin", "session-env.ts");
-}
-
-function warnLegacyPlugin(): void {
-  const legacy = legacyPluginPath();
-  if (fs.existsSync(legacy)) {
-    console.log("");
-    console.log(`note: a legacy copy of session-env.ts exists at ${legacy}`);
-    console.log("It was left by the previous copy-based installer and is still auto-discovered,");
-    console.log("so it duplicates the plugin now loaded from global/plugin/. Remove it to avoid a duplicate registration:");
-    console.log(`  rm "${legacy}"`);
-  }
 }
 
 function samePath(a: string, b: string): boolean {
@@ -285,8 +276,16 @@ function runCheck(): void {
     process.exit(1);
   }
   if (samePath(current, globalDir)) {
+    const local = path.join(globalDir, "opencode.json");
+    if (fs.existsSync(local)) {
+      try {
+        assertSupportedLocalConfig(local);
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : String(error));
+        process.exit(1);
+      }
+    }
     console.log(`configured: ${ENV_VAR}=${current}`);
-    warnLegacyPlugin();
     process.exit(0);
   }
   console.log(`mismatch: ${ENV_VAR}=${current}`);
@@ -356,7 +355,6 @@ function runSet(dryRun: boolean): void {
   if (isWindows()) {
     console.log("Windows GUI apps launched from Explorer may require logoff/logon to inherit the change.");
   }
-  warnLegacyPlugin();
 }
 
 function runUnset(): void {

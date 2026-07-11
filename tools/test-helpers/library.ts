@@ -121,11 +121,15 @@ export function newLibraryFixture(name: string): string {
     "2. Evidence",
     "3. Baseline Proof",
     "4. Small Slice",
-    "5. Test First",
-    "6. Focused Validation",
-    "7. Review Gate",
-    "8. Handoff",
-    "9. Process Improvement",
+    "5. Happy Path",
+    "6. Happy-Path Proof",
+    "7. Risk Discovery",
+    "8. Negative Tests",
+    "9. Harden",
+    "10. Review Gate",
+    "11. Final Validation",
+    "12. Handoff",
+    "13. Process Improvement",
     "",
   ]));
   writeText(path.join(dir, "templates", "project", "AGENTS.md"), lines([
@@ -133,13 +137,13 @@ export function newLibraryFixture(name: string): string {
     "",
     "## Universal Development Loop",
     "",
-    "- Use Intake, Evidence, Baseline Proof, Small Slice, Test First, Focused Validation, Review Gate, Handoff, and Process Improvement.",
-    "- For behavior changes, write tests before implementation.",
+    "- Follow `instructions/universal-development-loop.md` as the single canonical workflow.",
+    "- Implement and observably prove the smallest complete happy path, then use a separate fresh-context testing subagent for risk discovery, negative tests, and hardening.",
     "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
     "",
   ]));
   writeText(path.join(dir, "templates", "project", "opencode.json"), lines(["{", "  \"$schema\": \"https://opencode.ai/config.json\"", "}", ""]));
-  writeText(path.join(dir, "templates", "project", "validation.md"), lines(["# Project Validation", "", "- Tests before implementation when behavior changes.", ""]));
+  writeText(path.join(dir, "templates", "project", "validation.md"), lines(["# Project Validation", "", "- Record observable happy-path proof, risk discovery, negative suites, hardening, and final validation.", ""]));
   writeText(path.join(dir, "templates", "project", "adapter.json"), lines([
     "{",
     "  \"schemaVersion\": 1,",
@@ -194,7 +198,7 @@ export function newLibraryFixture(name: string): string {
     "",
     "- Use TypeScript for all repository automation and implementation code.",
     "- Do not add PowerShell, Python, or JavaScript source files; rewrite any such code to TypeScript instead.",
-    "- For behavior changes, add the smallest useful TDD/test-first gate before code changes.",
+    "- For behavior changes, prove the smallest complete happy path before a separate fresh-context testing subagent authors risk-driven tests.",
     "- Run repository tooling through npm scripts or `node` against `.ts` entrypoints.",
     "",
     "## Deterministic Helper Automation",
@@ -443,16 +447,16 @@ export function addImplementationWorkerFixture(fixture: string): string {
   const agents = fs.readFileSync(agentsPath, "utf8");
   writeText(agentsPath, agents.replace(
     "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.",
-    "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.\n- Use `implementation-worker` for bounded edit-mode implementation slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.\n- When delegating to `implementation-worker`, pass `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.",
+    "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.\n- Use `implementation-worker` for bounded edit-mode implementation slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.\n- When delegating to `implementation-worker`, pass `Role`, `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.",
   ));
 
   const templatePath = path.join(fixture, "templates", "project", "AGENTS.md");
   const template = fs.readFileSync(templatePath, "utf8");
-  writeText(templatePath, `${template}- Use \`implementation-worker\` for bounded edit-mode implementation slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.\n- When delegating to \`implementation-worker\`, pass \`Mission\`, \`Read scope\`, \`Write scope\`, \`Forbidden\`, \`Verification\`, and acceptance criteria.\n`);
+  writeText(templatePath, `${template}- Use \`implementation-worker\` for bounded edit-mode implementation slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.\n- When delegating to \`implementation-worker\`, pass \`Role\`, \`Mission\`, \`Read scope\`, \`Write scope\`, \`Forbidden\`, \`Verification\`, and acceptance criteria.\n`);
 
   const readmePath = path.join(fixture, "README.md");
   const readme = fs.readFileSync(readmePath, "utf8");
-  writeText(readmePath, readme.replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `implementation-worker`: Bounded TDD/test-first implementation worker."));
+  writeText(readmePath, readme.replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `implementation-worker`: Bounded production or independent testing implementation worker."));
   return workerPath;
 }
 

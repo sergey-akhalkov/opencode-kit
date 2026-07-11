@@ -22,7 +22,7 @@ Evidence:
 - [x] 2.3 Extract `tools/validators/agents.ts` (`validateAgents`, `validateReviewerBashPermission`, `validateReviewerFeedbackEditPermission`, `validateComplainSkillPermission`, `validateImplementationWorker`, `validateSessionDeliveryContextPermission`).
 - [x] 2.4 Extract `tools/validators/profiles.ts` (`validateProfiles`, `validateStringArray`, `findDuplicateStrings`, `compareStringSets`).
 - [x] 2.5 Extract `tools/validators/opencode-config.ts` (`validateOpenCodeConfigFiles`, `validateOpenCodePermissionRules`, `jsonReplacementForAutomationMarkdown`).
-- [x] 2.6 Extract `tools/validators/markdown.ts` (`validateMarkdownFile`, trailing-whitespace, TDD-language detection, forbidden-anchor scan, legacy-tooling-reference scan).
+- [x] 2.6 Extract `tools/validators/markdown.ts` (`validateMarkdownFile`, trailing-whitespace, implementation-workflow detection, forbidden-anchor scan, legacy-tooling-reference scan).
 - [x] 2.7 Extract `tools/validators/devkit-contract.ts` (`validateDevKitContract`, `validatePackageScripts`, `validateInstallerConfigDirModel`, `validateReadme`, `validateAgentsMd`, `validateInstructionFeedbackContracts`).
 - [x] 2.8 Extract `tools/validators/routing.ts` (`validateImplementationWorkerRouting`, `validateSessionDeliveryBinding`).
 - [x] 2.9 Reduce `tools/validate-library.ts` to argument parsing + dispatch + aggregate output; assert it stays under 400 lines.

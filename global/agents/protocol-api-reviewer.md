@@ -42,7 +42,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Error taxonomy is deterministic and observable.
 - Diagnostics include safe identifiers and error kinds without leaking secrets.
 - Tests include golden bytes, partial frames, malformed input, concurrency, reconnect, and compatibility cases where relevant.
-- For protocol/API implementation changes, those golden/integration/error/reconnect tests are authored or updated before code where feasible, or the blocker is explicit.
+- Protocol/API changes require observable happy-path proof first, followed by golden, integration, error, cancellation, and reconnect tests authored by a separate fresh-context testing subagent.
 
 ## Output
 

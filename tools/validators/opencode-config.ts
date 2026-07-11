@@ -2,7 +2,6 @@ import path from "node:path";
 import { parse as jsoncParse } from "jsonc-parser";
 import type { ValidationContext } from "./context.ts";
 import {
-  hasMachineOverride,
   isPlainRecord,
   readText,
   walkRepositoryFiles,
@@ -19,12 +18,18 @@ function validateOpenCodePermissionRules(
   ctx: ValidationContext,
   config: unknown,
   file: string,
+  root: string,
 ): void {
   if (!isPlainRecord(config)) {
     return;
   }
-  const machineOverride = hasMachineOverride(config);
-  const notePermission = machineOverride
+  if ("machineOverride" in config) {
+    ctx.addError(
+      `Unsupported OpenCode config field 'machineOverride' can prevent OpenCode startup; remove it: ${file}`,
+    );
+  }
+  const isMachineLocalConfig = samePath(file, path.join(root, "global", "opencode.json"));
+  const notePermission = isMachineLocalConfig
     ? (message: string): void => {
         ctx.addInfo(message);
       }
@@ -87,6 +92,14 @@ function validateOpenCodePermissionRules(
   }
 }
 
+function samePath(left: string, right: string): boolean {
+  const resolvedLeft = path.resolve(left);
+  const resolvedRight = path.resolve(right);
+  return process.platform === "win32"
+    ? resolvedLeft.toLowerCase() === resolvedRight.toLowerCase()
+    : resolvedLeft === resolvedRight;
+}
+
 export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string): void {
   for (const file of walkRepositoryFiles(root)) {
     if (path.basename(file) !== "opencode.json" && path.basename(file) !== "opencode.jsonc") {
@@ -109,6 +122,6 @@ export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string
       ctx.addError(`Invalid OpenCode config JSON: ${file}: ${message}`);
       continue;
     }
-    validateOpenCodePermissionRules(ctx, parsed, file);
+    validateOpenCodePermissionRules(ctx, parsed, file, root);
   }
 }

@@ -1,3 +1,5 @@
+> Superseded correction (2026-07-11): marker requirements below are archived history, not current normative behavior. The field is unsupported by OpenCode and current active specs prohibit it.
+
 ## ADDED Requirements
 
 ### Requirement: Three-layer config layering

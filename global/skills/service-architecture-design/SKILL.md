@@ -18,7 +18,7 @@ Use this skill when shaping service architecture, design docs, specs, or impleme
 - Deployment model: service/process split, config, secrets, logging, diagnostics, upgrades.
 - Observability: metrics, tracing, logs, health, readiness, auditability.
 - Testability: fake dependencies, integration tests, load tests, manual gates.
-- Implementation slices should begin with contract, acceptance, negative, recovery, or characterization tests before coding behavior.
+- Implementation slices should define the contract and observable happy path, implement and prove that path, then use a separate fresh-context testing subagent to author acceptance, negative, recovery, and characterization evidence from the architecture risk matrix.
 
 ## Output
 

@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parse as jsoncParse } from "jsonc-parser";
 
 type OutputFormat = "json" | "markdown";
 
@@ -33,6 +34,33 @@ function defaultProject(): string {
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+}
+
+function samePath(left: string, right: string): boolean {
+  const resolvedLeft = path.resolve(left);
+  const resolvedRight = path.resolve(right);
+  return process.platform === "win32"
+    ? resolvedLeft.toLowerCase() === resolvedRight.toLowerCase()
+    : resolvedLeft === resolvedRight;
+}
+
+function localConfigProblem(file: string): string | null {
+  try {
+    const errors: jsoncParse.ParseError[] = [];
+    const parsed = jsoncParse(fs.readFileSync(file, "utf8"), errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    });
+    if (errors.length > 0 || typeof parsed !== "object" || parsed == null || Array.isArray(parsed)) {
+      return "global/opencode.json is not valid OpenCode JSON/JSONC.";
+    }
+    if ("machineOverride" in parsed) {
+      return "global/opencode.json contains unsupported field 'machineOverride'; remove it before restarting OpenCode.";
+    }
+    return null;
+  } catch {
+    return "global/opencode.json could not be read or parsed.";
+  }
 }
 
 function printUsage(): void {
@@ -140,7 +168,7 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
     addCheck(checks, "opencode config layering", "warn", "OPENCODE_CONFIG_DIR is not set; install with npm run install:global so the kit becomes the active global config directory.");
   } else {
     const resolvedGlobalDir = path.resolve(globalConfigDir);
-    const isRepoGlobal = resolvedGlobalDir === path.resolve(root, "global");
+    const isRepoGlobal = samePath(resolvedGlobalDir, path.resolve(root, "global"));
     const templatePath = path.join(resolvedGlobalDir, "opencode.json.template");
     const localPath = path.join(resolvedGlobalDir, "opencode.json");
     if (!fs.existsSync(templatePath)) {
@@ -148,19 +176,29 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
     } else if (!isRepoGlobal) {
       addCheck(checks, "opencode config layering", "warn", `OPENCODE_CONFIG_DIR=${resolvedGlobalDir} does not point at the repo global/ directory; the kit's portable default will not be active.`);
     } else if (fs.existsSync(localPath)) {
-      let marker = false;
-      try {
-        const parsed = JSON.parse(fs.readFileSync(localPath, "utf8")) as { machineOverride?: unknown };
-        marker = parsed.machineOverride === true;
-      } catch {
-        // ignore: machineOverride downgrade is a validator concern, not a doctor gate.
-      }
-      addCheck(checks, "opencode config layering", "pass", marker
-        ? "Active layer: global/opencode.json (machineOverride: true)."
-        : "Active layer: global/opencode.json without machineOverride marker; intentional local overrides will fail validate:strict.");
+      const problem = localConfigProblem(localPath);
+      addCheck(
+        checks,
+        "opencode config layering",
+        problem == null ? "pass" : "blocked",
+        problem ?? "Active layer: gitignored global/opencode.json machine-local config.",
+      );
     } else {
-      addCheck(checks, "opencode config layering", "warn", "Active layer: global/opencode.json.template only (no provisioned local override yet). Run npm run install:global to provision global/opencode.json.");
+      addCheck(checks, "opencode config layering", "warn", "No active global/opencode.json exists. The template is an inactive provisioning seed; run npm run install:global to create the machine-local config.");
     }
+  }
+
+  const explicitConfig = process.env.OPENCODE_CONFIG;
+  if (explicitConfig != null && explicitConfig.trim() !== "") {
+    const resolvedExplicitConfig = path.resolve(explicitConfig);
+    addCheck(
+      checks,
+      "explicit opencode config",
+      fs.existsSync(resolvedExplicitConfig) ? "pass" : "blocked",
+      fs.existsSync(resolvedExplicitConfig)
+        ? `OPENCODE_CONFIG loads an additional explicit config: ${resolvedExplicitConfig}`
+        : `OPENCODE_CONFIG points to a missing file: ${resolvedExplicitConfig}`,
+    );
   }
 
   let status: CheckStatus = "pass";

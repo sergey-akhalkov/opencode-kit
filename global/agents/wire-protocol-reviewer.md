@@ -41,7 +41,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Binary bytes and non-ASCII data avoid lossy text conversion.
 - Unsupported request codes return deterministic errors.
 - Exact-size chunks, max payload, empty payload, and one-over-limit cases are covered.
-- Changed wire formats have exact golden vectors or scenarios authored/updated before codec or transport implementation where feasible.
+- Changed wire formats require an observably proven codec/transport happy path, then exact golden, boundary, malformed, and recovery vectors authored by a separate fresh-context testing subagent.
 - Partial receive, timeout, reconnect, stale bytes, and late responses do not break correlation.
 - Concurrent clients/sessions/resources cannot mix output buffers or response ownership.
 - Hot path avoids avoidable copies and round trips unless measured.

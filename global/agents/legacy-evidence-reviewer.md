@@ -41,7 +41,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Docs/specs do not overclaim compatibility.
 - Missing hardware/manual evidence is visible as a blocker or residual risk.
 - Tests or manual gates exist for compatibility-critical behavior.
-- Modern compatibility requirements map to current tests/manual gates authored or updated before implementation, or the legacy evidence blocker is explicit.
+- Modern compatibility requirements map to an observable happy path proven after implementation, followed by separate fresh-context compatibility test authoring; missing legacy evidence remains an explicit blocker.
 
 ## Output
 

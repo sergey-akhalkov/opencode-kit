@@ -29,6 +29,7 @@ import {
 import { getFrontmatterMap } from "./frontmatter.ts";
 
 const DREAM_TEAM_RUNTIME_AGENT_PREFIX = "dream-team-";
+const DREAM_TEAM_IMPLEMENTER_AGENT = "dream-team-implementer";
 
 function isDreamTeamRuntimeAgent(agentName: string, frontmatter: FrontmatterMap): boolean {
   return agentName.startsWith(DREAM_TEAM_RUNTIME_AGENT_PREFIX) && frontmatter.get("hidden") === "true";
@@ -42,6 +43,29 @@ function validateDreamTeamRuntimeAgent(
   if (frontmatter.get("permission.dream_team_*") !== "deny") {
     ctx.addError(`Dream Team runtime agent must deny dream_team_* tools: ${file}`);
   }
+}
+
+function validateDreamTeamImplementer(
+  ctx: ValidationContext,
+  frontmatter: FrontmatterMap,
+  file: string,
+): void {
+  if (frontmatter.get("permission.bash") !== "deny") {
+    ctx.addError(`Dream Team implementer must set bash: deny: ${file}`);
+  }
+  if (frontmatter.get("permission.edit") !== "allow") {
+    ctx.addError(`Dream Team implementer must set edit: allow: ${file}`);
+  }
+  if (frontmatter.get("permission.skill") !== "deny") {
+    ctx.addError(`Dream Team implementer must set skill: deny: ${file}`);
+  }
+  for (const permission of IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS) {
+    const key = `permission.${permission}`;
+    if (frontmatter.get(key) !== "deny") {
+      ctx.addError(`Dream Team implementer must set ${permission}: deny: ${file}`);
+    }
+  }
+  validateDreamTeamRuntimeAgent(ctx, frontmatter, file);
 }
 
 function validateReviewerBashPermission(
@@ -213,6 +237,10 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     validateSessionDeliveryContextPermission(ctx, frontmatter, file);
     if (path.basename(file) === IMPLEMENTATION_WORKER_FILE) {
       validateImplementationWorker(ctx, frontmatter, text, file);
+      continue;
+    }
+    if (isDreamTeamRuntime && agentName === DREAM_TEAM_IMPLEMENTER_AGENT) {
+      validateDreamTeamImplementer(ctx, frontmatter, file);
       continue;
     }
     validateReviewerBashPermission(ctx, frontmatter, file);

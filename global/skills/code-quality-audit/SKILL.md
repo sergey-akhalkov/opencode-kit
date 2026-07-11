@@ -17,7 +17,7 @@ Do not use this skill for pure documentation edits, generated/vendor code, tiny 
 - Treat smells as signals, not automatic guilt. A finding needs evidence, impact, likely root cause, and a minimal remedy.
 - Do not require perfection. Block only when the change worsens code health or creates a likely future defect/change-cost trap.
 - Do not apply Design Patterns by default. Use a pattern only when it removes concrete duplication, branching, coupling, lifecycle complexity, or boundary confusion.
-- For behavior-changing fixes, add or update the smallest useful test-first gate before refactoring or implementation unless infeasible; if infeasible, state the substitute evidence.
+- For behavior-changing fixes, require observable proof of the smallest complete happy path before independent fresh-context risk testing. Production authors must not create or modify automated test artifacts.
 
 ## Evidence Basis
 
@@ -104,7 +104,7 @@ If the command is not available in the target repository, use repository-native 
 - Run or request deterministic inventory when file size/navigation is a material risk.
 - Identify smells only when they affect change cost, readability, testability, or defect risk.
 - Prefer local refactors that reduce the current change's complexity before adding new abstractions.
-- If a refactor changes behavior, add/update the focused test-first gate before the refactor when practical.
+- If a refactor changes behavior, prove the resulting happy path through observable execution, then route realistic negative and end-to-end test authoring to a separate fresh-context testing subagent.
 - Use `code-quality-reviewer` as the read-only post-change reviewer after non-trivial code edits when feasible.
 - Escalate to `test-coverage-reviewer`, `performance-reliability-reviewer`, `rust-concurrency-reviewer`, or protocol/deployment reviewers when the finding is primarily in those domains.
 - If the review yields several concrete out-of-scope follow-ups from the current session, recommend grouping them into OpenSpec follow-up changes; do not do this for isolated nits, local style preferences, or one obvious next step.

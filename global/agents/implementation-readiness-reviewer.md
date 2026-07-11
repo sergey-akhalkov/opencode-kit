@@ -41,7 +41,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Design decisions are made or explicitly blocked.
 - Future-scope work is not mixed into the implementation slice.
 - Dependencies, migrations, compatibility, config, deployment, and rollback implications are identified.
-- Tests/benchmarks/manual gates for behavior-changing work are authored, updated, or blocked before implementation begins; planned-only evidence is insufficient unless the exact first test/gate is ready.
+- Before implementation begins, behavior-changing work defines its observable happy-path boundary and post-proof testing handoff. Automated tests and benchmarks remain test-only work for a separate fresh-context subagent after happy-path proof.
 - Required source files and context are discoverable.
 - Validation commands are known.
 - Material maintainability risks, likely large-file navigation issues, duplication, or boundary changes have a planned `code-quality-reviewer` gate or an explicit reason it is unnecessary.
@@ -56,6 +56,6 @@ Return:
 - `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
 - `Readiness Matrix`: requirement/decision -> status -> evidence/gap.
 - `Missing Decisions`: exact decisions needed.
-- `Required Evidence`: tests/docs/source/validation needed before implementation.
+- `Required Evidence`: requirements/docs/source evidence and the observable happy-path boundary needed to start implementation, plus the post-proof risk-testing handoff.
 - `Residual Risks`: gaps or `none`.
 - `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.

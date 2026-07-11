@@ -41,7 +41,7 @@ This reviewer follows the shared contract defined at `instructions/leaf-reviewer
 - Slow responses, busy states, cancellation, retries, and partial failures match legacy expectations or are explicitly changed.
 - Unsupported behavior is deterministic and documented.
 - Tests/manual gates prove representative legacy workflows.
-- Compatibility-critical implementation changes have representative workflow tests/manual gates authored or updated before code where feasible.
+- Compatibility-critical changes require observable happy-path proof with a representative legacy client first, followed by separate fresh-context workflow, negative, timing, and recovery test authoring.
 
 ## Output
 

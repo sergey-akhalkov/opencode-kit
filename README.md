@@ -8,7 +8,7 @@ Installable OpenCode development kit for reusable AI-assisted engineering workfl
 
 `opencode-dev-kit` packages reusable OpenCode skills, read-only reviewer agents with a scoped feedback-ledger write exception, bounded worker agents, project templates, instruction templates, and deterministic helper tools. Its purpose is to make work in other repositories faster, cheaper in tokens, and safer without creating a different workflow for every technology stack.
 
-The kit optimizes one process: gather evidence, prove current state, choose the smallest useful slice, work test-first when behavior changes, validate, run proportional reviewer gates, and hand off with residual risks.
+The kit optimizes one process: understand the original requirements, implement and observably prove the smallest complete happy path, use an independent fresh-context testing subagent to discover realistic production risks and author negative/end-to-end tests, harden failures, validate, review, and hand off residual risks.
 
 ## Universal Development Loop
 
@@ -61,7 +61,7 @@ Windows `setx` truncates user environment variables at 1024 characters. The inst
 
 On macOS/Linux, the default mode still prints the `export` line for transparency. If you want the installer to apply the change for you, run `npm run install:global -- --persist-script ~/.bashrc` (or `~/.zshrc`, `~/.profile`, …); the helper is idempotent and safe to re-run. The matching `--unset-script <file>` removes the line.
 
-Important: setting `OPENCODE_CONFIG_DIR` replaces OpenCode's entire global config directory. Anything currently in `~/.config/opencode` (other global agents, commands, skills, and `opencode.json`) stops loading. Put global provider/MCP/permission config in the local `global/opencode.json` (provisioned from the portable template) so the kit remains the complete global source of truth. If the previous copy-based installer left `~/.config/opencode/plugin/session-env.ts`, remove it after switching: it is still auto-discovered and would duplicate the plugin now loaded from `global/plugin/`.
+Important: setting `OPENCODE_CONFIG_DIR` replaces OpenCode's entire global config directory. Anything currently in `~/.config/opencode` (other global agents, commands, skills, plugins, and `opencode.json`) stops loading. Put global provider/MCP/permission config in the local `global/opencode.json` (provisioned from the portable template) so the kit remains the complete global source of truth.
 
 Keep project-specific skills out of `global/` unless their descriptions explicitly scope them to that project. Global skills are visible in unrelated repositories through the skill catalog, so broad or local-product triggers add avoidable routing noise.
 
@@ -71,17 +71,17 @@ The kit uses three OpenCode config files with a documented layering:
 
 - `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. Use it for repo-local MCPs (for example the bundled `headroom` MCP) and the workspace-wide `permission: ask` policy.
 - `global/opencode.json.template` — the portable safe default that ships with the kit. It declares compaction, watcher, tool output, and `permission: ask`. Never edit this file for machine-specific overrides.
-- `global/opencode.json` — the machine-local override (gitignored). Provisioned from `global/opencode.json.template` on first install; the installer writes `machineOverride: true` into the provisioned copy so the validator treats intentional local overrides as advisory rather than as warnings.
+- `global/opencode.json` — the machine-local config (gitignored). Provisioned from `global/opencode.json.template` on first install and editable for local provider, MCP, and permission settings.
 
-`machineOverride: true` is the contract that distinguishes "this is the kit's safe default" from "this developer explicitly accepted a permissive local rule". `npm run validate` shows overrides under `machineOverride: true` as `INFO:` notes; `npm run validate:strict` still passes. The same permission rules without the marker are emitted as `WARN:` and fail `validate:strict`.
+The validator identifies the machine-local layer by its gitignored `global/opencode.json` path and reports broad local permission overrides as `INFO:` notes. Never add unsupported marker fields to OpenCode config; every field must exist in the official OpenCode schema.
 
-For machine-specific provider paths (for example an absolute Windows path to a local MCP binary), use the `global/opencode.local.json` overlay pattern:
+For machine-specific provider paths (for example an absolute Windows path to a local MCP binary), edit the gitignored `global/opencode.json` directly. To keep a separate optional overlay, create a schema-valid file and load it explicitly through OpenCode's supported `OPENCODE_CONFIG` mechanism:
 
 1. Copy `global/opencode.local.json.example` to `global/opencode.local.json` (the overlay itself is gitignored).
-2. Add the machine-local provider, MCP, or permission rules to the overlay file.
-3. Keep the marker `machineOverride: true` on `global/opencode.json`; the validator treats the combined intent as an explicit local override.
+2. Add only official schema fields for machine-local provider, MCP, or permission rules.
+3. Set `OPENCODE_CONFIG` to that file when starting OpenCode; do not assume the overlay is auto-loaded.
 
-The overlay pattern is best-effort: if a future OpenCode version rejects the overlay, recreate it from the example and re-apply local edits.
+Validate any overlay against `https://opencode.ai/config.json` before loading it.
 
 ## Bootstrap A Project
 
@@ -180,7 +180,9 @@ npm run validate
 npm test
 ```
 
-The validator checks skill and agent frontmatter shape, skill trigger/output contracts, compact reviewer leaf contracts, README catalog/routing sync, repo/project-template autonomy and remote/destructive guards, TypeScript-only development policy, deterministic helper automation policy, reusable reviewer permission policy, OpenCode config warnings for broad mutation-capable wildcard `allow` permissions, optional project-neutral anchors passed via `--forbidden-anchor`, trailing whitespace, and warning-level TDD guard findings for Markdown artifacts with implementation-related language that do not mention test-first, TDD, before-code fixtures/gates, or equivalent validation-first language.
+The validator checks skill and agent frontmatter shape, skill trigger/output contracts, compact reviewer leaf contracts, README catalog/routing sync, repo/project-template autonomy and remote/destructive guards, TypeScript-only development policy, deterministic helper automation policy, reusable reviewer permission policy, OpenCode config warnings for broad mutation-capable wildcard `allow` permissions, optional project-neutral anchors passed via `--forbidden-anchor`, trailing whitespace, and warning-level workflow findings for implementation artifacts that omit observable happy-path proof and independent risk-driven testing.
+
+This repository validator is a policy and consistency gate, not a complete implementation of the OpenCode JSON Schema. Validate config fields against `https://opencode.ai/config.json` and confirm startup with the real OpenCode loader; repository validation must never invent fields to suppress its own diagnostics.
 
 For code maintainability reviews in this library, gather deterministic file-size/navigation bands with:
 
@@ -346,7 +348,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `performance-reliability-reviewer`: latency, throughput, starvation, overload, recovery evidence.
 - `deployment-config-reviewer`: config/deployment readiness and operational safety.
 - `protocol-api-reviewer`: framed/client API, schema evolution, correlation, reconnect.
-- `implementation-worker`: write-capable worker for one bounded non-overlapping implementation slice with scoped edits, TDD/test-first when behavior changes, focused validation, and report-only handoff.
+- `implementation-worker`: write-capable worker for one bounded non-overlapping production or test-only slice, with explicit role, scoped edits, happy-path evidence or fresh-context risk testing, focused validation, and report-only handoff.
 - `qwen-local-worker`: optional local Qwen3.6 first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks; requires a configured `qwen-local` OpenAI-compatible provider.
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
@@ -356,7 +358,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 Project plugin behavior:
 
-- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use, and automatically supplies `callerSessionId` to the `dream_team_review` MCP tool when OpenCode provides the current session id. `session-delivery-reviewer` uses normal OpenCode model selection. The plugin is auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; the implementation lives next to the plugin under `global/plugin/session-delivery-context/` and is reached via a static import, so the plugin does not need a `tools/` directory at runtime. A thin `tools/session-delivery-context.ts` CLI shim re-exports the same public API for tests and any future CLI consumer.
+- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. `global/plugin/dream-team-mcp-tool-context.ts` is the single owner of `dream_team_review` and `dream_team_implement` caller hierarchy validation, repo-path normalization, and review caller-session injection. Both plugins are auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; the delivery-context implementation lives beside `session-env.ts` and does not need a `tools/` directory at runtime.
 
 ## Instruction Templates
 
@@ -388,8 +390,8 @@ Overly narrow future-scope behavior that depended on one product domain was inte
 - For repetitive, evidence-heavy, or token-heavy workflows, consider a small deterministic helper before adding more prose process.
 - When several session-scoped follow-ups appear outside approved scope, prefer grouping them into OpenSpec changes when OpenSpec exists or is approved instead of leaving an untracked final-message backlog; avoid OpenSpec ceremony for isolated nits or one obvious next step.
 - Helper automation in skills or agents must be deterministic and contract-driven: explicit inputs/outputs, fixtures or schemas, stable ordering, privacy-safe output, and no hidden heuristics.
-- Implementation-capable artifacts should require TDD/test-first by default for behavior changes, or require an explicit infeasibility note plus the closest reproducible validation evidence.
-- Keep TDD proportional: require the smallest useful test/gate for the scoped behavior, not unrelated coverage expansion or speculative test suites.
+- Implementation-capable artifacts require observable proof of the smallest complete happy path before systematic test design, followed by independent fresh-context risk discovery and test authoring with production paths forbidden.
+- Test strategy targets realistic business and operational failures at real end-to-end boundaries; coverage metrics are diagnostic only, and justified mock exceptions must be explicit.
 - Reviewer agents should keep the compact `Leaf Contract`, ordered findings, residual risks, and `Actionable Continuation Items`; mutation-capable tools stay denied except scoped `docs/feedbacks/**` appends through `complain` and explicitly validated bounded worker exceptions such as `implementation-worker`.
 - Avoid hardcoded commands and paths. Use placeholders or say to use the repository's configured validation command.
 - If a target repository has stricter local instructions, local instructions win.

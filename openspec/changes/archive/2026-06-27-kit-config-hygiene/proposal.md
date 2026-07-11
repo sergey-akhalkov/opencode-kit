@@ -1,3 +1,5 @@
+> Superseded correction (2026-07-11): the archived local-override marker is not part of the official OpenCode schema and can prevent startup. Do not replay those tasks. Current behavior copies the schema-valid template unchanged, identifies the gitignored local layer by exact path, and rejects the unsupported field.
+
 ## Why
 
 The kit ships three overlapping configuration files (`opencode.json`, `global/opencode.json`, `global/opencode.json.template`) without a clear layering contract. `global/opencode.json` is gitignored but its committed working-tree copy contains a hardcoded absolute Windows path (`C:/Users/Sergey/.local/bin/codebase-memory-mcp.exe`) and `permission: allow`, both of which fail the kit's own `validate:strict` gate. `global/.gitignore` excludes `package.json` and `package-lock.json` even though those files exist in the directory. The installer `tools/install-opencode-global.ts` provisions `global/opencode.json` from the template on first run but does not mark user overrides so the validator cannot distinguish safe defaults from local UX overrides.

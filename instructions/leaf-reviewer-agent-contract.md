@@ -53,7 +53,7 @@ Each reusable reviewer body should include a compact `## Feedback Ledger` sectio
 - Assumptions must be labeled `assumption`.
 - If evidence is incomplete, lower confidence and say exactly what is missing.
 - Findings should separate the observed symptom from the likely root cause. Use `unknown` when evidence cannot support a cause, and recommend investigation or instrumentation instead of a guessed fix.
-- When implementation changes are in scope, report missing test-first/TDD evidence or an undocumented exception; do not infer chronology when evidence is unavailable.
+- When implementation changes are in scope, report missing original-requirement evidence, observable happy-path proof, independent testing-subagent evidence, realistic risk matrix, mock exceptions, or final negative/end-to-end validation; do not infer chronology when evidence is unavailable.
 - When repeated evidence gathering is the bottleneck, you may recommend deterministic helper automation as an `Actionable Continuation Item`, but reviewer agents do not write it.
 - Recommended helper automation must have explicit inputs/outputs, fixtures or schemas, stable ordering, privacy-safe output, and no hidden heuristics; do not recommend fuzzy scoring or model-like summarization as evidence.
 

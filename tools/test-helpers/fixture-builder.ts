@@ -92,11 +92,15 @@ export function newLibraryFixture(name: string, repoRoot: string): string {
       "2. Evidence",
       "3. Baseline Proof",
       "4. Small Slice",
-      "5. Test First",
-      "6. Focused Validation",
-      "7. Review Gate",
-      "8. Handoff",
-      "9. Process Improvement",
+      "5. Happy Path",
+      "6. Happy-Path Proof",
+      "7. Risk Discovery",
+      "8. Negative Tests",
+      "9. Harden",
+      "10. Review Gate",
+      "11. Final Validation",
+      "12. Handoff",
+      "13. Process Improvement",
       "",
     ]),
   );
@@ -107,8 +111,8 @@ export function newLibraryFixture(name: string, repoRoot: string): string {
       "",
       "## Universal Development Loop",
       "",
-      "- Use Intake, Evidence, Baseline Proof, Small Slice, Test First, Focused Validation, Review Gate, Handoff, and Process Improvement.",
-      "- For behavior changes, write tests before implementation.",
+      "- Follow `instructions/universal-development-loop.md` as the single canonical workflow.",
+      "- Implement and observably prove the smallest complete happy path, then use a separate fresh-context testing subagent for risk discovery, negative tests, and hardening.",
       "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
       "",
     ]),
@@ -119,7 +123,7 @@ export function newLibraryFixture(name: string, repoRoot: string): string {
   );
   writeText(
     path.join(dir, "templates", "project", "validation.md"),
-    lines(["# Project Validation", "", "- Tests before implementation when behavior changes.", ""]),
+    lines(["# Project Validation", "", "- Record observable happy-path proof, risk discovery, negative suites, hardening, and final validation.", ""]),
   );
   writeText(
     path.join(dir, "templates", "project", "adapter.json"),

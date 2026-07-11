@@ -23,8 +23,8 @@ Low confidence:
 - State whether important claims are confirmed, docs-only, assumption, or blocked.
 - Do not mark a task complete without evidence.
 - Do not claim production readiness without acceptance tests, validation output, benchmark/manual gates where relevant, and residual risk review.
-- For behavior-changing implementation, use test-first/TDD by default: add or update the focused failing, acceptance, or characterization test before code changes; if infeasible, state why and name the substitute evidence.
-- Keep test-first work proportional: stop at the smallest test/gate set that proves the scoped behavior unless risk evidence requires broader coverage.
+- For behavior-changing implementation, first prove the smallest complete happy path through observable execution, then delegate systematic risk discovery and all automated test authoring to a separate fresh-context testing subagent that did not author production code.
+- Optimize test scenarios for realistic business and operational failures, not coverage percentages. Prioritize real-boundary end-to-end evidence and document every material mock exception or unavailable dependency.
 - If validation cannot run, report `Validation skipped` with reason and risk.
 - For performance claims, include measurement, environment, profile, and before/after comparison when relevant.
 
@@ -41,10 +41,11 @@ Use this format for material findings:
 
 ## Validation Loop
 
-1. Reproduce or prove the current behavior where feasible.
-2. Add/update the focused failing, acceptance, or characterization test before changing behavior; if infeasible, record why and choose the closest reproducible evidence gate.
-3. Make the smallest correct change.
-4. Run targeted validation.
-5. Re-read changed ranges.
-6. Run broader validation when the change crosses module/API/deployment boundaries.
-7. Report results and residual risks.
+1. Read the original requirements and define the observable happy path, business invariants, boundaries, and acceptance evidence.
+2. Reproduce or prove current behavior where feasible.
+3. Make the smallest complete happy-path change.
+4. Prove the happy path through observable execution at the relevant boundary.
+5. Start a fresh-context testing subagent with test-only write scope to build the risk matrix and author realistic negative/end-to-end tests.
+6. Feed discovered failures into production hardening, then rerun the happy path and negative suites.
+7. Run broader validation when the change crosses module/API/deployment boundaries.
+8. Report happy-path evidence, testing agent/session, risk matrix, mock exceptions, failures found, validation, and residual risks.

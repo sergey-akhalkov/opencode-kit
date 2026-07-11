@@ -1,3 +1,5 @@
+> Superseded correction (2026-07-11): the archived local-override marker is not part of the official OpenCode schema and can prevent startup. This document is historical evidence only; current design uses exact-path local classification and rejects the unsupported field.
+
 ## Context
 
 The kit's opencode-config layout is the result of three independent decisions made at different times:

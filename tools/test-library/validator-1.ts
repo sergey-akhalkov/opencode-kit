@@ -40,13 +40,15 @@ export const validatorTests1: TestCase[] = [
         "2. `Evidence`: inspect source.",
         "3. `Baseline Proof`: reproduce or characterize current behavior before behavior changes when feasible.",
         "4. `Small Slice`: choose the smallest reviewable change that proves value.",
-        "5. `Test First`: add or update a focused failing, acceptance, or characterization test before behavior-changing implementation.",
-        "6. `Implement`: make the smallest correct change.",
-        "7. `Focused Validation`: run the nearest validation command first.",
-        "8. `Review Gate`: use relevant read-only reviewers only when risk justifies them.",
-        "9. `Final Validation`: broaden validation when boundaries are affected.",
-        "10. `Handoff`: report changed files.",
-        "11. `Process Improvement`: capture friction with `complain`.",
+        "5. `Happy Path`: implement the smallest complete production path.",
+        "6. `Happy-Path Proof`: demonstrate observable behavior at the relevant boundary.",
+        "7. `Risk Discovery`: use an independent fresh-context testing subagent.",
+        "8. `Negative Tests`: exercise realistic failure scenarios.",
+        "9. `Harden`: feed failures back into production fixes.",
+        "10. `Review Gate`: use relevant read-only reviewers only when risk justifies them.",
+        "11. `Final Validation`: broaden validation when boundaries are affected.",
+        "12. `Handoff`: report changed files and evidence.",
+        "13. `Process Improvement`: capture friction with `complain`.",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -63,7 +65,7 @@ export const validatorTests1: TestCase[] = [
         "",
         "## Universal Development Loop",
         "",
-        "Intake -> Evidence -> Baseline Proof -> Small Slice -> Test First -> Implement -> Focused Validation -> Review Gate -> Final Validation -> Handoff -> Process Improvement",
+        "Intake -> Evidence -> Baseline Proof -> Small Slice -> Happy Path -> Happy-Path Proof -> Risk Discovery -> Negative Tests -> Harden -> Review Gate -> Final Validation -> Handoff -> Process Improvement",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -126,7 +128,7 @@ export const validatorTests1: TestCase[] = [
       writeText(workerPath, fs.readFileSync(sourcePath, "utf8"));
       const readmePath = path.join(fixture, "README.md");
       const readme = fs.readFileSync(readmePath, "utf8");
-      writeText(readmePath, readme.replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `implementation-worker`: Bounded TDD/test-first implementation worker."));
+      writeText(readmePath, readme.replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `implementation-worker`: Bounded production or independent testing implementation worker."));
       const result = invokeValidator(fixture);
       assertFailure(result, "Implementation worker without base routing should fail validation.");
       assertOutputContains(result, "implementation-worker routing", "Routing failure should name implementation-worker routing.");
@@ -281,73 +283,6 @@ export const validatorTests1: TestCase[] = [
         "",
       ]));
       assertSuccess(invokeValidator(fixture), "Reviewer permissions should not require obsolete list permission.");
-    },
-  },
-  {
-    name: "validator accepts hidden Dream Team runtime agents outside reusable catalog",
-    run: () => {
-      const fixture = newLibraryFixture("hidden-dream-team-runtime-agent");
-      writeText(path.join(fixture, "global", "agents", "dream-team-reviewer.md"), lines([
-        "---",
-        "hidden: true",
-        "description: Runtime Dream Team reviewer fixture.",
-        "mode: subagent",
-        "permission:",
-        "  read: allow",
-        "  glob: allow",
-        "  grep: allow",
-        "  bash: deny",
-        "  edit:",
-        "    \"*\": deny",
-        "    \"docs/feedbacks/**\": allow",
-        "  task: deny",
-        "  question: deny",
-        "  skill:",
-        "    \"*\": deny",
-        "    complain: allow",
-        "  webfetch: deny",
-        "  websearch: deny",
-        "  todowrite: deny",
-        "  external_directory: deny",
-        "  lsp: deny",
-        "  doom_loop: deny",
-        "  dream_team_*: deny",
-        "---",
-        "",
-        "Runtime-only Dream Team reviewer fixture.",
-        "",
-      ]));
-
-      assertSuccess(
-        invokeValidator(fixture),
-        "Hidden dream-team runtime agents should not require reusable reviewer catalog/profile contracts.",
-      );
-    },
-  },
-  {
-    name: "validator rejects hidden Dream Team runtime agents without recursive tool deny",
-    run: () => {
-      const fixture = newLibraryFixture("hidden-dream-team-runtime-agent-missing-deny");
-      writeText(path.join(fixture, "global", "agents", "dream-team-reviewer.md"), lines([
-        "---",
-        "hidden: true",
-        "description: Runtime Dream Team reviewer fixture.",
-        "mode: subagent",
-        "permission:",
-        "  read: allow",
-        "---",
-        "",
-        "Runtime-only Dream Team reviewer fixture.",
-        "",
-      ]));
-
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Hidden dream-team runtime agents must deny recursive Dream Team tools.");
-      assertOutputContains(
-        result,
-        "must deny dream_team_* tools",
-        "Dream Team runtime-agent failure should name the recursive-tool deny contract.",
-      );
     },
   },
   {

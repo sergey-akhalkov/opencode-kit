@@ -1,6 +1,6 @@
 ---
 name: rust-workspace-bootstrap
-description: Bootstrap or reshape a Rust workspace with crate boundaries, TDD skeletons, tooling, CI-friendly validation, and minimal production-ready structure.
+description: Bootstrap or reshape a Rust workspace with crate boundaries, minimal happy-path skeletons, risk-driven tests, tooling, CI-friendly validation, and production-ready structure.
 license: MIT
 ---
 
@@ -11,8 +11,8 @@ Use this skill when creating a Rust workspace, adding crates, defining module bo
 ## Principles
 
 - Keep product crates in `crates/` and tooling/helper crates in `tools/` unless the repository uses another convention.
-- Start with a minimal compilable skeleton and tests that express the first contract.
-- For behavior-changing slices, add or update the smallest focused test/gate before implementation; if infeasible, state why and use the closest reproducible substitute evidence.
+- Start with a minimal compilable happy-path skeleton and prove it through observable execution at the relevant boundary.
+- After happy-path proof, use a separate fresh-context testing subagent to derive realistic Rust/runtime risks and author test-only negative or end-to-end evidence.
 - Prefer small cohesive crates over premature generic frameworks.
 - Make validation commands easy to run locally and in CI.
 - Avoid adding dependencies until there is a concrete need.
