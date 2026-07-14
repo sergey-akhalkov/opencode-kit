@@ -10,7 +10,6 @@
   },
   "quality": {
     "focusedValidationFirst": true,
-    "broadValidationBeforeHandoff": true,
-    "testFirstDefault": true
+    "broadValidationBeforeHandoff": true
   }
 }

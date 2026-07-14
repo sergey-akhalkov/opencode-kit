@@ -1,16 +1,21 @@
 # Project Agent Instructions
 
-This project follows the Universal Development Loop from `opencode-dev-kit`.
+This project follows the portable Change-Ready process for AI-assisted development.
 
-## Universal Development Loop
+## Runtime Authority
 
-Apply the process defined at `instructions/universal-development-loop.md` to every task, scaled to the size and risk of the change. Do not restate the step list in this file.
+- Shared runtime lifecycle authority lives in the active global OpenCode config: always-loaded `AGENTS.md` and the `change-ready-sdlc` skill. This project file supplies adapters, routing, and project constraints only; it cannot substitute missing global contracts.
+- Resolve the active global config directory to `OPENCODE_CONFIG_DIR` when set; otherwise use the host default global config directory. When `OPENCODE_CONFIG_DIR` is set, the default global directory is bypassed and not loaded.
+- Missing active global `AGENTS.md` or `change-ready-sdlc` blocks behavior-changing Change-Ready work. Do not invent a partial process or foreign stack default.
+- Apply the conceptual Universal Development Loop only as guidance consistent with the active global contracts; do not depend on a target-relative kit path for runtime authority.
 
 ## Project Adapter
 
-- Keep project-specific commands in `opencode-dev-kit/adapter.json` or this repository's documented validation section.
+- Keep project-specific commands in `opencode-dev-kit/adapter.json` and/or `opencode-dev-kit/validation.md`.
+- Either complete source is sufficient for doctor validation qualification: concrete `adapter.json` validation entries, or a complete `validation.md` Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build.
 - Technology choices change commands and constraints, not the development loop.
 - If validation commands are unknown, discover them from project files and report `unknown` rather than guessing.
+- `unknown`, blank, bare `N/A`, `TBD`/`TODO`, replace-me placeholders, or otherwise unresolved validation procedures must be discovered before qualification. An explicit reasoned `N/A` (`N/A - <reason>`, or validation.md Command `N/A` plus nonempty non-placeholder Notes) is a recorded decision, not unknown. Applicable unresolved or skipped validation keeps `Change-Ready: no`.
 
 ## Autonomy
 
@@ -21,19 +26,21 @@ Apply the process defined at `instructions/universal-development-loop.md` to eve
 
 ## Process Control
 
-- Keep clear small tasks direct and cheap.
-- Use `implementation-worker` for bounded edit-mode implementation slices when the work has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.
-- When delegating to `implementation-worker`, pass `Role` (`production` or `testing`), `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
-- Keep implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
+- Keep research, questions, ordinary review-only work, and proven-inert content direct and cheap in the main session.
+- For every behavior-changing production artifact, dispatch a discovered conforming production author. In this kit, `implementation-worker` is the optional default for production-only bounded slices with exact non-overlapping write scope, clear Acceptance Criteria, and a focused validation gate.
+- When delegating to `implementation-worker`, pass a complete Universal Task Briefing Contract production brief with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
+- After applicable proof, dispatch a fresh discovered conforming SDET session for test-only risk assessment and automated-test authorship; never assign testing ownership to a production author. In this kit, `sdet-quality-engineer` is the optional default SDET adapter only.
+- If the preferred production adapter is unavailable, use another conforming production author or block; never fall back to main-session production editing. Keep writers serial when scope is unclear, write targets overlap, or integration outweighs fan-out; serial does not authorize main production edits.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
-- Treat `session-delivery-reviewer` blocking output as binding: if it returns `Blocking for Acceptance: yes`, `Verdict: blocked`, any `P0 blocker`, or non-empty `Required Next Actions`, do not present the session as complete or ready-to-land. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
+- For Material work, always run the discovered conforming delivery/readiness gate (this kit's optional default is `session-delivery-reviewer`) with current requirements, candidate continuity, proof, SDET, validation, review, and residual-risk evidence; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.
+- Treat `session-delivery-reviewer` blocking output as binding for mandatory-gate or qualifying P0/P1 serious blockers: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, or non-empty `Required Next Actions` (restricted to those classes) keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and `Required Next Actions: none`. P2/note polish must not enter Required Next Actions; full anti-polishing detail lives in active global `change-ready-sdlc`. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
 
 ## Quality
 
 - Treat source, tests, schemas, scripts, generated artifacts, and live output as primary evidence.
 - Implement and observably prove the smallest complete happy path before systematic automated-test design.
-- Only a separate fresh-context testing subagent that did not author production code may create or modify automated test artifacts. It must derive a realistic risk matrix from the original requirements and prioritize end-to-end behavior at real system boundaries over coverage percentages.
+- Only a fresh discovered conforming SDET context that did not author production code may create or modify automated test artifacts after applicable proof. In this kit, `sdet-quality-engineer` is the optional default SDET adapter only. It must derive a realistic risk matrix from the original requirements and prioritize end-to-end behavior at real system boundaries over coverage percentages.
 - When Headroom MCP tools are available and a log, search result, JSON payload, validation output, or repeated tool output is likely to be reused and exceeds about 300 lines or 10 KB, call `headroom_compress`, keep the returned hash in working notes or final evidence when relevant, and call `headroom_retrieve` before exact claims.
 - Do not use Headroom MCP for small outputs, exact code under active edit, short errors already visible, or safety-critical details that must be quoted exactly.
 - Prefer deterministic helpers, validators, fixtures, or generated reports over repeated manual inspection.

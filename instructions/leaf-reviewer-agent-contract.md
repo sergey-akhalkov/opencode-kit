@@ -1,6 +1,23 @@
 # Leaf Reviewer Agent Contract
 
-Use this template for reusable read-only reviewer subagents with one scoped feedback-ledger write exception.
+This file is the repository **authoring and validation provenance** for reusable read-only reviewer
+subagents with one scoped feedback-ledger write exception. It is the canonical maintenance source for
+shared leaf-reviewer guidance. Runtime correctness MUST NOT depend on a target project reading this
+non-global path.
+
+## Reference-Based Authoring (normative for reusable bodies)
+
+Each reusable reviewer under `global/agents/*.md` MUST:
+
+1. Contain a `## Contract Reference` section whose sole path line names
+   `instructions/leaf-reviewer-agent-contract.md`.
+2. Contain role-specific runtime inputs, checks, verdict/output contract, and permissions.
+3. **NOT** inline the shared `## Leaf Contract`, `## Feedback Ledger`, or `## Prevention Feedback`
+   headings or bodies from this file.
+
+Shared runtime safety and feedback-ledger policy come from always-loaded `global/AGENTS.md` plus the
+role-specific agent body. This provenance file may retain the canonical shared text below for authors
+and validators; copy-paste of those three blocks into reusable reviewer bodies is forbidden.
 
 ## Frontmatter Skeleton
 
@@ -37,17 +54,26 @@ Every reusable leaf reviewer must set the top-level `dream_team_*: deny` permiss
 
 You are a read-only specialist reviewer. Your job is to find material risks in the scoped files/change and return evidence-backed findings to the main session. The only default write exception is appending feedback entries under `docs/feedbacks/**` through `complain`.
 
-## Leaf Contract Body
+## Shared Leaf Contract Text (maintenance only — do not inline)
 
-Each reusable reviewer body should include a compact `## Leaf Contract` section:
+Canonical compact leaf-contract text for maintenance and validation. Do **not** paste a `## Leaf Contract`
+section into a reusable reviewer body.
 
 `Read/search-only leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, dream_team_* tools, other skills, or nested agents. Stay in scope. Missing evidence -> exact main-session command/manual gate in Actionable Continuation Items; external domain -> Needs external reviewer: <agent-name> required|optional.`
 
-## Feedback Ledger Body
+At runtime this behavior is supplied by always-loaded global shared reviewer invariants and the
+role-specific agent body (for example a short `## Leaf Boundaries` section), not by inlining this block.
 
-Each reusable reviewer body should include a compact `## Feedback Ledger` section:
+## Shared Feedback Ledger Text (maintenance only — do not inline)
+
+Canonical compact feedback-ledger text for maintenance and validation. Do **not** paste a
+`## Feedback Ledger` section into a reusable reviewer body.
 
 `When current-session workflow friction appears, use complain and append a privacy-safe entry to docs/feedbacks/<agent-name>.md. Do not wait for proof that it repeats; write Recurrence: unknown when unsure. If feedback write is blocked by explicit mode or permission, return a Feedback Candidate.`
+
+At runtime this policy is supplied by always-loaded global Feedback Ledger instructions. Retain
+`docs/feedbacks/**` edit allow and `complain` skill allow in frontmatter; removing inline prose does not
+remove permission capability.
 
 ## Evidence Rules
 
@@ -66,9 +92,12 @@ Each reusable reviewer body should include a compact `## Feedback Ledger` sectio
 - `P1 material`: correctness, readiness, acceptance, compatibility, reliability, performance, or security risk.
 - `P2 minor`: clarity, coverage, maintainability, or tuning risk that is not blocking.
 
-## Prevention Feedback
+## Shared Prevention Feedback Text (maintenance only — do not inline)
 
-Reusable reviewer agents include an optional `Prevention Feedback` section. For each P0/P1 finding with non-`unknown` root cause, return:
+Canonical optional prevention-feedback guidance for maintenance and validation. Do **not** paste a
+`## Prevention Feedback` section into a reusable reviewer body.
+
+For each P0/P1 finding with non-`unknown` root cause, return:
 
 - `Severity`: P0 | P1.
 - `Recurrence Path`: existing instruction, skill, or agent that should have prevented recurrence, and why it missed.
@@ -78,6 +107,9 @@ Reusable reviewer agents include an optional `Prevention Feedback` section. For 
 - `Replay Evidence`: exact diff, fixture, command, or session context that should fail to reproduce after the rule is applied.
 
 For nit/P2 findings, return `Prevention Feedback: none` unless the main-session prompt explicitly asks.
+
+Role-specific output schemas may require prevention fields when the main session requests them; that is not
+a license to inline this shared section heading/body.
 
 ## Output Schema
 

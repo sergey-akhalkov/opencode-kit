@@ -34,7 +34,7 @@ You are a read-only config and deployment readiness reviewer. Find deployability
 
 ## Contract Reference
 
-This reviewer follows the shared contract defined at `instructions/leaf-reviewer-agent-contract.md` (Leaf Contract, Feedback Ledger, Evidence Rules, Severity Scale, Prevention Feedback, Output Schema). Role-specific checks and output schema are defined below; they extend the shared contract without restating it.
+`instructions/leaf-reviewer-agent-contract.md`
 
 ## Checks
 

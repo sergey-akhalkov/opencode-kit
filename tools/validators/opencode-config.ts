@@ -14,21 +14,74 @@ const mutationCapablePermissionKeys = new Set([
   "external_directory",
 ]);
 
+/**
+ * Stable pure inspection outcomes for OpenCode JSON/JSONC config text.
+ * No IO. Callers map codes to consumer-specific diagnostics.
+ */
+export type OpenCodeConfigInspection =
+  | { code: "parse_error"; detail: string }
+  | { code: "non_object_root"; detail: string }
+  | { code: "unsupported_machine_override"; detail: string; value: Record<string, unknown> }
+  | { code: "valid"; value: Record<string, unknown> };
+
+/** Platform-aware path equality for config directory / file comparisons. */
+export function sameConfigPath(left: string, right: string): boolean {
+  const resolvedLeft = path.resolve(left);
+  const resolvedRight = path.resolve(right);
+  return process.platform === "win32"
+    ? resolvedLeft.toLowerCase() === resolvedRight.toLowerCase()
+    : resolvedLeft === resolvedRight;
+}
+
+/**
+ * Pure JSONC root-shape and machineOverride policy for OpenCode config.
+ * Does not perform IO and does not validate permission policy.
+ */
+export function inspectOpenCodeConfigText(text: string): OpenCodeConfigInspection {
+  const errors: jsoncParse.ParseError[] = [];
+  let parsed: unknown;
+  try {
+    parsed = jsoncParse(text, errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { code: "parse_error", detail: message };
+  }
+  if (errors.length > 0) {
+    const message = errors.map((e) => `offset ${e.offset}: ${e.error}`).join("; ");
+    return { code: "parse_error", detail: message };
+  }
+  if (!isPlainRecord(parsed)) {
+    const kind =
+      parsed === null
+        ? "null"
+        : Array.isArray(parsed)
+          ? "array"
+          : typeof parsed;
+    return {
+      code: "non_object_root",
+      detail: `root must be a plain object (got ${kind})`,
+    };
+  }
+  if ("machineOverride" in parsed) {
+    return {
+      code: "unsupported_machine_override",
+      detail: "unsupported field 'machineOverride'",
+      value: parsed,
+    };
+  }
+  return { code: "valid", value: parsed };
+}
+
 function validateOpenCodePermissionRules(
   ctx: ValidationContext,
-  config: unknown,
+  config: Record<string, unknown>,
   file: string,
   root: string,
 ): void {
-  if (!isPlainRecord(config)) {
-    return;
-  }
-  if ("machineOverride" in config) {
-    ctx.addError(
-      `Unsupported OpenCode config field 'machineOverride' can prevent OpenCode startup; remove it: ${file}`,
-    );
-  }
-  const isMachineLocalConfig = samePath(file, path.join(root, "global", "opencode.json"));
+  const isMachineLocalConfig = sameConfigPath(file, path.join(root, "global", "opencode.json"));
   const notePermission = isMachineLocalConfig
     ? (message: string): void => {
         ctx.addInfo(message);
@@ -92,36 +145,35 @@ function validateOpenCodePermissionRules(
   }
 }
 
-function samePath(left: string, right: string): boolean {
-  const resolvedLeft = path.resolve(left);
-  const resolvedRight = path.resolve(right);
-  return process.platform === "win32"
-    ? resolvedLeft.toLowerCase() === resolvedRight.toLowerCase()
-    : resolvedLeft === resolvedRight;
-}
-
 export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string): void {
   for (const file of walkRepositoryFiles(root)) {
     if (path.basename(file) !== "opencode.json" && path.basename(file) !== "opencode.jsonc") {
       continue;
     }
-    let parsed: unknown;
+    let text: string;
     try {
-      const errors: jsoncParse.ParseError[] = [];
-      parsed = jsoncParse(readText(file), errors, {
-        allowTrailingComma: true,
-        disallowComments: false,
-      });
-      if (errors.length > 0) {
-        const message = errors.map((e) => `offset ${e.offset}: ${e.error}`).join("; ");
-        ctx.addError(`Invalid OpenCode config JSON: ${file}: ${message}`);
-        continue;
-      }
+      text = readText(file);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       ctx.addError(`Invalid OpenCode config JSON: ${file}: ${message}`);
       continue;
     }
-    validateOpenCodePermissionRules(ctx, parsed, file, root);
+    const inspection = inspectOpenCodeConfigText(text);
+    if (inspection.code === "parse_error") {
+      ctx.addError(`Invalid OpenCode config JSON: ${file}: ${inspection.detail}`);
+      continue;
+    }
+    if (inspection.code === "non_object_root") {
+      ctx.addError(`Invalid OpenCode config root: ${file}: ${inspection.detail}`);
+      continue;
+    }
+    if (inspection.code === "unsupported_machine_override") {
+      ctx.addError(
+        `Unsupported OpenCode config field 'machineOverride' can prevent OpenCode startup; remove it: ${file}`,
+      );
+      validateOpenCodePermissionRules(ctx, inspection.value, file, root);
+      continue;
+    }
+    validateOpenCodePermissionRules(ctx, inspection.value, file, root);
   }
 }

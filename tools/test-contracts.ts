@@ -11,9 +11,6 @@ import {
   PREVENTION_FEEDBACK_REVIEWER_FILES,
   REVIEWER_CONTRACT_REFERENCE_CONTRACTS,
   REVIEWER_CONTRACT_REFERENCE_TEXT,
-  SESSION_DELIVERY_BINDING_CONTRACT,
-  SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
-  SESSION_DELIVERY_BINDING_REQUIRED_TEXT,
   TEST_COVERAGE_REVIEWER_CONTRACT,
 } from "./contracts/reviewer-binding.ts";
 import {
@@ -50,6 +47,9 @@ import {
   SKILL_OUTPUT_CONTRACT_PATTERN,
   SKILL_TRIGGER_PATTERN,
 } from "./contracts/skills.ts";
+import { changeReadyContractTests } from "./test-contracts-change-ready.ts";
+import { identityRecipeContractTests } from "./test-contracts-change-ready-identity.ts";
+import { changeReadyDeliveryContractTests } from "./test-contracts-change-ready-delivery.ts";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -129,45 +129,7 @@ const EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES = [
 
 const EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT = [
   "## Contract Reference",
-  "instructions/leaf-reviewer-agent-contract.md",
-];
-
-const EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT = [
-  "Use after material or complex sessions",
-  "## Minimal Evidence Bundle",
-  "changed files or diffstat",
-  "reviewer findings/fixes",
-  "## Compaction Evidence Boundary",
-  "every explicit delivery-review request",
-  "Root causes must cite evidence; use `unknown`",
-  "requirementSignals[]",
-  "Root-session user messages, confirmed `requirementSignals[]`, and explicit `questionReplies[]` override supplied continuation summaries",
-  "openspec_all_changes",
-  "archive_when_complete",
-  "push_after_archive",
-  "blocker_escalation_gate",
-  "new_change_approval_required",
-  "push_all",
-  "Missing evidence for a confirmed signaled requirement is a P0 blocker",
-  "todos.ever[]",
-  "todos.unresolved[]",
-  "Changed-file scope",
-  "Current-slice framing",
-  "P0 blocker",
-  "observable happy-path proof",
-  "fresh-context testing subagent",
-  "Keep matrices terse",
-  "Required Next Actions",
-  "Actionable Continuation Items",
-];
-
-const EXPECTED_SESSION_DELIVERY_BINDING_HANDOFF_TOKENS = [
-  "Blocking for Acceptance: yes",
-  "Verdict: blocked",
-  "P0 blocker",
-  "Required Next Actions",
-  "do not present the session as complete",
-  "partial slice handoff must not end an unfinished root goal",
+  "`instructions/leaf-reviewer-agent-contract.md`",
 ];
 
 const EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT = [
@@ -176,11 +138,13 @@ const EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT = [
   "actual runtime envelope",
   "fresh-session behavior",
   "Task/Repro Coverage Matrix",
+  "After Applicable Proof",
+  "do not demand systematic tests before the production happy path and Applicable Proof",
 ];
 
 const EXPECTED_REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT = [
   "## Contract Reference",
-  "instructions/leaf-reviewer-agent-contract.md",
+  "`instructions/leaf-reviewer-agent-contract.md`",
   "`Findings`: ordered by severity",
   "`Residual Risks`",
   "Actionable Continuation Items",
@@ -214,39 +178,35 @@ const EXPECTED_IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS = [
 
 const EXPECTED_IMPLEMENTATION_WORKER_REQUIRED_TEXT = [
   "## Worker Contract",
-  "one bounded work slice",
-  "Role",
+  "one bounded production work slice",
+  "Universal Task Briefing Contract",
   "Write scope",
-  "Do not edit outside write scope",
+  "Do not edit outside the exact production write scope",
   "Do not ask the user questions",
   "No commits",
-  "observable proof",
-  "fresh-context",
-  "test artifacts",
-  "main-session validation gate",
+  "smallest complete happy path",
+  "Never create or modify automated tests",
+  "proof procedure",
+  "Blockers",
+  "Residual Risks",
   "## Feedback Ledger",
   "docs/feedbacks",
   "`complain`",
   "IMPLEMENTATION_WORKER_REPORT",
-  "Run:",
-  "Worker:",
 ];
 
 const EXPECTED_IMPLEMENTATION_WORKER_HANDOFF_FIELDS = [
-  "Mission",
-  "Role",
-  "Read scope",
-  "Write scope",
-  "Forbidden",
+  "Universal Task Briefing Contract",
+  "Acceptance Criteria",
   "Verification",
-  "acceptance criteria",
 ];
 
 const EXPECTED_IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT = [
   "implementation-worker",
+  "production-only",
   "non-overlapping write scope",
-  "clear acceptance criteria",
-  "focused validation gate",
+  "Universal Task Briefing Contract",
+  "sdet-quality-engineer",
 ];
 
 const EXPECTED_TROUBLESHOOTER_BASH_RULES = [
@@ -361,6 +321,7 @@ const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
   "Harden",
   "Review Gate",
   "Final Validation",
+  "Final Candidate Review",
   "Handoff",
   "Process Improvement",
 ];
@@ -380,7 +341,8 @@ const tests: TestCase[] = [
         "separate fresh-context testing subagent",
         "independent matrix of realistic",
         "Prioritize end-to-end tests",
-        "feed failures found by the testing subagent back into production fixes",
+        "feed qualifying failures (mandatory-gate or reproducible P0/P1 serious defects) found by the testing subagent back into production fixes",
+        "This mandatory gate is distinct from the optional domain Review Gate",
         "original requirements, happy-path proof, testing subagent/session, risk matrix",
       ]) {
         assert(workflow.includes(evidence), `Canonical workflow is missing required risk-driven evidence: ${evidence}`);
@@ -388,18 +350,104 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "contracts: independent testing role and handoff evidence remain explicit",
+    name: "contracts: portable bootstrap, discovery, and manual rollback surfaces remain honest",
+    run: () => {
+      const projectTemplate = fs.readFileSync(path.join(root, "templates", "project", "AGENTS.md"), "utf8");
+      for (const token of [
+        "active global OpenCode config",
+        "Missing active global `AGENTS.md` or `change-ready-sdlc` blocks",
+        "fresh discovered conforming SDET session",
+        "`sdet-quality-engineer` is the optional default SDET adapter only",
+        "unresolved validation procedures must be discovered before qualification",
+        "Applicable unresolved or skipped validation keeps `Change-Ready: no`",
+      ]) {
+        assert(projectTemplate.includes(token), `Project template missing self-contained bootstrap oracle: ${token}`);
+      }
+      assert(!projectTemplate.includes("Follow `instructions/universal-development-loop.md`"), "Project template must not require a target-relative UDL file.");
+      assert(!projectTemplate.includes("fresh `sdet-quality-engineer`"), "Project template must discover a conforming SDET rather than require the kit-named adapter.");
+
+      const delivery = fs.readFileSync(path.join(root, "global", "agents", "session-delivery-reviewer.md"), "utf8");
+      const description = delivery.split(/\r?\n/).find((line) => line.startsWith("description:")) ?? "";
+      assert(description.includes("Use always for Portable Material sessions"), "Delivery reviewer description must make Material discovery unconditional.");
+      assert(description.includes("Portable Small sessions when project policy, risk, owner, or an explicit delivery-review request requires it"), "Delivery reviewer description must keep Small discovery conditional.");
+
+      const globalAgents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      for (const token of [
+        "If optional tooling or evidence helpers required by a skill are unavailable",
+        "Absence of a mandatory Change-Ready capability or gate follows the canonical `change-ready-sdlc` skill and blocks qualification",
+        "do not weaken mandatory gates with a generic unavailable-tool fallback",
+      ]) {
+        assert(globalAgents.includes(token), `Unavailable-tool carve-out missing mandatory-capability oracle: ${token}`);
+      }
+
+      const porting = fs.readFileSync(path.join(root, "instructions", "porting-checklist.md"), "utf8");
+      assert(porting.includes("exactly one standalone `## Contract Reference` section whose sole path line is `` `instructions/leaf-reviewer-agent-contract.md` ``"), "Porting checklist must require the exact standalone Contract Reference.");
+      assert(porting.includes("plus role-specific body content"), "Porting checklist must preserve the reviewer role body.");
+      assert(porting.includes("MUST NOT inline shared `## Leaf Contract`, `## Feedback Ledger`, or `## Prevention Feedback`"), "Porting checklist must forbid copied shared sections.");
+      assert(!/^## (?:Feedback Ledger|Prevention Feedback)$/m.test(porting), "Porting checklist must not inline shared Feedback/Prevention sections itself.");
+
+      const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
+      for (const token of [
+        "record the exact prior `OPENCODE_CONFIG_DIR` state",
+        "record the exact prior value",
+        "installer does **not** persist prior state automatically",
+        "Restore the exact prior `OPENCODE_CONFIG_DIR` value",
+        "If the prior state was unset",
+        "Restart or reload OpenCode",
+        "Restore any backups created for pre-existing files",
+        "Remove only files proven created by that bootstrap run",
+        "Doctor is a structural diagnostic, not full lifecycle readiness certification",
+        "Report version 2 separates structural severity",
+        "`qualificationStatus: pass|blocked` and per-check `blocksQualification`",
+        "Only `qualificationStatus: blocked` / checks with `blocksQualification: true` block Change-Ready qualification",
+        "Advisory warnings alone",
+        "Missing project bootstrap/AGENTS, neither validation adapter source complete",
+      ]) {
+        assert(readme.includes(token), `README missing manual activation/bootstrap rollback honesty: ${token}`);
+      }
+    },
+  },
+  {
+    name: "contracts: production and SDET roles remain mutually exclusive",
     run: () => {
       const worker = fs.readFileSync(path.join(root, "global", "agents", "implementation-worker.md"), "utf8");
+      const sdet = fs.readFileSync(path.join(root, "global", "agents", "sdet-quality-engineer.md"), "utf8");
       for (const evidence of [
-        "`Role` (`production` or `testing`)",
-        "fresh-context new session that did not author production code",
-        "Write only test artifacts",
-        "independently derive a realistic risk matrix",
-        "never edit production paths",
-        "risk matrix, real boundaries, and mock exceptions",
+        "Production-only",
+        "Never create or modify automated tests",
+        "smallest complete happy path",
+        "proof procedure",
       ]) {
-        assert(worker.includes(evidence), `Implementation worker is missing independent-testing evidence: ${evidence}`);
+        assert(worker.includes(evidence), `Implementation worker is missing production-only evidence: ${evidence}`);
+      }
+      for (const evidence of [
+        "fresh context",
+        "test-only write scope",
+        "risk/oracle matrix",
+        "Prefer real boundaries",
+        "Never fix production",
+      ]) {
+        assert(sdet.includes(evidence), `SDET quality engineer is missing test-only evidence: ${evidence}`);
+      }
+    },
+  },
+  {
+    name: "contracts: implementation worker keeps owner-approved local model adapter",
+    run: () => {
+      const worker = fs.readFileSync(path.join(root, "global", "agents", "implementation-worker.md"), "utf8");
+      assert(/^model: xai\/grok-4\.5$/m.test(worker), "Implementation worker source must retain model: xai/grok-4.5 for this local adapter.");
+      assert(/^variant: high$/m.test(worker), "Implementation worker source must retain variant: high for this local adapter.");
+    },
+  },
+  {
+    name: "contracts: SDET co-located safety requires exact content blocks and unsafe attribution blocking",
+    run: () => {
+      const sdet = fs.readFileSync(path.join(root, "global", "agents", "sdet-quality-engineer.md"), "utf8");
+      for (const evidence of [
+        "For co-located tests, require exact content blocks that prevent production edits.",
+        "If attribution is unsafe, return `Action: blocked`.",
+      ]) {
+        assert(sdet.includes(evidence), `SDET co-located safety contract missing exact evidence: ${evidence}`);
       }
     },
   },
@@ -424,32 +472,6 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "contracts: session-delivery reviewer binding required text is byte-equal",
-    run: () => {
-      assertDeepEqual(
-        [...SESSION_DELIVERY_BINDING_REQUIRED_TEXT],
-        EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT,
-        "SESSION_DELIVERY_BINDING_REQUIRED_TEXT drifted from the inline list it replaced.",
-      );
-      assertEqual(SESSION_DELIVERY_BINDING_CONTRACT.fileName, "session-delivery-reviewer.md", "Binding contract filename drifted.");
-      assertDeepEqual(
-        SESSION_DELIVERY_BINDING_CONTRACT.requiredText,
-        EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT,
-        "Binding contract requiredText drifted.",
-      );
-    },
-  },
-  {
-    name: "contracts: session-delivery binding handoff tokens are byte-equal",
-    run: () => {
-      assertDeepEqual(
-        [...SESSION_DELIVERY_BINDING_HANDOFF_TOKENS],
-        EXPECTED_SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
-        "SESSION_DELIVERY_BINDING_HANDOFF_TOKENS drifted from the inline list it replaced.",
-      );
-    },
-  },
-  {
     name: "contracts: test-coverage reviewer contract is byte-equal",
     run: () => {
       assertEqual(TEST_COVERAGE_REVIEWER_CONTRACT.fileName, "test-coverage-reviewer.md", "Test-coverage contract filename drifted.");
@@ -458,6 +480,15 @@ const tests: TestCase[] = [
         EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT,
         "Test-coverage contract requiredText drifted.",
       );
+      for (const required of [
+        "After Applicable Proof",
+        "do not demand systematic tests before the production happy path and Applicable Proof",
+      ]) {
+        assert(
+          TEST_COVERAGE_REVIEWER_CONTRACT.requiredText.includes(required),
+          `Test-coverage contract must preserve proof-before-SDET ordering: ${required}`,
+        );
+      }
     },
   },
   {
@@ -549,6 +580,9 @@ const tests: TestCase[] = [
       );
     },
   },
+  ...changeReadyContractTests,
+  ...identityRecipeContractTests,
+  ...changeReadyDeliveryContractTests,
   {
     name: "contracts: troubleshooter file, denied keys, and required text are byte-equal",
     run: () => {
@@ -674,15 +708,10 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "contracts: implementation-worker bash rules preserve focused validation gates",
+    name: "contracts: implementation-worker bash rules preserve production-author no-shell policy",
     run: () => {
-      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.*"), "deny", "Implementation worker bash wildcard deny drifted.");
-      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.git status*"), "allow", "git status allow drifted.");
-      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.git diff*"), "allow", "git diff allow drifted.");
-      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.npm test*"), "allow", "npm test allow drifted.");
-      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.npm run test*"), "allow", "npm run test allow drifted.");
-      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.npm run validate*"), "allow", "npm run validate allow drifted.");
-      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash.node tools/test-*.ts"), "allow", "node tools/test allow drifted.");
+      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.get("permission.bash"), "deny", "Implementation worker scalar bash deny drifted.");
+      assertEqual(ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES.size, 1, "Implementation worker must not retain command-specific bash allowances.");
     },
   },
   {
@@ -693,6 +722,19 @@ const tests: TestCase[] = [
       assertEqual(SKILL_DESCRIPTION_MAX_CHARS, 1024, "SKILL_DESCRIPTION_MAX_CHARS drifted.");
       assert(SKILL_TRIGGER_PATTERN.test("Use this skill to validate."), "Skill trigger pattern should match.");
       assert(SKILL_OUTPUT_CONTRACT_PATTERN.test("## Output"), "Skill output contract should match leading heading.");
+    },
+  },
+  {
+    name: "contracts: canonical library fixture helper remains unique",
+    run: () => {
+      assert(
+        fs.existsSync(path.join(root, "tools", "test-helpers", "library.ts")),
+        "Canonical tools/test-helpers/library.ts fixture helper must remain present.",
+      );
+      assert(
+        !fs.existsSync(path.join(root, "tools", "test-helpers", "fixture-builder.ts")),
+        "Drifted duplicate fixture-builder.ts must remain deleted.",
+      );
     },
   },
   {
@@ -709,16 +751,9 @@ const tests: TestCase[] = [
     run: () => {
       const result = invokeProcessCapture("node", ["tools/validate-library.ts"], root);
       assertSuccess(result, "Validator should still pass against the real repository after contract extraction.");
-      if (!result.output.includes("warnings=0")) {
-        throw new Error(`Validator output should report zero warnings after refactor.\nOutput:\n${result.output}`);
+      if (!result.output.includes("OK:")) {
+        throw new Error(`Validator output should retain its machine-readable success summary.\nOutput:\n${result.output}`);
       }
-    },
-  },
-  {
-    name: "contracts: validator strict mode still passes on real repo after refactor",
-    run: () => {
-      const result = invokeProcessCapture("node", ["tools/validate-library.ts", "--fail-on-warnings"], root);
-      assertSuccess(result, "Validator strict mode should still pass against the real repository after contract extraction.");
     },
   },
 ];

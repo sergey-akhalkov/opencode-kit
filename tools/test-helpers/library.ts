@@ -5,6 +5,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import crypto from "node:crypto";
 
+import { MATERIAL_DELIVERY_ROUTING_TOKENS } from "../contracts/reviewer-binding.ts";
+
 export type ProcessResult = {
   exitCode: number;
   output: string;
@@ -49,6 +51,16 @@ export function appendReadmeAgentCatalogEntry(fixture: string, entry: string): v
     throw new Error(`Fixture README missing agent catalog marker: ${marker}`);
   }
   writeText(readmePath, readmeText.replace(marker, `${marker}\n${entry}`));
+}
+
+export function addRegisteredReviewerFixture(fixture: string, reviewer: "code-quality-reviewer"): string {
+  const reviewerPath = path.join(fixture, "global", "agents", `${reviewer}.md`);
+  writeText(reviewerPath, fs.readFileSync(path.join(helperRoot, "global", "agents", `${reviewer}.md`), "utf8"));
+  const profilePath = path.join(fixture, "profiles", "all.json");
+  const profile = fs.readFileSync(profilePath, "utf8");
+  writeText(profilePath, profile.replace('"demo-reviewer"]', `"demo-reviewer", "${reviewer}"]`));
+  appendReadmeAgentCatalogEntry(fixture, `- \`${reviewer}\`: Registered reviewer fixture.`);
+  return reviewerPath;
 }
 
 export function newLibraryFixture(name: string): string {
@@ -101,7 +113,7 @@ export function newLibraryFixture(name: string): string {
     "",
     "## Contract Reference",
     "",
-    "This reviewer follows the shared contract defined at `instructions/leaf-reviewer-agent-contract.md` (Leaf Contract, Feedback Ledger, Evidence Rules, Severity Scale, Prevention Feedback, Output Schema).",
+    "`instructions/leaf-reviewer-agent-contract.md`",
     "",
     "## Output",
     "",
@@ -129,8 +141,9 @@ export function newLibraryFixture(name: string): string {
     "9. Harden",
     "10. Review Gate",
     "11. Final Validation",
-    "12. Handoff",
-    "13. Process Improvement",
+    "12. Final Candidate Review",
+    "13. Handoff",
+    "14. Process Improvement",
     "",
   ]));
   writeText(path.join(dir, "templates", "project", "AGENTS.md"), lines([
@@ -138,7 +151,7 @@ export function newLibraryFixture(name: string): string {
     "",
     "## Universal Development Loop",
     "",
-    "- Follow `instructions/universal-development-loop.md` as the single canonical workflow.",
+    "- Shared runtime lifecycle authority comes from active global `AGENTS.md` and `change-ready-sdlc`; the Universal Development Loop is conceptual guidance, not a target-relative runtime dependency.",
     "- Implement and observably prove the smallest complete happy path, then use a separate fresh-context testing subagent for risk discovery, negative tests, and hardening.",
     "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
     "",
@@ -377,6 +390,34 @@ export function assert(condition: boolean, message: string): void {
   }
 }
 
+export function sectionBetween(text: string, start: string, end: string): string {
+  const startIndex = text.indexOf(start);
+  assert(startIndex >= 0, `Missing section start: ${start}`);
+  const endIndex = text.indexOf(end, startIndex + start.length);
+  assert(endIndex >= 0, `Missing section end after ${start}: ${end}`);
+  return text.slice(startIndex, endIndex);
+}
+
+/** Locate an exact ordered task item while allowing only its three OpenSpec checkbox states. */
+export function taskSectionBetween(text: string, startTaskText: string, endTaskText: string): string {
+  const locate = (taskText: string): number => {
+    const id = /^(\d+\.\d+)\b/.exec(taskText)?.[1];
+    assert(id != null, `Task lookup requires a leading numeric task ID: ${taskText}`);
+    const matches = [...text.matchAll(/^- \[([^\]\r\n]*)\] (.*)$/gm)]
+      .filter((match) => match[2] === id || match[2]!.startsWith(`${id} `));
+    assert(matches.length === 1, `Expected exactly one task item for ${id}; found ${matches.length}.`);
+    const match = matches[0]!;
+    assert(match[1] === " " || match[1] === "x" || match[1] === "X", `Task ${id} has unsupported marker [${match[1]}].`);
+    const item = match[2]!;
+    assert(item === taskText || item.startsWith(`${taskText} `), `Task ${id} wording drifted; expected prefix: ${taskText}`);
+    return match.index!;
+  };
+  const startIndex = locate(startTaskText);
+  const endIndex = locate(endTaskText);
+  assert(startIndex < endIndex, `Task order drifted: ${startTaskText} must precede ${endTaskText}.`);
+  return text.slice(startIndex, endIndex);
+}
+
 export function isNodeError(error: unknown): error is NodeJS.ErrnoException {
   return error instanceof Error && "code" in error;
 }
@@ -448,26 +489,32 @@ export function addImplementationWorkerFixture(fixture: string): string {
   const agents = fs.readFileSync(agentsPath, "utf8");
   writeText(agentsPath, agents.replace(
     "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.",
-    "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.\n- Use `implementation-worker` for bounded edit-mode implementation slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.\n- When delegating to `implementation-worker`, pass `Role`, `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.",
+    "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.\n- Use `implementation-worker` only for production-only bounded implementation slices with exact non-overlapping write scope and the complete Universal Task Briefing Contract; post-proof automated-test evidence routes to `sdet-quality-engineer`.\n- When delegating to `implementation-worker`, include Acceptance Criteria and Verification in the Universal Task Briefing Contract.",
   ));
 
   const templatePath = path.join(fixture, "templates", "project", "AGENTS.md");
   const template = fs.readFileSync(templatePath, "utf8");
-  writeText(templatePath, `${template}- Use \`implementation-worker\` for bounded edit-mode implementation slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.\n- When delegating to \`implementation-worker\`, pass \`Role\`, \`Mission\`, \`Read scope\`, \`Write scope\`, \`Forbidden\`, \`Verification\`, and acceptance criteria.\n`);
+  writeText(templatePath, `${template}- Use \`implementation-worker\` only for production-only bounded implementation slices with exact non-overlapping write scope and the complete Universal Task Briefing Contract; post-proof automated-test evidence routes to \`sdet-quality-engineer\`.\n- When delegating to \`implementation-worker\`, include Acceptance Criteria and Verification in the Universal Task Briefing Contract.\n`);
 
   const readmePath = path.join(fixture, "README.md");
   const readme = fs.readFileSync(readmePath, "utf8");
-  writeText(readmePath, readme.replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `implementation-worker`: Bounded production or independent testing implementation worker."));
+  writeText(readmePath, readme.replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `implementation-worker`: Bounded production-only implementation worker."));
   return workerPath;
 }
 
-export const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding: if it returns `Blocking for Acceptance: yes`, `Verdict: blocked`, any `P0 blocker`, or non-empty `Required Next Actions`, do not present the session as complete or ready-to-land. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
+export const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, any qualifying P0/P1 serious blocker, or non-empty `Required Next Actions` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and `Required Next Actions: none`. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
+const materialDeliveryRoutingFixtureText = MATERIAL_DELIVERY_ROUTING_TOKENS.join("; ");
 export const sessionDeliveryBindingTokens = [
+  "Change-Ready: no",
+  "Verdict: material deviations",
+  "Verdict: not enough evidence",
   "Blocking for Acceptance: yes",
   "Verdict: blocked",
-  "P0 blocker",
+  "qualifying P0/P1 serious blocker",
   "Required Next Actions",
   "do not present the session as complete",
+  "Blocking for Acceptance: no",
+  "Required Next Actions: none",
   "partial slice handoff must not end an unfinished root goal",
 ];
 
@@ -480,7 +527,7 @@ export function addSessionDeliveryBindingFixture(fixture: string): void {
 
   for (const relative of ["REPO_AGENTS.md", path.join("instructions", "universal-development-loop.md"), path.join("templates", "project", "AGENTS.md")]) {
     const file = path.join(fixture, relative);
-    writeText(file, `${fs.readFileSync(file, "utf8")}\n${sessionDeliveryBindingText}\n`);
+    writeText(file, `${fs.readFileSync(file, "utf8")}\n${sessionDeliveryBindingText}\n${materialDeliveryRoutingFixtureText}\n`);
   }
 }
 

@@ -1,5 +1,11 @@
 import path from "node:path";
 import {
+  CHANGE_READY_SDLC_CONTINUATION_TOKENS,
+  CHANGE_READY_SDLC_DESCRIPTION_TERMS,
+  CHANGE_READY_SDLC_FORBIDDEN_TOKENS,
+  CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
+  CHANGE_READY_SDLC_SKILL_NAME,
+  CHANGE_READY_SDLC_SKILL_RELATIVE_PATH,
   SKILL_DESCRIPTION_MAX_CHARS,
   SKILL_NAME_PATTERN,
   SKILL_OUTPUT_CONTRACT_PATTERN,
@@ -17,8 +23,59 @@ import {
   listDirectories,
   readText,
   requireTextContains,
+  toPosixPath,
 } from "./context.ts";
 import { getFrontmatterMap } from "./frontmatter.ts";
+
+function validateChangeReadySdlcSkill(
+  ctx: ValidationContext,
+  root: string,
+  file: string,
+  text: string,
+  description: string | null,
+): void {
+  const relative = toPosixPath(path.relative(root, file));
+  if (relative !== CHANGE_READY_SDLC_SKILL_RELATIVE_PATH) {
+    ctx.addError(
+      `change-ready-sdlc skill path mismatch: expected ${CHANGE_READY_SDLC_SKILL_RELATIVE_PATH}, got ${relative}`,
+    );
+  }
+
+  if (description) {
+    for (const term of CHANGE_READY_SDLC_DESCRIPTION_TERMS) {
+      if (!description.includes(term)) {
+        ctx.addError(
+          `change-ready-sdlc description missing discovery term '${term}': ${file}`,
+        );
+      }
+    }
+  }
+
+  for (const marker of CHANGE_READY_SDLC_LIFECYCLE_MARKERS) {
+    if (!text.includes(marker)) {
+      ctx.addError(
+        `change-ready-sdlc missing lifecycle marker '${marker}': ${file}`,
+      );
+    }
+  }
+
+  for (const token of CHANGE_READY_SDLC_CONTINUATION_TOKENS) {
+    if (!text.includes(token)) {
+      ctx.addError(
+        `change-ready-sdlc missing continuation token '${token}': ${file}`,
+      );
+    }
+  }
+
+  const lowerText = text.toLowerCase();
+  for (const token of CHANGE_READY_SDLC_FORBIDDEN_TOKENS) {
+    if (lowerText.includes(token.toLowerCase())) {
+      ctx.addError(
+        `change-ready-sdlc forbidden portable-hardcode token '${token}': ${file}`,
+      );
+    }
+  }
+}
 
 export function validateSkills(ctx: ValidationContext, root: string): string[] {
   const skillsDir = path.join(root, "global", "skills");
@@ -58,6 +115,10 @@ export function validateSkills(ctx: ValidationContext, root: string): string[] {
     }
     if (!SKILL_OUTPUT_CONTRACT_PATTERN.test(text)) {
       ctx.addError(`Skill must define an output or ledger contract: ${file}`);
+    }
+
+    if (folderName === CHANGE_READY_SDLC_SKILL_NAME) {
+      validateChangeReadySdlcSkill(ctx, root, file, text, description);
     }
   }
 

@@ -1,5 +1,29 @@
 # OpenCode Global Instructions
 
+## Change-Ready SDLC Routing
+
+Mandatory pre-mutation overlay for the active primary user-session agent (never a nested general-purpose subagent):
+
+- Before the first mutation of any behavior-changing implementation, bug fix, refactor, loaded instruction/configuration change, generated-output change, or explicit Change-Ready request, load the `change-ready-sdlc` skill. Explicit Change-Ready overrides ordinary review-only exclusion.
+- If the skill is unavailable or cannot be loaded, block behavior-changing mutation; do not invent a partial process or foreign stack default.
+- Before any behavior-changing candidate mutation, record the exact `Small` or `Material` classification, a complete cold-context Authoritative Brief from the Universal Task Briefing Contract, and project-adapter discovery. That record is required before candidate mutation itself, not only before specialist dispatch.
+- Remain the sole orchestrator: own state, serial writers unless scopes are proven isolated or non-overlapping, integration, applicable proof, candidate capture/freeze/recapture, authorized validation, owner routing, final review dispatch, local handoff, and the binary Change-Ready decision.
+- For behavior-changing candidate production artifacts, dispatch the configured production author; do not use direct edit/write tools as the production author. The same ban covers automated test authorship by the main session. Main still owns planning notes, integration, validation orchestration, local handoff text, and OpenSpec/task checkbox updates when those edits are not candidate production or test content.
+- Specialists return report-only handoffs. They do not ask the user, claim lifecycle completion, expand validation authority, or perform external operations without separate explicit authority.
+- Before first candidate mutation, record accepted acceptance criteria, project-specific scope lock, planned gate waves, correction budget, and stop line in the Authoritative Brief. After first mutation, new blocking corrections or acceptance criteria require explicit owner approval or a reproducible P0/P1 defect affecting behavior, CI, security, data integrity, or compatibility. Mandatory-gate failures, unsafe writer ownership/liveness, and unresolved owner decisions still block Change-Ready without expanding speculative product or evidence scope.
+- Keep `Required Next Actions` binding, but only for mandatory-gate or qualifying P0/P1 serious blockers. Route P2/note, coverage-only gaps, optional evidence, and wording polish to Residual Risks or a separately approved follow-up—never into blocking Required Next Actions or autonomous evidence-polish replay.
+- Plan one SDET wave, one Final Candidate Review wave, and for Material one delivery/readiness wave; replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate. Use representative high-impact evals, not exhaustive Cartesian products, unless risk, regulation, or owner requires more. Full anti-polishing detail lives only in `change-ready-sdlc`.
+- Full lifecycle detail lives only in `change-ready-sdlc`. Do not restate the complete process here.
+
+## Shared Reviewer Runtime Invariants
+
+Always-loaded reviewer safety for leaf specialist reviewers (role agents may tighten further):
+
+- Read-only leaf except scoped feedback-ledger appends under `docs/feedbacks/**` through `complain` when permission allows.
+- No user questions, nested orchestration, source/config/test/instruction mutation, commits, remote/destructive actions, or lifecycle completion claims.
+- Findings must be evidence-backed with severity, impact, and confidence; missing evidence becomes exact main-session gates or blockers, not guesses.
+- Report only to the active primary orchestrator: verdict/status, findings, residual risks, and actionable continuation items. Never self-approve readiness.
+
 ## Core Golden Rules
 
 - Bias toward caution over speed on non-trivial work. For trivial, obvious one-liners, use judgment and avoid unnecessary ceremony.
@@ -9,7 +33,7 @@
 - Complexity escalation requires consultation: when a proposed solution needs multiple new coordination, recovery, compatibility, or policy mechanisms, stop before implementation and present the user with the simpler process or architecture alternatives. Do not silently accept a complex design merely because an existing spec proposes it.
 - Reuse before building: prefer existing platform, framework, and repository capabilities over new entities, state stores, workflow layers, adapters, or abstractions. Add complexity only when a concrete requirement cannot be met more simply, and record that justification where the design decision is made.
 - Surgical changes: touch only what directly traces to the user request. Do not refactor, reformat, rename, reorder, or "improve" adjacent code unless required for the task; clean up only unused code created by your own change.
-- Goal-driven execution: turn tasks into verifiable success criteria, then loop until those criteria are met or a real blocker remains. Prefer `requirements -> reproduce -> minimal fix -> happy-path proof -> risk discovery -> regression and negative-scenario tests -> hardening -> final validation` for bugs and `requirements -> minimal implementation -> happy-path proof -> risk discovery -> negative-scenario tests -> hardening -> final validation` for behavior changes.
+- Goal-driven execution: turn tasks into verifiable success criteria, then loop until those criteria are met or a real blocker remains. For behavior-changing work, load `change-ready-sdlc` before mutation and follow that skill's profile, proof, fresh SDET, validation, correction replay, final review, and Change-Ready gates.
 
 ## Evidence And Uncertainty
 
@@ -90,14 +114,79 @@
 - For validation output, report summaries and failures first; read full saved tool output only when the preview lacks the cause.
 - Preserve exact code, commands, paths, errors, protocol terms, and safety warnings; do not compress away meaning.
 
+## Universal Task Briefing Contract
+
+This contract applies without exception whenever any agent assigns, delegates, transfers, or restarts work for another agent. It covers main agents, subagents, implementers, testing agents, reviewers, explorers, general-purpose agents, dream-team workers, nested delegations, resumed sessions, and post-compaction handoffs. The assigning agent owns task clarity; the receiving agent must not be expected to reconstruct requirements, discover unstated intent, or repeat analysis already available to the assigner.
+
+- Before dispatch, do enough bounded analysis to turn the request into an execution-ready brief. Do not delegate a raw user message when repository evidence, constraints, or unresolved interpretations materially affect execution.
+- Write every brief so a capable agent with no prior conversation can execute it correctly. Include all relevant facts from the conversation and workspace; never rely on hidden session context, implied knowledge, or references such as "the issue above", "as discussed", or "fix it".
+- Within `Current State and Evidence`, separately label observed facts, assumptions, hypotheses, and recommendations when present; keep decisions under `Resolved Decisions and Rationale`. Cite paths, symbols, requirements, logs, commands, or other evidence for implementation-sensitive claims. Never present an inference as a decided requirement.
+- Resolve decisions before delegation whenever evidence or a safe reversible default permits. If a decision is genuinely user-owned, do not pass it to an executor to guess: keep the dependent work blocked, ask the user through the main session, and identify the exact decision and consequence.
+- Translate the goal into observable required behavior and binary acceptance criteria. Every criterion must be independently checkable and traceable to a stated requirement, invariant, risk, or deliverable.
+- Scope must be explicit. Name allowed read areas, exact or bounded write areas, required deliverables, forbidden files/actions, non-goals, compatibility expectations, and whether tests, docs, generated files, commits, pushes, credential access, network access, host-level mutation, or remote-state changes are allowed.
+- Specify verification before execution: exact commands or procedures, required environment and fixtures, expected success condition, and what to report if a check cannot run. "Run relevant tests" or "ensure it works" is not a sufficient verification contract.
+- Specify the return contract: required findings or changes, evidence, files touched, commands run with outcomes, acceptance-criteria status, assumptions, blockers, residual risks, and actionable continuation items. Require exact paths and actionable detail rather than narrative reassurance.
+- Use `N/A - <reason>` for a contract field that genuinely does not apply; never omit a required field silently. Keep the brief proportional in length, but not in precision: even a small delegated task must identify the exact outcome, scope, acceptance evidence, and return format.
+- If the receiver finds a contradiction, unsafe instruction, missing prerequisite, or ambiguity that can materially change the result, it must stop the affected work and report the precise blocker plus the smallest decision or evidence needed. It must continue independently on unaffected work when safe.
+
+Every assignment, delegation, transfer, restart, or handoff brief must contain these labeled fields, adapted to the task but not silently omitted:
+
+```text
+Role:
+Objective:
+Business/System Context:
+Current State and Evidence:
+Required Deliverables:
+In Scope:
+Out of Scope / Non-Goals:
+Read Scope:
+Write Scope:
+Forbidden Actions:
+Requirements and Invariants:
+Resolved Decisions and Rationale:
+Inputs and Source of Truth:
+Dependencies and Preconditions:
+Acceptance Criteria:
+Verification:
+Return Contract:
+Blocker and Escalation Policy:
+```
+
+- `Objective` must describe the end state and user/system value, not merely an activity such as "investigate", "improve", or "review".
+- `Current State and Evidence` must separate observed behavior from suspected cause. For discovery work, name the questions to answer, evidence to collect, search boundaries, and stop conditions.
+- `Required Deliverables` must name concrete artifacts or decisions: code paths, tests, findings, matrices, schemas, patches, or reports. If no file change is allowed, say so explicitly.
+- `Requirements and Invariants` must include behavior, data, API/protocol, compatibility, security, performance, concurrency, failure, and operational constraints when relevant, plus explicit handling for realistic edge cases.
+- `Resolved Decisions and Rationale` must pre-decide approach, ownership boundary, error model, dependencies, compatibility policy, and rollback strategy when they affect execution. Do not force the receiver to redo settled architecture or product analysis.
+- `Acceptance Criteria` must use externally observable pass/fail statements. Avoid subjective criteria such as "clean", "robust", "proper", "production-ready", or "well tested" unless each is defined by concrete evidence.
+- `Blocker and Escalation Policy` must distinguish agent-resolvable unknowns from user-owned decisions and state whether partial progress is useful. Subagents report blockers to the main session and never ask the user directly.
+
+Apply role-specific precision in addition to the universal fields:
+
+- Implementation briefs: name target files/symbols when known, required behavior before internal design, allowed dependencies, compatibility and migration expectations, error/failure semantics, test ownership, and focused validation commands.
+- Testing briefs: provide the original requirements rather than only the implementation summary; identify the production boundary, realistic risk matrix, required happy-path evidence, permitted mocks, test-only write scope, forbidden production edits, and externally meaningful assertions.
+- Review briefs: identify the baseline and change scope, governing requirements and decisions, review dimensions, severity definitions, read-only boundary, required file/line evidence, finding format, and approval/blocking rules.
+- Exploration briefs: ask decision-driving questions, name likely locations without limiting valid discovery, define evidence quality, expected inventory or map, depth, and completion/stop conditions.
+- Planning or specification briefs: identify the intended implementer, decisions that must be resolved now, required implementation detail, sequencing, validation gates, risks, rollback, and the threshold for implementation readiness.
+
+Before invoking an agent, perform this quality gate:
+
+1. Could an agent with no conversation history state exactly what result is required, why it matters, and what it must not change?
+2. Are all material decisions either resolved with rationale or explicitly retained as main-session/user-owned blockers?
+3. Can every acceptance criterion be verified from named evidence or an exact check?
+4. Are permissions, read/write boundaries, credential and network access, host-level mutation, destructive/remote restrictions, and test ownership unambiguous?
+5. Does the return contract provide enough evidence for the main session to integrate or reject the result without guessing?
+
+If any answer is no, improve the brief before dispatch. Agent availability, urgency, and token pressure do not justify an ambiguous assignment.
+
 ## Autonomous Work Contract
 
-- The main session owns skill selection, decomposition, validation, reviewer gates, MR/PR-ready handoff, and final synthesis.
-- Ask the user only for real blockers: scope or risk decisions, credentials/provider access, missing owner/product/security/legal decisions, destructive operations, remote-state actions, and MR/PR review outcomes.
+- The main session (active primary user-session agent) owns skill selection, decomposition, project-native validation, reviewer gates, local Change-Ready handoff, and final synthesis.
+- Ask the user only for real blockers: scope or risk decisions, credentials/provider access, missing owner/product/security/legal decisions, destructive operations, remote-state actions, and separately authorized external review or delivery outcomes.
 - Continue autonomously when local evidence, repository policy, or a safe reversible default is enough; do not ask routine preference or progress questions.
 - Subagents and read-only reviewer gates never ask the user directly; they return `Actionable Continuation Items` or `Suggested Next Options` for the main session. Feedback-ledger writes under `docs/feedbacks/**` are allowed only through the scoped `complain` contract.
-- Before final handoff for material/complex sessions, run `session-delivery-reviewer` with bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks; skip only for trivial/bounded work or unavailable inputs, and report why.
-- Treat session-delivery-reviewer blocking output as binding: if it returns `Blocking for Acceptance: yes`, `Verdict: blocked`, any `P0 blocker`, or non-empty `Required Next Actions`, do not present the session as complete or ready-to-land. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
+- Discover the project's delivery/readiness gate via adapters. For Material work, always run the discovered conforming delivery/readiness gate with current requirements, candidate continuity, proof, SDET, validation, review, and residual-risk evidence; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it. Optional plugin delivery-context tools are evidence sources only when available, never portable dependencies.
+- Treat delivery/readiness or final-review blocking output as binding when it reports mandatory-gate or qualifying P0/P1 serious blockers: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, or non-empty `Required Next Actions` (restricted to those classes) keeps readiness blocked and must not present `Change-Ready: yes`. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and `Required Next Actions: none`. P2/note polish must not appear in Required Next Actions. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
+- When this kit's optional `session-delivery-reviewer` is used, treat its output as binding for session delivery only under the same blocker classes: if it reports `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, or non-empty `Required Next Actions`, do not present the session as complete and keep `Change-Ready: no`; optional plugin evidence is never mandatory, and main retains Change-Ready authority.
 
 ## Interactive Next-Step Handoff
 
@@ -107,9 +196,9 @@
 - Treat `(Recommended)` as presentation-only when interpreting the selected option.
 - If the user selects an actionable option, continue immediately in the current context.
 - Read-only reviewer subagents must not call `question` or ask the user directly; they return `Actionable Continuation Items` or `Suggested Next Options` for the main session. They may write feedback entries only under `docs/feedbacks/**` when permission allows it.
-- When an audit, reviewer gate, broad discovery, or validation failure produces several concrete tasks that are related to the current session but outside its approved scope, prefer grouping them into OpenSpec follow-up changes when the repository already uses OpenSpec or the user approved adding it; otherwise return grouped candidates instead of leaving a loose final-message backlog. Do not create OpenSpec ceremony for isolated nits, speculative polish, or one obvious next step.
+- When an audit, reviewer gate, broad discovery, or validation failure produces several concrete tasks that are related to the current session but outside its approved scope, prefer grouping them into the project's accepted follow-up mechanism when one exists or the user approved adding it; otherwise return grouped candidates instead of leaving a loose final-message backlog. Do not create ceremony for isolated nits, speculative polish, or one obvious next step.
 - At main-session final handoffs where work is complete and control returns to the user, include a compact `Recommended Next Steps` mini-section when a useful follow-up exists. End it with a yes/no question such as `делаем?` so the user can answer simply `да` or `нет`; skip in read-only, reviewer, subagent, or no-question contexts, and when the user explicitly requested no next-step suggestions.
-- If no real blocker remains, report completed work, validation, residual risks, and ready-to-land status without an interactive handoff.
+- If no real blocker remains, report completed work, validation, residual risks, and `Change-Ready: yes|no` (plus any project-native label) without an interactive handoff.
 - If a blocker remains and the question tool is unavailable, include a short `Next Steps` fallback with the same recommended-first ordering.
 
 ## OpenCode Feature Work
@@ -122,51 +211,62 @@
 
 ## Local OpenCode Model Environment
 
+Installation evidence for this machine only. The portable Change-Ready framework never requires these models or tools.
+
 - The local OpenCode Desktop/localServer on this machine has these authed, usable models: `openai/gpt-5.5`, `zai-coding-plan/glm-5.2`, `minimax/MiniMax-M3`. (Recurring reminder: do not waste time re-discovering this.)
 - `GET /api/model` (and `/api/model?directory=...`) returns `data: []` by default. Do NOT interpret an empty model list as "no models available / model unreachable". Models are present and authed even though that endpoint lists none for a directory.
-- Always pass the model explicitly through the OpenCode API / CLI: the `model` field on `POST /session`/`prompt_async`, or `--model <provider/id>` / `OPENCODE_REAL_MODEL=<provider/id>` for the dream-team review CLI/smoke. Never run a review or prompt against the local localServer without selecting a model explicitly.
-- If a probe shows no model, the fix is to pass one of the three IDs above — not to conclude the server is unusable. This has bitten us before on the dream-team review smokes (`packages/control-plane/test/temporal-review-opencode-smoke.test.ts` with `TEMPORAL_REVIEW_OPENCODE_E2E=1 OPENCODE_REAL_MODEL=...`).
+- Always pass the model explicitly through the OpenCode API / CLI: the `model` field on `POST /session`/`prompt_async`, or `--model <provider/id>` / `OPENCODE_REAL_MODEL=<provider/id>` for local review CLI/smoke. Never run a review or prompt against the local localServer without selecting a model explicitly.
+- If a probe shows no model, the fix is to pass one of the three IDs above — not to conclude the server is unusable. This has bitten us before on local review smokes (`packages/control-plane/test/temporal-review-opencode-smoke.test.ts` with `TEMPORAL_REVIEW_OPENCODE_E2E=1 OPENCODE_REAL_MODEL=...`).
 - The local `qwen-local` provider (llama.cpp @ `127.0.0.1:8080`) is usually NOT running; prefer the three cloud models above unless the user starts the local qwen server.
 
 ## Parallel Work And Delegation
 
-- **Subagent dispatch is BLOCKING — there is no background execution.** Spawning a single `task`/subagent and then doing other work yourself is NOT parallel: the main session waits for the subagent to finish before resuming. To actually parallelize, emit **multiple `task` tool calls in a single message** (fan-out); they run concurrently and OpenCode waits for all to report back. One subagent at a time = strictly serial; the main session must do its own share of the work either BEFORE dispatching or AFTER all subagents return, never "meanwhile".
+- **Specialist dispatch is blocking unless the discovered runtime fan-out adapter supports concurrent independent dispatches.** One specialist call at a time is strictly serial: the main session waits for that specialist to finish before resuming other orchestrator work. Real parallelism requires one adapter-supported fan-out of independent specialist dispatches; do not treat serial blocking dispatch as background parallelism or invent a portable tool/API name. The main session does its own share of work either before dispatch or after all specialists return, never as if a single in-flight specialist were running in the background.
+- Only the active primary orchestrator may create or resume specialist sessions. Leaf production, SDET, review, diagnosis, and delivery specialists must never dispatch or resume nested agents.
+- Real parallelism is one orchestrator-owned fan-out limited to independent isolated or exact non-overlapping scopes proved before dispatch. Single specialist dispatches remain serial. Reconcile and integrate every fan-out result before proof or qualification.
+- For every specialist dispatch, record role, ownership scope, and available runtime session/task identity.
+- Accept specialist dispatch or resume evidence only when the discovered runtime adapter proves active primary parent identity, child session/task identity, and expected child role/context. Top-level/default-primary fallback is not specialist evidence. Unavailable or unverifiable child dispatch or continuation blocks the affected gate. Do not hard-code a concrete runtime mechanism, provider, model, OS, or product name in portable runtime text.
+- **Universal writer attempt closure (serial or fan-out):** every mutation-capable execution—including every writer dispatch/attempt and every mutation-capable validation, generator, or formatter command—remains open after timeout, cancel, missing report, partial mutation, or unknown liveness until a terminal report is received, adapter-proven terminal cessation is established (cancellation counts only after the writer or execution can no longer execute or mutate), or its workspace/write authority is isolated or revoked so it cannot mutate the candidate. Recorded timeout, cancel, or missing report alone is not closure. Cancellation request or acknowledgement alone is not closure. Unknown liveness or unisolated ownership blocks integration, freeze, proof, and qualification. Late output or late mutation after the attempt boundary invalidates the qualification attempt and does not close a still-live mutator. Prefer isolated workspaces for mutation-capable validation.
+- If any fan-out child blocks, times out, is cancelled, returns a missing report, or leaves a partial mutation, do not freeze, prove, or qualify. Apply **Universal writer attempt closure** to every open serial or fan-out attempt: record each slice/attempt state and identity, recapture attributable mutations, quarantine unsafe ownership, integrate only after every result is accounted for, and route retry, resume, or fresh dispatch by continuity rules without erasing prior failure—only after the open attempt is closed or isolated. Do not invent a coordinator or durable orchestration state store. Mutation invalidates qualification evidence but never closes a still-live mutation-capable execution.
+- When a production defect stays inside the same production author's original bounded ownership scope and role, objective, and continuity remain safe, the orchestrator SHOULD resume that same production-author context through the discovered runtime continuation adapter. The continuation brief must include exact current Semantic Candidate Identity, Package Identity, and Identity Recipe, reproducer/outcome, explicit objective text continuous with the original production objective, explicit brief delta, unchanged forbidden actions, and return contract. Do not rely on chat-memory-only handoff.
+- Dispatch a new complete cold-context specialist or block when session identity is unavailable, continuity is unknown, role, objective, or ownership changes, scope materially expands, or independence/freshness requires a new context. If the host has no resumable specialist capability, use a fresh production author with a complete brief and report that continuation is unavailable; do not invent durable memory.
+- Corrected-candidate SDET is always a new fresh context. Final review is always a new fresh read-only context. Production-author reuse never preserves Applicable Proof, SDET, validation, or final review; replay all affected gates on the corrected candidate.
 - Run independent read/search/tool calls in parallel whenever there is no data dependency.
 - Use subagents only when the work is broad enough to benefit from separate context, parallel coverage, or independent review; keep simple searches, single-file reads, and tightly coupled reasoning in the main session.
-- Use `dream_team_implement` as the primary implementation path. Use `implementation-worker` only as a fallback or for explicitly coordinated bounded slices with exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate after the main session has chosen the fallback/parallel workflow.
-- When delegating to `implementation-worker` under that fallback, pass `Role` (`production` or `testing`), `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
-- Keep direct/fallback implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
+- Discover the project's production author, SDET, validation, and final-review adapters before dispatch. In this kit, `implementation-worker` is an optional default production adapter, `sdet-quality-engineer` is an optional default SDET adapter, and `final-candidate-reviewer` is an optional default final-review adapter; other tools or agents are optional checkpoints only when the project adapter selects them.
+- Every dispatch must satisfy the complete Universal Task Briefing Contract. Production and SDET are mutually exclusive authorship roles; do not assign automated-test authorship to a production author.
+- Keep writers serial unless scopes are proven isolated or exact non-overlapping write scope. Integrate all outputs before proof or qualification. No production or test mutation during frozen-candidate validation or final review.
+- Keep specialist dispatch serial when the preferred production adapter is unavailable, scope is unclear, write targets overlap, or coordinated fan-out would cost more than sequential conforming-author dispatch. Prefer another conforming production author; if none exists, report blocked. Do not treat serial dispatch as permission for the main session to author behavior-changing production or automated-test artifacts.
 - Use coordinated fan-out only for broad work with multiple independent bounded tracks where parallel planning, fan-in, validation gates, or isolation is worth the overhead; stay serial for small, unclear, or tightly coupled work.
-- When coordinating fan-out, the main session owns decomposition, dispatch, report reconciliation, integration, tests, reviewer gates, cleanup, user decisions, and final synthesis; it should not do substantial worker-assigned implementation directly.
+- When coordinating fan-out, the main session owns decomposition, dispatch, report reconciliation, integration, authorized validation, reviewer gates, cleanup, user decisions, and final synthesis; it should not do substantial worker-assigned implementation directly.
 - Before finishing a coordinated fan-out run, close or explicitly skip with reasons: worker report reconciliation, integration, focused/final validation, review gate, cleanup, residual risks, and next actions.
-- Load relevant skills when a task clearly matches them; do not load skills speculatively.
+- Load relevant skills when a task clearly matches them; do not load skills speculatively. For behavior-changing work, `change-ready-sdlc` is mandatory before mutation.
 - When multiple skills apply, load only the directly relevant skills, deduplicate overlapping steps, apply the strictest safety guard, and report unresolved conflicts as blockers or assumptions.
 - Use reviewer/subagent groups for material cross-domain work, but keep them bounded. Default to 1-3 reviewers and normally one reviewer wave.
-- After non-trivial code changes, run a relevant post-implementation reviewer/validation gate before final response, commit, push, or PR/MR creation when feasible.
+- After non-trivial behavior changes, complete the skill's proof, SDET, validation, and independent final-review gates before claiming Change-Ready or performing separately authorized external operations.
 
 ## Mode And Tool Precedence
 
 - Explicit user constraints override skill ceremonies: read-only, no-edit, no-commit, no-push, no-questions, quick audit, reviewer-only, no-network, or no-remote.
 - In read-only/no-questions modes, do not ask questions or call interactive tools; return assumptions, blockers, and actionable continuation items when useful.
 - Do not commit, push, merge, delete source artifacts, run destructive cleanup, or alter remote state unless explicitly requested and allowed by repository policy.
-- If a skill requires an unavailable tool, do not invent results or block solely on the missing tool. Use best available evidence, state the missing gate/tool, and downgrade confidence where appropriate.
+- If optional tooling or evidence helpers required by a skill are unavailable, do not invent results or block solely on the missing optional tool. Use best available evidence, state the missing optional tool, and downgrade confidence where appropriate. Absence of a mandatory Change-Ready capability or gate follows the canonical `change-ready-sdlc` skill and blocks qualification; do not weaken mandatory gates with a generic unavailable-tool fallback.
 
 ## Implementation Method
 
-- **Golden-rule default:** when a task requires repository file changes, use the `dream_team_implement` MCP tool instead of implementing directly or spawning ad-hoc implementation subagents. It performs a bounded local implementation pass in the shared checkout, can run a configured validation command, and returns the full `dream-team.implement-result.v1` object for main-session review.
-- Preconditions to use it: pass `repo` (absolute path of a local Git repo on the same machine), `base`, and `taskPrompt`; include `targetFiles` when the intended edit scope is known and `validationCommand` when a focused validation gate exists. It is local/shared-filesystem only by design; the repo, Temporal, and a worker process must be reachable on the same host.
-- The main session owns task scoping, prompt quality, result inspection, integration, final validation, reviewer gates, and final synthesis. Do not declare the work complete solely because the implementer reports success; inspect the diff and run or verify the necessary checks.
-- **Dream-team project exception:** when the current work is inside the `dream-team` project/repository and `dream_team_implement` fails, treat the failure as a product bug in the active work scope. Diagnose and fix the MCP/tooling failure locally, then rerun `dream_team_implement` or a focused validation proving the fix. Do not fall back to manual edits, implementation subagents, or checklists unless the user explicitly directs that fallback after seeing the blocker.
-- **Outside the dream-team project exception above, fall back to normal development** (manual edits, `implementation-worker`, subagents, or existing repository workflow) **without retrying the failing tool** when any of these hold: `dream_team_implement` is not configured/available in the current environment; the repo is remote or not on the local filesystem; the tool errors (infrastructure, validation, or input); or a synchronous implementation pass would block an urgent fix. State the fallback reason in one line and continue; do not loop on a failing tool within one session.
-- When the tool is available and the task is non-urgent development, use it even for your own work before making direct edits — it is the designated implementation path, not a last resort.
+- Discover the target project's production author adapter from project instructions, automation, or owner input. Prefer that adapter for bounded production mutations; do not hard-code a portable implementation product.
+- In this kit, `implementation-worker` is the optional default production adapter for production-only happy-path slices. Other local tools may be used only as discovered optional checkpoints, never as portable requirements.
+- Production authors implement the smallest complete happy path, preserve unrelated work, and do not create or modify automated test artifacts. They return changed artifacts, proof procedure, blockers, and residual risks; they do not claim SDET, final review, or Change-Ready.
+- The main session owns task scoping, Authoritative Brief quality, result inspection, integration, authorized validation, reviewer gates, and final synthesis. Do not declare Change-Ready solely because a production author reports success.
+- When the selected production adapter is unavailable, errors, or would block progress, use another conforming production author; if none exists, report blocked. State the reason in one line and do not loop on a failing optional tool. Main must not fall back to direct edit/write as the production author for behavior-changing candidate production or automated-test artifacts.
 
 ## Code Review Method
 
-- **Golden-rule default:** when a change warrants an independent review, use the `dream_team_review` MCP tool instead of self-reviewing or spawning an ad-hoc reviewer subagent. It returns a strict, structured merge verdict (`approved` / `approved_with_notes` / `changes_requested` / `blocked`) from an independent reviewer session, and on repeated reviews of the same repo+base+branch it resumes the same session — remembering prior findings and reusing context, so it consumes noticeably fewer tokens than a fresh-context review each time.
-- Preconditions to use it: pass `repo` (absolute path of a local Git repo on the same machine), `base`, and `taskPrompt`. It is read-only and local/shared-filesystem only by design; the reviewed repo, Temporal, and a worker process must be reachable on the same host.
-- **Dream-team project exception:** when the current work is inside the `dream-team` project/repository and any `dream_team_*` MCP tool fails, treat the failure as a product bug in the active work scope. Diagnose and fix the MCP/tooling failure locally, then rerun the intended `dream_team_*` call or a focused validation proving the fix. Do not fall back to manual review, reviewer subagents, or checklists unless the user explicitly directs that fallback after seeing the blocker.
-- **Outside the Dream-team project exception above, fall back to the old way** (manual self-review, a reviewer subagent, or a checklist) **without retrying the failing tool** when any of these hold: `dream_team_review` is not configured/available in the current environment; the repo is remote or not on the local filesystem; the tool errors (infrastructure, validation, or input); or a synchronous review would block an urgent fix. State the fallback reason in one line and continue; do not loop on a failing tool within one session.
-- When the tool is available and the review is non-urgent, prefer it even for your own work before declaring it done — it is the designated independent gate, not a last resort.
+- Discover the target project's independent final-review adapter. Final review of a behavior-changing candidate runs only after accepted SDET evidence and complete applicable validation. Evidence-backed SDET `N/A` is allowed only for proven non-behavioral work; reject `N/A` for behavior-changing or test-content candidates.
+- In this kit, `final-candidate-reviewer` is the optional default conforming final-review adapter. Other reviewers or tools are optional adapters only when they can inspect the complete candidate and map native verdicts to `approved | approved_with_notes | changes_requested | blocked`.
+- Final review must use a fresh read-only context that authored neither production nor tests. Self-review and pre-SDET checkpoints are implementation feedback only and do not satisfy the final gate.
+- Actionable notes do not pass. Absence of a conforming reviewer blocks readiness.
+- When the preferred adapter is unavailable, use another configured conforming reviewer or report blocked; do not invent a foreign review product.
 
 ## Repository Changes
 
@@ -181,7 +281,7 @@
   and often impossible.
 - Stage only intended paths. Do not use broad staging commands such as `git add -A`
   or `git add .` when unrecognized changes are present.
-- When making changes in a repository, complete relevant verification and report ready-to-land status.
+- When making changes in a repository, complete relevant verification and report Change-Ready status (plus any project-native label).
 - Commit, push, merge, or push to the default branch only when explicitly requested or clearly allowed by repository-local policy.
 - Always obey repository-specific remote-operation rules, branch rules, issue tracker rules, and validation gates.
 - When creating or updating a PR/MR description, write it for a reviewer who sees the project and change for the first time.
@@ -190,19 +290,18 @@
 
 ## Risk-Driven Test Workflow
 
-- This workflow supersedes generic pre-production test-authoring requirements. Follow a different ordering only when the user or repository explicitly requires it.
+- Lifecycle ordering for behavior-changing work is owned by `change-ready-sdlc`. Preserve the risk and oracle principles below; do not invent a second process.
 - Before implementation, study the original requirements and supporting evidence in detail. Define the intended contract, business invariants, constraints, non-goals, observable happy path, and concrete acceptance evidence; do not derive intent from the implementation alone.
-- First implement the smallest complete happy path, then prove that it works through observable execution at the relevant boundary. A code inspection, compilation result, mocked helper test, or plausible explanation is not happy-path proof.
-- Begin systematic automated-test design only after the happy path has been demonstrated. Give a dedicated fresh-context testing subagent the original requirements, runtime constraints, implementation, and happy-path evidence, and require it to independently challenge assumptions rather than confirm the implementation's structure.
-- Only a dedicated testing subagent that did not author the production implementation may create or modify automated tests, test fixtures, snapshots, fake services, or test harnesses. The main session and production implementation agent may run, inspect, and debug tests, but must delegate all test-authoring changes, for example to an `implementation-worker` assigned only the testing scope.
-- Start test authoring in a new subagent session that has not authored production code. Give it the original requirements, runtime constraints, happy-path evidence, read scope, test-only write scope, forbidden production paths, and verification command; require it to report its risk matrix, tests changed, real boundaries exercised, mock exceptions, failures found, and residual risks.
-- If no eligible fresh-context testing subagent is available, do not let the main session or production agent author the tests. Record the exact blocker and residual production risk instead.
+- First implement the smallest complete happy path, then prove it through observable execution at the relevant boundary. A code inspection, compilation result, mocked helper, or plausible explanation is not happy-path proof.
+- Begin systematic automated-test design only after applicable proof. Dispatch a fresh SDET context that did not author production; give original requirements, runtime constraints, current candidate, and proof evidence; require an independent risk/oracle matrix rather than confirmation of implementation structure.
+- Only fresh SDET may create or modify automated tests, fixtures, snapshots, fake services, simulators, harnesses, or golden artifacts. The main session and production authors may run, inspect, and debug tests, but must not author test artifacts.
+- SDET returns exactly one action: `authored-tests`, `assessed-existing-tests`, or `blocked`. Prefer real boundaries; use mocks only when a real dependency is unavailable, unsafe, non-deterministic, or impractical, and record the confidence gap.
+- If no eligible fresh SDET is available, do not let the main session or production agent author tests. Record the exact blocker and residual production risk instead.
 - The goal of automated tests is not line, branch, or case-count coverage. Coverage metrics are diagnostic signals only. The acceptance goal is to find and preserve evidence for realistic holes in business logic and code that could cause defects, data loss, security failures, outages, degraded service, or operational incidents.
-- Build a risk-based scenario matrix from the requirements, business invariants, implementation boundaries, and production runtime. Consider realistic boundary values, invalid or missing data, dependency failures, timeouts, retries, partial completion, duplicate requests, concurrency, ordering, authorization, state recovery, resource pressure, and observability gaps when relevant; do not spend effort on impossible or purely theoretical cases.
-- Prioritize end-to-end tests at the real user-facing or system boundary, using real processes, protocols, persistence, and integrations whenever the environment permits. Use isolated production-like environments; never mutate production or remote state without explicit authorization. Use mocks only when a real dependency is unavailable, unsafe, non-deterministic, or impractical to exercise, and explicitly record the resulting confidence gap.
+- Build a risk-based scenario matrix from requirements, business invariants, implementation boundaries, and production runtime. Consider realistic boundary values, invalid or missing data, dependency failures, timeouts, retries, partial completion, duplicate requests, concurrency, ordering, authorization, state recovery, resource pressure, and observability gaps when relevant; skip impossible or purely theoretical cases.
 - Every negative test must assert externally meaningful behavior, including safe failure, preserved invariants, useful diagnostics, and recovery as applicable. A test that merely mirrors implementation details or proves a mock interaction is insufficient.
-- Feed discovered failures back into production hardening, then let the testing subagent extend or adjust the tests and rerun the relevant happy-path and negative suites. Continue until all identified realistic high-impact scenarios are covered or an exact blocker and residual production risk are recorded.
-- Final handoff evidence for behavior changes and bug fixes must identify the original requirements, observable happy-path proof, testing subagent/session, risk matrix, mock exceptions, failures fed back into production code, final validation, and remaining risks.
+- Feed discovered failures to the correct owner (production vs fresh SDET), then replay affected proof, SDET, validation, and final review per `change-ready-sdlc`.
+- Final handoff evidence for behavior changes must identify original requirements, applicable proof, SDET session/action, risk matrix, mock exceptions, corrections, complete validation, independent final review, and residual risks.
 
 ## OpenSpec Change Authoring
 

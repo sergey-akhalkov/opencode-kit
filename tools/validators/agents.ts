@@ -3,19 +3,32 @@ import {
   ALLOWED_COMPLAIN_SKILL_RULES,
   ALLOWED_REVIEWER_BASH_RULES,
   ALLOWED_REVIEWER_EDIT_RULES,
+  FINAL_CANDIDATE_REVIEWER_FILE,
+  FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
   REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE,
   REUSABLE_REVIEWER_FORBIDDEN_INLINE_BLOCKS,
   REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT,
   REVIEWER_DENIED_PERMISSION_KEYS,
   REVIEWER_OBSOLETE_PERMISSION_KEYS,
+  STANDALONE_CONTRACT_REFERENCE_PATH,
 } from "../contracts/agents.ts";
-import { AGENT_TEXT_CONTRACTS } from "../contracts/reviewer-binding.ts";
+import {
+  AGENT_TEXT_CONTRACTS,
+  PREVENTION_FEEDBACK_REVIEWER_FILES,
+} from "../contracts/reviewer-binding.ts";
 import {
   ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES,
   IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS,
   IMPLEMENTATION_WORKER_FILE,
   IMPLEMENTATION_WORKER_REQUIRED_TEXT,
 } from "../contracts/implementation-worker.ts";
+import {
+  ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES,
+  ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES,
+  SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS,
+  SDET_QUALITY_ENGINEER_FILE,
+  SDET_QUALITY_ENGINEER_REQUIRED_TEXT,
+} from "../contracts/sdet-quality-engineer.ts";
 import {
   ALLOWED_TROUBLESHOOTER_BASH_RULES,
   ALLOWED_TROUBLESHOOTER_EDIT_RULES,
@@ -24,6 +37,7 @@ import {
   TROUBLESHOOTER_FILE,
   TROUBLESHOOTER_REQUIRED_TEXT,
 } from "../contracts/troubleshooter.ts";
+import { fencedCodeLineMask } from "./active-authority.ts";
 import type { FrontmatterMap, ValidationContext } from "./context.ts";
 import {
   directoryExists,
@@ -194,6 +208,14 @@ function validateImplementationWorker(
       );
     }
   }
+  if (
+    frontmatter.has("permission.bash") &&
+    typeof frontmatter.get("permission.bash") === "object"
+  ) {
+    ctx.addError(
+      `Implementation worker must use scalar bash: deny, not nested bash rules: ${file}`,
+    );
+  }
   validateComplainSkillPermission(ctx, frontmatter, file, "Implementation worker");
   for (const permission of IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS) {
     const key = `permission.${permission}`;
@@ -203,6 +225,184 @@ function validateImplementationWorker(
   }
   for (const required of IMPLEMENTATION_WORKER_REQUIRED_TEXT) {
     requireTextContains(ctx, text, required, "Implementation worker contract", file);
+  }
+}
+
+function validateSdetQualityEngineer(
+  ctx: ValidationContext,
+  frontmatter: FrontmatterMap,
+  text: string,
+  file: string,
+): void {
+  if (frontmatter.has("model") || frontmatter.has("variant")) {
+    ctx.addError(
+      `SDET quality engineer must not set model or variant (inherit session model): ${file}`,
+    );
+  }
+  for (const [key, expected] of ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES) {
+    if (frontmatter.get(key) !== expected) {
+      ctx.addError(
+        `SDET quality engineer must set ${key.replace("permission.", "")}: ${expected}: ${file}`,
+      );
+    }
+  }
+  for (const [key, expected] of ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES) {
+    if (frontmatter.get(key) !== expected) {
+      ctx.addError(
+        `SDET quality engineer must set ${key.replace("permission.", "")}: ${expected}: ${file}`,
+      );
+    }
+  }
+  for (const [key, value] of frontmatter) {
+    if (key.startsWith("permission.bash.")) {
+      ctx.addError(
+        `SDET quality engineer has unsupported nested bash permission '${key.replace("permission.bash.", "")}: ${String(value)}': ${file}`,
+      );
+    }
+    if (key.startsWith("permission.edit.")) {
+      ctx.addError(
+        `SDET quality engineer has unsupported nested edit permission '${key.replace("permission.edit.", "")}: ${String(value)}': ${file}`,
+      );
+    }
+    if (key.startsWith("permission.skill.")) {
+      ctx.addError(
+        `SDET quality engineer has unsupported nested skill permission '${key.replace("permission.skill.", "")}: ${String(value)}': ${file}`,
+      );
+    }
+  }
+  if (
+    frontmatter.has("permission.bash") &&
+    typeof frontmatter.get("permission.bash") === "object"
+  ) {
+    ctx.addError(`SDET quality engineer must use scalar bash: deny, not nested bash rules: ${file}`);
+  }
+  if (
+    frontmatter.has("permission.edit") &&
+    typeof frontmatter.get("permission.edit") === "object"
+  ) {
+    ctx.addError(`SDET quality engineer must use scalar edit: allow, not nested edit rules: ${file}`);
+  }
+  for (const permission of SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS) {
+    const key = `permission.${permission}`;
+    if (frontmatter.get(key) !== "deny") {
+      ctx.addError(`SDET quality engineer must set ${permission}: deny: ${file}`);
+    }
+  }
+  for (const required of SDET_QUALITY_ENGINEER_REQUIRED_TEXT) {
+    requireTextContains(ctx, text, required, "SDET quality engineer contract", file);
+  }
+}
+
+/** Byte-exact allowed Contract Reference heading (cardinality + shape gate). */
+const EXACT_CONTRACT_REFERENCE_HEADING = "## Contract Reference";
+/**
+ * ATX heading-like lines for title "Contract Reference": optional 0-3 leading
+ * ASCII spaces (CommonMark ATX; four spaces is a code block, not a heading),
+ * levels 1-6, spaces/tabs before the title, optional closing hash run, trailing
+ * horizontal whitespace only. Anchored so ordinary prose/identifiers containing
+ * the title are not headings. Sole allowed form remains byte-exact unindented
+ * `## Contract Reference` via the exact-syntax gate after cardinality.
+ */
+const CONTRACT_REFERENCE_HEADING_LIKE =
+  /^ {0,3}#{1,6}[ \t]+Contract Reference(?:[ \t]+#+)?[ \t]*$/;
+
+/**
+ * Exact standalone Contract Reference form for registered reusable reviewers and
+ * final-candidate-reviewer: exactly one heading-like occurrence that is byte-exact
+ * `## Contract Reference`, blank line, sole backticked path line, blank line, then
+ * next ## heading or EOF. Line-ending tolerant; rejects zero, duplicate, or
+ * malformed heading-like lines and verbose explanatory lines.
+ * Applies only to the named set so non-reviewer agents (e.g. qwen-local-worker) are untouched.
+ */
+function validateStandaloneContractReference(
+  ctx: ValidationContext,
+  text: string,
+  file: string,
+): void {
+  const lines = text.split(/\r?\n/);
+  // Fenced examples must not count toward Contract Reference heading cardinality.
+  const fenced = fencedCodeLineMask(lines);
+  const headingIndexes: number[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    if (fenced[i]) {
+      continue;
+    }
+    if (CONTRACT_REFERENCE_HEADING_LIKE.test(lines[i]!)) {
+      headingIndexes.push(i);
+    }
+  }
+  // Cardinality over all unfenced heading-like forms (wrong level, trailing space, closing #, etc.).
+  if (headingIndexes.length !== 1) {
+    ctx.addError(
+      `Reusable reviewer agent must contain exactly one ## Contract Reference heading: ${file}`,
+    );
+    return;
+  }
+  const headingIndex = headingIndexes[0]!;
+  const headingLine = lines[headingIndex]!;
+  // Sole occurrence must be the exact allowed syntax before section shape is read.
+  if (headingLine !== EXACT_CONTRACT_REFERENCE_HEADING) {
+    ctx.addError(
+      `Reusable reviewer agent Contract Reference heading must be exactly "${EXACT_CONTRACT_REFERENCE_HEADING}": ${file}`,
+    );
+    return;
+  }
+  const blankAfterHeading = lines[headingIndex + 1];
+  const pathLine = lines[headingIndex + 2];
+  const blankAfterPath = lines[headingIndex + 3];
+  if (blankAfterHeading !== "") {
+    ctx.addError(
+      `Contract Reference must be followed by a blank line then standalone backticked path: ${file}`,
+    );
+    return;
+  }
+  if (pathLine !== STANDALONE_CONTRACT_REFERENCE_PATH) {
+    ctx.addError(
+      `Contract Reference path line must be exactly ${STANDALONE_CONTRACT_REFERENCE_PATH} (no verbose explanatory sentence): ${file}`,
+    );
+    return;
+  }
+  if (blankAfterPath !== undefined && blankAfterPath !== "") {
+    ctx.addError(
+      `Contract Reference standalone path must be followed by a blank line then next ## heading or EOF: ${file}`,
+    );
+    return;
+  }
+  // blankAfterPath is "" or undefined (EOF after path with trailing newline only).
+  // Scan any remainder: first non-empty line must be a ## heading; blank-only remainder is EOF.
+  if (blankAfterPath === undefined) {
+    return;
+  }
+  let firstNonEmpty: string | undefined;
+  for (let i = headingIndex + 4; i < lines.length; i += 1) {
+    if (lines[i] !== "") {
+      firstNonEmpty = lines[i];
+      break;
+    }
+  }
+  if (firstNonEmpty === undefined) {
+    return;
+  }
+  if (!firstNonEmpty.startsWith("## ")) {
+    ctx.addError(
+      `Contract Reference must be followed by blank line then next ## heading or EOF: ${file}`,
+    );
+  }
+}
+
+function validateFinalCandidateReviewerExtras(
+  ctx: ValidationContext,
+  frontmatter: FrontmatterMap,
+  text: string,
+  file: string,
+): void {
+  if (frontmatter.has("model") || frontmatter.has("variant")) {
+    ctx.addError(
+      `Final candidate reviewer must not set model or variant (inherit session model): ${file}`,
+    );
+  }
+  for (const required of FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT) {
+    requireTextContains(ctx, text, required, "Final candidate reviewer contract", file);
   }
 }
 
@@ -358,16 +558,22 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       }
     }
     validateSessionDeliveryContextPermission(ctx, frontmatter, file);
-    if (path.basename(file) === IMPLEMENTATION_WORKER_FILE) {
+    const agentFileName = path.basename(file);
+    if (agentFileName === IMPLEMENTATION_WORKER_FILE) {
       validateImplementationWorker(ctx, frontmatter, text, file);
       continue;
     }
-    if (path.basename(file) === TROUBLESHOOTER_FILE) {
+    if (agentFileName === TROUBLESHOOTER_FILE) {
       validateTroubleshooter(ctx, frontmatter, text, file);
       continue;
     }
     if (isDreamTeamRuntime && agentName === DREAM_TEAM_IMPLEMENTER_AGENT) {
       validateDreamTeamImplementer(ctx, frontmatter, file);
+      continue;
+    }
+    // Write-capable SDET must use dedicated contract before generic read-only reviewer rules.
+    if (agentFileName === SDET_QUALITY_ENGINEER_FILE) {
+      validateSdetQualityEngineer(ctx, frontmatter, text, file);
       continue;
     }
     validateReviewerBashPermission(ctx, frontmatter, file);
@@ -383,8 +589,18 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       validateDreamTeamRuntimeAgent(ctx, frontmatter, file);
       continue;
     }
-    for (const required of REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT) {
-      requireTextContains(ctx, text, required, "Reusable reviewer leaf contract", file);
+    if (agentFileName === FINAL_CANDIDATE_REVIEWER_FILE) {
+      // Final reviewer keeps generic reviewer permissions + Contract Reference path,
+      // but uses its dedicated structured-report text (not the shared Findings boilerplate).
+      validateFinalCandidateReviewerExtras(ctx, frontmatter, text, file);
+      validateStandaloneContractReference(ctx, text, file);
+    } else {
+      for (const required of REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT) {
+        requireTextContains(ctx, text, required, "Reusable reviewer leaf contract", file);
+      }
+      if ((PREVENTION_FEEDBACK_REVIEWER_FILES as readonly string[]).includes(agentFileName)) {
+        validateStandaloneContractReference(ctx, text, file);
+      }
     }
     if (REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE.some((pattern) => pattern.test(text))) {
       ctx.addError(
@@ -393,7 +609,7 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     }
     if (REUSABLE_REVIEWER_FORBIDDEN_INLINE_BLOCKS.some((pattern) => pattern.test(text))) {
       ctx.addError(
-        `Reusable reviewer agent must reference the shared contract via ## Contract Reference, not inline the Leaf Contract or Prevention Feedback body: ${file}`,
+        `Reusable reviewer agent must reference the shared contract via ## Contract Reference, not inline the Leaf Contract, Feedback Ledger, or Prevention Feedback body: ${file}`,
       );
     }
     validateTextContracts(ctx, file, text, AGENT_TEXT_CONTRACTS);

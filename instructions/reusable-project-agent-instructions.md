@@ -2,9 +2,11 @@
 
 Use this template as a starting point for a project-level `AGENTS.md`. Keep only rules that are durable for the repository.
 
-## Universal Development Loop
+## Runtime Authority And Development Loop
 
-Follow the canonical Universal Development Loop defined at `instructions/universal-development-loop.md`. Do not restate the step list in this template; every project that includes this content consumes the canonical contract through that reference.
+Shared runtime lifecycle authority lives in the active global OpenCode config: always-loaded `AGENTS.md` and the `change-ready-sdlc` skill. Resolve the active global config directory to `OPENCODE_CONFIG_DIR` when set; otherwise use the host default global config directory. When `OPENCODE_CONFIG_DIR` is set, the default global directory is bypassed and not loaded. Missing active global `AGENTS.md` or `change-ready-sdlc` blocks behavior-changing Change-Ready work. Do not invent a partial process or foreign stack default.
+
+The conceptual Universal Development Loop is optional guidance only when it stays consistent with those active global contracts. Do not depend on a target-relative kit path such as `instructions/universal-development-loop.md` for runtime authority, and do not restate a competing step list in this template.
 
 - Technology-specific commands and constraints adapt the loop; they do not create separate workflows.
 - Start broad work with a deterministic project inventory, targeted search, or repository-native command before reading large file sets.
@@ -44,14 +46,15 @@ Follow the canonical Universal Development Loop defined at `instructions/univers
 
 ## Process Control
 
-- Use a direct single-agent path for clear small edits and questions.
-- Use `implementation-worker` for bounded edit-mode implementation slices when the work has exact non-overlapping write scope, clear acceptance criteria, and a focused validation gate.
-- When delegating to `implementation-worker`, pass `Role` (`production` or `testing`), `Mission`, `Read scope`, `Write scope`, `Forbidden`, `Verification`, and acceptance criteria.
-- Keep implementation serial when `implementation-worker` is unavailable, scope is unclear, write targets overlap, or integration would cost more than doing the work directly.
+- Use a direct main-session path only for research, questions, ordinary review-only work, and content proven inert under Change-Ready classification.
+- For every behavior-changing production artifact (Small or Material), dispatch a discovered conforming production author. In this kit, `implementation-worker` is the optional default adapter for exact bounded production-only slices with non-overlapping write scope, clear Acceptance Criteria, and a focused validation gate.
+- When delegating to `implementation-worker`, pass a complete Universal Task Briefing Contract production brief with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
+- After applicable proof, dispatch a fresh discovered conforming SDET session for test-only risk assessment and automated-test authorship; never assign testing ownership to a production author. In this kit, `sdet-quality-engineer` is the optional default SDET adapter only.
+- If `implementation-worker` is unavailable, use another conforming production author or block; never fall back to main-session production editing. Keep writers serial when scope is unclear, write targets overlap, work is coupled, or integration outweighs fan-out; serial writers do not authorize main production authorship.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
-- Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
-- Before final handoff for material/complex sessions, run `session-delivery-reviewer` with bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks; skip only for trivial/bounded work or unavailable inputs, and report why.
-- Treat session-delivery-reviewer blocking output as binding: if it returns `Blocking for Acceptance: yes`, `Verdict: blocked`, any `P0 blocker`, or non-empty `Required Next Actions`, do not present the session as complete or ready-to-land. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
+- Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session; main remains orchestrator only for behavior-changing production.
+- For Material work, always run the discovered conforming delivery/readiness gate (this kit's optional default is `session-delivery-reviewer`) with current requirements, candidate continuity, proof, SDET, validation, review, residual-risk evidence, and bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Missing required Material evidence produces blocked/not-enough-evidence, never skip/not-applicable solely because an optional input is unavailable. Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.
+- Treat session-delivery-reviewer blocking output as binding for mandatory-gate or qualifying P0/P1 serious blockers: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, or non-empty `Required Next Actions` (restricted to those classes) keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and `Required Next Actions: none`. P2/note polish must not enter Required Next Actions; full anti-polishing detail lives in active global `change-ready-sdlc`. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
 
 ## Review And Evidence
 

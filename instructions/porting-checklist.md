@@ -24,8 +24,8 @@ Use this checklist when moving project-local skills/agents into a global reusabl
 - Skill `description` is concrete and under OpenCode's discovery limit.
 - Agent frontmatter uses valid `mode` and least-privilege `permission`.
 - Reviewer agents are read-only leaf validators, except scoped feedback-ledger appends under `docs/feedbacks/**` through `complain`.
-- Reviewer agents include a `## Feedback Ledger` section and scoped `permission.edit`/`permission.skill` rules for `docs/feedbacks/**` and `complain`.
-- Reviewer agents include the canonical `## Prevention Feedback` section with `Recurrence Path`, `Prevention Target`, `Prevention Cost`, `Draft Rule`, and `Replay Evidence`.
+- Each reusable reviewer agent MUST contain exactly one standalone `## Contract Reference` section whose sole path line is `` `instructions/leaf-reviewer-agent-contract.md` ``, plus role-specific body content (inputs, checks, verdict/output, permissions).
+- Reusable reviewer agents MUST NOT inline shared `## Leaf Contract`, `## Feedback Ledger`, or `## Prevention Feedback` sections or bodies; shared runtime safety and feedback-ledger policy come from always-loaded global instructions and the role-specific agent body.
 - No copied instructions conflict with the target repository's higher-priority rules.
 
 ## Review Questions
@@ -34,5 +34,6 @@ Use this checklist when moving project-local skills/agents into a global reusabl
 - Are the trigger and non-goals clear enough to avoid accidental overuse?
 - Can a main session verify whether the artifact succeeded?
 - Is any critical rule buried in the middle of a long prompt?
-- If this artifact can drive implementation changes, does it require observable happy-path proof before independent fresh-context risk discovery and test-only subagent authoring?
+- If this artifact can drive implementation changes, does it require observable happy-path proof, pre-SDET candidate freeze with reproducible identities, and only then independent fresh-context risk discovery and test-only subagent authoring?
+- If the artifact documents project validation adapters, does it accept either a concrete adapter file or an equivalent documented Purpose/Command table without prescribing one kit-local identity hash algorithm as universal?
 - Does the artifact ask routine questions instead of continuing with evidence or safe defaults?

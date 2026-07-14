@@ -91,3 +91,33 @@ Return a diagnostic error envelope from `dream_team_implement` for infrastructur
 
 ### OpenSpec Follow-Up
 maybe
+
+## FB-2026-07-13-direct-subagent-cli-fallback
+
+Source: main-agent
+Role: main-agent
+Type: instruction-conflict
+Severity: high
+Recurrence: current-session-once
+Status: open
+
+### Complaint
+The evaluation contract prescribed direct CLI continuation with `--agent sdet-quality-engineer`, but OpenCode silently replaced that subagent with the default primary agent.
+
+### Context
+Fresh-process role and SDET-continuation acceptance for the Change-Ready SDLC.
+
+### Evidence From Current Session
+OpenCode 1.17.15 emitted `agent "<name>" is a subagent, not a primary agent. Falling back to default agent` for the production, SDET, and final-review subagent names. The resulting sessions used primary-agent tools and behavior instead of the requested leaf roles.
+
+### Impact
+Role-refusal and same-SDET continuity evidence can be falsely attributed to the wrong agent, invalidating lifecycle qualification and cross-repository confidence.
+
+### Desired Future
+Runtime evaluation must dispatch subagents through the primary orchestrator's supported task adapter and verify both parent and child session/role identity. Unsupported direct CLI invocation must fail closed.
+
+### Proposed Direction
+Replace the direct subagent `opencode run --agent ...` recipe with primary-session continuation plus explicit child-session resume through the discovered runtime continuation adapter, and add a regression oracle for CLI fallback.
+
+### OpenSpec Follow-Up
+yes

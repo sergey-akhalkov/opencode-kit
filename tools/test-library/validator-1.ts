@@ -16,6 +16,7 @@ import {
   lines,
   libraryRoot,
 } from "../test-helpers/library.ts";
+import { changeReadyValidatorTests } from "./validator-change-ready.ts";
 
 const root = libraryRoot;
 
@@ -68,8 +69,9 @@ export const validatorTests1: TestCase[] = [
         "9. `Harden`: feed failures back into production fixes.",
         "10. `Review Gate`: use relevant read-only reviewers only when risk justifies them.",
         "11. `Final Validation`: broaden validation when boundaries are affected.",
-        "12. `Handoff`: report changed files and evidence.",
-        "13. `Process Improvement`: capture friction with `complain`.",
+        "12. `Final Candidate Review`: run the mandatory independent post-validation review.",
+        "13. `Handoff`: report changed files and evidence.",
+        "14. `Process Improvement`: capture friction with `complain`.",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -86,7 +88,7 @@ export const validatorTests1: TestCase[] = [
         "",
         "## Universal Development Loop",
         "",
-        "Intake -> Evidence -> Baseline Proof -> Small Slice -> Happy Path -> Happy-Path Proof -> Risk Discovery -> Negative Tests -> Harden -> Review Gate -> Final Validation -> Handoff -> Process Improvement",
+        "Intake -> Evidence -> Baseline Proof -> Small Slice -> Happy Path -> Happy-Path Proof -> Risk Discovery -> Negative Tests -> Harden -> Review Gate -> Final Validation -> Final Candidate Review -> Handoff -> Process Improvement",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -116,13 +118,14 @@ export const validatorTests1: TestCase[] = [
       assertSuccess(invokeValidator(fixture), "Bounded implementation worker should pass validation.");
     },
   },
+  ...changeReadyValidatorTests,
   {
     name: "validator rejects unsupported implementation worker bash allow",
     run: () => {
       const fixture = newLibraryFixture("implementation-worker-extra-bash");
       const workerPath = addImplementationWorkerFixture(fixture);
       const worker = fs.readFileSync(workerPath, "utf8");
-      writeText(workerPath, worker.replace("    \"git diff*\": allow", "    \"git diff*\": allow\n    \"git push*\": allow"));
+      writeText(workerPath, worker.replace("  bash: deny", "  bash:\n    \"*\": deny\n    \"git push*\": allow"));
       const result = invokeValidator(fixture);
       assertFailure(result, "Implementation worker must reject unsupported bash allow rules.");
       assertOutputContains(result, "unsupported bash permission", "Implementation worker permission failure should name unsupported bash permission.");
@@ -408,7 +411,7 @@ export const validatorTests1: TestCase[] = [
         "",
         "## Contract Reference",
         "",
-        "This reviewer follows the shared contract defined at `instructions/leaf-reviewer-agent-contract.md` (Leaf Contract, Feedback Ledger, Evidence Rules, Severity Scale, Prevention Feedback, Output Schema).",
+        "`instructions/leaf-reviewer-agent-contract.md`",
         "",
         "## Output",
         "",
@@ -456,7 +459,8 @@ export const validatorTests1: TestCase[] = [
         "You are a read-only demo reviewer.",
         "",
         "## Contract Reference",
-        "This reviewer follows the shared contract defined at `instructions/leaf-reviewer-agent-contract.md` (Leaf Contract, Feedback Ledger, Evidence Rules, Severity Scale, Prevention Feedback, Output Schema).",
+        "",
+        "`instructions/leaf-reviewer-agent-contract.md`",
         "",
         "## Output",
         "",
@@ -507,7 +511,7 @@ export const validatorTests1: TestCase[] = [
         "",
         "## Contract Reference",
         "",
-        "This reviewer follows the shared contract defined at `instructions/leaf-reviewer-agent-contract.md` (Leaf Contract, Feedback Ledger, Evidence Rules, Severity Scale, Prevention Feedback, Output Schema).",
+        "`instructions/leaf-reviewer-agent-contract.md`",
         "",
         "## Output",
         "",
@@ -653,7 +657,7 @@ export const validatorTests1: TestCase[] = [
       const fixture = newLibraryFixture(`session-delivery-binding-${token.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
       addSessionDeliveryBindingFixture(fixture);
       const agentsPath = path.join(fixture, "REPO_AGENTS.md");
-      writeText(agentsPath, fs.readFileSync(agentsPath, "utf8").replace(token, "[missing-binding-token]"));
+      writeText(agentsPath, fs.readFileSync(agentsPath, "utf8").replaceAll(token, "[missing-binding-token]"));
       const result = invokeValidator(fixture);
       assertFailure(result, `Missing binding token should fail validation: ${token}`);
       assertOutputContains(result, token, `Validation output should name missing binding token: ${token}`);
@@ -695,7 +699,7 @@ export const validatorTests1: TestCase[] = [
         "",
         "## Contract Reference",
         "",
-        "This reviewer follows the shared contract defined at `instructions/leaf-reviewer-agent-contract.md` (Leaf Contract, Feedback Ledger, Evidence Rules, Severity Scale, Prevention Feedback, Output Schema).",
+        "`instructions/leaf-reviewer-agent-contract.md`",
         "",
         "## Prevention Feedback",
         "",
@@ -764,6 +768,23 @@ export const validatorTests1: TestCase[] = [
       const result = invokeValidator(fixture);
       assertFailure(result, "Duplicate catalog entries should fail validation.");
       assertOutputContains(result, "catalog has duplicate 'demo-skill'", "Duplicate catalog failure should name the duplicate entry.");
+    },
+  },
+  {
+    name: "validator rejects shared-policy non-object roots and machineOverride without leaking content",
+    run: () => {
+      const secret = "private-config-value-must-not-leak";
+      for (const [name, content, diagnostic] of [
+        ["scalar", `"${secret}"\n`, "Invalid OpenCode config root"], ["array", `["${secret}"]\n`, "Invalid OpenCode config root"],
+        ["null", "null\n", "Invalid OpenCode config root"], ...[true, false, null].map((value) => [`machine-override-${String(value)}`, `{ "machineOverride": ${String(value)}, "provider": "${secret}" }\n`, "Unsupported OpenCode config field 'machineOverride'"]),
+      ]) {
+        const fixture = newLibraryFixture(`config-root-${name}`);
+        writeText(path.join(fixture, "opencode.json"), content);
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${name} OpenCode config must fail closed.`);
+        assertOutputContains(result, diagnostic, `${name} must report the shared policy problem class.`);
+        assertOutputExcludes(result, secret, `${name} diagnostics must not expose config content.`);
+      }
     },
   },
 ];

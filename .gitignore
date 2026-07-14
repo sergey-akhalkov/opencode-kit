@@ -1,5 +1,6 @@
 node_modules/
 .dream-team/
 .opencode/state/
+/.review-evidence/
 /global/opencode.json
 /global/opencode.local.json

@@ -1,20 +1,8 @@
 export const IMPLEMENTATION_WORKER_FILE = "implementation-worker.md";
 
+/** Scalar only: permission.bash = deny. Every nested bash rule is rejected. */
 export const ALLOWED_IMPLEMENTATION_WORKER_BASH_RULES: ReadonlyMap<string, "deny" | "allow"> = new Map([
-  ["permission.bash.*", "deny"],
-  ["permission.bash.git status*", "allow"],
-  ["permission.bash.git diff*", "allow"],
-  ["permission.bash.npm test*", "allow"],
-  ["permission.bash.npm run test*", "allow"],
-  ["permission.bash.npm run validate*", "allow"],
-  ["permission.bash.npm run lint*", "allow"],
-  ["permission.bash.npm run typecheck*", "allow"],
-  ["permission.bash.node tools/test-*.ts", "allow"],
-  ["permission.bash.cargo test*", "allow"],
-  ["permission.bash.cargo check*", "allow"],
-  ["permission.bash.cargo clippy*", "allow"],
-  ["permission.bash.go test*", "allow"],
-  ["permission.bash.dotnet test*", "allow"],
+  ["permission.bash", "deny"],
 ]);
 
 export const IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS: readonly string[] = [
@@ -31,37 +19,55 @@ export const IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS: readonly string[] = [
 
 export const IMPLEMENTATION_WORKER_REQUIRED_TEXT: readonly string[] = [
   "## Worker Contract",
-  "one bounded work slice",
-  "Role",
+  "one bounded production work slice",
+  "Universal Task Briefing Contract",
   "Write scope",
-  "Do not edit outside write scope",
+  "Do not edit outside the exact production write scope",
   "Do not ask the user questions",
   "No commits",
-  "observable proof",
-  "fresh-context",
-  "test artifacts",
-  "main-session validation gate",
+  "smallest complete happy path",
+  "Never create or modify automated tests",
+  "proof procedure",
+  "Blockers",
+  "Residual Risks",
   "## Feedback Ledger",
   "docs/feedbacks",
   "`complain`",
   "IMPLEMENTATION_WORKER_REPORT",
-  "Run:",
-  "Worker:",
 ];
 
+/**
+ * Exact D15/SDLC-010 same-slice continuation tokens required in the implementation-worker prompt.
+ * Diagnostics must name the missing token and affected artifact.
+ */
+export const IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT: readonly string[] = [
+  "## Same-Slice Continuation",
+  "Only the main-session orchestrator may resume",
+  "Never self-resume",
+  "never nest agents",
+  "create or resume specialist sessions",
+  "complete continuation brief",
+  "exact current Semantic Candidate Identity, Package Identity, and Identity Recipe",
+  "explicit objective text",
+  "explicit brief delta",
+  "unchanged forbidden actions",
+  "original exact production ownership/write scope",
+  "role, objective, and original exact production ownership/write scope",
+  "role, objective, ownership, or material scope",
+  "prior Applicable Proof",
+];
+
+/** Tokens required in maintenance-route handoff wording (no Role:testing / Mission list). */
 export const IMPLEMENTATION_WORKER_HANDOFF_FIELDS: readonly string[] = [
-  "Mission",
-  "Role",
-  "Read scope",
-  "Write scope",
-  "Forbidden",
+  "Universal Task Briefing Contract",
+  "Acceptance Criteria",
   "Verification",
-  "acceptance criteria",
 ];
 
 export const IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT: readonly string[] = [
   "implementation-worker",
+  "production-only",
   "non-overlapping write scope",
-  "clear acceptance criteria",
-  "focused validation gate",
+  "Universal Task Briefing Contract",
+  "sdet-quality-engineer",
 ];
