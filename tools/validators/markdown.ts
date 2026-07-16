@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { ValidationContext } from "./context.ts";
 import { toPosixPath } from "./context.ts";
+import { getNestedFrontmatterString } from "./frontmatter.ts";
 
 const forbiddenCodeExtensions = new Set([
   ".cjs",
@@ -144,6 +145,14 @@ export function validateMarkdownFile(
       "global/AGENTS.md",
       "templates/project/AGENTS.md",
     ].includes(relative);
+  // Generated OpenSpec skills are not repository-owned; skip only the foreign workflow warning.
+  // Eligibility requires actual nested metadata.generatedBy from leading frontmatter only
+  // (not body text and not a literal top-level dotted key).
+  let isGeneratedOpenSpecSkill = false;
+  if (/^\.opencode\/skills\/openspec-[^/]+\/SKILL\.md$/.test(relative)) {
+    const generatedBy = getNestedFrontmatterString(text, "metadata", "generatedBy");
+    isGeneratedOpenSpecSkill = generatedBy != null;
+  }
   if (isInstructionArtifact) {
     for (const reference of legacyToolingReferences) {
       if (text.includes(reference)) {
@@ -162,7 +171,12 @@ export function validateMarkdownFile(
   const mentionsRiskDrivenWorkflow =
     /\b(Universal Development Loop|happy[- ]path|risk[- ]driven|risk discovery|fresh-context testing subagent|testing subagent|negative\/end-to-end|negative and end-to-end)\b/is.test(text);
 
-  if (isInstructionArtifact && mentionsImplementation && !mentionsRiskDrivenWorkflow) {
+  if (
+    isInstructionArtifact &&
+    !isGeneratedOpenSpecSkill &&
+    mentionsImplementation &&
+    !mentionsRiskDrivenWorkflow
+  ) {
     ctx.addWarning(`Implementation-related artifact language lacks happy-path-first risk-driven testing guidance: ${file}`);
   }
   const staleTestOrdering =

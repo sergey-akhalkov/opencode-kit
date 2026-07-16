@@ -121,3 +121,33 @@ Replace the direct subagent `opencode run --agent ...` recipe with primary-sessi
 
 ### OpenSpec Follow-Up
 yes
+
+## FB-2026-07-16-strict-validation-baseline-noise
+
+Source: main-agent
+Role: main-agent
+Type: tooling-friction
+Severity: medium
+Recurrence: unknown
+Status: open
+
+### Complaint
+A one-file instruction change was blocked by strict validation warnings in three unrelated, unchanged files.
+
+### Context
+The Change-Ready brief locked `npm run validate:strict` before mutation without first checking whether the repository baseline already passed that command.
+
+### Evidence From Current Session
+`npm run validate:strict` failed on warnings in three `.opencode/skills/**/SKILL.md` files outside the candidate scope. `npm run validate` completed successfully with the same warnings, and the scoped candidate identity remained unchanged.
+
+### Impact
+Candidate readiness becomes blocked by unrelated repository debt, and the original small task cannot finish without an owner-approved scope expansion.
+
+### Desired Future
+Validation adapter discovery should run a read-only baseline preflight before locking a strict gate. Existing failures should be separated from candidate regressions without weakening genuinely mandatory project policy.
+
+### Proposed Direction
+Add a pre-mutation strict-validation preflight or a deterministic baseline-versus-candidate warning comparison. If the baseline already fails, require an explicit owner decision before selecting a gate that demands a clean repository.
+
+### OpenSpec Follow-Up
+maybe

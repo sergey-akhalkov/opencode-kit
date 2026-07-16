@@ -363,6 +363,89 @@ export const validatorTests2: TestCase[] = [
     },
   },
   {
+    name: "validator exempts generated OpenSpec skills only from missing risk-driven guidance",
+    run: () => {
+      const fixture = newLibraryFixture("generated-openspec-risk-guidance-exemption");
+      const skillPath = path.join(fixture, ".opencode", "skills", "openspec-generated-fixture", "SKILL.md");
+      const generatedSkill = lines([
+        "---",
+        "name: openspec-generated-fixture",
+        "description: Use when testing generated OpenSpec validation.",
+        "metadata:",
+        "  author: openspec",
+        "  generatedBy: \"1.6.0\"",
+        "---",
+        "",
+        "# Generated OpenSpec Fixture",
+        "",
+        "This skill can implement code changes.",
+        "",
+        "## Output",
+        "",
+        "Return implementation notes.",
+        "",
+      ]);
+      writeText(skillPath, generatedSkill);
+
+      const exemptResult = invokeValidator(fixture);
+      assertSuccess(exemptResult, "Generated OpenSpec implementation guidance should pass without repository-owned workflow guidance.");
+      assertOutputContains(exemptResult, "warnings=0", "Generated OpenSpec implementation guidance should not emit warnings.");
+      assertOutputExcludes(exemptResult, "happy-path-first risk-driven testing guidance", "Generated OpenSpec skills should omit only the foreign workflow warning.");
+
+      const nonExemptGeneratedMarkers = [
+        {
+          name: "body-only generatedBy",
+          frontmatter: [],
+          body: ["generatedBy: \"1.6.0\"", ""],
+        },
+        {
+          name: "top-level generatedBy",
+          frontmatter: ["generatedBy: \"1.6.0\""],
+          body: [],
+        },
+        {
+          name: "literal dotted top-level metadata.generatedBy",
+          frontmatter: ["metadata.generatedBy: \"1.6.0\""],
+          body: [],
+        },
+        {
+          name: "blank metadata.generatedBy",
+          frontmatter: ["metadata:", "  generatedBy: \"   \""],
+          body: [],
+        },
+      ];
+      for (const markerCase of nonExemptGeneratedMarkers) {
+        writeText(skillPath, lines([
+          "---",
+          "name: openspec-generated-fixture",
+          "description: Use when testing generated OpenSpec validation.",
+          ...markerCase.frontmatter,
+          "---",
+          "",
+          "# Generated OpenSpec Fixture",
+          "",
+          ...markerCase.body,
+          "This skill can implement code changes.",
+          "",
+          "## Output",
+          "",
+          "Return implementation notes.",
+          "",
+        ]));
+        const nonExemptResult = invokeValidator(fixture);
+        assertSuccess(nonExemptResult, `${markerCase.name} should remain warning-only.`);
+        assertOutputContains(nonExemptResult, "WARN:", `${markerCase.name} should emit a visible warning.`);
+        assertOutputContains(nonExemptResult, "happy-path-first risk-driven testing guidance", `${markerCase.name} should not qualify for the generated workflow-warning exemption.`);
+      }
+
+      writeText(skillPath, `${generatedSkill}Trailing whitespace remains invalid. \n`);
+      const invalidResult = invokeValidator(fixture);
+      assertFailure(invalidResult, "Generated OpenSpec skills should remain subject to unrelated Markdown validation.");
+      assertOutputContains(invalidResult, "Trailing whitespace:", "Generated OpenSpec skills should retain trailing-whitespace diagnostics.");
+      assertOutputExcludes(invalidResult, "happy-path-first risk-driven testing guidance", "Unrelated failures should not restore the exempt workflow warning.");
+    },
+  },
+  {
     name: "validator accepts implementation guidance with observable proof and independent risk discovery",
     run: () => {
       const fixture = newLibraryFixture("compliant-risk-driven-guidance");

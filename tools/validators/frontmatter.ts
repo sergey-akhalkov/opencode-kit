@@ -81,3 +81,44 @@ export function getFrontmatterMap(
   flattenYamlMap(parsed as Record<string, unknown>, "", values, ctx, file);
   return values;
 }
+
+/**
+ * Side-effect-free read of a nested string from leading YAML frontmatter.
+ * Requires an actual parent mapping and child property; literal dotted top-level
+ * keys (e.g. `metadata.generatedBy`) do not match. Emits no diagnostics.
+ */
+export function getNestedFrontmatterString(
+  text: string,
+  parentKey: string,
+  childKey: string,
+): string | null {
+  const match = text.match(/^---\r?\n(?<body>[\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  if (!match?.groups?.body) {
+    return null;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = yaml.load(match.groups.body);
+  } catch {
+    return null;
+  }
+
+  if (parsed == null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return null;
+  }
+
+  const root = parsed as Record<string, unknown>;
+  const parent = root[parentKey];
+  if (parent == null || typeof parent !== "object" || Array.isArray(parent)) {
+    return null;
+  }
+
+  const child = (parent as Record<string, unknown>)[childKey];
+  if (typeof child !== "string") {
+    return null;
+  }
+
+  const trimmed = child.trim();
+  return trimmed !== "" ? trimmed : null;
+}

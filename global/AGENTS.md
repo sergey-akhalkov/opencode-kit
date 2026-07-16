@@ -76,8 +76,12 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 
 - Communicate with Sergey in chat only and exclusively in Russian. Keep all non-chat artifacts and technical materials, including code, tests, documentation, comments, commit messages, PR/MR text, specs, prompts, tool-facing content, schemas, and generated files, exclusively in English unless Sergey explicitly asks otherwise.
 - Record the user's preferred response language explicitly. If no preference is known, follow the user's language in the current conversation.
+- Make every user-facing message — progress updates, final answers, warnings, and questions — as short as practical while still giving the information needed to understand the situation or decide.
+- Use plain, concrete language. Do not assume domain expertise. Prefer everyday wording over jargon or acronyms when it stays accurate.
+- When a specialist term, jargon word, or acronym is necessary, define it immediately in one short phrase or sentence. If why it matters is not obvious, add that in the same brief definition.
 - Preserve exact names for APIs, commands, paths, filenames, protocol terms, product names, and established technical expressions.
-- When asking the user a question, provide concise answer options when useful. Put the recommended option first and explain why.
+- Simplicity must not remove or distort material facts, constraints, risks, uncertainty, or exact technical identifiers. Prefer short steps or a small example over inaccurate simplification.
+- When asking the user a question, provide concise answer options when useful. Put the recommended option first, mark it clearly as recommended, and state the reason. For every option, state in simple brief language: what selecting it does, its main advantage, and its main disadvantage.
 - Do not offer catch-all options when the UI/tool already provides a custom answer path.
 
 ## Automation Over Instructions
