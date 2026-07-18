@@ -140,6 +140,7 @@ const EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT = [
   "Task/Repro Coverage Matrix",
   "After Applicable Proof",
   "do not demand systematic tests before the production happy path and Applicable Proof",
+  "do not invent acceptance scope",
 ];
 
 const EXPECTED_REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT = [
@@ -316,12 +317,10 @@ const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
   "Small Slice",
   "Happy Path",
   "Happy-Path Proof",
-  "Risk Discovery",
-  "Negative Tests",
+  "Focused Validation",
+  "Edge Inspection",
   "Harden",
   "Review Gate",
-  "Final Validation",
-  "Final Candidate Review",
   "Handoff",
   "Process Improvement",
 ];
@@ -341,8 +340,8 @@ const tests: TestCase[] = [
         "separate fresh-context testing subagent",
         "independent matrix of realistic",
         "Prioritize end-to-end tests",
-        "feed qualifying failures (mandatory-gate or reproducible P0/P1 serious defects) found by the testing subagent back into production fixes",
-        "This mandatory gate is distinct from the optional domain Review Gate",
+        "feed qualifying failures (mandatory-gate or reproducible P0/P1 serious defects) back into production fixes",
+        "This optional gate does not replace independent Final Candidate Review on the qualification path",
         "original requirements, happy-path proof, testing subagent/session, risk matrix",
       ]) {
         assert(workflow.includes(evidence), `Canonical workflow is missing required risk-driven evidence: ${evidence}`);
@@ -355,7 +354,8 @@ const tests: TestCase[] = [
       const projectTemplate = fs.readFileSync(path.join(root, "templates", "project", "AGENTS.md"), "utf8");
       for (const token of [
         "active global OpenCode config",
-        "Missing active global `AGENTS.md` or `change-ready-sdlc` blocks",
+        "Missing active global `AGENTS.md` blocks Material/qualification work that requires it",
+        "Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill",
         "fresh discovered conforming SDET session",
         "`sdet-quality-engineer` is the optional default SDET adapter only",
         "unresolved validation procedures must be discovered before qualification",
@@ -374,7 +374,7 @@ const tests: TestCase[] = [
       const globalAgents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
       for (const token of [
         "If optional tooling or evidence helpers required by a skill are unavailable",
-        "Absence of a mandatory Change-Ready capability or gate follows the canonical `change-ready-sdlc` skill and blocks qualification",
+        "Absence of a mandatory Change-Ready capability or gate on the qualification path follows the canonical `change-ready-sdlc` skill and blocks qualification",
         "do not weaken mandatory gates with a generic unavailable-tool fallback",
       ]) {
         assert(globalAgents.includes(token), `Unavailable-tool carve-out missing mandatory-capability oracle: ${token}`);

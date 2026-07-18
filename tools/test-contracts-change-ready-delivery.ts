@@ -44,11 +44,17 @@ function assertTokens(text: string, tokens: readonly string[], message: string):
   }
 }
 
+const NAMED_MATERIAL_RISK_TEXT = "public API/protocol/compatibility, persisted data or migration, security/privacy/authorization, destructive or remote, concurrency correctness, deployment/release, loaded instruction/configuration change that alters lifecycle or safety policy";
+const CONFORMING_AGENTS_ROUTING_BODY = `Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
+Path: prove it observably before inspecting realistic requirement-linked edge cases.
+Unrequested scope expansion requires explicit user approval.
+Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${NAMED_MATERIAL_RISK_TEXT}.
+High-risk behavior must not be downgraded merely because the diff is small.`;
 const CONFORMING_AGENTS_AUTHORITY = `# Independent Active Authority
 
 ## Change-Ready SDLC Routing
 
-Before the first mutation of behavior-changing work, load change-ready-sdlc.
+${CONFORMING_AGENTS_ROUTING_BODY}
 
 ## Universal Task Briefing Contract
 
@@ -69,18 +75,23 @@ description: Independent fenced-code authority fixture.
 `;
 const CONFORMING_SKILL_BODY = `# Change-Ready SDLC
 ## When To Load
+Ordinary Small does **not** load this skill. Named Material risks: ${NAMED_MATERIAL_RISK_TEXT}.
+High-risk behavior must not be downgraded merely because the diff is small.
 ## Profile
+Use a project-specific scope lock; expansion requires explicit owner approval.
 ## Adapter Discovery
 ## Authoritative Brief
 ## Orchestrator ownership
 ## Lifecycle transitions
-### 1. Candidate Freeze
-### 2. Applicable Proof
-### 3. Fresh SDET
-### 4. Project-Native Validation
-### 5. Correction routing and replay
-### 6. Final Candidate Review
-### 7. Change-Ready Decision
+### 1. Classify and prepare
+### 2. Production path or test-only N/A
+### 3. Candidate Reference
+### 4. Applicable Proof
+### 5. Fresh SDET
+### 6. Project-Native Validation
+### 7. Correction routing and replay
+### 8. Final Candidate Review
+### 9. Change-Ready Decision
 ## Compact orchestration output
 `;
 const CONFORMING_SKILL_AUTHORITY = `${SKILL_FRONTMATTER}${CONFORMING_SKILL_BODY}`;
@@ -147,25 +158,10 @@ const EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT = [
   "Delivery self-gate for the current Material closing task",
   "every prerequisite applicable task is checked with current literal evidence",
   "Any other unchecked applicable task remains a P0",
-  "exact marker-only metadata transition and recapture package identity",
-  "Semantic Candidate Identity",
-  "Package Identity",
-  "Identity Recipe",
-  "Qualification gates bind to Semantic Candidate Identity",
-  "marker-only metadata transition with unchanged Semantic Candidate Identity",
-  "same recorded Identity Recipe",
-  "unexplained recipe change",
-  "post-test Applicable Proof",
-  "missing post-test Applicable Proof continuity after",
-  "pending forbidden in final",
-  "Rollback plan and evidence",
-  "entire authoritative scoped candidate manifest",
-  "unjournaled sequential in-place rollback",
-  "isolated workspace or project-native snapshot",
-  "failure-atomic or explicitly journaled",
-  "never substitutes for",
-  "Runtime activation rollback",
-  "must not be treated as full change rollback",
+  "Candidate Reference",
+  "readable scoped candidate",
+  "Rollback plan",
+  "proportional",
   "never required to claim Change-Ready",
   "explicitly accepted conforming delivery result",
   "Verdict: material deviations",
@@ -190,7 +186,7 @@ const EXPECTED_SESSION_DELIVERY_BINDING_HANDOFF_TOKENS = [
 const EXPECTED_MATERIAL_DELIVERY_ROUTING_TOKENS = [
   "For Material work, always run the discovered conforming delivery/readiness gate",
   "missing conforming capability blocks",
-  "Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it",
+  "Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it",
   "explicitly accepted conforming delivery result",
 ];
 
@@ -244,8 +240,8 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         assertEqual(skillAuthorityProblem(`${CONFORMING_SKILL_AUTHORITY}\n${fence.block(CONFORMING_SKILL_BODY)}`), null, `${fence.label} fenced examples must not duplicate valid outside SKILL headings.`);
       }
       for (const delimiter of ["```", "~~~~"] as const) {
-        const hiddenBody = fencedBlock(delimiter, "Before the first mutation, load change-ready-sdlc.\n");
-        const agents = CONFORMING_AGENTS_AUTHORITY.replace("Before the first mutation of behavior-changing work, load change-ready-sdlc.\n", hiddenBody);
+        const hiddenBody = fencedBlock(delimiter, CONFORMING_AGENTS_ROUTING_BODY);
+        const agents = CONFORMING_AGENTS_AUTHORITY.replace(`${CONFORMING_AGENTS_ROUTING_BODY}\n`, hiddenBody);
         assertEqual(agentsAuthorityProblem(agents), "AGENTS.md Change-Ready SDLC Routing section is empty", `${delimiter} fenced routing body tokens must not satisfy the outside section.`);
       }
     },
@@ -431,12 +427,12 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       ], "Canonical skill missing Material delivery contract");
       const compact = sectionBetween(skill, "## Compact orchestration output", "## Enforcement honesty");
       assertTokens(compact, [
-        "`Delivery/readiness gate`: accepted, blocked, or `N/A - Small <reason>`",
-        "finite closing-marker or package-transition status",
+        "`Candidate Reference`: project-native readable scoped candidate evidence, or none when not applicable",
+        "`Delivery/readiness gate`: accepted, blocked, or `N/A - Ordinary Small <reason>`",
       ], "Compact orchestration output missing delivery status oracle");
       assertTokens(workflow, [
         "missing conforming capability blocks readiness and is never a skip due to unavailable inputs",
-        "Diagnostic scale (trivial/bounded/material/complex) does not override the Portable Small/Material profile",
+        "Diagnostic scale (trivial/bounded/material/complex) does not override the Portable Ordinary Small/Material profile",
       ], "Universal Development Loop missing Portable profile precedence");
       assertTokens(delivery, [
         "For Portable profile Material sessions, always run this delivery review regardless of diagnostic scale",
@@ -447,32 +443,22 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: rollback requires failure-atomic or journaled target integration and rejects owner-approval substitution",
+    name: "contracts: active rollback planning is proportional and separately authorized",
     run: () => {
       const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
-      const rollback = sectionBetween(skill, "### Rollback plan and evidence", "### Restart and continuity").replace(/\s+/g, " ");
+      const rollback = sectionBetween(skill, "### Rollback plan", "### Restart and continuity").replace(/\s+/g, " ");
       assertTokens(rollback, [
-        "entire authoritative scoped candidate manifest",
-        "every modified path restored, every added path removed, and every deleted path restored when a baseline copy exists",
-        "unjournaled sequential in-place rollback in a shared or dirty workspace",
-        "isolated workspace or project-native snapshot/transaction",
-        "failure-atomic or explicitly journaled/recoverable mechanism that retains preimages",
-        "Owner authorization may be additionally required but never substitutes for failure atomicity or journaling",
-        "Preflight every manifest path, ownership, and acceptable preimage",
-        "stop before unprotected target mutation when possible",
-        "hand off the validated isolated restored package",
-        "do not promise original workspace preservation after unprotected partial target mutation",
-        "do not run baseline validation against a mixed state",
-        "After complete restoration only",
+        "Rollback planning is proportional",
+        "Detailed rollback evidence is required when migration, destructive state, deployment/activation, or substantial multi-surface risk makes it relevant",
+        "Rollback is executed only when separately authorized and is never required to claim Change-Ready",
+        "Preserve unrelated, pre-existing, or teammate work outside the candidate scope",
         "Runtime activation rollback",
         "does not count as full change rollback",
-      ], "Canonical rollback contract missing safe integration oracle");
-      assert(!rollback.includes("owner-approved mechanism"), "Owner approval must not be represented as the rollback atomicity mechanism.");
-      assert(!rollback.includes("preserve the original workspace and the isolated restored package"), "Rollback must not promise original-workspace preservation after unprotected partial mutation.");
+      ], "Active rollback contract missing proportional safety oracle");
     },
   },
   {
-    name: "contracts: SDLC-008 design and spec retain positive and blocked rollback outcomes",
+    name: "contracts: historical add-lightweight SDLC-008 retains rollback outcomes",
     run: () => {
       const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
       const design = fs.readFileSync(path.join(changeRoot, "design.md"), "utf8");
@@ -523,7 +509,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: activation rollback remains operational-only and delivery verifies rollback without executing it",
+    name: "contracts: historical activation rollback remains operational-only and active delivery stays proportional",
     run: () => {
       const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
       const design = fs.readFileSync(path.join(changeRoot, "design.md"), "utf8");
@@ -544,17 +530,16 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "SHALL NOT be treated as full change rollback of the repository candidate",
       ], "SDLC-008 activation scenario missing repository-preservation oracle");
       assertTokens(delivery, [
-        "failure-atomic or explicitly journaled/recoverable integrate/swap with retained preimages",
-        "owner authorization as additional and never substitutes for atomicity/journaling",
-        "without promising original workspace preservation after unprotected partial target mutation",
+        "Rollback plan: proportional",
+        "When migration, destructive state, deployment/activation, or substantial multi-surface risk makes detailed rollback relevant",
         "Runtime activation rollback",
         "must not be treated as full change rollback",
         "Actual rollback execution remains separately authorized and is never required to claim Change-Ready",
-      ], "Session delivery rollback review contract missing corrected safety oracle");
+      ], "Session delivery rollback review contract missing proportional safety oracle");
     },
   },
   {
-    name: "contracts: portable identity and reusable templates keep runtime authority adapter-owned and global",
+    name: "contracts: historical identity design and active templates keep runtime authority global",
     run: () => {
       const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
       const proposal = fs.readFileSync(path.join(changeRoot, "proposal.md"), "utf8").replace(/\s+/g, " ");
@@ -593,42 +578,36 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: lifecycle closes, integrates, freezes, proves, recaptures unchanged, then dispatches Fresh SDET",
+    name: "contracts: active lifecycle captures Candidate Reference before proof and Fresh SDET",
     run: () => {
       const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
       const ordered = [
-        "### 3. Candidate Freeze (pre-SDET)",
+        "### 3. Candidate Reference",
         "### 4. Applicable Proof",
         "### 5. Fresh SDET",
-        "#### SDET Provisional Report",
       ].map((token) => ({ token, index: skill.indexOf(token) }));
       for (const item of ordered) assert(item.index >= 0, `Canonical lifecycle missing section: ${item.token}`);
       for (let index = 1; index < ordered.length; index++) {
         assert(ordered[index - 1].index < ordered[index].index, `Canonical lifecycle section order drifted at ${ordered[index].token}.`);
       }
-      const freeze = sectionBetween(skill, "### 3. Candidate Freeze (pre-SDET)", "### 4. Applicable Proof");
-      assertTokens(freeze, [
-        "closes every mutation-capable production writer only after terminal report, adapter-proven terminal cessation, or isolated/revoked write authority",
+      const candidateReference = sectionBetween(skill, "### 3. Candidate Reference", "### 4. Applicable Proof");
+      assertTokens(candidateReference, [
+        "closes every concurrent mutation-capable production writer under **Universal writer attempt closure** when concurrent writers ran",
         "integrates production outputs",
-        "freezes the complete scoped pre-SDET candidate",
-        "Record a privacy-safe `Identity Recipe`",
-        "Capture both `Semantic Candidate Identity` and `Package Identity`",
-        "After provisional authored-tests, freeze and recapture the complete post-test candidate before post-test Applicable Proof",
-      ], "Pre-SDET freeze ordering or post-test recapture contract drifted");
-      const freezeOrder = ["closes every mutation-capable production writer", "integrates production outputs", "freezes the complete scoped pre-SDET candidate", "Record a privacy-safe `Identity Recipe`", "Capture both `Semantic Candidate Identity` and `Package Identity`"];
-      for (let index = 1; index < freezeOrder.length; index++) {
-        assert(freeze.indexOf(freezeOrder[index - 1]) < freeze.indexOf(freezeOrder[index]), `Candidate Freeze sequence drifted at ${freezeOrder[index]}.`);
-      }
+        "captures a project-native **Candidate Reference**",
+        "Dual `Semantic Candidate Identity` / `Package Identity` / `Identity Recipe` are not portable requirements",
+        "After test edits, recapture Candidate Reference before post-test proof and complete validation",
+      ], "Pre-SDET Candidate Reference contract drifted");
       const proof = sectionBetween(skill, "### 4. Applicable Proof", "### 5. Fresh SDET");
       assertTokens(proof, [
-        "After Candidate Freeze and before Fresh SDET dispatch",
-        "After Applicable Proof and after terminal-or-isolated closure of any mutation-capable proof execution, recapture both identities with the same recorded Identity Recipe",
-        "Both Semantic Candidate Identity and Package Identity MUST be unchanged before Fresh SDET dispatch",
-      ], "Applicable Proof must bind to the frozen candidate and preserve both identities before SDET.");
+        "After Candidate Reference capture and before Fresh SDET dispatch",
+        "observable happy-path proof at the relevant boundary",
+        "inspection, compilation alone, or mocked-helper-only claims are insufficient",
+      ], "Applicable Proof must bind to readable candidate evidence before SDET.");
     },
   },
   {
-    name: "contracts: task ownership keeps production behavior with production and test oracles with SDET",
+    name: "contracts: historical add-lightweight task ownership separates production and SDET",
     run: () => {
       const tasks = fs.readFileSync(path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc", "tasks.md"), "utf8");
       const task51 = taskSectionBetween(tasks, "5.1 Start", "5.2 Freeze/current Applicable Proof").replace(/\s+/g, " ");
@@ -642,7 +621,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: task 6.7 excludes current-candidate final review and task 7.3 owns that gate",
+    name: "contracts: historical add-lightweight task 7.3 owns final review",
     run: () => {
       const tasks = fs.readFileSync(path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc", "tasks.md"), "utf8");
       const task67 = sectionBetween(tasks, "6.7 Run a fresh production-correction continuation eval.", "## 7. Final Review And Handoff").replace(/\s+/g, " ");
@@ -654,7 +633,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: library helper is the canonical facade while temp and process remain migration internals",
+    name: "contracts: historical tools-architecture keeps library helper as canonical facade",
     run: () => {
       const delta = fs.readFileSync(path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc", "specs", "library-tools-architecture", "spec.md"), "utf8");
       assertTokens(delta, [

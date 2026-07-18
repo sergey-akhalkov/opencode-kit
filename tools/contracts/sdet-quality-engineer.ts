@@ -25,11 +25,7 @@ export const SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS: readonly string[] = [
 
 /**
  * Deterministic required substrings for the SDET agent body.
- * Covers fresh context, test-only/co-located safety, risk/oracle matrix,
- * real boundaries/mock exceptions, action enum, provisional/final same-context
- * handshake with input/current identity fields and Identity Recipe,
- * pending recapture rules, no production fix, no self-approval, no
- * commands/external actions, and report-only SDET_QUALITY_REPORT fields.
+ * Single report action; optional project-native Candidate Reference; no dual-identity handshake.
  */
 export const SDET_QUALITY_ENGINEER_REQUIRED_TEXT: readonly string[] = [
   "fresh context",
@@ -41,22 +37,12 @@ export const SDET_QUALITY_ENGINEER_REQUIRED_TEXT: readonly string[] = [
   "authored-tests",
   "assessed-existing-tests",
   "blocked",
-  "provisional",
-  "final",
-  "same SDET context",
   "Never fix production",
   "Never self-approve",
   "run shell",
   "SDET_QUALITY_REPORT",
-  "Phase: provisional | final",
   "Action: authored-tests | assessed-existing-tests | blocked",
-  "Input Semantic Candidate Identity",
-  "Input Package Identity",
-  "Semantic Candidate Identity",
-  "Package Identity",
-  "Identity Recipe",
-  "pending orchestrator recapture after test edits",
-  "Qualification gates bind to Semantic Candidate Identity",
+  "Candidate Reference",
   "distinct effective model",
   "same-model correlation risk",
   "Effective Model:",
@@ -64,7 +50,6 @@ export const SDET_QUALITY_ENGINEER_REQUIRED_TEXT: readonly string[] = [
   "Risk And Oracle Matrix",
   "Test Changes Or Existing Evidence",
   "Requested Validation Procedures",
-  "Validation Outcomes Received",
   "Blockers",
   "Residual Risks",
   "Actionable Continuation Items",

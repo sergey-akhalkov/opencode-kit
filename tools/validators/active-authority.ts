@@ -113,10 +113,37 @@ function sectionBodyAfterExactH2(text: string, title: string): string | null {
   return bodyLines.join("\n");
 }
 
+/** Exact stable markers required inside AGENTS Change-Ready routing (portable safety minimum). */
+const AGENTS_ROUTING_DIRECT_MAIN_MARKER =
+  "Main may directly author Ordinary Small production changes";
+const AGENTS_ROUTING_PROOF_MARKER = "prove it observably";
+const AGENTS_ROUTING_EDGE_MARKER = "realistic requirement-linked edge cases";
+const AGENTS_ROUTING_SCOPE_APPROVAL_MARKER = "explicit user approval";
+const AGENTS_ROUTING_EXPLICIT_CHANGE_READY_MARKER = "explicit Change-Ready";
+const AGENTS_ROUTING_PROJECT_REQUIRED_MARKER = "project-required qualification";
+const AGENTS_ROUTING_NO_DOWNGRADE_MARKER =
+  "must not be downgraded merely because the diff is small";
+/**
+ * Shared named Material risk classes for AGENTS routing and canonical skill authority.
+ * Exact full phrases only — weak substrings do not prove the intended safety class.
+ */
+const SHARED_MATERIAL_RISK_MARKERS: readonly { label: string; marker: string }[] = [
+  { label: "public API/protocol/compatibility", marker: "public API/protocol/compatibility" },
+  { label: "persisted data/migration", marker: "persisted data or migration" },
+  { label: "security/privacy/authorization", marker: "security/privacy/authorization" },
+  { label: "destructive/remote", marker: "destructive or remote" },
+  { label: "concurrency correctness", marker: "concurrency correctness" },
+  { label: "deployment/release", marker: "deployment/release" },
+  {
+    label: "loaded instruction/config lifecycle/safety",
+    marker: "loaded instruction/configuration change that alters lifecycle or safety policy",
+  },
+];
+
 /**
  * Structural AGENTS.md authority: distinct Markdown heading/section structure
- * (not token co-presence). One-line all-token stubs must fail.
- * Pure: no filesystem, process, environment, or logging side effects.
+ * plus deterministic Ordinary Small / Material safety minimum inside the routing section.
+ * One-line all-token stubs must fail. Pure: no filesystem, process, environment, or logging side effects.
  */
 export function agentsAuthorityProblem(text: string): string | null {
   if (text.trim() === "") {
@@ -129,11 +156,48 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (routing == null || routing.trim() === "") {
     return "AGENTS.md Change-Ready SDLC Routing section is empty";
   }
-  if (!/pre-mutation|Before the first mutation/i.test(routing)) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing pre-mutation instruction";
+  if (!routing.includes("Ordinary Small")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing Ordinary Small default";
+  }
+  if (!/Change-Ready:\s*not requested/i.test(routing)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing Change-Ready: not requested ordinary completion";
   }
   if (!routing.includes("change-ready-sdlc")) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing change-ready-sdlc load instruction";
+    return "AGENTS.md Change-Ready SDLC Routing section missing change-ready-sdlc qualification load instruction";
+  }
+  if (!/Before the first mutation|pre-mutation/i.test(routing)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing pre-mutation qualification instruction";
+  }
+  if (!routing.includes(AGENTS_ROUTING_DIRECT_MAIN_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing direct-main Ordinary Small production authorship";
+  }
+  const proofIdx = routing.indexOf(AGENTS_ROUTING_PROOF_MARKER);
+  if (proofIdx < 0) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing observable happy-path proof marker";
+  }
+  const edgeIdx = routing.indexOf(AGENTS_ROUTING_EDGE_MARKER);
+  if (edgeIdx < 0) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing realistic requirement-linked edge inspection marker";
+  }
+  if (proofIdx >= edgeIdx) {
+    return "AGENTS.md Change-Ready SDLC Routing section must order observable proof before realistic requirement-linked edge inspection";
+  }
+  if (!routing.includes(AGENTS_ROUTING_SCOPE_APPROVAL_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing explicit owner approval before unrequested scope expansion";
+  }
+  if (!routing.includes(AGENTS_ROUTING_EXPLICIT_CHANGE_READY_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing explicit Change-Ready qualification trigger";
+  }
+  if (!routing.includes(AGENTS_ROUTING_PROJECT_REQUIRED_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing project-required qualification trigger";
+  }
+  for (const risk of SHARED_MATERIAL_RISK_MARKERS) {
+    if (!routing.includes(risk.marker)) {
+      return `AGENTS.md Change-Ready SDLC Routing section missing named Material risk class: ${risk.label}`;
+    }
+  }
+  if (!routing.includes(AGENTS_ROUTING_NO_DOWNGRADE_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing no high-risk downgrade for small diffs";
   }
   if (!hasExactH2(text, "Universal Task Briefing Contract")) {
     return "AGENTS.md missing exact heading ## Universal Task Briefing Contract";
@@ -165,7 +229,7 @@ type SkillHeadingMarker = {
   test: (headingLine: string) => boolean;
 };
 
-/** Ordered lifecycle heading skeleton (stable contracts; not source-byte equality). */
+/** Ordered qualification lifecycle heading skeleton (stable contracts; not source-byte equality). */
 const SKILL_ORDERED_HEADINGS: SkillHeadingMarker[] = [
   { label: "Change-Ready title", test: (line) => /^#\s+Change-Ready\b/.test(line) },
   { label: "When To Load", test: (line) => /^##\s+When To Load\s*$/.test(line) },
@@ -180,7 +244,10 @@ const SKILL_ORDERED_HEADINGS: SkillHeadingMarker[] = [
     label: "Authoring And Gate Sequence (Lifecycle transitions)",
     test: (line) => /^##\s+Lifecycle transitions\s*$/.test(line),
   },
-  { label: "Candidate Freeze", test: (line) => /^###\s+\d+\.\s+Candidate Freeze\b/.test(line) },
+  {
+    label: "Candidate Reference",
+    test: (line) => /^###\s+\d+\.\s+Candidate Reference\b/.test(line),
+  },
   { label: "Applicable Proof", test: (line) => /^###\s+\d+\.\s+Applicable Proof\s*$/.test(line) },
   { label: "Fresh SDET", test: (line) => /^###\s+\d+\.\s+Fresh SDET\s*$/.test(line) },
   {
@@ -245,9 +312,19 @@ function skillBodyHeadingProblem(body: string): string | null {
   return null;
 }
 
+/** Exact stable markers required in the canonical skill body (portable safety minimum). */
+const SKILL_ORDINARY_NONLOAD_MARKERS: readonly string[] = [
+  "does **not** load this skill",
+  "Do not load for Ordinary Small",
+];
+const SKILL_SCOPE_LOCK_MARKER = "project-specific scope lock";
+const SKILL_OWNER_APPROVAL_MARKER = "explicit owner approval";
+const SKILL_NO_DOWNGRADE_MARKER =
+  "must not be downgraded merely because the diff is small";
+
 /**
  * Structural change-ready-sdlc SKILL.md authority: js-yaml frontmatter + ordered
- * lifecycle heading skeleton (not token co-presence or source equality).
+ * lifecycle heading skeleton + deterministic Material/Ordinary Small safety minimum.
  * Pure: no filesystem, process, environment, or logging side effects.
  */
 export function skillAuthorityProblem(text: string): string | null {
@@ -288,5 +365,28 @@ export function skillAuthorityProblem(text: string): string | null {
   if (map.description.trim() === "") {
     return "skills/change-ready-sdlc/SKILL.md frontmatter description must be nonempty";
   }
-  return skillBodyHeadingProblem(body);
+  const headingProblem = skillBodyHeadingProblem(body);
+  if (headingProblem != null) {
+    return headingProblem;
+  }
+  if (!SKILL_ORDINARY_NONLOAD_MARKERS.some((marker) => body.includes(marker))) {
+    return "skills/change-ready-sdlc/SKILL.md missing Ordinary Small non-load/default boundary";
+  }
+  if (!body.includes(SKILL_SCOPE_LOCK_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing project-specific scope-lock control";
+  }
+  if (!body.includes(SKILL_OWNER_APPROVAL_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing explicit owner approval expansion rule";
+  }
+  if (!body.includes(SKILL_NO_DOWNGRADE_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing no high-risk downgrade for small diffs";
+  }
+  // Triggers may live in description and/or body; require complete named Material classes.
+  const triggerSurface = `${map.description}\n${body}`;
+  for (const risk of SHARED_MATERIAL_RISK_MARKERS) {
+    if (!triggerSurface.includes(risk.marker)) {
+      return `skills/change-ready-sdlc/SKILL.md missing named Material risk class: ${risk.label}`;
+    }
+  }
+  return null;
 }

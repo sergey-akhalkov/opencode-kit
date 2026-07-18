@@ -8,13 +8,13 @@ Installable OpenCode development kit for reusable AI-assisted engineering workfl
 
 `opencode-dev-kit` packages reusable OpenCode skills, read-only reviewer agents with a scoped feedback-ledger write exception, bounded worker agents, project templates, instruction templates, and deterministic helper tools. Its purpose is to make work in other repositories faster, cheaper in tokens, and safer without creating a different workflow for every technology stack.
 
-The kit optimizes one process: understand the original requirements, implement and observably prove the smallest complete happy path, use an independent fresh-context testing subagent to discover realistic production risks and author negative/end-to-end tests, harden failures, validate, review, and hand off residual risks.
+The kit optimizes one process: understand the original requirements, implement and observably prove the smallest complete happy path, run focused validation, and inspect realistic requirement-linked edge cases. Ordinary Small work stays on that fast path. Material or explicit Change-Ready work adds independent fresh-context SDET risk testing, complete validation, final review, and delivery gates.
 
 ## Universal Development Loop
 
 The conceptual development loop lives in the single canonical file `instructions/universal-development-loop.md`. Step list, Token/Time Rules, Quality Defaults, and Output Shape are defined there; kit-level pointer and policy notes live in `docs/universal-development-loop.md`. Technology adapters may change commands and constraints, but not the conceptual loop; `npm run validate` enforces the single-source rule for that loop body.
 
-For behavior-changing work, the complete runtime Change-Ready adapter is the global skill `change-ready-sdlc` (loaded from the active global config directory via `OPENCODE_CONFIG_DIR`). UDL is conceptual guidance, not the sole operational authority for orchestration, proof, SDET, validation, final review, or Change-Ready readiness.
+Ordinary Small routing lives in always-loaded global `AGENTS.md`. Full qualification uses the global skill `change-ready-sdlc` (loaded from the active global config directory via `OPENCODE_CONFIG_DIR`) only for explicit Change-Ready requests, project-required qualification, or concrete Material risk. UDL is conceptual guidance, not a second competing process.
 
 ## Contents
 
@@ -146,9 +146,9 @@ npm run project:inventory -- --root <project-path> --format markdown
 - Use Headroom MCP tools only on demand for large logs, search results, JSON, or tool outputs; retrieve originals before trusting exact code, errors, or safety-critical details.
 - Route Headroom MCP through `tools/headroom-mcp-wrapper.ts` when OpenCode expects MCP prompts; the wrapper adds a small `headroom_usage_policy` prompt and proxies Headroom tools unchanged. Before spawning the child it probes `headroom --version`; when the binary is missing on `PATH` it prints `error: headroom binary not found on PATH` and exits `2`, and when the probe exits non-zero it prints `error: headroom binary not usable (exit <code>)` and exits `3`. The wrapper never relies on a buried child `error` event, so OpenCode startup fails fast with a deterministic code when Headroom is not usable.
 - Install the full kit by default, but load heavyweight skills/subagents only when they reduce total work.
-- For behavior-changing production work, dispatch a discovered conforming production author; in this kit, optional `implementation-worker` covers exact bounded non-overlapping production slices with clear acceptance criteria and a focused validation gate. If that adapter is unavailable, use another conforming production author or block—never main-session production editing. Keep research, questions, ordinary review-only work, and proven-inert content direct in the main session.
+- Ordinary Small production may be implemented directly by the main session. For delegated Material/qualification slices, optional `implementation-worker` covers exact bounded non-overlapping production slices with clear acceptance criteria and a focused validation gate. Keep research, questions, ordinary review-only work, and proven-inert content direct in the main session.
 - Run focused validation first; run broad validation when the change crosses boundaries.
-- For optional domain reviewers, use one relevant gate by risk instead of launching every domain reviewer; mandatory independent final review and Portable Material delivery/readiness gates remain required when their conditions apply.
+- For optional domain reviewers, use one relevant gate by risk instead of launching every domain reviewer; independent final review and Portable Material delivery/readiness gates remain required only when Material/explicit qualification conditions apply.
 - Convert repeated manual counting, drift checks, or report assembly into deterministic helpers.
 
 Inspect this kit's instruction context cost with:
@@ -159,7 +159,7 @@ npm run instruction:inventory -- --format markdown
 
 ### Manual Skills
 
-Manual copy of change-ready lifecycle skills, write-capable lifecycle agents, or reference-based reusable reviewers is incomplete unless the active runtime also loads the shared contracts from `<active-global-config-dir>/AGENTS.md` (Change-Ready trigger, Universal Task Briefing Contract, shared reviewer invariants, and feedback-ledger policy). Resolve `<active-global-config-dir>` to `OPENCODE_CONFIG_DIR` when set; otherwise use `~/.config/opencode`. When `OPENCODE_CONFIG_DIR` is set, the default `~/.config/opencode` is bypassed and not loaded. Prefer full-kit install via `OPENCODE_CONFIG_DIR` pointing at `global/`; selective copy alone does not imply standalone completeness. Project-local `.opencode` paths remain allowed and do not replace the active global shared contracts.
+Manual copy of change-ready lifecycle skills, write-capable lifecycle agents, or reference-based reusable reviewers is incomplete unless the active runtime also loads the shared contracts from `<active-global-config-dir>/AGENTS.md` (Ordinary Small default routing, Material/qualification triggers, Universal Task Briefing Contract, shared reviewer invariants, and feedback-ledger policy). Resolve `<active-global-config-dir>` to `OPENCODE_CONFIG_DIR` when set; otherwise use `~/.config/opencode`. When `OPENCODE_CONFIG_DIR` is set, the default `~/.config/opencode` is bypassed and not loaded. Prefer full-kit install via `OPENCODE_CONFIG_DIR` pointing at `global/`; selective copy alone does not imply standalone completeness. Project-local `.opencode` paths remain allowed and do not replace the active global shared contracts.
 
 OpenCode skills are loaded from project or global skill folders. Copy selected skill folders from `global/skills/` into one of these locations:
 
@@ -295,10 +295,11 @@ Routing and reviewer maps assume the default `all` install profile.
 - Existing OpenSpec continuation or "what next" work -> `next-step`; consistency work -> `openspec-consistency-review`.
 - Several session-scoped follow-ups from an audit, reviewer gate, broad discovery, or validation failure -> group them into lightweight OpenSpec changes when OpenSpec exists or is approved; otherwise return grouped continuation candidates.
 - Initial MR/PR title/body preparation -> `merge-request-author`.
-- Behavior-changing work -> load `change-ready-sdlc` before the first mutation (static instruction topology; not runtime lifecycle machinery).
-- Behavior-changing production artifacts -> discovered conforming production author; optional kit default is `implementation-worker` for exact bounded non-overlapping production slices when installed. If that adapter is unavailable, use another conforming production author or block—never fall back to main-session production editing. Keep writers serial when scope is unclear, overlapping, or coupled; serial writers do not authorize main production authorship.
-- Post-proof test risk/evidence and automated-test authorship -> fresh `sdet-quality-engineer` when installed.
-- Final post-validation candidate review -> `final-candidate-reviewer` when installed.
+- Ordinary Small clear/bounded/local/reversible work -> direct main implementation, observable proof, focused validation; do not load `change-ready-sdlc` merely because behavior changes. Report `Change-Ready: not requested`.
+- Explicit Change-Ready, project-required qualification, or concrete Material risk -> load `change-ready-sdlc` before the first mutation.
+- Delegated Material/qualification production slices -> discovered conforming production author; optional kit default is `implementation-worker` for exact bounded non-overlapping production slices when installed.
+- Material/qualification post-proof systematic test risk/evidence -> fresh `sdet-quality-engineer` when installed.
+- Qualification final post-validation candidate review -> `final-candidate-reviewer` when installed.
 - Bounded first-pass helper work that benefits from cheap/offline local context, such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker` when the target machine has a configured `qwen-local` provider.
 - Exceptional hard blockers, complex bugs, or root-cause investigations where normal agents/tools already failed -> `troubleshooter`; provide prior failed attempts, allowed write scope, forbidden paths, and validation gate.
 - Session delivery-control review for historical/current todos, user prompts/detected candidate requirement signals/question replies, changed-file scope, transcript/summary, compaction/resume continuity, and validation output -> `session-delivery-reviewer`.
@@ -337,7 +338,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 ### Planning And Workflow
 
-- `change-ready-sdlc`: global instruction artifact for portable Change-Ready orchestration topology (profile, brief, freeze, proof, SDET, validation, final review, Change-Ready decision). Repository support code only validates and distributes this artifact; it does not run the lifecycle.
+- `change-ready-sdlc`: global instruction artifact for portable full-qualification orchestration (Material/explicit Change-Ready only: profile, brief, Candidate Reference, proof, SDET, validation, final review, Change-Ready decision). Ordinary Small routing lives in always-loaded `AGENTS.md`. Repository support code only validates and distributes this artifact; it does not run the lifecycle.
 - `deep-task-planning`: execution-grade plans for complex work.
 - `next-step`: discover OpenSpec-backed workstreams and choose one serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.

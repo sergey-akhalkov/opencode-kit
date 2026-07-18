@@ -2,18 +2,42 @@
 
 ## Change-Ready SDLC Routing
 
-Mandatory pre-mutation overlay for the active primary user-session agent (never a nested general-purpose subagent):
+Always-loaded routing for the active primary user-session agent (never a nested general-purpose subagent).
 
-- Before the first mutation of any behavior-changing implementation, bug fix, refactor, loaded instruction/configuration change, generated-output change, or explicit Change-Ready request, load the `change-ready-sdlc` skill. Explicit Change-Ready overrides ordinary review-only exclusion.
-- If the skill is unavailable or cannot be loaded, block behavior-changing mutation; do not invent a partial process or foreign stack default.
-- Before any behavior-changing candidate mutation, record the exact `Small` or `Material` classification, a complete cold-context Authoritative Brief from the Universal Task Briefing Contract, and project-adapter discovery. That record is required before candidate mutation itself, not only before specialist dispatch.
-- Remain the sole orchestrator: own state, serial writers unless scopes are proven isolated or non-overlapping, integration, applicable proof, candidate capture/freeze/recapture, authorized validation, owner routing, final review dispatch, local handoff, and the binary Change-Ready decision.
-- For behavior-changing candidate production artifacts, dispatch the configured production author; do not use direct edit/write tools as the production author. The same ban covers automated test authorship by the main session. Main still owns planning notes, integration, validation orchestration, local handoff text, and OpenSpec/task checkbox updates when those edits are not candidate production or test content.
-- Specialists return report-only handoffs. They do not ask the user, claim lifecycle completion, expand validation authority, or perform external operations without separate explicit authority.
-- Before first candidate mutation, record accepted acceptance criteria, project-specific scope lock, planned gate waves, correction budget, and stop line in the Authoritative Brief. After first mutation, new blocking corrections or acceptance criteria require explicit owner approval or a reproducible P0/P1 defect affecting behavior, CI, security, data integrity, or compatibility. Mandatory-gate failures, unsafe writer ownership/liveness, and unresolved owner decisions still block Change-Ready without expanding speculative product or evidence scope.
-- Keep `Required Next Actions` binding, but only for mandatory-gate or qualifying P0/P1 serious blockers. Route P2/note, coverage-only gaps, optional evidence, and wording polish to Residual Risks or a separately approved follow-up—never into blocking Required Next Actions or autonomous evidence-polish replay.
-- Plan one SDET wave, one Final Candidate Review wave, and for Material one delivery/readiness wave; replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate. Use representative high-impact evals, not exhaustive Cartesian products, unless risk, regulation, or owner requires more. Full anti-polishing detail lives only in `change-ready-sdlc`.
-- Full lifecycle detail lives only in `change-ready-sdlc`. Do not restate the complete process here.
+### Ordinary Small (default)
+
+Default for clear, bounded, local, reversible work with known focused validation and no concrete named high-risk boundary:
+
+- Do **not** load `change-ready-sdlc` merely because code, config, or generated-output behavior changes.
+- Main may directly author Ordinary Small production changes.
+- Path: understand accepted behavior → implement the smallest complete happy path → prove it observably → run focused validation → inspect only realistic requirement-linked edge cases.
+- After observable happy-path proof, main may create or update the smallest focused regression test when useful. Prefer existing tests when sufficient.
+- Ordinary completion reports `Implementation Status`, proof, validation, residual risks, and `Change-Ready: not requested`. It must not claim full qualification.
+
+### Scope expansion approval
+
+Autonomous work may include only changes necessary for accepted behavior or a concrete serious defect inside the accepted boundary. Any unrequested feature, abstraction, compatibility behavior, configuration, tooling, hardening, adjacent cleanup, new acceptance criterion, or other scope expansion must be proposed to the user and must not be implemented until explicit user approval. P2/note/theoretical/coverage-only items remain residual or separately approved follow-up.
+
+### Material and qualification triggers
+
+Before the first mutation, load `change-ready-sdlc` only when at least one applies:
+
+- explicit Change-Ready request;
+- project-required qualification;
+- concrete Material risk: public API/protocol/compatibility semantics, persisted data or migration, security/privacy/authorization, destructive or remote action, concurrency correctness, deployment/release, or a loaded instruction/configuration change that alters lifecycle or safety policy.
+
+Unknown escalates only when it can materially change accepted behavior or one of those named risk domains. Missing optional adapters or generic uncertainty alone must not force Material. High-risk behavior must not be downgraded merely because the diff is small.
+
+If the skill is unavailable when Material/qualification work requires it, block behavior-changing mutation; do not invent a partial process or foreign stack default.
+
+### Qualification path (when skill is loaded)
+
+- Remain the sole orchestrator: own state, serial writers unless scopes are proven isolated or non-overlapping, integration, applicable proof, Candidate Reference capture, authorized validation, owner routing, final review dispatch, local handoff, and the binary Change-Ready decision.
+- For Material/qualification production artifacts, prefer the configured production author (`implementation-worker` when used). Specialists return report-only handoffs; they do not ask the user, claim lifecycle completion, expand validation authority, or perform external operations without separate explicit authority.
+- Before first candidate mutation, record accepted acceptance criteria, project-specific scope lock, planned gate waves, correction budget, and stop line. After first mutation, new blocking corrections or acceptance criteria require explicit owner approval or a reproducible P0/P1 defect affecting behavior, CI, security, data integrity, or compatibility.
+- Keep `Required Next Actions` binding only for mandatory-gate or qualifying P0/P1 serious blockers. Route P2/note polish to Residual Risks or a separately approved follow-up.
+- Plan one SDET wave, one Final Candidate Review wave, and for Material one delivery/readiness wave; replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate.
+- Full qualification lifecycle detail lives only in `change-ready-sdlc`. Do not restate the complete process here.
 
 ## Shared Reviewer Runtime Invariants
 
@@ -33,7 +57,7 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 - Complexity escalation requires consultation: when a proposed solution needs multiple new coordination, recovery, compatibility, or policy mechanisms, stop before implementation and present the user with the simpler process or architecture alternatives. Do not silently accept a complex design merely because an existing spec proposes it.
 - Reuse before building: prefer existing platform, framework, and repository capabilities over new entities, state stores, workflow layers, adapters, or abstractions. Add complexity only when a concrete requirement cannot be met more simply, and record that justification where the design decision is made.
 - Surgical changes: touch only what directly traces to the user request. Do not refactor, reformat, rename, reorder, or "improve" adjacent code unless required for the task; clean up only unused code created by your own change.
-- Goal-driven execution: turn tasks into verifiable success criteria, then loop until those criteria are met or a real blocker remains. For behavior-changing work, load `change-ready-sdlc` before mutation and follow that skill's profile, proof, fresh SDET, validation, correction replay, final review, and Change-Ready gates.
+- Goal-driven execution: turn tasks into verifiable success criteria, then loop until those criteria are met or a real blocker remains. Ordinary Small uses the default path above. Material/explicit Change-Ready work loads `change-ready-sdlc` before mutation and follows that skill's qualification gates.
 
 ## Evidence And Uncertainty
 
@@ -120,7 +144,9 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 
 ## Universal Task Briefing Contract
 
-This contract applies without exception whenever any agent assigns, delegates, transfers, or restarts work for another agent. It covers main agents, subagents, implementers, testing agents, reviewers, explorers, general-purpose agents, dream-team workers, nested delegations, resumed sessions, and post-compaction handoffs. The assigning agent owns task clarity; the receiving agent must not be expected to reconstruct requirements, discover unstated intent, or repeat analysis already available to the assigner.
+Ordinary Small **direct** main-session work uses a compact record only: objective, in-scope/non-goals, acceptance proof, focused validation, forbidden actions, and return status. Do not require the full field list below for direct Ordinary Small work.
+
+This contract applies whenever any agent assigns, delegates, transfers, or restarts work for another agent. It covers main agents, subagents, implementers, testing agents, reviewers, explorers, general-purpose agents, dream-team workers, nested delegations, resumed sessions, and post-compaction handoffs. Delegated Ordinary Small may keep fields concise and mark irrelevant fields `N/A - <reason>`. Material and cold-context handoffs remain complete. The assigning agent owns task clarity; the receiving agent must not be expected to reconstruct requirements, discover unstated intent, or repeat analysis already available to the assigner.
 
 - Before dispatch, do enough bounded analysis to turn the request into an execution-ready brief. Do not delegate a raw user message when repository evidence, constraints, or unresolved interpretations materially affect execution.
 - Write every brief so a capable agent with no prior conversation can execute it correctly. Include all relevant facts from the conversation and workspace; never rely on hidden session context, implied knowledge, or references such as "the issue above", "as discussed", or "fix it".
@@ -184,13 +210,13 @@ If any answer is no, improve the brief before dispatch. Agent availability, urge
 
 ## Autonomous Work Contract
 
-- The main session (active primary user-session agent) owns skill selection, decomposition, project-native validation, reviewer gates, local Change-Ready handoff, and final synthesis.
-- Ask the user only for real blockers: scope or risk decisions, credentials/provider access, missing owner/product/security/legal decisions, destructive operations, remote-state actions, and separately authorized external review or delivery outcomes.
+- The main session (active primary user-session agent) owns skill selection, decomposition, project-native validation, reviewer gates, local handoff, and final synthesis. Ordinary Small ends with `Change-Ready: not requested` unless qualification was requested. Only the qualification path emits `Change-Ready: yes|no`.
+- Ask the user only for real blockers: scope or risk decisions, credentials/provider access, missing owner/product/security/legal decisions, destructive operations, remote-state actions, unrequested scope expansion, and separately authorized external review or delivery outcomes.
 - Continue autonomously when local evidence, repository policy, or a safe reversible default is enough; do not ask routine preference or progress questions.
 - Subagents and read-only reviewer gates never ask the user directly; they return `Actionable Continuation Items` or `Suggested Next Options` for the main session. Feedback-ledger writes under `docs/feedbacks/**` are allowed only through the scoped `complain` contract.
-- Discover the project's delivery/readiness gate via adapters. For Material work, always run the discovered conforming delivery/readiness gate with current requirements, candidate continuity, proof, SDET, validation, review, and residual-risk evidence; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it. Optional plugin delivery-context tools are evidence sources only when available, never portable dependencies.
+- Discover the project's delivery/readiness gate via adapters. For Material work, always run the discovered conforming delivery/readiness gate with current requirements, Candidate Reference continuity, proof, SDET, validation, review, and residual-risk evidence; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it. Optional plugin delivery-context tools are evidence sources only when available, never portable dependencies.
 - Treat delivery/readiness or final-review blocking output as binding when it reports mandatory-gate or qualifying P0/P1 serious blockers: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, or non-empty `Required Next Actions` (restricted to those classes) keeps readiness blocked and must not present `Change-Ready: yes`. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and `Required Next Actions: none`. P2/note polish must not appear in Required Next Actions. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
-- When this kit's optional `session-delivery-reviewer` is used, treat its output as binding for session delivery only under the same blocker classes: if it reports `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, or non-empty `Required Next Actions`, do not present the session as complete and keep `Change-Ready: no`; optional plugin evidence is never mandatory, and main retains Change-Ready authority.
+- When this kit's optional `session-delivery-reviewer` is used on the qualification path, treat its output as binding for session delivery only under the same blocker classes: if it reports `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, or non-empty `Required Next Actions`, do not present the session as complete and keep `Change-Ready: no`; optional plugin evidence is never mandatory, and main retains Change-Ready authority.
 
 ## Interactive Next-Step Handoff
 
@@ -202,7 +228,7 @@ If any answer is no, improve the brief before dispatch. Agent availability, urge
 - Read-only reviewer subagents must not call `question` or ask the user directly; they return `Actionable Continuation Items` or `Suggested Next Options` for the main session. They may write feedback entries only under `docs/feedbacks/**` when permission allows it.
 - When an audit, reviewer gate, broad discovery, or validation failure produces several concrete tasks that are related to the current session but outside its approved scope, prefer grouping them into the project's accepted follow-up mechanism when one exists or the user approved adding it; otherwise return grouped candidates instead of leaving a loose final-message backlog. Do not create ceremony for isolated nits, speculative polish, or one obvious next step.
 - At main-session final handoffs where work is complete and control returns to the user, include a compact `Recommended Next Steps` mini-section when a useful follow-up exists. End it with a yes/no question such as `делаем?` so the user can answer simply `да` or `нет`; skip in read-only, reviewer, subagent, or no-question contexts, and when the user explicitly requested no next-step suggestions.
-- If no real blocker remains, report completed work, validation, residual risks, and `Change-Ready: yes|no` (plus any project-native label) without an interactive handoff.
+- If no real blocker remains, report completed work, validation, residual risks, and either `Change-Ready: not requested` (Ordinary Small) or `Change-Ready: yes|no` on the qualification path (plus any project-native label) without an interactive handoff.
 - If a blocker remains and the question tool is unavailable, include a short `Next Steps` fallback with the same recommended-first ordering.
 
 ## OpenCode Feature Work
@@ -230,47 +256,49 @@ Installation evidence for this machine only. The portable Change-Ready framework
 - Real parallelism is one orchestrator-owned fan-out limited to independent isolated or exact non-overlapping scopes proved before dispatch. Single specialist dispatches remain serial. Reconcile and integrate every fan-out result before proof or qualification.
 - For every specialist dispatch, record role, ownership scope, and available runtime session/task identity.
 - Accept specialist dispatch or resume evidence only when the discovered runtime adapter proves active primary parent identity, child session/task identity, and expected child role/context. Top-level/default-primary fallback is not specialist evidence. Unavailable or unverifiable child dispatch or continuation blocks the affected gate. Do not hard-code a concrete runtime mechanism, provider, model, OS, or product name in portable runtime text.
-- **Universal writer attempt closure (serial or fan-out):** every mutation-capable execution—including every writer dispatch/attempt and every mutation-capable validation, generator, or formatter command—remains open after timeout, cancel, missing report, partial mutation, or unknown liveness until a terminal report is received, adapter-proven terminal cessation is established (cancellation counts only after the writer or execution can no longer execute or mutate), or its workspace/write authority is isolated or revoked so it cannot mutate the candidate. Recorded timeout, cancel, or missing report alone is not closure. Cancellation request or acknowledgement alone is not closure. Unknown liveness or unisolated ownership blocks integration, freeze, proof, and qualification. Late output or late mutation after the attempt boundary invalidates the qualification attempt and does not close a still-live mutator. Prefer isolated workspaces for mutation-capable validation.
-- If any fan-out child blocks, times out, is cancelled, returns a missing report, or leaves a partial mutation, do not freeze, prove, or qualify. Apply **Universal writer attempt closure** to every open serial or fan-out attempt: record each slice/attempt state and identity, recapture attributable mutations, quarantine unsafe ownership, integrate only after every result is accounted for, and route retry, resume, or fresh dispatch by continuity rules without erasing prior failure—only after the open attempt is closed or isolated. Do not invent a coordinator or durable orchestration state store. Mutation invalidates qualification evidence but never closes a still-live mutation-capable execution.
-- When a production defect stays inside the same production author's original bounded ownership scope and role, objective, and continuity remain safe, the orchestrator SHOULD resume that same production-author context through the discovered runtime continuation adapter. The continuation brief must include exact current Semantic Candidate Identity, Package Identity, and Identity Recipe, reproducer/outcome, explicit objective text continuous with the original production objective, explicit brief delta, unchanged forbidden actions, and return contract. Do not rely on chat-memory-only handoff.
+- **Universal writer attempt closure (serial or fan-out):** apply to actual asynchronous or concurrent mutation-capable executions—including concurrent writer dispatch/attempt and mutation-capable validation/generator/formatter commands that can race. Such an execution remains open after timeout, cancel, missing report, partial mutation, or unknown liveness until a terminal report is received, adapter-proven terminal cessation is established (cancellation counts only after the writer or execution can no longer execute or mutate), or its workspace/write authority is isolated or revoked so it cannot mutate the candidate. Recorded timeout, cancel, or missing report alone is not closure. Cancellation request or acknowledgement alone is not closure. Unknown liveness or unisolated ownership blocks integration, freeze, proof, and qualification. Late output or late mutation after the attempt boundary invalidates the qualification attempt and does not close a still-live mutator. Prefer isolated workspaces for mutation-capable validation. Ordinary synchronous direct edits do not require this full liveness protocol.
+- If any fan-out child blocks, times out, is cancelled, returns a missing report, or leaves a partial mutation, do not freeze, prove, or qualify. Apply **Universal writer attempt closure** to every open concurrent attempt: record each slice/attempt state and identity, recapture attributable mutations, quarantine unsafe ownership, integrate only after every result is accounted for, and route retry, resume, or fresh dispatch by continuity rules without erasing prior failure—only after the open attempt is closed or isolated. Do not invent a coordinator or durable orchestration state store. Mutation invalidates qualification evidence but never closes a still-live mutation-capable execution.
+- When a production defect stays inside the same production author's original bounded ownership scope and role, objective, and continuity remain safe, the orchestrator SHOULD resume that same production-author context through the discovered runtime continuation adapter. The continuation brief must include Candidate Reference or reviewable diff, reproducer/outcome, explicit objective text continuous with the original production objective, explicit brief delta, unchanged forbidden actions, and return contract. Do not rely on chat-memory-only handoff.
 - Dispatch a new complete cold-context specialist or block when session identity is unavailable, continuity is unknown, role, objective, or ownership changes, scope materially expands, or independence/freshness requires a new context. If the host has no resumable specialist capability, use a fresh production author with a complete brief and report that continuation is unavailable; do not invent durable memory.
 - Corrected-candidate SDET is always a new fresh context. Final review is always a new fresh read-only context. Production-author reuse never preserves Applicable Proof, SDET, validation, or final review; replay all affected gates on the corrected candidate.
 - Run independent read/search/tool calls in parallel whenever there is no data dependency.
 - Use subagents only when the work is broad enough to benefit from separate context, parallel coverage, or independent review; keep simple searches, single-file reads, and tightly coupled reasoning in the main session.
-- Discover the project's production author, SDET, validation, and final-review adapters before dispatch. In this kit, `implementation-worker` is an optional default production adapter, `sdet-quality-engineer` is an optional default SDET adapter, and `final-candidate-reviewer` is an optional default final-review adapter; other tools or agents are optional checkpoints only when the project adapter selects them.
-- Every dispatch must satisfy the complete Universal Task Briefing Contract. Production and SDET are mutually exclusive authorship roles; do not assign automated-test authorship to a production author.
-- Keep writers serial unless scopes are proven isolated or exact non-overlapping write scope. Integrate all outputs before proof or qualification. No production or test mutation during frozen-candidate validation or final review.
-- Keep specialist dispatch serial when the preferred production adapter is unavailable, scope is unclear, write targets overlap, or coordinated fan-out would cost more than sequential conforming-author dispatch. Prefer another conforming production author; if none exists, report blocked. Do not treat serial dispatch as permission for the main session to author behavior-changing production or automated-test artifacts.
+- Discover the project's production author, SDET, validation, and final-review adapters when the qualification path or optional delegation needs them. In this kit, `implementation-worker` is an optional default production adapter, `sdet-quality-engineer` is an optional default SDET adapter, and `final-candidate-reviewer` is an optional default final-review adapter; other tools or agents are optional checkpoints only when the project adapter selects them.
+- Every specialist dispatch must satisfy the Universal Task Briefing Contract (proportional for Ordinary Small). Production and SDET are mutually exclusive authorship roles when SDET is invoked; do not assign automated-test authorship to a production author.
+- Keep writers serial unless scopes are proven isolated or exact non-overlapping write scope. Integrate all outputs before proof or qualification. No production or test mutation during frozen-candidate validation or final review on the qualification path.
+- Keep specialist dispatch serial when the preferred production adapter is unavailable, scope is unclear, write targets overlap, or coordinated fan-out would cost more than sequential conforming-author dispatch. Prefer another conforming production author; if none exists on the qualification path, report blocked. Ordinary Small main-session production and focused post-proof regression tests remain allowed under Change-Ready SDLC Routing.
 - Use coordinated fan-out only for broad work with multiple independent bounded tracks where parallel planning, fan-in, validation gates, or isolation is worth the overhead; stay serial for small, unclear, or tightly coupled work.
-- When coordinating fan-out, the main session owns decomposition, dispatch, report reconciliation, integration, authorized validation, reviewer gates, cleanup, user decisions, and final synthesis; it should not do substantial worker-assigned implementation directly.
+- When coordinating fan-out, the main session owns decomposition, dispatch, report reconciliation, integration, authorized validation, reviewer gates, cleanup, user decisions, and final synthesis; it should not do substantial worker-assigned implementation directly while that worker owns the slice.
 - Before finishing a coordinated fan-out run, close or explicitly skip with reasons: worker report reconciliation, integration, focused/final validation, review gate, cleanup, residual risks, and next actions.
-- Load relevant skills when a task clearly matches them; do not load skills speculatively. For behavior-changing work, `change-ready-sdlc` is mandatory before mutation.
+- Load relevant skills when a task clearly matches them; do not load skills speculatively. Load `change-ready-sdlc` before mutation only for Material/explicit qualification triggers.
 - When multiple skills apply, load only the directly relevant skills, deduplicate overlapping steps, apply the strictest safety guard, and report unresolved conflicts as blockers or assumptions.
 - Use reviewer/subagent groups for material cross-domain work, but keep them bounded. Default to 1-3 reviewers and normally one reviewer wave.
-- After non-trivial behavior changes, complete the skill's proof, SDET, validation, and independent final-review gates before claiming Change-Ready or performing separately authorized external operations.
+- After Material/explicit qualification behavior changes, complete the skill's proof, SDET, validation, and independent final-review gates before claiming Change-Ready or performing separately authorized external operations.
 
 ## Mode And Tool Precedence
 
 - Explicit user constraints override skill ceremonies: read-only, no-edit, no-commit, no-push, no-questions, quick audit, reviewer-only, no-network, or no-remote.
 - In read-only/no-questions modes, do not ask questions or call interactive tools; return assumptions, blockers, and actionable continuation items when useful.
 - Do not commit, push, merge, delete source artifacts, run destructive cleanup, or alter remote state unless explicitly requested and allowed by repository policy.
-- If optional tooling or evidence helpers required by a skill are unavailable, do not invent results or block solely on the missing optional tool. Use best available evidence, state the missing optional tool, and downgrade confidence where appropriate. Absence of a mandatory Change-Ready capability or gate follows the canonical `change-ready-sdlc` skill and blocks qualification; do not weaken mandatory gates with a generic unavailable-tool fallback.
+- If optional tooling or evidence helpers required by a skill are unavailable, do not invent results or block solely on the missing optional tool. Use best available evidence, state the missing optional tool, and downgrade confidence where appropriate. Absence of a mandatory Change-Ready capability or gate on the qualification path follows the canonical `change-ready-sdlc` skill and blocks qualification; do not weaken mandatory gates with a generic unavailable-tool fallback.
 
 ## Implementation Method
 
-- Discover the target project's production author adapter from project instructions, automation, or owner input. Prefer that adapter for bounded production mutations; do not hard-code a portable implementation product.
+- Ordinary Small: main may implement directly using the default path in Change-Ready SDLC Routing.
+- For Material/qualification or optional delegated slices, discover the target project's production author adapter from project instructions, automation, or owner input. Prefer that adapter for bounded production mutations; do not hard-code a portable implementation product.
 - In this kit, `implementation-worker` is the optional default production adapter for production-only happy-path slices. Other local tools may be used only as discovered optional checkpoints, never as portable requirements.
 - Production authors implement the smallest complete happy path, preserve unrelated work, and do not create or modify automated test artifacts. They return changed artifacts, proof procedure, blockers, and residual risks; they do not claim SDET, final review, or Change-Ready.
-- The main session owns task scoping, Authoritative Brief quality, result inspection, integration, authorized validation, reviewer gates, and final synthesis. Do not declare Change-Ready solely because a production author reports success.
-- When the selected production adapter is unavailable, errors, or would block progress, use another conforming production author; if none exists, report blocked. State the reason in one line and do not loop on a failing optional tool. Main must not fall back to direct edit/write as the production author for behavior-changing candidate production or automated-test artifacts.
+- The main session owns task scoping, brief quality, result inspection, integration, authorized validation, reviewer gates, and final synthesis. Do not declare Change-Ready solely because a production author reports success.
+- When a selected production adapter is unavailable on the qualification path, use another conforming production author; if none exists, report blocked. State the reason in one line and do not loop on a failing optional tool.
 
 ## Code Review Method
 
-- Discover the target project's independent final-review adapter. Final review of a behavior-changing candidate runs only after accepted SDET evidence and complete applicable validation. Evidence-backed SDET `N/A` is allowed only for proven non-behavioral work; reject `N/A` for behavior-changing or test-content candidates.
+- Final candidate review is a qualification gate, not an ordinary Ordinary Small completion gate.
+- Discover the target project's independent final-review adapter when running the qualification path. Final review runs only after accepted SDET evidence and complete applicable validation. Evidence-backed SDET `N/A` is allowed only for proven non-behavioral work; reject `N/A` for behavior-changing or test-content candidates.
 - In this kit, `final-candidate-reviewer` is the optional default conforming final-review adapter. Other reviewers or tools are optional adapters only when they can inspect the complete candidate and map native verdicts to `approved | approved_with_notes | changes_requested | blocked`.
 - Final review must use a fresh read-only context that authored neither production nor tests. Self-review and pre-SDET checkpoints are implementation feedback only and do not satisfy the final gate.
-- Actionable notes do not pass. Absence of a conforming reviewer blocks readiness.
-- When the preferred adapter is unavailable, use another configured conforming reviewer or report blocked; do not invent a foreign review product.
+- Actionable notes that request a qualifying candidate change do not pass. Absence of a conforming reviewer blocks qualification readiness.
+- When the preferred adapter is unavailable on the qualification path, use another configured conforming reviewer or report blocked; do not invent a foreign review product.
 
 ## Repository Changes
 
@@ -285,7 +313,7 @@ Installation evidence for this machine only. The portable Change-Ready framework
   and often impossible.
 - Stage only intended paths. Do not use broad staging commands such as `git add -A`
   or `git add .` when unrecognized changes are present.
-- When making changes in a repository, complete relevant verification and report Change-Ready status (plus any project-native label).
+- When making changes in a repository, complete relevant verification and report either `Change-Ready: not requested` (Ordinary Small) or qualification `Change-Ready: yes|no` (plus any project-native label).
 - Commit, push, merge, or push to the default branch only when explicitly requested or clearly allowed by repository-local policy.
 - Always obey repository-specific remote-operation rules, branch rules, issue tracker rules, and validation gates.
 - When creating or updating a PR/MR description, write it for a reviewer who sees the project and change for the first time.
@@ -294,18 +322,19 @@ Installation evidence for this machine only. The portable Change-Ready framework
 
 ## Risk-Driven Test Workflow
 
-- Lifecycle ordering for behavior-changing work is owned by `change-ready-sdlc`. Preserve the risk and oracle principles below; do not invent a second process.
+- Always prove the happy path before edge-case testing. Preserve the risk and oracle principles below; do not invent a second process.
 - Before implementation, study the original requirements and supporting evidence in detail. Define the intended contract, business invariants, constraints, non-goals, observable happy path, and concrete acceptance evidence; do not derive intent from the implementation alone.
 - First implement the smallest complete happy path, then prove it through observable execution at the relevant boundary. A code inspection, compilation result, mocked helper, or plausible explanation is not happy-path proof.
-- Begin systematic automated-test design only after applicable proof. Dispatch a fresh SDET context that did not author production; give original requirements, runtime constraints, current candidate, and proof evidence; require an independent risk/oracle matrix rather than confirmation of implementation structure.
-- Only fresh SDET may create or modify automated tests, fixtures, snapshots, fake services, simulators, harnesses, or golden artifacts. The main session and production authors may run, inspect, and debug tests, but must not author test artifacts.
-- SDET returns exactly one action: `authored-tests`, `assessed-existing-tests`, or `blocked`. Prefer real boundaries; use mocks only when a real dependency is unavailable, unsafe, non-deterministic, or impractical, and record the confidence gap.
-- If no eligible fresh SDET is available, do not let the main session or production agent author tests. Record the exact blocker and residual production risk instead.
+- Ordinary Small: after happy-path proof, main may create or update the smallest focused regression test when useful; prefer existing tests when sufficient. Inspect only realistic requirement-linked edge cases inside the accepted boundary.
+- Material/explicit qualification: begin systematic automated-test design only after applicable proof. Dispatch a fresh SDET context that did not author production; give original requirements, runtime constraints, current candidate, and proof evidence; require an independent risk/oracle matrix rather than confirmation of implementation structure.
+- On the qualification path, only fresh SDET may create or modify automated tests, fixtures, snapshots, fake services, simulators, harnesses, or golden artifacts. Production authors never author test artifacts. Main may run, inspect, and debug tests always, and may author focused Ordinary Small regression tests only after happy-path proof.
+- When invoked, SDET returns exactly one action: `authored-tests`, `assessed-existing-tests`, or `blocked`. Prefer real boundaries; use mocks only when a real dependency is unavailable, unsafe, non-deterministic, or impractical, and record the confidence gap.
+- If Material/qualification work requires SDET and no eligible fresh SDET is available, do not invent tests under a production-author role. Record the exact blocker and residual production risk instead.
 - The goal of automated tests is not line, branch, or case-count coverage. Coverage metrics are diagnostic signals only. The acceptance goal is to find and preserve evidence for realistic holes in business logic and code that could cause defects, data loss, security failures, outages, degraded service, or operational incidents.
-- Build a risk-based scenario matrix from requirements, business invariants, implementation boundaries, and production runtime. Consider realistic boundary values, invalid or missing data, dependency failures, timeouts, retries, partial completion, duplicate requests, concurrency, ordering, authorization, state recovery, resource pressure, and observability gaps when relevant; skip impossible or purely theoretical cases.
+- Build a risk-based scenario matrix from requirements, business invariants, implementation boundaries, and production runtime when systematic testing is warranted. Consider realistic boundary values, invalid or missing data, dependency failures, timeouts, retries, partial completion, duplicate requests, concurrency, ordering, authorization, state recovery, resource pressure, and observability gaps when relevant; skip impossible or purely theoretical cases.
 - Every negative test must assert externally meaningful behavior, including safe failure, preserved invariants, useful diagnostics, and recovery as applicable. A test that merely mirrors implementation details or proves a mock interaction is insufficient.
-- Feed discovered failures to the correct owner (production vs fresh SDET), then replay affected proof, SDET, validation, and final review per `change-ready-sdlc`.
-- Final handoff evidence for behavior changes must identify original requirements, applicable proof, SDET session/action, risk matrix, mock exceptions, corrections, complete validation, independent final review, and residual risks.
+- Feed discovered failures to the correct owner (production vs fresh SDET when used), then replay affected proof and gates. On the qualification path, follow `change-ready-sdlc`.
+- Ordinary Small handoff identifies requirements, proof, validation, residual risks, and `Change-Ready: not requested`. Qualification handoff also identifies SDET action, risk matrix, mock exceptions, corrections, complete validation, independent final review, and residual risks.
 
 ## OpenSpec Change Authoring
 

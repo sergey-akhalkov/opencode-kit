@@ -10,6 +10,7 @@ import {
   CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
   CHANGE_READY_SDLC_SKILL_RELATIVE_PATH,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
+  FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
   LIFECYCLE_ROLE_ROUTES,
@@ -114,11 +115,13 @@ function validateDuplicateLifecycleMarkers(
 }
 
 /**
- * Reject exact unsafe project-facing production routing sentences in maintenance files.
+ * Reject exact unsafe production-routing anti-patterns on active policy surfaces
+ * (maintenance files, canonical skill, UDL, and affected role prompts).
  * Runs only when the canonical Change-Ready skill is present so generic fixtures stay clean.
+ * Worker handoff-field validation still uses MAINTENANCE_ROUTING_FILES only.
  */
 function validateForbiddenProductionRouting(ctx: ValidationContext, root: string): void {
-  for (const relative of MAINTENANCE_ROUTING_FILES) {
+  for (const relative of FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES) {
     const file = path.join(root, relative);
     if (!fileExists(file)) {
       continue;

@@ -58,10 +58,8 @@ export const FINAL_CANDIDATE_REVIEWER_FILE = "final-candidate-reviewer.md";
 
 /**
  * Deterministic required substrings for final-candidate-reviewer.md.
- * Covers no-model policy text is validated separately via frontmatter;
- * body covers fresh/read-only/post-SDET/post-validation, complete candidate inputs,
- * exact verdict enum, dual candidate identity fields, findings, artifact owner, blockers,
- * residual risks, continuation items, and provenance-only external reference.
+ * Qualification gate: complete candidate, proof, SDET when required, validation,
+ * optional project-native Candidate Reference. Missing dual identity must not block.
  */
 export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "## Contract Reference",
@@ -76,13 +74,8 @@ export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "behavior-changing or test-content",
   "project-native validation",
   "approved | approved_with_notes | changes_requested | blocked",
-  "Semantic Candidate Identity",
-  "Package Identity",
-  "Identity Recipe",
-  "Qualification gates bind to Semantic Candidate Identity",
-  "Missing, incomplete, or unreproducible Identity Recipe blocks",
-  "post-test Applicable Proof",
-  "missing post-test Applicable Proof replay",
+  "Candidate Reference",
+  "qualification gate",
   "Findings",
   "Evidence Type",
   "Likely Root Cause",

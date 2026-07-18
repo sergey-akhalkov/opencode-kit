@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { FORBIDDEN_PRODUCTION_ROUTING_PATTERNS } from "../contracts/skills.ts";
 import {
   addRegisteredReviewerFixture,
   appendReadmeAgentCatalogEntry,
@@ -19,12 +20,19 @@ import {
 
 const root = libraryRoot;
 
-const materialDeliveryRoutingText = "For Material work, always run the discovered conforming delivery/readiness gate with current requirements and evidence; missing conforming capability blocks. Material Change-Ready requires an explicitly accepted conforming delivery result. Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.";
+const materialDeliveryRoutingText = "For Material work, always run the discovered conforming delivery/readiness gate with current requirements and evidence; missing conforming capability blocks. Material Change-Ready requires an explicitly accepted conforming delivery result. Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.";
 
 function addChangeReadySdlcFixture(fixture: string): void {
   writeText(path.join(fixture, "global", "AGENTS.md"), fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8"));
   writeText(path.join(fixture, "global", "skills", "change-ready-sdlc", "SKILL.md"), fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8"));
-  for (const agent of ["implementation-worker", "sdet-quality-engineer", "final-candidate-reviewer", "session-delivery-reviewer"] as const) {
+  for (const agent of [
+    "implementation-worker",
+    "sdet-quality-engineer",
+    "final-candidate-reviewer",
+    "session-delivery-reviewer",
+    "implementation-readiness-reviewer",
+    "test-coverage-reviewer",
+  ] as const) {
     writeText(path.join(fixture, "global", "agents", `${agent}.md`), fs.readFileSync(path.join(root, "global", "agents", `${agent}.md`), "utf8"));
   }
 
@@ -32,15 +40,15 @@ function addChangeReadySdlcFixture(fixture: string): void {
   "name": "all",
   "description": "Fixture all profile.",
   "skills": ["change-ready-sdlc", "complain", "demo-skill"],
-  "agents": ["demo-reviewer", "final-candidate-reviewer", "implementation-worker", "session-delivery-reviewer", "sdet-quality-engineer"]
+  "agents": ["demo-reviewer", "final-candidate-reviewer", "implementation-readiness-reviewer", "implementation-worker", "session-delivery-reviewer", "sdet-quality-engineer", "test-coverage-reviewer"]
 }
 `);
 
   const readmePath = path.join(fixture, "README.md");
   const readme = fs.readFileSync(readmePath, "utf8")
-    .replace("- Demo work -> `demo-skill`.", "- Demo work -> `demo-skill`.\n- Behavior-changing work -> load `change-ready-sdlc` before mutation.\n- Production-only slices -> `implementation-worker`; post-proof test evidence -> `sdet-quality-engineer`; final review -> `final-candidate-reviewer`.")
+    .replace("- Demo work -> `demo-skill`.", "- Demo work -> `demo-skill`.\n- Ordinary Small -> direct main implementation and `Change-Ready: not requested`.\n- Material/explicit qualification -> load `change-ready-sdlc` before mutation; production-only slices -> `implementation-worker`; post-proof test evidence -> `sdet-quality-engineer`; final review -> `final-candidate-reviewer`.")
     .replace("- `demo-skill`: Demo skill.", "- `change-ready-sdlc`: Portable Change-Ready orchestration topology.\n- `demo-skill`: Demo skill.")
-    .replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `final-candidate-reviewer`: Final candidate reviewer.\n- `implementation-worker`: Production-only implementation worker.\n- `session-delivery-reviewer`: Session delivery reviewer.\n- `sdet-quality-engineer`: Test-only SDET quality engineer.")
+    .replace("- `demo-reviewer`: Demo reviewer.", "- `demo-reviewer`: Demo reviewer.\n- `final-candidate-reviewer`: Final candidate reviewer.\n- `implementation-readiness-reviewer`: Implementation readiness reviewer.\n- `implementation-worker`: Production-only implementation worker.\n- `session-delivery-reviewer`: Session delivery reviewer.\n- `sdet-quality-engineer`: Test-only SDET quality engineer.\n- `test-coverage-reviewer`: Test coverage reviewer.")
     .replace("- `universal-development-loop.md`: Universal loop.", "- `reusable-project-agent-instructions.md`: Reusable project instructions.\n- `universal-development-loop.md`: Universal loop.");
   writeText(readmePath, readme);
 
@@ -169,7 +177,7 @@ export const changeReadyValidatorTests: TestCase[] = [
         throw new Error("Bootstrapped AGENTS.md must be byte-equivalent to the current project template.");
       }
       const text = bootstrapped.toString("utf8");
-      for (const token of ["production author", "After applicable proof", "fresh discovered conforming SDET session", "`sdet-quality-engineer` is the optional default SDET adapter only", "Missing active global `AGENTS.md` or `change-ready-sdlc` blocks", "unresolved validation procedures must be discovered before qualification", "For Material work, always run", "missing conforming capability blocks"]) {
+      for (const token of ["Ordinary Small is the default", "Main may implement directly", "After applicable proof on Material/explicit qualification work", "fresh discovered conforming SDET session", "`sdet-quality-engineer` is the optional default SDET adapter only", "Missing active global `AGENTS.md` blocks Material/qualification work", "Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill", "unresolved validation procedures must be discovered before qualification", "For Material work, always run", "missing conforming capability blocks"]) {
         if (!text.includes(token)) throw new Error(`Bootstrapped AGENTS.md missing Change-Ready routing token: ${token}`);
       }
       if (fs.existsSync(path.join(target, "instructions", "universal-development-loop.md"))) {
@@ -188,7 +196,7 @@ export const changeReadyValidatorTests: TestCase[] = [
       name: "project template",
       fixtureName: "change-ready-sdlc-template-missing-material-routing",
       relative: path.join("templates", "project", "AGENTS.md"),
-      token: "Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it",
+      token: "Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it",
     },
   ].map((testCase): TestCase => ({
     name: `validator rejects ${testCase.name} missing a Material delivery routing token`,
@@ -207,60 +215,57 @@ export const changeReadyValidatorTests: TestCase[] = [
       assertOutputContains(result, testCase.relative, `Diagnostic should identify the affected ${testCase.name} surface.`);
     },
   })),
-  {
-    name: "validator rejects Small behavior-changing direct-main production routing",
+  ...FORBIDDEN_PRODUCTION_ROUTING_PATTERNS.map((pattern, index): TestCase => ({
+    name: `validator rejects old active-policy anti-pattern: ${pattern.diagnostic}`,
     run: () => {
-      const fixture = newLibraryFixture("change-ready-sdlc-small-direct-main");
+      const fixture = newLibraryFixture(`change-ready-old-policy-${index}`);
       addChangeReadySdlcFixture(fixture);
-      const agentsPath = path.join(fixture, "templates", "project", "AGENTS.md");
-      writeText(
-        agentsPath,
-        `${fs.readFileSync(agentsPath, "utf8")}\n- Small behavior-changing production work may be implemented directly by the main session when the change is local and reversible.\n`,
-      );
+      const relative = index % 2 === 0 ? "REPO_AGENTS.md" : path.join("templates", "project", "AGENTS.md");
+      const file = path.join(fixture, relative);
+      writeText(file, `${fs.readFileSync(file, "utf8")}\n${pattern.needle}\n`);
       const result = invokeValidator(fixture);
-      assertFailure(result, "Small behavior-changing direct-main production routing must fail validation.");
-      assertOutputContains(
-        result,
-        "unsafe direct main-session behavior-changing production routing",
-        "Diagnostic should identify the forbidden direct-main production route.",
-      );
-      assertOutputContains(
-        result,
-        path.join("templates", "project", "AGENTS.md"),
-        "Diagnostic should identify the affected project template.",
-      );
+      assertFailure(result, `Old active-policy anti-pattern must fail validation: ${pattern.needle}`);
+      assertOutputContains(result, pattern.diagnostic, "Diagnostic should identify the exact superseded policy class.");
+      assertOutputContains(result, relative, "Diagnostic should identify the affected maintenance surface.");
     },
-  },
-  {
-    name: "validator rejects unavailable implementation worker fallback to main production editing",
+  })),
+  ...([
+    ["canonical Change-Ready skill", path.join("global", "skills", "change-ready-sdlc", "SKILL.md"), 0],
+    ["Universal Development Loop", path.join("instructions", "universal-development-loop.md"), 1],
+    ["implementation worker", path.join("global", "agents", "implementation-worker.md"), 2],
+    ["SDET quality engineer", path.join("global", "agents", "sdet-quality-engineer.md"), 3],
+    ["final candidate reviewer", path.join("global", "agents", "final-candidate-reviewer.md"), 4],
+    ["session delivery reviewer", path.join("global", "agents", "session-delivery-reviewer.md"), 5],
+    ["implementation readiness reviewer", path.join("global", "agents", "implementation-readiness-reviewer.md"), 6],
+    ["test coverage reviewer", path.join("global", "agents", "test-coverage-reviewer.md"), 0],
+  ] as const).map(([name, relative, patternIndex]): TestCase => ({
+    name: `validator scans ${name} for forbidden production routing`,
     run: () => {
-      const fixture = newLibraryFixture("change-ready-sdlc-unavailable-worker-main-fallback");
+      const fixture = newLibraryFixture(
+        `change-ready-forbidden-surface-${name.replace(/\s+/g, "-").toLowerCase()}`,
+      );
       addChangeReadySdlcFixture(fixture);
-      const agentsPath = path.join(fixture, "REPO_AGENTS.md");
-      writeText(
-        agentsPath,
-        `${fs.readFileSync(agentsPath, "utf8")}\n- If \`implementation-worker\` is unavailable, the main session may edit behavior-changing production directly to avoid blocking.\n`,
-      );
+      const pattern = FORBIDDEN_PRODUCTION_ROUTING_PATTERNS[patternIndex];
+      if (pattern == null) throw new Error(`Missing forbidden routing fixture pattern ${patternIndex}.`);
+      const file = path.join(fixture, relative);
+      if (!fs.existsSync(file)) throw new Error(`Missing active routing fixture surface: ${relative}`);
+      writeText(file, `${fs.readFileSync(file, "utf8")}\n${pattern.needle}\n`);
       const result = invokeValidator(fixture);
-      assertFailure(result, "Unavailable implementation-worker fallback to main production editing must fail validation.");
-      assertOutputContains(
-        result,
-        "unsafe unavailable-worker main-session production fallback",
-        "Diagnostic should identify the forbidden unavailable-worker fallback.",
-      );
-      assertOutputContains(result, "REPO_AGENTS.md", "Diagnostic should identify the affected repository instructions.");
+      assertFailure(result, `${name} must reject an injected old universal-routing sentence.`);
+      assertOutputContains(result, pattern.diagnostic, `${name} diagnostic should identify the forbidden policy class.`);
+      assertOutputContains(result, relative, `${name} diagnostic should identify the scanned path.`);
     },
-  },
+  })),
   {
-    name: "validator rejects Change-Ready skill missing a D13 lifecycle marker",
+    name: "validator rejects Change-Ready skill missing Candidate Reference lifecycle marker",
     run: () => {
       const fixture = newLibraryFixture("change-ready-sdlc-missing-marker");
       addChangeReadySdlcFixture(fixture);
       const skillPath = path.join(fixture, "global", "skills", "change-ready-sdlc", "SKILL.md");
-      replaceRequiredText(skillPath, "SDET Provisional Report", "SDET provisional handoff");
+      replaceRequiredText(skillPath, "Candidate Reference", "Candidate Snapshot");
       const result = invokeValidator(fixture);
-      assertFailure(result, "Missing D13 lifecycle marker should fail validation.");
-      assertOutputContains(result, "SDET Provisional Report", "Diagnostic should name the missing lifecycle marker.");
+      assertFailure(result, "Missing Candidate Reference lifecycle marker should fail validation.");
+      assertOutputContains(result, "Candidate Reference", "Diagnostic should name the missing lifecycle marker.");
       assertOutputContains(result, "change-ready-sdlc", "Diagnostic should name the canonical skill.");
     },
   },
@@ -283,7 +288,7 @@ export const changeReadyValidatorTests: TestCase[] = [
       const fixture = newLibraryFixture("change-ready-sdlc-duplicate-marker-below-threshold");
       addChangeReadySdlcFixture(fixture);
       const reviewerPath = path.join(fixture, "global", "agents", "demo-reviewer.md");
-      writeText(reviewerPath, `${fs.readFileSync(reviewerPath, "utf8")}\nAdapter Discovery\nProfile: Small | Material\nAuthoritative Brief\nApplicable Proof\nSDET Provisional Report\n`);
+      writeText(reviewerPath, `${fs.readFileSync(reviewerPath, "utf8")}\nAdapter Discovery\nProfile: Ordinary Small | Material\nAuthoritative Brief\nApplicable Proof\nCandidate Reference\n`);
       assertSuccess(invokeValidator(fixture), "Five exact lifecycle markers should remain below the D13 duplicate threshold.");
     },
   },
@@ -293,7 +298,7 @@ export const changeReadyValidatorTests: TestCase[] = [
       const fixture = newLibraryFixture("change-ready-sdlc-duplicate-marker-threshold");
       addChangeReadySdlcFixture(fixture);
       const reviewerPath = path.join(fixture, "global", "agents", "demo-reviewer.md");
-      writeText(reviewerPath, `${fs.readFileSync(reviewerPath, "utf8")}\nAdapter Discovery\nProfile: Small | Material\nAuthoritative Brief\nApplicable Proof\nSDET Provisional Report\nCandidate Freeze\n`);
+      writeText(reviewerPath, `${fs.readFileSync(reviewerPath, "utf8")}\nAdapter Discovery\nProfile: Ordinary Small | Material\nAuthoritative Brief\nApplicable Proof\nCandidate Reference\nProject-Native Validation\n`);
       const result = invokeValidator(fixture);
       assertFailure(result, "Six exact lifecycle markers should fail the duplicate-orchestration drift check.");
       assertOutputContains(result, "global/agents/demo-reviewer.md", "Diagnostic should name the duplicate-marker file.");
@@ -415,10 +420,10 @@ export const changeReadyValidatorTests: TestCase[] = [
       diagnostic: "global AGENTS fan-out and specialist continuation",
     },
     {
-      fixture: "worker-singular-continuation-identity",
+      fixture: "worker-missing-candidate-reference",
       relative: path.join("global", "agents", "implementation-worker.md"),
-      original: "exact current Semantic Candidate Identity, Package Identity, and Identity Recipe",
-      replacement: "current candidate identity",
+      original: "Candidate Reference",
+      replacement: "candidate snapshot",
       diagnostic: "implementation-worker same-slice continuation",
     },
   ].map((testCase): TestCase => ({
@@ -519,16 +524,16 @@ export const changeReadyValidatorTests: TestCase[] = [
     },
   },
   {
-    name: "validator rejects SDET missing an input identity report token",
+    name: "validator rejects SDET missing Candidate Reference report token",
     run: () => {
-      const fixture = newLibraryFixture("sdet-missing-input-semantic-identity");
+      const fixture = newLibraryFixture("sdet-missing-candidate-reference");
       addChangeReadySdlcFixture(fixture);
       const sdetPath = path.join(fixture, "global", "agents", "sdet-quality-engineer.md");
-      replaceRequiredText(sdetPath, "Input Semantic Candidate Identity", "Pre-SDET Semantic Candidate Identity");
+      replaceRequiredText(sdetPath, "Candidate Reference", "Candidate Snapshot");
       const result = invokeValidator(fixture);
-      assertFailure(result, "SDET missing Input Semantic Candidate Identity must fail validation.");
+      assertFailure(result, "SDET missing Candidate Reference must fail validation.");
       assertOutputContains(result, "SDET quality engineer contract", "Diagnostic should name the SDET contract.");
-      assertOutputContains(result, "Input Semantic Candidate Identity", "Diagnostic should name the missing input identity token.");
+      assertOutputContains(result, "Candidate Reference", "Diagnostic should name the missing candidate-reference token.");
       assertOutputContains(result, "sdet-quality-engineer.md", "Diagnostic should identify the SDET artifact.");
     },
   },
@@ -736,10 +741,10 @@ export const changeReadyValidatorTests: TestCase[] = [
   ...[
     {
       label: "final reviewer",
-      fixtureName: "final-reviewer-missing-identity-recipe-block",
+      fixtureName: "final-reviewer-missing-candidate-reference",
       relative: path.join("global", "agents", "final-candidate-reviewer.md"),
-      original: "Missing, incomplete, or unreproducible Identity Recipe blocks",
-      replacement: "Missing identity framing blocks",
+      original: "Candidate Reference",
+      replacement: "Candidate Snapshot",
       contractLabel: "Final candidate reviewer contract",
     },
     {
@@ -752,39 +757,37 @@ export const changeReadyValidatorTests: TestCase[] = [
     },
     {
       label: "session-delivery reviewer",
-      fixtureName: "session-delivery-missing-identity-recipe-change-block",
+      fixtureName: "session-delivery-missing-readable-candidate",
       relative: path.join("global", "agents", "session-delivery-reviewer.md"),
-      original: "unexplained recipe change",
-      replacement: "unexplained framing change",
+      original: "readable scoped candidate",
+      replacement: "candidate summary",
       contractLabel: "session-delivery-reviewer must require delivery-control safeguards",
     },
   ].map((testCase): TestCase => ({
-    name: `validator rejects ${testCase.label} missing an Identity Recipe blocking token`,
+    name: `validator rejects ${testCase.label} missing an active qualification token`,
     run: () => {
       const fixture = newLibraryFixture(testCase.fixtureName);
       addChangeReadySdlcFixture(fixture);
       const file = path.join(fixture, testCase.relative);
       replaceRequiredText(file, testCase.original, testCase.replacement);
       const result = invokeValidator(fixture);
-      assertFailure(result, `${testCase.label} missing an Identity Recipe blocking token should fail validation.`);
+      assertFailure(result, `${testCase.label} missing an active qualification token should fail validation.`);
       assertOutputContains(result, testCase.contractLabel, `Diagnostic should name the ${testCase.label} contract.`);
-      assertOutputContains(result, testCase.original, "Diagnostic should name the missing Identity Recipe blocking token.");
+      assertOutputContains(result, testCase.original, "Diagnostic should name the missing active qualification token.");
       assertOutputContains(result, testCase.relative, `Diagnostic should identify the affected ${testCase.label} artifact.`);
     },
   })),
   {
-    name: "validator rejects session-delivery reviewer missing isolated rollback evidence",
+    name: "validator accepts proportional delivery without old universal rollback ceremony",
     run: () => {
-      const fixture = newLibraryFixture("session-delivery-missing-isolated-rollback-evidence");
+      const fixture = newLibraryFixture("session-delivery-proportional-rollback");
       addChangeReadySdlcFixture(fixture);
       const relative = path.join("global", "agents", "session-delivery-reviewer.md");
       const deliveryPath = path.join(fixture, relative);
-      replaceRequiredText(deliveryPath, "isolated workspace or project-native snapshot", "isolated workspace or transaction");
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Missing isolated rollback evidence should fail validation.");
-      assertOutputContains(result, "session-delivery-reviewer must require delivery-control safeguards", "Diagnostic should name the session-delivery contract.");
-      assertOutputContains(result, "isolated workspace or project-native snapshot", "Diagnostic should name the missing rollback token.");
-      assertOutputContains(result, relative, "Diagnostic should identify the session-delivery artifact.");
+      const delivery = fs.readFileSync(deliveryPath, "utf8");
+      if (!delivery.includes("Rollback plan: proportional")) throw new Error("Delivery reviewer must require proportional rollback planning.");
+      if (delivery.includes("isolated workspace or project-native snapshot")) throw new Error("Active delivery reviewer must not retain universal isolated-rollback ceremony.");
+      assertSuccess(invokeValidator(fixture), "Current proportional delivery contract should pass without old universal rollback text.");
     },
   },
 ];

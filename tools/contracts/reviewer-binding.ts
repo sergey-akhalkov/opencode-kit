@@ -61,25 +61,10 @@ export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
   "Delivery self-gate for the current Material closing task",
   "every prerequisite applicable task is checked with current literal evidence",
   "Any other unchecked applicable task remains a P0",
-  "exact marker-only metadata transition and recapture package identity",
-  "Semantic Candidate Identity",
-  "Package Identity",
-  "Identity Recipe",
-  "Qualification gates bind to Semantic Candidate Identity",
-  "marker-only metadata transition with unchanged Semantic Candidate Identity",
-  "same recorded Identity Recipe",
-  "unexplained recipe change",
-  "post-test Applicable Proof",
-  "missing post-test Applicable Proof continuity after",
-  "pending forbidden in final",
-  "Rollback plan and evidence",
-  "entire authoritative scoped candidate manifest",
-  "unjournaled sequential in-place rollback",
-  "isolated workspace or project-native snapshot",
-  "failure-atomic or explicitly journaled",
-  "never substitutes for",
-  "Runtime activation rollback",
-  "must not be treated as full change rollback",
+  "Candidate Reference",
+  "readable scoped candidate",
+  "Rollback plan",
+  "proportional",
   "never required to claim Change-Ready",
   "explicitly accepted conforming delivery result",
   "Verdict: material deviations",
@@ -94,17 +79,17 @@ export const SESSION_DELIVERY_BINDING_CONTRACT: TextContract = {
 };
 
 /**
- * Exact Material-always / Small-conditional / missing-capability-blocks tokens required on
- * all five project-facing delivery binding surfaces. Static evidence only; never decides readiness.
+ * Exact Material-always / Ordinary-conditional / missing-capability-blocks tokens required on
+ * project-facing delivery binding surfaces.
  */
 export const MATERIAL_DELIVERY_ROUTING_TOKENS: readonly string[] = [
   "For Material work, always run the discovered conforming delivery/readiness gate",
   "missing conforming capability blocks",
-  "Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it",
+  "Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it",
   "explicitly accepted conforming delivery result",
 ];
 
-/** Five surfaces that must retain Material delivery routing semantics. */
+/** Surfaces that must retain Material delivery routing semantics. */
 export const MATERIAL_DELIVERY_ROUTING_SURFACES: readonly string[] = [
   "REPO_AGENTS.md",
   "global/AGENTS.md",
@@ -124,6 +109,7 @@ export const TEST_COVERAGE_REVIEWER_CONTRACT: TextContract = {
     "Task/Repro Coverage Matrix",
     "After Applicable Proof",
     "do not demand systematic tests before the production happy path and Applicable Proof",
+    "do not invent acceptance scope",
   ],
 };
 

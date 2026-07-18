@@ -11,14 +11,13 @@ export const CHANGE_READY_SDLC_SKILL_NAME = "change-ready-sdlc";
 
 export const CHANGE_READY_SDLC_SKILL_RELATIVE_PATH = "global/skills/change-ready-sdlc/SKILL.md";
 
-/** Exact case-sensitive D13 lifecycle markers required in the canonical skill. */
+/** Exact case-sensitive lifecycle markers required in the canonical skill. */
 export const CHANGE_READY_SDLC_LIFECYCLE_MARKERS: readonly string[] = [
   "Adapter Discovery",
-  "Profile: Small | Material",
+  "Profile: Ordinary Small | Material",
   "Authoritative Brief",
   "Applicable Proof",
-  "SDET Provisional Report",
-  "Candidate Freeze",
+  "Candidate Reference",
   "Project-Native Validation",
   "Final Candidate Review",
   "Change-Ready Decision",
@@ -49,8 +48,6 @@ export const CHANGE_READY_SDLC_FORBIDDEN_TOKENS: readonly string[] = [
 
 /**
  * Exact discovery terms that must appear in the canonical skill frontmatter description.
- * Covers implementation, bug fix, refactor, loaded instruction, configuration change,
- * generated-output change, Change-Ready, review-only, research, inert content.
  */
 export const CHANGE_READY_SDLC_DESCRIPTION_TERMS: readonly string[] = [
   "implementation",
@@ -63,13 +60,15 @@ export const CHANGE_READY_SDLC_DESCRIPTION_TERMS: readonly string[] = [
   "review-only",
   "research",
   "inert content",
+  "Ordinary Small",
+  "Material",
 ];
 
-/** Duplicate-orchestration drift threshold: unique exact D13 markers per non-canonical global Markdown artifact. */
+/** Duplicate-orchestration drift threshold: unique exact lifecycle markers per non-canonical global Markdown artifact. */
 export const CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD = 6;
 
 /**
- * Exact D15/SDLC-010 fan-out and specialist-continuation tokens required in the canonical skill.
+ * Qualification-path tokens required in the canonical skill (not ordinary-path ceremony).
  * Diagnostics must name the missing token and affected artifact.
  */
 export const CHANGE_READY_SDLC_CONTINUATION_TOKENS: readonly string[] = [
@@ -79,7 +78,7 @@ export const CHANGE_READY_SDLC_CONTINUATION_TOKENS: readonly string[] = [
   "independent isolated or exact non-overlapping",
   "same production-author context",
   "discovered runtime continuation adapter",
-  "exact current Semantic Candidate Identity, Package Identity, and Identity Recipe",
+  "Candidate Reference",
   "explicit objective text",
   "explicit brief delta",
   "unchanged forbidden actions",
@@ -98,7 +97,6 @@ export const CHANGE_READY_SDLC_CONTINUATION_TOKENS: readonly string[] = [
   "Unknown liveness or unisolated ownership",
   "Late output or late mutation",
   "Universal writer attempt closure",
-  "every writer dispatch/attempt",
   "mutation-capable",
   "serial or fan-out",
   "active primary parent identity",
@@ -106,35 +104,13 @@ export const CHANGE_READY_SDLC_CONTINUATION_TOKENS: readonly string[] = [
   "expected child role/context",
   "Top-level/default-primary fallback is not specialist evidence",
   "Unavailable or unverifiable child",
-  "Semantic Candidate Identity",
-  "Package Identity",
-  "Identity Recipe",
-  "Qualification gates bind to Semantic Candidate Identity",
-  "deterministic candidate identity-generation capability",
-  "adapter-owned",
-  "adapter-enumerated",
   "directly readable under the reviewer's effective permissions",
   "External path references alone are insufficient",
-  "Input Semantic Candidate Identity",
-  "Input Package Identity",
-  "pending orchestrator recapture after test edits",
-  "Authored-tests identity handshake",
-  "post-test Applicable Proof",
-  "missing post-test proof continuity after authored-tests",
-  "do not replay proof solely for SDET assessment",
-  "Rollback plan and evidence",
-  "executed only when separately authorized",
-  "never required to claim Change-Ready",
-  "entire authoritative scoped candidate manifest",
-  "unjournaled sequential in-place rollback",
-  "isolated workspace or project-native snapshot",
-  "failure-atomic",
-  "journaled",
-  "never substitutes for",
-  "Runtime activation rollback",
-  "does not count as full change rollback",
   "Delivery/readiness gate",
   "explicitly accepted conforming delivery result",
+  "Rollback plan",
+  "executed only when separately authorized",
+  "never required to claim Change-Ready",
 ];
 
 /** Lifecycle role routes required in always-loaded global AGENTS routing text. */
@@ -144,7 +120,7 @@ export const LIFECYCLE_ROLE_ROUTES = [
   "final-candidate-reviewer",
 ] as const;
 
-/** Maintenance instruction files that must keep production-only lifecycle routing. */
+/** Maintenance instruction files that must keep production lifecycle routing. */
 export const MAINTENANCE_ROUTING_FILES = [
   "REPO_AGENTS.md",
   "global/AGENTS.md",
@@ -153,37 +129,80 @@ export const MAINTENANCE_ROUTING_FILES = [
 ] as const;
 
 /**
- * Exact forbidden production-routing anti-patterns for maintenance instruction files.
+ * Surfaces scanned for old universal-ceremony anti-patterns only.
+ * Broader than MAINTENANCE_ROUTING_FILES so the canonical skill, UDL, and active
+ * role prompts cannot reintroduce forbidden sentences without validator failure.
+ * Do not use this list for implementation-worker handoff-field validation.
+ */
+export const FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES = [
+  "REPO_AGENTS.md",
+  "global/AGENTS.md",
+  "instructions/reusable-project-agent-instructions.md",
+  "templates/project/AGENTS.md",
+  "global/skills/change-ready-sdlc/SKILL.md",
+  "instructions/universal-development-loop.md",
+  "global/agents/implementation-worker.md",
+  "global/agents/sdet-quality-engineer.md",
+  "global/agents/final-candidate-reviewer.md",
+  "global/agents/session-delivery-reviewer.md",
+  "global/agents/implementation-readiness-reviewer.md",
+  "global/agents/test-coverage-reviewer.md",
+] as const;
+
+/**
+ * Exact forbidden production-routing anti-patterns (old universal ceremony).
  * Match whole unsafe sentences only — never broad substrings that would hit valid negation.
  */
 export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
   {
+    needle: "Any false or unknown condition selects Material",
+    diagnostic: "old universal unknown-forces-Material routing",
+  },
+  {
+    needle: "Every behavior change still receives fresh independent SDET assessment",
+    diagnostic: "old universal fresh-SDET-for-every-behavior-change routing",
+  },
+  {
     needle:
       "Small behavior-changing production work may be implemented directly by the main session when the change is local and reversible.",
-    diagnostic: "unsafe direct main-session behavior-changing production routing",
+    diagnostic:
+      "obsolete Small-label direct-main sentence; use Ordinary Small wording instead",
   },
   {
     needle:
       "If `implementation-worker` is unavailable, the main session may edit behavior-changing production directly to avoid blocking.",
-    diagnostic: "unsafe unavailable-worker main-session production fallback",
+    diagnostic: "unsafe unavailable-worker main-session production fallback for Material/qualification work",
+  },
+  {
+    needle:
+      "Main must not fall back to direct edit/write as the production author for behavior-changing candidate production or automated-test artifacts.",
+    diagnostic: "old universal ban on main Ordinary Small production authorship",
+  },
+  {
+    needle: "exact current Semantic Candidate Identity, Package Identity, and Identity Recipe",
+    diagnostic: "old mandatory dual-identity Identity Recipe wording",
+  },
+  {
+    needle: "Qualification gates bind to Semantic Candidate Identity",
+    diagnostic: "old Semantic Candidate Identity binding wording",
   },
 ] as const;
 
-/** Mandatory pre-mutation trigger and orchestration topology tokens for global/AGENTS.md. */
+/** Mandatory ordinary-default and qualification-trigger tokens for global/AGENTS.md. */
 export const GLOBAL_AGENTS_TRIGGER_TOKENS: readonly string[] = [
   "change-ready-sdlc",
-  "Before the first mutation",
-  "sole orchestrator",
-  "Authoritative Brief",
-  "Small",
+  "Ordinary Small",
   "Material",
+  "Change-Ready: not requested",
+  "explicit user approval",
+  "sole orchestrator",
+  "Before the first mutation",
   "If the skill is unavailable",
   "block behavior-changing mutation",
 ];
 
 /**
- * Exact D15/SDLC-010 fan-out and specialist-continuation tokens required in global/AGENTS.md.
- * Diagnostics must name the missing token and affected artifact.
+ * Fan-out and specialist-continuation tokens required in global/AGENTS.md when concurrent writers apply.
  */
 export const GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS: readonly string[] = [
   "create or resume specialist sessions",
@@ -192,7 +211,7 @@ export const GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS: readonly string[] = [
   "independent isolated or exact non-overlapping",
   "same production-author context",
   "discovered runtime continuation adapter",
-  "exact current Semantic Candidate Identity, Package Identity, and Identity Recipe",
+  "Candidate Reference",
   "explicit objective text",
   "explicit brief delta",
   "unchanged forbidden actions",
@@ -211,7 +230,6 @@ export const GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS: readonly string[] = [
   "Unknown liveness or unisolated ownership",
   "Late output or late mutation",
   "Universal writer attempt closure",
-  "every writer dispatch/attempt",
   "mutation-capable",
   "serial or fan-out",
   "active primary parent identity",

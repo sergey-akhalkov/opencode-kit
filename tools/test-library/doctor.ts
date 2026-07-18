@@ -50,22 +50,29 @@ const concreteValidationDoc = `# Project Validation
 | Build | \`project build\` | Build. |
 `;
 
+const namedMaterialRiskFixtureCases = [
+  ["public API protocol compatibility", "public API/protocol/compatibility", "public interfaces", "public API/protocol/compatibility"],
+  ["persisted data migration", "persisted data or migration", "stored records", "persisted data/migration"],
+  ["security privacy authorization", "security/privacy/authorization", "sensitive access", "security/privacy/authorization"],
+  ["destructive remote", "destructive or remote", "state-changing operations", "destructive/remote"],
+  ["concurrency correctness", "concurrency correctness", "parallel execution", "concurrency correctness"],
+  ["deployment release", "deployment/release", "shipping changes", "deployment/release"],
+  ["loaded instruction configuration lifecycle safety", "loaded instruction/configuration change that alters lifecycle or safety policy", "runtime guidance changes", "loaded instruction/config lifecycle/safety"],
+] as const;
+const namedMaterialRiskFixtureText = namedMaterialRiskFixtureCases.map(([, marker]) => marker).join(", ");
+
 const conformingAgentsAuthority = `# Independent Active Authority
-
 ## Change-Ready SDLC Routing
-
-Before the first mutation of behavior-changing work, load change-ready-sdlc.
-
+Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
+Path: prove it observably before inspecting realistic requirement-linked edge cases.
+Unrequested scope expansion requires explicit user approval.
+Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
+High-risk behavior must not be downgraded merely because the diff is small.
 ## Universal Task Briefing Contract
-
 Provide an execution-ready brief before specialist dispatch.
-
 ## Autonomous Work Contract
-
 The primary orchestrator owns lifecycle state and bounded validation.
-
 ## Shared Reviewer Runtime Invariants
-
 Reviewers are read-only leaf specialists and never self-approve readiness.
 `;
 
@@ -75,33 +82,25 @@ description: Independently copied lifecycle authority for fixture validation.
 ---
 # Change-Ready SDLC
 ## When To Load
-Load before behavior-changing mutation.
+Ordinary Small does **not** load this skill.
+Load before mutation for a concrete Material risk: ${namedMaterialRiskFixtureText}.
+High-risk behavior must not be downgraded merely because the diff is small.
 ## Profile
-Classify the change before mutation.
+Classify the change before mutation and record a project-specific scope lock. Expansion requires explicit owner approval.
 ## Adapter Discovery
-Discover project-native lifecycle adapters.
 ## Authoritative Brief
-Record the complete brief.
 ## Orchestrator ownership
-The primary orchestrator owns lifecycle state.
 ## Lifecycle transitions
-Follow the complete ordered gate sequence.
-### 1. Candidate Freeze
-Freeze the candidate.
-### 2. Applicable Proof
-Prove the relevant boundary.
-### 3. Fresh SDET
-Use an independent testing context.
-### 4. Project-Native Validation
-Run bounded then complete validation.
-### 5. Correction routing and replay
-Route defects to their owning author and replay affected gates.
-### 6. Final Candidate Review
-Use a fresh read-only reviewer.
-### 7. Change-Ready Decision
-The orchestrator makes the binary decision.
+### 1. Classify and prepare
+### 2. Production path or test-only N/A
+### 3. Candidate Reference
+### 4. Applicable Proof
+### 5. Fresh SDET
+### 6. Project-Native Validation
+### 7. Correction routing and replay
+### 8. Final Candidate Review
+### 9. Change-Ready Decision
 ## Compact orchestration output
-Hand off identities, evidence, outcomes, and residual risk.
 `;
 
 function writeConformingAuthority(globalDir: string): void {
@@ -604,6 +603,20 @@ export const doctorTests: TestCase[] = [
     name: "doctor blocks adversarial active authority shapes without requiring source equality",
     run: () => {
       const cases = [
+        { name: "agents-missing-direct-main", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("Main may directly author Ordinary Small production changes", "Ordinary Small production changes use the normal author"), expected: "missing direct-main Ordinary Small production authorship" },
+        { name: "agents-missing-proof", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("prove it observably", "inspect the implementation"), expected: "missing observable happy-path proof marker" },
+        { name: "agents-missing-edge", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("realistic requirement-linked edge cases", "practical edge cases"), expected: "missing realistic requirement-linked edge inspection marker" },
+        { name: "agents-proof-after-edge", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("prove it observably before inspecting realistic requirement-linked edge cases", "inspect realistic requirement-linked edge cases before we prove it observably"), expected: "must order observable proof before realistic requirement-linked edge inspection" },
+        { name: "agents-missing-user-approval", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("explicit user approval", "later consideration"), expected: "missing explicit owner approval before unrequested scope expansion" },
+        { name: "agents-missing-explicit-change-ready", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("explicit Change-Ready", "owner-requested qualification"), expected: "missing explicit Change-Ready qualification trigger" },
+        { name: "agents-missing-project-qualification", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("project-required qualification", "project guidance"), expected: "missing project-required qualification trigger" },
+        ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `agents-risk-${name}`, relative: "AGENTS.md", text: conformingAgentsAuthority.replace(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
+        { name: "agents-missing-no-downgrade", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
+        { name: "skill-missing-ordinary-nonload", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("does **not** load this skill", "uses a compact path"), expected: "missing Ordinary Small non-load/default boundary" },
+        { name: "skill-missing-scope-lock", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("project-specific scope lock", "task boundary"), expected: "missing project-specific scope-lock control" },
+        { name: "skill-missing-owner-approval", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("explicit owner approval", "later review"), expected: "missing explicit owner approval expansion rule" },
+        ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `skill-risk-${name}`, relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
+        { name: "skill-missing-no-downgrade", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
         { name: "empty-agents", relative: "AGENTS.md", text: "", expected: "AGENTS.md is empty" },
         { name: "stub-agents", relative: "AGENTS.md", text: "# Stub authority\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },
         { name: "token-packed-agents", relative: "AGENTS.md", text: "Change-Ready SDLC Routing Before the first mutation load change-ready-sdlc Universal Task Briefing Contract Autonomous Work Contract Shared Reviewer Runtime Invariants\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },
@@ -618,9 +631,9 @@ export const doctorTests: TestCase[] = [
         { name: "skill-missing-description", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("description: Independently copied lifecycle authority for fixture validation.\n", ""), expected: "missing description" },
         { name: "skill-empty-description", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("description: Independently copied lifecycle authority for fixture validation.", "description: '   '"), expected: "description must be nonempty" },
         { name: "skill-wrong-name", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("name: change-ready-sdlc", "name: other-skill"), expected: "exact name" },
-        { name: "skill-incomplete-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("### 3. Fresh SDET", "### 3. Test Review"), expected: "missing ordered heading: Fresh SDET" },
+        { name: "skill-incomplete-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("### 3. Candidate Reference", "### 3. Candidate Snapshot"), expected: "missing ordered heading: Candidate Reference" },
         { name: "skill-misordered-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("## Profile", "## SWAP").replace("## Adapter Discovery", "## Profile").replace("## SWAP", "## Adapter Discovery"), expected: "out-of-order heading: Adapter Discovery" },
-        { name: "skill-duplicate-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: `${conformingSkillAuthority}\n### 3. Fresh SDET\nDuplicate marker.\n`, expected: "duplicate heading: Fresh SDET" },
+        { name: "skill-duplicate-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: `${conformingSkillAuthority}\n### 5. Fresh SDET\nDuplicate marker.\n`, expected: "duplicate heading: Fresh SDET" },
       ];
       for (const item of cases) {
         const fixture = newIsolatedDoctorFixture(item.name, "{}\n");
@@ -628,7 +641,9 @@ export const doctorTests: TestCase[] = [
         writeText(path.join(fixture.globalDir, item.relative), item.text);
         const result = invokeIsolatedDoctor(fixture);
         assertSuccess(result, `${item.name} should remain a machine-readable structural warning.`);
-        const authority = findBucket(parseDoctorV2(result).checks, "name", "active kit required runtime authority");
+        const { checks, report } = parseDoctorV2(result);
+        assertEqual(report.qualificationStatus, "blocked", `${item.name} must block qualification.`);
+        const authority = findBucket(checks, "name", "active kit required runtime authority");
         assertEqual(authority.status, "warn", `${item.name} must not pass structural authority.`);
         assertEqual(authority.blocksQualification, true, `${item.name} must block qualification.`);
         assert(String(authority.detail).includes(item.expected), `${item.name} diagnostic should identify '${item.expected}', got: ${String(authority.detail)}`);

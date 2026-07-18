@@ -37,8 +37,8 @@ export const IMPLEMENTATION_WORKER_REQUIRED_TEXT: readonly string[] = [
 ];
 
 /**
- * Exact D15/SDLC-010 same-slice continuation tokens required in the implementation-worker prompt.
- * Diagnostics must name the missing token and affected artifact.
+ * Same-slice continuation tokens for the implementation-worker prompt.
+ * Bounded correction needs candidate reference/diff and reproducer, not dual identities.
  */
 export const IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT: readonly string[] = [
   "## Same-Slice Continuation",
@@ -47,7 +47,8 @@ export const IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT: readonly string[]
   "never nest agents",
   "create or resume specialist sessions",
   "complete continuation brief",
-  "exact current Semantic Candidate Identity, Package Identity, and Identity Recipe",
+  "Candidate Reference",
+  "reproducer",
   "explicit objective text",
   "explicit brief delta",
   "unchanged forbidden actions",
@@ -57,7 +58,7 @@ export const IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT: readonly string[]
   "prior Applicable Proof",
 ];
 
-/** Tokens required in maintenance-route handoff wording (no Role:testing / Mission list). */
+/** Tokens required in maintenance-route handoff wording. */
 export const IMPLEMENTATION_WORKER_HANDOFF_FIELDS: readonly string[] = [
   "Universal Task Briefing Contract",
   "Acceptance Criteria",
