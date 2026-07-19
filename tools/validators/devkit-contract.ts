@@ -337,15 +337,36 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
   requireTextContains(
     ctx,
     agentsText,
-    "Suggested Next Options",
+    "Follow-up Candidates",
     "REPO_AGENTS.md completion handoff contract",
     agentsPath,
   );
   requireTextContains(
     ctx,
     agentsText,
-    "Actionable Continuation Items",
-    "REPO_AGENTS.md completion handoff contract",
+    "Residual Risks",
+    "REPO_AGENTS.md evidence-only reviewer handoff contract",
+    agentsPath,
+  );
+  requireTextContains(
+    ctx,
+    agentsText,
+    "Blocking Evidence",
+    "REPO_AGENTS.md closed-world reviewer handoff contract",
+    agentsPath,
+  );
+  requireTextContains(
+    ctx,
+    agentsText,
+    "post-freeze scope may only shrink",
+    "REPO_AGENTS.md closed-world scope firewall",
+    agentsPath,
+  );
+  requireTextContains(
+    ctx,
+    agentsText,
+    "never authorize scope expansion",
+    "REPO_AGENTS.md closed-world scope firewall",
     agentsPath,
   );
   requireTextContains(

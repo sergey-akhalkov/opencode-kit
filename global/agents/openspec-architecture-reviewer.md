@@ -59,4 +59,5 @@ Return:
 - `Architecture Risk Matrix`: area -> risk -> evidence -> recommendation.
 - `Traceability Notes`: requirement/task/test gaps.
 - `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable, or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

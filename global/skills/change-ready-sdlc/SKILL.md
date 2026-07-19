@@ -73,41 +73,55 @@ Populate every Universal Task Briefing Contract field. Emphasize:
 - Current State and Evidence with labeled observations, assumptions, hypotheses, and recommendations.
 - Requirements and Invariants plus independently checkable acceptance criteria and the observable happy path.
 - Exact read scope, write scope, and forbidden actions for this role only.
-- Resolved Decisions and Rationale including ownership, error model, compatibility, **accepted acceptance criteria**, **project-specific scope lock**, **planned gate waves**, **correction budget**, and **stop line** (record before first candidate mutation).
+- Resolved Decisions and Rationale including ownership, error model, compatibility, **frozen acceptance criterion IDs**, **task IDs**, **project-specific scope lock** (write roots, exact allowed additions, forbidden artifacts), **mandatory gate IDs/procedures/baselines**, **one initial fresh SDET**, **one correction wave**, **at most one fresh corrected-candidate SDET**, **one final review**, **one delivery review**, and **stop line** (record before first candidate mutation).
 - Verification as exact project-native procedures already authorized by adapter discovery.
 - Return Contract requiring evidence, changed artifacts, procedures/outcomes, blockers, and residual risks.
 - Blocker and Escalation Policy distinguishing agent-resolvable unknowns from owner decisions.
 
-## Acceptance scope lock and anti-polishing
+## Closed-world scope firewall
 
-### Pre-mutation record
+### Pre-mutation scope capsule
 
-Before the first behavior-changing candidate mutation on the qualification path, record accepted acceptance criteria, project-specific scope lock, planned gate waves, correction budget, and stop line.
+Before the first behavior-changing candidate mutation on the qualification path, freeze a readable project-native scope capsule with: primary outcome; frozen acceptance criterion IDs and exact observable statements; frozen task IDs; allowed write roots and exact allowed additions; forbidden artifacts and non-goals; mandatory gate IDs, exact procedures, trusted sources, and baseline outcomes; one initial fresh SDET; one correction wave; at most one fresh corrected-candidate SDET when that correction is consumed; one final review; one delivery review for Material; and the stop line. Project-specific scope lock is this capsule. After freeze, checkbox/status and evidence-reference updates are allowed; new criterion, task, gate, path, or evidence-tool IDs are not part of the current revision.
 
-### Post-mutation expansion rule
+### Post-freeze closed world
 
-After the first candidate mutation, a new blocking candidate correction or new acceptance criterion requires either:
+After the first candidate mutation, post-freeze scope may only shrink. Only explicit owner approval from the user may expand scope, and expansion creates a new revision or separate change with a new scope capsule and invalidated prior qualification evidence. Reviewers, SDET, validation, delivery gates, severity labels, P0/P1 findings, mandatory-gate failures, unknowns, and missing capabilities may bind readiness and require `Change-Ready: no` but never authorize scope expansion, mutation, task addition, new acceptance criteria, new gates, new write paths, artifacts, or persistent evidence infrastructure.
 
-1. explicit owner approval; or
-2. a reproducible P0/P1 defect that affects behavior, CI, security, data integrity, or compatibility.
+### Correction eligibility (four predicates)
 
-Missing or failed mandatory lifecycle gate, unsafe concurrent writer ownership/liveness, or unresolved owner decision still blocks Change-Ready, but must not justify speculative product or evidence scope.
+A current-change correction is eligible only when all are evidenced:
+
+1. The finding references a frozen acceptance criterion ID.
+2. A concrete reproducer demonstrates the violation on the current candidate.
+3. Baseline-versus-candidate evidence shows the candidate introduced, worsened, or newly reached the violation.
+4. The complete minimal correction remains inside frozen write roots and exact allowed artifacts, introduces no persistent evidence infrastructure, and the single correction wave remains unused.
+
+If any predicate is false or unknown, the finding may reject readiness via `Blocking Evidence` but cannot authorize current-change work. Pre-existing baseline debt remains baseline-attributed unless frozen scope made its removal the primary outcome. Mandatory gates are current-change authority only when frozen with trusted source and baseline outcome; baseline failures and later-discovered gates cannot authorize cleanup.
+
+### Unknown and external blockers
+
+After freeze, an unknown may receive bounded read-only investigation, then residual risk, an evidence-backed in-scope defect, or a terminal external blocker. Unknown never becomes implementation authority by itself. Out-of-scope P0/P1 findings remain stop-ship evidence: report `Change-Ready: no` and route an owner decision or separate prerequisite/follow-up change; do not fix inside the frozen change.
+
+### Persistent evidence infrastructure
+
+A new reusable harness, validator framework, benchmark system, simulator, ledger, generator, cross-repository runner, or equivalent persistent artifact introduced solely to prove the current candidate requires a separate prerequisite change. The current change may use existing validation, an already frozen focused regression-test path, a bounded manual procedure, or ephemeral output.
 
 ### Blocking versus residual
 
-Keep `Required Next Actions` and final-review `changes_requested` binding only for mandatory-gate failures or qualifying P0/P1 serious defects. Route P2/note, coverage-only gaps, optional evidence, and wording polish to Residual Risks or a separately approved follow-up.
+Reviewer and SDET outputs use `Blocking Evidence` for facts that reject readiness and non-authorizing `Follow-up Candidates` for separate revision/change/investigation proposals. They SHALL NOT contain superseded action-list fields or current-task authoring fields. `Follow-up Candidates` never authorize current-candidate work. Route P2/note, coverage-only gaps, optional evidence, and wording polish to Residual Risks or non-authorizing `Follow-up Candidates`.
 
-### Planned gate waves and replay
+### Finite qualification waves
 
-Plan one SDET qualification wave, one Final Candidate Review wave, and for Material one delivery/readiness wave. Replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate.
+Plan one initial fresh SDET, zero or one eligible correction wave, at most one fresh corrected-candidate SDET inside that wave, one Final Candidate Review, and for Material one delivery/readiness wave. The corrected-candidate SDET never authorizes a second correction. A second serious failure after the correction wave terminates the attempt. Final and delivery review are accept-or-reject gates and never initiate autonomous correction or replay.
 
 ### Role views
 
 - Production author: production write scope only; smallest complete happy path; no automated test artifacts; return changed artifacts, observable proof procedure, blockers, residual risks.
-- SDET: fresh context that did not author production; test-only write scope; original requirements and current candidate; optional project-native Candidate Reference; action exactly `authored-tests | assessed-existing-tests | blocked`; independent risk/oracle matrix. Main owns post-test proof/validation.
-- Final reviewer: fresh read-only context that authored neither production nor tests; complete current candidate; Applicable Proof; final SDET evidence or evidence-backed SDET `N/A` only for proven non-behavioral work; complete validation; optional Candidate Reference; structured verdict only. This is a qualification gate, not an ordinary completion gate.
-- Delivery/readiness reviewer (always for Material; for Ordinary Small only when policy/risk/owner requires): local package and continuity evidence via readable scoped candidate/diff/manifest; no candidate authorship. Missing conforming Material delivery/readiness capability blocks.
-- Diagnosis specialist: cause analysis only; route production fixes to production author and test fixes to fresh SDET.
+- SDET: fresh context that did not author production; test-only write scope; original requirements and current candidate; optional project-native Candidate Reference; action exactly `authored-tests | assessed-existing-tests | blocked`; independent risk/oracle matrix; `Blocking Evidence` and non-authorizing `Follow-up Candidates` only. Main owns post-test proof/validation.
+- Final reviewer: fresh read-only context that authored neither production nor tests; complete current candidate; Applicable Proof; final SDET evidence or evidence-backed SDET `N/A` only for proven non-behavioral work; complete validation; optional Candidate Reference; structured verdict `approved | approved_with_notes | rejected | blocked` only. Rejection terminates. This is a qualification gate, not an ordinary completion gate.
+- Delivery/readiness reviewer (always for Material; for Ordinary Small only when policy/risk/owner requires): local package and continuity evidence via readable scoped candidate/diff/manifest; no candidate authorship; `Blocking Evidence` and non-authorizing `Follow-up Candidates` only. Negative outcomes are terminal. Missing conforming Material delivery/readiness capability blocks.
+- Diagnosis specialist: cause analysis only; route eligible in-scope production fixes to production author and test fixes to fresh SDET under correction eligibility; otherwise report terminal blocker.
 
 ### Cold-context dispatch gate
 
@@ -189,49 +203,49 @@ Record each exact authorized procedure and its trusted source before execution. 
 
 | Failure | Owner |
 | --- | --- |
-| Qualifying product/build defect (P0/P1 serious or mandatory-gate) | Production author; preserve reproducer |
-| Qualifying test, fixture, simulator, harness, snapshot, or oracle defect | Fresh SDET |
-| Missing high-impact risk oracle for an accepted serious risk | Fresh SDET |
-| P2/note, coverage-only, optional evidence, wording polish | Residual Risks or separately approved follow-up |
-| Unknown cause or ownership | Orchestrator diagnosis or block |
-| Validation authority/environment | Orchestrator or evidence owner |
-| Final-review qualifying production finding | Production author |
-| Final-review qualifying test finding | Fresh SDET |
+| Eligible candidate-attributable frozen-criterion product/build defect | Production author inside frozen scope; preserve reproducer; consumes the single correction wave |
+| Eligible candidate-attributable frozen-criterion test/fixture/simulator/harness/snapshot/oracle defect | Fresh SDET inside frozen test scope; consumes the single correction wave when it is the correction |
+| Missing high-impact risk oracle for a frozen accepted serious risk fully correctable in frozen test scope | Fresh SDET; only while correction wave unused and predicates hold |
+| Out-of-scope P0/P1, baseline debt, missing capability, or incomplete correction fit | `Blocking Evidence`; `Change-Ready: no`; owner decision or separate change — never current mutation |
+| P2/note, coverage-only, optional evidence, wording polish | Residual Risks or non-authorizing `Follow-up Candidates` |
+| Unknown cause or ownership | Bounded read-only investigation, residual risk, or terminal external blocker — never implementation authority alone |
+| Validation authority/environment | Orchestrator or evidence owner; missing mandatory capability blocks without expanding scope |
+| Final-review or delivery rejection | Terminal for current attempt; new revision/separate change requires explicit owner decision |
 | Handoff-package text only | Orchestrator / package author |
 
-When a production defect belongs to the same recorded production author and role, objective, ownership scope, and continuity remain safe, resume that same production-author context using the discovered runtime continuation adapter. The continuation brief must include the new reproducer/outcome, Candidate Reference or reviewable diff, explicit objective text continuous with the original production objective, explicit brief delta, unchanged forbidden actions, and return contract—not chat-memory-only handoff.
+A current correction may run only when correction eligibility holds and the single correction wave is unused. When a production defect belongs to the same recorded production author and role, objective, ownership scope, and continuity remain safe, resume that same production-author context using the discovered runtime continuation adapter. The continuation brief must include the new reproducer/outcome, Candidate Reference or reviewable diff, explicit objective text continuous with the original production objective, explicit brief delta, unchanged forbidden actions, and return contract—not chat-memory-only handoff.
 
 When session identity is unavailable, continuity is unknown, role, objective, or ownership changes, scope materially expands, or independence requires freshness, dispatch a new conforming production author with a complete cold-context brief or block.
 
-Corrected-candidate SDET is always a new fresh context. Final review remains fresh and read-only. Production-author continuation does not preserve Applicable Proof, SDET, validation, or final-review evidence; replay all affected gates on the corrected candidate.
+Corrected-candidate SDET is always a new fresh context and is part of the single correction wave. Final review remains fresh and read-only. Production-author continuation does not preserve Applicable Proof, SDET, validation, or final-review evidence; replay all affected gates on the corrected candidate exactly once inside that wave.
 
-Any qualifying production or test correction invalidates affected Applicable Proof, SDET, validation, specialist review, and final review. Replay only those affected downstream gates.
+Any eligible production or test correction invalidates affected Applicable Proof, SDET, validation, specialist review, and final review. Replay only those affected downstream frozen gates. A second serious failure after the correction wave, or any serious finding from corrected-candidate SDET, terminates the attempt.
 
-Unexplained fail/pass on an unchanged candidate remains blocked. Stop with `Change-Ready: no` when the same failure repeats without new root-cause evidence, a mandatory adapter is unavailable, concurrent workspace ownership is unsafe, an owner decision remains unresolved, or the predeclared correction budget is exhausted while a serious or mandatory blocker remains.
+Unexplained fail/pass on an unchanged candidate remains blocked. Stop with `Change-Ready: no` when the same failure repeats without new root-cause evidence, a mandatory adapter is unavailable, concurrent workspace ownership is unsafe, an owner decision remains unresolved, correction eligibility fails, the single correction wave is exhausted while a serious or mandatory blocker remains, or final/delivery rejection occurs.
 
 ### 8. Final Candidate Review
 
-Begin only after accepted final SDET evidence (or evidence-backed SDET `N/A` only for proven non-behavioral work; behavior-changing or test-content work cannot use `N/A`) and complete applicable validation. Dispatch a fresh read-only final reviewer that authored neither production nor tests. Map native verdicts to `approved | approved_with_notes | changes_requested | blocked`. Actionable notes that request a candidate change for a qualifying P0/P1 or mandatory-gate failure do not pass. P2/note polish alone must not produce `changes_requested`. No conforming reviewer means blocked.
+Begin only after accepted final SDET evidence (or evidence-backed SDET `N/A` only for proven non-behavioral work; behavior-changing or test-content work cannot use `N/A`) and complete applicable validation. Dispatch a fresh read-only final reviewer that authored neither production nor tests. Map native verdicts to `approved | approved_with_notes | rejected | blocked`. Final review is accept-or-reject only: `rejected` or `blocked` terminates the qualification attempt and never authorizes autonomous correction or replay. P2/note polish alone must not produce `rejected`. No conforming reviewer means blocked.
 
 Before any reviewer dispatch, verify every candidate and evidence input is directly readable under the reviewer's effective permissions. External path references alone are insufficient. Supply a privacy-safe inline or attached evidence bundle: Candidate Reference or reviewable diff/content for every scoped artifact, runtime event excerpts when used as proof, final SDET report, and validation outcomes. Missing readability blocks before dispatch.
 
-Require a structured report: exact verdict enum, optional Candidate Reference for the candidate assessed, ordered evidence-backed findings with `Evidence Type`, `Likely Root Cause`, `Artifact Owner`, `Recommendation`, `Confidence`, and `Needs external reviewer`, plus blockers, residual risks, and actionable continuation items—not a bare verdict.
+Require a structured report: exact verdict enum, optional Candidate Reference for the candidate assessed, ordered evidence-backed findings with `Evidence Type`, `Likely Root Cause`, `Artifact Owner`, `Recommendation`, `Confidence`, and `Needs external reviewer`, plus blockers, residual risks, `Blocking Evidence`, and non-authorizing `Follow-up Candidates`—not a bare verdict and not an action list.
 
 ### 9. Change-Ready Decision
 
 Report `Change-Ready: yes` only when the same current candidate has:
 
-- accepted requirements;
+- accepted frozen requirements;
 - Applicable Proof;
 - SDET final evidence or evidence-backed `N/A` (N/A only for proven non-behavioral work);
 - complete project/owner validation pass;
-- accepted Final Candidate Review;
+- accepted Final Candidate Review (`approved` or `approved_with_notes`);
 - for Material work, an explicitly accepted conforming delivery result;
 - scoped candidate ownership with no unsafe overlap;
-- no binding blocker or required action;
+- no binding `Blocking Evidence`;
 - complete local change-handoff package.
 
-Material work always supplies current task/evidence status to the discovered conforming delivery/readiness gate; missing conforming capability blocks. Ordinary Small uses proportional evidence and invokes that gate only when policy, risk, or owner requires it. Every `Change-Ready: no`, delivery `Verdict: material deviations`, an evidence-insufficient delivery verdict, `Blocking for Acceptance: yes`, `Verdict: blocked`, qualifying P0/P1 serious blocker, mandatory-gate failure, or non-empty Required Next Actions (restricted to those blocker classes) is binding and keeps readiness blocked. P2/note and optional polish must not appear in Required Next Actions.
+Material work always supplies current task/evidence status to the discovered conforming delivery/readiness gate; missing conforming capability blocks. Ordinary Small uses proportional evidence and invokes that gate only when policy, risk, or owner requires it. Delivery accepted mapping retains diagnostic verdict names: `on plan` or `minor deviations` only with `Change-Ready: yes` and `Blocking for Acceptance: no`. Every `Change-Ready: no`, delivery `Verdict: material deviations`, an evidence-insufficient delivery verdict, `Blocking for Acceptance: yes`, `Verdict: blocked`, final `rejected`/`blocked`, mandatory-gate failure, or non-empty `Blocking Evidence` is binding readiness rejection, is terminal for the current attempt, and never authorize scope expansion. P2/note and optional polish route only to Residual Risks or non-authorizing `Follow-up Candidates`.
 
 Local package contents: context; requirements; scope; non-goals; main changes; Applicable Proof; SDET/testing evidence; validation; review results; risks and proportional rollback notes when relevant; review focus; changed-artifact scope; baseline/candidate assumptions; residual blockers; `External Operations: not performed`.
 

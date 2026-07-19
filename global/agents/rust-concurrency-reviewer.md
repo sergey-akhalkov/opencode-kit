@@ -58,6 +58,6 @@ Return:
 - `Blocking for acceptance`: yes/no.
 - `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
 - `Concurrency Matrix`: shared resource/task/channel -> owner -> risk -> evidence.
-- `Missing Tests`: smallest concurrency tests or harnesses needed.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps such as absent concurrency tests or harnesses, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable (including absent concurrency verification that blocks acceptance), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

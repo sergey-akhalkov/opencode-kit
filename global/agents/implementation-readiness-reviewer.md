@@ -64,7 +64,6 @@ Return:
 - `Blocking for implementation`: yes/no.
 - `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
 - `Readiness Matrix`: requirement/decision -> status -> evidence/gap.
-- `Missing Decisions`: exact decisions needed.
-- `Required Evidence`: requirements/docs/source evidence and the observable happy-path boundary needed to start implementation, plus the post-proof risk-testing handoff when Material/qualification applies.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps or deferred nonblocking owner choices, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable, including unresolved owner decisions or absent requirements/docs/source evidence and the observable happy-path boundary needed to start implementation (plus the post-proof risk-testing handoff when Material/qualification applies), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

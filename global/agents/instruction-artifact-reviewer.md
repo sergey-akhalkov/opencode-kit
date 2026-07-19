@@ -66,6 +66,6 @@ Return:
 - `Routing Review`: artifact -> intended trigger -> overlap/gap.
 - `Autonomy And Handoff Review`: where user intervention is necessary, unnecessary, or missing.
 - `Safety And Permission Review`: read/write boundaries, remote/destructive guards, host-mutation risks.
-- `Validation Gaps`: missing validators, tests, fixtures, or reviewer gates.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps such as absent validators, tests, fixtures, or reviewer gates, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable (including absent validators or gates that block acceptance), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

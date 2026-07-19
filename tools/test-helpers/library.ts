@@ -63,6 +63,19 @@ export function addRegisteredReviewerFixture(fixture: string, reviewer: "code-qu
   return reviewerPath;
 }
 
+export function addQwenLocalWorkerFixture(fixture: string): string {
+  const workerName = "qwen-local-worker";
+  const workerPath = path.join(fixture, "global", "agents", `${workerName}.md`);
+  writeText(workerPath, fs.readFileSync(path.join(helperRoot, "global", "agents", `${workerName}.md`), "utf8"));
+
+  const profilePath = path.join(fixture, "profiles", "all.json");
+  const profile = JSON.parse(fs.readFileSync(profilePath, "utf8")) as { agents: string[] };
+  profile.agents.push(workerName);
+  writeText(profilePath, `${JSON.stringify(profile, null, 2)}\n`);
+  appendReadmeAgentCatalogEntry(fixture, `- \`${workerName}\`: Non-registered local worker fixture.`);
+  return workerPath;
+}
+
 export function newLibraryFixture(name: string): string {
   const dir = newTempDir(name);
   writeText(path.join(dir, "global", "skills", "demo-skill", "SKILL.md"), lines([
@@ -121,7 +134,8 @@ export function newLibraryFixture(name: string): string {
     "",
     "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
     "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
-    "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+    "- `Blocking Evidence`: readiness-rejecting facts or `none`.",
+    "- `Follow-up Candidates`: non-authorizing separate work or `none`.",
     "",
   ]));
   writeText(path.join(dir, "instructions", "example.md"), lines(["# Example", ""]));
@@ -234,11 +248,12 @@ export function newLibraryFixture(name: string): string {
     "- Ask the user only for real blockers, remote/destructive actions, scope or risk decisions, credentials, and MR/PR outcomes.",
     "- When asking, offer 2-4 self-contained next actions via `question` when available.",
     "- Put the recommended option first and end its label with `(Recommended)`.",
-    "- In read-only, no-question, or subagent contexts, return `Suggested Next Options` or `Actionable Continuation Items` instead of asking the user directly.",
+    "- In read-only, no-question, or subagent contexts, return `Blocking Evidence`, `Residual Risks`, or non-authorizing `Follow-up Candidates` instead of asking the user directly.",
     "",
     "## Autonomous Work Contract",
     "",
     "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.",
+    "- After freeze, post-freeze scope may only shrink; reviewer/SDET findings and failed gates may bind readiness but never authorize scope expansion.",
     "",
   ]));
   writeText(path.join(dir, "README.md"), lines([
@@ -502,7 +517,7 @@ export function addImplementationWorkerFixture(fixture: string): string {
   return workerPath;
 }
 
-export const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, any qualifying P0/P1 serious blocker, or non-empty `Required Next Actions` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and `Required Next Actions: none`. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
+export const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding readiness rejection: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, or non-empty `Blocking Evidence` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and empty `Blocking Evidence`. Findings may bind readiness but never authorize scope expansion or mutation. After freeze, post-freeze scope may only shrink; only explicit user approval may expand through a new revision or separate change. Qualification permits one correction wave only for a candidate-attributable frozen acceptance criterion violation fully inside frozen scope. Route separate work to non-authorizing `Follow-up Candidates`; persistent evidence infrastructure is a separate prerequisite. Delivery rejection is terminal and never authorizes mutation or replay. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
 const materialDeliveryRoutingFixtureText = MATERIAL_DELIVERY_ROUTING_TOKENS.join("; ");
 export const sessionDeliveryBindingTokens = [
   "Change-Ready: no",
@@ -510,11 +525,11 @@ export const sessionDeliveryBindingTokens = [
   "Verdict: not enough evidence",
   "Blocking for Acceptance: yes",
   "Verdict: blocked",
-  "qualifying P0/P1 serious blocker",
-  "Required Next Actions",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
   "do not present the session as complete",
   "Blocking for Acceptance: no",
-  "Required Next Actions: none",
   "partial slice handoff must not end an unfinished root goal",
 ];
 

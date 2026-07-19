@@ -132,6 +132,12 @@ const EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT = [
   "`instructions/leaf-reviewer-agent-contract.md`",
 ];
 
+const EXPECTED_REGISTERED_REVIEWER_REQUIRED_TEXT = [
+  ...EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT,
+  "Blocking Evidence",
+  "Follow-up Candidates",
+];
+
 const EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT = [
   "## Review Inputs And Baseline Scenario",
   "user task, acceptance criteria, logs, and reproduction",
@@ -148,7 +154,6 @@ const EXPECTED_REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT = [
   "`instructions/leaf-reviewer-agent-contract.md`",
   "`Findings`: ordered by severity",
   "`Residual Risks`",
-  "Actionable Continuation Items",
 ];
 
 const EXPECTED_REVIEWER_DENIED_PERMISSION_KEYS = [
@@ -340,7 +345,7 @@ const tests: TestCase[] = [
         "separate fresh-context testing subagent",
         "independent matrix of realistic",
         "Prioritize end-to-end tests",
-        "feed qualifying failures (mandatory-gate or reproducible P0/P1 serious defects) back into production fixes",
+        "Out-of-scope P0/P1, unknowns, and missing capabilities bind `Change-Ready: no` via `Blocking Evidence` but never authorize scope expansion",
         "This optional gate does not replace independent Final Candidate Review on the qualification path",
         "original requirements, happy-path proof, testing subagent/session, risk matrix",
       ]) {
@@ -496,9 +501,10 @@ const tests: TestCase[] = [
     run: () => {
       const expectedTotal = EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES.length + 2;
       assertEqual(AGENT_TEXT_CONTRACTS.length, expectedTotal, "AGENT_TEXT_CONTRACTS must aggregate reviewer + binding + test-coverage contracts.");
+      const registeredReviewerFiles = new Set(EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES);
       const contractReference = AGENT_TEXT_CONTRACTS.filter(
-        (c) => c.requiredText.length === EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT.length
-          && c.requiredText[0] === EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT[0],
+        (c) => registeredReviewerFiles.has(c.fileName)
+          && EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT.every((required, index) => c.requiredText[index] === required),
       );
       assertEqual(contractReference.length, EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES.length, "Reviewer contract reference contracts missing.");
       const contractFiles = contractReference.map((c) => c.fileName).sort();
@@ -507,6 +513,13 @@ const tests: TestCase[] = [
         [...EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES].sort(),
         "Reviewer contract reference file list drifted.",
       );
+      for (const contract of contractReference) {
+        assertDeepEqual(
+          contract.requiredText,
+          EXPECTED_REGISTERED_REVIEWER_REQUIRED_TEXT,
+          `Registered reviewer contract requiredText drifted: ${contract.fileName}`,
+        );
+      }
     },
   },
   {

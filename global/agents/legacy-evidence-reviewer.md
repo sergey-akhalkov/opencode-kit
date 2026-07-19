@@ -57,4 +57,5 @@ Return:
 - `Legacy Evidence Matrix`: behavior -> legacy evidence -> modern requirement/test.
 - `Unknowns`: unresolved legacy behavior and why.
 - `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable, or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

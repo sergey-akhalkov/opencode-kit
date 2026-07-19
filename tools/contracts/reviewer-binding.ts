@@ -21,10 +21,16 @@ export const REVIEWER_CONTRACT_REFERENCE_TEXT: readonly string[] = [
   "`instructions/leaf-reviewer-agent-contract.md`",
 ];
 
+/** Closed-world output fields required on exact registered read-only reviewers only. */
+export const REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT: readonly string[] = [
+  "Blocking Evidence",
+  "Follow-up Candidates",
+];
+
 export const REVIEWER_CONTRACT_REFERENCE_CONTRACTS: readonly TextContract[] = PREVENTION_FEEDBACK_REVIEWER_FILES.map((fileName) => ({
   fileName,
   label: `${fileName} must reference the shared reviewer contract via ## Contract Reference`,
-  requiredText: [...REVIEWER_CONTRACT_REFERENCE_TEXT],
+  requiredText: [...REVIEWER_CONTRACT_REFERENCE_TEXT, ...REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT],
 }));
 
 export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
@@ -53,11 +59,12 @@ export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
   "observable happy-path proof",
   "fresh-context testing subagent",
   "Keep matrices terse",
-  "Required Next Actions",
-  "Actionable Continuation Items",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
   "Record the optional-tool gap in `Evidence Reviewed` and `Residual Risks`",
-  "Add the gap to `Required Next Actions` only when required session evidence is unavailable from all allowed sources",
-  "Optional-tool absence alone is not a required action when substitute evidence is sufficient",
+  "Record missing required session evidence in `Blocking Evidence` when unavailable from all allowed sources",
+  "Optional-tool absence alone is not blocking when substitute evidence is sufficient",
   "Delivery self-gate for the current Material closing task",
   "every prerequisite applicable task is checked with current literal evidence",
   "Any other unchecked applicable task remains a P0",
@@ -70,6 +77,7 @@ export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
   "Verdict: material deviations",
   "Verdict: not enough evidence",
   "must not coexist with `Blocking for Acceptance: no`",
+  "terminal for the current attempt",
 ];
 
 export const SESSION_DELIVERY_BINDING_CONTRACT: TextContract = {
@@ -119,13 +127,90 @@ export const SESSION_DELIVERY_BINDING_HANDOFF_TOKENS: readonly string[] = [
   "Verdict: not enough evidence",
   "Blocking for Acceptance: yes",
   "Verdict: blocked",
-  "qualifying P0/P1 serious blocker",
-  "Required Next Actions",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
   "do not present the session as complete",
   "Blocking for Acceptance: no",
-  "Required Next Actions: none",
   "partial slice handoff must not end an unfinished root goal",
 ];
+
+/**
+ * Exact closed-world scope-firewall markers required on loaded authority surfaces.
+ * Deterministic substring checks only — no fuzzy severity/scope classification.
+ */
+export const CLOSED_WORLD_SCOPE_MARKERS: readonly string[] = [
+  "post-freeze scope may only shrink",
+  "new revision or separate change",
+  "never authorize scope expansion",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "one correction wave",
+  "frozen acceptance criterion",
+];
+
+/** Surfaces that must retain closed-world scope-firewall markers. */
+export const CLOSED_WORLD_SCOPE_SURFACES: readonly string[] = [
+  "REPO_AGENTS.md",
+  "global/AGENTS.md",
+  "global/skills/change-ready-sdlc/SKILL.md",
+  "instructions/reusable-project-agent-instructions.md",
+  "instructions/universal-development-loop.md",
+  "templates/project/AGENTS.md",
+];
+
+/**
+ * Exact superseded authority phrases that must not appear on loaded closed-world surfaces.
+ * Match whole unsafe sentences/phrases only.
+ */
+export const CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS = [
+  {
+    needle: "Actionable Continuation Items",
+    diagnostic: "superseded reviewer/SDET action-list field Actionable Continuation Items",
+  },
+  {
+    needle: "Required Next Actions",
+    diagnostic: "superseded delivery/reviewer action-list field Required Next Actions",
+  },
+  {
+    needle: "changes_requested",
+    diagnostic: "superseded final-review verdict changes_requested",
+  },
+  {
+    needle: "Suggested Next Options",
+    diagnostic: "superseded reviewer/subagent action-list field Suggested Next Options",
+  },
+  {
+    needle: "actionable continuation items",
+    diagnostic: "superseded generic actionable continuation items on loaded closed-world surface",
+  },
+  {
+    needle:
+      "new blocking corrections or acceptance criteria require explicit owner approval or a reproducible P0/P1 defect",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception",
+  },
+  {
+    needle: "a new blocking candidate correction or new acceptance criterion requires either:",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception in skill",
+  },
+  {
+    needle: "Keep `Required Next Actions` and final-review `changes_requested`",
+    diagnostic: "superseded action-list binding authority",
+  },
+  {
+    needle: "Replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate",
+    diagnostic: "superseded unbounded P0/P1 correction-replay authority",
+  },
+  {
+    needle: "replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate",
+    diagnostic: "superseded unbounded P0/P1 correction-replay authority",
+  },
+  {
+    needle:
+      "Evidence tooling must not become a second product; it MAY be added only when a mandatory gate cannot be reproduced without it",
+    diagnostic: "superseded persistent evidence-tool exception",
+  },
+] as const;
 
 /** Surfaces that must retain session-delivery binding handoff tokens. */
 export const SESSION_DELIVERY_BINDING_SURFACES: readonly string[] = [

@@ -199,6 +199,15 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (!routing.includes(AGENTS_ROUTING_NO_DOWNGRADE_MARKER)) {
     return "AGENTS.md Change-Ready SDLC Routing section missing no high-risk downgrade for small diffs";
   }
+  if (!routing.includes("post-freeze scope may only shrink")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing closed-world post-freeze shrink rule";
+  }
+  if (!routing.includes("never authorize scope expansion")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing non-authorizing blocker rule";
+  }
+  if (!routing.includes("one correction wave")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing finite one-correction-wave marker";
+  }
   if (!hasExactH2(text, "Universal Task Briefing Contract")) {
     return "AGENTS.md missing exact heading ## Universal Task Briefing Contract";
   }
@@ -321,6 +330,12 @@ const SKILL_SCOPE_LOCK_MARKER = "project-specific scope lock";
 const SKILL_OWNER_APPROVAL_MARKER = "explicit owner approval";
 const SKILL_NO_DOWNGRADE_MARKER =
   "must not be downgraded merely because the diff is small";
+const SKILL_CLOSED_WORLD_SHRINK_MARKER = "post-freeze scope may only shrink";
+const SKILL_NON_AUTHORIZING_MARKER = "never authorize scope expansion";
+const SKILL_CORRECTION_WAVE_MARKER = "one correction wave";
+const SKILL_BLOCKING_EVIDENCE_MARKER = "Blocking Evidence";
+const SKILL_FOLLOW_UP_CANDIDATES_MARKER = "Follow-up Candidates";
+const SKILL_FINAL_VERDICT_MARKER = "approved | approved_with_notes | rejected | blocked";
 
 /**
  * Structural change-ready-sdlc SKILL.md authority: js-yaml frontmatter + ordered
@@ -380,6 +395,24 @@ export function skillAuthorityProblem(text: string): string | null {
   }
   if (!body.includes(SKILL_NO_DOWNGRADE_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing no high-risk downgrade for small diffs";
+  }
+  if (!body.includes(SKILL_CLOSED_WORLD_SHRINK_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing closed-world post-freeze shrink rule";
+  }
+  if (!body.includes(SKILL_NON_AUTHORIZING_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing non-authorizing blocker rule";
+  }
+  if (!body.includes(SKILL_CORRECTION_WAVE_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing finite one-correction-wave marker";
+  }
+  if (!body.includes(SKILL_BLOCKING_EVIDENCE_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing Blocking Evidence output field";
+  }
+  if (!body.includes(SKILL_FOLLOW_UP_CANDIDATES_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing Follow-up Candidates output field";
+  }
+  if (!body.includes(SKILL_FINAL_VERDICT_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing final-review rejected verdict enum";
   }
   // Triggers may live in description and/or body; require complete named Material classes.
   const triggerSurface = `${map.description}\n${body}`;

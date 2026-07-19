@@ -37,7 +37,22 @@ export const REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT: readonly string[] = [
   "`instructions/leaf-reviewer-agent-contract.md`",
   "`Findings`: ordered by severity",
   "`Residual Risks`",
+];
+
+/** Exact field names forbidden on registered reviewer/SDET output contracts (closed-world firewall). */
+export const REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS: readonly string[] = [
+  "Missing Tests",
+  "Missing Golden Tests",
+  "Missing Golden/Integration Tests",
+  "Missing Decisions",
+  "Required Evidence",
+  "Benchmark Suggestions",
+  "Validation Gaps",
+  "Manual Gates",
+  "Suggested Next Options",
+  "Required Next Actions",
   "Actionable Continuation Items",
+  "changes_requested",
 ];
 
 /** Exact standalone path line required under ## Contract Reference for registered reviewers. */
@@ -73,7 +88,7 @@ export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "proven non-behavioral",
   "behavior-changing or test-content",
   "project-native validation",
-  "approved | approved_with_notes | changes_requested | blocked",
+  "approved | approved_with_notes | rejected | blocked",
   "Candidate Reference",
   "qualification gate",
   "Findings",
@@ -85,7 +100,9 @@ export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "Needs external reviewer",
   "Blockers",
   "Residual Risks",
-  "Actionable Continuation Items",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
   "validation provenance only",
   "directly readable",
   "FINAL_CANDIDATE_REVIEW_REPORT",

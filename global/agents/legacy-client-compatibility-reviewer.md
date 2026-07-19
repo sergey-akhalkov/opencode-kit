@@ -55,6 +55,6 @@ Return:
 - `Blocking for compatibility`: yes/no.
 - `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
 - `Compatibility Matrix`: legacy workflow/API -> expected behavior -> evidence/gap.
-- `Manual Gates`: workflows that require manual/client validation.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps, including workflows that still need manual or client validation, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable (including unresolved manual or client validation that blocks compatibility acceptance), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

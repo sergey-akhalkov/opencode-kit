@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import {
+  CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS,
   CHANGE_READY_SDLC_CONTINUATION_TOKENS,
   CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
   CHANGE_READY_SDLC_FORBIDDEN_TOKENS,
@@ -9,6 +10,7 @@ import {
   CHANGE_READY_SDLC_SKILL_NAME,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
+  GLOBAL_AGENTS_CLOSED_WORLD_MARKERS,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
   LIFECYCLE_ROLE_ROUTES,
@@ -24,7 +26,14 @@ import {
 import {
   FINAL_CANDIDATE_REVIEWER_FILE,
   FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
+  REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS,
 } from "./contracts/agents.ts";
+import {
+  CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS,
+  CLOSED_WORLD_SCOPE_MARKERS,
+  CLOSED_WORLD_SCOPE_SURFACES,
+  REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT,
+} from "./contracts/reviewer-binding.ts";
 import { IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT } from "./contracts/implementation-worker.ts";
 import {
   assert,
@@ -75,7 +84,9 @@ const EXPECTED_SDET_QUALITY_ENGINEER_REQUIRED_TEXT = [
   "Requested Validation Procedures",
   "Blockers",
   "Residual Risks",
-  "Actionable Continuation Items",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
 ];
 
 const EXPECTED_FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT = [
@@ -90,7 +101,7 @@ const EXPECTED_FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT = [
   "proven non-behavioral",
   "behavior-changing or test-content",
   "project-native validation",
-  "approved | approved_with_notes | changes_requested | blocked",
+  "approved | approved_with_notes | rejected | blocked",
   "Candidate Reference",
   "qualification gate",
   "Findings",
@@ -102,7 +113,9 @@ const EXPECTED_FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT = [
   "Needs external reviewer",
   "Blockers",
   "Residual Risks",
-  "Actionable Continuation Items",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
   "validation provenance only",
   "directly readable",
   "FINAL_CANDIDATE_REVIEW_REPORT",
@@ -302,6 +315,144 @@ const EXPECTED_FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
     needle: "Qualification gates bind to Semantic Candidate Identity",
     diagnostic: "old Semantic Candidate Identity binding wording",
   },
+  {
+    needle: "Actionable Continuation Items",
+    diagnostic: "superseded action-list field Actionable Continuation Items on production-routing surface",
+  },
+  {
+    needle: "Required Next Actions",
+    diagnostic: "superseded action-list field Required Next Actions on production-routing surface",
+  },
+  {
+    needle: "changes_requested",
+    diagnostic: "superseded final-review verdict changes_requested on production-routing surface",
+  },
+  {
+    needle: "new blocking corrections or acceptance criteria require explicit owner approval or a reproducible P0/P1 defect",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception",
+  },
+  {
+    needle: "a new blocking candidate correction or new acceptance criterion requires either:",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception in skill",
+  },
+  {
+    needle: "Evidence tooling must not become a second product; it MAY be added only when a mandatory gate cannot be reproduced without it",
+    diagnostic: "superseded persistent evidence-tool exception on production-routing surface",
+  },
+];
+
+const EXPECTED_REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS = [
+  "Missing Tests",
+  "Missing Golden Tests",
+  "Missing Golden/Integration Tests",
+  "Missing Decisions",
+  "Required Evidence",
+  "Benchmark Suggestions",
+  "Validation Gaps",
+  "Manual Gates",
+  "Suggested Next Options",
+  "Required Next Actions",
+  "Actionable Continuation Items",
+  "changes_requested",
+];
+
+const EXPECTED_REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT = [
+  "Blocking Evidence",
+  "Follow-up Candidates",
+];
+
+const EXPECTED_EVIDENCE_ONLY_HANDOFF_FIELDS = [
+  "Blocking Evidence",
+  "Residual Risks",
+  "Follow-up Candidates",
+];
+
+const EXPECTED_CLOSED_WORLD_SCOPE_MARKERS = [
+  "post-freeze scope may only shrink",
+  "new revision or separate change",
+  "never authorize scope expansion",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "one correction wave",
+  "frozen acceptance criterion",
+];
+
+const EXPECTED_CLOSED_WORLD_SCOPE_SURFACES = [
+  "REPO_AGENTS.md",
+  "global/AGENTS.md",
+  "global/skills/change-ready-sdlc/SKILL.md",
+  "instructions/reusable-project-agent-instructions.md",
+  "instructions/universal-development-loop.md",
+  "templates/project/AGENTS.md",
+];
+
+const EXPECTED_CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS = [
+  {
+    needle: "Actionable Continuation Items",
+    diagnostic: "superseded reviewer/SDET action-list field Actionable Continuation Items",
+  },
+  {
+    needle: "Required Next Actions",
+    diagnostic: "superseded delivery/reviewer action-list field Required Next Actions",
+  },
+  {
+    needle: "changes_requested",
+    diagnostic: "superseded final-review verdict changes_requested",
+  },
+  {
+    needle: "Suggested Next Options",
+    diagnostic: "superseded reviewer/subagent action-list field Suggested Next Options",
+  },
+  {
+    needle: "actionable continuation items",
+    diagnostic: "superseded generic actionable continuation items on loaded closed-world surface",
+  },
+  {
+    needle: "new blocking corrections or acceptance criteria require explicit owner approval or a reproducible P0/P1 defect",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception",
+  },
+  {
+    needle: "a new blocking candidate correction or new acceptance criterion requires either:",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception in skill",
+  },
+  {
+    needle: "Keep `Required Next Actions` and final-review `changes_requested`",
+    diagnostic: "superseded action-list binding authority",
+  },
+  {
+    needle: "Replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate",
+    diagnostic: "superseded unbounded P0/P1 correction-replay authority",
+  },
+  {
+    needle: "replay only gates invalidated by a qualifying P0/P1 correction or a failed mandatory gate",
+    diagnostic: "superseded unbounded P0/P1 correction-replay authority",
+  },
+  {
+    needle: "Evidence tooling must not become a second product; it MAY be added only when a mandatory gate cannot be reproduced without it",
+    diagnostic: "superseded persistent evidence-tool exception",
+  },
+];
+
+const EXPECTED_CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS = [
+  "post-freeze scope may only shrink",
+  "new revision or separate change",
+  "never authorize scope expansion",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "one correction wave",
+  "frozen acceptance criterion",
+  "approved | approved_with_notes | rejected | blocked",
+  "persistent evidence infrastructure",
+];
+
+const EXPECTED_GLOBAL_AGENTS_CLOSED_WORLD_MARKERS = [
+  "post-freeze scope may only shrink",
+  "new revision or separate change",
+  "never authorize scope expansion",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "one correction wave",
+  "approved | approved_with_notes | rejected | blocked",
 ];
 
 function assertTokens(text: string, tokens: readonly string[], message: string): void {
@@ -349,6 +500,68 @@ export const changeReadyContractTests: TestCase[] = [
       assertDeepEqual([...MAINTENANCE_ROUTING_FILES], EXPECTED_MAINTENANCE_ROUTING_FILES, "Maintenance routing files drifted.");
       assertDeepEqual([...GLOBAL_AGENTS_TRIGGER_TOKENS], EXPECTED_GLOBAL_AGENTS_TRIGGER_TOKENS, "Global AGENTS trigger tokens drifted.");
       assertDeepEqual([...FORBIDDEN_PRODUCTION_ROUTING_PATTERNS], EXPECTED_FORBIDDEN_PRODUCTION_ROUTING_PATTERNS, "Forbidden old-policy patterns drifted.");
+      assertDeepEqual([...REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS], EXPECTED_REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS, "Reviewer/SDET forbidden action fields drifted.");
+      assertDeepEqual([...REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT], EXPECTED_REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT, "Registered reviewer output fields drifted.");
+      assertDeepEqual([...CLOSED_WORLD_SCOPE_MARKERS], EXPECTED_CLOSED_WORLD_SCOPE_MARKERS, "Closed-world scope markers drifted.");
+      assertDeepEqual([...CLOSED_WORLD_SCOPE_SURFACES], EXPECTED_CLOSED_WORLD_SCOPE_SURFACES, "Closed-world scope surfaces drifted.");
+      assertDeepEqual([...CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS], EXPECTED_CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS, "Closed-world forbidden authority patterns drifted.");
+      assertDeepEqual([...CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS], EXPECTED_CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS, "Canonical skill closed-world markers drifted.");
+      assertDeepEqual([...GLOBAL_AGENTS_CLOSED_WORLD_MARKERS], EXPECTED_GLOBAL_AGENTS_CLOSED_WORLD_MARKERS, "Global AGENTS closed-world markers drifted.");
+    },
+  },
+  {
+    name: "contracts: registered reviewers and SDET expose evidence-only output while qwen remains outside that role registry",
+    run: () => {
+      const registeredRoleFiles = [
+        "code-quality-reviewer.md",
+        "deployment-config-reviewer.md",
+        "implementation-readiness-reviewer.md",
+        "instruction-artifact-reviewer.md",
+        "legacy-client-compatibility-reviewer.md",
+        "legacy-evidence-reviewer.md",
+        "openspec-architecture-reviewer.md",
+        "performance-reliability-reviewer.md",
+        "protocol-api-reviewer.md",
+        "rust-concurrency-reviewer.md",
+        "session-delivery-reviewer.md",
+        "test-coverage-reviewer.md",
+        "wire-protocol-reviewer.md",
+        "final-candidate-reviewer.md",
+        "sdet-quality-engineer.md",
+      ];
+      for (const fileName of registeredRoleFiles) {
+        const text = fs.readFileSync(path.join(root, "global", "agents", fileName), "utf8");
+        assertTokens(text, EXPECTED_EVIDENCE_ONLY_HANDOFF_FIELDS, `${fileName} missing evidence-only output field`);
+        for (const forbidden of EXPECTED_REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
+          assert(!text.includes(forbidden), `${fileName} must not expose superseded action authority: ${forbidden}`);
+        }
+      }
+
+      const leafContractPath = path.join(root, "instructions", "leaf-reviewer-agent-contract.md");
+      const leafContract = fs.readFileSync(leafContractPath, "utf8");
+      assertTokens(leafContract, EXPECTED_EVIDENCE_ONLY_HANDOFF_FIELDS, "Shared leaf-reviewer contract missing evidence-only output field");
+      for (const forbidden of EXPECTED_REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
+        assert(!leafContract.includes(forbidden), `Shared leaf-reviewer contract must not expose superseded action authority: ${forbidden}`);
+      }
+
+      const qwen = fs.readFileSync(path.join(root, "global", "agents", "qwen-local-worker.md"), "utf8");
+      assert(qwen.includes("Actionable Continuation Items"), "qwen-local-worker must retain its non-registered-worker continuation field.");
+      assert(!EXPECTED_EVIDENCE_ONLY_HANDOFF_FIELDS.every((field) => qwen.includes(field)), "qwen-local-worker must not be forced into registered-reviewer output fields.");
+    },
+  },
+  {
+    name: "contracts: loaded authority surfaces preserve every closed-world marker and exclude every superseded authority phrase",
+    run: () => {
+      for (const relative of CLOSED_WORLD_SCOPE_SURFACES) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assertTokens(text, CLOSED_WORLD_SCOPE_MARKERS, `${relative} missing closed-world authority marker`);
+        if (relative === "global/AGENTS.md" || relative === "REPO_AGENTS.md") {
+          assertTokens(text, EXPECTED_EVIDENCE_ONLY_HANDOFF_FIELDS, `${relative} missing evidence-only handoff field`);
+        }
+        for (const forbidden of CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS) {
+          assert(!text.includes(forbidden.needle), `${relative} retains ${forbidden.diagnostic}`);
+        }
+      }
     },
   },
   {
@@ -406,13 +619,15 @@ export const changeReadyContractTests: TestCase[] = [
       ], "Global scope-expansion policy missing exact approval oracle");
 
       const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
-      const scopeLock = sectionBetween(skill, "## Acceptance scope lock and anti-polishing", "## Orchestrator ownership");
+      const scopeLock = sectionBetween(skill, "## Closed-world scope firewall", "## Orchestrator ownership");
       assertTokens(scopeLock, [
+        "post-freeze scope may only shrink",
         "explicit owner approval",
-        "reproducible P0/P1 defect",
+        "new revision or separate change",
+        "never authorize scope expansion",
         "P2/note, coverage-only gaps, optional evidence, and wording polish",
-        "Residual Risks or a separately approved follow-up",
-      ], "Qualification scope lock missing anti-polishing oracle");
+        "Residual Risks or non-authorizing `Follow-up Candidates`",
+      ], "Qualification scope firewall missing owner-authority oracle");
 
       const spec = fs.readFileSync(path.join(root, "openspec", "specs", "library-change-ready-sdlc", "spec.md"), "utf8");
       assertTokens(spec, [
@@ -421,6 +636,38 @@ export const changeReadyContractTests: TestCase[] = [
         "839-line split candidate",
         "SHALL NOT trigger unrelated fixes inside this change",
       ], "Accepted one-change qualification and baseline-debt scenarios drifted");
+    },
+  },
+  {
+    name: "contracts: frozen scope capsule, correction predicates, unknown handling, and finite stop line remain explicit",
+    run: () => {
+      const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const firewall = sectionBetween(skill, "## Closed-world scope firewall", "## Orchestrator ownership");
+      assertTokens(firewall, [
+        "frozen acceptance criterion IDs and exact observable statements",
+        "frozen task IDs",
+        "allowed write roots and exact allowed additions",
+        "mandatory gate IDs, exact procedures, trusted sources, and baseline outcomes",
+        "new criterion, task, gate, path, or evidence-tool IDs are not part of the current revision",
+        "The finding references a frozen acceptance criterion ID",
+        "A concrete reproducer demonstrates the violation on the current candidate",
+        "Baseline-versus-candidate evidence shows the candidate introduced, worsened, or newly reached the violation",
+        "The complete minimal correction remains inside frozen write roots and exact allowed artifacts",
+        "the single correction wave remains unused",
+        "Unknown never becomes implementation authority by itself",
+        "requires a separate prerequisite change",
+        "The corrected-candidate SDET never authorizes a second correction",
+        "A second serious failure after the correction wave terminates the attempt",
+        "Final and delivery review are accept-or-reject gates and never initiate autonomous correction or replay",
+      ], "Canonical closed-world authority is missing a frozen-scope or terminal-wave oracle");
+
+      const correction = sectionBetween(skill, "### 7. Correction routing and replay", "### 8. Final Candidate Review");
+      assertTokens(correction, [
+        "any serious finding from corrected-candidate SDET",
+        "terminates the attempt",
+        "Final-review or delivery rejection",
+        "Terminal for current attempt",
+      ], "Correction routing must stop after corrected-candidate or final/delivery failure");
     },
   },
   {

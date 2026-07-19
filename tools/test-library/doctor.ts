@@ -66,6 +66,7 @@ const conformingAgentsAuthority = `# Independent Active Authority
 Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
 Path: prove it observably before inspecting realistic requirement-linked edge cases.
 Unrequested scope expansion requires explicit user approval.
+After freeze, post-freeze scope may only shrink. Findings may block readiness but never authorize scope expansion. Qualification permits one correction wave.
 Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
 ## Universal Task Briefing Contract
@@ -87,6 +88,7 @@ Load before mutation for a concrete Material risk: ${namedMaterialRiskFixtureTex
 High-risk behavior must not be downgraded merely because the diff is small.
 ## Profile
 Classify the change before mutation and record a project-specific scope lock. Expansion requires explicit owner approval.
+After freeze, post-freeze scope may only shrink; expansion requires a new revision or separate change. Findings use Blocking Evidence and non-authorizing Follow-up Candidates and never authorize scope expansion. Qualification permits one correction wave for a frozen acceptance criterion, with no persistent evidence infrastructure. Final review uses approved | approved_with_notes | rejected | blocked.
 ## Adapter Discovery
 ## Authoritative Brief
 ## Orchestrator ownership
@@ -612,11 +614,20 @@ export const doctorTests: TestCase[] = [
         { name: "agents-missing-project-qualification", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("project-required qualification", "project guidance"), expected: "missing project-required qualification trigger" },
         ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `agents-risk-${name}`, relative: "AGENTS.md", text: conformingAgentsAuthority.replace(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
         { name: "agents-missing-no-downgrade", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
+        { name: "agents-missing-post-freeze-shrink", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("post-freeze scope may only shrink", "scope remains bounded after freeze"), expected: "missing closed-world post-freeze shrink rule" },
+        { name: "agents-missing-non-authorizing-blocker", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("never authorize scope expansion", "do not normally expand scope"), expected: "missing non-authorizing blocker rule" },
+        { name: "agents-missing-one-correction-wave", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("one correction wave", "bounded corrections"), expected: "missing finite one-correction-wave marker" },
         { name: "skill-missing-ordinary-nonload", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("does **not** load this skill", "uses a compact path"), expected: "missing Ordinary Small non-load/default boundary" },
         { name: "skill-missing-scope-lock", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("project-specific scope lock", "task boundary"), expected: "missing project-specific scope-lock control" },
         { name: "skill-missing-owner-approval", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("explicit owner approval", "later review"), expected: "missing explicit owner approval expansion rule" },
         ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `skill-risk-${name}`, relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
         { name: "skill-missing-no-downgrade", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
+        { name: "skill-missing-post-freeze-shrink", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("post-freeze scope may only shrink", "scope remains bounded after freeze"), expected: "missing closed-world post-freeze shrink rule" },
+        { name: "skill-missing-non-authorizing-blocker", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("never authorize scope expansion", "do not normally expand scope"), expected: "missing non-authorizing blocker rule" },
+        { name: "skill-missing-one-correction-wave", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("one correction wave", "bounded corrections"), expected: "missing finite one-correction-wave marker" },
+        { name: "skill-missing-blocking-evidence", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Blocking Evidence", "Readiness Evidence"), expected: "missing Blocking Evidence output field" },
+        { name: "skill-missing-follow-up-candidates", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Follow-up Candidates", "Future Work"), expected: "missing Follow-up Candidates output field" },
+        { name: "skill-missing-final-verdict-enum", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("approved | approved_with_notes | rejected | blocked", "accepted or rejected"), expected: "missing final-review rejected verdict enum" },
         { name: "empty-agents", relative: "AGENTS.md", text: "", expected: "AGENTS.md is empty" },
         { name: "stub-agents", relative: "AGENTS.md", text: "# Stub authority\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },
         { name: "token-packed-agents", relative: "AGENTS.md", text: "Change-Ready SDLC Routing Before the first mutation load change-ready-sdlc Universal Task Briefing Contract Autonomous Work Contract Shared Reviewer Runtime Invariants\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },

@@ -6,22 +6,33 @@ import {
   IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT,
 } from "../contracts/implementation-worker.ts";
 import {
+  FINAL_CANDIDATE_REVIEWER_FILE,
+  REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS,
+} from "../contracts/agents.ts";
+import {
+  CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS,
   CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
   CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
   CHANGE_READY_SDLC_SKILL_RELATIVE_PATH,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
+  GLOBAL_AGENTS_CLOSED_WORLD_MARKERS,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
   LIFECYCLE_ROLE_ROUTES,
   MAINTENANCE_ROUTING_FILES,
 } from "../contracts/skills.ts";
 import {
+  CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS,
+  CLOSED_WORLD_SCOPE_MARKERS,
+  CLOSED_WORLD_SCOPE_SURFACES,
   MATERIAL_DELIVERY_ROUTING_SURFACES,
   MATERIAL_DELIVERY_ROUTING_TOKENS,
+  PREVENTION_FEEDBACK_REVIEWER_FILES,
   SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
   SESSION_DELIVERY_BINDING_SURFACES,
 } from "../contracts/reviewer-binding.ts";
+import { SDET_QUALITY_ENGINEER_FILE } from "../contracts/sdet-quality-engineer.ts";
 import type { ValidationContext } from "./context.ts";
 import {
   directoryExists,
@@ -67,6 +78,59 @@ function validateGlobalAgentsTriggerTopology(
       "global AGENTS fan-out and specialist continuation",
       file,
     );
+  }
+  for (const token of GLOBAL_AGENTS_CLOSED_WORLD_MARKERS) {
+    requireTextContains(ctx, text, token, "global AGENTS closed-world scope firewall", file);
+  }
+}
+
+function validateClosedWorldScopeFirewall(ctx: ValidationContext, root: string): void {
+  const skillFile = path.join(root, ...CHANGE_READY_SDLC_SKILL_RELATIVE_PATH.split("/"));
+  if (fileExists(skillFile)) {
+    const skillText = readText(skillFile);
+    for (const token of CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS) {
+      requireTextContains(
+        ctx,
+        skillText,
+        token,
+        "change-ready-sdlc closed-world scope firewall",
+        skillFile,
+      );
+    }
+  }
+
+  for (const relative of CLOSED_WORLD_SCOPE_SURFACES) {
+    const file = path.join(root, relative);
+    if (!fileExists(file)) {
+      continue;
+    }
+    const text = readText(file);
+    for (const marker of CLOSED_WORLD_SCOPE_MARKERS) {
+      requireTextContains(ctx, text, marker, "closed-world scope firewall", file);
+    }
+    for (const pattern of CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS) {
+      if (text.includes(pattern.needle)) {
+        ctx.addError(`${pattern.diagnostic}: ${file}`);
+      }
+    }
+  }
+
+  const roleFiles = [
+    ...PREVENTION_FEEDBACK_REVIEWER_FILES.map((name) => path.join(root, "global", "agents", name)),
+    path.join(root, "global", "agents", FINAL_CANDIDATE_REVIEWER_FILE),
+    path.join(root, "global", "agents", SDET_QUALITY_ENGINEER_FILE),
+    path.join(root, "instructions", "leaf-reviewer-agent-contract.md"),
+  ];
+  for (const file of roleFiles) {
+    if (!fileExists(file)) {
+      continue;
+    }
+    const text = readText(file);
+    for (const field of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
+      if (text.includes(field)) {
+        ctx.addError(`superseded reviewer/SDET action-list field ${field}: ${file}`);
+      }
+    }
   }
 }
 
@@ -146,6 +210,7 @@ export function validateImplementationWorkerRouting(
   const canonicalSkill = path.join(root, ...CHANGE_READY_SDLC_SKILL_RELATIVE_PATH.split("/"));
   if (fileExists(canonicalSkill)) {
     validateGlobalAgentsTriggerTopology(ctx, root);
+    validateClosedWorldScopeFirewall(ctx, root);
     validateDuplicateLifecycleMarkers(ctx, root);
     validateForbiddenProductionRouting(ctx, root);
   }

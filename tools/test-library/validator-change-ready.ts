@@ -2,6 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { FORBIDDEN_PRODUCTION_ROUTING_PATTERNS } from "../contracts/skills.ts";
 import {
+  CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS,
+  CLOSED_WORLD_SCOPE_MARKERS,
+} from "../contracts/reviewer-binding.ts";
+import {
+  addQwenLocalWorkerFixture,
   addRegisteredReviewerFixture,
   appendReadmeAgentCatalogEntry,
   assertEqual,
@@ -60,6 +65,15 @@ function addChangeReadySdlcFixture(fixture: string): void {
   writeText(
     path.join(fixture, "instructions", "reusable-project-agent-instructions.md"),
     fs.readFileSync(path.join(root, "instructions", "reusable-project-agent-instructions.md"), "utf8"),
+  );
+  writeText(
+    path.join(fixture, "instructions", "leaf-reviewer-agent-contract.md"),
+    fs.readFileSync(path.join(root, "instructions", "leaf-reviewer-agent-contract.md"), "utf8"),
+  );
+  replaceRequiredText(
+    readmePath,
+    "- `reusable-project-agent-instructions.md`: Reusable project instructions.",
+    "- `leaf-reviewer-agent-contract.md`: Shared leaf-reviewer contract.\n- `reusable-project-agent-instructions.md`: Reusable project instructions.",
   );
   for (const relative of ["REPO_AGENTS.md", path.join("instructions", "universal-development-loop.md"), path.join("templates", "project", "AGENTS.md")]) {
     const file = path.join(fixture, relative);
@@ -165,6 +179,83 @@ export const changeReadyValidatorTests: TestCase[] = [
       assertSuccess(invokeValidator(fixture), "Complete Change-Ready SDLC topology fixture should pass validation.");
     },
   },
+  {
+    name: "validator keeps qwen-local-worker outside the registered-reviewer evidence-only output contract",
+    run: () => {
+      const fixture = newLibraryFixture("change-ready-qwen-role-boundary");
+      addChangeReadySdlcFixture(fixture);
+      const qwenPath = addQwenLocalWorkerFixture(fixture);
+      const qwen = fs.readFileSync(qwenPath, "utf8");
+      if (!qwen.includes("Actionable Continuation Items")) {
+        throw new Error("qwen-local-worker fixture must exercise its existing non-registered continuation field.");
+      }
+      assertSuccess(invokeValidator(fixture), "Closed-world validation must not apply registered-reviewer output fields to qwen-local-worker.");
+    },
+  },
+  ...([
+    ["post-freeze scope may only shrink", "REPO_AGENTS.md"],
+    ["new revision or separate change", path.join("instructions", "reusable-project-agent-instructions.md")],
+    ["never authorize scope expansion", path.join("templates", "project", "AGENTS.md")],
+    ["Blocking Evidence", path.join("instructions", "universal-development-loop.md")],
+    ["Follow-up Candidates", "REPO_AGENTS.md"],
+    ["one correction wave", path.join("global", "AGENTS.md")],
+    ["frozen acceptance criterion", path.join("global", "skills", "change-ready-sdlc", "SKILL.md")],
+  ] as const).map(([marker, relative]): TestCase => ({
+    name: `validator rejects missing closed-world marker: ${marker}`,
+    run: () => {
+      const fixture = newLibraryFixture(`closed-world-missing-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      addChangeReadySdlcFixture(fixture);
+      if (!(CLOSED_WORLD_SCOPE_MARKERS as readonly string[]).includes(marker)) {
+        throw new Error(`Test marker is not registered as closed-world authority: ${marker}`);
+      }
+      const file = path.join(fixture, relative);
+      replaceRequiredText(file, marker, `[removed-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}]`);
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Missing closed-world marker must fail validation: ${marker}`);
+      assertOutputContains(result, marker, "Diagnostic must name the missing closed-world marker.");
+      assertOutputContains(result, relative, "Diagnostic must identify the affected authority surface.");
+    },
+  })),
+  ...CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS.map((pattern, index): TestCase => ({
+    name: `validator rejects superseded closed-world authority: ${pattern.diagnostic}`,
+    run: () => {
+      const fixture = newLibraryFixture(`closed-world-forbidden-${index}`);
+      addChangeReadySdlcFixture(fixture);
+      const relative = "REPO_AGENTS.md";
+      const file = path.join(fixture, relative);
+      writeText(file, `${fs.readFileSync(file, "utf8")}\n${pattern.needle}\n`);
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Superseded authority must fail validation: ${pattern.needle}`);
+      assertOutputContains(result, pattern.diagnostic, "Diagnostic must name the superseded authority class.");
+      assertOutputContains(result, relative, "Diagnostic must identify the affected authority surface.");
+    },
+  })),
+  ...([
+    ["Missing Tests", path.join("global", "agents", "sdet-quality-engineer.md")],
+    ["Missing Golden Tests", path.join("global", "agents", "test-coverage-reviewer.md")],
+    ["Missing Golden/Integration Tests", path.join("instructions", "leaf-reviewer-agent-contract.md")],
+    ["Missing Decisions", path.join("global", "agents", "implementation-readiness-reviewer.md")],
+    ["Required Evidence", path.join("global", "agents", "implementation-readiness-reviewer.md")],
+    ["Benchmark Suggestions", path.join("global", "agents", "test-coverage-reviewer.md")],
+    ["Validation Gaps", path.join("global", "agents", "test-coverage-reviewer.md")],
+    ["Manual Gates", path.join("global", "agents", "session-delivery-reviewer.md")],
+    ["Suggested Next Options", path.join("global", "agents", "implementation-readiness-reviewer.md")],
+    ["Required Next Actions", path.join("global", "agents", "session-delivery-reviewer.md")],
+    ["Actionable Continuation Items", path.join("global", "agents", "sdet-quality-engineer.md")],
+    ["changes_requested", path.join("global", "agents", "final-candidate-reviewer.md")],
+  ] as const).map(([field, relative]): TestCase => ({
+    name: `validator rejects ${field} on ${relative}`,
+    run: () => {
+      const fixture = newLibraryFixture(`closed-world-role-${relative}-${field}`.replace(/[^a-z0-9]+/gi, "-").toLowerCase());
+      addChangeReadySdlcFixture(fixture);
+      const file = path.join(fixture, relative);
+      writeText(file, `${fs.readFileSync(file, "utf8")}\n${field}\n`);
+      const result = invokeValidator(fixture);
+      assertFailure(result, `${relative} must reject superseded output authority: ${field}`);
+      assertOutputContains(result, `superseded reviewer/SDET action-list field ${field}`, "Diagnostic must name the forbidden output field.");
+      assertOutputContains(result, relative, "Diagnostic must identify the affected registered role or shared leaf contract.");
+    },
+  })),
   {
     name: "project bootstrap copies the current Change-Ready routing into a separate repository",
     run: () => {

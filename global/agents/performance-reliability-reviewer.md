@@ -57,6 +57,6 @@ Return:
 - `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
 - `Performance Evidence Matrix`: claim/path -> evidence -> gap.
 - `Reliability Failure Matrix`: scenario -> expected behavior -> evidence/gap.
-- `Benchmark Suggestions`: minimal useful benchmark/load profiles.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps, including absent benchmark or load profiles that would change confidence, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable (including absent performance or reliability proof that blocks readiness), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

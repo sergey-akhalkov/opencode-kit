@@ -103,6 +103,6 @@ Return:
 - `Findings`: ordered by severity. Each finding includes `Severity`, `File/Line`, `Evidence`, `Evidence Type`, `Impact on agent work`, `Impact on human readability`, `Likely Root Cause`, `Minimal Recommendation`, `Pattern/Refactoring`, `Confidence`, `Needs external reviewer`.
 - `Navigation Signals`: attention/split-candidate files, responsibility map, and split-or-justify decisions.
 - `Smell Matrix`: smell -> evidence -> force/optional/nit -> remedy.
-- `Validation Gaps`: missing tests, inventories, or reviewer evidence that would change confidence.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps such as absent tests, inventories, or reviewer evidence that would change confidence, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable (including absent verification that blocks acceptance confidence), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

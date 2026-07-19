@@ -58,7 +58,7 @@ Return:
 - `Blocking for acceptance`: yes/no.
 - `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
 - `Protocol Findings`: byte-level issues or risks.
-- `Missing Golden Tests`: exact vectors/scenarios.
 - `Compatibility Notes`: legacy/capture/schema comparison when relevant.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps such as absent golden vectors/scenarios, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable (including absent wire-protocol vectors that block acceptance), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

@@ -419,7 +419,8 @@ export const validatorTests1: TestCase[] = [
         "",
         "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
         "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
-        "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+        "- `Blocking Evidence`: readiness-rejecting facts or `none`.",
+        "- `Follow-up Candidates`: non-authorizing separate work or `none`.",
         "",
       ]));
       assertSuccess(invokeValidator(fixture), "Reviewer permissions should not require obsolete list permission.");
@@ -468,7 +469,8 @@ export const validatorTests1: TestCase[] = [
         "",
         "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
         "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
-        "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+        "- `Blocking Evidence`: readiness-rejecting facts or `none`.",
+        "- `Follow-up Candidates`: non-authorizing separate work or `none`.",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -519,7 +521,8 @@ export const validatorTests1: TestCase[] = [
         "",
         "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
         "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
-        "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+        "- `Blocking Evidence`: readiness-rejecting facts or `none`.",
+        "- `Follow-up Candidates`: non-authorizing separate work or `none`.",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -718,7 +721,8 @@ export const validatorTests1: TestCase[] = [
         "",
         "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
         "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
-        "- `Actionable Continuation Items`: concrete tasks for the main session, or `none`.",
+        "- `Blocking Evidence`: readiness-rejecting facts or `none`.",
+        "- `Follow-up Candidates`: non-authorizing separate work or `none`.",
         "",
       ]));
       appendReadmeAgentCatalogEntry(fixture, "- `code-quality-reviewer`: Code quality reviewer.");

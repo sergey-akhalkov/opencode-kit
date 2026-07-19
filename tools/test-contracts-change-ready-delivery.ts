@@ -48,6 +48,7 @@ const NAMED_MATERIAL_RISK_TEXT = "public API/protocol/compatibility, persisted d
 const CONFORMING_AGENTS_ROUTING_BODY = `Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
 Path: prove it observably before inspecting realistic requirement-linked edge cases.
 Unrequested scope expansion requires explicit user approval.
+After freeze, post-freeze scope may only shrink. Findings may block readiness but never authorize scope expansion. Qualification permits one correction wave.
 Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${NAMED_MATERIAL_RISK_TEXT}.
 High-risk behavior must not be downgraded merely because the diff is small.`;
 const CONFORMING_AGENTS_AUTHORITY = `# Independent Active Authority
@@ -79,6 +80,7 @@ Ordinary Small does **not** load this skill. Named Material risks: ${NAMED_MATER
 High-risk behavior must not be downgraded merely because the diff is small.
 ## Profile
 Use a project-specific scope lock; expansion requires explicit owner approval.
+After freeze, post-freeze scope may only shrink; expansion requires a new revision or separate change. Findings use Blocking Evidence and non-authorizing Follow-up Candidates and never authorize scope expansion. Qualification permits one correction wave for a frozen acceptance criterion, with no persistent evidence infrastructure. Final review uses approved | approved_with_notes | rejected | blocked.
 ## Adapter Discovery
 ## Authoritative Brief
 ## Orchestrator ownership
@@ -150,11 +152,12 @@ const EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT = [
   "observable happy-path proof",
   "fresh-context testing subagent",
   "Keep matrices terse",
-  "Required Next Actions",
-  "Actionable Continuation Items",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
   "Record the optional-tool gap in `Evidence Reviewed` and `Residual Risks`",
-  "Add the gap to `Required Next Actions` only when required session evidence is unavailable from all allowed sources",
-  "Optional-tool absence alone is not a required action when substitute evidence is sufficient",
+  "Record missing required session evidence in `Blocking Evidence` when unavailable from all allowed sources",
+  "Optional-tool absence alone is not blocking when substitute evidence is sufficient",
   "Delivery self-gate for the current Material closing task",
   "every prerequisite applicable task is checked with current literal evidence",
   "Any other unchecked applicable task remains a P0",
@@ -167,6 +170,7 @@ const EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT = [
   "Verdict: material deviations",
   "Verdict: not enough evidence",
   "must not coexist with `Blocking for Acceptance: no`",
+  "terminal for the current attempt",
 ];
 
 const EXPECTED_SESSION_DELIVERY_BINDING_HANDOFF_TOKENS = [
@@ -175,11 +179,11 @@ const EXPECTED_SESSION_DELIVERY_BINDING_HANDOFF_TOKENS = [
   "Verdict: not enough evidence",
   "Blocking for Acceptance: yes",
   "Verdict: blocked",
-  "qualifying P0/P1 serious blocker",
-  "Required Next Actions",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
   "do not present the session as complete",
   "Blocking for Acceptance: no",
-  "Required Next Actions: none",
   "partial slice handoff must not end an unfinished root goal",
 ];
 
@@ -403,14 +407,16 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       const consistency = sectionBetween(delivery, "- Output consistency:", "## Severity Guide");
       assertTokens(consistency, [
         "Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result",
+        "Accepted mapping: `on plan` or `minor deviations` only with `Change-Ready: yes` and `Blocking for Acceptance: no`",
         "Every `Change-Ready: no`",
         "`Verdict: material deviations`",
         "`Verdict: not enough evidence`",
         "`Blocking for Acceptance: yes`",
         "`Verdict: blocked`",
-        "qualifying P0/P1 serious blocker",
-        "non-empty `Required Next Actions`",
-        "Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and `Required Next Actions: none`",
+        "non-empty `Blocking Evidence`",
+        "terminal for the current attempt",
+        "Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and empty `Blocking Evidence`",
+        "Delivery rejection never authorizes candidate mutation or gate replay",
       ], "Session-delivery output-consistency contract missing accepted/blocked result");
     },
   },
@@ -437,8 +443,8 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       assertTokens(delivery, [
         "For Portable profile Material sessions, always run this delivery review regardless of diagnostic scale",
         "Record the optional-tool gap in `Evidence Reviewed` and `Residual Risks`",
-        "Add the gap to `Required Next Actions` only when required session evidence is unavailable from all allowed sources",
-        "Optional-tool absence alone is not a required action when substitute evidence is sufficient",
+        "Record missing required session evidence in `Blocking Evidence` when unavailable from all allowed sources",
+        "Optional-tool absence alone is not blocking when substitute evidence is sufficient",
       ], "Session-delivery reviewer missing proportional optional-evidence handling");
     },
   },

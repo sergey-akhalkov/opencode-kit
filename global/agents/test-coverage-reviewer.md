@@ -78,7 +78,6 @@ Return:
 - `Task/Repro Coverage Matrix`: user task, acceptance claim, log, repro, or runtime envelope -> existing/planned/missing verification.
 - `Inferred Coverage Matrix`: source behavior/invariant -> existing/planned/missing verification.
 - `Weak Assertion Findings`: tests that execute without proving the contract.
-- `Missing Tests`: smallest useful missing tests/evidence.
-- `Required Evidence`: minimal evidence needed before acceptance.
-- `Residual Risks`: gaps or `none`.
-- `Actionable Continuation Items`: fixes/gates; OpenSpec follow-up if several items remain; else `none`.
+- `Residual Risks`: nonblocking gaps such as absent useful tests or acceptance evidence, or `none`.
+- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable (including absent verification that blocks acceptance), or `none`. Never authorizes mutation.
+- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.

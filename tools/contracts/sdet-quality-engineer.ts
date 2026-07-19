@@ -52,5 +52,7 @@ export const SDET_QUALITY_ENGINEER_REQUIRED_TEXT: readonly string[] = [
   "Requested Validation Procedures",
   "Blockers",
   "Residual Risks",
-  "Actionable Continuation Items",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "never authorize",
 ];

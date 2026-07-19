@@ -186,7 +186,57 @@ export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
     needle: "Qualification gates bind to Semantic Candidate Identity",
     diagnostic: "old Semantic Candidate Identity binding wording",
   },
+  {
+    needle: "Actionable Continuation Items",
+    diagnostic: "superseded action-list field Actionable Continuation Items on production-routing surface",
+  },
+  {
+    needle: "Required Next Actions",
+    diagnostic: "superseded action-list field Required Next Actions on production-routing surface",
+  },
+  {
+    needle: "changes_requested",
+    diagnostic: "superseded final-review verdict changes_requested on production-routing surface",
+  },
+  {
+    needle:
+      "new blocking corrections or acceptance criteria require explicit owner approval or a reproducible P0/P1 defect",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception",
+  },
+  {
+    needle: "a new blocking candidate correction or new acceptance criterion requires either:",
+    diagnostic: "superseded P0/P1 post-mutation scope-expansion exception in skill",
+  },
+  {
+    needle:
+      "Evidence tooling must not become a second product; it MAY be added only when a mandatory gate cannot be reproduced without it",
+    diagnostic: "superseded persistent evidence-tool exception on production-routing surface",
+  },
 ] as const;
+
+/** Closed-world markers required in the canonical Change-Ready skill body. */
+export const CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS: readonly string[] = [
+  "post-freeze scope may only shrink",
+  "new revision or separate change",
+  "never authorize scope expansion",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "one correction wave",
+  "frozen acceptance criterion",
+  "approved | approved_with_notes | rejected | blocked",
+  "persistent evidence infrastructure",
+];
+
+/** Closed-world markers required in always-loaded global AGENTS routing. */
+export const GLOBAL_AGENTS_CLOSED_WORLD_MARKERS: readonly string[] = [
+  "post-freeze scope may only shrink",
+  "new revision or separate change",
+  "never authorize scope expansion",
+  "Blocking Evidence",
+  "Follow-up Candidates",
+  "one correction wave",
+  "approved | approved_with_notes | rejected | blocked",
+];
 
 /** Mandatory ordinary-default and qualification-trigger tokens for global/AGENTS.md. */
 export const GLOBAL_AGENTS_TRIGGER_TOKENS: readonly string[] = [
