@@ -109,7 +109,7 @@ A new reusable harness, validator framework, benchmark system, simulator, ledger
 
 ### Blocking versus residual
 
-Reviewer and SDET outputs use `Blocking Evidence` for facts that reject readiness and non-authorizing `Follow-up Candidates` for separate revision/change/investigation proposals. They SHALL NOT contain superseded action-list fields or current-task authoring fields. `Follow-up Candidates` never authorize current-candidate work. Route P2/note, coverage-only gaps, optional evidence, and wording polish to Residual Risks or non-authorizing `Follow-up Candidates`.
+Reviewer and SDET outputs use `Blocking Evidence` for readiness-rejecting facts and non-authorizing `Follow-up Candidates` for separate revision/change/investigation proposals. No superseded action-list or current-task authoring fields. `Follow-up Candidates` never authorize current-candidate work. Route P2/note, coverage-only gaps, optional evidence, and wording polish to Residual Risks or non-authorizing `Follow-up Candidates`.
 
 ### Finite qualification waves
 
@@ -191,7 +191,7 @@ Every Material/explicit qualification behavior change gets a fresh SDET context 
 
 Prefer a distinct effective SDET model when available. Same effective model remains allowed; then record residual same-model correlation risk.
 
-SDET independently builds a realistic risk and observable-oracle matrix and selects cases representatively from high-impact risks. Coverage percentage, test count, opaque snapshot growth, retry-until-green, exhaustive Cartesian expansion by default, and mock-interaction-only assertions do not establish acceptance. Prefer real boundaries; record justified simulation/mock exceptions as confidence gaps.
+SDET independently builds a realistic risk and observable-oracle matrix and selects cases representatively from high-impact risks reachable inside the accepted enforced operating envelope. Coverage percentage, test count, opaque snapshot growth, retry-until-green, exhaustive Cartesian expansion by default, and mock-interaction-only assertions do not establish acceptance. Prefer real boundaries; record justified simulation/mock exceptions as confidence gaps. Unreachable future-scale risks stay residual.
 
 SDET returns exactly one report with action `authored-tests | assessed-existing-tests | blocked`, risk/oracle matrix, test changes or existing-test evidence, required validation procedures, residual risks, blockers, and optional Candidate Reference. The orchestrator inspects write scope. Out-of-scope mutation blocks progression. Main owns post-test Applicable Proof and complete validation after authored-tests.
 
@@ -251,13 +251,19 @@ Local package contents: context; requirements; scope; non-goals; main changes; A
 
 Projects may render `PR-Ready`, `MR-Ready`, `Ready To Land`, or another native label. Publication, upload, remote review creation/update, integration, deployment, release, and archive require separate explicit authority and are not part of Change-Ready.
 
+### 10. Pilot-Ready Decision
+
+`Pilot-Ready: yes | no | not requested` is a main-session limited-use disposition. It is not a third lifecycle profile and does not replace `Ordinary Small | Material` or Change-Ready. The complete Pilot safety floor is authoritative only in always-loaded global `AGENTS.md` and applies on the qualification path; this skill does not restate that floor.
+
+`Pilot-Ready: yes` may coexist with `Change-Ready: no` or `not requested` only when the Change-Ready blocker is outside the pilot envelope and does not undermine candidate identity/scope, proof, containment, safety floor, validation, or material-risk acceptance. Final/delivery rejection stays terminal for Change-Ready and never authorizes mutation/replay; it does not automatically erase independently proven Pilot-Ready evidence unless pilot facts become unreadable or untrustworthy. Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
+
 ### Rollback plan
 
-Rollback planning is proportional. Detailed rollback evidence is required when migration, destructive state, deployment/activation, or substantial multi-surface risk makes it relevant. Rollback is executed only when separately authorized and is never required to claim Change-Ready. Preserve unrelated, pre-existing, or teammate work outside the candidate scope. Runtime activation rollback (restore prior active config pointer and restart/reload without mutating the repository candidate) is a separate operational action and does not count as full change rollback of the repository candidate.
+Rollback planning is proportional. Detailed rollback evidence is required when migration, destructive state, deployment/activation, or substantial multi-surface risk makes it relevant. Rollback is executed only when separately authorized and is never required to claim Change-Ready. Preserve unrelated, pre-existing, or teammate work outside the candidate scope. Runtime activation rollback (prior active config pointer + restart/reload without repository mutation) is separate and does not count as full change rollback.
 
 ### Restart and continuity
 
-After restart, compaction, cancellation, or context loss, reconstruct brief, Candidate Reference, role identities, validation, and correction evidence from authoritative project/session sources. Anything unproved is stale and blocks Change-Ready. Continuity uncertainty never resets prior failures.
+After restart, compaction, cancellation, or context loss, reconstruct brief, Candidate Reference, role identities, validation, and correction evidence from authoritative sources. Unproved items are stale and block Change-Ready. Continuity uncertainty never resets prior failures.
 
 ## Compact orchestration output
 
@@ -269,11 +275,12 @@ Return a compact record:
 - `Gates`: Applicable Proof, SDET action or N/A, validation, final review
 - `Delivery/readiness gate`: accepted, blocked, or `N/A - Ordinary Small <reason>`
 - `Corrections`: owner routes and replays, or none
-- `Change-Ready`: yes | no
+- `Pilot-Ready`: yes | no | not requested
+- `Change-Ready`: yes | no | not requested
 - `Native label`: project label if any, else none
 - `External Operations`: not performed (unless separately authorized and recorded)
-- `Blockers / residual risks`: exact items or none
+- `Blockers / residual risks`: exact items or none; include technically enforced pilot envelope limits when Pilot-Ready is yes
 
 ## Enforcement honesty
 
-These are process controls for instruction-only runtime: conditional pre-mutation load for Material/qualification work, one complete orchestration skill, mutually exclusive roles when SDET/final review is invoked, exact briefs and reports, main-session candidate inspection, and binding independent review. They are not an OS sandbox, dynamic path ACL, durable run database, or cryptographic guarantee of model compliance.
+These are process controls for instruction-only runtime: conditional pre-mutation load, one orchestration skill, mutually exclusive roles when SDET/final review is invoked, exact briefs/reports, main-session candidate inspection, and binding independent review. Not an OS sandbox, path ACL, durable run DB, or cryptographic guarantee.

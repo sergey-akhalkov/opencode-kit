@@ -26,7 +26,7 @@ This project follows the portable Change-Ready process for AI-assisted developme
 
 ## Process Control
 
-- Ordinary Small is the default: clear, bounded, local, reversible work with known focused validation. Main may implement directly, prove the happy path, run focused validation, and author the smallest focused regression test after proof when useful.
+- Ordinary Small is the default: clear, bounded, local, reversible work with known focused validation inside a technically enforced operating envelope. Main may implement directly, prove the happy path, run focused validation, and author the smallest focused regression test after proof when useful. Handoff may report `Pilot-Ready: yes | no | not requested` (not a third profile); neither Pilot-Ready nor Change-Ready authorizes external operations.
 - Do not load `change-ready-sdlc` merely because code or config behavior changes. Load it before mutation only for explicit Change-Ready, project-required qualification, or concrete Material risk.
 - For delegated Material/qualification production slices, dispatch a discovered conforming production author. In this kit, `implementation-worker` is the optional default for production-only bounded slices with exact non-overlapping write scope, clear Acceptance Criteria, and a focused validation gate.
 - When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
@@ -41,17 +41,16 @@ This project follows the portable Change-Ready process for AI-assisted developme
 ## Quality
 
 - Treat source, tests, schemas, scripts, generated artifacts, and live output as primary evidence.
-- Implement and observably prove the smallest complete happy path before edge-case testing.
+- Implement and observably prove the smallest complete happy path for the next working increment before edge-case testing. Prefer remove/narrow/reuse/local guard before new mechanisms.
 - Ordinary Small: after happy-path proof, main may create or update the smallest focused regression test when useful. Prefer existing tests when sufficient.
 - Material/explicit qualification: only a fresh discovered conforming SDET context that did not author production code may create or modify automated test artifacts after applicable proof. In this kit, `sdet-quality-engineer` is the optional default SDET adapter only. It must derive a realistic risk matrix from the original requirements and prioritize end-to-end behavior at real system boundaries over coverage percentages.
-- When Headroom MCP tools are available and a log, search result, JSON payload, validation output, or repeated tool output is likely to be reused and exceeds about 300 lines or 10 KB, call `headroom_compress`, keep the returned hash in working notes or final evidence when relevant, and call `headroom_retrieve` before exact claims.
-- Do not use Headroom MCP for small outputs, exact code under active edit, short errors already visible, or safety-critical details that must be quoted exactly.
-- Prefer deterministic helpers, validators, fixtures, or generated reports over repeated manual inspection.
-- Reviewer agents are read-only leaf validators by default, except feedback-ledger appends under `docs/feedbacks/**` through `complain` when permission allows it.
+- Headroom MCP: compress large reusable tool output; do not compress exact edit targets or short errors.
+- Prefer deterministic helpers/validators over repeated manual inspection.
+- Reviewers are read-only leaves except `docs/feedbacks/**` through `complain`.
 
 ## Feedback Ledger
 
-- When current-session workflow friction, instruction conflict, tooling pain, missing automation, confusing handoff, validation noise, or reusable improvement opportunity appears, use the `complain` skill and append a structured entry to `docs/feedbacks/<agent-or-skill-name>.md`.
+- On current-session workflow friction, use `complain` and append to `docs/feedbacks/<agent-or-skill-name>.md`.
 - Do not wait for proof that it repeats. If recurrence is unknown, write `Recurrence: unknown`.
 - OpenCode permissions enforce the feedback path boundary; `complain` is the required model contract for entry shape and privacy checks.
 - Keep entries privacy-safe and focused on workflow/tooling/instructions, not personal blame. If writing is blocked, return a `Feedback Candidate`.

@@ -40,10 +40,10 @@ You are a read-only implementation readiness reviewer. Determine whether the sco
 
 ## Checks
 
-- Problem, goal, scope, non-goals, and acceptance criteria are clear.
-- Requirements are scenario-based and observable.
-- Design decisions are made or explicitly blocked.
-- Future-scope work is not mixed into the implementation slice.
+- Problem, goal, scope, non-goals, and acceptance criteria are clear for the next working increment.
+- Requirements are scenario-based and observable inside the current enforced operating envelope.
+- Design decisions that change current outcome, envelope, invariants, proof, or material risk are made or explicitly blocked.
+- Future-scope/unreachable/polish-only work is residual and does not block next-slice readiness.
 - Dependencies, migrations, compatibility, config, deployment, and rollback implications are identified when relevant.
 - Before implementation begins, behavior-changing work defines its observable happy-path boundary. Ordinary Small may use direct main implementation and focused post-proof regression tests. Material/explicit qualification work defines post-proof SDET handoff; production authors must not own automated-test artifacts on the qualification path.
 - Required source files and context are discoverable.

@@ -7,7 +7,7 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 - Keep artifacts project-neutral: do not hardcode repository names, company-internal paths, issue trackers, services, hardware, or validation commands unless the artifact is explicitly scoped to that ecosystem.
 - Prefer evidence-backed workflow contracts over reminders. If a check can be automated, document the command shape or validation hook instead of adding vague prose.
 - For retros, audits, reviewer gates, and follow-up backlogs, distinguish symptoms from likely root causes. Prefer fixes that remove or reduce the recurrence path; when evidence cannot identify the cause, route an investigation or instrumentation task instead of guessing.
-- Ordinary Small is the default for clear, bounded, local, reversible work: understand accepted behavior, implement and observably prove the smallest complete happy path, run focused validation, then inspect only realistic requirement-linked edge cases. After happy-path proof, the main session may author the smallest focused regression test when useful.
+- Ordinary Small is the default for clear, bounded, local, reversible work: understand accepted behavior inside a technically enforced operating envelope, implement and observably prove the smallest complete happy path, run focused validation, then inspect only realistic requirement-linked edge cases. After happy-path proof, the main session may author the smallest focused regression test when useful. Handoff may include `Pilot-Ready: yes | no | not requested` (not a third profile).
 - Material/explicit Change-Ready work loads `change-ready-sdlc` and uses independent fresh-context SDET for systematic risk testing and automated-test authorship after applicable proof.
 - Optimize tests for realistic production failure discovery rather than coverage percentages. Prioritize real-boundary end-to-end scenarios, record justified mock exceptions, and continue until identified high-impact risks are covered or an exact blocker and residual risk are documented.
 - Skills and agents must be safe to reuse in unrelated repositories. Use placeholders such as `<project>`, `<change>`, `<service>`, `<legacy-source>`, and `<validation-command>` where local projects differ.
@@ -24,33 +24,16 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 
 ## Deterministic Helper Automation
 
-- For repetitive, evidence-heavy, or token-heavy work, first consider whether a small deterministic helper could gather, count, validate, redact, diff, inventory, or enforce explicit rules more efficiently than manual inspection.
-- When writing helper code for agent workflow, make it deterministic and contract-driven: explicit inputs, explicit outputs, schemas or fixtures, stable ordering, and privacy-safe output.
-- Helper code must have no hidden heuristics: do not encode fuzzy scoring, probabilistic classification, model-like summarization, or unstated inference as evidence.
-- If deterministic helper code cannot answer something from its inputs, report `unknown`, `unreadable`, `unsupported`, or `blocked` instead of guessing.
-- Keep judgment-heavy synthesis in the agent/reviewer layer; use helper code to gather, count, validate, redact, diff, inventory, or enforce explicit rules.
-- Deterministic helper output may support root-cause analysis with evidence and missing-data signals, but root-cause judgment remains in the agent/reviewer layer.
+- Prefer small deterministic helpers for repetitive, evidence-heavy work: explicit inputs, explicit outputs, schemas/fixtures, stable ordering, privacy-safe output, and no hidden heuristics, fuzzy scoring, or model-like summarization.
+- If inputs cannot answer, report `unknown`/`unreadable`/`unsupported`/`blocked`. Judgment stays in the agent/reviewer layer.
 
 ## Feedback Ledger
 
-- When current-session workflow friction, instruction conflict, tooling pain, missing automation, confusing handoff, validation noise, or reusable improvement opportunity appears, use the `complain` skill and append a structured entry to `docs/feedbacks/<agent-or-skill-name>.md`.
-- Do not wait for proof that the issue is recurring. If recurrence is unknown, write `Recurrence: unknown`; prefer a compact useful signal over suppressing feedback.
-- Keep entries privacy-safe and focused on workflow/tooling/instructions, not personal blame. Do not include secrets, raw private prompts, or large logs.
-- Reviewer agents may edit only `docs/feedbacks/**` for feedback entries; they remain read-only for source, config, instructions, specs, and task artifacts.
-- OpenCode permissions enforce the feedback path boundary; `complain` is the required model contract for entry shape and privacy checks, not a hard semantic enforcement layer.
-- Prevention entries that use `npm run instruction:feedback -- --add ...` close only after `applied -> replayed -> resolved`; if replay is `still-failing`, reopen and route the applied rule as a new finding.
-- If explicit read-only/no-edit mode or permissions block writing, return a `Feedback Candidate` for the main session instead of dropping the signal.
+- On current-session workflow friction, use `complain` and append to `docs/feedbacks/<agent-or-skill-name>.md`. `Recurrence: unknown` is fine. Privacy-safe only. Reviewers write only under `docs/feedbacks/**`. Prevention via `npm run instruction:feedback -- --add ...` closes only after `applied -> replayed -> resolved`. If write is blocked, return a `Feedback Candidate`.
 
 ## Token Efficiency
 
-- Keep responses compact by default: outcome, changed files, validation, blockers, and only necessary rationale.
-- Remove filler and repeated caveats from responses, but preserve exact commands, paths, errors, code, safety warnings, and user-facing decisions.
-- Prefer targeted searches, symbols, and bounded file reads over broad file or log dumps.
-- On native Windows, `rtk` filters work only when invoked explicitly; use `rtk <command>` for shell-heavy read-only commands instead of relying on hook auto-rewrite.
-- When Headroom MCP tools are available and a log, search result, JSON payload, validation output, or repeated tool output is likely to be reused and exceeds about 300 lines or 10 KB, call `headroom_compress`, keep the returned hash in working notes or final evidence when relevant, and call `headroom_retrieve` before exact claims.
-- Do not use Headroom MCP for small outputs, exact code under active edit, short errors already visible, or safety-critical details that must be quoted exactly.
-- For validation output, report summaries and failures first; read full saved tool output only when the preview lacks the cause.
-- Preserve exact code, commands, paths, errors, protocol terms, and safety warnings; do not compress away meaning.
+- Compact by default: outcome, changed files, validation, blockers, necessary rationale. Prefer targeted search/reads. On native Windows use `rtk <command>` explicitly. Headroom MCP: compress large reusable tool output (>~300 lines/10 KB); do not compress exact edit targets or short errors. Preserve exact commands, paths, errors, and safety warnings.
 
 ## Autonomous Work Contract
 
@@ -72,11 +55,10 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 
 ## Completion Handoff
 
-- When a real blocker or user-owned decision remains, the main session offers 2-4 self-contained next actions via `question` when available.
-- Put the recommended option first and end its label with `(Recommended)`.
-- In read-only, no-question, reviewer-agent, or subagent contexts, do not ask the user directly; return evidence-only reports using `Blocking Evidence`, `Residual Risks`, or non-authorizing `Follow-up Candidates` for the main session instead.
-- When an audit, retro, reviewer gate, broad discovery, or validation failure produces several concrete tasks related to the current session but outside its approved scope, prefer grouping them into OpenSpec follow-up changes when the repository already uses OpenSpec or the user approved adding it; otherwise return grouped candidates instead of leaving a loose final-message backlog. Do not create OpenSpec ceremony for isolated nits, speculative polish, or one obvious next step.
-- If the user selects an actionable option, continue immediately in the current context instead of asking them to restate the task.
-- If no real blocker remains, report the completed work, validation, residual risks, and either `Change-Ready: not requested` (Ordinary Small) or qualification readiness without an interactive handoff.
+- On real blockers, main offers 2-4 self-contained next actions via `question` when available; recommended option first with `(Recommended)`.
+- Read-only/no-question/reviewer/subagent contexts never ask the user; return `Blocking Evidence`, `Residual Risks`, or non-authorizing `Follow-up Candidates`.
+- Several out-of-scope session tasks → group into OpenSpec follow-ups when available/approved; no ceremony for nits or one obvious next step.
+- If the user selects an option, continue immediately.
+- If no blocker remains, report completed work, validation, residual risks, `Pilot-Ready: yes | no | not requested` when relevant, and either `Change-Ready: not requested` (Ordinary Small) or qualification readiness.
 
 After changing skills or agents, review `README.md` and the relevant artifact frontmatter so the library remains discoverable.

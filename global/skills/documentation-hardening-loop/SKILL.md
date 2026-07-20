@@ -14,7 +14,7 @@ Do not use it for quick wording edits, single small comments, or normal code rev
 
 - Documentation is a map, not proof. Confirm behavior with source, tests, schemas, scripts, live output, standards, or owner decisions.
 - Behavior-changing requirements should live in the project's normative spec system, not only in README prose.
-- When doc/spec hardening creates behavior-changing tasks, require original requirements, minimal happy-path implementation, observable proof, then independent fresh-context risk discovery and test-only negative/end-to-end authoring.
+- When doc/spec hardening creates behavior-changing tasks, require original requirements, minimal happy-path implementation, and observable proof first. Material/explicit qualification then requires independent fresh-context risk discovery and test-only negative/end-to-end authoring. Ordinary Small uses focused validation and optional smallest post-proof regression.
 - Prefer one canonical source over repeated status tables or duplicated requirement text.
 - Cosmetic wording is out of scope unless it prevents misimplementation.
 

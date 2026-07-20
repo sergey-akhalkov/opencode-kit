@@ -46,11 +46,13 @@ function assertTokens(text: string, tokens: readonly string[], message: string):
 
 const NAMED_MATERIAL_RISK_TEXT = "public API/protocol/compatibility, persisted data or migration, security/privacy/authorization, destructive or remote, concurrency correctness, deployment/release, loaded instruction/configuration change that alters lifecycle or safety policy";
 const CONFORMING_AGENTS_ROUTING_BODY = `Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
+Profiles remain Ordinary Small | Material. Pilot-Ready: yes | no | not requested is a disposition inside a technically enforced operating envelope. Neither disposition authorizes external operations.
 Path: prove it observably before inspecting realistic requirement-linked edge cases.
 Unrequested scope expansion requires explicit user approval.
 After freeze, post-freeze scope may only shrink. Findings may block readiness but never authorize scope expansion. Qualification permits one correction wave.
 Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${NAMED_MATERIAL_RISK_TEXT}.
-High-risk behavior must not be downgraded merely because the diff is small.`;
+High-risk behavior must not be downgraded merely because the diff is small.
+Before Pilot-Ready: yes, require a bounded outcome and non-goals, real-boundary happy-path proof, focused project-native validation, critical safety/data/authorization protection, sufficient material failure visibility, and proportional disable/rollback/containment.`;
 const CONFORMING_AGENTS_AUTHORITY = `# Independent Active Authority
 
 ## Change-Ready SDLC Routing
@@ -94,6 +96,8 @@ After freeze, post-freeze scope may only shrink; expansion requires a new revisi
 ### 7. Correction routing and replay
 ### 8. Final Candidate Review
 ### 9. Change-Ready Decision
+### 10. Pilot-Ready Decision
+Pilot-Ready: yes | no | not requested is not a third lifecycle profile; profiles remain Ordinary Small | Material. The complete Pilot safety floor is authoritative only in always-loaded global AGENTS.md; this skill does not restate that floor. Neither disposition authorizes external operations.
 ## Compact orchestration output
 `;
 const CONFORMING_SKILL_AUTHORITY = `${SKILL_FRONTMATTER}${CONFORMING_SKILL_BODY}`;
@@ -171,6 +175,9 @@ const EXPECTED_SESSION_DELIVERY_BINDING_REQUIRED_TEXT = [
   "Verdict: not enough evidence",
   "must not coexist with `Blocking for Acceptance: no`",
   "terminal for the current attempt",
+  "Pilot-Ready: yes|no|not requested",
+  "not a third profile",
+  "does not authorize external operations",
 ];
 
 const EXPECTED_SESSION_DELIVERY_BINDING_HANDOFF_TOKENS = [
@@ -242,6 +249,42 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         assertEqual(skillAuthorityProblem(`${SKILL_FRONTMATTER}${fence.block(CONFORMING_SKILL_BODY)}`), "skills/change-ready-sdlc/SKILL.md missing ordered heading: Change-Ready title", `${fence.label} fenced SKILL headings must not satisfy authority.`);
         assertEqual(agentsAuthorityProblem(`${CONFORMING_AGENTS_AUTHORITY}\n${fence.block(CONFORMING_AGENTS_AUTHORITY)}`), null, `${fence.label} fenced examples must not corrupt valid outside AGENTS authority.`);
         assertEqual(skillAuthorityProblem(`${CONFORMING_SKILL_AUTHORITY}\n${fence.block(CONFORMING_SKILL_BODY)}`), null, `${fence.label} fenced examples must not duplicate valid outside SKILL headings.`);
+
+        const floorMarker = "bounded outcome and non-goals";
+        const agentsWithoutOperativeFloor = CONFORMING_AGENTS_AUTHORITY.replace(floorMarker, "[removed-pilot-floor-marker]");
+        assertEqual(
+          agentsAuthorityProblem(`${agentsWithoutOperativeFloor}\n${fence.block(floorMarker)}`),
+          "AGENTS.md missing Pilot safety-floor bounded outcome and non-goals marker",
+          `${fence.label} fenced-only Pilot floor marker must not satisfy AGENTS authority.`,
+        );
+
+        const skillMarker = "not a third lifecycle profile";
+        const skillWithoutOperativePilotMarker = CONFORMING_SKILL_AUTHORITY.replace(skillMarker, "[removed-pilot-profile-marker]");
+        assertEqual(
+          skillAuthorityProblem(`${skillWithoutOperativePilotMarker}\n${fence.block(skillMarker)}`),
+          "skills/change-ready-sdlc/SKILL.md missing no-third-profile Pilot-Ready boundary",
+          `${fence.label} fenced-only Pilot marker must not satisfy skill authority.`,
+        );
+
+        const globalFloorAuthorityMarker = "complete Pilot safety floor is authoritative only in always-loaded global";
+        const skillWithoutOperativeGlobalAuthority = CONFORMING_SKILL_AUTHORITY.replace(globalFloorAuthorityMarker, "[removed-global-floor-authority-marker]");
+        assertEqual(
+          skillAuthorityProblem(`${skillWithoutOperativeGlobalAuthority}\n${fence.block(globalFloorAuthorityMarker)}`),
+          "skills/change-ready-sdlc/SKILL.md missing complete Pilot safety-floor authority reference to always-loaded global AGENTS",
+          `${fence.label} fenced-only global-floor authority reference must not satisfy skill authority.`,
+        );
+      }
+      for (const [marker, diagnostic] of [
+        ["bounded outcome and non-goals", "AGENTS.md missing Pilot safety-floor bounded outcome and non-goals marker"],
+        ["real-boundary happy-path proof", "AGENTS.md missing Pilot safety-floor real-boundary happy-path proof marker"],
+        ["focused project-native validation", "AGENTS.md missing Pilot safety-floor focused project-native validation marker"],
+        ["critical safety/data/authorization", "AGENTS.md missing Pilot safety-floor critical safety/data/authorization marker"],
+        ["failure visibility", "AGENTS.md missing Pilot safety-floor failure visibility marker"],
+        ["disable/rollback/containment", "AGENTS.md missing Pilot safety-floor disable/rollback/containment marker"],
+      ] as const) {
+        const withoutMarker = CONFORMING_AGENTS_AUTHORITY.replace(marker, "[removed-pilot-floor-item]");
+        assert(withoutMarker !== CONFORMING_AGENTS_AUTHORITY, `Conforming AGENTS fixture must contain Pilot floor marker: ${marker}`);
+        assertEqual(agentsAuthorityProblem(withoutMarker), diagnostic, `Active authority must reject missing Pilot floor marker: ${marker}`);
       }
       for (const delimiter of ["```", "~~~~"] as const) {
         const hiddenBody = fencedBlock(delimiter, CONFORMING_AGENTS_ROUTING_BODY);

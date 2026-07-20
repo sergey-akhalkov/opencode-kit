@@ -12,7 +12,7 @@ Default for clear, bounded, local, reversible work with known focused validation
 - Main may directly author Ordinary Small production changes.
 - Path: understand accepted behavior → implement the smallest complete happy path → prove it observably → run focused validation → inspect only realistic requirement-linked edge cases.
 - After observable happy-path proof, main may create or update the smallest focused regression test when useful. Prefer existing tests when sufficient.
-- Ordinary completion reports `Implementation Status`, proof, validation, residual risks, and `Change-Ready: not requested`. It must not claim full qualification.
+- Ordinary completion reports proof, validation, residual risks, `Pilot-Ready: yes | no | not requested` when relevant (else `not requested`), and `Change-Ready: not requested`. No full qualification claim.
 
 ### Scope expansion approval
 
@@ -45,17 +45,16 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 
 - Read-only leaf except scoped feedback-ledger appends under `docs/feedbacks/**` through `complain` when permission allows.
 - No user questions, nested orchestration, source/config/test/instruction mutation, commits, remote/destructive actions, or lifecycle completion claims.
-- Findings must be evidence-backed with severity, impact, and confidence; missing evidence becomes `Blocking Evidence` or residual risk, not guesses or authorized work.
-- Report only to the active primary orchestrator: verdict/status, findings, residual risks, `Blocking Evidence`, and non-authorizing `Follow-up Candidates`. Never self-approve readiness. Reviewer and SDET findings may reject readiness but never authorize scope expansion.
+- Report all evidence-backed findings with severity, impact, and confidence. Distinguish reachability inside the accepted enforced operating envelope from future-scope validity. A finding blocks Pilot-Ready only when reachable there and it violates the current outcome, a pilot safety-floor item, a non-deferrable invariant, an accepted risk limit, or trusted mandatory validation. Evidence-format polish alone is non-blocking when semantic evidence remains trustworthy. Missing evidence → `Blocking Evidence` or residual risk, not guesses or authorized work.
+- Finding `Recommendation` uses remove, narrow, reuse, local guard, then deferral; larger mechanisms only with evidence earlier options cannot make the current slice safe. No separate action-authoring field.
+- Report only to the active primary orchestrator: verdict/status, findings, residual risks, `Blocking Evidence`, and non-authorizing `Follow-up Candidates`. Never self-approve readiness. Findings may reject readiness but never authorize scope expansion.
 
 ## Core Golden Rules
 
 - Bias toward caution over speed on non-trivial work. For trivial, obvious one-liners, use judgment and avoid unnecessary ceremony.
 - Think before coding: do not assume, hide confusion, or silently choose between meaningful interpretations. If ambiguity affects outcome, risk, scope, data, or public API, stop and ask one concise question; if a safe reversible default exists, state the assumption and continue.
-- Simplicity first: implement the minimum code that solves the actual task. Do not add speculative features, single-use abstractions, configurability, compatibility layers, or impossible-case handling unless there is concrete evidence or an explicit requirement.
-- Process-first architecture: think as a Solution Architect before adding mechanisms. Ask whether changing the workflow, ownership boundary, isolation model, or integration process removes the root problem (for example, per-run workspaces, immutable inputs, single-writer ownership, or platform-native transactions). Prefer a simpler universal process that prevents the failure class over locks, recovery protocols, state machines, or validation code that compensates for a flawed process.
-- Complexity escalation requires consultation: when a proposed solution needs multiple new coordination, recovery, compatibility, or policy mechanisms, stop before implementation and present the user with the simpler process or architecture alternatives. Do not silently accept a complex design merely because an existing spec proposes it.
-- Reuse before building: prefer existing platform, framework, and repository capabilities over new entities, state stores, workflow layers, adapters, or abstractions. Add complexity only when a concrete requirement cannot be met more simply, and record that justification where the design decision is made.
+- Outcome-first simplicity: least lifecycle complexity for the accepted outcome and non-deferrable invariants inside a technically enforced operating envelope—not fewest lines. Before new mechanisms/abstractions, in order: remove unnecessary capability; narrow users/data/interfaces/modes/load/concurrency/side effects; reuse an existing platform/project mechanism; add one local guard, validation, or focused test; then new mechanism/state/compatibility/recovery; last reusable abstraction. Later steps need evidence earlier options fail. Multiple new coordination/recovery/compatibility/policy mechanisms require a narrower slice first.
+- Risk classification covers only behavior reachable in the proposed operating envelope. Relied-upon limits remove reachability only when the candidate or an accepted project mechanism enforces them. A prose-only, ambiguous, or bypassable limit is not containment.
 - Surgical changes: touch only what directly traces to the user request. Do not refactor, reformat, rename, reorder, or "improve" adjacent code unless required for the task; clean up only unused code created by your own change.
 - Goal-driven execution: turn tasks into verifiable success criteria, then loop until those criteria are met or a real blocker remains. Ordinary Small uses the default path above. Material/explicit Change-Ready work loads `change-ready-sdlc` before mutation and follows that skill's qualification gates.
 
@@ -79,22 +78,15 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 - Prefer existing credential stores, environment variables, local provider auth, or user-approved secret managers over asking the user to paste secrets. Ask for credentials only when the task cannot proceed without user-owned access.
 - Before commits, PR/MR text, screenshots, shared logs, or feedback entries, check that no secrets or private prompt contents are included.
 
+
+
 ## Remembering User Preferences
 
-- When the user asks to remember something, decide whether it is durable and general enough to apply across future OpenCode sessions, projects, or repositories.
-- Store only durable general instructions in the global `AGENTS.md` using clear wording that still makes sense outside the current conversation.
-- Do not store task-specific notes, temporary decisions, repository-local implementation details, secrets, credentials, or one-off troubleshooting context globally.
-- If the requested memory is ambiguous, ask one concise clarification question before writing it down.
-- After updating the global instruction file, briefly tell the user what was added and where.
+- Store only durable general instructions in global `AGENTS.md`. No secrets, task-specific notes, or one-offs. Clarify if ambiguous; state what was added and where.
 
 ## Global Artifact Location
 
-- Global artifacts (the global `AGENTS.md`, global skills, global agents, global commands, global plugins, and the global `opencode.json`) are loaded from the OpenCode global config directory, not a fixed path.
-- Before editing any global artifact, read `OPENCODE_CONFIG_DIR` to resolve the active global config directory:
-  - If `OPENCODE_CONFIG_DIR` is set, edit under that directory: `<CONFIG_DIR>/AGENTS.md`, `<CONFIG_DIR>/skills/<name>/SKILL.md`, `<CONFIG_DIR>/agents/<name>.md`, `<CONFIG_DIR>/commands/<name>.md`, `<CONFIG_DIR>/plugin/`, `<CONFIG_DIR>/opencode.json`.
-  - If `OPENCODE_CONFIG_DIR` is NOT set, the default global config directory is `~/.config/opencode`; edit there.
-- When `OPENCODE_CONFIG_DIR` is set, `~/.config/opencode` is bypassed and not loaded, so edits there have no effect. Never edit the bypassed default when a `OPENCODE_CONFIG_DIR` override is active.
-- When the user asks to change a global artifact, state which directory you resolved before editing, so the user knows where the change lands.
+- Global artifacts load from the OpenCode global config directory. Resolve `OPENCODE_CONFIG_DIR` when set (`AGENTS.md`, `skills/`, `agents/`, `commands/`, `plugin/`, `opencode.json`); else `~/.config/opencode`. When `OPENCODE_CONFIG_DIR` is set, the default path is bypassed—never edit the bypassed default. State which directory you resolved before editing.
 
 ## Communication Preferences
 
@@ -108,39 +100,25 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 - When asking the user a question, provide concise answer options when useful. Put the recommended option first, mark it clearly as recommended, and state the reason. For every option, state in simple brief language: what selecting it does, its main advantage, and its main disadvantage.
 - Do not offer catch-all options when the UI/tool already provides a custom answer path.
 
+
 ## Automation Over Instructions
 
-- Prefer executable automation over prose instructions whenever the work can be made machine-checkable: code, tests, validators, generators, status reports, hooks, and scripts are more reliable than reminders.
-- Treat new instructions as the last resort. Before adding instructions, consider whether the same goal can be enforced, detected, or summarized by program logic or validation output.
-- Use prose instructions for judgment-heavy work that cannot be safely algorithmized, such as code review priorities, architectural trade-offs, communication style, and safety boundaries.
-- Do not create false confidence by over-automating human judgment. Use automation to gather evidence and make failures visible, then keep explicit reviewer judgment where needed.
-- For retros, audits, reviewer gates, and follow-up backlogs, separate symptoms from likely root causes. Durable improvements should remove or reduce the recurrence path; when the cause is unknown, route an investigation or instrumentation task instead of guessing.
+- Prefer executable automation over prose when the work can be machine-checked. New instructions are last resort.
+- Keep prose for judgment-heavy work (review priorities, architecture trade-offs, communication, safety).
+- Separate symptoms from root causes in retros/audits; unknown cause → investigation, not a guessed rule.
 
 ## Deterministic Helper Automation
 
-- For repetitive, evidence-heavy, or token-heavy work, first consider whether a small deterministic helper could gather, count, validate, redact, diff, inventory, or enforce explicit rules more efficiently than manual inspection.
-- When writing helper code for agent workflow, make it deterministic and contract-driven: explicit inputs, explicit outputs, schemas or fixtures, stable ordering, and privacy-safe output.
-- Helper code must have no hidden heuristics: do not encode fuzzy scoring, probabilistic classification, model-like summarization, or unstated inference as evidence.
-- If deterministic helper code cannot answer something from its inputs, report `unknown`, `unreadable`, `unsupported`, or `blocked` instead of guessing.
-- Keep judgment-heavy synthesis in the agent/reviewer layer; use helper code to gather, count, validate, redact, diff, inventory, or enforce explicit rules.
-- Deterministic helpers may surface root-cause signals, evidence chains, and missing data, but they must not infer root cause from fuzzy transcript content or hidden heuristics.
+- Prefer small deterministic helpers for repetitive evidence work: explicit inputs/outputs, schemas/fixtures, stable ordering, privacy-safe output, no hidden heuristics or fuzzy scoring.
+- If inputs cannot answer, report `unknown`/`unreadable`/`unsupported`/`blocked`. Judgment stays in the agent/reviewer layer.
 
 ## Feedback Ledger
 
-- When current-session workflow friction, instruction conflict, tooling pain, missing automation, confusing handoff, validation noise, or reusable improvement opportunity appears, use the `complain` skill and append a structured entry to `docs/feedbacks/<agent-or-skill-name>.md`.
-- Do not wait for proof that the issue is recurring. If recurrence is unknown, write `Recurrence: unknown`; prefer a compact useful signal over suppressing feedback.
-- Keep entries privacy-safe and focused on workflow/tooling/instructions, not personal blame. Do not include secrets, raw private prompts, or large logs.
-- Reviewer agents may edit only `docs/feedbacks/**` for feedback entries; they remain read-only for source, config, instructions, specs, and task artifacts.
-- OpenCode permissions enforce the feedback path boundary; `complain` is the required model contract for entry shape and privacy checks, not a hard semantic enforcement layer.
-- If explicit read-only/no-edit mode or permissions block writing, return a `Feedback Candidate` for the main session instead of dropping the signal.
+- On current-session workflow friction, use `complain` and append to `docs/feedbacks/<agent-or-skill-name>.md`. `Recurrence: unknown` is fine. Privacy-safe only. Reviewers write only under `docs/feedbacks/**`. If write is blocked, return a `Feedback Candidate`.
 
 ## Token Efficiency
 
-- Keep responses compact by default: outcome, changed files, validation, blockers, and only necessary rationale.
-- Remove filler and repeated caveats from responses, but preserve exact commands, paths, errors, code, safety warnings, and user-facing decisions.
-- Prefer targeted searches, symbols, and bounded file reads over broad file or log dumps.
-- For validation output, report summaries and failures first; read full saved tool output only when the preview lacks the cause.
-- Preserve exact code, commands, paths, errors, protocol terms, and safety warnings; do not compress away meaning.
+- Compact by default: outcome, changed files, validation, blockers, necessary rationale. Prefer targeted search/reads. Preserve exact commands, paths, errors, and safety warnings.
 
 ## Universal Task Briefing Contract
 
@@ -153,11 +131,13 @@ This contract applies whenever any agent assigns, delegates, transfers, or resta
 - Within `Current State and Evidence`, separately label observed facts, assumptions, hypotheses, and recommendations when present; keep decisions under `Resolved Decisions and Rationale`. Cite paths, symbols, requirements, logs, commands, or other evidence for implementation-sensitive claims. Never present an inference as a decided requirement.
 - Resolve decisions before delegation whenever evidence or a safe reversible default permits. If a decision is genuinely user-owned, do not pass it to an executor to guess: keep the dependent work blocked, ask the user through the main session, and identify the exact decision and consequence.
 - Translate the goal into observable required behavior and binary acceptance criteria. Every criterion must be independently checkable and traceable to a stated requirement, invariant, risk, or deliverable.
-- Scope must be explicit. Name allowed read areas, exact or bounded write areas, required deliverables, forbidden files/actions, non-goals, compatibility expectations, and whether tests, docs, generated files, commits, pushes, credential access, network access, host-level mutation, or remote-state changes are allowed.
-- Specify verification before execution: exact commands or procedures, required environment and fixtures, expected success condition, and what to report if a check cannot run. "Run relevant tests" or "ensure it works" is not a sufficient verification contract.
-- Specify the return contract: required findings or changes, evidence, files touched, commands run with outcomes, acceptance-criteria status, assumptions, blockers, and residual risks. Reviewer and SDET return contracts are evidence-only: use `Blocking Evidence`, `Residual Risks`, and non-authorizing `Follow-up Candidates` only. Require exact paths and actionable detail rather than narrative reassurance.
-- Use `N/A - <reason>` for a contract field that genuinely does not apply; never omit a required field silently. Keep the brief proportional in length, but not in precision: even a small delegated task must identify the exact outcome, scope, acceptance evidence, and return format.
-- If the receiver finds a contradiction, unsafe instruction, missing prerequisite, or ambiguity that can materially change the result, it must stop the affected work and report the precise blocker plus the smallest decision or evidence needed. It must continue independently on unaffected work when safe.
+- Scope must be explicit: read/write bounds, deliverables, forbidden actions, non-goals, and whether tests/docs/commits/credentials/network/remote mutation are allowed.
+- Specify verification before execution with exact procedures and success conditions. "Run relevant tests" is not enough.
+- Specify the return contract: findings/changes, evidence, files, outcomes, blockers, residual risks. Reviewer/SDET use `Blocking Evidence`, `Residual Risks`, and non-authorizing `Follow-up Candidates` only.
+- Use `N/A - <reason>` when a field does not apply; never omit silently.
+- On contradiction, unsafe instruction, missing prerequisite, or material ambiguity, stop affected work and report the precise blocker; continue unaffected work when safe.
+
+
 
 Every assignment, delegation, transfer, restart, or handoff brief must contain these labeled fields, adapted to the task but not silently omitted:
 
@@ -182,21 +162,21 @@ Return Contract:
 Blocker and Escalation Policy:
 ```
 
-- `Objective` must describe the end state and user/system value, not merely an activity such as "investigate", "improve", or "review".
-- `Current State and Evidence` must separate observed behavior from suspected cause. For discovery work, name the questions to answer, evidence to collect, search boundaries, and stop conditions.
-- `Required Deliverables` must name concrete artifacts or decisions: code paths, tests, findings, matrices, schemas, patches, or reports. If no file change is allowed, say so explicitly.
-- `Requirements and Invariants` must include behavior, data, API/protocol, compatibility, security, performance, concurrency, failure, and operational constraints when relevant, plus explicit handling for realistic edge cases.
-- `Resolved Decisions and Rationale` must pre-decide approach, ownership boundary, error model, dependencies, compatibility policy, and rollback strategy when they affect execution. Do not force the receiver to redo settled architecture or product analysis.
-- `Acceptance Criteria` must use externally observable pass/fail statements. Avoid subjective criteria such as "clean", "robust", "proper", "production-ready", or "well tested" unless each is defined by concrete evidence.
-- `Blocker and Escalation Policy` must distinguish agent-resolvable unknowns from user-owned decisions and state whether partial progress is useful. Subagents report blockers to the main session and never ask the user directly.
+- `Objective`: end state and value, not activity-only.
+- `Current State and Evidence`: separate observed vs suspected cause; discovery needs questions, evidence, bounds, stop conditions.
+- `Required Deliverables`: concrete artifacts/decisions; say if no file change allowed.
+- `Requirements and Invariants`: behavior/data/API/security/perf/concurrency/failure/ops plus realistic edges when relevant.
+- `Resolved Decisions and Rationale`: approach, ownership, error model, deps, compatibility, rollback when they affect execution.
+- `Acceptance Criteria`: observable pass/fail; define subjective words with concrete evidence.
+- `Blocker and Escalation Policy`: agent-resolvable vs user-owned; subagents never ask the user.
 
 Apply role-specific precision in addition to the universal fields:
 
-- Implementation briefs: name target files/symbols when known, required behavior before internal design, allowed dependencies, compatibility and migration expectations, error/failure semantics, test ownership, and focused validation commands.
-- Testing briefs: provide the original requirements rather than only the implementation summary; identify the production boundary, realistic risk matrix, required happy-path evidence, permitted mocks, test-only write scope, forbidden production edits, and externally meaningful assertions.
-- Review briefs: identify the baseline and change scope, governing requirements and decisions, review dimensions, severity definitions, read-only boundary, required file/line evidence, finding format, and approval/blocking rules.
-- Exploration briefs: ask decision-driving questions, name likely locations without limiting valid discovery, define evidence quality, expected inventory or map, depth, and completion/stop conditions.
-- Planning or specification briefs: identify the intended implementer, decisions that must be resolved now, required implementation detail, sequencing, validation gates, risks, rollback, and the threshold for implementation readiness.
+- Implementation briefs: targets, required behavior, deps, compatibility, errors, test ownership, focused validation.
+- Testing briefs: original requirements, production boundary, risk matrix, happy-path evidence, mocks, test-only write scope, external oracles.
+- Review briefs: baseline/scope, requirements, dimensions, severity, read-only boundary, file/line evidence, finding format, blocking rules.
+- Exploration briefs: decision questions, likely locations, evidence quality, inventory/map, depth, stop conditions.
+- Planning briefs: implementer, decisions to resolve now, detail, sequencing, gates, risks, rollback, readiness threshold.
 
 Before invoking an agent, perform this quality gate:
 
@@ -210,8 +190,9 @@ If any answer is no, improve the brief before dispatch. Agent availability, urge
 
 ## Autonomous Work Contract
 
-- The main session (active primary user-session agent) owns skill selection, decomposition, project-native validation, reviewer gates, local handoff, and final synthesis. Ordinary Small ends with `Change-Ready: not requested` unless qualification was requested. Only the qualification path emits `Change-Ready: yes|no`.
-- Ask the user only for real blockers: scope or risk decisions, credentials/provider access, missing owner/product/security/legal decisions, destructive operations, remote-state actions, unrequested scope expansion, and separately authorized external review or delivery outcomes.
+- The main session owns skill selection, decomposition, validation, reviewer gates, handoff, and final synthesis. Lifecycle profiles remain exactly `Ordinary Small | Material`. Compact handoff may report `Pilot-Ready: yes | no | not requested` and `Change-Ready: yes | no | not requested`. Pilot-Ready is a limited-use disposition, not a third profile or Change-Ready substitute. Ordinary Small ends with `Change-Ready: not requested` unless qualification was requested; only the qualification path emits `Change-Ready: yes|no`. Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
+- Before `Pilot-Ready: yes`, the same readable candidate must have: one bounded outcome and non-goals; a technically enforced operating envelope (prose-only limits are not containment); real-boundary happy-path proof; focused project-native validation; protection of applicable critical safety/data/authorization invariants; sufficient material failure visibility; proportional disable/rollback/containment for persistent or spreading effects; one compact material residual-risk bundle with explicit user acceptance for every material risk reachable inside the enforced pilot envelope; and no uncontrolled authorization, privacy, data-integrity, irreversible-action, or envelope-escape risk. Skip minor, theoretical, wording, optional-evidence, and unreachable future risks. User acceptance cannot waive uncontrolled authorization, privacy, data-integrity, irreversible-action, or envelope-escape risk. Qualification-only Pilot coexistence and gate detail live in `change-ready-sdlc` when loaded.
+- Ask the user only for real blockers: scope/risk decisions, credentials/provider access, owner/product/security/legal decisions, destructive operations, remote-state actions, unrequested scope expansion, material pilot residual-risk acceptance, and separately authorized external review or delivery outcomes.
 - Continue autonomously when local evidence, repository policy, or a safe reversible default is enough; do not ask routine preference or progress questions.
 - Subagents and read-only reviewer gates never ask the user directly; they return evidence-only reports using `Blocking Evidence`, `Residual Risks`, and non-authorizing `Follow-up Candidates` for the main session. Feedback-ledger writes under `docs/feedbacks/**` are allowed only through the scoped `complain` contract. `Follow-up Candidates` never authorize current-candidate work.
 - Discover the project's delivery/readiness gate via adapters. For Material work, always run the discovered conforming delivery/readiness gate with current requirements, Candidate Reference continuity, proof, SDET, validation, review, and residual-risk evidence; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it. Optional plugin delivery-context tools are evidence sources only when available, never portable dependencies.
@@ -228,26 +209,23 @@ If any answer is no, improve the brief before dispatch. Agent availability, urge
 - Read-only reviewer subagents must not call `question` or ask the user directly; they return evidence-only reports using `Blocking Evidence`, `Residual Risks`, and non-authorizing `Follow-up Candidates` for the main session. They may write feedback entries only under `docs/feedbacks/**` when permission allows it.
 - When an audit, reviewer gate, broad discovery, or validation failure produces several concrete tasks that are related to the current session but outside its approved scope, prefer grouping them into the project's accepted follow-up mechanism when one exists or the user approved adding it; otherwise return grouped candidates instead of leaving a loose final-message backlog. Do not create ceremony for isolated nits, speculative polish, or one obvious next step.
 - At main-session final handoffs where work is complete and control returns to the user, include a compact `Recommended Next Steps` mini-section when a useful follow-up exists. End it with a yes/no question such as `делаем?` so the user can answer simply `да` or `нет`; skip in read-only, reviewer, subagent, or no-question contexts, and when the user explicitly requested no next-step suggestions.
-- If no real blocker remains, report completed work, validation, residual risks, and either `Change-Ready: not requested` (Ordinary Small) or `Change-Ready: yes|no` on the qualification path (plus any project-native label) without an interactive handoff.
+- If no real blocker remains, report completed work, validation, residual risks, `Pilot-Ready: yes | no | not requested`, and either `Change-Ready: not requested` (Ordinary Small) or `Change-Ready: yes|no` on the qualification path (plus any project-native label) without an interactive handoff.
 - If a blocker remains and the question tool is unavailable, include a short `Next Steps` fallback with the same recommended-first ordering.
+
 
 ## OpenCode Feature Work
 
-- When editing OpenCode configuration, skills, agents, plugins, hooks, permissions, MCP servers, or integrations, verify implementation-sensitive claims against current OpenCode docs, schemas, source, or live loader behavior.
-- Never add `machineOverride` or `machineOverride: true` to any `opencode.json` or `opencode.jsonc` file. It is not part of the official OpenCode schema and can prevent OpenCode from starting. Treat repository validators, documentation, examples, or generated config that require this field as defective and fix or report those artifacts instead of changing the OpenCode config.
-- Use the official OpenCode documentation and schema as baseline references. If the organization keeps a local documentation mirror, record its path as a local customization such as `<local-opencode-docs-path>`.
-- Trust but verify: documentation, examples, comments, generated summaries, issue descriptions, and user claims are navigation aids until checked against executable/source evidence.
-- If prose and implementation disagree, surface the conflict and trust implementation evidence until explicitly resolved.
+- Verify OpenCode config/skills/agents/plugins claims against current docs, schemas, source, or live loader behavior.
+- Never add `machineOverride` to any `opencode.json`/`opencode.jsonc`. Fix defective validators/docs that require it.
+- Trust but verify prose against executable/source evidence.
 
 ## Local OpenCode Model Environment
 
 Installation evidence for this machine only. The portable Change-Ready framework never requires these models or tools.
 
-- The local OpenCode Desktop/localServer on this machine has these authed, usable models: `openai/gpt-5.5`, `zai-coding-plan/glm-5.2`, `minimax/MiniMax-M3`. (Recurring reminder: do not waste time re-discovering this.)
-- `GET /api/model` (and `/api/model?directory=...`) returns `data: []` by default. Do NOT interpret an empty model list as "no models available / model unreachable". Models are present and authed even though that endpoint lists none for a directory.
-- Always pass the model explicitly through the OpenCode API / CLI: the `model` field on `POST /session`/`prompt_async`, or `--model <provider/id>` / `OPENCODE_REAL_MODEL=<provider/id>` for local review CLI/smoke. Never run a review or prompt against the local localServer without selecting a model explicitly.
-- If a probe shows no model, the fix is to pass one of the three IDs above — not to conclude the server is unusable. This has bitten us before on local review smokes (`packages/control-plane/test/temporal-review-opencode-smoke.test.ts` with `TEMPORAL_REVIEW_OPENCODE_E2E=1 OPENCODE_REAL_MODEL=...`).
-- The local `qwen-local` provider (llama.cpp @ `127.0.0.1:8080`) is usually NOT running; prefer the three cloud models above unless the user starts the local qwen server.
+- Authed local models: `openai/gpt-5.5`, `zai-coding-plan/glm-5.2`, `minimax/MiniMax-M3`.
+- `GET /api/model` may return `data: []`; that is not "no models". Always pass `model` / `--model` / `OPENCODE_REAL_MODEL` explicitly.
+- Prefer the three cloud models above; local `qwen-local` is usually off.
 
 ## Parallel Work And Delegation
 
@@ -275,6 +253,7 @@ Installation evidence for this machine only. The portable Change-Ready framework
 - Use reviewer/subagent groups for material cross-domain work, but keep them bounded. Default to 1-3 reviewers and normally one reviewer wave.
 - After Material/explicit qualification behavior changes, complete the skill's proof, SDET, validation, and independent final-review gates before claiming Change-Ready or performing separately authorized external operations.
 
+
 ## Mode And Tool Precedence
 
 - Explicit user constraints override skill ceremonies: read-only, no-edit, no-commit, no-push, no-questions, quick audit, reviewer-only, no-network, or no-remote.
@@ -289,7 +268,7 @@ Installation evidence for this machine only. The portable Change-Ready framework
 - In this kit, `implementation-worker` is the optional default production adapter for production-only happy-path slices. Other local tools may be used only as discovered optional checkpoints, never as portable requirements.
 - Production authors implement the smallest complete happy path, preserve unrelated work, and do not create or modify automated test artifacts. They return changed artifacts, proof procedure, blockers, and residual risks; they do not claim SDET, final review, or Change-Ready.
 - The main session owns task scoping, brief quality, result inspection, integration, authorized validation, reviewer gates, and final synthesis. Do not declare Change-Ready solely because a production author reports success.
-- When a selected production adapter is unavailable on the qualification path, use another conforming production author; if none exists, report blocked. State the reason in one line and do not loop on a failing optional tool.
+- When a selected production adapter is unavailable on the qualification path, use another conforming production author; if none exists, report blocked.
 
 ## Code Review Method
 
@@ -299,6 +278,7 @@ Installation evidence for this machine only. The portable Change-Ready framework
 - Final review must use a fresh read-only context that authored neither production nor tests. Self-review and pre-SDET checkpoints are implementation feedback only and do not satisfy the final gate.
 - Final review is accept-or-reject only: `rejected` or `blocked` terminates the qualification attempt with `Change-Ready: no` and never authorizes autonomous correction or replay. Absence of a conforming reviewer blocks qualification readiness.
 - When the preferred adapter is unavailable on the qualification path, use another configured conforming reviewer or report blocked; do not invent a foreign review product.
+
 
 ## Repository Changes
 
@@ -313,12 +293,12 @@ Installation evidence for this machine only. The portable Change-Ready framework
   and often impossible.
 - Stage only intended paths. Do not use broad staging commands such as `git add -A`
   or `git add .` when unrecognized changes are present.
-- When making changes in a repository, complete relevant verification and report either `Change-Ready: not requested` (Ordinary Small) or qualification `Change-Ready: yes|no` (plus any project-native label).
+- When making changes in a repository, complete relevant verification and report `Pilot-Ready: yes | no | not requested` plus either `Change-Ready: not requested` (Ordinary Small) or qualification `Change-Ready: yes|no` (plus any project-native label).
 - Commit, push, merge, or push to the default branch only when explicitly requested or clearly allowed by repository-local policy.
 - Always obey repository-specific remote-operation rules, branch rules, issue tracker rules, and validation gates.
 - When creating or updating a PR/MR description, write it for a reviewer who sees the project and change for the first time.
 - Start PR/MR descriptions with plain-language context, problem/purpose, scope, non-goals, main changes, validation, risks, and review focus.
-- Avoid unexplained internal jargon, file-list-only summaries, and latest-commit changelogs unless the user explicitly asks for commit-focused text.
+- Avoid unexplained jargon and file-list-only summaries unless the user asks for commit-focused text.
 
 ## Risk-Driven Test Workflow
 
@@ -334,50 +314,20 @@ Installation evidence for this machine only. The portable Change-Ready framework
 - Build a risk-based scenario matrix from requirements, business invariants, implementation boundaries, and production runtime when systematic testing is warranted. Consider realistic boundary values, invalid or missing data, dependency failures, timeouts, retries, partial completion, duplicate requests, concurrency, ordering, authorization, state recovery, resource pressure, and observability gaps when relevant; skip impossible or purely theoretical cases.
 - Every negative test must assert externally meaningful behavior, including safe failure, preserved invariants, useful diagnostics, and recovery as applicable. A test that merely mirrors implementation details or proves a mock interaction is insufficient.
 - Feed discovered failures to the correct owner (production vs fresh SDET when used), then replay affected proof and gates. On the qualification path, follow `change-ready-sdlc`.
-- Ordinary Small handoff identifies requirements, proof, validation, residual risks, and `Change-Ready: not requested`. Qualification handoff also identifies SDET action, risk matrix, mock exceptions, corrections, complete validation, independent final review, and residual risks.
+- Ordinary Small handoff identifies requirements, proof, validation, residual risks, `Pilot-Ready`, and `Change-Ready: not requested`. Qualification handoff also identifies SDET action, risk matrix, mock exceptions, corrections, complete validation, independent final review, residual risks, and both readiness dispositions.
+
 
 ## OpenSpec Change Authoring
 
-- Author every OpenSpec change (proposal, design, spec deltas, `tasks.md`) to be implementation-ready for a less capable model or a "confident middle" engineer: as detailed and unambiguous as possible, with the hard thinking and decisions resolved during authoring, not deferred into implementation.
-- Analogy: write it the way a senior systems analyst hands work off to confident-mid engineers — the analysis, approach, trade-offs, and risk resolution are done up front; the implementer executes rather than re-derives.
-- Prefer concrete over abstract: name exact files/paths, symbols, signatures, data shapes, error and edge cases, and acceptance criteria. Spell out "how", not only "what"; add short code sketches or interface stubs when they remove ambiguity.
-- Make `tasks.md` small, safe, and sequentially executable: one bounded action per task, each independently verifiable with the exact validation command and its expected pass condition. Split anything that mixes concerns, touches many files at once, or hides non-trivial reasoning.
-- Pre-resolve every decision the implementer would otherwise have to make: approach, library choice, boundary placement, error model, compatibility, rollback. If a decision is genuinely user-owned, surface it as an explicit open question for the user — never leave it for the implementer to guess.
-- No vague placeholders ("TBD", "as appropriate", "handle errors") inside actionable parts. Keep unresolved items in the proposal's open-questions section and route them to the user, not to implementation.
-- Keep risk and complexity inside the resolved design, not inside the implementer's head: call out hazards, irreversible steps, and validation gates explicitly so a weaker model can execute the change safely with low risk.
+- Default each change to the next useful working increment inside a technically enforced operating envelope, not exhaustive resolution of the imagined final system. Resolve decisions only when they can materially change that increment's outcome, envelope, non-deferrable invariants, observable proof, material residual risk, or stop line.
+- Every behavior-changing increment identifies, directly or via an accepted project-native equivalent: `Outcome`, `Operating Envelope`, `Non-Goals`, `Non-Deferrable Invariants`, `Observable Proof`, `Material Residual Risks`, and `Stop Line`.
+- Implementation readiness means a capable cold-context implementer can build and prove the next slice without guessing a user-owned decision or a decision that changes material risk. Future scaling, variants, integrations, compatibility, or unreachable edge behavior is non-blocking future scope unless reachable in the current envelope.
+- Prefer concrete paths, symbols, data shapes, and acceptance criteria for the current slice. Group mechanical mirror edits that share one owner and one validation result. Tasks represent meaningful behavior, evidence, or gate outcomes—not one task per mechanical file.
+- No vague placeholders ("TBD", "as appropriate", "handle errors") in actionable current-slice parts. Keep unresolved user-owned items in open questions. Specification review stops when remaining findings are future-scope, unreachable, optional, or polish-only.
 
 ## Task Completion Honesty
 
-This is a hard rule. Violations make the rest of the verification gate a lie.
-
-- **Never check a checkbox you have not actually completed.** When a task
-  list, OpenSpec `tasks.md`, GitHub issue, todo, or sub-task is marked
-  `[x]` / done / completed, the work behind it must have actually been done
-  in this session or in a prior session whose evidence is in the change.
-- "Looks done", "covered by tests", "implicit", "partially done", or
-  "deferred but the goal is clear" do not count. If the test was not run, the
-  command was not actually executed, the credential was not used, the
-  contract was not verified — the box stays unchecked.
-- "Optional", "follow-up", "smoke" — are part of the change, not outside
-  it. If the spec says "real OpenCode smoke", "real CLI output", "with
-  credentials when available", the smoke must be run when the credentials
-  ARE available. Treat opt-in env-gated tests as required when the
-  gating env is reachable from the working environment.
-- Before checking the box, look back at the task description and confirm
-  every literal clause is satisfied. If any clause is unsatisfied, leave
-  the box unchecked and either complete it now, or split it into a real
-  follow-up change that is itself an OpenSpec change or a PR with a
-  blocker label — never silently check.
-- When verification evidence already exists in the repo (captured CLI
-  output, golden fixtures, real-process artifacts), prefer it over
-  re-running. When evidence does not exist, run the verification now
-  before declaring success. Synthesis without execution is not verification.
-- When you previously checked a box honestly and later discover it was
-  not actually completed, immediately mark it `[ ]` (or "Not done") in
-  the same file, append a one-line note pointing to this rule, and either
-  complete the work or route a follow-up — do not let the lie persist.
-- Applies equally to: OpenSpec tasks, PR description checkboxes, todo
-  lists, agent self-reports, and reviewer notes.
+Hard rule: never mark a task/checkbox done unless the work actually ran in this session or prior evidence in the change proves it. "Looks done", "implicit", or "deferred" do not count. Optional/smoke/env-gated checks are required when their gate is reachable. Prefer existing verification evidence over re-runs; synthesis without execution is not verification. If a prior check was wrong, uncheck it immediately and finish or route follow-up.
 
 ## Concise Response Style
 

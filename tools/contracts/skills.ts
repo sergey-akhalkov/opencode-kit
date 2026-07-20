@@ -212,6 +212,34 @@ export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
       "Evidence tooling must not become a second product; it MAY be added only when a mandatory gate cannot be reproduced without it",
     diagnostic: "superseded persistent evidence-tool exception on production-routing surface",
   },
+  {
+    needle: "as detailed and unambiguous as possible",
+    diagnostic: "superseded maximal OpenSpec pre-resolution wording",
+  },
+  {
+    needle: "Pre-resolve every decision the implementer would otherwise have to make",
+    diagnostic: "superseded maximal OpenSpec pre-resolve-every-decision wording",
+  },
+  {
+    needle: "Pilot-Ready: yes` authorizes deployment",
+    diagnostic: "Pilot-Ready must not authorize deployment",
+  },
+  {
+    needle: "Pilot-Ready: yes authorizes deployment",
+    diagnostic: "Pilot-Ready must not authorize deployment",
+  },
+  {
+    needle: "Profile: Ordinary Small | Material | Pilot",
+    diagnostic: "Pilot must not appear as a third lifecycle profile",
+  },
+  {
+    needle: "add a third lifecycle profile",
+    diagnostic: "third lifecycle profile is forbidden; profiles remain Ordinary Small | Material",
+  },
+  {
+    needle: "evidence-format polish alone blocks Pilot-Ready",
+    diagnostic: "evidence-format polish must not be an unconditional Pilot-Ready blocker",
+  },
 ] as const;
 
 /** Closed-world markers required in the canonical Change-Ready skill body. */
@@ -250,6 +278,92 @@ export const GLOBAL_AGENTS_TRIGGER_TOKENS: readonly string[] = [
   "If the skill is unavailable",
   "block behavior-changing mutation",
 ];
+
+/**
+ * Canonical outcome-first / Pilot-Ready markers required in always-loaded global/AGENTS.md.
+ * Deterministic substring checks only — no fuzzy reachability or severity classification.
+ */
+export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
+  "technically enforced operating envelope",
+  "Pilot-Ready: yes | no | not requested",
+  "Ordinary Small | Material",
+  "prose-only",
+  "not containment",
+  "remove unnecessary capability",
+  "narrow users/data/interfaces",
+  "reuse an existing platform/project mechanism",
+  "local guard",
+  "Neither disposition authorizes",
+  "material residual-risk bundle",
+  "cannot waive uncontrolled authorization",
+  "bounded outcome and non-goals",
+  "real-boundary happy-path proof",
+  "focused project-native validation",
+  "critical safety/data/authorization",
+  "failure visibility",
+  "disable/rollback/containment",
+  "`Outcome`",
+  "`Operating Envelope`",
+  "`Non-Goals`",
+  "`Non-Deferrable Invariants`",
+  "`Observable Proof`",
+  "`Material Residual Risks`",
+  "`Stop Line`",
+  "remove, narrow, reuse, local guard, then deferral",
+];
+
+/**
+ * Qualification-specific Pilot-Ready markers required in the canonical Change-Ready skill.
+ * Sole complete Pilot safety-floor owner is always-loaded global/AGENTS.md; this array requires
+ * disposition/coexistence/terminal markers plus an explicit global-floor authority reference —
+ * not a second complete floor enumeration.
+ */
+export const CHANGE_READY_SDLC_PILOT_READY_MARKERS: readonly string[] = [
+  "Pilot-Ready Decision",
+  "Pilot-Ready: yes | no | not requested",
+  "not a third lifecycle profile",
+  "Ordinary Small | Material",
+  "complete Pilot safety floor is authoritative only in always-loaded global",
+  "Neither disposition authorizes",
+  "does not automatically erase independently proven Pilot-Ready",
+  "does not undermine candidate identity/scope, proof, containment, safety floor, validation, or material-risk acceptance",
+];
+
+/**
+ * Surfaces that must not restate the complete canonical outcome-first + Pilot-Ready policy block.
+ * Role/planning files keep only role-specific deltas.
+ */
+export const OUTCOME_FIRST_ROLE_DELTA_SURFACES: readonly string[] = [
+  "global/agents/implementation-worker.md",
+  "global/agents/sdet-quality-engineer.md",
+  "global/agents/implementation-readiness-reviewer.md",
+  "global/agents/openspec-architecture-reviewer.md",
+  "global/agents/final-candidate-reviewer.md",
+  "global/agents/session-delivery-reviewer.md",
+  "global/skills/deep-task-planning/SKILL.md",
+  "global/skills/next-step/SKILL.md",
+  "global/skills/service-architecture-design/SKILL.md",
+  "global/skills/openspec-consistency-review/SKILL.md",
+];
+
+/**
+ * Exact phrases that mark a complete policy copy when present together above threshold
+ * on a role/planning delta surface (sole complete floor owner is always-loaded global AGENTS;
+ * skill and role/planning files keep only deltas).
+ */
+export const OUTCOME_FIRST_COMPLETE_POLICY_MARKERS: readonly string[] = [
+  "cannot waive uncontrolled authorization",
+  "material residual-risk bundle",
+  "Neither disposition authorizes",
+  "prose-only limits are not containment",
+  "Pilot-Ready Decision",
+  "`Non-Deferrable Invariants`",
+  "remove unnecessary capability",
+  "not a third lifecycle profile",
+];
+
+/** How many complete-policy markers on a role/planning surface trigger duplication failure. */
+export const OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD = 5;
 
 /**
  * Fan-out and specialist-continuation tokens required in global/AGENTS.md when concurrent writers apply.

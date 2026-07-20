@@ -142,6 +142,8 @@ export function newLibraryFixture(name: string): string {
   writeText(path.join(dir, "instructions", "universal-development-loop.md"), lines([
     "# Universal Development Loop",
     "",
+    "Pilot-Ready: yes | no | not requested is a disposition for the Ordinary Small | Material profiles inside a technically enforced operating envelope. Prefer remove/narrow/reuse/local guard.",
+    "",
     "## Contract",
     "",
     "1. Intake",
@@ -167,6 +169,7 @@ export function newLibraryFixture(name: string): string {
     "",
     "- Shared runtime lifecycle authority comes from active global `AGENTS.md` and `change-ready-sdlc`; the Universal Development Loop is conceptual guidance, not a target-relative runtime dependency.",
     "- Implement and observably prove the smallest complete happy path, then use a separate fresh-context testing subagent for risk discovery, negative tests, and hardening.",
+    "- Report `Pilot-Ready: yes | no | not requested` only as a disposition; neither Pilot-Ready nor Change-Ready authorizes external operations.",
     "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
     "",
   ]));
@@ -307,6 +310,8 @@ export function newLibraryFixture(name: string): string {
     "- `universal-development-loop.md`: Universal loop.",
     "",
     "## Porting Notes",
+    "",
+    "- Reviewer reports use non-authorizing `Follow-up Candidates` for separate work.",
     "",
   ]));
   return dir;

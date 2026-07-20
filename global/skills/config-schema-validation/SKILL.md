@@ -13,7 +13,7 @@ Use this skill when work touches configuration loading, schema shape, validation
 - Prefer explicit config over hidden defaults for production-critical behavior.
 - Validate early and fail with actionable diagnostics.
 - Keep schema, docs, generated examples, tests, and runtime behavior synchronized.
-- Implement and observably prove the smallest schema-valid happy path first, then use a separate fresh-context testing subagent to author accepted/rejected fixtures and realistic default, boundary, precedence, reload, and operational-failure tests.
+- Implement and observably prove the smallest schema-valid happy path first. Material/explicit qualification then uses a separate fresh-context testing subagent to author accepted/rejected fixtures and realistic default, boundary, precedence, reload, and operational-failure tests. Ordinary Small uses focused validation and optional smallest post-proof regression.
 - Treat unsafe defaults, duplicate aliases, ambiguous precedence, and silent truncation as material risks.
 - Do not add speculative config fields, aliases, dynamic policy, or lifecycle concepts unless accepted requirements require them.
 

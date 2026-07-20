@@ -64,11 +64,13 @@ const namedMaterialRiskFixtureText = namedMaterialRiskFixtureCases.map(([, marke
 const conformingAgentsAuthority = `# Independent Active Authority
 ## Change-Ready SDLC Routing
 Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
+Profiles remain Ordinary Small | Material. Pilot-Ready: yes | no | not requested is a disposition inside a technically enforced operating envelope. Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
 Path: prove it observably before inspecting realistic requirement-linked edge cases.
 Unrequested scope expansion requires explicit user approval.
 After freeze, post-freeze scope may only shrink. Findings may block readiness but never authorize scope expansion. Qualification permits one correction wave.
 Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
+Before Pilot-Ready: yes, require a bounded outcome and non-goals, real-boundary happy-path proof, focused project-native validation, critical safety/data/authorization protection, sufficient material failure visibility, and proportional disable/rollback/containment.
 ## Universal Task Briefing Contract
 Provide an execution-ready brief before specialist dispatch.
 ## Autonomous Work Contract
@@ -102,6 +104,8 @@ After freeze, post-freeze scope may only shrink; expansion requires a new revisi
 ### 7. Correction routing and replay
 ### 8. Final Candidate Review
 ### 9. Change-Ready Decision
+### 10. Pilot-Ready Decision
+Pilot-Ready: yes | no | not requested is not a third lifecycle profile; profiles remain Ordinary Small | Material. The complete Pilot safety floor is authoritative only in always-loaded global AGENTS.md; this skill does not restate that floor. Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
 ## Compact orchestration output
 `;
 
@@ -628,6 +632,7 @@ export const doctorTests: TestCase[] = [
         { name: "skill-missing-blocking-evidence", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Blocking Evidence", "Readiness Evidence"), expected: "missing Blocking Evidence output field" },
         { name: "skill-missing-follow-up-candidates", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Follow-up Candidates", "Future Work"), expected: "missing Follow-up Candidates output field" },
         { name: "skill-missing-final-verdict-enum", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("approved | approved_with_notes | rejected | blocked", "accepted or rejected"), expected: "missing final-review rejected verdict enum" },
+        { name: "skill-missing-global-floor-authority", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("complete Pilot safety floor is authoritative only in always-loaded global", "Pilot safety floor is documented elsewhere"), expected: "missing complete Pilot safety-floor authority reference to always-loaded global AGENTS" },
         { name: "empty-agents", relative: "AGENTS.md", text: "", expected: "AGENTS.md is empty" },
         { name: "stub-agents", relative: "AGENTS.md", text: "# Stub authority\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },
         { name: "token-packed-agents", relative: "AGENTS.md", text: "Change-Ready SDLC Routing Before the first mutation load change-ready-sdlc Universal Task Briefing Contract Autonomous Work Contract Shared Reviewer Runtime Invariants\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },

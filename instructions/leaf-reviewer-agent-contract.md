@@ -77,14 +77,13 @@ remove permission capability.
 
 ## Evidence Rules
 
-- Source, tests, schemas, scripts, generated artifacts, and live output are stronger evidence than docs/comments/user claims.
-- Docs-only claims must be labeled `docs-only`.
-- Assumptions must be labeled `assumption`.
-- If evidence is incomplete, lower confidence and say exactly what is missing.
-- Findings should separate the observed symptom from the likely root cause. Use `unknown` when evidence cannot support a cause, and recommend investigation or instrumentation instead of a guessed fix.
-- When implementation changes are in scope, report missing original-requirement evidence, observable happy-path proof, independent testing-subagent evidence, realistic risk matrix, mock exceptions, or final negative/end-to-end validation; do not infer chronology when evidence is unavailable.
-- When repeated evidence gathering is the bottleneck, you may recommend deterministic helper automation as a non-authorizing `Follow-up Candidate`, but reviewer agents do not write it and the recommendation never authorizes current-candidate work.
-- Recommended helper automation must have explicit inputs/outputs, fixtures or schemas, stable ordering, privacy-safe output, and no hidden heuristics; do not recommend fuzzy scoring or model-like summarization as evidence.
+- Source, tests, schemas, scripts, generated artifacts, and live output beat docs/comments/user claims.
+- Label docs-only claims `docs-only` and assumptions `assumption`. Incomplete evidence → lower confidence and name the gap.
+- Separate symptom from likely root cause; use `unknown` when cause is unproven.
+- Distinguish reachability inside the accepted enforced operating envelope from future-scope validity. Pilot-Ready blocking requires reachable current-outcome/safety-floor/invariant/accepted-risk/trusted-validation impact. Evidence-format polish alone is non-blocking when semantic evidence remains trustworthy.
+- Finding `Recommendation`: remove, narrow, reuse, local guard, then deferral before larger mechanisms. No separate action-authoring field.
+- For implementation changes, report missing original requirements, happy-path proof, independent testing-subagent evidence, risk matrix, mock exceptions, or final validation when relevant.
+- Deterministic helper automation may be a non-authorizing `Follow-up Candidate` only; reviewers do not write it. Helpers need explicit I/O, schemas/fixtures, stable ordering, privacy-safe output, no fuzzy scoring.
 
 ## Severity Scale
 

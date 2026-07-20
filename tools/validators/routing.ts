@@ -13,14 +13,19 @@ import {
   CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS,
   CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
   CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
+  CHANGE_READY_SDLC_PILOT_READY_MARKERS,
   CHANGE_READY_SDLC_SKILL_RELATIVE_PATH,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
   GLOBAL_AGENTS_CLOSED_WORLD_MARKERS,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
+  GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
   LIFECYCLE_ROLE_ROUTES,
   MAINTENANCE_ROUTING_FILES,
+  OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
+  OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
+  OUTCOME_FIRST_ROLE_DELTA_SURFACES,
 } from "../contracts/skills.ts";
 import {
   CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS,
@@ -42,6 +47,7 @@ import {
   toPosixPath,
   walkMarkdownFiles,
 } from "./context.ts";
+import { operativeTextOutsideFences } from "./active-authority.ts";
 
 const GLOBAL_AGENTS_RELATIVE = "global/AGENTS.md";
 
@@ -81,6 +87,53 @@ function validateGlobalAgentsTriggerTopology(
   }
   for (const token of GLOBAL_AGENTS_CLOSED_WORLD_MARKERS) {
     requireTextContains(ctx, text, token, "global AGENTS closed-world scope firewall", file);
+  }
+  // Outcome-first / Pilot markers must be operative (outside fenced examples).
+  const operative = operativeTextOutsideFences(text);
+  for (const token of GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS) {
+    requireTextContains(
+      ctx,
+      operative,
+      token,
+      "global AGENTS outcome-first and Pilot-Ready policy",
+      file,
+    );
+  }
+}
+
+function validateOutcomeFirstPilotReadyAuthority(ctx: ValidationContext, root: string): void {
+  const skillFile = path.join(root, ...CHANGE_READY_SDLC_SKILL_RELATIVE_PATH.split("/"));
+  if (fileExists(skillFile)) {
+    const skillOperative = operativeTextOutsideFences(readText(skillFile));
+    for (const token of CHANGE_READY_SDLC_PILOT_READY_MARKERS) {
+      requireTextContains(
+        ctx,
+        skillOperative,
+        token,
+        "change-ready-sdlc Pilot-Ready qualification policy",
+        skillFile,
+      );
+    }
+  }
+
+  for (const relative of OUTCOME_FIRST_ROLE_DELTA_SURFACES) {
+    const file = path.join(root, relative);
+    if (!fileExists(file)) {
+      continue;
+    }
+    const text = readText(file);
+    const operative = operativeTextOutsideFences(text);
+    let completePolicyHits = 0;
+    for (const marker of OUTCOME_FIRST_COMPLETE_POLICY_MARKERS) {
+      if (operative.includes(marker)) {
+        completePolicyHits += 1;
+      }
+    }
+    if (completePolicyHits >= OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD) {
+      ctx.addError(
+        `outcome-first complete policy duplication: ${relative} contains ${completePolicyHits} canonical policy markers (threshold >=${OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD}); keep role-specific deltas only`,
+      );
+    }
   }
 }
 
@@ -211,6 +264,7 @@ export function validateImplementationWorkerRouting(
   if (fileExists(canonicalSkill)) {
     validateGlobalAgentsTriggerTopology(ctx, root);
     validateClosedWorldScopeFirewall(ctx, root);
+    validateOutcomeFirstPilotReadyAuthority(ctx, root);
     validateDuplicateLifecycleMarkers(ctx, root);
     validateForbiddenProductionRouting(ctx, root);
   }

@@ -76,6 +76,10 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
       "Final Validation",
       "Handoff",
       "Process Improvement",
+      "Pilot-Ready",
+      "Ordinary Small | Material",
+      "technically enforced operating envelope",
+      "remove/narrow/reuse/local guard",
     ]) {
       requireTextContains(ctx, text, required, "Universal Development Loop", universalLoop);
     }
@@ -96,6 +100,20 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
       projectTemplateText,
       "Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested",
       "project AGENTS.md remote/destructive guard",
+      projectTemplate,
+    );
+    requireTextContains(
+      ctx,
+      projectTemplateText,
+      "Pilot-Ready: yes | no | not requested",
+      "project AGENTS.md Pilot-Ready disposition",
+      projectTemplate,
+    );
+    requireTextContains(
+      ctx,
+      projectTemplateText,
+      "neither Pilot-Ready nor Change-Ready authorizes external operations",
+      "project AGENTS.md readiness non-authorization",
       projectTemplate,
     );
   }
@@ -151,6 +169,19 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
       requireTextContains(ctx, readme, `## ${heading}`, "README opencode-dev-kit quickstart", readmePath);
     }
     requireTextContains(ctx, readme, "opencode-dev-kit", "README product framing", readmePath);
+    // Leaf reviewer output field must stay synchronized with current contracts.
+    if (readme.includes("Actionable Continuation Items")) {
+      ctx.addError(
+        `README must not prescribe superseded field 'Actionable Continuation Items' (use non-authorizing 'Follow-up Candidates'): ${readmePath}`,
+      );
+    }
+    requireTextContains(
+      ctx,
+      readme,
+      "Follow-up Candidates",
+      "README leaf-reviewer Follow-up Candidates field",
+      readmePath,
+    );
   }
 
   const scripts = readPackageScripts(ctx, root);

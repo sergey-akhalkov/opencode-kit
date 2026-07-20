@@ -41,6 +41,23 @@ export function fencedCodeLineMask(lines: readonly string[]): boolean[] {
   return mask;
 }
 
+/**
+ * Deterministic operative text: all lines outside closed and unclosed fenced code
+ * examples (fence delimiters excluded). Uses the same CommonMark fence mask as
+ * heading/section parsing. No semantic classification.
+ */
+export function operativeTextOutsideFences(text: string): string {
+  const lines = text.split(/\r?\n/);
+  const fenced = fencedCodeLineMask(lines);
+  const operative: string[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    if (!fenced[i]) {
+      operative.push(lines[i]!);
+    }
+  }
+  return operative.join("\n");
+}
+
 function tryOpenFence(line: string): { marker: "`" | "~"; length: number } | null {
   const match = /^( {0,3})(`{3,}|~{3,})(.*)$/.exec(line);
   if (match == null) {
@@ -208,6 +225,39 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (!routing.includes("one correction wave")) {
     return "AGENTS.md Change-Ready SDLC Routing section missing finite one-correction-wave marker";
   }
+  // Outcome-first / Pilot-Ready may live outside the routing H2; check operative text only
+  // (closed and unclosed fenced examples cannot satisfy authority markers).
+  const operative = operativeTextOutsideFences(text);
+  if (!operative.includes("Pilot-Ready: yes | no | not requested")) {
+    return "AGENTS.md missing exact Pilot-Ready disposition token";
+  }
+  if (!operative.includes("technically enforced operating envelope")) {
+    return "AGENTS.md missing technically enforced operating envelope marker";
+  }
+  if (!operative.includes("Neither disposition authorizes")) {
+    return "AGENTS.md missing neither-disposition-authorizes external-operation safety marker";
+  }
+  if (!operative.includes("Ordinary Small | Material")) {
+    return "AGENTS.md missing exact Ordinary Small | Material profile pair";
+  }
+  if (!operative.includes("bounded outcome and non-goals")) {
+    return "AGENTS.md missing Pilot safety-floor bounded outcome and non-goals marker";
+  }
+  if (!operative.includes("real-boundary happy-path proof")) {
+    return "AGENTS.md missing Pilot safety-floor real-boundary happy-path proof marker";
+  }
+  if (!operative.includes("focused project-native validation")) {
+    return "AGENTS.md missing Pilot safety-floor focused project-native validation marker";
+  }
+  if (!operative.includes("critical safety/data/authorization")) {
+    return "AGENTS.md missing Pilot safety-floor critical safety/data/authorization marker";
+  }
+  if (!operative.includes("failure visibility")) {
+    return "AGENTS.md missing Pilot safety-floor failure visibility marker";
+  }
+  if (!operative.includes("disable/rollback/containment")) {
+    return "AGENTS.md missing Pilot safety-floor disable/rollback/containment marker";
+  }
   if (!hasExactH2(text, "Universal Task Briefing Contract")) {
     return "AGENTS.md missing exact heading ## Universal Task Briefing Contract";
   }
@@ -274,6 +324,10 @@ const SKILL_ORDERED_HEADINGS: SkillHeadingMarker[] = [
   {
     label: "Change-Ready Decision",
     test: (line) => /^###\s+\d+\.\s+Change-Ready Decision\s*$/.test(line),
+  },
+  {
+    label: "Pilot-Ready Decision",
+    test: (line) => /^###\s+\d+\.\s+Pilot-Ready Decision\s*$/.test(line),
   },
   {
     label: "Handoff And Delivery (Compact orchestration output)",
@@ -414,8 +468,23 @@ export function skillAuthorityProblem(text: string): string | null {
   if (!body.includes(SKILL_FINAL_VERDICT_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing final-review rejected verdict enum";
   }
-  // Triggers may live in description and/or body; require complete named Material classes.
-  const triggerSurface = `${map.description}\n${body}`;
+  // Qualification Pilot markers must appear in operative body text, not only inside fenced examples.
+  // Complete floor enumeration is owned only by always-loaded global AGENTS; skill binds by reference.
+  const operativeBody = operativeTextOutsideFences(body);
+  if (!operativeBody.includes("Pilot-Ready: yes | no | not requested")) {
+    return "skills/change-ready-sdlc/SKILL.md missing exact Pilot-Ready disposition token";
+  }
+  if (!operativeBody.includes("not a third lifecycle profile")) {
+    return "skills/change-ready-sdlc/SKILL.md missing no-third-profile Pilot-Ready boundary";
+  }
+  if (!operativeBody.includes("complete Pilot safety floor is authoritative only in always-loaded global")) {
+    return "skills/change-ready-sdlc/SKILL.md missing complete Pilot safety-floor authority reference to always-loaded global AGENTS";
+  }
+  if (!operativeBody.includes("Neither disposition authorizes")) {
+    return "skills/change-ready-sdlc/SKILL.md missing neither-disposition-authorizes external-operation safety marker";
+  }
+  // Triggers may live in description and/or operative body; require complete named Material classes.
+  const triggerSurface = `${map.description}\n${operativeBody}`;
   for (const risk of SHARED_MATERIAL_RISK_MARKERS) {
     if (!triggerSurface.includes(risk.marker)) {
       return `skills/change-ready-sdlc/SKILL.md missing named Material risk class: ${risk.label}`;

@@ -39,13 +39,13 @@ You are a read-only architecture and OpenSpec reviewer. Find design/spec defects
 
 ## Checks
 
-- Scope and non-goals are explicit.
-- State, request, response, session, resource, retry, and cancellation ownership are clear.
-- Concurrency model is testable.
-- Failure model covers dependency failure, partial IO, timeout, overload, shutdown, restart, and stale state where relevant.
+- Scope and non-goals are explicit for the next working increment; unreachable future design is non-blocking residual.
+- State, request, response, session, resource, retry, and cancellation ownership are clear when reachable in the accepted envelope.
+- Concurrency model is testable under the enforced envelope; future multi-worker scale is residual unless currently reachable.
+- Failure model covers dependency failure, partial IO, timeout, overload, shutdown, restart, and stale state where relevant and currently reachable.
 - API/protocol/config/deployment boundaries are consistent across docs/specs/tasks.
 - Traceability links requirements to tasks/tests.
-- Behavior-changing requirements define the observable happy path; tasks implement and prove it before separate fresh-context testing work authors acceptance, negative, and end-to-end evidence.
+- Behavior-changing requirements define the observable happy path; tasks implement and prove it first. Material/explicit qualification then requires separate fresh-context SDET/testing for acceptance, negative, and end-to-end evidence. Ordinary Small uses focused validation and optional smallest post-proof regression; do not treat qualification SDET as mandatory for Ordinary Small.
 - Diagrams and prose do not contradict normative specs.
 
 ## Output

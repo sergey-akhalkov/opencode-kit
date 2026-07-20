@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
-import { FORBIDDEN_PRODUCTION_ROUTING_PATTERNS } from "../contracts/skills.ts";
+import {
+  CHANGE_READY_SDLC_PILOT_READY_MARKERS,
+  FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
+  GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
+  OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
+  OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
+} from "../contracts/skills.ts";
 import {
   CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS,
   CLOSED_WORLD_SCOPE_MARKERS,
@@ -9,6 +15,7 @@ import {
   addQwenLocalWorkerFixture,
   addRegisteredReviewerFixture,
   appendReadmeAgentCatalogEntry,
+  assert,
   assertEqual,
   assertFailure,
   assertOutputContains,
@@ -26,6 +33,11 @@ import {
 const root = libraryRoot;
 
 const materialDeliveryRoutingText = "For Material work, always run the discovered conforming delivery/readiness gate with current requirements and evidence; missing conforming capability blocks. Material Change-Ready requires an explicitly accepted conforming delivery result. Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.";
+const operativeFenceCases = [
+  { label: "closed-backtick", block: (body: string) => ["```markdown", body, "```", ""].join("\n") },
+  { label: "closed-tilde", block: (body: string) => ["~~~ markdown", body, "~~~", ""].join("\n") },
+  { label: "unclosed-backtick", block: (body: string) => ["```markdown", body, ""].join("\n") },
+] as const;
 
 function addChangeReadySdlcFixture(fixture: string): void {
   writeText(path.join(fixture, "global", "AGENTS.md"), fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8"));
@@ -179,6 +191,198 @@ export const changeReadyValidatorTests: TestCase[] = [
       assertSuccess(invokeValidator(fixture), "Complete Change-Ready SDLC topology fixture should pass validation.");
     },
   },
+  ...([
+    "technically enforced operating envelope",
+    "prose-only",
+    "remove, narrow, reuse, local guard, then deferral",
+    "material residual-risk bundle",
+    "cannot waive uncontrolled authorization",
+    "Neither disposition authorizes",
+    "bounded outcome and non-goals",
+    "real-boundary happy-path proof",
+    "focused project-native validation",
+    "critical safety/data/authorization",
+    "failure visibility",
+    "disable/rollback/containment",
+    "`Non-Deferrable Invariants`",
+    "Pilot-Ready: yes | no | not requested",
+  ] as const).map((marker): TestCase => ({
+    name: `validator rejects missing global outcome-first marker: ${marker}`,
+    run: () => {
+      assert((GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS as readonly string[]).includes(marker), `Negative fixture marker is not configured for global AGENTS: ${marker}`);
+      const fixture = newLibraryFixture(`outcome-first-global-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "AGENTS.md");
+      const file = path.join(fixture, relative);
+      replaceRequiredText(file, marker, "[removed-outcome-first-marker]");
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Missing global outcome-first marker must fail validation: ${marker}`);
+      assertOutputContains(result, "global AGENTS outcome-first and Pilot-Ready policy", "Diagnostic must name the global outcome-first contract.");
+      assertOutputContains(result, marker, "Diagnostic must name the missing outcome-first marker.");
+      assertOutputContains(result, relative, "Diagnostic must identify global/AGENTS.md.");
+    },
+  })),
+  ...([
+    "not a third lifecycle profile",
+    "complete Pilot safety floor is authoritative only in always-loaded global",
+    "Neither disposition authorizes",
+    "does not automatically erase independently proven Pilot-Ready",
+    "does not undermine candidate identity/scope, proof, containment, safety floor, validation, or material-risk acceptance",
+  ] as const).map((marker): TestCase => ({
+    name: `validator rejects missing canonical Pilot-Ready marker: ${marker}`,
+    run: () => {
+      assert((CHANGE_READY_SDLC_PILOT_READY_MARKERS as readonly string[]).includes(marker), `Negative fixture marker is not configured for the canonical skill: ${marker}`);
+      const fixture = newLibraryFixture(`pilot-ready-skill-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "skills", "change-ready-sdlc", "SKILL.md");
+      const file = path.join(fixture, relative);
+      replaceRequiredText(file, marker, "[removed-pilot-ready-marker]");
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Missing canonical Pilot-Ready marker must fail validation: ${marker}`);
+      assertOutputContains(result, "change-ready-sdlc Pilot-Ready qualification policy", "Diagnostic must name the canonical Pilot-Ready contract.");
+      assertOutputContains(result, marker, "Diagnostic must name the missing canonical marker.");
+      assertOutputContains(result, relative, "Diagnostic must identify the canonical skill.");
+    },
+  })),
+  {
+    name: "validator requires global and skill Pilot markers outside closed and unclosed fences",
+    run: () => {
+      const surfaces = [
+        {
+          label: "global-floor",
+          relative: path.join("global", "AGENTS.md"),
+          marker: "bounded outcome and non-goals",
+          contract: "global AGENTS outcome-first and Pilot-Ready policy",
+        },
+        {
+          label: "skill-pilot",
+          relative: path.join("global", "skills", "change-ready-sdlc", "SKILL.md"),
+          marker: "does not automatically erase independently proven Pilot-Ready",
+          contract: "change-ready-sdlc Pilot-Ready qualification policy",
+        },
+      ] as const;
+
+      for (const fence of operativeFenceCases) {
+        const positiveFixture = newLibraryFixture(`operative-pilot-positive-${fence.label}`);
+        addChangeReadySdlcFixture(positiveFixture);
+        for (const surface of surfaces) {
+          const file = path.join(positiveFixture, surface.relative);
+          writeText(file, `${fs.readFileSync(file, "utf8")}\n${fence.block(surface.marker)}`);
+        }
+        assertSuccess(invokeValidator(positiveFixture), `${fence.label} examples must not corrupt operative Pilot markers outside fences.`);
+
+        for (const surface of surfaces) {
+          const fixture = newLibraryFixture(`operative-pilot-${fence.label}-${surface.label}`);
+          addChangeReadySdlcFixture(fixture);
+          const file = path.join(fixture, surface.relative);
+          replaceRequiredText(file, surface.marker, `[removed-${surface.label}-operative-marker]`);
+          writeText(file, `${fs.readFileSync(file, "utf8")}\n${fence.block(surface.marker)}`);
+          const result = invokeValidator(fixture);
+          assertFailure(result, `${fence.label} fenced-only ${surface.label} marker must fail operative validation.`);
+          assertOutputContains(
+            result,
+            `${surface.contract} must include '${surface.marker}'`,
+            `${fence.label} diagnostic must name the exact missing operative marker.`,
+          );
+          assertOutputContains(result, surface.relative, `${fence.label} diagnostic must identify the affected authority path.`);
+        }
+      }
+    },
+  },
+  {
+    name: "validator permits role and planning deltas below the complete-policy threshold and rejects a complete policy copy",
+    run: () => {
+      for (const [surface, relative] of [
+        ["role", "global/agents/implementation-worker.md"],
+        ["planning", "global/skills/deep-task-planning/SKILL.md"],
+      ] as const) {
+        const fixture = newLibraryFixture(`outcome-first-${surface}-policy-duplication`);
+        addChangeReadySdlcFixture(fixture);
+        const file = path.join(fixture, ...relative.split("/"));
+        if (!fs.existsSync(file)) {
+          writeText(file, fs.readFileSync(path.join(root, ...relative.split("/")), "utf8"));
+          const profilePath = path.join(fixture, "profiles", "all.json");
+          const profile = JSON.parse(fs.readFileSync(profilePath, "utf8")) as { skills: string[] };
+          profile.skills.push("deep-task-planning");
+          writeText(profilePath, `${JSON.stringify(profile, null, 2)}\n`);
+          replaceRequiredText(
+            path.join(fixture, "README.md"),
+            "- `demo-skill`: Demo skill.",
+            "- `deep-task-planning`: Planning-surface duplication fixture.\n- `demo-skill`: Demo skill.",
+          );
+        }
+        let text = fs.readFileSync(file, "utf8");
+        const countHits = (value: string) => OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.filter((marker) => value.includes(marker)).length;
+        const missing = OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.filter((marker) => !text.includes(marker));
+        const initialHits = countHits(text);
+        assert(initialHits < OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD, `${surface} fixture must begin below the role/planning delta duplicate threshold.`);
+        const belowThresholdAdditions = OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD - 1 - initialHits;
+        assert(missing.length > belowThresholdAdditions, `${surface} fixture must have enough absent policy markers to cross the duplicate threshold deterministically.`);
+        text = `${text}\n${missing.slice(0, belowThresholdAdditions).join("\n")}\n`;
+        writeText(file, text);
+        assertEqual(countHits(text), OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD - 1, `${surface} delta fixture must exercise the exact below-threshold boundary.`);
+        assertSuccess(invokeValidator(fixture), `A ${surface}-specific delta below the complete-policy threshold should pass validation.`);
+
+        writeText(file, `${text}${missing[belowThresholdAdditions]}\n`);
+        const result = invokeValidator(fixture);
+        assertFailure(result, `A ${surface} surface reaching the complete-policy threshold must fail validation.`);
+        assertOutputContains(result, "outcome-first complete policy duplication", "Diagnostic must name complete-policy duplication.");
+        assertOutputContains(result, `threshold >=${OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD}`, "Diagnostic must state the exact duplicate threshold.");
+        assertOutputContains(result, relative, `Diagnostic must identify the offending ${surface} surface.`);
+      }
+    },
+  },
+  {
+    name: "validator ignores complete-policy duplicate markers inside closed and unclosed role examples",
+    run: () => {
+      for (const fence of operativeFenceCases) {
+        const fixture = newLibraryFixture(`outcome-first-role-fenced-${fence.label}`);
+        addChangeReadySdlcFixture(fixture);
+        const relative = "global/agents/implementation-worker.md";
+        const file = path.join(fixture, ...relative.split("/"));
+        writeText(
+          file,
+          `${fs.readFileSync(file, "utf8")}\n${fence.block(OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.join("\n"))}`,
+        );
+        assertSuccess(invokeValidator(fixture), `${fence.label} role example must not count toward complete-policy duplication.`);
+      }
+    },
+  },
+  {
+    name: "validator does not classify arbitrary natural-language risk narratives",
+    run: () => {
+      const fixture = newLibraryFixture("outcome-first-no-fuzzy-risk-classifier");
+      addChangeReadySdlcFixture(fixture);
+      const reviewer = path.join(fixture, "global", "agents", "demo-reviewer.md");
+      writeText(reviewer, `${fs.readFileSync(reviewer, "utf8")}\nA narrative finding says a risk may be reachable, severe, material, user-accepted, and contained.\n`);
+      assertSuccess(invokeValidator(fixture), "Deterministic validation must not infer reachability, severity, materiality, containment, or acceptance from arbitrary prose.");
+    },
+  },
+  {
+    name: "validator rejects missing next-increment marker on the Universal Development Loop boundary",
+    run: () => {
+      const fixture = newLibraryFixture("outcome-first-udl-missing-envelope");
+      const relative = path.join("instructions", "universal-development-loop.md");
+      replaceRequiredText(path.join(fixture, relative), "technically enforced operating envelope", "documented operating envelope");
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Universal Development Loop without an enforced-envelope marker must fail validation.");
+      assertOutputContains(result, "Universal Development Loop", "Diagnostic must name the Universal Development Loop contract.");
+      assertOutputContains(result, "technically enforced operating envelope", "Diagnostic must name the missing envelope marker.");
+      assertOutputContains(result, relative, "Diagnostic must identify the UDL surface.");
+    },
+  },
+  {
+    name: "validator rejects project template missing readiness non-authorization",
+    run: () => {
+      const fixture = newLibraryFixture("outcome-first-template-missing-non-authorization");
+      const relative = path.join("templates", "project", "AGENTS.md");
+      replaceRequiredText(path.join(fixture, relative), "neither Pilot-Ready nor Change-Ready authorizes external operations", "readiness is reported separately");
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Project template without readiness non-authorization must fail validation.");
+      assertOutputContains(result, "project AGENTS.md readiness non-authorization", "Diagnostic must name the readiness non-authorization contract.");
+      assertOutputContains(result, relative, "Diagnostic must identify the project template.");
+    },
+  },
   {
     name: "validator keeps qwen-local-worker outside the registered-reviewer evidence-only output contract",
     run: () => {
@@ -190,6 +394,28 @@ export const changeReadyValidatorTests: TestCase[] = [
         throw new Error("qwen-local-worker fixture must exercise its existing non-registered continuation field.");
       }
       assertSuccess(invokeValidator(fixture), "Closed-world validation must not apply registered-reviewer output fields to qwen-local-worker.");
+    },
+  },
+  {
+    name: "validator accepts current README reviewer field and rejects the stale action-list field",
+    run: () => {
+      const currentFixture = newLibraryFixture("readme-current-reviewer-field");
+      const currentReadme = fs.readFileSync(path.join(currentFixture, "README.md"), "utf8");
+      assert(currentReadme.includes("Follow-up Candidates"), "Current README fixture must expose Follow-up Candidates.");
+      assert(!currentReadme.includes("Actionable Continuation Items"), "Current README fixture must not expose the stale reviewer field.");
+      assertSuccess(invokeValidator(currentFixture), "README with Follow-up Candidates and no stale field should pass validation.");
+
+      const staleFixture = newLibraryFixture("readme-stale-reviewer-field");
+      const staleReadmePath = path.join(staleFixture, "README.md");
+      writeText(staleReadmePath, `${fs.readFileSync(staleReadmePath, "utf8")}\nActionable Continuation Items\n`);
+      const result = invokeValidator(staleFixture);
+      assertFailure(result, "README with Actionable Continuation Items must fail validation.");
+      assertOutputContains(
+        result,
+        "README must not prescribe superseded field 'Actionable Continuation Items' (use non-authorizing 'Follow-up Candidates')",
+        "README diagnostic must identify the stale/current field contract.",
+      );
+      assertOutputContains(result, "README.md", "README stale-field diagnostic must identify README.md.");
     },
   },
   ...([

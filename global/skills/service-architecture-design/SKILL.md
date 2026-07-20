@@ -6,11 +6,11 @@ license: MIT
 
 # Service Architecture Design
 
-Use this skill when shaping service architecture, design docs, specs, or implementation plans before coding.
+Use this skill when shaping service architecture, design docs, specs, or implementation plans before coding. Resolve only next-increment outcome, enforced operating envelope, non-deferrable invariants, proof, or material residual risk. Unreachable future-scale design is residual.
 
 ## Design Areas
 
-- System boundary and non-goals.
+- System boundary, operating envelope, and non-goals for the next increment.
 - Ownership of state, requests, responses, resources, sessions, and retries.
 - Concurrency model: actors, workers, queues, locks, async boundaries, cancellation, shutdown.
 - Failure model: dependency failure, partial IO, timeout, overload, stale state, crash, restart.
@@ -18,7 +18,7 @@ Use this skill when shaping service architecture, design docs, specs, or impleme
 - Deployment model: service/process split, config, secrets, logging, diagnostics, upgrades.
 - Observability: metrics, tracing, logs, health, readiness, auditability.
 - Testability: fake dependencies, integration tests, load tests, manual gates.
-- Implementation slices should define the contract and observable happy path, implement and prove that path, then use a separate fresh-context testing subagent to author acceptance, negative, recovery, and characterization evidence from the architecture risk matrix.
+- Implementation slices define the contract and observable happy path, implement and prove that path, then apply focused validation. Material/explicit qualification then uses a separate fresh-context SDET/testing subagent for acceptance, negative, recovery, and characterization evidence from the architecture risk matrix. Ordinary Small may add only the smallest optional post-proof regression test.
 
 ## Output
 

@@ -20,7 +20,7 @@ For broad audits that include multiple skills/agents, global config, installed c
 - Evidence discipline: docs and user claims are hypotheses until checked against source, tests, schemas, or live output.
 - Root-cause discipline: audits, reviewer findings, and follow-up artifacts separate symptoms from likely root causes, and recommendations explain how recurrence is prevented or reduced.
 - Verification: the artifact names concrete checks, commands, reviewer gates, or eval criteria where possible.
-- Risk-driven test discipline: implementation-capable artifacts require observable happy-path proof before systematic test design, followed by independent fresh-context test authoring against realistic production risks and real boundaries.
+- Risk-driven test discipline: implementation-capable artifacts require observable happy-path proof before systematic test design. Material/explicit qualification then requires independent fresh-context test authoring against realistic production risks and real boundaries. Ordinary Small uses focused validation and optional smallest post-proof regression.
 - Tool safety: edit/read-only boundaries, destructive-operation policy, remote-state policy, and permissions are explicit.
 - Context efficiency: remove repeated boilerplate, stale examples, source dumps, and project-specific details that should be local.
 - AI usability: critical routing, permissions, blockers, and output schema are near the top and easy to retrieve.

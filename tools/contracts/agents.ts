@@ -106,4 +106,7 @@ export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "validation provenance only",
   "directly readable",
   "FINAL_CANDIDATE_REVIEW_REPORT",
+  "Keep Change-Ready and Pilot-Ready evidence separate",
+  "does not automatically erase independently proven Pilot-Ready",
+  "remove, narrow, reuse, local guard",
 ];

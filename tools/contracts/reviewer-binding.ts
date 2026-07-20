@@ -78,6 +78,9 @@ export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
   "Verdict: not enough evidence",
   "must not coexist with `Blocking for Acceptance: no`",
   "terminal for the current attempt",
+  "Pilot-Ready: yes|no|not requested",
+  "not a third profile",
+  "does not authorize external operations",
 ];
 
 export const SESSION_DELIVERY_BINDING_CONTRACT: TextContract = {

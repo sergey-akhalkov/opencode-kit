@@ -29,8 +29,9 @@ For a new broad task that is not yet tied to existing OpenSpec work, do not infe
 - Include lightweight follow-up changes whose primary artifact is `tasks.md`, especially changes created from audits, retros, reviewer gates, or validation failure triage.
 - Group items into independent workstreams, not low-level task lists. Each workstream should have a clear outcome, bounded scope, readiness state, and likely validation evidence.
 - Keep the user-facing discovery summary high-level. Do not include detailed file-by-file plans, worker prompts, implementation steps, or test matrices until parallel coordination is approved.
-- Prefer steps that reduce uncertainty, unblock implementation, or produce a reviewable slice.
-- Avoid speculative polish and unrelated cleanup.
+- Prefer steps that reduce uncertainty, unblock the next useful working increment inside an enforced envelope, or produce a reviewable slice.
+- Avoid speculative polish, unreachable future design, and unrelated cleanup.
+
 
 ## Multi-Workstream Decision Gate
 
@@ -62,7 +63,7 @@ After approval when required, or after the safe autonomous decision gate passes:
 - Each planning worker should load/use `deep-task-planning` before doing planning work. If the worker cannot load that skill because the tool is unavailable, the worker uses the planning contract from the prompt, reports `Planning Skill: deep-task-planning unavailable; fallback contract used`, and lowers confidence instead of blocking solely on the missing skill.
 - Each planning worker receives one high-level workstream, exact OpenSpec artifacts to inspect, write scope `none`, expected planning evidence, relevant OpenSpec skill rules, and an explicit instruction to report `Planning Skill: deep-task-planning loaded` in its final report.
 - Synthesize planning reports into bounded implementation/review/test workers with non-overlapping write scopes and focused validation.
-- Assign each implementation worker an explicit `production` or `testing` role. Production workers implement and prove the happy path without editing test artifacts; testing workers start in fresh sessions, use test-only write scopes, and independently cover realistic negative/end-to-end risks.
+- Assign each implementation worker an explicit `production` or `testing` role. Production workers implement and prove the happy path without editing test artifacts. Fresh-context testing/SDET workers (test-only write scopes, independent negative/end-to-end risks) are required for Material/explicit qualification after proof; Ordinary Small reuses focused validation and may add only the smallest optional post-proof regression test.
 - Continue through execution, integration, focused validation, final validation, relevant read-only reviewer gates including `code-quality-reviewer` for non-trivial code changes, cleanup, and final user-facing status.
 - The master session owns task tracking, integration decisions, validation, reviewer gates, residual risks, and final synthesis.
 - Workers must not ask the user questions, launch nested parallel coordination, commit, push, merge, delete worktrees, or edit outside assigned scope.

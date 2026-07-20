@@ -7,14 +7,19 @@ import {
   CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
   CHANGE_READY_SDLC_FORBIDDEN_TOKENS,
   CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
+  CHANGE_READY_SDLC_PILOT_READY_MARKERS,
   CHANGE_READY_SDLC_SKILL_NAME,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
   GLOBAL_AGENTS_CLOSED_WORLD_MARKERS,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
+  GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
   LIFECYCLE_ROLE_ROUTES,
   MAINTENANCE_ROUTING_FILES,
+  OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
+  OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
+  OUTCOME_FIRST_ROLE_DELTA_SURFACES,
 } from "./contracts/skills.ts";
 import {
   ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES,
@@ -43,6 +48,7 @@ import {
   sectionBetween,
   type TestCase,
 } from "./test-helpers/library.ts";
+import { operativeTextOutsideFences } from "./validators/active-authority.ts";
 
 const root = libraryRoot;
 
@@ -119,6 +125,9 @@ const EXPECTED_FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT = [
   "validation provenance only",
   "directly readable",
   "FINAL_CANDIDATE_REVIEW_REPORT",
+  "Keep Change-Ready and Pilot-Ready evidence separate",
+  "does not automatically erase independently proven Pilot-Ready",
+  "remove, narrow, reuse, local guard",
 ];
 
 const EXPECTED_CHANGE_READY_SDLC_LIFECYCLE_MARKERS = [
@@ -339,6 +348,98 @@ const EXPECTED_FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
     needle: "Evidence tooling must not become a second product; it MAY be added only when a mandatory gate cannot be reproduced without it",
     diagnostic: "superseded persistent evidence-tool exception on production-routing surface",
   },
+  {
+    needle: "as detailed and unambiguous as possible",
+    diagnostic: "superseded maximal OpenSpec pre-resolution wording",
+  },
+  {
+    needle: "Pre-resolve every decision the implementer would otherwise have to make",
+    diagnostic: "superseded maximal OpenSpec pre-resolve-every-decision wording",
+  },
+  {
+    needle: "Pilot-Ready: yes` authorizes deployment",
+    diagnostic: "Pilot-Ready must not authorize deployment",
+  },
+  {
+    needle: "Pilot-Ready: yes authorizes deployment",
+    diagnostic: "Pilot-Ready must not authorize deployment",
+  },
+  {
+    needle: "Profile: Ordinary Small | Material | Pilot",
+    diagnostic: "Pilot must not appear as a third lifecycle profile",
+  },
+  {
+    needle: "add a third lifecycle profile",
+    diagnostic: "third lifecycle profile is forbidden; profiles remain Ordinary Small | Material",
+  },
+  {
+    needle: "evidence-format polish alone blocks Pilot-Ready",
+    diagnostic: "evidence-format polish must not be an unconditional Pilot-Ready blocker",
+  },
+];
+
+const EXPECTED_GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS = [
+  "technically enforced operating envelope",
+  "Pilot-Ready: yes | no | not requested",
+  "Ordinary Small | Material",
+  "prose-only",
+  "not containment",
+  "remove unnecessary capability",
+  "narrow users/data/interfaces",
+  "reuse an existing platform/project mechanism",
+  "local guard",
+  "Neither disposition authorizes",
+  "material residual-risk bundle",
+  "cannot waive uncontrolled authorization",
+  "bounded outcome and non-goals",
+  "real-boundary happy-path proof",
+  "focused project-native validation",
+  "critical safety/data/authorization",
+  "failure visibility",
+  "disable/rollback/containment",
+  "`Outcome`",
+  "`Operating Envelope`",
+  "`Non-Goals`",
+  "`Non-Deferrable Invariants`",
+  "`Observable Proof`",
+  "`Material Residual Risks`",
+  "`Stop Line`",
+  "remove, narrow, reuse, local guard, then deferral",
+];
+
+const EXPECTED_CHANGE_READY_SDLC_PILOT_READY_MARKERS = [
+  "Pilot-Ready Decision",
+  "Pilot-Ready: yes | no | not requested",
+  "not a third lifecycle profile",
+  "Ordinary Small | Material",
+  "complete Pilot safety floor is authoritative only in always-loaded global",
+  "Neither disposition authorizes",
+  "does not automatically erase independently proven Pilot-Ready",
+  "does not undermine candidate identity/scope, proof, containment, safety floor, validation, or material-risk acceptance",
+];
+
+const EXPECTED_OUTCOME_FIRST_ROLE_DELTA_SURFACES = [
+  "global/agents/implementation-worker.md",
+  "global/agents/sdet-quality-engineer.md",
+  "global/agents/implementation-readiness-reviewer.md",
+  "global/agents/openspec-architecture-reviewer.md",
+  "global/agents/final-candidate-reviewer.md",
+  "global/agents/session-delivery-reviewer.md",
+  "global/skills/deep-task-planning/SKILL.md",
+  "global/skills/next-step/SKILL.md",
+  "global/skills/service-architecture-design/SKILL.md",
+  "global/skills/openspec-consistency-review/SKILL.md",
+];
+
+const EXPECTED_OUTCOME_FIRST_COMPLETE_POLICY_MARKERS = [
+  "cannot waive uncontrolled authorization",
+  "material residual-risk bundle",
+  "Neither disposition authorizes",
+  "prose-only limits are not containment",
+  "Pilot-Ready Decision",
+  "`Non-Deferrable Invariants`",
+  "remove unnecessary capability",
+  "not a third lifecycle profile",
 ];
 
 const EXPECTED_REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS = [
@@ -455,9 +556,310 @@ const EXPECTED_GLOBAL_AGENTS_CLOSED_WORLD_MARKERS = [
   "approved | approved_with_notes | rejected | blocked",
 ];
 
+type FreshTestingSurfaceClass = "profile-conditioned" | "exact-trigger-material" | "role-ownership";
+
+type ProfileRouteRules = {
+  ordinaryMarkers: readonly string[];
+  routeLineMarkers?: readonly string[];
+  qualificationLineMarkers?: readonly string[];
+  qualificationArtifactMarkers?: readonly string[];
+};
+
+type FreshTestingSurfaceClassification = {
+  relativePath: string;
+  classification: FreshTestingSurfaceClass;
+  freshTestingMarkers: readonly string[];
+  classMarkers: readonly string[];
+  profileRoute?: ProfileRouteRules;
+};
+
+const STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS = [
+  "Ordinary Small",
+  "focused validation",
+  "optional",
+  "post-proof regression",
+] as const;
+
+const FRESH_TESTING_LANGUAGE_PATTERN = /\bfresh-context\b|\bfresh(?: independent)? SDET\b/i;
+
+const FRESH_TESTING_SURFACE_CLASSIFICATION: readonly FreshTestingSurfaceClassification[] = [
+  {
+    relativePath: "global/skills/change-ready-sdlc/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["Fresh independent SDET is required for Material/explicit qualification behavior changes"],
+    classMarkers: ["Canonical portable orchestration adapter for **full qualification** work", "Ordinary Small work does **not** load this skill"],
+    profileRoute: {
+      ordinaryMarkers: ["Ordinary Small work does **not** load this skill", "known focused validation"],
+      qualificationArtifactMarkers: [
+        "Material/qualification work uses this skill end-to-end",
+        "Profile controls planning and delivery ceremony. Fresh independent SDET is required for Material/explicit qualification behavior changes",
+      ],
+    },
+  },
+  {
+    relativePath: "global/skills/deep-task-planning/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context SDET/risk discovery", "fresh-context SDET/test-only authoring"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Material/explicit qualification behavior-changing slices:", "`Implementation Slices`:"],
+    },
+  },
+  {
+    relativePath: "global/skills/next-step/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["Fresh-context testing/SDET workers"],
+    classMarkers: ["required for Material/explicit qualification after proof", "Ordinary Small reuses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Assign each implementation worker an explicit `production` or `testing` role"],
+    },
+  },
+  {
+    relativePath: "global/skills/service-architecture-design/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context SDET/testing subagent"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small may add only the smallest optional post-proof regression test"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Implementation slices define the contract and observable happy path"],
+    },
+  },
+  {
+    relativePath: "global/skills/openspec-consistency-review/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context SDET/risk discovery"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small reuses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Behavior-changing tasks order minimal happy-path implementation and observable proof first"],
+    },
+  },
+  {
+    relativePath: "global/skills/code-quality-audit/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context risk testing", "fresh-context testing subagent"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["For behavior-changing fixes", "If a refactor changes behavior"],
+    },
+  },
+  {
+    relativePath: "global/skills/rust-workspace-bootstrap/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["After happy-path proof"],
+    },
+  },
+  {
+    relativePath: "global/skills/config-schema-validation/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Implement and observably prove the smallest schema-valid happy path first"],
+    },
+  },
+  {
+    relativePath: "global/skills/external-service-simulator-harness/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Implement and observably prove the smallest simulator happy path first"],
+    },
+  },
+  {
+    relativePath: "global/skills/latency-benchmark-pack/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["If benchmark tooling changes behavior"],
+    },
+  },
+  {
+    relativePath: "global/skills/documentation-hardening-loop/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context risk discovery"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["When doc/spec hardening creates behavior-changing tasks"],
+    },
+  },
+  {
+    relativePath: "global/skills/instruction-artifact-tuning/SKILL.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context test authoring"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Risk-driven test discipline:"],
+    },
+  },
+  {
+    relativePath: "global/agents/openspec-architecture-reviewer.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context SDET/testing"],
+    classMarkers: ["Material/explicit qualification", "do not treat qualification SDET as mandatory for Ordinary Small"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Behavior-changing requirements define the observable happy path"],
+    },
+  },
+  {
+    relativePath: "global/agents/instruction-artifact-reviewer.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context risk testing"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Verification workflow: behavior-changing work requires original-requirement evidence"],
+    },
+  },
+  {
+    relativePath: "global/agents/deployment-config-reviewer.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context risk discovery"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Schema, default, reload, limit, or deployment changes show observable happy-path proof first"],
+    },
+  },
+  {
+    relativePath: "global/agents/performance-reliability-reviewer.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Material/explicit qualification", "Ordinary Small uses focused validation"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Latency/reliability-affecting changes require observable happy-path proof first"],
+    },
+  },
+  {
+    relativePath: "global/agents/session-delivery-reviewer.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh SDET evidence", "fresh-context testing subagent acting as SDET"],
+    classMarkers: ["Map delivery evidence to the portable profile first", "cannot escalate the portable profile by itself"],
+    profileRoute: {
+      ordinaryMarkers: STANDARD_ORDINARY_FRESH_TESTING_ROUTE_MARKERS,
+      routeLineMarkers: ["Portable profile `Material`:", "- `material`:"],
+      qualificationLineMarkers: ["Portable profile `Material`", "Material/explicit qualification"],
+    },
+  },
+  {
+    relativePath: "global/agents/test-coverage-reviewer.md",
+    classification: "profile-conditioned",
+    freshTestingMarkers: ["fresh-context SDET"],
+    classMarkers: ["Material/explicit qualification post-happy-path review", "for Ordinary Small, report residual risk rather than inventing mandatory SDET scope"],
+    profileRoute: {
+      ordinaryMarkers: ["Ordinary Small may rely on existing focused tests or the smallest post-proof regression test"],
+      routeLineMarkers: ["For Material/explicit qualification post-happy-path review", "After Applicable Proof"],
+      qualificationLineMarkers: ["Material/explicit qualification", "Material/qualification applies"],
+    },
+  },
+  {
+    relativePath: "global/skills/com-activex-adapter-implementation/SKILL.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["public compatibility contracts"],
+  },
+  {
+    relativePath: "global/skills/codebase-audit-loop/SKILL.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["only a separate fresh-context testing subagent", "a separate fresh-context testing subagent before final hardening"],
+    classMarkers: ["Use this skill only for broad, high-risk, or explicitly exhaustive audits"],
+  },
+  {
+    relativePath: "global/skills/framed-protocol-implementation/SKILL.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["complete protocol happy path over the real transport"],
+  },
+  {
+    relativePath: "global/skills/legacy-contract-extract/SKILL.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["proposed migration tasks route characterization and compatibility test authoring"],
+  },
+  {
+    relativePath: "global/skills/windows-service-packaging/SKILL.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Use this skill when work touches Windows service deployment", "service/installer happy path"],
+  },
+  {
+    relativePath: "global/agents/legacy-client-compatibility-reviewer.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context workflow, negative, timing, and recovery test authoring"],
+    classMarkers: ["Compatibility-critical changes require observable happy-path proof"],
+  },
+  {
+    relativePath: "global/agents/legacy-evidence-reviewer.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context compatibility test authoring"],
+    classMarkers: ["Modern compatibility requirements map to an observable happy path"],
+  },
+  {
+    relativePath: "global/agents/protocol-api-reviewer.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Protocol/API changes require observable happy-path proof first"],
+  },
+  {
+    relativePath: "global/agents/rust-concurrency-reviewer.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context test/harness authoring"],
+    classMarkers: ["Concurrency-affecting changes require observable happy-path proof first"],
+  },
+  {
+    relativePath: "global/agents/wire-protocol-reviewer.md",
+    classification: "exact-trigger-material",
+    freshTestingMarkers: ["fresh-context testing subagent"],
+    classMarkers: ["Changed wire formats require an observably proven codec/transport happy path"],
+  },
+  {
+    relativePath: "global/agents/implementation-worker.md",
+    classification: "role-ownership",
+    freshTestingMarkers: ["test-only authorship (owned by fresh SDET)"],
+    classMarkers: ["Never create or modify automated tests", "Production-only"],
+  },
+  {
+    relativePath: "global/agents/sdet-quality-engineer.md",
+    classification: "role-ownership",
+    freshTestingMarkers: ["Fresh-context test-only SDET"],
+    classMarkers: ["You own independent risk assessment and test-artifact evidence only", "You are not a production author"],
+  },
+  {
+    relativePath: "global/agents/troubleshooter.md",
+    classification: "role-ownership",
+    freshTestingMarkers: ["Route all automated-test authorship to a new fresh SDET"],
+    classMarkers: ["Do not write or modify tests", "Troubleshooter does not perform either step"],
+  },
+];
+
 function assertTokens(text: string, tokens: readonly string[], message: string): void {
   for (const token of tokens) {
     assert(text.includes(token), `${message}: ${token}`);
+  }
+}
+
+function assertOrderedTokens(text: string, tokens: readonly string[], message: string): void {
+  let cursor = -1;
+  for (const token of tokens) {
+    const index = text.indexOf(token, cursor + 1);
+    assert(index > cursor, `${message}: ${token}`);
+    cursor = index;
   }
 }
 
@@ -507,6 +909,102 @@ export const changeReadyContractTests: TestCase[] = [
       assertDeepEqual([...CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS], EXPECTED_CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS, "Closed-world forbidden authority patterns drifted.");
       assertDeepEqual([...CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS], EXPECTED_CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS, "Canonical skill closed-world markers drifted.");
       assertDeepEqual([...GLOBAL_AGENTS_CLOSED_WORLD_MARKERS], EXPECTED_GLOBAL_AGENTS_CLOSED_WORLD_MARKERS, "Global AGENTS closed-world markers drifted.");
+      assertDeepEqual([...GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS], EXPECTED_GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS, "Global AGENTS outcome-first markers drifted.");
+      assertDeepEqual([...CHANGE_READY_SDLC_PILOT_READY_MARKERS], EXPECTED_CHANGE_READY_SDLC_PILOT_READY_MARKERS, "Change-Ready Pilot-Ready markers drifted.");
+      assertDeepEqual([...OUTCOME_FIRST_ROLE_DELTA_SURFACES], EXPECTED_OUTCOME_FIRST_ROLE_DELTA_SURFACES, "Outcome-first role/planning delta surfaces drifted.");
+      assertDeepEqual([...OUTCOME_FIRST_COMPLETE_POLICY_MARKERS], EXPECTED_OUTCOME_FIRST_COMPLETE_POLICY_MARKERS, "Outcome-first complete-policy markers drifted.");
+      assertEqual(OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD, 5, "Outcome-first complete-policy duplicate threshold drifted.");
+    },
+  },
+  {
+    name: "contracts: outcome-first policy preserves reachable-risk, reviewer, and next-increment oracles",
+    run: () => {
+      const globalAgents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const reviewer = sectionBetween(globalAgents, "## Shared Reviewer Runtime Invariants", "## Core Golden Rules");
+      assertTokens(reviewer, [
+        "future-scope validity",
+        "A finding blocks Pilot-Ready only when reachable there",
+        "Evidence-format polish alone is non-blocking when semantic evidence remains trustworthy",
+        "Missing evidence → `Blocking Evidence` or residual risk",
+      ], "Shared reviewer policy missing reachability or semantic-evidence oracle");
+      assertOrderedTokens(reviewer, [
+        "remove, narrow, reuse, local guard, then deferral",
+        "larger mechanisms only with evidence earlier options cannot make the current slice safe",
+      ], "Shared reviewer policy missing minimum-remedy order");
+
+      const autonomy = sectionBetween(globalAgents, "## Autonomous Work Contract", "## Interactive Next-Step Handoff");
+      assertTokens(autonomy, [
+        "Lifecycle profiles remain exactly `Ordinary Small | Material`",
+        "Pilot-Ready is a limited-use disposition, not a third profile or Change-Ready substitute",
+        "one bounded outcome and non-goals",
+        "a technically enforced operating envelope (prose-only limits are not containment)",
+        "real-boundary happy-path proof",
+        "focused project-native validation",
+        "protection of applicable critical safety/data/authorization invariants",
+        "sufficient material failure visibility",
+        "proportional disable/rollback/containment for persistent or spreading effects",
+        "one compact material residual-risk bundle",
+        "explicit user acceptance for every material risk reachable inside the enforced pilot envelope",
+        "no uncontrolled authorization, privacy, data-integrity, irreversible-action, or envelope-escape risk",
+        "cannot waive uncontrolled authorization, privacy, data-integrity, irreversible-action, or envelope-escape risk",
+        "Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation",
+      ], "Autonomous work policy missing Pilot-Ready separation or non-waivable-risk oracle");
+
+      const openSpec = sectionBetween(globalAgents, "## OpenSpec Change Authoring", "## Task Completion Honesty");
+      assertTokens(openSpec, [
+        ...EXPECTED_GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS.slice(18, 25),
+        "Group mechanical mirror edits that share one owner and one validation result",
+        "Specification review stops when remaining findings are future-scope, unreachable, optional, or polish-only",
+      ], "OpenSpec policy missing next-increment contract or stop condition");
+
+      const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const pilot = sectionBetween(skill, "### 10. Pilot-Ready Decision", "### Rollback plan");
+      assertTokens(pilot, [
+        "complete Pilot safety floor is authoritative only in always-loaded global `AGENTS.md`",
+        "this skill does not restate that floor",
+        "does not undermine candidate identity/scope, proof, containment, safety floor, validation, or material-risk acceptance",
+        "Final/delivery rejection stays terminal for Change-Ready and never authorizes mutation/replay",
+        "does not automatically erase independently proven Pilot-Ready evidence unless pilot facts become unreadable or untrustworthy",
+        "Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation",
+      ], "Canonical skill missing qualification-specific Pilot coexistence or global-floor authority oracle");
+      const skillOperative = operativeTextOutsideFences(skill);
+      const skillCompletePolicyHits = OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.filter((marker) => skillOperative.includes(marker)).length;
+      assert(
+        skillCompletePolicyHits < OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
+        `Conditional Change-Ready skill must not copy the complete Pilot safety floor; found ${skillCompletePolicyHits} complete-policy markers.`,
+      );
+    },
+  },
+  {
+    name: "contracts: outcome-first validators remain configured deterministic checks without semantic risk inference",
+    run: () => {
+      const supportPaths = [
+        "tools/contracts/agents.ts",
+        "tools/contracts/reviewer-binding.ts",
+        "tools/contracts/skills.ts",
+        "tools/validators/active-authority.ts",
+        "tools/validators/devkit-contract.ts",
+        "tools/validators/routing.ts",
+      ];
+      const routing = fs.readFileSync(path.join(root, "tools", "validators", "routing.ts"), "utf8");
+      assertTokens(routing, [
+        "GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS",
+        "CHANGE_READY_SDLC_PILOT_READY_MARKERS",
+        "OUTCOME_FIRST_ROLE_DELTA_SURFACES",
+        "OUTCOME_FIRST_COMPLETE_POLICY_MARKERS",
+        "requireTextContains",
+        "text.includes(marker)",
+      ], "Routing validator must use configured exact paths and markers");
+      const semanticClassifierPatterns = [
+        /\b(?:classify|infer|score)(?:Risk|Reachability|Severity|Materiality|Containment|Acceptance)\b/i,
+        /\b(?:risk|reachability|severity|materiality|containment|acceptance)(?:Classifier|Scorer)\b/i,
+      ];
+      for (const relative of supportPaths) {
+        const source = fs.readFileSync(path.join(root, relative), "utf8");
+        for (const forbidden of semanticClassifierPatterns) {
+          assert(!forbidden.test(source), `${relative} must not classify arbitrary natural-language risk semantics: ${forbidden}`);
+        }
+      }
     },
   },
   {
@@ -606,6 +1104,128 @@ export const changeReadyContractTests: TestCase[] = [
         "Ordinary Small completion does not require this gate",
         "Change-Ready: not requested",
       ], "Universal Development Loop missing proportional Ordinary Small behavior");
+    },
+  },
+  {
+    name: "contracts: installed fresh-testing surfaces are catalog-classified and profile-conditioned routes stay line-locked",
+    run: () => {
+      const profile = JSON.parse(fs.readFileSync(path.join(root, "profiles", "all.json"), "utf8")) as {
+        skills?: unknown;
+        agents?: unknown;
+      };
+      if (!Array.isArray(profile.skills) || !Array.isArray(profile.agents)) {
+        throw new Error("profiles/all.json must expose skills[] and agents[] as the installed catalog.");
+      }
+
+      const installedPaths = [
+        ...profile.skills.map((name) => {
+          assert(typeof name === "string", "profiles/all.json skill names must be strings.");
+          return `global/skills/${String(name)}/SKILL.md`;
+        }),
+        ...profile.agents.map((name) => {
+          assert(typeof name === "string", "profiles/all.json agent names must be strings.");
+          return `global/agents/${String(name)}.md`;
+        }),
+      ];
+      assertEqual(new Set(installedPaths).size, installedPaths.length, "profiles/all.json must not install a skill or agent path twice.");
+
+      const installedOperativeText = new Map<string, string>();
+      for (const relative of installedPaths) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        installedOperativeText.set(relative, operativeTextOutsideFences(text));
+      }
+      const discoveredFreshTestingPaths = installedPaths
+        .filter((relative) => FRESH_TESTING_LANGUAGE_PATTERN.test(installedOperativeText.get(relative) ?? ""))
+        .sort();
+      const classifiedPaths = FRESH_TESTING_SURFACE_CLASSIFICATION.map((entry) => entry.relativePath);
+      assertEqual(new Set(classifiedPaths).size, classifiedPaths.length, "Fresh-testing classification table must classify each path exactly once.");
+      assertDeepEqual(
+        discoveredFreshTestingPaths,
+        [...classifiedPaths].sort(),
+        "Every installed operative surface with explicit fresh-context/fresh-SDET language must be classified, with no uninstalled table entries.",
+      );
+      assertEqual(FRESH_TESTING_SURFACE_CLASSIFICATION.filter((entry) => entry.classification === "profile-conditioned").length, 18, "Profile-conditioned fresh-testing inventory drifted.");
+      assertEqual(FRESH_TESTING_SURFACE_CLASSIFICATION.filter((entry) => entry.classification === "exact-trigger-material").length, 10, "Exact-trigger Material fresh-testing inventory drifted.");
+      assertEqual(FRESH_TESTING_SURFACE_CLASSIFICATION.filter((entry) => entry.classification === "role-ownership").length, 3, "Role-ownership fresh-testing inventory drifted.");
+
+      for (const entry of FRESH_TESTING_SURFACE_CLASSIFICATION) {
+        const operative = installedOperativeText.get(entry.relativePath);
+        assert(operative !== undefined, `${entry.relativePath} is classified but not installed by profiles/all.json.`);
+        if (operative === undefined) continue;
+        assert(FRESH_TESTING_LANGUAGE_PATTERN.test(operative), `${entry.relativePath} lost explicit fresh-context/fresh-SDET language.`);
+        assertTokens(operative, entry.freshTestingMarkers, `${entry.relativePath} lost expected fresh-testing language`);
+        assertTokens(operative, entry.classMarkers, `${entry.relativePath} lost direct ${entry.classification} source markers`);
+
+        if (entry.classification !== "profile-conditioned") continue;
+        const profileRoute = entry.profileRoute;
+        assert(profileRoute !== undefined, `${entry.relativePath} lacks profile-route assertions.`);
+        if (profileRoute === undefined) continue;
+        assertTokens(operative, profileRoute.ordinaryMarkers, `${entry.relativePath} lost its direct Ordinary Small route`);
+
+        if (profileRoute.qualificationArtifactMarkers !== undefined) {
+          assertTokens(
+            operative,
+            profileRoute.qualificationArtifactMarkers,
+            `${entry.relativePath} must remain qualification-only by its direct artifact trigger`,
+          );
+        } else {
+          const routeLineMarkers = profileRoute.routeLineMarkers ?? [];
+          const qualificationLineMarkers = profileRoute.qualificationLineMarkers ?? ["Material/explicit qualification"];
+          const freshTestingLines = operative
+            .split(/\r?\n/)
+            .filter((line) => FRESH_TESTING_LANGUAGE_PATTERN.test(line));
+          assertEqual(
+            freshTestingLines.length,
+            routeLineMarkers.length,
+            `${entry.relativePath} fresh-testing lines must stay explicitly represented in the static route table.`,
+          );
+          const coveredLineIndexes = new Set<number>();
+          for (const routeLineMarker of routeLineMarkers) {
+            const matchingIndexes = freshTestingLines
+              .map((line, index) => line.includes(routeLineMarker) ? index : -1)
+              .filter((index) => index >= 0);
+            assertEqual(matchingIndexes.length, 1, `${entry.relativePath} route marker must identify exactly one fresh-testing line: ${routeLineMarker}`);
+            coveredLineIndexes.add(matchingIndexes[0]);
+          }
+          assertEqual(coveredLineIndexes.size, freshTestingLines.length, `${entry.relativePath} has a fresh-testing line not covered by its static route markers.`);
+
+          for (const line of freshTestingLines) {
+            const freshMatch = line.match(FRESH_TESTING_LANGUAGE_PATTERN);
+            const freshIndex = freshMatch?.index ?? -1;
+            assert(freshIndex >= 0, `${entry.relativePath} fresh-testing line scan lost its exact marker: ${line}`);
+            assert(
+              /\b(?:proof|prove(?:d|s)?|proven|post-happy-path)\b/i.test(line.slice(0, freshIndex)),
+              `${entry.relativePath} must place direct proof/happy-path evidence before fresh testing: ${line}`,
+            );
+            assert(
+              qualificationLineMarkers.some((marker) => line.includes(marker)),
+              `${entry.relativePath} fresh testing must be directly bound to its Material/qualification route: ${line}`,
+            );
+          }
+        }
+
+        assert(
+          !/Ordinary Small[^\n]*(?:requires?|must use)[^\n]*(?:fresh-context|fresh SDET)/i.test(operative),
+          `${entry.relativePath} must not make fresh testing mandatory for Ordinary Small.`,
+        );
+      }
+
+      const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
+      assertTokens(readme, [
+        "Material/explicit qualification",
+        "Ordinary Small",
+        "focused validation",
+        "optional smallest post-proof regression",
+      ], "README.md missing direct profile-conditioned curation route");
+      const readmeFreshTestingLines = readme
+        .split(/\r?\n/)
+        .filter((line) => /^\s*-\s/.test(line) && /fresh-context/i.test(line) && /\b(?:SDET|testing|test authoring)\b/i.test(line));
+      assertEqual(readmeFreshTestingLines.length, 1, "README.md must retain exactly one direct profile-conditioned curation rule.");
+      for (const line of readmeFreshTestingLines) {
+        const freshContextIndex = line.search(/fresh-context/i);
+        assert(/\b(?:proof|prove(?:d|s)?)\b/i.test(line.slice(0, freshContextIndex)), `README.md must place observable proof before fresh-context testing: ${line}`);
+        assert(line.includes("Material/explicit qualification"), `README.md must bind fresh-context testing to Material/explicit qualification: ${line}`);
+      }
     },
   },
   {
@@ -806,6 +1426,11 @@ export const changeReadyContractTests: TestCase[] = [
         "FORBIDDEN_PRODUCTION_ROUTING_PATTERNS",
         "FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES",
         "GLOBAL_AGENTS_TRIGGER_TOKENS",
+        "GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS",
+        "CHANGE_READY_SDLC_PILOT_READY_MARKERS",
+        "OUTCOME_FIRST_ROLE_DELTA_SURFACES",
+        "OUTCOME_FIRST_COMPLETE_POLICY_MARKERS",
+        "OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD",
       ]) {
         assert(skillsImport.includes(symbol), `routing.ts must import ${symbol} from contracts/skills.ts.`);
         assert(!new RegExp(`(?:const|let|var)\\s+${symbol}\\b`).test(routing), `routing.ts must not redeclare ${symbol}.`);
@@ -822,7 +1447,9 @@ export const changeReadyContractTests: TestCase[] = [
         "Material/explicit Change-Ready only: profile, brief, Candidate Reference, proof, SDET, validation, final review, Change-Ready decision",
         "Final post-SDET, post-validation candidate review of the complete current candidate -> `final-candidate-reviewer`",
         "independent final review and Portable Material delivery/readiness gates remain required only when Material/explicit qualification conditions apply",
+        "Follow-up Candidates",
       ], "README routing/catalog drifted");
+      assert(!readme.includes("Actionable Continuation Items"), "README must not prescribe the superseded reviewer action-list field Actionable Continuation Items.");
     },
   },
 ];
