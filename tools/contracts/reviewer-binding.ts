@@ -139,21 +139,23 @@ export const SESSION_DELIVERY_BINDING_HANDOFF_TOKENS: readonly string[] = [
 ];
 
 /**
- * Exact closed-world scope-firewall markers required on loaded authority surfaces.
+ * Exact outcome-authority markers required on loaded authority surfaces.
  * Deterministic substring checks only — no fuzzy severity/scope classification.
+ * Shared intersection only: every configured surface must carry these exact substrings.
  */
-export const CLOSED_WORLD_SCOPE_MARKERS: readonly string[] = [
-  "post-freeze scope may only shrink",
-  "new revision or separate change",
-  "never authorize scope expansion",
+export const OUTCOME_AUTHORITY_SCOPE_MARKERS: readonly string[] = [
+  "accepted outcome",
+  "protected-boundary",
+  "dependency closure",
+  "never authorize mutation",
   "Blocking Evidence",
   "Follow-up Candidates",
-  "one correction wave",
-  "frozen acceptance criterion",
+  "correction wave",
+  "root goal",
 ];
 
-/** Surfaces that must retain closed-world scope-firewall markers. */
-export const CLOSED_WORLD_SCOPE_SURFACES: readonly string[] = [
+/** Surfaces that must retain outcome-authority markers. */
+export const OUTCOME_AUTHORITY_SCOPE_SURFACES: readonly string[] = [
   "REPO_AGENTS.md",
   "global/AGENTS.md",
   "global/skills/change-ready-sdlc/SKILL.md",
@@ -163,10 +165,10 @@ export const CLOSED_WORLD_SCOPE_SURFACES: readonly string[] = [
 ];
 
 /**
- * Exact superseded authority phrases that must not appear on loaded closed-world surfaces.
+ * Exact superseded authority phrases that must not appear on loaded outcome-authority surfaces.
  * Match whole unsafe sentences/phrases only.
  */
-export const CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS = [
+export const OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS = [
   {
     needle: "Actionable Continuation Items",
     diagnostic: "superseded reviewer/SDET action-list field Actionable Continuation Items",
@@ -185,7 +187,7 @@ export const CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS = [
   },
   {
     needle: "actionable continuation items",
-    diagnostic: "superseded generic actionable continuation items on loaded closed-world surface",
+    diagnostic: "superseded generic actionable continuation items on loaded outcome-authority surface",
   },
   {
     needle:
@@ -212,6 +214,14 @@ export const CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS = [
     needle:
       "Evidence tooling must not become a second product; it MAY be added only when a mandatory gate cannot be reproduced without it",
     diagnostic: "superseded persistent evidence-tool exception",
+  },
+  {
+    needle: "post-freeze scope may only shrink",
+    diagnostic: "superseded closed-world post-freeze shrink rule on loaded outcome-authority surface",
+  },
+  {
+    needle: "expansion requires a new revision or separate change",
+    diagnostic: "superseded closed-world revision-only expansion authority on loaded outcome-authority surface",
   },
 ] as const;
 

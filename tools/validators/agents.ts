@@ -37,11 +37,14 @@ import {
   TROUBLESHOOTER_FILE,
   TROUBLESHOOTER_REQUIRED_TEXT,
 } from "../contracts/troubleshooter.ts";
-import { fencedCodeLineMask } from "./active-authority.ts";
+import {
+  fencedCodeLineMask,
+  isAtxH1OrH2BoundaryLine,
+  scanModelFacingMarkdownBody,
+} from "./active-authority.ts";
 import type { FrontmatterMap, ValidationContext } from "./context.ts";
 import {
   directoryExists,
-  fileExists,
   getRequiredScalar,
   listFiles,
   readText,
@@ -52,6 +55,214 @@ import { getFrontmatterMap } from "./frontmatter.ts";
 
 const DREAM_TEAM_RUNTIME_AGENT_PREFIX = "dream-team-";
 const DREAM_TEAM_IMPLEMENTER_AGENT = "dream-team-implementer";
+
+/** Byte-exact Output heading that owns each intentional report-envelope schema. */
+const EXACT_OUTPUT_H2 = "## Output";
+/** Byte-exact top-level opener for intentional role report envelopes. */
+const EXACT_REPORT_MARKDOWN_OPEN = "```markdown";
+/** Byte-exact top-level closer for intentional role report envelopes. */
+const EXACT_REPORT_MARKDOWN_CLOSE = "```";
+
+/**
+ * Markers that may be certified only from the intentional ## Output report
+ * envelope for implementation-worker. Behavioral/safety markers stay operative-only.
+ */
+const IMPLEMENTATION_WORKER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
+  "Blockers",
+  "Residual Risks",
+];
+
+/**
+ * Markers that may be certified only from the intentional ## Output report
+ * envelope for sdet-quality-engineer.
+ */
+const SDET_QUALITY_ENGINEER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
+  "Action: authored-tests | assessed-existing-tests | blocked",
+  "Effective Model:",
+  "Model Independence:",
+  "Risk And Oracle Matrix",
+  "Test Changes Or Existing Evidence",
+  "Requested Validation Procedures",
+  "Blockers",
+  "Residual Risks",
+];
+
+/**
+ * Markers that may be certified only from the intentional ## Output report
+ * envelope for final-candidate-reviewer.
+ */
+const FINAL_CANDIDATE_REVIEWER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
+  "approved | approved_with_notes | rejected | blocked",
+  "Evidence Type",
+  "Likely Root Cause",
+  "Artifact Owner",
+  "Confidence",
+  "Needs external reviewer",
+  "FINAL_CANDIDATE_REVIEW_REPORT",
+];
+
+/**
+ * Markers that may be certified only from the intentional ## Output report
+ * envelope for troubleshooter.
+ */
+const TROUBLESHOOTER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
+  "TROUBLESHOOTER_REPORT",
+  "Continuation Items",
+];
+
+/** Model-facing agent body after frontmatter strip and fence/indent filtering. */
+type AgentModelFacingSurfaces = {
+  /** Raw body after YAML frontmatter removal (fences retained). */
+  rawBody: string;
+  /** Operative instructions: no frontmatter, supported fences, or indented code. */
+  operativeBody: string;
+};
+
+/**
+ * Build model-facing surfaces for agent contract checks via the shared scanner.
+ * Missing frontmatter returns null (frontmatter map validation already recorded).
+ * Unsupported non-top-level fence syntax records a path-specific error and returns
+ * null so callers skip opposite-polarity cascades on that file.
+ */
+function readAgentModelFacingSurfaces(
+  ctx: ValidationContext,
+  text: string,
+  file: string,
+): AgentModelFacingSurfaces | null {
+  const scan = scanModelFacingMarkdownBody(text);
+  if (!scan.hasFrontmatter) {
+    return null;
+  }
+  if (scan.unsupportedFenceLine != null) {
+    ctx.addError(
+      `unsupported non-top-level fenced-code syntax at line ${scan.unsupportedFenceLine}: ${file}`,
+    );
+    return null;
+  }
+  return {
+    rawBody: scan.rawBody,
+    operativeBody: scan.operativeBody,
+  };
+}
+
+/**
+ * Exact intentional report-envelope body under one ## Output section, or null.
+ * Requires exactly one top-level ```markdown fence whose first/last body lines are
+ * the role's opening/closing report tags.
+ */
+function extractExactReportSchemaBody(
+  body: string,
+  openTag: string,
+  closeTag: string,
+): string | null {
+  const lines = body.split(/\r?\n/);
+  const fenced = fencedCodeLineMask(lines);
+
+  let sectionStart = -1;
+  for (let i = 0; i < lines.length; i += 1) {
+    if (!fenced[i] && lines[i] === EXACT_OUTPUT_H2) {
+      if (sectionStart >= 0) {
+        return null;
+      }
+      sectionStart = i;
+    }
+  }
+  if (sectionStart < 0) {
+    return null;
+  }
+
+  let sectionEnd = lines.length;
+  for (let i = sectionStart + 1; i < lines.length; i += 1) {
+    if (!fenced[i] && isAtxH1OrH2BoundaryLine(lines[i]!)) {
+      sectionEnd = i;
+      break;
+    }
+  }
+
+  const openers: number[] = [];
+  for (let i = sectionStart + 1; i < sectionEnd; i += 1) {
+    if (fenced[i] && (i === 0 || !fenced[i - 1])) {
+      openers.push(i);
+    }
+  }
+  if (openers.length !== 1) {
+    return null;
+  }
+
+  const open = openers[0]!;
+  if (lines[open] !== EXACT_REPORT_MARKDOWN_OPEN) {
+    return null;
+  }
+
+  let close = open;
+  while (close + 1 < sectionEnd && fenced[close + 1]) {
+    close += 1;
+  }
+  if (close === open || lines[close] !== EXACT_REPORT_MARKDOWN_CLOSE) {
+    return null;
+  }
+
+  const schemaBody: string[] = [];
+  for (let i = open + 1; i < close; i += 1) {
+    schemaBody.push(lines[i]!);
+  }
+  if (schemaBody.length < 2) {
+    return null;
+  }
+  if (schemaBody[0] !== openTag || schemaBody[schemaBody.length - 1] !== closeTag) {
+    return null;
+  }
+  return schemaBody.join("\n");
+}
+
+/**
+ * Require an exact ## Output report envelope and return its body, or record an error.
+ */
+function requireExactReportSchemaBody(
+  ctx: ValidationContext,
+  body: string,
+  openTag: string,
+  closeTag: string,
+  file: string,
+): string | null {
+  const schemaBody = extractExactReportSchemaBody(body, openTag, closeTag);
+  if (schemaBody == null) {
+    ctx.addError(
+      `Agent must contain exactly one exact ## Output top-level \`\`\`markdown report envelope (${openTag}...${closeTag}): ${file}`,
+    );
+    return null;
+  }
+  return schemaBody;
+}
+
+/**
+ * Require contract markers from operative body, with an explicit schema-only allowlist
+ * satisfied only from the intentional report envelope. No dynamic missing-marker fallback.
+ */
+function requireOperativeOrAllowlistedReportMarkers(
+  ctx: ValidationContext,
+  operativeBody: string,
+  reportSchemaBody: string | null,
+  schemaOnlyAllowlist: readonly string[],
+  required: readonly string[],
+  label: string,
+  file: string,
+): void {
+  const allowlist = new Set(schemaOnlyAllowlist);
+  for (const marker of required) {
+    if (operativeBody.includes(marker)) {
+      continue;
+    }
+    if (
+      allowlist.has(marker) &&
+      reportSchemaBody != null &&
+      reportSchemaBody.includes(marker)
+    ) {
+      continue;
+    }
+    requireTextContains(ctx, operativeBody, marker, label, file);
+  }
+}
 
 function isDreamTeamRuntimeAgent(agentName: string, frontmatter: FrontmatterMap): boolean {
   return agentName.startsWith(DREAM_TEAM_RUNTIME_AGENT_PREFIX) && frontmatter.get("hidden") === "true";
@@ -185,7 +396,7 @@ function validateReviewerFeedbackEditPermission(
 function validateImplementationWorker(
   ctx: ValidationContext,
   frontmatter: FrontmatterMap,
-  text: string,
+  surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
   if (frontmatter.get("permission.edit") !== "allow") {
@@ -223,15 +434,28 @@ function validateImplementationWorker(
       ctx.addError(`Implementation worker must set ${permission}: deny: ${file}`);
     }
   }
-  for (const required of IMPLEMENTATION_WORKER_REQUIRED_TEXT) {
-    requireTextContains(ctx, text, required, "Implementation worker contract", file);
-  }
+  const reportSchemaBody = requireExactReportSchemaBody(
+    ctx,
+    surfaces.rawBody,
+    "<IMPLEMENTATION_WORKER_REPORT>",
+    "</IMPLEMENTATION_WORKER_REPORT>",
+    file,
+  );
+  requireOperativeOrAllowlistedReportMarkers(
+    ctx,
+    surfaces.operativeBody,
+    reportSchemaBody,
+    IMPLEMENTATION_WORKER_REPORT_SCHEMA_ONLY_MARKERS,
+    IMPLEMENTATION_WORKER_REQUIRED_TEXT,
+    "Implementation worker contract",
+    file,
+  );
 }
 
 function validateSdetQualityEngineer(
   ctx: ValidationContext,
   frontmatter: FrontmatterMap,
-  text: string,
+  surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
   if (frontmatter.has("model") || frontmatter.has("variant")) {
@@ -288,9 +512,22 @@ function validateSdetQualityEngineer(
       ctx.addError(`SDET quality engineer must set ${permission}: deny: ${file}`);
     }
   }
-  for (const required of SDET_QUALITY_ENGINEER_REQUIRED_TEXT) {
-    requireTextContains(ctx, text, required, "SDET quality engineer contract", file);
-  }
+  const reportSchemaBody = requireExactReportSchemaBody(
+    ctx,
+    surfaces.rawBody,
+    "<SDET_QUALITY_REPORT>",
+    "</SDET_QUALITY_REPORT>",
+    file,
+  );
+  requireOperativeOrAllowlistedReportMarkers(
+    ctx,
+    surfaces.operativeBody,
+    reportSchemaBody,
+    SDET_QUALITY_ENGINEER_REPORT_SCHEMA_ONLY_MARKERS,
+    SDET_QUALITY_ENGINEER_REQUIRED_TEXT,
+    "SDET quality engineer contract",
+    file,
+  );
 }
 
 /** Byte-exact allowed Contract Reference heading (cardinality + shape gate). */
@@ -393,7 +630,7 @@ function validateStandaloneContractReference(
 function validateFinalCandidateReviewerExtras(
   ctx: ValidationContext,
   frontmatter: FrontmatterMap,
-  text: string,
+  surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
   if (frontmatter.has("model") || frontmatter.has("variant")) {
@@ -401,9 +638,22 @@ function validateFinalCandidateReviewerExtras(
       `Final candidate reviewer must not set model or variant (inherit session model): ${file}`,
     );
   }
-  for (const required of FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT) {
-    requireTextContains(ctx, text, required, "Final candidate reviewer contract", file);
-  }
+  const reportSchemaBody = requireExactReportSchemaBody(
+    ctx,
+    surfaces.rawBody,
+    "<FINAL_CANDIDATE_REVIEW_REPORT>",
+    "</FINAL_CANDIDATE_REVIEW_REPORT>",
+    file,
+  );
+  requireOperativeOrAllowlistedReportMarkers(
+    ctx,
+    surfaces.operativeBody,
+    reportSchemaBody,
+    FINAL_CANDIDATE_REVIEWER_REPORT_SCHEMA_ONLY_MARKERS,
+    FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
+    "Final candidate reviewer contract",
+    file,
+  );
 }
 
 function validateTroubleshooterRuleMap(
@@ -469,7 +719,7 @@ function validateTroubleshooterSkillRuleOrder(
 function validateTroubleshooter(
   ctx: ValidationContext,
   frontmatter: FrontmatterMap,
-  text: string,
+  surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
   if (frontmatter.get("model") !== "openai/gpt-5.6-sol") {
@@ -516,9 +766,22 @@ function validateTroubleshooter(
       ctx.addError(`Troubleshooter must set ${permission}: deny: ${file}`);
     }
   }
-  for (const required of TROUBLESHOOTER_REQUIRED_TEXT) {
-    requireTextContains(ctx, text, required, "Troubleshooter contract", file);
-  }
+  const reportSchemaBody = requireExactReportSchemaBody(
+    ctx,
+    surfaces.rawBody,
+    "<TROUBLESHOOTER_REPORT>",
+    "</TROUBLESHOOTER_REPORT>",
+    file,
+  );
+  requireOperativeOrAllowlistedReportMarkers(
+    ctx,
+    surfaces.operativeBody,
+    reportSchemaBody,
+    TROUBLESHOOTER_REPORT_SCHEMA_ONLY_MARKERS,
+    TROUBLESHOOTER_REQUIRED_TEXT,
+    "Troubleshooter contract",
+    file,
+  );
 }
 
 export function validateAgents(ctx: ValidationContext, root: string): string[] {
@@ -559,12 +822,19 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     }
     validateSessionDeliveryContextPermission(ctx, frontmatter, file);
     const agentFileName = path.basename(file);
+    // Model-facing body surface: exclude frontmatter, supported fences, indented code.
+    // Unsupported fence syntax fails closed once; skip remaining body checks on this file.
+    const surfaces = readAgentModelFacingSurfaces(ctx, text, file);
     if (agentFileName === IMPLEMENTATION_WORKER_FILE) {
-      validateImplementationWorker(ctx, frontmatter, text, file);
+      if (surfaces != null) {
+        validateImplementationWorker(ctx, frontmatter, surfaces, file);
+      }
       continue;
     }
     if (agentFileName === TROUBLESHOOTER_FILE) {
-      validateTroubleshooter(ctx, frontmatter, text, file);
+      if (surfaces != null) {
+        validateTroubleshooter(ctx, frontmatter, surfaces, file);
+      }
       continue;
     }
     if (isDreamTeamRuntime && agentName === DREAM_TEAM_IMPLEMENTER_AGENT) {
@@ -573,7 +843,9 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     }
     // Write-capable SDET must use dedicated contract before generic read-only reviewer rules.
     if (agentFileName === SDET_QUALITY_ENGINEER_FILE) {
-      validateSdetQualityEngineer(ctx, frontmatter, text, file);
+      if (surfaces != null) {
+        validateSdetQualityEngineer(ctx, frontmatter, surfaces, file);
+      }
       continue;
     }
     validateReviewerBashPermission(ctx, frontmatter, file);
@@ -589,30 +861,48 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       validateDreamTeamRuntimeAgent(ctx, frontmatter, file);
       continue;
     }
+    if (surfaces == null) {
+      continue;
+    }
     if (agentFileName === FINAL_CANDIDATE_REVIEWER_FILE) {
       // Final reviewer keeps generic reviewer permissions + Contract Reference path,
       // but uses its dedicated structured-report text (not the shared Findings boilerplate).
-      validateFinalCandidateReviewerExtras(ctx, frontmatter, text, file);
+      validateFinalCandidateReviewerExtras(ctx, frontmatter, surfaces, file);
+      // Structural Contract Reference gate keeps its dedicated full-text scanner.
       validateStandaloneContractReference(ctx, text, file);
     } else {
       for (const required of REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT) {
-        requireTextContains(ctx, text, required, "Reusable reviewer leaf contract", file);
+        requireTextContains(
+          ctx,
+          surfaces.operativeBody,
+          required,
+          "Reusable reviewer leaf contract",
+          file,
+        );
       }
       if ((PREVENTION_FEEDBACK_REVIEWER_FILES as readonly string[]).includes(agentFileName)) {
         validateStandaloneContractReference(ctx, text, file);
       }
     }
-    if (REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE.some((pattern) => pattern.test(text))) {
+    if (
+      REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE.some((pattern) =>
+        pattern.test(surfaces.operativeBody),
+      )
+    ) {
       ctx.addError(
         `Reusable reviewer agent must use the compact Leaf Contract instead of old boilerplate: ${file}`,
       );
     }
-    if (REUSABLE_REVIEWER_FORBIDDEN_INLINE_BLOCKS.some((pattern) => pattern.test(text))) {
+    if (
+      REUSABLE_REVIEWER_FORBIDDEN_INLINE_BLOCKS.some((pattern) =>
+        pattern.test(surfaces.operativeBody),
+      )
+    ) {
       ctx.addError(
         `Reusable reviewer agent must reference the shared contract via ## Contract Reference, not inline the Leaf Contract, Feedback Ledger, or Prevention Feedback body: ${file}`,
       );
     }
-    validateTextContracts(ctx, file, text, AGENT_TEXT_CONTRACTS);
+    validateTextContracts(ctx, file, surfaces.operativeBody, AGENT_TEXT_CONTRACTS);
   }
 
   return agentNames;

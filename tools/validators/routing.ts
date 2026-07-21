@@ -10,15 +10,15 @@ import {
   REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS,
 } from "../contracts/agents.ts";
 import {
-  CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS,
   CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
   CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
+  CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS,
   CHANGE_READY_SDLC_PILOT_READY_MARKERS,
   CHANGE_READY_SDLC_SKILL_RELATIVE_PATH,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
-  GLOBAL_AGENTS_CLOSED_WORLD_MARKERS,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
+  GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS,
   GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
   LIFECYCLE_ROLE_ROUTES,
@@ -28,11 +28,11 @@ import {
   OUTCOME_FIRST_ROLE_DELTA_SURFACES,
 } from "../contracts/skills.ts";
 import {
-  CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS,
-  CLOSED_WORLD_SCOPE_MARKERS,
-  CLOSED_WORLD_SCOPE_SURFACES,
   MATERIAL_DELIVERY_ROUTING_SURFACES,
   MATERIAL_DELIVERY_ROUTING_TOKENS,
+  OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS,
+  OUTCOME_AUTHORITY_SCOPE_MARKERS,
+  OUTCOME_AUTHORITY_SCOPE_SURFACES,
   PREVENTION_FEEDBACK_REVIEWER_FILES,
   SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
   SESSION_DELIVERY_BINDING_SURFACES,
@@ -47,9 +47,192 @@ import {
   toPosixPath,
   walkMarkdownFiles,
 } from "./context.ts";
-import { operativeTextOutsideFences } from "./active-authority.ts";
+import {
+  fencedCodeLineMask,
+  isAtxH1OrH2BoundaryLine,
+  scanModelFacingMarkdownBody,
+  scanOperativeTextOutsideFences,
+} from "./active-authority.ts";
 
 const GLOBAL_AGENTS_RELATIVE = "global/AGENTS.md";
+/** POSIX-relative prefix for role agent Markdown surfaces. */
+const GLOBAL_AGENTS_DIR_PREFIX = "global/agents/";
+
+/**
+ * Exact ordered labels of the normative Universal Task Briefing Contract schema
+ * (single top-level ```text block under ## Universal Task Briefing Contract in global AGENTS).
+ */
+const NORMATIVE_BRIEFING_SCHEMA_LABELS: readonly string[] = [
+  "Role:",
+  "Objective:",
+  "Business/System Context:",
+  "Current State and Evidence:",
+  "Required Deliverables:",
+  "In Scope:",
+  "Out of Scope / Non-Goals:",
+  "Read Scope:",
+  "Write Scope:",
+  "Forbidden Actions:",
+  "Requirements and Invariants:",
+  "Resolved Decisions and Rationale:",
+  "Inputs and Source of Truth:",
+  "Dependencies and Preconditions:",
+  "Acceptance Criteria:",
+  "Verification:",
+  "Return Contract:",
+  "Blocker and Escalation Policy:",
+];
+
+/**
+ * Read a markdown authority surface, reject unsupported non-top-level fence syntax,
+ * and return operative text only. Returns null when the file is missing or unsupported
+ * (error already recorded). Never returns raw text for policy consumers.
+ * Fence-only: no frontmatter strip and no indented-code exclusion (general authority).
+ */
+function readOperativeAuthorityText(
+  ctx: ValidationContext,
+  file: string,
+): string | null {
+  if (!fileExists(file)) {
+    return null;
+  }
+  const scan = scanOperativeTextOutsideFences(readText(file));
+  if (scan.unsupportedFenceLine != null) {
+    ctx.addError(
+      `unsupported non-top-level fenced-code syntax at line ${scan.unsupportedFenceLine}: ${file}`,
+    );
+    return null;
+  }
+  return scan.operativeText;
+}
+
+/** True for actual `global/agents/*.md` role files (not leaf contracts or other surfaces). */
+function isGlobalRoleAgentRelative(relative: string): boolean {
+  const posix = relative.replace(/\\/g, "/");
+  return (
+    posix.startsWith(GLOBAL_AGENTS_DIR_PREFIX) &&
+    posix.endsWith(".md") &&
+    !posix.slice(GLOBAL_AGENTS_DIR_PREFIX.length).includes("/")
+  );
+}
+
+/**
+ * Model-facing operative text for role agent Markdown: strip leading frontmatter,
+ * exclude supported fences and CommonMark indented code, fail closed on unsupported
+ * fence syntax with original-file line numbers. Returns null when missing/unsupported.
+ */
+function readModelFacingRoleAgentText(
+  ctx: ValidationContext,
+  file: string,
+): string | null {
+  if (!fileExists(file)) {
+    return null;
+  }
+  const scan = scanModelFacingMarkdownBody(readText(file));
+  if (scan.unsupportedFenceLine != null) {
+    ctx.addError(
+      `unsupported non-top-level fenced-code syntax at line ${scan.unsupportedFenceLine}: ${file}`,
+    );
+    return null;
+  }
+  return scan.operativeBody;
+}
+
+/**
+ * Authority surface reader: role agents use model-facing boundary; all other
+ * surfaces keep general fence-only semantics.
+ */
+function readRoutingSurfaceOperativeText(
+  ctx: ValidationContext,
+  root: string,
+  file: string,
+): string | null {
+  const relative = toPosixPath(path.relative(root, file));
+  if (isGlobalRoleAgentRelative(relative)) {
+    return readModelFacingRoleAgentText(ctx, file);
+  }
+  return readOperativeAuthorityText(ctx, file);
+}
+
+/** Byte-exact normative briefing H2; whitespace/indent drift is rejected. */
+const EXACT_NORMATIVE_BRIEFING_H2 = "## Universal Task Briefing Contract";
+/** Byte-exact top-level opener for the normative briefing schema fence. */
+const EXACT_NORMATIVE_BRIEFING_OPEN = "```text";
+/** Byte-exact top-level closer for the normative briefing schema fence. */
+const EXACT_NORMATIVE_BRIEFING_CLOSE = "```";
+
+/**
+ * Body of the single exact normative ```text briefing schema under
+ * ## Universal Task Briefing Contract, or null when the shape is not exact.
+ * Deterministic line scan only: one byte-exact H2, section ends at next unfenced
+ * H1/H2, one top-level byte-exact ```text / ``` fence, 18 ordered labels with
+ * no blank or extra lines, no indent/delimiter/trailing-whitespace drift.
+ */
+function extractExactNormativeBriefingSchemaBody(text: string): string | null {
+  const lines = text.split(/\r?\n/);
+  const fenced = fencedCodeLineMask(lines);
+
+  let sectionStart = -1;
+  for (let i = 0; i < lines.length; i += 1) {
+    if (!fenced[i] && lines[i] === EXACT_NORMATIVE_BRIEFING_H2) {
+      if (sectionStart >= 0) {
+        return null;
+      }
+      sectionStart = i;
+    }
+  }
+  if (sectionStart < 0) {
+    return null;
+  }
+
+  // Ownership ends at the next unfenced supported ATX H1/H2 boundary
+  // (0-3 leading spaces; space/tab or EOL after the hash run).
+  let sectionEnd = lines.length;
+  for (let i = sectionStart + 1; i < lines.length; i += 1) {
+    if (!fenced[i] && isAtxH1OrH2BoundaryLine(lines[i]!)) {
+      sectionEnd = i;
+      break;
+    }
+  }
+
+  const openers: number[] = [];
+  for (let i = sectionStart + 1; i < sectionEnd; i += 1) {
+    if (fenced[i] && (i === 0 || !fenced[i - 1])) {
+      openers.push(i);
+    }
+  }
+  if (openers.length !== 1) {
+    return null;
+  }
+
+  const open = openers[0]!;
+  if (lines[open] !== EXACT_NORMATIVE_BRIEFING_OPEN) {
+    return null;
+  }
+
+  let close = open;
+  while (close + 1 < sectionEnd && fenced[close + 1]) {
+    close += 1;
+  }
+  if (close === open || lines[close] !== EXACT_NORMATIVE_BRIEFING_CLOSE) {
+    return null;
+  }
+
+  // Keep every interior line (including blanks); blanks make the shape non-exact.
+  const body: string[] = [];
+  for (let i = open + 1; i < close; i += 1) {
+    body.push(lines[i]!);
+  }
+  if (body.length !== NORMATIVE_BRIEFING_SCHEMA_LABELS.length) {
+    return null;
+  }
+  for (let i = 0; i < body.length; i += 1) {
+    if (body[i] !== NORMATIVE_BRIEFING_SCHEMA_LABELS[i]) {
+      return null;
+    }
+  }
+  return body.join("\n");
+}
 
 function countExactLifecycleMarkers(text: string): number {
   let count = 0;
@@ -66,30 +249,34 @@ function validateGlobalAgentsTriggerTopology(
   root: string,
 ): void {
   const file = path.join(root, GLOBAL_AGENTS_RELATIVE);
-  if (!fileExists(file)) {
+  const operative = readOperativeAuthorityText(ctx, file);
+  if (operative == null) {
     return;
   }
-  const text = readText(file);
   for (const token of GLOBAL_AGENTS_TRIGGER_TOKENS) {
-    requireTextContains(ctx, text, token, "global AGENTS Change-Ready trigger", file);
+    requireTextContains(ctx, operative, token, "global AGENTS Change-Ready trigger", file);
   }
   for (const role of LIFECYCLE_ROLE_ROUTES) {
-    requireTextContains(ctx, text, role, "global AGENTS lifecycle role route", file);
+    requireTextContains(ctx, operative, role, "global AGENTS lifecycle role route", file);
   }
   for (const token of GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS) {
     requireTextContains(
       ctx,
-      text,
+      operative,
       token,
       "global AGENTS fan-out and specialist continuation",
       file,
     );
   }
-  for (const token of GLOBAL_AGENTS_CLOSED_WORLD_MARKERS) {
-    requireTextContains(ctx, text, token, "global AGENTS closed-world scope firewall", file);
+  for (const token of GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS) {
+    requireTextContains(
+      ctx,
+      operative,
+      token,
+      "global AGENTS outcome-authority scope contract",
+      file,
+    );
   }
-  // Outcome-first / Pilot markers must be operative (outside fenced examples).
-  const operative = operativeTextOutsideFences(text);
   for (const token of GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS) {
     requireTextContains(
       ctx,
@@ -103,8 +290,8 @@ function validateGlobalAgentsTriggerTopology(
 
 function validateOutcomeFirstPilotReadyAuthority(ctx: ValidationContext, root: string): void {
   const skillFile = path.join(root, ...CHANGE_READY_SDLC_SKILL_RELATIVE_PATH.split("/"));
-  if (fileExists(skillFile)) {
-    const skillOperative = operativeTextOutsideFences(readText(skillFile));
+  const skillOperative = readOperativeAuthorityText(ctx, skillFile);
+  if (skillOperative != null) {
     for (const token of CHANGE_READY_SDLC_PILOT_READY_MARKERS) {
       requireTextContains(
         ctx,
@@ -118,11 +305,11 @@ function validateOutcomeFirstPilotReadyAuthority(ctx: ValidationContext, root: s
 
   for (const relative of OUTCOME_FIRST_ROLE_DELTA_SURFACES) {
     const file = path.join(root, relative);
-    if (!fileExists(file)) {
+    // Role agents: model-facing; skill delta surfaces remain fence-only.
+    const operative = readRoutingSurfaceOperativeText(ctx, root, file);
+    if (operative == null) {
       continue;
     }
-    const text = readText(file);
-    const operative = operativeTextOutsideFences(text);
     let completePolicyHits = 0;
     for (const marker of OUTCOME_FIRST_COMPLETE_POLICY_MARKERS) {
       if (operative.includes(marker)) {
@@ -137,32 +324,32 @@ function validateOutcomeFirstPilotReadyAuthority(ctx: ValidationContext, root: s
   }
 }
 
-function validateClosedWorldScopeFirewall(ctx: ValidationContext, root: string): void {
+function validateOutcomeAuthorityScope(ctx: ValidationContext, root: string): void {
   const skillFile = path.join(root, ...CHANGE_READY_SDLC_SKILL_RELATIVE_PATH.split("/"));
-  if (fileExists(skillFile)) {
-    const skillText = readText(skillFile);
-    for (const token of CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS) {
+  const skillOperative = readOperativeAuthorityText(ctx, skillFile);
+  if (skillOperative != null) {
+    for (const token of CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS) {
       requireTextContains(
         ctx,
-        skillText,
+        skillOperative,
         token,
-        "change-ready-sdlc closed-world scope firewall",
+        "change-ready-sdlc outcome-authority scope contract",
         skillFile,
       );
     }
   }
 
-  for (const relative of CLOSED_WORLD_SCOPE_SURFACES) {
+  for (const relative of OUTCOME_AUTHORITY_SCOPE_SURFACES) {
     const file = path.join(root, relative);
-    if (!fileExists(file)) {
+    const operative = readOperativeAuthorityText(ctx, file);
+    if (operative == null) {
       continue;
     }
-    const text = readText(file);
-    for (const marker of CLOSED_WORLD_SCOPE_MARKERS) {
-      requireTextContains(ctx, text, marker, "closed-world scope firewall", file);
+    for (const marker of OUTCOME_AUTHORITY_SCOPE_MARKERS) {
+      requireTextContains(ctx, operative, marker, "outcome-authority scope contract", file);
     }
-    for (const pattern of CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS) {
-      if (text.includes(pattern.needle)) {
+    for (const pattern of OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS) {
+      if (operative.includes(pattern.needle)) {
         ctx.addError(`${pattern.diagnostic}: ${file}`);
       }
     }
@@ -175,12 +362,13 @@ function validateClosedWorldScopeFirewall(ctx: ValidationContext, root: string):
     path.join(root, "instructions", "leaf-reviewer-agent-contract.md"),
   ];
   for (const file of roleFiles) {
-    if (!fileExists(file)) {
+    // Role agents: model-facing (frontmatter + fence + indent). Leaf contract: fence-only.
+    const operative = readRoutingSurfaceOperativeText(ctx, root, file);
+    if (operative == null) {
       continue;
     }
-    const text = readText(file);
     for (const field of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
-      if (text.includes(field)) {
+      if (operative.includes(field)) {
         ctx.addError(`superseded reviewer/SDET action-list field ${field}: ${file}`);
       }
     }
@@ -192,14 +380,15 @@ function validateImplementationWorkerContinuation(
   root: string,
 ): void {
   const file = path.join(root, "global", "agents", IMPLEMENTATION_WORKER_FILE);
-  if (!fileExists(file)) {
+  // Role agent: model-facing boundary (frontmatter + fence + indent).
+  const operative = readRoutingSurfaceOperativeText(ctx, root, file);
+  if (operative == null) {
     return;
   }
-  const text = readText(file);
   for (const token of IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT) {
     requireTextContains(
       ctx,
-      text,
+      operative,
       token,
       "implementation-worker same-slice continuation",
       file,
@@ -220,8 +409,12 @@ function validateDuplicateLifecycleMarkers(
     if (path.resolve(file) === path.resolve(canonicalSkill)) {
       continue;
     }
-    const text = readText(file);
-    const count = countExactLifecycleMarkers(text);
+    // Role agents under global/agents: model-facing; other global Markdown stays fence-only.
+    const operative = readRoutingSurfaceOperativeText(ctx, root, file);
+    if (operative == null) {
+      continue;
+    }
+    const count = countExactLifecycleMarkers(operative);
     if (count >= CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD) {
       const relative = toPosixPath(path.relative(root, file));
       ctx.addError(
@@ -240,12 +433,15 @@ function validateDuplicateLifecycleMarkers(
 function validateForbiddenProductionRouting(ctx: ValidationContext, root: string): void {
   for (const relative of FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES) {
     const file = path.join(root, relative);
-    if (!fileExists(file)) {
+    // Role agents use model-facing boundary; maintenance/skill/UDL stay fence-only.
+    const operative = isGlobalRoleAgentRelative(relative)
+      ? readModelFacingRoleAgentText(ctx, file)
+      : readOperativeAuthorityText(ctx, file);
+    if (operative == null) {
       continue;
     }
-    const text = readText(file);
     for (const pattern of FORBIDDEN_PRODUCTION_ROUTING_PATTERNS) {
-      if (text.includes(pattern.needle)) {
+      if (operative.includes(pattern.needle)) {
         // Absolute path keeps platform separators so SDET path.join assertions match.
         ctx.addError(`${pattern.diagnostic}: ${file}`);
       }
@@ -263,7 +459,7 @@ export function validateImplementationWorkerRouting(
   const canonicalSkill = path.join(root, ...CHANGE_READY_SDLC_SKILL_RELATIVE_PATH.split("/"));
   if (fileExists(canonicalSkill)) {
     validateGlobalAgentsTriggerTopology(ctx, root);
-    validateClosedWorldScopeFirewall(ctx, root);
+    validateOutcomeAuthorityScope(ctx, root);
     validateOutcomeFirstPilotReadyAuthority(ctx, root);
     validateDuplicateLifecycleMarkers(ctx, root);
     validateForbiddenProductionRouting(ctx, root);
@@ -277,17 +473,39 @@ export function validateImplementationWorkerRouting(
 
   for (const relative of MAINTENANCE_ROUTING_FILES) {
     const file = path.join(root, relative);
-    if (!fileExists(file)) {
+    // Syntax gate first: unsupported non-top-level fences record an error and skip all checks.
+    const operative = readOperativeAuthorityText(ctx, file);
+    if (operative == null) {
       continue;
     }
-    const text = readText(file);
-    requireTextContains(ctx, text, "implementation-worker", "implementation-worker routing", file);
+    requireTextContains(
+      ctx,
+      operative,
+      "implementation-worker",
+      "implementation-worker routing",
+      file,
+    );
     for (const required of IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT) {
       if (required === "implementation-worker") continue;
-      requireTextContains(ctx, text, required, "implementation-worker routing", file);
+      requireTextContains(ctx, operative, required, "implementation-worker routing", file);
+    }
+    // Handoff schema labels: operative on every surface. Only global/AGENTS.md may also
+    // use the exact complete normative ```text briefing schema under the exact H2.
+    let handoffSurface = operative;
+    if (relative === GLOBAL_AGENTS_RELATIVE) {
+      const schemaBody = extractExactNormativeBriefingSchemaBody(readText(file));
+      if (schemaBody != null) {
+        handoffSurface = `${operative}\n${schemaBody}`;
+      }
     }
     for (const field of IMPLEMENTATION_WORKER_HANDOFF_FIELDS) {
-      requireTextContains(ctx, text, field, "implementation-worker handoff fields", file);
+      requireTextContains(
+        ctx,
+        handoffSurface,
+        field,
+        "implementation-worker handoff fields",
+        file,
+      );
     }
   }
 }
@@ -303,30 +521,36 @@ export function validateSessionDeliveryBinding(
 
   for (const relative of SESSION_DELIVERY_BINDING_SURFACES) {
     const file = path.join(root, relative);
-    if (!fileExists(file)) {
+    const operative = readOperativeAuthorityText(ctx, file);
+    if (operative == null) {
       continue;
     }
-    const text = readText(file);
     requireTextContains(
       ctx,
-      text,
+      operative,
       "session-delivery-reviewer",
       "session-delivery-reviewer binding handoff",
       file,
     );
     for (const token of SESSION_DELIVERY_BINDING_HANDOFF_TOKENS) {
-      requireTextContains(ctx, text, token, "session-delivery-reviewer binding handoff", file);
+      requireTextContains(
+        ctx,
+        operative,
+        token,
+        "session-delivery-reviewer binding handoff",
+        file,
+      );
     }
   }
 
   for (const relative of MATERIAL_DELIVERY_ROUTING_SURFACES) {
     const file = path.join(root, relative);
-    if (!fileExists(file)) {
+    const operative = readOperativeAuthorityText(ctx, file);
+    if (operative == null) {
       continue;
     }
-    const text = readText(file);
     for (const token of MATERIAL_DELIVERY_ROUTING_TOKENS) {
-      requireTextContains(ctx, text, token, "Material delivery routing", file);
+      requireTextContains(ctx, operative, token, "Material delivery routing", file);
     }
   }
 }

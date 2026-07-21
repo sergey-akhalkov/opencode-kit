@@ -1,15 +1,27 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
+  CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
+  CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS,
   CHANGE_READY_SDLC_PILOT_READY_MARKERS,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
+  GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS,
   GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
   OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
   OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
 } from "../contracts/skills.ts";
 import {
-  CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS,
-  CLOSED_WORLD_SCOPE_MARKERS,
+  IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT,
+  IMPLEMENTATION_WORKER_REQUIRED_TEXT,
+} from "../contracts/implementation-worker.ts";
+import {
+  REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT,
+} from "../contracts/agents.ts";
+import {
+  AGENT_TEXT_CONTRACTS,
+  OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS,
+  OUTCOME_AUTHORITY_SCOPE_MARKERS,
 } from "../contracts/reviewer-binding.ts";
 import {
   addQwenLocalWorkerFixture,
@@ -31,6 +43,11 @@ import {
 } from "../test-helpers/library.ts";
 
 const root = libraryRoot;
+const expectedImplementationWorkerHandoffFields = [
+  "Universal Task Briefing Contract",
+  "Acceptance Criteria",
+  "Verification",
+] as const;
 
 const materialDeliveryRoutingText = "For Material work, always run the discovered conforming delivery/readiness gate with current requirements and evidence; missing conforming capability blocks. Material Change-Ready requires an explicitly accepted conforming delivery result. Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.";
 const operativeFenceCases = [
@@ -191,6 +208,34 @@ export const changeReadyValidatorTests: TestCase[] = [
       assertSuccess(invokeValidator(fixture), "Complete Change-Ready SDLC topology fixture should pass validation.");
     },
   },
+  ...GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS.map((marker): TestCase => ({
+    name: `validator rejects missing global outcome-authority marker: ${marker}`,
+    run: () => {
+      const fixture = newLibraryFixture(`outcome-authority-global-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "AGENTS.md");
+      replaceRequiredText(path.join(fixture, relative), marker, "[removed-global-outcome-authority-marker]");
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Missing global outcome-authority marker must fail validation: ${marker}`);
+      assertOutputContains(result, "global AGENTS outcome-authority scope contract", "Diagnostic must name the global outcome-authority contract.");
+      assertOutputContains(result, marker, "Diagnostic must name the missing global outcome-authority marker.");
+      assertOutputContains(result, relative, "Diagnostic must identify global/AGENTS.md.");
+    },
+  })),
+  ...CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS.map((marker): TestCase => ({
+    name: `validator rejects missing canonical outcome-authority marker: ${marker}`,
+    run: () => {
+      const fixture = newLibraryFixture(`outcome-authority-skill-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "skills", "change-ready-sdlc", "SKILL.md");
+      replaceRequiredText(path.join(fixture, relative), marker, "[removed-canonical-outcome-authority-marker]");
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Missing canonical outcome-authority marker must fail validation: ${marker}`);
+      assertOutputContains(result, "change-ready-sdlc outcome-authority scope contract", "Diagnostic must name the canonical outcome-authority contract.");
+      assertOutputContains(result, marker, "Diagnostic must name the missing canonical outcome-authority marker.");
+      assertOutputContains(result, relative, "Diagnostic must identify the canonical skill.");
+    },
+  })),
   ...([
     "technically enforced operating envelope",
     "prose-only",
@@ -290,6 +335,544 @@ export const changeReadyValidatorTests: TestCase[] = [
     },
   },
   {
+    name: "validator routing consumers report unsupported container-prefixed authority fences explicitly",
+    run: () => {
+      const cases = [
+        {
+          fixtureName: "operative-routing-unsupported-agents-blockquote",
+          relative: path.join("global", "AGENTS.md"),
+          unsupportedLine: "> ``` private-agents-container-content",
+          privateSentinel: "private-agents-container-content",
+        },
+        {
+          fixtureName: "operative-routing-unsupported-skill-list-container",
+          relative: path.join("global", "skills", "change-ready-sdlc", "SKILL.md"),
+          unsupportedLine: "> - ~~~ private-skill-container-content",
+          privateSentinel: "private-skill-container-content",
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newLibraryFixture(item.fixtureName);
+        addChangeReadySdlcFixture(fixture);
+        const file = path.join(fixture, item.relative);
+        const prefix = `${fs.readFileSync(file, "utf8")}\n`;
+        const unsupportedLineNumber = prefix.split(/\r?\n/).length;
+        writeText(file, `${prefix}${item.unsupportedLine}\n`);
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${item.relative} unsupported container-prefixed fence syntax must fail routing validation.`);
+        assertOutputContains(result, `unsupported non-top-level fenced-code syntax at line ${unsupportedLineNumber}`, "Routing diagnostic must report unsupported syntax rather than a synthetic missing marker.");
+        assertOutputContains(result, item.relative, "Routing diagnostic must identify the affected active authority surface.");
+        assert(!result.output.includes(item.privateSentinel), "Routing diagnostics must not expose unsupported source-line content.");
+      }
+    },
+  },
+  {
+    name: "validator scans a later unsupported delimiter before raw handoff schema checks",
+    run: () => {
+      const fixture = newLibraryFixture("operative-routing-later-run-before-schema");
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "AGENTS.md");
+      const file = path.join(fixture, relative);
+      const current = fs.readFileSync(file, "utf8");
+      for (const field of expectedImplementationWorkerHandoffFields) {
+        assert(current.includes(field), `Multi-run maintenance fixture must contain raw handoff schema field: ${field}`);
+      }
+      const privateSentinel = "private-later-run-routing-content";
+      const unsupportedLine = `\`\`\` invalid opener prose > \`\`\` ${privateSentinel}`;
+      const prefix = `${current}\n`;
+      const unsupportedLineNumber = prefix.split(/\r?\n/).length;
+      writeText(file, `${prefix}${unsupportedLine}\n`);
+
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A later unsupported delimiter run must fail aggregate validation even when all raw handoff fields exist.");
+      const expectedDiagnostic = `unsupported non-top-level fenced-code syntax at line ${unsupportedLineNumber}`;
+      assertOutputContains(result, expectedDiagnostic, "Aggregate routing must inspect every unmasked delimiter run.");
+      assertOutputContains(result, relative, "Aggregate multi-run diagnostic must identify global/AGENTS.md.");
+      const errors = result.output.split(/\r?\n/).filter((line) => line.startsWith("ERROR: "));
+      assert(errors.length > 0 && errors[0]!.includes(expectedDiagnostic), "Unsupported syntax must be the first aggregate policy error before handoff schema validation.");
+      assert(!result.output.includes(privateSentinel), "Aggregate multi-run diagnostic must not expose source-line content.");
+    },
+  },
+  {
+    name: "validator rejects unsupported role syntax before opposite-polarity policy duplication counts",
+    run: () => {
+      const fixture = newLibraryFixture("operative-role-unsupported-before-duplication");
+      addChangeReadySdlcFixture(fixture);
+      const relative = "global/agents/implementation-worker.md";
+      const file = path.join(fixture, ...relative.split("/"));
+      const policyCopy = OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.join("\n");
+      assert(
+        OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.filter((marker) => policyCopy.includes(marker)).length >= OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
+        "Opposite-polarity fixture must contain at least the complete-policy duplication threshold.",
+      );
+      const privateSentinel = "private-role-duplication-content";
+      const unsupportedLine = `\`\`\` invalid opener > \`\`\` ${privateSentinel}`;
+      const prefix = `${fs.readFileSync(file, "utf8")}\n${policyCopy}\n`;
+      const unsupportedLineNumber = prefix.split(/\r?\n/).length;
+      writeText(file, `${prefix}${unsupportedLine}\n`);
+
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Unsupported role syntax must not pass as zero duplicate-policy hits.");
+      assertOutputContains(result, `unsupported non-top-level fenced-code syntax at line ${unsupportedLineNumber}`, "Role syntax diagnostic must precede opposite-polarity count logic.");
+      assertOutputContains(result, path.join("global", "agents", "implementation-worker.md"), "Role syntax diagnostic must identify implementation-worker.md.");
+      assert(!result.output.includes("outcome-first complete policy duplication"), "Duplicate-policy counting must not run on a surface rejected by the syntax gate.");
+      assert(!result.output.includes(privateSentinel), "Role syntax diagnostic must not expose source-line content.");
+    },
+  },
+  {
+    name: "validator requires authority lifecycle and continuation markers outside supported fences",
+    run: () => {
+      const cases = [
+        {
+          label: "global-outcome-authority",
+          relative: path.join("global", "AGENTS.md"),
+          marker: "accepted outcome",
+          fence: operativeFenceCases[0],
+          diagnostic: "global AGENTS outcome-authority scope contract must include 'accepted outcome'",
+        },
+        {
+          label: "skill-outcome-authority",
+          relative: path.join("global", "skills", "change-ready-sdlc", "SKILL.md"),
+          marker: "persistent evidence infrastructure",
+          fence: operativeFenceCases[1],
+          diagnostic: "change-ready-sdlc outcome-authority scope contract must include 'persistent evidence infrastructure'",
+        },
+        {
+          label: "skill-lifecycle",
+          relative: path.join("global", "skills", "change-ready-sdlc", "SKILL.md"),
+          marker: "Adapter Discovery",
+          fence: operativeFenceCases[2],
+          diagnostic: "change-ready-sdlc missing lifecycle marker 'Adapter Discovery'",
+        },
+        {
+          label: "skill-continuation",
+          relative: path.join("global", "skills", "change-ready-sdlc", "SKILL.md"),
+          marker: "External path references alone are insufficient",
+          fence: operativeFenceCases[0],
+          diagnostic: "change-ready-sdlc missing continuation token 'External path references alone are insufficient'",
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newLibraryFixture(`operative-required-${item.label}`);
+        addChangeReadySdlcFixture(fixture);
+        const file = path.join(fixture, item.relative);
+        replaceRequiredText(file, item.marker, `[removed-${item.label}]`);
+        writeText(file, `${fs.readFileSync(file, "utf8")}\n${item.fence.block(item.marker)}`);
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${item.label} present only in a supported fence must fail aggregate validation.`);
+        assertOutputContains(result, item.diagnostic, `${item.label} diagnostic must name the missing operative marker.`);
+        assertOutputContains(result, item.relative, `${item.label} diagnostic must identify the affected authority path.`);
+        assert(!result.output.includes("unsupported non-top-level fenced-code syntax"), `${item.label} supported fence must not be misclassified as unsupported syntax.`);
+      }
+    },
+  },
+  {
+    name: "validator accepts Verification only in the normative fenced briefing schema",
+    run: () => {
+      const currentGlobal = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const briefingStart = currentGlobal.indexOf("## Universal Task Briefing Contract");
+      const schemaStart = currentGlobal.indexOf("```text", briefingStart);
+      const schemaEnd = currentGlobal.indexOf("```", schemaStart + "```text".length);
+      assert(briefingStart >= 0 && schemaStart > briefingStart && schemaEnd > schemaStart, "Current global AGENTS must retain the normative fenced briefing schema.");
+      const schema = currentGlobal.slice(schemaStart, schemaEnd);
+      for (const field of expectedImplementationWorkerHandoffFields) {
+        assert(currentGlobal.includes(field), `Current global AGENTS must contain handoff field: ${field}`);
+      }
+      assert(schema.includes("Acceptance Criteria"), "Normative fenced briefing schema must contain Acceptance Criteria.");
+      assert(schema.includes("Verification"), "Normative fenced briefing schema must contain Verification.");
+      const outsideSchema = `${currentGlobal.slice(0, schemaStart)}${currentGlobal.slice(schemaEnd + 3)}`;
+      assert(!outsideSchema.includes("Verification"), "Current global AGENTS must exercise Verification only inside the normative supported fence.");
+
+      assertSuccess(invokeValidator(root), "Current global AGENTS normative briefing schema must pass the real validator.");
+      const fixture = newLibraryFixture("normative-fenced-briefing-schema");
+      addChangeReadySdlcFixture(fixture);
+      assertSuccess(invokeValidator(fixture), "A copied fixture with Verification only in the normative supported fence must pass all three handoff-field checks.");
+    },
+  },
+  {
+    name: "validator rejects handoff labels relocated from the normative schema to an arbitrary supported fence",
+    run: () => {
+      const fixture = newLibraryFixture("normative-briefing-schema-relocated-fields");
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "AGENTS.md");
+      const file = path.join(fixture, relative);
+      replaceRequiredText(file, "Verification:", "[removed-schema-field]:");
+      writeText(
+        file,
+        `${fs.readFileSync(file, "utf8")}\n## Arbitrary Briefing Example\n\n${operativeFenceCases[0].block(expectedImplementationWorkerHandoffFields.join("\n"))}`,
+      );
+
+      const result = invokeValidator(fixture);
+      assertFailure(result, "An arbitrary supported fence must not replace a missing normative Verification schema field.");
+      assertOutputContains(
+        result,
+        "implementation-worker handoff fields must include 'Verification'",
+        "Relocated handoff labels must retain the exact missing-field diagnostic.",
+      );
+      assertOutputContains(result, relative, "Relocated handoff diagnostic must identify global/AGENTS.md.");
+      assert(!result.output.includes("unsupported non-top-level fenced-code syntax"), "The arbitrary top-level example must remain supported but non-normative.");
+    },
+  },
+  {
+    name: "validator rejects non-exact normative briefing schema shapes",
+    run: () => {
+      assertSuccess(
+        invokeValidator(root),
+        "Current root with the byte-exact normative briefing schema must pass before negative shape variants.",
+      );
+      const currentGlobal = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const briefingStart = currentGlobal.indexOf("## Universal Task Briefing Contract");
+      const schemaStart = currentGlobal.indexOf("```text", briefingStart);
+      const schemaEnd = currentGlobal.indexOf("```", schemaStart + "```text".length);
+      assert(briefingStart >= 0 && schemaStart > briefingStart && schemaEnd > schemaStart, "Current global AGENTS must expose the exact normative schema fixture source.");
+      const schema = currentGlobal.slice(schemaStart, schemaEnd + 3);
+      assertEqual(schema.split(/\r?\n/).length, 20, "Normative schema fixture must contain one opener, 18 labels, and one closer.");
+
+      const briefingOwnershipBoundaryCases = [
+        { label: "one-space H1", boundary: " # Intervening Briefing Boundary" },
+        { label: "two-space H2", boundary: "  ## Intervening Briefing Boundary" },
+        { label: "three-space H1", boundary: "   # Intervening Briefing Boundary" },
+        { label: "tab-separated H1", boundary: "#\tIntervening Briefing Boundary" },
+        { label: "one-space tab-separated H2", boundary: " ##\tIntervening Briefing Boundary" },
+      ] as const;
+
+      const cases = [
+        {
+          label: "partial field list",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/^Verification:\r?\n/m, "")),
+        },
+        {
+          label: "reordered fields",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/Acceptance Criteria:\r?\nVerification:/, "Verification:\nAcceptance Criteria:")),
+        },
+        {
+          label: "duplicate field cardinality",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/^Verification:/m, "Verification:\nVerification:")),
+        },
+        {
+          label: "wrong fence info string",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/^```text/m, "```markdown")),
+        },
+        {
+          label: "second schema block under the exact H2",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, `${fixtureSchema}\n\n${fixtureSchema}`),
+        },
+        {
+          label: "duplicate exact H2 and schema block",
+          mutate: (text: string, fixtureSchema: string) => `${text}\n## Universal Task Briefing Contract\n\n${fixtureSchema}\n`,
+        },
+        {
+          label: "schema block moved under a different H2",
+          mutate: (text: string, fixtureSchema: string) => `${text.replace(fixtureSchema, "")}\n## Briefing Schema Example\n\n${fixtureSchema}\n`,
+        },
+        {
+          label: "target H2 leading whitespace drift",
+          mutate: (text: string, _fixtureSchema: string) => text.replace("## Universal Task Briefing Contract", " ## Universal Task Briefing Contract"),
+        },
+        {
+          label: "target H2 trailing whitespace drift",
+          mutate: (text: string, _fixtureSchema: string) => text.replace("## Universal Task Briefing Contract", "## Universal Task Briefing Contract "),
+        },
+        {
+          label: "target H2 internal whitespace drift",
+          mutate: (text: string, _fixtureSchema: string) => text.replace("## Universal Task Briefing Contract", "## Universal  Task Briefing Contract"),
+        },
+        {
+          label: "schema moved below an intervening unfenced H1",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, `# Intervening Briefing Boundary\n\n${fixtureSchema}`),
+        },
+        ...briefingOwnershipBoundaryCases.map((item) => ({
+          label: `schema moved below an intervening ${item.label}`,
+          mutate: (text: string, fixtureSchema: string) => text.replace(
+            fixtureSchema,
+            `${item.boundary}\n\n${fixtureSchema}`,
+          ),
+        })),
+        {
+          label: "opener indentation drift",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/^```text/m, " ```text")),
+        },
+        {
+          label: "opener delimiter length drift",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/^```text/m, "````text")),
+        },
+        {
+          label: "opener trailing whitespace drift",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/^```text/m, "```text ")),
+        },
+        {
+          label: "closer indentation drift",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/\r?\n```$/, "\n ```")),
+        },
+        {
+          label: "closer delimiter length drift",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/\r?\n```$/, "\n````")),
+        },
+        {
+          label: "closer trailing whitespace drift",
+          mutate: (text: string, fixtureSchema: string) => text.replace(fixtureSchema, fixtureSchema.replace(/\r?\n```$/, "\n``` ")),
+        },
+        {
+          label: "blank line inserted among labels",
+          mutate: (text: string, fixtureSchema: string) => text.replace(
+            fixtureSchema,
+            fixtureSchema.replace(/Verification:\r?\nReturn Contract:/, "Verification:\n\nReturn Contract:"),
+          ),
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newLibraryFixture(`normative-schema-shape-${item.label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+        addChangeReadySdlcFixture(fixture);
+        const relative = path.join("global", "AGENTS.md");
+        const file = path.join(fixture, relative);
+        const original = fs.readFileSync(file, "utf8");
+        const fixtureBriefingStart = original.indexOf("## Universal Task Briefing Contract");
+        const fixtureSchemaStart = original.indexOf("```text", fixtureBriefingStart);
+        const fixtureSchemaEnd = original.indexOf("```", fixtureSchemaStart + "```text".length);
+        assert(fixtureBriefingStart >= 0 && fixtureSchemaStart > fixtureBriefingStart && fixtureSchemaEnd > fixtureSchemaStart, `Fixture must retain its source schema before mutation: ${item.label}`);
+        const fixtureSchema = original.slice(fixtureSchemaStart, fixtureSchemaEnd + 3);
+        const mutated = item.mutate(original, fixtureSchema);
+        assert(mutated !== original, `Schema-shape fixture must mutate global AGENTS: ${item.label}`);
+        writeText(file, mutated);
+
+        const result = invokeValidator(fixture);
+        assertFailure(result, `Non-exact normative schema shape must fail: ${item.label}`);
+        assertOutputContains(
+          result,
+          "implementation-worker handoff fields must include 'Verification'",
+          `Non-exact schema shape must fail the externally visible Verification field: ${item.label}`,
+        );
+        assertOutputContains(result, relative, `Schema-shape diagnostic must identify global/AGENTS.md: ${item.label}`);
+        assert(!result.output.includes("unsupported non-top-level fenced-code syntax"), `Supported but non-exact schema shape must not be misclassified as unsupported syntax: ${item.label}`);
+      }
+    },
+  },
+  {
+    name: "validator accepts current YAML frontmatter maps and all four exact role report envelopes",
+    run: () => {
+      const reports = [
+        {
+          relative: path.join("global", "agents", "implementation-worker.md"),
+          openTag: "<IMPLEMENTATION_WORKER_REPORT>",
+          closeTag: "</IMPLEMENTATION_WORKER_REPORT>",
+        },
+        {
+          relative: path.join("global", "agents", "sdet-quality-engineer.md"),
+          openTag: "<SDET_QUALITY_REPORT>",
+          closeTag: "</SDET_QUALITY_REPORT>",
+        },
+        {
+          relative: path.join("global", "agents", "final-candidate-reviewer.md"),
+          openTag: "<FINAL_CANDIDATE_REVIEW_REPORT>",
+          closeTag: "</FINAL_CANDIDATE_REVIEW_REPORT>",
+        },
+        {
+          relative: path.join("global", "agents", "troubleshooter.md"),
+          openTag: "<TROUBLESHOOTER_REPORT>",
+          closeTag: "</TROUBLESHOOTER_REPORT>",
+        },
+      ] as const;
+      for (const report of reports) {
+        const text = fs.readFileSync(path.join(root, report.relative), "utf8");
+        assert(/^---\r?\n/.test(text), `Current role must retain leading YAML frontmatter: ${report.relative}`);
+        assert(text.includes("## Output"), `Current role must retain its exact Output H2: ${report.relative}`);
+        assert(text.includes(report.openTag), `Current role must retain report opener ${report.openTag}: ${report.relative}`);
+        assert(text.includes(report.closeTag), `Current role must retain report closer ${report.closeTag}: ${report.relative}`);
+      }
+      assertSuccess(
+        invokeValidator(root),
+        "The real current-root validator must accept current frontmatter maps and all four exact role report envelopes.",
+      );
+    },
+  },
+  {
+    name: "validator rejects an implementation-worker report envelope relocated outside exact Output ownership",
+    run: () => {
+      const fixture = newLibraryFixture("implementation-worker-relocated-report-envelope");
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "agents", "implementation-worker.md");
+      const file = path.join(fixture, relative);
+      const reportIntroduction = "Return exactly one final `IMPLEMENTATION_WORKER_REPORT` envelope:";
+      replaceRequiredText(
+        file,
+        reportIntroduction,
+        `${reportIntroduction}\n\n## Relocated Report Example`,
+      );
+
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A report fence moved below another H2 must fail exact Output ownership validation.");
+      assertOutputContains(
+        result,
+        "Agent must contain exactly one exact ## Output top-level ```markdown report envelope (<IMPLEMENTATION_WORKER_REPORT>...</IMPLEMENTATION_WORKER_REPORT>)",
+        "Relocated report diagnostic must name the exact implementation-worker envelope contract.",
+      );
+      assertOutputContains(result, relative, "Relocated report diagnostic must identify implementation-worker.md.");
+    },
+  },
+  {
+    name: "validator rejects report envelopes relocated below supported indented or tab-separated H1/H2 boundaries",
+    run: () => {
+      const boundaries = [
+        { label: "one-space H1", line: " # Relocated Report Boundary" },
+        { label: "two-space H2", line: "  ## Relocated Report Boundary" },
+        { label: "three-space H1", line: "   # Relocated Report Boundary" },
+        { label: "tab-separated H1", line: "#\tRelocated Report Boundary" },
+        { label: "one-space tab-separated H2", line: " ##\tRelocated Report Boundary" },
+      ] as const;
+
+      for (const boundary of boundaries) {
+        const fixture = newLibraryFixture(`implementation-worker-relocated-report-${boundary.label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+        addChangeReadySdlcFixture(fixture);
+        const relative = path.join("global", "agents", "implementation-worker.md");
+        const file = path.join(fixture, relative);
+        const reportIntroduction = "Return exactly one final `IMPLEMENTATION_WORKER_REPORT` envelope:";
+        replaceRequiredText(
+          file,
+          reportIntroduction,
+          `${reportIntroduction}\n\n${boundary.line}`,
+        );
+
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${boundary.label} must end exact Output ownership before the otherwise exact report envelope.`);
+        assertOutputContains(
+          result,
+          "Agent must contain exactly one exact ## Output top-level ```markdown report envelope (<IMPLEMENTATION_WORKER_REPORT>...</IMPLEMENTATION_WORKER_REPORT>)",
+          `${boundary.label} diagnostic must name the exact implementation-worker envelope contract.`,
+        );
+        assertOutputContains(result, relative, `${boundary.label} diagnostic must identify implementation-worker.md.`);
+        assert(
+          !result.output.includes("unsupported non-top-level fenced-code syntax"),
+          `${boundary.label} must be treated as a supported ownership boundary, not unsupported syntax.`,
+        );
+      }
+    },
+  },
+  {
+    name: "validator requires non-global implementation-worker handoff labels outside supported fences",
+    run: () => {
+      const surfaces = [
+        "REPO_AGENTS.md",
+        path.join("instructions", "reusable-project-agent-instructions.md"),
+        path.join("templates", "project", "AGENTS.md"),
+      ] as const;
+
+      for (const relative of surfaces) {
+        const fixture = newLibraryFixture(`operative-handoff-${relative.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+        addChangeReadySdlcFixture(fixture);
+        const file = path.join(fixture, relative);
+        replaceRequiredText(file, "Verification", "[removed-operative-handoff-field]");
+        writeText(file, `${fs.readFileSync(file, "utf8")}\n${operativeFenceCases[0].block(expectedImplementationWorkerHandoffFields.join("\n"))}`);
+
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${relative} must not satisfy handoff labels from a supported fence.`);
+        assertOutputContains(
+          result,
+          "implementation-worker handoff fields must include 'Verification'",
+          `${relative} must retain the exact missing operative handoff-field diagnostic.`,
+        );
+        assertOutputContains(result, relative, `Handoff-field diagnostic must identify ${relative}.`);
+        assert(!result.output.includes("unsupported non-top-level fenced-code syntax"), `${relative} supported fence must remain valid example syntax.`);
+      }
+    },
+  },
+  {
+    name: "validator requires unique devkit instruction markers outside supported fences",
+    run: () => {
+      const cases = [
+        {
+          label: "UDL Intake stage",
+          relative: path.join("instructions", "universal-development-loop.md"),
+          marker: "Intake",
+          diagnostic: "Universal Development Loop must include 'Intake'",
+        },
+        {
+          label: "project template remote and destructive guard",
+          relative: path.join("templates", "project", "AGENTS.md"),
+          marker: "Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested",
+          diagnostic: "project AGENTS.md remote/destructive guard must include 'Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested'",
+        },
+        {
+          label: "project template readiness non-authorization",
+          relative: path.join("templates", "project", "AGENTS.md"),
+          marker: "neither Pilot-Ready nor Change-Ready authorizes external operations",
+          diagnostic: "project AGENTS.md readiness non-authorization must include 'neither Pilot-Ready nor Change-Ready authorizes external operations'",
+        },
+        {
+          label: "REPO autonomy marker",
+          relative: "REPO_AGENTS.md",
+          marker: "Ask the user only",
+          diagnostic: "REPO_AGENTS.md autonomous work contract must include 'Ask the user only'",
+        },
+        {
+          label: "REPO completion handoff marker",
+          relative: "REPO_AGENTS.md",
+          marker: "(Recommended)",
+          diagnostic: "REPO_AGENTS.md completion handoff contract must include '(Recommended)'",
+        },
+        {
+          label: "REPO deterministic helper marker",
+          relative: "REPO_AGENTS.md",
+          marker: "no hidden heuristics",
+          diagnostic: "REPO_AGENTS.md deterministic helper automation policy must include 'no hidden heuristics'",
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newLibraryFixture(`operative-devkit-${item.label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+        addChangeReadySdlcFixture(fixture);
+        const file = path.join(fixture, item.relative);
+        replaceRequiredText(file, item.marker, `[removed-${item.label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}]`);
+        writeText(file, `${fs.readFileSync(file, "utf8")}\n${operativeFenceCases[0].block(item.marker)}`);
+
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${item.label} present only in a supported fence must fail aggregate validation.`);
+        assertOutputContains(result, item.diagnostic, `${item.label} diagnostic must name the exact devkit contract and marker.`);
+        assertOutputContains(result, item.relative, `${item.label} diagnostic must identify the affected model-facing path.`);
+        assert(!result.output.includes("unsupported non-top-level fenced-code syntax"), `${item.label} supported fence must not be classified as unsupported syntax.`);
+      }
+    },
+  },
+  {
+    name: "validator rejects unsupported syntax before model-facing devkit marker checks",
+    run: () => {
+      const surfaces = [
+        { label: "UDL", relative: path.join("instructions", "universal-development-loop.md") },
+        { label: "project template", relative: path.join("templates", "project", "AGENTS.md") },
+        { label: "REPO", relative: "REPO_AGENTS.md" },
+      ] as const;
+
+      for (const item of surfaces) {
+        const fixture = newLibraryFixture(`unsupported-devkit-${item.label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+        addChangeReadySdlcFixture(fixture);
+        const file = path.join(fixture, item.relative);
+        const current = fs.readFileSync(file, "utf8");
+        for (const marker of item.label === "UDL"
+          ? ["Intake", "Process Improvement"]
+          : item.label === "project template"
+            ? ["Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested", "neither Pilot-Ready nor Change-Ready authorizes external operations"]
+            : ["Ask the user only", "(Recommended)", "no hidden heuristics"]) {
+          assert(current.includes(marker), `${item.label} unsupported-syntax control must begin with its raw required marker: ${marker}`);
+        }
+        const prefix = current.endsWith("\n") ? current : `${current}\n`;
+        const unsupportedLineNumber = prefix.split(/\r?\n/).length;
+        const privateSentinel = `private-${item.label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-devkit-content`;
+        writeText(file, `${prefix}> \`\`\` ${privateSentinel}\n`);
+
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${item.label} unsupported non-top-level syntax must fail aggregate validation.`);
+        const expectedDiagnostic = `unsupported non-top-level fenced-code syntax at line ${unsupportedLineNumber}`;
+        assertOutputContains(result, expectedDiagnostic, `${item.label} diagnostic must report the exact unsupported line.`);
+        assertOutputContains(result, item.relative, `${item.label} unsupported-syntax diagnostic must identify the model-facing path.`);
+        const errors = result.output.split(/\r?\n/).filter((line) => line.startsWith("ERROR: "));
+        assert(errors.length > 0 && errors[0]!.includes(expectedDiagnostic), `${item.label} unsupported syntax must be the first aggregate error before marker success.`);
+        assert(!result.output.includes(privateSentinel), `${item.label} unsupported-syntax diagnostic must not expose source-line content.`);
+      }
+    },
+  },
+  {
     name: "validator permits role and planning deltas below the complete-policy threshold and rejects a complete policy copy",
     run: () => {
       for (const [surface, relative] of [
@@ -333,19 +916,308 @@ export const changeReadyValidatorTests: TestCase[] = [
     },
   },
   {
-    name: "validator ignores complete-policy duplicate markers inside closed and unclosed role examples",
+    name: "validator ignores forbidden and duplicate-policy markers inside closed and unclosed role examples",
     run: () => {
       for (const fence of operativeFenceCases) {
         const fixture = newLibraryFixture(`outcome-first-role-fenced-${fence.label}`);
         addChangeReadySdlcFixture(fixture);
         const relative = "global/agents/implementation-worker.md";
         const file = path.join(fixture, ...relative.split("/"));
+        const forbiddenPolicy = FORBIDDEN_PRODUCTION_ROUTING_PATTERNS[0];
+        assert(forbiddenPolicy != null, "Supported-fence control requires a configured forbidden routing pattern.");
+        // Fixture ownership: implementation-worker ends at ## Output, so a separate H2
+        // keeps this arbitrary example outside the exact report-envelope section.
         writeText(
           file,
-          `${fs.readFileSync(file, "utf8")}\n${fence.block(OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.join("\n"))}`,
+          `${fs.readFileSync(file, "utf8")}\n## Non-Operative Role Example\n\n${fence.block(`${OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.join("\n")}\n${forbiddenPolicy.needle}`)}`,
         );
-        assertSuccess(invokeValidator(fixture), `${fence.label} role example must not count toward complete-policy duplication.`);
+        assertSuccess(invokeValidator(fixture), `${fence.label} role example must not trigger forbidden-policy or complete-policy duplication checks.`);
       }
+    },
+  },
+  {
+    name: "validator treats reviewer action-list markers in fenced and indented code as non-operative",
+    run: () => {
+      const marker = "Actionable Continuation Items";
+      const relative = path.join("global", "agents", "sdet-quality-engineer.md");
+
+      const fencedFixture = newLibraryFixture("agent-action-marker-fenced-code");
+      addChangeReadySdlcFixture(fencedFixture);
+      const fencedFile = path.join(fencedFixture, relative);
+      writeText(
+        fencedFile,
+        `${fs.readFileSync(fencedFile, "utf8")}\n## Non-Operative Example\n\n${operativeFenceCases[0].block(marker)}`,
+      );
+      assertSuccess(
+        invokeValidator(fencedFixture),
+        "A forbidden reviewer action-list marker inside a supported fence must remain non-operative.",
+      );
+
+      const indentedFixture = newLibraryFixture("agent-action-marker-indented-code");
+      addChangeReadySdlcFixture(indentedFixture);
+      const indentedFile = path.join(indentedFixture, relative);
+      writeText(
+        indentedFile,
+        `${fs.readFileSync(indentedFile, "utf8")}\n## Non-Operative CommonMark Code\n\n    ${marker}\n`,
+      );
+      assertSuccess(
+        invokeValidator(indentedFixture),
+        "A forbidden reviewer action-list marker inside CommonMark indented code must remain non-operative.",
+      );
+
+      const tabIndentedFixture = newLibraryFixture("agent-action-marker-tab-indented-code");
+      addChangeReadySdlcFixture(tabIndentedFixture);
+      const tabIndentedFile = path.join(tabIndentedFixture, relative);
+      writeText(
+        tabIndentedFile,
+        `${fs.readFileSync(tabIndentedFile, "utf8")}\n## Non-Operative Tab Code\n\n\t${marker}\n`,
+      );
+      assertSuccess(
+        invokeValidator(tabIndentedFixture),
+        "A forbidden reviewer action-list marker inside tab-indented code must remain non-operative.",
+      );
+    },
+  },
+  {
+    name: "validator cannot certify implementation-worker behavior from fenced or indented role code",
+    run: () => {
+      const marker = "smallest complete happy path";
+      assert(
+        (IMPLEMENTATION_WORKER_REQUIRED_TEXT as readonly string[]).includes(marker),
+        "Role-code boundary fixture marker must remain configured in the implementation-worker contract.",
+      );
+      const cases = [
+        {
+          label: "supported-fence",
+          block: operativeFenceCases[0].block(marker),
+        },
+        {
+          label: "four-space-indented",
+          block: `    ${marker}\n`,
+        },
+        {
+          label: "tab-indented",
+          block: `\t${marker}\n`,
+        },
+        {
+          label: "one-space-tab-indented",
+          block: ` \t${marker}\n`,
+        },
+        {
+          label: "two-space-tab-indented",
+          block: `  \t${marker}\n`,
+        },
+        {
+          label: "three-space-tab-indented",
+          block: `   \t${marker}\n`,
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newLibraryFixture(`implementation-worker-marker-${item.label}`);
+        addChangeReadySdlcFixture(fixture);
+        const relative = path.join("global", "agents", "implementation-worker.md");
+        const file = path.join(fixture, relative);
+        replaceRequiredText(file, marker, `[removed-operative-${item.label}-marker]`);
+        writeText(
+          file,
+          `${fs.readFileSync(file, "utf8")}\n## Non-Operative Behavioral Example\n\n${item.block}`,
+        );
+
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${item.label} role code must not certify implementation-worker behavior.`);
+        assertOutputContains(
+          result,
+          `Implementation worker contract must include '${marker}'`,
+          `${item.label} diagnostic must name the missing operative behavioral marker.`,
+        );
+        assertOutputContains(result, relative, `${item.label} diagnostic must identify implementation-worker.md.`);
+        assert(
+          !result.output.includes("Agent must contain exactly one exact ## Output"),
+          `${item.label} example must remain outside and must not corrupt the exact report envelope.`,
+        );
+      }
+    },
+  },
+  {
+    name: "validator keeps one-to-three-space ordinary role text operative",
+    run: () => {
+      const marker = "smallest complete happy path";
+      assert(
+        (IMPLEMENTATION_WORKER_REQUIRED_TEXT as readonly string[]).includes(marker),
+        "Ordinary-indentation control marker must remain configured in the implementation-worker contract.",
+      );
+
+      for (const spaces of [1, 2, 3] as const) {
+        const fixture = newLibraryFixture(`implementation-worker-operative-${spaces}-space-text`);
+        addChangeReadySdlcFixture(fixture);
+        const relative = path.join("global", "agents", "implementation-worker.md");
+        const file = path.join(fixture, relative);
+        replaceRequiredText(file, marker, `[removed-operative-${spaces}-space-control]`);
+        writeText(
+          file,
+          `${fs.readFileSync(file, "utf8")}\n## Operative Indented Prose Control\n\n${" ".repeat(spaces)}${marker}\n`,
+        );
+
+        assertSuccess(
+          invokeValidator(fixture),
+          `${spaces} leading space(s) before ordinary marker text must remain operative at the real role-validator boundary.`,
+        );
+      }
+    },
+  },
+  {
+    name: "validator cannot certify implementation-worker continuation from four-column indented role code",
+    run: () => {
+      const marker = "prior Applicable Proof";
+      assert(
+        (IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT as readonly string[]).includes(marker),
+        "Indented continuation fixture marker must remain configured in the routing contract.",
+      );
+      const cases = [
+        { label: "four-space", block: `    ${marker}\n` },
+        { label: "two-space-tab", block: `  \t${marker}\n` },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newLibraryFixture(`implementation-worker-continuation-${item.label}-indented-only`);
+        addChangeReadySdlcFixture(fixture);
+        const relative = path.join("global", "agents", "implementation-worker.md");
+        const file = path.join(fixture, relative);
+        replaceRequiredText(file, marker, `[removed-operative-${item.label}-continuation-marker]`);
+        writeText(
+          file,
+          `${fs.readFileSync(file, "utf8")}\n## Non-Operative Continuation Example\n\n${item.block}`,
+        );
+
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${item.label} indented-only continuation text must fail the routing positive contract.`);
+        assertOutputContains(
+          result,
+          `implementation-worker same-slice continuation must include '${marker}'`,
+          `${item.label} continuation diagnostic must name the missing operative marker.`,
+        );
+        assertOutputContains(result, relative, `${item.label} continuation diagnostic must identify implementation-worker.md.`);
+        assert(
+          !result.output.includes("unsupported non-top-level fenced-code syntax"),
+          `${item.label} CommonMark indented role code is supported and non-operative, not unsupported fence syntax.`,
+        );
+      }
+    },
+  },
+  {
+    name: "validator excludes indented role examples from complete-policy and lifecycle duplication counts",
+    run: () => {
+      assert(
+        OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.length >= OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
+        "Indented count fixture requires enough complete-policy markers to reach its configured threshold.",
+      );
+      assert(
+        CHANGE_READY_SDLC_LIFECYCLE_MARKERS.length >= CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
+        "Indented count fixture requires enough lifecycle markers to reach its configured threshold.",
+      );
+      const fixture = newLibraryFixture("implementation-worker-indented-duplication-markers");
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "agents", "implementation-worker.md");
+      const file = path.join(fixture, relative);
+      const indentedPolicy = [
+        ...OUTCOME_FIRST_COMPLETE_POLICY_MARKERS.map((marker) => `    ${marker}`),
+        ...CHANGE_READY_SDLC_LIFECYCLE_MARKERS.map((marker) => `\t${marker}`),
+      ].join("\n");
+      writeText(
+        file,
+        `${fs.readFileSync(file, "utf8")}\n## Non-Operative Policy Examples\n\n${indentedPolicy}\n`,
+      );
+
+      assertSuccess(
+        invokeValidator(fixture),
+        "Indented role examples at both duplication thresholds must not trigger count-based policy failures.",
+      );
+    },
+  },
+  {
+    name: "validator does not allow an exact report envelope to certify non-allowlisted role behavior",
+    run: () => {
+      const marker = "smallest complete happy path";
+      assert(
+        (IMPLEMENTATION_WORKER_REQUIRED_TEXT as readonly string[]).includes(marker),
+        "Report-boundary fixture marker must remain a required implementation-worker behavior.",
+      );
+      const fixture = newLibraryFixture("implementation-worker-behavior-in-report-only");
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "agents", "implementation-worker.md");
+      const file = path.join(fixture, relative);
+      replaceRequiredText(file, marker, "[removed-operative-behavior-marker]");
+      replaceRequiredText(
+        file,
+        "</IMPLEMENTATION_WORKER_REPORT>",
+        `${marker}\n</IMPLEMENTATION_WORKER_REPORT>`,
+      );
+
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A non-allowlisted behavioral marker inside the exact report envelope must not certify the role contract.");
+      assertOutputContains(
+        result,
+        `Implementation worker contract must include '${marker}'`,
+        "Report-only behavior diagnostic must name the missing operative contract marker.",
+      );
+      assertOutputContains(result, relative, "Report-only behavior diagnostic must identify implementation-worker.md.");
+      assert(
+        !result.output.includes("Agent must contain exactly one exact ## Output"),
+        "The negative control must retain an otherwise exact report envelope.",
+      );
+    },
+  },
+  {
+    name: "validator cannot certify reusable-reviewer or configured agent text contracts from role code examples",
+    run: () => {
+      const genericMarker = "`Findings`: ordered by severity";
+      assert(
+        (REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT as readonly string[]).includes(genericMarker),
+        "Generic reviewer fixture marker must remain configured in the reusable leaf contract.",
+      );
+      const genericFixture = newLibraryFixture("generic-reviewer-marker-fenced-only");
+      addChangeReadySdlcFixture(genericFixture);
+      const genericRelative = path.join("global", "agents", "implementation-readiness-reviewer.md");
+      const genericFile = path.join(genericFixture, genericRelative);
+      replaceRequiredText(genericFile, genericMarker, "[removed-operative-generic-reviewer-marker]");
+      writeText(
+        genericFile,
+        `${fs.readFileSync(genericFile, "utf8")}\n## Non-Operative Reviewer Example\n\n${operativeFenceCases[0].block(genericMarker)}`,
+      );
+      const genericResult = invokeValidator(genericFixture);
+      assertFailure(genericResult, "A fenced-only reusable-reviewer marker must not certify the generic leaf contract.");
+      assertOutputContains(
+        genericResult,
+        `Reusable reviewer leaf contract must include '${genericMarker}'`,
+        "Generic reviewer diagnostic must name the missing operative marker.",
+      );
+      assertOutputContains(genericResult, genericRelative, "Generic reviewer diagnostic must identify its role file.");
+
+      const configuredMarker = "actual runtime envelope";
+      assert(
+        AGENT_TEXT_CONTRACTS.some(
+          (contract) => contract.fileName === "test-coverage-reviewer.md" && contract.requiredText.includes(configuredMarker),
+        ),
+        "Configured agent-text fixture marker must remain registered for test-coverage-reviewer.md.",
+      );
+      const configuredFixture = newLibraryFixture("configured-agent-text-marker-indented-only");
+      addChangeReadySdlcFixture(configuredFixture);
+      const configuredRelative = path.join("global", "agents", "test-coverage-reviewer.md");
+      const configuredFile = path.join(configuredFixture, configuredRelative);
+      replaceRequiredText(configuredFile, configuredMarker, "[removed-operative-configured-agent-text-marker]");
+      writeText(
+        configuredFile,
+        `${fs.readFileSync(configuredFile, "utf8")}\n## Non-Operative Contract Example\n\n    ${configuredMarker}\n`,
+      );
+      const configuredResult = invokeValidator(configuredFixture);
+      assertFailure(configuredResult, "An indented-only configured AGENT_TEXT_CONTRACTS marker must not certify the role contract.");
+      assertOutputContains(
+        configuredResult,
+        `test-coverage-reviewer must require task/repro/runtime-envelope coverage must include '${configuredMarker}'`,
+        "Configured agent-text diagnostic must name the missing operative marker.",
+      );
+      assertOutputContains(configuredResult, configuredRelative, "Configured agent-text diagnostic must identify test-coverage-reviewer.md.");
     },
   },
   {
@@ -393,7 +1265,7 @@ export const changeReadyValidatorTests: TestCase[] = [
       if (!qwen.includes("Actionable Continuation Items")) {
         throw new Error("qwen-local-worker fixture must exercise its existing non-registered continuation field.");
       }
-      assertSuccess(invokeValidator(fixture), "Closed-world validation must not apply registered-reviewer output fields to qwen-local-worker.");
+      assertSuccess(invokeValidator(fixture), "Outcome-authority validation must not apply registered-reviewer output fields to qwen-local-worker.");
     },
   },
   {
@@ -419,33 +1291,36 @@ export const changeReadyValidatorTests: TestCase[] = [
     },
   },
   ...([
-    ["post-freeze scope may only shrink", "REPO_AGENTS.md"],
-    ["new revision or separate change", path.join("instructions", "reusable-project-agent-instructions.md")],
-    ["never authorize scope expansion", path.join("templates", "project", "AGENTS.md")],
-    ["Blocking Evidence", path.join("instructions", "universal-development-loop.md")],
+    ["accepted outcome", "REPO_AGENTS.md"],
+    ["protected-boundary", path.join("instructions", "reusable-project-agent-instructions.md")],
+    ["dependency closure", path.join("templates", "project", "AGENTS.md")],
+    ["never authorize mutation", path.join("instructions", "universal-development-loop.md")],
+    ["Blocking Evidence", path.join("instructions", "reusable-project-agent-instructions.md")],
     ["Follow-up Candidates", "REPO_AGENTS.md"],
-    ["one correction wave", path.join("global", "AGENTS.md")],
-    ["frozen acceptance criterion", path.join("global", "skills", "change-ready-sdlc", "SKILL.md")],
+    ["correction wave", path.join("templates", "project", "AGENTS.md")],
+    ["root goal", path.join("instructions", "universal-development-loop.md")],
   ] as const).map(([marker, relative]): TestCase => ({
-    name: `validator rejects missing closed-world marker: ${marker}`,
+    name: `validator rejects missing shared outcome-authority marker: ${marker}`,
     run: () => {
-      const fixture = newLibraryFixture(`closed-world-missing-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      const fixture = newLibraryFixture(`outcome-authority-missing-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
       addChangeReadySdlcFixture(fixture);
-      if (!(CLOSED_WORLD_SCOPE_MARKERS as readonly string[]).includes(marker)) {
-        throw new Error(`Test marker is not registered as closed-world authority: ${marker}`);
+      if (!(OUTCOME_AUTHORITY_SCOPE_MARKERS as readonly string[]).includes(marker)) {
+        throw new Error(`Test marker is not registered as outcome authority: ${marker}`);
       }
       const file = path.join(fixture, relative);
-      replaceRequiredText(file, marker, `[removed-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}]`);
+      replaceRequiredText(file, marker, "[removed-shared-outcome-authority-marker]");
+      assert(!fs.readFileSync(file, "utf8").includes(marker), `Negative fixture must remove every occurrence of the shared outcome-authority marker: ${marker}`);
       const result = invokeValidator(fixture);
-      assertFailure(result, `Missing closed-world marker must fail validation: ${marker}`);
-      assertOutputContains(result, marker, "Diagnostic must name the missing closed-world marker.");
+      assertFailure(result, `Missing shared outcome-authority marker must fail validation: ${marker}`);
+      assertOutputContains(result, "outcome-authority scope contract", "Diagnostic must name the shared outcome-authority contract.");
+      assertOutputContains(result, marker, "Diagnostic must name the missing outcome-authority marker.");
       assertOutputContains(result, relative, "Diagnostic must identify the affected authority surface.");
     },
   })),
-  ...CLOSED_WORLD_FORBIDDEN_AUTHORITY_PATTERNS.map((pattern, index): TestCase => ({
-    name: `validator rejects superseded closed-world authority: ${pattern.diagnostic}`,
+  ...OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS.map((pattern, index): TestCase => ({
+    name: `validator rejects superseded outcome authority: ${pattern.diagnostic}`,
     run: () => {
-      const fixture = newLibraryFixture(`closed-world-forbidden-${index}`);
+      const fixture = newLibraryFixture(`outcome-authority-forbidden-${index}`);
       addChangeReadySdlcFixture(fixture);
       const relative = "REPO_AGENTS.md";
       const file = path.join(fixture, relative);
@@ -456,6 +1331,26 @@ export const changeReadyValidatorTests: TestCase[] = [
       assertOutputContains(result, relative, "Diagnostic must identify the affected authority surface.");
     },
   })),
+  {
+    name: "validator excludes historical OpenSpec policy text from active outcome-authority scans",
+    run: () => {
+      const fixture = newLibraryFixture("outcome-authority-historical-openspec-exclusion");
+      addChangeReadySdlcFixture(fixture);
+      const historicalText = OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS.map((pattern) => pattern.needle).join("\n");
+      writeText(
+        path.join(fixture, "openspec", "changes", "archive", "historical-closed-world-policy", "design.md"),
+        `# Historical policy record\n\n${historicalText}\n`,
+      );
+      writeText(
+        path.join(fixture, "openspec", "changes", "prior-policy-record", "proposal.md"),
+        `# Prior active-change record\n\n${historicalText}\n`,
+      );
+      assertSuccess(
+        invokeValidator(fixture),
+        "Historical OpenSpec records must not be treated as current loaded or project-facing authority.",
+      );
+    },
+  },
   ...([
     ["Missing Tests", path.join("global", "agents", "sdet-quality-engineer.md")],
     ["Missing Golden Tests", path.join("global", "agents", "test-coverage-reviewer.md")],
@@ -472,7 +1367,7 @@ export const changeReadyValidatorTests: TestCase[] = [
   ] as const).map(([field, relative]): TestCase => ({
     name: `validator rejects ${field} on ${relative}`,
     run: () => {
-      const fixture = newLibraryFixture(`closed-world-role-${relative}-${field}`.replace(/[^a-z0-9]+/gi, "-").toLowerCase());
+      const fixture = newLibraryFixture(`outcome-authority-role-${relative}-${field}`.replace(/[^a-z0-9]+/gi, "-").toLowerCase());
       addChangeReadySdlcFixture(fixture);
       const file = path.join(fixture, relative);
       writeText(file, `${fs.readFileSync(file, "utf8")}\n${field}\n`);
@@ -494,7 +1389,7 @@ export const changeReadyValidatorTests: TestCase[] = [
         throw new Error("Bootstrapped AGENTS.md must be byte-equivalent to the current project template.");
       }
       const text = bootstrapped.toString("utf8");
-      for (const token of ["Ordinary Small is the default", "Main may implement directly", "After applicable proof on Material/explicit qualification work", "fresh discovered conforming SDET session", "`sdet-quality-engineer` is the optional default SDET adapter only", "Missing active global `AGENTS.md` blocks Material/qualification work", "Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill", "unresolved validation procedures must be discovered before qualification", "For Material work, always run", "missing conforming capability blocks"]) {
+      for (const token of ["Ordinary Small is the default", "Main may implement directly", "After applicable proof on Material/explicit qualification work", "fresh discovered conforming SDET session", "`sdet-quality-engineer` is the optional default SDET adapter only", "Missing active global `AGENTS.md` blocks Material/qualification work", "Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill", "unresolved validation procedures must be discovered before qualification", "For Material work, always run", "missing conforming capability blocks", "accepted outcome and protected boundaries", "Necessary local reversible dependency closure is autonomous", "Never ask solely to approve an internal revision or process counter", "does not automatically end the root goal"]) {
         if (!text.includes(token)) throw new Error(`Bootstrapped AGENTS.md missing Change-Ready routing token: ${token}`);
       }
       if (fs.existsSync(path.join(target, "instructions", "universal-development-loop.md"))) {
@@ -597,6 +1492,63 @@ export const changeReadyValidatorTests: TestCase[] = [
       assertFailure(result, "Portable hardcode token should fail validation.");
       assertOutputContains(result, "forbidden portable-hardcode token 'npm '", "Diagnostic should name the forbidden token.");
       assertOutputContains(result, "change-ready-sdlc", "Diagnostic should name the canonical skill file.");
+    },
+  },
+  {
+    name: "validator enforces portable-hardcode token boundaries at the canonical skill subprocess",
+    run: () => {
+      const cases = [
+        {
+          label: "ordinary through suffix",
+          appendedText: "Continue through the discovered adapter.",
+          forbiddenToken: null,
+        },
+        {
+          label: "standalone gh command",
+          appendedText: "Invoke gh status through the discovered adapter.",
+          forbiddenToken: "gh ",
+        },
+        {
+          label: "dream team configured prefix",
+          appendedText: "Invoke dream_team_review through the discovered adapter.",
+          forbiddenToken: "dream_team_",
+        },
+        {
+          label: "WindowsService identifier",
+          appendedText: "Use the WindowsService adapter.",
+          forbiddenToken: null,
+        },
+        {
+          label: "standalone Windows name",
+          appendedText: "Use the Windows adapter.",
+          forbiddenToken: "Windows",
+        },
+        {
+          label: "punctuation-led GitHub path",
+          appendedText: "Read .github/workflows/validation.yml.",
+          forbiddenToken: ".github/",
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newLibraryFixture(`change-ready-portable-boundary-${item.label.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+        addChangeReadySdlcFixture(fixture);
+        const skillPath = path.join(fixture, "global", "skills", "change-ready-sdlc", "SKILL.md");
+        writeText(skillPath, `${fs.readFileSync(skillPath, "utf8")}\n${item.appendedText}\n`);
+
+        const result = invokeValidator(fixture);
+        if (item.forbiddenToken === null) {
+          assertSuccess(result, `${item.label} must not trigger a portable-hardcode diagnostic.`);
+          continue;
+        }
+
+        assertFailure(result, `${item.label} must trigger its configured portable-hardcode diagnostic.`);
+        assertOutputContains(
+          result,
+          `change-ready-sdlc forbidden portable-hardcode token '${item.forbiddenToken}': ${skillPath}`,
+          `${item.label} must emit the exact token-and-file diagnostic.`,
+        );
+      }
     },
   },
   {

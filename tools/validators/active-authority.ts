@@ -1,18 +1,29 @@
 import * as yaml from "js-yaml";
+import {
+  GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
+  GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
+  GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
+} from "../contracts/skills.ts";
 
 /**
- * CommonMark-style fenced code block line mask (backtick or tilde).
+ * Supported top-level fenced-code line mask (backtick or tilde only).
  * Pure and deterministic: no filesystem, process, environment, or logging side effects.
  *
- * Open: 0-3 leading ASCII spaces, then a run of 3+ identical `` ` `` or `~` markers
- * (for backtick fences the info string must not contain `` ` ``).
- * Close: 0-3 leading ASCII spaces, same marker character, run length at least the opener,
- * trailing horizontal whitespace only.
- * Fence delimiter lines and content between them are marked true. An unclosed fence
- * remains open through EOF. Four-space indented code is not a fence.
+ * Supported subset (not full CommonMark containers):
+ * - Open: exactly 0-3 leading ASCII spaces, then a run of 3+ identical `` ` `` or `~`
+ *   markers (for backtick fences the info string must not contain `` ` ``).
+ * - Close: exactly 0-3 leading ASCII spaces, same marker character, run length at least
+ *   the opener, trailing horizontal whitespace only.
+ * - Fence delimiter lines and content between them are marked true. An unclosed fence
+ *   remains open through EOF.
  *
- * @returns boolean array parallel to `lines`; true means the line is inside a fence
- *   (including the opening and closing fence delimiter lines).
+ * Non-top-level fence syntax (blockquote/list/nested-container prefixes, 4+ leading
+ * spaces, prose/inline prefixes before a 3+ fence run) is intentionally unsupported.
+ * Callers that need fail-closed operative text must use `operativeTextOutsideFences`
+ * or the AGENTS/skill authority entry points, which reject that syntax.
+ *
+ * @returns boolean array parallel to `lines`; true means the line is inside a supported
+ *   top-level fence (including the opening and closing fence delimiter lines).
  */
 export function fencedCodeLineMask(lines: readonly string[]): boolean[] {
   const mask = new Array<boolean>(lines.length);
@@ -42,20 +53,215 @@ export function fencedCodeLineMask(lines: readonly string[]): boolean[] {
 }
 
 /**
- * Deterministic operative text: all lines outside closed and unclosed fenced code
- * examples (fence delimiters excluded). Uses the same CommonMark fence mask as
- * heading/section parsing. No semantic classification.
+ * Structured operative scan: distinguishes legitimate empty operative text from
+ * unsupported non-top-level fence syntax. Pure and deterministic.
+ *
+ * - `operativeText`: lines outside supported top-level fences (empty string is valid
+ *   when the whole document is fenced or blank).
+ * - `unsupportedFenceLine`: 1-based line of the first unmasked line that contains any
+ *   3+ backtick/tilde run whose prefix is not exactly 0-3 ASCII spaces; null when none.
+ *   Every delimiter run on each unmasked line is inspected. Runs inside supported
+ *   top-level fences are ignored.
  */
-export function operativeTextOutsideFences(text: string): string {
+export type OperativeTextScan = {
+  operativeText: string;
+  unsupportedFenceLine: number | null;
+};
+
+/**
+ * First 1-based line number of an unsupported non-top-level fence delimiter run, or null.
+ * Inspects every 3+ backtick/tilde run on each unmasked line.
+ */
+function unsupportedNonTopLevelFenceLine(
+  lines: readonly string[],
+  fenced: readonly boolean[],
+): number | null {
+  for (let i = 0; i < lines.length; i += 1) {
+    if (fenced[i]) {
+      continue;
+    }
+    const line = lines[i]!;
+    const runPattern = /(`{3,}|~{3,})/g;
+    let run: RegExpExecArray | null;
+    while ((run = runPattern.exec(line)) != null) {
+      const prefix = line.slice(0, run.index);
+      if (!/^ {0,3}$/.test(prefix)) {
+        return i + 1;
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * One shared deterministic scan for operative authority text and unsupported fence syntax.
+ * Prefer this over the string wrapper when callers must distinguish ok vs unsupported.
+ */
+export function scanOperativeTextOutsideFences(text: string): OperativeTextScan {
   const lines = text.split(/\r?\n/);
   const fenced = fencedCodeLineMask(lines);
+  const unsupportedFenceLine = unsupportedNonTopLevelFenceLine(lines, fenced);
   const operative: string[] = [];
   for (let i = 0; i < lines.length; i += 1) {
     if (!fenced[i]) {
       operative.push(lines[i]!);
     }
   }
-  return operative.join("\n");
+  return {
+    operativeText: operative.join("\n"),
+    unsupportedFenceLine,
+  };
+}
+
+/**
+ * Compatibility wrapper over `scanOperativeTextOutsideFences`.
+ * Returns operative text when syntax is supported; returns "" when unsupported
+ * (fail-closed for callers that only need a string surface). Prefer the structured
+ * scan when positive/negative/count logic must not treat unsupported as empty success.
+ */
+export function operativeTextOutsideFences(text: string): string {
+  const scan = scanOperativeTextOutsideFences(text);
+  if (scan.unsupportedFenceLine != null) {
+    return "";
+  }
+  return scan.operativeText;
+}
+
+/**
+ * Model-facing Markdown body scan for role agent files (`global/agents/*.md`).
+ * Pure and deterministic: no filesystem, process, environment, or logging side effects.
+ *
+ * - Optional leading YAML frontmatter (`---` … `---`) is recognized and removed when
+ *   present; `rawBody` retains the post-frontmatter body (fences kept) for exact
+ *   report-schema parsing.
+ * - Supported top-level fences use `fencedCodeLineMask` / `scanOperativeTextOutsideFences`.
+ * - CommonMark indented code lines (tab or ≥4 ASCII spaces) are non-operative.
+ * - `unsupportedFenceLine` is the original file's 1-based line (frontmatter offset applied).
+ *
+ * Does not change general authority semantics of `scanOperativeTextOutsideFences`
+ * (fence-only; no frontmatter strip; no indented-code exclusion).
+ */
+export type ModelFacingMarkdownScan = {
+  /** True when a leading YAML frontmatter block was recognized and removed. */
+  hasFrontmatter: boolean;
+  /** Body after frontmatter removal (fences retained). Full text when no frontmatter. */
+  rawBody: string;
+  /**
+   * Operative model-facing text: outside supported fences and indented code.
+   * Empty string when unsupported fence syntax is present (fail-closed).
+   */
+  operativeBody: string;
+  /**
+   * Original-file 1-based line of the first unsupported non-top-level fence run,
+   * or null when syntax is supported.
+   */
+  unsupportedFenceLine: number | null;
+};
+
+/**
+ * Leading indentation column count under CommonMark four-column tab stops.
+ * ASCII space adds one column; tab advances to the next multiple of four.
+ * Stops at the first non-space/non-tab character.
+ */
+function leadingIndentationColumns(line: string): number {
+  let columns = 0;
+  for (let i = 0; i < line.length; i += 1) {
+    const ch = line[i]!;
+    if (ch === " ") {
+      columns += 1;
+      continue;
+    }
+    if (ch === "\t") {
+      columns = (Math.floor(columns / 4) + 1) * 4;
+      continue;
+    }
+    break;
+  }
+  return columns;
+}
+
+/**
+ * True when leading indentation reaches at least four columns (CommonMark
+ * indented code). Covers `\t`, four spaces, and mixed prefixes such as
+ * ` \t`, `  \t`, and `   \t`. One-to-three spaces alone are not indented code.
+ */
+function isIndentedCodeLine(line: string): boolean {
+  return leadingIndentationColumns(line) >= 4;
+}
+
+/**
+ * Supported ATX H1/H2 ownership-boundary line (not a full heading parser).
+ * Pure and deterministic.
+ *
+ * Recognizes:
+ * - optional 0-3 leading ASCII spaces (four spaces is indented code, not a heading);
+ * - exactly one or two `#` characters (H1/H2 only; H3–H6 do not match);
+ * - then at least one ASCII space or tab, or end of line (empty heading form).
+ *
+ * Does not relax byte-exact target heading equality checks used by schema extractors.
+ */
+export function isAtxH1OrH2BoundaryLine(line: string): boolean {
+  return /^ {0,3}#{1,2}(?:[ \t]+|$)/.test(line);
+}
+
+/**
+ * Strip an exact leading YAML frontmatter block when present.
+ * Returns null when the leading block is absent.
+ */
+function stripLeadingYamlFrontmatter(
+  text: string,
+): { body: string; lineOffset: number } | null {
+  const match = /^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/.exec(text);
+  if (match == null) {
+    return null;
+  }
+  const prefix = match[0];
+  return {
+    body: text.slice(prefix.length),
+    lineOffset: (prefix.match(/\r?\n/g) ?? []).length,
+  };
+}
+
+/**
+ * Shared deterministic model-facing body boundary for role agent Markdown.
+ * Prefer this over ad-hoc frontmatter/fence/indent scanners in agents and routing.
+ */
+export function scanModelFacingMarkdownBody(text: string): ModelFacingMarkdownScan {
+  const stripped = stripLeadingYamlFrontmatter(text);
+  const hasFrontmatter = stripped != null;
+  const rawBody = stripped != null ? stripped.body : text;
+  const lineOffset = stripped != null ? stripped.lineOffset : 0;
+
+  const scan = scanOperativeTextOutsideFences(rawBody);
+  if (scan.unsupportedFenceLine != null) {
+    return {
+      hasFrontmatter,
+      rawBody,
+      operativeBody: "",
+      unsupportedFenceLine: scan.unsupportedFenceLine + lineOffset,
+    };
+  }
+
+  const lines = rawBody.split(/\r?\n/);
+  const fenced = fencedCodeLineMask(lines);
+  const operative: string[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    if (fenced[i]) {
+      continue;
+    }
+    const line = lines[i]!;
+    if (isIndentedCodeLine(line)) {
+      continue;
+    }
+    operative.push(line);
+  }
+
+  return {
+    hasFrontmatter,
+    rawBody,
+    operativeBody: operative.join("\n"),
+    unsupportedFenceLine: null,
+  };
 }
 
 function tryOpenFence(line: string): { marker: "`" | "~"; length: number } | null {
@@ -80,36 +286,58 @@ function isCloseFence(line: string, marker: "`" | "~", minLength: number): boole
   return match != null && match[2]!.length >= minLength;
 }
 
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-/** Exact ATX heading line match (level 2), ignoring headings inside fenced code blocks. */
-function hasExactH2(text: string, title: string): boolean {
-  const re = new RegExp(`^##\\s+${escapeRegExp(title)}\\s*$`);
+/**
+ * Count of byte-exact unfenced ATX H2 target lines (`## ${title}`).
+ * Ignores lines inside supported fenced code blocks. Whitespace/tab/closing-hash
+ * variants do not match.
+ */
+function countExactH2(text: string, title: string): number {
+  const exact = `## ${title}`;
   const lines = text.split(/\r?\n/);
   const fenced = fencedCodeLineMask(lines);
+  let count = 0;
   for (let i = 0; i < lines.length; i += 1) {
-    if (!fenced[i] && re.test(lines[i]!)) {
-      return true;
+    if (!fenced[i] && lines[i] === exact) {
+      count += 1;
     }
   }
-  return false;
+  return count;
 }
 
 /**
- * Body of the first exact level-2 section outside fenced code blocks, or null when
- * the heading is missing. Section ends at the next non-fenced H2 (or EOF).
- * Fenced body lines (including fence delimiters) are omitted so they cannot satisfy
- * nonempty or required-instruction checks.
+ * Require exactly one byte-exact unfenced `## ${title}` before section-body trust.
+ * Zero → existing missing-heading diagnostic; more than one → section-specific
+ * duplicate diagnostic. Null means cardinality is exact one.
+ */
+function exactMandatoryH2CardinalityProblem(
+  text: string,
+  title: string,
+): string | null {
+  const count = countExactH2(text, title);
+  if (count === 0) {
+    return `AGENTS.md missing exact heading ## ${title}`;
+  }
+  if (count > 1) {
+    return `AGENTS.md duplicate exact heading ## ${title}`;
+  }
+  return null;
+}
+
+/**
+ * Body of the first byte-exact level-2 section outside fenced code blocks, or null
+ * when the heading is missing. Target is only `## ${title}`. Section ends at the
+ * next unfenced supported ATX H1/H2 ownership boundary (`isAtxH1OrH2BoundaryLine`)
+ * or EOF. Fenced body lines (including fence delimiters) are omitted so they cannot
+ * satisfy nonempty or required-instruction checks. H3–H6 and four-column indented
+ * code lines do not end ownership.
  */
 function sectionBodyAfterExactH2(text: string, title: string): string | null {
-  const re = new RegExp(`^##\\s+${escapeRegExp(title)}\\s*$`);
+  const exact = `## ${title}`;
   const lines = text.split(/\r?\n/);
   const fenced = fencedCodeLineMask(lines);
   let startLine = -1;
   for (let i = 0; i < lines.length; i += 1) {
-    if (!fenced[i] && re.test(lines[i]!)) {
+    if (!fenced[i] && lines[i] === exact) {
       startLine = i;
       break;
     }
@@ -119,7 +347,7 @@ function sectionBodyAfterExactH2(text: string, title: string): string | null {
   }
   const bodyLines: string[] = [];
   for (let i = startLine + 1; i < lines.length; i += 1) {
-    if (!fenced[i] && /^##\s+/.test(lines[i]!)) {
+    if (!fenced[i] && isAtxH1OrH2BoundaryLine(lines[i]!)) {
       break;
     }
     if (fenced[i]) {
@@ -166,8 +394,17 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (text.trim() === "") {
     return "AGENTS.md is empty";
   }
-  if (!hasExactH2(text, "Change-Ready SDLC Routing")) {
-    return "AGENTS.md missing exact heading ## Change-Ready SDLC Routing";
+  const scan = scanOperativeTextOutsideFences(text);
+  if (scan.unsupportedFenceLine != null) {
+    return `AGENTS.md contains unsupported non-top-level fenced-code syntax at line ${scan.unsupportedFenceLine}`;
+  }
+  const operative = scan.operativeText;
+  const routingHeadingProblem = exactMandatoryH2CardinalityProblem(
+    text,
+    "Change-Ready SDLC Routing",
+  );
+  if (routingHeadingProblem != null) {
+    return routingHeadingProblem;
   }
   const routing = sectionBodyAfterExactH2(text, "Change-Ready SDLC Routing");
   if (routing == null || routing.trim() === "") {
@@ -216,18 +453,30 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (!routing.includes(AGENTS_ROUTING_NO_DOWNGRADE_MARKER)) {
     return "AGENTS.md Change-Ready SDLC Routing section missing no high-risk downgrade for small diffs";
   }
-  if (!routing.includes("post-freeze scope may only shrink")) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing closed-world post-freeze shrink rule";
+  if (!routing.includes("accepted outcome")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing accepted-outcome authority marker";
   }
-  if (!routing.includes("never authorize scope expansion")) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing non-authorizing blocker rule";
+  if (!routing.includes("protected boundaries")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing protected-boundaries authority marker";
+  }
+  if (!routing.includes("smallest sufficient dependency closure")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing local reversible dependency-closure marker";
+  }
+  if (!routing.includes("never authorize mutation")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing non-authorizing findings rule";
   }
   if (!routing.includes("one correction wave")) {
     return "AGENTS.md Change-Ready SDLC Routing section missing finite one-correction-wave marker";
   }
+  if (!routing.includes("does not automatically end the unfinished root goal")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing attempt-versus-root-goal continuation marker";
+  }
+  if (!routing.includes("unchanged-candidate")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing unchanged-candidate anti-retry marker";
+  }
   // Outcome-first / Pilot-Ready may live outside the routing H2; check operative text only
   // (closed and unclosed fenced examples cannot satisfy authority markers).
-  const operative = operativeTextOutsideFences(text);
+  // `operative` comes from the structured scan above (unsupported already rejected).
   if (!operative.includes("Pilot-Ready: yes | no | not requested")) {
     return "AGENTS.md missing exact Pilot-Ready disposition token";
   }
@@ -258,23 +507,48 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (!operative.includes("disable/rollback/containment")) {
     return "AGENTS.md missing Pilot safety-floor disable/rollback/containment marker";
   }
-  if (!hasExactH2(text, "Universal Task Briefing Contract")) {
-    return "AGENTS.md missing exact heading ## Universal Task Briefing Contract";
+  for (const boundary of GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES) {
+    if (!operative.includes(boundary.marker)) {
+      return `AGENTS.md missing protected-boundary category: ${boundary.label}`;
+    }
+  }
+  if (!operative.includes(GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE)) {
+    return "AGENTS.md missing non-waivable critical-risk clause";
+  }
+  for (const field of GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS) {
+    if (!operative.includes(field)) {
+      return `AGENTS.md missing decision-ready handoff field: ${field}`;
+    }
+  }
+  const briefingHeadingProblem = exactMandatoryH2CardinalityProblem(
+    text,
+    "Universal Task Briefing Contract",
+  );
+  if (briefingHeadingProblem != null) {
+    return briefingHeadingProblem;
   }
   const briefing = sectionBodyAfterExactH2(text, "Universal Task Briefing Contract");
   if (briefing == null || briefing.trim() === "") {
     return "AGENTS.md Universal Task Briefing Contract section is empty";
   }
   // Runtime/owner/delivery authority sections (adapter-neutral structural markers).
-  if (!hasExactH2(text, "Autonomous Work Contract")) {
-    return "AGENTS.md missing exact heading ## Autonomous Work Contract";
+  const autonomousHeadingProblem = exactMandatoryH2CardinalityProblem(
+    text,
+    "Autonomous Work Contract",
+  );
+  if (autonomousHeadingProblem != null) {
+    return autonomousHeadingProblem;
   }
   const autonomous = sectionBodyAfterExactH2(text, "Autonomous Work Contract");
   if (autonomous == null || autonomous.trim() === "") {
     return "AGENTS.md Autonomous Work Contract section is empty";
   }
-  if (!hasExactH2(text, "Shared Reviewer Runtime Invariants")) {
-    return "AGENTS.md missing exact heading ## Shared Reviewer Runtime Invariants";
+  const reviewerHeadingProblem = exactMandatoryH2CardinalityProblem(
+    text,
+    "Shared Reviewer Runtime Invariants",
+  );
+  if (reviewerHeadingProblem != null) {
+    return reviewerHeadingProblem;
   }
   const reviewer = sectionBodyAfterExactH2(text, "Shared Reviewer Runtime Invariants");
   if (reviewer == null || reviewer.trim() === "") {
@@ -384,9 +658,14 @@ const SKILL_SCOPE_LOCK_MARKER = "project-specific scope lock";
 const SKILL_OWNER_APPROVAL_MARKER = "explicit owner approval";
 const SKILL_NO_DOWNGRADE_MARKER =
   "must not be downgraded merely because the diff is small";
-const SKILL_CLOSED_WORLD_SHRINK_MARKER = "post-freeze scope may only shrink";
-const SKILL_NON_AUTHORIZING_MARKER = "never authorize scope expansion";
+const SKILL_ACCEPTED_OUTCOME_MARKER = "accepted outcome";
+const SKILL_PROTECTED_BOUNDARIES_MARKER = "protected boundaries";
+const SKILL_DEPENDENCY_CLOSURE_MARKER = "smallest sufficient dependency closure";
+const SKILL_NON_AUTHORIZING_MARKER = "never authorize mutation";
 const SKILL_CORRECTION_WAVE_MARKER = "one correction wave";
+const SKILL_ROOT_GOAL_CONTINUATION_MARKER = "does not automatically end the unfinished root goal";
+const SKILL_UNCHANGED_CANDIDATE_MARKER = "Never retry an unchanged candidate";
+const SKILL_PROCESS_ONLY_BLOCKER_MARKER = "Never ask the user solely to approve an internal revision";
 const SKILL_BLOCKING_EVIDENCE_MARKER = "Blocking Evidence";
 const SKILL_FOLLOW_UP_CANDIDATES_MARKER = "Follow-up Candidates";
 const SKILL_FINAL_VERDICT_MARKER = "approved | approved_with_notes | rejected | blocked";
@@ -399,6 +678,10 @@ const SKILL_FINAL_VERDICT_MARKER = "approved | approved_with_notes | rejected | 
 export function skillAuthorityProblem(text: string): string | null {
   if (text.trim() === "") {
     return "skills/change-ready-sdlc/SKILL.md is empty";
+  }
+  const fullScan = scanOperativeTextOutsideFences(text);
+  if (fullScan.unsupportedFenceLine != null) {
+    return `skills/change-ready-sdlc/SKILL.md contains unsupported non-top-level fenced-code syntax at line ${fullScan.unsupportedFenceLine}`;
   }
   const fmMatch = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)([\s\S]*)$/);
   if (fmMatch == null) {
@@ -438,39 +721,56 @@ export function skillAuthorityProblem(text: string): string | null {
   if (headingProblem != null) {
     return headingProblem;
   }
-  if (!SKILL_ORDINARY_NONLOAD_MARKERS.some((marker) => body.includes(marker))) {
+  // Outcome-authority / safety markers must appear in operative body text only.
+  // Closed and unclosed fenced examples cannot satisfy authority markers.
+  // Complete Pilot floor enumeration is owned only by always-loaded global AGENTS; skill binds by reference.
+  // Unsupported syntax already rejected on full text (file line numbers); body scan is operative surface only.
+  const operativeBody = scanOperativeTextOutsideFences(body).operativeText;
+  if (!SKILL_ORDINARY_NONLOAD_MARKERS.some((marker) => operativeBody.includes(marker))) {
     return "skills/change-ready-sdlc/SKILL.md missing Ordinary Small non-load/default boundary";
   }
-  if (!body.includes(SKILL_SCOPE_LOCK_MARKER)) {
+  if (!operativeBody.includes(SKILL_SCOPE_LOCK_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing project-specific scope-lock control";
   }
-  if (!body.includes(SKILL_OWNER_APPROVAL_MARKER)) {
+  if (!operativeBody.includes(SKILL_OWNER_APPROVAL_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing explicit owner approval expansion rule";
   }
-  if (!body.includes(SKILL_NO_DOWNGRADE_MARKER)) {
+  if (!operativeBody.includes(SKILL_NO_DOWNGRADE_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing no high-risk downgrade for small diffs";
   }
-  if (!body.includes(SKILL_CLOSED_WORLD_SHRINK_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing closed-world post-freeze shrink rule";
+  if (!operativeBody.includes(SKILL_ACCEPTED_OUTCOME_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing accepted-outcome authority marker";
   }
-  if (!body.includes(SKILL_NON_AUTHORIZING_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing non-authorizing blocker rule";
+  if (!operativeBody.includes(SKILL_PROTECTED_BOUNDARIES_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing protected-boundaries authority marker";
   }
-  if (!body.includes(SKILL_CORRECTION_WAVE_MARKER)) {
+  if (!operativeBody.includes(SKILL_DEPENDENCY_CLOSURE_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing local reversible dependency-closure marker";
+  }
+  if (!operativeBody.includes(SKILL_NON_AUTHORIZING_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing non-authorizing findings rule";
+  }
+  if (!operativeBody.includes(SKILL_CORRECTION_WAVE_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing finite one-correction-wave marker";
   }
-  if (!body.includes(SKILL_BLOCKING_EVIDENCE_MARKER)) {
+  if (!operativeBody.includes(SKILL_ROOT_GOAL_CONTINUATION_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing attempt-versus-root-goal continuation marker";
+  }
+  if (!operativeBody.includes(SKILL_UNCHANGED_CANDIDATE_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing unchanged-candidate anti-retry marker";
+  }
+  if (!operativeBody.includes(SKILL_PROCESS_ONLY_BLOCKER_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing process-only-blocker prohibition marker";
+  }
+  if (!operativeBody.includes(SKILL_BLOCKING_EVIDENCE_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing Blocking Evidence output field";
   }
-  if (!body.includes(SKILL_FOLLOW_UP_CANDIDATES_MARKER)) {
+  if (!operativeBody.includes(SKILL_FOLLOW_UP_CANDIDATES_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing Follow-up Candidates output field";
   }
-  if (!body.includes(SKILL_FINAL_VERDICT_MARKER)) {
+  if (!operativeBody.includes(SKILL_FINAL_VERDICT_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing final-review rejected verdict enum";
   }
-  // Qualification Pilot markers must appear in operative body text, not only inside fenced examples.
-  // Complete floor enumeration is owned only by always-loaded global AGENTS; skill binds by reference.
-  const operativeBody = operativeTextOutsideFences(body);
   if (!operativeBody.includes("Pilot-Ready: yes | no | not requested")) {
     return "skills/change-ready-sdlc/SKILL.md missing exact Pilot-Ready disposition token";
   }

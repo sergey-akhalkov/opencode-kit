@@ -14,6 +14,29 @@ import {
   requireFile,
   requireTextContains,
 } from "./context.ts";
+import { scanOperativeTextOutsideFences } from "./active-authority.ts";
+
+/**
+ * Read a model-facing Markdown instruction surface with structured operative scan.
+ * Unsupported non-top-level fence syntax records a privacy-safe path+line error and
+ * returns null. Package/catalog/config/tool-source checks must not use this helper.
+ */
+function readOperativeModelFacingText(
+  ctx: ValidationContext,
+  file: string,
+): string | null {
+  if (!fileExists(file)) {
+    return null;
+  }
+  const scan = scanOperativeTextOutsideFences(readText(file));
+  if (scan.unsupportedFenceLine != null) {
+    ctx.addError(
+      `unsupported non-top-level fenced-code syntax at line ${scan.unsupportedFenceLine}: ${file}`,
+    );
+    return null;
+  }
+  return scan.operativeText;
+}
 
 function readPackageScripts(
   ctx: ValidationContext,
@@ -61,61 +84,65 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
 
   const universalLoop = path.join(root, "instructions", "universal-development-loop.md");
   if (fileExists(universalLoop)) {
-    const text = readText(universalLoop);
-    for (const required of [
-      "Intake",
-      "Evidence",
-      "Baseline Proof",
-      "Small Slice",
-      "Happy Path",
-      "Happy-Path Proof",
-      "Risk Discovery",
-      "Negative Tests",
-      "Harden",
-      "Review Gate",
-      "Final Validation",
-      "Handoff",
-      "Process Improvement",
-      "Pilot-Ready",
-      "Ordinary Small | Material",
-      "technically enforced operating envelope",
-      "remove/narrow/reuse/local guard",
-    ]) {
-      requireTextContains(ctx, text, required, "Universal Development Loop", universalLoop);
+    const text = readOperativeModelFacingText(ctx, universalLoop);
+    if (text != null) {
+      for (const required of [
+        "Intake",
+        "Evidence",
+        "Baseline Proof",
+        "Small Slice",
+        "Happy Path",
+        "Happy-Path Proof",
+        "Risk Discovery",
+        "Negative Tests",
+        "Harden",
+        "Review Gate",
+        "Final Validation",
+        "Handoff",
+        "Process Improvement",
+        "Pilot-Ready",
+        "Ordinary Small | Material",
+        "technically enforced operating envelope",
+        "remove/narrow/reuse/local guard",
+      ]) {
+        requireTextContains(ctx, text, required, "Universal Development Loop", universalLoop);
+      }
     }
   }
 
   const projectTemplate = path.join(root, "templates", "project", "AGENTS.md");
   if (fileExists(projectTemplate)) {
-    const projectTemplateText = readText(projectTemplate);
-    requireTextContains(
-      ctx,
-      projectTemplateText,
-      "Universal Development Loop",
-      "project AGENTS.md template",
-      projectTemplate,
-    );
-    requireTextContains(
-      ctx,
-      projectTemplateText,
-      "Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested",
-      "project AGENTS.md remote/destructive guard",
-      projectTemplate,
-    );
-    requireTextContains(
-      ctx,
-      projectTemplateText,
-      "Pilot-Ready: yes | no | not requested",
-      "project AGENTS.md Pilot-Ready disposition",
-      projectTemplate,
-    );
-    requireTextContains(
-      ctx,
-      projectTemplateText,
-      "neither Pilot-Ready nor Change-Ready authorizes external operations",
-      "project AGENTS.md readiness non-authorization",
-      projectTemplate,
-    );
+    const projectTemplateText = readOperativeModelFacingText(ctx, projectTemplate);
+    if (projectTemplateText != null) {
+      requireTextContains(
+        ctx,
+        projectTemplateText,
+        "Universal Development Loop",
+        "project AGENTS.md template",
+        projectTemplate,
+      );
+      requireTextContains(
+        ctx,
+        projectTemplateText,
+        "Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested",
+        "project AGENTS.md remote/destructive guard",
+        projectTemplate,
+      );
+      requireTextContains(
+        ctx,
+        projectTemplateText,
+        "Pilot-Ready: yes | no | not requested",
+        "project AGENTS.md Pilot-Ready disposition",
+        projectTemplate,
+      );
+      requireTextContains(
+        ctx,
+        projectTemplateText,
+        "neither Pilot-Ready nor Change-Ready authorizes external operations",
+        "project AGENTS.md readiness non-authorization",
+        projectTemplate,
+      );
+    }
   }
 
   const projectFeedbackTemplate = path.join(
@@ -329,7 +356,10 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
     );
   }
 
-  const agentsText = readText(agentsPath);
+  const agentsText = readOperativeModelFacingText(ctx, agentsPath);
+  if (agentsText == null) {
+    return;
+  }
   requireTextContains(
     ctx,
     agentsText,
@@ -383,21 +413,49 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
     ctx,
     agentsText,
     "Blocking Evidence",
-    "REPO_AGENTS.md closed-world reviewer handoff contract",
+    "REPO_AGENTS.md outcome-authority reviewer handoff contract",
     agentsPath,
   );
   requireTextContains(
     ctx,
     agentsText,
-    "post-freeze scope may only shrink",
-    "REPO_AGENTS.md closed-world scope firewall",
+    "accepted outcome and protected boundaries",
+    "REPO_AGENTS.md outcome-authority scope contract",
     agentsPath,
   );
   requireTextContains(
     ctx,
     agentsText,
-    "never authorize scope expansion",
-    "REPO_AGENTS.md closed-world scope firewall",
+    "necessary local reversible dependency closure is autonomous",
+    "REPO_AGENTS.md outcome-authority scope contract",
+    agentsPath,
+  );
+  requireTextContains(
+    ctx,
+    agentsText,
+    "never authorize mutation",
+    "REPO_AGENTS.md outcome-authority scope contract",
+    agentsPath,
+  );
+  requireTextContains(
+    ctx,
+    agentsText,
+    "does not automatically end the root goal",
+    "REPO_AGENTS.md outcome-authority attempt-versus-root contract",
+    agentsPath,
+  );
+  requireTextContains(
+    ctx,
+    agentsText,
+    "Never ask solely to approve an internal revision",
+    "REPO_AGENTS.md outcome-authority process-only-blocker contract",
+    agentsPath,
+  );
+  requireTextContains(
+    ctx,
+    agentsText,
+    "Decision-ready handoff",
+    "REPO_AGENTS.md outcome-authority decision-ready handoff contract",
     agentsPath,
   );
   requireTextContains(

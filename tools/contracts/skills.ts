@@ -242,28 +242,96 @@ export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
   },
 ] as const;
 
-/** Closed-world markers required in the canonical Change-Ready skill body. */
-export const CHANGE_READY_SDLC_CLOSED_WORLD_MARKERS: readonly string[] = [
-  "post-freeze scope may only shrink",
-  "new revision or separate change",
-  "never authorize scope expansion",
+/** Outcome-authority markers required in the canonical Change-Ready skill body. */
+export const CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
+  "accepted outcome",
+  "protected boundaries",
+  "smallest sufficient dependency closure",
+  "never authorize mutation",
   "Blocking Evidence",
   "Follow-up Candidates",
   "one correction wave",
-  "frozen acceptance criterion",
+  "does not automatically end the unfinished root goal",
+  "Never retry an unchanged candidate",
+  "Never ask the user solely to approve an internal revision",
   "approved | approved_with_notes | rejected | blocked",
   "persistent evidence infrastructure",
 ];
 
-/** Closed-world markers required in always-loaded global AGENTS routing. */
-export const GLOBAL_AGENTS_CLOSED_WORLD_MARKERS: readonly string[] = [
-  "post-freeze scope may only shrink",
-  "new revision or separate change",
-  "never authorize scope expansion",
+/** Outcome-authority markers required in always-loaded global AGENTS routing. */
+export const GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
+  "accepted outcome",
+  "protected boundaries",
+  "smallest sufficient dependency closure",
+  "never authorize mutation",
   "Blocking Evidence",
   "Follow-up Candidates",
   "one correction wave",
+  "does not automatically end the unfinished root goal",
+  "Never ask solely to approve an internal revision",
+  "unchanged-candidate",
+  "decision-ready",
   "approved | approved_with_notes | rejected | blocked",
+];
+
+/**
+ * Exact owner-authority protected-boundary categories required in always-loaded global AGENTS.
+ * Labels are privacy-safe diagnostics; markers are deterministic substrings only.
+ */
+export const GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES: readonly {
+  label: string;
+  marker: string;
+}[] = [
+  { label: "credentials/elevation", marker: "credentials/elevation" },
+  {
+    label: "destructive/irreversible/remote action",
+    marker: "destructive, irreversible, or remote action",
+  },
+  {
+    label: "deployment/install/activation/release/publication",
+    marker: "deployment/install/activation/release/publication",
+  },
+  {
+    label: "owner-controlled cost/external commitment",
+    marker: "owner-controlled cost/external commitment",
+  },
+  {
+    label: "public API/protocol/compatibility semantics",
+    marker: "changed public API/protocol/compatibility semantics",
+  },
+  {
+    label: "persisted-data/migration semantics",
+    marker: "persisted-data/migration semantics",
+  },
+  {
+    label: "security/privacy/authorization semantics",
+    marker: "security/privacy/authorization semantics",
+  },
+  {
+    label: "product/legal/policy decisions",
+    marker: "product/legal/policy decisions",
+  },
+];
+
+/**
+ * Exact non-waivable critical-risk clause required in always-loaded global AGENTS operative text.
+ */
+export const GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE =
+  "User acceptance cannot waive uncontrolled authorization, privacy, data-integrity, irreversible-action, or envelope-escape risk.";
+
+/**
+ * Exact decision-ready blocker handoff fields required in always-loaded global AGENTS operative text.
+ */
+export const GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS: readonly string[] = [
+  "outcome working status",
+  "exact failure/evidence",
+  "root-cause status/confidence",
+  "attempted paths",
+  "why no authorized path remains",
+  "exact requested action",
+  "real alternatives/consequences if any",
+  "residual risk",
+  "preserved state",
 ];
 
 /** Mandatory ordinary-default and qualification-trigger tokens for global/AGENTS.md. */

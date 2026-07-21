@@ -1,6 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
+  GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
+  GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
+} from "../contracts/skills.ts";
+import {
   asArray,
   asRecord,
   assert,
@@ -60,17 +65,40 @@ const namedMaterialRiskFixtureCases = [
   ["loaded instruction configuration lifecycle safety", "loaded instruction/configuration change that alters lifecycle or safety policy", "runtime guidance changes", "loaded instruction/config lifecycle/safety"],
 ] as const;
 const namedMaterialRiskFixtureText = namedMaterialRiskFixtureCases.map(([, marker]) => marker).join(", ");
+const protectedBoundaryAuthorityFixtureText = GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ marker }) => marker).join("; ");
+const decisionReadyHandoffFixtureText = GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS.join("; ");
+
+const globalAuthorityMinimumFixtureCases = [
+  ...GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ label, marker }) => ({
+    name: `protected-boundary-${label}`,
+    marker,
+    diagnostic: `AGENTS.md missing protected-boundary category: ${label}`,
+  })),
+  {
+    name: "non-waivable-critical-risk-clause",
+    marker: GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
+    diagnostic: "AGENTS.md missing non-waivable critical-risk clause",
+  },
+  ...GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS.map((field) => ({
+    name: `decision-ready-${field}`,
+    marker: field,
+    diagnostic: `AGENTS.md missing decision-ready handoff field: ${field}`,
+  })),
+];
 
 const conformingAgentsAuthority = `# Independent Active Authority
 ## Change-Ready SDLC Routing
 Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
 Profiles remain Ordinary Small | Material. Pilot-Ready: yes | no | not requested is a disposition inside a technically enforced operating envelope. Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
 Path: prove it observably before inspecting realistic requirement-linked edge cases.
-Unrequested scope expansion requires explicit user approval.
-After freeze, post-freeze scope may only shrink. Findings may block readiness but never authorize scope expansion. Qualification permits one correction wave.
+The accepted outcome and protected boundaries define scope; expansion requires explicit user approval. Necessary local reversible work uses the smallest sufficient dependency closure. Findings never authorize mutation.
+Qualification permits one correction wave. Attempt failure does not automatically end the unfinished root goal. An unchanged-candidate must not be retried blindly.
 Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
 Before Pilot-Ready: yes, require a bounded outcome and non-goals, real-boundary happy-path proof, focused project-native validation, critical safety/data/authorization protection, sufficient material failure visibility, and proportional disable/rollback/containment.
+Protected-boundary owner authority includes: ${protectedBoundaryAuthorityFixtureText}.
+${GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE}
+Decision-ready handoff states: ${decisionReadyHandoffFixtureText}. State every listed field explicitly; when evidence is absent, use unknown or none.
 ## Universal Task Briefing Contract
 Provide an execution-ready brief before specialist dispatch.
 ## Autonomous Work Contract
@@ -89,8 +117,8 @@ Ordinary Small does **not** load this skill.
 Load before mutation for a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
 ## Profile
-Classify the change before mutation and record a project-specific scope lock. Expansion requires explicit owner approval.
-After freeze, post-freeze scope may only shrink; expansion requires a new revision or separate change. Findings use Blocking Evidence and non-authorizing Follow-up Candidates and never authorize scope expansion. Qualification permits one correction wave for a frozen acceptance criterion, with no persistent evidence infrastructure. Final review uses approved | approved_with_notes | rejected | blocked.
+Classify the change before mutation and record a project-specific scope lock around the accepted outcome and protected boundaries. Expansion requires explicit owner approval.
+Necessary local reversible work uses the smallest sufficient dependency closure. Findings use Blocking Evidence and non-authorizing Follow-up Candidates and never authorize mutation. Qualification permits one correction wave with no persistent evidence infrastructure and does not automatically end the unfinished root goal. Never retry an unchanged candidate. Never ask the user solely to approve an internal revision. Final review uses approved | approved_with_notes | rejected | blocked.
 ## Adapter Discovery
 ## Authoritative Brief
 ## Orchestrator ownership
@@ -130,6 +158,7 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
     .replace('from "js-yaml"', `from "${import.meta.resolve("js-yaml")}"`);
   assert(!isolatedAuthoritySource.includes('from "js-yaml"'), "Isolated active-authority must resolve the real installed js-yaml module.");
   writeText(path.join(fixtureRoot, "tools", "validators", "active-authority.ts"), isolatedAuthoritySource);
+  writeText(path.join(fixtureRoot, "tools", "contracts", "skills.ts"), fs.readFileSync(path.join(root, "tools", "contracts", "skills.ts"), "utf8"));
   const configPolicy = fs.readFileSync(path.join(root, "tools", "validators", "opencode-config.ts"), "utf8")
     .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
   writeText(path.join(fixtureRoot, "tools", "validators", "opencode-config.ts"), configPolicy);
@@ -212,7 +241,11 @@ export const doctorTests: TestCase[] = [
       const doctorSource = fs.readFileSync(path.join(root, "tools", "doctor.ts"), "utf8");
       const authoritySource = fs.readFileSync(path.join(root, "tools", "validators", "active-authority.ts"), "utf8");
       assert(doctorSource.includes('from "./validators/active-authority.ts"'), "Doctor must import the active-authority policy module.");
-      assertEqual([...authoritySource.matchAll(/from\s+["']([^"']+)["']/g)].map((match) => match[1]).join(","), "js-yaml", "Active-authority must import only its real YAML parser dependency.");
+      assertEqual(
+        [...authoritySource.matchAll(/from\s+["']([^"']+)["']/g)].map((match) => match[1]).join(","),
+        "js-yaml,../contracts/skills.ts",
+        "Active-authority imports must remain limited to the real YAML parser and canonical authority marker groups.",
+      );
       for (const symbol of ["agentsAuthorityProblem", "skillAuthorityProblem"]) {
         assert(authoritySource.includes(`export function ${symbol}(`), `Active-authority must export ${symbol}.`);
         assert(!new RegExp(`(?:export\\s+)?function\\s+${symbol}\\s*\\(`).test(doctorSource), `Doctor must not duplicate ${symbol}.`);
@@ -583,6 +616,143 @@ export const doctorTests: TestCase[] = [
     },
   },
   {
+    name: "doctor blocks copied AGENTS heading drift, duplicate cardinality, and cross-section marker ownership",
+    run: () => {
+      const cases = [
+        {
+          name: "routing-target-tab-separator",
+          text: conformingAgentsAuthority.replace(
+            "## Change-Ready SDLC Routing",
+            "##\tChange-Ready SDLC Routing",
+          ),
+          problem: "AGENTS.md missing exact heading ## Change-Ready SDLC Routing",
+        },
+        {
+          name: "routing-markers-below-indented-h2",
+          text: conformingAgentsAuthority.replace(
+            "## Change-Ready SDLC Routing\n",
+            "## Change-Ready SDLC Routing\n  ## Other\n",
+          ),
+          problem: "AGENTS.md Change-Ready SDLC Routing section is empty",
+        },
+        {
+          name: "routing-duplicate-exact-heading",
+          text: `${conformingAgentsAuthority}\n## Change-Ready SDLC Routing\nprivate-routing-duplicate-body\n`,
+          problem: "AGENTS.md duplicate exact heading ## Change-Ready SDLC Routing",
+          privateSentinel: "private-routing-duplicate-body",
+        },
+        {
+          name: "reviewer-duplicate-exact-heading",
+          text: `${conformingAgentsAuthority}\n## Shared Reviewer Runtime Invariants\nprivate-reviewer-duplicate-body\n`,
+          problem: "AGENTS.md duplicate exact heading ## Shared Reviewer Runtime Invariants",
+          privateSentinel: "private-reviewer-duplicate-body",
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newIsolatedDoctorFixture(item.name, "{}\n");
+        writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), concreteAdapter);
+        writeText(path.join(fixture.globalDir, "AGENTS.md"), item.text);
+
+        const result = invokeIsolatedDoctor(fixture);
+        assertSuccess(result, `${item.name} must remain a successful machine-readable doctor command.`);
+        const { checks, report } = parseDoctorV2(result);
+        assertEqual(report.status, "warn", `${item.name} must remain a structural warning rather than a process crash.`);
+        assertEqual(report.qualificationStatus, "blocked", `${item.name} must block qualification.`);
+        const authority = findBucket(checks, "name", "active kit required runtime authority");
+        assertEqual(authority.status, "warn", `${item.name} must warn at the active-authority boundary.`);
+        assertEqual(authority.blocksQualification, true, `${item.name} must expose blocksQualification=true.`);
+        assertEqual(
+          authority.detail,
+          `Resolved active global config (OPENCODE_CONFIG_DIR) has incomplete required runtime authority: ${item.problem}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks behavior-changing Change-Ready work.`,
+          `${item.name} must return the exact privacy-safe structural detail.`,
+        );
+        if ("privateSentinel" in item) {
+          assert(!result.output.includes(item.privateSentinel), `${item.name} doctor output must not expose duplicate-section body content.`);
+        }
+      }
+    },
+  },
+  {
+    name: "doctor blocks copied authority missing each protected boundary, non-waivable risk, or decision-ready handoff field",
+    run: () => {
+      for (const item of globalAuthorityMinimumFixtureCases) {
+        const fixture = newIsolatedDoctorFixture(`copied-authority-${item.name.replace(/[^a-z0-9]+/gi, "-")}`, "{\n  \"permission\": \"ask\"\n}\n");
+        writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), concreteAdapter);
+        const copied = path.join(fixture.root, "copied-active-global");
+        writeConformingAuthority(copied);
+        writeText(path.join(copied, "opencode.json"), "{}\n");
+        const agentsPath = path.join(copied, "AGENTS.md");
+        const complete = fs.readFileSync(agentsPath, "utf8");
+        const incomplete = complete.replaceAll(item.marker, `[removed-${item.name.replace(/[^a-z0-9]+/gi, "-")}]`);
+        assert(incomplete !== complete, `Copied authority fixture must contain ${item.name}.`);
+        assert(!incomplete.includes(item.marker), `Copied authority fixture must remove every occurrence of ${item.name}.`);
+        writeText(agentsPath, incomplete);
+
+        const result = invokeIsolatedDoctor(fixture, { OPENCODE_CONFIG_DIR: copied });
+        assertSuccess(result, `${item.name} must remain a machine-readable structural warning.`);
+        const { checks, report } = parseDoctorV2(result);
+        assertEqual(report.qualificationStatus, "blocked", `${item.name} must block qualification.`);
+        const authority = findBucket(checks, "name", "active kit required runtime authority");
+        assertEqual(authority.status, "warn", `${item.name} must fail copied active-authority certification.`);
+        assertEqual(authority.blocksQualification, true, `${item.name} must expose blocksQualification=true.`);
+        assert(String(authority.detail).includes(item.diagnostic), `${item.name} diagnostic must identify '${item.diagnostic}', got: ${String(authority.detail)}`);
+      }
+    },
+  },
+  {
+    name: "doctor blocks qualification for unsupported blockquote and list-container authority fences",
+    run: () => {
+      const cases = [
+        {
+          name: "agents-blockquote-fence",
+          relative: "AGENTS.md",
+          text: conformingAgentsAuthority.replace(
+            "# Independent Active Authority\n",
+            "# Independent Active Authority\n> ``` private-agents-authority-content\n",
+          ),
+          expected: "AGENTS.md contains unsupported non-top-level fenced-code syntax at line 2",
+          privateSentinel: "private-agents-authority-content",
+        },
+        {
+          name: "skill-list-container-fence",
+          relative: path.join("skills", "change-ready-sdlc", "SKILL.md"),
+          text: conformingSkillAuthority.replace(
+            "---\n# Change-Ready SDLC",
+            "---\n> - ~~~ private-skill-authority-content\n# Change-Ready SDLC",
+          ),
+          expected: "skills/change-ready-sdlc/SKILL.md contains unsupported non-top-level fenced-code syntax at line 5",
+          privateSentinel: "private-skill-authority-content",
+        },
+        {
+          name: "agents-later-delimiter-run",
+          relative: "AGENTS.md",
+          text: conformingAgentsAuthority.replace(
+            "# Independent Active Authority\n",
+            "# Independent Active Authority\n``` invalid opener prose > ``` private-later-doctor-content\n",
+          ),
+          expected: "AGENTS.md contains unsupported non-top-level fenced-code syntax at line 2",
+          privateSentinel: "private-later-doctor-content",
+        },
+      ] as const;
+
+      for (const item of cases) {
+        const fixture = newIsolatedDoctorFixture(item.name, "{}\n");
+        writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), concreteAdapter);
+        writeText(path.join(fixture.globalDir, item.relative), item.text);
+        const result = invokeIsolatedDoctor(fixture);
+        assertSuccess(result, `${item.name} should remain a machine-readable structural warning.`);
+        const { checks, report } = parseDoctorV2(result);
+        assertEqual(report.qualificationStatus, "blocked", `${item.name} must block qualification.`);
+        const authority = findBucket(checks, "name", "active kit required runtime authority");
+        assertEqual(authority.status, "warn", `${item.name} must fail active-authority certification.`);
+        assertEqual(authority.blocksQualification, true, `${item.name} must expose blocksQualification=true.`);
+        assert(String(authority.detail).includes(item.expected), `${item.name} must report the exact privacy-safe line diagnostic.`);
+        assert(!result.output.includes(item.privateSentinel), `${item.name} doctor output must not expose source-line content.`);
+      }
+    },
+  },
+  {
     name: "doctor resolves an unset override to a deterministic isolated default home",
     run: () => {
       const fixture = newIsolatedDoctorFixture("default-active-global", "{\n  \"permission\": \"ask\"\n}\n");
@@ -616,19 +786,28 @@ export const doctorTests: TestCase[] = [
         { name: "agents-missing-user-approval", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("explicit user approval", "later consideration"), expected: "missing explicit owner approval before unrequested scope expansion" },
         { name: "agents-missing-explicit-change-ready", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("explicit Change-Ready", "owner-requested qualification"), expected: "missing explicit Change-Ready qualification trigger" },
         { name: "agents-missing-project-qualification", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("project-required qualification", "project guidance"), expected: "missing project-required qualification trigger" },
-        ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `agents-risk-${name}`, relative: "AGENTS.md", text: conformingAgentsAuthority.replace(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
+        ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `agents-risk-${name}`, relative: "AGENTS.md", text: conformingAgentsAuthority.replaceAll(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
         { name: "agents-missing-no-downgrade", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
-        { name: "agents-missing-post-freeze-shrink", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("post-freeze scope may only shrink", "scope remains bounded after freeze"), expected: "missing closed-world post-freeze shrink rule" },
-        { name: "agents-missing-non-authorizing-blocker", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("never authorize scope expansion", "do not normally expand scope"), expected: "missing non-authorizing blocker rule" },
+        { name: "agents-missing-accepted-outcome", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("accepted outcome", "planned work"), expected: "missing accepted-outcome authority marker" },
+        { name: "agents-missing-protected-boundaries", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("protected boundaries", "special cases"), expected: "missing protected-boundaries authority marker" },
+        { name: "agents-missing-dependency-closure", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("smallest sufficient dependency closure", "small local repair"), expected: "missing local reversible dependency-closure marker" },
+        { name: "agents-missing-non-authorizing-findings", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("never authorize mutation", "usually do not authorize mutation"), expected: "missing non-authorizing findings rule" },
         { name: "agents-missing-one-correction-wave", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("one correction wave", "bounded corrections"), expected: "missing finite one-correction-wave marker" },
+        { name: "agents-missing-root-goal-continuation", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("does not automatically end the unfinished root goal", "ends the workflow"), expected: "missing attempt-versus-root-goal continuation marker" },
+        { name: "agents-missing-unchanged-anti-retry", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("unchanged-candidate", "same candidate"), expected: "missing unchanged-candidate anti-retry marker" },
         { name: "skill-missing-ordinary-nonload", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("does **not** load this skill", "uses a compact path"), expected: "missing Ordinary Small non-load/default boundary" },
         { name: "skill-missing-scope-lock", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("project-specific scope lock", "task boundary"), expected: "missing project-specific scope-lock control" },
         { name: "skill-missing-owner-approval", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("explicit owner approval", "later review"), expected: "missing explicit owner approval expansion rule" },
-        ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `skill-risk-${name}`, relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
+        ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `skill-risk-${name}`, relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replaceAll(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
         { name: "skill-missing-no-downgrade", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
-        { name: "skill-missing-post-freeze-shrink", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("post-freeze scope may only shrink", "scope remains bounded after freeze"), expected: "missing closed-world post-freeze shrink rule" },
-        { name: "skill-missing-non-authorizing-blocker", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("never authorize scope expansion", "do not normally expand scope"), expected: "missing non-authorizing blocker rule" },
+        { name: "skill-missing-accepted-outcome", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("accepted outcome", "planned work"), expected: "missing accepted-outcome authority marker" },
+        { name: "skill-missing-protected-boundaries", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("protected boundaries", "special cases"), expected: "missing protected-boundaries authority marker" },
+        { name: "skill-missing-dependency-closure", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("smallest sufficient dependency closure", "small local repair"), expected: "missing local reversible dependency-closure marker" },
+        { name: "skill-missing-non-authorizing-findings", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("never authorize mutation", "usually do not authorize mutation"), expected: "missing non-authorizing findings rule" },
         { name: "skill-missing-one-correction-wave", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("one correction wave", "bounded corrections"), expected: "missing finite one-correction-wave marker" },
+        { name: "skill-missing-root-goal-continuation", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("does not automatically end the unfinished root goal", "ends the workflow"), expected: "missing attempt-versus-root-goal continuation marker" },
+        { name: "skill-missing-unchanged-anti-retry", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Never retry an unchanged candidate", "Retry the candidate when useful"), expected: "missing unchanged-candidate anti-retry marker" },
+        { name: "skill-missing-process-only-blocker-prohibition", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Never ask the user solely to approve an internal revision", "Ask the user about the next revision"), expected: "missing process-only-blocker prohibition marker" },
         { name: "skill-missing-blocking-evidence", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Blocking Evidence", "Readiness Evidence"), expected: "missing Blocking Evidence output field" },
         { name: "skill-missing-follow-up-candidates", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Follow-up Candidates", "Future Work"), expected: "missing Follow-up Candidates output field" },
         { name: "skill-missing-final-verdict-enum", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("approved | approved_with_notes | rejected | blocked", "accepted or rejected"), expected: "missing final-review rejected verdict enum" },

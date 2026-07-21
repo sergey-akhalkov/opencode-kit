@@ -324,8 +324,12 @@ const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
   "Happy-Path Proof",
   "Focused Validation",
   "Edge Inspection",
+  "Risk Discovery",
+  "Negative Tests",
   "Harden",
   "Review Gate",
+  "Final Validation",
+  "Final Candidate Review",
   "Handoff",
   "Process Improvement",
 ];
@@ -337,7 +341,7 @@ const tests: TestCase[] = [
     name: "contracts: canonical workflow orders observable proof before independent risk-driven testing",
     run: () => {
       const workflow = fs.readFileSync(path.join(root, "instructions", "universal-development-loop.md"), "utf8");
-      const actualSteps = [...workflow.matchAll(/^\d+\. `([^`]+)`:/gm)].map((match) => match[1]);
+      const actualSteps = [...workflow.matchAll(/^\d+\. `([^`\r\n]+)`(?:[ \t]+\([^)\r\n]+\))?:/gm)].map((match) => match[1]);
       assertDeepEqual(actualSteps, EXPECTED_CANONICAL_WORKFLOW_STEPS, "Canonical workflow step names or ordering drifted.");
       for (const evidence of [
         "smallest complete production path",
@@ -345,9 +349,9 @@ const tests: TestCase[] = [
         "separate fresh-context testing subagent",
         "independent matrix of realistic",
         "Prioritize end-to-end tests",
-        "Out-of-scope P0/P1, unknowns, and missing capabilities bind `Change-Ready: no` via `Blocking Evidence` but never authorize scope expansion",
-        "This optional gate does not replace independent Final Candidate Review on the qualification path",
-        "original requirements, happy-path proof, testing subagent/session, risk matrix",
+        "Protected-boundary needs/unknowns/missing capabilities bind `Change-Ready: no` via `Blocking Evidence` but never authorize mutation; main diagnoses",
+        "optional domain review when risk justifies it—not a Final Candidate Review substitute",
+        "requirements, happy-path proof, testing session, risk matrix",
       ]) {
         assert(workflow.includes(evidence), `Canonical workflow is missing required risk-driven evidence: ${evidence}`);
       }

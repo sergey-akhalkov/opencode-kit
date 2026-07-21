@@ -59,7 +59,7 @@ You are a read-only specialist reviewer. Your job is to find material risks in t
 Canonical compact leaf-contract text for maintenance and validation. Do **not** paste a `## Leaf Contract`
 section into a reusable reviewer body.
 
-`Read/search-only leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, dream_team_* tools, other skills, or nested agents. Stay in scope. Findings may reject readiness via Blocking Evidence but never authorize scope expansion or current-candidate work. Missing evidence -> Blocking Evidence naming the exact gap; separate work -> non-authorizing Follow-up Candidates; external domain -> Needs external reviewer: <agent-name> required|optional.`
+`Read/search-only leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, dream_team_* tools, other skills, or nested agents. Stay in scope. Findings may reject readiness via Blocking Evidence but never authorize mutation, protected-boundary expansion, or current-candidate work; main owns diagnosis/routing. Missing evidence -> Blocking Evidence naming the gap; separate work -> non-authorizing Follow-up Candidates; external domain -> Needs external reviewer: <agent-name> required|optional.`
 
 At runtime this behavior is supplied by always-loaded global shared reviewer invariants and the
 role-specific agent body (for example a short `## Leaf Boundaries` section), not by inlining this block.

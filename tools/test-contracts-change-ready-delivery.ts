@@ -10,6 +10,11 @@ import {
   SESSION_DELIVERY_BINDING_SURFACES,
 } from "./contracts/reviewer-binding.ts";
 import {
+  GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
+  GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
+  GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
+} from "./contracts/skills.ts";
+import {
   addRegisteredReviewerFixture,
   assert,
   assertDeepEqual,
@@ -28,7 +33,12 @@ import {
   writeText,
 } from "./test-helpers/library.ts";
 import { measuredValueLength, SETX_SAFE_LIMIT } from "./install-opencode-global.ts";
-import { agentsAuthorityProblem, skillAuthorityProblem } from "./validators/active-authority.ts";
+import {
+  agentsAuthorityProblem,
+  operativeTextOutsideFences,
+  scanOperativeTextOutsideFences,
+  skillAuthorityProblem,
+} from "./validators/active-authority.ts";
 
 const root = libraryRoot;
 const ENV_VAR = "OPENCODE_CONFIG_DIR";
@@ -45,14 +55,19 @@ function assertTokens(text: string, tokens: readonly string[], message: string):
 }
 
 const NAMED_MATERIAL_RISK_TEXT = "public API/protocol/compatibility, persisted data or migration, security/privacy/authorization, destructive or remote, concurrency correctness, deployment/release, loaded instruction/configuration change that alters lifecycle or safety policy";
+const PROTECTED_BOUNDARY_AUTHORITY_TEXT = GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ marker }) => marker).join("; ");
+const DECISION_READY_HANDOFF_TEXT = GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS.join("; ");
 const CONFORMING_AGENTS_ROUTING_BODY = `Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
 Profiles remain Ordinary Small | Material. Pilot-Ready: yes | no | not requested is a disposition inside a technically enforced operating envelope. Neither disposition authorizes external operations.
 Path: prove it observably before inspecting realistic requirement-linked edge cases.
-Unrequested scope expansion requires explicit user approval.
-After freeze, post-freeze scope may only shrink. Findings may block readiness but never authorize scope expansion. Qualification permits one correction wave.
+The accepted outcome and protected boundaries define scope; expansion requires explicit user approval. Necessary local reversible work uses the smallest sufficient dependency closure. Findings never authorize mutation.
+Qualification permits one correction wave. Attempt failure does not automatically end the unfinished root goal. An unchanged-candidate must not be retried blindly.
 Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${NAMED_MATERIAL_RISK_TEXT}.
 High-risk behavior must not be downgraded merely because the diff is small.
-Before Pilot-Ready: yes, require a bounded outcome and non-goals, real-boundary happy-path proof, focused project-native validation, critical safety/data/authorization protection, sufficient material failure visibility, and proportional disable/rollback/containment.`;
+Before Pilot-Ready: yes, require a bounded outcome and non-goals, real-boundary happy-path proof, focused project-native validation, critical safety/data/authorization protection, sufficient material failure visibility, and proportional disable/rollback/containment.
+Protected-boundary owner authority includes: ${PROTECTED_BOUNDARY_AUTHORITY_TEXT}.
+${GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE}
+Decision-ready handoff states: ${DECISION_READY_HANDOFF_TEXT}. State every listed field explicitly; when evidence is absent, use unknown or none.`;
 const CONFORMING_AGENTS_AUTHORITY = `# Independent Active Authority
 
 ## Change-Ready SDLC Routing
@@ -71,6 +86,12 @@ The primary orchestrator owns lifecycle state and bounded validation.
 
 Reviewers are read-only leaf specialists and never self-approve readiness.
 `;
+const MANDATORY_AGENTS_H2_TITLES = [
+  "Change-Ready SDLC Routing",
+  "Universal Task Briefing Contract",
+  "Autonomous Work Contract",
+  "Shared Reviewer Runtime Invariants",
+] as const;
 const SKILL_FRONTMATTER = `---
 name: change-ready-sdlc
 description: Independent fenced-code authority fixture.
@@ -81,8 +102,8 @@ const CONFORMING_SKILL_BODY = `# Change-Ready SDLC
 Ordinary Small does **not** load this skill. Named Material risks: ${NAMED_MATERIAL_RISK_TEXT}.
 High-risk behavior must not be downgraded merely because the diff is small.
 ## Profile
-Use a project-specific scope lock; expansion requires explicit owner approval.
-After freeze, post-freeze scope may only shrink; expansion requires a new revision or separate change. Findings use Blocking Evidence and non-authorizing Follow-up Candidates and never authorize scope expansion. Qualification permits one correction wave for a frozen acceptance criterion, with no persistent evidence infrastructure. Final review uses approved | approved_with_notes | rejected | blocked.
+Use a project-specific scope lock around the accepted outcome and protected boundaries; expansion requires explicit owner approval.
+Necessary local reversible work uses the smallest sufficient dependency closure. Findings use Blocking Evidence and non-authorizing Follow-up Candidates and never authorize mutation. Qualification permits one correction wave with no persistent evidence infrastructure and does not automatically end the unfinished root goal. Never retry an unchanged candidate. Never ask the user solely to approve an internal revision. Final review uses approved | approved_with_notes | rejected | blocked.
 ## Adapter Discovery
 ## Authoritative Brief
 ## Orchestrator ownership
@@ -102,10 +123,79 @@ Pilot-Ready: yes | no | not requested is not a third lifecycle profile; profiles
 `;
 const CONFORMING_SKILL_AUTHORITY = `${SKILL_FRONTMATTER}${CONFORMING_SKILL_BODY}`;
 
+const GLOBAL_AUTHORITY_MINIMUM_CASES = [
+  ...GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ label, marker }) => ({
+    label: `protected boundary ${label}`,
+    marker,
+    diagnostic: `AGENTS.md missing protected-boundary category: ${label}`,
+  })),
+  {
+    label: "non-waivable critical-risk clause",
+    marker: GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
+    diagnostic: "AGENTS.md missing non-waivable critical-risk clause",
+  },
+  ...GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS.map((field) => ({
+    label: `decision-ready handoff field ${field}`,
+    marker: field,
+    diagnostic: `AGENTS.md missing decision-ready handoff field: ${field}`,
+  })),
+];
+
+const SKILL_OPERATIVE_AUTHORITY_CASES = [
+  { marker: "Ordinary Small does **not** load this skill", diagnostic: "skills/change-ready-sdlc/SKILL.md missing Ordinary Small non-load/default boundary" },
+  { marker: "project-specific scope lock", diagnostic: "skills/change-ready-sdlc/SKILL.md missing project-specific scope-lock control" },
+  { marker: "explicit owner approval", diagnostic: "skills/change-ready-sdlc/SKILL.md missing explicit owner approval expansion rule" },
+  { marker: "must not be downgraded merely because the diff is small", diagnostic: "skills/change-ready-sdlc/SKILL.md missing no high-risk downgrade for small diffs" },
+  { marker: "accepted outcome", diagnostic: "skills/change-ready-sdlc/SKILL.md missing accepted-outcome authority marker" },
+  { marker: "protected boundaries", diagnostic: "skills/change-ready-sdlc/SKILL.md missing protected-boundaries authority marker" },
+  { marker: "smallest sufficient dependency closure", diagnostic: "skills/change-ready-sdlc/SKILL.md missing local reversible dependency-closure marker" },
+  { marker: "never authorize mutation", diagnostic: "skills/change-ready-sdlc/SKILL.md missing non-authorizing findings rule" },
+  { marker: "one correction wave", diagnostic: "skills/change-ready-sdlc/SKILL.md missing finite one-correction-wave marker" },
+  { marker: "does not automatically end the unfinished root goal", diagnostic: "skills/change-ready-sdlc/SKILL.md missing attempt-versus-root-goal continuation marker" },
+  { marker: "Never retry an unchanged candidate", diagnostic: "skills/change-ready-sdlc/SKILL.md missing unchanged-candidate anti-retry marker" },
+  { marker: "Never ask the user solely to approve an internal revision", diagnostic: "skills/change-ready-sdlc/SKILL.md missing process-only-blocker prohibition marker" },
+  { marker: "Blocking Evidence", diagnostic: "skills/change-ready-sdlc/SKILL.md missing Blocking Evidence output field" },
+  { marker: "Follow-up Candidates", diagnostic: "skills/change-ready-sdlc/SKILL.md missing Follow-up Candidates output field" },
+  { marker: "approved | approved_with_notes | rejected | blocked", diagnostic: "skills/change-ready-sdlc/SKILL.md missing final-review rejected verdict enum" },
+  { marker: "Pilot-Ready: yes | no | not requested", diagnostic: "skills/change-ready-sdlc/SKILL.md missing exact Pilot-Ready disposition token" },
+  { marker: "not a third lifecycle profile", diagnostic: "skills/change-ready-sdlc/SKILL.md missing no-third-profile Pilot-Ready boundary" },
+  { marker: "complete Pilot safety floor is authoritative only in always-loaded global", diagnostic: "skills/change-ready-sdlc/SKILL.md missing complete Pilot safety-floor authority reference to always-loaded global AGENTS" },
+  { marker: "Neither disposition authorizes", diagnostic: "skills/change-ready-sdlc/SKILL.md missing neither-disposition-authorizes external-operation safety marker" },
+  { marker: "public API/protocol/compatibility", diagnostic: "skills/change-ready-sdlc/SKILL.md missing named Material risk class: public API/protocol/compatibility" },
+  { marker: "persisted data or migration", diagnostic: "skills/change-ready-sdlc/SKILL.md missing named Material risk class: persisted data/migration" },
+  { marker: "security/privacy/authorization", diagnostic: "skills/change-ready-sdlc/SKILL.md missing named Material risk class: security/privacy/authorization" },
+  { marker: "destructive or remote", diagnostic: "skills/change-ready-sdlc/SKILL.md missing named Material risk class: destructive/remote" },
+  { marker: "concurrency correctness", diagnostic: "skills/change-ready-sdlc/SKILL.md missing named Material risk class: concurrency correctness" },
+  { marker: "deployment/release", diagnostic: "skills/change-ready-sdlc/SKILL.md missing named Material risk class: deployment/release" },
+  { marker: "loaded instruction/configuration change that alters lifecycle or safety policy", diagnostic: "skills/change-ready-sdlc/SKILL.md missing named Material risk class: loaded instruction/config lifecycle/safety" },
+] as const;
+
 function fencedBlock(delimiter: "```" | "~~~~", body: string, indent = "", closed = true): string {
   const content = body.endsWith("\n") ? body : `${body}\n`;
   return `${indent}${delimiter} markdown\n${content}${closed ? `${indent}${delimiter}\n` : ""}`;
 }
+
+const UNSUPPORTED_AUTHORITY_FENCE_PREFIXES = [
+  { label: "blockquote", prefix: "> " },
+  { label: "nested blockquote", prefix: "> > " },
+  { label: "unordered list", prefix: "- " },
+  { label: "ordered list", prefix: "1. " },
+  { label: "nested blockquote-list container", prefix: "> - " },
+  { label: "four-space indent", prefix: "    " },
+  { label: "prose and inline-code prefix", prefix: "prose `inline` " },
+  { label: "tab prefix", prefix: "\t" },
+] as const;
+
+const SUPPORTED_AUTHORITY_FENCE_CASES = [
+  { label: "zero-space closed backtick", delimiter: "```", indent: "", closed: true },
+  { label: "zero-space unclosed tilde", delimiter: "~~~~", indent: "", closed: false },
+  { label: "one-space closed tilde", delimiter: "~~~~", indent: " ", closed: true },
+  { label: "one-space unclosed backtick", delimiter: "```", indent: " ", closed: false },
+  { label: "two-space closed backtick", delimiter: "```", indent: "  ", closed: true },
+  { label: "two-space unclosed tilde", delimiter: "~~~~", indent: "  ", closed: false },
+  { label: "three-space closed tilde", delimiter: "~~~~", indent: "   ", closed: true },
+  { label: "three-space unclosed backtick", delimiter: "```", indent: "   ", closed: false },
+] as const;
 
 const CONTRACT_REFERENCE_EXAMPLE = "## Contract Reference\n\n`instructions/leaf-reviewer-agent-contract.md`\n";
 const CONTRACT_REFERENCE_FENCES = [
@@ -237,6 +327,129 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
+    name: "contracts: copied active authority requires every protected boundary, non-waivable risk, and decision-ready handoff field",
+    run: () => {
+      assertEqual(agentsAuthorityProblem(CONFORMING_AGENTS_AUTHORITY), null, "Complete independently copied AGENTS authority must pass the pure active-authority boundary.");
+      for (const item of GLOBAL_AUTHORITY_MINIMUM_CASES) {
+        const incomplete = CONFORMING_AGENTS_AUTHORITY.replaceAll(item.marker, `[removed-${item.label.replace(/[^a-z0-9]+/gi, "-")}]`);
+        assert(incomplete !== CONFORMING_AGENTS_AUTHORITY, `Copied AGENTS fixture must contain ${item.label}.`);
+        assert(!incomplete.includes(item.marker), `Negative copied AGENTS fixture must remove every occurrence of ${item.label}.`);
+        assertEqual(
+          agentsAuthorityProblem(incomplete),
+          item.diagnostic,
+          `Copied AGENTS authority must reject missing ${item.label}.`,
+        );
+      }
+    },
+  },
+  {
+    name: "contracts: copied AGENTS target headings are byte-exact",
+    run: () => {
+      const exactHeading = "## Change-Ready SDLC Routing";
+      const missingHeadingDiagnostic = "AGENTS.md missing exact heading ## Change-Ready SDLC Routing";
+      const driftCases = [
+        { label: "tab separator", heading: "##\tChange-Ready SDLC Routing" },
+        { label: "repeated separator", heading: "##  Change-Ready SDLC Routing" },
+        { label: "leading space", heading: " ## Change-Ready SDLC Routing" },
+        { label: "trailing space", heading: "## Change-Ready SDLC Routing " },
+        { label: "closing hash", heading: "## Change-Ready SDLC Routing #" },
+      ] as const;
+
+      for (const item of driftCases) {
+        const drifted = CONFORMING_AGENTS_AUTHORITY.replace(exactHeading, item.heading);
+        assert(drifted !== CONFORMING_AGENTS_AUTHORITY, `${item.label} fixture must replace the exact routing target.`);
+        assertEqual(
+          agentsAuthorityProblem(drifted),
+          missingHeadingDiagnostic,
+          `${item.label} must fail at the byte-exact routing-heading oracle rather than a downstream marker check.`,
+        );
+      }
+    },
+  },
+  {
+    name: "contracts: copied AGENTS requires exactly one unfenced byte-exact mandatory H2",
+    run: () => {
+      for (const title of MANDATORY_AGENTS_H2_TITLES) {
+        const exactHeading = `## ${title}`;
+        assertEqual(
+          CONFORMING_AGENTS_AUTHORITY.split(/\r?\n/).filter((line) => line === exactHeading).length,
+          1,
+          `The conforming copied-authority fixture must begin with exactly one ${exactHeading}.`,
+        );
+        const privateDuplicateBody = `private contradictory duplicate body for ${title}`;
+        const duplicated = `${CONFORMING_AGENTS_AUTHORITY}\n${exactHeading}\n\n${privateDuplicateBody}\n`;
+        assertEqual(
+          agentsAuthorityProblem(duplicated),
+          `AGENTS.md duplicate exact heading ${exactHeading}`,
+          `${exactHeading} must reject a second unfenced exact target before the already-conforming first body can certify authority.`,
+        );
+      }
+    },
+  },
+  {
+    name: "contracts: fenced and non-exact mandatory H2 copies do not change exact cardinality",
+    run: () => {
+      for (const title of MANDATORY_AGENTS_H2_TITLES) {
+        const exactHeading = `## ${title}`;
+        const fencedCopies = `${exactHeading}\nclosed private example\n${exactHeading}\nsecond closed private example\n`;
+        const withSupportedFencedCopies = `${CONFORMING_AGENTS_AUTHORITY}\n${fencedBlock("```", fencedCopies)}${fencedBlock("~~~~", fencedCopies, "  ", false)}`;
+        assertEqual(
+          agentsAuthorityProblem(withSupportedFencedCopies),
+          null,
+          `Closed and unclosed supported fences containing repeated ${exactHeading} examples must not count against the one outside target.`,
+        );
+      }
+
+      const withRepresentativeNonExactCopies = `${CONFORMING_AGENTS_AUTHORITY}\n##\tUniversal Task Briefing Contract\nnon-exact tab copy\n## Shared Reviewer Runtime Invariants #\nnon-exact closing-hash copy\n`;
+      assertEqual(
+        agentsAuthorityProblem(withRepresentativeNonExactCopies),
+        null,
+        "Representative tab-separated and closing-hash lookalikes must remain outside byte-exact mandatory-target cardinality.",
+      );
+    },
+  },
+  {
+    name: "contracts: copied AGENTS markers remain owned by their exact H2 sections",
+    run: () => {
+      const exactRoutingSection = `## Change-Ready SDLC Routing\n\n${CONFORMING_AGENTS_ROUTING_BODY}`;
+      assert(CONFORMING_AGENTS_AUTHORITY.includes(exactRoutingSection), "Copied authority fixture must expose the exact routing section for ownership mutations.");
+      for (const boundary of ["# Other", " # Other", "  ## Other", "##\tOther"] as const) {
+        const misowned = CONFORMING_AGENTS_AUTHORITY.replace(
+          exactRoutingSection,
+          `## Change-Ready SDLC Routing\n${boundary}\n${CONFORMING_AGENTS_ROUTING_BODY}`,
+        );
+        assertEqual(
+          agentsAuthorityProblem(misowned),
+          "AGENTS.md Change-Ready SDLC Routing section is empty",
+          `${JSON.stringify(boundary)} must end routing ownership before the original markers.`,
+        );
+      }
+
+      const autonomousBody = "The primary orchestrator owns lifecycle state and bounded validation.";
+      const exactAutonomousSection = `## Autonomous Work Contract\n\n${autonomousBody}`;
+      assert(CONFORMING_AGENTS_AUTHORITY.includes(exactAutonomousSection), "Copied authority fixture must expose the exact autonomous section for ownership mutation.");
+      const misownedAutonomous = CONFORMING_AGENTS_AUTHORITY.replace(
+        exactAutonomousSection,
+        `## Autonomous Work Contract\n ## Other\n${autonomousBody}`,
+      );
+      assertEqual(
+        agentsAuthorityProblem(misownedAutonomous),
+        "AGENTS.md Autonomous Work Contract section is empty",
+        "The shared H1/H2 boundary must also protect the Autonomous Work Contract caller.",
+      );
+
+      const h3AndIndentedCodeControl = CONFORMING_AGENTS_AUTHORITY.replace(
+        exactRoutingSection,
+        `## Change-Ready SDLC Routing\n### Routing detail\n    ## Indented example\n${CONFORMING_AGENTS_ROUTING_BODY}`,
+      );
+      assertEqual(
+        agentsAuthorityProblem(h3AndIndentedCodeControl),
+        null,
+        "H3 and four-space indented heading-like lines must not end exact H2 ownership.",
+      );
+    },
+  },
+  {
     name: "contracts: active authority ignores closed and unclosed fenced heading skeletons and body tokens",
     run: () => {
       const fences = [
@@ -258,21 +471,16 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
           `${fence.label} fenced-only Pilot floor marker must not satisfy AGENTS authority.`,
         );
 
-        const skillMarker = "not a third lifecycle profile";
-        const skillWithoutOperativePilotMarker = CONFORMING_SKILL_AUTHORITY.replace(skillMarker, "[removed-pilot-profile-marker]");
-        assertEqual(
-          skillAuthorityProblem(`${skillWithoutOperativePilotMarker}\n${fence.block(skillMarker)}`),
-          "skills/change-ready-sdlc/SKILL.md missing no-third-profile Pilot-Ready boundary",
-          `${fence.label} fenced-only Pilot marker must not satisfy skill authority.`,
-        );
-
-        const globalFloorAuthorityMarker = "complete Pilot safety floor is authoritative only in always-loaded global";
-        const skillWithoutOperativeGlobalAuthority = CONFORMING_SKILL_AUTHORITY.replace(globalFloorAuthorityMarker, "[removed-global-floor-authority-marker]");
-        assertEqual(
-          skillAuthorityProblem(`${skillWithoutOperativeGlobalAuthority}\n${fence.block(globalFloorAuthorityMarker)}`),
-          "skills/change-ready-sdlc/SKILL.md missing complete Pilot safety-floor authority reference to always-loaded global AGENTS",
-          `${fence.label} fenced-only global-floor authority reference must not satisfy skill authority.`,
-        );
+        for (const item of SKILL_OPERATIVE_AUTHORITY_CASES) {
+          const withoutOperativeMarker = CONFORMING_SKILL_AUTHORITY.replaceAll(item.marker, `[removed-${item.marker.replace(/[^a-z0-9]+/gi, "-")}]`);
+          assert(withoutOperativeMarker !== CONFORMING_SKILL_AUTHORITY, `Conforming SKILL fixture must contain operative marker: ${item.marker}`);
+          assert(!withoutOperativeMarker.includes(item.marker), `Negative SKILL fixture must remove every operative occurrence: ${item.marker}`);
+          assertEqual(
+            skillAuthorityProblem(`${withoutOperativeMarker}\n${fence.block(item.marker)}`),
+            item.diagnostic,
+            `${fence.label} fenced-only SKILL marker must not satisfy operative authority: ${item.marker}`,
+          );
+        }
       }
       for (const [marker, diagnostic] of [
         ["bounded outcome and non-goals", "AGENTS.md missing Pilot safety-floor bounded outcome and non-goals marker"],
@@ -291,6 +499,125 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         const agents = CONFORMING_AGENTS_AUTHORITY.replace(`${CONFORMING_AGENTS_ROUTING_BODY}\n`, hiddenBody);
         assertEqual(agentsAuthorityProblem(agents), "AGENTS.md Change-Ready SDLC Routing section is empty", `${delimiter} fenced routing body tokens must not satisfy the outside section.`);
       }
+    },
+  },
+  {
+    name: "contracts: unsupported container and inline fences fail closed across direct authority and operative text",
+    run: () => {
+      for (const prefixCase of UNSUPPORTED_AUTHORITY_FENCE_PREFIXES) {
+        for (const delimiter of ["```", "~~~"] as const) {
+          const privateLineSentinel = `private-${prefixCase.label.replace(/[^a-z]+/g, "-")}-${delimiter === "```" ? "backtick" : "tilde"}-content`;
+          const unsupportedLine = `${prefixCase.prefix}${delimiter} ${privateLineSentinel}`;
+          const agentsText = `# Unsupported fence fixture\n${unsupportedLine}\n${CONFORMING_AGENTS_AUTHORITY}`;
+          const skillText = `${SKILL_FRONTMATTER}${unsupportedLine}\n${CONFORMING_SKILL_BODY}`;
+
+          const agentsProblem = agentsAuthorityProblem(agentsText);
+          assertEqual(
+            agentsProblem,
+            "AGENTS.md contains unsupported non-top-level fenced-code syntax at line 2",
+            `${prefixCase.label} ${delimiter} syntax must block otherwise conforming AGENTS authority at its exact line.`,
+          );
+          assert(
+            !String(agentsProblem).includes(privateLineSentinel),
+            `${prefixCase.label} ${delimiter} AGENTS diagnostic must not expose source-line content.`,
+          );
+
+          const skillProblem = skillAuthorityProblem(skillText);
+          assertEqual(
+            skillProblem,
+            "skills/change-ready-sdlc/SKILL.md contains unsupported non-top-level fenced-code syntax at line 5",
+            `${prefixCase.label} ${delimiter} syntax must block otherwise conforming skill authority at its exact line.`,
+          );
+          assert(
+            !String(skillProblem).includes(privateLineSentinel),
+            `${prefixCase.label} ${delimiter} skill diagnostic must not expose source-line content.`,
+          );
+
+          assertEqual(
+            operativeTextOutsideFences(agentsText),
+            "",
+            `${prefixCase.label} ${delimiter} syntax must remove the complete shared AGENTS operative surface even when required markers exist.`,
+          );
+          assertEqual(
+            operativeTextOutsideFences(skillText),
+            "",
+            `${prefixCase.label} ${delimiter} syntax must remove the complete shared skill operative surface even when required markers exist.`,
+          );
+        }
+      }
+    },
+  },
+  {
+    name: "contracts: operative scan inspects every delimiter run after an invalid top-level opener",
+    run: () => {
+      const privateLineSentinel = "private-later-delimiter-content";
+      const unsupportedLine = `\`\`\` invalid opener prose > \`\`\` ${privateLineSentinel}`;
+      const agentsText = `# Multi-run unsupported fixture\n${unsupportedLine}\n${CONFORMING_AGENTS_AUTHORITY}`;
+      const skillText = `${SKILL_FRONTMATTER}${unsupportedLine}\n${CONFORMING_SKILL_BODY}`;
+
+      const agentsScan = scanOperativeTextOutsideFences(agentsText);
+      assertEqual(agentsScan.unsupportedFenceLine, 2, "AGENTS scan must inspect the later delimiter run after the invalid first opener.");
+      assert(agentsScan.operativeText.includes(CONFORMING_AGENTS_ROUTING_BODY), "Structured AGENTS scan must preserve its independently reported operative surface.");
+      assertEqual(operativeTextOutsideFences(agentsText), "", "Compatibility wrapper must fail closed for a later unsupported delimiter run.");
+
+      const agentsProblem = agentsAuthorityProblem(agentsText);
+      assertEqual(agentsProblem, "AGENTS.md contains unsupported non-top-level fenced-code syntax at line 2", "AGENTS authority must reject the exact multi-run line.");
+      assert(!String(agentsProblem).includes(privateLineSentinel), "AGENTS multi-run diagnostic must not expose source-line content.");
+
+      const skillScan = scanOperativeTextOutsideFences(skillText);
+      assertEqual(skillScan.unsupportedFenceLine, 5, "Skill scan must inspect the later delimiter run after the invalid first opener.");
+      assert(skillScan.operativeText.includes("# Change-Ready SDLC"), "Structured skill scan must preserve its independently reported operative surface.");
+      assertEqual(operativeTextOutsideFences(skillText), "", "Skill compatibility wrapper must fail closed for a later unsupported delimiter run.");
+
+      const skillProblem = skillAuthorityProblem(skillText);
+      assertEqual(skillProblem, "skills/change-ready-sdlc/SKILL.md contains unsupported non-top-level fenced-code syntax at line 5", "Skill authority must reject the exact multi-run line.");
+      assert(!String(skillProblem).includes(privateLineSentinel), "Skill multi-run diagnostic must not expose source-line content.");
+    },
+  },
+  {
+    name: "contracts: supported top-level fences and nested delimiter examples preserve active authority",
+    run: () => {
+      assertEqual(agentsAuthorityProblem(CONFORMING_AGENTS_AUTHORITY), null, "Complete copied AGENTS authority must remain a positive control.");
+      assertEqual(skillAuthorityProblem(CONFORMING_SKILL_AUTHORITY), null, "Complete copied skill authority must remain a positive control.");
+      assertEqual(
+        agentsAuthorityProblem(fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8")),
+        null,
+        "Current canonical global AGENTS authority must remain supported.",
+      );
+      assertEqual(
+        skillAuthorityProblem(fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8")),
+        null,
+        "Current canonical Change-Ready skill authority must remain supported.",
+      );
+
+      for (const control of SUPPORTED_AUTHORITY_FENCE_CASES) {
+        const fencedAgentsExample = fencedBlock(control.delimiter, CONFORMING_AGENTS_AUTHORITY, control.indent, control.closed);
+        const fencedSkillExample = fencedBlock(control.delimiter, CONFORMING_SKILL_BODY, control.indent, control.closed);
+        const agentsText = `${CONFORMING_AGENTS_AUTHORITY}\n${fencedAgentsExample}`;
+        const skillText = `${CONFORMING_SKILL_AUTHORITY}\n${fencedSkillExample}`;
+        assertEqual(agentsAuthorityProblem(agentsText), null, `${control.label} example must not reject valid AGENTS authority.`);
+        assertEqual(skillAuthorityProblem(skillText), null, `${control.label} example must not reject valid skill authority.`);
+        assert(
+          operativeTextOutsideFences(agentsText).includes("bounded outcome and non-goals"),
+          `${control.label} must preserve valid AGENTS operative text outside the supported fence.`,
+        );
+        assert(
+          operativeTextOutsideFences(skillText).includes("project-specific scope lock"),
+          `${control.label} must preserve valid skill operative text outside the supported fence.`,
+        );
+      }
+
+      const nestedSentinel = "private-nested-delimiter-content";
+      const nestedDelimiterExample = fencedBlock(
+        "```",
+        `> \`\`\` ${nestedSentinel}\n> - ~~~~ ${nestedSentinel}\n`,
+      );
+      const agentsWithNestedExample = `${CONFORMING_AGENTS_AUTHORITY}\n${nestedDelimiterExample}`;
+      const skillWithNestedExample = `${CONFORMING_SKILL_AUTHORITY}\n${nestedDelimiterExample}`;
+      assertEqual(agentsAuthorityProblem(agentsWithNestedExample), null, "Container-prefixed delimiter runs inside a recognized AGENTS fence must remain masked.");
+      assertEqual(skillAuthorityProblem(skillWithNestedExample), null, "Container-prefixed delimiter runs inside a recognized skill fence must remain masked.");
+      assert(!operativeTextOutsideFences(agentsWithNestedExample).includes(nestedSentinel), "Nested delimiter content inside a supported AGENTS fence must remain non-operative.");
+      assert(!operativeTextOutsideFences(skillWithNestedExample).includes(nestedSentinel), "Nested delimiter content inside a supported skill fence must remain non-operative.");
     },
   },
   {

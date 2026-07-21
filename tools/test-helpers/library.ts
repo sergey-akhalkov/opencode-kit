@@ -142,7 +142,7 @@ export function newLibraryFixture(name: string): string {
   writeText(path.join(dir, "instructions", "universal-development-loop.md"), lines([
     "# Universal Development Loop",
     "",
-    "Pilot-Ready: yes | no | not requested is a disposition for the Ordinary Small | Material profiles inside a technically enforced operating envelope. Prefer remove/narrow/reuse/local guard.",
+    "Pilot-Ready: yes | no | not requested is a disposition for the Ordinary Small | Material profiles inside a technically enforced operating envelope. Prefer remove/narrow/reuse/local guard. User-owned scope is the accepted outcome and each protected-boundary decision; necessary local reversible dependency closure is autonomous. Findings may bind Blocking Evidence but never authorize mutation. One correction wave ends the attempt, not the root goal; separate work stays in Follow-up Candidates.",
     "",
     "## Contract",
     "",
@@ -169,6 +169,7 @@ export function newLibraryFixture(name: string): string {
     "",
     "- Shared runtime lifecycle authority comes from active global `AGENTS.md` and `change-ready-sdlc`; the Universal Development Loop is conceptual guidance, not a target-relative runtime dependency.",
     "- Implement and observably prove the smallest complete happy path, then use a separate fresh-context testing subagent for risk discovery, negative tests, and hardening.",
+    "- User-owned scope is accepted outcome and protected boundaries; protected-boundary changes require owner authority; necessary local reversible dependency closure is autonomous. Findings may bind Blocking Evidence but never authorize mutation. One correction wave ends the attempt and does not automatically end the root goal. Never ask solely to approve an internal revision. Decision-ready handoff names the exact blocker; separate work stays in Follow-up Candidates.",
     "- Report `Pilot-Ready: yes | no | not requested` only as a disposition; neither Pilot-Ready nor Change-Ready authorizes external operations.",
     "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
     "",
@@ -256,7 +257,7 @@ export function newLibraryFixture(name: string): string {
     "## Autonomous Work Contract",
     "",
     "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.",
-    "- After freeze, post-freeze scope may only shrink; reviewer/SDET findings and failed gates may bind readiness but never authorize scope expansion.",
+    "- User-owned scope is accepted outcome and protected boundaries; protected-boundary changes require owner authority; necessary local reversible dependency closure is autonomous. Findings may bind Blocking Evidence but never authorize mutation. One correction wave ends the attempt and does not automatically end the root goal. Never ask solely to approve an internal revision. Decision-ready handoff names the exact blocker; separate work stays in Follow-up Candidates.",
     "",
   ]));
   writeText(path.join(dir, "README.md"), lines([
@@ -522,7 +523,7 @@ export function addImplementationWorkerFixture(fixture: string): string {
   return workerPath;
 }
 
-export const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding readiness rejection: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, or non-empty `Blocking Evidence` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and empty `Blocking Evidence`. Findings may bind readiness but never authorize scope expansion or mutation. After freeze, post-freeze scope may only shrink; only explicit user approval may expand through a new revision or separate change. Qualification permits one correction wave only for a candidate-attributable frozen acceptance criterion violation fully inside frozen scope. Route separate work to non-authorizing `Follow-up Candidates`; persistent evidence infrastructure is a separate prerequisite. Delivery rejection is terminal and never authorizes mutation or replay. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
+export const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding readiness rejection: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, or non-empty `Blocking Evidence` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and empty `Blocking Evidence`. Findings may bind readiness but never authorize mutation or protected-boundary expansion. User-owned scope is the accepted outcome; necessary local reversible dependency closure is autonomous. Qualification permits one correction wave for a candidate-attributable outcome or invariant violation. Route separate work to non-authorizing `Follow-up Candidates`; persistent evidence infrastructure is a separate prerequisite. Delivery rejection is terminal for the inspected attempt and does not end the unfinished root goal; it never authorizes mutation or replay of that attempt. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
 const materialDeliveryRoutingFixtureText = MATERIAL_DELIVERY_ROUTING_TOKENS.join("; ");
 export const sessionDeliveryBindingTokens = [
   "Change-Ready: no",

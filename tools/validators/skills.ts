@@ -26,6 +26,69 @@ import {
   toPosixPath,
 } from "./context.ts";
 import { getFrontmatterMap } from "./frontmatter.ts";
+import { scanOperativeTextOutsideFences } from "./active-authority.ts";
+
+/** ASCII letter or digit (not underscore). */
+function isAsciiLetterOrDigit(ch: string | undefined): boolean {
+  if (ch === undefined || ch.length !== 1) {
+    return false;
+  }
+  const code = ch.charCodeAt(0);
+  return (
+    (code >= 48 && code <= 57) || // 0-9
+    (code >= 65 && code <= 90) || // A-Z
+    (code >= 97 && code <= 122) // a-z
+  );
+}
+
+/** ASCII word char for portable-hardcode token edges: letter, digit, or underscore. */
+function isAsciiWordChar(ch: string | undefined): boolean {
+  return isAsciiLetterOrDigit(ch) || ch === "_";
+}
+
+/**
+ * Case-insensitive literal match for a configured forbidden token.
+ * Word-led tokens require a non-word (or start) left edge. Tokens ending in an
+ * ASCII letter or digit require a non-word (or end) right edge. A trailing
+ * underscore is an intentional prefix terminator and does not require a right
+ * edge (e.g. `dream_team_` still matches `dream_team_review`). Punctuation-led
+ * or punctuation-ended tokens keep plain literal detection (e.g. `.github/`).
+ */
+function containsForbiddenPortableHardcodeToken(
+  text: string,
+  token: string,
+): boolean {
+  const haystack = text.toLowerCase();
+  const needle = token.toLowerCase();
+  if (needle.length === 0 || needle.length > haystack.length) {
+    return false;
+  }
+  const requireLeftBoundary = isAsciiWordChar(needle[0]);
+  const last = needle[needle.length - 1];
+  // Right edge only for letter/digit ends; trailing `_` keeps prefix semantics.
+  const requireRightBoundary = isAsciiLetterOrDigit(last);
+  let from = 0;
+  while (from <= haystack.length - needle.length) {
+    const idx = haystack.indexOf(needle, from);
+    if (idx === -1) {
+      return false;
+    }
+    const leftOk =
+      !requireLeftBoundary ||
+      idx === 0 ||
+      !isAsciiWordChar(haystack[idx - 1]);
+    const after = idx + needle.length;
+    const rightOk =
+      !requireRightBoundary ||
+      after === haystack.length ||
+      !isAsciiWordChar(haystack[after]);
+    if (leftOk && rightOk) {
+      return true;
+    }
+    from = idx + 1;
+  }
+  return false;
+}
 
 function validateChangeReadySdlcSkill(
   ctx: ValidationContext,
@@ -51,8 +114,17 @@ function validateChangeReadySdlcSkill(
     }
   }
 
+  const scan = scanOperativeTextOutsideFences(text);
+  if (scan.unsupportedFenceLine != null) {
+    ctx.addError(
+      `change-ready-sdlc contains unsupported non-top-level fenced-code syntax at line ${scan.unsupportedFenceLine}: ${file}`,
+    );
+    return;
+  }
+  const operative = scan.operativeText;
+
   for (const marker of CHANGE_READY_SDLC_LIFECYCLE_MARKERS) {
-    if (!text.includes(marker)) {
+    if (!operative.includes(marker)) {
       ctx.addError(
         `change-ready-sdlc missing lifecycle marker '${marker}': ${file}`,
       );
@@ -60,16 +132,16 @@ function validateChangeReadySdlcSkill(
   }
 
   for (const token of CHANGE_READY_SDLC_CONTINUATION_TOKENS) {
-    if (!text.includes(token)) {
+    if (!operative.includes(token)) {
       ctx.addError(
         `change-ready-sdlc missing continuation token '${token}': ${file}`,
       );
     }
   }
 
-  const lowerText = text.toLowerCase();
+  // Forbidden portable-hardcode policy remains full-document (including fences/examples).
   for (const token of CHANGE_READY_SDLC_FORBIDDEN_TOKENS) {
-    if (lowerText.includes(token.toLowerCase())) {
+    if (containsForbiddenPortableHardcodeToken(text, token)) {
       ctx.addError(
         `change-ready-sdlc forbidden portable-hardcode token '${token}': ${file}`,
       );
