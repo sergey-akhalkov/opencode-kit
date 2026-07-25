@@ -718,12 +718,26 @@ export const validatorTests2: TestCase[] = [
     },
   })),
   {
-    name: "validator reports broad permission in global/opencode.json as info and passes strict mode",
+    name: "validator accepts a machine-local model differing from the portable template while reporting broad local permissions as info",
     run: () => {
       const fixture = newLibraryFixture("machine-local-permission-info");
+      writeText(path.join(fixture, "global", "opencode.json.template"), lines([
+        "{",
+        "  \"$schema\": \"https://opencode.ai/config.json\",",
+        "  \"model\": \"openai/gpt-5.6-sol\"",
+        "}",
+      ]));
       writeText(path.join(fixture, "global", "opencode.json"), lines([
         "{",
         "  \"$schema\": \"https://opencode.ai/config.json\",",
+        "  \"model\": \"owner/local-primary-model\",",
+        "  \"mcp\": {",
+        "    \"dream_team\": {",
+        "      \"type\": \"local\",",
+        "      \"command\": [\"echo\"],",
+        "      \"enabled\": false",
+        "    }",
+        "  },",
         "  \"permission\": {",
         "    \"*\": \"allow\",",
         "    \"bash\": { \"*\": \"allow\" }",
@@ -731,7 +745,7 @@ export const validatorTests2: TestCase[] = [
         "}",
       ]));
       const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
-      assertSuccess(result, "Strict mode should accept informational diagnostics for the path-defined machine-local layer.");
+      assertSuccess(result, "Strict mode should accept a machine-local model that differs from the portable template default.");
       assertOutputContains(result, "INFO: OpenCode permission config", "Machine-local broad permissions should remain visible as info.");
       assertOutputContains(result, "warnings=0", "Machine-local broad permissions must not become strict-mode warnings.");
       assertOutputContains(result, "infos=2", "Both realistic broad permission risks should be counted as informational diagnostics.");

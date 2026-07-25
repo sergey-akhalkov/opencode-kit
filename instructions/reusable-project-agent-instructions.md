@@ -10,8 +10,8 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 - Technology-specific commands and constraints adapt the loop; they do not create separate workflows.
 - Start broad work with a deterministic project inventory, targeted search, or repository-native command before reading large file sets.
-- Ordinary Small default: study the original requirements, implement the smallest complete happy path, prove it through observable execution, run focused validation, then inspect only realistic requirement-linked edge cases.
-- Do not load `change-ready-sdlc` merely because code or config behavior changes. Load it before mutation only for explicit Change-Ready, project-required qualification, or concrete Material risk.
+- Ordinary Small default: implement and prove the smallest complete happy path to reach MVP, complete accepted scope, run focused validation, then freeze RC and finish stable handoff when no known critical/non-deferrable defect remains.
+- Do not load `change-ready-sdlc` merely because code or config behavior changes. Load it before mutation only for explicit stable/full qualification, project-required qualification, or concrete Material risk.
 - Run focused validation first, then broaden validation when boundaries, APIs, data, deployment, or compatibility are affected.
 - Use read-only reviewer gates only when the risk justifies them, and report skipped gates with the reason. Reviewer feedback-ledger writes under `docs/feedbacks/**` are the only default write exception.
 
@@ -45,21 +45,21 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 ## Process Control
 
-- Ordinary Small production may be implemented directly by the main session.
-- For delegated Material/qualification production slices, dispatch a discovered conforming production author. In this kit, `implementation-worker` is the optional default adapter for exact bounded production-only slices with non-overlapping write scope, clear Acceptance Criteria, and a focused validation gate.
+- Main is the default production author for Ordinary Small and Material. Optional `implementation-worker` only for evidenced isolated production-only slices with non-overlapping write scope, representative proof boundary, clear Acceptance Criteria, Verification, and evidenced benefit.
 - When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
-- After applicable proof on Material/explicit qualification work, dispatch a fresh discovered conforming SDET session for systematic test-only risk assessment and automated-test authorship; never assign testing ownership to a production author. In this kit, `sdet-quality-engineer` is the optional default SDET adapter only.
-- If `implementation-worker` is unavailable on the qualification path, use another conforming production author or block. Keep writers serial when scope is unclear, write targets overlap, work is coupled, or integration outweighs fan-out.
+- After MVP on Material behavior work, complete accepted scope and use fresh critical-only `sdet-quality-engineer`; optional reviewers never become mandatory gates. Never assign Material test authorship to a production author.
+- If `implementation-worker` is unavailable, main retains production authorship or uses another conforming author; block only when no conforming path exists. Keep writers serial when scope is unclear, write targets overlap, work is coupled, or integration outweighs fan-out.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
-- For Material work, always run the discovered conforming delivery/readiness gate (this kit's optional default is `session-delivery-reviewer`) with current requirements, candidate continuity, proof, SDET, validation, review, residual-risk evidence, and bundle: goal/constraints, transcript/summary plus compaction state, files/diffstat, validation, reviewer fixes, risks; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Missing required Material evidence produces blocked/not-enough-evidence, never skip/not-applicable solely because an optional input is unavailable. Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.
-- User-owned scope is accepted outcome and protected boundaries. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery findings may bind readiness via `Blocking Evidence` but never authorize mutation. One in-attempt correction wave for candidate-attributable outcome/invariant defects with authorized local reversible fit; else stop that attempt. Persistent evidence infrastructure is a separate prerequisite unless dependency-closure applies. Final/delivery rejection is terminal for the inspected attempt only and does not automatically end the root goal or require internal-revision approval.
-- Session-delivery-reviewer blockers bind the inspected candidate: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, or non-empty `Blocking Evidence` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery/`Change-Ready: no` must not pair with `Blocking for Acceptance: no` and empty `Blocking Evidence`. P2/note → Residual Risks or non-authorizing `Follow-up Candidates`. Detail: active global `change-ready-sdlc`. Continue when safe, or ask only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
+- User-owned scope is accepted outcome and protected-boundary decisions. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery evidence must never authorize mutation.
+- Optional final-candidate, delivery, code-quality, and domain reviewers may run after MVP when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected-RC for main disposition; missing or unusable optional output is not itself a stage blocker.
+- Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; continue only after an immediately-prior main-confirmed critical defect, production fix, and new proof, and permanently stop otherwise. Non-critical findings are parked and never prolong the loop.
+- Handoff reports `Development-Stage: development | MVP | RC<n> | stable` and `Stable Candidate: RC<n>` when stable.
 
 ## Review And Evidence
 
-- Findings require evidence, impact, recommendation, and confidence.
-- Missing evidence for critical behavior is a finding, blocker, or accepted risk.
+- Risk rows require a stable Risk ID, requirement/invariant, reachability/envelope, evidence, business consequence, likelihood, confidence, reproduction procedure when feasible, and smallest mitigation note.
+- Missing evidence for critical behavior is an evidence-gap row for main disposition.
 - Reviewer agents should be leaf validators: read-only except feedback-ledger appends under `docs/feedbacks/**`, no source/config/instruction edits, no commits, no pushes, no nested agents, no user questions.
 
 ## Feedback Ledger

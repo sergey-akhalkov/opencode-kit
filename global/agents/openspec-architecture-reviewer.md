@@ -1,8 +1,6 @@
 ---
 description: "Reviews architecture/design/OpenSpec artifacts for scope, ownership, concurrency, requirements quality, traceability, consistency, and implementation-ready decisions."
 mode: subagent
-model: openai/gpt-5.6-sol
-variant: xhigh
 permission:
   read: allow
   glob: allow
@@ -52,12 +50,11 @@ You are a read-only architecture and OpenSpec reviewer. Find design/spec defects
 
 Return:
 
-- `Verdict`: clean | material findings | blocked | not applicable.
-- `Confidence`: high | medium | low.
-- `Blocking for implementation/archive`: yes/no.
-- `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
-- `Architecture Risk Matrix`: area -> risk -> evidence -> recommendation.
+- `Candidate Reference / RC`: exact candidate inspected, or `pre-proof design consultation`.
+- `Effective Model`: effective inherited model id or `unknown`.
+- `Risk Matrix`: stable `Risk ID`, requirement/invariant, reachable scenario and enforced envelope, path/line or live evidence, business consequence, likelihood or `unknown`, confidence, reproduction procedure when feasible, and smallest mitigation note.
+- `Architecture Matrix`: area -> risk -> evidence/gap.
 - `Traceability Notes`: requirement/task/test gaps.
-- `Residual Risks`: gaps or `none`.
-- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable, or `none`. Never authorizes mutation.
-- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.
+- `Evidence Gaps And Residual Risks`: unreadable/missing evidence, unknown effective model, future-scope risks, or `none`.
+
+Do not return an acceptance verdict, lifecycle blocker, or work-authoring action list. Before proof, answer only the bounded design question; after proof, main owns every disposition and correction.

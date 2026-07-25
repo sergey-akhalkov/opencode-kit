@@ -23,20 +23,23 @@ Low confidence:
 - State whether important claims are confirmed, docs-only, assumption, or blocked.
 - Do not mark a task complete without evidence.
 - Do not claim production readiness without acceptance tests, validation output, benchmark/manual gates where relevant, and residual risk review.
-- For behavior-changing implementation, first prove the smallest complete happy path through observable execution, then delegate systematic risk discovery and all automated test authoring to a separate fresh-context testing subagent that did not author production code.
+- For Material behavior changes, first prove MVP through observable execution, complete accepted scope, then delegate critical risk discovery and automated test authoring to a separate fresh-context SDET that did not author production. Optional reviewers run only for concrete risk.
 - Optimize test scenarios for realistic business and operational failures, not coverage percentages. Prioritize real-boundary end-to-end evidence and document every material mock exception or unavailable dependency.
 - If validation cannot run, report `Validation skipped` with reason and risk.
 - For performance claims, include measurement, environment, profile, and before/after comparison when relevant.
 
 ## Finding Format
 
-Use this format for material findings:
+Use this format for material risk rows:
 
-- `Severity`: P0 blocker | P1 material | P2 minor.
+- `Risk ID`: stable identifier.
+- `Requirement/Invariant`: exact behavior or protected boundary.
 - `Evidence`: file:line, command output, schema path, test name, log, or explicit missing evidence.
 - `Evidence Type`: source | test | schema | live output | docs-only | assumption.
-- `Impact`: what can break or be misunderstood.
-- `Recommendation`: smallest useful fix or evidence gate.
+- `Reachable Scenario`: how the risk occurs inside the enforced envelope.
+- `Business Consequence`: what can break or be misunderstood.
+- `Likelihood`: known estimate or `unknown`.
+- `Smallest Mitigation Note`: remove, narrow, reuse, local guard, or defer for main disposition.
 - `Confidence`: high | medium | low.
 
 ## Validation Loop
@@ -45,7 +48,9 @@ Use this format for material findings:
 2. Reproduce or prove current behavior where feasible.
 3. Make the smallest complete happy-path change.
 4. Prove the happy path through observable execution at the relevant boundary.
-5. Start a fresh-context testing subagent with test-only write scope to build the risk matrix and author realistic negative/end-to-end tests.
-6. Feed discovered failures into production hardening, then rerun the happy path and negative suites.
-7. Run broader validation when the change crosses module/API/deployment boundaries.
-8. Report happy-path evidence, testing agent/session, risk matrix, mock exceptions, failures found, validation, and residual risks.
+5. Optionally collect reviewer evidence only for concrete risk; main dispositions any invoked findings.
+6. Apply only authorized corrections, then rerun observable proof and capture the next RC when the candidate changed.
+7. Start a fresh-context testing subagent with test-only write scope for reachable critical risk discovery and realistic negative/end-to-end tests.
+8. Feed confirmed failures into production hardening, then rerun the happy path and affected suites.
+9. Run broader validation when the change crosses module/API/deployment boundaries.
+10. Report MVP evidence, critical-SDET state when applicable, validation, known non-critical limitations, `Development-Stage`, and external-operation state.

@@ -134,8 +134,11 @@ const EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT = [
 
 const EXPECTED_REGISTERED_REVIEWER_REQUIRED_TEXT = [
   ...EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT,
-  "Blocking Evidence",
-  "Follow-up Candidates",
+  "Candidate Reference / RC",
+  "Effective Model",
+  "Risk Matrix",
+  "Evidence Gaps And Residual Risks",
+  "Do not return an acceptance",
 ];
 
 const EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT = [
@@ -144,16 +147,17 @@ const EXPECTED_TEST_COVERAGE_REVIEWER_REQUIRED_TEXT = [
   "actual runtime envelope",
   "fresh-session behavior",
   "Task/Repro Coverage Matrix",
-  "After Applicable Proof",
-  "do not demand systematic tests before the production happy path and Applicable Proof",
+  "After Runtime Proof",
+  "do not demand systematic tests before the production happy path and Runtime Proof",
   "do not invent acceptance scope",
 ];
 
 const EXPECTED_REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT = [
   "## Contract Reference",
   "`instructions/leaf-reviewer-agent-contract.md`",
-  "`Findings`: ordered by severity",
-  "`Residual Risks`",
+  "`Candidate Reference / RC`",
+  "`Effective Model`",
+  "`Evidence Gaps And Residual Risks`",
 ];
 
 const EXPECTED_REVIEWER_DENIED_PERMISSION_KEYS = [
@@ -192,7 +196,11 @@ const EXPECTED_IMPLEMENTATION_WORKER_REQUIRED_TEXT = [
   "No commits",
   "smallest complete happy path",
   "Never create or modify automated tests",
-  "proof procedure",
+  "run-observe-correct",
+  "Execution Request",
+  "raw output",
+  "provisional",
+  "Effective Model",
   "Blockers",
   "Residual Risks",
   "## Feedback Ledger",
@@ -213,6 +221,8 @@ const EXPECTED_IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT = [
   "non-overlapping write scope",
   "Universal Task Briefing Contract",
   "sdet-quality-engineer",
+  "default production author",
+  "evidenced benefit",
 ];
 
 const EXPECTED_TROUBLESHOOTER_BASH_RULES = [
@@ -321,16 +331,12 @@ const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
   "Baseline Proof",
   "Small Slice",
   "Happy Path",
-  "Happy-Path Proof",
-  "Focused Validation",
-  "Edge Inspection",
-  "Risk Discovery",
-  "Negative Tests",
-  "Harden",
-  "Review Gate",
-  "Final Validation",
-  "Final Candidate Review",
-  "Handoff",
+  "Runtime Proof",
+  "Accepted Scope",
+  "Optional Risk Discovery",
+  "Critical SDET",
+  "Validation And RC",
+  "Stable Handoff",
   "Process Improvement",
 ];
 
@@ -344,14 +350,16 @@ const tests: TestCase[] = [
       const actualSteps = [...workflow.matchAll(/^\d+\. `([^`\r\n]+)`(?:[ \t]+\([^)\r\n]+\))?:/gm)].map((match) => match[1]);
       assertDeepEqual(actualSteps, EXPECTED_CANONICAL_WORKFLOW_STEPS, "Canonical workflow step names or ordering drifted.");
       for (const evidence of [
-        "smallest complete production path",
-        "observable execution",
-        "separate fresh-context testing subagent",
-        "independent matrix of realistic",
-        "Prioritize end-to-end tests",
-        "Protected-boundary needs/unknowns/missing capabilities bind `Change-Ready: no` via `Blocking Evidence` but never authorize mutation; main diagnoses",
-        "optional domain review when risk justifies it—not a Final Candidate Review substitute",
-        "requirements, happy-path proof, testing session, risk matrix",
+        "smallest useful increment",
+        "run-observe-correct",
+        "Development-Stage: MVP",
+        "Optional final-candidate, delivery, code-quality, or domain review may run after MVP",
+        "critical-risks-reported | no-critical-risk | blocked",
+        "Reviewer/SDET evidence must never authorize mutation",
+        "Mutation returns to development; current proof restores MVP",
+        "freezes the next `RC<n>`",
+        "promote the same RC to stable",
+        "external operations remain separately authorized",
       ]) {
         assert(workflow.includes(evidence), `Canonical workflow is missing required risk-driven evidence: ${evidence}`);
       }
@@ -365,20 +373,23 @@ const tests: TestCase[] = [
         "active global OpenCode config",
         "Missing active global `AGENTS.md` blocks Material/qualification work that requires it",
         "Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill",
-        "fresh discovered conforming SDET session",
-        "`sdet-quality-engineer` is the optional default SDET adapter only",
+        "fresh conforming SDET",
+        "sdet-quality-engineer",
         "unresolved validation procedures must be discovered before qualification",
-        "Applicable unresolved or skipped validation keeps `Change-Ready: no`",
+        "Applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC",
       ]) {
         assert(projectTemplate.includes(token), `Project template missing self-contained bootstrap oracle: ${token}`);
       }
       assert(!projectTemplate.includes("Follow `instructions/universal-development-loop.md`"), "Project template must not require a target-relative UDL file.");
-      assert(!projectTemplate.includes("fresh `sdet-quality-engineer`"), "Project template must discover a conforming SDET rather than require the kit-named adapter.");
+      assert(
+        projectTemplate.includes("fresh conforming SDET") || projectTemplate.includes("fresh critical-only `sdet-quality-engineer`"),
+        "Project template must keep discovered/fresh SDET ownership without requiring a kit-only adapter as the sole path.",
+      );
 
       const delivery = fs.readFileSync(path.join(root, "global", "agents", "session-delivery-reviewer.md"), "utf8");
       const description = delivery.split(/\r?\n/).find((line) => line.startsWith("description:")) ?? "";
-      assert(description.includes("Use always for Portable Material sessions"), "Delivery reviewer description must make Material discovery unconditional.");
-      assert(description.includes("Portable Small sessions when project policy, risk, owner, or an explicit delivery-review request requires it"), "Delivery reviewer description must keep Small discovery conditional.");
+      assert(description.includes("Optional post-MVP delivery evidence review"), "Delivery reviewer description must make review optional and post-MVP.");
+      assert(description.includes("concrete risk, project policy, owner, or an explicit request"), "Delivery reviewer description must keep discovery conditional.");
 
       const globalAgents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
       for (const token of [
@@ -402,15 +413,15 @@ const tests: TestCase[] = [
         "installer does **not** persist prior state automatically",
         "Restore the exact prior `OPENCODE_CONFIG_DIR` value",
         "If the prior state was unset",
-        "Restart or reload OpenCode",
+        "Restart OpenCode so the restored environment is loaded.",
         "Restore any backups created for pre-existing files",
         "Remove only files proven created by that bootstrap run",
-        "Doctor is a structural diagnostic, not full lifecycle readiness certification",
+        "Doctor is a structural diagnostic, not lifecycle readiness certification",
         "Report version 2 separates structural severity",
         "`qualificationStatus: pass|blocked` and per-check `blocksQualification`",
-        "Only `qualificationStatus: blocked` / checks with `blocksQualification: true` block Change-Ready qualification",
-        "Advisory warnings alone",
-        "Missing project bootstrap/AGENTS, neither validation adapter source complete",
+        "Only `qualificationStatus: blocked` or `blocksQualification: true` blocks RC/stable qualification; advisory warnings alone do not.",
+        "advisory warnings alone",
+        "Missing project bootstrap/AGENTS, neither validation source complete",
       ]) {
         assert(readme.includes(token), `README missing manual activation/bootstrap rollback honesty: ${token}`);
       }
@@ -422,30 +433,35 @@ const tests: TestCase[] = [
       const worker = fs.readFileSync(path.join(root, "global", "agents", "implementation-worker.md"), "utf8");
       const sdet = fs.readFileSync(path.join(root, "global", "agents", "sdet-quality-engineer.md"), "utf8");
       for (const evidence of [
-        "Production-only",
+        "production-only",
         "Never create or modify automated tests",
         "smallest complete happy path",
-        "proof procedure",
+        "run-observe-correct",
+        "Execution Request",
+        "Effective Model",
       ]) {
         assert(worker.includes(evidence), `Implementation worker is missing production-only evidence: ${evidence}`);
       }
       for (const evidence of [
-        "fresh context",
+        "fresh-context",
         "test-only write scope",
-        "risk/oracle matrix",
-        "Prefer real boundaries",
-        "Never fix production",
+        "Critical Risk Matrix",
+        "Prefer the real candidate boundary",
+        "Never edit or repair production",
       ]) {
         assert(sdet.includes(evidence), `SDET quality engineer is missing test-only evidence: ${evidence}`);
       }
     },
   },
   {
-    name: "contracts: implementation worker keeps owner-approved local model adapter",
+    name: "contracts: implementation worker inherits the invoking primary model",
     run: () => {
       const worker = fs.readFileSync(path.join(root, "global", "agents", "implementation-worker.md"), "utf8");
-      assert(/^model: xai\/grok-4\.5$/m.test(worker), "Implementation worker source must retain model: xai/grok-4.5 for this local adapter.");
-      assert(/^variant: high$/m.test(worker), "Implementation worker source must retain variant: high for this local adapter.");
+      const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(worker)?.[1];
+      assert(frontmatter !== undefined, "Implementation worker must retain readable YAML frontmatter.");
+      assert(!/^model\s*:/m.test(frontmatter ?? ""), "Implementation worker must not pin model in frontmatter.");
+      assert(!/^variant\s*:/m.test(frontmatter ?? ""), "Implementation worker must not pin variant in frontmatter.");
+      assert(worker.includes("Record the inherited Effective Model"), "Implementation worker must report inherited Effective Model provenance.");
     },
   },
   {
@@ -453,8 +469,9 @@ const tests: TestCase[] = [
     run: () => {
       const sdet = fs.readFileSync(path.join(root, "global", "agents", "sdet-quality-engineer.md"), "utf8");
       for (const evidence of [
-        "For co-located tests, require exact content blocks that prevent production edits.",
-        "If attribution is unsafe, return `Action: blocked`.",
+        "co-located",
+        "unsafe co-located test attribution",
+        "Action: blocked",
       ]) {
         assert(sdet.includes(evidence), `SDET co-located safety contract missing exact evidence: ${evidence}`);
       }
@@ -490,8 +507,8 @@ const tests: TestCase[] = [
         "Test-coverage contract requiredText drifted.",
       );
       for (const required of [
-        "After Applicable Proof",
-        "do not demand systematic tests before the production happy path and Applicable Proof",
+        "After Runtime Proof",
+        "do not demand systematic tests before the production happy path and Runtime Proof",
       ]) {
         assert(
           TEST_COVERAGE_REVIEWER_CONTRACT.requiredText.includes(required),
@@ -518,9 +535,18 @@ const tests: TestCase[] = [
         "Reviewer contract reference file list drifted.",
       );
       for (const contract of contractReference) {
+        const expected = contract.fileName === "code-quality-reviewer.md"
+          ? [
+            ...EXPECTED_REVIEWER_CONTRACT_REFERENCE_TEXT,
+            "Candidate Reference / RC",
+            "Effective Model",
+            "Reduction Matrix",
+            "Evidence Gaps",
+          ]
+          : EXPECTED_REGISTERED_REVIEWER_REQUIRED_TEXT;
         assertDeepEqual(
           contract.requiredText,
-          EXPECTED_REGISTERED_REVIEWER_REQUIRED_TEXT,
+          expected,
           `Registered reviewer contract requiredText drifted: ${contract.fileName}`,
         );
       }

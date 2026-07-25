@@ -8,13 +8,13 @@ Installable OpenCode development kit for reusable AI-assisted engineering workfl
 
 `opencode-dev-kit` packages reusable OpenCode skills, read-only reviewer agents with a scoped feedback-ledger write exception, bounded worker agents, project templates, instruction templates, and deterministic helper tools. Its purpose is to make work in other repositories faster, cheaper in tokens, and safer without creating a different workflow for every technology stack.
 
-The kit optimizes one process: understand the original requirements, implement and observably prove the smallest complete happy path, run focused validation, and inspect realistic requirement-linked edge cases. Ordinary Small work stays on that fast path. Material or explicit Change-Ready work adds independent fresh-context SDET risk testing, complete validation, final review, and delivery gates.
+The kit optimizes one process: main-default production authorship, run-observe-correct to MVP, accepted-scope completion, critical-only SDET for Material behavior, applicable validation, RC freeze, and local stable handoff. Optional reviewers never become stage gates.
 
 ## Universal Development Loop
 
 The conceptual development loop lives in the single canonical file `instructions/universal-development-loop.md`. Step list, Token/Time Rules, Quality Defaults, and Output Shape are defined there; kit-level pointer and policy notes live in `docs/universal-development-loop.md`. Technology adapters may change commands and constraints, but not the conceptual loop; `npm run validate` enforces the single-source rule for that loop body.
 
-Ordinary Small routing lives in always-loaded global `AGENTS.md`. Full qualification uses the global skill `change-ready-sdlc` (loaded from the active global config directory via `OPENCODE_CONFIG_DIR`) only for explicit Change-Ready requests, project-required qualification, or concrete Material risk. UDL is conceptual guidance, not a second competing process.
+Ordinary Small routing lives in always-loaded global `AGENTS.md`. Full qualification uses the global skill `change-ready-sdlc` (loaded from the active global config directory via `OPENCODE_CONFIG_DIR`) only for explicit stable/full-qualification requests, project-required qualification, or concrete Material risk. UDL is conceptual guidance, not a second competing process. User-facing maturity is `Development-Stage: development | MVP | RC<n> | stable`.
 
 ## Contents
 
@@ -47,7 +47,7 @@ Point OpenCode at this repository as the single source of truth for global confi
 npm run install:global
 ```
 
-`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed portable default (compaction, watcher, tool output, `permission: ask`); the installer provisions a local `global/opencode.json` from it on first run. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
+`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed portable default (GPT-5.6 Sol main model, compaction, watcher, tool output, `permission: ask`); the installer provisions a local `global/opencode.json` from it on first run. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission/review-environment overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
 
 Options:
 
@@ -74,7 +74,7 @@ Runtime activation rollback restores only the active config pointer and reloads 
 
 1. Restore the exact prior `OPENCODE_CONFIG_DIR` value you recorded before install.
 2. If the prior state was unset, use `npm run install:global -- --unset` (or the matching profile `--unset-script` path) so the variable is removed rather than pointed at an invented path.
-3. Restart or reload OpenCode so the restored environment is loaded.
+3. Restart OpenCode so the restored environment is loaded.
 4. Do not treat activation rollback as full change rollback of repository artifacts.
 
 Keep project-specific skills out of `global/` unless their descriptions explicitly scope them to that project. Global skills are visible in unrelated repositories through the skill catalog, so broad or local-product triggers add avoidable routing noise.
@@ -84,8 +84,8 @@ Keep project-specific skills out of `global/` unless their descriptions explicit
 The kit uses three OpenCode config files with a documented layering:
 
 - `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. Use it for repo-local MCPs (for example the bundled `headroom` MCP) and the workspace-wide `permission: ask` policy.
-- `global/opencode.json.template` — the portable safe default that ships with the kit. It declares compaction, watcher, tool output, and `permission: ask`. Never edit this file for machine-specific overrides.
-- `global/opencode.json` — the machine-local config (gitignored). Provisioned from `global/opencode.json.template` on first install and editable for local provider, MCP, and permission settings.
+- `global/opencode.json.template` — the portable safe default that ships with the kit. It declares the GPT-5.6 Sol main model default, compaction, watcher, tool output, and `permission: ask`. Never edit this file for machine-specific overrides.
+- `global/opencode.json` — the machine-local config (gitignored). Provisioned from `global/opencode.json.template` on first install and editable for local provider, MCP, permission, and review-environment settings.
 
 The validator identifies the machine-local layer by its gitignored `global/opencode.json` path and reports broad local permission overrides as `INFO:` notes. Never add unsupported marker fields to OpenCode config; every field must exist in the official OpenCode schema.
 
@@ -129,7 +129,11 @@ Run the structural/bootstrap diagnostic after bootstrapping or install:
 npm run doctor -- --project <project-path>
 ```
 
-Doctor is a structural diagnostic, not full lifecycle readiness certification. Report version 2 separates structural severity (`status: pass|warn|blocked`, process exit) from machine-readable qualification impact (`qualificationStatus: pass|blocked` and per-check `blocksQualification`). Only `qualificationStatus: blocked` / checks with `blocksQualification: true` block Change-Ready qualification. Advisory warnings alone (optional project `opencode.json`, feedback ledger, optional kit default role files, a missing or incomplete alternate validation adapter source when the other source is complete, missing machine-local `opencode.json` when the resolved active global directory has complete required authority, or informational notes that the resolved directory is not this checkout) do not block. Active global resolution uses nonblank `OPENCODE_CONFIG_DIR` when set; otherwise the host default `~/.config/opencode`. Required active authority is structurally conforming `AGENTS.md` and `skills/change-ready-sdlc/SKILL.md` at that resolved directory: nonempty regular files with distinct Markdown heading/section structure (not token-packed one-line stubs), YAML-parsed skill frontmatter with exact scalar `name: change-ready-sdlc` and nonempty scalar `description`, and an ordered lifecycle heading skeleton through freeze/proof/SDET/validation/final review/handoff. A complete trusted default or independent copy may pass even when it is not this repository checkout and even without `opencode.json.template`. Empty, malformed, missing-frontmatter, non-scalar/duplicate-key frontmatter, or lifecycle-incomplete authority blocks qualification. Source-path equality and template markers are informational only. Project validation qualification accepts either complete concrete `opencode-dev-kit/adapter.json` validation entries or a complete `opencode-dev-kit/validation.md` Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build. A command is resolved when it is a concrete non-placeholder value, adapter JSON `N/A - <nonempty reason>`, validation.md Command `N/A - <reason>`, or Command `N/A` with a nonempty non-placeholder Notes reason. Bare `N/A`, `unknown`, `TBD`/`TODO`, replace-me / replace-after-discovery, blank, and equivalent placeholders remain unresolved. Missing project bootstrap/AGENTS, neither validation adapter source complete, missing required active authority, invalid explicit/local config (missing regular file, malformed JSON/JSONC, non-object, or `machineOverride`), invalid project path, or required Node do block qualification. Empty `--project=` and whitespace-only `--project` values error instead of silently selecting the current directory. Doctor does not invent validation commands or score lifecycle capability.
+Doctor is a structural diagnostic, not lifecycle readiness certification. Report version 2 separates structural severity (`status: pass|warn|blocked`, process exit) from machine-readable qualification impact (`qualificationStatus: pass|blocked` and per-check `blocksQualification`). Only `qualificationStatus: blocked` or `blocksQualification: true` blocks RC/stable qualification; advisory warnings alone do not.
+
+Active global resolution uses nonblank `OPENCODE_CONFIG_DIR` when set; otherwise it uses the host default `~/.config/opencode`. Required authority is structurally conforming `AGENTS.md` and `skills/change-ready-sdlc/SKILL.md`: nonempty regular files with real Markdown sections, valid scalar skill frontmatter, and an ordered lifecycle skeleton through development, MVP proof, critical SDET when applicable, RC validation, and stable handoff. A trusted default or independent copy may pass without matching this checkout. Missing, malformed, or lifecycle-incomplete authority blocks qualification; source-path equality and template markers are informational only.
+
+Project validation qualification accepts either complete concrete `opencode-dev-kit/adapter.json` validation entries or a complete `opencode-dev-kit/validation.md` Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build. A command is resolved when it is concrete or records reasoned non-applicability as `N/A - <reason>` (or Command `N/A` with non-placeholder Notes). Bare `N/A`, `unknown`, `TBD`/`TODO`, replace-me placeholders, and blanks remain unresolved. Missing project bootstrap/AGENTS, neither validation source complete, missing required authority, invalid explicit/local config, invalid project path, or unsupported Node block qualification. Empty `--project=` and whitespace-only `--project` values error rather than selecting the current directory. Doctor does not invent commands or score lifecycle capability.
 
 Before broad AI work in a target repository, gather a compact deterministic map:
 
@@ -146,9 +150,9 @@ npm run project:inventory -- --root <project-path> --format markdown
 - Use Headroom MCP tools only on demand for large logs, search results, JSON, or tool outputs; retrieve originals before trusting exact code, errors, or safety-critical details.
 - Route Headroom MCP through `tools/headroom-mcp-wrapper.ts` when OpenCode expects MCP prompts; the wrapper adds a small `headroom_usage_policy` prompt and proxies Headroom tools unchanged. Before spawning the child it probes `headroom --version`; when the binary is missing on `PATH` it prints `error: headroom binary not found on PATH` and exits `2`, and when the probe exits non-zero it prints `error: headroom binary not usable (exit <code>)` and exits `3`. The wrapper never relies on a buried child `error` event, so OpenCode startup fails fast with a deterministic code when Headroom is not usable.
 - Install the full kit by default, but load heavyweight skills/subagents only when they reduce total work.
-- Ordinary Small production may be implemented directly by the main session. For delegated Material/qualification slices, optional `implementation-worker` covers exact bounded non-overlapping production slices with clear acceptance criteria and a focused validation gate. Keep research, questions, ordinary review-only work, and proven-inert content direct in the main session.
+- Main is the default production author for Ordinary Small and Material. Optional `implementation-worker` covers evidenced isolated production-only slices with exact non-overlapping write scope, representative proof boundary, clear acceptance criteria, and a focused validation gate. Keep research, questions, ordinary review-only work, and proven-inert content direct in the main session.
 - Run focused validation first; run broad validation when the change crosses boundaries.
-- For optional domain reviewers, use one relevant gate by risk instead of launching every domain reviewer; independent final review and Portable Material delivery/readiness gates remain required only when Material/explicit qualification conditions apply.
+- Launch optional reviewers after MVP only when concrete risk, project policy, or the owner makes them useful. Reviewer output informs main disposition but never gates a stage.
 - Convert repeated manual counting, drift checks, or report assembly into deterministic helpers.
 
 Inspect this kit's instruction context cost with:
@@ -187,7 +191,7 @@ OpenCode agents are loaded from project or global agent folders. Copy selected f
 - Project: `.opencode/agents/<name>.md`
 - Global: `<active-global-config-dir>/agents/<name>.md`
 
-Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default with a scoped `docs/feedbacks/**` write exception through `complain`; `implementation-worker` and `sdet-quality-engineer` are separately validated write-capable exceptions (production-only and test-only respectively), `troubleshooter` remains an escalation write-capable exception, and `final-candidate-reviewer` is a read-only final gate.
+Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default with a scoped `docs/feedbacks/**` write exception through `complain`; `implementation-worker` and `sdet-quality-engineer` are separately validated write-capable exceptions (production-only and test-only respectively), `troubleshooter` remains an escalation write-capable exception, and `final-candidate-reviewer` is an optional read-only risk reviewer.
 
 OpenCode permissions enforce the `docs/feedbacks/**` path boundary; `complain` is the required model contract for entry shape and privacy checks. Use a semantic plugin/tool later if hard append-only or skill-mediated enforcement is required.
 
@@ -295,25 +299,25 @@ Routing and reviewer maps assume the default `all` install profile.
 - Existing OpenSpec continuation or "what next" work -> `next-step`; consistency work -> `openspec-consistency-review`.
 - Several session-scoped follow-ups from an audit, reviewer gate, broad discovery, or validation failure -> group them into lightweight OpenSpec changes when OpenSpec exists or is approved; otherwise return grouped continuation candidates.
 - Initial MR/PR title/body preparation -> `merge-request-author`.
-- Ordinary Small clear/bounded/local/reversible work -> direct main implementation, observable proof, focused validation; do not load `change-ready-sdlc` merely because behavior changes. Report `Change-Ready: not requested`.
-- Explicit Change-Ready, project-required qualification, or concrete Material risk -> load `change-ready-sdlc` before the first mutation.
-- Delegated Material/qualification production slices -> discovered conforming production author; optional kit default is `implementation-worker` for exact bounded non-overlapping production slices when installed.
-- Material/qualification post-proof systematic test risk/evidence -> fresh `sdet-quality-engineer` when installed.
-- Qualification final post-validation candidate review -> `final-candidate-reviewer` when installed.
-- Bounded first-pass helper work that benefits from cheap/offline local context, such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker` when the target machine has a configured `qwen-local` provider.
+- Ordinary Small clear/bounded/local/reversible work -> main-default implementation, Runtime Proof to MVP, accepted-scope completion, focused validation, RC, and stable handoff.
+- Explicit stable/full qualification, project-required qualification, or concrete Material risk -> load `change-ready-sdlc` before the first mutation.
+- Optional delegated production slices -> `implementation-worker` only when isolation, proof boundary, and evidenced benefit justify handoff; main remains default author.
+- Material critical test risk/evidence after MVP and accepted-scope completion -> fresh `sdet-quality-engineer` when installed.
+- Optional post-MVP candidate risk review -> `final-candidate-reviewer` when concrete risk, policy, or the owner requires it.
+- Bounded first-pass helper work such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker`; it inherits the invoking primary model and does not imply local/offline execution.
 - Exceptional hard blockers, complex bugs, or root-cause investigations where normal agents/tools already failed -> `troubleshooter`; provide prior failed attempts, allowed write scope, forbidden paths, and validation gate.
-- Session delivery-control review for historical/current todos, user prompts/detected candidate requirement signals/question replies, changed-file scope, transcript/summary, compaction/resume continuity, and validation output -> `session-delivery-reviewer`.
+- Optional post-MVP delivery-control review for historical/current todos, user decisions, changed-file scope, continuity, and validation evidence -> `session-delivery-reviewer` when project policy, risk, owner, or an explicit request requires it.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; current-session friction notes -> `complain`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
-- Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; use `code-quality-reviewer` as the read-only gate.
+- Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; the Material `code-quality-reviewer` gate returns only a safe net-reduction matrix.
 
 ## Reviewer Gate Map
 
 - Instruction artifacts, skills, agents, prompts, `AGENTS.md`, and README routing -> `instruction-artifact-reviewer`.
-- Code health, maintainability, readability, file navigation, duplication, boundaries, and pragmatic refactoring -> `code-quality-reviewer`.
+- Safe deletion, reuse, deduplication, state simplification, and public-surface narrowing -> `code-quality-reviewer` reduction matrix.
 - Implementation readiness, stable scope, blockers, validation path -> `implementation-readiness-reviewer`.
-- Final post-SDET, post-validation candidate review of the complete current candidate -> `final-candidate-reviewer`.
-- Session delivery alignment, historical/current todos, user prompts/detected candidate requirement signals/question replies, changed-file scope, compaction continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff -> `session-delivery-reviewer`.
+- Optional post-MVP risk review of the complete current candidate -> `final-candidate-reviewer`.
+- Optional post-MVP delivery alignment and evidence risk matrix -> `session-delivery-reviewer` when explicitly applicable.
 - OpenSpec/design/architecture ownership and consistency -> `openspec-architecture-reviewer`.
 - Requirements-to-tests, weak assertions, missing gates -> `test-coverage-reviewer`.
 - Config, deployment, packaging, operational safety -> `deployment-config-reviewer`.
@@ -332,13 +336,13 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - Bad triggers: isolated nits, speculative polish, local style preferences, duplicated final-answer bullets, or one obvious next step.
 - Prefer one OpenSpec change per coherent outcome, capability, risk area, or artifact family. For lightweight backlog changes, `tasks.md` can be the primary surface; add proposal/spec/design detail only when requirements, behavior, compatibility, architecture, or acceptance criteria need it.
 - Create or update OpenSpec files only when the repository already has an OpenSpec workflow or the user approved adding one; otherwise return grouped follow-up candidates as continuation items.
-- Reviewer agents remain read-only for source/config/instruction/spec/task artifacts; their only default write exception is feedback-ledger entries under `docs/feedbacks/**` through `complain`. They recommend OpenSpec follow-up tracking in non-authorizing `Follow-up Candidates`; the main session owns any OpenSpec writes and `next-step` continuation.
+- Reviewer agents remain read-only for source/config/instruction/spec/task artifacts; their only default write exception is feedback-ledger entries under `docs/feedbacks/**` through `complain`. They return risk matrices (or the code-quality reduction matrix); main owns disposition, any OpenSpec writes, and `next-step` continuation.
 
 ## Skill Catalog
 
 ### Planning And Workflow
 
-- `change-ready-sdlc`: global instruction artifact for portable full-qualification orchestration (Material/explicit Change-Ready only: profile, brief, Candidate Reference, proof, SDET, validation, final review, Change-Ready decision). Ordinary Small routing lives in always-loaded `AGENTS.md`. Repository support code only validates and distributes this artifact; it does not run the lifecycle.
+- `change-ready-sdlc`: global instruction artifact for Material/full qualification using development -> MVP -> RC -> stable, critical-only SDET, non-critical parking, validation, and local handoff. Optional reviewers do not gate stages.
 - `deep-task-planning`: execution-grade plans for complex work.
 - `next-step`: discover OpenSpec-backed workstreams and choose one serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
@@ -377,7 +381,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 ## Agent Catalog
 
-- `code-quality-reviewer`: maintainability/readability reviewer for code smells, file bloat, duplication, boundaries, overengineering, and pragmatic refactoring gates.
+- `code-quality-reviewer`: read-only safe net-reduction reviewer for deletion, reuse, deduplication, state simplification, and public-surface narrowing while retaining unique critical/compatibility oracles.
 - `test-coverage-reviewer`: task/repro/runtime-envelope coverage, requirement-to-test matrix, missing tests, weak assertions.
 - `implementation-readiness-reviewer`: stable scope, decisions, blockers, validation readiness.
 - `openspec-architecture-reviewer`: architecture/OpenSpec consistency and ownership risks.
@@ -385,15 +389,15 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `performance-reliability-reviewer`: latency, throughput, starvation, overload, recovery evidence.
 - `deployment-config-reviewer`: config/deployment readiness and operational safety.
 - `protocol-api-reviewer`: framed/client API, schema evolution, correlation, reconnect.
-- `implementation-worker`: write-capable production-only worker for one bounded non-overlapping production slice, with scoped production edits, observable proof handoff, and report-only return; never authors automated tests.
+- `implementation-worker`: optional write-capable production-only worker for one evidenced isolated non-overlapping production slice, with scoped production edits, parent raw-output run-observe-correct, and report-only return; never authors automated tests.
 - `sdet-quality-engineer`: write-capable test-only SDET for independent risk/oracle assessment and automated-test evidence after applicable proof; never edits production or claims readiness.
-- `final-candidate-reviewer`: fresh read-only final-candidate reviewer after SDET and complete project-native validation; returns structured verdict only and never edits candidate artifacts.
-- `troubleshooter`: GPT 5.6 Sol Xhigh escalation-only problem solver for exceptional blockers, complex bugs, and root-cause investigations after normal agents/tools failed; can run safe experiments, web research, debugging, and permission-gated diagnostic instrumentation; routes production corrections to the production author and test corrections to a fresh SDET.
-- `qwen-local-worker`: optional local Qwen3.6 first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks; requires a configured `qwen-local` OpenAI-compatible provider.
+- `final-candidate-reviewer`: optional fresh read-only post-MVP risk reviewer; returns an evidence-backed risk matrix and never edits candidate artifacts or approves a stage.
+- `troubleshooter`: inherited-model escalation-only problem solver for exceptional blockers, complex bugs, and root-cause investigations after normal agents/tools failed; can run safe experiments, web research, debugging, and permission-gated diagnostic instrumentation; routes production corrections to the production author and test corrections to a fresh SDET.
+- `qwen-local-worker`: inherited-model first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks.
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
 - `legacy-client-compatibility-reviewer`: compatibility with legacy clients/tools/workflows.
-- `session-delivery-reviewer`: session delivery-control reviewer that uses `session_delivery_context` when available for historical/current todos, user prompts, detected candidate requirement signals, question replies, and permission replies (otherwise continues from supplied readable evidence), then checks semantic goal alignment, changed-file scope, continuity, proportional rigor, missed work, risks, validation/review completeness, and acceptance handoff.
+- `session-delivery-reviewer`: optional post-MVP delivery evidence reviewer; uses `session_delivery_context` when available and never gates RC or stable.
 - `instruction-artifact-reviewer`: read-only review of skills, agents, prompts, `AGENTS.md`, README routing, autonomy handoff, and safety boundaries.
 
 Project plugin behavior:
@@ -430,7 +434,7 @@ Overly narrow future-scope behavior that depended on one product domain was inte
 - For repetitive, evidence-heavy, or token-heavy workflows, consider a small deterministic helper before adding more prose process.
 - When several session-scoped follow-ups appear outside approved scope, prefer grouping them into OpenSpec changes when OpenSpec exists or is approved instead of leaving an untracked final-message backlog; avoid OpenSpec ceremony for isolated nits or one obvious next step.
 - Helper automation in skills or agents must be deterministic and contract-driven: explicit inputs/outputs, fixtures or schemas, stable ordering, privacy-safe output, and no hidden heuristics.
-- Implementation-capable artifacts require observable proof of the smallest complete happy path before systematic test design. Material/explicit qualification then requires independent fresh-context risk discovery and test authoring with production paths forbidden. Ordinary Small uses focused validation and optional smallest post-proof regression.
+- Implementation-capable artifacts require observable MVP proof before systematic test design. Material behavior then requires independent fresh critical-only SDET/test authoring with production paths forbidden. Ordinary Small uses focused validation and an optional smallest regression after proof.
 - Test strategy targets realistic business and operational failures at real end-to-end boundaries; coverage metrics are diagnostic only, and justified mock exceptions must be explicit.
 - Reviewer agents should keep `## Contract Reference`, role-specific inputs/checks/output, ordered findings, residual risks, and non-authorizing `Follow-up Candidates`; do not inline `## Leaf Contract`, `## Feedback Ledger`, or `## Prevention Feedback` (shared runtime invariants come from global instructions); mutation-capable tools stay denied except scoped `docs/feedbacks/**` appends through `complain` and explicitly validated bounded exceptions such as `implementation-worker`, `sdet-quality-engineer`, and `troubleshooter`.
 - Avoid hardcoded commands and paths. Use placeholders or say to use the repository's configured validation command.

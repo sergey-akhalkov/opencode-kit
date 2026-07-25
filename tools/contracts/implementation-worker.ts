@@ -27,7 +27,11 @@ export const IMPLEMENTATION_WORKER_REQUIRED_TEXT: readonly string[] = [
   "No commits",
   "smallest complete happy path",
   "Never create or modify automated tests",
-  "proof procedure",
+  "run-observe-correct",
+  "Execution Request",
+  "raw output",
+  "provisional",
+  "Effective Model",
   "Blockers",
   "Residual Risks",
   "## Feedback Ledger",
@@ -55,7 +59,7 @@ export const IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT: readonly string[]
   "original exact production ownership/write scope",
   "role, objective, and original exact production ownership/write scope",
   "role, objective, ownership, or material scope",
-  "prior Applicable Proof",
+  "prior Runtime Proof",
 ];
 
 /** Tokens required in maintenance-route handoff wording. */
@@ -71,4 +75,6 @@ export const IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT: readonly string[] = [
   "non-overlapping write scope",
   "Universal Task Briefing Contract",
   "sdet-quality-engineer",
+  "default production author",
+  "evidenced benefit",
 ];

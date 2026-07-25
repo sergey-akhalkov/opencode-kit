@@ -96,6 +96,14 @@ export function newLibraryFixture(name: string): string {
   ]));
   writeText(path.join(dir, "global", "skills", "complain", "SKILL.md"), fs.readFileSync(path.join(helperRoot, "global", "skills", "complain", "SKILL.md"), "utf8"));
   writeText(path.join(dir, "docs", "feedbacks", "README.md"), fs.readFileSync(path.join(helperRoot, "docs", "feedbacks", "README.md"), "utf8"));
+  writeText(
+    path.join(dir, "instructions", "leaf-reviewer-agent-contract.md"),
+    fs.readFileSync(path.join(helperRoot, "instructions", "leaf-reviewer-agent-contract.md"), "utf8"),
+  );
+  writeText(
+    path.join(dir, "instructions", "reusable-project-agent-instructions.md"),
+    fs.readFileSync(path.join(helperRoot, "instructions", "reusable-project-agent-instructions.md"), "utf8"),
+  );
   writeText(path.join(dir, "global", "agents", "demo-reviewer.md"), lines([
     "---",
     "description: Reviews demo fixture behavior.",
@@ -132,45 +140,26 @@ export function newLibraryFixture(name: string): string {
     "",
     "Return:",
     "",
-    "- `Findings`: ordered by severity. Each finding includes `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.",
-    "- `Residual Risks`: known low-confidence gaps, missing evidence, or `none`.",
-    "- `Blocking Evidence`: readiness-rejecting facts or `none`.",
-    "- `Follow-up Candidates`: non-authorizing separate work or `none`.",
+    "- `Candidate Reference / RC`: exact candidate inspected.",
+    "- `Effective Model`: effective model id or `unknown`.",
+    "- `Risk Matrix`: stable `Risk ID`, requirement/invariant, reachable scenario and enforced envelope, evidence, business consequence, likelihood or `unknown`, confidence, reproduction procedure when feasible, and smallest mitigation note.",
+    "- `Evidence Gaps And Residual Risks`: missing evidence, unknown model provenance, or `none`.",
     "",
   ]));
   writeText(path.join(dir, "instructions", "example.md"), lines(["# Example", ""]));
-  writeText(path.join(dir, "instructions", "universal-development-loop.md"), lines([
-    "# Universal Development Loop",
-    "",
-    "Pilot-Ready: yes | no | not requested is a disposition for the Ordinary Small | Material profiles inside a technically enforced operating envelope. Prefer remove/narrow/reuse/local guard. User-owned scope is the accepted outcome and each protected-boundary decision; necessary local reversible dependency closure is autonomous. Findings may bind Blocking Evidence but never authorize mutation. One correction wave ends the attempt, not the root goal; separate work stays in Follow-up Candidates.",
-    "",
-    "## Contract",
-    "",
-    "1. Intake",
-    "2. Evidence",
-    "3. Baseline Proof",
-    "4. Small Slice",
-    "5. Happy Path",
-    "6. Happy-Path Proof",
-    "7. Risk Discovery",
-    "8. Negative Tests",
-    "9. Harden",
-    "10. Review Gate",
-    "11. Final Validation",
-    "12. Final Candidate Review",
-    "13. Handoff",
-    "14. Process Improvement",
-    "",
-  ]));
+  writeText(
+    path.join(dir, "instructions", "universal-development-loop.md"),
+    fs.readFileSync(path.join(helperRoot, "instructions", "universal-development-loop.md"), "utf8"),
+  );
   writeText(path.join(dir, "templates", "project", "AGENTS.md"), lines([
     "# Project Agent Instructions",
     "",
     "## Universal Development Loop",
     "",
     "- Shared runtime lifecycle authority comes from active global `AGENTS.md` and `change-ready-sdlc`; the Universal Development Loop is conceptual guidance, not a target-relative runtime dependency.",
-    "- Implement and observably prove the smallest complete happy path, then use a separate fresh-context testing subagent for risk discovery, negative tests, and hardening.",
-    "- User-owned scope is accepted outcome and protected boundaries; protected-boundary changes require owner authority; necessary local reversible dependency closure is autonomous. Findings may bind Blocking Evidence but never authorize mutation. One correction wave ends the attempt and does not automatically end the root goal. Never ask solely to approve an internal revision. Decision-ready handoff names the exact blocker; separate work stays in Follow-up Candidates.",
-    "- Report `Pilot-Ready: yes | no | not requested` only as a disposition; neither Pilot-Ready nor Change-Ready authorizes external operations.",
+    "- Implement and observably prove the smallest complete happy path. Ordinary Small may add the smallest focused post-proof regression test; Material automated-test authorship belongs to fresh test-only SDET.",
+    "- User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. Optional reviewers may run after MVP for concrete risk, project policy, or owner request, return a risk matrix, and never gate a stage. Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; another attempt requires an immediately-prior main-confirmed critical defect, production fix, and new proof, and the first valid no-confirmed-critical attempt permanently stops SDET for the root. Non-critical findings are parked. A partial slice handoff must not end an unfinished root goal.",
+    "- Report `Development-Stage: development | MVP | RC<n> | stable` and `Stable Candidate: RC<n>` only for stable; no stage authorizes external operations.",
     "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
     "",
   ]));
@@ -252,12 +241,12 @@ export function newLibraryFixture(name: string): string {
     "- Ask the user only for real blockers, remote/destructive actions, scope or risk decisions, credentials, and MR/PR outcomes.",
     "- When asking, offer 2-4 self-contained next actions via `question` when available.",
     "- Put the recommended option first and end its label with `(Recommended)`.",
-    "- In read-only, no-question, or subagent contexts, return `Blocking Evidence`, `Residual Risks`, or non-authorizing `Follow-up Candidates` instead of asking the user directly.",
+    "- In read-only, no-question, or subagent contexts, return a `Risk Matrix`, `Residual Risks`, or non-authorizing residual notes instead of asking the user directly.",
     "",
     "## Autonomous Work Contract",
     "",
     "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.",
-    "- User-owned scope is accepted outcome and protected boundaries; protected-boundary changes require owner authority; necessary local reversible dependency closure is autonomous. Findings may bind Blocking Evidence but never authorize mutation. One correction wave ends the attempt and does not automatically end the root goal. Never ask solely to approve an internal revision. Decision-ready handoff names the exact blocker; separate work stays in Follow-up Candidates.",
+    "- User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. Optional reviewers may run after MVP for concrete risk, project policy, or owner request, return a risk matrix, and never gate a stage. Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; another attempt requires an immediately-prior main-confirmed critical defect, production fix, and new proof, and the first valid no-confirmed-critical attempt permanently stops SDET for the root. Non-critical findings are parked. Never ask solely to approve an internal revision. Decision-ready handoff names the exact blocker. A partial slice handoff must not end an unfinished root goal.",
     "",
   ]));
   writeText(path.join(dir, "README.md"), lines([
@@ -308,6 +297,8 @@ export function newLibraryFixture(name: string): string {
     "## Instruction Templates",
     "",
     "- `example.md`: Demo instruction.",
+    "- `leaf-reviewer-agent-contract.md`: Shared leaf-reviewer contract.",
+    "- `reusable-project-agent-instructions.md`: Reusable project instructions.",
     "- `universal-development-loop.md`: Universal loop.",
     "",
     "## Porting Notes",
@@ -506,16 +497,22 @@ export function addImplementationWorkerFixture(fixture: string): string {
   const profile = fs.readFileSync(profilePath, "utf8");
   writeText(profilePath, profile.replace("\"demo-reviewer\"]", "\"demo-reviewer\", \"implementation-worker\"]"));
 
+  const workerRoutingLines = [
+    "- Main is the default production author for Ordinary Small and Material.",
+    "- Optional `implementation-worker` only for evidenced isolated production-only bounded slices with exact non-overlapping write scope, representative proof boundary, clear Acceptance Criteria, evidenced benefit, and a focused validation gate; post-proof automated-test evidence routes to `sdet-quality-engineer`.",
+    "- When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief with Acceptance Criteria and Verification.",
+  ].join("\n");
+
   const agentsPath = path.join(fixture, "REPO_AGENTS.md");
   const agents = fs.readFileSync(agentsPath, "utf8");
   writeText(agentsPath, agents.replace(
     "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.",
-    "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.\n- Use `implementation-worker` only for production-only bounded implementation slices with exact non-overlapping write scope and the complete Universal Task Briefing Contract; post-proof automated-test evidence routes to `sdet-quality-engineer`.\n- When delegating to `implementation-worker`, include Acceptance Criteria and Verification in the Universal Task Briefing Contract.",
+    `- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.\n${workerRoutingLines}`,
   ));
 
   const templatePath = path.join(fixture, "templates", "project", "AGENTS.md");
   const template = fs.readFileSync(templatePath, "utf8");
-  writeText(templatePath, `${template}- Use \`implementation-worker\` only for production-only bounded implementation slices with exact non-overlapping write scope and the complete Universal Task Briefing Contract; post-proof automated-test evidence routes to \`sdet-quality-engineer\`.\n- When delegating to \`implementation-worker\`, include Acceptance Criteria and Verification in the Universal Task Briefing Contract.\n`);
+  writeText(templatePath, `${template}${workerRoutingLines}\n`);
 
   const readmePath = path.join(fixture, "README.md");
   const readme = fs.readFileSync(readmePath, "utf8");
@@ -523,20 +520,12 @@ export function addImplementationWorkerFixture(fixture: string): string {
   return workerPath;
 }
 
-export const sessionDeliveryBindingText = "Treat session-delivery-reviewer blocking output as binding readiness rejection: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, or non-empty `Blocking Evidence` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery verdict or `Change-Ready: no` must not coexist with `Blocking for Acceptance: no` and empty `Blocking Evidence`. Findings may bind readiness but never authorize mutation or protected-boundary expansion. User-owned scope is the accepted outcome; necessary local reversible dependency closure is autonomous. Qualification permits one correction wave for a candidate-attributable outcome or invariant violation. Route separate work to non-authorizing `Follow-up Candidates`; persistent evidence infrastructure is a separate prerequisite. Delivery rejection is terminal for the inspected attempt and does not end the unfinished root goal; it never authorizes mutation or replay of that attempt. Continue autonomous work when safe, or ask/escalate only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.";
+export const sessionDeliveryBindingText = "Optional final-candidate and session-delivery review may run after MVP for concrete risk, project policy, or owner request. Missing or unusable optional output is not itself a stage blocker. Reviewer evidence must never authorize mutation. Development-Stage remains main-owned, and a partial slice handoff must not end an unfinished root goal.";
 const materialDeliveryRoutingFixtureText = MATERIAL_DELIVERY_ROUTING_TOKENS.join("; ");
 export const sessionDeliveryBindingTokens = [
-  "Change-Ready: no",
-  "Verdict: material deviations",
-  "Verdict: not enough evidence",
-  "Blocking for Acceptance: yes",
-  "Verdict: blocked",
-  "Blocking Evidence",
-  "Follow-up Candidates",
-  "never authorize",
-  "do not present the session as complete",
-  "Blocking for Acceptance: no",
-  "partial slice handoff must not end an unfinished root goal",
+  "Development-Stage",
+  "after MVP",
+  "optional",
 ];
 
 export function addSessionDeliveryBindingFixture(fixture: string): void {

@@ -1,29 +1,66 @@
-# library-change-ready-sdlc Specification
+## REMOVED Requirements
 
-## Purpose
-Define proportional Change-Ready routing that prioritizes a minimal observable happy path for Ordinary Small work while preserving explicit scope control and full qualification for concrete Material risks.
-## Requirements
-### Requirement: SDLC-012 Outcome-first slices minimize sufficient lifecycle complexity
-The portable runtime instructions SHALL optimize for the earliest useful working increment that satisfies the accepted outcome and non-deferrable invariants inside an explicitly enforced operating envelope. Simplicity SHALL mean the fewest capabilities, reachable modes, states, configuration dimensions, recovery paths, compatibility paths, owner boundaries, and abstractions sufficient for that increment, not merely the fewest lines of code.
+### Requirement: SDLC-001 Runtime SDLC uses Ordinary Small default and conditional Material qualification
 
-Before adding a new mechanism or abstraction, the main session and implementation roles SHALL consider, in order: removing an unnecessary capability; narrowing users, data, interfaces, modes, load, concurrency, persistence, or side effects; reusing an existing project/platform mechanism; and adding a local guard, validation, or focused test. Multiple new coordination, recovery, compatibility, policy, or evidence mechanisms SHALL require presenting a narrower slice or explicit evidence that the simpler options cannot satisfy the accepted increment.
+**Reason**: The Change-Ready disposition and mandatory reviewer gates are superseded by the Development-Stage lifecycle, optional review, and critical-only Material SDET.
 
-Risk classification SHALL evaluate behavior reachable inside the proposed operating envelope. A relied-upon envelope limit SHALL remove a risk from current reachability only when the candidate or an accepted existing project mechanism enforces that limit. A prose-only, ambiguous, or bypassable limit SHALL NOT reduce risk classification.
+**Migration**: Use the new simple lifecycle, RC, stable, Material SDET, optional-review, and proportional Ordinary Small requirements below.
 
-#### Scenario: Scope reduction removes unnecessary concurrency
-- **WHEN** the first useful increment can be restricted by an enforced single-worker or single-user boundary
-- **THEN** the agent SHALL prefer that bounded slice over adding locks, distributed coordination, retries, and recovery state for unreachable concurrent use
-- **AND** future concurrency SHALL remain explicit non-goal or follow-up scope.
+### Requirement: SDLC-002 Scope expansion requires explicit user approval
 
-#### Scenario: Prose-only containment does not reduce risk
-- **WHEN** a proposed pilot says "single tenant only" but no accepted mechanism prevents another tenant from reaching the behavior
-- **THEN** multi-tenant effects SHALL remain reachable for risk classification
-- **AND** the candidate SHALL NOT receive a simplified disposition based on prose alone.
+**Reason**: The closed-world correction-wave wording is superseded by accepted-outcome authority, protected boundaries, and the critical-only post-MVP stop line.
 
-#### Scenario: Existing mechanism is preferred
-- **WHEN** an existing feature flag, allowlist, read-only mode, queue, transaction, or project-native boundary can enforce the accepted slice
-- **THEN** the implementation SHALL reuse it unless evidence shows it cannot meet the current outcome
-- **AND** SHALL NOT add a parallel mechanism for hypothetical future flexibility.
+**Migration**: Use the new post-MVP stop-line and non-authorizing review requirements together with the current loaded outcome-authority contract.
+
+### Requirement: SDLC-003 Proportional briefing and role separation when invoked
+
+**Reason**: Its old SDET action enum and mandatory final/delivery gates conflict with the current critical-only SDET and optional-review model.
+
+**Migration**: Use the new Material SDET, optional-review, and proportional Ordinary Small requirements below.
+
+### Requirement: SDLC-004 Candidate Reference replaces universal dual identity
+
+**Reason**: Candidate Reference remains implementation evidence, but the old Change-Ready disposition wording is no longer an active lifecycle contract.
+
+**Migration**: Use the new RC/stable requirements and current loaded Candidate Reference contract.
+
+### Requirement: SDLC-005 Static contracts and validators enforce the new model
+
+**Reason**: Its Change-Ready, finite-wave, and mandatory-review markers are superseded by explicit Development-Stage semantics.
+
+**Migration**: Use the new lifecycle requirements and the instruction-artifact validator requirement in this change.
+
+### Requirement: SDLC-006 Qualification is finite and cannot create evidence products
+
+**Reason**: Mandatory final/delivery review and fixed correction-wave qualification are superseded by optional review and convergent critical-only SDET.
+
+**Migration**: Use the new RC, stable, post-MVP stop-line, Material SDET, and optional-review requirements below.
+
+### Requirement: SDLC-013 Pilot-Ready is separate from Change-Ready
+
+**Reason**: Pilot-Ready and Change-Ready are removed as active lifecycle aliases.
+
+**Migration**: Use `Development-Stage: development | MVP | RC<n> | stable`.
+
+### Requirement: SDLC-014 Material pilot risk is approved without turning every finding into work
+
+**Reason**: Pilot-specific risk acceptance is superseded by the MVP/RC/stable lifecycle and the non-deferrable risk floor.
+
+**Migration**: Use the new post-MVP stop-line and critical/non-deferrable disposition requirements.
+
+### Requirement: SDLC-015 Review disposition is reachability-based and remedy-minimal
+
+**Reason**: The Pilot-Ready/Change-Ready review split is removed; reviewer evidence is now optional and non-authorizing.
+
+**Migration**: Use the new optional-review and post-MVP stop-line requirements.
+
+### Requirement: SDLC-016 Existing validators enforce explicit pilot policy without judging risk semantics
+
+**Reason**: Pilot-Ready and Change-Ready validator markers are superseded by explicit Development-Stage semantics.
+
+**Migration**: Use the new lifecycle requirements and current deterministic validator contracts.
+
+## ADDED Requirements
 
 ### Requirement: The lifecycle uses one simple development stage
 

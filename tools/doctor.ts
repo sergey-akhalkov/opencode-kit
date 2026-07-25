@@ -471,7 +471,7 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
       checks,
       "project adapter validation",
       "warn",
-      `No complete validation adapter source. ${describeValidationSource("adapter.json", adapterState)}; ${describeValidationSource("validation.md", docState)}. Provide concrete opencode-dev-kit/adapter.json validation entries or a complete opencode-dev-kit/validation.md Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build before Change-Ready qualification.`,
+      `No complete validation adapter source. ${describeValidationSource("adapter.json", adapterState)}; ${describeValidationSource("validation.md", docState)}. Provide concrete opencode-dev-kit/adapter.json validation entries or a complete opencode-dev-kit/validation.md Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build before RC qualification.`,
       true,
     );
   }
@@ -556,8 +556,8 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
       "active kit required runtime authority",
       "warn",
       dirExists
-        ? `Resolved active global config (${sourceLabel}) has incomplete required runtime authority: ${authorityProblems.join("; ")}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks behavior-changing Change-Ready work.`
-        : `Resolved active global config (${sourceLabel}) is missing; cannot verify AGENTS.md or change-ready-sdlc. Missing required authority blocks behavior-changing Change-Ready work.`,
+        ? `Resolved active global config (${sourceLabel}) has incomplete required runtime authority: ${authorityProblems.join("; ")}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`
+        : `Resolved active global config (${sourceLabel}) is missing; cannot verify AGENTS.md or change-ready-sdlc. Missing required authority blocks RC/stable qualification work.`,
       true,
     );
   } else {

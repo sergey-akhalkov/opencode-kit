@@ -49,7 +49,7 @@ export const dreamTeamAgentTests: TestCase[] = [
         "Runtime-only Dream Team reviewer fixture.",
         "",
       ]));
-      assertSuccess(invokeValidator(fixture), "Hidden Dream Team runtime agents should not require reusable reviewer catalog/profile contracts.");
+      assertSuccess(invokeValidator(fixture), "Hidden Dream Team runtime agents should inherit the primary model without reusable reviewer catalog/profile contracts.");
     },
   },
   {

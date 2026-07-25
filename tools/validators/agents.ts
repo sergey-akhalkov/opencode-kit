@@ -3,11 +3,17 @@ import {
   ALLOWED_COMPLAIN_SKILL_RULES,
   ALLOWED_REVIEWER_BASH_RULES,
   ALLOWED_REVIEWER_EDIT_RULES,
+  CODE_QUALITY_REVIEWER_FILE,
+  CODE_QUALITY_REVIEWER_REQUIRED_TEXT,
   FINAL_CANDIDATE_REVIEWER_FILE,
   FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
+  LEAF_REVIEWER_AGENT_CONTRACT_RELATIVE_PATH,
+  LEAF_REVIEWER_SHARED_EFFECTIVE_MODEL_REQUIRED_TEXT,
+  REVIEW_DELIVERY_AGENT_FILES,
   REUSABLE_REVIEWER_FORBIDDEN_BOILERPLATE,
   REUSABLE_REVIEWER_FORBIDDEN_INLINE_BLOCKS,
   REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT,
+  REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS,
   REVIEWER_DENIED_PERMISSION_KEYS,
   REVIEWER_OBSOLETE_PERMISSION_KEYS,
   STANDALONE_CONTRACT_REFERENCE_PATH,
@@ -70,6 +76,8 @@ const EXACT_REPORT_MARKDOWN_CLOSE = "```";
 const IMPLEMENTATION_WORKER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
   "Blockers",
   "Residual Risks",
+  "Effective Model",
+  "Execution Request",
 ];
 
 /**
@@ -77,14 +85,18 @@ const IMPLEMENTATION_WORKER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
  * envelope for sdet-quality-engineer.
  */
 const SDET_QUALITY_ENGINEER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
-  "Action: authored-tests | assessed-existing-tests | blocked",
+  "Action: critical-risks-reported | no-critical-risk | blocked",
+  "SDET_QUALITY_REPORT",
   "Effective Model:",
-  "Model Independence:",
-  "Risk And Oracle Matrix",
-  "Test Changes Or Existing Evidence",
-  "Requested Validation Procedures",
-  "Blockers",
-  "Residual Risks",
+  "Critical Risk Matrix",
+  "Risk ID",
+  "Incident Consequence",
+  "Reachability And Envelope",
+  "Raw Evidence",
+  "Reproduction Procedure",
+  "Test Evidence",
+  "Test Changes",
+  "Evidence Gaps And Residual Risks",
 ];
 
 /**
@@ -92,13 +104,19 @@ const SDET_QUALITY_ENGINEER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
  * envelope for final-candidate-reviewer.
  */
 const FINAL_CANDIDATE_REVIEWER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
-  "approved | approved_with_notes | rejected | blocked",
-  "Evidence Type",
-  "Likely Root Cause",
-  "Artifact Owner",
+  "Risk Matrix",
+  "Risk ID",
+  "Requirement/Invariant",
+  "Reachable Scenario And Enforced Envelope",
+  "Business Consequence",
+  "Likelihood",
   "Confidence",
-  "Needs external reviewer",
+  "Reproduction Procedure",
+  "Smallest Mitigation Note",
+  "Evidence Gaps And Residual Risks",
   "FINAL_CANDIDATE_REVIEW_REPORT",
+  "Effective Model",
+  "exact candidate assessed",
 ];
 
 /**
@@ -233,6 +251,19 @@ function requireExactReportSchemaBody(
     return null;
   }
   return schemaBody;
+}
+
+function rejectForbiddenReportSchemaFields(
+  ctx: ValidationContext,
+  reportSchemaBody: string | null,
+  file: string,
+): void {
+  if (reportSchemaBody == null) return;
+  for (const field of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
+    if (reportSchemaBody.includes(field)) {
+      ctx.addError(`superseded reviewer/SDET action-list field ${field}: ${file}`);
+    }
+  }
 }
 
 /**
@@ -458,11 +489,6 @@ function validateSdetQualityEngineer(
   surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
-  if (frontmatter.has("model") || frontmatter.has("variant")) {
-    ctx.addError(
-      `SDET quality engineer must not set model or variant (inherit session model): ${file}`,
-    );
-  }
   for (const [key, expected] of ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES) {
     if (frontmatter.get(key) !== expected) {
       ctx.addError(
@@ -504,7 +530,7 @@ function validateSdetQualityEngineer(
     frontmatter.has("permission.edit") &&
     typeof frontmatter.get("permission.edit") === "object"
   ) {
-    ctx.addError(`SDET quality engineer must use scalar edit: allow, not nested edit rules: ${file}`);
+    ctx.addError(`SDET quality engineer must use scalar edit: ask, not nested edit rules: ${file}`);
   }
   for (const permission of SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS) {
     const key = `permission.${permission}`;
@@ -519,6 +545,7 @@ function validateSdetQualityEngineer(
     "</SDET_QUALITY_REPORT>",
     file,
   );
+  rejectForbiddenReportSchemaFields(ctx, reportSchemaBody, file);
   requireOperativeOrAllowlistedReportMarkers(
     ctx,
     surfaces.operativeBody,
@@ -633,11 +660,6 @@ function validateFinalCandidateReviewerExtras(
   surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
-  if (frontmatter.has("model") || frontmatter.has("variant")) {
-    ctx.addError(
-      `Final candidate reviewer must not set model or variant (inherit session model): ${file}`,
-    );
-  }
   const reportSchemaBody = requireExactReportSchemaBody(
     ctx,
     surfaces.rawBody,
@@ -645,6 +667,7 @@ function validateFinalCandidateReviewerExtras(
     "</FINAL_CANDIDATE_REVIEW_REPORT>",
     file,
   );
+  rejectForbiddenReportSchemaFields(ctx, reportSchemaBody, file);
   requireOperativeOrAllowlistedReportMarkers(
     ctx,
     surfaces.operativeBody,
@@ -722,12 +745,6 @@ function validateTroubleshooter(
   surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
-  if (frontmatter.get("model") !== "openai/gpt-5.6-sol") {
-    ctx.addError(`Troubleshooter must use model: openai/gpt-5.6-sol: ${file}`);
-  }
-  if (frontmatter.get("variant") !== "xhigh") {
-    ctx.addError(`Troubleshooter must use variant: xhigh: ${file}`);
-  }
   validateTroubleshooterRuleMap(ctx, frontmatter, file, "bash", ALLOWED_TROUBLESHOOTER_BASH_RULES);
   validateTroubleshooterRuleMap(ctx, frontmatter, file, "edit", ALLOWED_TROUBLESHOOTER_EDIT_RULES);
   validateComplainSkillPermission(ctx, frontmatter, file, "Troubleshooter");
@@ -784,12 +801,37 @@ function validateTroubleshooter(
   );
 }
 
+function validateLeafReviewerSharedEffectiveModelContract(
+  ctx: ValidationContext,
+  root: string,
+): void {
+  const file = path.join(root, ...LEAF_REVIEWER_AGENT_CONTRACT_RELATIVE_PATH.split("/"));
+  let text: string;
+  try {
+    text = readText(file);
+  } catch {
+    ctx.addError(`Missing shared leaf reviewer contract: ${file}`);
+    return;
+  }
+  for (const marker of LEAF_REVIEWER_SHARED_EFFECTIVE_MODEL_REQUIRED_TEXT) {
+    requireTextContains(
+      ctx,
+      text,
+      marker,
+      "shared leaf-reviewer Effective Model output contract",
+      file,
+    );
+  }
+}
+
 export function validateAgents(ctx: ValidationContext, root: string): string[] {
   const agentsDir = path.join(root, "global", "agents");
   if (!directoryExists(agentsDir)) {
     ctx.addError(`Missing agents directory: ${agentsDir}`);
     return [];
   }
+
+  validateLeafReviewerSharedEffectiveModelContract(ctx, root);
 
   const agentNames: string[] = [];
   for (const file of listFiles(agentsDir, ".md")) {
@@ -805,6 +847,13 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     }
     if (mode !== "subagent") {
       ctx.addError(`Reusable reviewer agent must use mode: subagent: ${file}`);
+    }
+    for (const inheritedField of ["model", "variant"]) {
+      if (frontmatter.has(inheritedField)) {
+        ctx.addError(
+          `Reusable agent must inherit the invoking primary model; remove frontmatter '${inheritedField}': ${file}`,
+        );
+      }
     }
     for (const permission of ["read", "glob", "grep"]) {
       const key = `permission.${permission}`;
@@ -870,7 +919,9 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       validateFinalCandidateReviewerExtras(ctx, frontmatter, surfaces, file);
       // Structural Contract Reference gate keeps its dedicated full-text scanner.
       validateStandaloneContractReference(ctx, text, file);
-    } else {
+    } else if (
+      (REVIEW_DELIVERY_AGENT_FILES as readonly string[]).includes(agentFileName)
+    ) {
       for (const required of REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT) {
         requireTextContains(
           ctx,
@@ -882,6 +933,17 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       }
       if ((PREVENTION_FEEDBACK_REVIEWER_FILES as readonly string[]).includes(agentFileName)) {
         validateStandaloneContractReference(ctx, text, file);
+      }
+      if (agentFileName === CODE_QUALITY_REVIEWER_FILE) {
+        for (const required of CODE_QUALITY_REVIEWER_REQUIRED_TEXT) {
+          requireTextContains(
+            ctx,
+            surfaces.operativeBody,
+            required,
+            "Code quality reduction-only contract",
+            file,
+          );
+        }
       }
     }
     if (

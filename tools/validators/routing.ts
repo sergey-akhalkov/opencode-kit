@@ -6,14 +6,14 @@ import {
   IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT,
 } from "../contracts/implementation-worker.ts";
 import {
-  FINAL_CANDIDATE_REVIEWER_FILE,
+  REVIEW_DELIVERY_AGENT_FILES,
   REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS,
 } from "../contracts/agents.ts";
 import {
   CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD,
   CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
   CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS,
-  CHANGE_READY_SDLC_PILOT_READY_MARKERS,
+  CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS,
   CHANGE_READY_SDLC_SKILL_RELATIVE_PATH,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
@@ -33,7 +33,6 @@ import {
   OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS,
   OUTCOME_AUTHORITY_SCOPE_MARKERS,
   OUTCOME_AUTHORITY_SCOPE_SURFACES,
-  PREVENTION_FEEDBACK_REVIEWER_FILES,
   SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
   SESSION_DELIVERY_BINDING_SURFACES,
 } from "../contracts/reviewer-binding.ts";
@@ -282,22 +281,22 @@ function validateGlobalAgentsTriggerTopology(
       ctx,
       operative,
       token,
-      "global AGENTS outcome-first and Pilot-Ready policy",
+      "global AGENTS outcome-first and Development-Stage policy",
       file,
     );
   }
 }
 
-function validateOutcomeFirstPilotReadyAuthority(ctx: ValidationContext, root: string): void {
+function validateOutcomeFirstDevelopmentStageAuthority(ctx: ValidationContext, root: string): void {
   const skillFile = path.join(root, ...CHANGE_READY_SDLC_SKILL_RELATIVE_PATH.split("/"));
   const skillOperative = readOperativeAuthorityText(ctx, skillFile);
   if (skillOperative != null) {
-    for (const token of CHANGE_READY_SDLC_PILOT_READY_MARKERS) {
+    for (const token of CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS) {
       requireTextContains(
         ctx,
         skillOperative,
         token,
-        "change-ready-sdlc Pilot-Ready qualification policy",
+        "change-ready-sdlc Development-Stage qualification policy",
         skillFile,
       );
     }
@@ -356,8 +355,7 @@ function validateOutcomeAuthorityScope(ctx: ValidationContext, root: string): vo
   }
 
   const roleFiles = [
-    ...PREVENTION_FEEDBACK_REVIEWER_FILES.map((name) => path.join(root, "global", "agents", name)),
-    path.join(root, "global", "agents", FINAL_CANDIDATE_REVIEWER_FILE),
+    ...REVIEW_DELIVERY_AGENT_FILES.map((name) => path.join(root, "global", "agents", name)),
     path.join(root, "global", "agents", SDET_QUALITY_ENGINEER_FILE),
     path.join(root, "instructions", "leaf-reviewer-agent-contract.md"),
   ];
@@ -460,7 +458,7 @@ export function validateImplementationWorkerRouting(
   if (fileExists(canonicalSkill)) {
     validateGlobalAgentsTriggerTopology(ctx, root);
     validateOutcomeAuthorityScope(ctx, root);
-    validateOutcomeFirstPilotReadyAuthority(ctx, root);
+    validateOutcomeFirstDevelopmentStageAuthority(ctx, root);
     validateDuplicateLifecycleMarkers(ctx, root);
     validateForbiddenProductionRouting(ctx, root);
   }
@@ -525,13 +523,6 @@ export function validateSessionDeliveryBinding(
     if (operative == null) {
       continue;
     }
-    requireTextContains(
-      ctx,
-      operative,
-      "session-delivery-reviewer",
-      "session-delivery-reviewer binding handoff",
-      file,
-    );
     for (const token of SESSION_DELIVERY_BINDING_HANDOFF_TOKENS) {
       requireTextContains(
         ctx,

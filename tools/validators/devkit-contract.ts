@@ -92,15 +92,14 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
         "Baseline Proof",
         "Small Slice",
         "Happy Path",
-        "Happy-Path Proof",
-        "Risk Discovery",
-        "Negative Tests",
-        "Harden",
-        "Review Gate",
-        "Final Validation",
-        "Handoff",
+        "Runtime Proof",
+        "Accepted Scope",
+        "Optional Risk Discovery",
+        "Critical SDET",
+        "Validation And RC",
+        "Stable Handoff",
         "Process Improvement",
-        "Pilot-Ready",
+        "Development-Stage",
         "Ordinary Small | Material",
         "technically enforced operating envelope",
         "remove/narrow/reuse/local guard",
@@ -131,15 +130,15 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
       requireTextContains(
         ctx,
         projectTemplateText,
-        "Pilot-Ready: yes | no | not requested",
-        "project AGENTS.md Pilot-Ready disposition",
+        "Development-Stage: development | MVP | RC<n> | stable",
+        "project AGENTS.md Development-Stage disposition",
         projectTemplate,
       );
       requireTextContains(
         ctx,
         projectTemplateText,
-        "neither Pilot-Ready nor Change-Ready authorizes external operations",
-        "project AGENTS.md readiness non-authorization",
+        "no stage authorizes external operations",
+        "project AGENTS.md stage non-authorization",
         projectTemplate,
       );
     }
@@ -398,8 +397,8 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
   requireTextContains(
     ctx,
     agentsText,
-    "Follow-up Candidates",
-    "REPO_AGENTS.md completion handoff contract",
+    "risk matrix",
+    "REPO_AGENTS.md reviewer risk-matrix contract",
     agentsPath,
   );
   requireTextContains(
@@ -412,14 +411,7 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
   requireTextContains(
     ctx,
     agentsText,
-    "Blocking Evidence",
-    "REPO_AGENTS.md outcome-authority reviewer handoff contract",
-    agentsPath,
-  );
-  requireTextContains(
-    ctx,
-    agentsText,
-    "accepted outcome and protected boundaries",
+    "accepted outcome and protected-boundary decisions",
     "REPO_AGENTS.md outcome-authority scope contract",
     agentsPath,
   );
@@ -440,8 +432,8 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
   requireTextContains(
     ctx,
     agentsText,
-    "does not automatically end the root goal",
-    "REPO_AGENTS.md outcome-authority attempt-versus-root contract",
+    "critical-risks-reported | no-critical-risk | blocked",
+    "REPO_AGENTS.md critical-only SDET contract",
     agentsPath,
   );
   requireTextContains(

@@ -10,11 +10,13 @@ The canonical loop definition lives at `instructions/universal-development-loop.
 | --- | --- | --- |
 | Focused validation | After each meaningful edit | Nearest test/build/lint command result |
 | Happy-path proof | Behavior-changing code | Observable execution at the relevant user-facing or system boundary |
-| Independent risk-testing gate | After happy-path proof | Fresh-context testing subagent, realistic risk matrix, negative/end-to-end tests, and mock exceptions |
-| Code-quality reviewer | Non-trivial code edits or large-file/navigation risk | Read-only reviewer findings or skipped reason |
-| Test-coverage reviewer | New behavior, weak assertions, or missing acceptance evidence | Requirement-to-test matrix and gaps |
+| Independent critical SDET | Material behavior, after MVP and accepted-scope completion | Fresh test-only SDET, reachable critical-risk matrix, smallest critical reproducer when needed, and mock confidence gaps |
+| Code-quality reduction reviewer | Optional after MVP for concrete maintainability risk | Read-only safe net-reduction matrix or evidence-backed empty matrix |
+| Test-coverage reviewer | Optional after MVP for concrete oracle risk | Requirement-to-test risk matrix and meaningful oracle gaps |
 | Implementation-readiness reviewer | Risky plans/specs or blocked requirements | Scope, decisions, blockers, validation path |
 | Final validation | Boundary/API/data/deployment/compatibility change | Broader project command result |
+
+Ordinary Small uses main-owned Runtime Proof, focused validation, and realistic requirement-linked edge inspection. It does not acquire independent SDET or systematic reviewer gates solely because behavior changed.
 
 ## Adapter Commands
 

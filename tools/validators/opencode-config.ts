@@ -145,9 +145,32 @@ function validateOpenCodePermissionRules(
   }
 }
 
+const KIT_GLOBAL_OPENCODE_TEMPLATE = path.join("global", "opencode.json.template");
+const KIT_DEFAULT_MODEL = "openai/gpt-5.6-sol";
+
+function validateKitGlobalModelSource(
+  ctx: ValidationContext,
+  config: Record<string, unknown>,
+  file: string,
+  root: string,
+): void {
+  if (!sameConfigPath(file, path.join(root, KIT_GLOBAL_OPENCODE_TEMPLATE))) {
+    return;
+  }
+  if (config.model !== KIT_DEFAULT_MODEL) {
+    ctx.addError(
+      `Kit global OpenCode config template must set portable top-level model: ${KIT_DEFAULT_MODEL}: ${file}`,
+    );
+  }
+}
+
 export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string): void {
   for (const file of walkRepositoryFiles(root)) {
-    if (path.basename(file) !== "opencode.json" && path.basename(file) !== "opencode.jsonc") {
+    if (
+      path.basename(file) !== "opencode.json" &&
+      path.basename(file) !== "opencode.jsonc" &&
+      path.basename(file) !== "opencode.json.template"
+    ) {
       continue;
     }
     let text: string;
@@ -175,5 +198,6 @@ export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string
       continue;
     }
     validateOpenCodePermissionRules(ctx, inspection.value, file, root);
+    validateKitGlobalModelSource(ctx, inspection.value, file, root);
   }
 }

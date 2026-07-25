@@ -201,8 +201,15 @@ export const identityRecipeContractTests: TestCase[] = [
       const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
       const sdet = fs.readFileSync(path.join(root, "global", "agents", "sdet-quality-engineer.md"), "utf8");
       const activeOutput = sectionBetween(sdet, "## Output", "</SDET_QUALITY_REPORT>");
-      assert(skill.includes("Dual `Semantic Candidate Identity` / `Package Identity` / `Identity Recipe` are not portable requirements"), "Active skill must make dual identity non-portable.");
-      assert(activeOutput.includes("Candidate Reference:"), "Active SDET output must expose optional Candidate Reference.");
+      assert(
+        skill.includes("After current Runtime Proof, capture a readable Candidate Reference"),
+        "Active skill must require a readable Candidate Reference rather than a dual-identity handshake.",
+      );
+      assert(
+        !skill.includes("Semantic Candidate Identity") && !skill.includes("Identity Recipe"),
+        "Active skill must not reinstate dual-identity/Identity Recipe portable requirements.",
+      );
+      assert(activeOutput.includes("Candidate Reference:"), "Active SDET output must expose Candidate Reference.");
       for (const stale of ["Phase: provisional | final", "Input Semantic Candidate Identity", "Input Package Identity", "Identity Recipe:"]) {
         assert(!activeOutput.includes(stale), `Active SDET output must not retain historical identity field: ${stale}`);
       }

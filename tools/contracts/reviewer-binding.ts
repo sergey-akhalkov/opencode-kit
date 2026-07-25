@@ -1,4 +1,5 @@
 import type { TextContract } from "./types.ts";
+import { CODE_QUALITY_REVIEWER_FILE } from "./agents.ts";
 
 export const PREVENTION_FEEDBACK_REVIEWER_FILES: readonly string[] = [
   "code-quality-reviewer.md",
@@ -23,64 +24,43 @@ export const REVIEWER_CONTRACT_REFERENCE_TEXT: readonly string[] = [
 
 /** Closed-world output fields required on exact registered read-only reviewers only. */
 export const REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT: readonly string[] = [
-  "Blocking Evidence",
-  "Follow-up Candidates",
+  "Candidate Reference / RC",
+  "Effective Model",
+  "Risk Matrix",
+  "Evidence Gaps And Residual Risks",
+  "Do not return an acceptance",
 ];
 
 export const REVIEWER_CONTRACT_REFERENCE_CONTRACTS: readonly TextContract[] = PREVENTION_FEEDBACK_REVIEWER_FILES.map((fileName) => ({
   fileName,
   label: `${fileName} must reference the shared reviewer contract via ## Contract Reference`,
-  requiredText: [...REVIEWER_CONTRACT_REFERENCE_TEXT, ...REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT],
+  requiredText: [
+    ...REVIEWER_CONTRACT_REFERENCE_TEXT,
+    ...(fileName === CODE_QUALITY_REVIEWER_FILE
+      ? ["Candidate Reference / RC", "Effective Model", "Reduction Matrix", "Evidence Gaps"]
+      : REGISTERED_REVIEWER_OUTPUT_FIELD_TEXT),
+  ],
 }));
 
 export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
-  "For Portable profile Material sessions, always run this delivery review regardless of diagnostic scale",
-  "For Portable profile Small sessions, run when project policy, risk, owner, or an explicit delivery-review request requires it",
+  "optional after MVP",
+  "never a mandatory RC/stable gate",
   "## Minimal Evidence Bundle",
   "changed files or diffstat",
-  "reviewer findings/fixes",
-  "## Compaction Evidence Boundary",
-  "every explicit delivery-review request",
   "Root causes must cite evidence; use `unknown`",
-  "requirementSignals[]",
-  "Root-session user messages, confirmed `requirementSignals[]`, and explicit `questionReplies[]` override supplied continuation summaries",
-  "openspec_all_changes",
-  "archive_when_complete",
-  "push_after_archive",
-  "blocker_escalation_gate",
-  "new_change_approval_required",
-  "push_all",
-  "Missing evidence for a confirmed signaled requirement is a P0 blocker",
-  "todos.ever[]",
-  "todos.unresolved[]",
-  "Changed-file scope",
-  "Current-slice framing",
-  "P0 blocker",
-  "observable happy-path proof",
-  "fresh-context testing subagent",
+  "candidate-specific production proof",
+  "critical-risks-reported | no-critical-risk | blocked",
   "Keep matrices terse",
-  "Blocking Evidence",
-  "Follow-up Candidates",
-  "never authorize",
-  "Record the optional-tool gap in `Evidence Reviewed` and `Residual Risks`",
-  "Record missing required session evidence in `Blocking Evidence` when unavailable from all allowed sources",
-  "Optional-tool absence alone is not blocking when substitute evidence is sufficient",
-  "Delivery self-gate for the current Material closing task",
-  "every prerequisite applicable task is checked with current literal evidence",
-  "Any other unchecked applicable task remains a P0",
+  "Risk Matrix",
+  "Do not return an acceptance/rejection verdict",
   "Candidate Reference",
   "readable scoped candidate",
   "Rollback plan",
   "proportional",
-  "never required to claim Change-Ready",
-  "explicitly accepted conforming delivery result",
-  "Verdict: material deviations",
-  "Verdict: not enough evidence",
-  "must not coexist with `Blocking for Acceptance: no`",
-  "terminal for the current attempt",
-  "Pilot-Ready: yes|no|not requested",
-  "not a third profile",
-  "does not authorize external operations",
+  "Development-Stage",
+  "Stable Candidate: RC<n>",
+  "no stage authorizes external operations",
+  "Effective Model",
 ];
 
 export const SESSION_DELIVERY_BINDING_CONTRACT: TextContract = {
@@ -90,14 +70,13 @@ export const SESSION_DELIVERY_BINDING_CONTRACT: TextContract = {
 };
 
 /**
- * Exact Material-always / Ordinary-conditional / missing-capability-blocks tokens required on
- * project-facing delivery binding surfaces.
+ * Exact optional post-MVP delivery-review tokens required on project-facing binding surfaces.
  */
 export const MATERIAL_DELIVERY_ROUTING_TOKENS: readonly string[] = [
-  "For Material work, always run the discovered conforming delivery/readiness gate",
-  "missing conforming capability blocks",
-  "Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it",
-  "explicitly accepted conforming delivery result",
+  "Optional final-candidate",
+  "after MVP",
+  "concrete risk, project policy, or",
+  "not itself a stage blocker",
 ];
 
 /** Surfaces that must retain Material delivery routing semantics. */
@@ -118,24 +97,16 @@ export const TEST_COVERAGE_REVIEWER_CONTRACT: TextContract = {
     "actual runtime envelope",
     "fresh-session behavior",
     "Task/Repro Coverage Matrix",
-    "After Applicable Proof",
-    "do not demand systematic tests before the production happy path and Applicable Proof",
+    "After Runtime Proof",
+    "do not demand systematic tests before the production happy path and Runtime Proof",
     "do not invent acceptance scope",
   ],
 };
 
 export const SESSION_DELIVERY_BINDING_HANDOFF_TOKENS: readonly string[] = [
-  "Change-Ready: no",
-  "Verdict: material deviations",
-  "Verdict: not enough evidence",
-  "Blocking for Acceptance: yes",
-  "Verdict: blocked",
-  "Blocking Evidence",
-  "Follow-up Candidates",
-  "never authorize",
-  "do not present the session as complete",
-  "Blocking for Acceptance: no",
-  "partial slice handoff must not end an unfinished root goal",
+  "Development-Stage",
+  "after MVP",
+  "optional",
 ];
 
 /**
@@ -148,10 +119,7 @@ export const OUTCOME_AUTHORITY_SCOPE_MARKERS: readonly string[] = [
   "protected-boundary",
   "dependency closure",
   "never authorize mutation",
-  "Blocking Evidence",
-  "Follow-up Candidates",
-  "correction wave",
-  "root goal",
+  "critical-risks-reported",
 ];
 
 /** Surfaces that must retain outcome-authority markers. */

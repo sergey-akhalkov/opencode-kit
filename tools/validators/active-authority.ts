@@ -3,6 +3,7 @@ import {
   GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
+  GLOBAL_AGENTS_SHARED_REVIEWER_RUNTIME_MARKERS,
 } from "../contracts/skills.ts";
 
 /**
@@ -360,14 +361,16 @@ function sectionBodyAfterExactH2(text: string, title: string): string | null {
 
 /** Exact stable markers required inside AGENTS Change-Ready routing (portable safety minimum). */
 const AGENTS_ROUTING_DIRECT_MAIN_MARKER =
-  "Main may directly author Ordinary Small production changes";
-const AGENTS_ROUTING_PROOF_MARKER = "prove it observably";
+  "Main is the default production author for Ordinary Small and Material";
+const AGENTS_ROUTING_PROOF_MARKER = "run-observe-correct";
 const AGENTS_ROUTING_EDGE_MARKER = "realistic requirement-linked edge cases";
 const AGENTS_ROUTING_SCOPE_APPROVAL_MARKER = "explicit user approval";
-const AGENTS_ROUTING_EXPLICIT_CHANGE_READY_MARKER = "explicit Change-Ready";
+const AGENTS_ROUTING_EXPLICIT_QUAL_MARKER = "explicit stable";
 const AGENTS_ROUTING_PROJECT_REQUIRED_MARKER = "project-required qualification";
 const AGENTS_ROUTING_NO_DOWNGRADE_MARKER =
   "must not be downgraded merely because the diff is small";
+const AGENTS_ROUTING_DEVELOPMENT_STAGE_MARKER =
+  "Development-Stage: development | MVP | RC<n> | stable";
 /**
  * Shared named Material risk classes for AGENTS routing and canonical skill authority.
  * Exact full phrases only — weak substrings do not prove the intended safety class.
@@ -413,9 +416,6 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (!routing.includes("Ordinary Small")) {
     return "AGENTS.md Change-Ready SDLC Routing section missing Ordinary Small default";
   }
-  if (!/Change-Ready:\s*not requested/i.test(routing)) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing Change-Ready: not requested ordinary completion";
-  }
   if (!routing.includes("change-ready-sdlc")) {
     return "AGENTS.md Change-Ready SDLC Routing section missing change-ready-sdlc qualification load instruction";
   }
@@ -423,24 +423,27 @@ export function agentsAuthorityProblem(text: string): string | null {
     return "AGENTS.md Change-Ready SDLC Routing section missing pre-mutation qualification instruction";
   }
   if (!routing.includes(AGENTS_ROUTING_DIRECT_MAIN_MARKER)) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing direct-main Ordinary Small production authorship";
+    return "AGENTS.md Change-Ready SDLC Routing section missing main-default production authorship";
+  }
+  if (!routing.includes(AGENTS_ROUTING_DEVELOPMENT_STAGE_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing exact Development-Stage field";
   }
   const proofIdx = routing.indexOf(AGENTS_ROUTING_PROOF_MARKER);
   if (proofIdx < 0) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing observable happy-path proof marker";
+    return "AGENTS.md Change-Ready SDLC Routing section missing run-observe-correct proof marker";
   }
   const edgeIdx = routing.indexOf(AGENTS_ROUTING_EDGE_MARKER);
   if (edgeIdx < 0) {
     return "AGENTS.md Change-Ready SDLC Routing section missing realistic requirement-linked edge inspection marker";
   }
   if (proofIdx >= edgeIdx) {
-    return "AGENTS.md Change-Ready SDLC Routing section must order observable proof before realistic requirement-linked edge inspection";
+    return "AGENTS.md Change-Ready SDLC Routing section must order runtime proof before realistic requirement-linked edge inspection";
   }
   if (!routing.includes(AGENTS_ROUTING_SCOPE_APPROVAL_MARKER)) {
     return "AGENTS.md Change-Ready SDLC Routing section missing explicit owner approval before unrequested scope expansion";
   }
-  if (!routing.includes(AGENTS_ROUTING_EXPLICIT_CHANGE_READY_MARKER)) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing explicit Change-Ready qualification trigger";
+  if (!routing.includes(AGENTS_ROUTING_EXPLICIT_QUAL_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing explicit stable qualification trigger";
   }
   if (!routing.includes(AGENTS_ROUTING_PROJECT_REQUIRED_MARKER)) {
     return "AGENTS.md Change-Ready SDLC Routing section missing project-required qualification trigger";
@@ -462,50 +465,50 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (!routing.includes("smallest sufficient dependency closure")) {
     return "AGENTS.md Change-Ready SDLC Routing section missing local reversible dependency-closure marker";
   }
-  if (!routing.includes("never authorize mutation")) {
+  if (!routing.includes("evidence never authorizes mutation")) {
     return "AGENTS.md Change-Ready SDLC Routing section missing non-authorizing findings rule";
   }
-  if (!routing.includes("one correction wave")) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing finite one-correction-wave marker";
+  if (!routing.includes("critical-risks-reported | no-critical-risk | blocked")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing critical-only SDET action marker";
   }
-  if (!routing.includes("does not automatically end the unfinished root goal")) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing attempt-versus-root-goal continuation marker";
+  if (!routing.includes("permanently stops SDET for the root")) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing semantic SDET stop marker";
   }
-  if (!routing.includes("unchanged-candidate")) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing unchanged-candidate anti-retry marker";
-  }
-  // Outcome-first / Pilot-Ready may live outside the routing H2; check operative text only
+  // Outcome-first / Development-Stage may live outside the routing H2; check operative text only
   // (closed and unclosed fenced examples cannot satisfy authority markers).
   // `operative` comes from the structured scan above (unsupported already rejected).
-  if (!operative.includes("Pilot-Ready: yes | no | not requested")) {
-    return "AGENTS.md missing exact Pilot-Ready disposition token";
+  if (!operative.includes("Development-Stage: development | MVP | RC<n> | stable")) {
+    return "AGENTS.md missing exact Development-Stage token";
+  }
+  if (operative.includes("Pilot-Ready: yes | no | not requested")) {
+    return "AGENTS.md must not retain old Pilot-Ready disposition field";
+  }
+  if (operative.includes("Change-Ready: not requested")) {
+    return "AGENTS.md must not retain old Change-Ready disposition field";
   }
   if (!operative.includes("technically enforced operating envelope")) {
     return "AGENTS.md missing technically enforced operating envelope marker";
   }
-  if (!operative.includes("Neither disposition authorizes")) {
-    return "AGENTS.md missing neither-disposition-authorizes external-operation safety marker";
+  if (!operative.includes("Neither MVP, RC, nor stable authorizes")) {
+    return "AGENTS.md missing stage non-authorization safety marker";
   }
   if (!operative.includes("Ordinary Small | Material")) {
     return "AGENTS.md missing exact Ordinary Small | Material profile pair";
   }
-  if (!operative.includes("bounded outcome and non-goals")) {
-    return "AGENTS.md missing Pilot safety-floor bounded outcome and non-goals marker";
+  if (!operative.includes("bounded accepted outcome and non-goals")) {
+    return "AGENTS.md missing working-result floor bounded outcome and non-goals marker";
   }
   if (!operative.includes("real-boundary happy-path proof")) {
-    return "AGENTS.md missing Pilot safety-floor real-boundary happy-path proof marker";
+    return "AGENTS.md missing working-result floor real-boundary happy-path proof marker";
   }
-  if (!operative.includes("focused project-native validation")) {
-    return "AGENTS.md missing Pilot safety-floor focused project-native validation marker";
+  if (!operative.includes("green applicable project-native validation")) {
+    return "AGENTS.md missing working-result floor green applicable project-native validation marker";
   }
   if (!operative.includes("critical safety/data/authorization")) {
-    return "AGENTS.md missing Pilot safety-floor critical safety/data/authorization marker";
+    return "AGENTS.md missing working-result floor critical safety/data/authorization marker";
   }
   if (!operative.includes("failure visibility")) {
-    return "AGENTS.md missing Pilot safety-floor failure visibility marker";
-  }
-  if (!operative.includes("disable/rollback/containment")) {
-    return "AGENTS.md missing Pilot safety-floor disable/rollback/containment marker";
+    return "AGENTS.md missing working-result floor failure visibility marker";
   }
   for (const boundary of GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES) {
     if (!operative.includes(boundary.marker)) {
@@ -554,6 +557,11 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (reviewer == null || reviewer.trim() === "") {
     return "AGENTS.md Shared Reviewer Runtime Invariants section is empty";
   }
+  for (const marker of GLOBAL_AGENTS_SHARED_REVIEWER_RUNTIME_MARKERS) {
+    if (!reviewer.includes(marker)) {
+      return `AGENTS.md Shared Reviewer Runtime Invariants missing required marker: ${marker}`;
+    }
+  }
   return null;
 }
 
@@ -566,46 +574,43 @@ type SkillHeadingMarker = {
 const SKILL_ORDERED_HEADINGS: SkillHeadingMarker[] = [
   { label: "Change-Ready title", test: (line) => /^#\s+Change-Ready\b/.test(line) },
   { label: "When To Load", test: (line) => /^##\s+When To Load\s*$/.test(line) },
-  { label: "Profile", test: (line) => /^##\s+Profile\b/.test(line) },
-  { label: "Adapter Discovery", test: (line) => /^##\s+Adapter Discovery\s*$/.test(line) },
+  { label: "Profiles And Stage", test: (line) => /^##\s+Profiles And Stage\s*$/.test(line) },
   { label: "Authoritative Brief", test: (line) => /^##\s+Authoritative Brief\s*$/.test(line) },
   {
-    label: "Authoring And Gate Sequence (Orchestrator ownership)",
-    test: (line) => /^##\s+Orchestrator ownership\s*$/.test(line),
+    label: "Outcome-First Stop Line",
+    test: (line) => /^##\s+Outcome-First Stop Line\s*$/.test(line),
   },
   {
-    label: "Authoring And Gate Sequence (Lifecycle transitions)",
-    test: (line) => /^##\s+Lifecycle transitions\s*$/.test(line),
+    label: "Orchestrator And Writer Safety",
+    test: (line) => /^##\s+Orchestrator And Writer Safety\s*$/.test(line),
   },
   {
-    label: "Candidate Reference",
-    test: (line) => /^###\s+\d+\.\s+Candidate Reference\b/.test(line),
-  },
-  { label: "Applicable Proof", test: (line) => /^###\s+\d+\.\s+Applicable Proof\s*$/.test(line) },
-  { label: "Fresh SDET", test: (line) => /^###\s+\d+\.\s+Fresh SDET\s*$/.test(line) },
-  {
-    label: "Project-Native Validation",
-    test: (line) => /^###\s+\d+\.\s+Project-Native Validation\s*$/.test(line),
+    label: "Qualification Flow",
+    test: (line) => /^##\s+Qualification Flow\s*$/.test(line),
   },
   {
-    label: "Failure Rules (Correction routing and replay)",
-    test: (line) => /^###\s+\d+\.\s+Correction routing and replay\s*$/.test(line),
+    label: "Implement And Prove MVP",
+    test: (line) => /^###\s+\d+\.\s+Implement And Prove MVP\s*$/.test(line),
   },
   {
-    label: "Fresh Final Candidate Review",
-    test: (line) => /^###\s+\d+\.\s+Final Candidate Review\s*$/.test(line),
+    label: "Optional Risk Discovery",
+    test: (line) => /^###\s+\d+\.\s+Optional Risk Discovery\s*$/.test(line),
   },
   {
-    label: "Change-Ready Decision",
-    test: (line) => /^###\s+\d+\.\s+Change-Ready Decision\s*$/.test(line),
+    label: "Critical SDET",
+    test: (line) => /^###\s+\d+\.\s+Critical SDET\s*$/.test(line),
   },
   {
-    label: "Pilot-Ready Decision",
-    test: (line) => /^###\s+\d+\.\s+Pilot-Ready Decision\s*$/.test(line),
+    label: "Validate And Freeze RC",
+    test: (line) => /^###\s+\d+\.\s+Validate And Freeze RC\s*$/.test(line),
   },
   {
-    label: "Handoff And Delivery (Compact orchestration output)",
-    test: (line) => /^##\s+Compact orchestration output\s*$/.test(line),
+    label: "Stable Handoff",
+    test: (line) => /^###\s+\d+\.\s+Stable Handoff\s*$/.test(line),
+  },
+  {
+    label: "Output",
+    test: (line) => /^##\s+Output\s*$/.test(line),
   },
 ];
 
@@ -654,7 +659,7 @@ const SKILL_ORDINARY_NONLOAD_MARKERS: readonly string[] = [
   "does **not** load this skill",
   "Do not load for Ordinary Small",
 ];
-const SKILL_SCOPE_LOCK_MARKER = "project-specific scope lock";
+const SKILL_SCOPE_LOCK_MARKER = "accepted outcome capsule";
 const SKILL_OWNER_APPROVAL_MARKER = "explicit owner approval";
 const SKILL_NO_DOWNGRADE_MARKER =
   "must not be downgraded merely because the diff is small";
@@ -662,13 +667,11 @@ const SKILL_ACCEPTED_OUTCOME_MARKER = "accepted outcome";
 const SKILL_PROTECTED_BOUNDARIES_MARKER = "protected boundaries";
 const SKILL_DEPENDENCY_CLOSURE_MARKER = "smallest sufficient dependency closure";
 const SKILL_NON_AUTHORIZING_MARKER = "never authorize mutation";
-const SKILL_CORRECTION_WAVE_MARKER = "one correction wave";
-const SKILL_ROOT_GOAL_CONTINUATION_MARKER = "does not automatically end the unfinished root goal";
-const SKILL_UNCHANGED_CANDIDATE_MARKER = "Never retry an unchanged candidate";
-const SKILL_PROCESS_ONLY_BLOCKER_MARKER = "Never ask the user solely to approve an internal revision";
-const SKILL_BLOCKING_EVIDENCE_MARKER = "Blocking Evidence";
-const SKILL_FOLLOW_UP_CANDIDATES_MARKER = "Follow-up Candidates";
-const SKILL_FINAL_VERDICT_MARKER = "approved | approved_with_notes | rejected | blocked";
+const SKILL_OPTIONAL_REVIEWER_MARKER = "Reviewer absence, timeout, malformed output, or disagreement is not itself a stage blocker";
+const SKILL_CRITICAL_SDET_ACTION_MARKER =
+  "Action: critical-risks-reported | no-critical-risk | blocked";
+const SKILL_CRITICAL_SDET_STOP_MARKER = "permanently stops SDET for the root";
+const SKILL_STAGE_MARKER = "Development-Stage: development | MVP | RC<n> | stable";
 
 /**
  * Structural change-ready-sdlc SKILL.md authority: js-yaml frontmatter + ordered
@@ -750,38 +753,29 @@ export function skillAuthorityProblem(text: string): string | null {
   if (!operativeBody.includes(SKILL_NON_AUTHORIZING_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing non-authorizing findings rule";
   }
-  if (!operativeBody.includes(SKILL_CORRECTION_WAVE_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing finite one-correction-wave marker";
+  if (!operativeBody.includes(SKILL_OPTIONAL_REVIEWER_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing optional-reviewer non-blocking marker";
   }
-  if (!operativeBody.includes(SKILL_ROOT_GOAL_CONTINUATION_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing attempt-versus-root-goal continuation marker";
+  if (!operativeBody.includes(SKILL_CRITICAL_SDET_ACTION_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing critical-only SDET action marker";
   }
-  if (!operativeBody.includes(SKILL_UNCHANGED_CANDIDATE_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing unchanged-candidate anti-retry marker";
+  if (!operativeBody.includes(SKILL_CRITICAL_SDET_STOP_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing semantic SDET permanent-stop marker";
   }
-  if (!operativeBody.includes(SKILL_PROCESS_ONLY_BLOCKER_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing process-only-blocker prohibition marker";
+  if (!operativeBody.includes(SKILL_STAGE_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing exact Development-Stage token";
   }
-  if (!operativeBody.includes(SKILL_BLOCKING_EVIDENCE_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing Blocking Evidence output field";
+  if (operativeBody.includes("Pilot-Ready: yes | no | not requested")) {
+    return "skills/change-ready-sdlc/SKILL.md must not retain old Pilot-Ready disposition field";
   }
-  if (!operativeBody.includes(SKILL_FOLLOW_UP_CANDIDATES_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing Follow-up Candidates output field";
+  if (operativeBody.includes("Change-Ready: not requested")) {
+    return "skills/change-ready-sdlc/SKILL.md must not retain old Change-Ready disposition field";
   }
-  if (!operativeBody.includes(SKILL_FINAL_VERDICT_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing final-review rejected verdict enum";
+  if (!operativeBody.includes("Neither MVP, RC, nor stable authorizes")) {
+    return "skills/change-ready-sdlc/SKILL.md missing stage non-authorization marker";
   }
-  if (!operativeBody.includes("Pilot-Ready: yes | no | not requested")) {
-    return "skills/change-ready-sdlc/SKILL.md missing exact Pilot-Ready disposition token";
-  }
-  if (!operativeBody.includes("not a third lifecycle profile")) {
-    return "skills/change-ready-sdlc/SKILL.md missing no-third-profile Pilot-Ready boundary";
-  }
-  if (!operativeBody.includes("complete Pilot safety floor is authoritative only in always-loaded global")) {
-    return "skills/change-ready-sdlc/SKILL.md missing complete Pilot safety-floor authority reference to always-loaded global AGENTS";
-  }
-  if (!operativeBody.includes("Neither disposition authorizes")) {
-    return "skills/change-ready-sdlc/SKILL.md missing neither-disposition-authorizes external-operation safety marker";
+  if (!operativeBody.includes("Runtime Proof")) {
+    return "skills/change-ready-sdlc/SKILL.md missing Runtime Proof marker";
   }
   // Triggers may live in description and/or operative body; require complete named Material classes.
   const triggerSurface = `${map.description}\n${operativeBody}`;

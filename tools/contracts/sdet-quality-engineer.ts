@@ -5,9 +5,9 @@ export const ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES: ReadonlyMap<string, "deny
   ["permission.bash", "deny"],
 ]);
 
-/** Scalar only: permission.edit = allow. Nested edit rules are rejected. */
-export const ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES: ReadonlyMap<string, "deny" | "allow"> = new Map([
-  ["permission.edit", "allow"],
+/** Scalar only: every SDET edit requires runtime approval for the supplied test-only scope. */
+export const ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES: ReadonlyMap<string, "deny" | "ask" | "allow"> = new Map([
+  ["permission.edit", "ask"],
 ]);
 
 export const SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS: readonly string[] = [
@@ -25,34 +25,34 @@ export const SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS: readonly string[] = [
 
 /**
  * Deterministic required substrings for the SDET agent body.
- * Single report action; optional project-native Candidate Reference; no dual-identity handshake.
+ * Critical-only report action; exact model; smallest critical test-only scope.
  */
 export const SDET_QUALITY_ENGINEER_REQUIRED_TEXT: readonly string[] = [
-  "fresh context",
+  "fresh-context",
   "test-only write scope",
   "co-located",
-  "risk/oracle matrix",
-  "Prefer real boundaries",
-  "mock",
-  "authored-tests",
-  "assessed-existing-tests",
+  "critical business-logic incidents",
+  "Critical Risk Matrix",
+  "Prefer the real candidate boundary",
+  "black-box",
+  "mock confidence gap",
   "blocked",
-  "Never fix production",
-  "Never self-approve",
-  "run shell",
+  "Never edit or repair production",
+  "Every edit requires runtime approval",
+  "smallest test artifact",
+  "Execution Request",
+  "raw output",
   "SDET_QUALITY_REPORT",
-  "Action: authored-tests | assessed-existing-tests | blocked",
+  "Action: critical-risks-reported | no-critical-risk | blocked",
   "Candidate Reference",
-  "distinct effective model",
-  "same-model correlation risk",
   "Effective Model:",
-  "Model Independence:",
-  "Risk And Oracle Matrix",
-  "Test Changes Or Existing Evidence",
-  "Requested Validation Procedures",
-  "Blockers",
-  "Residual Risks",
-  "Blocking Evidence",
-  "Follow-up Candidates",
-  "never authorize",
+  "Risk ID",
+  "Incident Consequence",
+  "Reachability And Envelope",
+  "Raw Evidence",
+  "Reproduction Procedure",
+  "Test Evidence",
+  "Test Changes",
+  "Evidence Gaps And Residual Risks",
+  "never authorizes production work",
 ];

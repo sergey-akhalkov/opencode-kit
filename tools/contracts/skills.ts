@@ -13,14 +13,14 @@ export const CHANGE_READY_SDLC_SKILL_RELATIVE_PATH = "global/skills/change-ready
 
 /** Exact case-sensitive lifecycle markers required in the canonical skill. */
 export const CHANGE_READY_SDLC_LIFECYCLE_MARKERS: readonly string[] = [
-  "Adapter Discovery",
-  "Profile: Ordinary Small | Material",
+  "Profiles And Stage",
   "Authoritative Brief",
-  "Applicable Proof",
+  "Runtime Proof",
   "Candidate Reference",
-  "Project-Native Validation",
-  "Final Candidate Review",
-  "Change-Ready Decision",
+  "Optional Risk Discovery",
+  "Critical SDET",
+  "Validate And Freeze RC",
+  "Stable Handoff",
 ];
 
 /**
@@ -50,17 +50,9 @@ export const CHANGE_READY_SDLC_FORBIDDEN_TOKENS: readonly string[] = [
  * Exact discovery terms that must appear in the canonical skill frontmatter description.
  */
 export const CHANGE_READY_SDLC_DESCRIPTION_TERMS: readonly string[] = [
-  "implementation",
-  "bug fix",
-  "refactor",
-  "loaded instruction",
-  "configuration change",
-  "generated-output change",
-  "Change-Ready",
-  "review-only",
-  "research",
-  "inert content",
-  "Ordinary Small",
+  "stable",
+  "full-qualification",
+  "lifecycle/safety policy",
   "Material",
 ];
 
@@ -73,44 +65,20 @@ export const CHANGE_READY_SDLC_DUPLICATE_MARKER_THRESHOLD = 6;
  */
 export const CHANGE_READY_SDLC_CONTINUATION_TOKENS: readonly string[] = [
   "create or resume specialist sessions",
-  "runtime session/task identity",
-  "orchestrator-owned fan-out",
-  "independent isolated or exact non-overlapping",
-  "same production-author context",
-  "discovered runtime continuation adapter",
+  "one orchestrator-owned fan-out",
+  "independent isolated or exact non-overlapping scopes",
   "Candidate Reference",
-  "explicit objective text",
-  "explicit brief delta",
-  "unchanged forbidden actions",
-  "blocks, times out, is cancelled",
   "missing report",
   "partial mutation",
-  "do not freeze, prove, or qualify",
-  "Corrected-candidate SDET",
-  "does not preserve Applicable Proof",
-  "fresh and read-only",
-  "terminal report is received",
+  "Another fresh attempt is earned only when",
+  "permanently stops SDET for the root",
   "adapter-proven terminal cessation",
-  "Cancellation request or acknowledgement alone is not closure",
-  "workspace/write authority is isolated or revoked",
-  "Recorded timeout, cancel, or missing report alone is not closure",
-  "Unknown liveness or unisolated ownership",
-  "Late output or late mutation",
-  "Universal writer attempt closure",
+  "Cancellation acknowledgement alone is not closure",
+  "write isolation/revocation",
+  "Unknown liveness blocks integration, proof, and qualification",
   "mutation-capable",
-  "serial or fan-out",
-  "active primary parent identity",
-  "child session/task identity",
-  "expected child role/context",
-  "Top-level/default-primary fallback is not specialist evidence",
-  "Unavailable or unverifiable child",
-  "directly readable under the reviewer's effective permissions",
-  "External path references alone are insufficient",
-  "Delivery/readiness gate",
-  "explicitly accepted conforming delivery result",
-  "Rollback plan",
-  "executed only when separately authorized",
-  "never required to claim Change-Ready",
+  "Known Non-Critical Limitations",
+  "Stable Candidate: RC<n>",
 ];
 
 /** Lifecycle role routes required in always-loaded global AGENTS routing text. */
@@ -229,6 +197,14 @@ export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
     diagnostic: "Pilot-Ready must not authorize deployment",
   },
   {
+    needle: "Change-Status: Done-Done authorizes deployment",
+    diagnostic: "Done-Done must not authorize deployment",
+  },
+  {
+    needle: "RC authorizes deployment",
+    diagnostic: "RC must not authorize deployment",
+  },
+  {
     needle: "Profile: Ordinary Small | Material | Pilot",
     diagnostic: "Pilot must not appear as a third lifecycle profile",
   },
@@ -240,6 +216,30 @@ export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
     needle: "evidence-format polish alone blocks Pilot-Ready",
     diagnostic: "evidence-format polish must not be an unconditional Pilot-Ready blocker",
   },
+  {
+    needle: "evidence-format polish alone blocks Done-Done",
+    diagnostic: "evidence-format polish must not be an unconditional Done-Done blocker",
+  },
+  {
+    needle: "Pilot-Ready: yes | no | not requested",
+    diagnostic: "old Pilot-Ready disposition field is forbidden on current production-routing surfaces",
+  },
+  {
+    needle: "Change-Ready: not requested",
+    diagnostic: "old Change-Ready disposition field is forbidden on current production-routing surfaces",
+  },
+  {
+    needle: "Change-Ready: yes | no | not requested",
+    diagnostic: "old dual Change-Ready disposition field is forbidden on current production-routing surfaces",
+  },
+  {
+    needle: "### 4. Applicable Proof",
+    diagnostic: "stale Applicable Proof heading; require Runtime Proof heading instead",
+  },
+  {
+    needle: "### 9. Change-Ready Decision",
+    diagnostic: "stale Change-Ready Decision heading; require Stable Handoff instead",
+  },
 ] as const;
 
 /** Outcome-authority markers required in the canonical Change-Ready skill body. */
@@ -248,14 +248,9 @@ export const CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
   "protected boundaries",
   "smallest sufficient dependency closure",
   "never authorize mutation",
-  "Blocking Evidence",
-  "Follow-up Candidates",
-  "one correction wave",
-  "does not automatically end the unfinished root goal",
-  "Never retry an unchanged candidate",
-  "Never ask the user solely to approve an internal revision",
-  "approved | approved_with_notes | rejected | blocked",
-  "persistent evidence infrastructure",
+  "critical-risks-reported | no-critical-risk | blocked",
+  "main owns reproduction, classification, correction, parking, and stage transitions",
+  "Known documented non-critical limitations do not require an owner quiz",
 ];
 
 /** Outcome-authority markers required in always-loaded global AGENTS routing. */
@@ -263,15 +258,11 @@ export const GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
   "accepted outcome",
   "protected boundaries",
   "smallest sufficient dependency closure",
-  "never authorize mutation",
-  "Blocking Evidence",
-  "Follow-up Candidates",
-  "one correction wave",
-  "does not automatically end the unfinished root goal",
+  "evidence never authorizes mutation",
+  "critical-risks-reported | no-critical-risk | blocked",
   "Never ask solely to approve an internal revision",
-  "unchanged-candidate",
   "decision-ready",
-  "approved | approved_with_notes | rejected | blocked",
+  "Known non-critical limitations",
 ];
 
 /**
@@ -339,21 +330,36 @@ export const GLOBAL_AGENTS_TRIGGER_TOKENS: readonly string[] = [
   "change-ready-sdlc",
   "Ordinary Small",
   "Material",
-  "Change-Ready: not requested",
+  "Development-Stage: development | MVP | RC<n> | stable",
   "explicit user approval",
   "sole orchestrator",
   "Before the first mutation",
   "If the skill is unavailable",
   "block behavior-changing mutation",
+  "default production author",
+  "run-observe-correct",
 ];
 
 /**
- * Canonical outcome-first / Pilot-Ready markers required in always-loaded global/AGENTS.md.
+ * Always-loaded Shared Reviewer Runtime Invariants markers (global/AGENTS.md section body).
+ * Runtime leaves load AGENTS.md; Contract Reference alone is validation provenance only.
+ */
+export const GLOBAL_AGENTS_SHARED_REVIEWER_RUNTIME_MARKERS: readonly string[] = [
+  "Reviewer invocation is optional and risk-driven, not a lifecycle gate",
+  "`Risk ID`",
+  "`Effective Model`",
+  "Do not return an acceptance/rejection verdict",
+  "`code-quality-reviewer` returns only a reduction matrix",
+  "Main alone reproduces, classifies, fixes, parks, asks the owner, and changes lifecycle state",
+];
+
+/**
+ * Canonical outcome-first / Development-Stage markers required in always-loaded global/AGENTS.md.
  * Deterministic substring checks only — no fuzzy reachability or severity classification.
  */
 export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "technically enforced operating envelope",
-  "Pilot-Ready: yes | no | not requested",
+  "Development-Stage: development | MVP | RC<n> | stable",
   "Ordinary Small | Material",
   "prose-only",
   "not containment",
@@ -361,15 +367,14 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "narrow users/data/interfaces",
   "reuse an existing platform/project mechanism",
   "local guard",
-  "Neither disposition authorizes",
-  "material residual-risk bundle",
+  "Neither MVP, RC, nor stable authorizes",
+  "Known non-critical limitations",
   "cannot waive uncontrolled authorization",
-  "bounded outcome and non-goals",
+  "bounded accepted outcome and non-goals",
   "real-boundary happy-path proof",
-  "focused project-native validation",
+  "green applicable project-native validation",
   "critical safety/data/authorization",
   "failure visibility",
-  "disable/rollback/containment",
   "`Outcome`",
   "`Operating Envelope`",
   "`Non-Goals`",
@@ -378,23 +383,22 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "`Material Residual Risks`",
   "`Stop Line`",
   "remove, narrow, reuse, local guard, then deferral",
+  "Stable Candidate: RC",
 ];
 
 /**
- * Qualification-specific Pilot-Ready markers required in the canonical Change-Ready skill.
- * Sole complete Pilot safety-floor owner is always-loaded global/AGENTS.md; this array requires
- * disposition/coexistence/terminal markers plus an explicit global-floor authority reference —
+ * Qualification-specific Development-Stage markers required in the canonical skill.
+ * Sole complete safety-floor owner is always-loaded global/AGENTS.md; this array requires
+ * status/transition/terminal markers plus an explicit global-floor authority reference —
  * not a second complete floor enumeration.
  */
-export const CHANGE_READY_SDLC_PILOT_READY_MARKERS: readonly string[] = [
-  "Pilot-Ready Decision",
-  "Pilot-Ready: yes | no | not requested",
-  "not a third lifecycle profile",
+export const CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS: readonly string[] = [
+  "Stable Handoff",
+  "Development-Stage: development | MVP | RC<n> | stable",
   "Ordinary Small | Material",
-  "complete Pilot safety floor is authoritative only in always-loaded global",
-  "Neither disposition authorizes",
-  "does not automatically erase independently proven Pilot-Ready",
-  "does not undermine candidate identity/scope, proof, containment, safety floor, validation, or material-risk acceptance",
+  "Neither MVP, RC, nor stable authorizes",
+  "Stable Candidate: RC",
+  "returns to `development`",
 ];
 
 /**
@@ -421,13 +425,12 @@ export const OUTCOME_FIRST_ROLE_DELTA_SURFACES: readonly string[] = [
  */
 export const OUTCOME_FIRST_COMPLETE_POLICY_MARKERS: readonly string[] = [
   "cannot waive uncontrolled authorization",
-  "material residual-risk bundle",
-  "Neither disposition authorizes",
+  "Neither MVP, RC, nor stable authorizes",
   "prose-only limits are not containment",
-  "Pilot-Ready Decision",
+  "Stable Handoff",
   "`Non-Deferrable Invariants`",
   "remove unnecessary capability",
-  "not a third lifecycle profile",
+  "Development-Stage",
 ];
 
 /** How many complete-policy markers on a role/planning surface trigger duplication failure. */
@@ -452,7 +455,7 @@ export const GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS: readonly string[] = [
   "partial mutation",
   "do not freeze, prove, or qualify",
   "Corrected-candidate SDET",
-  "never preserves Applicable Proof",
+  "never preserves Runtime Proof",
   "fresh read-only context",
   "terminal report is received",
   "adapter-proven terminal cessation",

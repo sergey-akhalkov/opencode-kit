@@ -62,16 +62,14 @@ export const validatorTests1: TestCase[] = [
         "2. `Evidence`: inspect source.",
         "3. `Baseline Proof`: reproduce or characterize current behavior before behavior changes when feasible.",
         "4. `Small Slice`: choose the smallest reviewable change that proves value.",
-        "5. `Happy Path`: implement the smallest complete production path.",
-        "6. `Happy-Path Proof`: demonstrate observable behavior at the relevant boundary.",
-        "7. `Risk Discovery`: use an independent fresh-context testing subagent.",
-        "8. `Negative Tests`: exercise realistic failure scenarios.",
-        "9. `Harden`: feed failures back into production fixes.",
-        "10. `Review Gate`: use relevant read-only reviewers only when risk justifies them.",
-        "11. `Final Validation`: broaden validation when boundaries are affected.",
-        "12. `Final Candidate Review`: run the mandatory independent post-validation review.",
-        "13. `Handoff`: report changed files and evidence.",
-        "14. `Process Improvement`: capture friction with `complain`.",
+        "5. `Happy Path`: main implements the smallest complete production path.",
+        "6. `Runtime Proof`: demonstrate observable behavior at the relevant boundary.",
+        "7. `Accepted Scope`: finish required scope without optional polishing.",
+        "8. `Optional Risk Discovery`: use read-only reviewers only when concrete risk justifies them.",
+        "9. `Critical SDET`: use fresh test-only SDET for reachable critical Material incidents.",
+        "10. `Validation And RC`: run applicable validation before freezing RC.",
+        "11. `Stable Handoff`: promote the same RC after local handoff.",
+        "12. `Process Improvement`: capture friction with `complain`.",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -88,7 +86,7 @@ export const validatorTests1: TestCase[] = [
         "",
         "## Universal Development Loop",
         "",
-        "Intake -> Evidence -> Baseline Proof -> Small Slice -> Happy Path -> Happy-Path Proof -> Risk Discovery -> Negative Tests -> Harden -> Review Gate -> Final Validation -> Final Candidate Review -> Handoff -> Process Improvement",
+        "Intake -> Evidence -> Baseline Proof -> Small Slice -> Happy Path -> Runtime Proof -> Accepted Scope -> Optional Risk Discovery -> Critical SDET -> Validation And RC -> Stable Handoff -> Process Improvement",
         "",
       ]));
       const result = invokeValidator(fixture);
@@ -201,26 +199,27 @@ export const validatorTests1: TestCase[] = [
   ...[
     {
       name: "model",
-      original: "model: openai/gpt-5.6-sol",
-      replacement: "model: openai/gpt-5.5",
-      diagnostic: "Troubleshooter must use model: openai/gpt-5.6-sol",
+      original: "mode: subagent",
+      replacement: "mode: subagent\nmodel: example/pinned-model",
+      diagnostic: "Reusable agent must inherit the invoking primary model; remove frontmatter 'model'",
     },
     {
       name: "variant",
-      original: "variant: xhigh",
-      replacement: "variant: high",
-      diagnostic: "Troubleshooter must use variant: xhigh",
+      original: "mode: subagent",
+      replacement: "mode: subagent\nvariant: pinned-variant",
+      diagnostic: "Reusable agent must inherit the invoking primary model; remove frontmatter 'variant'",
     },
   ].map((testCase): TestCase => ({
-    name: `validator rejects troubleshooter ${testCase.name} drift`,
+    name: `validator rejects troubleshooter ${testCase.name} pin`,
     run: () => {
-      const fixture = newLibraryFixture(`troubleshooter-${testCase.name}-drift`);
+      const fixture = newLibraryFixture(`troubleshooter-${testCase.name}-pin`);
       const troubleshooterPath = addTroubleshooterFixture(fixture);
       const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
       writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, testCase.original, testCase.replacement));
       const result = invokeValidator(fixture);
-      assertFailure(result, `Troubleshooter ${testCase.name} drift should fail validation.`);
-      assertOutputContains(result, testCase.diagnostic, `Troubleshooter ${testCase.name} failure should name the required value.`);
+      assertFailure(result, `Troubleshooter ${testCase.name} pin should fail validation.`);
+      assertOutputContains(result, testCase.diagnostic, `Troubleshooter ${testCase.name} failure should name the forbidden inherited field.`);
+      assertOutputContains(result, path.join("global", "agents", "troubleshooter.md"), `Troubleshooter ${testCase.name} diagnostic should name the exact role path.`);
     },
   })),
   {
@@ -638,20 +637,6 @@ export const validatorTests1: TestCase[] = [
       const result = invokeValidator(fixture);
       assertFailure(result, "Missing session-delivery reviewer control contract should fail validation.");
       assertOutputContains(result, "session-delivery-reviewer must require delivery-control safeguards", "Validation output should name the missing reviewer contract.");
-    },
-  },
-  {
-    name: "validator rejects missing session delivery binding handoff",
-    run: () => {
-      const fixture = newLibraryFixture("session-delivery-binding-handoff");
-      addSessionDeliveryBindingFixture(fixture);
-      assertSuccess(invokeValidator(fixture), "Session delivery binding fixture should pass before token removal.");
-      const agentsPath = path.join(fixture, "REPO_AGENTS.md");
-      writeText(agentsPath, fs.readFileSync(agentsPath, "utf8").replace("Blocking for Acceptance: yes", "Blocking for Acceptance: missing"));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Missing binding session-delivery handoff instructions should fail validation.");
-      assertOutputContains(result, "session-delivery-reviewer binding handoff", "Validation output should name binding handoff contract.");
-      assertOutputContains(result, "Blocking for Acceptance: yes", "Validation output should name missing binding token.");
     },
   },
   ...sessionDeliveryBindingTokens.map((token): TestCase => ({

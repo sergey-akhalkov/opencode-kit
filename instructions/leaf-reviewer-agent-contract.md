@@ -11,7 +11,7 @@ Each reusable reviewer under `global/agents/*.md` MUST:
 
 1. Contain a `## Contract Reference` section whose sole path line names
    `instructions/leaf-reviewer-agent-contract.md`.
-2. Contain role-specific runtime inputs, checks, verdict/output contract, and permissions.
+2. Contain role-specific runtime inputs, checks, matrix/output contract, and permissions.
 3. **NOT** inline the shared `## Leaf Contract`, `## Feedback Ledger`, or `## Prevention Feedback`
    headings or bodies from this file.
 
@@ -59,7 +59,7 @@ You are a read-only specialist reviewer. Your job is to find material risks in t
 Canonical compact leaf-contract text for maintenance and validation. Do **not** paste a `## Leaf Contract`
 section into a reusable reviewer body.
 
-`Read/search-only leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, dream_team_* tools, other skills, or nested agents. Stay in scope. Findings may reject readiness via Blocking Evidence but never authorize mutation, protected-boundary expansion, or current-candidate work; main owns diagnosis/routing. Missing evidence -> Blocking Evidence naming the gap; separate work -> non-authorizing Follow-up Candidates; external domain -> Needs external reviewer: <agent-name> required|optional.`
+`Read/search-only optional leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, dream_team_* tools, other skills, or nested agents. Stay in scope. Return one evidence-backed risk matrix for the exact inspected candidate; code quality returns only its reduction matrix. No acceptance/rejection verdict, lifecycle blocker, or work-authoring action list. Main owns reproduction, disposition, correction routing, parking, owner questions, and Development-Stage.`
 
 At runtime this behavior is supplied by always-loaded global shared reviewer invariants and the
 role-specific agent body (for example a short `## Leaf Boundaries` section), not by inlining this block.
@@ -80,16 +80,17 @@ remove permission capability.
 - Source, tests, schemas, scripts, generated artifacts, and live output beat docs/comments/user claims.
 - Label docs-only claims `docs-only` and assumptions `assumption`. Incomplete evidence → lower confidence and name the gap.
 - Separate symptom from likely root cause; use `unknown` when cause is unproven.
-- Distinguish reachability inside the accepted enforced operating envelope from future-scope validity. Pilot-Ready blocking requires reachable current-outcome/safety-floor/invariant/accepted-risk/trusted-validation impact. Evidence-format polish alone is non-blocking when semantic evidence remains trustworthy.
-- Finding `Recommendation`: remove, narrow, reuse, local guard, then deferral before larger mechanisms. No separate action-authoring field.
-- For implementation changes, report missing original requirements, happy-path proof, independent testing-subagent evidence, risk matrix, mock exceptions, or final validation when relevant.
-- Deterministic helper automation may be a non-authorizing `Follow-up Candidate` only; reviewers do not write it. Helpers need explicit I/O, schemas/fixtures, stable ordering, privacy-safe output, no fuzzy scoring.
+- Distinguish reachability inside the accepted enforced operating envelope from future-scope validity. Evidence-format polish without semantic consequence remains residual. Assess the exact current RC; never relabel a source matrix as review of a later corrected RC.
+- Record the inherited `Effective Model` on every review handoff. An unknown effective model is an evidence-gap row and the run is not conforming role evidence; it still consumes the role's one launch.
+- Recommendation order: remove, narrow, reuse, local guard, then deferral. No separate action-authoring field.
+- For implementation changes, report missing original requirements, current Runtime Proof, Candidate Reference continuity, risk evidence, and validation evidence when relevant.
+- Reviewers do not write deterministic helpers. Any helper idea is a residual risk note and needs explicit I/O, schemas/fixtures, stable ordering, privacy-safe output, and no fuzzy scoring if separately authorized.
 
-## Severity Scale
+## Risk Evidence
 
-- `P0 blocker`: cannot safely continue, accept, merge, archive, or release.
-- `P1 material`: correctness, readiness, acceptance, compatibility, reliability, performance, or security risk.
-- `P2 minor`: clarity, coverage, maintainability, or tuning risk that is not blocking.
+- Every row uses a stable Risk ID and names the requirement/invariant, reachable scenario/enforced envelope, path/line or live evidence, business consequence, likelihood or `unknown`, confidence, reproduction procedure when feasible, and smallest mitigation note.
+- Missing/unreadable evidence is a row with the exact unknowable fact. Reviewer severity or confidence never authorizes work or directly changes lifecycle state.
+- Plausible non-deferrable authorization, privacy, data-integrity, irreversible-action, or envelope-escape claims need exact evidence for main reproduction/disproof/unreachability analysis; reviewers do not park or waive them.
 
 ## Shared Prevention Feedback Text (maintenance only — do not inline)
 
@@ -114,13 +115,10 @@ a license to inline this shared section heading/body.
 
 Return:
 
-- `Verdict`: clean | material findings | blocked | not applicable.
-- `Confidence`: high | medium | low.
-- `Blocking`: yes/no with context.
-- `Findings`: ordered by severity; fields: `Severity`, `Evidence`, `Evidence Type`, `Impact`, `Likely Root Cause`, `Recommendation`, `Confidence`, `Needs external reviewer`.
-- `Matrices`: domain-specific coverage/risk matrices requested by the prompt.
-- `Blocking Evidence`: readiness-rejecting facts with frozen-criterion reference when applicable, or `none`. Never authorizes mutation.
-- `Residual Risks`: gaps or `none`.
-- `Follow-up Candidates`: non-authorizing separate revision/change/investigation proposals; OpenSpec follow-up if several items remain outside current scope; else `none`. Never current tasks.
+- `Candidate Reference / RC`: exact candidate inspected.
+- `Effective Model: <effective model id when known, or unknown>`.
+- `Risk Matrix`: common row fields from Risk Evidence.
+- `Domain Matrix`: role-specific evidence map when useful.
+- `Evidence Gaps And Residual Risks`: unknown effective model, unreadable evidence, future-scope/optional risks, or `none`.
 
-Role-specific extensions may add domain evidence matrices and evidence-backed finding `Recommendation` fields. They must not add standalone prescriptive action-authoring output fields that instruct tests, gates, decisions, benchmarks, evidence acquisition, or next-step work. Route readiness-rejecting, nonblocking, and separate-work information only through `Blocking Evidence`, `Residual Risks`, or non-authorizing `Follow-up Candidates`.
+Role-specific extensions may add domain evidence matrices. They must not add acceptance/rejection verdicts, lifecycle blocker fields, or standalone prescriptive action-authoring fields that instruct tests, gates, decisions, benchmarks, evidence acquisition, or next-step work. `code-quality-reviewer` is the only exception to the common risk matrix and returns only its safe net-reduction matrix.

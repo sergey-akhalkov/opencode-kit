@@ -124,36 +124,6 @@ The validator SHALL exempt a skill from the missing happy-path-first risk-driven
 - **THEN** the file SHALL NOT receive the generated workflow-warning exemption
 - **AND** implementation wording without risk-driven guidance SHALL retain the existing warning
 
-### Requirement: Loaded instruction artifacts preserve the closed-world scope firewall
-
-The loaded global routing, canonical Change-Ready skill, qualification role agents, shared reviewer contract, reusable project guidance, project template, and repository maintenance guidance SHALL preserve one non-contradictory authority model: post-freeze scope may only shrink; only the user may approve expansion through a new revision or separate change; rejection may bind readiness but SHALL NOT authorize implementation; and qualification SHALL be finite.
-
-The repository SHALL enforce this model through existing deterministic contract modules and focused tests. It SHALL NOT add a new validator framework, runtime state store, lifecycle service, or evidence subsystem for this requirement.
-
-#### Scenario: canonical and mirrored surfaces agree
-
-- **WHEN** existing validation scans the configured scope-firewall instruction surfaces
-- **THEN** every surface SHALL preserve closed-world scope, non-authorizing blockers, terminal external findings, and finite review semantics
-- **AND** no surface SHALL retain the superseded P0/P1 expansion exception.
-
-#### Scenario: role output cannot grant scope or author actions
-
-- **WHEN** a reviewer, SDET, final-review, or delivery output contract is inspected
-- **THEN** its findings MAY state readiness impact through `Blocking Evidence` and propose separate work through non-authorizing `Follow-up Candidates`
-- **AND** SHALL NOT contain `Required Next Actions`, `Actionable Continuation Items`, `changes_requested`, or authority to add criteria, tasks, gates, paths, evidence infrastructure, candidate fixes, or replay waves.
-
-#### Scenario: current validator architecture is reused
-
-- **WHEN** the scope-firewall checks are implemented
-- **THEN** they SHALL extend existing files under `tools/contracts/`, `tools/validators/`, and focused existing test files
-- **AND** SHALL NOT create a new support file or general-purpose validation subsystem.
-
-#### Scenario: historical artifacts remain historical
-
-- **WHEN** validation encounters prior OpenSpec change artifacts that record superseded policy
-- **THEN** those historical artifacts SHALL remain unchanged and SHALL NOT be treated as current loaded authority
-- **AND** current global/project-facing authority surfaces SHALL satisfy the new policy.
-
 ### Requirement: OpenSpec authoring is sufficient for the next working increment
 Loaded OpenSpec authoring guidance SHALL default each change to the next useful working increment rather than exhaustive resolution of the imagined final system. Actionable proposal, design, spec, and task content SHALL resolve decisions only when they can materially change the current increment's outcome, technically enforced operating envelope, non-deferrable invariants, observable proof, material residual risk, or stop line.
 
@@ -181,70 +151,65 @@ Tasks SHALL represent meaningful behavior, evidence, or gate outcomes and MAY gr
 - **THEN** `tasks.md` MAY group them into one bounded task
 - **AND** SHALL NOT create separate tasks solely for each mechanical file edit.
 
-### Requirement: Outcome-first policy has canonical authority and minimal role deltas
-The complete outcome-first, operating-envelope, Pilot-Ready, material-risk-acceptance, and minimum-remedy policy SHALL have canonical loaded authority in `global/AGENTS.md`, with qualification-specific detail in `global/skills/change-ready-sdlc/SKILL.md`. Shared reviewer maintenance provenance SHALL live in `instructions/leaf-reviewer-agent-contract.md`. Other global skills, agents, project-facing templates, and guidance SHALL carry only role-specific decision deltas and SHALL NOT copy the complete policy block.
+### Requirement: Loaded authority owns the simple stage model
 
-Specialized checklists SHALL be conditional on the accepted operating envelope and current increment. They SHALL NOT convert every listed domain area into current acceptance scope. Existing artifacts that already express no-perfection, stop-line, minimal-remedy, or replacement rules SHALL remain unchanged unless a concrete contradiction is evidenced.
+`global/AGENTS.md` SHALL contain the complete portable `Development-Stage: development | MVP | RC<n> | stable` authority. `global/skills/change-ready-sdlc/SKILL.md` SHALL contain Material qualification detail. Roles and project-facing mirrors SHALL contain only proportional routing and role-specific deltas.
 
-No new runtime instruction artifact SHALL be added for this policy. The implementation SHALL replace conflicting maximal-planning and duplicated readiness text so `global/AGENTS.md` and the combined changed runtime instruction corpus do not increase under the existing `instruction:inventory` token proxy.
+#### Scenario: Runtime authority has one stage owner
+- **WHEN** lifecycle authority is inspected
+- **THEN** `global/AGENTS.md` SHALL define the complete stage model
+- **AND** the skill, roles, and mirrors SHALL contain only qualification or role-specific deltas.
 
-#### Scenario: Role agent references shared policy
-- **WHEN** a reviewer or implementation role needs outcome-first behavior
-- **THEN** it SHALL contain only the role-specific reachability, evidence, remedy, or output rule needed by that role
-- **AND** SHALL NOT duplicate the complete operating-envelope or Pilot-Ready contract.
+### Requirement: Validators enforce explicit stage semantics
 
-#### Scenario: Specialized checklist is scoped
-- **WHEN** a domain reviewer lists concurrency, migration, compatibility, overload, recovery, or deployment checks
-- **THEN** it SHALL apply only checks reachable in the accepted current envelope or required by a non-deferrable invariant
-- **AND** SHALL report other valid concerns as future scope rather than automatically block the increment.
+Deterministic contracts and validators SHALL require the exact Development-Stage field, representative proof before MVP, accepted-scope and validation gates before RC, stable-to-RC linkage, monotonic RC numbering, candidate-mutation invalidation, non-critical non-blocking wording, critical-only SDET stop, optional reviewer wording, and external-operation separation.
 
-#### Scenario: Existing conforming artifact is preserved
-- **WHEN** `code-quality-audit`, `code-quality-reviewer`, `documentation-hardening-loop`, or `instruction-artifact-tuning` already provides the accepted minimal-remedy or stop-line behavior without contradiction
-- **THEN** implementation SHALL leave that artifact unchanged
-- **AND** SHALL NOT edit it merely to repeat the new terminology.
+They SHALL reject active Change-Status/Done-Done aliases, RC assignment from happy-path proof alone, stable without an RC, mandatory reviewer evidence as a stage gate, non-critical polish as an unconditional blocker, reusable-agent model/variant pins, and any stage that implies external release authority.
 
-#### Scenario: Runtime context does not grow
-- **WHEN** the policy is implemented across its bounded runtime instruction set
-- **THEN** `instruction:inventory` SHALL show no increase for `global/AGENTS.md` or the combined changed runtime corpus
-- **AND** any new guidance SHALL replace conflicting or duplicated prose rather than append another override layer.
+#### Scenario: Validator rejects RC on proof alone
+- **WHEN** an active artifact assigns RC immediately after happy-path proof without accepted-scope completion and validation
+- **THEN** deterministic validation SHALL fail with a stage-semantics diagnostic.
 
-### Requirement: Reviewer contracts separate finding validity from current disposition
-Loaded shared reviewer invariants and the canonical reviewer maintenance contract SHALL require evidence-backed findings to distinguish reachability inside the accepted operating envelope from future-scope validity. Existing finding `Recommendation` fields SHALL state the smallest sufficient remedy or why removal, narrowing, reuse, a local guard, or deferral cannot satisfy the current increment. No new standalone action-authoring output field SHALL be introduced.
+### Requirement: Reusable agents inherit the primary model
 
-Qualification and delivery roles SHALL keep Pilot-Ready and Change-Ready evidence separate. A full-qualification rejection SHALL remain binding for Change-Ready, but SHALL NOT automatically erase independently proven Pilot-Ready evidence unless the finding makes the pilot candidate, proof, containment, safety floor, validation, or material-risk acceptance invalid or unknowable.
+Every reusable `global/agents/*.md` role SHALL omit model and variant pins and SHALL report Effective Model provenance when used as lifecycle evidence. A model differing from the portable default SHALL NOT be non-conforming by itself.
 
-#### Scenario: Reviewer reports a valid future issue
-- **WHEN** a reviewer finds an evidence-backed issue outside the technically enforced pilot envelope
-- **THEN** the finding SHALL remain in the report with its impact and confidence
-- **AND** SHALL NOT become current Pilot-Ready blocking evidence solely because it is valid.
+#### Scenario: Reusable role inherits model
+- **WHEN** a reusable role omits `model` and `variant` and reports its effective model
+- **THEN** it SHALL conform regardless of whether that effective model differs from the portable default.
 
-#### Scenario: Recommendation avoids unnecessary subsystem
-- **WHEN** a finding can be resolved by dropping a variant or narrowing the operating envelope
-- **THEN** the recommendation SHALL prefer that remedy over a new state machine, compatibility layer, recovery protocol, or framework
-- **AND** SHALL explain why a larger mechanism is necessary when it recommends one.
+### Requirement: SDET has least-privilege test-only authority
 
-#### Scenario: Change-Ready rejection retains its authority
-- **WHEN** final or delivery review produces binding Change-Ready evidence
-- **THEN** `Change-Ready` SHALL remain `no` under the existing terminal qualification rules
-- **AND** the main session SHALL separately evaluate Pilot-Ready only against the accepted pilot contract without replaying or mutating the rejected qualification attempt.
+SDET SHALL require runtime approval for edits, remain production-denied, accept an exact test-only write scope, and return blocked when that scope or execution route is unavailable. SDET output SHALL use the critical-only action enum and SHALL NOT approve RC or stable.
 
-### Requirement: Existing validators prevent policy duplication and contradiction
-Existing instruction contracts and validators SHALL enforce canonical outcome-first placement, exact Pilot-Ready output tokens on configured surfaces, separation from Change-Ready, minimum-remedy ordering, and the prohibition on remote-operation implication. They SHALL reject duplicated complete policy blocks and unconditional wording that turns unreachable future findings or evidence-format polish into Pilot-Ready blockers.
+#### Scenario: SDET cannot edit production
+- **WHEN** an SDET attempt requests a production-path edit or lacks an exact test-only write scope
+- **THEN** the attempt SHALL return blocked without modifying production.
 
-Validation SHALL extend existing contract, active-authority, routing, and focused test owners. It SHALL NOT add a new validator framework, fuzzy semantic classifier, lifecycle service, persistent evidence artifact, or runtime dependency.
+### Requirement: Reviewer roles remain optional and non-authorizing
 
-#### Scenario: Duplicate complete policy is rejected
-- **WHEN** a role agent or secondary skill copies the complete canonical outcome-first and Pilot-Ready contract
-- **THEN** strict validation SHALL fail with the canonical source and offending artifact
-- **AND** SHALL require a role-specific delta instead.
+Reviewer roles SHALL remain read-only, return evidence-backed risk matrices or the code-quality reduction matrix, and SHALL NOT return acceptance verdicts, lifecycle blockers, or work-authoring actions. No reviewer launch count or output SHALL be a mandatory RC/stable requirement.
 
-#### Scenario: Contradictory maximal-planning rule is rejected
-- **WHEN** a loaded OpenSpec authoring surface requires every future decision or edge case to be resolved before the next bounded increment can start
-- **THEN** strict validation SHALL fail or a focused behavioral eval SHALL reject the artifact
-- **AND** SHALL require next-increment sufficiency and the specification stop line.
+#### Scenario: Reviewer output cannot approve a stage
+- **WHEN** an optional reviewer returns a risk matrix
+- **THEN** main SHALL own reproduction and disposition
+- **AND** the reviewer output SHALL NOT set or block Development-Stage by itself.
 
-#### Scenario: Deterministic scope remains explicit
-- **WHEN** validators inspect the new policy
-- **THEN** they SHALL check configured files, headings, fields, exact markers, forbidden duplication, and output-token presence
-- **AND** SHALL NOT infer whether arbitrary natural-language risk is reachable or acceptable.
+### Requirement: Active mirrors use the same terminology
+
+`REPO_AGENTS.md`, reusable project instructions, project templates, Universal Development Loop, README, quality-gate docs, adapter docs, merge-request rendering, and lifecycle role text SHALL use Development-Stage/MVP/RC/stable semantics without retaining active compatibility aliases.
+
+#### Scenario: Project-facing mirror uses current terminology
+- **WHEN** a project-facing lifecycle mirror is rendered or validated
+- **THEN** it SHALL use Development-Stage/MVP/RC/stable terminology
+- **AND** it SHALL NOT expose an active compatibility lifecycle alias.
+
+### Requirement: Historical evidence remains historical
+
+Previously captured Change-Status, Done-Done, reviewer-recovery, and RC-on-proof events MAY remain in implementation evidence when clearly identified as superseded historical behavior. They SHALL NOT satisfy current-stage requirements.
+
+#### Scenario: Historical RC evidence is not current proof
+- **WHEN** implementation evidence contains a superseded RC-on-proof event
+- **THEN** it MAY remain labeled as historical
+- **AND** it SHALL NOT establish the current candidate's Development-Stage.
 

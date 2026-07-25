@@ -15,7 +15,7 @@ Do not use it for routine single-file changes, simple questions, or tasks where 
 - Define `Outcome`, `Operating Envelope`, `Non-Goals`, `Non-Deferrable Invariants`, `Observable Proof`, `Material Residual Risks`, and `Stop Line` (or project-native equivalents).
 - Identify primary evidence: source, tests, schemas, scripts, live output, product docs, external specs, or owner decisions.
 - Prefer the next useful working increment inside a technically enforced operating envelope; unreachable future design is non-blocking residual.
-- Material/explicit qualification behavior-changing slices: original requirements, minimal happy-path implementation, observable proof, then independent fresh-context SDET/risk discovery and test-only negative/end-to-end authoring, hardening, and final validation. Ordinary Small reuses always-loaded direct production, observable proof, focused validation, and optional smallest post-proof regression test. Future/unreachable scope stays non-blocking.
+- Material behavior-changing slices: original requirements, minimal happy-path implementation and observable MVP proof, accepted-scope completion, independent fresh critical-only SDET/test authoring, and final validation. Optional reviewers run only for concrete risk. Ordinary Small uses direct production, proof, focused validation, and optional smallest regression test.
 - Make the test plan risk-driven rather than coverage-driven: identify realistic business and operational failures, real boundaries, justified mock exceptions, and residual risks.
 - Add a `code-quality-reviewer` gate for slices likely to affect maintainability, file navigation, duplication, module boundaries, or public surface area.
 - Separate confirmed facts from assumptions and open questions.
@@ -28,7 +28,7 @@ Return:
 
 - `Outcome` / `Operating Envelope`: one bounded next increment and its enforced limits.
 - `Current Evidence`: what was checked and what remains unverified.
-- `Implementation Slices`: ordered happy-path implementation and observable proof first; Material/explicit qualification then independent fresh-context SDET/test-only authoring before hardening/validation; Ordinary Small uses focused validation and optional post-proof regression only. Group mechanical mirror edits that share one owner/validation.
+- `Implementation Slices`: happy-path implementation and observable MVP proof first; Material then completes accepted scope and uses independent fresh critical-only SDET/test authoring before RC validation. Ordinary Small uses focused validation and optional post-proof regression only.
 - `Test Plan`: unit, integration, acceptance, negative, performance, or manual gates as applicable.
 - `Code Quality Gate`: when to run `code-quality-audit` or `code-quality-reviewer`, or why it is not needed.
 - `Risk Register`: risk, impact, mitigation, owner or blocker.

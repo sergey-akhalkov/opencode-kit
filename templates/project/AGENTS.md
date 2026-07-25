@@ -1,6 +1,6 @@
 # Project Agent Instructions
 
-This project follows the portable Change-Ready process for AI-assisted development.
+This project follows the portable Development/MVP/RC/stable process for AI-assisted development.
 
 ## Runtime Authority
 
@@ -15,7 +15,7 @@ This project follows the portable Change-Ready process for AI-assisted developme
 - Either complete source is sufficient for doctor validation qualification: concrete `adapter.json` validation entries, or a complete `validation.md` Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build.
 - Technology choices change commands and constraints, not the development loop.
 - If validation commands are unknown, discover them from project files and report `unknown` rather than guessing.
-- `unknown`, blank, bare `N/A`, `TBD`/`TODO`, replace-me placeholders, or otherwise unresolved validation procedures must be discovered before qualification. An explicit reasoned `N/A` (`N/A - <reason>`, or validation.md Command `N/A` plus nonempty non-placeholder Notes) is a recorded decision, not unknown. Applicable unresolved or skipped validation keeps `Change-Ready: no`.
+- `unknown`, blank, bare `N/A`, `TBD`/`TODO`, replace-me placeholders, or otherwise unresolved validation procedures must be discovered before qualification. An explicit reasoned `N/A` (`N/A - <reason>`, or validation.md Command `N/A` plus nonempty non-placeholder Notes) is a recorded decision, not unknown. Applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC.
 
 ## Autonomy
 
@@ -26,24 +26,24 @@ This project follows the portable Change-Ready process for AI-assisted developme
 
 ## Process Control
 
-- Ordinary Small is the default: clear, bounded, local, reversible work with known focused validation inside a technically enforced operating envelope. Main may implement directly, prove the happy path, run focused validation, and author the smallest focused regression test after proof when useful. Handoff may report `Pilot-Ready: yes | no | not requested` (not a third profile); neither Pilot-Ready nor Change-Ready authorizes external operations.
-- Do not load `change-ready-sdlc` merely because code or config behavior changes. Load it before mutation only for explicit Change-Ready, project-required qualification, or concrete Material risk.
-- For delegated Material/qualification production slices, dispatch a discovered conforming production author. In this kit, `implementation-worker` is the optional default for production-only bounded slices with exact non-overlapping write scope, clear Acceptance Criteria, and a focused validation gate.
+- Ordinary Small default: main is the default production author and run-observe-corrects the smallest complete happy path to MVP, completes accepted scope, runs focused validation, freezes RC when no known critical/non-deferrable defect remains, then finishes stable handoff. `Development-Stage: development | MVP | RC<n> | stable`; no stage authorizes external operations. Report `Stable Candidate: RC<n>` when stable.
+- Do not load `change-ready-sdlc` merely because code or config behavior changes. Load it before mutation only for explicit stable/full qualification, project-required qualification, or concrete Material risk.
+- Optional `implementation-worker` only for evidenced isolated production-only bounded slices with exact non-overlapping write scope, representative proof boundary, clear Acceptance Criteria, evidenced benefit, and a focused validation gate.
 - When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
-- After applicable proof on Material/explicit qualification work, dispatch a fresh discovered conforming SDET session for systematic test-only risk assessment and automated-test authorship; never assign testing ownership to a production author. In this kit, `sdet-quality-engineer` is the optional default SDET adapter only.
-- If the preferred production adapter is unavailable on the qualification path, use another conforming production author or block. Keep writers serial when scope is unclear, write targets overlap, or integration outweighs fan-out.
+- After MVP on Material behavior work, complete accepted scope and use fresh critical-only `sdet-quality-engineer`; optional reviewers never become mandatory gates. Never assign Material test authorship to a production author.
+- If the preferred production adapter is unavailable, main retains production authorship or uses another conforming author; block only when no conforming path exists. Keep writers serial when scope is unclear, write targets overlap, or integration outweighs fan-out.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
-- For Material work, always run the discovered conforming delivery/readiness gate (this kit's optional default is `session-delivery-reviewer`) with current requirements, candidate continuity, proof, SDET, validation, review, and residual-risk evidence; missing conforming capability blocks. Material `Change-Ready: yes` requires an explicitly accepted conforming delivery result. Ordinary Small uses proportional evidence and invokes that gate only when project policy, risk, or the owner requires it.
-- User-owned scope is accepted outcome and protected boundaries. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery findings may bind readiness via `Blocking Evidence` but never authorize mutation. One in-attempt correction wave for candidate-attributable outcome/invariant defects with authorized local reversible fit; else stop that attempt. Persistent evidence infrastructure is a separate prerequisite unless dependency-closure applies. Final/delivery rejection is terminal for the inspected attempt only and does not automatically end the root goal or require internal-revision approval.
-- `session-delivery-reviewer` blockers bind the inspected candidate: every `Change-Ready: no`, `Verdict: material deviations`, `Verdict: not enough evidence`, `Blocking for Acceptance: yes`, `Verdict: blocked`, or non-empty `Blocking Evidence` keeps readiness blocked; do not present the session as complete or ready-to-land. Negative delivery/`Change-Ready: no` must not pair with `Blocking for Acceptance: no` and empty `Blocking Evidence`. P2/note → Residual Risks or non-authorizing `Follow-up Candidates`. Detail: active global `change-ready-sdlc`. Continue when safe, or ask only the exact user-owned blocker; partial slice handoff must not end an unfinished root goal.
+- User-owned scope is accepted outcome and protected-boundary decisions. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery evidence must never authorize mutation.
+- Optional final-candidate, delivery, code-quality, and domain reviewers may run after MVP when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected-RC for main disposition; missing or unusable optional output is not itself a stage blocker.
+- Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; continue only after an immediately-prior main-confirmed critical defect, production fix, and new proof, and permanently stop otherwise. Non-critical findings are parked and never prolong the loop.
 
 ## Quality
 
 - Treat source, tests, schemas, scripts, generated artifacts, and live output as primary evidence.
 - Implement and observably prove the smallest complete happy path for the next working increment before edge-case testing. Prefer remove/narrow/reuse/local guard before new mechanisms.
 - Ordinary Small: after happy-path proof, main may create or update the smallest focused regression test when useful. Prefer existing tests when sufficient.
-- Material/explicit qualification: only a fresh discovered conforming SDET context that did not author production code may create or modify automated test artifacts after applicable proof. In this kit, `sdet-quality-engineer` is the optional default SDET adapter only. It must derive a realistic risk matrix from the original requirements and prioritize end-to-end behavior at real system boundaries over coverage percentages.
+- Material behavior: only a fresh conforming SDET that did not author production may create or modify the smallest critical reproducer/regression artifact after MVP and accepted-scope completion. It prioritizes reachable critical incidents at real boundaries over coverage percentages.
 - Headroom MCP: compress large reusable tool output; do not compress exact edit targets or short errors.
 - Prefer deterministic helpers/validators over repeated manual inspection.
 - Reviewers are read-only leaves except `docs/feedbacks/**` through `complain`.

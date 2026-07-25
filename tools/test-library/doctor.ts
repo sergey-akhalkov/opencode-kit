@@ -88,14 +88,14 @@ const globalAuthorityMinimumFixtureCases = [
 
 const conformingAgentsAuthority = `# Independent Active Authority
 ## Change-Ready SDLC Routing
-Ordinary Small is the default and reports Change-Ready: not requested. Main may directly author Ordinary Small production changes.
-Profiles remain Ordinary Small | Material. Pilot-Ready: yes | no | not requested is a disposition inside a technically enforced operating envelope. Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
-Path: prove it observably before inspecting realistic requirement-linked edge cases.
-The accepted outcome and protected boundaries define scope; expansion requires explicit user approval. Necessary local reversible work uses the smallest sufficient dependency closure. Findings never authorize mutation.
-Qualification permits one correction wave. Attempt failure does not automatically end the unfinished root goal. An unchanged-candidate must not be retried blindly.
-Before the first mutation, load change-ready-sdlc for an explicit Change-Ready request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
+Ordinary Small is the default. Main is the default production author for Ordinary Small and Material.
+Profiles remain Ordinary Small | Material. Development-Stage: development | MVP | RC<n> | stable is the one user-facing lifecycle field inside a technically enforced operating envelope. Neither MVP, RC, nor stable authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
+Path: run-observe-correct before inspecting realistic requirement-linked edge cases.
+The accepted outcome and protected boundaries define scope; expansion requires explicit user approval. Necessary local reversible work uses the smallest sufficient dependency closure. Reviewer/SDET/validation evidence never authorizes mutation.
+Optional reviewers may run after MVP for concrete risk, project policy, or owner request; their absence is not a stage blocker. Fresh SDET returns critical-risks-reported | no-critical-risk | blocked and permanently stops SDET for the root on the first valid no-confirmed-critical attempt.
+Before the first mutation, load change-ready-sdlc for an explicit stable request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
-Before Pilot-Ready: yes, require a bounded outcome and non-goals, real-boundary happy-path proof, focused project-native validation, critical safety/data/authorization protection, sufficient material failure visibility, and proportional disable/rollback/containment.
+Before stable, require a bounded accepted outcome and non-goals, real-boundary happy-path proof, complete accepted scope, green applicable project-native validation, protection of critical safety/data/authorization invariants, sufficient failure visibility, and no known reachable critical or non-deferrable defect.
 Protected-boundary owner authority includes: ${protectedBoundaryAuthorityFixtureText}.
 ${GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE}
 Decision-ready handoff states: ${decisionReadyHandoffFixtureText}. State every listed field explicitly; when evidence is absent, use unknown or none.
@@ -104,7 +104,7 @@ Provide an execution-ready brief before specialist dispatch.
 ## Autonomous Work Contract
 The primary orchestrator owns lifecycle state and bounded validation.
 ## Shared Reviewer Runtime Invariants
-Reviewers are read-only leaf specialists and never self-approve readiness.
+Reviewer invocation is optional and risk-driven, not a lifecycle gate. Return an evidence-backed risk matrix with stable \`Risk ID\` and \`Effective Model\`. Do not return an acceptance/rejection verdict. \`code-quality-reviewer\` returns only a reduction matrix. Main alone reproduces, classifies, fixes, parks, asks the owner, and changes lifecycle state.
 `;
 
 const conformingSkillAuthority = `---
@@ -113,28 +113,30 @@ description: Independently copied lifecycle authority for fixture validation.
 ---
 # Change-Ready SDLC
 ## When To Load
-Ordinary Small does **not** load this skill.
+Do not load for Ordinary Small.
 Load before mutation for a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
-## Profile
-Classify the change before mutation and record a project-specific scope lock around the accepted outcome and protected boundaries. Expansion requires explicit owner approval.
-Necessary local reversible work uses the smallest sufficient dependency closure. Findings use Blocking Evidence and non-authorizing Follow-up Candidates and never authorize mutation. Qualification permits one correction wave with no persistent evidence infrastructure and does not automatically end the unfinished root goal. Never retry an unchanged candidate. Never ask the user solely to approve an internal revision. Final review uses approved | approved_with_notes | rejected | blocked.
-## Adapter Discovery
+## Profiles And Stage
+Development-Stage: development | MVP | RC<n> | stable. Profiles remain Ordinary Small | Material. Neither MVP, RC, nor stable authorizes external operations.
 ## Authoritative Brief
-## Orchestrator ownership
-## Lifecycle transitions
-### 1. Classify and prepare
-### 2. Production path or test-only N/A
-### 3. Candidate Reference
-### 4. Applicable Proof
-### 5. Fresh SDET
-### 6. Project-Native Validation
-### 7. Correction routing and replay
-### 8. Final Candidate Review
-### 9. Change-Ready Decision
-### 10. Pilot-Ready Decision
-Pilot-Ready: yes | no | not requested is not a third lifecycle profile; profiles remain Ordinary Small | Material. The complete Pilot safety floor is authoritative only in always-loaded global AGENTS.md; this skill does not restate that floor. Neither disposition authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
-## Compact orchestration output
+Freeze the accepted outcome capsule around the accepted outcome and protected boundaries. Scope expansion requires explicit owner approval. Necessary local reversible work uses the smallest sufficient dependency closure. Findings never authorize mutation.
+## Outcome-First Stop Line
+Runtime Proof is required. Non-critical findings are parked.
+## Orchestrator And Writer Safety
+Concurrent writers require terminal closure or write isolation.
+## Qualification Flow
+### 1. Implement And Prove MVP
+Runtime Proof establishes MVP; candidate mutation returns to \`development\`.
+### 2. Optional Risk Discovery
+Reviewer absence, timeout, malformed output, or disagreement is not itself a stage blocker.
+### 3. Critical SDET
+SDET returns Action: critical-risks-reported | no-critical-risk | blocked. The first valid no-confirmed-critical attempt permanently stops SDET for the root.
+### 4. Validate And Freeze RC
+Validation and completed scope freeze the next RC.
+### 5. Stable Handoff
+Stable Candidate: RC<n> records the same RC at stable.
+## Output
+Report Development-Stage and Runtime Proof.
 `;
 
 function writeConformingAuthority(globalDir: string): void {
@@ -257,8 +259,16 @@ export const doctorTests: TestCase[] = [
     run: () => {
       const project = newTempDir("doctor-project");
       assertSuccess(invokeInitProject(["--target", project, "--mode", "write"]), "Bootstrap should prepare the doctor fixture.");
-      const repoGlobalDir = path.join(root, "global");
-      const result = invokeDoctor(["--project", project, "--format", "json"], { OPENCODE_CONFIG: undefined, OPENCODE_CONFIG_DIR: repoGlobalDir });
+      // Keep the real init-project bootstrap project, but resolve authority from an
+      // independently conforming copy. Production AGENTS/skill fidelity is owned by
+      // active-authority contract tests; this oracle isolates bootstrap validation honesty.
+      const fixture = newIsolatedDoctorFixture("default-bootstrap-authority", "{\n  \"permission\": \"ask\"\n}\n");
+      const result = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", project, "--format", "json"],
+        { OPENCODE_CONFIG: undefined, OPENCODE_CONFIG_DIR: fixture.globalDir },
+        fixture.root,
+      );
       assertSuccess(result, "Doctor warnings should remain machine-readable with exit 0 for the default bootstrap.");
       const { checks, report } = parseDoctorV2(result);
       assertEqual(report.project, "<redacted>", "Doctor should redact project paths by default.");
@@ -270,7 +280,7 @@ export const doctorTests: TestCase[] = [
       const validation = findBucket(checks, "name", "project adapter validation");
       assertEqual(validation.status, "warn", "Default bootstrap validation commands must remain unresolved.");
       assertEqual(validation.blocksQualification, true, "Unresolved validation commands must block qualification.");
-      assertEqual(validation.detail, "No complete validation adapter source. adapter.json unresolved (focusedTest, test, typecheck, lint, build); validation.md unresolved (focusedTest, test, typecheck, lint, build). Provide concrete opencode-dev-kit/adapter.json validation entries or a complete opencode-dev-kit/validation.md Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build before Change-Ready qualification.", "Doctor must report both unresolved sources and all five purposes in stable order.");
+      assertEqual(validation.detail, "No complete validation adapter source. adapter.json unresolved (focusedTest, test, typecheck, lint, build); validation.md unresolved (focusedTest, test, typecheck, lint, build). Provide concrete opencode-dev-kit/adapter.json validation entries or a complete opencode-dev-kit/validation.md Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build before RC qualification.", "Doctor must report both unresolved sources and all five purposes in stable order.");
       if (fs.existsSync(path.join(project, "instructions", "universal-development-loop.md"))) {
         throw new Error("Doctor/bootstrap must not require or create a target-relative UDL file.");
       }
@@ -487,7 +497,7 @@ export const doctorTests: TestCase[] = [
       assertEqual(validation.status, "warn", "Markerless config acceptance must not hide unresolved adapter validation.");
       assertEqual(
         validation.detail,
-        "No complete validation adapter source. adapter.json unresolved (focusedTest, test, typecheck, lint, build); validation.md unresolved (focusedTest, test, typecheck, lint, build). Provide concrete opencode-dev-kit/adapter.json validation entries or a complete opencode-dev-kit/validation.md Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build before Change-Ready qualification.",
+        "No complete validation adapter source. adapter.json unresolved (focusedTest, test, typecheck, lint, build); validation.md unresolved (focusedTest, test, typecheck, lint, build). Provide concrete opencode-dev-kit/adapter.json validation entries or a complete opencode-dev-kit/validation.md Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build before RC qualification.",
         "Doctor must retain the exact dual-source unresolved-validation diagnostic.",
       );
       assertEqual(layering.status, "pass", "The active markerless machine-local config layer should pass.");
@@ -581,7 +591,7 @@ export const doctorTests: TestCase[] = [
       assertEqual(authority.status, "warn", "Missing active kit authority should warn.");
       assertEqual(authority.blocksQualification, true, "Missing required active authority must expose blocksQualification=true.");
       const detail = String(authority.detail).replace(/\\/g, "/");
-      if (!detail.includes("skills/change-ready-sdlc/SKILL.md") || !detail.includes("blocks behavior-changing Change-Ready work")) {
+      if (!detail.includes("skills/change-ready-sdlc/SKILL.md") || !detail.includes("blocks RC/stable qualification work")) {
         throw new Error(`Missing-authority diagnostic must block lifecycle claims, got: ${String(authority.detail)}`);
       }
 
@@ -664,7 +674,7 @@ export const doctorTests: TestCase[] = [
         assertEqual(authority.blocksQualification, true, `${item.name} must expose blocksQualification=true.`);
         assertEqual(
           authority.detail,
-          `Resolved active global config (OPENCODE_CONFIG_DIR) has incomplete required runtime authority: ${item.problem}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks behavior-changing Change-Ready work.`,
+          `Resolved active global config (OPENCODE_CONFIG_DIR) has incomplete required runtime authority: ${item.problem}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`,
           `${item.name} must return the exact privacy-safe structural detail.`,
         );
         if ("privateSentinel" in item) {
@@ -779,39 +789,32 @@ export const doctorTests: TestCase[] = [
     name: "doctor blocks adversarial active authority shapes without requiring source equality",
     run: () => {
       const cases = [
-        { name: "agents-missing-direct-main", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("Main may directly author Ordinary Small production changes", "Ordinary Small production changes use the normal author"), expected: "missing direct-main Ordinary Small production authorship" },
-        { name: "agents-missing-proof", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("prove it observably", "inspect the implementation"), expected: "missing observable happy-path proof marker" },
+        { name: "agents-missing-direct-main", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("Main is the default production author for Ordinary Small and Material", "Ordinary Small production changes use the normal author"), expected: "missing main-default production authorship" },
+        { name: "agents-missing-proof", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("run-observe-correct", "inspect the implementation"), expected: "missing run-observe-correct proof marker" },
         { name: "agents-missing-edge", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("realistic requirement-linked edge cases", "practical edge cases"), expected: "missing realistic requirement-linked edge inspection marker" },
-        { name: "agents-proof-after-edge", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("prove it observably before inspecting realistic requirement-linked edge cases", "inspect realistic requirement-linked edge cases before we prove it observably"), expected: "must order observable proof before realistic requirement-linked edge inspection" },
+        { name: "agents-proof-after-edge", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("run-observe-correct before inspecting realistic requirement-linked edge cases", "inspect realistic requirement-linked edge cases before run-observe-correct"), expected: "must order runtime proof before realistic requirement-linked edge inspection" },
         { name: "agents-missing-user-approval", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("explicit user approval", "later consideration"), expected: "missing explicit owner approval before unrequested scope expansion" },
-        { name: "agents-missing-explicit-change-ready", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("explicit Change-Ready", "owner-requested qualification"), expected: "missing explicit Change-Ready qualification trigger" },
+        { name: "agents-missing-explicit-stable", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("explicit stable", "owner-requested qualification"), expected: "missing explicit stable qualification trigger" },
         { name: "agents-missing-project-qualification", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("project-required qualification", "project guidance"), expected: "missing project-required qualification trigger" },
         ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `agents-risk-${name}`, relative: "AGENTS.md", text: conformingAgentsAuthority.replaceAll(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
         { name: "agents-missing-no-downgrade", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
-        { name: "agents-missing-accepted-outcome", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("accepted outcome", "planned work"), expected: "missing accepted-outcome authority marker" },
+        { name: "agents-missing-accepted-outcome", relative: "AGENTS.md", text: conformingAgentsAuthority.replaceAll("accepted outcome", "planned work"), expected: "missing accepted-outcome authority marker" },
         { name: "agents-missing-protected-boundaries", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("protected boundaries", "special cases"), expected: "missing protected-boundaries authority marker" },
         { name: "agents-missing-dependency-closure", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("smallest sufficient dependency closure", "small local repair"), expected: "missing local reversible dependency-closure marker" },
-        { name: "agents-missing-non-authorizing-findings", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("never authorize mutation", "usually do not authorize mutation"), expected: "missing non-authorizing findings rule" },
-        { name: "agents-missing-one-correction-wave", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("one correction wave", "bounded corrections"), expected: "missing finite one-correction-wave marker" },
-        { name: "agents-missing-root-goal-continuation", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("does not automatically end the unfinished root goal", "ends the workflow"), expected: "missing attempt-versus-root-goal continuation marker" },
-        { name: "agents-missing-unchanged-anti-retry", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("unchanged-candidate", "same candidate"), expected: "missing unchanged-candidate anti-retry marker" },
-        { name: "skill-missing-ordinary-nonload", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("does **not** load this skill", "uses a compact path"), expected: "missing Ordinary Small non-load/default boundary" },
-        { name: "skill-missing-scope-lock", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("project-specific scope lock", "task boundary"), expected: "missing project-specific scope-lock control" },
+        { name: "agents-missing-non-authorizing-findings", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("evidence never authorizes mutation", "evidence usually does not authorize mutation"), expected: "missing non-authorizing findings rule" },
+        { name: "agents-missing-critical-sdet-action", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("critical-risks-reported | no-critical-risk | blocked", "pass | fail | blocked"), expected: "missing critical-only SDET action marker" },
+        { name: "agents-missing-sdet-stop", relative: "AGENTS.md", text: conformingAgentsAuthority.replace("permanently stops SDET for the root", "may retry SDET later"), expected: "missing semantic SDET stop marker" },
+        { name: "skill-missing-ordinary-nonload", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Do not load for Ordinary Small", "Ordinary Small may load this skill"), expected: "missing Ordinary Small non-load/default boundary" },
+        { name: "skill-missing-scope-lock", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("accepted outcome capsule", "task boundary"), expected: "missing project-specific scope-lock control" },
         { name: "skill-missing-owner-approval", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("explicit owner approval", "later review"), expected: "missing explicit owner approval expansion rule" },
         ...namedMaterialRiskFixtureCases.map(([name, marker, replacement, diagnostic]) => ({ name: `skill-risk-${name}`, relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replaceAll(marker, replacement), expected: `missing named Material risk class: ${diagnostic}` })),
         { name: "skill-missing-no-downgrade", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("must not be downgraded merely because the diff is small", "should usually remain cautious"), expected: "missing no high-risk downgrade for small diffs" },
-        { name: "skill-missing-accepted-outcome", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("accepted outcome", "planned work"), expected: "missing accepted-outcome authority marker" },
         { name: "skill-missing-protected-boundaries", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("protected boundaries", "special cases"), expected: "missing protected-boundaries authority marker" },
         { name: "skill-missing-dependency-closure", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("smallest sufficient dependency closure", "small local repair"), expected: "missing local reversible dependency-closure marker" },
         { name: "skill-missing-non-authorizing-findings", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("never authorize mutation", "usually do not authorize mutation"), expected: "missing non-authorizing findings rule" },
-        { name: "skill-missing-one-correction-wave", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("one correction wave", "bounded corrections"), expected: "missing finite one-correction-wave marker" },
-        { name: "skill-missing-root-goal-continuation", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("does not automatically end the unfinished root goal", "ends the workflow"), expected: "missing attempt-versus-root-goal continuation marker" },
-        { name: "skill-missing-unchanged-anti-retry", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Never retry an unchanged candidate", "Retry the candidate when useful"), expected: "missing unchanged-candidate anti-retry marker" },
-        { name: "skill-missing-process-only-blocker-prohibition", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Never ask the user solely to approve an internal revision", "Ask the user about the next revision"), expected: "missing process-only-blocker prohibition marker" },
-        { name: "skill-missing-blocking-evidence", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Blocking Evidence", "Readiness Evidence"), expected: "missing Blocking Evidence output field" },
-        { name: "skill-missing-follow-up-candidates", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Follow-up Candidates", "Future Work"), expected: "missing Follow-up Candidates output field" },
-        { name: "skill-missing-final-verdict-enum", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("approved | approved_with_notes | rejected | blocked", "accepted or rejected"), expected: "missing final-review rejected verdict enum" },
-        { name: "skill-missing-global-floor-authority", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("complete Pilot safety floor is authoritative only in always-loaded global", "Pilot safety floor is documented elsewhere"), expected: "missing complete Pilot safety-floor authority reference to always-loaded global AGENTS" },
+        { name: "skill-missing-optional-reviewer-boundary", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Reviewer absence, timeout, malformed output, or disagreement is not itself a stage blocker", "Reviewer evidence is considered"), expected: "missing optional-reviewer non-blocking marker" },
+        { name: "skill-missing-critical-sdet-action", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("Action: critical-risks-reported | no-critical-risk | blocked", "Action: pass | fail | blocked"), expected: "missing critical-only SDET action marker" },
+        { name: "skill-missing-sdet-stop", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("permanently stops SDET for the root", "may retry SDET later"), expected: "missing semantic SDET permanent-stop marker" },
         { name: "empty-agents", relative: "AGENTS.md", text: "", expected: "AGENTS.md is empty" },
         { name: "stub-agents", relative: "AGENTS.md", text: "# Stub authority\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },
         { name: "token-packed-agents", relative: "AGENTS.md", text: "Change-Ready SDLC Routing Before the first mutation load change-ready-sdlc Universal Task Briefing Contract Autonomous Work Contract Shared Reviewer Runtime Invariants\n", expected: "missing exact heading ## Change-Ready SDLC Routing" },
@@ -826,9 +829,8 @@ export const doctorTests: TestCase[] = [
         { name: "skill-missing-description", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("description: Independently copied lifecycle authority for fixture validation.\n", ""), expected: "missing description" },
         { name: "skill-empty-description", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("description: Independently copied lifecycle authority for fixture validation.", "description: '   '"), expected: "description must be nonempty" },
         { name: "skill-wrong-name", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("name: change-ready-sdlc", "name: other-skill"), expected: "exact name" },
-        { name: "skill-incomplete-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("### 3. Candidate Reference", "### 3. Candidate Snapshot"), expected: "missing ordered heading: Candidate Reference" },
-        { name: "skill-misordered-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("## Profile", "## SWAP").replace("## Adapter Discovery", "## Profile").replace("## SWAP", "## Adapter Discovery"), expected: "out-of-order heading: Adapter Discovery" },
-        { name: "skill-duplicate-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: `${conformingSkillAuthority}\n### 5. Fresh SDET\nDuplicate marker.\n`, expected: "duplicate heading: Fresh SDET" },
+        { name: "skill-incomplete-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: conformingSkillAuthority.replace("### 1. Implement And Prove MVP", "### 1. Candidate Snapshot"), expected: "missing ordered heading: Implement And Prove MVP" },
+        { name: "skill-duplicate-lifecycle", relative: path.join("skills", "change-ready-sdlc", "SKILL.md"), text: `${conformingSkillAuthority}\n### 6. Critical SDET\nDuplicate marker.\n`, expected: "duplicate heading: Critical SDET" },
       ];
       for (const item of cases) {
         const fixture = newIsolatedDoctorFixture(item.name, "{}\n");
