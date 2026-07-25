@@ -151,3 +151,33 @@ Add a pre-mutation strict-validation preflight or a deterministic baseline-versu
 
 ### OpenSpec Follow-Up
 maybe
+
+## FB-2026-07-25-owner-handoff-context-gap
+
+Source: main-agent
+Role: main-agent
+Type: context-friction
+Severity: high
+Recurrence: current-session-once
+Status: open
+
+### Complaint
+The decision-ready handoff contract can still produce a terse blocker question full of internal identifiers and unexplained technical terms, forcing the user to reconstruct the situation from code, documents, logs, and earlier chat.
+
+### Context
+A real owner-decision handoff named candidate and blocker IDs, proof-contract terminology, and source/runtime details without explaining the goal, practical consequences, decision options, or recommendation in one self-contained message.
+
+### Evidence From Current Session
+The active `global/AGENTS.md` lists required blocker fields, but it does not require one complete plain-language decision packet, explain references inline, or test whether the user can decide without opening linked material.
+
+### Impact
+The user must interrupt work, rediscover the problem, translate jargon, compare unstated tradeoffs, and ask what action is actually required. This increases decision time and the chance of a low-quality choice.
+
+### Desired Future
+Every transfer of control should provide all decision-relevant context in one plain-language message: goal, current state, failure, evidence, attempts, unknowns, exact decision, options and consequences, recommendation, required reply, and what happens next.
+
+### Proposed Direction
+Strengthen the active and reusable handoff contracts, make links and internal IDs optional supporting evidence only, and add deterministic checks for the self-contained decision-packet requirements.
+
+### OpenSpec Follow-Up
+no

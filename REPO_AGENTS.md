@@ -38,7 +38,7 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 ## Autonomous Work Contract
 
 - Main owns skill selection, decomposition, validation, reviewer gates, MR/PR-ready handoff, and final synthesis.
-- Ask the user only for exact user-owned blockers: credentials/elevation; destructive/irreversible/remote authorization; owner/product/security/legal decisions; protected-boundary semantic expansion; missing external capability; material residual-risk acceptance; MR/PR outcomes. Never ask solely to approve an internal revision, correction exhaustion, or process continuation. Decision-ready handoff: outcome status, failure/evidence, root-cause status, attempted paths, why user authority is required, exact action, real alternatives, residual risk, preserved state.
+- Ask the user only for exact user-owned blockers: credentials/elevation; destructive/irreversible/remote authorization; owner/product/security/legal decisions; protected-boundary semantic expansion; missing external capability; material residual-risk acceptance; MR/PR outcomes. Never ask solely to approve an internal revision, correction exhaustion, or process continuation. Every owner question must satisfy the Completion Handoff contract below.
 - Continue autonomously on local evidence, repo policy, or safe reversible default; no routine preference/progress questions.
 - Subagents/reviewers never ask the user. User-owned scope is accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET/delivery evidence must never authorize mutation.
 - Optional final-candidate, delivery, code-quality, and domain reviewers may run after MVP only for concrete risk, project policy, or owner request. Each returns a risk matrix tied to the inspected-RC for main disposition; absence or unusable output is not itself a stage blocker.
@@ -55,7 +55,11 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 
 ## Completion Handoff
 
-- On real user-owned blockers, main offers 2-4 self-contained product/consequence actions via `question` when available; `(Recommended)` first. Never bare revision/retry/continue.
+- Before a real user-owned blocker question, main provides one self-contained decision packet in chat. This Decision-ready handoff assumes no prior context: the user must be able to understand and decide without opening earlier chat, code, documents, logs, or links.
+- Start with a plain-language overview, then explain the goal and current state, what happened and why it matters, completed work, exact stopping point and evidence, facts versus unknowns, root-cause confidence, attempted paths, why user authority is necessary, the exact decision, real options and practical consequences, risks and reversibility, recommendation and rationale, required reply, preserved state, and what happens next.
+- Define necessary jargon inline. Links, paths, symbols, logs, candidate/blocker IDs, and lifecycle terms are optional supporting evidence only; explain what each proves and why it matters. Never use an internal ID as the question or option label.
+- When real alternatives exist, main offers 2-4 product/consequence actions via `question`; for each, explain the result, main advantage, main disadvantage, material risks, reversibility, relevant cost, and next action. Put `(Recommended)` first with a reason. If only one viable action exists, state it without inventing choices. Never bare revision/retry/continue.
+- Before asking, mentally remove all references. If the user could not still explain the situation, compare options, understand the recommendation and risks, and know the exact response required, improve the handoff.
 - Read-only/no-question/reviewer/subagent contexts never ask the user; return the role's evidence matrix/report, evidence gaps, and `Residual Risks`.
 - Several out-of-scope session tasks → group into OpenSpec follow-ups when available/approved; no ceremony for nits or one obvious next step.
 - If the user selects an option, continue immediately.

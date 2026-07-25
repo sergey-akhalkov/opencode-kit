@@ -13,6 +13,7 @@ import {
   GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
+  GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
 } from "./contracts/skills.ts";
 import {
   agentsAuthorityProblem,
@@ -71,6 +72,36 @@ const EXPECTED_DELIVERY_SURFACES = [
   "templates/project/AGENTS.md",
 ];
 
+const MIRROR_SELF_CONTAINMENT_MARKERS = [
+  {
+    relative: "REPO_AGENTS.md",
+    markers: [
+      "one self-contained decision packet",
+      "without opening earlier chat, code, documents, logs, or links",
+      "Links, paths, symbols, logs, candidate/blocker IDs, and lifecycle terms are optional supporting evidence only",
+      "mentally remove all references",
+    ],
+  },
+  {
+    relative: "instructions/reusable-project-agent-instructions.md",
+    markers: [
+      "one self-contained chat message",
+      "will not open earlier chat, code, documents, logs, or links",
+      "References and internal IDs are optional supporting evidence only",
+      "mentally remove every reference",
+    ],
+  },
+  {
+    relative: "templates/project/AGENTS.md",
+    markers: [
+      "one self-contained message",
+      "will not open earlier chat, code, documents, logs, or links",
+      "Treat references and internal IDs as optional supporting evidence",
+      "mentally remove every reference",
+    ],
+  },
+] as const;
+
 export const changeReadyDeliveryContractTests: TestCase[] = [
   {
     name: "contracts: current copied authority passes active structural checks",
@@ -98,6 +129,30 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       }
       const withoutNonWaivable = agents.replaceAll(GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE, "[removed-non-waivable-risk]");
       assertEqual(agentsAuthorityProblem(withoutNonWaivable), "AGENTS.md missing non-waivable critical-risk clause", "Non-waivable critical-risk omission must fail closed.");
+    },
+  },
+  {
+    name: "contracts: copied authority rejects every self-contained owner-handoff omission",
+    run: () => {
+      const agents = copiedAgentsAuthority();
+      for (const [index, marker] of GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS.entries()) {
+        const incomplete = agents.replaceAll(marker, `[removed-self-contained-handoff-${index}]`);
+        assert(incomplete !== agents, `Copied authority must contain self-contained handoff marker: ${marker}`);
+        assertEqual(
+          agentsAuthorityProblem(incomplete),
+          `AGENTS.md missing self-contained owner handoff marker: ${marker}`,
+          `Missing self-contained handoff marker must fail closed: ${marker}`,
+        );
+      }
+    },
+  },
+  {
+    name: "contracts: project-facing mirrors keep exact no-external-context handoff guards",
+    run: () => {
+      for (const { relative, markers } of MIRROR_SELF_CONTAINMENT_MARKERS) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assertTokens(text, markers, `${relative} missing self-contained owner-handoff guard`);
+      }
     },
   },
   {

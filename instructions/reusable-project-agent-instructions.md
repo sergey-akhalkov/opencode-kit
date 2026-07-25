@@ -34,14 +34,22 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 ## Token Efficiency
 
-- Prefer targeted search/reads. Compact handoffs; preserve exact commands, paths, errors. On native Windows use `rtk <command>` explicitly.
+- Prefer targeted search/reads. Keep routine handoffs compact, but never shorten context required for an owner decision. Preserve exact commands, paths, errors. On native Windows use `rtk <command>` explicitly.
 
 ## Autonomy
 
 - Continue autonomously within the selected goal while safe, useful work remains.
-- Ask the user only for exact user-owned blockers: credentials/elevation, hardware/manual gate, destructive/remote authorization, product/legal/security decision, protected-boundary semantic expansion, missing external capability, material residual-risk acceptance, or mode that forbids the action. Never ask solely to approve an internal revision or process counter. Decision-ready handoff: outcome status, failure/evidence, root cause, attempted paths, exact ask, alternatives, residual risk, preserved state.
+- Ask the user only for exact user-owned blockers: credentials/elevation, hardware/manual gate, destructive/remote authorization, product/legal/security decision, protected-boundary semantic expansion, missing external capability, material residual-risk acceptance, or mode that forbids the action. Never ask solely to approve an internal revision or process counter. Every owner question must satisfy the Owner Decision Handoff contract below.
 - No routine questions when local evidence or a safe reversible default exists.
 - Necessary local reversible work for the accepted outcome may be added with traceability; optional improvements stay residual.
+
+## Owner Decision Handoff
+
+- Put all decision-relevant context in one self-contained chat message immediately before the question. Assume the user has no prior context and will not open earlier chat, code, documents, logs, or links.
+- Start with a plain-language overview, then explain the goal and current state, what happened and why it matters, completed work, stopping point and evidence, facts and unknowns, root-cause confidence, attempted paths, why user authority is required, the exact decision, options and practical consequences, advantages and disadvantages, risks and reversibility, recommendation and rationale, the exact reply required, preserved state, and what happens next.
+- Define necessary jargon inline. References and internal IDs are optional supporting evidence only; explain what each proves and why it matters. Never use an internal ID as the question or option label.
+- Present 2-4 options only when real alternatives exist. Explain each option's practical result, tradeoffs, risks, relevant cost, and next action. Put the recommendation first. If only one viable action exists, say so instead of fabricating choices.
+- Before asking, mentally remove every reference. If the remaining message is insufficient to understand the situation, compare choices, understand the recommendation and risks, and give the exact required answer, rewrite it.
 
 ## Process Control
 

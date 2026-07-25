@@ -4,6 +4,7 @@ import {
   GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
+  GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
 } from "../contracts/skills.ts";
 import {
   asArray,
@@ -67,6 +68,7 @@ const namedMaterialRiskFixtureCases = [
 const namedMaterialRiskFixtureText = namedMaterialRiskFixtureCases.map(([, marker]) => marker).join(", ");
 const protectedBoundaryAuthorityFixtureText = GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ marker }) => marker).join("; ");
 const decisionReadyHandoffFixtureText = GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS.join("; ");
+const selfContainedHandoffFixtureText = GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS.join("; ");
 
 const globalAuthorityMinimumFixtureCases = [
   ...GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ label, marker }) => ({
@@ -84,6 +86,11 @@ const globalAuthorityMinimumFixtureCases = [
     marker: field,
     diagnostic: `AGENTS.md missing decision-ready handoff field: ${field}`,
   })),
+  ...GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS.map((marker) => ({
+    name: `self-contained-handoff-${marker}`,
+    marker,
+    diagnostic: `AGENTS.md missing self-contained owner handoff marker: ${marker}`,
+  })),
 ];
 
 const conformingAgentsAuthority = `# Independent Active Authority
@@ -99,6 +106,7 @@ Before stable, require a bounded accepted outcome and non-goals, real-boundary h
 Protected-boundary owner authority includes: ${protectedBoundaryAuthorityFixtureText}.
 ${GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE}
 Decision-ready handoff states: ${decisionReadyHandoffFixtureText}. State every listed field explicitly; when evidence is absent, use unknown or none.
+Self-contained handoff guards: ${selfContainedHandoffFixtureText}.
 ## Universal Task Briefing Contract
 Provide an execution-ready brief before specialist dispatch.
 ## Autonomous Work Contract
@@ -684,7 +692,7 @@ export const doctorTests: TestCase[] = [
     },
   },
   {
-    name: "doctor blocks copied authority missing each protected boundary, non-waivable risk, or decision-ready handoff field",
+    name: "doctor blocks copied authority missing each protected boundary, non-waivable risk, or owner-handoff marker",
     run: () => {
       for (const item of globalAuthorityMinimumFixtureCases) {
         const fixture = newIsolatedDoctorFixture(`copied-authority-${item.name.replace(/[^a-z0-9]+/gi, "-")}`, "{\n  \"permission\": \"ask\"\n}\n");

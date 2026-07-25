@@ -314,15 +314,31 @@ export const GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE =
  * Exact decision-ready blocker handoff fields required in always-loaded global AGENTS operative text.
  */
 export const GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS: readonly string[] = [
+  "plain-language goal and current state",
+  "what happened and why it matters",
   "outcome working status",
   "exact failure/evidence",
+  "facts, inferences, and unknowns",
   "root-cause status/confidence",
-  "attempted paths",
+  "attempted paths and why they did not resolve the blocker",
   "why no authorized path remains",
+  "why user authority is required",
   "exact requested action",
   "real alternatives/consequences if any",
+  "option advantages, disadvantages, risks, reversibility, and cost",
+  "agent recommendation and rationale",
+  "what happens after each choice",
   "residual risk",
   "preserved state",
+  "exact reply needed from the user",
+];
+
+/** Self-containment guards required around the owner-decision field set. */
+export const GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS: readonly string[] = [
+  "one self-contained message",
+  "without opening prior chat, code, documents, logs, or links",
+  "Links and internal identifiers are optional supporting evidence",
+  "remove every link and internal identifier",
 ];
 
 /** Mandatory ordinary-default and qualification-trigger tokens for global/AGENTS.md. */

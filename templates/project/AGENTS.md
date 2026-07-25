@@ -24,6 +24,14 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 - Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
 
+## Owner Decision Handoff
+
+- Before asking about a real user-owned blocker, provide all decision-relevant context in one self-contained message. Assume the user has no prior context and will not open earlier chat, code, documents, logs, or links.
+- Explain in plain language: the goal and current state, what happened and why it matters, completed work, stopping point and evidence, facts and unknowns, root-cause confidence, attempted paths, why user authority is required, the exact decision, real options and practical consequences, risks and reversibility, recommendation and rationale, exact reply required, preserved state, and what happens next.
+- Define necessary jargon inline. Treat references and internal IDs as optional supporting evidence; explain what each proves and never use one as the question or option label.
+- Offer 2-4 options only when real alternatives exist. For each, explain the result, advantages, disadvantages, material risks, relevant cost, and next action. Recommend one with a reason. If only one viable action exists, say so.
+- Before asking, mentally remove every reference. If the user could not still understand the situation, compare choices, understand the recommendation and risks, and know the exact answer required, rewrite the handoff.
+
 ## Process Control
 
 - Ordinary Small default: main is the default production author and run-observe-corrects the smallest complete happy path to MVP, completes accepted scope, runs focused validation, freezes RC when no known critical/non-deferrable defect remains, then finishes stable handoff. `Development-Stage: development | MVP | RC<n> | stable`; no stage authorizes external operations. Report `Stable Candidate: RC<n>` when stable.
