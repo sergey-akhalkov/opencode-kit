@@ -17,6 +17,7 @@ import {
 import { validateAgents } from "./validators/agents.ts";
 import { validateProfiles } from "./validators/profiles.ts";
 import { validateOpenCodeConfigFiles } from "./validators/opencode-config.ts";
+import { validateModelProfiles } from "./validators/model-profiles.ts";
 import {
   validateMarkdownFile,
   validateTypeScriptOnlySourceFiles,
@@ -149,6 +150,7 @@ function main(): void {
   validateProfiles(ctx, root, skillNames, agentNames);
   validateImplementationWorkerRouting(ctx, root, agentNames);
   validateSessionDeliveryBinding(ctx, root, agentNames);
+  validateModelProfiles(ctx, root);
   validateOpenCodeConfigFiles(ctx, root);
   validateReadme(ctx, root, skillNames, agentNames, instructionNames);
   validateRepoAgentsMd(ctx, root);

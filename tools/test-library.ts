@@ -7,6 +7,7 @@ import { dreamTeamAgentTests } from "./test-library/dream-team-agents.ts";
 import { initTests } from "./test-library/init.ts";
 import { doctorTests } from "./test-library/doctor.ts";
 import { inventoryTests } from "./test-library/inventory.ts";
+import { modelProfileTests } from "./test-library/model-profiles.ts";
 
 runTests(
   [
@@ -17,6 +18,7 @@ runTests(
     ...initTests,
     ...doctorTests,
     ...inventoryTests,
+    ...modelProfileTests,
   ],
   "library",
 );

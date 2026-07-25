@@ -1,0 +1,119 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "xai/grok-4.5",
+  "small_model": "xai/grok-4.5",
+  "agent": {
+    "build": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "code-quality-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "compaction": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "deployment-config-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "dream-team-implementer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "dream-team-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "explore": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "final-candidate-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "general": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "implementation-readiness-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "implementation-worker": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "instruction-artifact-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "legacy-client-compatibility-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "legacy-evidence-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "openspec-architecture-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "performance-reliability-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "plan": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "protocol-api-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "qwen-local-worker": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "rust-concurrency-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "scout": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "sdet-quality-engineer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "session-delivery-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "summary": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "test-coverage-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "title": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "troubleshooter": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    },
+    "wire-protocol-reviewer": {
+      "model": "xai/grok-4.5",
+      "variant": "high"
+    }
+  }
+}

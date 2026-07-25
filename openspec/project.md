@@ -14,6 +14,8 @@ The kit ships three OpenCode config files with a documented layering (see `READM
 
 `global/opencode.local.json` is an optional schema-valid overlay for machine-specific paths; it must be loaded explicitly through the supported `OPENCODE_CONFIG` mechanism.
 
+Restricted model profiles under `global/model-profiles/` are also explicit overlays, not automatically loaded config files and not a fourth base layer. The `opencode:profile` launcher supplies one complete committed `<id>` or gitignored `local:<id>` matrix only to a new child OpenCode process through `OPENCODE_CONFIG_CONTENT`; it does not rewrite any of the three base files. Profiles may contain only official model-routing fields, cannot bypass administrator-managed configuration, and must not add unsupported fields or machine-local provider/permission settings.
+
 ## Active Roadmap
 
 The full audit ledger at `docs/feedbacks/audit-opencode-kit-2026-06-27.md` (commit `1af6e5b`) split the audit findings into six OpenSpec changes. Current state, based on `npx openspec list`, task checkboxes, recent commits, and GitHub Actions run `28288079534`:

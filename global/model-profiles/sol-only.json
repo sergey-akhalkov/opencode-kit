@@ -1,0 +1,119 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "openai/gpt-5.6-sol",
+  "small_model": "openai/gpt-5.6-sol",
+  "agent": {
+    "build": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "code-quality-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "compaction": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "deployment-config-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "dream-team-implementer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "dream-team-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "explore": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "final-candidate-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "general": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "implementation-readiness-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "implementation-worker": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "instruction-artifact-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "legacy-client-compatibility-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "legacy-evidence-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "openspec-architecture-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "performance-reliability-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "plan": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "protocol-api-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "qwen-local-worker": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "rust-concurrency-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "scout": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "sdet-quality-engineer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "session-delivery-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "summary": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "test-coverage-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "title": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "troubleshooter": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "wire-protocol-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    }
+  }
+}

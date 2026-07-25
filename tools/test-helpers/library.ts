@@ -26,6 +26,30 @@ export const doctor = path.join(helperRoot, "tools", "doctor.ts");
 export const projectInventory = path.join(helperRoot, "tools", "project-inventory.ts");
 export const instructionInventory = path.join(helperRoot, "tools", "instruction-artifacts-inventory.ts");
 
+const FIXTURE_MODEL_PROFILE_SCHEMA = "https://opencode.ai/config.json";
+const FIXTURE_SOL_MODEL = "openai/gpt-5.6-sol";
+const FIXTURE_GROK_MODEL = "xai/grok-4.5";
+const FIXTURE_QUALITY_CREATORS = new Set([
+  "build",
+  "compaction",
+  "dream-team-implementer",
+  "general",
+  "implementation-worker",
+  "plan",
+  "troubleshooter",
+]);
+export const FIXTURE_MODEL_PROFILE_AGENTS = [
+  "build",
+  "compaction",
+  "demo-reviewer",
+  "explore",
+  "general",
+  "plan",
+  "scout",
+  "summary",
+  "title",
+] as const;
+
 export function newTempDir(name: string): string {
   const parent = path.join(os.tmpdir(), "agents-and-skills-tests");
   fs.mkdirSync(parent, { recursive: true });
@@ -37,6 +61,71 @@ export function newTempDir(name: string): string {
 export function writeText(filePath: string, content: string): void {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content.replace(/\r?\n/g, os.EOL), "utf8");
+  syncFixtureModelProfilesForAgent(filePath);
+}
+
+export function writeFixtureModelProfileBaseline(fixture: string): void {
+  writeText(path.join(fixture, ".gitignore"), "/global/model-profiles/local/*.json\n");
+  for (const profileName of ["grok-only", "quality-independent", "sol-only"] as const) {
+    const agents = Object.fromEntries(
+      [...FIXTURE_MODEL_PROFILE_AGENTS]
+        .sort((left, right) => left.localeCompare(right))
+        .map((agentName) => [agentName, fixtureRoute(profileName, agentName)]),
+    );
+    const model = profileName === "grok-only" ? FIXTURE_GROK_MODEL : FIXTURE_SOL_MODEL;
+    const smallModel = profileName === "quality-independent" ? FIXTURE_GROK_MODEL : model;
+    writeText(
+      path.join(fixture, "global", "model-profiles", `${profileName}.json`),
+      `${JSON.stringify({
+        $schema: FIXTURE_MODEL_PROFILE_SCHEMA,
+        model,
+        small_model: smallModel,
+        agent: agents,
+      }, null, 2)}\n`,
+    );
+  }
+}
+
+export function addFixtureAgentToModelProfiles(fixture: string, agentName: string): void {
+  const profilesDir = path.join(fixture, "global", "model-profiles");
+  for (const profileName of ["grok-only", "quality-independent", "sol-only"] as const) {
+    const profilePath = path.join(profilesDir, `${profileName}.json`);
+    if (!fs.existsSync(profilePath)) return;
+    const profile = JSON.parse(fs.readFileSync(profilePath, "utf8")) as {
+      agent: Record<string, { model: string; variant: string }>;
+    };
+    if (profile.agent[agentName] != null) continue;
+    profile.agent[agentName] = fixtureRoute(profileName, agentName);
+    profile.agent = Object.fromEntries(
+      Object.entries(profile.agent).sort(([left], [right]) => left.localeCompare(right)),
+    );
+    fs.writeFileSync(
+      profilePath,
+      `${JSON.stringify(profile, null, 2).replace(/\n/g, os.EOL)}${os.EOL}`,
+      "utf8",
+    );
+  }
+}
+
+function fixtureRoute(
+  profileName: "grok-only" | "quality-independent" | "sol-only",
+  agentName: string,
+): { model: string; variant: string } {
+  const useSol = profileName === "sol-only" ||
+    (profileName === "quality-independent" && FIXTURE_QUALITY_CREATORS.has(agentName));
+  return useSol
+    ? { model: FIXTURE_SOL_MODEL, variant: "xhigh" }
+    : { model: FIXTURE_GROK_MODEL, variant: "high" };
+}
+
+function syncFixtureModelProfilesForAgent(filePath: string): void {
+  if (path.extname(filePath) !== ".md" || path.basename(path.dirname(filePath)) !== "agents") return;
+  const fixture = path.dirname(path.dirname(path.dirname(path.resolve(filePath))));
+  if (path.resolve(path.dirname(filePath)) !== path.join(fixture, "global", "agents")) return;
+  const fixtureParent = path.join(os.tmpdir(), "agents-and-skills-tests");
+  const relative = path.relative(fixtureParent, fixture);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return;
+  addFixtureAgentToModelProfiles(fixture, path.basename(filePath, ".md"));
 }
 
 export function lines(values: string[]): string {
@@ -146,6 +235,7 @@ export function newLibraryFixture(name: string): string {
     "- `Evidence Gaps And Residual Risks`: missing evidence, unknown model provenance, or `none`.",
     "",
   ]));
+  writeFixtureModelProfileBaseline(dir);
   writeText(path.join(dir, "instructions", "example.md"), lines(["# Example", ""]));
   writeText(
     path.join(dir, "instructions", "universal-development-loop.md"),
