@@ -732,7 +732,7 @@ export const validatorTests2: TestCase[] = [
         "  \"$schema\": \"https://opencode.ai/config.json\",",
         "  \"model\": \"owner/local-primary-model\",",
         "  \"mcp\": {",
-        "    \"dream_team\": {",
+        "    \"local_service\": {",
         "      \"type\": \"local\",",
         "      \"command\": [\"echo\"],",
         "      \"enabled\": false",

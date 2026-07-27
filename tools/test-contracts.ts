@@ -163,7 +163,6 @@ const EXPECTED_REUSABLE_REVIEWER_LEAF_CONTRACT_TEXT = [
 const EXPECTED_REVIEWER_DENIED_PERMISSION_KEYS = [
   "task",
   "question",
-  "dream_team_*",
   "webfetch",
   "websearch",
   "todowrite",
@@ -177,7 +176,6 @@ const EXPECTED_REVIEWER_OBSOLETE_PERMISSION_KEYS = ["list"];
 const EXPECTED_IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS = [
   "task",
   "question",
-  "dream_team_*",
   "webfetch",
   "websearch",
   "todowrite",
@@ -304,7 +302,6 @@ const EXPECTED_TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS = [
 const EXPECTED_TROUBLESHOOTER_DENIED_PERMISSION_KEYS = [
   "task",
   "question",
-  "dream_team_*",
   "todowrite",
   "external_directory",
   "doom_loop",

@@ -13,7 +13,6 @@ export const ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES: ReadonlyMap<string, "deny
 export const SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS: readonly string[] = [
   "task",
   "question",
-  "dream_team_*",
   "skill",
   "webfetch",
   "websearch",

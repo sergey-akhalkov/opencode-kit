@@ -38,7 +38,6 @@ export const CHANGE_READY_SDLC_FORBIDDEN_TOKENS: readonly string[] = [
   "git ",
   "gh ",
   "openspec ",
-  "dream_team_",
   "session_delivery_context",
   ".github/",
   "Windows",

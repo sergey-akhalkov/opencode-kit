@@ -222,18 +222,6 @@ export const validatorTests1: TestCase[] = [
       assertOutputContains(result, path.join("global", "agents", "troubleshooter.md"), `Troubleshooter ${testCase.name} diagnostic should name the exact role path.`);
     },
   })),
-  {
-    name: "validator rejects a troubleshooter without explicit nested Dream Team denial",
-    run: () => {
-      const fixture = newLibraryFixture("troubleshooter-missing-dream-team-deny");
-      const troubleshooterPath = addTroubleshooterFixture(fixture);
-      const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
-      writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, "  dream_team_*: deny\n", ""));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Troubleshooter without explicit nested Dream Team denial should fail validation.");
-      assertOutputContains(result, "Troubleshooter must set dream_team_*: deny", "Troubleshooter Dream Team denial failure should be explicit.");
-    },
-  },
   ...[
     {
       name: "bash",
@@ -362,7 +350,6 @@ export const validatorTests1: TestCase[] = [
         "    \"docs/feedbacks/**\": allow",
         "  task: deny",
         "  question: deny",
-        "  dream_team_*: deny",
         "  skill:",
         "    \"*\": deny",
         "    complain: allow",
@@ -394,7 +381,6 @@ export const validatorTests1: TestCase[] = [
         "    \"docs/feedbacks/**\": allow",
         "  task: deny",
         "  question: deny",
-        "  dream_team_*: deny",
         "  skill:",
         "    \"*\": deny",
         "    complain: allow",

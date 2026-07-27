@@ -32,7 +32,6 @@ const FIXTURE_GROK_MODEL = "xai/grok-4.5";
 const FIXTURE_QUALITY_CREATORS = new Set([
   "build",
   "compaction",
-  "dream-team-implementer",
   "general",
   "implementation-worker",
   "plan",
@@ -207,7 +206,6 @@ export function newLibraryFixture(name: string): string {
     "    \"docs/feedbacks/**\": allow",
     "  task: deny",
     "  question: deny",
-    "  dream_team_*: deny",
     "  skill:",
     "    \"*\": deny",
     "    complain: allow",

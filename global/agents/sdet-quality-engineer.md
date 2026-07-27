@@ -9,7 +9,6 @@ permission:
   edit: ask
   task: deny
   question: deny
-  dream_team_*: deny
   skill: deny
   webfetch: deny
   websearch: deny

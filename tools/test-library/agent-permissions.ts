@@ -1,15 +1,7 @@
-import fs from "node:fs";
-import path from "node:path";
 import { ALLOWED_TROUBLESHOOTER_EDIT_RULES } from "../contracts/troubleshooter.ts";
 import {
-  addImplementationWorkerFixture,
   assertEqual,
-  assertFailure,
-  assertOutputContains,
-  invokeValidator,
-  newLibraryFixture,
   type TestCase,
-  writeText,
 } from "../test-helpers/library.ts";
 
 function matchesSimpleWildcard(pattern: string, value: string): boolean {
@@ -38,32 +30,6 @@ function resolveTroubleshooterEditPermission(filePath: string): string | undefin
 }
 
 export const agentPermissionTests: TestCase[] = [
-  {
-    name: "validator rejects reusable reviewer missing explicit Dream Team denial",
-    run: () => {
-      const fixture = newLibraryFixture("reviewer-missing-dream-team-deny");
-      const reviewerPath = path.join(fixture, "global", "agents", "demo-reviewer.md");
-      const reviewer = fs.readFileSync(reviewerPath, "utf8");
-      writeText(reviewerPath, reviewer.replace(/^  dream_team_\*: deny\r?\n/m, ""));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "A reusable reviewer without Dream Team denial should fail validation.");
-      assertOutputContains(result, "Agent permission must set dream_team_*: deny", "Reviewer recursion-deny failure should be explicit.");
-      assertOutputContains(result, "demo-reviewer.md", "Reviewer recursion-deny failure should name the invalid reusable agent.");
-    },
-  },
-  {
-    name: "validator rejects implementation worker missing explicit Dream Team denial",
-    run: () => {
-      const fixture = newLibraryFixture("implementation-worker-missing-dream-team-deny");
-      const workerPath = addImplementationWorkerFixture(fixture);
-      const worker = fs.readFileSync(workerPath, "utf8");
-      writeText(workerPath, worker.replace(/^  dream_team_\*: deny\r?\n/m, ""));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "An implementation worker without Dream Team denial should fail validation.");
-      assertOutputContains(result, "Implementation worker must set dream_team_*: deny", "Implementation-worker recursion-deny failure should be explicit.");
-      assertOutputContains(result, "implementation-worker.md", "Implementation-worker recursion-deny failure should name the invalid agent.");
-    },
-  },
   {
     name: "troubleshooter edit permissions hard-deny root and nested test evidence last-match-wins",
     run: () => {

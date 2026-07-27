@@ -5,11 +5,6 @@ import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 export const MODEL_PROFILE_SCHEMA = "https://opencode.ai/config.json";
-export const MODEL_PROFILE_ID_ENV = "OPENCODE_MODEL_PROFILE_ID";
-export const MODEL_PROFILE_REVIEW_MODEL_ENV = "OPENCODE_MODEL_PROFILE_DREAM_TEAM_REVIEW_MODEL";
-export const MODEL_PROFILE_REVIEW_VARIANT_ENV = "OPENCODE_MODEL_PROFILE_DREAM_TEAM_REVIEW_VARIANT";
-export const MODEL_PROFILE_IMPLEMENT_MODEL_ENV = "OPENCODE_MODEL_PROFILE_DREAM_TEAM_IMPLEMENT_MODEL";
-export const MODEL_PROFILE_IMPLEMENT_VARIANT_ENV = "OPENCODE_MODEL_PROFILE_DREAM_TEAM_IMPLEMENT_VARIANT";
 
 export const GOVERNED_BUILTIN_AGENTS = [
   "build",
@@ -267,19 +262,9 @@ export function buildProfileChildEnvironment(
   loaded: LoadedModelProfile,
 ): NodeJS.ProcessEnv {
   assertNoInheritedInlineConfig(baseEnvironment);
-  const review = loaded.profile.agent["dream-team-reviewer"];
-  const implement = loaded.profile.agent["dream-team-implementer"];
-  if (review == null || implement == null) {
-    throw new Error(`Model profile '${loaded.selection}' is missing Dream Team bridge routes`);
-  }
   return {
     ...baseEnvironment,
     OPENCODE_CONFIG_CONTENT: JSON.stringify(loaded.profile),
-    [MODEL_PROFILE_ID_ENV]: loaded.selection,
-    [MODEL_PROFILE_REVIEW_MODEL_ENV]: review.model,
-    [MODEL_PROFILE_REVIEW_VARIANT_ENV]: review.variant,
-    [MODEL_PROFILE_IMPLEMENT_MODEL_ENV]: implement.model,
-    [MODEL_PROFILE_IMPLEMENT_VARIANT_ENV]: implement.variant,
   };
 }
 

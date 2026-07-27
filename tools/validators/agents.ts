@@ -59,9 +59,6 @@ import {
 } from "./context.ts";
 import { getFrontmatterMap } from "./frontmatter.ts";
 
-const DREAM_TEAM_RUNTIME_AGENT_PREFIX = "dream-team-";
-const DREAM_TEAM_IMPLEMENTER_AGENT = "dream-team-implementer";
-
 /** Byte-exact Output heading that owns each intentional report-envelope schema. */
 const EXACT_OUTPUT_H2 = "## Output";
 /** Byte-exact top-level opener for intentional role report envelopes. */
@@ -293,43 +290,6 @@ function requireOperativeOrAllowlistedReportMarkers(
     }
     requireTextContains(ctx, operativeBody, marker, label, file);
   }
-}
-
-function isDreamTeamRuntimeAgent(agentName: string, frontmatter: FrontmatterMap): boolean {
-  return agentName.startsWith(DREAM_TEAM_RUNTIME_AGENT_PREFIX) && frontmatter.get("hidden") === "true";
-}
-
-function validateDreamTeamRuntimeAgent(
-  ctx: ValidationContext,
-  frontmatter: FrontmatterMap,
-  file: string,
-): void {
-  if (frontmatter.get("permission.dream_team_*") !== "deny") {
-    ctx.addError(`Dream Team runtime agent must deny dream_team_* tools: ${file}`);
-  }
-}
-
-function validateDreamTeamImplementer(
-  ctx: ValidationContext,
-  frontmatter: FrontmatterMap,
-  file: string,
-): void {
-  if (frontmatter.get("permission.bash") !== "deny") {
-    ctx.addError(`Dream Team implementer must set bash: deny: ${file}`);
-  }
-  if (frontmatter.get("permission.edit") !== "allow") {
-    ctx.addError(`Dream Team implementer must set edit: allow: ${file}`);
-  }
-  if (frontmatter.get("permission.skill") !== "deny") {
-    ctx.addError(`Dream Team implementer must set skill: deny: ${file}`);
-  }
-  for (const permission of IMPLEMENTATION_WORKER_DENIED_PERMISSION_KEYS) {
-    const key = `permission.${permission}`;
-    if (frontmatter.get(key) !== "deny") {
-      ctx.addError(`Dream Team implementer must set ${permission}: deny: ${file}`);
-    }
-  }
-  validateDreamTeamRuntimeAgent(ctx, frontmatter, file);
 }
 
 function validateReviewerBashPermission(
@@ -838,8 +798,7 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     const agentName = path.basename(file, ".md");
     const text = readText(file);
     const frontmatter = getFrontmatterMap(ctx, text, file);
-    const isDreamTeamRuntime = isDreamTeamRuntimeAgent(agentName, frontmatter);
-    if (!isDreamTeamRuntime) agentNames.push(agentName);
+    agentNames.push(agentName);
     const description = getRequiredScalar(ctx, frontmatter, "description", file);
     const mode = getRequiredScalar(ctx, frontmatter, "mode", file);
     if (!description || description.trim() === "") {
@@ -886,10 +845,6 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       }
       continue;
     }
-    if (isDreamTeamRuntime && agentName === DREAM_TEAM_IMPLEMENTER_AGENT) {
-      validateDreamTeamImplementer(ctx, frontmatter, file);
-      continue;
-    }
     // Write-capable SDET must use dedicated contract before generic read-only reviewer rules.
     if (agentFileName === SDET_QUALITY_ENGINEER_FILE) {
       if (surfaces != null) {
@@ -905,10 +860,6 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       if (frontmatter.get(key) !== "deny") {
         ctx.addError(`Agent permission must set ${permission}: deny: ${file}`);
       }
-    }
-    if (isDreamTeamRuntime) {
-      validateDreamTeamRuntimeAgent(ctx, frontmatter, file);
-      continue;
     }
     if (surfaces == null) {
       continue;

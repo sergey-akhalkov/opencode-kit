@@ -4,11 +4,6 @@ import fs from "node:fs";
 import { syncBuiltinESMExports } from "node:module";
 import path from "node:path";
 import {
-  MODEL_PROFILE_ID_ENV,
-  MODEL_PROFILE_IMPLEMENT_MODEL_ENV,
-  MODEL_PROFILE_IMPLEMENT_VARIANT_ENV,
-  MODEL_PROFILE_REVIEW_MODEL_ENV,
-  MODEL_PROFILE_REVIEW_VARIANT_ENV,
   MODEL_PROFILE_SCHEMA,
   assertNoInheritedInlineConfig,
   buildProfileChildEnvironment,
@@ -42,7 +37,6 @@ const GROK_MODEL = "xai/grok-4.5";
 const QUALITY_CREATORS = new Set([
   "build",
   "compaction",
-  "dream-team-implementer",
   "general",
   "implementation-worker",
   "plan",
@@ -53,8 +47,6 @@ const EXPECTED_CATALOG = [
   "code-quality-reviewer",
   "compaction",
   "deployment-config-reviewer",
-  "dream-team-implementer",
-  "dream-team-reviewer",
   "explore",
   "final-candidate-reviewer",
   "general",
@@ -119,9 +111,7 @@ function profileFor(
 
 function newSelectionFixture(name: string): { root: string; agents: string[] } {
   const root = newTempDir(name);
-  for (const agentName of ["dream-team-implementer", "dream-team-reviewer"]) {
-    writeText(path.join(root, "global", "agents", `${agentName}.md`), `# ${agentName}\n`);
-  }
+  writeText(path.join(root, "global", "agents", "demo-reviewer.md"), "# demo-reviewer\n");
   const agents = discoverGovernedAgentNames(root);
   writeText(
     path.join(root, "global", "model-profiles", "shared.json"),
@@ -151,7 +141,7 @@ function captureConsole<T>(run: () => T): { value: T; logs: string[]; warnings: 
 
 const tests: TestCase[] = [
   {
-    name: "committed presets cover the exact current catalog including hidden Dream Team agents",
+    name: "committed presets cover the exact current agent catalog",
     run: () => {
       const catalog = discoverGovernedAgentNames(libraryRoot);
       assertDeepEqual(
@@ -159,8 +149,6 @@ const tests: TestCase[] = [
         [...EXPECTED_CATALOG].sort((left, right) => left.localeCompare(right)),
         "Governed catalog must be the eight built-ins plus every current global/agents Markdown role.",
       );
-      assert(catalog.includes("dream-team-implementer"), "Hidden Dream Team implementer must be governed.");
-      assert(catalog.includes("dream-team-reviewer"), "Hidden Dream Team reviewer must be governed.");
       for (const profileName of ["grok-only", "quality-independent", "sol-only"]) {
         const loaded = loadModelProfile(libraryRoot, profileName);
         assertDeepEqual(
@@ -397,14 +385,7 @@ const tests: TestCase[] = [
       const loaded = loadModelProfile(libraryRoot, "quality-independent");
       const base: NodeJS.ProcessEnv = { PATH: "fixture-path", OWNER_SENTINEL: "preserve" };
       const beforeBase = { ...base };
-      const parentKeys = [
-        "OPENCODE_CONFIG_CONTENT",
-        MODEL_PROFILE_ID_ENV,
-        MODEL_PROFILE_REVIEW_MODEL_ENV,
-        MODEL_PROFILE_REVIEW_VARIANT_ENV,
-        MODEL_PROFILE_IMPLEMENT_MODEL_ENV,
-        MODEL_PROFILE_IMPLEMENT_VARIANT_ENV,
-      ];
+      const parentKeys = ["OPENCODE_CONFIG_CONTENT"];
       const parentBefore = Object.fromEntries(parentKeys.map((key) => [key, process.env[key]]));
       const child = buildProfileChildEnvironment(base, loaded);
 
@@ -412,11 +393,6 @@ const tests: TestCase[] = [
       assertDeepEqual(base, beforeBase, "Base environment must not be mutated.");
       assertEqual(child.OWNER_SENTINEL, "preserve", "Unrelated environment values must be forwarded.");
       assertEqual(child.OPENCODE_CONFIG_CONTENT, JSON.stringify(loaded.profile), "Child inline config must be the validated selected profile.");
-      assertEqual(child[MODEL_PROFILE_ID_ENV], "quality-independent", "Child profile marker must identify the selection.");
-      assertEqual(child[MODEL_PROFILE_REVIEW_MODEL_ENV], GROK_MODEL, "Review bridge model must come from the profile route.");
-      assertEqual(child[MODEL_PROFILE_REVIEW_VARIANT_ENV], "high", "Review bridge variant must come from the profile route.");
-      assertEqual(child[MODEL_PROFILE_IMPLEMENT_MODEL_ENV], SOL_MODEL, "Implementation bridge model must come from the profile route.");
-      assertEqual(child[MODEL_PROFILE_IMPLEMENT_VARIANT_ENV], "xhigh", "Implementation bridge variant must come from the profile route.");
       assertDeepEqual(
         Object.fromEntries(parentKeys.map((key) => [key, process.env[key]])),
         parentBefore,
@@ -534,7 +510,11 @@ const tests: TestCase[] = [
           args: ["run", "--model", "owner/custom", "task text"],
         }], "Explicit primary model and unrelated launch arguments must reach OpenCode unchanged.");
         assertEqual(calls[0]!.env.SAFE_SENTINEL, "preserved", "Unrelated child environment must be preserved.");
-        assertEqual(calls[0]!.env[MODEL_PROFILE_ID_ENV], "quality-independent", "Spawned child must receive the selected profile marker.");
+        assertEqual(
+          calls[0]!.env.OPENCODE_CONFIG_CONTENT,
+          JSON.stringify(loadModelProfile(libraryRoot, "quality-independent").profile),
+          "Spawned child must receive the selected profile config.",
+        );
       } finally {
         mutableChildProcess.spawnSync = originalSpawnSync;
         syncBuiltinESMExports();

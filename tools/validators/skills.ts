@@ -51,8 +51,8 @@ function isAsciiWordChar(ch: string | undefined): boolean {
  * Word-led tokens require a non-word (or start) left edge. Tokens ending in an
  * ASCII letter or digit require a non-word (or end) right edge. A trailing
  * underscore is an intentional prefix terminator and does not require a right
- * edge (e.g. `dream_team_` still matches `dream_team_review`). Punctuation-led
- * or punctuation-ended tokens keep plain literal detection (e.g. `.github/`).
+ * edge. Punctuation-led or punctuation-ended tokens keep plain literal
+ * detection (e.g. `.github/`).
  */
 function containsForbiddenPortableHardcodeToken(
   text: string,

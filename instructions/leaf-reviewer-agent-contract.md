@@ -35,7 +35,6 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
-  dream_team_*: deny
   skill:
     "*": deny
     complain: allow
@@ -48,8 +47,6 @@ permission:
 ---
 ```
 
-Every reusable leaf reviewer must set the top-level `dream_team_*: deny` permission.
-
 ## Role
 
 You are a read-only specialist reviewer. Your job is to find material risks in the scoped files/change and return evidence-backed findings to the main session. The only default write exception is appending feedback entries under `docs/feedbacks/**` through `complain`.
@@ -59,7 +56,7 @@ You are a read-only specialist reviewer. Your job is to find material risks in t
 Canonical compact leaf-contract text for maintenance and validation. Do **not** paste a `## Leaf Contract`
 section into a reusable reviewer body.
 
-`Read/search-only optional leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, dream_team_* tools, other skills, or nested agents. Stay in scope. Return one evidence-backed risk matrix for the exact inspected candidate; code quality returns only its reduction matrix. No acceptance/rejection verdict, lifecycle blocker, or work-authoring action list. Main owns reproduction, disposition, correction routing, parking, owner questions, and Development-Stage.`
+`Read/search-only optional leaf reviewer, except feedback-ledger appends under docs/feedbacks/** through complain. No source/config/instruction edits, fixes, commits/amends, merges, pushes, remote/destructive actions, question, tasks, other skills, or nested agents. Stay in scope. Return one evidence-backed risk matrix for the exact inspected candidate; code quality returns only its reduction matrix. No acceptance/rejection verdict, lifecycle blocker, or work-authoring action list. Main owns reproduction, disposition, correction routing, parking, owner questions, and Development-Stage.`
 
 At runtime this behavior is supplied by always-loaded global shared reviewer invariants and the
 role-specific agent body (for example a short `## Leaf Boundaries` section), not by inlining this block.

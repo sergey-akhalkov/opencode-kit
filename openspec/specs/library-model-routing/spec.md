@@ -49,47 +49,19 @@ The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` commit
 
 #### Scenario: Recommended creator roles
 - **WHEN** `quality-independent` is selected
-- **THEN** `build`, `plan`, `general`, `compaction`, `implementation-worker`, `dream-team-implementer`, and `troubleshooter` SHALL resolve to `openai/gpt-5.6-sol` with variant `xhigh`.
+- **THEN** `build`, `plan`, `general`, `compaction`, `implementation-worker`, and `troubleshooter` SHALL resolve to `openai/gpt-5.6-sol` with variant `xhigh`.
 
 #### Scenario: Recommended challenge roles
 - **WHEN** `quality-independent` is selected
-- **THEN** `explore`, `scout`, `title`, `summary`, `qwen-local-worker`, `sdet-quality-engineer`, `dream-team-reviewer`, and every reusable reviewer SHALL resolve to `xai/grok-4.5` with variant `high`.
+- **THEN** `explore`, `scout`, `title`, `summary`, `qwen-local-worker`, `sdet-quality-engineer`, and every reusable reviewer SHALL resolve to `xai/grok-4.5` with variant `high`.
 
 #### Scenario: Single-model controls
 - **WHEN** `sol-only` or `grok-only` is validated
 - **THEN** every governed agent SHALL resolve respectively to `openai/gpt-5.6-sol`/`xhigh` or `xai/grok-4.5`/`high`
 - **AND** no governed agent SHALL rely on inherited routing inside those profiles.
 
-### Requirement: Dream Team profile propagation
-When a profile-launched OpenCode process invokes `dream_team_review` or `dream_team_implement`, the existing Dream Team tool-context plugin SHALL provide an explicit model and compatible variant from the corresponding profile agent entry whenever the caller omitted them. The plugin SHALL preserve explicit caller values and SHALL NOT combine a profile variant with a differing explicit model.
-
-#### Scenario: Omitted Dream Team routing
-- **WHEN** either Dream Team tool is called without model or variant under an active profile
-- **THEN** the plugin SHALL inject the corresponding Dream Team agent's profile model and variant before dispatch
-- **AND** the resulting request SHALL carry an explicit model identity rather than an implicit server-default identity.
-
-#### Scenario: Explicit differing model
-- **WHEN** a Dream Team call explicitly supplies a model different from the selected profile and omits variant
-- **THEN** the plugin SHALL preserve the explicit model and leave variant unspecified
-- **AND** it SHALL emit a structured informational profile-deviation diagnostic.
-
-#### Scenario: Explicit matching model
-- **WHEN** a Dream Team call explicitly supplies the profile model but omits variant
-- **THEN** the plugin SHALL inject the profile variant
-- **AND** it SHALL preserve every unrelated tool argument unchanged.
-
-#### Scenario: Incomplete active bridge
-- **WHEN** a profile marker is present but the selected Dream Team role's bridge model or variant is missing or malformed
-- **THEN** the plugin SHALL fail before Dream Team dispatch with a precise routing diagnostic
-- **AND** it SHALL NOT fall back silently to server-default or machine-local model selection.
-
-#### Scenario: No active profile
-- **WHEN** a Dream Team tool is called from an OpenCode process without a profile marker
-- **THEN** the plugin SHALL preserve the pre-change Dream Team model fallback behavior
-- **AND** existing caller-hierarchy and repository-path handling SHALL remain unchanged.
-
 ### Requirement: Visible selection and override semantics
-The profile launcher SHALL provide stable inspection output for the selected source and complete resolved routing matrix. Explicit OpenCode or Dream Team model overrides SHALL remain permitted, SHALL win over profile defaults at their supported boundary, and SHALL be reported as deviations rather than silently presented as profile-conforming execution.
+The profile launcher SHALL provide stable inspection output for the selected source and complete resolved routing matrix. Explicit OpenCode model overrides SHALL remain permitted, SHALL win over profile defaults at their supported boundary, and SHALL be reported as deviations rather than silently presented as profile-conforming execution.
 
 #### Scenario: Explain a profile
 - **WHEN** the owner runs the profile launcher with `--explain`
@@ -107,7 +79,7 @@ The profile launcher SHALL provide stable inspection output for the selected sou
 - **AND** they SHALL NOT print credentials, inherited inline config content, prompts, or provider secrets.
 
 ### Requirement: Deterministic validation and non-billable proof
-Repository validation SHALL check profile syntax, restricted shape, complete catalog coverage, exact committed preset matrices, local ignore policy, launcher behavior, and Dream Team propagation without requiring credentials, network access, or a model response. Focused runtime proof SHALL use OpenCode debug and pre-dispatch boundaries and SHALL remain non-billable.
+Repository validation SHALL check profile syntax, restricted shape, complete catalog coverage, exact committed preset matrices, local ignore policy, and launcher behavior without requiring credentials, network access, or a model response. Focused runtime proof SHALL use OpenCode debug boundaries and SHALL remain non-billable.
 
 #### Scenario: Static repository validation
 - **WHEN** `npm run validate:strict` runs
@@ -119,12 +91,7 @@ Repository validation SHALL check profile syntax, restricted shape, complete cat
 - **THEN** it SHALL cover committed and local resolution, traversal rejection, inherited-inline refusal, stable explain output, conflicting project config precedence, child environment construction, argument forwarding, and explicit primary overrides
 - **AND** all test fixtures SHALL be disposable and credential-free.
 
-#### Scenario: Focused Dream Team tests
-- **WHEN** the Dream Team tool-context tests run
-- **THEN** they SHALL cover omitted, matching, differing, malformed, and no-profile model/variant cases for review and implementation
-- **AND** existing hierarchy, mutability, caller-session, and repo-resolution tests SHALL remain green.
-
 #### Scenario: Runtime proof
 - **WHEN** the candidate receives local runtime proof
-- **THEN** the proof SHALL observe one Sol-routed normal agent, one Grok-routed normal agent, and both Dream Team tools' pre-dispatch explicit routing under `quality-independent`
-- **AND** it SHALL not send a provider prompt, start a billable Dream Team workflow, mutate remote state, or require credentials.
+- **THEN** the proof SHALL observe one Sol-routed agent and one Grok-routed agent under `quality-independent`
+- **AND** it SHALL not send a provider prompt, mutate remote state, or require credentials.

@@ -1351,40 +1351,6 @@ export const changeReadyValidatorTests: TestCase[] = [
     },
   })),
   {
-    name: "validator rejects verdict authority on the registered Dream Team reviewer",
-    run: () => {
-      const fixture = newLibraryFixture("outcome-authority-dream-team-reviewer-verdict");
-      addChangeReadySdlcFixture(fixture);
-      const reviewerName = "dream-team-reviewer";
-      const reviewerPath = path.join(fixture, "global", "agents", `${reviewerName}.md`);
-      writeText(reviewerPath, fs.readFileSync(path.join(root, "global", "agents", `${reviewerName}.md`), "utf8"));
-      assertSuccess(invokeValidator(fixture), "Registered Dream Team reviewer baseline must validate before the seeded verdict field.");
-
-      writeText(reviewerPath, `${fs.readFileSync(reviewerPath, "utf8")}\nVerdict:\n`);
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Registered Dream Team reviewer must reject superseded verdict authority.");
-      assertOutputContains(result, "superseded reviewer/SDET action-list field Verdict:", "Diagnostic must name the forbidden verdict field.");
-      assertOutputContains(result, path.join("global", "agents", `${reviewerName}.md`), "Diagnostic must identify the registered Dream Team reviewer.");
-    },
-  },
-  {
-    name: "validator rejects lifecycle blocker authority on the registered Dream Team reviewer",
-    run: () => {
-      const fixture = newLibraryFixture("outcome-authority-dream-team-reviewer-lifecycle-blocker");
-      addChangeReadySdlcFixture(fixture);
-      const reviewerName = "dream-team-reviewer";
-      const reviewerPath = path.join(fixture, "global", "agents", `${reviewerName}.md`);
-      writeText(reviewerPath, fs.readFileSync(path.join(root, "global", "agents", `${reviewerName}.md`), "utf8"));
-      assertSuccess(invokeValidator(fixture), "Registered Dream Team reviewer baseline must validate before the seeded lifecycle blocker field.");
-
-      writeText(reviewerPath, `${fs.readFileSync(reviewerPath, "utf8")}\nLifecycle Blocker: blocked\n`);
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Registered Dream Team reviewer must reject lifecycle blocker authority.");
-      assertOutputContains(result, "superseded reviewer/SDET action-list field Lifecycle Blocker:", "Diagnostic must name the forbidden lifecycle blocker field.");
-      assertOutputContains(result, path.join("global", "agents", `${reviewerName}.md`), "Diagnostic must identify the registered Dream Team reviewer.");
-    },
-  },
-  {
     name: "validator rejects lifecycle blocker authority inside the final-review report envelope",
     run: () => {
       const fixture = newLibraryFixture("outcome-authority-final-reviewer-envelope-lifecycle-blocker");
@@ -1573,11 +1539,6 @@ export const changeReadyValidatorTests: TestCase[] = [
           label: "standalone gh command",
           appendedText: "Invoke gh status through the discovered adapter.",
           forbiddenToken: "gh ",
-        },
-        {
-          label: "dream team configured prefix",
-          appendedText: "Invoke dream_team_review through the discovered adapter.",
-          forbiddenToken: "dream_team_",
         },
         {
           label: "WindowsService identifier",

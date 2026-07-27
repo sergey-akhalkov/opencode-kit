@@ -273,10 +273,10 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "does not own Dream Team or other tool execution context",
+    name: "does not own tool execution context",
     run: async () => {
       const hooks = await plugin.server({} as never);
-      assert(hooks["tool.execute.before"] == null, "session-env must not register tool.execute.before; Dream Team context has a single plugin owner.");
+      assert(hooks["tool.execute.before"] == null, "session-env must not register tool.execute.before.");
     },
   },
   {

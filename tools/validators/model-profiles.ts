@@ -17,7 +17,6 @@ const GROK_VARIANT = "high";
 const QUALITY_CREATOR_AGENTS = new Set([
   "build",
   "compaction",
-  "dream-team-implementer",
   "general",
   "implementation-worker",
   "plan",

@@ -75,7 +75,6 @@ permission:
     "docs/feedbacks/**": allow
   task: deny
   question: deny
-  dream_team_*: deny
   skill:
     "*": deny
     complain: allow

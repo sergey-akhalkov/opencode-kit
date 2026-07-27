@@ -7,7 +7,6 @@ export const REVIEWER_ALLOWED_PERMISSION_KEYS = [
 export const REVIEWER_DENIED_PERMISSION_KEYS = [
   "task",
   "question",
-  "dream_team_*",
   "webfetch",
   "websearch",
   "todowrite",
@@ -147,7 +146,6 @@ export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
 export const REVIEW_DELIVERY_AGENT_FILES: readonly string[] = [
   "code-quality-reviewer.md",
   "deployment-config-reviewer.md",
-  "dream-team-reviewer.md",
   "final-candidate-reviewer.md",
   "implementation-readiness-reviewer.md",
   "instruction-artifact-reviewer.md",

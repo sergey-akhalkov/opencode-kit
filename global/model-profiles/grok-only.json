@@ -19,14 +19,6 @@
       "model": "xai/grok-4.5",
       "variant": "high"
     },
-    "dream-team-implementer": {
-      "model": "xai/grok-4.5",
-      "variant": "high"
-    },
-    "dream-team-reviewer": {
-      "model": "xai/grok-4.5",
-      "variant": "high"
-    },
     "explore": {
       "model": "xai/grok-4.5",
       "variant": "high"

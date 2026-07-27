@@ -81,7 +81,6 @@ export const TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS: ReadonlyMap<string, Permiss
 export const TROUBLESHOOTER_DENIED_PERMISSION_KEYS: readonly string[] = [
   "task",
   "question",
-  "dream_team_*",
   "todowrite",
   "external_directory",
   "doom_loop",

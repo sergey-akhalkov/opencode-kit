@@ -108,9 +108,7 @@ For a personal complete matrix, create `global/model-profiles/local/<id>.json` a
 
 The launcher supplies the selected JSON only to the child process through `OPENCODE_CONFIG_CONTENT`; it never rewrites repository, project, global, machine-local, shell-profile, or managed configuration. It refuses a non-empty inherited `OPENCODE_CONFIG_CONTENT` rather than overwriting or printing it. The inline profile overrides ordinary project model configuration, while upstream administrator-managed configuration remains authoritative. OpenCode loads configuration once, so switching profiles requires a new process; there is no hot reload.
 
-The launcher also sends the selected `dream-team-reviewer` and `dream-team-implementer` routes to `global/plugin/dream-team-mcp-tool-context.ts`. When either Dream Team call omits routing, the plugin injects an explicit profile model and compatible variant before dispatch. Explicit Dream Team values win; a differing explicit model does not receive the profile variant, and differing model/variant values produce a privacy-safe structured informational log. Direct `opencode` startup has no profile marker and preserves the existing OpenCode and Dream Team fallback behavior.
-
-Profile selection is a startup default, not a lock. `/models`, an explicit OpenCode `--model`, and explicit Dream Team `model`/`variant` arguments may intentionally diverge. The actual-runtime sources of truth are OpenCode's current-model display, `--explain` for the startup matrix, Dream Team profile-deviation logs, and each agent's `Effective Model` evidence. To roll back profile use, stop the profile-launched process and start `opencode` directly; no configuration restoration is required.
+Profile selection is a startup default, not a lock. `/models` and an explicit OpenCode `--model` may intentionally diverge. The actual-runtime sources of truth are OpenCode's current-model display, `--explain` for the startup matrix, and each agent's `Effective Model` evidence. To roll back profile use, stop the profile-launched process and start `opencode` directly; no configuration restoration is required.
 
 For machine-specific provider paths (for example an absolute Windows path to a local MCP binary), edit the gitignored `global/opencode.json` directly. To keep a separate optional overlay, create a schema-valid file and load it explicitly through OpenCode's supported `OPENCODE_CONFIG` mechanism:
 
@@ -425,7 +423,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 Project plugin behavior:
 
-- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. `global/plugin/dream-team-mcp-tool-context.ts` is the single owner of `dream_team_review` and `dream_team_implement` caller hierarchy validation, repo-path normalization, review caller-session injection, and optional model-profile bridge routing/deviation diagnostics. Both plugins are auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; the delivery-context implementation lives beside `session-env.ts` and does not need a `tools/` directory at runtime.
+- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. The plugin is auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; the delivery-context implementation lives beside `session-env.ts` and does not need a `tools/` directory at runtime.
 
 ## Instruction Templates
 
