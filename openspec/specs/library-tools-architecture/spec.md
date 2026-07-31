@@ -15,7 +15,9 @@ The library SHALL organize executable tools under `tools/` with the following di
 #### Scenario: monolithic file detected
 
 - **WHEN** `tools/code-quality-inventory` reports a code file in the split-candidate band (`>= 800` lines)
-- **THEN** the change that introduces or extends the file SHALL include a task that splits it into the appropriate module above OR records an explicit justification (cohesive lookup table, generated code, one-off emergency) with reviewer acceptance.
+- **THEN** the current change SHALL inspect the file's responsibilities and navigation cost
+- **AND** a change that adds a responsibility to already mixed code SHALL split one cohesive owner into the appropriate module above or record an explicit main-owned `split-or-justify` disposition
+- **AND** line count alone SHALL NOT fail the change when the file remains cohesive and locally understandable.
 
 ### Requirement: Validator orchestrator
 
@@ -68,4 +70,3 @@ Every list of required text, required permission keys, or required frontmatter t
 - **THEN** the token SHALL be added to `tools/contracts/reviewer-binding.ts`
 - **AND** the validator SHALL import it from that file
 - **AND** tests SHALL reference the same exported symbol.
-

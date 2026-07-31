@@ -14,8 +14,9 @@ Do not use this skill for pure documentation edits, generated/vendor code, tiny 
 
 - Code quality means future changes are easier and safer for both the agent and the human reader.
 - Prefer the smallest design that keeps the code understandable, testable, and locally changeable.
+- Treat agent context as an engineering resource: a routine change should be understandable through targeted reads of one cohesive owner and narrow neighbors, not by loading an unrelated subsystem or one god file.
 - Treat smells as signals, not automatic guilt. A finding needs evidence, impact, likely root cause, and a minimal remedy.
-- Do not require perfection. Block only when the change worsens code health or creates a likely future defect/change-cost trap.
+- Do not require perfection. Main treats correction as accepted-scope work only when the current change worsens code health or creates a likely future defect/change-cost trap; unrelated debt remains a finding, not a reviewer-owned gate.
 - Do not apply Design Patterns by default. Use a pattern only when it removes concrete duplication, branching, coupling, lifecycle complexity, or boundary confusion.
 - For behavior-changing fixes, require observable proof of the smallest complete happy path first. Material/explicit qualification then requires independent fresh-context risk testing. Ordinary Small uses focused validation and optional smallest post-proof regression. Production authors must not create or modify automated test artifacts.
 
@@ -25,11 +26,12 @@ Do not use this skill for pure documentation edits, generated/vendor code, tiny 
 - Fowler code smell principle: smells are quick indicators of possible deeper problems, not proof by themselves.
 - Refactoring catalog practice: long methods, large classes, duplication, shotgun surgery, speculative generality, and coupling smells should map to small refactorings such as Extract Method, Extract Class, Move Method, Introduce Parameter Object, Strategy, State, Facade, or Adapter.
 
-## When To Force Engineering Practice
+## When To Require Main Disposition
 
-Force a fix, split, or explicit justification before acceptance when one or more of these is true:
+Require main to correct the current change or record an explicit `split-or-justify` disposition before completing accepted scope when one or more of these is true:
 
 - The reviewer cannot explain the changed behavior, ownership, and data flow after one careful pass through the touched code.
+- Understanding the changed behavior requires loading unrelated responsibilities because the touched file has no cohesive ownership boundary.
 - The change adds a new responsibility to a file/class/module that already mixes unrelated responsibilities.
 - The change makes a future likely edit require touching multiple unrelated places for one concept.
 - The same behavior, branching shape, validation rule, mapping, fixture, or protocol detail appears for the third time without a shared owner.
@@ -37,9 +39,10 @@ Force a fix, split, or explicit justification before acceptance when one or more
 - A public API, abstraction, interface, factory, generic type, or plugin point is added for hypothetical future needs rather than current requirements.
 - New code hides side effects, temporal coupling, global mutation, IO, caching, retries, or concurrency behind names that do not reveal those costs.
 - Tests or validation cannot prove the behavior after the refactor, or the code structure makes a focused test impractical.
+- A catch/wrap/translation path discards the original exception cause/stack, or an owning runtime boundary lacks enough safe context to distinguish realistic failures without adding noisy duplicate logs.
 - The file reaches a `split-candidate` navigation band and the touched change does not either split a coherent responsibility or justify why the file is still cohesive.
 
-Do not force a fix when the issue is generated code, vendor code, local style preference, a cohesive data table, a one-off emergency workaround with explicit follow-up, or a refactor that would be larger/riskier than the scoped change.
+Do not classify current-scope correction when the issue is generated code, vendor code, local style preference, a cohesive data table, a one-off emergency workaround with explicit follow-up, or pre-existing debt whose refactor would be larger/riskier than the scoped change.
 
 ## File Size And Navigation Signals
 
@@ -57,7 +60,7 @@ If this library tooling is available, gather deterministic evidence with:
 npm run code-quality:inventory -- --format markdown
 ```
 
-For stricter local gates, use:
+Only when a repository explicitly adopts a hard line threshold as local policy, use:
 
 ```sh
 npm run code-quality:inventory -- --attention-lines 400 --split-lines 800 --fail-on-split-candidates
@@ -85,6 +88,8 @@ If the command is not available in the target repository, use repository-native 
 | Dead code / unused exports | Code is not reachable or maintained and increases review surface. | Delete, or mark explicit compatibility requirement if external consumers need it. |
 | Comment-dependent code | Comments explain what unclear code does rather than why it exists. | Rename, extract, simplify; keep comments for rationale, invariants, algorithms, and external contracts. |
 | Hidden side effects | Name looks pure but performs IO, mutation, caching, retries, or scheduling. | Rename, separate query from command, Command pattern for queued work, explicit effect boundary. |
+| Context-heavy module | A local change requires unrelated code to understand ownership or control flow. | Extract one cohesive owner behind a narrow interface; avoid wrapper-only micro-files. |
+| Opaque failure path | Errors lose cause/stack or reach an owning boundary without safe operation/correlation context. | Preserve the exception chain; log once at the owning boundary with structured context; capture proof artifacts. |
 
 ## Pattern Discipline
 
@@ -101,6 +106,7 @@ If the command is not available in the target repository, use repository-native 
 ## Review Workflow
 
 - Inspect the diff first, then enough surrounding code to understand ownership and data flow.
+- Before accepting added behavior, map touched responsibilities and record `split-or-justify` for navigation-heavy or mixed-owner files. Line count remains evidence, never the finding by itself.
 - Run or request deterministic inventory when file size/navigation is a material risk.
 - Identify smells only when they affect change cost, readability, testability, or defect risk.
 - Prefer local refactors that reduce the current change's complexity before adding new abstractions.

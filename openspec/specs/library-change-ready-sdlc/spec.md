@@ -72,7 +72,7 @@ Any candidate-affecting production, test, fixture, configuration, instruction, o
 
 ### Requirement: Post-MVP work stops at critical boundaries
 
-After MVP, mandatory work SHALL be limited to incomplete accepted scope and reproduced accepted-outcome, critical, or non-deferrable defects. Known non-critical bugs, optional coverage, maintainability, style, wording, evidence formatting, diagnostics, optimization, and future-scale work SHALL be documented and parked and SHALL NOT block RC or stable.
+After MVP, mandatory work SHALL be limited to incomplete accepted scope and reproduced accepted-outcome, critical, or non-deferrable defects. Current-change architecture and diagnostic non-degradation obligations SHALL be accepted-scope implementation rather than post-MVP cleanup. Known non-critical bugs, optional coverage, pre-existing maintainability debt, style, wording, evidence formatting, diagnostic polish, optimization, and future-scale work SHALL be documented and parked and SHALL NOT block RC or stable.
 
 #### Scenario: Non-critical post-MVP finding is parked
 - **WHEN** main confirms a reachable non-critical limitation after MVP
@@ -107,3 +107,32 @@ Ordinary Small SHALL reach MVP through main-owned representative proof, RC throu
 #### Scenario: Ordinary Small advances without Material ceremony
 - **WHEN** bounded local work has current MVP proof, complete accepted scope, green focused validation, and no known critical/non-deferrable defect
 - **THEN** it MAY advance to RC and stable without SDET or reviewer evidence.
+
+### Requirement: Current work preserves local comprehension
+
+Human-written production changes SHALL keep the changed behavior understandable through targeted reads of a cohesive owner and narrow neighbors. Line count SHALL be a navigation signal rather than a hard quota. A change SHALL NOT add a new responsibility to an already mixed file or materially worsen change locality, testability, or navigation without extracting one cohesive responsibility or recording a `split-or-justify` decision. Existing unrelated debt MAY remain parked, and the requirement SHALL NOT justify speculative abstractions, wrapper-only micro-files, or broad unrelated refactoring.
+
+#### Scenario: Large cohesive file remains intact
+- **WHEN** a touched file is large but has one clear owner and the current behavior remains locally understandable and testable
+- **THEN** line count alone SHALL NOT require a split.
+
+#### Scenario: New responsibility reaches mixed code
+- **WHEN** a current change would add a responsibility to a human-written file that already mixes unrelated owners
+- **THEN** the implementation SHALL extract one cohesive owner within the accepted dependency closure or record why a split would increase current risk
+- **AND** SHALL NOT defer its own structural degradation as pre-existing debt.
+
+### Requirement: Runtime behavior and proof retain diagnostic evidence
+
+Behavior-changing work SHALL identify meaningful failure boundaries before implementation and use the project's existing logging/error mechanism. At the owning process, service, job, external-dependency, or persistence boundary, the implementation SHALL preserve the original exception cause and stack and provide structured privacy-safe operation/correlation context when useful. It SHALL log once at the owning boundary, avoid duplicate catch-and-rethrow logging and routine per-item noise, and SHALL NOT add an unrelated telemetry stack solely for compliance.
+
+Runtime Proof SHALL preserve the exact invocation and representative input, Candidate/Environment identity, exit status, stdout/stderr, relevant logs and exceptions, observed side effects, and artifact paths. The production author SHALL inspect those diagnostics before mutation or another run. When they cannot distinguish realistic in-scope causes, the author SHALL add the smallest safe instrumentation at the owning boundary and recapture the affected proof lane rather than guess from a summary.
+
+#### Scenario: Failed real-boundary proof has actionable evidence
+- **WHEN** a representative invocation fails
+- **THEN** the author SHALL receive preserved raw diagnostics and the original exception chain before correction
+- **AND** another run SHALL occur only after the evidence is inspected or the exact missing diagnostic fact is identified.
+
+#### Scenario: Routine success avoids log noise
+- **WHEN** normal processing succeeds repeatedly or iterates over many items
+- **THEN** the implementation SHALL NOT emit per-item success logs solely to satisfy observability
+- **AND** meaningful failures SHALL remain attributable at their owning boundary.

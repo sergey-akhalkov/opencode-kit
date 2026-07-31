@@ -41,7 +41,7 @@ jobs:
         run: npm test
 
       - name: Run code-quality inventory
-        run: npm run code-quality:inventory -- --root . --format markdown --fail-on-split-candidates --attention-lines 400 --split-lines 800
+        run: npm run code-quality:inventory -- --root . --format markdown --attention-lines 400 --split-lines 800
 
       - name: Run instruction inventory
         run: npm run instruction:inventory -- --format markdown

@@ -213,3 +213,17 @@ Previously captured Change-Status, Done-Done, reviewer-recovery, and RC-on-proof
 - **THEN** it MAY remain labeled as historical
 - **AND** it SHALL NOT establish the current candidate's Development-Stage.
 
+### Requirement: Architecture and diagnostic quality stay executable
+
+The always-loaded global authority SHALL require responsibility-aware local comprehension, `split-or-justify` without a hard line quota, preservation of the original exception cause/stack, structured safe context at owning failure boundaries, and Runtime Proof capture of exit status, stdout/stderr, relevant logs/exceptions, and artifact paths. Project templates, reusable instructions, the canonical loop, production/testing roles, and relevant planning, architecture, code-quality, and qualification skills SHALL contain only the concise shared rule or their role-specific delta.
+
+Deterministic validation SHALL use exact marker checks as drift tripwires for the global authority and an explicit maintained-mirror list. These checks SHALL NOT claim to prove semantic policy direction; canonical scenarios and semantic review retain that responsibility. Doctor inspection of the resolved active global config SHALL treat missing global architecture or diagnostic quality markers as incomplete runtime authority. The executable contract SHALL live in a focused validator module with its required-text lists under `tools/contracts/`, rather than enlarging an unrelated validator god file.
+
+#### Scenario: Active authority loses diagnostic capture
+- **WHEN** the resolved global `AGENTS.md` omits stdout/stderr, exception-chain, or artifact-path proof requirements
+- **THEN** doctor and repository validation SHALL report incomplete architecture/diagnostic authority.
+
+#### Scenario: Mirror drops split-or-justify
+- **WHEN** an explicitly listed maintained project or role surface drops its required `split-or-justify` marker
+- **THEN** deterministic repository validation SHALL fail and name the drifting artifact
+- **AND** retaining the marker SHALL NOT replace semantic review of the surrounding policy.

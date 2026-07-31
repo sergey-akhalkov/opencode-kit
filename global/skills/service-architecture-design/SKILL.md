@@ -11,12 +11,14 @@ Use this skill when shaping service architecture, design docs, specs, or impleme
 ## Design Areas
 
 - System boundary, operating envelope, and non-goals for the next increment.
+- Cohesive code/module ownership that keeps routine changes understandable through targeted reads; navigation-heavy touched files require one responsibility extraction or `split-or-justify`, not wrapper-only fragmentation.
 - Ownership of state, requests, responses, resources, sessions, and retries.
 - Concurrency model: actors, workers, queues, locks, async boundaries, cancellation, shutdown.
 - Failure model: dependency failure, partial IO, timeout, overload, stale state, crash, restart.
 - API/protocol model and compatibility constraints.
 - Deployment model: service/process split, config, secrets, logging, diagnostics, upgrades.
-- Observability: metrics, tracing, logs, health, readiness, auditability.
+- Observability: meaningful failure boundaries, existing logging/error mechanisms, original exception cause/stack, structured safe operation/correlation context, log-once ownership, noise/redaction limits, metrics, tracing, health, readiness, and auditability.
+- Diagnostic evidence: exact invocation/input, identity, exit status, stdout/stderr, relevant logs/exceptions, side effects, artifact paths, retention, and the smallest instrumentation needed when realistic causes remain indistinguishable.
 - Testability: fake dependencies, integration tests, load tests, manual gates.
 - Implementation slices define the contract and observable happy path, implement and prove that path, then apply focused validation. Material/explicit qualification then uses a separate fresh-context SDET/testing subagent for acceptance, negative, recovery, and characterization evidence from the architecture risk matrix. Ordinary Small may add only the smallest optional post-proof regression test.
 

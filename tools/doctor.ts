@@ -8,6 +8,7 @@ import {
   agentsAuthorityProblem,
   skillAuthorityProblem,
 } from "./validators/active-authority.ts";
+import { engineeringQualityAuthorityProblem } from "./validators/engineering-quality.ts";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
 
 type OutputFormat = "json" | "markdown";
@@ -78,7 +79,7 @@ function inspectRequiredAuthorityFile(
     }
     const text = fs.readFileSync(file, "utf8");
     if (relative === "AGENTS.md") {
-      const problem = agentsAuthorityProblem(text);
+      const problem = agentsAuthorityProblem(text) ?? engineeringQualityAuthorityProblem(text);
       return problem == null ? { ok: true } : { ok: false, problem };
     }
     const problem = skillAuthorityProblem(text);

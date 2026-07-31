@@ -50,6 +50,9 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 
 - Treat source, tests, schemas, scripts, generated artifacts, and live output as primary evidence.
 - Implement and observably prove the smallest complete happy path for the next working increment before edge-case testing. Prefer remove/narrow/reuse/local guard before new mechanisms.
+- Keep touched human-written code locally understandable. Treat line count as a navigation signal, not a quota; do not add a new responsibility to an already mixed file without extracting one cohesive owner or recording `split-or-justify`. Do not replace a god file with wrapper-only micro-files.
+- Use the project's existing error/logging mechanism at meaningful failure boundaries. Preserve the original exception cause/stack, add structured safe operation/correlation context when useful, and avoid duplicate or routine-noise logging.
+- Runtime proof must retain exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Inspect that evidence before mutation or rerun; add only the smallest missing instrumentation needed to distinguish realistic causes.
 - Ordinary Small: after happy-path proof, main may create or update the smallest focused regression test when useful. Prefer existing tests when sufficient.
 - Material behavior: only a fresh conforming SDET that did not author production may create or modify the smallest critical reproducer/regression artifact after MVP and accepted-scope completion. It prioritizes reachable critical incidents at real boundaries over coverage percentages.
 - Headroom MCP: compress large reusable tool output; do not compress exact edit targets or short errors.

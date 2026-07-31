@@ -353,7 +353,7 @@ const tests: TestCase[] = [
         "Optional final-candidate, delivery, code-quality, or domain review may run after MVP",
         "critical-risks-reported | no-critical-risk | blocked",
         "Reviewer/SDET evidence must never authorize mutation",
-        "Mutation returns to development; current proof restores MVP",
+        "Product Candidate mutation returns to development and invalidates dependent proof",
         "freezes the next `RC<n>`",
         "promote the same RC to stable",
         "external operations remain separately authorized",

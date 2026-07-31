@@ -26,6 +26,8 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 - Prefer the next useful working increment inside a technically enforced operating envelope; remove/narrow/reuse/local guard before new mechanisms.
 - No unrelated cleanup/refactors. Scope expansion (changed accepted outcome, out-of-envelope behavior, weakened invariant, protected-boundary crossing) needs explicit user approval; necessary local reversible dependency closure does not.
+- Keep touched human-written code locally understandable. Line count is a navigation signal, not a quota; adding a responsibility to an already mixed file requires one cohesive extraction or a `split-or-justify` decision, not wrapper-only fragmentation or a broad cleanup.
+- At meaningful failure boundaries, use existing project diagnostics, preserve the original exception cause/stack, and add structured safe operation/correlation context without duplicate or routine-noise logging. Real-boundary proof retains exit status, stdout/stderr, relevant logs/exceptions, and artifact paths for inspection before mutation or rerun.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
 - Ordinary Small: after happy-path proof, main may create or modify the smallest focused regression test when useful. Prefer existing tests when sufficient.
 - Material/explicit qualification: only a separate fresh-context testing subagent that did not author production code may create or modify automated test artifacts. Give it test-only write scope, forbid production paths, and require an independent realistic risk matrix.

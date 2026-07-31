@@ -6,6 +6,7 @@ import {
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
   GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
 } from "../contracts/skills.ts";
+import { GLOBAL_ENGINEERING_QUALITY_MARKERS } from "../contracts/engineering-quality.ts";
 import {
   asArray,
   asRecord,
@@ -103,6 +104,7 @@ Optional reviewers may run after MVP for concrete risk, project policy, or owner
 Before the first mutation, load change-ready-sdlc for an explicit stable request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
 Before stable, require a bounded accepted outcome and non-goals, real-boundary happy-path proof, complete accepted scope, green applicable project-native validation, protection of critical safety/data/authorization invariants, sufficient failure visibility, and no known reachable critical or non-deferrable defect.
+Engineering quality authority: ${GLOBAL_ENGINEERING_QUALITY_MARKERS.join("; ")}.
 Protected-boundary owner authority includes: ${protectedBoundaryAuthorityFixtureText}.
 ${GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE}
 Decision-ready handoff states: ${decisionReadyHandoffFixtureText}. State every listed field explicitly; when evidence is absent, use unknown or none.
@@ -169,6 +171,8 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
   assert(!isolatedAuthoritySource.includes('from "js-yaml"'), "Isolated active-authority must resolve the real installed js-yaml module.");
   writeText(path.join(fixtureRoot, "tools", "validators", "active-authority.ts"), isolatedAuthoritySource);
   writeText(path.join(fixtureRoot, "tools", "contracts", "skills.ts"), fs.readFileSync(path.join(root, "tools", "contracts", "skills.ts"), "utf8"));
+  writeText(path.join(fixtureRoot, "tools", "contracts", "engineering-quality.ts"), fs.readFileSync(path.join(root, "tools", "contracts", "engineering-quality.ts"), "utf8"));
+  writeText(path.join(fixtureRoot, "tools", "validators", "engineering-quality.ts"), fs.readFileSync(path.join(root, "tools", "validators", "engineering-quality.ts"), "utf8"));
   const configPolicy = fs.readFileSync(path.join(root, "tools", "validators", "opencode-config.ts"), "utf8")
     .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
   writeText(path.join(fixtureRoot, "tools", "validators", "opencode-config.ts"), configPolicy);

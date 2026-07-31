@@ -47,10 +47,36 @@ After MVP:
 
 - incomplete accepted scope remains required work;
 - a reproduced accepted-outcome, critical, or non-deferrable defect authorizes its smallest correction;
-- known non-critical bugs, optional coverage, maintainability, style, wording, report formatting, diagnostic noise, optimization, and future-scale work are recorded and parked;
+- known non-critical bugs, optional coverage, pre-existing maintainability debt, style, wording, report formatting, optional diagnostic polish, optimization, and future-scale work are recorded and parked;
 - parked non-critical work never blocks RC or stable.
 
+Current-change architecture and diagnostics are part of the same bounded implementation edit set as the behavior change, not a second post-MVP refactor program. A touched human-written file that already mixes owners SHALL NOT receive a new responsibility without one cohesive extraction or a `split-or-justify` decision. Existing unrelated debt remains parked. Meaningful in-scope failure boundaries preserve the original exception cause/stack and sufficient safe diagnostic context; optional logging polish remains parked.
+
 The phrase "all critical bugs are fixed" means no **known confirmed reachable** critical or non-deferrable defect remains inside the enforced operating envelope. It never claims that undiscovered bugs are impossible.
+
+## Evidence Topology And Scoped Invalidation
+
+For evidence-heavy work, identify these roles before building or changing a proof harness:
+
+- **Product Candidate**: behavior-affecting production code, config, data, or schema;
+- **Proof Runner**: drives the real boundary and records observations;
+- **Evaluator**: derives acceptance results from observations;
+- **Environment Identity**: relevant executable, configuration, dependency, hardware, dataset, or service identity;
+- **Raw Evidence Bundle**: immutable observations and hashes used for replay.
+
+For runtime lanes, the Raw Evidence Bundle includes the exact invocation and representative input, Candidate/Environment identity, exit status, stdout/stderr, relevant logs and exceptions, observed side effects, and artifact paths. Inspect that preserved evidence before mutation or another live attempt. If it cannot distinguish realistic in-scope causes, add only the smallest safe instrumentation at the owning boundary and recapture the affected lane.
+
+Invalidation is dependency-scoped:
+
+- Product Candidate mutation invalidates dependent Runtime Proof and validation lanes and returns the candidate to `development`.
+- Environment mutation invalidates only lanes that rely on that identity.
+- Proof Runner mutation invalidates only captures whose driven behavior or recorded facts may differ.
+- Evaluator-only mutation invalidates derived verdicts, not trustworthy raw observations; replay the preserved bundle instead of repeating a live/external attempt.
+- Report or documentation formatting changes invalidate nothing unless accepted semantics or evidence interpretation changed.
+
+Keep runtime fail-closed guards for non-deferrable safety, identity/liveness, authorization, data-integrity, ownership/correlation, required restoration/cleanup, irreversible-action, and envelope-escape conditions. Domain-specific policy may add concrete guards but must not omit accepted global invariants. A live fail-closed outcome is not evidence-only and evaluator replay cannot waive it. Evaluate non-safety cardinality, grouping, formatting, percentile, report, and similar acceptance oracles after raw capture when possible. Such evaluator failures must not alter cleanup or manufacture an unknown product state.
+
+Proof may compose multiple bounded lanes against the same Product Candidate and compatible Environment Identity unless simultaneity is itself an accepted requirement. After an evidence-only failure, preserve the complete raw bundle and replay every reachable evaluator before another live/external attempt. A repeated evidence-only failure in the same chain blocks another attempt until regression evidence covers the preserved corpus or the exact missing observation is recorded.
 
 ## Orchestrator And Writer Safety
 
@@ -68,11 +94,11 @@ Freeze the accepted outcome capsule, trusted validation, operating envelope, pro
 
 Main implements the smallest complete happy path and owns run-observe-correct. Production authors do not create or modify automated tests, fixtures, snapshots, fakes, simulators, harnesses, or goldens.
 
-After current Runtime Proof, capture a readable Candidate Reference and set `Development-Stage: MVP`. Failed proof remains `development` and consumes no RC number.
+After current Runtime Proof, capture a readable Product Candidate Reference plus Proof Runner, Evaluator, Environment Identity, and Raw Evidence Bundle identities when applicable, then set `Development-Stage: MVP`. Failed proof remains `development` and consumes no RC number.
 
 ### 3. Complete Accepted Scope
 
-Implement the remaining accepted scope without optional polishing. Every candidate mutation returns to `development`; repeat Runtime Proof to restore `MVP`. Keep unrelated work intact.
+Implement the remaining accepted scope without optional polishing. Product Candidate mutation returns to `development`; repeat affected Runtime Proof lanes to restore `MVP`. Runner, evaluator, environment, and report mutations follow the scoped invalidation rules above. Keep unrelated work intact.
 
 ### 4. Optional Risk Discovery
 
@@ -92,7 +118,7 @@ Main independently reproduces each row. Another fresh attempt is earned only whe
 
 Run every applicable trusted project-native validation procedure. With accepted scope complete, validation green, terminal Material SDET usable when applicable, and no known confirmed reachable critical/non-deferrable defect, freeze the next monotonic `RC<n>`.
 
-RC numbering starts at RC1 and never resets within the root. Candidate-affecting mutation invalidates RC/stable and returns to `development`; current proof restores MVP, and the next complete qualification freezes `RC<n+1>`.
+RC numbering starts at RC1 and never resets within the root. Product Candidate mutation invalidates RC/stable and returns to `development`; scoped runner/environment mutation invalidates affected evidence lanes; evaluator/report mutation requires replay but does not erase trustworthy raw product observations. Current affected proof restores MVP, and the next complete qualification freezes `RC<n+1>`.
 
 ### 7. Stable Handoff
 
@@ -108,8 +134,11 @@ After restart or compaction, reconstruct the accepted outcome, current Candidate
 
 - `Profile`: Ordinary Small | Material
 - `Outcome`: working | not working | unknown
-- `Candidate Reference`: readable current candidate or none
+- `Candidate Reference`: readable Product Candidate plus runner/evaluator/environment identities when applicable, or none
+- `Raw Evidence Bundle`: immutable observations and lane status, or N/A with reason
 - `Runtime Proof`: boundary, input, expected/actual observation, side effects, outcome
+- `Architecture`: touched responsibilities and `split-or-justify` decisions, or N/A with reason
+- `Diagnostics`: exit status, stdout/stderr, relevant log/exception and artifact paths, or N/A with reason
 - `Critical SDET`: terminal state and confirmed-critical correction history, or N/A with reason
 - `Validation`: trusted commands and outcomes
 - `Known Non-Critical Limitations`: list or none

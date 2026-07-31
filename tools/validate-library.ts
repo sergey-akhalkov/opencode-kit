@@ -34,6 +34,7 @@ import {
   validateImplementationWorkerRouting,
   validateSessionDeliveryBinding,
 } from "./validators/routing.ts";
+import { validateEngineeringQualityContracts } from "./validators/engineering-quality.ts";
 
 type Options = {
   failOnWarnings: boolean;
@@ -150,6 +151,7 @@ function main(): void {
   validateProfiles(ctx, root, skillNames, agentNames);
   validateImplementationWorkerRouting(ctx, root, agentNames);
   validateSessionDeliveryBinding(ctx, root, agentNames);
+  validateEngineeringQualityContracts(ctx, root);
   validateModelProfiles(ctx, root);
   validateOpenCodeConfigFiles(ctx, root);
   validateReadme(ctx, root, skillNames, agentNames, instructionNames);
