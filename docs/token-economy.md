@@ -1,6 +1,6 @@
 # Token Economy
 
-Token economy is part of quality: lower context cost leaves more budget for reasoning, validation, and review.
+Speed means time to a verified working result, fewer owner interruptions, fewer tokens/tool calls, less repeated manual work, more safe parallelism, and deterministic automation. Token economy is one mechanism: lower context cost leaves more budget for reasoning, validation, and review, but never justifies weaker proof.
 
 ## Rules
 

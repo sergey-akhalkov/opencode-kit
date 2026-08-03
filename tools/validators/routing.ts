@@ -18,11 +18,15 @@ import {
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
+  GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS,
   GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS,
   GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
   LIFECYCLE_ROLE_ROUTES,
   MAINTENANCE_ROUTING_FILES,
+  OPERATING_PRIORITY_COMPLETE_LABELS,
+  OPERATING_PRIORITY_DUPLICATE_SCAN_FILES,
+  OPERATING_PRIORITY_DUPLICATE_SCAN_PREFIXES,
   OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
   OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
   OUTCOME_FIRST_ROLE_DELTA_SURFACES,
@@ -255,6 +259,9 @@ function validateGlobalAgentsTriggerTopology(
   for (const token of GLOBAL_AGENTS_TRIGGER_TOKENS) {
     requireTextContains(ctx, operative, token, "global AGENTS Change-Ready trigger", file);
   }
+  for (const token of GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS) {
+    requireTextContains(ctx, operative, token, "global AGENTS operating priorities", file);
+  }
   for (const role of LIFECYCLE_ROLE_ROUTES) {
     requireTextContains(ctx, operative, role, "global AGENTS lifecycle role route", file);
   }
@@ -284,6 +291,33 @@ function validateGlobalAgentsTriggerTopology(
       "global AGENTS outcome-first and Development-Stage policy",
       file,
     );
+  }
+}
+
+function validateOperatingPriorityDuplication(ctx: ValidationContext, root: string): void {
+  for (const file of walkMarkdownFiles(root)) {
+    const relative = toPosixPath(path.relative(root, file));
+    if (relative === GLOBAL_AGENTS_RELATIVE) {
+      continue;
+    }
+    const inScope =
+      OPERATING_PRIORITY_DUPLICATE_SCAN_FILES.includes(relative) ||
+      OPERATING_PRIORITY_DUPLICATE_SCAN_PREFIXES.some((prefix) => relative.startsWith(prefix));
+    if (!inScope) {
+      continue;
+    }
+    const operative = readRoutingSurfaceOperativeText(ctx, root, file);
+    if (operative == null) {
+      continue;
+    }
+    const copiedLabels = OPERATING_PRIORITY_COMPLETE_LABELS.filter((label) =>
+      operative.includes(label),
+    );
+    if (copiedLabels.length === OPERATING_PRIORITY_COMPLETE_LABELS.length) {
+      ctx.addError(
+        `Operating priority contract duplication: ${relative} copies the complete label set; keep the full contract only in ${GLOBAL_AGENTS_RELATIVE}`,
+      );
+    }
   }
 }
 
@@ -459,6 +493,7 @@ export function validateImplementationWorkerRouting(
     validateGlobalAgentsTriggerTopology(ctx, root);
     validateOutcomeAuthorityScope(ctx, root);
     validateOutcomeFirstDevelopmentStageAuthority(ctx, root);
+    validateOperatingPriorityDuplication(ctx, root);
     validateDuplicateLifecycleMarkers(ctx, root);
     validateForbiddenProductionRouting(ctx, root);
   }

@@ -1,6 +1,6 @@
 # Quality Gates
 
-Quality gates make the Universal Development Loop executable and reviewable.
+Quality gates make the Universal Development Loop executable and reviewable. They protect quality first while proportional scope, focused checks, autonomous defaults, and risk-driven breadth minimize time to a verified result.
 
 The canonical loop definition lives at `instructions/universal-development-loop.md`; this document only describes the gate matrix and adapter commands that operate on top of it.
 

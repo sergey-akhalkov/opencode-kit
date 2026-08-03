@@ -81,8 +81,10 @@ function validateOpenCodePermissionRules(
   file: string,
   root: string,
 ): void {
-  const isMachineLocalConfig = sameConfigPath(file, path.join(root, "global", "opencode.json"));
-  const notePermission = isMachineLocalConfig
+  const isIntentionalGlobalConfig =
+    sameConfigPath(file, path.join(root, "global", "opencode.json")) ||
+    sameConfigPath(file, path.join(root, "global", "opencode.json.template"));
+  const notePermission = isIntentionalGlobalConfig
     ? (message: string): void => {
         ctx.addInfo(message);
       }

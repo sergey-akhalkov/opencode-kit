@@ -213,6 +213,8 @@ Incident narratives, examples, source dumps, and rule provenance stay out of run
 
 ### 8. Instruction growth is a budgeted replacement transaction
 
+Baseline capture for this change starts only after `prioritize-quality-autonomy-speed` is complete and its accepted runtime priority authority is part of the repository candidate. Parallel mutation of overlapping runtime instruction files is forbidden before that dependency is satisfied.
+
 The implementation first adds a deterministic scoped inventory mode that emits a complete stable JSON manifest for the runtime corpus:
 
 - `global/AGENTS.md`

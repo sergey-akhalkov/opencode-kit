@@ -23,7 +23,7 @@ For broad audits that include multiple skills/agents, global config, installed c
 - Risk-driven test discipline: implementation-capable artifacts require observable happy-path proof before systematic test design. Material/explicit qualification then requires independent fresh-context test authoring against realistic production risks and real boundaries. Ordinary Small uses focused validation and optional smallest post-proof regression.
 - Implementation quality: implementation-capable artifacts protect local comprehension with responsibility-aware `split-or-justify` guidance and require useful exception/log evidence plus preserved stdout/stderr at real proof boundaries without mandating noisy logging or hard line quotas.
 - Tool safety: edit/read-only boundaries, destructive-operation policy, remote-state policy, and permissions are explicit.
-- Context efficiency: remove repeated boilerplate, stale examples, source dumps, and project-specific details that should be local.
+- Operating priorities and context efficiency: preserve quality/safety -> autonomy -> speed, keep full policy global, and remove repeated or local-only context.
 - AI usability: critical routing, permissions, blockers, and output schema are near the top and easy to retrieve.
 - Runtime realism: distinguish startup rules, discovered skill/agent catalogs, on-demand skill content, installed copies, active config, and live loader behavior.
 - Deterministic automation opportunities: identify where a small helper could gather, validate, diff, redact, or inventory evidence faster than prose, without replacing judgment.

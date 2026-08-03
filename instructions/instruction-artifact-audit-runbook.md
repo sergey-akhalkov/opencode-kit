@@ -21,7 +21,7 @@ Cover every lane that applies; mark non-applicable lanes explicitly.
 - `Installed State`: global/project installed copies under OpenCode config directories, personal skill folders, backups, and copy drift.
 - `Runtime Policy`: official docs, local docs mirror, schema/source, `opencode debug config`, and live loader output when available.
 - `Context Cost`: line counts or token proxy for global `AGENTS.md`, heavy skills, available skill catalog size, and repeated boilerplate.
-- `Autonomy Policy`: when the main session proceeds, asks the user, launches reviewers, creates/updates PR/MR text, or stops.
+- `Operating Priorities`: ordered quality/safety -> autonomy -> speed; blocker-only questions; verified-result speed without weaker proof.
 - `Permission Semantics`: prose-only, wildcard config, explicit config, semantic hook/plugin, or managed policy enforcement.
 - `Reviewer Gates`: which read-only reviewers ran, what evidence they checked, and which gates were skipped with reasons.
 - `Prevention Feedback Loop`: reviewer `Prevention Feedback` blocks, `instruction:feedback` ledger entries, routing decisions, replay evidence, and unresolved pending entries.
@@ -80,6 +80,7 @@ Do not describe wildcard shell patterns as hard enforcement. Report them as best
 - `Prevention Feedback`: open/applied/replayed/resolved counts and replay evidence coverage.
 - `Validator Tests`: before -> after test count and new failure modes.
 - `Reviewer Gates`: reviewers run, findings fixed, findings deferred.
+- `Delivery Speed`: avoidable questions/repetition/calls, safe parallelism, and automation; no routine per-task telemetry.
 
 ## Output Contract
 

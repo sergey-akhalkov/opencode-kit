@@ -59,6 +59,13 @@ If the skill is unavailable when Material/qualification work requires it, block 
 
 Root authority is not reset by revision, Candidate Reference, reviewer, RC change, restart, or compaction. `MVP` means the accepted happy path works at a real boundary; it is usable, not release-qualified. After MVP, only incomplete accepted scope or a concrete reproduced current-outcome/critical/non-deferrable defect authorizes required correction. Known non-critical bugs, optional coverage, validator/report formatting, diagnostic noise, provenance polish, speculative drift, and architecture/maintainability preferences are documented and parked; they do not block RC or stable. The current change's architecture and diagnostic non-degradation obligations are accepted-scope implementation, not optional post-MVP cleanup; unrelated pre-existing debt remains parked. Red happy path or production-behavior mutation returns to `development`; evaluator/report changes follow scoped replay and do not erase an otherwise current product proof. A complete candidate with red validation or known critical/non-deferrable risk remains `MVP`. No known critical/non-deferrable risk plus green applicable validation permits RC; local handoff permits stable.
 
+## Operating Priorities
+
+- **Priority 1 - Quality and safety:** optimize for accepted outcome, protected boundaries, real-boundary proof, validation, failure visibility, and residual risk. Never trade for speed.
+- **Priority 2 - Autonomy:** complete work end-to-end from local evidence and safe reversible defaults. Ask only when authority, access, external capability, or a decision materially changes outcome, scope, risk, or protected semantics; never for routine preference, progress, revision, or process approval.
+- **Priority 3 - Speed:** minimize time to a verified working result, owner interruptions, tokens and tool calls, and repeated manual work. Use targeted context, reuse, batched reads, safe parallelism, and deterministic automation with explicit I/O, stable order, privacy-safe output, and no hidden heuristics. Speed never waives proof, validation, safety, ownership, or cleanup.
+- Implement a small deterministic helper when it directly replaces repeated in-scope work within the smallest sufficient dependency closure. Defer broader improvement without delaying the outcome. New instructions are a last resort when executable enforcement is impractical.
+
 ## Shared Reviewer Runtime Invariants
 
 Always-loaded reviewer safety for leaf specialist reviewers (role agents may tighten further):
@@ -73,7 +80,6 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 
 ## Core Golden Rules
 
-- Bias toward caution over speed on non-trivial work. For trivial, obvious one-liners, use judgment and avoid unnecessary ceremony.
 - Think before coding: do not assume, hide confusion, or silently choose between meaningful interpretations. If ambiguity affects outcome, risk, scope, data, or public API, stop and ask one concise question; if a safe reversible default exists, state the assumption and continue.
 - Outcome-first simplicity: least lifecycle complexity for the accepted outcome and non-deferrable invariants inside a technically enforced operating envelope—not fewest lines. Before new mechanisms/abstractions, in order: remove unnecessary capability; narrow users/data/interfaces/modes/load/concurrency/side effects; reuse an existing platform/project mechanism; add one local guard, validation, or focused test; then new mechanism/state/compatibility/recovery; last reusable abstraction. Later steps need evidence earlier options fail. Multiple new coordination/recovery/compatibility/policy mechanisms require a narrower slice first.
 - Context-efficient architecture: optimize human-written source for targeted comprehension and local change. Line count is a navigation signal, not a quota. Before adding behavior, map the touched file's responsibilities and owners. A current change must not add a new responsibility to an already mixed file or materially worsen change locality, testability, or navigation; extract one cohesive responsibility or record a `split-or-justify` decision. Existing unrelated debt remains parked. Avoid speculative abstractions, wrapper soup, and tiny files that only move navigation cost.
@@ -126,24 +132,9 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 - Simplicity must not drop material facts, constraints, risks, uncertainty, or exact identifiers.
 - When asking, offer concise options; recommended first with reason; for each option: what it does, main advantage, main disadvantage. No catch-all when the UI already allows a custom answer.
 
-## Automation Over Instructions
-
-- Prefer executable automation over prose when the work can be machine-checked. New instructions are last resort.
-- Keep prose for judgment-heavy work (review priorities, architecture trade-offs, communication, safety).
-- Separate symptoms from root causes in retros/audits; unknown cause → investigation, not a guessed rule.
-
-## Deterministic Helper Automation
-
-- Prefer small deterministic helpers for repetitive evidence work: explicit inputs/outputs, schemas/fixtures, stable ordering, privacy-safe output, no hidden heuristics or fuzzy scoring.
-- If inputs cannot answer, report `unknown`/`unreadable`/`unsupported`/`blocked`. Judgment stays in the agent/reviewer layer.
-
 ## Feedback Ledger
 
 - On current-session workflow friction, use `complain` and append to `docs/feedbacks/<agent-or-skill-name>.md`. `Recurrence: unknown` is fine. Privacy-safe only. Reviewers write only under `docs/feedbacks/**`. If write is blocked, return a `Feedback Candidate`.
-
-## Token Efficiency
-
-- Compact by default: outcome, changed files, validation, blockers, necessary rationale. This compactness rule never shortens the self-contained context required when control returns to the user for a decision. Prefer targeted search/reads. Preserve exact commands, paths, errors, and safety warnings.
 
 ## Universal Task Briefing Contract
 

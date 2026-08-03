@@ -6,7 +6,7 @@ Installable OpenCode development kit for reusable AI-assisted engineering workfl
 
 ## What This Is
 
-`opencode-dev-kit` packages reusable OpenCode skills, read-only reviewer agents with a scoped feedback-ledger write exception, bounded worker agents, project templates, instruction templates, and deterministic helper tools. Its purpose is to make work in other repositories faster, cheaper in tokens, and safer without creating a different workflow for every technology stack.
+`opencode-dev-kit` packages reusable OpenCode skills, read-only reviewer agents with a scoped feedback-ledger write exception, bounded worker agents, project templates, instruction templates, and deterministic helper tools. It applies one ordered operating contract: protect quality and safety, continue autonomously, then optimize speed to a verified result without creating a different workflow for every technology stack.
 
 The kit optimizes one process: main-default production authorship, run-observe-correct to MVP, accepted-scope completion, critical-only SDET for Material behavior, applicable validation, RC freeze, and local stable handoff. Optional reviewers never become stage gates.
 
@@ -47,7 +47,7 @@ Point OpenCode at this repository as the single source of truth for global confi
 npm run install:global
 ```
 
-`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed portable default (GPT-5.6 Sol main model, compaction, watcher, tool output, `permission: ask`); the installer provisions a local `global/opencode.json` from it on first run. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission/review-environment overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
+`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed autonomy-first portable default (GPT-5.6 Sol main model, compaction, watcher, tool output, `permission: allow`); the installer provisions a local `global/opencode.json` from it on first run. This permissive tool setting is not an OS sandbox: protected-boundary instructions remain mandatory, while managed enforcement requires a separate policy layer. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission/review-environment overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
 
 Options:
 
@@ -84,7 +84,7 @@ Keep project-specific skills out of `global/` unless their descriptions explicit
 The kit uses three OpenCode config files with a documented layering:
 
 - `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. Use it for repo-local MCPs (for example the bundled `headroom` MCP) and the workspace-wide `permission: ask` policy.
-- `global/opencode.json.template` — the portable safe default that ships with the kit. It declares the GPT-5.6 Sol main model default, compaction, watcher, tool output, and `permission: ask`. Never edit this file for machine-specific overrides.
+- `global/opencode.json.template` — the portable autonomy-first default that ships with the kit. It declares the GPT-5.6 Sol main model default, compaction, watcher, tool output, and `permission: allow`. It provides permissive tool access, not hard sandbox enforcement. Never edit this file for machine-specific overrides.
 - `global/opencode.json` — the machine-local config (gitignored). Provisioned from `global/opencode.json.template` on first install and editable for local provider, MCP, permission, and review-environment settings.
 
 The validator identifies the machine-local layer by its gitignored `global/opencode.json` path and reports broad local permission overrides as `INFO:` notes. Never add unsupported marker fields to OpenCode config; every field must exist in the official OpenCode schema.
@@ -235,7 +235,7 @@ npm run validate
 npm test
 ```
 
-The validator checks skill and agent frontmatter shape, skill trigger/output contracts, compact reviewer leaf contracts, README catalog/routing sync, repo/project-template autonomy and remote/destructive guards, TypeScript-only development policy, deterministic helper automation policy, reusable reviewer permission policy, OpenCode config warnings for broad mutation-capable wildcard `allow` permissions, optional project-neutral anchors passed via `--forbidden-anchor`, trailing whitespace, and warning-level workflow findings for implementation artifacts that omit observable happy-path proof and independent risk-driven testing.
+The validator checks skill and agent frontmatter shape, skill trigger/output contracts, compact reviewer leaf contracts, README catalog/routing sync, repo/project-template autonomy and remote/destructive guards, TypeScript-only development policy, deterministic helper automation policy, reusable reviewer permission policy, informational broad-permission diagnostics for the two intentional global config paths, warnings for broad mutation-capable `allow` elsewhere, optional project-neutral anchors passed via `--forbidden-anchor`, trailing whitespace, and warning-level workflow findings for implementation artifacts that omit observable happy-path proof and independent risk-driven testing.
 
 This repository validator is a policy and consistency gate, not a complete implementation of the OpenCode JSON Schema. Validate config fields against `https://opencode.ai/config.json` and confirm startup with the real OpenCode loader; repository validation must never invent fields to suppress its own diagnostics.
 

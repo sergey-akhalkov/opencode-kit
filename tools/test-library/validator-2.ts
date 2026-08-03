@@ -770,6 +770,65 @@ export const validatorTests2: TestCase[] = [
     },
   },
   {
+    name: "validator treats exact global/opencode.json.template top-level allow as info in strict mode",
+    run: () => {
+      const fixture = newLibraryFixture("global-template-permission-info");
+      writeText(path.join(fixture, "global", "opencode.json.template"), lines([
+        "{",
+        "  \"$schema\": \"https://opencode.ai/config.json\",",
+        "  \"model\": \"openai/gpt-5.6-sol\",",
+        "  \"permission\": \"allow\"",
+        "}",
+      ]));
+      const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
+      assertSuccess(result, "Strict mode should accept exact portable global template top-level allow.");
+      assertOutputContains(result, "INFO: OpenCode permission config uses top-level allow", "Exact global template allow must remain visible as info.");
+      assertOutputContains(result, "warnings=0", "Exact global template allow must not become a strict-mode warning.");
+      assertOutputExcludes(result, "WARN: OpenCode permission config uses top-level allow", "Exact global template allow must not be warning-class.");
+    },
+  },
+  {
+    name: "validator treats exact global/opencode.json top-level allow as info in strict mode",
+    run: () => {
+      const fixture = newLibraryFixture("global-machine-local-top-level-allow-info");
+      writeText(path.join(fixture, "global", "opencode.json.template"), lines([
+        "{",
+        "  \"$schema\": \"https://opencode.ai/config.json\",",
+        "  \"model\": \"openai/gpt-5.6-sol\"",
+        "}",
+      ]));
+      writeText(path.join(fixture, "global", "opencode.json"), lines([
+        "{",
+        "  \"$schema\": \"https://opencode.ai/config.json\",",
+        "  \"model\": \"owner/local-primary-model\",",
+        "  \"permission\": \"allow\"",
+        "}",
+      ]));
+      const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
+      assertSuccess(result, "Strict mode should accept exact machine-local top-level allow.");
+      assertOutputContains(result, "INFO: OpenCode permission config uses top-level allow", "Exact machine-local allow must remain visible as info.");
+      assertOutputContains(result, "warnings=0", "Exact machine-local allow must not become a strict-mode warning.");
+      assertOutputExcludes(result, "WARN: OpenCode permission config uses top-level allow", "Exact machine-local allow must not be warning-class.");
+    },
+  },
+  {
+    name: "validator treats nested/global/opencode.json.template as a workspace warning in strict mode",
+    run: () => {
+      const fixture = newLibraryFixture("nested-global-template-permission-strict");
+      writeText(path.join(fixture, "nested", "global", "opencode.json.template"), lines([
+        "{",
+        "  \"$schema\": \"https://opencode.ai/config.json\",",
+        "  \"permission\": \"allow\"",
+        "}",
+      ]));
+      const result = invokeProcessCapture("node", [validator, "--root", fixture, "--fail-on-warnings"], root);
+      assertFailure(result, "A near-miss nested global template path must not receive intentional-global INFO treatment.");
+      assertOutputContains(result, "WARN: OpenCode permission config uses top-level allow", "Nested global template should retain workspace warning severity.");
+      assertOutputContains(result, "Warnings are not allowed", "Strict mode should fail on the nested template path warning.");
+      assertOutputExcludes(result, "INFO: OpenCode permission config uses top-level allow", "Near-miss template path must not be downgraded to INFO.");
+    },
+  },
+  {
     name: "validator strict mode fails for broad permission in workspace opencode.json",
     run: () => {
       const fixture = newLibraryFixture("workspace-permission-strict");

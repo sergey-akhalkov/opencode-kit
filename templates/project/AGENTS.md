@@ -19,18 +19,16 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 
 ## Autonomy
 
-- Continue autonomously when local evidence or a safe reversible default is enough.
+- Follow active global quality/safety -> autonomy -> speed without copying it. Continue when evidence or a safe reversible default is enough.
 - Ask the user only for exact user-owned blockers: credentials/elevation, missing external systems, destructive/remote actions, owner/product/security/legal decisions, protected-boundary semantic expansion, material residual-risk acceptance, or MR/PR outcomes. Never ask solely to approve an internal revision or process counter.
 - Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
 
 ## Owner Decision Handoff
 
-- Before asking about a real user-owned blocker, provide all decision-relevant context in one self-contained message. Assume the user has no prior context and will not open earlier chat, code, documents, logs, or links.
-- Explain in plain language: the goal and current state, what happened and why it matters, completed work, stopping point and evidence, facts and unknowns, root-cause confidence, attempted paths, why user authority is required, the exact decision, real options and practical consequences, risks and reversibility, recommendation and rationale, exact reply required, preserved state, and what happens next.
-- Define necessary jargon inline. Treat references and internal IDs as optional supporting evidence; explain what each proves and never use one as the question or option label.
-- Offer 2-4 options only when real alternatives exist. For each, explain the result, advantages, disadvantages, material risks, relevant cost, and next action. Recommend one with a reason. If only one viable action exists, say so.
-- Before asking, mentally remove every reference. If the user could not still understand the situation, compare choices, understand the recommendation and risks, and know the exact answer required, rewrite the handoff.
+- Follow the active global self-contained owner-handoff contract; this project defines no competing field list.
+- Before a real owner blocker, provide one self-contained message with goal/state, evidence/unknowns, attempts, authority need, options/consequences, risks/cost, recommendation, exact reply, preserved state, and next action; assume the user will not open earlier chat, code, documents, logs, or links.
+- Treat references and internal IDs as optional supporting evidence. Offer 2-4 options only for real alternatives, recommend one, and mentally remove every reference to verify the message stands alone.
 
 ## Process Control
 

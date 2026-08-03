@@ -6,8 +6,10 @@ import {
   CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS,
   CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
+  GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS,
   GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS,
   GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
+  OPERATING_PRIORITY_COMPLETE_LABELS,
   OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
   OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
 } from "../contracts/skills.ts";
@@ -254,6 +256,77 @@ export const changeReadyValidatorTests: TestCase[] = [
       assertOutputContains(result, relative, "Diagnostic must identify global/AGENTS.md.");
     },
   })),
+  ...GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS.map((marker): TestCase => ({
+    name: `validator rejects missing global operating-priority marker: ${marker}`,
+    run: () => {
+      assert(
+        (GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS as readonly string[]).includes(marker),
+        `Negative fixture marker is not configured for global operating priorities: ${marker}`,
+      );
+      const fixture = newLibraryFixture(`operating-priority-global-${marker.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
+      addChangeReadySdlcFixture(fixture);
+      const relative = path.join("global", "AGENTS.md");
+      const file = path.join(fixture, relative);
+      replaceRequiredText(file, marker, "[removed-operating-priority-marker]");
+      const result = invokeValidator(fixture);
+      assertFailure(result, `Missing global operating-priority marker must fail validation: ${marker}`);
+      assertOutputContains(result, "global AGENTS operating priorities", "Diagnostic must name the operating-priorities contract.");
+      assertOutputContains(result, marker, "Diagnostic must name the missing operating-priority marker.");
+      assertOutputContains(result, relative, "Diagnostic must identify global/AGENTS.md.");
+    },
+  })),
+  {
+    name: "validator requires operating-priority markers outside supported fences",
+    run: () => {
+      const marker = "Speed never waives proof";
+      assert(
+        (GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS as readonly string[]).includes(marker),
+        "Fenced operating-priority decoy marker must remain configured.",
+      );
+      for (const fence of operativeFenceCases) {
+        const fixture = newLibraryFixture(`operative-operating-priority-${fence.label}`);
+        addChangeReadySdlcFixture(fixture);
+        const relative = path.join("global", "AGENTS.md");
+        const file = path.join(fixture, relative);
+        replaceRequiredText(file, marker, "[removed-operative-operating-priority-marker]");
+        writeText(file, `${fs.readFileSync(file, "utf8")}\n${fence.block(marker)}`);
+        const result = invokeValidator(fixture);
+        assertFailure(result, `${fence.label} fenced-only operating-priority marker must fail operative validation.`);
+        assertOutputContains(
+          result,
+          `global AGENTS operating priorities must include '${marker}'`,
+          `${fence.label} diagnostic must name the exact missing operative operating-priority marker.`,
+        );
+        assertOutputContains(result, relative, `${fence.label} diagnostic must identify global/AGENTS.md.`);
+        assert(
+          !result.output.includes("unsupported non-top-level fenced-code syntax"),
+          `${fence.label} supported fence must not be misclassified as unsupported syntax.`,
+        );
+      }
+    },
+  },
+  {
+    name: "validator rejects a copied complete operating-priority label set outside global AGENTS",
+    run: () => {
+      const fixture = newLibraryFixture("operating-priority-complete-label-duplication");
+      addChangeReadySdlcFixture(fixture);
+      const relative = "global/agents/implementation-worker.md";
+      const file = path.join(fixture, ...relative.split("/"));
+      const missing = OPERATING_PRIORITY_COMPLETE_LABELS.filter((label) => !fs.readFileSync(file, "utf8").includes(label));
+      writeText(file, `${fs.readFileSync(file, "utf8")}\n## Noncanonical Priority Copy\n\n${OPERATING_PRIORITY_COMPLETE_LABELS.join("\n")}\n`);
+      assertEqual(
+        missing.length,
+        OPERATING_PRIORITY_COMPLETE_LABELS.length,
+        "Implementation-worker fixture must not already carry the complete operating-priority label set.",
+      );
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A noncanonical copy of the complete operating-priority label set must fail validation.");
+      assertOutputContains(result, "Operating priority contract duplication", "Diagnostic must name operating-priority duplication.");
+      assertOutputContains(result, relative, "Diagnostic must identify the offending noncanonical path.");
+      assertOutputContains(result, "global/AGENTS.md", "Diagnostic must identify the canonical global source.");
+      assertOutputContains(result, "complete label set", "Diagnostic must state the complete-label-set trigger.");
+    },
+  },
   ...CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS.map((marker): TestCase => ({
     name: `validator rejects missing canonical Development-Stage marker: ${marker}`,
     run: () => {

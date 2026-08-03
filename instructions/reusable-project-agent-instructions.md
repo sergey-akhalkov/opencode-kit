@@ -40,18 +40,16 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 ## Autonomy
 
-- Continue autonomously within the selected goal while safe, useful work remains.
+- Follow active global quality/safety -> autonomy -> speed without copying it. Continue within the goal while safe, useful work remains.
 - Ask the user only for exact user-owned blockers: credentials/elevation, hardware/manual gate, destructive/remote authorization, product/legal/security decision, protected-boundary semantic expansion, missing external capability, material residual-risk acceptance, or mode that forbids the action. Never ask solely to approve an internal revision or process counter. Every owner question must satisfy the Owner Decision Handoff contract below.
 - No routine questions when local evidence or a safe reversible default exists.
 - Necessary local reversible work for the accepted outcome may be added with traceability; optional improvements stay residual.
 
 ## Owner Decision Handoff
 
-- Put all decision-relevant context in one self-contained chat message immediately before the question. Assume the user has no prior context and will not open earlier chat, code, documents, logs, or links.
-- Start with a plain-language overview, then explain the goal and current state, what happened and why it matters, completed work, stopping point and evidence, facts and unknowns, root-cause confidence, attempted paths, why user authority is required, the exact decision, options and practical consequences, advantages and disadvantages, risks and reversibility, recommendation and rationale, the exact reply required, preserved state, and what happens next.
-- Define necessary jargon inline. References and internal IDs are optional supporting evidence only; explain what each proves and why it matters. Never use an internal ID as the question or option label.
-- Present 2-4 options only when real alternatives exist. Explain each option's practical result, tradeoffs, risks, relevant cost, and next action. Put the recommendation first. If only one viable action exists, say so instead of fabricating choices.
-- Before asking, mentally remove every reference. If the remaining message is insufficient to understand the situation, compare choices, understand the recommendation and risks, and give the exact required answer, rewrite it.
+- Follow the active global self-contained owner-handoff contract; this template defines no competing field list.
+- Before a real owner blocker, provide one self-contained chat message with goal/state, evidence/unknowns, attempts, authority need, options/consequences, risks/cost, recommendation, exact reply, preserved state, and next action; assume the user will not open earlier chat, code, documents, logs, or links.
+- References and internal IDs are optional supporting evidence only. Present 2-4 options only for real alternatives, recommend one, and mentally remove every reference to verify the message stands alone.
 
 ## Process Control
 

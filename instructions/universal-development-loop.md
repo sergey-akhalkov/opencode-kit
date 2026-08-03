@@ -15,9 +15,9 @@ Use this loop for AI-assisted development in any project. Technology adapters ma
 9. `Critical SDET`: Material behavior uses fresh test-only critical SDET returning `critical-risks-reported | no-critical-risk | blocked`. Continue only after a main-confirmed critical defect, fix, and new proof; the first valid no-critical attempt permanently stops the loop. Non-critical findings are parked.
 10. `Validation And RC`: complete applicable project-native validation. Accepted scope complete, green validation, and no known critical/non-deferrable defect freezes the next `RC<n>`.
 11. `Stable Handoff`: promote the same RC to stable after local handoff. Known documented non-critical limitations are allowed. `Stable Candidate: RC<n>` identifies it; external operations remain separately authorized.
-12. `Process Improvement`: record recurring workflow friction and prefer deterministic automation over more prose.
+12. `Process Improvement`: record friction and automate repeated deterministic work without delaying the outcome.
 
-Profiles remain `Ordinary Small | Material`. User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. A partial slice handoff must not end an unfinished root goal.
+Trade-offs follow quality/safety -> autonomy -> speed; speed never weakens proof. Profiles remain `Ordinary Small | Material`. User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. A partial slice handoff must not end an unfinished root goal.
 
 ## Quality Defaults
 

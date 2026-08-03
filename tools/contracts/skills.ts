@@ -355,6 +355,46 @@ export const GLOBAL_AGENTS_TRIGGER_TOKENS: readonly string[] = [
   "run-observe-correct",
 ];
 
+/** Ordered quality/autonomy/speed authority required in always-loaded global AGENTS. */
+export const GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS: readonly string[] = [
+  "## Operating Priorities",
+  "Priority 1 - Quality and safety",
+  "Priority 2 - Autonomy",
+  "Priority 3 - Speed",
+  "time to a verified working result",
+  "owner interruptions",
+  "tokens and tool calls",
+  "repeated manual work",
+  "safe parallelism",
+  "deterministic automation",
+  "Speed never waives proof",
+  "New instructions are a last resort",
+];
+
+/** Exact labels that identify a copied complete operating-priority block. */
+export const OPERATING_PRIORITY_COMPLETE_LABELS: readonly string[] = [
+  "Priority 1 - Quality and safety",
+  "Priority 2 - Autonomy",
+  "Priority 3 - Speed",
+];
+
+/** Runtime/maintenance roots scanned for copied complete priority blocks. */
+export const OPERATING_PRIORITY_DUPLICATE_SCAN_PREFIXES: readonly string[] = [
+  "global/agents/",
+  "global/skills/",
+  "instructions/",
+  "templates/",
+];
+
+/** Additional maintained files scanned for copied complete priority blocks. */
+export const OPERATING_PRIORITY_DUPLICATE_SCAN_FILES: readonly string[] = [
+  "README.md",
+  "REPO_AGENTS.md",
+  "docs/adapters.md",
+  "docs/quality-gates.md",
+  "docs/token-economy.md",
+];
+
 /**
  * Always-loaded Shared Reviewer Runtime Invariants markers (global/AGENTS.md section body).
  * Runtime leaves load AGENTS.md; Contract Reference alone is validation provenance only.

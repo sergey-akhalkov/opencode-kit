@@ -9,7 +9,7 @@ OpenSpec archive does not require a separate learning file or archive-time proce
 The kit ships three OpenCode config files with a documented layering (see `README.md` -> "Configuration Layering" for the full contract):
 
 - `opencode.json` (repo root) — workspace config loaded when running OpenCode in this repository.
-- `global/opencode.json.template` — portable safe default committed with the kit.
+- `global/opencode.json.template` — portable autonomy-first default committed with the kit using `permission: allow`; this is permissive tool access, not a managed sandbox.
 - `global/opencode.json` — machine-local config (gitignored); the installer copies the schema-valid portable template without injecting unsupported fields, and validators identify this local layer by path.
 
 `global/opencode.local.json` is an optional schema-valid overlay for machine-specific paths; it must be loaded explicitly through the supported `OPENCODE_CONFIG` mechanism.

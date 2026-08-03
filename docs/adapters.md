@@ -12,7 +12,7 @@ Adapters capture project-specific commands and constraints while preserving one 
 ## Adapter Non-Responsibilities
 
 - Do not define a new workflow.
-- Do not override evidence-first requirements, MVP proof, proportional Ordinary Small validation, or Material critical-only SDET and RC validation.
+- Do not override the active priority order, evidence-first requirements, MVP proof, proportional Ordinary Small validation, or Material critical-only SDET and RC validation.
 - Do not make global skills project-specific.
 
 ## Minimal Adapter

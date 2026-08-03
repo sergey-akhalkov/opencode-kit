@@ -37,3 +37,4 @@ Use this checklist when moving project-local skills/agents into a global reusabl
 - If this artifact can drive implementation changes, does it require main-default production authorship, run-observe-correct Runtime Proof, Candidate Reference freeze with RC assignment, and only then independent fresh-context black-box risk discovery and test-only subagent authoring?
 - If the artifact documents project validation adapters, does it accept either a concrete adapter file or an equivalent documented Purpose/Command table without prescribing one kit-local identity hash algorithm as universal?
 - Does the artifact ask routine questions instead of continuing with evidence or safe defaults?
+- Does it preserve quality/safety -> autonomy -> speed without copying the global contract?

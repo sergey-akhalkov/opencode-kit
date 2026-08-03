@@ -12,6 +12,13 @@ import {
 } from "./test-helpers/library.ts";
 
 const root = libraryRoot;
+const historicalChangeRoot = path.join(
+  root,
+  "openspec",
+  "changes",
+  "archive",
+  "2026-08-03-add-lightweight-sdet-pr-ready-sdlc",
+);
 
 type LocalStatusItem = {
   artifact: string;
@@ -159,8 +166,7 @@ export const identityRecipeContractTests: TestCase[] = [
   {
     name: "contracts: historical add-lightweight D14 resumes the recorded primary and exact SDET child",
     run: () => {
-      const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
-      const design = fs.readFileSync(path.join(changeRoot, "design.md"), "utf8");
+      const design = fs.readFileSync(path.join(historicalChangeRoot, "design.md"), "utf8");
       const d14 = sectionBetween(
         design,
         "### D14. Use reproducible fresh-process evaluations and candidate-only validation",
@@ -215,7 +221,7 @@ export const identityRecipeContractTests: TestCase[] = [
       }
 
       const historicalSpec = fs.readFileSync(
-        path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc", "specs", "library-change-ready-sdlc", "spec.md"),
+        path.join(historicalChangeRoot, "specs", "library-change-ready-sdlc", "spec.md"),
         "utf8",
       );
       assert(historicalSpec.includes("Semantic Candidate Identity, Package Identity, and Identity Recipe"), "Historical identity evidence must remain readable as history.");
@@ -314,7 +320,7 @@ export const identityRecipeContractTests: TestCase[] = [
     name: "contracts: historical add-lightweight design records adapter-owned status normalization",
     run: () => {
       const design = fs.readFileSync(
-        path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc", "design.md"),
+        path.join(historicalChangeRoot, "design.md"),
         "utf8",
       );
       const normalizedDesign = design.replace(/\s+/g, " ");
@@ -335,9 +341,8 @@ export const identityRecipeContractTests: TestCase[] = [
   {
     name: "contracts: historical add-lightweight v4 recipe records collision-safe framing",
     run: () => {
-      const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
-      const tasks = fs.readFileSync(path.join(changeRoot, "tasks.md"), "utf8");
-      const design = fs.readFileSync(path.join(changeRoot, "design.md"), "utf8");
+      const tasks = fs.readFileSync(path.join(historicalChangeRoot, "tasks.md"), "utf8");
+      const design = fs.readFileSync(path.join(historicalChangeRoot, "design.md"), "utf8");
       const recipeSurfaces = [
         ["tasks", sectionBetween(tasks, "## Kit-Local Identity Recipe (v4)", "## Requirement Trace")],
         ["design", sectionBetween(design, "For this change, the settled kit-local Identity Recipe is", "Identity Recipe is the adapter-owned")],
@@ -380,9 +385,8 @@ export const identityRecipeContractTests: TestCase[] = [
   {
     name: "contracts: historical add-lightweight OpenSpec traces identity restart reproducibility",
     run: () => {
-      const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
-      const spec = fs.readFileSync(path.join(changeRoot, "specs", "library-change-ready-sdlc", "spec.md"), "utf8");
-      const tasks = fs.readFileSync(path.join(changeRoot, "tasks.md"), "utf8");
+      const spec = fs.readFileSync(path.join(historicalChangeRoot, "specs", "library-change-ready-sdlc", "spec.md"), "utf8");
+      const tasks = fs.readFileSync(path.join(historicalChangeRoot, "tasks.md"), "utf8");
       const normalizedTasks = tasks.replace(/\s+/g, " ");
       const restartScenario = sectionBetween(
         spec,
@@ -421,9 +425,8 @@ export const identityRecipeContractTests: TestCase[] = [
   {
     name: "contracts: historical add-lightweight OpenSpec traces identity handshake paths",
     run: () => {
-      const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
-      const spec = fs.readFileSync(path.join(changeRoot, "specs", "library-change-ready-sdlc", "spec.md"), "utf8");
-      const tasks = fs.readFileSync(path.join(changeRoot, "tasks.md"), "utf8");
+      const spec = fs.readFileSync(path.join(historicalChangeRoot, "specs", "library-change-ready-sdlc", "spec.md"), "utf8");
+      const tasks = fs.readFileSync(path.join(historicalChangeRoot, "tasks.md"), "utf8");
       const task12 = taskSectionBetween(tasks, "1.2 Make the skill the only complete global orchestration adapter", "1.3 Keep the complete shared dispatch schema").replace(/\s+/g, " ");
       const authoredScenario = sectionBetween(
         spec,
@@ -466,10 +469,9 @@ export const identityRecipeContractTests: TestCase[] = [
   {
     name: "contracts: historical add-lightweight candidate manifest remains exact",
     run: () => {
-      const changeRoot = path.join(root, "openspec", "changes", "add-lightweight-sdet-pr-ready-sdlc");
-      const proposal = fs.readFileSync(path.join(changeRoot, "proposal.md"), "utf8");
-      const design = fs.readFileSync(path.join(changeRoot, "design.md"), "utf8");
-      const tasks = fs.readFileSync(path.join(changeRoot, "tasks.md"), "utf8");
+      const proposal = fs.readFileSync(path.join(historicalChangeRoot, "proposal.md"), "utf8");
+      const design = fs.readFileSync(path.join(historicalChangeRoot, "design.md"), "utf8");
+      const tasks = fs.readFileSync(path.join(historicalChangeRoot, "tasks.md"), "utf8");
       const paths = (text: string) => [...text.matchAll(/^- `([^`]+)`\s*$/gm)].map((match) => match[1]);
       const actualManifest = {
         modified: paths(sectionBetween(tasks, "### Modified (42)", "### Added (16)")),
@@ -488,7 +490,10 @@ export const identityRecipeContractTests: TestCase[] = [
       assert(normalized[2].includes("Counts: **42 M**, **16 A**, **1 D**"), "Tasks final manifest count summary drifted.");
       const architectureDelta = "openspec/changes/add-lightweight-sdet-pr-ready-sdlc/specs/library-tools-architecture/spec.md";
       assert(actualManifest.added.includes(architectureDelta), "The 59-path manifest must include the library-tools architecture delta.");
-      assert(fs.existsSync(path.join(root, architectureDelta)), "The library-tools architecture delta must exist at its manifested path.");
+      assert(
+        fs.existsSync(path.join(historicalChangeRoot, "specs", "library-tools-architecture", "spec.md")),
+        "The archived library-tools architecture delta must remain readable as historical evidence.",
+      );
       assert(actualManifest.modified.includes("tools/install-opencode-global.ts"), "The 59-path manifest must include the corrected installer production path.");
       assertEqual(actualManifest.modified.filter((entry) => entry === "tools/validators/opencode-config.ts").length, 1, "The shared OpenCode config policy must appear exactly once in the modified manifest.");
       const authorityPath = "tools/validators/active-authority.ts";
