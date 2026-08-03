@@ -212,7 +212,9 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
 
   const scripts = readPackageScripts(ctx, root);
   for (const script of [
+    "setup:global",
     "install:global",
+    "install:mcps",
     "init:project",
     "doctor",
     "project:inventory",

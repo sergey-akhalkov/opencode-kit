@@ -52,7 +52,7 @@ The full audit ledger at `docs/feedbacks/audit-opencode-kit-2026-06-27.md` (comm
 After Wave 0 is green, run these in parallel:
 
 - `refactor-tools-split-candidate`: continue from task group 2 (validator split). This remains the critical path.
-- `install-init-hardening`: start now that `kit-config-hygiene` is complete. It owns `tools/install-opencode-global.ts`, `tools/init-project.ts`, and `tools/headroom-mcp-wrapper.ts`.
+- `install-init-hardening`: start now that `kit-config-hygiene` is complete. It owns `tools/install-opencode-global.ts` and `tools/init-project.ts`.
 
 Archive candidates from the completed bucket (`deduplicate-instruction-artifacts`, `kit-config-hygiene`) can be archived in parallel with Wave 1 if final validation and reviewer evidence are fresh.
 
@@ -80,7 +80,6 @@ Archive in dependency order after implementation, validation, and reviewer gates
 | `tools/delivery-context/*.ts` | ✏️ | | ✏️ | | | |
 | `tools/install-opencode-global.ts` | | | | ✏️ | ✏️ | |
 | `tools/init-project.ts` | | | | | ✏️ | |
-| `tools/headroom-mcp-wrapper.ts` | | | | | ✏️ | |
 | `global/opencode*.json*` | | | | ✏️ | | |
 | `docs/`, `instructions/`, `templates/` | | ✏️ | | | | |
 | `global/agents/*.md` (14) | | ✏️ | | | | |

@@ -18,21 +18,6 @@
     "max_lines": 1000,
     "max_bytes": 24000
   },
-  "mcp": {
-    "headroom": {
-      "type": "local",
-      "command": [
-        "node",
-        "tools/headroom-mcp-wrapper.ts"
-      ],
-      "enabled": true,
-      "environment": {
-        "HEADROOM_TELEMETRY": "off",
-        "HEADROOM_LOG_LEVEL": "WARN"
-      },
-      "timeout": 10000
-    }
-  },
   "lsp": true,
   "permission": "ask"
 }

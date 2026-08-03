@@ -41,13 +41,19 @@ Before install, record the exact prior `OPENCODE_CONFIG_DIR` state so activation
 3. If unset, record that the prior state was unset.
 4. Keep that owner-recorded note outside the installer. The installer does **not** persist prior state automatically and does not create a restore state store.
 
-Point OpenCode at this repository as the single source of truth for global configuration. The installer sets the `OPENCODE_CONFIG_DIR` environment variable to the repository `global/` directory instead of copying artifacts into `~/.config/opencode`:
+Install the two code-intelligence MCP executables, then point OpenCode at this repository as the single source of truth for global configuration:
 
 ```sh
+npm run install:mcps -- --dry-run
+npm run install:mcps
 npm run install:global
 ```
 
-`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed autonomy-first portable default (GPT-5.6 Sol main model, compaction, watcher, tool output, `permission: allow`); the installer provisions a local `global/opencode.json` from it on first run. This permissive tool setting is not an OS sandbox: protected-boundary instructions remain mandatory, while managed enforcement requires a separate policy layer. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission/review-environment overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
+Use `npm run setup:global` as the one-command equivalent of `install:mcps` followed by `install:global`.
+
+`install:mcps` preserves working installations instead of upgrading them. It installs missing Serena through the official `uv tool install -p 3.13 serena-agent` command, initializes Serena, and installs missing Codebase Memory through the supported `npm install --global codebase-memory-mcp` package. Use `--check`/`--audit` for a read-only availability check or `--dry-run`/`--what-if` to preview missing-package commands. Serena requires `uv`; if `uv` is unavailable, the helper fails before mutation with the official installation URL.
+
+`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed autonomy-first portable default (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`); the installer provisions a local `global/opencode.json` from it on first run. Both MCP entries use commands from `PATH`, so the committed template contains no user-specific executable path. This permissive tool setting is not an OS sandbox: protected-boundary instructions remain mandatory, while managed enforcement requires a separate policy layer. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission/review-environment overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
 
 Options:
 
@@ -83,8 +89,8 @@ Keep project-specific skills out of `global/` unless their descriptions explicit
 
 The kit uses three OpenCode config files with a documented layering:
 
-- `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. Use it for repo-local MCPs (for example the bundled `headroom` MCP) and the workspace-wide `permission: ask` policy.
-- `global/opencode.json.template` — the portable autonomy-first default that ships with the kit. It declares the GPT-5.6 Sol main model default, compaction, watcher, tool output, and `permission: allow`. It provides permissive tool access, not hard sandbox enforcement. Never edit this file for machine-specific overrides.
+- `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. Use it for workspace-specific settings such as the local model override and `permission: ask` policy.
+- `global/opencode.json.template` — the portable autonomy-first default that ships with the kit. It declares the GPT-5.6 Sol main model default, Serena and Codebase Memory MCPs, compaction, watcher, tool output, and `permission: allow`. It provides permissive tool access, not hard sandbox enforcement. Never edit this file for machine-specific overrides.
 - `global/opencode.json` — the machine-local config (gitignored). Provisioned from `global/opencode.json.template` on first install and editable for local provider, MCP, permission, and review-environment settings.
 
 The validator identifies the machine-local layer by its gitignored `global/opencode.json` path and reports broad local permission overrides as `INFO:` notes. Never add unsupported marker fields to OpenCode config; every field must exist in the official OpenCode schema.
@@ -168,8 +174,6 @@ npm run project:inventory -- --root <project-path> --format markdown
 - Use the Universal Development Loop instead of choosing among competing workflows.
 - Use `project:inventory`, `code-quality:inventory`, `glob`, and `grep` before broad file reads.
 - On native Windows, use `rtk <command>` explicitly for shell-heavy read-only commands; do not rely on hook auto-rewrite.
-- Use Headroom MCP tools only on demand for large logs, search results, JSON, or tool outputs; retrieve originals before trusting exact code, errors, or safety-critical details.
-- Route Headroom MCP through `tools/headroom-mcp-wrapper.ts` when OpenCode expects MCP prompts; the wrapper adds a small `headroom_usage_policy` prompt and proxies Headroom tools unchanged. Before spawning the child it probes `headroom --version`; when the binary is missing on `PATH` it prints `error: headroom binary not found on PATH` and exits `2`, and when the probe exits non-zero it prints `error: headroom binary not usable (exit <code>)` and exits `3`. The wrapper never relies on a buried child `error` event, so OpenCode startup fails fast with a deterministic code when Headroom is not usable.
 - Install the full kit by default, but load heavyweight skills/subagents only when they reduce total work.
 - Main is the default production author for Ordinary Small and Material. Optional `implementation-worker` covers evidenced isolated production-only slices with exact non-overlapping write scope, representative proof boundary, clear acceptance criteria, and a focused validation gate. Keep research, questions, ordinary review-only work, and proven-inert content direct in the main session.
 - Run focused validation first; run broad validation when the change crosses boundaries.

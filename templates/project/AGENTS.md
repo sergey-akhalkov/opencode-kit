@@ -53,7 +53,6 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 - Runtime proof must retain exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Inspect that evidence before mutation or rerun; add only the smallest missing instrumentation needed to distinguish realistic causes.
 - Ordinary Small: after happy-path proof, main may create or update the smallest focused regression test when useful. Prefer existing tests when sufficient.
 - Material behavior: only a fresh conforming SDET that did not author production may create or modify the smallest critical reproducer/regression artifact after MVP and accepted-scope completion. It prioritizes reachable critical incidents at real boundaries over coverage percentages.
-- Headroom MCP: compress large reusable tool output; do not compress exact edit targets or short errors.
 - Prefer deterministic helpers/validators over repeated manual inspection.
 - Reviewers are read-only leaves except `docs/feedbacks/**` through `complain`.
 

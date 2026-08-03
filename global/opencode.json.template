@@ -4,6 +4,30 @@
   "plugin": [
     "opencode-pty"
   ],
+  "mcp": {
+    "serena": {
+      "type": "local",
+      "command": [
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide",
+        "--project-from-cwd"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "timeout": 60000
+    },
+    "codebase-memory-mcp": {
+      "type": "local",
+      "command": [
+        "codebase-memory-mcp"
+      ],
+      "cwd": ".",
+      "enabled": true,
+      "timeout": 60000
+    }
+  },
   "experimental": {
     "batch_tool": true
   },

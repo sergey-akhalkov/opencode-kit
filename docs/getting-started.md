@@ -7,11 +7,15 @@ Use this guide to install `opencode-dev-kit` on a new machine or attach it to a 
 From the kit repository:
 
 ```sh
+npm run install:mcps -- --dry-run
+npm run install:mcps
 npm run install:global -- --dry-run
 npm run install:global
 ```
 
-By default, the installer installs every repository skill and agent globally through the single `all` profile. The repository does not maintain smaller profile splits.
+`npm run setup:global` combines the MCP and global-config installation steps. The MCP helper installs only missing Serena and Codebase Memory executables; use `npm run install:mcps -- --check` to verify them without mutation.
+
+By default, the global-config installer installs every repository skill and agent globally through the single `all` profile. The repository does not maintain smaller profile splits.
 
 Restart OpenCode after installation because skills, agents, and config-time files are loaded at startup.
 

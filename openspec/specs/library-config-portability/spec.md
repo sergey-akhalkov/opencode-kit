@@ -90,6 +90,29 @@ The committed `global/opencode.json` SHALL NOT contain absolute user paths. The 
 - **AND** README SHALL state that `OPENCODE_CONFIG` must explicitly load the copied overlay
 - **AND** `.gitignore` SHALL ignore `global/opencode.local.json`.
 
+### Requirement: Portable global code-intelligence MCP setup
+
+`global/opencode.json.template` SHALL enable Serena and Codebase Memory as local MCP servers through commands resolved from `PATH`, without absolute user paths. The repository SHALL expose a TypeScript installer that installs only missing executables, preserves working existing versions, and supports non-mutating `--check` and `--dry-run` modes.
+
+#### Scenario: global MCP launch commands
+
+- **WHEN** OpenCode loads the provisioned global config from a project workspace
+- **THEN** Codebase Memory SHALL launch through `codebase-memory-mcp`
+- **AND** Serena SHALL launch through `serena start-mcp-server --context ide --project-from-cwd`.
+
+#### Scenario: existing MCP installations
+
+- **WHEN** both executable version probes succeed
+- **THEN** `npm run install:mcps` SHALL NOT run either package installation command
+- **AND** SHALL report both executables as configured.
+
+#### Scenario: missing MCP installations
+
+- **WHEN** an executable version probe reports that Serena or Codebase Memory is missing
+- **THEN** default `npm run install:mcps` SHALL use the documented official package-manager command for that executable
+- **AND** `--dry-run` SHALL print the command without installing or initializing anything
+- **AND** `--check` SHALL exit non-zero without installing or initializing anything.
+
 ### Requirement: global/.gitignore consistency
 
 The file `global/.gitignore` SHALL NOT ignore files that are intentionally tracked in `global/`. The dependencies in `global/package.json` and `global/package-lock.json` SHALL be either both tracked or both ignored, not mismatched.
