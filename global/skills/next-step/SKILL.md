@@ -1,12 +1,12 @@
 ---
 name: next-step
-description: Discover OpenSpec-backed available work and choose the next bounded Universal Development Loop slice.
+description: Use when the user asks "what next?", "what should I do next?", or "что дальше?" in an OpenSpec/spec-first workflow; inventory available work and recommend the next bounded Universal Development Loop slice.
 license: MIT
 ---
 
 # Next Step Planner
 
-Use this skill when the user asks what to do next, how to continue a change, or how to choose the next reviewable slice in a spec/doc-first workflow.
+Use this skill when the user asks "what next?", "what should I do next?", "что дальше?", how to continue a change, or how to choose the next reviewable slice in a spec/doc-first workflow.
 
 This skill is an entrypoint, not an implementation skill. It inventories OpenSpec-backed work and chooses the next bounded Universal Development Loop slice.
 
