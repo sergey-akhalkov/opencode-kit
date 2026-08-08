@@ -1,7 +1,7 @@
 # library-install-init-resilience Specification
 
 ## Purpose
-TBD - created by archiving change install-init-hardening. Update Purpose after archive.
+Defines safe global-config activation, platform-specific persistence, project bootstrap behavior, rollback, and failure-atomic installer diagnostics.
 ## Requirements
 ### Requirement: setx truncation guard
 

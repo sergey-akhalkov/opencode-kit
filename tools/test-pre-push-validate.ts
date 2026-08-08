@@ -58,23 +58,32 @@ const tests: TestCase[] = [
       assertEqual(plan.length, 2, "Plan without OpenSpec should include two gates.");
       assertArrayEqual(plan[0].args, ["run", "validate"], "First gate should run repository validation.");
       assertArrayEqual(plan[1].args, ["test"], "Second gate should run repository tests.");
+      assertEqual(plan.some((command) => command.label.toLowerCase().includes("prepush") || command.args.includes("prepush")), false, "Removed prepush operation must not appear without OpenSpec.");
     }),
   },
   {
     name: "pre-push plan includes OpenSpec validation when present",
     run: () => withOpenSpecRoot("with-openspec", (root) => {
       const plan = buildPrePushValidationPlan(root);
-      assertEqual(plan.length, 4, "Plan with OpenSpec should include repository gates, operation gate, tests, and OpenSpec validation.");
-      assertEqual(plan[1].label, "OpenSpec operation prepush gate", "Second gate should be OpenSpec operation prepush gate.");
-      assertArrayEqual(plan[1].args, ["run", "openspec:gate", "--", "--operation", "prepush"], "Operation gate should use npm script wrapper.");
+      assertEqual(plan.length, 3, "Plan with OpenSpec should include repository validation, tests, and OpenSpec validation.");
       assertArrayEqual(plan.map((command) => command.label), [
         "Repository validation",
-        "OpenSpec operation prepush gate",
         "Repository tests",
         "OpenSpec validation",
-      ], "Operation gate should run before repository tests.");
-      assertEqual(plan[3].command, "npm", "Fourth gate should use package OpenSpec validation wrapper.");
-      assertArrayEqual(plan[3].args, ["run", "openspec:validate"], "Fourth gate should validate all OpenSpec changes through package script.");
+      ], "OpenSpec pre-push plan must retain unique gates in stable order without ceremony-only operation gate.");
+      assertArrayEqual(plan[0].args, ["run", "validate"], "First gate should run repository validation.");
+      assertArrayEqual(plan[1].args, ["test"], "Second gate should run repository tests.");
+      assertEqual(plan[2].command, "npm", "Third gate should use package OpenSpec validation wrapper.");
+      assertArrayEqual(plan[2].args, ["run", "openspec:validate"], "Third gate should validate all OpenSpec changes through package script.");
+      assertEqual(
+        plan.some((command) =>
+          command.label.toLowerCase().includes("prepush")
+          || command.args.includes("prepush")
+          || command.args.includes("openspec:gate")
+          || command.label.includes("operation")),
+        false,
+        "Removed OpenSpec prepush operation gate must not reappear in the plan.",
+      );
     }),
   },
   {
@@ -100,29 +109,9 @@ const tests: TestCase[] = [
       assertEqual(exitCode, 0, "Successful fake runner should return zero.");
       assertArrayEqual(calls, [
         "Repository validation:npm run validate",
-        "OpenSpec operation prepush gate:npm run openspec:gate -- --operation prepush",
         "Repository tests:npm test",
         "OpenSpec validation:npm run openspec:validate",
-      ], "Fake runner should execute gates in deterministic order.");
-    }),
-  },
-  {
-    name: "pre-push fake runner short-circuits on operation gate failure",
-    run: () => withOpenSpecRoot("runner-operation-gate-fails", (root) => {
-      const calls: string[] = [];
-      const exitCode = runPrePushValidation(root, {
-        runner: (_root: string, command: ValidationCommand): ValidationCommandResult => {
-          calls.push(commandKey(command));
-          return command.label === "OpenSpec operation prepush gate" ? { status: 6, signal: null } : { status: 0, signal: null };
-        },
-        output: { log: () => undefined, error: () => undefined },
-      });
-
-      assertEqual(exitCode, 6, "Operation gate failure should propagate.");
-      assertArrayEqual(calls, [
-        "Repository validation:npm run validate",
-        "OpenSpec operation prepush gate:npm run openspec:gate -- --operation prepush",
-      ], "Operation gate failure should stop before repository tests.");
+      ], "Fake runner should execute the three unique gates in deterministic order.");
     }),
   },
   {
@@ -142,6 +131,27 @@ const tests: TestCase[] = [
     }),
   },
   {
+    name: "pre-push fake runner propagates repository tests failure before OpenSpec validation",
+    run: () => withOpenSpecRoot("runner-tests-fail", (root) => {
+      const calls: string[] = [];
+      const errors: string[] = [];
+      const exitCode = runPrePushValidation(root, {
+        runner: (_root: string, command: ValidationCommand): ValidationCommandResult => {
+          calls.push(commandKey(command));
+          return command.label === "Repository tests" ? { status: 6, signal: null } : { status: 0, signal: null };
+        },
+        output: { log: () => undefined, error: (message: string) => errors.push(message) },
+      });
+
+      assertEqual(exitCode, 6, "Repository tests failure should propagate.");
+      assertArrayEqual(calls, [
+        "Repository validation:npm run validate",
+        "Repository tests:npm test",
+      ], "Repository tests failure should stop before OpenSpec validation.");
+      assertEqual(errors.includes("Pre-push validation failed at Repository tests."), true, "Failure output should name repository tests gate.");
+    }),
+  },
+  {
     name: "pre-push fake runner propagates OpenSpec validation failure",
     run: () => withOpenSpecRoot("runner-openspec-fails", (root) => {
       const calls: string[] = [];
@@ -157,7 +167,6 @@ const tests: TestCase[] = [
       assertEqual(exitCode, 42, "OpenSpec failure code should propagate.");
       assertArrayEqual(calls, [
         "Repository validation:npm run validate",
-        "OpenSpec operation prepush gate:npm run openspec:gate -- --operation prepush",
         "Repository tests:npm test",
         "OpenSpec validation:npm run openspec:validate",
       ], "OpenSpec failure should occur after earlier gates pass.");

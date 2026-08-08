@@ -1,7 +1,7 @@
 # library-model-routing Specification
 
 ## Purpose
-TBD - created by archiving change add-model-routing-profiles. Update Purpose after archive.
+Defines explicit portable model-routing profiles, launcher behavior, schema restrictions, and machine-local override boundaries.
 ## Requirements
 ### Requirement: Restricted complete model profiles
 The library SHALL support committed model profiles under `global/model-profiles/<id>.json` and gitignored personal profiles under `global/model-profiles/local/<id>.json`. Each profile SHALL be a complete restricted OpenCode config fragment containing only `$schema`, `model`, `small_model`, and per-agent `model` and `variant` routing. Each profile SHALL cover every governed built-in agent and every agent defined under `global/agents/` without adding model or variant pins to agent Markdown files.

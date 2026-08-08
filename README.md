@@ -12,13 +12,13 @@ The kit optimizes one process: main-default production authorship, run-observe-c
 
 ## Universal Development Loop
 
-The conceptual development loop lives in the single canonical file `instructions/universal-development-loop.md`. Step list, Token/Time Rules, Quality Defaults, and Output Shape are defined there; kit-level pointer and policy notes live in `docs/universal-development-loop.md`. Technology adapters may change commands and constraints, but not the conceptual loop; `npm run validate` enforces the single-source rule for that loop body.
+The conceptual development loop lives in the single canonical file `instructions/universal-development-loop.md`. Its current 12-step list, Quality Defaults, and Output Shape are defined there; token and time policy lives in the always-loaded operating priorities and `docs/token-economy.md`. Kit-level pointer notes live in `docs/universal-development-loop.md`. Technology adapters may change commands and constraints, but not the conceptual loop; `npm run validate` enforces the single-source rule for that loop body.
 
-Ordinary Small routing lives in always-loaded global `AGENTS.md`. Full qualification uses the global skill `change-ready-sdlc` (loaded from the active global config directory via `OPENCODE_CONFIG_DIR`) only for explicit stable/full-qualification requests, project-required qualification, or concrete Material risk. UDL is conceptual guidance, not a second competing process. User-facing maturity is `Development-Stage: development | MVP | RC<n> | stable`.
+Ordinary Small routing lives in the kit's global `AGENTS.md`. Full qualification uses the `change-ready-sdlc` skill from the kit custom config directory only for explicit stable/full-qualification requests, project-required qualification, or concrete Material risk. Other loader-visible sources may coexist and must be diagnosed rather than assumed absent. UDL is conceptual guidance, not a second competing process. User-facing maturity is `Development-Stage: development | MVP | RC<n> | stable`.
 
 ## Contents
 
-- `global/`: OpenCode global config directory pointed to by `OPENCODE_CONFIG_DIR`. Holds `skills/`, `agents/`, `plugin/`, `AGENTS.md`, and `opencode.json` as the single source of truth for global skills, agents, and instructions.
+- `global/`: kit-owned custom OpenCode config directory pointed to by `OPENCODE_CONFIG_DIR`. Holds the kit's `skills/`, `agents/`, `plugin/`, `AGENTS.md`, and machine-local `opencode.json`; it does not prove that host-default or managed sources are absent.
 - `docs/feedbacks/`: shared feedback ledger for agent and skill complaints, suggestions, and workflow-friction notes.
 - `instructions/`: copyable instruction templates for global/project `AGENTS.md`, reviewer contracts, evidence discipline, and porting.
 - `templates/`: project bootstrap and CI templates for applying the Universal Development Loop to another repository.
@@ -41,7 +41,7 @@ Before install, record the exact prior `OPENCODE_CONFIG_DIR` state so activation
 3. If unset, record that the prior state was unset.
 4. Keep that owner-recorded note outside the installer. The installer does **not** persist prior state automatically and does not create a restore state store.
 
-Install the two code-intelligence MCP executables, then point OpenCode at this repository as the single source of truth for global configuration:
+Install the two code-intelligence MCP executables, then add this repository as OpenCode's kit-owned custom configuration source:
 
 ```sh
 npm run install:mcps -- --dry-run
@@ -53,7 +53,7 @@ Use `npm run setup:global` as the one-command equivalent of `install:mcps` follo
 
 `install:mcps` preserves working installations instead of upgrading them. It installs missing Serena through the official `uv tool install -p 3.13 serena-agent` command, initializes Serena, and installs missing Codebase Memory through the supported `npm install --global codebase-memory-mcp` package. Use `--check`/`--audit` for a read-only availability check or `--dry-run`/`--what-if` to preview missing-package commands. Serena requires `uv`; if `uv` is unavailable, the helper fails before mutation with the official installation URL.
 
-`global/` is a complete OpenCode global config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads all of them directly from there. `global/opencode.json.template` is the committed autonomy-first portable default (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`); the installer provisions a local `global/opencode.json` from it on first run. Both MCP entries use commands from `PATH`, so the committed template contains no user-specific executable path. This permissive tool setting is not an OS sandbox: protected-boundary instructions remain mandatory, while managed enforcement requires a separate policy layer. `global/opencode.json` is gitignored — add machine-specific provider/MCP/permission/review-environment overrides there without touching the shared template. Edit artifacts under `global/` and restart OpenCode; there is no copy or sync step to drift.
+`global/` is a complete kit-owned custom config directory: `global/skills/`, `global/agents/`, `global/plugin/`, `global/AGENTS.md`, and `global/opencode.json`. OpenCode loads these artifacts directly while other documented source layers may coexist. `global/opencode.json.template` is the committed autonomy-first portable default (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`); the installer provisions a local `global/opencode.json` and personal `global/opencode.local.instructions.md` on first run. Both MCP entries use commands from `PATH`, so the committed template contains no user-specific executable path. This permissive tool setting is not an OS sandbox: protected-boundary instructions remain mandatory, while managed enforcement requires a separate policy layer. Both local files are gitignored. Edit kit artifacts under `global/` and restart OpenCode; use `npm run opencode:sources` to inventory safe source locations and collisions.
 
 Options:
 
@@ -72,7 +72,7 @@ Windows `setx` truncates user environment variables at 1024 characters. The inst
 
 On macOS/Linux, the default mode prints the safe `export` line only and does not persist. To persist, run `npm run install:global -- --persist-script ~/.bashrc` (or `~/.zshrc`, `~/.profile`, …); the helper converges to exactly one desired export line, is safe to re-run, and replaces the profile failure-atomically. The matching `--unset-script <file>` removes every matching export line. Restart the shell and verify with `--check` after activation.
 
-Important: setting `OPENCODE_CONFIG_DIR` replaces OpenCode's entire global config directory. Anything currently in `~/.config/opencode` (other global agents, commands, skills, plugins, and `opencode.json`) stops loading. Put global provider/MCP/permission config in the local `global/opencode.json` (provisioned from the portable template) so the kit remains the complete global source of truth.
+Important: `OPENCODE_CONFIG_DIR` adds the kit custom directory with documented precedence; it is not evidence that `~/.config/opencode`, project, managed, explicit, or inline sources stopped loading. Keep kit-specific provider/MCP/permission config in local `global/opencode.json`, personal preferences in local `global/opencode.local.instructions.md`, and inspect loader-visible source locations with `npm run opencode:sources`. Exact precedence claims require current documentation or isolated runtime proof for the artifact class.
 
 #### Runtime activation rollback
 
@@ -87,7 +87,7 @@ Keep project-specific skills out of `global/` unless their descriptions explicit
 
 ### Configuration Layering
 
-The kit uses three OpenCode config files with a documented layering:
+The kit owns three OpenCode config files within a broader additive OpenCode source model:
 
 - `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. Use it for workspace-specific settings such as the local model override and `permission: ask` policy.
 - `global/opencode.json.template` — the portable autonomy-first default that ships with the kit. It declares the GPT-5.6 Sol main model default, Serena and Codebase Memory MCPs, compaction, watcher, tool output, and `permission: allow`. It provides permissive tool access, not hard sandbox enforcement. Never edit this file for machine-specific overrides.
@@ -158,7 +158,7 @@ npm run doctor -- --project <project-path>
 
 Doctor is a structural diagnostic, not lifecycle readiness certification. Report version 2 separates structural severity (`status: pass|warn|blocked`, process exit) from machine-readable qualification impact (`qualificationStatus: pass|blocked` and per-check `blocksQualification`). Only `qualificationStatus: blocked` or `blocksQualification: true` blocks RC/stable qualification; advisory warnings alone do not.
 
-Active global resolution uses nonblank `OPENCODE_CONFIG_DIR` when set; otherwise it uses the host default `~/.config/opencode`. Required authority is structurally conforming `AGENTS.md` and `skills/change-ready-sdlc/SKILL.md`: nonempty regular files with real Markdown sections, valid scalar skill frontmatter, and an ordered lifecycle skeleton through development, MVP proof, critical SDET when applicable, RC validation, and stable handoff. A trusted default or independent copy may pass without matching this checkout. Missing, malformed, or lifecycle-incomplete authority blocks qualification; source-path equality and template markers are informational only.
+Doctor inspects the kit custom directory selected by nonblank `OPENCODE_CONFIG_DIR`, or the host default `~/.config/opencode` when no custom directory is selected. This inspection does not claim other runtime sources are absent. Required kit authority is structurally conforming `AGENTS.md` and `skills/change-ready-sdlc/SKILL.md`: nonempty regular files with real Markdown sections, valid scalar skill frontmatter, and an ordered lifecycle skeleton through development, MVP proof, critical SDET when applicable, RC validation, and stable handoff. Missing, malformed, or lifecycle-incomplete required authority blocks qualification; source-path equality and template markers are informational only.
 
 Project validation qualification accepts either complete concrete `opencode-dev-kit/adapter.json` validation entries or a complete `opencode-dev-kit/validation.md` Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build. A command is resolved when it is concrete or records reasoned non-applicability as `N/A - <reason>` (or Command `N/A` with non-placeholder Notes). Bare `N/A`, `unknown`, `TBD`/`TODO`, replace-me placeholders, and blanks remain unresolved. Missing project bootstrap/AGENTS, neither validation source complete, missing required authority, invalid explicit/local config, invalid project path, or unsupported Node block qualification. Empty `--project=` and whitespace-only `--project` values error rather than selecting the current directory. Doctor does not invent commands or score lifecycle capability.
 
@@ -170,7 +170,7 @@ npm run project:inventory -- --root <project-path> --format markdown
 
 ## Token Economy
 
-- The repository-level maintainer rules live in `REPO_AGENTS.md`. `global/AGENTS.md` is the runtime instruction file OpenCode loads when `OPENCODE_CONFIG_DIR` points at `global/`. Scripts that previously referenced the root `AGENTS.md` must use `REPO_AGENTS.md` instead.
+- The repository-level maintainer rules live in `REPO_AGENTS.md`. `global/AGENTS.md` is the kit runtime instruction file OpenCode loads from the custom directory; other loader-visible instructions must be inventoried for collisions. Scripts that previously referenced the root `AGENTS.md` must use `REPO_AGENTS.md` instead.
 - Use the Universal Development Loop instead of choosing among competing workflows.
 - Use `project:inventory`, `code-quality:inventory`, `glob`, and `grep` before broad file reads.
 - On native Windows, use `rtk <command>` explicitly for shell-heavy read-only commands; do not rely on hook auto-rewrite.
@@ -188,7 +188,7 @@ npm run instruction:inventory -- --format markdown
 
 ### Manual Skills
 
-Manual copy of change-ready lifecycle skills, write-capable lifecycle agents, or reference-based reusable reviewers is incomplete unless the active runtime also loads the shared contracts from `<active-global-config-dir>/AGENTS.md` (Ordinary Small default routing, Material/qualification triggers, Universal Task Briefing Contract, shared reviewer invariants, and feedback-ledger policy). Resolve `<active-global-config-dir>` to `OPENCODE_CONFIG_DIR` when set; otherwise use `~/.config/opencode`. When `OPENCODE_CONFIG_DIR` is set, the default `~/.config/opencode` is bypassed and not loaded. Prefer full-kit install via `OPENCODE_CONFIG_DIR` pointing at `global/`; selective copy alone does not imply standalone completeness. Project-local `.opencode` paths remain allowed and do not replace the active global shared contracts.
+Manual copy of change-ready lifecycle skills, write-capable lifecycle agents, or reference-based reusable reviewers is incomplete unless the runtime also loads their shared contracts from the same kit source's `AGENTS.md` (Ordinary Small routing, Material triggers, Universal Task Briefing Contract, shared reviewer invariants, and feedback-ledger policy). Resolve the kit source to `OPENCODE_CONFIG_DIR` when set; otherwise inspect the host default. Do not infer that another source is bypassed. Prefer full-kit installation and use `npm run opencode:sources` to detect same-name collisions; selective copy alone does not imply standalone completeness.
 
 OpenCode skills are loaded from project or global skill folders. Copy selected skill folders from `global/skills/` into one of these locations:
 
@@ -209,7 +209,7 @@ Use an absolute path or a path relative to the config file that declares it.
 
 ### Manual Agents
 
-The same shared-runtime prerequisite as Manual Skills applies: reference-based reviewers and lifecycle agents require the active runtime to load shared contracts from `<active-global-config-dir>/AGENTS.md` (same resolution: `OPENCODE_CONFIG_DIR` when set, otherwise `~/.config/opencode`; override bypasses the default). Prefer full-kit install when using those agents. Project-local `.opencode` agent paths remain allowed and do not replace the active global shared contracts.
+The same shared-runtime prerequisite as Manual Skills applies: reference-based reviewers and lifecycle agents require the runtime to load shared contracts from the same kit source's `AGENTS.md`. `OPENCODE_CONFIG_DIR` selects the kit custom source but does not prove the host default is bypassed. Prefer full-kit install when using those agents and inspect collisions before qualification.
 
 OpenCode agents are loaded from project or global agent folders. Copy selected files from `global/agents/` into one of these locations:
 
@@ -280,7 +280,6 @@ Run deterministic operation gates before sensitive OpenSpec lifecycle steps with
 ```sh
 npm run openspec:gate -- --operation apply --change <change-id>
 npm run openspec:gate -- --operation archive --change <change-id>
-npm run openspec:gate -- --operation prepush
 ```
 
 Use `--persist` only when a JSON evidence artifact should be written to `openspec/changes/<change-id>/automation/operation-gates/<operation>.json` from a write-authorized main session. Default operation-gate runs are read-only.
@@ -304,7 +303,7 @@ Before pushing changes from this repository, run the pre-push gate:
 npm run prepush:validate
 ```
 
-The pre-push gate runs `npm run validate`, `npm run openspec:gate -- --operation prepush` when `openspec/` exists, `npm test`, and `npm run openspec:validate`.
+The pre-push gate runs `npm run validate`, `npm test`, and `npm run openspec:validate` when `openspec/` exists. The former existence-only OpenSpec operation gate was removed because it duplicated no meaningful validation fact.
 
 To enable the tracked local git hook for this clone, run:
 
@@ -312,7 +311,7 @@ To enable the tracked local git hook for this clone, run:
 git config core.hooksPath .githooks
 ```
 
-Continuous integration runs the same machine-checked gates on every pull request and on push to `main` through `.github/workflows/validate.yml`. CI enforces `npm run validate:strict`, `npm test`, `npm run code-quality:inventory -- --root . --format markdown --attention-lines 400 --split-lines 800`, `npm run instruction:inventory -- --format markdown`, and the conditional OpenSpec steps (`npm run openspec:validate`, `npm run openspec:gate -- --operation prepush`) when `openspec/changes/` is non-empty. The code-quality inventory exposes attention and split-candidate navigation signals without failing on line count alone; responsibility mixing and current-change degradation require the semantic `split-or-justify` disposition. Downstream consumers can copy the user-facing template at `templates/ci/github-actions.yml` instead of the kit's own workflow.
+Continuous integration runs the same machine-checked gates on every pull request and on push to `main` through `.github/workflows/validate.yml`. CI enforces `npm run validate:strict`, `npm test`, `npm run code-quality:inventory -- --root . --format markdown --attention-lines 400 --split-lines 800`, `npm run instruction:inventory -- --format markdown`, and conditional `npm run openspec:validate` when `openspec/changes/` is non-empty. The code-quality inventory exposes attention and split-candidate navigation signals without failing on line count alone; responsibility mixing and current-change degradation require the semantic `split-or-justify` disposition. Downstream consumers can copy the user-facing template at `templates/ci/github-actions.yml` instead of the kit's own workflow.
 
 For broad instruction-artifact audits, use `instructions/instruction-artifact-audit-runbook.md` to prove repo source, installed state, runtime policy, context-cost metrics, permission semantics, reviewer gates, and non-repo changes. Capture before/after metrics such as global rules line count, top heavy skill line counts, installed-copy drift, validator test count, and reviewer findings.
 

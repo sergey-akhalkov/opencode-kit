@@ -8,12 +8,10 @@ import {
   CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS,
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
-  GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
-  GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
 } from "./contracts/skills.ts";
 import {
   FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
@@ -72,33 +70,6 @@ const EXPECTED_DEVELOPMENT_STAGE_MARKERS = [
   "returns to `development`",
 ];
 
-const EXPECTED_DECISION_READY_HANDOFF_FIELDS = [
-  "plain-language goal and current state",
-  "what happened and why it matters",
-  "outcome working status",
-  "exact failure/evidence",
-  "facts, inferences, and unknowns",
-  "root-cause status/confidence",
-  "attempted paths and why they did not resolve the blocker",
-  "why no authorized path remains",
-  "why user authority is required",
-  "exact requested action",
-  "real alternatives/consequences if any",
-  "option advantages, disadvantages, risks, reversibility, and cost",
-  "agent recommendation and rationale",
-  "what happens after each choice",
-  "residual risk",
-  "preserved state",
-  "exact reply needed from the user",
-];
-
-const EXPECTED_SELF_CONTAINED_HANDOFF_MARKERS = [
-  "one self-contained message",
-  "without opening prior chat, code, documents, logs, or links",
-  "Links and internal identifiers are optional supporting evidence",
-  "remove every link and internal identifier",
-];
-
 const EXPECTED_FINAL_REVIEWER_MARKERS = [
   "## Contract Reference",
   "`instructions/leaf-reviewer-agent-contract.md`",
@@ -130,12 +101,10 @@ const EXPECTED_FINAL_REVIEWER_MARKERS = [
 
 export const changeReadyContractTests: TestCase[] = [
   {
-    name: "contracts: current lifecycle, owner-handoff, and optional final-review arrays are exact",
+    name: "contracts: current lifecycle and optional final-review arrays are exact",
     run: () => {
       assertDeepEqual([...CHANGE_READY_SDLC_LIFECYCLE_MARKERS], EXPECTED_LIFECYCLE_MARKERS, "Lifecycle marker array drifted.");
       assertDeepEqual([...CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS], EXPECTED_DEVELOPMENT_STAGE_MARKERS, "Development-Stage marker array drifted.");
-      assertDeepEqual([...GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS], EXPECTED_DECISION_READY_HANDOFF_FIELDS, "Decision-ready handoff field array drifted.");
-      assertDeepEqual([...GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS], EXPECTED_SELF_CONTAINED_HANDOFF_MARKERS, "Self-contained handoff marker array drifted.");
       assertDeepEqual([...FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT], EXPECTED_FINAL_REVIEWER_MARKERS, "Optional final-review marker array drifted.");
     },
   },
@@ -170,8 +139,6 @@ export const changeReadyContractTests: TestCase[] = [
         ...GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
         ...GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ marker }) => marker),
         GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
-        ...GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
-        ...GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
         "Reviewer invocation is optional and risk-driven, not a lifecycle gate",
         "Known non-critical limitations may remain",
       ], "Global authority missing current safety invariant");

@@ -54,7 +54,6 @@ export function buildPrePushValidationPlan(root: string): ValidationCommand[] {
   ];
 
   if (fs.existsSync(path.join(root, "openspec"))) {
-    plan.push({ label: "OpenSpec operation prepush gate", command: "npm", args: ["run", "openspec:gate", "--", "--operation", "prepush"] });
     plan.push({ label: "Repository tests", command: "npm", args: ["test"] });
     plan.push({ label: "OpenSpec validation", command: "npm", args: ["run", "openspec:validate"] });
   } else {

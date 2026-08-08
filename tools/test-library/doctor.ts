@@ -1,10 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
-  GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
 } from "../contracts/skills.ts";
 import { GLOBAL_ENGINEERING_QUALITY_MARKERS } from "../contracts/engineering-quality.ts";
 import {
@@ -68,8 +66,6 @@ const namedMaterialRiskFixtureCases = [
 ] as const;
 const namedMaterialRiskFixtureText = namedMaterialRiskFixtureCases.map(([, marker]) => marker).join(", ");
 const protectedBoundaryAuthorityFixtureText = GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ marker }) => marker).join("; ");
-const decisionReadyHandoffFixtureText = GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS.join("; ");
-const selfContainedHandoffFixtureText = GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS.join("; ");
 
 const globalAuthorityMinimumFixtureCases = [
   ...GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ label, marker }) => ({
@@ -82,16 +78,6 @@ const globalAuthorityMinimumFixtureCases = [
     marker: GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
     diagnostic: "AGENTS.md missing non-waivable critical-risk clause",
   },
-  ...GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS.map((field) => ({
-    name: `decision-ready-${field}`,
-    marker: field,
-    diagnostic: `AGENTS.md missing decision-ready handoff field: ${field}`,
-  })),
-  ...GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS.map((marker) => ({
-    name: `self-contained-handoff-${marker}`,
-    marker,
-    diagnostic: `AGENTS.md missing self-contained owner handoff marker: ${marker}`,
-  })),
 ];
 
 const conformingAgentsAuthority = `# Independent Active Authority
@@ -107,8 +93,6 @@ Before stable, require a bounded accepted outcome and non-goals, real-boundary h
 Engineering quality authority: ${GLOBAL_ENGINEERING_QUALITY_MARKERS.join("; ")}.
 Protected-boundary owner authority includes: ${protectedBoundaryAuthorityFixtureText}.
 ${GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE}
-Decision-ready handoff states: ${decisionReadyHandoffFixtureText}. State every listed field explicitly; when evidence is absent, use unknown or none.
-Self-contained handoff guards: ${selfContainedHandoffFixtureText}.
 ## Universal Task Briefing Contract
 Provide an execution-ready brief before specialist dispatch.
 ## Autonomous Work Contract
@@ -686,7 +670,7 @@ export const doctorTests: TestCase[] = [
         assertEqual(authority.blocksQualification, true, `${item.name} must expose blocksQualification=true.`);
         assertEqual(
           authority.detail,
-          `Resolved active global config (OPENCODE_CONFIG_DIR) has incomplete required runtime authority: ${item.problem}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`,
+          `Inspected kit source (OPENCODE_CONFIG_DIR) has incomplete required runtime authority: ${item.problem}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`,
           `${item.name} must return the exact privacy-safe structural detail.`,
         );
         if ("privateSentinel" in item) {

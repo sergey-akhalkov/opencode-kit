@@ -83,18 +83,29 @@ When ready to implement, run /opsx-apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
-5. **Show final status**
+5. **Validate operation readiness**
+   ```bash
+   npm run openspec:gate -- --operation propose --change "<name>"
+   openspec validate "<name>" --strict
+   ```
+
+   Stop if either command exits non-zero. Do not describe the change as ready from
+   artifact existence alone. Preserve the exact failing command, exit status,
+   stdout/stderr, and named artifact.
+
+6. **Show final status**
    ```bash
    openspec status --change "<name>"
    ```
 
 **Output**
 
-After completing all artifacts, summarize:
+After completing all artifacts and both readiness checks, summarize:
 - Change name and location
 - List of artifacts created with brief descriptions
-- What's ready: "All artifacts created! Ready for implementation."
+- What's ready: "Artifacts and deterministic readiness checks passed. Ready for implementation."
 - Prompt: "Run `/opsx-apply` or ask me to implement to start working on the tasks."
+- Lifecycle: planning artifacts alone remain `Development-Stage: development`; never emit an RC or stable claim from this command
 
 **Artifact Creation Guidelines**
 
@@ -112,3 +123,5 @@ After completing all artifacts, summarize:
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
+- Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
+- Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable

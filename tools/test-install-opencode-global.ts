@@ -133,6 +133,21 @@ function replacementTemps(file: string): string[] {
   return fs.readdirSync(path.dirname(file)).filter((name) => name.startsWith(`.${path.basename(file)}.`) && name.endsWith(".tmp"));
 }
 
+const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md";
+const LOCAL_INSTRUCTIONS_EXAMPLE = "# Machine-Local OpenCode Preferences\n\nFixture personal instructions example.\n";
+
+function writeFixtureGlobalSkeleton(fixtureGlobal: string, templateText = "{}\n"): void {
+  fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
+  fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
+  fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
+  fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateText, "utf8");
+  fs.writeFileSync(path.join(fixtureGlobal, "opencode.local.instructions.example.md"), LOCAL_INSTRUCTIONS_EXAMPLE, "utf8");
+}
+
+function expectedMaterializedLocalInstructionsPath(fixtureGlobal: string): string {
+  return path.join(fixtureGlobal, "opencode.local.instructions.md").replaceAll("\\", "/");
+}
+
 function prepareCopiedInstaller(name: string, fakeWindows = false, safeLimit = SETX_SAFE_LIMIT): {
   copiedInstaller: string;
   dir: string;
@@ -143,10 +158,7 @@ function prepareCopiedInstaller(name: string, fakeWindows = false, safeLimit = S
   const toolsDir = path.join(dir, "tools");
   const fixtureGlobal = path.join(dir, "global");
   fs.mkdirSync(toolsDir, { recursive: true });
-  fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
-  fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
-  fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
-  fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), "{}\n", "utf8");
+  writeFixtureGlobalSkeleton(fixtureGlobal);
   const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
   if (fakeWindows) writeFakeWindowsInstaller(copiedInstaller, safeLimit);
   else writeCopiedInstaller(copiedInstaller);
@@ -172,34 +184,64 @@ function readFakeProcessCalls(log: string): FakeProcessCall[] {
 
 const tests: { name: string; run: () => void }[] = [
   {
-    name: "installer provisions the template byte-equivalently without unsupported fields",
+    name: "installer materializes local-instructions placeholder and provisions the portable example",
     run: () => {
       const dir = makeTempDir();
       try {
         const toolsDir = path.join(dir, "tools");
         const fixtureGlobal = path.join(dir, "global");
         fs.mkdirSync(toolsDir, { recursive: true });
-        fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
-        fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
-        fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
         const templateBytes = fs.readFileSync(path.join(root, "global", "opencode.json.template"));
-        fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateBytes);
+        writeFixtureGlobalSkeleton(fixtureGlobal, templateBytes.toString("utf8"));
+        assert(templateBytes.toString("utf8").includes(LOCAL_INSTRUCTIONS_PLACEHOLDER), "Source template fixture must retain the documented local-instructions placeholder.");
 
         const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
         writeCopiedInstaller(copiedInstaller);
-        const result = spawnSync(process.execPath, [copiedInstaller], {
-          cwd: dir,
-          encoding: "utf8",
-          env: { ...process.env, [ENV_VAR]: undefined },
-        });
-        const captured = { exitCode: result.status ?? 0, output: `${result.stdout}${result.stderr}` };
+        const captured = invokeCopiedInstaller(copiedInstaller, dir, []);
         assertSuccess(captured, "Copied installer should provision a machine-local config without altering host environment state.");
         const local = path.join(fixtureGlobal, "opencode.json");
-        const localBytes = fs.readFileSync(local);
-        assert(localBytes.equals(templateBytes), "Provisioned global/opencode.json must be byte-equivalent to opencode.json.template.");
-        assert(!localBytes.toString("utf8").includes("machineOverride"), "Provisioned config must not contain unsupported marker fields.");
+        const localText = fs.readFileSync(local, "utf8");
+        const expectedPath = expectedMaterializedLocalInstructionsPath(fixtureGlobal);
+        assert(!localText.includes(LOCAL_INSTRUCTIONS_PLACEHOLDER), "Provisioned config must replace the documented local-instructions placeholder.");
+        assert(localText.includes(JSON.stringify(expectedPath)), "Provisioned config must materialize an absolute forward-slash local-instructions path.");
+        assert(path.isAbsolute(expectedPath.replaceAll("/", path.sep)), "Materialized local-instructions path must be absolute.");
+        assert(!expectedPath.includes("\\"), "Materialized local-instructions path must use forward slashes.");
+        assert(localText.includes('"permission": "allow"'), "Provisioned config must retain autonomy-first permission allow.");
+        assert(!localText.includes("machineOverride"), "Provisioned config must not contain unsupported marker fields.");
+        const localInstructions = path.join(fixtureGlobal, "opencode.local.instructions.md");
+        assert(fs.existsSync(localInstructions), "Installer must provision gitignored local instructions from the portable example.");
+        assert(fs.readFileSync(localInstructions, "utf8") === LOCAL_INSTRUCTIONS_EXAMPLE, "Provisioned local instructions must match the portable example bytes.");
         const temporaryArtifacts = replacementTemps(local);
         assert(temporaryArtifacts.length === 0, `Successful provisioning must not leave temporary artifacts: ${temporaryArtifacts.join(", ")}`);
+      } finally {
+        rmTempDir(dir);
+      }
+    },
+  },
+  {
+    name: "installer preserves existing gitignored config bytes and reports missing local-instructions migration guidance",
+    run: () => {
+      const dir = makeTempDir();
+      try {
+        const toolsDir = path.join(dir, "tools");
+        const fixtureGlobal = path.join(dir, "global");
+        fs.mkdirSync(toolsDir, { recursive: true });
+        writeFixtureGlobalSkeleton(fixtureGlobal);
+        const local = path.join(fixtureGlobal, "opencode.json");
+        const originalBytes = Buffer.from('{ "permission": "allow", "provider": "owner-local-value" }\n');
+        fs.writeFileSync(local, originalBytes);
+        const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
+        writeCopiedInstaller(copiedInstaller);
+        const captured = invokeCopiedInstaller(copiedInstaller, dir, []);
+        assertSuccess(captured, "Installer must succeed while preserving an existing supported local config.");
+        assert(fs.readFileSync(local).equals(originalBytes), "Existing gitignored opencode.json must remain byte-for-byte preserved.");
+        const guidancePath = path.join(fixtureGlobal, "opencode.local.instructions.md");
+        assertOutputContains(captured, "preserved existing global/opencode.json", "Installer must report that existing local config was preserved.");
+        assertOutputContains(captured, guidancePath, "Migration guidance must name the absolute local-instructions path to add.");
+        assertOutputContains(captured, "Add that absolute path", "Migration guidance must be actionable without automatic rewrite.");
+        assert(!captured.output.includes("owner-local-value"), "Preservation diagnostics must not expose machine-local config content.");
+        assert(fs.existsSync(guidancePath), "Missing local instructions should still be provisioned from the portable example.");
+        assert(replacementTemps(local).length === 0, "Preservation path must leave no config temp.");
       } finally {
         rmTempDir(dir);
       }
@@ -213,10 +255,7 @@ const tests: { name: string; run: () => void }[] = [
         const toolsDir = path.join(dir, "tools");
         const fixtureGlobal = path.join(dir, "global");
         fs.mkdirSync(toolsDir, { recursive: true });
-        fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
-        fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
-        fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
-        fs.copyFileSync(path.join(root, "global", "opencode.json.template"), path.join(fixtureGlobal, "opencode.json.template"));
+        writeFixtureGlobalSkeleton(fixtureGlobal, fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8"));
         const local = path.join(fixtureGlobal, "opencode.json");
         const secretSentinel = "private-config-value-must-not-leak";
         const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");

@@ -1,12 +1,14 @@
 ---
 name: openspec-consistency-review
-description: Review OpenSpec proposal/design/specs/tasks/docs/tests for synchronization and readiness at implementation, archive, release, or merge gates.
+description: Review OpenSpec proposal/design/specs/tasks/docs/tests for synchronization and evidence gaps across implementation, archive, release, or merge work.
 license: MIT
 ---
 
 # OpenSpec Consistency Review
 
 Use this skill for a focused read-only or fix-enabled consistency pass over OpenSpec artifacts and their source/test evidence.
+
+This skill returns evidence only. It does not authorize mutation, set or block a lifecycle stage, or replace main-owned reproduction and disposition.
 
 ## Checks
 
@@ -28,5 +30,5 @@ Return:
 - `Findings`: severity, evidence, impact, likely root cause, recommendation, confidence.
 - `Requirement-To-Test Matrix`: existing/planned/missing.
 - `Task Evidence Review`: completed tasks with proof or gaps.
-- `Archive/Implementation Readiness`: yes/no for the next working increment and why; future-scope gaps alone must not force `no`.
+- `Evidence Gaps`: missing current-increment proof, synchronization, validation, or owner decisions; future-scope gaps stay non-blocking.
 - `Validation`: commands run or skipped with reason.

@@ -27,7 +27,16 @@ Implement tasks from an OpenSpec change.
 
    Always announce: "Using change: <name>" and how to override (e.g., `/opsx-apply <other>`).
 
-2. **Check status to understand the schema**
+2. **Run the apply operation gate before mutation**
+
+   ```bash
+   npm run openspec:gate -- --operation apply --change "<name>"
+   ```
+
+   Stop on a non-zero exit. Preserve the exact gate output instead of entering the
+   implementation loop with missing required artifacts.
+
+3. **Check status to understand the schema**
    ```bash
    openspec status --change "<name>" --json
    ```
@@ -36,7 +45,7 @@ Implement tasks from an OpenSpec change.
    - `planningHome`, `changeRoot`, and `actionContext`: planning scope and edit constraints
    - Which artifact contains the tasks (typically "tasks" for spec-driven, check status for others)
 
-3. **Get apply instructions**
+4. **Get apply instructions**
 
    ```bash
    openspec instructions apply --change "<name>" --json
@@ -53,14 +62,14 @@ Implement tasks from an OpenSpec change.
    - If `state: "all_done"`: congratulate, suggest archive
    - Otherwise: proceed to implementation
 
-4. **Read context files**
+5. **Read context files**
 
    Read every file path listed under `contextFiles` from the apply instructions output.
    The files depend on the schema being used:
    - **spec-driven**: proposal, specs, design, tasks
    - Other schemas: follow the contextFiles from CLI output
 
-5. **Show current progress**
+6. **Show current progress**
 
    Display:
    - Schema being used
@@ -68,14 +77,23 @@ Implement tasks from an OpenSpec change.
    - Remaining tasks overview
    - Dynamic instruction from CLI
 
-6. **Implement tasks (loop until done or blocked)**
+7. **Implement tasks (loop until done or blocked)**
 
    For each pending task:
    - Show which task is being worked on
    - Make the code changes required
    - Keep changes minimal and focused
-   - Mark task complete in the tasks file: `- [ ]` → `- [x]`
+   - Run the task's stated observable proof on the current candidate
+   - Run its applicable focused validation, or record the exact reasoned manual/external gate
+   - Mark the task complete only after required proof and validation pass: `- [ ]` → `- [x]`
    - Continue to next task
+
+   **If proof or validation fails:**
+   - Leave the task unchecked
+   - Preserve the command, representative input, exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths
+   - Treat the raw tool result as authoritative; never substitute an expected exit code. If only generic non-zero status is observable, record the precise process exit code as `unknown`
+   - Inspect those diagnostics and continue local run-observe-correct when the failure is resolvable inside the accepted scope
+   - Pause only for an exact user-owned blocker; do not convert an ordinary failure into a routine approval question
 
    **Pause if:**
    - Task is unclear → ask for clarification
@@ -83,12 +101,12 @@ Implement tasks from an OpenSpec change.
    - Error or blocker encountered → report and wait for guidance
    - User interrupts
 
-7. **On completion or pause, show status**
+8. **On completion or pause, show status**
 
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: suggest archive
+   - If all done: report that implementation tasks are complete and archive checks are next
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**
@@ -119,7 +137,8 @@ Working on task 4/7: <task description>
 - [x] Task 2
 ...
 
-All tasks complete! Ready to archive this change.
+All implementation tasks have current evidence. Run `/opsx-archive` for separate sync, validation, and archive checks.
+Do not emit an RC or stable claim from this command. If current runtime proof supports a lifecycle report, apply output is capped at `Development-Stage: MVP` until the separate qualification and handoff checks complete.
 ```
 
 **Output On Pause (Issue Encountered)**
@@ -148,7 +167,8 @@ What would you like to do?
 - If task is ambiguous, pause and ask before implementing
 - If implementation reveals issues, pause and suggest artifact updates
 - Keep code changes minimal and scoped to each task
-- Update task checkbox immediately after completing each task
+- Update a task checkbox only after its required observable proof and focused validation pass
+- Do not infer RC/stable from completed task checkboxes; this command does not complete the separate archive and stable-handoff boundary
 - Pause on errors, blockers, or unclear requirements - don't guess
 - Use contextFiles from CLI output, don't assume specific file names
 

@@ -16,6 +16,40 @@ export const STRUCTURAL_SECRET_KEYS = new Set([
   "worktree",
 ]);
 
+const REDACTED_VALUE = "<redacted>";
+const sensitiveAssignmentPattern = /(\b(?:access[_-]?token|api[_-]?key|authorization|cookie|password|secret|token)\b\s*[:=]\s*)(?:"[^"]*"|'[^']*'|[^\s,;]+)/gi;
+const credentialTokenPattern = /\b(?:sk-(?:proj-)?[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/g;
+const bearerTokenPattern = /\bBearer\s+[A-Za-z0-9._~+/-]+=*/gi;
+const windowsHomePathPattern = /\b[A-Za-z]:\\Users\\[^\s"'<>|]+/g;
+const posixHomePathPattern = /\/(?:Users|home)\/[^\s/"']+(?:\/[^\s"']*)?/g;
+
+function redactSensitiveText(value: string): string {
+  return value
+    .replace(bearerTokenPattern, `Bearer ${REDACTED_VALUE}`)
+    .replace(credentialTokenPattern, REDACTED_VALUE)
+    .replace(sensitiveAssignmentPattern, `$1${REDACTED_VALUE}`)
+    .replace(windowsHomePathPattern, "<home-path>")
+    .replace(posixHomePathPattern, "<home-path>");
+}
+
+function redactSensitiveStrings(value: unknown): unknown {
+  if (typeof value === "string") {
+    return redactSensitiveText(value);
+  }
+  if (Array.isArray(value)) {
+    return value.map(redactSensitiveStrings);
+  }
+  if (value == null || typeof value !== "object") {
+    return value;
+  }
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).map(([key, nested]) => [
+      key,
+      redactSensitiveStrings(nested),
+    ]),
+  );
+}
+
 export function hashRef(prefix: string, value: string | null | undefined): string {
   const normalized = value == null || value === "" ? "<missing>" : value;
   const digest = crypto.createHash("sha256").update(normalized).digest("hex").slice(0, 12);
@@ -80,9 +114,11 @@ function redactStructuralSecrets(value: unknown): unknown {
 }
 
 function transcriptContent(value: unknown, rawSessionId: string): unknown {
-  return redactSessionTokens(
-    redactKnownSessionId(redactStructuralSecrets(value), rawSessionId),
-    new Set([hashRef("session", rawSessionId)]),
+  return redactSensitiveStrings(
+    redactSessionTokens(
+      redactKnownSessionId(redactStructuralSecrets(value), rawSessionId),
+      new Set([hashRef("session", rawSessionId)]),
+    ),
   );
 }
 

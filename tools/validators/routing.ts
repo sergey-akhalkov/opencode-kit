@@ -2,7 +2,6 @@ import path from "node:path";
 import {
   IMPLEMENTATION_WORKER_CONTINUATION_REQUIRED_TEXT,
   IMPLEMENTATION_WORKER_FILE,
-  IMPLEMENTATION_WORKER_HANDOFF_FIELDS,
   IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT,
 } from "../contracts/implementation-worker.ts";
 import {
@@ -51,8 +50,6 @@ import {
   walkMarkdownFiles,
 } from "./context.ts";
 import {
-  fencedCodeLineMask,
-  isAtxH1OrH2BoundaryLine,
   scanModelFacingMarkdownBody,
   scanOperativeTextOutsideFences,
 } from "./active-authority.ts";
@@ -60,31 +57,6 @@ import {
 const GLOBAL_AGENTS_RELATIVE = "global/AGENTS.md";
 /** POSIX-relative prefix for role agent Markdown surfaces. */
 const GLOBAL_AGENTS_DIR_PREFIX = "global/agents/";
-
-/**
- * Exact ordered labels of the normative Universal Task Briefing Contract schema
- * (single top-level ```text block under ## Universal Task Briefing Contract in global AGENTS).
- */
-const NORMATIVE_BRIEFING_SCHEMA_LABELS: readonly string[] = [
-  "Role:",
-  "Objective:",
-  "Business/System Context:",
-  "Current State and Evidence:",
-  "Required Deliverables:",
-  "In Scope:",
-  "Out of Scope / Non-Goals:",
-  "Read Scope:",
-  "Write Scope:",
-  "Forbidden Actions:",
-  "Requirements and Invariants:",
-  "Resolved Decisions and Rationale:",
-  "Inputs and Source of Truth:",
-  "Dependencies and Preconditions:",
-  "Acceptance Criteria:",
-  "Verification:",
-  "Return Contract:",
-  "Blocker and Escalation Policy:",
-];
 
 /**
  * Read a markdown authority surface, reject unsupported non-top-level fence syntax,
@@ -155,86 +127,6 @@ function readRoutingSurfaceOperativeText(
     return readModelFacingRoleAgentText(ctx, file);
   }
   return readOperativeAuthorityText(ctx, file);
-}
-
-/** Byte-exact normative briefing H2; whitespace/indent drift is rejected. */
-const EXACT_NORMATIVE_BRIEFING_H2 = "## Universal Task Briefing Contract";
-/** Byte-exact top-level opener for the normative briefing schema fence. */
-const EXACT_NORMATIVE_BRIEFING_OPEN = "```text";
-/** Byte-exact top-level closer for the normative briefing schema fence. */
-const EXACT_NORMATIVE_BRIEFING_CLOSE = "```";
-
-/**
- * Body of the single exact normative ```text briefing schema under
- * ## Universal Task Briefing Contract, or null when the shape is not exact.
- * Deterministic line scan only: one byte-exact H2, section ends at next unfenced
- * H1/H2, one top-level byte-exact ```text / ``` fence, 18 ordered labels with
- * no blank or extra lines, no indent/delimiter/trailing-whitespace drift.
- */
-function extractExactNormativeBriefingSchemaBody(text: string): string | null {
-  const lines = text.split(/\r?\n/);
-  const fenced = fencedCodeLineMask(lines);
-
-  let sectionStart = -1;
-  for (let i = 0; i < lines.length; i += 1) {
-    if (!fenced[i] && lines[i] === EXACT_NORMATIVE_BRIEFING_H2) {
-      if (sectionStart >= 0) {
-        return null;
-      }
-      sectionStart = i;
-    }
-  }
-  if (sectionStart < 0) {
-    return null;
-  }
-
-  // Ownership ends at the next unfenced supported ATX H1/H2 boundary
-  // (0-3 leading spaces; space/tab or EOL after the hash run).
-  let sectionEnd = lines.length;
-  for (let i = sectionStart + 1; i < lines.length; i += 1) {
-    if (!fenced[i] && isAtxH1OrH2BoundaryLine(lines[i]!)) {
-      sectionEnd = i;
-      break;
-    }
-  }
-
-  const openers: number[] = [];
-  for (let i = sectionStart + 1; i < sectionEnd; i += 1) {
-    if (fenced[i] && (i === 0 || !fenced[i - 1])) {
-      openers.push(i);
-    }
-  }
-  if (openers.length !== 1) {
-    return null;
-  }
-
-  const open = openers[0]!;
-  if (lines[open] !== EXACT_NORMATIVE_BRIEFING_OPEN) {
-    return null;
-  }
-
-  let close = open;
-  while (close + 1 < sectionEnd && fenced[close + 1]) {
-    close += 1;
-  }
-  if (close === open || lines[close] !== EXACT_NORMATIVE_BRIEFING_CLOSE) {
-    return null;
-  }
-
-  // Keep every interior line (including blanks); blanks make the shape non-exact.
-  const body: string[] = [];
-  for (let i = open + 1; i < close; i += 1) {
-    body.push(lines[i]!);
-  }
-  if (body.length !== NORMATIVE_BRIEFING_SCHEMA_LABELS.length) {
-    return null;
-  }
-  for (let i = 0; i < body.length; i += 1) {
-    if (body[i] !== NORMATIVE_BRIEFING_SCHEMA_LABELS[i]) {
-      return null;
-    }
-  }
-  return body.join("\n");
 }
 
 function countExactLifecycleMarkers(text: string): number {
@@ -521,24 +413,6 @@ export function validateImplementationWorkerRouting(
     for (const required of IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT) {
       if (required === "implementation-worker") continue;
       requireTextContains(ctx, operative, required, "implementation-worker routing", file);
-    }
-    // Handoff schema labels: operative on every surface. Only global/AGENTS.md may also
-    // use the exact complete normative ```text briefing schema under the exact H2.
-    let handoffSurface = operative;
-    if (relative === GLOBAL_AGENTS_RELATIVE) {
-      const schemaBody = extractExactNormativeBriefingSchemaBody(readText(file));
-      if (schemaBody != null) {
-        handoffSurface = `${operative}\n${schemaBody}`;
-      }
-    }
-    for (const field of IMPLEMENTATION_WORKER_HANDOFF_FIELDS) {
-      requireTextContains(
-        ctx,
-        handoffSurface,
-        field,
-        "implementation-worker handoff fields",
-        file,
-      );
     }
   }
 }

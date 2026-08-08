@@ -15,6 +15,7 @@ type Options = {
 
 const ENV_VAR = "OPENCODE_CONFIG_DIR";
 const GLOBAL_DIR_NAME = "global";
+const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md";
 export const SETX_SAFE_LIMIT = 900;
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,11 +25,11 @@ function printUsage(): void {
   console.log(`Usage:
   npm run install:global -- [options]
 
-Point OpenCode at this repository as its single source of truth for global
-configuration. Instead of copying skills/agents/AGENTS.md into ~/.config/opencode,
-the installer sets the OPENCODE_CONFIG_DIR environment variable to the repository
-"global/" directory. OpenCode loads skills, agents, AGENTS.md, plugins, and
-opencode.json directly from there.
+Point OpenCode at this repository as a custom global configuration source. Instead
+of copying skills/agents/AGENTS.md into ~/.config/opencode, the installer sets the
+OPENCODE_CONFIG_DIR environment variable to the repository "global/" directory.
+OpenCode loads artifacts directly from there, while host-default, project, managed,
+explicit, or inline sources may remain loader-visible according to current precedence.
 
 Target: ${globalDir}
 
@@ -524,7 +525,7 @@ function validateGlobalDir(target: string): string[] {
     errors.push(`Missing global config directory: ${target}`);
     return errors;
   }
-  for (const required of ["skills", "agents", "AGENTS.md", "opencode.json.template"]) {
+  for (const required of ["skills", "agents", "AGENTS.md", "opencode.json.template", "opencode.local.instructions.example.md"]) {
     const candidate = path.join(target, required);
     if (!fs.existsSync(candidate)) {
       errors.push(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
@@ -533,7 +534,7 @@ function validateGlobalDir(target: string): string[] {
   return errors;
 }
 
-function assertSupportedLocalConfig(file: string): void {
+function assertSupportedLocalConfig(file: string): Record<string, unknown> {
   let text: string;
   try {
     text = decodeUtf8Strict(fs.readFileSync(file), "opencode.json");
@@ -549,6 +550,7 @@ function assertSupportedLocalConfig(file: string): void {
       `Existing global/opencode.json contains unsupported field 'machineOverride'; remove it before restarting OpenCode or reinstalling.`,
     );
   }
+  return inspection.value;
 }
 
 function assertSupportedTemplate(templatePath: string): Buffer {
@@ -575,20 +577,58 @@ function assertSupportedTemplate(templatePath: string): Buffer {
   return templateBytes;
 }
 
+function materializeTemplate(templateBytes: Buffer, target: string): Buffer {
+  const templateText = decodeUtf8Strict(templateBytes, "opencode.json.template");
+  const placeholder = JSON.stringify(LOCAL_INSTRUCTIONS_PLACEHOLDER);
+  if (!templateText.includes(placeholder)) {
+    return templateBytes;
+  }
+  const localInstructions = path.join(target, "opencode.local.instructions.md").replaceAll("\\", "/");
+  return Buffer.from(templateText.replaceAll(placeholder, JSON.stringify(localInstructions)), "utf8");
+}
+
 function ensureLocalConfig(target: string): void {
   const local = path.join(target, "opencode.json");
   const template = path.join(target, "opencode.json.template");
   if (fs.existsSync(local)) {
-    assertSupportedLocalConfig(local);
+    const config = assertSupportedLocalConfig(local);
+    const expected = path.join(target, "opencode.local.instructions.md");
+    const instructions = Array.isArray(config.instructions) ? config.instructions : [];
+    const configured = instructions.some(
+      (instruction) => typeof instruction === "string" && path.isAbsolute(instruction) && sameConfigPath(instruction, expected),
+    );
+    if (!configured) {
+      console.log(
+        `note: preserved existing global/opencode.json; its instructions do not reference ${expected}. Add that absolute path to load machine-local preferences.`,
+      );
+    }
     return;
   }
   if (!fs.existsSync(template)) {
     return;
   }
-  const templateBytes = assertSupportedTemplate(template);
+  const templateBytes = materializeTemplate(assertSupportedTemplate(template), target);
   replaceFileAtomically(local, templateBytes, null);
-  console.log(`provisioned: global/opencode.json from opencode.json.template (portable default).`);
+  console.log(`provisioned: global/opencode.json from the materialized opencode.json.template default.`);
   console.log(`Edit global/opencode.json for machine-specific provider/MCP overrides; it is gitignored.`);
+}
+
+function ensureLocalInstructions(target: string): void {
+  const local = path.join(target, "opencode.local.instructions.md");
+  const example = path.join(target, "opencode.local.instructions.example.md");
+  if (fs.existsSync(local)) {
+    const stat = fs.lstatSync(local);
+    if (!stat.isFile() || stat.isSymbolicLink()) {
+      throw new Error("Existing global/opencode.local.instructions.md must be a regular non-symlink file.");
+    }
+    return;
+  }
+  if (!fs.existsSync(example) || !fs.statSync(example).isFile()) {
+    throw new Error("Missing global/opencode.local.instructions.example.md; cannot provision personal instructions.");
+  }
+  replaceFileAtomically(local, fs.readFileSync(example), null);
+  console.log("provisioned: global/opencode.local.instructions.md from the portable example.");
+  console.log("Edit the gitignored file for personal language, coordination, and local model preferences.");
 }
 
 function isWindows(): boolean {
@@ -641,6 +681,7 @@ function runSet(dryRun: boolean): void {
   }
   if (!dryRun) {
     ensureLocalConfig(globalDir);
+    ensureLocalInstructions(globalDir);
   }
 
   const previous = currentValue();
@@ -687,7 +728,7 @@ function runSet(dryRun: boolean): void {
   }
 
   console.log("");
-  console.log("Restart OpenCode so it loads the new global config directory.");
+  console.log("Restart OpenCode so it loads the kit custom config directory alongside other documented sources.");
   if (isWindows()) {
     console.log("Windows GUI apps launched from Explorer may require logoff/logon to inherit the change.");
   }

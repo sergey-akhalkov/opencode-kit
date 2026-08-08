@@ -246,16 +246,10 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
       "package.json script 'instruction:feedback' must run node tools/instruction-feedback-ledger.ts.",
     );
   }
-  if (
-    scripts.test &&
-    !/(^|&&)\s*node\s+tools\/test-instruction-feedback-ledger\.ts(\s|$|&&)/.test(scripts.test)
-  ) {
+  if (scripts.test && !scripts.test.includes("tools/test-instruction-feedback-ledger.ts")) {
     ctx.addError("package.json script 'test' must include node tools/test-instruction-feedback-ledger.ts.");
   }
-  if (
-    scripts.test &&
-    !/(^|&&)\s*node\s+tools\/test-install-opencode-global\.ts(\s|$|&&)/.test(scripts.test)
-  ) {
+  if (scripts.test && !scripts.test.includes("tools/test-install-opencode-global.ts")) {
     ctx.addError("package.json script 'test' must include node tools/test-install-opencode-global.ts.");
   }
   if (scripts["validate:strict"] && !scripts["validate:strict"].includes("--fail-on-warnings")) {

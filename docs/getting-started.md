@@ -41,10 +41,10 @@ npm run doctor -- --project <project-path>
 
 ## First Task Prompt
 
-In the target project, ask for work using the single loop defined at `instructions/universal-development-loop.md`:
+The active global instructions provide runtime authority; a target project does not need a copy of the kit-relative conceptual-loop file. Start with a bounded outcome and let risk select the proportional path:
 
 ```text
-Use the Universal Development Loop (see instructions/universal-development-loop.md) to implement <task>. Keep the slice small, prove the happy path through observable execution, then use a separate fresh-context testing subagent to discover realistic risks and author negative/end-to-end tests.
+Implement <task> as the smallest complete working slice. Prove the happy path through observable execution and run focused project validation. Use Material qualification and fresh critical-only SDET only when a named Material boundary, explicit stable request, or project policy requires it.
 ```
 
 ## Before Broad Work

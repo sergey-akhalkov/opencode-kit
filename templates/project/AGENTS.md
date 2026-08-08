@@ -5,7 +5,7 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 ## Runtime Authority
 
 - Shared runtime lifecycle authority lives in the active global OpenCode config: always-loaded `AGENTS.md` and the conditional `change-ready-sdlc` skill. This project file supplies adapters, routing, and project constraints only; it cannot substitute missing global contracts.
-- Resolve the active global config directory to `OPENCODE_CONFIG_DIR` when set; otherwise use the host default global config directory. When `OPENCODE_CONFIG_DIR` is set, the default global directory is bypassed and not loaded.
+- Resolve the kit custom config directory to `OPENCODE_CONFIG_DIR` when set; otherwise inspect the host default global directory. A custom directory does not prove every host-default or project source is unloaded; detect authority collisions before qualification.
 - Missing active global `AGENTS.md` blocks Material/qualification work that requires it. Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill. Do not invent a partial process or foreign stack default.
 - Apply the conceptual Universal Development Loop only as guidance consistent with the active global contracts; do not depend on a target-relative kit path for runtime authority.
 

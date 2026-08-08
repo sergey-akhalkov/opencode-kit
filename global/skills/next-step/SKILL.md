@@ -22,51 +22,26 @@ For a new broad task that is not yet tied to existing OpenSpec work, do not infe
 
 ## Workflow
 
-- Inspect the current repository state, OpenSpec change directories, specs, tasks, proposal/design files, archive candidates, recent diffs, and validation evidence if available.
-- Prefer the repository's OpenSpec commands when available, such as `openspec list`, `openspec list --specs`, and `openspec validate --all`; otherwise inspect the OpenSpec files directly.
-- Inventory all available OpenSpec-backed work, including incomplete implementation tasks, missing tests, spec/doc synchronization, consistency reviews, validation failures, proposal/exploration gaps, and archive-ready completed changes.
-- Surface archive-ready OpenSpec changes when implementation tasks are done but spec sync, validation evidence, reviewer evidence, or archive movement is missing.
-- Include lightweight follow-up changes whose primary artifact is `tasks.md`, especially changes created from audits, retros, reviewer gates, or validation failure triage.
-- Group items into independent workstreams, not low-level task lists. Each workstream should have a clear outcome, bounded scope, readiness state, and likely validation evidence.
-- Keep the user-facing discovery summary high-level. Do not include detailed file-by-file plans, worker prompts, implementation steps, or test matrices until parallel coordination is approved.
+- Start with `openspec list --json`. Do not glob `openspec/changes/archive`, main specs, or the repository.
+- When exactly one active change exists, run `openspec status --change <id> --json` and `openspec instructions apply --change <id> --json`. Those three OpenSpec calls are the complete default evidence budget; do not also read proposal/design/specs/tasks or run git status/diff unless a returned error makes one exact read necessary.
+- When several active changes exist, use list output to recommend one serial change. Read status for only the recommended change unless the list lacks enough information to distinguish a dependency or blocker.
+- When no active change exists, report that fact. Inspect archived changes or main specs only when the user explicitly asks for historical, proposal, or broad discovery work.
+- Derive the next action from the first pending task whose dependencies are satisfied, current apply instruction, or archive checks when every task is complete.
+- Keep the user-facing response high-level. Do not include file-by-file plans, worker prompts, implementation steps, or test matrices.
 - Prefer steps that reduce uncertainty, unblock the next useful working increment inside an enforced envelope, or produce a reviewable slice.
 - Avoid speculative polish, unreachable future design, and unrelated cleanup.
 
 
-## Multi-Workstream Decision Gate
+## Multi-Workstream Recommendation
 
 When two or more independent OpenSpec-backed workstreams are available:
 
 - Show `Available OpenSpec Workstreams` with concise, high-level descriptions only.
 - Recommend one serial next step by default, or a clearly bounded subset if the user explicitly requested parallel execution.
-- Ask the user for approval before launching parallel work when scope, risk, destructive/remote actions, dirty-state preservation, or acceptance policy is user-owned. Use `question` when available.
-- If the user forbids questions and approval is genuinely required, return `Suggested Next Options` and do not launch parallel work until the user explicitly approves.
-- Offer 2-4 self-contained options. Put the recommended option first and end its label with `(Recommended)`.
-- Include a stop/serial option when parallel work may be too broad, risky, or not what the user wants.
-- Limit one parallel batch to 2-6 approved workstreams. If more than 6 workstreams are available, show all of them at a high level, recommend the first prioritized batch of at most 6, and require separate approval for later batches.
-- Treat approval, when required, as permission to coordinate only the approved streams and approved mode. If later detailed planning exposes overlapping write scopes, unstable acceptance criteria, missing dependencies, or unsafe ambiguity, pause that stream and report the blocker instead of widening scope silently.
-
-Example approval options:
-
-- `Start recommended step (Recommended)`: execute the single highest-priority serial slice.
-- `Run selected streams`: ask the user to name the workstreams, then coordinate only those.
-- `Plan first only`: run read-only detailed planning workers and stop before implementation.
-- `Stay discovery-only`: return the inventory without starting work.
-
-## Worker Handoff
-
-After approval when required, or after the safe autonomous decision gate passes:
-
-- Keep this skill's OpenSpec inventory as the master intake evidence.
-- Carry the approved mode into the handoff. If the user chose plan-first only, run read-only planning workers, synthesize their reports, and stop before implementation until the user explicitly approves execution.
-- Start with parallel detailed planning workers, one per approved workstream, unless two streams are too coupled to plan independently.
-- Each planning worker should load/use `deep-task-planning` before doing planning work. If the worker cannot load that skill because the tool is unavailable, the worker uses the planning contract from the prompt, reports `Planning Skill: deep-task-planning unavailable; fallback contract used`, and lowers confidence instead of blocking solely on the missing skill.
-- Each planning worker receives one high-level workstream, exact OpenSpec artifacts to inspect, write scope `none`, expected planning evidence, relevant OpenSpec skill rules, and an explicit instruction to report `Planning Skill: deep-task-planning loaded` in its final report.
-- Synthesize planning reports into bounded implementation/review/test workers with non-overlapping write scopes and focused validation.
-- Assign each implementation worker an explicit `production` or `testing` role. Production workers implement and prove the happy path without editing test artifacts. Fresh-context testing/SDET workers (test-only write scopes, independent negative/end-to-end risks) are required for Material/explicit qualification after proof; Ordinary Small reuses focused validation and may add only the smallest optional post-proof regression test.
-- Continue through execution, integration, focused validation, final validation, relevant read-only reviewer gates including `code-quality-reviewer` for non-trivial code changes, cleanup, and final user-facing status.
-- The master session owns task tracking, integration decisions, validation, reviewer gates, residual risks, and final synthesis.
-- Workers must not ask the user questions, launch nested parallel coordination, commit, push, merge, delete worktrees, or edit outside assigned scope.
+- Do not launch planning, implementation, testing, review, or parallel work from this skill. The user asked for a recommendation, not execution.
+- If execution would cross a protected boundary, identify the exact later owner decision without asking it during recommendation-only output.
+- Offer at most two lower-priority alternatives only when live active-change evidence supports them.
+- An explicit later execution request starts a separate implementation or planning workflow with fresh scope and current repository evidence.
 
 ## Single-Step Output
 
@@ -92,12 +67,3 @@ Return:
 - `Approval Needed`: the exact approval request and options.
 - `Not Starting Yet`: details intentionally withheld until approval, such as worker prompts, file-level plans, and implementation steps.
 
-## Approved Worker Output
-
-Use this after the user approves parallel worker planning and work begins.
-
-Return progress and final status, plus:
-
-- `Approved Workstreams`: names from the user's approval.
-- `Planning Evidence`: worker reports or blockers.
-- `Execution Status`: completed, in progress, blocked, or intentionally deferred per workstream.

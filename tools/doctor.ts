@@ -510,13 +510,23 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
     : ACTIVE_REQUIRED_AUTHORITY_FILES.map((relative) => `${relative} is missing or not a regular file`);
   const hasRequiredAuthority = authorityProblems.length === 0;
 
+  addCheck(
+    checks,
+    "opencode source model",
+    "pass",
+    fromOverride
+      ? "OPENCODE_CONFIG_DIR selects the inspected kit custom directory; host-default, project, managed, explicit, or inline sources may remain loader-visible. Run npm run opencode:sources for privacy-safe source and collision inventory."
+      : "No custom directory is selected; doctor inspects the host-default source. Project, managed, explicit, or inline sources may also be loader-visible.",
+    false,
+  );
+
   if (!dirExists) {
     addCheck(
       checks,
       "opencode config layering",
       "warn",
       fromOverride
-        ? "OPENCODE_CONFIG_DIR points at a missing directory; set it to a complete active global config or install with npm run install:global."
+          ? "OPENCODE_CONFIG_DIR points at a missing kit custom directory; set it to a complete kit source or install with npm run install:global."
         : "OPENCODE_CONFIG_DIR is unset and the host default ~/.config/opencode is missing; install with npm run install:global or provision a complete default global config.",
       true,
     );
@@ -528,8 +538,8 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
       problem == null ? "pass" : "blocked",
       problem ??
         (isRepoGlobal
-          ? "Active layer: gitignored global/opencode.json machine-local config."
-          : "Active layer: existing machine-local opencode.json under the resolved active global config directory."),
+           ? "Inspected kit custom layer: gitignored global/opencode.json machine-local config."
+           : "Inspected source: existing machine-local opencode.json under the resolved config directory."),
       problem != null,
     );
   } else {
@@ -545,7 +555,7 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
       checks,
       "opencode config layering",
       "warn",
-      `No active opencode.json exists under the resolved active global config directory.${templateNote}${sourceNote} Missing machine-local config is advisory when required active authority files are present.`,
+       `No opencode.json exists under the inspected config directory.${templateNote}${sourceNote} Missing machine-local config is advisory when required kit authority files are present.`,
       false,
     );
   }
@@ -557,8 +567,8 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
       "active kit required runtime authority",
       "warn",
       dirExists
-        ? `Resolved active global config (${sourceLabel}) has incomplete required runtime authority: ${authorityProblems.join("; ")}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`
-        : `Resolved active global config (${sourceLabel}) is missing; cannot verify AGENTS.md or change-ready-sdlc. Missing required authority blocks RC/stable qualification work.`,
+        ? `Inspected kit source (${sourceLabel}) has incomplete required runtime authority: ${authorityProblems.join("; ")}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`
+        : `Inspected kit source (${sourceLabel}) is missing; cannot verify AGENTS.md or change-ready-sdlc. Missing required authority blocks RC/stable qualification work.`,
       true,
     );
   } else {
@@ -567,7 +577,7 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
       "active kit required runtime authority",
       "pass",
       fromOverride
-        ? "Resolved active global config contains structurally conforming required runtime authority: AGENTS.md and change-ready-sdlc."
+        ? "Inspected kit custom source contains structurally conforming required runtime authority: AGENTS.md and change-ready-sdlc."
         : "Host default ~/.config/opencode contains structurally conforming required runtime authority: AGENTS.md and change-ready-sdlc.",
       false,
     );
@@ -592,7 +602,7 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
         checks,
         "active kit optional default role files",
         "warn",
-        `Resolved active global config is missing optional default role files: ${missingOptionalRoles.join(", ")}. Missing optional defaults do not block when alternate conforming adapters can be discovered.`,
+        `Inspected kit source is missing optional default role files: ${missingOptionalRoles.join(", ")}. Missing optional defaults do not block when alternate conforming adapters can be discovered.`,
         false,
       );
     } else {
@@ -600,7 +610,7 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
         checks,
         "active kit optional default role files",
         "pass",
-        "Resolved active global config contains optional default production/SDET/final role files.",
+        "Inspected kit source contains optional default production/SDET/final role files.",
         false,
       );
     }

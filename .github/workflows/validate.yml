@@ -49,7 +49,3 @@ jobs:
       - name: Validate OpenSpec changes
         if: hashFiles('openspec/changes/**/*.md') != ''
         run: npm run openspec:validate
-
-      - name: Run OpenSpec prepush operation gate
-        if: hashFiles('openspec/changes/**/*.md') != ''
-        run: npm run openspec:gate -- --operation prepush

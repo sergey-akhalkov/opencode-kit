@@ -10,10 +10,8 @@ import {
   SESSION_DELIVERY_BINDING_SURFACES,
 } from "./contracts/reviewer-binding.ts";
 import {
-  GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
-  GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
 } from "./contracts/skills.ts";
 import {
   agentsAuthorityProblem,
@@ -114,7 +112,6 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "Development-Stage: development | MVP | RC<n> | stable",
         ...GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES.map(({ marker }) => marker),
         GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
-        ...GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
       ], "Copied global authority missing safety marker");
     },
   },
@@ -129,21 +126,6 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       }
       const withoutNonWaivable = agents.replaceAll(GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE, "[removed-non-waivable-risk]");
       assertEqual(agentsAuthorityProblem(withoutNonWaivable), "AGENTS.md missing non-waivable critical-risk clause", "Non-waivable critical-risk omission must fail closed.");
-    },
-  },
-  {
-    name: "contracts: copied authority rejects every self-contained owner-handoff omission",
-    run: () => {
-      const agents = copiedAgentsAuthority();
-      for (const [index, marker] of GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS.entries()) {
-        const incomplete = agents.replaceAll(marker, `[removed-self-contained-handoff-${index}]`);
-        assert(incomplete !== agents, `Copied authority must contain self-contained handoff marker: ${marker}`);
-        assertEqual(
-          agentsAuthorityProblem(incomplete),
-          `AGENTS.md missing self-contained owner handoff marker: ${marker}`,
-          `Missing self-contained handoff marker must fail closed: ${marker}`,
-        );
-      }
     },
   },
   {

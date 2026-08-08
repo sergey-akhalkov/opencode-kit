@@ -1,7 +1,7 @@
 # library-plugin-architecture Specification
 
 ## Purpose
-TBD - created by archiving change plugin-self-containment. Update Purpose after archive.
+Defines self-contained global plugin packaging, runtime discovery, privacy-safe session context, and independence from repository-only source paths.
 ## Requirements
 ### Requirement: Plugin self-containment
 
@@ -50,4 +50,3 @@ The file `tools/session-delivery-context.ts` SHALL exist as a thin CLI entrypoin
 - **WHEN** a developer runs `node tools/session-delivery-context.ts` from the repo root
 - **THEN** the shim SHALL resolve the implementation from `global/plugin/session-delivery-context/index.ts`
 - **AND** the shim's output SHALL match the pre-change behavior byte-for-byte on the fixture SQLite databases in `tools/test-session-env-plugin.ts`.
-

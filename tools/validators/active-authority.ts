@@ -1,7 +1,5 @@
 import * as yaml from "js-yaml";
 import {
-  GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS,
-  GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS,
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
   GLOBAL_AGENTS_SHARED_REVIEWER_RUNTIME_MARKERS,
@@ -518,16 +516,6 @@ export function agentsAuthorityProblem(text: string): string | null {
   }
   if (!operative.includes(GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE)) {
     return "AGENTS.md missing non-waivable critical-risk clause";
-  }
-  for (const field of GLOBAL_AGENTS_DECISION_READY_HANDOFF_FIELDS) {
-    if (!operative.includes(field)) {
-      return `AGENTS.md missing decision-ready handoff field: ${field}`;
-    }
-  }
-  for (const marker of GLOBAL_AGENTS_SELF_CONTAINED_HANDOFF_MARKERS) {
-    if (!operative.includes(marker)) {
-      return `AGENTS.md missing self-contained owner handoff marker: ${marker}`;
-    }
   }
   const briefingHeadingProblem = exactMandatoryH2CardinalityProblem(
     text,

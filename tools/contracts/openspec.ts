@@ -6,10 +6,7 @@ export const OPENSPEC_KNOWN_OPERATIONS: readonly string[] = [
   "acceptance",
   "archive",
   "post-archive",
-  "prepush",
 ];
-
-export const OPENSPEC_PREPUSH_OPERATIONS: ReadonlySet<string> = new Set(["prepush"]);
 
 export const OPENSPEC_PROPOSAL_OPERATIONS: readonly string[] = [
   "propose",

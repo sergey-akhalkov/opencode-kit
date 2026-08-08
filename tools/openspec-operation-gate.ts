@@ -43,10 +43,19 @@ const knownOperations = new Set([
   "acceptance",
   "archive",
   "post-archive",
-  "prepush",
 ]);
 
-const changeScopedOperations = new Set([...knownOperations].filter((operation) => operation !== "prepush"));
+const changeScopedOperations = new Set([...knownOperations]);
+
+const specCapsuleFields = [
+  "Outcome",
+  "Operating Envelope",
+  "Non-Goals",
+  "Non-Deferrable Invariants",
+  "Observable Proof",
+  "Material Residual Risks",
+  "Stop Line",
+] as const;
 
 function normalizePath(value: string): string {
   return value.replaceAll("\\", "/");
@@ -115,9 +124,17 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
   const tasksPath = changePath(root, changeId, "tasks.md");
   const specsPath = changePath(root, changeId, "specs");
   if (["propose", "apply", "review", "acceptance", "archive"].includes(operation)) {
-    checks.push(fs.existsSync(proposalPath) && fs.statSync(proposalPath).isFile()
+    const hasProposal = fs.existsSync(proposalPath) && fs.statSync(proposalPath).isFile();
+    checks.push(hasProposal
       ? check("artifact:proposal", "OpenSpec proposal", "passed", false, `openspec/changes/${changeId}/proposal.md`, "proposal.md exists.")
       : check("artifact:proposal", "OpenSpec proposal", "failed", true, `openspec/changes/${changeId}/proposal.md`, "proposal.md is required."));
+    if (hasProposal) {
+      const proposalText = fs.readFileSync(proposalPath, "utf8");
+      const missingFields = specCapsuleFields.filter((field) => !proposalText.includes(field));
+      checks.push(missingFields.length === 0
+        ? check("artifact:proposal-capsule", "OpenSpec proposal outcome capsule", "passed", false, `openspec/changes/${changeId}/proposal.md`, "proposal.md contains every required current-increment Outcome Capsule field.")
+        : check("artifact:proposal-capsule", "OpenSpec proposal outcome capsule", "failed", true, `openspec/changes/${changeId}/proposal.md`, `proposal.md is missing required Outcome Capsule field(s): ${missingFields.join(", ")}.`));
+    }
   }
   if (["apply", "task-update", "review", "acceptance", "archive"].includes(operation)) {
     if (!fs.existsSync(tasksPath) || !fs.statSync(tasksPath).isFile()) {
@@ -125,6 +142,11 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
     } else {
       const counts = countMarkdownChecklistItems(fs.readFileSync(tasksPath, "utf8"));
       checks.push(check("artifact:tasks", "OpenSpec tasks", "passed", false, `openspec/changes/${changeId}/tasks.md`, `tasks.md exists with ${counts.unchecked}/${counts.total} unchecked task(s).`));
+      if (operation === "archive" && counts.total === 0) {
+        checks.push(check("archive:tasks-empty", "OpenSpec complete archive task evidence", "failed", true, `openspec/changes/${changeId}/tasks.md`, "Complete archive requires at least one trackable task."));
+      } else if (operation === "archive" && counts.unchecked > 0) {
+        checks.push(check("archive:tasks-incomplete", "OpenSpec complete archive task evidence", "failed", true, `openspec/changes/${changeId}/tasks.md`, `Complete archive is blocked by ${counts.unchecked} unchecked task(s).`));
+      }
       if (counts.total > 0 && counts.unchecked === 0 && operation === "task-update") {
         checks.push(check("task-update:all-checked", "OpenSpec task update freshness", "warning", false, `openspec/changes/${changeId}/tasks.md`, "tasks.md is all checked; active change may need archive or stale-state reconciliation."));
       }
@@ -139,20 +161,9 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
   return checks;
 }
 
-function prepushChecks(root: string): OpenSpecOperationGateCheck[] {
-  const openspecRoot = path.join(root, "openspec");
-  if (!fs.existsSync(openspecRoot)) {
-    return [check("prepush:openspec", "OpenSpec prepush scope", "not-applicable", false, "openspec", "No OpenSpec directory exists; operation gate has no OpenSpec artifacts to inspect.")];
-  }
-  return [check("prepush:openspec", "OpenSpec prepush scope", "passed", false, "openspec", "OpenSpec directory exists; run repository pre-push validation for full command gates.")];
-}
-
 function operationChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
   if (!knownOperations.has(operation)) {
     return [check("operation:known", "OpenSpec operation registry", "unknown", true, operation, `Unknown OpenSpec operation ${operation}.`)];
-  }
-  if (operation === "prepush") {
-    return prepushChecks(root);
   }
   return [...requiredChangeChecks(root, operation, changeId), ...artifactChecks(root, operation, changeId)];
 }

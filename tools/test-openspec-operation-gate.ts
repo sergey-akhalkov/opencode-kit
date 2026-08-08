@@ -13,6 +13,16 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const gate = path.join(root, "tools", "openspec-operation-gate.ts");
 const generatedAt = "2026-06-12T00:00:00.000Z";
 
+const OUTCOME_CAPSULE = [
+  "Outcome",
+  "Operating Envelope",
+  "Non-Goals",
+  "Non-Deferrable Invariants",
+  "Observable Proof",
+  "Material Residual Risks",
+  "Stop Line",
+] as const;
+
 function assert(condition: boolean, message: string): void {
   if (!condition) {
     throw new Error(message);
@@ -40,16 +50,21 @@ function writeText(filePath: string, text: string): void {
   fs.writeFileSync(filePath, text.replace(/\r\n/g, "\n"), "utf8");
 }
 
+function proposalWithCapsule(extra = ""): string {
+  const fields = OUTCOME_CAPSULE.map((field) => `- **${field}**: fixture value for ${field}.`).join("\n");
+  return `# Proposal\n\n## Why\n\nNeed change.\n\n### Outcome Capsule\n\n${fields}\n${extra}`;
+}
+
 function writeChange(repo: string, changeId: string, tasks = "- [ ] Do work."): void {
   const changeRoot = path.join(repo, "openspec", "changes", changeId);
-  writeText(path.join(changeRoot, "proposal.md"), `# Proposal\n\n## Why\n\nNeed change.\n`);
+  writeText(path.join(changeRoot, "proposal.md"), proposalWithCapsule());
   writeText(path.join(changeRoot, "tasks.md"), `# Tasks\n\n${tasks}\n`);
   writeText(path.join(changeRoot, "specs", "demo", "spec.md"), `# Demo Spec\n\n## ADDED Requirements\n\n### Requirement: Demo\n\n#### Scenario: Works\n\n- **WHEN** work runs\n- **THEN** result is visible\n`);
 }
 
 function writeIncompleteChange(repo: string, changeId: string): void {
   const changeRoot = path.join(repo, "openspec", "changes", changeId);
-  writeText(path.join(changeRoot, "proposal.md"), `# Proposal\n\n## Why\n\nNeed change.\n`);
+  writeText(path.join(changeRoot, "proposal.md"), proposalWithCapsule());
 }
 
 function spawnGate(repo: string, args: string[]): { status: number; stdout: string; stderr: string } {
@@ -62,13 +77,13 @@ function spawnGate(repo: string, args: string[]): { status: number; stdout: stri
 
 const tests: TestCase[] = [
   {
-    name: "prepush with no openspec is not-applicable and stable JSON",
-    run: () => withTempRepo("prepush-empty", (repo) => {
-      const output = runOpenSpecOperationGate(repo, { operation: "prepush", generatedAt });
+    name: "unknown operation without openspec reports unknown and stable JSON",
+    run: () => withTempRepo("unknown-empty", (repo) => {
+      const output = runOpenSpecOperationGate(repo, { operation: "prepush" as never, generatedAt });
       assert(output.schemaVersion === 1, "Gate output must use schemaVersion=1.");
-      assert(output.operation === "prepush", "Gate output should echo operation.");
-      assert(output.status === "passed" && output.exitCode === 0, `Expected passed prepush empty gate, got ${output.status}.`);
-      assert(output.checks.some((check) => check.status === "not-applicable"), "Empty prepush should include a not-applicable check.");
+      assert(output.operation === "prepush", "Gate output should echo the requested operation.");
+      assert(output.status === "unknown" && output.exitCode === 1, `Expected unknown for removed prepush operation, got ${output.status}.`);
+      assert(output.checks.some((check) => check.id === "operation:known" && check.status === "unknown"), "Removed prepush must surface operation:known unknown.");
       assertEqual(output.checks.map((check) => check.id), [...output.checks.map((check) => check.id)].sort(), "Checks should be deterministically sorted by id.");
     }),
   },
@@ -78,6 +93,7 @@ const tests: TestCase[] = [
       writeChange(repo, "change-a");
       const passed = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "change-a", generatedAt });
       assert(passed.status === "passed" && passed.exitCode === 0, `Expected apply pass, got ${passed.status}.`);
+      assert(passed.checks.some((check) => check.id === "artifact:proposal-capsule" && check.status === "passed"), "Ready apply fixture must pass Outcome Capsule check.");
       writeChange(repo, "done-change", "- [x] Done.");
       const warning = runOpenSpecOperationGate(repo, { operation: "task-update", changeId: "done-change", generatedAt });
       assert(warning.status === "warning" && warning.exitCode === 0, `Expected task-update warning, got ${warning.status}.`);
@@ -85,13 +101,36 @@ const tests: TestCase[] = [
     }),
   },
   {
-    name: "archive gate blocks missing change and unsafe change id",
+    name: "propose and apply fail closed when Outcome Capsule fields are missing",
+    run: () => withTempRepo("missing-capsule", (repo) => {
+      const changeRoot = path.join(repo, "openspec", "changes", "change-a");
+      writeText(path.join(changeRoot, "proposal.md"), "# Proposal\n\n## Why\n\nNeed change.\n");
+      writeText(path.join(changeRoot, "tasks.md"), "# Tasks\n\n- [ ] Do work.\n");
+      writeText(path.join(changeRoot, "specs", "demo", "spec.md"), "# Demo\n");
+      for (const operation of ["propose", "apply"] as const) {
+        const failed = runOpenSpecOperationGate(repo, { operation, changeId: "change-a", generatedAt });
+        assert(failed.status === "failed" && failed.exitCode === 1, `Expected ${operation} capsule failure, got ${failed.status}.`);
+        const capsule = failed.checks.find((check) => check.id === "artifact:proposal-capsule");
+        assert(capsule?.status === "failed" && capsule.blocking, `${operation} must block on missing Outcome Capsule.`);
+        for (const field of OUTCOME_CAPSULE) {
+          assert(capsule.summary.includes(field), `${operation} capsule failure must name missing field ${field}.`);
+        }
+      }
+    }),
+  },
+  {
+    name: "archive gate blocks missing change, unsafe change id, and unchecked tasks",
     run: () => withTempRepo("archive-blocked", (repo) => {
       const missing = runOpenSpecOperationGate(repo, { operation: "archive", generatedAt });
       const unsafe = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "../escape", generatedAt });
       assert(missing.status === "blocked" && missing.exitCode === 1, "Archive without change should block.");
       assert(unsafe.status === "blocked" && unsafe.exitCode === 1, "Unsafe change id should block.");
       assert(unsafe.checks.some((check) => check.id === "scope:change:safe-id"), "Unsafe change id should produce safe-id check.");
+
+      writeChange(repo, "open-change", "- [x] Done.\n- [ ] Still open.");
+      const incomplete = runOpenSpecOperationGate(repo, { operation: "archive", changeId: "open-change", generatedAt });
+      assert(incomplete.status === "failed" && incomplete.exitCode === 1, `Expected incomplete archive failure, got ${incomplete.status}.`);
+      assert(incomplete.checks.some((check) => check.id === "archive:tasks-incomplete" && check.blocking), "Complete archive must fail closed on unchecked tasks.");
     }),
   },
   {

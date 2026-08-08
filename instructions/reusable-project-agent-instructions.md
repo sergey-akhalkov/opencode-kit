@@ -4,7 +4,7 @@ Use this template as a starting point for a project-level `AGENTS.md`. Keep only
 
 ## Runtime Authority And Development Loop
 
-Shared runtime lifecycle authority lives in the active global OpenCode config: always-loaded `AGENTS.md` and the conditional `change-ready-sdlc` skill. Resolve the active global config directory to `OPENCODE_CONFIG_DIR` when set; otherwise use the host default global config directory. When `OPENCODE_CONFIG_DIR` is set, the default global directory is bypassed and not loaded. Missing active global `AGENTS.md` blocks Material/qualification work that requires it. Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill. Do not invent a partial process or foreign stack default.
+Shared runtime lifecycle authority must come from one coherent kit source containing `AGENTS.md` and the conditional `change-ready-sdlc` skill. Resolve the kit custom directory to `OPENCODE_CONFIG_DIR` when set; otherwise inspect the host default global directory. Do not infer that setting a custom directory unloads every host-default or project source; detect same-name collisions before qualification. Missing kit `AGENTS.md` blocks Material/qualification work that requires it. Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill. Do not invent a partial process or foreign stack default.
 
 The conceptual Universal Development Loop is optional guidance only when it stays consistent with those active global contracts. Do not depend on a target-relative kit path such as `instructions/universal-development-loop.md` for runtime authority, and do not restate a competing step list in this template.
 

@@ -18,6 +18,14 @@ Default for clear, bounded, local, reversible work with known focused validation
 
 Production author owns run-observe-correct: launch/invoke candidate, supply representative input, observe output/side effects, correct until green or exact blocker. Same author context must receive raw observations. Parent may run exact authorized commands for a bash-denied worker only when it returns unfiltered output and resumes that worker; edit-only handoff is provisional/blocked, not proven. Autonomous proof only when local/ephemeral, contained, reversible/disposable, non-credentialed, non-destructive outside disposable state, non-billable, sandbox-permitted. Shared/remote staging, credentials, cost, destructive/deploy/install/release/publish remain owner-controlled. Unproved candidates stop before systematic SDET/review/polish.
 
+### End-to-end substitution, skip, and acceleration proof
+
+- When a change derives value by skipping, replacing, caching, replaying, simulating, emulating, precomputing, or otherwise substituting work performed by an existing system, helper output, offline analysis, unit tests, and helper runtime are component evidence only. Do not call the user outcome working, complete, MVP, RC, or stable until the candidate is integrated into the actual actor/caller path and reaches the representative downstream boundary where the original work produced observable state or effects.
+- Before implementation, define the baseline and candidate paths from the same user/actor request through integration, transport/buffer/queue ownership, external effects, and terminal observation. Name what remains unchanged, the exact substitution boundary, fallback behavior, and every state/effect/order dependency that may not be skipped. Unknown or unobservable dependencies block equivalence; they are not assumed irrelevant.
+- Freeze an equivalence contract before candidate execution: identical workload and environment identity, initial-state restoration, exact discrete/order/hash observations, evidence-based numeric tolerances, buffer/queue continuation, failure/fault behavior, bounded downstream continuation, cleanup, and immutable raw evidence. A plausible model, matching summary, or synthetic state object is not equivalence proof when the real boundary is reachable.
+- Measure benefit end to end using the same workload, initial state, environment, start event, and terminal ready/completion event for baseline and candidate. Preserve raw timestamps, phase timings, absolute savings, and relative speedup. Never substitute helper CPU time, a microbenchmark, or skipped work count for operator-visible latency/throughput unless that metric is the explicitly accepted outcome.
+- If the representative boundary is remote, credentialed, costly, destructive, or physical/hardware-controlled, the specification must still contain the exact safe runbook, environment/state manifest, equivalence evaluator, performance method, restoration/cleanup, stop criteria, and owner-authorization gate. Local implementation may proceed, but offline/mock/component proof cannot silently satisfy or remove that gate, and the expanded outcome remains `development` or incomplete until the authorized proof exists.
+
 ### Evidence topology and scoped invalidation
 
 - Evidence-heavy work distinguishes the **Product Candidate** (behavior-affecting code/config/data), **Proof Runner** (drives the boundary and records facts), **Evaluator** (derives verdicts from recorded facts), **Environment Identity**, and immutable **Raw Evidence Bundle**. If one file contains several roles, classify the changed behavior by role rather than invalidating everything by pathname.
@@ -64,7 +72,14 @@ Root authority is not reset by revision, Candidate Reference, reviewer, RC chang
 - **Priority 1 - Quality and safety:** optimize for accepted outcome, protected boundaries, real-boundary proof, validation, failure visibility, and residual risk. Never trade for speed.
 - **Priority 2 - Autonomy:** complete work end-to-end from local evidence and safe reversible defaults. Ask only when authority, access, external capability, or a decision materially changes outcome, scope, risk, or protected semantics; never for routine preference, progress, revision, or process approval.
 - **Priority 3 - Speed:** minimize time to a verified working result, owner interruptions, tokens and tool calls, and repeated manual work. Use targeted context, reuse, batched reads, safe parallelism, and deterministic automation with explicit I/O, stable order, privacy-safe output, and no hidden heuristics. Speed never waives proof, validation, safety, ownership, or cleanup.
-- Implement a small deterministic helper when it directly replaces repeated in-scope work within the smallest sufficient dependency closure. Defer broader improvement without delaying the outcome. New instructions are a last resort when executable enforcement is impractical.
+- TypeScript/JavaScript helpers may enforce explicit schema, inventory, mirror-drift, privacy, and exact safety facts with stable I/O; they must not score, rank, infer, or optimize instruction, prompt, or process effectiveness. Evaluate behavior changes on dedicated disposable workflows with baseline and candidate instructions, the same model/input/environment, observable quality oracles, and recorded time/rework. Keep a durable behavior change only when the workflow evidence improves or fixes a reproduced defect; otherwise discard it.
+- Implement a small deterministic helper only when it directly replaces repeated product work within the smallest sufficient dependency closure. Defer broader improvement without delaying the outcome. New instructions are a last resort when executable enforcement is impractical.
+
+### Compaction reflection and next-session improvement
+
+- Every compaction summary SHALL state `Original User Goal` from root user messages and `Goal Status`, then include `Session Reflection`: outcome, the slowest observed loop or largest time sink, concrete evidence, likely cause with uncertainty, and what should not be repeated. It SHALL also include one compact improvement matrix with rows `Quality`, `Cycle Speed`, and `Token Economy`, and columns `Working Repository` and `opencode-kit`. Each of the six cells records `evidence -> smallest cheap improvement -> expected benefit -> cost/risk`, or `none` when the session supplies no evidence. Admit a candidate only when it has observed evidence, a direct causal link to the next user-visible result, a local/reversible low-cost action, and no scope expansion.
+- After compaction or when a new session receives that matrix, verify every candidate against `Original User Goal` before substantial work. Matrix entries are candidates, not selected actions. End the reflection with `Next-Session Action: <exactly one Working Repository improvement or none>`; never select a list or one action per direction. If the goal is missing, ambiguous, or conflicts with a candidate, call `session_delivery_context` once when available and use root user messages/requirement signals to resolve it; do not launch a reviewer solely for compaction. Execute that one highest-ROI improvement only when it directly accelerates the original goal; then continue the accepted outcome. Keep kit candidates visible but never make a non-blocking kit improvement the next action while unrelated project work is incomplete unless the owner explicitly included kit work. Instruction/process candidates still require a dedicated workflow comparison before retention.
+- Do not manufacture timing claims from memory. Use `unknown` when duration or cause was not observed, and do not let reflection delay the user's accepted outcome.
 
 ## Shared Reviewer Runtime Invariants
 
@@ -115,7 +130,7 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 
 ## Global Artifact Location
 
-- Global artifacts load from the OpenCode global config directory. Resolve `OPENCODE_CONFIG_DIR` when set (`AGENTS.md`, `skills/`, `agents/`, `commands/`, `plugin/`, `opencode.json`); else `~/.config/opencode`. When `OPENCODE_CONFIG_DIR` is set, the default path is bypassed—never edit the bypassed default. State which directory you resolved before editing.
+- Treat `OPENCODE_CONFIG_DIR` as the kit custom source, not proof that host-default, project, managed, explicit, or inline sources are absent. Resolve the kit source there when set, otherwise inspect `~/.config/opencode`; use privacy-safe runtime inventory for same-name collisions and current docs or isolated live evidence for precedence. Never edit another source merely to remove a collision without owner authority. State which source you are editing.
 
 ## Codebase Memory MCP
 
@@ -125,10 +140,9 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 
 ## Communication Preferences
 
-- Communicate with Sergey in chat only and exclusively in Russian. All non-chat artifacts (code, tests, docs, comments, commits, PR/MR, specs, prompts, schemas, generated files) stay English unless Sergey asks otherwise.
-- Record preferred response language; if unknown, follow the user's current language.
+- Personal language, naming, availability, and machine-local routing preferences belong in `opencode.local.instructions.md`, loaded through the official config `instructions` field. If no personal preference is loaded, follow the user's current language.
 - Keep routine updates and completion summaries compact. Optimize owner-decision handoffs for decision quality and completeness, not brevity. Prefer plain wording; define necessary jargon immediately. Preserve exact technical names only where they add evidence.
-- Do not assume Sergey is continuously at the computer or can react immediately. Before starting a bounded window that requires his manual action, synchronize availability, then publish the exact checkpoint and deadline; treat silence only as absence, never as consent, action, refusal, or a product failure.
+- Do not assume the user is continuously available. Before starting a bounded window that requires manual action, synchronize availability, then publish the exact checkpoint and deadline; treat silence only as absence, never as consent, action, refusal, or a product failure.
 - Simplicity must not drop material facts, constraints, risks, uncertainty, or exact identifiers.
 - When asking, offer concise options; recommended first with reason; for each option: what it does, main advantage, main disadvantage. No catch-all when the UI already allows a custom answer.
 
@@ -138,69 +152,10 @@ Always-loaded reviewer safety for leaf specialist reviewers (role agents may tig
 
 ## Universal Task Briefing Contract
 
-Ordinary Small **direct** main-session work uses a compact record only: objective, in-scope/non-goals, acceptance proof, focused validation, forbidden actions, and return status. Do not require the full field list below for direct Ordinary Small work.
-
-This contract applies whenever any agent assigns, delegates, transfers, or restarts work for another agent. It covers main agents, subagents, implementers, testing agents, reviewers, explorers, general-purpose agents, nested delegations, resumed sessions, and post-compaction handoffs. Delegated Ordinary Small may keep fields concise and mark irrelevant fields `N/A - <reason>`. Material and cold-context handoffs remain complete. The assigning agent owns task clarity; the receiving agent must not be expected to reconstruct requirements, discover unstated intent, or repeat analysis already available to the assigner.
-
-- Before dispatch, do enough bounded analysis to turn the request into an execution-ready brief. Do not delegate a raw user message when repository evidence, constraints, or unresolved interpretations materially affect execution.
-- Write every brief so a capable agent with no prior conversation can execute it correctly. Include all relevant facts from the conversation and workspace; never rely on hidden session context, implied knowledge, or references such as "the issue above", "as discussed", or "fix it".
-- Within `Current State and Evidence`, separately label observed facts, assumptions, hypotheses, and recommendations when present; keep decisions under `Resolved Decisions and Rationale`. Cite paths, symbols, requirements, logs, commands, or other evidence for implementation-sensitive claims. Never present an inference as a decided requirement.
-- Resolve decisions before delegation whenever evidence or a safe reversible default permits. If a decision is genuinely user-owned, do not pass it to an executor to guess: keep the dependent work blocked, ask the user through the main session, and identify the exact decision and consequence.
-- Translate the goal into observable required behavior and binary acceptance criteria. Every criterion must be independently checkable and traceable to a stated requirement, invariant, risk, or deliverable.
-- Scope must be explicit: read/write bounds, deliverables, forbidden actions, non-goals, and whether tests/docs/commits/credentials/network/remote mutation are allowed.
-- Specify verification before execution with exact procedures and success conditions. "Run relevant tests" is not enough.
-- Specify the return contract: findings/changes, evidence, files, outcomes, gaps, and residual risks. Reviewers return only their required risk/reduction matrix; SDET returns only its critical-risk report. Neither authorizes work.
-- Use `N/A - <reason>` when a field does not apply; never omit silently.
-- On contradiction, unsafe instruction, missing prerequisite, or material ambiguity, stop affected work and report the precise blocker; continue unaffected work when safe.
-
-Every assignment, delegation, transfer, restart, or handoff brief must contain these labeled fields, adapted to the task but not silently omitted:
-
-```text
-Role:
-Objective:
-Business/System Context:
-Current State and Evidence:
-Required Deliverables:
-In Scope:
-Out of Scope / Non-Goals:
-Read Scope:
-Write Scope:
-Forbidden Actions:
-Requirements and Invariants:
-Resolved Decisions and Rationale:
-Inputs and Source of Truth:
-Dependencies and Preconditions:
-Acceptance Criteria:
-Verification:
-Return Contract:
-Blocker and Escalation Policy:
-```
-
-- `Objective`: end state and value, not activity-only.
-- `Current State and Evidence`: separate observed vs suspected cause; discovery needs questions, evidence, bounds, stop conditions.
-- `Required Deliverables`: concrete artifacts/decisions; say if no file change allowed.
-- `Requirements and Invariants`: behavior/data/API/security/perf/concurrency/failure/ops plus realistic edges when relevant.
-- `Resolved Decisions and Rationale`: approach, ownership, error model, deps, compatibility, rollback when they affect execution.
-- `Acceptance Criteria`: observable pass/fail; define subjective words with concrete evidence.
-- `Blocker and Escalation Policy`: agent-resolvable vs user-owned; subagents never ask the user.
-
-Apply role-specific precision in addition to the universal fields:
-
-- Implementation briefs: targets, required behavior, deps, compatibility, errors, test ownership, focused validation.
-- Testing briefs: original requirements, production boundary, risk matrix, happy-path evidence, mocks, test-only write scope, external oracles.
-- Review briefs: baseline/scope, requirements, dimensions, read-only boundary, file/line evidence, risk-matrix format, and main-owned disposition rules.
-- Exploration briefs: decision questions, likely locations, evidence quality, inventory/map, depth, stop conditions.
-- Planning briefs: implementer, decisions to resolve now, detail, sequencing, gates, risks, rollback, readiness threshold.
-
-Before invoking an agent, perform this quality gate:
-
-1. Could an agent with no conversation history state exactly what result is required, why it matters, and what it must not change?
-2. Are all material decisions either resolved with rationale or explicitly retained as main-session/user-owned blockers?
-3. Can every acceptance criterion be verified from named evidence or an exact check?
-4. Are permissions, read/write boundaries, credential and network access, host-level mutation, destructive/remote restrictions, and test ownership unambiguous?
-5. Does the return contract provide enough evidence for the main session to integrate or reject the result without guessing?
-
-If any answer is no, improve the brief before dispatch. Agent availability, urgency, and token pressure do not justify an ambiguous assignment.
+- Direct main-session work needs no delegation brief. Before assigning work to a cold-context agent, provide a self-contained brief with: role, outcome/value objective, observed state/evidence versus assumptions/unknowns, deliverables, in/out/read/write scope, forbidden actions, required behavior/invariants and resolved decisions, inputs/dependencies, observable acceptance, exact checks, return evidence, and blocker/escalation policy. Use `N/A - <reason>` only when a field truly does not apply.
+- Resolve safe defaults and agent-owned decisions before dispatch. Keep user-owned decisions in main; never make the receiver reconstruct conversation context, infer scope, or guess protected semantics.
+- Keep delegated Ordinary Small briefs compact. Add role-specific detail only where it changes execution: production behavior/error/test ownership; testing boundary/oracles/mocks; review dimensions/read-only matrix; exploration questions/evidence/stop condition; planning sequence/gates/rollback.
+- Before dispatch, verify four things: the receiver can state the result and non-goals; read/write/credential/network/remote boundaries are explicit; acceptance is independently checkable; return evidence is sufficient to integrate without guessing. If not, improve the brief.
 
 ## Autonomous Work Contract
 
@@ -214,34 +169,17 @@ If any answer is no, improve the brief before dispatch. Agent availability, urge
 
 ## Self-Contained Owner Handoff
 
-- This section defines the decision-ready handoff for every owner-controlled action or decision.
-- When control returns because the user must decide or act, provide all decision-relevant context in one self-contained message immediately before `question`. Assume the user has no prior context. They must understand the situation and make a high-quality decision without opening prior chat, code, documents, logs, or links.
-- Use two layers in that same message: first a 30-60 second plain-language overview; then the complete decision detail. Include the plain-language goal and current state; what happened and why it matters; outcome working status; exact failure/evidence; facts, inferences, and unknowns; root-cause status/confidence; attempted paths and why they did not resolve the blocker; why no authorized path remains; why user authority is required; exact requested action; real alternatives/consequences if any; option advantages, disadvantages, risks, reversibility, and cost; agent recommendation and rationale; what happens after each choice; residual risk; preserved state; and the exact reply needed from the user. State every field explicitly, using `unknown`, `none`, or `not applicable - <reason>` when necessary.
-- Explain the situation as a short causal story, not a field dump: goal -> work completed -> stopping point -> cause/evidence -> decision. Include all context needed for the decision, not raw history or full logs.
-- Links and internal identifiers are optional supporting evidence, never prerequisites. Define every necessary technical term at first use. For each path, symbol, document, log, candidate ID, blocker ID, or lifecycle term retained, explain inline what it is, what it establishes, and why it matters. Put audit-only references last under `Supporting evidence`; never make an internal ID the question or option label.
-- When real alternatives exist, present 2-4 product/consequence options. For each, state what the user is choosing, the practical result, main advantage, main disadvantage, material risks, reversibility, time/cost when relevant, and what the agent will do next. Put the recommendation first and justify it against the user's goal. If only one viable owner action exists, say so and explain the consequence of declining; never invent meaningless choices.
-- The `question` UI only captures the choice. Its short labels and descriptions may summarize options but must not carry context required to understand them. Never offer a bare retry, replacement specialist launch, revision approval, process continuation, or budget extension.
-- Before sending, remove every link and internal identifier mentally. If the user could no longer explain what happened, compare the choices, understand the recommendation, know the risks, and provide the exact required answer, improve the handoff before asking. A follow-up such as "explain the issue, the blocker, and what you need from me" means the handoff failed.
-- Recommended option first with `(Recommended)`; `(Recommended)` is presentation-only; continue immediately on selection.
-- Reviewer subagents: no `question`; role matrix plus evidence gaps/residual risks only; feedback only under `docs/feedbacks/**` when allowed.
-- Related out-of-scope task batches → project follow-up mechanism when exists/approved; else grouped candidates. No ceremony for nits or one obvious next step.
-- Complete main handoffs may add compact `Recommended Next Steps` ending with yes/no (`делаем?`); skip read-only/reviewer/subagent/no-question contexts and when user forbade suggestions.
-- No real blocker → report work, validation, documented non-critical limitations, and `Development-Stage` (`stable` + `Stable Candidate: RC<n>`, current RC, MVP, or development) without interactive handoff.
-- Blocker without `question` tool → short `Next Steps` fallback, recommended first.
+- When the user must decide or act, immediately before `question` provide one self-contained message: a short plain-language goal/current-state/blocker overview, then complete decision detail.
+- Separate facts, inferences, and unknowns; state working status, exact evidence, attempted alternatives, why only the owner can act, residual risk, preserved state, and the exact requested reply. Never invent context.
+- Present only real options. For each: practical result, advantage, disadvantage, material risk, reversibility, cost/window when relevant, and what happens next. Put `(Recommended)` first with rationale; if only one viable action exists, say so rather than inventing choices.
+- `question` labels only capture selection and must not carry required context. Never ask for a bare retry, specialist launch, revision/process approval, or budget extension.
+- Reviewer/subagent outputs never use `question`. No real blocker means a compact completion report, not an interactive handoff; without the `question` tool, give a short recommended-first fallback.
 
 ## OpenCode Feature Work
 
 - Verify OpenCode config/skills/agents/plugins claims against current docs, schemas, source, or live loader behavior.
 - Never add `machineOverride` to any `opencode.json`/`opencode.jsonc`. Fix defective validators/docs that require it.
 - Trust but verify prose against executable/source evidence.
-
-## Local OpenCode Model Environment
-
-Installation evidence for this machine only. The portable Change-Ready framework never requires these models or tools.
-
-- Authed local models: `openai/gpt-5.5`, `zai-coding-plan/glm-5.2`, `minimax/MiniMax-M3`.
-- `GET /api/model` may return `data: []`; that is not "no models". Always pass `model` / `--model` / `OPENCODE_REAL_MODEL` explicitly.
-- Prefer the three cloud models above; local `qwen-local` is usually off.
 
 ## Parallel Work And Delegation
 
@@ -323,6 +261,7 @@ Installation evidence for this machine only. The portable Change-Ready framework
 
 - Default each change to the next useful working increment inside a technically enforced operating envelope, not exhaustive resolution of the imagined final system. Resolve decisions only when they can materially change that increment's outcome, envelope, non-deferrable invariants, observable proof, material residual risk, or stop line.
 - Every behavior-changing increment identifies, directly or via an accepted project-native equivalent: `Outcome`, `Operating Envelope`, `Non-Goals`, `Non-Deferrable Invariants`, `Observable Proof`, `Material Residual Risks`, and `Stop Line`.
+- For optimization or substitution outcomes, the change also identifies the actual user/caller integration point, unchanged baseline path, substitution/skip boundary, state-and-effect equivalence manifest, representative downstream proof, baseline-versus-candidate measurement method, required benefit threshold, and external authorization blocker. A component analyzer, planner, simulator, cache, or benchmark may be a useful component increment, but it does not by itself satisfy the product outcome; split it into an explicitly named component change and a dependent integration/equivalence change rather than marking the product outcome complete.
 - Implementation readiness means a capable cold-context implementer can build and prove the next slice without guessing a user-owned decision or a decision that changes material risk. Future scaling, variants, integrations, compatibility, or unreachable edge behavior is non-blocking future scope unless reachable in the current envelope.
 - Prefer concrete paths, symbols, data shapes, and acceptance criteria for the current slice. Group mechanical mirror edits that share one owner and one validation result. Tasks represent meaningful behavior, evidence, or gate outcomes—not one task per mechanical file.
 - No vague placeholders ("TBD", "as appropriate", "handle errors") in actionable current-slice parts. Keep unresolved user-owned items in open questions. Specification review stops when remaining findings are future-scope, unreachable, optional, or polish-only.

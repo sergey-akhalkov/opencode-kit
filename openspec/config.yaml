@@ -1,20 +1,30 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Define the next useful working increment, not the imagined final system.
+  Every behavior-changing increment needs an Outcome, technically enforced
+  Operating Envelope, Non-Goals, Non-Deferrable Invariants, Observable Proof,
+  Material Residual Risks, and Stop Line. Resolve only decisions that can change
+  the current increment or a protected boundary. Keep unreachable future behavior
+  outside current acceptance. Ordinary Small uses main-owned runtime proof and
+  focused validation; Material behavior uses fresh critical-only SDET after proof
+  and accepted-scope completion. Edits alone never complete an implementation task.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - Include an Outcome Capsule with all seven current-increment fields from project context.
+    - State user value and why this bounded increment is needed now.
+    - List exact new and modified capabilities; do not hide behavior changes as implementation detail.
+  design:
+    - Resolve only current-increment architecture, ownership, failure boundaries, and protected decisions.
+    - Record alternatives and why a simpler remove, narrow, reuse, or local-guard option is insufficient.
+    - Keep future scale, variants, and compatibility out of the current design unless reachable in the enforced envelope.
+  specs:
+    - Give every current-increment requirement at least one observable acceptance scenario.
+    - Do not use TBD, as appropriate, handle errors, or another vague placeholder in actionable requirements.
+    - Keep non-applicable and future behavior explicit rather than silently omitting or requiring it.
+  tasks:
+    - Group work by meaningful behavior, evidence, or gate outcome rather than one checkbox per file.
+    - Put the smallest complete happy path and observable runtime proof before broad testing or optional review.
+    - State the exact observable proof and applicable focused validation for each behavior task; keep it unchecked until both pass.
+    - Material test artifacts belong to a fresh test-only SDET after current proof and accepted-scope completion.

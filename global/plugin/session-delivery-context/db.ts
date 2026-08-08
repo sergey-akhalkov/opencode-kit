@@ -74,6 +74,15 @@ export function selectedRows(
   requested: RequestedSessionSelection,
 ): SessionRow[] {
   const orderBy = schema.get("session")?.has("time_created") === true ? "time_created, id" : "id";
+  const rawIds = [...requested.rawIds].sort();
+  if (rawIds.length > 0) {
+    const directRows = db
+      .prepare(`select * from session where id in (${rawIds.map(() => "?").join(", ")}) order by ${orderBy}`)
+      .all(...rawIds) as SessionRow[];
+    if (directRows.length > 0) {
+      return directRows;
+    }
+  }
   const rows = db.prepare(`select * from session order by ${orderBy}`).all() as SessionRow[];
   return rows.filter((row) => {
     const rawId = String(row.id);

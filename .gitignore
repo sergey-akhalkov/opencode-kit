@@ -4,4 +4,5 @@ node_modules/
 /.review-evidence/
 /global/opencode.json
 /global/opencode.local.json
+/global/opencode.local.instructions.md
 /global/model-profiles/local/*.json

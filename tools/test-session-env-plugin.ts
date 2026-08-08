@@ -654,6 +654,75 @@ const tests: TestCase[] = [
       }
     }),
   },
+  {
+    name: "critical session: direct raw-id lookup short-circuits before full scan and hashed public refs still resolve",
+    run: async () => withTempDataDir("direct-lookup", async (dataDir) => {
+      const { DatabaseSync } = await import("node:sqlite");
+      const { selectedRows, requestedSession, tableColumns, tableNames } = await import("../global/plugin/session-delivery-context/db.ts");
+      const { hashRef } = await import("../global/plugin/session-delivery-context/redaction.ts");
+      const targetId = "session_direct_lookup_secret";
+      const decoyId = "session_decoy_should_not_be_needed";
+      const dbPath = path.join(dataDir, "opencode.db");
+      const db = new DatabaseSync(dbPath);
+      try {
+        db.exec("create table session (id text primary key, time_created integer, time_updated integer);");
+        // Insert decoy first so a full scan would see it before the target when ordered by id.
+        db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(decoyId, 1, 1);
+        db.prepare("insert into session (id, time_created, time_updated) values (?, ?, ?)").run(targetId, 2, 2);
+        const names = tableNames(db);
+        const schema = new Map<string, Set<string>>();
+        for (const name of names) {
+          schema.set(name, tableColumns(db, name));
+        }
+        const direct = selectedRows(db, schema, requestedSession(targetId));
+        assert(direct.length === 1 && String(direct[0]?.id) === targetId, `Direct raw-id path must return only the target row, got ${JSON.stringify(direct)}`);
+
+        const publicRef = hashRef("session", targetId);
+        assert(/^session_[a-f0-9]{12}$/.test(publicRef), `Public session ref shape drifted: ${publicRef}`);
+        // Store only the raw id; hashed-ref fallback scans and matches by hashRef equality.
+        const hashed = selectedRows(db, schema, requestedSession(publicRef));
+        // requestedSession(publicRef) treats a session_* 12-hex token as both raw and ref candidates.
+        // Ensure the fallback path can still resolve when the caller supplies the public ref form.
+        assert(hashed.some((row) => String(row.id) === targetId || hashRef("session", String(row.id)) === publicRef), `Hashed public ref must resolve to the target session, got ${JSON.stringify(hashed)}`);
+      } finally {
+        db.close();
+      }
+    }),
+  },
+  {
+    name: "critical session: credential and home-path redaction removes sensitive shapes while ordinary text remains",
+    run: async () => withTempDataDir("redaction-shapes", async (dataDir) => {
+      const rawSessionId = "session_redaction_secret";
+      const prompt = [
+        "Ordinary requirement text remains visible.",
+        "authorization: Bearer sk-proj-abcdefghijklmnopqrstuvwxyz012345",
+        "api_key=ghp_abcdefghijklmnopqrstuv",
+        "token: super-secret-value",
+        "HOME=C:\\Users\\sergey\\secrets\\file.txt",
+        "also /home/sergey/project/readme.md",
+      ].join(" ");
+      createDeliveryContextDbWithPromptOnly(path.join(dataDir, "opencode.db"), rawSessionId, prompt);
+      const previousDataDir = process.env.OPENCODE_DATA_DIR;
+      process.env.OPENCODE_DATA_DIR = dataDir;
+      try {
+        const output = await readDeliveryContextOutput(dataDir, rawSessionId);
+        assert(output.includes("Ordinary requirement text remains visible."), "Ordinary text must remain after redaction.");
+        assert(!output.includes("sk-proj-abcdefghijklmnopqrstuvwxyz012345"), "API token material must be redacted.");
+        assert(!output.includes("ghp_abcdefghijklmnopqrstuv"), "GitHub token material must be redacted.");
+        assert(!output.includes("super-secret-value"), "Assigned secret values must be redacted.");
+        assert(!output.includes("C:\\Users\\sergey"), "Windows home paths must be redacted.");
+        assert(!output.includes("/home/sergey"), "POSIX home paths must be redacted.");
+        assert(output.includes("<redacted>") || output.includes("<home-path>"), "Redaction markers must appear for sensitive shapes.");
+        assert(!output.includes(rawSessionId), "Raw session id must be redacted.");
+      } finally {
+        if (previousDataDir == null) {
+          delete process.env.OPENCODE_DATA_DIR;
+        } else {
+          process.env.OPENCODE_DATA_DIR = previousDataDir;
+        }
+      }
+    }),
+  },
 ];
 
 let failed = 0;

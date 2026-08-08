@@ -27,7 +27,18 @@ Archive a completed change in the experimental workflow.
 
    **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user choose.
 
-2. **Check artifact completion status**
+2. **Run the complete-archive operation gate**
+
+   ```bash
+   npm run openspec:gate -- --operation archive --change "<name>"
+   ```
+
+   Stop on a non-zero exit. A confirmation prompt does not waive a blocking
+   completion check. If the owner needs to retain incomplete work, stop and report
+   that a distinct incomplete/abandoned preservation flow is required; do not use
+   the complete archive path or claim completion.
+
+3. **Check artifact completion status**
 
    Run `openspec status --change "<name>" --json` to check artifact completion.
 
@@ -37,24 +48,22 @@ Archive a completed change in the experimental workflow.
    - `artifacts`: List of artifacts with their status (`done` or other)
 
    **If any artifacts are not `done`:**
-   - Display warning listing incomplete artifacts
-   - Use **AskUserQuestion tool** to confirm user wants to proceed
-   - Proceed if user confirms
+   - Display the incomplete artifacts
+   - Stop without moving the change
 
-3. **Check task completion status**
+4. **Check task completion status**
 
    Read the tasks file (typically `tasks.md`) to check for incomplete tasks.
 
    Count tasks marked with `- [ ]` (incomplete) vs `- [x]` (complete).
 
    **If incomplete tasks found:**
-   - Display warning showing count of incomplete tasks
-   - Use **AskUserQuestion tool** to confirm user wants to proceed
-   - Proceed if user confirms
+   - Display the exact incomplete count
+   - Stop without moving the change
 
-   **If no tasks file exists:** Proceed without task-related warning.
+   **If no tasks file exists for a schema that requires tasks:** Stop as incomplete.
 
-4. **Assess delta spec sync state**
+5. **Assess delta spec sync state**
 
    Use `artifactPaths.specs.existingOutputPaths` from status JSON to check for delta specs. If none exist, proceed without sync prompt.
 
@@ -64,12 +73,25 @@ Archive a completed change in the experimental workflow.
    - Show a combined summary before prompting
 
    **Prompt options:**
-   - If changes needed: "Sync now (recommended)", "Archive without syncing"
+   - If changes needed: "Sync now", "Cancel"
    - If already synced: "Archive now", "Sync anyway", "Cancel"
 
-   If user chooses sync, use Task tool (subagent_type: "general-purpose", prompt: "Use Skill tool to invoke openspec-sync-specs for change '<name>'. Delta spec analysis: <include the analyzed delta spec summary>"). Proceed to archive regardless of choice.
+   If changes are needed, complete and verify sync before archive. Cancel leaves the
+   change active. Complete archive never proceeds with required sync skipped.
 
-5. **Perform the archive**
+6. **Run complete-candidate validation**
+
+   ```bash
+   openspec validate "<name>" --strict
+   npm run prepush:validate
+   ```
+
+   Both commands must exit zero on the current synchronized candidate. If the
+   project has a different trusted full-validation adapter, use that exact command
+   instead of inventing an npm fallback. Preserve command, exit status,
+   stdout/stderr, and candidate identity. Stop on failure.
+
+7. **Perform the archive**
 
    Create an `archive` directory under `planningHome.changesDir` if it doesn't exist:
    ```bash
@@ -86,7 +108,7 @@ Archive a completed change in the experimental workflow.
    mv "<changeRoot>" "<planningHome.changesDir>/archive/YYYY-MM-DD-<name>"
    ```
 
-6. **Display summary**
+8. **Display summary**
 
    Show archive completion summary including:
    - Change name
@@ -111,7 +133,7 @@ All artifacts complete. All tasks complete.
 **Guardrails**
 - Always prompt for change selection if not provided
 - Use artifact graph (openspec status --json) for completion checking
-- Don't block archive on warnings - just inform and confirm
+- Do not downgrade incomplete artifacts, unchecked tasks, required spec sync, or missing applicable validation to confirmation-only warnings
 - Preserve .openspec.yaml when moving to archive (it moves with the directory)
 - Show clear summary of what happened
 - If sync is requested, use openspec-sync-specs approach (agent-driven)

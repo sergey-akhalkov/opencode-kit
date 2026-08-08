@@ -1,94 +1,38 @@
 # Project OpenSpec Guide
 
-This repository uses OpenSpec changes for durable follow-up work that affects reusable skills, agents, instructions, validators, tools, templates, or project documentation.
+This repository uses OpenSpec changes for durable behavior and contract work that affects reusable skills, agents, instructions, validators, tools, templates, or project documentation.
 
-OpenSpec archive does not require a separate learning file or archive-time process gate. Archive readiness is based on completed scoped tasks, synchronized specs, validation evidence, reviewer evidence when risk warrants it, and explicit handling of unresolved blockers or follow-ups.
+## Durable Rules
 
-## Configuration Layering
+- Define the next useful working increment through the Spec Capsule in `openspec/config.yaml`.
+- Keep proposal, design, delta specs, tasks, implementation, proof, and documentation synchronized.
+- Mark a task complete only after its stated observable proof and applicable focused validation pass.
+- Treat `openspec validate` as structural evidence, not semantic or runtime proof.
+- Complete archive requires finished artifacts and tasks, synchronized specs, current applicable validation, and explicit handling of blockers. Intentionally incomplete work uses the separate abandon path and never claims completion.
+- Optional reviewers provide evidence only. They do not authorize mutation, set lifecycle state, or become mandatory without concrete risk or project policy.
 
-The kit ships three OpenCode config files with a documented layering (see `README.md` -> "Configuration Layering" for the full contract):
+## Live Status
 
-- `opencode.json` (repo root) — workspace config loaded when running OpenCode in this repository.
-- `global/opencode.json.template` — portable autonomy-first default committed with the kit using `permission: allow`; this is permissive tool access, not a managed sandbox.
-- `global/opencode.json` — machine-local config (gitignored); the installer copies the schema-valid portable template without injecting unsupported fields, and validators identify this local layer by path.
+Do not maintain active changes, task counts, dependency waves, commit ids, or CI run ids in this file. Discover current state from live evidence:
 
-`global/opencode.local.json` is an optional schema-valid overlay for machine-specific paths; it must be loaded explicitly through the supported `OPENCODE_CONFIG` mechanism.
+```sh
+npx openspec list --json
+npx openspec status --change <change-id> --json
+npx openspec instructions apply --change <change-id> --json
+```
 
-Restricted model profiles under `global/model-profiles/` are also explicit overlays, not automatically loaded config files and not a fourth base layer. The `opencode:profile` launcher supplies one complete committed `<id>` or gitignored `local:<id>` matrix only to a new child OpenCode process through `OPENCODE_CONFIG_CONTENT`; it does not rewrite any of the three base files. Profiles may contain only official model-routing fields, cannot bypass administrator-managed configuration, and must not add unsupported fields or machine-local provider/permission settings.
+Use current task checkboxes and validation output for completion evidence. Use `openspec/changes/archive/` only for historical reference.
 
-## Active Roadmap
+## Configuration Sources
 
-The full audit ledger at `docs/feedbacks/audit-opencode-kit-2026-06-27.md` (commit `1af6e5b`) split the audit findings into six OpenSpec changes. Current state, based on `npx openspec list`, task checkboxes, recent commits, and GitHub Actions run `28288079534`:
+OpenCode may combine managed, host-default global, project, explicit, inline, and custom-directory sources. `OPENCODE_CONFIG_DIR` points at the kit's custom `global/` directory but does not prove that host-default artifacts are absent. Use current official documentation and privacy-safe runtime diagnostics for exact precedence.
 
-### Implemented / Archive Candidates
+The kit owns these committed or provisioned artifacts:
 
-- `deduplicate-instruction-artifacts` — Complete. Tasks 37/37 checked. Implemented in commit `f5c314e` plus follow-up `48f9ffe` for reviewer-binding contract test names. Candidate for archive after final `npm run validate:strict`, `npm test`, and reviewer gate.
-- `kit-config-hygiene` — Complete. Tasks 24/24 checked. Implemented in commit `f0bce9d`. Candidate for archive after final `npm run validate:strict`, `npm test`, and reviewer gate.
+- `opencode.json`: this workspace's project config.
+- `global/opencode.json.template`: portable machine-config seed.
+- `global/opencode.json`: gitignored machine-local config provisioned from the template.
+- `global/opencode.local.instructions.md`: optional gitignored personal instructions referenced through the official `instructions` config field.
+- `global/model-profiles/`: explicit child-process model overlays, never implicit base layers.
 
-### Implemented But Not Green
-
-- `add-ci-workflow` — Workflow and docs implemented, but not archive-ready. Latest GitHub Actions runs fail before install because `actions/setup-node@v4` with `cache: npm` requires a root lockfile; this repo currently has no root `package-lock.json`. Keep active until the lockfile/cache policy is fixed and a merged workflow run is green.
-
-### Partially Implemented
-
-- `refactor-tools-split-candidate` — 7/45 tasks complete. Contract extraction task group 1 is done (`tools/contracts/{skills,agents,complain,reviewer-binding,implementation-worker,openspec}.ts` plus byte-equal tests). Remaining work: validator split, parser replacement, `node --test` migration, delivery-context split, final validation/docs.
-
-### Not Started
-
-- `install-init-hardening` — 0/22 tasks. Now unblocked because `kit-config-hygiene` is complete; it may start in the next implementation wave.
-- `plugin-self-containment` — 20/20 tasks. Implemented; reader moved under `global/plugin/session-delivery-context/`, plugin uses a static import, `tools/session-delivery-context.ts` is a 12-line CLI shim. Candidate for archive after final `npm run validate:strict`, `npm test`, `npm run openspec:validate`, `npm run openspec:gate -- --operation prepush`, and the new regression test that copies `global/plugin/` into a temp config dir and executes `session_delivery_context` without a `tools/` directory.
-
-## Active Execution Waves
-
-### Wave 0 — Stabilize Implemented CI Gate
-
-- `add-ci-workflow`: fix the current GitHub Actions failure. Choose one path:
-  - Add a root `package-lock.json` and keep `npm ci` + `cache: npm` as specified.
-  - Or remove npm cache / change install policy, then update the OpenSpec spec because it currently requires npm cache.
-- Exit condition: latest `validate` GitHub Actions run is green and `add-ci-workflow` tasks are 16/16.
-
-### Wave 1 — Parallel Active Work
-
-After Wave 0 is green, run these in parallel:
-
-- `refactor-tools-split-candidate`: continue from task group 2 (validator split). This remains the critical path.
-- `install-init-hardening`: start now that `kit-config-hygiene` is complete. It owns `tools/install-opencode-global.ts` and `tools/init-project.ts`.
-
-Archive candidates from the completed bucket (`deduplicate-instruction-artifacts`, `kit-config-hygiene`) can be archived in parallel with Wave 1 if final validation and reviewer evidence are fresh.
-
-### Wave 2 — Depends on Wave 1
-
-- (none — `refactor-tools-split-candidate` task group 5 already landed at commit `5821351`, and `plugin-self-containment` has executed on top of that split.)
-
-### Wave 3 — Archive Remaining Active Changes
-
-Archive in dependency order after implementation, validation, and reviewer gates:
-
-1. `add-ci-workflow` once GitHub Actions is green.
-2. `plugin-self-containment` (now implemented) after final `npm run validate:strict`, `npm test`, `npm run openspec:validate`, `npm run openspec:gate -- --operation prepush`.
-3. `install-init-hardening` after Wave 1 completion.
-4. `refactor-tools-split-candidate` after all 45 tasks and final inventories pass.
-
-### File conflict matrix
-
-| File | refactor | dedup-instr | plugin | config | install-init | ci |
-| --- | :-: | :-: | :-: | :-: | :-: | :-: |
-| `tools/validate-library.ts` | ✏️ | | | | | |
-| `tools/validators/opencode-config.ts` | ✏️ | | | ✏️ | | |
-| `tools/test-*.ts` (9) | ✏️ | | | | | |
-| `tools/session-delivery-context.ts` | ✏️ | | ✏️ | | | |
-| `tools/delivery-context/*.ts` | ✏️ | | ✏️ | | | |
-| `tools/install-opencode-global.ts` | | | | ✏️ | ✏️ | |
-| `tools/init-project.ts` | | | | | ✏️ | |
-| `global/opencode*.json*` | | | | ✏️ | | |
-| `docs/`, `instructions/`, `templates/` | | ✏️ | | | | |
-| `global/agents/*.md` (14) | | ✏️ | | | | |
-| `README.md` | | ✏️ | | ✏️ | ✏️ | ✏️ |
-| `.github/workflows/validate.yml` | | | | | | ✏️ |
-
-### Conflict-resolution rules
-
-- `tools/validate-library.ts` is single-writer during Wave 1 (only `refactor-tools-split-candidate`); after Wave 1 the orchestrator is small enough that no other change should touch it.
-- `tools/install-opencode-global.ts` is single-writer across `kit-config-hygiene` and `install-init-hardening`; CHG-004 lands first, CHG-005 follows.
-- `tools/session-delivery-context.ts` is single-writer across `refactor-tools-split-candidate` and `plugin-self-containment`; CHG-001 splits it first, CHG-003 rewrites it as a CLI shim.
-- README.md has three sections touched by three different changes (`deduplicate-instruction-artifacts`, `kit-config-hygiene`, `add-ci-workflow`); each change touches a distinct section so merges stay trivial.
+Permissive `permission: allow` is tool access, not a managed sandbox. Runtime safety and external-operation authority remain explicit requirements.

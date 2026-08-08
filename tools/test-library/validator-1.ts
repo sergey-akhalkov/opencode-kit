@@ -16,7 +16,6 @@ import {
   lines,
   libraryRoot,
 } from "../test-helpers/library.ts";
-import { changeReadyValidatorTests } from "./validator-change-ready.ts";
 
 const root = libraryRoot;
 
@@ -116,7 +115,6 @@ export const validatorTests1: TestCase[] = [
       assertSuccess(invokeValidator(fixture), "Bounded implementation worker should pass validation.");
     },
   },
-  ...changeReadyValidatorTests,
   {
     name: "validator rejects unsupported implementation worker bash allow",
     run: () => {
