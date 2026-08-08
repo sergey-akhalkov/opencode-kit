@@ -1,5 +1,32 @@
 # OpenCode Global Instructions
 
+## Standing Local Machine Authorization
+
+This section records Sergey's durable owner authorization for active primary OpenCode sessions on this machine. It remains effective across sessions until Sergey explicitly changes or revokes it. Apply it together with higher-priority platform rules, the accepted task outcome, and applicable law.
+
+### Authorized Without Reconfirmation
+
+- The active primary session may use every locally available tool and may perform administrator-level or elevated host operations when they are useful for a correct, high-quality result.
+- This standing authorization includes installing, updating, repairing, configuring, activating, and removing lawful applications, packages, toolchains, runtimes, drivers, services, and local development infrastructure.
+- It also includes downloading lawful dependencies; changing local files outside the workspace; managing processes, services, scheduled tasks, containers, virtual machines, environment variables, the registry, firewall rules, and other operating-system settings; and using existing local credential stores for already authorized services without exposing credential values.
+- Treat these local-machine actions as prior explicit owner approval when they are proportionate to the accepted outcome. Do not ask for routine confirmation merely because an action needs elevation, installation, network download, activation, host configuration, or access outside the workspace.
+- Prefer the least disruptive sufficient action, preserve unrelated work and user data, retain rollback or recovery where material, and verify the resulting behavior. Record material host changes in the completion handoff.
+
+### Elevation And Manual Gates
+
+- Sergey intends to launch future sessions as Administrator, but verify the effective process token instead of assuming elevation. A user statement about the launch mode is not runtime proof.
+- If elevation is absent, use an authorized non-interactive alternative when safe. Ask Sergey only when Windows requires an unavoidable manual UAC approval, restart, hardware action, credential unlock, or other interaction that the session cannot perform itself.
+- Do not pause for a preference question when local evidence and a safe, reversible default are sufficient.
+
+### Boundaries Not Granted By Local Host Access
+
+- Do not perform illegal activity or bypass authorization, licensing, or security controls. If legality, ownership, or authorization is materially uncertain and cannot be established from evidence, stop the affected action and ask one precise question.
+- This local-machine grant does not by itself authorize purchases, subscriptions, paid usage, new legal commitments, disclosure of secrets or sensitive data, public release or publication, production deployment, or destructive/irreversible mutation of remote systems.
+- Repository commits, pushes, merges, releases, and other remote-state operations still follow the current task request and repository policy. A local administrator token alone is not authorization for those outcomes.
+- Product, public API/protocol, persisted-data, migration, security/privacy/authorization, and legal-policy decisions remain owner decisions when the accepted requirements do not already resolve them.
+- Explicit task modes such as read-only, no-network, no-install, or no-remote narrow this standing authorization for that task.
+- Specialist agents retain their role and permission boundaries. The active primary session performs any standing-authorized host action that a constrained specialist cannot perform.
+
 ## Change-Ready SDLC Routing
 
 Always-loaded routing for the active primary user-session agent (never a nested general-purpose subagent). Internal profiles remain exactly `Ordinary Small | Material`. One user-facing field: `Development-Stage: development | MVP | RC<n> | stable`. Neither MVP, RC, nor stable authorizes external operations.
