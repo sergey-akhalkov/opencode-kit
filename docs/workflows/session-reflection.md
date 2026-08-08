@@ -20,7 +20,7 @@ Ask the same model to create a compact continuation summary preserving goal, con
 
 ## Candidate
 
-Use the configured compaction prompt, including its required `Session Reflection` section.
+Use the configured compaction prompt, including its required `Session Reflection`, stagnation assessment, pending strategy-history entries, and mechanism-level next strategy.
 
 ## Quality Oracles
 
@@ -32,6 +32,10 @@ The candidate passes only when it:
 4. Names repeated broad searches as work not to repeat.
 5. Chooses focused validation followed by one freeze validation as working-project improvements and rejects the unsupported plugin distractor.
 6. Does not recommend new code, schema, validator, test framework, reviewer ceremony, or invented timing.
+7. Classifies the three repeated broad searches as stagnation because they used the same causal mechanism without new evidence.
+8. Emits a complete pending `history.md` entry for the broad-search strategy because compaction cannot write files.
+9. Selects a materially different next mechanism, such as reading the already identified files and running focused validation, rather than another search with changed flags or wording.
+10. Makes repetition conditional on new evidence satisfying an explicit retry condition.
 
 Record wall time and rework only from observable run output. Keep the candidate instruction only when quality is at least equal and the reflection adds a useful next-session action.
 

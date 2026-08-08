@@ -16,6 +16,7 @@ I'll create a change with artifacts:
 - proposal.md (what & why)
 - design.md (how)
 - tasks.md (implementation steps)
+- history.md (materially distinct attempted strategies)
 
 When ready to implement, run /opsx-apply
 
@@ -83,7 +84,11 @@ When ready to implement, run /opsx-apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
-5. **Validate operation readiness**
+5. **Create strategy history**
+
+   Create `<changeRoot>/history.md` with `# Strategy History`. Record only materially distinct strategies actually considered or tried while preparing this change. Each entry contains objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. If no strategy has been tried, retain the heading and state that no attempts are recorded yet; do not invent history.
+
+6. **Validate operation readiness**
    ```bash
    npm run openspec:gate -- --operation propose --change "<name>"
    openspec validate "<name>" --strict
@@ -93,7 +98,7 @@ When ready to implement, run /opsx-apply
    artifact existence alone. Preserve the exact failing command, exit status,
    stdout/stderr, and named artifact.
 
-6. **Show final status**
+7. **Show final status**
    ```bash
    openspec status --change "<name>"
    ```
@@ -123,5 +128,6 @@ After completing all artifacts and both readiness checks, summarize:
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
+- Create `history.md` before readiness checks and never manufacture attempted strategies
 - Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable

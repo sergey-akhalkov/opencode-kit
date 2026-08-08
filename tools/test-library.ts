@@ -8,6 +8,7 @@ import { doctorTests } from "./test-library/doctor.ts";
 import { inventoryTests } from "./test-library/inventory.ts";
 import { modelProfileTests } from "./test-library/model-profiles.ts";
 import { engineeringQualityTests } from "./test-library/engineering-quality.ts";
+import { portableWorkflowToolTests } from "./test-library/portable-workflow-tools.ts";
 
 runTests(
   [
@@ -19,6 +20,7 @@ runTests(
     ...inventoryTests,
     ...modelProfileTests,
     ...engineeringQualityTests,
+    ...portableWorkflowToolTests,
   ],
   "library",
 );

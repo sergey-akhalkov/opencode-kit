@@ -24,7 +24,6 @@ Cover every lane that applies; mark non-applicable lanes explicitly.
 - `Operating Priorities`: ordered quality/safety -> autonomy -> speed; blocker-only questions; verified-result speed without weaker proof.
 - `Permission Semantics`: prose-only, wildcard config, explicit config, semantic hook/plugin, or managed policy enforcement.
 - `Reviewer Gates`: which read-only reviewers ran, what evidence they checked, and which gates were skipped with reasons.
-- `Prevention Feedback Loop`: reviewer `Prevention Feedback` blocks, `instruction:feedback` ledger entries, routing decisions, replay evidence, and unresolved pending entries.
 - `Non-Repo Changes`: global config, global rules, installed copies, personal skills, backups, or external docs changed outside the current git worktree.
 
 ## Inventory Checklist
@@ -35,7 +34,6 @@ Cover every lane that applies; mark non-applicable lanes explicitly.
 - List global installed library copies: `~/.config/opencode/skills`, `~/.config/opencode/agents`, and marker block in `~/.config/opencode/AGENTS.md`.
 - List personal/global extra skills such as `~/.opencode/skills`, `~/.claude/skills`, or `~/.agents/skills` when loader-visible.
 - List active config files and relevant fields: `opencode.json`, `opencode.jsonc`, `instructions`, `skills.paths`, `agent`, `permission`, `plugin`, `mcp`.
-- List active prevention-feedback entries with `npm run instruction:feedback -- --pending` when the audit or current session produced reviewer `Prevention Feedback`.
 
 ## Fast Grep Gate
 

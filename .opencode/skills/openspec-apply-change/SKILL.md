@@ -69,6 +69,8 @@ Implement tasks from an OpenSpec change.
    - **spec-driven**: proposal, specs, design, tasks
    - Other schemas: follow the contextFiles from CLI output
 
+   Read `<changeRoot>/history.md` before substantial work. If it is missing, create it with `# Strategy History` and no invented attempts. Reconcile any `Pending Strategy History` entries from compaction before continuing.
+
 6. **Show current progress**
 
    Display:
@@ -93,6 +95,9 @@ Implement tasks from an OpenSpec change.
    - Preserve the command, representative input, exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths
    - Treat the raw tool result as authoritative; never substitute an expected exit code. If only generic non-zero status is observable, record the precise process exit code as `unknown`
    - Inspect those diagnostics and continue local run-observe-correct when the failure is resolvable inside the accepted scope
+   - Before another materially distinct attempt, append objective, approach, evidence, outcome, reason, do-not-repeat condition, and retry condition to `history.md`
+   - After two materially similar attempts without observable progress, stop repeating and use a different causal mechanism; flags, wording, timeout, prompt details, or retry count alone are not a new strategy
+   - Repeat a recorded strategy only after appending new evidence that satisfies its retry condition or invalidates the prior result
    - Pause only for an exact user-owned blocker; do not convert an ordinary failure into a routine approval question
 
    **Pause if:**

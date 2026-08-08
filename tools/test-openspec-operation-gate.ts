@@ -55,16 +55,22 @@ function proposalWithCapsule(extra = ""): string {
   return `# Proposal\n\n## Why\n\nNeed change.\n\n### Outcome Capsule\n\n${fields}\n${extra}`;
 }
 
+function writeStrategyHistory(changeRoot: string): void {
+  writeText(path.join(changeRoot, "history.md"), "# Strategy History\n\n");
+}
+
 function writeChange(repo: string, changeId: string, tasks = "- [ ] Do work."): void {
   const changeRoot = path.join(repo, "openspec", "changes", changeId);
   writeText(path.join(changeRoot, "proposal.md"), proposalWithCapsule());
   writeText(path.join(changeRoot, "tasks.md"), `# Tasks\n\n${tasks}\n`);
+  writeStrategyHistory(changeRoot);
   writeText(path.join(changeRoot, "specs", "demo", "spec.md"), `# Demo Spec\n\n## ADDED Requirements\n\n### Requirement: Demo\n\n#### Scenario: Works\n\n- **WHEN** work runs\n- **THEN** result is visible\n`);
 }
 
 function writeIncompleteChange(repo: string, changeId: string): void {
   const changeRoot = path.join(repo, "openspec", "changes", changeId);
   writeText(path.join(changeRoot, "proposal.md"), proposalWithCapsule());
+  writeStrategyHistory(changeRoot);
 }
 
 function spawnGate(repo: string, args: string[]): { status: number; stdout: string; stderr: string } {
@@ -106,6 +112,7 @@ const tests: TestCase[] = [
       const changeRoot = path.join(repo, "openspec", "changes", "change-a");
       writeText(path.join(changeRoot, "proposal.md"), "# Proposal\n\n## Why\n\nNeed change.\n");
       writeText(path.join(changeRoot, "tasks.md"), "# Tasks\n\n- [ ] Do work.\n");
+      writeStrategyHistory(changeRoot);
       writeText(path.join(changeRoot, "specs", "demo", "spec.md"), "# Demo\n");
       for (const operation of ["propose", "apply"] as const) {
         const failed = runOpenSpecOperationGate(repo, { operation, changeId: "change-a", generatedAt });
@@ -142,6 +149,38 @@ const tests: TestCase[] = [
       assert(failed.status === "failed" && failed.exitCode === 1, `Expected missing tasks failure, got ${failed.status}.`);
       assert(failed.checks.some((check) => check.id === "artifact:tasks" && check.status === "failed"), "Missing tasks should produce failed tasks artifact check.");
       assert(unknown.status === "unknown" && unknown.exitCode === 1, `Expected unknown operation, got ${unknown.status}.`);
+    }),
+  },
+  {
+    name: "propose and apply fail closed when strategy history is missing",
+    run: () => withTempRepo("missing-history", (repo) => {
+      const changeRoot = path.join(repo, "openspec", "changes", "change-a");
+      writeText(path.join(changeRoot, "proposal.md"), proposalWithCapsule());
+      writeText(path.join(changeRoot, "tasks.md"), "# Tasks\n\n- [ ] Do work.\n");
+      writeText(path.join(changeRoot, "specs", "demo", "spec.md"), "# Demo\n");
+      for (const operation of ["propose", "apply"] as const) {
+        const failed = runOpenSpecOperationGate(repo, { operation, changeId: "change-a", generatedAt });
+        assert(failed.status === "failed" && failed.exitCode === 1, `Expected ${operation} history failure, got ${failed.status}.`);
+        assert(
+          failed.checks.some((check) => check.id === "artifact:strategy-history" && check.status === "failed" && check.blocking),
+          `${operation} must block when history.md is missing.`,
+        );
+      }
+    }),
+  },
+  {
+    name: "propose and apply fail closed when strategy history heading is missing",
+    run: () => withTempRepo("history-heading", (repo) => {
+      writeChange(repo, "change-a");
+      writeText(path.join(repo, "openspec", "changes", "change-a", "history.md"), "# Notes\n\n- prior attempt\n");
+      for (const operation of ["propose", "apply"] as const) {
+        const failed = runOpenSpecOperationGate(repo, { operation, changeId: "change-a", generatedAt });
+        assert(failed.status === "failed" && failed.exitCode === 1, `Expected ${operation} history-heading failure, got ${failed.status}.`);
+        assert(
+          failed.checks.some((check) => check.id === "artifact:strategy-history-heading" && check.status === "failed" && check.blocking),
+          `${operation} must block when history.md lacks the Strategy History heading.`,
+        );
+      }
     }),
   },
   {

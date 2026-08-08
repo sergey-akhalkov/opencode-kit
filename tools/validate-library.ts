@@ -24,7 +24,6 @@ import {
 } from "./validators/markdown.ts";
 import {
   validateDevKitContract,
-  validateInstructionFeedbackContracts,
   validateInstallerConfigDirModel,
   validatePackageScriptsTypeScriptOnly,
   validateReadme,
@@ -156,7 +155,6 @@ function main(): void {
   validateOpenCodeConfigFiles(ctx, root);
   validateReadme(ctx, root, skillNames, agentNames, instructionNames);
   validateRepoAgentsMd(ctx, root);
-  validateInstructionFeedbackContracts(ctx, root);
   validateInstallerConfigDirModel(ctx, root);
 
   const markdownFiles = getMarkdownFiles(root);

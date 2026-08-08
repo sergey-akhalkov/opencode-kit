@@ -122,6 +122,7 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
   const checks: OpenSpecOperationGateCheck[] = [];
   const proposalPath = changePath(root, changeId, "proposal.md");
   const tasksPath = changePath(root, changeId, "tasks.md");
+  const historyPath = changePath(root, changeId, "history.md");
   const specsPath = changePath(root, changeId, "specs");
   if (["propose", "apply", "review", "acceptance", "archive"].includes(operation)) {
     const hasProposal = fs.existsSync(proposalPath) && fs.statSync(proposalPath).isFile();
@@ -150,6 +151,15 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
       if (counts.total > 0 && counts.unchecked === 0 && operation === "task-update") {
         checks.push(check("task-update:all-checked", "OpenSpec task update freshness", "warning", false, `openspec/changes/${changeId}/tasks.md`, "tasks.md is all checked; active change may need archive or stale-state reconciliation."));
       }
+    }
+  }
+  if (["propose", "apply", "task-update", "review", "acceptance", "archive"].includes(operation)) {
+    const hasHistory = fs.existsSync(historyPath) && fs.statSync(historyPath).isFile();
+    checks.push(hasHistory
+      ? check("artifact:strategy-history", "OpenSpec strategy history", "passed", false, `openspec/changes/${changeId}/history.md`, "history.md exists for strategy continuity.")
+      : check("artifact:strategy-history", "OpenSpec strategy history", "failed", true, `openspec/changes/${changeId}/history.md`, "history.md is required for strategy continuity."));
+    if (hasHistory && !/^# Strategy History\s*$/m.test(fs.readFileSync(historyPath, "utf8"))) {
+      checks.push(check("artifact:strategy-history-heading", "OpenSpec strategy history format", "failed", true, `openspec/changes/${changeId}/history.md`, "history.md must contain the '# Strategy History' heading."));
     }
   }
   if (operation === "propose" || operation === "apply") {

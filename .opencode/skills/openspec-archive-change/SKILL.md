@@ -1,140 +1,47 @@
 ---
 name: openspec-archive-change
-description: Archive a completed change in the experimental workflow. Use when the user wants to finalize and archive a change after implementation is complete.
-allowed-tools: Bash(openspec:*)
+description: Deterministically validate, synchronize, and archive a completed OpenSpec change. Use when implementation and evidence are complete and the owner requests archive.
 license: MIT
-compatibility: Requires openspec CLI.
+compatibility: Requires OpenSpec 1.6-compatible CLI, Node.js 24+, and the portable kit archive tool.
 metadata:
-  author: openspec
-  version: "1.0"
-  generatedBy: "1.6.0"
+  author: opencode-kit
+  version: "2.0"
+  generatedBy: opencode-kit
 ---
 
-Archive a completed change in the experimental workflow.
+# Deterministic OpenSpec Archive
 
-**Store selection:** If the user names a store (a store is a standalone OpenSpec repo registered on this machine) or the work lives in one, run `openspec store list --json` to discover registered store ids, then pass `--store <id>` on the commands that read or write specs and changes (`new change`, `status`, `instructions`, `list`, `show`, `validate`, `archive`, `doctor`, `context`). Other commands do not take the flag. Hints printed by commands already carry the flag; keep it on follow-ups. Without a store, commands act on the nearest local `openspec/` root.
+Archive a completed OpenSpec change through the portable deterministic archive tool.
 
-**Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+## Resolve Scope
 
-**Steps**
+- If the change name is missing and multiple active changes exist, run `openspec list --json` and ask the user to select. Never guess.
+- Preserve an explicit registered `--store <id>` selector when applicable.
+- Resolve the target project root and the active kit global source. The helper is `<global-source>/bin/openspec-archive.ts`.
+- Resolve one trusted aggregate project-validation argv from the project adapter or repository-native validation entrypoint. Never guess npm, a shell, or a command. A genuinely non-applicable validation boundary requires a concrete reason.
 
-1. **If no change name provided, prompt for selection**
+## Execute One Owner
 
-   Run `openspec list --json` to get available changes. Use the **AskUserQuestion tool** to let the user select.
-
-   Show only active changes (not already archived).
-   Include the schema used for each change if available.
-
-   **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user choose.
-
-2. **Run the complete-archive operation gate**
-
-   ```bash
-   npm run openspec:gate -- --operation archive --change "<name>"
-   ```
-
-   Stop on a non-zero exit. A confirmation prompt does not waive a blocking
-   completion check. If the owner needs to retain incomplete work, stop and report
-   that a distinct incomplete/abandoned preservation flow is required; do not use
-   the complete archive path or claim completion.
-
-3. **Check artifact completion status**
-
-   Run `openspec status --change "<name>" --json` to check artifact completion.
-
-   Parse the JSON to understand:
-   - `schemaName`: The workflow being used
-   - `planningHome`, `changeRoot`, `artifactPaths`, and `actionContext`: path and scope context
-   - `artifacts`: List of artifacts with their status (`done` or other)
-
-   **If any artifacts are not `done`:**
-   - Display the incomplete artifacts
-   - Stop without moving the change
-
-4. **Check task completion status**
-
-   Read the tasks file (typically `tasks.md`) to check for incomplete tasks.
-
-   Count tasks marked with `- [ ]` (incomplete) vs `- [x]` (complete).
-
-   **If incomplete tasks found:**
-   - Display the exact incomplete count
-   - Stop without moving the change
-
-   **If no tasks file exists for a schema that requires tasks:** Stop as incomplete.
-
-5. **Assess delta spec sync state**
-
-   Use `artifactPaths.specs.existingOutputPaths` from status JSON to check for delta specs. If none exist, proceed without sync prompt.
-
-   **If delta specs exist:**
-   - Compare each delta spec with its corresponding main spec at `openspec/specs/<capability>/spec.md`
-   - Determine what changes would be applied (adds, modifications, removals, renames)
-   - Show a combined summary before prompting
-
-   **Prompt options:**
-   - If changes needed: "Sync now", "Cancel"
-   - If already synced: "Archive now", "Sync anyway", "Cancel"
-
-   If changes are needed, complete and verify sync before archive. Cancel leaves the
-   change active. Complete archive never proceeds with required sync skipped.
-
-6. **Run complete-candidate validation**
-
-   ```bash
-   openspec validate "<name>" --strict
-   npm run prepush:validate
-   ```
-
-   Both commands must exit zero on the current synchronized candidate. If the
-   project has a different trusted full-validation adapter, use that exact command
-   instead of inventing an npm fallback. Preserve command, exit status,
-   stdout/stderr, and candidate identity. Stop on failure.
-
-7. **Perform the archive**
-
-   Create an `archive` directory under `planningHome.changesDir` if it doesn't exist:
-   ```bash
-   mkdir -p "<planningHome.changesDir>/archive"
-   ```
-
-   Generate target name using current date: `YYYY-MM-DD-<change-name>`
-
-   **Check if target already exists:**
-   - If yes: Fail with error, suggest renaming existing archive or using different date
-   - If no: Move `changeRoot` to the archive directory
-
-   ```bash
-   mv "<changeRoot>" "<planningHome.changesDir>/archive/YYYY-MM-DD-<name>"
-   ```
-
-8. **Display summary**
-
-   Show archive completion summary including:
-   - Change name
-   - Schema that was used
-   - Archive location
-   - Whether specs were synced (if applicable)
-   - Note about any warnings (incomplete artifacts/tasks)
-
-**Output On Success**
-
-```
-## Archive Complete
-
-**Change:** <change-name>
-**Schema:** <schema-name>
-**Archived to:** the archive path derived from `planningHome.changesDir`/YYYY-MM-DD-<name>/
-**Specs:** ✓ Synced to main specs (or "No delta specs" or "Sync skipped")
-
-All artifacts complete. All tasks complete.
+```text
+node "<global-source>/bin/openspec-archive.ts" --root "<project-root>" --change "<name>" [--store "<id>"] -- <validation-executable> [validation-args...]
 ```
 
-**Guardrails**
-- Always prompt for change selection if not provided
-- Use artifact graph (openspec status --json) for completion checking
-- Do not downgrade incomplete artifacts, unchecked tasks, required spec sync, or missing applicable validation to confirmation-only warnings
-- Preserve .openspec.yaml when moving to archive (it moves with the directory)
-- Show clear summary of what happened
-- If sync is requested, use openspec-sync-specs approach (agent-driven)
-- If delta specs exist, always run the sync assessment and show the combined summary before prompting
+Or, only when project validation is genuinely not applicable:
+
+```text
+node "<global-source>/bin/openspec-archive.ts" --root "<project-root>" --change "<name>" [--store "<id>"] --validation-not-applicable "<reason>"
+```
+
+The helper checks machine-readable artifact status, requires a non-empty all-checked task file, runs strict and project validation, delegates spec merge and movement to `openspec archive <name> --yes --json`, and validates the archived result. `--yes` cannot waive the independent completion gate.
+
+## Failure Contract
+
+- Preserve raw stdout, stderr, exit status, and reported side effects.
+- Never edit main specs manually, invoke agent-driven sync, deep-import OpenSpec `dist/`, pass `--skip-specs`, or move the change directory yourself.
+- Official deterministic merge rejection is a fail-closed compatibility result. Update a partial `MODIFIED` delta to the complete accepted requirement only when semantics are already known; never substitute model judgment.
+- If post-archive validation is red, report the archive path and red candidate; do not claim archive completion.
+- Incomplete work uses the distinct abandoned-incomplete flow and never receives completion language.
+
+## Success Contract
+
+Success requires zero exit and final `status: archived`. Report change, archive path, spec-update status/totals, validation argv, and helper identity. Archive does not authorize commit, push, merge, release, installation, or deployment.

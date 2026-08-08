@@ -12,6 +12,8 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 ## Project Adapter
 
 - Keep project-specific commands in `opencode-dev-kit/adapter.json` and/or `opencode-dev-kit/validation.md`.
+- Use explicit reusable workflow cores from the resolved kit `global/bin/` with an explicit project root and project command argv. Keep package-manager, shell, service, and repository-specific behavior in this project's thin adapter rather than modifying the portable core.
+- Before relying on a new or materially changed reusable tool, require proof from an unrelated disposable project; success only in the kit repository is component evidence.
 - Either complete source is sufficient for doctor validation qualification: concrete `adapter.json` validation entries, or a complete `validation.md` Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build.
 - Technology choices change commands and constraints, not the development loop.
 - If validation commands are unknown, discover them from project files and report `unknown` rather than guessing.

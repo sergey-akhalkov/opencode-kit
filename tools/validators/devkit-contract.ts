@@ -219,7 +219,6 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     "doctor",
     "project:inventory",
     "instruction:inventory",
-    "instruction:feedback",
     "code-quality:inventory",
     "openspec:validate",
     "openspec:gate",
@@ -237,17 +236,6 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
   }
   if (scripts["openspec:gate"] && scripts["openspec:gate"] !== "node tools/openspec-operation-gate.ts") {
     ctx.addError("package.json script 'openspec:gate' must run node tools/openspec-operation-gate.ts.");
-  }
-  if (
-    scripts["instruction:feedback"] &&
-    scripts["instruction:feedback"] !== "node tools/instruction-feedback-ledger.ts"
-  ) {
-    ctx.addError(
-      "package.json script 'instruction:feedback' must run node tools/instruction-feedback-ledger.ts.",
-    );
-  }
-  if (scripts.test && !scripts.test.includes("tools/test-instruction-feedback-ledger.ts")) {
-    ctx.addError("package.json script 'test' must include node tools/test-instruction-feedback-ledger.ts.");
   }
   if (scripts.test && !scripts.test.includes("tools/test-install-opencode-global.ts")) {
     ctx.addError("package.json script 'test' must include node tools/test-install-opencode-global.ts.");
@@ -283,31 +271,6 @@ export function validatePackageScriptsTypeScriptOnly(
   }
 }
 
-export function validateInstructionFeedbackContracts(ctx: ValidationContext, root: string): void {
-  const helperPath = path.join(root, "tools", "instruction-feedback-ledger.ts");
-  if (fileExists(helperPath)) {
-    const helperText = readText(helperPath);
-    for (const required of [
-      "--add",
-      "--pending",
-      "--decay-report",
-      "--check-bloat",
-      "--replay-pending",
-      "duplicate",
-      "routeRuleWrite",
-      "unsupportedRequest",
-    ]) {
-      requireTextContains(
-        ctx,
-        helperText,
-        required,
-        "instruction-feedback ledger helper CLI surface",
-        helperPath,
-      );
-    }
-  }
-}
-
 export function validateInstallerConfigDirModel(ctx: ValidationContext, root: string): void {
   const installerPath = path.join(root, "tools", "install-opencode-global.ts");
   if (!fileExists(installerPath)) {
@@ -329,10 +292,56 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
     ctx.addError(`Missing global config directory: ${globalDir}`);
     return;
   }
-  for (const required of ["skills", "agents", "AGENTS.md", "opencode.json.template"]) {
+  for (const required of ["skills", "agents", "bin", "AGENTS.md", "package.json", "opencode.json.template"]) {
     const candidate = path.join(globalDir, required);
     if (!fileExists(candidate) && !directoryExists(candidate)) {
       ctx.addError(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
+    }
+  }
+  for (const required of ["bin/openspec-archive.ts", "bin/portable-process.ts", "bin/validate-staged.ts"]) {
+    const candidate = path.join(globalDir, required);
+    if (!fileExists(candidate)) {
+      ctx.addError(`Missing global/${required}: portable project workflow tooling is incomplete.`);
+    }
+  }
+  for (const entrypoint of ["openspec-archive.ts", "validate-staged.ts"]) {
+    const candidate = path.join(globalDir, "bin", entrypoint);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const forbidden of [
+      { pattern: /\b(?:npm|pnpm|yarn|bun)\b/i, label: "package manager" },
+      { pattern: /\bopencode-(?:kit|dev-kit)\b/i, label: "repository identity" },
+      { pattern: /(?:[A-Za-z]:\\\\[A-Za-z0-9]|[A-Za-z]:\/[A-Za-z0-9]|\/Users\/|\/home\/)[^\s"']*/i, label: "maintainer absolute path" },
+    ]) {
+      if (forbidden.pattern.test(text)) {
+        ctx.addError(`Portable workflow core embeds a ${forbidden.label}: ${candidate}`);
+      }
+    }
+    for (const marker of ["--root", "pathToFileURL", "import.meta.url"]) {
+      if (!text.includes(marker)) {
+        ctx.addError(`Portable workflow entrypoint is missing required '${marker}' contract: ${candidate}`);
+      }
+    }
+  }
+  const globalAgentsPath = path.join(globalDir, "AGENTS.md");
+  if (fileExists(globalAgentsPath)) {
+    const globalAgentsText = readOperativeModelFacingText(ctx, globalAgentsPath);
+    if (globalAgentsText != null) {
+      for (const marker of [
+        "Treat the session as stagnant",
+        "openspec/changes/<change>/history.md",
+        "Pending Strategy History",
+        "materially different local mechanism",
+      ]) {
+        requireTextContains(ctx, globalAgentsText, marker, "global AGENTS stagnation strategy contract", globalAgentsPath);
+      }
+    }
+  }
+  const configTemplatePath = path.join(globalDir, "opencode.json.template");
+  if (fileExists(configTemplatePath)) {
+    const configTemplateText = readText(configTemplatePath);
+    for (const marker of ["Pending Strategy History", "history.md", "materially different `Next Strategy`"]) {
+      requireTextContains(ctx, configTemplateText, marker, "compaction stagnation strategy contract", configTemplatePath);
     }
   }
 }
@@ -488,6 +497,21 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
     "REPO_AGENTS.md deterministic helper automation policy",
     agentsPath,
   );
+  for (const marker of [
+    "## Portability Contract",
+    "project-neutral reusable core",
+    "thin project adapters",
+    "unrelated disposable project",
+    "Repository-maintenance-only validators",
+  ]) {
+    requireTextContains(
+      ctx,
+      agentsText,
+      marker,
+      "REPO_AGENTS.md portable workflow tooling contract",
+      agentsPath,
+    );
+  }
   requireTextContains(
     ctx,
     agentsText,
@@ -546,49 +570,6 @@ export function validateRepoAgentsMd(ctx: ValidationContext, root: string): void
       agentsPath,
     );
   }
-  requireTextContains(
-    ctx,
-    agentsText,
-    "npm run instruction:feedback -- --add",
-    "REPO_AGENTS.md prevention feedback ledger handoff",
-    agentsPath,
-  );
-  requireTextContains(
-    ctx,
-    agentsText,
-    "applied -> replayed -> resolved",
-    "REPO_AGENTS.md replay gate policy",
-    agentsPath,
-  );
-  requireTextContains(
-    ctx,
-    agentsText,
-    "## Feedback Ledger",
-    "REPO_AGENTS.md feedback ledger policy",
-    agentsPath,
-  );
-  requireTextContains(
-    ctx,
-    agentsText,
-    "complain",
-    "REPO_AGENTS.md feedback ledger policy",
-    agentsPath,
-  );
-  requireTextContains(
-    ctx,
-    agentsText,
-    "docs/feedbacks",
-    "REPO_AGENTS.md feedback ledger policy",
-    agentsPath,
-  );
-  requireTextContains(
-    ctx,
-    agentsText,
-    "Recurrence: unknown",
-    "REPO_AGENTS.md feedback ledger policy",
-    agentsPath,
-  );
-
   if (
     /after (a )?non-trivial user-visible work( cycle)?,? (the main session offers|offer|use the built-in `?question`?|before stopping)/i.test(
       agentsText,

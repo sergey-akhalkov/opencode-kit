@@ -133,9 +133,21 @@ Stable Candidate: RC<n> records the same RC at stable.
 Report Development-Stage and Runtime Proof.
 `;
 
+function writePortableWorkflowTools(globalDir: string): void {
+  for (const relative of [
+    path.join("bin", "openspec-archive.ts"),
+    path.join("bin", "portable-process.ts"),
+    path.join("bin", "validate-staged.ts"),
+  ]) {
+    writeText(path.join(globalDir, relative), `// fixture portable tool ${relative}\n`);
+  }
+  writeText(path.join(globalDir, "package.json"), "{\n  \"private\": true,\n  \"type\": \"module\"\n}\n");
+}
+
 function writeConformingAuthority(globalDir: string): void {
   writeText(path.join(globalDir, "AGENTS.md"), conformingAgentsAuthority);
   writeText(path.join(globalDir, "skills", "change-ready-sdlc", "SKILL.md"), conformingSkillAuthority);
+  writePortableWorkflowTools(globalDir);
 }
 
 function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDoctorFixture {
@@ -294,7 +306,29 @@ export const doctorTests: TestCase[] = [
       assertEqual(report.qualificationStatus, "pass", "Fully concrete complete authority should pass qualification diagnostics.");
       assertEqual(findBucket(checks, "name", "project adapter validation").status, "pass", "Concrete adapter validation entries should pass their check.");
       assertEqual(findBucket(checks, "name", "active kit required runtime authority").status, "pass", "Current required active kit authority should pass.");
+      assertEqual(findBucket(checks, "name", "portable project workflow tools").status, "pass", "Present portable archive and staged tools should pass.");
       assertEqual(findBucket(checks, "name", "active kit optional default role files").status, "pass", "Present optional default roles should pass their advisory check.");
+    },
+  },
+  {
+    name: "doctor blocks qualification when portable workflow tools are missing",
+    run: () => {
+      const fixture = newIsolatedDoctorFixture("missing-portable-tools", "{\n  \"permission\": \"ask\"\n}\n");
+      writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), concreteAdapter);
+      fs.rmSync(path.join(fixture.globalDir, "bin"), { recursive: true, force: true });
+      const result = invokeIsolatedDoctor(fixture);
+      assertFailure(result, "Missing portable tools must produce a blocked doctor report.");
+      assertEqual(result.exitCode, 2, "Blocked portable-tool inventory must use exit code 2.");
+      const { checks, report } = parseDoctorV2(result);
+      assertEqual(report.status, "blocked", "Missing portable tools must set structural blocked status.");
+      assertEqual(report.qualificationStatus, "blocked", "Missing portable tools must block qualification.");
+      const portable = findBucket(checks, "name", "portable project workflow tools");
+      assertEqual(portable.status, "blocked", "Missing portable tools check must be blocked.");
+      assertEqual(portable.blocksQualification, true, "Missing portable tools must expose blocksQualification=true.");
+      const detail = String(portable.detail).replaceAll("\\", "/");
+      assert(detail.includes("bin/openspec-archive.ts"), "Portable-tool diagnostic must name the archive entrypoint.");
+      assert(detail.includes("bin/validate-staged.ts"), "Portable-tool diagnostic must name the staged entrypoint.");
+      assert(!result.output.includes(fixture.root), "Portable-tool diagnostics must not expose absolute fixture paths.");
     },
   },
   {
@@ -516,9 +550,11 @@ export const doctorTests: TestCase[] = [
         HOME: isolatedHome,
         USERPROFILE: isolatedHome,
       });
-      assertSuccess(result, "Doctor warning status should remain machine-readable with exit 0.");
+      // Missing host-default portable tools are structural blocked (exit 2); project bootstrap gaps remain visible.
+      assertFailure(result, "Unbootstrapped project with missing host-default portable tools must remain machine-readable.");
+      assertEqual(result.exitCode, 2, "Missing portable tools in the host-default kit source must use blocked exit 2.");
       const { checks, report } = parseDoctorV2(result);
-      assertEqual(report.status, "warn", "Doctor should report warn for a project missing bootstrap files.");
+      assertEqual(report.status, "blocked", "Missing portable tools force structural blocked status.");
       assertEqual(report.qualificationStatus, "blocked", "Missing project bootstrap and active config must block qualification.");
       const agentsCheck = findBucket(checks, "name", "project AGENTS.md");
       assertEqual(agentsCheck.status, "warn", "Doctor should warn when project AGENTS.md is missing the loop.");
@@ -531,6 +567,9 @@ export const doctorTests: TestCase[] = [
       const feedbackCheck = findBucket(checks, "name", "project feedback ledger");
       assertEqual(feedbackCheck.status, "warn", "Doctor should warn when project feedback ledger is missing.");
       assertEqual(feedbackCheck.blocksQualification, false, "Missing project feedback ledger must remain advisory.");
+      const portable = findBucket(checks, "name", "portable project workflow tools");
+      assertEqual(portable.status, "blocked", "Missing host-default portable tools must block.");
+      assertEqual(portable.blocksQualification, true, "Missing host-default portable tools must block qualification.");
     },
   },
   ...[
@@ -597,10 +636,16 @@ export const doctorTests: TestCase[] = [
         HOME: isolatedHome,
         USERPROFILE: isolatedHome,
       });
-      assertSuccess(defaultResult, "Missing default authority should remain a machine-readable warning.");
-      const defaultAuthority = findBucket(parseDoctorV2(defaultResult).checks, "name", "active kit required runtime authority");
+      // Empty host-default kit source is missing portable tools as well as authority; portable tools force exit 2.
+      assertFailure(defaultResult, "Missing default authority/portable tools should remain machine-readable.");
+      assertEqual(defaultResult.exitCode, 2, "Missing host-default portable tools must use blocked exit 2.");
+      const defaultChecks = parseDoctorV2(defaultResult).checks;
+      const defaultAuthority = findBucket(defaultChecks, "name", "active kit required runtime authority");
       assertEqual(defaultAuthority.status, "warn", "Missing isolated default authority should warn structurally.");
       assertEqual(defaultAuthority.blocksQualification, true, "Missing isolated default authority must block qualification.");
+      const defaultPortable = findBucket(defaultChecks, "name", "portable project workflow tools");
+      assertEqual(defaultPortable.status, "blocked", "Missing isolated default portable tools must block.");
+      assertEqual(defaultPortable.blocksQualification, true, "Missing isolated default portable tools must block qualification.");
     },
   },
   {

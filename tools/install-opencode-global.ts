@@ -525,10 +525,16 @@ function validateGlobalDir(target: string): string[] {
     errors.push(`Missing global config directory: ${target}`);
     return errors;
   }
-  for (const required of ["skills", "agents", "AGENTS.md", "opencode.json.template", "opencode.local.instructions.example.md"]) {
+  for (const required of ["skills", "agents", "bin", "AGENTS.md", "package.json", "opencode.json.template", "opencode.local.instructions.example.md"]) {
     const candidate = path.join(target, required);
     if (!fs.existsSync(candidate)) {
       errors.push(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
+    }
+  }
+  for (const required of ["openspec-archive.ts", "portable-process.ts", "validate-staged.ts"]) {
+    const candidate = path.join(target, "bin", required);
+    if (!fs.existsSync(candidate) || !fs.statSync(candidate).isFile()) {
+      errors.push(`Missing global/bin/${required}: portable project workflow tooling is incomplete.`);
     }
   }
   return errors;

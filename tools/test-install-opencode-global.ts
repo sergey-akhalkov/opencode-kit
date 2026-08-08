@@ -136,12 +136,22 @@ function replacementTemps(file: string): string[] {
 const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md";
 const LOCAL_INSTRUCTIONS_EXAMPLE = "# Machine-Local OpenCode Preferences\n\nFixture personal instructions example.\n";
 
+function writeFixturePortableTools(fixtureGlobal: string): void {
+  const binDir = path.join(fixtureGlobal, "bin");
+  fs.mkdirSync(binDir, { recursive: true });
+  for (const name of ["openspec-archive.ts", "portable-process.ts", "validate-staged.ts"]) {
+    fs.writeFileSync(path.join(binDir, name), `// fixture portable tool ${name}\n`, "utf8");
+  }
+  fs.writeFileSync(path.join(fixtureGlobal, "package.json"), '{\n  "private": true,\n  "type": "module"\n}\n', "utf8");
+}
+
 function writeFixtureGlobalSkeleton(fixtureGlobal: string, templateText = "{}\n"): void {
   fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
   fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateText, "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.local.instructions.example.md"), LOCAL_INSTRUCTIONS_EXAMPLE, "utf8");
+  writeFixturePortableTools(fixtureGlobal);
 }
 
 function expectedMaterializedLocalInstructionsPath(fixtureGlobal: string): string {
@@ -183,6 +193,33 @@ function readFakeProcessCalls(log: string): FakeProcessCall[] {
 }
 
 const tests: { name: string; run: () => void }[] = [
+  {
+    name: "installer rejects missing portable global bin tools without exposing machine-local config contents",
+    run: () => {
+      const dir = makeTempDir();
+      try {
+        const toolsDir = path.join(dir, "tools");
+        const fixtureGlobal = path.join(dir, "global");
+        fs.mkdirSync(toolsDir, { recursive: true });
+        writeFixtureGlobalSkeleton(fixtureGlobal);
+        fs.rmSync(path.join(fixtureGlobal, "bin"), { recursive: true, force: true });
+        fs.rmSync(path.join(fixtureGlobal, "package.json"), { force: true });
+        const secret = "owner-private-config-value-must-not-leak";
+        fs.writeFileSync(path.join(fixtureGlobal, "opencode.json"), `{ "provider": "${secret}" }\n`, "utf8");
+        const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
+        writeCopiedInstaller(copiedInstaller);
+        const captured = invokeCopiedInstaller(copiedInstaller, dir, ["--dry-run"]);
+        assertFailure(captured, "Installer must fail before activation when portable tools are missing.");
+        assertOutputContains(captured, "Missing global/bin", "Missing bin directory must be named.");
+        assertOutputContains(captured, "Missing global/package.json", "Missing package.json must be named.");
+        assertOutputContains(captured, "Missing global/bin/openspec-archive.ts", "Missing archive tool must be named.");
+        assertOutputContains(captured, "Missing global/bin/validate-staged.ts", "Missing staged tool must be named.");
+        assert(!captured.output.includes(secret), "Missing-tool diagnostics must not expose machine-local config contents.");
+      } finally {
+        rmTempDir(dir);
+      }
+    },
+  },
   {
     name: "installer materializes local-instructions placeholder and provisions the portable example",
     run: () => {

@@ -23,7 +23,8 @@ Ordinary Small routing lives in the kit's global `AGENTS.md`. Full qualification
 - `instructions/`: copyable instruction templates for global/project `AGENTS.md`, reviewer contracts, evidence discipline, and porting.
 - `templates/`: project bootstrap and CI templates for applying the Universal Development Loop to another repository.
 - `profiles/`: single `all` install manifest covering every reusable skill and agent in the repository.
-- `tools/`: TypeScript validation, install, project bootstrap, doctor, inventory, code-quality, `instruction:feedback`, OpenSpec gates, and session-delivery support tooling for this kit.
+- `tools/`: TypeScript maintenance validation, install, project bootstrap, doctor, inventory, code-quality, OpenSpec gates, and session-delivery tooling for the documented kit schema.
+- `global/bin/`: explicit project-neutral workflow cores available with the resolved global kit source, including deterministic OpenSpec archive and exact staged-candidate validation. The directory is outside OpenCode custom-tool discovery; project package managers and validation commands remain thin adapter argv.
 
 ## Prerequisites
 
@@ -255,18 +256,6 @@ For instruction-artifact context-cost reviews in this kit, gather deterministic 
 npm run instruction:inventory -- --format markdown
 ```
 
-Route reviewer prevention feedback through the deterministic instruction-feedback ledger helper:
-
-```sh
-npm run instruction:feedback -- --add <feedback.json>
-npm run instruction:feedback -- --pending
-npm run instruction:feedback -- --decay-report
-npm run instruction:feedback -- --check-bloat --change <change-id>
-npm run instruction:feedback -- --replay-pending
-```
-
-The helper persists entries, detects exact-match duplicates, enforces replay status transitions, reports stale open/applied entries, and checks one-in-one-out evidence for broad instruction rules. It does not classify prevention cost or draft rule quality.
-
 Use `complain` for lightweight feedback that should be captured. Entries append to `docs/feedbacks/<agent-or-skill-name>.md` and can later be grouped into OpenSpec follow-up analysis when patterns accumulate.
 
 Validate all OpenSpec changes with the first-class package gate:
@@ -283,6 +272,28 @@ npm run openspec:gate -- --operation archive --change <change-id>
 ```
 
 Use `--persist` only when a JSON evidence artifact should be written to `openspec/changes/<change-id>/automation/operation-gates/<operation>.json` from a write-authorized main session. Default operation-gate runs are read-only.
+
+Complete archive uses the project-neutral core from `global/bin/` and the official OpenSpec JSON operation. This kit's package script is only a thin validation adapter:
+
+```sh
+npm run openspec:archive -- --change <change-id> -- npm run prepush:validate
+```
+
+An unrelated project can invoke the same core with its own root and aggregate validation argv:
+
+```text
+node "<global-source>/bin/openspec-archive.ts" --root "<project-root>" --change "<change-id>" -- <validation-executable> [args...]
+```
+
+Validate the exact Git index rather than unrelated dirty-worktree content with the reusable staged core. This kit reuses its ignored `node_modules` through a thin package adapter; other projects select their own ignored reuse paths and command:
+
+```sh
+npm run validate:staged
+```
+
+```text
+node "<global-source>/bin/validate-staged.ts" --root "<project-root>" [--reuse "<ignored-relative-dir>"] -- <validation-executable> [args...]
+```
 
 For installer changes, prove the no-write path before running the default mode:
 

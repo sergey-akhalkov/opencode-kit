@@ -352,6 +352,12 @@ const ACTIVE_OPTIONAL_DEFAULT_ROLE_FILES = [
   path.join("agents", "final-candidate-reviewer.md"),
 ] as const;
 
+const ACTIVE_REQUIRED_PORTABLE_TOOL_FILES = [
+  path.join("bin", "openspec-archive.ts"),
+  path.join("bin", "portable-process.ts"),
+  path.join("bin", "validate-staged.ts"),
+] as const;
+
 function nodeMajor(): number {
   const match = process.versions.node.match(/^(\d+)\./);
   return match ? Number(match[1]) : 0;
@@ -580,6 +586,29 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
         ? "Inspected kit custom source contains structurally conforming required runtime authority: AGENTS.md and change-ready-sdlc."
         : "Host default ~/.config/opencode contains structurally conforming required runtime authority: AGENTS.md and change-ready-sdlc.",
       false,
+    );
+  }
+
+  if (!dirExists) {
+    addCheck(
+      checks,
+      "portable project workflow tools",
+      "blocked",
+      "Inspected kit source is missing; deterministic archive and staged validation tools are unavailable.",
+      true,
+    );
+  } else {
+    const missingPortableTools = ACTIVE_REQUIRED_PORTABLE_TOOL_FILES.filter(
+      (relative) => !pathIsFile(path.join(resolvedGlobalDir, relative)),
+    );
+    addCheck(
+      checks,
+      "portable project workflow tools",
+      missingPortableTools.length === 0 ? "pass" : "blocked",
+      missingPortableTools.length === 0
+        ? "Inspected kit source contains portable deterministic archive and staged-candidate validation tools."
+        : `Inspected kit source is missing required portable tool files: ${missingPortableTools.join(", ")}.`,
+      missingPortableTools.length > 0,
     );
   }
 

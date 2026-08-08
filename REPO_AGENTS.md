@@ -17,6 +17,16 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 - Keep each artifact cohesive. Split artifacts when triggers, permissions, or output contracts differ materially.
 - Preserve OpenCode compatibility: skill folders must match `name` in `SKILL.md`; agent files must use valid frontmatter and least-privilege permissions.
 
+## Portability Contract
+
+- Every workflow tool shipped into project context SHALL have a project-neutral reusable core. Core inputs include an explicit project root plus explicit config or command argv; core behavior must not derive from this repository's checkout identity.
+- Keep package managers, shells, repository names, maintainer paths, issue trackers, services, hardware, and validation commands in thin project adapters. Reusable cores must not hardcode npm, PowerShell, Windows-only paths, this repository name, or another project-specific command.
+- A project adapter may bind a reusable core to one ecosystem, but it must remain thin, visibly scoped, and replaceable without changing the core algorithm or safety invariants.
+- Before calling a new or materially changed workflow tool reusable, run it in an unrelated disposable project with different project identity and explicit adapter argv. Repository-local helper output alone is not portability proof.
+- Reusable tools must preserve target-project work: explicit write envelope, preview/dry-run when applicable, original child exit/stdout/stderr, fail-closed cleanup, and no credential, remote, install, release, or destructive behavior without separate owner authority.
+- Repository-maintenance-only validators may target the documented kit schema when they are not installed or described as generic project tools. Their names and docs must state that boundary; this exception does not permit project-specific assumptions in tools shipped to target projects.
+- New or modified tools that violate this contract are incomplete even when this repository's own tests pass.
+
 ## TypeScript Development
 
 - Use TypeScript for all repository automation and implementation code.
@@ -28,10 +38,7 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 
 - Prefer small deterministic helpers for repetitive, evidence-heavy work: explicit inputs, explicit outputs, schemas/fixtures, stable ordering, privacy-safe output, and no hidden heuristics, fuzzy scoring, or model-like summarization.
 - If inputs cannot answer, report `unknown`/`unreadable`/`unsupported`/`blocked`. Judgment stays in the agent/reviewer layer.
-
-## Feedback Ledger
-
-- On current-session workflow friction, use `complain` and append to `docs/feedbacks/<agent-or-skill-name>.md`. `Recurrence: unknown` is fine. Privacy-safe only. Reviewers write only under `docs/feedbacks/**`. Prevention via `npm run instruction:feedback -- --add ...` closes only after `applied -> replayed -> resolved`. If write is blocked, return a `Feedback Candidate`.
+- Deterministic helpers may validate strategy-history structure, but they must not infer whether a strategy is effective or semantically distinct. That judgment remains in the agent layer and must cite observed progress evidence.
 
 ## Token Efficiency
 
