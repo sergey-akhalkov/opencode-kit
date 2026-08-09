@@ -76,7 +76,11 @@ Invalidation is dependency-scoped:
 
 Keep runtime fail-closed guards for non-deferrable safety, identity/liveness, authorization, data-integrity, ownership/correlation, required restoration/cleanup, irreversible-action, and envelope-escape conditions. Domain-specific policy may add concrete guards but must not omit accepted global invariants. A live fail-closed outcome is not evidence-only and evaluator replay cannot waive it. Evaluate non-safety cardinality, grouping, formatting, percentile, report, and similar acceptance oracles after raw capture when possible. Such evaluator failures must not alter cleanup or manufacture an unknown product state.
 
-Proof may compose multiple bounded lanes against the same Product Candidate and compatible Environment Identity unless simultaneity is itself an accepted requirement. After an evidence-only failure, preserve the complete raw bundle and replay every reachable evaluator before another live/external attempt. A repeated evidence-only failure in the same chain blocks another attempt until regression evidence covers the preserved corpus or the exact missing observation is recorded.
+Proof may compose multiple bounded lanes against the same Product Candidate and compatible Environment Identity unless simultaneity is itself an accepted requirement. After an evidence-only failure, preserve the complete raw bundle and replay the post-run/evaluator path against it without re-driving live effects. A new exception, log, failing line, or later failure in the same chain is diagnosis, not outcome progress.
+
+One evidence-only failure after an external, physical, costly, destructive, or long-running attempt immediately blocks another live attempt through the same proof path. Before unblocking it, run the candidate post-run/evaluator chain against the preserved bundle through its terminal verdict and every downstream stage reachable for the actual run mode, including non-side-effecting finalization checks; fixing or testing only the first failing line, helper, or parser is insufficient. Replay prior bundles from the same failure chain. Unlock only when preserved-corpus replay is green or the exact missing raw observation is identified. If that observation can only be acquired live, the next attempt is bounded evidence capture, not proof, and must record that limit in advance. Required live restoration and cleanup remain fail-closed and cannot be waived by replay.
+
+Before a repeated high-cost live attempt, record the causal change, preserved bundles, exact offline replay coverage and terminal result, unlock condition, and why the attempt can now reach farther. `unknown` gate state remains blocked. If this evidence cannot be stated, do not run the attempt.
 
 ## Orchestrator And Writer Safety
 
@@ -128,7 +132,7 @@ Known documented non-critical limitations do not require an owner quiz and do no
 
 ## Restart And Continuity
 
-After restart or compaction, reconstruct the accepted outcome, current Candidate Reference, Development-Stage, root RC history, current proof, SDET state, validation, and known limitations from authoritative evidence for the root change. Uncertainty never resets RC history. Unknown RC history leaves the candidate at MVP after proof and blocks the next RC number until history is resolved.
+After restart or compaction, reconstruct the accepted outcome, current Candidate Reference, Development-Stage, root RC history, current proof, SDET state, validation, known limitations, and any live-attempt gate with its failure chain, preserved bundles, replay coverage, terminal result, and unlock condition. Uncertainty never resets RC history or clears a live-attempt gate. Unknown RC history leaves the candidate at MVP after proof and blocks the next RC number until history is resolved; unknown live-attempt gate state blocks another high-cost live attempt until resolved.
 
 ## Output
 
@@ -136,6 +140,7 @@ After restart or compaction, reconstruct the accepted outcome, current Candidate
 - `Outcome`: working | not working | unknown
 - `Candidate Reference`: readable Product Candidate plus runner/evaluator/environment identities when applicable, or none
 - `Raw Evidence Bundle`: immutable observations and lane status, or N/A with reason
+- `Live-Attempt Gate`: clear | blocked | unknown; include failure chain, replay coverage/result, and unlock condition when not clear
 - `Runtime Proof`: boundary, input, expected/actual observation, side effects, outcome
 - `Architecture`: touched responsibilities and `split-or-justify` decisions, or N/A with reason
 - `Diagnostics`: exit status, stdout/stderr, relevant log/exception and artifact paths, or N/A with reason

@@ -329,6 +329,10 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
     if (globalAgentsText != null) {
       for (const marker of [
         "Treat the session as stagnant",
+        "Attempt control and stagnation",
+        "diagnosis, not outcome progress",
+        "immediately blocks another live attempt",
+        "`unknown` gate state remains blocked",
         "openspec/changes/<change>/history.md",
         "Pending Strategy History",
         "materially different local mechanism",
@@ -340,7 +344,15 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
   const configTemplatePath = path.join(globalDir, "opencode.json.template");
   if (fileExists(configTemplatePath)) {
     const configTemplateText = readText(configTemplatePath);
-    for (const marker of ["Pending Strategy History", "history.md", "materially different `Next Strategy`"]) {
+    for (const marker of [
+      "Pending Strategy History",
+      "history.md",
+      "Live-Attempt Gate: clear | blocked | unknown",
+      "Failure Chain",
+      "Terminal Replay Result",
+      "first gate-closing offline step",
+      "bounded evidence capture rather than proof",
+    ]) {
       requireTextContains(ctx, configTemplateText, marker, "compaction stagnation strategy contract", configTemplatePath);
     }
   }

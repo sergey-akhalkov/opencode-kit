@@ -370,7 +370,11 @@ The authority SHALL require representative proof in an unrelated disposable proj
 
 ### Requirement: Compaction switches stalled strategies and preserves strategy history
 
-The active global instructions and compaction prompt SHALL identify stagnation when at least two materially similar attempts since the last observable progress produce no new accepted artifact, runtime evidence, resolved blocker, or downstream boundary advancement. On stagnation the agent SHALL select a different causal mechanism rather than retrying with only changed flags, wording, timeout, or repetition count.
+The active global instructions and compaction prompt SHALL identify stagnation when at least two materially similar cheap or local attempts since the last observable progress produce no new accepted artifact, decision-changing evidence, resolved blocker outside the same still-failing chain, or downstream boundary advancement. A new exception, log, failing line, or later failure in the same runner/evaluator chain SHALL be treated as diagnosis rather than outcome progress and SHALL NOT reset stagnation. On stagnation the agent SHALL select a different causal mechanism rather than retrying with only changed flags, wording, timeout, repetition count, or the first failing line.
+
+One evidence-only failure after an external, physical, costly, destructive, or long-running attempt SHALL block another live attempt through the same proof path. The gate SHALL remain blocked until the candidate post-run/evaluator chain replays the preserved corpus without live effects through its terminal verdict and every downstream stage reachable for the actual run mode, including non-side-effecting finalization checks, or until the exact missing raw observation is identified. Fixing or testing only the first failing line, helper, or parser SHALL NOT clear the gate. If the missing observation can only be acquired live, the next attempt SHALL be classified in advance as bounded evidence capture rather than proof.
+
+Every compaction summary SHALL emit `Live-Attempt Gate: clear | blocked | unknown`. A blocked or unknown gate SHALL also preserve the failure chain, raw bundles, offline replay coverage, terminal replay result, and unlock condition. Missing evidence SHALL produce `unknown`, not an inferred clear state, and SHALL block another high-cost live attempt. For a blocked or unknown gate, `Next Strategy` and `Next-Session Action` SHALL identify the same first gate-closing offline step; an improvement-matrix item SHALL NOT preempt it.
 
 For an active OpenSpec change, each materially distinct attempted strategy SHALL be recorded in `openspec/changes/<change>/history.md` with objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. A later session SHALL read that history before substantial work and SHALL NOT repeat a recorded strategy unless new evidence satisfies its retry condition or invalidates the previous result.
 
@@ -378,9 +382,22 @@ If compaction cannot write files, its summary SHALL emit structured pending hist
 
 #### Scenario: Similar retries make no progress
 
-- **WHEN** two attempts use the same causal mechanism and neither advances an accepted artifact, runtime observation, blocker, or downstream boundary
+- **WHEN** two cheap or local attempts use the same causal mechanism and neither advances an accepted artifact, decision-changing evidence, a blocker outside the same failure chain, or a downstream boundary
 - **THEN** the next attempt uses a materially different mechanism
 - **AND** the attempted mechanism is recorded in the active change `history.md`.
+
+#### Scenario: Costly run reaches a later evaluator failure
+
+- **WHEN** a costly live run produces trustworthy product observations but post-run evaluation fails
+- **AND** a first-line fix exposes another failure later in the same evaluator chain
+- **THEN** the later failure does not count as outcome progress
+- **AND** another costly live run remains blocked until preserved-corpus replay reaches the terminal verdict for the actual run mode.
+
+#### Scenario: Offline replay cannot establish the gate state
+
+- **WHEN** compaction lacks evidence that the complete post-run/evaluator chain reached its terminal result over the preserved corpus
+- **THEN** it emits `Live-Attempt Gate: unknown` with the missing coverage and unlock condition
+- **AND** `Next Strategy` and `Next-Session Action` select the same first offline gate-closing step instead of another high-cost live attempt.
 
 #### Scenario: New evidence makes an old strategy viable
 

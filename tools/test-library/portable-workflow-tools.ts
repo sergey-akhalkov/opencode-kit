@@ -72,7 +72,9 @@ function installPortableFixtureSurface(fixture: string): void {
   writeText(path.join(fixture, "global", "AGENTS.md"), lines([
     "# Fixture Global Agents",
     "",
-    "- Treat the session as stagnant when retries stall.",
+    "- ## Attempt control and stagnation",
+    "- Treat the session as stagnant when retries stall; a later failure in the same chain is diagnosis, not outcome progress.",
+    "- One evidence-only costly attempt immediately blocks another live attempt; the `unknown` gate state remains blocked.",
     "- Record strategy history in `openspec/changes/<change>/history.md`.",
     "- Emit `Pending Strategy History` when compaction cannot write files.",
     "- Choose a materially different local mechanism instead of repeating the same approach.",
@@ -83,7 +85,7 @@ function installPortableFixtureSurface(fixture: string): void {
     '  "$schema": "https://opencode.ai/config.json",',
     '  "model": "openai/gpt-5.6-sol",',
     '  "compaction": {',
-    '    "prompt": "Emit Pending Strategy History and write openspec/changes/<change>/history.md with a materially different `Next Strategy`."',
+    '    "prompt": "Emit Pending Strategy History and write history.md with Live-Attempt Gate: clear | blocked | unknown, Failure Chain, and Terminal Replay Result. Name the first gate-closing offline step and classify a live-only missing observation as bounded evidence capture rather than proof."',
     "  }",
     "}",
     "",
@@ -355,10 +357,32 @@ export const portableWorkflowToolTests: TestCase[] = [
       writeMinimalPortableEntrypoint(path.join(fixture, "global", "bin", "openspec-archive.ts"));
 
       const agentsPath = path.join(fixture, "global", "AGENTS.md");
-      writeText(agentsPath, fs.readFileSync(agentsPath, "utf8").replace("Treat the session as stagnant", "Treat retries carefully"));
+      const completeAgents = fs.readFileSync(agentsPath, "utf8");
+      writeText(agentsPath, completeAgents.replace("Treat the session as stagnant", "Treat retries carefully"));
       const missingStagnation = invokeValidator(fixture);
       assertFailure(missingStagnation, "Removed stagnation marker must fail validation.");
       assertOutputContains(missingStagnation, "global AGENTS stagnation strategy contract", "Stagnation contract failure must be named.");
+
+      writeText(agentsPath, completeAgents.replace("immediately blocks another live attempt", "permits another live attempt"));
+      const missingLiveAttemptGate = invokeValidator(fixture);
+      assertFailure(missingLiveAttemptGate, "Removed live-attempt block marker must fail validation.");
+      assertOutputContains(
+        missingLiveAttemptGate,
+        "global AGENTS stagnation strategy contract",
+        "Live-attempt block contract failure must be named.",
+      );
+      writeText(agentsPath, completeAgents);
+
+      const compactionPath = path.join(fixture, "global", "opencode.json.template");
+      const completeCompaction = fs.readFileSync(compactionPath, "utf8");
+      writeText(compactionPath, completeCompaction.replace("Terminal Replay Result", "Replay Result"));
+      const missingTerminalReplay = invokeValidator(fixture);
+      assertFailure(missingTerminalReplay, "Removed terminal replay marker must fail validation.");
+      assertOutputContains(
+        missingTerminalReplay,
+        "compaction stagnation strategy contract",
+        "Terminal replay contract failure must be named.",
+      );
     },
   },
   {
