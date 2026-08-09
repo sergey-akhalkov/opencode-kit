@@ -7,6 +7,7 @@ This repository uses OpenSpec changes for durable behavior and contract work tha
 - Define the next useful working increment through the Spec Capsule in `openspec/config.yaml`.
 - Keep proposal, design, delta specs, tasks, implementation, proof, and documentation synchronized.
 - Mark a task complete only after its stated observable proof and applicable focused validation pass.
+- Order behavior tasks by time-to-first-real-signal: an earliest safely reachable real check or its smallest harness/safety/restoration prerequisite precedes dependent behavior; external execution remains separately authorized.
 - Treat `openspec validate` as structural evidence, not semantic or runtime proof.
 - Complete archive requires finished artifacts and tasks, synchronized specs, current applicable validation, and explicit handling of blockers. Intentionally incomplete work uses the separate abandon path and never claims completion.
 - Optional reviewers provide evidence only. They do not authorize mutation, set lifecycle state, or become mandatory without concrete risk or project policy.

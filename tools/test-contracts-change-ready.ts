@@ -12,6 +12,8 @@ import {
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
+  SHIFT_LEFT_REAL_BOUNDARY_MARKERS,
+  SHIFT_LEFT_REAL_BOUNDARY_SURFACES,
 } from "./contracts/skills.ts";
 import {
   FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
@@ -27,12 +29,16 @@ import {
   SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS,
   SDET_QUALITY_ENGINEER_REQUIRED_TEXT,
 } from "./contracts/sdet-quality-engineer.ts";
+import { createContext } from "./validators/context.ts";
+import { validateImplementationWorkerRouting } from "./validators/routing.ts";
 import {
   assert,
   assertDeepEqual,
   assertEqual,
   libraryRoot,
+  newTempDir,
   type TestCase,
+  writeText,
 } from "./test-helpers/library.ts";
 
 const root = libraryRoot;
@@ -70,6 +76,33 @@ const EXPECTED_DEVELOPMENT_STAGE_MARKERS = [
   "returns to `development`",
 ];
 
+const EXPECTED_SHIFT_LEFT_REAL_BOUNDARY_MARKERS = [
+  "time-to-first-real-signal",
+  "earliest safely reachable real boundary",
+  "does not authorize external operations",
+];
+
+const EXPECTED_SHIFT_LEFT_REAL_BOUNDARY_SURFACES = [
+  "REPO_AGENTS.md",
+  "global/AGENTS.md",
+  "global/skills/change-ready-sdlc/SKILL.md",
+  "instructions/reusable-project-agent-instructions.md",
+  "instructions/universal-development-loop.md",
+  "templates/project/AGENTS.md",
+];
+
+function seedShiftLeftSurfaces(fixture: string): void {
+  for (const relative of SHIFT_LEFT_REAL_BOUNDARY_SURFACES) {
+    writeText(path.join(fixture, relative), fs.readFileSync(path.join(root, relative), "utf8"));
+  }
+}
+
+function shiftLeftCadenceErrors(fixture: string): string[] {
+  const ctx = createContext();
+  validateImplementationWorkerRouting(ctx, fixture, []);
+  return ctx.errors;
+}
+
 const EXPECTED_FINAL_REVIEWER_MARKERS = [
   "## Contract Reference",
   "`instructions/leaf-reviewer-agent-contract.md`",
@@ -106,6 +139,48 @@ export const changeReadyContractTests: TestCase[] = [
       assertDeepEqual([...CHANGE_READY_SDLC_LIFECYCLE_MARKERS], EXPECTED_LIFECYCLE_MARKERS, "Lifecycle marker array drifted.");
       assertDeepEqual([...CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS], EXPECTED_DEVELOPMENT_STAGE_MARKERS, "Development-Stage marker array drifted.");
       assertDeepEqual([...FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT], EXPECTED_FINAL_REVIEWER_MARKERS, "Optional final-review marker array drifted.");
+      assertDeepEqual([...SHIFT_LEFT_REAL_BOUNDARY_MARKERS], EXPECTED_SHIFT_LEFT_REAL_BOUNDARY_MARKERS, "Shift-left real-boundary marker array drifted.");
+      assertDeepEqual([...SHIFT_LEFT_REAL_BOUNDARY_SURFACES], EXPECTED_SHIFT_LEFT_REAL_BOUNDARY_SURFACES, "Shift-left real-boundary surface array drifted.");
+    },
+  },
+  {
+    name: "contracts: shift-left real-boundary cadence fails closed on missing operative marker and fenced decoys",
+    run: () => {
+      const targetRelative = "REPO_AGENTS.md";
+      const marker = "does not authorize external operations";
+      const baseline = fs.readFileSync(path.join(root, targetRelative), "utf8");
+      assertEqual(baseline.split(marker).length - 1, 1, `Baseline ${targetRelative} must keep unique non-authorization marker.`);
+
+      const missingFixture = newTempDir("shift-left-missing-marker");
+      seedShiftLeftSurfaces(missingFixture);
+      writeText(path.join(missingFixture, targetRelative), baseline.replace(marker, "removed-marker"));
+      const missingErrors = shiftLeftCadenceErrors(missingFixture);
+      assert(
+        missingErrors.some(
+          (error) =>
+            error.includes("shift-left real-boundary cadence") &&
+            error.includes(`'${marker}'`) &&
+            error.replace(/\\/g, "/").includes(targetRelative),
+        ),
+        `Removing operative marker must fail closed with cadence label, marker, and path. errors=${JSON.stringify(missingErrors)}`,
+      );
+
+      const fencedFixture = newTempDir("shift-left-fenced-decoy");
+      seedShiftLeftSurfaces(fencedFixture);
+      writeText(
+        path.join(fencedFixture, targetRelative),
+        `${baseline.replace(marker, "removed-marker")}\n\n\`\`\`text\n${marker}\n\`\`\`\n`,
+      );
+      const fencedErrors = shiftLeftCadenceErrors(fencedFixture);
+      assert(
+        fencedErrors.some(
+          (error) =>
+            error.includes("shift-left real-boundary cadence") &&
+            error.includes(`'${marker}'`) &&
+            error.replace(/\\/g, "/").includes(targetRelative),
+        ),
+        `Fenced-only marker text must not satisfy operative shift-left cadence. errors=${JSON.stringify(fencedErrors)}`,
+      );
     },
   },
   {

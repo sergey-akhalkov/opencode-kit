@@ -28,7 +28,7 @@ For a new broad task that is not yet tied to existing OpenSpec work, do not infe
 - When no active change exists, report that fact. Inspect archived changes or main specs only when the user explicitly asks for historical, proposal, or broad discovery work.
 - Derive the next action from the first pending task whose dependencies are satisfied, current apply instruction, or archive checks when every task is complete.
 - Keep the user-facing response high-level. Do not include file-by-file plans, worker prompts, implementation steps, or test matrices.
-- Prefer steps that reduce uncertainty, unblock the next useful working increment inside an enforced envelope, or produce a reviewable slice.
+- Prefer the dependency-valid step with the highest ROI from reducing uncertainty and minimizing time-to-first-real-signal. If a safe real boundary is reachable, recommend it before dependent implementation; if not, prefer the smallest harness/safety/restoration/evidence task that removes the exact blocker.
 - Avoid speculative polish, unreachable future design, and unrelated cleanup.
 
 
@@ -52,6 +52,7 @@ Return:
 - `Recommended Next Step`: one action with why it is best now.
 - `Scope`: files, specs, tests, or commands likely involved.
 - `Success Criteria`: observable completion signal.
+- `Earliest Real Signal`: current fidelity rung, next real boundary, blocker/unblocker when deferred, and protected authorization or safety gate.
 - `Validation`: commands or reviewer gates to run.
 - `Alternatives`: 1-3 lower-priority options with trade-offs.
 - `Do Not Start Yet`: adjacent work that should remain out of scope.

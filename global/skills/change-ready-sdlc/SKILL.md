@@ -54,6 +54,13 @@ Current-change architecture and diagnostics are part of the same bounded impleme
 
 The phrase "all critical bugs are fixed" means no **known confirmed reachable** critical or non-deferrable defect remains inside the enforced operating envelope. It never claims that undiscovered bugs are impossible.
 
+## Shift-Left Proof Cadence
+
+- For each behavior dependency chain, minimize `time-to-first-real-signal`: execute the earliest safely reachable real boundary now, progressing from offline/preserved replay through local integration/simulator, shadow or independently effect-blocked read-only real use, bounded live effects, and end-to-end operation. Unit/mock/component checks remain fast feedback, not substitutes for a reachable real boundary.
+- Roadmaps SHALL state the fidelity ladder once, and every behavior-slice item SHALL include `Current Rung`, `Next Real Boundary`, `Blocker/Unblocker`, and `Observable Proof`, plus owner authorization, safeguards, restoration/cleanup, and expected immutable evidence; omission makes the plan incomplete. Once a safe real rung is reachable, run it before expanding behavior that depends on its unverified semantics. Stop only the affected dependency chain; continue independent work.
+- Before emulation, replacement, replay, caching, skipping, or another substitution depends on a model of the real system, safely characterize the smallest relevant real baseline when separately authorized. Compare baseline and candidate from the same actor request, environment and initial state through outputs, state/effects/order/timing, faults/recovery, cleanup, and terminal observation.
+- This cadence does not authorize external operations or weaken protected boundaries, physical-effect suppression, `Live-Attempt Gate`, identity, restoration, cleanup, cost, or remote/destructive/deploy/install/release controls. Early characterization is production-owned run-observe-correct; fresh Material SDET remains after current MVP proof and accepted-scope completion.
+
 ## Evidence Topology And Scoped Invalidation
 
 For evidence-heavy work, identify these roles before building or changing a proof harness:
@@ -92,11 +99,11 @@ Asynchronous or concurrent mutation-capable work remains open after timeout, can
 
 ### 1. Prepare
 
-Freeze the accepted outcome capsule, trusted validation, operating envelope, protected boundaries, non-goals, non-deferrable invariants, root RC history, and stop line. Start or return to `development` when the current candidate is unproved.
+Freeze the accepted outcome capsule, trusted validation, operating envelope, protected boundaries, non-goals, non-deferrable invariants, root RC history, stop line, and per-dependency proof ladder. Start or return to `development` when the current candidate is unproved.
 
 ### 2. Implement And Prove MVP
 
-Main implements the smallest complete happy path and owns run-observe-correct. Production authors do not create or modify automated tests, fixtures, snapshots, fakes, simulators, harnesses, or goldens.
+Main implements the smallest complete happy path and owns run-observe-correct at the earliest safely reachable real boundary. Production authors may build its Proof Runner, capture/evaluator, and restoration tooling, but do not create or modify automated test artifacts such as tests, fixtures, snapshots, fakes, simulators, automated test harnesses, or goldens.
 
 After current Runtime Proof, capture a readable Product Candidate Reference plus Proof Runner, Evaluator, Environment Identity, and Raw Evidence Bundle identities when applicable, then set `Development-Stage: MVP`. Failed proof remains `development` and consumes no RC number.
 

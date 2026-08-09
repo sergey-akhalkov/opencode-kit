@@ -29,6 +29,8 @@ import {
   OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
   OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
   OUTCOME_FIRST_ROLE_DELTA_SURFACES,
+  SHIFT_LEFT_REAL_BOUNDARY_MARKERS,
+  SHIFT_LEFT_REAL_BOUNDARY_SURFACES,
 } from "../contracts/skills.ts";
 import {
   MATERIAL_DELIVERY_ROUTING_SURFACES,
@@ -299,6 +301,28 @@ function validateOutcomeAuthorityScope(ctx: ValidationContext, root: string): vo
   }
 }
 
+function validateShiftLeftRealBoundaryPolicy(
+  ctx: ValidationContext,
+  root: string,
+): void {
+  for (const relative of SHIFT_LEFT_REAL_BOUNDARY_SURFACES) {
+    const file = path.join(root, relative);
+    const operative = readOperativeAuthorityText(ctx, file);
+    if (operative == null) {
+      continue;
+    }
+    for (const marker of SHIFT_LEFT_REAL_BOUNDARY_MARKERS) {
+      requireTextContains(
+        ctx,
+        operative,
+        marker,
+        "shift-left real-boundary cadence",
+        file,
+      );
+    }
+  }
+}
+
 function validateImplementationWorkerContinuation(
   ctx: ValidationContext,
   root: string,
@@ -384,6 +408,7 @@ export function validateImplementationWorkerRouting(
   if (fileExists(canonicalSkill)) {
     validateGlobalAgentsTriggerTopology(ctx, root);
     validateOutcomeAuthorityScope(ctx, root);
+    validateShiftLeftRealBoundaryPolicy(ctx, root);
     validateOutcomeFirstDevelopmentStageAuthority(ctx, root);
     validateOperatingPriorityDuplication(ctx, root);
     validateDuplicateLifecycleMarkers(ctx, root);

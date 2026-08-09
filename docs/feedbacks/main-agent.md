@@ -181,3 +181,33 @@ Strengthen the active and reusable handoff contracts, make links and internal ID
 
 ### OpenSpec Follow-Up
 no
+
+## FB-2026-08-09-rtk-raw-diff-pipeline
+
+Source: main-agent
+Role: main-agent
+Type: tooling-friction
+Severity: medium
+Recurrence: current-session-repeated
+Status: open
+
+### Complaint
+`rtk git diff` rendered a human summary instead of raw patch bytes, so piping it into `git apply` repeatedly produced `No valid patches in input`.
+
+### Context
+Scoped validation needed to reconstruct only the current change in a disposable worktree while excluding unrelated concurrent worktree changes.
+
+### Evidence From Current Session
+Several `rtk git diff ... | git apply -` attempts failed with empty/invalid patch input. Calling the discovered native Git executable directly with the same path list produced a valid patch immediately.
+
+### Impact
+Raw-output consumers can silently receive presentation output, causing repeated failed attempts and making isolated validation slower.
+
+### Desired Future
+Commands that feed another process should have an obvious verified raw-output mode or a diagnostic that refuses incompatible summarized output.
+
+### Proposed Direction
+Document a raw passthrough flag for `rtk git diff`, or detect pipe/redirect use and preserve native bytes. Until then, use native Git directly for patch pipelines and `rtk` for human-readable inspection.
+
+### OpenSpec Follow-Up
+no

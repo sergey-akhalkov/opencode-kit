@@ -395,6 +395,8 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "cannot waive uncontrolled authorization",
   "bounded accepted outcome and non-goals",
   "real-boundary happy-path proof",
+  "time-to-first-real-signal",
+  "earliest safely reachable real boundary",
   "green applicable project-native validation",
   "critical safety/data/authorization",
   "failure visibility",
@@ -407,6 +409,23 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "`Stop Line`",
   "remove, narrow, reuse, local guard, then deferral",
   "Stable Candidate: RC",
+];
+
+/** Exact shift-left cadence markers required on maintained runtime/project mirrors. */
+export const SHIFT_LEFT_REAL_BOUNDARY_MARKERS: readonly string[] = [
+  "time-to-first-real-signal",
+  "earliest safely reachable real boundary",
+  "does not authorize external operations",
+];
+
+/** Maintained surfaces that must preserve the concise shift-left cadence contract. */
+export const SHIFT_LEFT_REAL_BOUNDARY_SURFACES: readonly string[] = [
+  "REPO_AGENTS.md",
+  "global/AGENTS.md",
+  "global/skills/change-ready-sdlc/SKILL.md",
+  "instructions/reusable-project-agent-instructions.md",
+  "instructions/universal-development-loop.md",
+  "templates/project/AGENTS.md",
 ];
 
 /**

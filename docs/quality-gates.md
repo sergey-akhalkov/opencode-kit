@@ -9,6 +9,7 @@ The canonical loop definition lives at `instructions/universal-development-loop.
 | Gate | When | Evidence |
 | --- | --- | --- |
 | Focused validation | After each meaningful edit | Nearest test/build/lint command result |
+| Earliest real signal | Each behavior dependency chain, before dependent expansion | Current fidelity rung, earliest safely reachable real boundary result, or exact blocker/unblocking task plus authorization, safeguards, restoration, and evidence plan |
 | Happy-path proof | Behavior-changing code | Observable execution at the relevant user-facing or system boundary |
 | Independent critical SDET | Material behavior, after MVP and accepted-scope completion | Fresh test-only SDET, reachable critical-risk matrix, smallest critical reproducer when needed, and mock confidence gaps |
 | Code-quality reduction reviewer | Optional after MVP for concrete maintainability risk | Read-only safe net-reduction matrix or evidence-backed empty matrix |
@@ -17,6 +18,8 @@ The canonical loop definition lives at `instructions/universal-development-loop.
 | Final validation | Boundary/API/data/deployment/compatibility change | Broader project command result |
 
 Ordinary Small uses main-owned Runtime Proof, focused validation, and realistic requirement-linked edge inspection. It does not acquire independent SDET or systematic reviewer gates solely because behavior changed.
+
+Shift-left changes evidence order, not authority: local preparation may proceed, but remote, shared, credentialed, costly, destructive, or physical execution remains separately owner-controlled and subject to restoration, cleanup, and live-attempt gates.
 
 ## Adapter Commands
 

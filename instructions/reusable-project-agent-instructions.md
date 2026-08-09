@@ -25,6 +25,7 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 ## Work Style
 
 - Prefer the next useful working increment inside a technically enforced operating envelope; remove/narrow/reuse/local guard before new mechanisms.
+- Minimize time-to-first-real-signal per behavior dependency chain: execute the earliest safely reachable real boundary before dependent expansion, or record the exact blocker, earliest unblocking task, authorization, independent effect suppression, restoration/cleanup, expected evidence, and stop condition. Shift-left sequencing does not authorize external operations or weaken protected gates.
 - No unrelated cleanup/refactors. Scope expansion (changed accepted outcome, out-of-envelope behavior, weakened invariant, protected-boundary crossing) needs explicit user approval; necessary local reversible dependency closure does not.
 - Keep touched human-written code locally understandable. Line count is a navigation signal, not a quota; adding a responsibility to an already mixed file requires one cohesive extraction or a `split-or-justify` decision, not wrapper-only fragmentation or a broad cleanup.
 - At meaningful failure boundaries, use existing project diagnostics, preserve the original exception cause/stack, and add structured safe operation/correlation context without duplicate or routine-noise logging. Real-boundary proof retains exit status, stdout/stderr, relevant logs/exceptions, and artifact paths for inspection before mutation or rerun.

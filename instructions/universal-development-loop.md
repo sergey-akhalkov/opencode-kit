@@ -6,10 +6,10 @@ Use this loop for AI-assisted development in any project. Technology adapters ma
 
 1. `Intake`: state the accepted `Outcome`, technically enforced operating envelope, `Non-Goals`, non-deferrable invariants, happy path, validation boundary, touched ownership, and meaningful failure boundaries.
 2. `Evidence`: inspect source, tests, schemas, config, preserved stdout/stderr, logs, exceptions, and artifacts before trusting summaries.
-3. `Baseline Proof`: reproduce current behavior when feasible.
-4. `Small Slice`: implement the smallest useful increment; prefer remove/narrow/reuse/local guard, preserve unrelated work, and use `split-or-justify` rather than adding a responsibility to an already mixed file.
+3. `Baseline Proof`: reproduce current behavior at the earliest safely reachable real boundary; when deferred, name the exact blocker and earliest unblocking task.
+4. `Small Slice`: implement the smallest useful increment as a vertical slice that minimizes time-to-first-real-signal; prefer remove/narrow/reuse/local guard, preserve unrelated work, and use `split-or-justify` rather than adding a responsibility to an already mixed file.
 5. `Happy Path`: main is the default production author for Ordinary Small and Material.
-6. `Runtime Proof`: run-observe-correct at the nearest representative boundary and retain invocation/input, identity, exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Inspect preserved diagnostics before mutation or rerun. Compilation or unit checks alone are not proof. Current proof sets `Development-Stage: MVP`.
+6. `Runtime Proof`: run-observe-correct at the earliest safely reachable real boundary and retain invocation/input, identity, exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Use offline/replay -> integration/simulator -> shadow or independently effect-blocked read-only real -> bounded live -> end-to-end as the fidelity ladder; once a safe authorized real rung is reachable, run it before dependent expansion. Compilation or unit checks alone are not proof. Current proof sets `Development-Stage: MVP`.
 7. `Accepted Scope`: complete required scope without optional polishing. Product Candidate mutation returns to development and invalidates dependent proof; runner, evaluator, environment, and report changes invalidate only affected evidence. Current affected proof restores MVP.
 8. `Optional Risk Discovery`: Optional final-candidate, delivery, code-quality, or domain review may run after MVP only for concrete risk, project policy, or the owner. Missing or unusable optional evidence is not itself a stage blocker; reviewers never authorize mutation.
 9. `Critical SDET`: Material behavior uses fresh test-only critical SDET returning `critical-risks-reported | no-critical-risk | blocked`. Continue only after a main-confirmed critical defect, fix, and new proof; the first valid no-critical attempt permanently stops the loop. Non-critical findings are parked.
@@ -18,6 +18,8 @@ Use this loop for AI-assisted development in any project. Technology adapters ma
 12. `Process Improvement`: record friction and automate repeated deterministic work without delaying the outcome.
 
 Trade-offs follow quality/safety -> autonomy -> speed; speed never weakens proof. Profiles remain `Ordinary Small | Material`. User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. A partial slice handoff must not end an unfinished root goal.
+
+Shift-left sequencing does not authorize external operations. A deferred real rung records authorization, safeguards, restoration/cleanup, immutable evidence, and its dependency-chain stop condition; independent work may continue while the affected chain waits.
 
 ## Quality Defaults
 
@@ -34,6 +36,7 @@ Trade-offs follow quality/safety -> autonomy -> speed; speed never weakens proof
 - `Outcome`: working | not working | unknown.
 - `Candidate Reference`: readable Product Candidate plus runner/evaluator/environment identities when applicable, or none.
 - `Raw Evidence Bundle`: immutable observations and lane status, or N/A with reason.
+- `Earliest Real Signal`: fidelity ladder, current rung, next real boundary, blocker/unblocker, and dependency-chain stop condition.
 - `Runtime Proof`: boundary, input, expected/actual observation, exit status, stdout/stderr, logs/exceptions, side effects, and artifact paths.
 - `Architecture`: touched responsibilities and `split-or-justify` decisions, or N/A with reason.
 - `Diagnostics`: captured evidence and smallest instrumentation decision, or N/A with reason.
