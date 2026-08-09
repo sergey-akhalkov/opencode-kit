@@ -12,7 +12,6 @@ export const PREVENTION_FEEDBACK_REVIEWER_FILES: readonly string[] = [
   "performance-reliability-reviewer.md",
   "protocol-api-reviewer.md",
   "rust-concurrency-reviewer.md",
-  "session-delivery-reviewer.md",
   "test-coverage-reviewer.md",
   "wire-protocol-reviewer.md",
 ];
@@ -42,52 +41,6 @@ export const REVIEWER_CONTRACT_REFERENCE_CONTRACTS: readonly TextContract[] = PR
   ],
 }));
 
-export const SESSION_DELIVERY_BINDING_REQUIRED_TEXT: readonly string[] = [
-  "optional after MVP",
-  "never a mandatory RC/stable gate",
-  "## Minimal Evidence Bundle",
-  "changed files or diffstat",
-  "Root causes must cite evidence; use `unknown`",
-  "candidate-specific production proof",
-  "critical-risks-reported | no-critical-risk | blocked",
-  "Keep matrices terse",
-  "Risk Matrix",
-  "Do not return an acceptance/rejection verdict",
-  "Candidate Reference",
-  "readable scoped candidate",
-  "Rollback plan",
-  "proportional",
-  "Development-Stage",
-  "Stable Candidate: RC<n>",
-  "no stage authorizes external operations",
-  "Effective Model",
-];
-
-export const SESSION_DELIVERY_BINDING_CONTRACT: TextContract = {
-  fileName: "session-delivery-reviewer.md",
-  label: "session-delivery-reviewer must require delivery-control safeguards",
-  requiredText: [...SESSION_DELIVERY_BINDING_REQUIRED_TEXT],
-};
-
-/**
- * Exact optional post-MVP delivery-review tokens required on project-facing binding surfaces.
- */
-export const MATERIAL_DELIVERY_ROUTING_TOKENS: readonly string[] = [
-  "Optional final-candidate",
-  "after MVP",
-  "concrete risk, project policy, or",
-  "not itself a stage blocker",
-];
-
-/** Surfaces that must retain Material delivery routing semantics. */
-export const MATERIAL_DELIVERY_ROUTING_SURFACES: readonly string[] = [
-  "REPO_AGENTS.md",
-  "global/AGENTS.md",
-  "instructions/reusable-project-agent-instructions.md",
-  "instructions/universal-development-loop.md",
-  "templates/project/AGENTS.md",
-];
-
 export const TEST_COVERAGE_REVIEWER_CONTRACT: TextContract = {
   fileName: "test-coverage-reviewer.md",
   label: "test-coverage-reviewer must require task/repro/runtime-envelope coverage",
@@ -102,12 +55,6 @@ export const TEST_COVERAGE_REVIEWER_CONTRACT: TextContract = {
     "do not invent acceptance scope",
   ],
 };
-
-export const SESSION_DELIVERY_BINDING_HANDOFF_TOKENS: readonly string[] = [
-  "Development-Stage",
-  "after MVP",
-  "optional",
-];
 
 /**
  * Exact outcome-authority markers required on loaded authority surfaces.
@@ -193,17 +140,7 @@ export const OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS = [
   },
 ] as const;
 
-/** Surfaces that must retain session-delivery binding handoff tokens. */
-export const SESSION_DELIVERY_BINDING_SURFACES: readonly string[] = [
-  "REPO_AGENTS.md",
-  "global/AGENTS.md",
-  "instructions/reusable-project-agent-instructions.md",
-  "instructions/universal-development-loop.md",
-  "templates/project/AGENTS.md",
-];
-
 export const AGENT_TEXT_CONTRACTS: readonly TextContract[] = [
   ...REVIEWER_CONTRACT_REFERENCE_CONTRACTS,
-  SESSION_DELIVERY_BINDING_CONTRACT,
   TEST_COVERAGE_REVIEWER_CONTRACT,
 ];

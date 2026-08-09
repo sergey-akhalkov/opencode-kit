@@ -2,14 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 
 import {
-  MATERIAL_DELIVERY_ROUTING_SURFACES,
-  MATERIAL_DELIVERY_ROUTING_TOKENS,
-  SESSION_DELIVERY_BINDING_CONTRACT,
-  SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
-  SESSION_DELIVERY_BINDING_REQUIRED_TEXT,
-  SESSION_DELIVERY_BINDING_SURFACES,
-} from "./contracts/reviewer-binding.ts";
-import {
   GLOBAL_AGENTS_NON_WAIVABLE_RISK_CLAUSE,
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
 } from "./contracts/skills.ts";
@@ -19,7 +11,6 @@ import {
 } from "./validators/active-authority.ts";
 import {
   assert,
-  assertDeepEqual,
   assertEqual,
   libraryRoot,
   type TestCase,
@@ -41,34 +32,13 @@ function assertTokens(text: string, tokens: readonly string[], message: string):
   for (const token of tokens) assert(text.includes(token), `${message}: ${token}`);
 }
 
-const EXPECTED_SESSION_DELIVERY_REQUIRED_TEXT = [
-  "optional after MVP",
-  "never a mandatory RC/stable gate",
-  "## Minimal Evidence Bundle",
-  "changed files or diffstat",
-  "Root causes must cite evidence; use `unknown`",
-  "candidate-specific production proof",
-  "critical-risks-reported | no-critical-risk | blocked",
-  "Keep matrices terse",
-  "Risk Matrix",
-  "Do not return an acceptance/rejection verdict",
-  "Candidate Reference",
-  "readable scoped candidate",
-  "Rollback plan",
-  "proportional",
-  "Development-Stage",
-  "Stable Candidate: RC<n>",
-  "no stage authorizes external operations",
-  "Effective Model",
-];
-
-const EXPECTED_DELIVERY_SURFACES = [
+const OPTIONAL_REVIEW_SURFACES = [
   "REPO_AGENTS.md",
   "global/AGENTS.md",
   "instructions/reusable-project-agent-instructions.md",
   "instructions/universal-development-loop.md",
   "templates/project/AGENTS.md",
-];
+] as const;
 
 const MIRROR_SELF_CONTAINMENT_MARKERS = [
   {
@@ -98,6 +68,15 @@ const MIRROR_SELF_CONTAINMENT_MARKERS = [
       "mentally remove every reference",
     ],
   },
+] as const;
+
+const ACTIVE_CATALOG_SURFACES = [
+  "README.md",
+  "profiles/all.json",
+  "global/model-profiles/grok-only.json",
+  "global/model-profiles/quality-independent.json",
+  "global/model-profiles/sol-only.json",
+  "global/opencode.json.template",
 ] as const;
 
 export const changeReadyDeliveryContractTests: TestCase[] = [
@@ -138,63 +117,85 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: optional delivery binding arrays are byte-equal",
+    name: "contracts: automatic completion guard retires active session-delivery-reviewer routing",
     run: () => {
-      assertDeepEqual([...SESSION_DELIVERY_BINDING_REQUIRED_TEXT], EXPECTED_SESSION_DELIVERY_REQUIRED_TEXT, "Session-delivery required markers drifted.");
-      assertDeepEqual(SESSION_DELIVERY_BINDING_CONTRACT.requiredText, EXPECTED_SESSION_DELIVERY_REQUIRED_TEXT, "Session-delivery contract drifted.");
-      assertDeepEqual([...SESSION_DELIVERY_BINDING_HANDOFF_TOKENS], ["Development-Stage", "after MVP", "optional"], "Session-delivery handoff tokens drifted.");
-      assertDeepEqual([...MATERIAL_DELIVERY_ROUTING_TOKENS], [
-        "Optional final-candidate",
-        "after MVP",
-        "concrete risk, project policy, or",
-        "not itself a stage blocker",
-      ], "Optional delivery routing tokens drifted.");
-      assertDeepEqual([...MATERIAL_DELIVERY_ROUTING_SURFACES], EXPECTED_DELIVERY_SURFACES, "Optional delivery routing surfaces drifted.");
-      assertDeepEqual([...SESSION_DELIVERY_BINDING_SURFACES], EXPECTED_DELIVERY_SURFACES, "Delivery handoff surfaces drifted.");
-    },
-  },
-  {
-    name: "contracts: project-facing surfaces keep optional post-MVP delivery semantics",
-    run: () => {
-      for (const relative of EXPECTED_DELIVERY_SURFACES) {
+      assert(
+        !fs.existsSync(path.join(root, "global", "agents", "session-delivery-reviewer.md")),
+        "Active session-delivery-reviewer agent file must be deleted after migration.",
+      );
+      for (const relative of ACTIVE_CATALOG_SURFACES) {
         const text = fs.readFileSync(path.join(root, relative), "utf8");
-        assertTokens(text, MATERIAL_DELIVERY_ROUTING_TOKENS, `${relative} missing optional delivery route`);
-        assertTokens(text, SESSION_DELIVERY_BINDING_HANDOFF_TOKENS, `${relative} missing stage/optional handoff token`);
+        assert(
+          !text.includes("session-delivery-reviewer"),
+          `${relative} must not positively register or route retired session-delivery-reviewer.`,
+        );
+        assert(
+          text.includes("session-completion-arbiter") || relative === "README.md" || relative.endsWith("opencode.json.template"),
+          `${relative} should retain completion-arbiter routing when it is a profile/catalog surface.`,
+        );
+      }
+      const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
+      assert(readme.includes("session-completion-arbiter"), "README catalog must advertise the hidden completion arbiter.");
+      assert(!readme.includes("`session-delivery-reviewer`"), "README catalog must not advertise retired session-delivery-reviewer.");
+      const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
+      assert(template.includes("session-completion-guard"), "Runtime template must load the completion guard extension.");
+      assert(template.includes("session-completion-arbiter"), "Runtime template must name the completion arbiter agent.");
+    },
+  },
+  {
+    name: "contracts: optional post-MVP review remains non-authorizing without delivery-reviewer binding",
+    run: () => {
+      for (const relative of OPTIONAL_REVIEW_SURFACES) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assert(text.includes("after MVP"), `${relative} missing optional post-MVP review timing`);
+        assert(
+          /optional/i.test(text),
+          `${relative} missing optional review wording`,
+        );
+        assert(
+          text.includes("never authorize mutation") || text.includes("never a stage blocker") || text.includes("not itself a stage blocker"),
+          `${relative} missing non-authorizing optional-review safeguard`,
+        );
+        assert(
+          !text.includes("session-delivery-reviewer"),
+          `${relative} must not instruct dispatch of retired session-delivery-reviewer.`,
+        );
       }
     },
   },
   {
-    name: "contracts: session delivery review is evidence-only and never a stage gate",
+    name: "contracts: completion arbiter remains machine-only and non-lifecycle",
     run: () => {
-      const delivery = fs.readFileSync(path.join(root, "global", "agents", "session-delivery-reviewer.md"), "utf8");
-      assertTokens(delivery, [
-        ...SESSION_DELIVERY_BINDING_REQUIRED_TEXT,
-        "Missing or unusable optional review output is not itself a stage blocker",
-        "never a mandatory RC/stable gate",
-        "Main alone dispositions every row and changes stage",
-        "execution remains separately authorized",
-        "never required solely to claim stable",
-      ], "Session-delivery role missing optional/non-authorizing safeguard");
-      for (const staleActivePolicy of [
-        "run this delivery review once after Runtime Proof and before terminal SDET regardless of diagnostic scale",
-        "unusable mandatory output consumes the launch",
-        "Main alone dispositions every row and decides Done-Done",
-      ]) {
-        assert(!delivery.includes(staleActivePolicy), `Session-delivery role retains superseded mandatory policy: ${staleActivePolicy}`);
-      }
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+      assertTokens(arbiter, [
+        "hidden: true",
+        "\"*\": deny",
+        "schemaVersion",
+        "auditID",
+        "rootSessionRef",
+        "inspectedRevision",
+        "allow_stop | continue | owner_required | user_paused",
+        "one JSON object",
+        "Do not wrap it in Markdown",
+        "never run as an optional reviewer",
+        "never approves `Development-Stage`",
+        "Never convert synthetic text or guard rejection into a human requirement or answer",
+      ], "Completion arbiter missing machine-verdict safeguard");
+      assert(!arbiter.includes("session_delivery_context:"), "Completion arbiter must not register session_delivery_context tool permission.");
     },
   },
   {
-    name: "contracts: optional delivery never authorizes external operations",
+    name: "contracts: historical delivery-reviewer evidence remains attributable outside active routing",
     run: () => {
-      const delivery = fs.readFileSync(path.join(root, "global", "agents", "session-delivery-reviewer.md"), "utf8");
-      assertTokens(delivery, [
-        "no stage authorizes external operations",
-        "Do not set or approve `Development-Stage`",
-        "Rollback plan: proportional",
-        "execution remains separately authorized",
-        "External Operations",
-      ], "Delivery role missing external-operation separation");
+      const feedback = fs.readFileSync(path.join(root, "docs", "feedbacks", "session-delivery-reviewer.md"), "utf8");
+      assert(feedback.includes("session-delivery-reviewer"), "Historical feedback ledger may retain retired agent attribution.");
+      const changeHistory = fs.readFileSync(
+        path.join(root, "openspec", "changes", "add-session-completion-guard", "history.md"),
+        "utf8",
+      );
+      assert(changeHistory.includes("session-delivery-reviewer"), "Active change history may retain superseded approach attribution.");
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      assert(!agents.includes("session-delivery-reviewer"), "Loaded global authority must not route the retired reviewer.");
     },
   },
 ];

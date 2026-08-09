@@ -342,7 +342,7 @@ Routing and reviewer maps assume the default `all` install profile.
 - Optional post-MVP candidate risk review -> `final-candidate-reviewer` when concrete risk, policy, or the owner requires it.
 - Bounded first-pass helper work such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker`; it inherits the invoking primary model and does not imply local/offline execution.
 - Exceptional hard blockers, complex bugs, or root-cause investigations where normal agents/tools already failed -> `troubleshooter`; provide prior failed attempts, allowed write scope, forbidden paths, and validation gate.
-- Optional post-MVP delivery-control review for historical/current todos, user decisions, changed-file scope, continuity, and validation evidence -> `session-delivery-reviewer` when project policy, risk, owner, or an explicit request requires it.
+- Opt-in root completion enforcement -> `/enable-grind` enables deterministic async preflight and the hidden `session-completion-arbiter` for only the current root; `/disable-grind` returns it to ordinary chat. New roots default off.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; current-session friction notes -> `complain`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
 - Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; the Material `code-quality-reviewer` gate returns only a safe net-reduction matrix.
@@ -353,7 +353,7 @@ Routing and reviewer maps assume the default `all` install profile.
 - Safe deletion, reuse, deduplication, state simplification, and public-surface narrowing -> `code-quality-reviewer` reduction matrix.
 - Implementation readiness, stable scope, blockers, validation path -> `implementation-readiness-reviewer`.
 - Optional post-MVP risk review of the complete current candidate -> `final-candidate-reviewer`.
-- Optional post-MVP delivery alignment and evidence risk matrix -> `session-delivery-reviewer` when explicitly applicable.
+- Root goal alignment, unfinished accepted scope, and owner-boundary routing in an explicitly grind-enabled root -> session completion guard plus hidden `session-completion-arbiter`.
 - OpenSpec/design/architecture ownership and consistency -> `openspec-architecture-reviewer`.
 - Requirements-to-tests, weak assertions, missing gates -> `test-coverage-reviewer`.
 - Config, deployment, packaging, operational safety -> `deployment-config-reviewer`.
@@ -433,12 +433,41 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
 - `legacy-client-compatibility-reviewer`: compatibility with legacy clients/tools/workflows.
-- `session-delivery-reviewer`: optional post-MVP delivery evidence reviewer; uses `session_delivery_context` when available and never gates RC or stable.
+- `session-completion-arbiter`: hidden no-tool machine adjudicator used only by an explicitly enabled completion guard; returns one exact correlated JSON non-lifecycle verdict from guard-supplied redacted session-delivery evidence.
 - `instruction-artifact-reviewer`: read-only review of skills, agents, prompts, `AGENTS.md`, README routing, autonomy handoff, and safety boundaries.
 
 Project plugin behavior:
 
-- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for current-session delivery evidence, including `todowrite` history and candidate requirement signals reconstructed from transcript parts, and injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. The plugin is auto-discovered from `global/plugin/` once `OPENCODE_CONFIG_DIR` points at `global/`; the delivery-context implementation lives beside `session-env.ts` and does not need a `tools/` directory at runtime.
+- `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for manual diagnostics and exposes the same redacted projection imported by the automatic completion guard, including `todowrite` history and requirement signals reconstructed from transcript parts. It also injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. The plugin is loaded explicitly from the kit config; the context implementation lives beside `session-env.ts` and does not need a `tools/` directory at runtime.
+
+### Opt-In Session Completion Guard
+
+The kit config loads `global/extensions/opencode-pty-bridge.ts` and `global/extensions/session-completion-guard.ts` from explicit kit-relative file URLs. The bridge and guard share the one pinned `opencode-pty` manager from `global/node_modules`; a second cache-installed PTY plugin must not be enabled. Loading the plugin does not enable grind: every new root starts in `disabled`.
+
+Control is per root and persisted in that root's metadata:
+
+- **`/enable-grind`**: enables completion and question arbitration for the current root after its bounded confirmation turn. That control turn is not audited.
+- **`/disable-grind`**: immediately cancels guard-owned audit/retry/fallback intent and prevents later guard side effects for the current root. It does not kill user PTYs/tasks, interrupt the primary response, delete retained evidence, or change sibling roots.
+
+An enabled parentless root reacts to idle events as follows:
+
+- **waiting-async**: deterministic preflight found an awaited PTY, background child, unconsumed task result, unknown lease, compaction, or guard-owned turn. No completion model is called.
+- **auditing / audit-retrying**: async state is clear and one retained hidden `session-completion-arbiter` child is evaluating a root-correlated, redacted evidence snapshot. The configured model must return one exact JSON object; invalid JSON, provider failure, or stale correlation has no root side effect and retries with bounded exponential delay.
+- **continuing**: one validated `continue` verdict produced one synthetic root continuation under the original root agent/model/variant/tool context.
+- **passed**: the unchanged root revision may remain idle. This is not an RC, stable, release, deployment, or external-operation verdict, and it adds no transcript success message.
+- **paused**: a real in-flight user interrupt or explicit non-synthetic stop instruction won. A later ordinary human message resumes guard eligibility; synthetic PTY/task/guard text cannot do so.
+
+When TUI toast support is available, status transitions are shown there. The same state and privacy-safe correlation fields are stored in session metadata for headless operation and restart recovery. Local logs use hashed session/audit/PTY refs and bounded redacted error causes; they must not include credentials, prompts, provider options, or full command output.
+
+Operational notes:
+
+- Ordinary conversation needs no action: leave the root disabled. Use `/enable-grind` only when autonomous completion enforcement is wanted, then `/disable-grind` to return to normal chat.
+- Main permission defaults are normalized to `allow` by the guard config hook. Explicit specialist-agent restrictions still apply; the hidden arbiter has no registered tools.
+- Plugin, agent, dependency, or config changes require a new OpenCode process. Updating kit files does not activate them in an already-running owner session.
+- If a root remains `waiting-async`, inspect current `pty_list`, background children, and whether the matching synthetic result/exit notification reached the root. Unknown liveness intentionally remains fail-closed.
+- If a root remains `audit-retrying`, verify the profile's arbiter provider/model is connected and available, then inspect the retained child metadata and the owning-boundary error. Do not paste a guessed verdict into the root.
+- If a root is `paused`, send a new ordinary human message only when work should resume. An explicit stop instruction keeps the current turn paused.
+- Roll back as one coherent version-controlled change: stop OpenCode, restore the previous config/template, dependency graph, profiles, validators, and agent inventory together, reinstall the selected profile, then restart. Do not remove only the guard while leaving a mismatched PTY source or partially migrated routing active.
 
 ## Instruction Templates
 

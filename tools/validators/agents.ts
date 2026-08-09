@@ -65,6 +65,7 @@ const EXACT_OUTPUT_H2 = "## Output";
 const EXACT_REPORT_MARKDOWN_OPEN = "```markdown";
 /** Byte-exact top-level closer for intentional role report envelopes. */
 const EXACT_REPORT_MARKDOWN_CLOSE = "```";
+const SESSION_COMPLETION_ARBITER_FILE = "session-completion-arbiter.md";
 
 /**
  * Markers that may be certified only from the intentional ## Output report
@@ -311,18 +312,62 @@ function validateSessionDeliveryContextPermission(
   frontmatter: FrontmatterMap,
   file: string,
 ): void {
-  const isSessionDeliveryReviewer = path.basename(file) === "session-delivery-reviewer.md";
-  if (
-    isSessionDeliveryReviewer &&
-    frontmatter.get("permission.session_delivery_context") !== "allow"
-  ) {
+  if (frontmatter.has("permission.session_delivery_context")) {
     ctx.addError(
-      `session-delivery-reviewer must allow session_delivery_context custom tool: ${file}`,
+      `No active agent may set session_delivery_context permission: ${file}`,
     );
   }
-  if (!isSessionDeliveryReviewer && frontmatter.has("permission.session_delivery_context")) {
-    ctx.addError(
-      `Only session-delivery-reviewer may set session_delivery_context permission: ${file}`,
+}
+
+function validateSessionCompletionArbiter(
+  ctx: ValidationContext,
+  frontmatter: FrontmatterMap,
+  surfaces: AgentModelFacingSurfaces,
+  file: string,
+): void {
+  if (![true, "true"].includes(frontmatter.get("hidden") as true | "true")) {
+    ctx.addError(`session-completion-arbiter must set hidden: true: ${file}`);
+  }
+  if (frontmatter.get("permission.*") !== "deny") {
+    ctx.addError(`session-completion-arbiter must set wildcard permission deny: ${file}`);
+  }
+  if (frontmatter.get("steps") !== "6") {
+    ctx.addError(`session-completion-arbiter must set steps: 6: ${file}`);
+  }
+  for (const permission of [
+    "bash",
+    "edit",
+    "task",
+    "question",
+    "skill",
+    "webfetch",
+    "websearch",
+    "todowrite",
+    "external_directory",
+    "lsp",
+    "doom_loop",
+  ]) {
+    if (frontmatter.get(`permission.${permission}`) !== "deny") {
+      ctx.addError(`session-completion-arbiter must set ${permission}: deny: ${file}`);
+    }
+  }
+  for (const required of [
+    "schemaVersion",
+    "auditID",
+    "rootSessionRef",
+    "inspectedRevision",
+    "allow_stop | continue | owner_required | user_paused",
+    "one JSON object",
+    "Do not wrap it in Markdown",
+    "never run as an optional reviewer",
+    "never approves `Development-Stage`",
+  ]) {
+    requireTextContains(
+      ctx,
+      surfaces.rawBody,
+      required,
+      "session-completion-arbiter machine verdict contract",
+      file,
     );
   }
 }
@@ -796,6 +841,7 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
   const agentNames: string[] = [];
   for (const file of listFiles(agentsDir, ".md")) {
     const agentName = path.basename(file, ".md");
+    const agentFileName = path.basename(file);
     const text = readText(file);
     const frontmatter = getFrontmatterMap(ctx, text, file);
     agentNames.push(agentName);
@@ -814,10 +860,12 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
         );
       }
     }
-    for (const permission of ["read", "glob", "grep"]) {
-      const key = `permission.${permission}`;
-      if (frontmatter.get(key) !== "allow") {
-        ctx.addError(`Agent permission must set ${permission}: allow: ${file}`);
+    if (agentFileName !== SESSION_COMPLETION_ARBITER_FILE) {
+      for (const permission of ["read", "glob", "grep"]) {
+        const key = `permission.${permission}`;
+        if (frontmatter.get(key) !== "allow") {
+          ctx.addError(`Agent permission must set ${permission}: allow: ${file}`);
+        }
       }
     }
     for (const obsolete of REVIEWER_OBSOLETE_PERMISSION_KEYS) {
@@ -829,7 +877,6 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       }
     }
     validateSessionDeliveryContextPermission(ctx, frontmatter, file);
-    const agentFileName = path.basename(file);
     // Model-facing body surface: exclude frontmatter, supported fences, indented code.
     // Unsupported fence syntax fails closed once; skip remaining body checks on this file.
     const surfaces = readAgentModelFacingSurfaces(ctx, text, file);
@@ -849,6 +896,12 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     if (agentFileName === SDET_QUALITY_ENGINEER_FILE) {
       if (surfaces != null) {
         validateSdetQualityEngineer(ctx, frontmatter, surfaces, file);
+      }
+      continue;
+    }
+    if (agentFileName === SESSION_COMPLETION_ARBITER_FILE) {
+      if (surfaces != null) {
+        validateSessionCompletionArbiter(ctx, frontmatter, surfaces, file);
       }
       continue;
     }

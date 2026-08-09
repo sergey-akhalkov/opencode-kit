@@ -28,12 +28,99 @@ export type DeliveryContextUserMessage = {
   time: string | null;
 };
 
+export type DeliveryContextSyntheticMessage = DeliveryContextUserMessage & {
+  provenance: "compaction" | "guard" | "opencode" | "pty" | "task";
+  truncated: boolean;
+};
+
+export type DeliveryContextAssistantEvidence = {
+  agent: string | null;
+  error: string | null;
+  eventRef: string;
+  finish: string | null;
+  modelRef: string;
+  text: string;
+  time: string | null;
+  truncated: boolean;
+};
+
+export type DeliveryContextToolEvidence = {
+  callRef: string;
+  eventRef: string;
+  output: string | null;
+  status: string;
+  time: string | null;
+  title: string | null;
+  tool: string;
+  truncated: boolean;
+};
+
+export type DeliveryContextDiffEvidence = {
+  eventRef: string;
+  files: string[];
+  patchRef: string;
+  time: string | null;
+};
+
+export type DeliveryContextValidationEvidence = {
+  callRef: string;
+  command: string | null;
+  eventRef: string;
+  status: string;
+  summary: string | null;
+  time: string | null;
+  truncated: boolean;
+};
+
+export type DeliveryContextDescendantEvidence = {
+  agent: string | null;
+  parentRef: string;
+  resultConsumed: boolean | "unknown";
+  sessionRef: string;
+  status: "idle" | "running" | "unknown";
+  updated: string | null;
+};
+
+export type DeliveryContextBackgroundEvidence = {
+  agent: string | null;
+  callRef: string;
+  childRef: string | null;
+  resultConsumed: boolean | "unknown";
+  status: string;
+};
+
+export type DeliveryContextStrategyRef = {
+  ref: string;
+  source: "docs_fallback" | "openspec_history" | "session_metadata";
+};
+
+export type DeliveryContextAuditRef = {
+  auditRef: string;
+  childRef: string;
+  status: string;
+};
+
+export type DeliveryContextTruncation = {
+  limit: number;
+  omitted: number;
+  surface: string;
+};
+
 export type DeliveryContextQuestionReply = {
   answers: string[][];
   eventRef: string;
   questions: string[];
   requestRef: string | null;
   status: DeliveryContextQuestionStatus;
+  time: string | null;
+};
+
+export type DeliveryContextQuestionIntervention = {
+  actor: "guard" | "unknown";
+  eventRef: string;
+  questions: string[];
+  requestRef: string | null;
+  status: "rejected";
   time: string | null;
 };
 
@@ -45,9 +132,16 @@ export type DeliveryContextPermissionReply = {
 };
 
 export type SessionDeliveryContextResult = {
+  assistantEvidence: DeliveryContextAssistantEvidence[];
+  auditRefs: DeliveryContextAuditRef[];
+  background: DeliveryContextBackgroundEvidence[];
+  descendants: DeliveryContextDescendantEvidence[];
+  diffEvidence: DeliveryContextDiffEvidence[];
   generatedAt: string;
+  humanMessages: DeliveryContextUserMessage[];
   missingSessions: string[];
   permissionReplies: DeliveryContextPermissionReply[];
+  questionInterventions: DeliveryContextQuestionIntervention[];
   questionReplies: DeliveryContextQuestionReply[];
   requirementSignals: Array<{
     eventRef: string;
@@ -56,24 +150,39 @@ export type SessionDeliveryContextResult = {
     text: string;
     time: string | null;
   }>;
+  schemaVersion: 2;
   session: {
     counts: {
+      assistantEvidence: number;
+      auditRefs: number;
+      background: number;
       currentTodos: number;
+      descendants: number;
+      diffEvidence: number;
       everTodos: number;
+      humanMessages: number;
       openTodos: number;
       permissionReplies: number;
+      questionInterventions: number;
       questionReplies: number;
       requirementSignals: number;
+      strategyRefs: number;
+      syntheticMessages: number;
       todoToolCalls: number;
       todos: number;
+      toolEvidence: number;
+      truncationWarnings: number;
       unresolvedTodos: number;
       userMessages: number;
+      validationEvidence: number;
     };
     dateRange: DateRange;
     sessionRef: string;
     sourceRef: string;
   } | null;
   resolvedFromSessionRef: string | null;
+  strategyRefs: DeliveryContextStrategyRef[];
+  syntheticMessages: DeliveryContextSyntheticMessage[];
   todos: {
     current: DeliveryContextTodo[];
     ever: DeliveryContextTodo[];
@@ -82,7 +191,11 @@ export type SessionDeliveryContextResult = {
     unresolved: DeliveryContextTodo[];
   };
   tool: "opencode-session-delivery-context";
+  toolEvidence: DeliveryContextToolEvidence[];
+  truncationWarnings: DeliveryContextTruncation[];
+  /** @deprecated Use humanMessages. Compatibility alias; never feeds requirement signals. */
   userMessages: DeliveryContextUserMessage[];
+  validationEvidence: DeliveryContextValidationEvidence[];
   warnings: string[];
 };
 
@@ -119,13 +232,23 @@ export function emptyResult(
   warnings: string[],
 ): SessionDeliveryContextResult {
   return {
+    assistantEvidence: [],
+    auditRefs: [],
+    background: [],
+    descendants: [],
+    diffEvidence: [],
     generatedAt: options.generatedAt ?? new Date().toISOString(),
+    humanMessages: [],
     missingSessions: [missingRef],
     permissionReplies: [],
+    questionInterventions: [],
     questionReplies: [],
     requirementSignals: [],
     resolvedFromSessionRef: null,
+    schemaVersion: 2,
     session: null,
+    strategyRefs: [],
+    syntheticMessages: [],
     todos: {
       current: [],
       ever: [],
@@ -134,7 +257,10 @@ export function emptyResult(
       unresolved: [],
     },
     tool: "opencode-session-delivery-context",
+    toolEvidence: [],
+    truncationWarnings: [],
     userMessages: [],
+    validationEvidence: [],
     warnings,
   };
 }

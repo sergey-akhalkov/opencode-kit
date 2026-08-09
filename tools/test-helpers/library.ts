@@ -5,8 +5,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import crypto from "node:crypto";
 
-import { MATERIAL_DELIVERY_ROUTING_TOKENS } from "../contracts/reviewer-binding.ts";
-
 export type ProcessResult = {
   exitCode: number;
   output: string;
@@ -609,25 +607,39 @@ export function addImplementationWorkerFixture(fixture: string): string {
   return workerPath;
 }
 
-export const sessionDeliveryBindingText = "Optional final-candidate and session-delivery review may run after MVP for concrete risk, project policy, or owner request. Missing or unusable optional output is not itself a stage blocker. Reviewer evidence must never authorize mutation. Development-Stage remains main-owned, and a partial slice handoff must not end an unfinished root goal.";
-const materialDeliveryRoutingFixtureText = MATERIAL_DELIVERY_ROUTING_TOKENS.join("; ");
-export const sessionDeliveryBindingTokens = [
+export const optionalReviewRoutingTokens = [
   "Development-Stage",
   "after MVP",
   "optional",
-];
+] as const;
 
-export function addSessionDeliveryBindingFixture(fixture: string): void {
-  writeText(path.join(fixture, "global", "agents", "session-delivery-reviewer.md"), fs.readFileSync(path.join(helperRoot, "global", "agents", "session-delivery-reviewer.md"), "utf8"));
-  appendReadmeAgentCatalogEntry(fixture, "- `session-delivery-reviewer`: Session delivery reviewer.");
+export const optionalReviewRoutingText =
+  "Optional final-candidate, code-quality, and domain reviewers may run after MVP for concrete risk, project policy, or owner request. Missing or unusable optional output is not itself a stage blocker. Reviewer evidence must never authorize mutation. Development-Stage remains main-owned, and a partial slice handoff must not end an unfinished root goal.";
+
+/** @deprecated Use addSessionCompletionArbiterFixture; kept name alias only for migration clarity in focused suites. */
+export const sessionDeliveryBindingTokens = optionalReviewRoutingTokens;
+
+export function addSessionCompletionArbiterFixture(fixture: string): string {
+  const arbiterPath = path.join(fixture, "global", "agents", "session-completion-arbiter.md");
+  writeText(arbiterPath, fs.readFileSync(path.join(helperRoot, "global", "agents", "session-completion-arbiter.md"), "utf8"));
+  appendReadmeAgentCatalogEntry(fixture, "- `session-completion-arbiter`: Hidden completion adjudicator.");
   const profilePath = path.join(fixture, "profiles", "all.json");
   const profile = fs.readFileSync(profilePath, "utf8");
-  writeText(profilePath, profile.replace('"demo-reviewer"]', '"demo-reviewer", "session-delivery-reviewer"]'));
+  writeText(profilePath, profile.replace('"demo-reviewer"]', '"demo-reviewer", "session-completion-arbiter"]'));
+  return arbiterPath;
+}
 
+export function addOptionalReviewRoutingFixture(fixture: string): void {
   for (const relative of ["REPO_AGENTS.md", path.join("instructions", "universal-development-loop.md"), path.join("templates", "project", "AGENTS.md")]) {
     const file = path.join(fixture, relative);
-    writeText(file, `${fs.readFileSync(file, "utf8")}\n${sessionDeliveryBindingText}\n${materialDeliveryRoutingFixtureText}\n`);
+    writeText(file, `${fs.readFileSync(file, "utf8")}\n${optionalReviewRoutingText}\n`);
   }
+}
+
+/** @deprecated Prefer addSessionCompletionArbiterFixture + addOptionalReviewRoutingFixture. */
+export function addSessionDeliveryBindingFixture(fixture: string): void {
+  addSessionCompletionArbiterFixture(fixture);
+  addOptionalReviewRoutingFixture(fixture);
 }
 
 export function runTests(tests: TestCase[], suiteLabel: string): void {

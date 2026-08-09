@@ -155,7 +155,6 @@ export const REVIEW_DELIVERY_AGENT_FILES: readonly string[] = [
   "performance-reliability-reviewer.md",
   "protocol-api-reviewer.md",
   "rust-concurrency-reviewer.md",
-  "session-delivery-reviewer.md",
   "test-coverage-reviewer.md",
   "wire-protocol-reviewer.md",
 ];

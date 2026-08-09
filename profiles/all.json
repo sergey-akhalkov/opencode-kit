@@ -42,7 +42,7 @@
     "qwen-local-worker",
     "rust-concurrency-reviewer",
     "sdet-quality-engineer",
-    "session-delivery-reviewer",
+    "session-completion-arbiter",
     "test-coverage-reviewer",
     "troubleshooter",
     "wire-protocol-reviewer"

@@ -2,7 +2,6 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { DatabaseSync } from "node:sqlite";
 import {
   CLOSED_TODO_STATUSES,
   OPEN_TODO_STATUSES,
@@ -10,10 +9,8 @@ import {
   mergeTodoEvidence,
   normalizeMillis,
   readQuestionAndPermissionEvents,
-  readSessionInputs,
   readTodoRows,
   readTodoWriteHistory,
-  readUserMessages,
   requestedSession,
   resolveRootRow,
   selectedRows,
@@ -25,7 +22,11 @@ import {
 import { emptyResult, isoTime, makeDateRange } from "./projection.ts";
 import { detectRequirementSignals } from "./requirements.ts";
 import { hashRef } from "./redaction.ts";
+import { readCompletionEvidence } from "./evidence.ts";
+import { openReadOnlyDatabase, type SqliteDatabase } from "./sqlite.ts";
 import type {
+  DeliveryContextQuestionIntervention,
+  DeliveryContextSyntheticMessage,
   ReadSessionDeliveryContextOptions,
   SessionDeliveryContextResult,
 } from "./projection.ts";
@@ -34,9 +35,11 @@ export * from "./redaction.ts";
 export * from "./projection.ts";
 export * from "./requirements.ts";
 export * from "./db.ts";
+export * from "./evidence.ts";
 
 export type {
   DeliveryContextPermissionReply,
+  DeliveryContextQuestionIntervention,
   DeliveryContextQuestionReply,
   DeliveryContextTodo,
   DeliveryContextTodoHistory,
@@ -44,6 +47,35 @@ export type {
   ReadSessionDeliveryContextOptions,
   SessionDeliveryContextResult,
 } from "./projection.ts";
+
+function mergedQuestionInterventions(
+  events: DeliveryContextQuestionIntervention[],
+  syntheticMessages: DeliveryContextSyntheticMessage[],
+): DeliveryContextQuestionIntervention[] {
+  const merged = new Map<string, DeliveryContextQuestionIntervention>();
+  for (const intervention of events) {
+    merged.set(intervention.requestRef ?? intervention.eventRef, intervention);
+  }
+  for (const message of syntheticMessages) {
+    if (message.provenance !== "guard") continue;
+    const requestRef = message.text.match(
+      /<completion_guard_question_correction\s+request_ref="(question_[A-Za-z0-9_-]+)">/,
+    )?.[1];
+    if (requestRef == null) continue;
+    const existing = merged.get(requestRef);
+    merged.set(requestRef, {
+      actor: "guard",
+      eventRef: existing?.eventRef ?? message.eventRef,
+      questions: existing?.questions ?? [],
+      requestRef,
+      status: "rejected",
+      time: existing?.time ?? message.time,
+    });
+  }
+  return [...merged.values()].sort(
+    (left, right) => (left.time ?? "").localeCompare(right.time ?? "") || left.eventRef.localeCompare(right.eventRef),
+  );
+}
 
 function requireHome(): string {
   const home = os.homedir();
@@ -128,7 +160,7 @@ function discoverDbPaths(
 }
 
 function contextForRow(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: Map<string, Set<string>>,
   sourceRef: string,
   row: Record<string, unknown> & { id: unknown },
@@ -161,39 +193,60 @@ function contextForRow(
   const unresolvedTodos = everTodos.filter(
     (todo) => todo.status == null || !CLOSED_TODO_STATUSES.has(todo.status),
   );
-  const userMessages = [
-    ...readSessionInputs(db, schema, rawSessionId),
-    ...readUserMessages(db, schema, rawSessionId),
-  ].sort(
-    (left, right) =>
-      (left.time ?? "").localeCompare(right.time ?? "") || left.eventRef.localeCompare(right.eventRef),
-  );
-  const requirementSignals = detectRequirementSignals(userMessages);
+  const completion = readCompletionEvidence(db, schema, rawSessionId, warnings);
+  const userMessages = completion.humanMessages;
+  const requirementSignals = detectRequirementSignals(completion.humanMessages);
   const events = readQuestionAndPermissionEvents(db, schema, rawSessionId, warnings);
+  const questionInterventions = mergedQuestionInterventions(
+    events.questionInterventions,
+    completion.syntheticMessages,
+  );
   return {
+    assistantEvidence: completion.assistantEvidence,
+    auditRefs: completion.auditRefs,
+    background: completion.background,
+    descendants: completion.descendants,
+    diffEvidence: completion.diffEvidence,
     generatedAt: options.generatedAt ?? new Date().toISOString(),
+    humanMessages: completion.humanMessages,
     missingSessions: [],
     permissionReplies: events.permissionReplies,
+    questionInterventions,
     questionReplies: events.questionReplies,
     requirementSignals,
     resolvedFromSessionRef,
+    schemaVersion: 2,
     session: {
       counts: {
+        assistantEvidence: completion.assistantEvidence.length,
+        auditRefs: completion.auditRefs.length,
+        background: completion.background.length,
         currentTodos: currentTodos.length,
+        descendants: completion.descendants.length,
+        diffEvidence: completion.diffEvidence.length,
         everTodos: everTodos.length,
+        humanMessages: completion.humanMessages.length,
         openTodos: openTodos.length,
         permissionReplies: events.permissionReplies.length,
+        questionInterventions: questionInterventions.length,
         questionReplies: events.questionReplies.length,
         requirementSignals: requirementSignals.length,
+        strategyRefs: completion.strategyRefs.length,
+        syntheticMessages: completion.syntheticMessages.length,
         todoToolCalls: todoHistory.history.toolCalls,
         todos: everTodos.length,
+        toolEvidence: completion.toolEvidence.length,
+        truncationWarnings: completion.truncationWarnings.length,
         unresolvedTodos: unresolvedTodos.length,
         userMessages: userMessages.length,
+        validationEvidence: completion.validationEvidence.length,
       },
       dateRange: makeDateRange([normalizeMillis(row.time_created), normalizeMillis(row.time_updated)]),
       sessionRef: hashRef("session", rawSessionId),
       sourceRef,
     },
+    strategyRefs: completion.strategyRefs,
+    syntheticMessages: completion.syntheticMessages,
     todos: {
       current: currentTodos,
       ever: everTodos,
@@ -202,7 +255,10 @@ function contextForRow(
       unresolved: unresolvedTodos,
     },
     tool: "opencode-session-delivery-context",
+    toolEvidence: completion.toolEvidence,
+    truncationWarnings: completion.truncationWarnings,
     userMessages,
+    validationEvidence: completion.validationEvidence,
     warnings,
   };
 }
@@ -226,9 +282,9 @@ export function readSessionDeliveryContext(
       warnings.push(`${hashRef("source", dbPath)} missing`);
       continue;
     }
-    let db: InstanceType<typeof DatabaseSync> | null = null;
+    let db: SqliteDatabase | null = null;
     try {
-      db = new DatabaseSync(dbPath, { readOnly: true });
+      db = openReadOnlyDatabase(dbPath);
       const tables = tableNames(db);
       if (!tables.has("session")) {
         warnings.push(`${hashRef("source", dbPath)} missing session table`);

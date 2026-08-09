@@ -122,7 +122,6 @@ const EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES = [
   "performance-reliability-reviewer.md",
   "protocol-api-reviewer.md",
   "rust-concurrency-reviewer.md",
-  "session-delivery-reviewer.md",
   "test-coverage-reviewer.md",
   "wire-protocol-reviewer.md",
 ];
@@ -383,10 +382,15 @@ const tests: TestCase[] = [
         "Project template must keep discovered/fresh SDET ownership without requiring a kit-only adapter as the sole path.",
       );
 
-      const delivery = fs.readFileSync(path.join(root, "global", "agents", "session-delivery-reviewer.md"), "utf8");
-      const description = delivery.split(/\r?\n/).find((line) => line.startsWith("description:")) ?? "";
-      assert(description.includes("Optional post-MVP delivery evidence review"), "Delivery reviewer description must make review optional and post-MVP.");
-      assert(description.includes("concrete risk, project policy, owner, or an explicit request"), "Delivery reviewer description must keep discovery conditional.");
+      assert(
+        !fs.existsSync(path.join(root, "global", "agents", "session-delivery-reviewer.md")),
+        "Retired session-delivery-reviewer must not remain an active agent file.",
+      );
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+      const arbiterDescription = arbiter.split(/\r?\n/).find((line) => line.startsWith("description:")) ?? "";
+      assert(arbiterDescription.includes("Hidden completion adjudicator"), "Completion arbiter description must identify the hidden adjudicator role.");
+      assert(arbiter.includes("never approves `Development-Stage`"), "Completion arbiter must forbid lifecycle approval.");
+      assert(arbiter.includes("one JSON object"), "Completion arbiter must require exact JSON verdict transport.");
 
       const globalAgents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
       for (const token of [
@@ -517,8 +521,8 @@ const tests: TestCase[] = [
   {
     name: "contracts: AGENT_TEXT_CONTRACTS aggregates reviewer contracts",
     run: () => {
-      const expectedTotal = EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES.length + 2;
-      assertEqual(AGENT_TEXT_CONTRACTS.length, expectedTotal, "AGENT_TEXT_CONTRACTS must aggregate reviewer + binding + test-coverage contracts.");
+      const expectedTotal = EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES.length + 1;
+      assertEqual(AGENT_TEXT_CONTRACTS.length, expectedTotal, "AGENT_TEXT_CONTRACTS must aggregate reviewer contract-reference entries plus the dedicated test-coverage contract.");
       const registeredReviewerFiles = new Set(EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES);
       const contractReference = AGENT_TEXT_CONTRACTS.filter(
         (c) => registeredReviewerFiles.has(c.fileName)

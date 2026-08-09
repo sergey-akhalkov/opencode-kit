@@ -2,15 +2,16 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   addImplementationWorkerFixture,
-  addSessionDeliveryBindingFixture,
+  addOptionalReviewRoutingFixture,
+  addSessionCompletionArbiterFixture,
   appendReadmeAgentCatalogEntry,
+  assert,
   assertFailure,
   assertOutputContains,
   assertOutputExcludes,
   assertSuccess,
   invokeValidator,
   newLibraryFixture,
-  sessionDeliveryBindingTokens,
   type TestCase,
   writeText,
   lines,
@@ -136,7 +137,7 @@ export const validatorTests1: TestCase[] = [
       writeText(workerPath, worker.replace("  edit: allow", "  edit: allow\n  session_delivery_context: allow"));
       const result = invokeValidator(fixture);
       assertFailure(result, "Implementation worker must not allow session_delivery_context.");
-      assertOutputContains(result, "Only session-delivery-reviewer", "Custom-tool permission exception should include implementation-worker.");
+      assertOutputContains(result, "No active agent may set session_delivery_context permission", "session_delivery_context must be forbidden on every active agent.");
     },
   },
   {
@@ -410,7 +411,7 @@ export const validatorTests1: TestCase[] = [
     },
   },
   {
-    name: "validator rejects reviewer bash allow outside session delivery reviewer",
+    name: "validator rejects reviewer bash allow outside the hardened deny policy",
     run: () => {
       const fixture = newLibraryFixture("reviewer-bash-exception-scope");
       writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
@@ -457,13 +458,13 @@ export const validatorTests1: TestCase[] = [
         "",
       ]));
       const result = invokeValidator(fixture);
-      assertFailure(result, "Only session-delivery-reviewer should be allowed to run delivery-context.");
+      assertFailure(result, "Reviewer bash allow exceptions must remain denied.");
       assertOutputContains(result, "bash: deny", "Unauthorized reviewer bash exception should explain expected deny policy.");
       assertOutputExcludes(result, "Unsupported frontmatter syntax", "Validator should parse nested bash permission objects.");
     },
   },
   {
-    name: "validator rejects session delivery context tool outside session delivery reviewer",
+    name: "validator rejects session delivery context tool on any active agent",
     run: () => {
       const fixture = newLibraryFixture("reviewer-custom-tool-exception-scope");
       writeText(path.join(fixture, "global", "agents", "demo-reviewer.md"), lines([
@@ -509,8 +510,8 @@ export const validatorTests1: TestCase[] = [
         "",
       ]));
       const result = invokeValidator(fixture);
-      assertFailure(result, "Only session-delivery-reviewer should be allowed to use session_delivery_context.");
-      assertOutputContains(result, "Only session-delivery-reviewer", "Custom-tool permission exception should be exclusive.");
+      assertFailure(result, "No active agent may set session_delivery_context permission.");
+      assertOutputContains(result, "No active agent may set session_delivery_context permission", "session_delivery_context permission must be exclusive to the retired delivery-reviewer path and therefore forbidden.");
     },
   },
   {
@@ -586,17 +587,25 @@ export const validatorTests1: TestCase[] = [
     },
   },
   {
-    name: "validator rejects missing session-delivery reviewer control contract",
+    name: "validator accepts complete session-completion-arbiter fixture",
     run: () => {
-      const fixture = newLibraryFixture("session-delivery-control-contract");
-      writeText(path.join(fixture, "global", "agents", "session-delivery-reviewer.md"), lines([
+      const fixture = newLibraryFixture("valid-session-completion-arbiter");
+      addSessionCompletionArbiterFixture(fixture);
+      assertSuccess(invokeValidator(fixture), "Complete session-completion-arbiter fixture should pass validation.");
+    },
+  },
+  {
+    name: "validator rejects incomplete session-completion-arbiter machine contract",
+    run: () => {
+      const fixture = newLibraryFixture("session-completion-arbiter-control-contract");
+      writeText(path.join(fixture, "global", "agents", "session-completion-arbiter.md"), lines([
         "---",
-        "description: Reviews OpenCode session delivery.",
+        "description: Incomplete completion arbiter fixture.",
         "mode: subagent",
+        "hidden: true",
+        "steps: 6",
         "permission:",
-        "  read: allow",
-        "  glob: allow",
-        "  grep: allow",
+        "  \"*\": deny",
         "  bash: deny",
         "  edit: deny",
         "  task: deny",
@@ -610,31 +619,42 @@ export const validatorTests1: TestCase[] = [
         "  doom_loop: deny",
         "---",
         "",
-        "You are a read-only session delivery reviewer.",
-        "",
-        "## Checks",
-        "",
-        "- Verify goal alignment.",
+        "You are an incomplete completion arbiter without the machine verdict contract.",
         "",
       ]));
-      appendReadmeAgentCatalogEntry(fixture, "- `session-delivery-reviewer`: Session delivery reviewer.");
+      appendReadmeAgentCatalogEntry(fixture, "- `session-completion-arbiter`: Hidden completion adjudicator.");
       const result = invokeValidator(fixture);
-      assertFailure(result, "Missing session-delivery reviewer control contract should fail validation.");
-      assertOutputContains(result, "session-delivery-reviewer must require delivery-control safeguards", "Validation output should name the missing reviewer contract.");
+      assertFailure(result, "Incomplete session-completion-arbiter machine contract should fail validation.");
+      assertOutputContains(result, "session-completion-arbiter machine verdict contract", "Validation output should name the missing arbiter contract.");
     },
   },
-  ...sessionDeliveryBindingTokens.map((token): TestCase => ({
-    name: `validator rejects missing session delivery binding token: ${token}`,
+  {
+    name: "validator rejects session_delivery_context permission on session-completion-arbiter",
     run: () => {
-      const fixture = newLibraryFixture(`session-delivery-binding-${token.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`);
-      addSessionDeliveryBindingFixture(fixture);
-      const agentsPath = path.join(fixture, "REPO_AGENTS.md");
-      writeText(agentsPath, fs.readFileSync(agentsPath, "utf8").replaceAll(token, "[missing-binding-token]"));
+      const fixture = newLibraryFixture("arbiter-session-delivery-context-forbidden");
+      const arbiterPath = addSessionCompletionArbiterFixture(fixture);
+      const arbiter = fs.readFileSync(arbiterPath, "utf8");
+      writeText(arbiterPath, arbiter.replace("  doom_loop: deny", "  doom_loop: deny\n  session_delivery_context: allow"));
       const result = invokeValidator(fixture);
-      assertFailure(result, `Missing binding token should fail validation: ${token}`);
-      assertOutputContains(result, token, `Validation output should name missing binding token: ${token}`);
+      assertFailure(result, "Completion arbiter must not set session_delivery_context permission.");
+      assertOutputContains(result, "No active agent may set session_delivery_context permission", "Arbiter must remain tool-free for delivery context.");
     },
-  })),
+  },
+  {
+    name: "validator accepts optional review routing plus session-completion-arbiter without delivery-reviewer",
+    run: () => {
+      const fixture = newLibraryFixture("optional-review-routing-with-arbiter");
+      addSessionCompletionArbiterFixture(fixture);
+      addOptionalReviewRoutingFixture(fixture);
+      assert(!fs.existsSync(path.join(fixture, "global", "agents", "session-delivery-reviewer.md")), "Fixture must not restore retired session-delivery-reviewer.");
+      const agentsPath = path.join(fixture, "REPO_AGENTS.md");
+      const text = fs.readFileSync(agentsPath, "utf8");
+      for (const token of ["Development-Stage", "after MVP", "optional"]) {
+        assert(text.includes(token), `Optional review routing fixture must retain token ${token}`);
+      }
+      assertSuccess(invokeValidator(fixture), "Optional review routing fixture with completion arbiter should validate.");
+    },
+  },
   {
     name: "validator rejects reviewer that inlines Prevention Feedback block",
     run: () => {

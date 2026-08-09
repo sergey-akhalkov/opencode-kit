@@ -244,7 +244,7 @@ export const changeReadyContractTests: TestCase[] = [
         "run-observe-correct",
         "focused validation",
         "Development-Stage",
-        "Optional final-candidate, delivery, code-quality, and domain reviewers",
+        "Optional final-candidate, code-quality, and domain reviewers",
       ], "Ordinary Small routing missing current path");
       assert(!/Ordinary Small[^\n]*(?:requires?|must use)[^\n]*(?:reviewer|fresh SDET)/i.test(agents), "Ordinary Small must not acquire mandatory reviewer/SDET ceremony.");
     },
@@ -271,12 +271,22 @@ export const changeReadyContractTests: TestCase[] = [
   {
     name: "contracts: optional reviewers remain evidence-only and never stage authorities",
     run: () => {
-      for (const fileName of ["final-candidate-reviewer.md", "session-delivery-reviewer.md", "code-quality-reviewer.md"]) {
+      assert(
+        !fs.existsSync(path.join(root, "global", "agents", "session-delivery-reviewer.md")),
+        "Retired session-delivery-reviewer must not remain an active optional reviewer.",
+      );
+      for (const fileName of ["final-candidate-reviewer.md", "code-quality-reviewer.md"]) {
         const text = fs.readFileSync(path.join(root, "global", "agents", fileName), "utf8");
         assert(text.includes("Effective Model"), `${fileName} must record Effective Model.`);
         for (const forbidden of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
           assert(!text.includes(forbidden), `${fileName} exposes forbidden reviewer authority: ${forbidden}`);
         }
+      }
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+      assert(arbiter.includes("hidden: true"), "Completion arbiter must remain hidden.");
+      assert(arbiter.includes("never run as an optional reviewer"), "Completion arbiter must not be an optional reviewer.");
+      for (const forbidden of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
+        assert(!arbiter.includes(forbidden), `Completion arbiter exposes forbidden reviewer authority: ${forbidden}`);
       }
       const finalReviewer = fs.readFileSync(path.join(root, "global", "agents", "final-candidate-reviewer.md"), "utf8");
       assertTokens(finalReviewer, FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT, "Final reviewer missing current optional-review marker");

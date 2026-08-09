@@ -111,7 +111,6 @@ export const FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES = [
   "global/agents/implementation-worker.md",
   "global/agents/sdet-quality-engineer.md",
   "global/agents/final-candidate-reviewer.md",
-  "global/agents/session-delivery-reviewer.md",
   "global/agents/implementation-readiness-reviewer.md",
   "global/agents/test-coverage-reviewer.md",
 ] as const;
@@ -453,7 +452,6 @@ export const OUTCOME_FIRST_ROLE_DELTA_SURFACES: readonly string[] = [
   "global/agents/implementation-readiness-reviewer.md",
   "global/agents/openspec-architecture-reviewer.md",
   "global/agents/final-candidate-reviewer.md",
-  "global/agents/session-delivery-reviewer.md",
   "global/skills/deep-task-planning/SKILL.md",
   "global/skills/next-step/SKILL.md",
   "global/skills/service-architecture-design/SKILL.md",

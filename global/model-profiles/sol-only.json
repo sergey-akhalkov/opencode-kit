@@ -83,7 +83,7 @@
       "model": "openai/gpt-5.6-sol",
       "variant": "xhigh"
     },
-    "session-delivery-reviewer": {
+    "session-completion-arbiter": {
       "model": "openai/gpt-5.6-sol",
       "variant": "xhigh"
     },

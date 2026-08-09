@@ -83,7 +83,7 @@
       "model": "xai/grok-4.5",
       "variant": "high"
     },
-    "session-delivery-reviewer": {
+    "session-completion-arbiter": {
       "model": "xai/grok-4.5",
       "variant": "high"
     },

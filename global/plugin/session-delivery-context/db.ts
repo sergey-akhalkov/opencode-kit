@@ -1,5 +1,5 @@
-import { DatabaseSync } from "node:sqlite";
 import { hashRef, sanitizeText } from "./redaction.ts";
+import type { SqliteDatabase } from "./sqlite.ts";
 import type { DeliveryContextTodo, DeliveryContextUserMessage } from "./projection.ts";
 import type {
   DbSchema,
@@ -26,14 +26,14 @@ export function quoteIdent(identifier: string): string {
   return `"${identifier}"`;
 }
 
-export function tableNames(db: InstanceType<typeof DatabaseSync>): Set<string> {
+export function tableNames(db: SqliteDatabase): Set<string> {
   const rows = db.prepare("select name from sqlite_master where type = 'table'").all() as Array<{
     name: unknown;
   }>;
   return new Set(rows.map((row) => String(row.name)));
 }
 
-export function tableColumns(db: InstanceType<typeof DatabaseSync>, table: string): Set<string> {
+export function tableColumns(db: SqliteDatabase, table: string): Set<string> {
   const rows = db
     .prepare(`pragma table_info(${quoteIdent(table)})`)
     .all() as Array<{ name: unknown }>;
@@ -69,7 +69,7 @@ export function requestedSession(sessionId: string): RequestedSessionSelection {
 }
 
 export function selectedRows(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   requested: RequestedSessionSelection,
 ): SessionRow[] {
@@ -91,7 +91,7 @@ export function selectedRows(
 }
 
 export function resolveRootRow(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   startRow: SessionRow,
 ): SessionRow {
@@ -131,7 +131,7 @@ export function warnMissingColumns(
 }
 
 export function readTodoRows(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   rawSessionId: string,
   isoTime: (value: number | null) => string | null,
@@ -308,7 +308,7 @@ function todoWriteMillis(row: Record<string, unknown>, parsed: Record<string, un
 }
 
 export function readTodoWriteHistory(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   rawSessionId: string,
   warnings: string[],
@@ -485,7 +485,7 @@ function messagePartText(parsed: Record<string, unknown> | null): string | null 
 }
 
 export function readMessagePartTexts(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   rawSessionId: string,
 ): Map<string, string[]> {
@@ -526,7 +526,7 @@ export function readMessagePartTexts(
 }
 
 export function readSessionInputs(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   rawSessionId: string,
 ): DeliveryContextUserMessage[] {
@@ -561,7 +561,7 @@ export function readSessionInputs(
 }
 
 export function readUserMessages(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   rawSessionId: string,
 ): DeliveryContextUserMessage[] {
@@ -691,12 +691,20 @@ export function eventOrderBy(schema: DbSchema, sessionColumn: string): string {
 }
 
 export function readQuestionAndPermissionEvents(
-  db: InstanceType<typeof DatabaseSync>,
+  db: SqliteDatabase,
   schema: DbSchema,
   rawSessionId: string,
   warnings: string[],
 ): {
   permissionReplies: Array<{ eventRef: string; reply: string | null; requestRef: string | null; time: string | null }>;
+  questionInterventions: Array<{
+    actor: "guard" | "unknown";
+    eventRef: string;
+    questions: string[];
+    requestRef: string | null;
+    status: "rejected";
+    time: string | null;
+  }>;
   questionReplies: Array<{
     answers: string[][];
     eventRef: string;
@@ -708,14 +716,14 @@ export function readQuestionAndPermissionEvents(
 } {
   if (!schema.has("event")) {
     warnings.push("event table missing; question and permission replies unavailable");
-    return { permissionReplies: [], questionReplies: [] };
+    return { permissionReplies: [], questionInterventions: [], questionReplies: [] };
   }
   const sessionColumn = eventSessionColumn(schema);
   if (sessionColumn == null) {
     warnings.push(
       "event table missing session_id/aggregate_id column; question and permission replies unavailable",
     );
-    return { permissionReplies: [], questionReplies: [] };
+    return { permissionReplies: [], questionInterventions: [], questionReplies: [] };
   }
   if (!hasAnyColumn(schema, "event", ["type", "name", "event"])) {
     warnings.push(
@@ -751,6 +759,14 @@ export function readQuestionAndPermissionEvents(
     status: "replied" | "rejected";
     time: string | null;
   }> = [];
+  const questionInterventions: Array<{
+    actor: "guard" | "unknown";
+    eventRef: string;
+    questions: string[];
+    requestRef: string | null;
+    status: "rejected";
+    time: string | null;
+  }> = [];
   const permissionReplies: Array<{
     eventRef: string;
     reply: string | null;
@@ -766,17 +782,25 @@ export function readQuestionAndPermissionEvents(
       questionsByRequest.set(request, questionTexts(payload, rawSessionId));
       continue;
     }
-    if (
-      type != null &&
-      (QUESTION_REPLIED_EVENTS.has(type) || QUESTION_REJECTED_EVENTS.has(type))
-    ) {
-      const replied = QUESTION_REPLIED_EVENTS.has(type);
+    if (type != null && QUESTION_REPLIED_EVENTS.has(type)) {
       questionReplies.push({
-        answers: replied ? answerMatrix(payload.answers, rawSessionId) : [],
+        answers: answerMatrix(payload.answers, rawSessionId),
         eventRef: deliveryEventRef(row, index, type, request),
         questions: request == null ? [] : questionsByRequest.get(request) ?? [],
         requestRef: request == null ? null : hashRef("question", request),
-        status: replied ? "replied" : "rejected",
+        status: "replied",
+        time: eventTime(row.time_created),
+      });
+      continue;
+    }
+    if (type != null && QUESTION_REJECTED_EVENTS.has(type)) {
+      const provenance = `${String(payload.provenance ?? "")} ${String(payload.actor ?? "")}`.toLowerCase();
+      questionInterventions.push({
+        actor: provenance.includes("guard") ? "guard" : "unknown",
+        eventRef: deliveryEventRef(row, index, type, request),
+        questions: request == null ? [] : questionsByRequest.get(request) ?? [],
+        requestRef: request == null ? null : hashRef("question", request),
+        status: "rejected",
         time: eventTime(row.time_created),
       });
       continue;
@@ -791,7 +815,7 @@ export function readQuestionAndPermissionEvents(
       });
     }
   }
-  return { permissionReplies, questionReplies };
+  return { permissionReplies, questionInterventions, questionReplies };
 }
 
 export { CLOSED_TODO_STATUSES, OPEN_TODO_STATUSES };

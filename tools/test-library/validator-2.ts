@@ -724,7 +724,13 @@ export const validatorTests2: TestCase[] = [
       writeText(path.join(fixture, "global", "opencode.json.template"), lines([
         "{",
         "  \"$schema\": \"https://opencode.ai/config.json\",",
-        "  \"model\": \"openai/gpt-5.6-sol\"",
+        "  \"model\": \"openai/gpt-5.6-sol\",",
+        "  \"plugin\": [",
+        "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
+        "    \"__OPENCODE_CONFIG_DIR__/plugin/session-env.ts\",",
+        "    \"__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts\",",
+        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"enabled\": true }]",
+        "  ]",
         "}",
       ]));
       writeText(path.join(fixture, "global", "opencode.json"), lines([
@@ -777,6 +783,12 @@ export const validatorTests2: TestCase[] = [
         "{",
         "  \"$schema\": \"https://opencode.ai/config.json\",",
         "  \"model\": \"openai/gpt-5.6-sol\",",
+        "  \"plugin\": [",
+        "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
+        "    \"__OPENCODE_CONFIG_DIR__/plugin/session-env.ts\",",
+        "    \"__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts\",",
+        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"enabled\": true }]",
+        "  ],",
         "  \"permission\": \"allow\"",
         "}",
       ]));
@@ -794,7 +806,13 @@ export const validatorTests2: TestCase[] = [
       writeText(path.join(fixture, "global", "opencode.json.template"), lines([
         "{",
         "  \"$schema\": \"https://opencode.ai/config.json\",",
-        "  \"model\": \"openai/gpt-5.6-sol\"",
+        "  \"model\": \"openai/gpt-5.6-sol\",",
+        "  \"plugin\": [",
+        "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
+        "    \"__OPENCODE_CONFIG_DIR__/plugin/session-env.ts\",",
+        "    \"__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts\",",
+        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"enabled\": true }]",
+        "  ]",
         "}",
       ]));
       writeText(path.join(fixture, "global", "opencode.json"), lines([

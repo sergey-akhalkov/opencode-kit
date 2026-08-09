@@ -149,6 +149,72 @@ function validateOpenCodePermissionRules(
 
 const KIT_GLOBAL_OPENCODE_TEMPLATE = path.join("global", "opencode.json.template");
 const KIT_DEFAULT_MODEL = "openai/gpt-5.6-sol";
+const KIT_PLUGIN_SOURCES = [
+  "__OPENCODE_CONFIG_DIR__/plugins/notify.ts",
+  "__OPENCODE_CONFIG_DIR__/plugin/session-env.ts",
+  "__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts",
+  "__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts",
+] as const;
+const GUARD_SOURCE_SUFFIX = "/extensions/session-completion-guard.ts";
+const AUDIT_WINDOW_KEYS = new Set([
+  "closePassedAfterMs",
+  "enabled",
+  "mode",
+  "scope",
+  "terminal",
+]);
+
+function pluginSource(entry: unknown): string | null {
+  return typeof entry === "string"
+    ? entry
+    : Array.isArray(entry) && typeof entry[0] === "string"
+      ? entry[0]
+      : null;
+}
+
+function validateAuditWindowOptions(
+  ctx: ValidationContext,
+  config: Record<string, unknown>,
+  file: string,
+  portableTemplate: boolean,
+): void {
+  if (!Array.isArray(config.plugin)) return;
+  const guardEntry = config.plugin.find((entry) => pluginSource(entry)?.replaceAll("\\", "/").endsWith(GUARD_SOURCE_SUFFIX));
+  if (!Array.isArray(guardEntry) || !isPlainRecord(guardEntry[1])) {
+    ctx.addError(`Completion guard plugin must use a tuple with options: ${file}`);
+    return;
+  }
+  const auditWindow = guardEntry[1].auditWindow;
+  if (!isPlainRecord(auditWindow)) {
+    ctx.addError(`Completion guard options must define auditWindow: ${file}`);
+    return;
+  }
+  const unknown = Object.keys(auditWindow).filter((key) => !AUDIT_WINDOW_KEYS.has(key));
+  if (unknown.length > 0) {
+    ctx.addError(`Completion guard auditWindow has unsupported option(s) ${unknown.join(", ")}: ${file}`);
+  }
+  if (typeof auditWindow.enabled !== "boolean") {
+    ctx.addError(`Completion guard auditWindow.enabled must be boolean: ${file}`);
+  } else if (portableTemplate && auditWindow.enabled !== false) {
+    ctx.addError(`Portable completion guard auditWindow.enabled must default to false: ${file}`);
+  }
+  if (auditWindow.mode !== "read-only-monitor") {
+    ctx.addError(`Completion guard auditWindow.mode must be 'read-only-monitor': ${file}`);
+  }
+  if (auditWindow.scope !== "per-root") {
+    ctx.addError(`Completion guard auditWindow.scope must be 'per-root': ${file}`);
+  }
+  if (auditWindow.terminal !== "powershell-shell") {
+    ctx.addError(`Completion guard auditWindow.terminal must be 'powershell-shell': ${file}`);
+  }
+  if (
+    typeof auditWindow.closePassedAfterMs !== "number" ||
+    !Number.isInteger(auditWindow.closePassedAfterMs) ||
+    auditWindow.closePassedAfterMs < 0
+  ) {
+    ctx.addError(`Completion guard auditWindow.closePassedAfterMs must be a non-negative integer: ${file}`);
+  }
+}
 
 function validateKitGlobalModelSource(
   ctx: ValidationContext,
@@ -164,6 +230,40 @@ function validateKitGlobalModelSource(
       `Kit global OpenCode config template must set portable top-level model: ${KIT_DEFAULT_MODEL}: ${file}`,
     );
   }
+}
+
+function validateKitPluginSources(
+  ctx: ValidationContext,
+  config: Record<string, unknown>,
+  file: string,
+  root: string,
+): void {
+  if (!sameConfigPath(file, path.join(root, KIT_GLOBAL_OPENCODE_TEMPLATE))) return;
+  if (!Array.isArray(config.plugin)) {
+    ctx.addError(`Kit global OpenCode config template must define a plugin inventory: ${file}`);
+    return;
+  }
+  const sources = config.plugin.map((entry) =>
+    typeof entry === "string"
+      ? entry
+      : Array.isArray(entry) && typeof entry[0] === "string"
+        ? entry[0]
+        : null
+  );
+  if (sources.some((source) => source == null)) {
+    ctx.addError(`Kit global OpenCode config template has an invalid plugin source entry: ${file}`);
+    return;
+  }
+  for (const expected of KIT_PLUGIN_SOURCES) {
+    const count = sources.filter((source) => source === expected).length;
+    if (count !== 1) {
+      ctx.addError(`Kit global OpenCode config template must include exactly one '${expected}' source: ${file}`);
+    }
+  }
+  if (sources.some((source) => source === "opencode-pty" || source?.startsWith("opencode-pty@"))) {
+    ctx.addError(`Kit global OpenCode config template must not enable package/cache opencode-pty: ${file}`);
+  }
+  validateAuditWindowOptions(ctx, config, file, true);
 }
 
 export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string): void {
@@ -201,5 +301,9 @@ export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string
     }
     validateOpenCodePermissionRules(ctx, inspection.value, file, root);
     validateKitGlobalModelSource(ctx, inspection.value, file, root);
+    validateKitPluginSources(ctx, inspection.value, file, root);
+    if (sameConfigPath(file, path.join(root, "global", "opencode.json"))) {
+      validateAuditWindowOptions(ctx, inspection.value, file, false);
+    }
   }
 }

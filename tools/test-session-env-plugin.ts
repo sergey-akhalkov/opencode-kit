@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { pathToFileURL } from "node:url";
-import plugin, { SESSION_DELIVERY_CONTEXT_TOOL, SESSION_DELIVERY_REVIEWER_AGENT } from "../global/plugin/session-env.ts";
+import plugin, { SESSION_COMPLETION_ARBITER_AGENT, SESSION_DELIVERY_CONTEXT_TOOL } from "../global/plugin/session-env.ts";
 
 type TestCase = {
   name: string;
@@ -239,7 +239,7 @@ async function readDeliveryContextOutput(dataDir: string, rawSessionId: string):
   const hooks = await plugin.server({} as never);
   const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
     abort: new AbortController().signal,
-    agent: SESSION_DELIVERY_REVIEWER_AGENT,
+    agent: SESSION_COMPLETION_ARBITER_AGENT,
     ask: async () => undefined,
     directory: dataDir,
     messageID: "message_fixture",
@@ -284,7 +284,7 @@ const tests: TestCase[] = [
     run: async () => {
       const hooks = await plugin.server({} as never);
       assert(hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL] != null, "Plugin must register session_delivery_context tool.");
-      assert(hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.description.includes("root parent session"), "Custom tool description should document root parent session resolution for subagent reviewers.");
+      assert(hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.description.includes("root parent session"), "Custom tool description should document root parent session resolution for completion evidence.");
     },
   },
   {
@@ -300,7 +300,7 @@ const tests: TestCase[] = [
         const hooks = await copiedPlugin.server({} as never);
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
-          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          agent: SESSION_COMPLETION_ARBITER_AGENT,
           ask: async () => undefined,
           directory: configDir,
           messageID: "message_fixture",
@@ -334,7 +334,7 @@ const tests: TestCase[] = [
         const metadataCalls: unknown[] = [];
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
-          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          agent: SESSION_COMPLETION_ARBITER_AGENT,
           ask: async () => undefined,
           directory: dataDir,
           messageID: "message_fixture",
@@ -381,7 +381,7 @@ const tests: TestCase[] = [
         const hooks = await plugin.server({} as never);
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
-          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          agent: SESSION_COMPLETION_ARBITER_AGENT,
           ask: async () => undefined,
           directory: dataDir,
           messageID: "message_fixture",
@@ -415,7 +415,7 @@ const tests: TestCase[] = [
         const hooks = await plugin.server({} as never);
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
-          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          agent: SESSION_COMPLETION_ARBITER_AGENT,
           ask: async () => undefined,
           directory: dataDir,
           messageID: "message_fixture",
@@ -455,7 +455,7 @@ const tests: TestCase[] = [
         const hooks = await plugin.server({} as never);
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
-          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          agent: SESSION_COMPLETION_ARBITER_AGENT,
           ask: async () => undefined,
           directory: dataDir,
           messageID: "message_fixture",
@@ -493,7 +493,7 @@ const tests: TestCase[] = [
         const hooks = await plugin.server({} as never);
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
-          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          agent: SESSION_COMPLETION_ARBITER_AGENT,
           ask: async () => undefined,
           directory: dataDir,
           messageID: "message_fixture",
@@ -538,7 +538,7 @@ const tests: TestCase[] = [
         const hooks = await plugin.server({} as never);
         const result = await hooks.tool?.[SESSION_DELIVERY_CONTEXT_TOOL]?.execute({}, {
           abort: new AbortController().signal,
-          agent: SESSION_DELIVERY_REVIEWER_AGENT,
+          agent: SESSION_COMPLETION_ARBITER_AGENT,
           ask: async () => undefined,
           directory: dataDir,
           messageID: "message_fixture",

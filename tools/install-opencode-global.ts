@@ -2,7 +2,7 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
 
 type Mode = "set" | "check" | "print" | "unset" | "persist-script" | "unset-script";
@@ -16,6 +16,12 @@ type Options = {
 const ENV_VAR = "OPENCODE_CONFIG_DIR";
 const GLOBAL_DIR_NAME = "global";
 const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md";
+const PLUGIN_PATH_PLACEHOLDERS = [
+  "plugins/notify.ts",
+  "plugin/session-env.ts",
+  "extensions/opencode-pty-bridge.ts",
+  "extensions/session-completion-guard.ts",
+] as const;
 export const SETX_SAFE_LIMIT = 900;
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -584,13 +590,18 @@ function assertSupportedTemplate(templatePath: string): Buffer {
 }
 
 function materializeTemplate(templateBytes: Buffer, target: string): Buffer {
-  const templateText = decodeUtf8Strict(templateBytes, "opencode.json.template");
+  let templateText = decodeUtf8Strict(templateBytes, "opencode.json.template");
   const placeholder = JSON.stringify(LOCAL_INSTRUCTIONS_PLACEHOLDER);
-  if (!templateText.includes(placeholder)) {
-    return templateBytes;
-  }
   const localInstructions = path.join(target, "opencode.local.instructions.md").replaceAll("\\", "/");
-  return Buffer.from(templateText.replaceAll(placeholder, JSON.stringify(localInstructions)), "utf8");
+  templateText = templateText.replaceAll(placeholder, JSON.stringify(localInstructions));
+  for (const pluginPath of PLUGIN_PATH_PLACEHOLDERS) {
+    const source = `__OPENCODE_CONFIG_DIR__/${pluginPath}`;
+    templateText = templateText.replaceAll(
+      JSON.stringify(source),
+      JSON.stringify(pathToFileURL(path.join(target, ...pluginPath.split("/"))).href),
+    );
+  }
+  return Buffer.from(templateText, "utf8");
 }
 
 function ensureLocalConfig(target: string): void {

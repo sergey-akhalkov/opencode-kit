@@ -211,3 +211,33 @@ Document a raw passthrough flag for `rtk git diff`, or detect pipe/redirect use 
 
 ### OpenSpec Follow-Up
 no
+
+## FB-2026-08-10-terminal-sdet-fixture-deadlock
+
+Source: main-agent
+Role: main-agent
+Type: instruction-conflict
+Severity: high
+Recurrence: current-session-once
+Status: open
+
+### Complaint
+The qualification rules permanently stop SDET after the first valid `no-critical-risk`, while also forbidding main from repairing any automated-test artifact. That leaves no permitted author for known non-critical fixture drift discovered by complete validation after terminal SDET.
+
+### Context
+The completion-guard candidate reached terminal critical SDET, then full `npm test` found four synthetic OpenCode config fixtures missing a newly mandatory `auditWindow` object.
+
+### Evidence From Current Session
+The terminal SDET returned `no-critical-risk` and no edits. Full validation then failed only four fixture setup assertions; all product-focused and other direct suites were green. The correct change is fixture synchronization, but another SDET is prohibited and main test authorship is prohibited. Weakening the production validator would hide a real portable-config requirement.
+
+### Impact
+A complete candidate cannot reach green validation or RC even though the defect and minimal correction are deterministic. The process incentivizes either a policy violation or an incorrect production workaround.
+
+### Desired Future
+Validation-only fixture maintenance should have one explicit permitted owner after terminal critical SDET without reopening risk discovery or creating another SDET attempt.
+
+### Proposed Direction
+Allow main to apply deterministic expectation/fixture synchronization after terminal SDET when no product oracle changes, or require complete validation before the terminal SDET launch so the eligible test author can repair fixture drift in the same bounded test-only session.
+
+### OpenSpec Follow-Up
+yes

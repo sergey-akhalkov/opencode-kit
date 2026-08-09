@@ -29,10 +29,7 @@ import {
   validateReadme,
   validateRepoAgentsMd,
 } from "./validators/devkit-contract.ts";
-import {
-  validateImplementationWorkerRouting,
-  validateSessionDeliveryBinding,
-} from "./validators/routing.ts";
+import { validateImplementationWorkerRouting } from "./validators/routing.ts";
 import { validateEngineeringQualityContracts } from "./validators/engineering-quality.ts";
 
 type Options = {
@@ -149,7 +146,6 @@ function main(): void {
   validateDevKitContract(ctx, root);
   validateProfiles(ctx, root, skillNames, agentNames);
   validateImplementationWorkerRouting(ctx, root, agentNames);
-  validateSessionDeliveryBinding(ctx, root, agentNames);
   validateEngineeringQualityContracts(ctx, root);
   validateModelProfiles(ctx, root);
   validateOpenCodeConfigFiles(ctx, root);

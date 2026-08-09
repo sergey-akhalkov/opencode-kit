@@ -2,7 +2,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@opencode-ai/plugin": "1.18.11"
+    "@opencode-ai/plugin": "1.18.15",
+    "opencode-pty": "0.3.6"
   },
   "devDependencies": {
     "detect-terminal": "2.0.0",

@@ -33,13 +33,9 @@ import {
   SHIFT_LEFT_REAL_BOUNDARY_SURFACES,
 } from "../contracts/skills.ts";
 import {
-  MATERIAL_DELIVERY_ROUTING_SURFACES,
-  MATERIAL_DELIVERY_ROUTING_TOKENS,
   OUTCOME_AUTHORITY_FORBIDDEN_PATTERNS,
   OUTCOME_AUTHORITY_SCOPE_MARKERS,
   OUTCOME_AUTHORITY_SCOPE_SURFACES,
-  SESSION_DELIVERY_BINDING_HANDOFF_TOKENS,
-  SESSION_DELIVERY_BINDING_SURFACES,
 } from "../contracts/reviewer-binding.ts";
 import { SDET_QUALITY_ENGINEER_FILE } from "../contracts/sdet-quality-engineer.ts";
 import type { ValidationContext } from "./context.ts";
@@ -442,40 +438,3 @@ export function validateImplementationWorkerRouting(
   }
 }
 
-export function validateSessionDeliveryBinding(
-  ctx: ValidationContext,
-  root: string,
-  agentNames: string[],
-): void {
-  if (!agentNames.includes("session-delivery-reviewer")) {
-    return;
-  }
-
-  for (const relative of SESSION_DELIVERY_BINDING_SURFACES) {
-    const file = path.join(root, relative);
-    const operative = readOperativeAuthorityText(ctx, file);
-    if (operative == null) {
-      continue;
-    }
-    for (const token of SESSION_DELIVERY_BINDING_HANDOFF_TOKENS) {
-      requireTextContains(
-        ctx,
-        operative,
-        token,
-        "session-delivery-reviewer binding handoff",
-        file,
-      );
-    }
-  }
-
-  for (const relative of MATERIAL_DELIVERY_ROUTING_SURFACES) {
-    const file = path.join(root, relative);
-    const operative = readOperativeAuthorityText(ctx, file);
-    if (operative == null) {
-      continue;
-    }
-    for (const token of MATERIAL_DELIVERY_ROUTING_TOKENS) {
-      requireTextContains(ctx, operative, token, "Material delivery routing", file);
-    }
-  }
-}
