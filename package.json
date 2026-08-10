@@ -13,6 +13,7 @@
     "project:inventory": "node tools/project-inventory.ts",
     "instruction:inventory": "node tools/instruction-artifacts-inventory.ts",
     "code-quality:inventory": "node tools/code-quality-inventory.ts",
+    "proof:guard-retry": "bun tools/proofs/session-completion-guard-retry.ts",
     "test": "node --test --test-reporter=dot --test-concurrency=1 tools/test-library.ts tools/test-model-profile.ts tools/test-library-validation-scripts.ts tools/test-contracts.ts tools/test-code-quality-inventory.ts tools/test-session-env-plugin.ts tools/test-session-completion-guard.ts tools/test-init-project.ts tools/test-install-opencode-global.ts tools/test-openspec-operation-gate.ts tools/test-pre-push-validate.ts || npm run test:diagnostic",
     "test:diagnostic": "node tools/test-library.ts && node tools/test-model-profile.ts && node tools/test-library-validation-scripts.ts && node tools/test-contracts.ts && node tools/test-code-quality-inventory.ts && node tools/test-session-env-plugin.ts && node tools/test-session-completion-guard.ts && node tools/test-init-project.ts && node tools/test-install-opencode-global.ts && node tools/test-openspec-operation-gate.ts && node tools/test-pre-push-validate.ts",
     "test:focused:library": "node tools/run-focused-test.ts tools/test-library.ts",

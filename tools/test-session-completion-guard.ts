@@ -42,6 +42,7 @@ import { hashRef } from "../global/plugin/session-delivery-context/redaction.ts"
 
 const RUNAUDIT_DISABLE_ORACLE_FLAG = "--oracle-runaudit-disable-race";
 const QUESTION_CORRECTION_DISABLE_ORACLE_FLAG = "--oracle-question-correction-disable-race";
+const RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG = "--oracle-retry-prompt-amplification";
 const isBunRuntime = typeof (globalThis as { Bun?: unknown }).Bun !== "undefined";
 
 function sleep(ms: number): Promise<void> {
@@ -1004,6 +1005,350 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "critical: same-epoch arbiter retry must not re-embed completionEvidence",
+    run: async () => {
+      // Same Bun boundary as other controller oracles: controller pulls bun-pty.
+      // Locks the confirmed grind defect where every retry re-sent the full audit
+      // payload into one retained child until the provider 500k prompt limit failed.
+      if (!isBunRuntime) {
+        const self = fileURLToPath(import.meta.url);
+        const result = spawnSync("bun", [self, RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG], {
+          cwd: path.resolve(path.dirname(self), ".."),
+          encoding: "utf8",
+          shell: false,
+        });
+        const combined = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+        assert(
+          result.status === 0,
+          `Bun retry-prompt-amplification oracle failed (status=${result.status}):\n${combined}`,
+        );
+        assert(
+          combined.includes("PASS critical: same-epoch arbiter retry must not re-embed completionEvidence"),
+          `Bun oracle did not report PASS:\n${combined}`,
+        );
+        return;
+      }
+
+      const { SessionCompletionController } = await import(
+        "../global/extensions/session-completion-guard/controller.ts"
+      );
+      const { inspectRootEvidence } = await import(
+        "../global/extensions/session-completion-guard/inspection.ts"
+      );
+
+      const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "scg-retry-amplify-"));
+      try {
+        const rootID = "session_root_retry_amplify";
+        const childID = "session_child_retry_amplify_1";
+        const rootRef = hashRef("session", rootID);
+        const evidenceMarker = `COMPLETION_EVIDENCE_MARKER_${"X".repeat(4_000)}`;
+        let root: Session = sessionFixture({ id: rootID, directory: dataDir });
+        const promptBodies: Array<{ sessionID: string; text: string }> = [];
+        let createCalls = 0;
+        let promptAsyncCalls = 0;
+        let promptOrdinal = 0;
+
+        const client = {
+          session: {
+            get: async ({ sessionID }: { sessionID: string }) => {
+              if (sessionID === rootID) return { data: root };
+              if (sessionID === childID) {
+                return {
+                  data: {
+                    ...root,
+                    id: childID,
+                    parentID: rootID,
+                    metadata: { completionGuard: { rootSessionRef: rootRef } },
+                  },
+                };
+              }
+              return { error: { name: "NotFoundError" } };
+            },
+            update: async (args: { sessionID: string; metadata?: unknown }) => {
+              if (args.sessionID === rootID) {
+                root = { ...root, metadata: args.metadata as Session["metadata"] };
+                return { data: root };
+              }
+              return {
+                data: {
+                  id: args.sessionID,
+                  parentID: rootID,
+                  directory: dataDir,
+                  projectID: "proj_fixture",
+                  title: "audit-child",
+                  version: "1",
+                  time: { created: 0, updated: 0 },
+                  metadata: args.metadata,
+                },
+              };
+            },
+            create: async () => {
+              createCalls += 1;
+              return {
+                data: {
+                  id: childID,
+                  parentID: rootID,
+                  directory: dataDir,
+                  projectID: "proj_fixture",
+                  title: "audit-child",
+                  version: "1",
+                  time: { created: 0, updated: 0 },
+                  metadata: { completionGuard: { rootSessionRef: rootRef } },
+                },
+              };
+            },
+            children: async () => ({
+              data: createCalls === 0
+                ? []
+                : [{
+                  id: childID,
+                  parentID: rootID,
+                  directory: dataDir,
+                  projectID: "proj_fixture",
+                  title: "audit-child",
+                  version: "1",
+                  time: { created: 0, updated: 0 },
+                  metadata: { completionGuard: { rootSessionRef: rootRef } },
+                }],
+            }),
+            messages: async () => ({ data: [] }),
+            todo: async () => ({ data: [] }),
+            diff: async () => ({ data: [] }),
+            prompt: async (args: {
+              sessionID: string;
+              parts?: Array<{ type?: string; text?: string }>;
+            }) => {
+              const text = args.parts?.map((part) => part.text ?? "").join("") ?? "";
+              promptBodies.push({ sessionID: args.sessionID, text });
+              promptOrdinal += 1;
+              if (promptOrdinal === 1) {
+                // Malformed owner_required mirrors the live incident parser failure.
+                const invalid = {
+                  schemaVersion: 1,
+                  auditID: "audit_retry_amplify_1",
+                  rootSessionRef: rootRef,
+                  inspectedRevision: "will-be-rewritten",
+                  verdict: "owner_required",
+                  confidence: "high",
+                  goalSummary: "Need owner decision",
+                  evidenceGaps: [],
+                  evidenceRefs: [],
+                  ownerBoundary: null,
+                  requirementMatrix: [{
+                    evidenceRefs: [],
+                    requirementRef: "req_1",
+                    status: "owner_required",
+                  }],
+                  unresolved: [],
+                  strategyAssessment: {
+                    fingerprint: "fp_retry",
+                    prohibitedStrategies: [],
+                    repeated: false,
+                    requiredRetryEvidence: [],
+                  },
+                };
+                // inspectedRevision is filled after inspection is known (below via closure rewrite).
+                return {
+                  data: {
+                    info: {},
+                    parts: [{ type: "text", text: JSON.stringify(invalid) }],
+                  },
+                };
+              }
+              const allowStop = {
+                schemaVersion: 1,
+                auditID: "audit_retry_amplify_1",
+                rootSessionRef: rootRef,
+                inspectedRevision: "will-be-rewritten",
+                verdict: "allow_stop",
+                confidence: "high",
+                goalSummary: "Accepted outcome complete",
+                evidenceGaps: [],
+                evidenceRefs: ["evidence_1"],
+                ownerBoundary: null,
+                requirementMatrix: [{
+                  evidenceRefs: ["evidence_1"],
+                  requirementRef: "req_1",
+                  status: "complete",
+                }],
+                unresolved: [],
+                strategyAssessment: {
+                  fingerprint: "fp_retry",
+                  prohibitedStrategies: [],
+                  repeated: false,
+                  requiredRetryEvidence: [],
+                },
+              };
+              return {
+                data: {
+                  info: {},
+                  parts: [{ type: "text", text: JSON.stringify(allowStop) }],
+                },
+              };
+            },
+            promptAsync: async () => {
+              promptAsyncCalls += 1;
+              return {};
+            },
+          },
+          tool: { ids: async () => ({ data: ["bash"] }) },
+          v2: {
+            agent: {
+              list: async () => ({
+                data: {
+                  data: [{
+                    id: "session-completion-arbiter",
+                    hidden: true,
+                    model: { providerID: "xai", id: "grok-4.5" },
+                  }],
+                },
+              }),
+            },
+          },
+          provider: {
+            list: async () => ({
+              data: {
+                all: [{ id: "xai", models: { "grok-4.5": { id: "grok-4.5" } } }],
+                connected: ["xai"],
+              },
+            }),
+          },
+          tui: { showToast: async () => ({}) },
+        };
+
+        const input = {
+          client: {
+            app: { log: async () => ({}) },
+          },
+          directory: dataDir,
+        };
+        const controller = new SessionCompletionController(
+          input as never,
+          {
+            statusToasts: false,
+            settleMs: 0,
+            initialDelayMs: 1,
+            maxDelayMs: 1,
+            auditWindow: { enabled: false },
+            strategyFallback: "strategy-fallback",
+          },
+          client as never,
+        );
+        type ControllerProbe = {
+          roots: Map<string, RootState>;
+          runAudit(state: RootState, inspection: RootInspection, epoch: AuditEpoch): Promise<void>;
+          leases: AsyncLeaseRegistry;
+        };
+        const probe = controller as unknown as ControllerProbe;
+
+        const inspection = await inspectRootEvidence({
+          client: client as never,
+          configDirectory: dataDir,
+          leases: probe.leases,
+          options: parseGuardOptions({
+            statusToasts: false,
+            settleMs: 0,
+            initialDelayMs: 1,
+            maxDelayMs: 1,
+            auditWindow: { enabled: false },
+            strategyFallback: "strategy-fallback",
+          }),
+          root,
+        });
+        const revisionDigest = inspection.revision.revisionDigest;
+
+        // Rewrite verdict payloads so correlation matches the live inspection digest.
+        const originalPrompt = client.session.prompt;
+        client.session.prompt = async (args) => {
+          const result = await originalPrompt(args);
+          const part = result.data.parts[0];
+          if (part?.type === "text" && typeof part.text === "string") {
+            const parsed = JSON.parse(part.text) as Record<string, unknown>;
+            parsed.inspectedRevision = revisionDigest;
+            part.text = JSON.stringify(parsed);
+          }
+          return result;
+        };
+
+        const epoch: AuditEpoch = {
+          auditID: "audit_retry_amplify_1",
+          attempt: 0,
+          childSessionID: null,
+          completionEvidence: {
+            schemaVersion: 2,
+            session: { sessionRef: rootRef },
+            bulk: evidenceMarker,
+          } as never,
+          inspected: inspection.revision,
+          kind: "completion",
+          questionRequestID: null,
+          rootRef,
+          rootSessionID: rootID,
+        };
+        const state: RootState = {
+          ...initialRootState(root),
+          activeAudit: epoch,
+          auditAbort: new AbortController(),
+          grindEnabled: true,
+          state: "auditing",
+        };
+        probe.roots.set(rootID, state);
+
+        await probe.runAudit(state, inspection, epoch);
+
+        const deadline = Date.now() + 5_000;
+        while (Date.now() < deadline && state.state !== "passed") {
+          await sleep(20);
+        }
+
+        assert(promptBodies.length === 2, `Expected first attempt + one retry prompt, got ${promptBodies.length}`);
+        assert(createCalls === 1, `Same retained child must be reused; createCalls=${createCalls}`);
+        assert(
+          promptBodies.every((entry) => entry.sessionID === childID),
+          `All arbiter prompts must target the same retained child; sessions=${promptBodies.map((e) => e.sessionID).join(",")}`,
+        );
+
+        const [first, retry] = promptBodies;
+        assert(
+          first.text.includes("<completion_audit_request>") && first.text.includes("completionEvidence"),
+          "First attempt must send the full completion audit request with completionEvidence.",
+        );
+        assert(
+          first.text.includes(evidenceMarker),
+          "First attempt must retain the complete evidence payload.",
+        );
+        assert(
+          !retry.text.includes("completionEvidence") && !retry.text.includes(evidenceMarker),
+          "Retry prompt must not re-embed completionEvidence (same-epoch prompt amplification).",
+        );
+        assert(
+          retry.text.includes("<completion_audit_retry>") && retry.text.includes("previousError"),
+          "Retry prompt must carry bounded schema feedback, not a silent re-prompt.",
+        );
+        assert(
+          /ownerBoundary/i.test(retry.text),
+          `Retry feedback must surface the parser failure cause; retry=${retry.text.slice(0, 400)}`,
+        );
+        assert(
+          retry.text.length < 2_000 && retry.text.length < first.text.length / 2,
+          `Retry prompt must stay bounded (retryChars=${retry.text.length}, firstChars=${first.text.length}).`,
+        );
+        assert(
+          promptAsyncCalls === 0,
+          `Invalid first response and allow_stop must not inject root continuation; promptAsyncCalls=${promptAsyncCalls}`,
+        );
+        assert(epoch.attempt === 2, `Expected two attempts on the same epoch, got attempt=${epoch.attempt}`);
+        assert(
+          state.state === "passed",
+          `Valid second response must reach terminal Passed; state=${state.state} prompts=${promptBodies.length}`,
+        );
+        assert(state.activeAudit == null, "Passed audit must clear the active epoch.");
+      } finally {
+        fs.rmSync(dataDir, { recursive: true, force: true });
+      }
+    },
+  },
+  {
     name: "critical: in-flight status persist must not rewrite grindEnabled true after disable",
     run: async () => {
       // /disable-grind must persist disabled mode. A concurrent pre-disable status.persist that
@@ -1175,11 +1520,14 @@ const tests: TestCase[] = [
 
 const onlyRunauditOracle = process.argv.includes(RUNAUDIT_DISABLE_ORACLE_FLAG);
 const onlyQuestionCorrectionOracle = process.argv.includes(QUESTION_CORRECTION_DISABLE_ORACLE_FLAG);
+const onlyRetryAmplificationOracle = process.argv.includes(RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG);
 const selectedTests = onlyRunauditOracle
   ? tests.filter((test) => test.name.includes("in-flight runAudit must not call arbiter prompt"))
   : onlyQuestionCorrectionOracle
     ? tests.filter((test) => test.name.includes("in-flight question correction must not continue root"))
-    : tests;
+    : onlyRetryAmplificationOracle
+      ? tests.filter((test) => test.name.includes("same-epoch arbiter retry must not re-embed completionEvidence"))
+      : tests;
 
 let failed = 0;
 for (const test of selectedTests) {

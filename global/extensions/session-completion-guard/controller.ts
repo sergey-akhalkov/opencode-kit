@@ -10,7 +10,11 @@ import {
   removeSessionUpdateCallback,
   SHARED_PTY_MANAGER,
 } from "../opencode-pty-bridge.ts";
-import { buildArbiterAuditRequest, captureArbiterEvidence } from "./arbiter-evidence.ts";
+import {
+  buildArbiterAuditRequest,
+  buildArbiterRetryRequest,
+  captureArbiterEvidence,
+} from "./arbiter-evidence.ts";
 import { ensureArbiterChild } from "./arbiter-child.ts";
 import { GuardAuditMonitorLauncher } from "./audit-monitor.ts";
 import { isExplicitHumanStop, isGuardSyntheticPart, syntheticAsyncMarker } from "./control.ts";
@@ -451,7 +455,12 @@ export class SessionCompletionController {
     );
   }
 
-  private async runAudit(state: RootState, inspection: RootInspection, epoch: AuditEpoch): Promise<void> {
+  private async runAudit(
+    state: RootState,
+    inspection: RootInspection,
+    epoch: AuditEpoch,
+    retryReason: string | null = null,
+  ): Promise<void> {
     if (this.disposed || !this.isCurrentAudit(state, epoch)) return;
     try {
       const auditSignal = state.auditAbort?.signal;
@@ -478,7 +487,9 @@ export class SessionCompletionController {
           tools: route.tools,
           parts: [{
             type: "text",
-            text: buildArbiterAuditRequest(epoch, inspection, completionEvidence),
+            text: retryReason == null
+              ? buildArbiterAuditRequest(epoch, inspection, completionEvidence)
+              : buildArbiterRetryRequest(epoch, retryReason),
             synthetic: true,
             metadata: { provenance: "completion-guard", auditID: epoch.auditID },
           }],
@@ -519,9 +530,11 @@ export class SessionCompletionController {
     if (!this.isCurrentAudit(state, epoch)) return;
     await this.updateAuditMetadata(epoch, "retrying", delay);
     if (!this.isCurrentAudit(state, epoch)) return;
+    const details = safeError(error, epoch.rootSessionID);
+    const retryReason = details.message ?? "Previous arbiter response was unavailable or invalid";
     state.retryTimer = setTimeout(() => {
       state.retryTimer = null;
-      void this.runAudit(state, inspection, epoch);
+      void this.runAudit(state, inspection, epoch, retryReason);
     }, delay);
   }
 

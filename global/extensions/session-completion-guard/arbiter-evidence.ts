@@ -56,3 +56,16 @@ export function buildArbiterAuditRequest(
   };
   return `<completion_audit_request>\n${JSON.stringify(request, null, 2)}\n</completion_audit_request>`;
 }
+
+export function buildArbiterRetryRequest(epoch: AuditEpoch, previousError: string): string {
+  const request = {
+    schemaVersion: 1,
+    auditID: epoch.auditID,
+    rootSessionRef: epoch.rootRef,
+    inspectedRevision: epoch.inspected.revisionDigest,
+    attempt: epoch.attempt,
+    previousError: previousError.slice(0, 1_000),
+    instruction: "Correct the verdict for the original completion_audit_request in this retained child. Return one exact schema-valid JSON verdict object with no Markdown or surrounding prose. Do not call tools.",
+  };
+  return `<completion_audit_retry>\n${JSON.stringify(request, null, 2)}\n</completion_audit_retry>`;
+}
