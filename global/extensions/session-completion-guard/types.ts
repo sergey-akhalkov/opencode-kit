@@ -92,6 +92,12 @@ export type StrategyAssessment = {
   requiredRetryEvidence: string[];
 };
 
+export type OwnerBoundaryVerdict = {
+  decision: string;
+  evidenceRefs: string[];
+  reason: string;
+};
+
 export type CompletionVerdict = {
   auditID: string;
   confidence: "high" | "low" | "medium";
@@ -99,7 +105,7 @@ export type CompletionVerdict = {
   evidenceRefs: string[];
   goalSummary: string;
   inspectedRevision: string;
-  ownerBoundary: string | null;
+  ownerBoundary: OwnerBoundaryVerdict | null;
   requirementMatrix: RequirementVerdict[];
   rootSessionRef: string;
   schemaVersion: 1;

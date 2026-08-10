@@ -93,7 +93,7 @@ The verdict transport SHALL be one exact JSON text object from the configured ar
 
 #### Scenario: Only owner action remains
 - **WHEN** independent work is complete and the remaining item requires an exact protected owner decision/action or unavailable capability
-- **THEN** the arbiter SHALL return `owner_required` with evidence and a self-contained handoff basis
+- **THEN** the arbiter SHALL return `owner_required` with a structured `ownerBoundary` containing the exact decision, reason, and privacy-safe evidence refs needed for a self-contained handoff
 - **AND** it SHALL not classify optional polish or generic uncertainty as owner-required.
 
 ### Requirement: Continuations are synthetic bounded and stale-safe
@@ -125,6 +125,7 @@ The guard SHALL audit a pending `question.asked` request independently from term
 #### Scenario: Owner-only question remains open
 - **WHEN** the arbiter proves the pending question crosses the accepted owner boundary
 - **THEN** the guard SHALL leave the request open without auto-answering or auto-rejecting it.
+- **AND** a schema-valid structured `ownerBoundary` SHALL terminate the question audit as Owner Required rather than enter retry.
 
 ### Requirement: User interruption suspends the guard immediately
 The guard SHALL suspend a root on `MessageAbortedError`, a supported explicit session interrupt, or an unambiguous non-synthetic human stop/pause instruction. Suspension SHALL cancel guard audit/retry work and persist until a later non-synthetic human message starts a new revision.

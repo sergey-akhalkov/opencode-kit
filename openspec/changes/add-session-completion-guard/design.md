@@ -144,13 +144,13 @@ goalSummary
 requirementMatrix[]
 unresolved[]
 strategyAssessment
-ownerBoundary
+ownerBoundary: null | { decision, reason, evidenceRefs[] }
 evidenceRefs[]
 evidenceGaps[]
 confidence
 ```
 
-`allow_stop` means the current root turn may remain idle; it does not approve a lifecycle stage. `continue` requires at least one current unsatisfied user requirement, concrete evidence, and a bounded safe next action. `owner_required` requires an exact protected decision/action or unavailable capability, evidence that independent work is complete, and a self-contained handoff. Optional polish, speculative hardening, and non-critical residual risk cannot force continuation.
+`allow_stop` means the current root turn may remain idle; it does not approve a lifecycle stage. `continue` requires at least one current unsatisfied user requirement, concrete evidence, and a bounded safe next action. `owner_required` requires an exact protected decision/action or unavailable capability, evidence that independent work is complete, and a structured `ownerBoundary` with non-empty `decision` and `reason` plus privacy-safe evidence refs for a self-contained handoff. Every other verdict requires `ownerBoundary: null`. Optional polish, speculative hardening, and non-critical residual risk cannot force continuation.
 
 Unknown fields are ignored only within the same schema version. Unknown versions, invalid enums, missing correlation, malformed or non-exact JSON output, model errors, and timeouts enter audit retry rather than being interpreted as a verdict.
 

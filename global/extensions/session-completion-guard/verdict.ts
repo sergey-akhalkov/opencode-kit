@@ -1,5 +1,11 @@
 import type { TextPartInput } from "@opencode-ai/sdk/v2";
-import type { AuditEpoch, CompletionVerdict, GuardContinuation, RootPromptContext } from "./types.ts";
+import type {
+  AuditEpoch,
+  CompletionVerdict,
+  GuardContinuation,
+  OwnerBoundaryVerdict,
+  RootPromptContext,
+} from "./types.ts";
 
 const VERDICT_VALUES = new Set(["allow_stop", "continue", "owner_required", "user_paused"]);
 const CONFIDENCE_VALUES = new Set(["high", "medium", "low"]);
@@ -44,6 +50,17 @@ function stringArray(value: unknown, field: string, maxItems = 256): string[] {
     throw new Error(`Invalid completion verdict field: ${field}`);
   }
   return value as string[];
+}
+
+function ownerBoundary(value: unknown): OwnerBoundaryVerdict | null {
+  if (value == null) return null;
+  const boundary = record(value);
+  if (boundary == null) throw new Error("Invalid completion verdict field: ownerBoundary");
+  return {
+    decision: requiredString(boundary.decision, "ownerBoundary.decision", 2_000),
+    evidenceRefs: stringArray(boundary.evidenceRefs, "ownerBoundary.evidenceRefs", 64),
+    reason: requiredString(boundary.reason, "ownerBoundary.reason", 2_000),
+  };
 }
 
 export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): CompletionVerdict {
@@ -101,11 +118,15 @@ export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): Compl
     throw new Error("Invalid completion verdict field: strategyAssessment");
   }
   const verdict = input.verdict as CompletionVerdict["verdict"];
+  const parsedOwnerBoundary = ownerBoundary(input.ownerBoundary);
   if (verdict === "continue" && unresolved.length === 0) {
     throw new Error("A continue verdict requires at least one unresolved requirement");
   }
-  if (verdict === "owner_required" && (typeof input.ownerBoundary !== "string" || input.ownerBoundary.trim() === "")) {
-    throw new Error("An owner_required verdict requires ownerBoundary");
+  if (verdict === "owner_required" && parsedOwnerBoundary == null) {
+    throw new Error("An owner_required verdict requires a structured ownerBoundary");
+  }
+  if (verdict !== "owner_required" && parsedOwnerBoundary != null) {
+    throw new Error("Only an owner_required verdict may define ownerBoundary");
   }
   return {
     auditID,
@@ -114,7 +135,7 @@ export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): Compl
     evidenceRefs: stringArray(input.evidenceRefs, "evidenceRefs", 256),
     goalSummary: requiredString(input.goalSummary, "goalSummary", 2_000),
     inspectedRevision,
-    ownerBoundary: input.ownerBoundary == null ? null : requiredString(input.ownerBoundary, "ownerBoundary", 2_000),
+    ownerBoundary: parsedOwnerBoundary,
     requirementMatrix,
     rootSessionRef,
     schemaVersion: 1,

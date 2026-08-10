@@ -489,3 +489,23 @@
 - **Reason**: The SDK route preserves the production controller's explicit hidden agent, model, variant, all-tools-disabled map, retained child, and prompt shape; the bounded retry supplies parser feedback without re-embedding immutable completion evidence.
 - **Do Not Repeat**: Do not recreate this runner in temp, use CLI hidden-agent fallback, or rerun the live lane without a dependent product/runner/environment mutation or new failure evidence.
 - **Evidence-Based Retry Condition**: A later retry requires a dependent mutation or a newly observed failure. Run the inventoried no-model preflight first, preserve exact invocation/result, and follow the live-attempt gate before `--mode live`.
+
+## 2026-08-10 - Structured owner boundary was rejected as if it were missing
+
+- **Objective**: Stop a pending protected owner question from repeatedly invoking the arbiter while the interactive question remains unanswered.
+- **Approach**: Preserve the new root/child state and inspect only privacy-safe verdict structure and parser diagnostics before any additional model call.
+- **Evidence**: Root `ses_014c91f01ffenx69e3cFXmp3Z9` opened one owner-only question. Retained child `ses_014a2ce17ffeU77uvXtoXttc84` produced three correlated schema-version-1 `owner_required` verdicts. Every `ownerBoundary` was an object with exactly `decision:string`, `reason:string`, and `evidenceRefs:string[]`; the parser nevertheless required a string and retried with 2,000 ms then 4,000 ms backoff. The child reached 206,915 input and 228,480 cache-read tokens while the root question stayed open.
+- **Outcome**: Confirmed internal verdict-schema mismatch. The canonical field is now the observed structured object; a valid owner-required question must transition terminally to Owner Required and remain open for the human response.
+- **Reason**: The agent example showed only `ownerBoundary: null`, the design left its data shape unspecified, and the parser privately assumed a string. Retry feedback could not correct an ambiguous contract that the model had already satisfied semantically.
+- **Do Not Repeat**: Do not retry a schema-valid structured owner boundary as missing, accept unvalidated arbitrary objects, or auto-answer/reject an owner-only question.
+- **Evidence-Based Retry Condition**: Before another live model call, replay the preserved `{decision,reason,evidenceRefs}` shape through the production parser and actual question-verdict path to terminal Owner Required with zero question reject/root continuation calls. Then validate the exact hidden-agent schema route without reusing the active user child.
+
+## 2026-08-10 - Structured owner question terminates without reject or continuation
+
+- **Objective**: Prove the schema correction against the exact observed owner-boundary shape and preserve a reusable terminal question-path runner.
+- **Approach**: Canonicalize `ownerBoundary` as `{decision,reason,evidenceRefs}`, reject that field on non-owner verdicts, update the hidden-agent/spec contract, and replay a privacy-safe equivalent of the preserved real response through the production parser and `applyVerdict` question path.
+- **Evidence**: `npm run proof:guard-question` exited `0` with `finalState=owner-required`, `questionState=owner-required`, non-empty decision, `questionRejectCalls=0`, and `rootPromptCalls=0`. The runner is maintained at `tools/proofs/session-completion-guard-question.ts` and inventoried in `tools/proofs/README.md`. Fresh SDET added the canonical/legacy/invalid/non-owner protocol oracle and returned `no-critical-risk`; focused guard tests are green `27/27`. Strict validation reports zero warnings and OpenSpec validation is green `10/10`.
+- **Outcome**: Current candidate accepts the configured arbiter's already-observed structured response and reaches the required terminal owner-question state without another live model attempt. The interactive question remains for the human to answer; retry toasts stop after restart loads the candidate.
+- **Reason**: Parser, TypeScript type, hidden-agent instructions, design, spec, proof, and regression oracle now share one exact object contract rather than relying on an unstated string assumption.
+- **Do Not Repeat**: Do not accept legacy string boundaries, attach an owner boundary to autonomous verdicts, reject/answer an owner-only question, or rebuild this proof in temp.
+- **Evidence-Based Retry Condition**: No additional live arbiter call is required for this correction because the preserved configured-model output already matches the accepted candidate shape. A later live retry requires a dependent mutation or a newly observed distinct failure after restart.

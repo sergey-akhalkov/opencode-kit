@@ -383,6 +383,86 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "critical: structured ownerBoundary object is canonical; string/legacy shapes fail closed",
+    run: () => {
+      // Live incident: arbiter returned schema-valid {decision,reason,evidenceRefs[]} while the
+      // prior parser required a string, so owner_required retried with the question still open.
+      const structured = {
+        decision: "Owner must choose the protected action",
+        reason: "The action requires owner authority",
+        evidenceRefs: ["event_ref_1"],
+      };
+      const parsed = parseCompletionVerdict(validVerdict({
+        verdict: "owner_required",
+        ownerBoundary: structured as never,
+        unresolved: [],
+        requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
+      }), epoch());
+      assert(parsed.verdict === "owner_required", "Structured owner_required must parse.");
+      assert(parsed.ownerBoundary?.decision === structured.decision, "decision must be preserved.");
+      assert(parsed.ownerBoundary?.reason === structured.reason, "reason must be preserved.");
+      assert(
+        JSON.stringify(parsed.ownerBoundary?.evidenceRefs) === JSON.stringify(structured.evidenceRefs),
+        "evidenceRefs must be preserved.",
+      );
+
+      // Text path must accept the same structured JSON the hidden arbiter emits.
+      const fromText = parseCompletionVerdictText(
+        [{ type: "text", text: JSON.stringify(validVerdict({
+          verdict: "owner_required",
+          ownerBoundary: structured as never,
+          unresolved: [],
+          requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
+        })) }],
+        epoch(),
+      );
+      assert(
+        fromText.ownerBoundary?.decision === structured.decision,
+        "JSON text path must accept structured ownerBoundary.",
+      );
+
+      // Prior string-only contract would accept this; current contract must reject it.
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          verdict: "owner_required",
+          ownerBoundary: "Owner must choose the protected action" as never,
+          unresolved: [],
+          requirementMatrix: [{ evidenceRefs: [], requirementRef: "r", status: "owner_required" }],
+        }), epoch()),
+        "ownerBoundary",
+        "String ownerBoundary must fail closed (no legacy string acceptance).",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          verdict: "owner_required",
+          ownerBoundary: { decision: "x", reason: "", evidenceRefs: [] } as never,
+          unresolved: [],
+          requirementMatrix: [{ evidenceRefs: [], requirementRef: "r", status: "owner_required" }],
+        }), epoch()),
+        "ownerBoundary.reason",
+        "Empty reason must fail validation.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          verdict: "continue",
+          ownerBoundary: structured as never,
+        }), epoch()),
+        "ownerBoundary",
+        "Non-owner verdict must not carry ownerBoundary.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          verdict: "allow_stop",
+          unresolved: [],
+          requirementMatrix: [{ evidenceRefs: ["e"], requirementRef: "r", status: "complete" }],
+          ownerBoundary: structured as never,
+        }), epoch()),
+        "ownerBoundary",
+        "allow_stop must require null ownerBoundary.",
+      );
+    },
+  },
+  {
     name: "critical: explicit English human stop wins; negated and quoted stop do not",
     run: () => {
       assert(isExplicitHumanStop("stop"), "Bare stop must suspend.");
