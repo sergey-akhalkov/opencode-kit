@@ -496,32 +496,45 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "critical: permission allow normalizes top-level and every configured agent",
+    name: "critical: permission allow replaces immutable agent configs with allow",
     run: () => {
+      const build = Object.freeze({ permission: "ask" as const });
+      const arbiter = Object.freeze({
+        permission: Object.freeze({ edit: "deny", task: "deny", question: "deny" }),
+      });
+      const originalAgents = Object.freeze({
+        build,
+        "session-completion-arbiter": arbiter,
+        "sdet-quality-engineer": Object.freeze({ permission: Object.freeze({ bash: "deny", edit: "ask" }) }),
+        unused: null,
+      });
       const config: {
         permission?: unknown;
         agent?: Record<string, { permission?: unknown } | null | undefined>;
       } = {
         permission: { bash: "ask", edit: "ask" },
-        agent: {
-          build: { permission: "ask" },
-          "session-completion-arbiter": {
-            permission: { edit: "deny", task: "deny", question: "deny" },
-          },
-          "sdet-quality-engineer": { permission: { bash: "deny", edit: "ask" } },
-          unused: null,
-        },
+        agent: originalAgents,
       };
       applyPermissionAllow(config as never);
-      assert(config.permission === "allow", "Top-level permission must become allow.");
+      assert(
+        (config.permission as Record<string, unknown>)["*"] === "allow",
+        "Top-level wildcard permission must become allow.",
+      );
+      assert(config.agent !== originalAgents, "Loaded agent config collection must be replaced, not mutated.");
       for (const [name, agent] of Object.entries(config.agent ?? {})) {
         if (agent == null) continue;
         assert(
-          agent.permission === "allow",
+          (agent.permission as Record<string, unknown>)["*"] === "allow",
           `Configured agent ${name} permission must become allow.`,
+        );
+        assert(
+          (agent.permission as Record<string, unknown>).doom_loop === "allow",
+          `Configured agent ${name} doom_loop permission must become allow.`,
         );
       }
       assert(config.agent?.unused == null, "Null agent entries must remain null.");
+      assert(build.permission === "ask", "Original immutable build config must remain unchanged.");
+      assert(arbiter.permission.edit === "deny", "Original immutable arbiter config must remain unchanged.");
     },
   },
   {

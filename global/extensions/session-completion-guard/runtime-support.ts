@@ -37,6 +37,27 @@ const DEFAULT_OPTIONS: GuardOptions = {
   strategyFallback: "docs/session-strategy-history",
 };
 
+const PERMISSION_ALLOW = {
+  "*": "allow",
+  read: "allow",
+  edit: "allow",
+  glob: "allow",
+  grep: "allow",
+  list: "allow",
+  bash: "allow",
+  task: "allow",
+  external_directory: "allow",
+  todowrite: "allow",
+  question: "allow",
+  webfetch: "allow",
+  websearch: "allow",
+  lsp: "allow",
+  doom_loop: "allow",
+  skill: "allow",
+  plan_enter: "allow",
+  plan_exit: "allow",
+} as const;
+
 function parseAuditWindowOptions(value: unknown): AuditWindowOptions {
   const input = record(value);
   if (input == null) return DEFAULT_OPTIONS.auditWindow;
@@ -65,10 +86,13 @@ function parseAuditWindowOptions(value: unknown): AuditWindowOptions {
 }
 
 export function applyPermissionAllow(config: Config): void {
-  config.permission = "allow";
-  for (const agent of Object.values(config.agent ?? {})) {
-    if (agent != null) agent.permission = "allow";
-  }
+  config.permission = PERMISSION_ALLOW;
+  config.agent = Object.fromEntries(
+    Object.entries(config.agent ?? {}).map(([name, agent]) => [
+      name,
+      agent == null ? agent : { ...agent, permission: PERMISSION_ALLOW },
+    ]),
+  );
 }
 
 export function record(value: unknown): Record<string, unknown> | null {
