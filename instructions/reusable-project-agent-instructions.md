@@ -37,13 +37,14 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 ## Token Efficiency
 
-- Prefer targeted search/reads. Keep routine handoffs compact, but never shorten context required for an owner decision. Preserve exact commands, paths, errors. On native Windows use `rtk <command>` explicitly.
+- Prefer targeted search/reads. Keep routine handoffs compact, but never shorten context required for an owner decision. Preserve exact commands, paths, errors.
 
 ## Autonomy
 
 - Follow active global quality/safety -> autonomy -> speed without copying it. Continue within the goal while safe, useful work remains.
 - Ask the user only for exact user-owned blockers: credentials/elevation, hardware/manual gate, destructive/remote authorization, product/legal/security decision, protected-boundary semantic expansion, missing external capability, material residual-risk acceptance, or mode that forbids the action. Never ask solely to approve an internal revision or process counter. Every owner question must satisfy the Owner Decision Handoff contract below.
 - No routine questions when local evidence or a safe reversible default exists.
+- A progress checkpoint, long work cycle, green validation, still-open task, locally resolvable failure, or blocked live/external gate does not justify asking whether to continue. Continue safe local/offline required work and stop only the affected action at its exact owner boundary.
 - Necessary local reversible work for the accepted outcome may be added with traceability; optional improvements stay residual.
 
 ## Owner Decision Handoff

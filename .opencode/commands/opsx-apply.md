@@ -73,7 +73,7 @@ Implement tasks from an OpenSpec change.
    - Remaining tasks overview
    - Dynamic instruction from CLI
 
-7. **Implement tasks (loop until done or blocked)**
+7. **Implement tasks (loop until done or owner-blocked)**
 
    For each pending task:
    - Show which task is being worked on
@@ -96,19 +96,20 @@ Implement tasks from an OpenSpec change.
    - Repeat a recorded strategy only after appending new evidence that satisfies its retry condition or invalidates the prior result
    - Pause only for an exact user-owned blocker; do not convert an ordinary failure into a routine approval question
 
-   **Pause if:**
-   - Task is unclear → ask for clarification
-   - Implementation reveals a design issue → suggest updating artifacts
-   - Error or blocker encountered → report and wait for guidance
-   - User interrupts
+   **Pause only if:**
+   - A task is materially ambiguous and no evidence-backed safe reversible interpretation exists → ask one exact clarification question
+   - Progress requires an exact user-owned decision or action under the active global owner-boundary contract → provide the required self-contained owner handoff
+   - The user interrupts
 
-8. **On completion or pause, show status**
+   A progress checkpoint, completed work cycle, green validation pass, still-open task, locally resolvable error, or blocked live/external gate is not by itself a reason to ask whether to continue. Continue safe local/offline required work, and stop only the affected action at its exact owner boundary. If implementation exposes an artifact or design mismatch but the accepted semantics are already clear, update the affected OpenSpec artifact as the smallest necessary dependency closure and continue.
+
+8. **On completion or owner-blocked pause, show status**
 
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
    - If all done after a final session-derived improvement reconciliation: report that implementation tasks are complete and archive checks are next
-   - If paused: explain why and wait for guidance
+   - If owner-blocked: explain the exact owner boundary and wait for the required decision or action
 
 **Output During Implementation**
 
@@ -142,36 +143,34 @@ All implementation tasks have current evidence. Run `/opsx-archive` for separate
 Do not emit an RC or stable claim from this command. If current runtime proof supports a lifecycle report, apply output is capped at `Development-Stage: MVP` until the separate qualification and handoff checks complete.
 ```
 
-**Output On Pause (Issue Encountered)**
+**Output On Owner Blocker**
 
 ```
-## Implementation Paused
+## Owner Action Required
 
 **Change:** <change-name>
 **Schema:** <schema-name>
 **Progress:** 4/7 tasks complete
 
-### Issue Encountered
-<description of the issue>
+### Exact Blocker
+<why only the owner can decide or act>
 
-**Options:**
-1. <option 1>
-2. <option 2>
-3. Other approach
+**Decision:**
+<exact requested decision or action, with real alternatives only when they exist>
 
-What would you like to do?
+**Preserved State:** <current candidate and evidence>
 ```
 
 **Guardrails**
-- Keep going through tasks until done or blocked
+- Keep going through tasks until done, interrupted, or stopped by an exact owner boundary
 - Always read context files before starting (from the apply instructions output)
-- If task is ambiguous, pause and ask before implementing
-- If implementation reveals issues, pause and suggest artifact updates
+- If a task is materially ambiguous and lacks a safe reversible interpretation, pause and ask one exact question
+- If implementation reveals an artifact or design mismatch with already resolved semantics, update the affected artifact and continue
 - Keep code changes minimal and scoped to each task
-- Persist every admitted session-derived improvement immediately and complete all such tasks before archive; never leave a non-selected candidate only in summary prose
 - Update a task checkbox only after its required observable proof and focused validation pass
+- Persist every admitted session-derived improvement immediately and complete all such tasks before archive; never leave a non-selected candidate only in summary prose
 - Do not infer RC/stable from completed task checkboxes; this command does not complete the separate archive and stable-handoff boundary
-- Pause on errors, blockers, or unclear requirements - don't guess
+- Diagnose and correct ordinary errors and locally resolvable blockers without asking whether to continue; do not guess across an exact owner boundary
 - Use contextFiles from CLI output, don't assume specific file names
 
 **Fluid Workflow Integration**
@@ -179,4 +178,4 @@ What would you like to do?
 This skill supports the "actions on a change" model:
 
 - **Can be invoked anytime**: Before all artifacts are done (if tasks exist), after partial implementation, interleaved with other actions
-- **Allows artifact updates**: If implementation reveals design issues, suggest updating artifacts - not phase-locked, work fluidly
+- **Allows artifact updates**: If implementation reveals an artifact or design mismatch, update the affected artifacts when accepted semantics are already clear; ask only for an exact owner-owned decision

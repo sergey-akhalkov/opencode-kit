@@ -112,6 +112,12 @@ function resolveSessionCompletionGuardHistoryPaths(): string[] {
   return found;
 }
 
+/** Active OpenSpec apply surfaces that must share the owner-only pause contract. */
+const OPENSPEC_APPLY_AUTONOMY_SURFACES = [
+  ".opencode/skills/openspec-apply-change/SKILL.md",
+  ".opencode/commands/opsx-apply.md",
+] as const;
+
 /**
  * Model-facing surfaces for admitted session-derived improvement persistence.
  * Compaction uses `global/opencode.json.template` agent prompt as its real entry
@@ -149,7 +155,97 @@ const SESSION_IMPROVEMENT_AGENTS_SAFETY_MARKERS = [
   "no scope expansion",
 ] as const;
 
+/** Focused markers that keep apply autonomous after checkpoints while preserving owner stops. */
+const OPENSPEC_APPLY_AUTONOMY_REQUIRED_MARKERS = [
+  "**Pause only if:**",
+  "exact user-owned decision or action",
+  "The user interrupts",
+  "not by itself a reason to ask whether to continue",
+  "progress checkpoint",
+  "locally resolvable",
+  "blocked live/external gate",
+  "Pause only for an exact user-owned blocker",
+  "## Owner Action Required",
+  "do not guess across an exact owner boundary",
+] as const;
+
+/**
+ * Old contradictory apply pause/options wording that caused routine "continue?"
+ * owner questions after large cycles or ordinary failures.
+ */
+const OPENSPEC_APPLY_AUTONOMY_FORBIDDEN_PHRASES = [
+  "wait for guidance",
+  "Pause on errors",
+  "Pause if: Error or blocker",
+  "Error or blocker encountered",
+  "report and wait",
+  "Would you like me to continue",
+  "Do you want me to continue",
+  "Should I continue",
+] as const;
+
+const GLOBAL_CHECKPOINT_CONTINUE_MARKERS = [
+  "A progress checkpoint, completed or long work cycle, green validation pass, still-open task, locally resolvable failure, or blocked live/external gate is not itself an owner blocker",
+  "Do not ask whether to continue while safe local/offline required work remains",
+] as const;
+
+const ARBITER_CHECKPOINT_CONTINUE_MARKERS = [
+  "classify a question asking whether to continue in that state as autonomous",
+  "progress checkpoint, completed or long work cycle, green validation pass, still-open task, locally resolvable failure, or blocked live/external gate is not an owner boundary",
+  "use `owner_required` only when the question crosses an exact owner boundary",
+] as const;
+
 export const changeReadyDeliveryContractTests: TestCase[] = [
+  {
+    name: "contracts: OpenSpec apply skill and slash command keep owner-only pause autonomy",
+    run: () => {
+      for (const relative of OPENSPEC_APPLY_AUTONOMY_SURFACES) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assertTokens(text, OPENSPEC_APPLY_AUTONOMY_REQUIRED_MARKERS, `${relative} missing apply autonomy marker`);
+        for (const phrase of OPENSPEC_APPLY_AUTONOMY_FORBIDDEN_PHRASES) {
+          assert(
+            !text.includes(phrase),
+            `${relative} retains forbidden generic pause/continue trigger: ${phrase}`,
+          );
+        }
+        // Owner-boundary path must remain explicit — autonomy must not erase protected stops.
+        assert(
+          text.includes("exact owner boundary") || text.includes("exact user-owned"),
+          `${relative} must retain exact owner-boundary pause language`,
+        );
+        assert(
+          text.includes("## Owner Action Required"),
+          `${relative} must retain the owner-blocker output contract`,
+        );
+      }
+    },
+  },
+  {
+    name: "contracts: global authority and completion arbiter reject checkpoint continue questions",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      assertTokens(
+        agents,
+        GLOBAL_CHECKPOINT_CONTINUE_MARKERS,
+        "global/AGENTS.md missing checkpoint/continue autonomy rule",
+      );
+      assert(
+        agents.includes("exact owner-only blocker") || agents.includes("exact user-owned blockers"),
+        "global/AGENTS.md must retain exact owner-boundary pause authority",
+      );
+
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+      assertTokens(
+        arbiter,
+        ARBITER_CHECKPOINT_CONTINUE_MARKERS,
+        "session-completion-arbiter missing checkpoint continue-as-autonomous rule",
+      );
+      assert(
+        arbiter.includes("Use `owner_required` only for an exact protected decision/action"),
+        "session-completion-arbiter must retain owner_required for exact protected boundaries",
+      );
+    },
+  },
   {
     name: "contracts: current copied authority passes active structural checks",
     run: () => {

@@ -23,6 +23,7 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 
 - Follow active global quality/safety -> autonomy -> speed without copying it. Continue when evidence or a safe reversible default is enough.
 - Ask the user only for exact user-owned blockers: credentials/elevation, missing external systems, destructive/remote actions, owner/product/security/legal decisions, protected-boundary semantic expansion, material residual-risk acceptance, or MR/PR outcomes. Never ask solely to approve an internal revision or process counter.
+- A progress checkpoint, long work cycle, green validation, still-open task, locally resolvable failure, or blocked live/external gate does not justify asking whether to continue. Continue safe local/offline required work and stop only the affected action at its exact owner boundary.
 - Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
 
