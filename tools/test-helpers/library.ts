@@ -42,7 +42,6 @@ export const FIXTURE_MODEL_PROFILE_AGENTS = [
   "explore",
   "general",
   "plan",
-  "scout",
   "summary",
   "title",
 ] as const;

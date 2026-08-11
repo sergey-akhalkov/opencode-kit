@@ -75,10 +75,6 @@
       "model": "xai/grok-4.5",
       "variant": "high"
     },
-    "scout": {
-      "model": "xai/grok-4.5",
-      "variant": "high"
-    },
     "sdet-quality-engineer": {
       "model": "xai/grok-4.5",
       "variant": "high"

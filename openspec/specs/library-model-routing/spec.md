@@ -53,7 +53,7 @@ The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` commit
 
 #### Scenario: Recommended challenge roles
 - **WHEN** `quality-independent` is selected
-- **THEN** `explore`, `scout`, `title`, `summary`, `qwen-local-worker`, `sdet-quality-engineer`, and every reusable reviewer SHALL resolve to `xai/grok-4.5` with variant `high`.
+- **THEN** `explore`, `title`, `summary`, `qwen-local-worker`, `sdet-quality-engineer`, and every reusable reviewer SHALL resolve to `xai/grok-4.5` with variant `high`.
 
 #### Scenario: Single-model controls
 - **WHEN** `sol-only` or `grok-only` is validated
@@ -116,4 +116,3 @@ Completion-guard runtime evidence SHALL record the effective arbiter agent, mode
 - **WHEN** deterministic preflight launches a completion audit
 - **THEN** the retained child metadata and proof record SHALL identify the effective route and correlation fields
 - **AND** SHALL not expose provider credentials or raw session ids.
-

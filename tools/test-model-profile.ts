@@ -61,7 +61,6 @@ const EXPECTED_CATALOG = [
   "protocol-api-reviewer",
   "qwen-local-worker",
   "rust-concurrency-reviewer",
-  "scout",
   "sdet-quality-engineer",
   "session-completion-arbiter",
   "summary",
@@ -147,7 +146,7 @@ const tests: TestCase[] = [
       assertDeepEqual(
         catalog,
         [...EXPECTED_CATALOG].sort((left, right) => left.localeCompare(right)),
-        "Governed catalog must be the eight built-ins plus every current global/agents Markdown role.",
+        "Governed catalog must be the seven built-ins plus every current global/agents Markdown role.",
       );
       for (const profileName of ["grok-only", "quality-independent", "sol-only"]) {
         const loaded = loadModelProfile(libraryRoot, profileName);

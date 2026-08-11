@@ -75,10 +75,6 @@
       "model": "openai/gpt-5.6-sol",
       "variant": "xhigh"
     },
-    "scout": {
-      "model": "openai/gpt-5.6-sol",
-      "variant": "xhigh"
-    },
     "sdet-quality-engineer": {
       "model": "openai/gpt-5.6-sol",
       "variant": "xhigh"

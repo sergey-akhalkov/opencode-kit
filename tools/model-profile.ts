@@ -12,7 +12,6 @@ export const GOVERNED_BUILTIN_AGENTS = [
   "explore",
   "general",
   "plan",
-  "scout",
   "summary",
   "title",
 ] as const;
