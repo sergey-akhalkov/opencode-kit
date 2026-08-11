@@ -26,7 +26,7 @@ import {
 import type { RootInspection } from "../global/extensions/session-completion-guard/inspection.ts";
 import { PtyFallbackScheduler } from "../global/extensions/session-completion-guard/pty-fallback.ts";
 import {
-  applyMainPermissionAllow,
+  applyPermissionAllow,
   initialRootState,
   parseGuardOptions,
 } from "../global/extensions/session-completion-guard/runtime-support.ts";
@@ -496,24 +496,32 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "critical: main permission defaults allow without wiping specialist config object shape",
+    name: "critical: permission allow normalizes top-level and every configured agent",
     run: () => {
-      const config: { permission?: Record<string, unknown>; agent?: Record<string, unknown> } = {
+      const config: {
+        permission?: unknown;
+        agent?: Record<string, { permission?: unknown } | null | undefined>;
+      } = {
         permission: { bash: "ask", edit: "ask" },
         agent: {
+          build: { permission: "ask" },
           "session-completion-arbiter": {
             permission: { edit: "deny", task: "deny", question: "deny" },
           },
+          "sdet-quality-engineer": { permission: { bash: "deny", edit: "ask" } },
+          unused: null,
         },
       };
-      applyMainPermissionAllow(config as never);
-      assert(config.permission?.bash === "allow", "Main bash must default allow.");
-      assert(config.permission?.edit === "allow", "Main edit must default allow.");
-      assert(config.permission?.webfetch === "allow", "Main webfetch must default allow.");
-      assert(
-        (config.agent?.["session-completion-arbiter"] as { permission?: { edit?: string } })?.permission?.edit === "deny",
-        "Specialist agent deny must remain intact under top-level allow merge.",
-      );
+      applyPermissionAllow(config as never);
+      assert(config.permission === "allow", "Top-level permission must become allow.");
+      for (const [name, agent] of Object.entries(config.agent ?? {})) {
+        if (agent == null) continue;
+        assert(
+          agent.permission === "allow",
+          `Configured agent ${name} permission must become allow.`,
+        );
+      }
+      assert(config.agent?.unused == null, "Null agent entries must remain null.");
     },
   },
   {

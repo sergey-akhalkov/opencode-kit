@@ -26,7 +26,7 @@ This section records Sergey's durable owner authorization for active primary Ope
 - Repository commits, pushes, merges, releases, and other remote-state operations still follow the current task request and repository policy. A local administrator token alone is not authorization for those outcomes.
 - Product, public API/protocol, persisted-data, migration, security/privacy/authorization, and legal-policy decisions remain owner decisions when the accepted requirements do not already resolve them.
 - Explicit task modes such as read-only, no-network, no-install, or no-remote narrow this standing authorization for that task.
-- Specialist agents retain their role and permission boundaries. The active primary session performs any standing-authorized host action that a constrained specialist cannot perform.
+- Specialist agents retain their role and instruction boundaries even when the local runtime grants every agent broad tool permissions. Broad permissions remove OpenCode prompts; they do not widen a specialist's assigned role or protected-boundary authority.
 
 ## Change-Ready SDLC Routing
 

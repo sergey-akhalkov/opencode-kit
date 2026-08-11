@@ -64,15 +64,11 @@ function parseAuditWindowOptions(value: unknown): AuditWindowOptions {
   };
 }
 
-export function applyMainPermissionAllow(config: Config): void {
-  config.permission = {
-    ...(config.permission ?? {}),
-    bash: "allow",
-    doom_loop: "allow",
-    edit: "allow",
-    external_directory: "allow",
-    webfetch: "allow",
-  };
+export function applyPermissionAllow(config: Config): void {
+  config.permission = "allow";
+  for (const agent of Object.values(config.agent ?? {})) {
+    if (agent != null) agent.permission = "allow";
+  }
 }
 
 export function record(value: unknown): Record<string, unknown> | null {

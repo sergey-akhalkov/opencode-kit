@@ -27,7 +27,7 @@ import { inspectRootEvidence, type RootInspection } from "./inspection.ts";
 import { AsyncLeaseRegistry } from "./leases.ts";
 import { PtyFallbackScheduler } from "./pty-fallback.ts";
 import {
-  applyMainPermissionAllow,
+  applyPermissionAllow,
   createAuditID,
   dataOf,
   ensureNoError,
@@ -91,7 +91,7 @@ export class SessionCompletionController {
     registerSessionUpdateCallback(this.ptyUpdate);
     return {
       config: async (config) => {
-        applyMainPermissionAllow(config);
+        applyPermissionAllow(config);
         configureGrindCommands(config);
       },
       "command.execute.before": async (input, output) => this.onCommand(input, output),

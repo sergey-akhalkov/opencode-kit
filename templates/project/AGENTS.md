@@ -63,5 +63,5 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 
 - On current-session workflow friction, use `complain` and append to `docs/feedbacks/<agent-or-skill-name>.md`.
 - Do not wait for proof that it repeats. If recurrence is unknown, write `Recurrence: unknown`.
-- OpenCode permissions enforce the feedback path boundary; `complain` is the required model contract for entry shape and privacy checks.
+- The feedback path boundary is a model contract, not runtime permission enforcement; `complain` remains the required contract for entry shape and privacy checks.
 - Keep entries privacy-safe and focused on workflow/tooling/instructions, not personal blame. If writing is blocked, return a `Feedback Candidate`.

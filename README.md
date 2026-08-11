@@ -90,7 +90,7 @@ Keep project-specific skills out of `global/` unless their descriptions explicit
 
 The kit owns three OpenCode config files within a broader additive OpenCode source model:
 
-- `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. Use it for workspace-specific settings such as the local model override and `permission: ask` policy.
+- `opencode.json` (repo root) — the workspace config. OpenCode loads this when run inside this repository. It keeps workspace-specific settings such as the local model override but does not override the global `permission: allow` policy.
 - `global/opencode.json.template` — the portable autonomy-first default that ships with the kit. It declares the GPT-5.6 Sol main model default, Serena and Codebase Memory MCPs, compaction, watcher, tool output, and `permission: allow`. It provides permissive tool access, not hard sandbox enforcement. Never edit this file for machine-specific overrides.
 - `global/opencode.json` — the machine-local config (gitignored). Provisioned from `global/opencode.json.template` on first install and editable for local provider, MCP, permission, and review-environment settings.
 
@@ -219,7 +219,7 @@ OpenCode agents are loaded from project or global agent folders. Copy selected f
 
 Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default with a scoped `docs/feedbacks/**` write exception through `complain`; `implementation-worker` and `sdet-quality-engineer` are separately validated write-capable exceptions (production-only and test-only respectively), `troubleshooter` remains an escalation write-capable exception, and `final-candidate-reviewer` is an optional read-only risk reviewer.
 
-OpenCode permissions enforce the `docs/feedbacks/**` path boundary; `complain` is the required model contract for entry shape and privacy checks. Use a semantic plugin/tool later if hard append-only or skill-mediated enforcement is required.
+The `docs/feedbacks/**` path boundary is a model contract, not runtime permission enforcement; `complain` remains the required contract for entry shape and privacy checks. Use a semantic plugin/tool later if hard append-only or skill-mediated enforcement is required.
 
 Global install is enough for fresh projects: when `docs/feedbacks` is missing, agents use the scoped edit/add-file path to create `docs/feedbacks/<agent-or-skill-name>.md` on first feedback write. Project bootstrap only pre-creates a README for discoverability.
 
@@ -464,7 +464,7 @@ When TUI toast support is available, status transitions are shown there. The sam
 Operational notes:
 
 - Ordinary conversation needs no action: leave the root disabled. Use `/enable-grind` only when autonomous completion enforcement is wanted, then `/disable-grind` to return to normal chat.
-- Main permission defaults are normalized to `allow` by the guard config hook. Explicit specialist-agent restrictions still apply; the hidden arbiter has no registered tools.
+- Main and configured-agent permission defaults are normalized to `allow` by the guard config hook. Specialist role boundaries still apply as model instructions; the hidden arbiter remains tool-free by its prompt contract rather than a runtime permission gate.
 - Plugin, agent, dependency, or config changes require a new OpenCode process. Updating kit files does not activate them in an already-running owner session.
 - If a root remains `waiting-async`, inspect current `pty_list`, background children, and whether the matching synthetic result/exit notification reached the root. Unknown liveness intentionally remains fail-closed.
 - If a root remains `audit-retrying`, verify the profile's arbiter provider/model is connected and available, then inspect the retained child metadata and the owning-boundary error. Do not paste a guessed verdict into the root.

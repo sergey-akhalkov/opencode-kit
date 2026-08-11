@@ -18,6 +18,5 @@
     "max_lines": 1000,
     "max_bytes": 24000
   },
-  "lsp": true,
-  "permission": "ask"
+  "lsp": true
 }
