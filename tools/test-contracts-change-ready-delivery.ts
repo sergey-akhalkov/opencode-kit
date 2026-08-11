@@ -112,6 +112,43 @@ function resolveSessionCompletionGuardHistoryPaths(): string[] {
   return found;
 }
 
+/**
+ * Model-facing surfaces for admitted session-derived improvement persistence.
+ * Compaction uses `global/opencode.json.template` agent prompt as its real entry
+ * point (not AGENTS.md alone); missing markers there drop the write-unavailable
+ * fallback required by the non-deferrable preserve-at-compaction invariant.
+ */
+  const SESSION_IMPROVEMENT_PERSISTENCE_SURFACES = [
+  "global/AGENTS.md",
+  ".opencode/skills/openspec-apply-change/SKILL.md",
+  ".opencode/commands/opsx-apply.md",
+  ".opencode/skills/openspec-archive-change/SKILL.md",
+  // Apply completion points operators at `/opsx-archive`; that command is a real
+  // archive entry point and must not skip pre-helper pending reconciliation.
+  ".opencode/commands/opsx-archive.md",
+  "global/opencode.json.template",
+] as const;
+
+/** Archive skill + slash command must both refuse complete archive over unpersisted admits. */
+const SESSION_IMPROVEMENT_ARCHIVE_SURFACES = [
+  ".opencode/skills/openspec-archive-change/SKILL.md",
+  ".opencode/commands/opsx-archive.md",
+] as const;
+
+const SESSION_IMPROVEMENT_REQUIRED_MARKERS = [
+  "Pending Improvement Tasks",
+  "Session-Derived Improvements",
+  "Owner Blocker",
+] as const;
+
+const SESSION_IMPROVEMENT_AGENTS_SAFETY_MARKERS = [
+  "no improvement task may preempt",
+  "do not mutate silently",
+  "All admitted tasks still remain mandatory before normal complete archive",
+  "direct causal link to `Original User Goal`",
+  "no scope expansion",
+] as const;
+
 export const changeReadyDeliveryContractTests: TestCase[] = [
   {
     name: "contracts: current copied authority passes active structural checks",
@@ -238,6 +275,66 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       );
       const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
       assert(!agents.includes("session-delivery-reviewer"), "Loaded global authority must not route the retired reviewer.");
+    },
+  },
+  {
+    name: "contracts: admitted session improvements stay durable across apply/archive and compaction entry point",
+    run: () => {
+      for (const relative of SESSION_IMPROVEMENT_PERSISTENCE_SURFACES) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assertTokens(
+          text,
+          SESSION_IMPROVEMENT_REQUIRED_MARKERS,
+          `${relative} missing session-improvement persistence marker`,
+        );
+        assert(
+          !/remain only in (the )?summary|summary-only disposition|may remain only in/i.test(text),
+          `${relative} must not authorize leaving an admitted non-selected candidate summary-only`,
+        );
+      }
+
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      assertTokens(
+        agents,
+        SESSION_IMPROVEMENT_AGENTS_SAFETY_MARKERS,
+        "global/AGENTS.md missing session-improvement safety/admission marker",
+      );
+
+      for (const relative of SESSION_IMPROVEMENT_ARCHIVE_SURFACES) {
+        const archive = fs.readFileSync(path.join(root, relative), "utf8");
+        assert(
+          archive.includes("Before invoking the archive helper") ||
+            archive.includes("Before invoking the deterministic archive helper") ||
+            /before invoking .*archive helper/i.test(archive),
+          `${relative} must reconcile session-derived improvements before the deterministic helper`,
+        );
+        assert(
+          archive.includes("every persisted improvement task is checked") ||
+            /every persisted improvement task is checked/i.test(archive),
+          `${relative} must refuse complete archive while improvement tasks remain unchecked`,
+        );
+        assert(
+          archive.includes("Pending Improvement Tasks"),
+          `${relative} must inspect Pending Improvement Tasks before complete archive`,
+        );
+      }
+
+      // Compaction agent loads the template prompt, not AGENTS.md; one Next-Session
+      // Action remains for Live-Attempt Gate order and must not drop other admits.
+      const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
+      assert(
+        template.includes("Next-Session Action"),
+        "Compaction prompt must still emit one Next-Session Action for gate ordering",
+      );
+      assert(
+        template.includes("Live-Attempt Gate: clear | blocked | unknown"),
+        "Compaction prompt must retain Live-Attempt Gate classification",
+      );
+      assert(
+        /all admitted|every admitted|every still-admissible|Pending Improvement Tasks/i.test(template) &&
+          template.includes("Pending Improvement Tasks"),
+        "Compaction prompt must require Pending Improvement Tasks for every not-yet-persisted admitted candidate",
+      );
     },
   },
 ];

@@ -14,6 +14,13 @@ Archive a completed OpenSpec change through the portable deterministic archive t
 2. Resolve the portable helper from the active kit global source as `<global-source>/bin/openspec-archive.ts`. If that file is unavailable, use an equivalent project-installed adapter only when its behavior is already trusted and documented; otherwise stop as blocked.
 3. Resolve one existing trusted aggregate project-validation argv from project configuration such as `opencode-dev-kit/adapter.json`, `opencode-dev-kit/validation.md`, or a repository-native validation script. Do not guess a package manager or invent a shell expression. If project validation is genuinely not applicable, retain a concrete reason for `--validation-not-applicable`.
 
+## Reconcile Session-Derived Improvements
+
+- Before invoking the archive helper, inspect the current session and continuation for admitted candidates and `Pending Improvement Tasks`.
+- Persist every still-admissible item owned by the active change as an unchecked task under `## Session-Derived Improvements` with `Trigger/Evidence`, `Why`, `Prerequisites`, `Scope/Non-Goals`, `Implementation`, `Observable Proof`, and `Validation`; then stop archive and return to apply until all such tasks are implemented and proven.
+- If a candidate targets another repository, expands accepted outcome, or crosses a protected boundary, record the exact `Owner Blocker` and stop for an authorized implementation path or explicit owner scope change. Never drop a non-selected candidate or leave it only in summary prose.
+- Invoke the deterministic archive helper only after this reconciliation finds no unpersisted admitted candidate and every persisted improvement task is checked with current evidence.
+
 ## Execute
 
 Run exactly one portable archive invocation:

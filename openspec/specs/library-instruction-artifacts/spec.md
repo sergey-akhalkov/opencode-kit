@@ -36,24 +36,38 @@ The current canonical loop SHALL contain 12 steps through `Process Improvement`,
 ### Requirement: Compaction analyzes improvement across three directions and two targets
 Every compaction summary SHALL evaluate quality, cycle speed, and token economy for both the active working repository and `opencode-kit`. Each of the six cells SHALL record observed session evidence, the smallest cheap improvement, expected benefit, cost/risk, or `none` when the session supplies no supporting evidence.
 
-An improvement candidate SHALL be admitted only when it is local, reversible, low-cost, and causally linked to an observed loss or opportunity. The summary SHALL NOT invent timing, recurrence, savings, or root cause.
+An improvement candidate SHALL be admitted only when it is local, reversible, low-cost, causally linked to an observed loss or opportunity and the original user goal, and does not expand accepted scope. The summary SHALL NOT invent timing, recurrence, savings, or root cause.
 
-At next-session start, the agent SHALL verify the candidates against `Original User Goal` and MAY execute at most one highest-ROI working-repository improvement when it directly accelerates that goal and does not expand scope. An `opencode-kit` candidate SHALL remain visible but SHALL NOT become the next action while an unrelated project goal is incomplete unless the kit defect directly blocks that goal or the owner explicitly included kit work.
+When an identifiable writable active OpenSpec change owns an admitted improvement, the main session SHALL immediately append an unchecked item under `## Session-Derived Improvements` in that change's `tasks.md`. The item SHALL state `Trigger/Evidence`, `Why`, `Prerequisites`, `Scope/Non-Goals`, `Implementation`, `Observable Proof`, and `Validation`, plus `Owner Blocker` only when applicable. It SHALL remain unchecked until implementation and its stated proof and validation are complete.
+
+Automatic compaction SHALL emit every not-yet-persisted admitted candidate under `Pending Improvement Tasks` because compaction cannot call tools. The next session SHALL reconcile all such entries against `Original User Goal` and persist every still-admissible entry before substantial work. It SHALL NOT silently select one candidate and discard the remainder.
+
+An improvement that belongs to another repository, expands outcome, or crosses a protected boundary SHALL NOT be silently implemented in the active change. The entry SHALL identify the exact target or owner blocker, and normal completion SHALL wait for an authorized scoped implementation path or an explicit owner change to accepted scope.
 
 #### Scenario: Session provides evidence in every direction
-- **WHEN** a session observes a quality rework cause, a repeated slow loop, and duplicated context or noisy output
-- **THEN** compaction records evidence-backed candidate improvements for all applicable working-repository and kit cells
-- **AND** the next session selects no more than one admissible action.
+- **WHEN** a session observes multiple distinct working-repository improvements and each passes the admission gate
+- **THEN** every admitted improvement is appended to the owning active change's `tasks.md` with the required evidence and completion fields
+- **AND** no candidate is dropped merely because another candidate has higher ROI.
 
 #### Scenario: Session provides no evidence for a cell
 - **WHEN** the session contains no observation supporting an improvement in one target and direction
 - **THEN** that cell reports `none`
-- **AND** it does not manufacture a generic best practice.
+- **AND** it does not manufacture a generic best practice or task.
 
 #### Scenario: Kit improvement would distract from incomplete project work
 - **WHEN** the original project goal remains incomplete and a non-blocking kit improvement is available
 - **THEN** the next action remains the highest-value project-goal action
 - **AND** the kit candidate stays recorded without mutation.
+
+#### Scenario: Compaction cannot write the active task file
+- **WHEN** automatic compaction admits one or more improvements but cannot call file tools
+- **THEN** it emits each complete task record under `Pending Improvement Tasks`
+- **AND** the next active session persists every still-admissible entry before substantial work.
+
+#### Scenario: Kit improvement does not belong to the working change
+- **WHEN** an `opencode-kit` candidate is observed while an unrelated project change is active
+- **THEN** the agent does not mutate kit files or pretend the project change owns that implementation
+- **AND** the active task record identifies the target/owner blocker that must be resolved before normal completion or explicit scope change.
 
 ### Requirement: Structural validation and behavior evaluation have separate authority
 The kit SHALL permit deterministic TypeScript validators, schemas, fixtures, inventories, and tests for explicit structural facts, official config shape, exact safety invariants, mirror drift, and stable machine-readable output. Such helpers SHALL NOT score, rank, infer, or optimize instruction or process effectiveness.
@@ -338,17 +352,17 @@ This change SHALL not increase the token proxy of `global/AGENTS.md` above 13,27
 - **AND** semantic review SHALL confirm that removed text is superseded rather than an unrelated safety deletion.
 
 ### Requirement: Continuous improvement serves the operating priorities
-Continuous learning, workflow feedback, and deterministic automation SHALL remain mechanisms serving quality, autonomy, and speed rather than a mandatory fourth stage or peer priority. Improvement capture SHALL NOT delay the current accepted outcome unless the current defect itself is critical or non-deferrable.
+Continuous learning, workflow feedback, and deterministic automation SHALL remain mechanisms serving quality, autonomy, and speed rather than a mandatory fourth stage or peer priority. A candidate that fails the improvement admission gate SHALL NOT delay the accepted outcome. A candidate that passes that gate during an active OpenSpec change becomes accepted completion scope through its evidence-rich task and SHALL be implemented before normal completion unless an exact protected-boundary or target-ownership blocker requires owner resolution.
 
 #### Scenario: Repeated manual step is locally replaceable
-- **WHEN** a small deterministic helper is necessary for the accepted outcome or directly replaces repeated in-scope manual work
-- **THEN** the agent MAY implement it within the smallest sufficient dependency closure
-- **AND** SHALL verify its explicit inputs, outputs, stable ordering, and failure behavior.
+- **WHEN** a small deterministic helper is necessary for the accepted outcome or directly replaces repeated in-scope manual work and passes the admission gate
+- **THEN** the agent SHALL add and implement the corresponding session-derived task within the smallest sufficient dependency closure
+- **AND** SHALL verify its explicit inputs, outputs, stable ordering, and failure behavior before checking the task.
 
 #### Scenario: Broader reusable improvement is outside scope
-- **WHEN** an improvement is useful but not necessary for the current outcome or invariant
-- **THEN** it SHALL be captured through the approved follow-up mechanism without delaying handoff
-- **AND** SHALL NOT silently expand the product candidate.
+- **WHEN** an improvement is useful but fails the no-scope-expansion or target-ownership admission condition
+- **THEN** it SHALL NOT silently expand the product candidate or disappear as advisory prose
+- **AND** its task record SHALL name the exact owner disposition needed before normal completion or an explicit change to accepted scope.
 
 ### Requirement: Repository maintainer authority requires portable workflow tooling
 
@@ -474,4 +488,38 @@ Loaded main-session authority SHALL require a current completion-guard continuat
 - **WHEN** main receives a current synthetic continuation with unresolved requirement refs
 - **THEN** main SHALL continue the bounded work or invoke the required troubleshooter route
 - **AND** a production mutation or new human requirement SHALL require a new completion audit.
+
+### Requirement: Scoped deduplication artifacts preserve lazy routing
+The global kit SHALL provide one `deduplication-audit` skill and one `/dedup` command with valid loader metadata, an explicit scoped trigger, and a read-only output contract. The workflow SHALL stay unloaded for unrelated trivial fixes and SHALL not duplicate the exhaustive `codebase-audit-loop` contract.
+
+#### Scenario: Global loader discovers the new artifacts
+- **WHEN** OpenCode starts with `OPENCODE_CONFIG_DIR` pointing at the kit `global/` source
+- **THEN** its skill inventory SHALL include `deduplication-audit`
+- **AND** its command inventory SHALL include `/dedup` after restart.
+
+#### Scenario: Command carries the whole scope argument
+- **WHEN** the user invokes `/dedup src one`
+- **THEN** the command SHALL pass the complete argument text as scope intent to the lazy skill
+- **AND** it SHALL not reinterpret the command as an exhaustive audit request.
+
+### Requirement: Deduplication structural checks do not claim behavioral proof
+Deterministic contract tests SHALL verify skill metadata, command routing, candidate classifications, recommendation/output fields, reviewer reuse, forbidden agent/upstream-skill artifacts, and trivial-fix opt-out wording. They SHALL NOT claim that those markers prove semantic classification or runtime behavior.
+
+#### Scenario: Required safety marker is removed
+- **WHEN** the skill omits the rule that clone output is not semantic-equivalence proof or the command permits automatic production editing
+- **THEN** focused contract validation SHALL fail and name the affected artifact
+- **AND** the failure SHALL remain structural evidence only.
+
+### Requirement: Same-model evaluation covers deduplication decisions
+The instruction change SHALL be evaluated with bounded same-model baseline/candidate workflows using identical model, input, workspace shape, and tool envelope for local existing owner, exact clone, near clone with different semantics, unique compatibility test, no-match helper, and trivial fix scenarios. Candidate retention SHALL require the expected scoped decision and absence of unauthorized source mutation.
+
+#### Scenario: Candidate merges semantic near clones
+- **WHEN** the candidate recommends merging the near-clone scenario solely because the text is similar
+- **THEN** behavior evaluation SHALL fail that scenario
+- **AND** the instruction candidate SHALL not qualify until corrected and re-proved.
+
+#### Scenario: Candidate adds trivial-fix ceremony
+- **WHEN** the candidate loads the skill, invokes `jscpd`, or dispatches a reviewer for the unrelated trivial-fix scenario
+- **THEN** behavior evaluation SHALL fail the proportionality oracle
+- **AND** the workflow SHALL remain at `development` or `MVP` rather than RC.
 

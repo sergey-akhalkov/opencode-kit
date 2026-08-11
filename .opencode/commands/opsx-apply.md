@@ -51,7 +51,7 @@ Implement tasks from an OpenSpec change.
 
    **Handle states:**
    - If `state: "blocked"` (missing artifacts): show message, suggest using `/opsx-continue`
-   - If `state: "all_done"`: congratulate, suggest archive
+   - If `state: "all_done"`: treat it as provisional until session-derived improvements are reconciled; suggest archive only when none must be added
    - Otherwise: proceed to implementation
 
 5. **Read context files**
@@ -62,6 +62,8 @@ Implement tasks from an OpenSpec change.
    - Other schemas: follow the contextFiles from CLI output
 
    Read `<changeRoot>/history.md` before substantial work. If it is missing, create it with `# Strategy History` and no invented attempts. Reconcile any `Pending Strategy History` entries from compaction before continuing.
+
+   Reconcile every admitted candidate from the current session and `Pending Improvement Tasks` before substantial work. Append every still-admissible owned item as an unchecked task under `## Session-Derived Improvements` in the active `tasks.md`; never retain only the highest-ROI item. Each task must state `Trigger/Evidence`, `Why`, `Prerequisites`, `Scope/Non-Goals`, `Implementation`, `Observable Proof`, and `Validation`, plus `Owner Blocker` only when applicable. If a candidate belongs to another repository, expands accepted outcome, or crosses a protected boundary, record that exact blocker without mutating across it. Do not silently drop the candidate or call the change complete.
 
 6. **Show current progress**
 
@@ -81,6 +83,8 @@ Implement tasks from an OpenSpec change.
    - Run its applicable focused validation, or record the exact reasoned manual/external gate
    - Mark the task complete only after required proof and validation pass: `- [ ]` → `- [x]`
    - Continue to next task
+
+   When an improvement candidate becomes admissible during implementation, append it immediately using the same section and fields. It is accepted completion scope; implement and prove it before normal completion while preserving dependency and safety-gate order.
 
    **If proof or validation fails:**
    - Leave the task unchecked
@@ -103,7 +107,7 @@ Implement tasks from an OpenSpec change.
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done: report that implementation tasks are complete and archive checks are next
+   - If all done after a final session-derived improvement reconciliation: report that implementation tasks are complete and archive checks are next
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**
@@ -164,6 +168,7 @@ What would you like to do?
 - If task is ambiguous, pause and ask before implementing
 - If implementation reveals issues, pause and suggest artifact updates
 - Keep code changes minimal and scoped to each task
+- Persist every admitted session-derived improvement immediately and complete all such tasks before archive; never leave a non-selected candidate only in summary prose
 - Update a task checkbox only after its required observable proof and focused validation pass
 - Do not infer RC/stable from completed task checkboxes; this command does not complete the separate archive and stable-handoff boundary
 - Pause on errors, blockers, or unclear requirements - don't guess

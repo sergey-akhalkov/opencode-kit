@@ -46,6 +46,7 @@ Before MVP, correct only the accepted happy path and applicable non-deferrable i
 After MVP:
 
 - incomplete accepted scope remains required work;
+- evidence-backed session improvements admitted into the active change's `tasks.md` under the global persistence contract are accepted scope and remain required until implemented and proven or the owner explicitly changes scope;
 - a reproduced accepted-outcome, critical, or non-deferrable defect authorizes its smallest correction;
 - known non-critical bugs, optional coverage, pre-existing maintainability debt, style, wording, report formatting, optional diagnostic polish, optimization, and future-scale work are recorded and parked;
 - parked non-critical work never blocks RC or stable.

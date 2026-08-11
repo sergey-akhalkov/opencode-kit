@@ -20,6 +20,13 @@ Archive a completed OpenSpec change through the portable deterministic archive t
 - Resolve the target project root and the active kit global source. The helper is `<global-source>/bin/openspec-archive.ts`.
 - Resolve one trusted aggregate project-validation argv from the project adapter or repository-native validation entrypoint. Never guess npm, a shell, or a command. A genuinely non-applicable validation boundary requires a concrete reason.
 
+## Reconcile Session-Derived Improvements
+
+- Before invoking the archive helper, inspect the current session and continuation for admitted candidates and `Pending Improvement Tasks`.
+- Persist every still-admissible item owned by the active change as an unchecked task under `## Session-Derived Improvements` with `Trigger/Evidence`, `Why`, `Prerequisites`, `Scope/Non-Goals`, `Implementation`, `Observable Proof`, and `Validation`; then stop archive and return to apply until all such tasks are implemented and proven.
+- If a candidate targets another repository, expands accepted outcome, or crosses a protected boundary, record the exact `Owner Blocker` and stop for an authorized implementation path or explicit owner scope change. Never drop a non-selected candidate or leave it only in summary prose.
+- Invoke complete archive only after this reconciliation finds no unpersisted admitted candidate and every persisted improvement task is checked with current evidence.
+
 ## Execute One Owner
 
 ```text

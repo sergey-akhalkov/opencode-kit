@@ -31,4 +31,5 @@ rules:
     - Put the smallest complete happy path and observable runtime proof before broad testing or optional review.
     - Put the earliest safely reachable real check before dependent behavior; if deferred, name the exact blocker, earliest unblocking task, and dependency-chain stop condition.
     - State the exact observable proof and applicable focused validation for each behavior task; keep it unchecked until both pass.
+    - Put admitted session-derived improvements under `## Session-Derived Improvements` and state Trigger/Evidence, Why, Prerequisites, Scope/Non-Goals, Implementation, Observable Proof, Validation, and any exact Owner Blocker.
     - Material test artifacts belong to a fresh test-only SDET after current proof and accepted-scope completion.
