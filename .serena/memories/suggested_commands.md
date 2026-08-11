@@ -9,4 +9,3 @@
 - Full pre-push gate: `npm run prepush:validate`.
 - Inspect active OpenCode source layers: `npm run opencode:sources`.
 - Preview/check model profile: `npm run opencode:profile -- quality-independent --check` and `npm run opencode:profile -- quality-independent --explain`.
-- On native Windows, repository guidance prefers explicit `rtk <command>` for shell-heavy read-only commands.

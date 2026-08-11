@@ -174,7 +174,6 @@ npm run project:inventory -- --root <project-path> --format markdown
 - The repository-level maintainer rules live in `REPO_AGENTS.md`. `global/AGENTS.md` is the kit runtime instruction file OpenCode loads from the custom directory; other loader-visible instructions must be inventoried for collisions. Scripts that previously referenced the root `AGENTS.md` must use `REPO_AGENTS.md` instead.
 - Use the Universal Development Loop instead of choosing among competing workflows.
 - Use `project:inventory`, `code-quality:inventory`, `glob`, and `grep` before broad file reads.
-- On native Windows, use `rtk <command>` explicitly for shell-heavy read-only commands; do not rely on hook auto-rewrite.
 - Install the full kit by default, but load heavyweight skills/subagents only when they reduce total work.
 - Main is the default production author for Ordinary Small and Material. Optional `implementation-worker` covers evidenced isolated production-only slices with exact non-overlapping write scope, representative proof boundary, clear acceptance criteria, and a focused validation gate. Keep research, questions, ordinary review-only work, and proven-inert content direct in the main session.
 - Run focused validation first; run broad validation when the change crosses boundaries.

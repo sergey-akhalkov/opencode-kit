@@ -43,7 +43,7 @@ This repository stores reusable OpenCode skills, subagents, and instruction temp
 
 ## Token Efficiency
 
-- Compact by default: outcome, changed files, validation, blockers, necessary rationale. Prefer targeted search/reads and OpenCode's bounded tool output. On native Windows use `rtk <command>` explicitly. Preserve exact commands, paths, errors, and safety warnings.
+- Compact by default: outcome, changed files, validation, blockers, necessary rationale. Prefer targeted search/reads and OpenCode's bounded tool output. Preserve exact commands, paths, errors, and safety warnings.
 
 ## Autonomous Work Contract
 

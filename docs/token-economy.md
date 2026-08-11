@@ -8,7 +8,6 @@ Speed means time to a verified working result, fewer owner interruptions, fewer 
 - Gather inventories before broad reads.
 - Keep responses compact by default and remove filler, while preserving exact commands, paths, errors, code, and safety warnings.
 - Prefer `glob`, `grep`, and targeted file reads over scanning whole trees manually.
-- On native Windows, use `rtk <command>` explicitly for shell-heavy read-only commands; hook auto-rewrite is not supported there.
 - Install the full kit globally, but load heavyweight/domain skills only when they reduce total work.
 - Run one relevant reviewer gate by risk, not all reviewers.
 - Keep handoffs compact: outcome, changed files, evidence, validation, residual risks.
