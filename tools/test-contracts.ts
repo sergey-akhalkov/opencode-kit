@@ -50,6 +50,7 @@ import {
 import { changeReadyContractTests } from "./test-contracts-change-ready.ts";
 import { identityRecipeContractTests } from "./test-contracts-change-ready-identity.ts";
 import { changeReadyDeliveryContractTests } from "./test-contracts-change-ready-delivery.ts";
+import { deduplicationContractTests } from "./test-contracts-deduplication.ts";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -627,6 +628,7 @@ const tests: TestCase[] = [
   ...changeReadyContractTests,
   ...identityRecipeContractTests,
   ...changeReadyDeliveryContractTests,
+  ...deduplicationContractTests,
   {
     name: "contracts: troubleshooter file, denied keys, and required text are byte-equal",
     run: () => {

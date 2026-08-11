@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "pre-dedup-baseline",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/agents/code-quality-reviewer.md": "56a0d1020434314697a27db1abfcb6ab39d7ff08eec954db0e17bc2c25e7195a",
+      "global/commands/dedup.md": null,
+      "global/skills/deduplication-audit/SKILL.md": null,
+      "tools/proofs/deduplication-audit.ts": "6be0d15f6818a43aee380722163612c9f1e885764a8bb617819953364ba2bc52"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_01034c77effelFC9C4K3TvT7IS",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "dedup-baseline-no-match-helper",
+      "--command",
+      "dedup",
+      "src"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786434505027,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb493b001ei4ELkpo34q5Pj\",\"messageID\":\"msg_fefcb413a001gDmVXgIQY3Vry6\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434505571,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb493f001f65r0jJ16nk1vr\",\"messageID\":\"msg_fefcb413a001gDmVXgIQY3Vry6\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"text\",\"text\":\"I’ll inventory `src`, then compare repeated implementations and report only evidence-backed reduction candidates. No files will be changed.\",\"time\":{\"start\":1786434505023,\"end\":1786434505562},\"metadata\":{\"openai\":{\"itemId\":\"msg_0c675bccea479f5c016a7ad3c97b38819192ac3f2b63a44cb6\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434506622,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_NL9CX86e3FR8AOS5hB1gVcKL\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"src/**/*\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\one-use-helper.ts\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-1MiW3t\\\\project\",\"time\":{\"start\":1786434506488,\"end\":1786434506576}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c675bccea479f5c016a7ad3cab69481918c1bd9894790180b\"}},\"id\":\"prt_fefcb4e9f001K7zn0q1y1SOAbm\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"messageID\":\"msg_fefcb413a001gDmVXgIQY3Vry6\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434506622,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb4f550016w6GddoX99Qqjz\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefcb413a001gDmVXgIQY3Vry6\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"step-finish\",\"tokens\":{\"total\":18619,\"input\":18552,\"output\":49,\"reasoning\":18,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434507834,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb54330012vWaHoMhwEie8C\",\"messageID\":\"msg_fefcb4f63001Dcbt2OeuIFI7DD\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434509177,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_GEtqTowQmYznZWZKmP9y5UkV\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\one-use-helper.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\one-use-helper.ts</path>\\n<type>file</type>\\n<content>\\n1: export function fixtureOnlyGlyph(value: string): string {\\n2:   return value.replaceAll('::glyph::', '#').trim();\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function fixtureOnlyGlyph(value: string): string {\\n  return value.replaceAll('::glyph::', '#').trim();\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\one-use-helper.ts\",\"text\":\"export function fixtureOnlyGlyph(value: string): string {\\n  return value.replaceAll('::glyph::', '#').trim();\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-1MiW3t\\\\project\\\\src\\\\one-use-helper.ts\",\"time\":{\"start\":1786434509098,\"end\":1786434509148}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0aeddd02aa0d212e016a7ad3cccdfc8191b82762588eb377e8\"}},\"id\":\"prt_fefcb563c0018F9oeq1d6ShV4m\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"messageID\":\"msg_fefcb4f63001Dcbt2OeuIFI7DD\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434509177,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb5961001UfNB33h61KvpQt\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefcb4f63001Dcbt2OeuIFI7DD\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"step-finish\",\"tokens\":{\"total\":18731,\"input\":745,\"output\":56,\"reasoning\":10,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434510503,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb5ea0001qrFRp2enh9s9xB\",\"messageID\":\"msg_fefcb5970001F2Kdcw7qygK9lI\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434518070,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb760a001w0xOO9t6KPg9pH\",\"messageID\":\"msg_fefcb5970001F2Kdcw7qygK9lI\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"text\",\"text\":\"**Duplication Findings**\\nNo duplication candidates found within `src`.\\n\\n- `src/one-use-helper.ts:1-3` is the sole implementation in scope.\\n- Meaningful differences: not applicable; no comparable implementation exists.\\n- Recommendation: retain unchanged. Duplication evidence does not justify extraction, consolidation, deletion, or inlining.\\n- Proof before any later change: identify all importers, verify exported-API obligations, and test preservation of global `::glyph::` replacement plus trimming behavior.\\n\\nNo files were modified.\",\"time\":{\"start\":1786434516490,\"end\":1786434518067},\"metadata\":{\"openai\":{\"itemId\":\"msg_08db6c49d94da089016a7ad3d4e8b4819189b67dbaa4d61c93\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434518110,\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"part\":{\"id\":\"prt_fefcb7c52001YaQhbuV1CnCG4M\",\"reason\":\"stop\",\"messageID\":\"msg_fefcb5970001F2Kdcw7qygK9lI\",\"sessionID\":\"ses_01034c77effelFC9C4K3TvT7IS\",\"type\":\"step-finish\",\"tokens\":{\"total\":19246,\"input\":917,\"output\":112,\"reasoning\":297,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: jscpd only; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: code-quality-reviewer only",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inventory `src`, then compare repeated implementations and report only evidence-backed reduction candidates. No files will be changed.**Duplication Findings**\nNo duplication candidates found within `src`.\n\n- `src/one-use-helper.ts:1-3` is the sole implementation in scope.\n- Meaningful differences: not applicable; no comparable implementation exists.\n- Recommendation: retain unchanged. Duplication evidence does not justify extraction, consolidation, deletion, or inlining.\n- Proof before any later change: identify all importers, verify exported-API obligations, and test preservation of global `::glyph::` replacement plus trimming behavior.\n\nNo files were modified.",
+    "costs": [
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 19098,
+    "eventCount": 10,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_01034c77effelFC9C4K3TvT7IS"
+    ],
+    "tokens": [
+      {
+        "total": 18619,
+        "input": 18552,
+        "output": 49,
+        "reasoning": 18,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 18731,
+        "input": 745,
+        "output": 56,
+        "reasoning": 10,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 19246,
+        "input": 917,
+        "output": 112,
+        "reasoning": 297,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "src/**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\one-use-helper.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "command": "dedup",
+    "message": "src",
+    "scenario": "no-match-helper"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "hash": "fcc21c0f8f470e530a6b1feb27ed96354e926e953dd491d846287564633a3b65",
+        "path": "src/one-use-helper.ts"
+      }
+    ],
+    "before": [
+      {
+        "hash": "fcc21c0f8f470e530a6b1feb27ed96354e926e953dd491d846287564633a3b65",
+        "path": "src/one-use-helper.ts"
+      }
+    ]
+  }
+}

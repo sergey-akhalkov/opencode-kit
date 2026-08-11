@@ -1,0 +1,56 @@
+{
+  "candidateId": "dedup-candidate-1",
+  "captureKind": "candidate",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "scenarios": [
+    "local-owner",
+    "exact-clone",
+    "semantic-near-clone",
+    "unique-compatibility-test",
+    "no-match-helper",
+    "trivial-fix"
+  ],
+  "sourceHashes": {
+    "global/agents/code-quality-reviewer.md": "56a0d1020434314697a27db1abfcb6ab39d7ff08eec954db0e17bc2c25e7195a",
+    "global/commands/dedup.md": "4f403b94a6b7d75045506a95eea169a293692bde946ef0b1b80be9bd6d3223b3",
+    "global/skills/deduplication-audit/SKILL.md": "ce788616ae0df0689ec6d95c107d209da4d3c52f6e038421a29c8546d0bc5071",
+    "profiles/all.json": "50fb2fadb735d1b384a5e223f1a53a88016772468540af3bedb28346fc90dcfb",
+    "README.md": "073293e65611be98683897a48d0dd81f70ae16947fd9d4681032a0186d54f1a3",
+    "tools/proofs/deduplication-audit.ts": "04b2716ad97b61664f9ef6a65fa76e3ec744df0994ad764ea3bbe9b39aa87784"
+  },
+  "toolPolicy": [
+    "bash: jscpd only; shell metacharacters denied last",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: code-quality-reviewer only",
+    "webfetch: deny"
+  ],
+  "version": 1,
+  "credentials": {
+    "count": 4,
+    "status": 0
+  },
+  "loader": {
+    "agentStatus": 0,
+    "configStatus": 0,
+    "dedupSkillLoaded": true,
+    "expectedSkillLoaded": true,
+    "skillStatus": 0
+  },
+  "permission": {
+    "exactFinalPolicy": true
+  },
+  "agentEnvelope": {
+    "steps": 24
+  },
+  "opencodeVersion": "1.18.16"
+}

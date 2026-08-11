@@ -1,0 +1,1035 @@
+{
+  "baselineComplete": true,
+  "candidateComplete": true,
+  "candidateOraclesPass": true,
+  "note": "Explicit observed facts only. No similarity, semantic-equivalence, confidence, or aggregate quality score is inferred.",
+  "rows": [
+    {
+      "baseline": {
+        "assistantChars": 4990,
+        "cleanup": true,
+        "elapsedMs": 229078,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": true,
+          "reviewer": true,
+          "skill": true
+        },
+        "tokenFacts": [
+          {
+            "total": 18804,
+            "input": 18716,
+            "output": 68,
+            "reasoning": 20,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 20580,
+            "input": 2304,
+            "output": 259,
+            "reasoning": 97,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 25550,
+            "input": 5192,
+            "output": 348,
+            "reasoning": 42,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 26822,
+            "input": 2358,
+            "output": 207,
+            "reasoning": 193,
+            "cache": {
+              "write": 0,
+              "read": 24064
+            }
+          },
+          {
+            "total": 27613,
+            "input": 758,
+            "output": 363,
+            "reasoning": 380,
+            "cache": {
+              "write": 0,
+              "read": 26112
+            }
+          },
+          {
+            "total": 32466,
+            "input": 5308,
+            "output": 770,
+            "reasoning": 276,
+            "cache": {
+              "write": 0,
+              "read": 26112
+            }
+          },
+          {
+            "total": 34983,
+            "input": 2605,
+            "output": 299,
+            "reasoning": 847,
+            "cache": {
+              "write": 0,
+              "read": 31232
+            }
+          },
+          {
+            "total": 37694,
+            "input": 2421,
+            "output": 977,
+            "reasoning": 1016,
+            "cache": {
+              "write": 0,
+              "read": 33280
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assistantChars": 4548,
+        "cleanup": true,
+        "elapsedMs": 212712,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": true,
+          "reviewer": true,
+          "skill": true
+        },
+        "tokenFacts": [
+          {
+            "total": 18819,
+            "input": 18715,
+            "output": 77,
+            "reasoning": 27,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 20522,
+            "input": 2319,
+            "output": 158,
+            "reasoning": 125,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 20977,
+            "input": 788,
+            "output": 188,
+            "reasoning": 33,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 21787,
+            "input": 1057,
+            "output": 460,
+            "reasoning": 302,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 23590,
+            "input": 2706,
+            "output": 321,
+            "reasoning": 595,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 25030,
+            "input": 2193,
+            "output": 632,
+            "reasoning": 189,
+            "cache": {
+              "write": 0,
+              "read": 22016
+            }
+          },
+          {
+            "total": 26878,
+            "input": 2228,
+            "output": 298,
+            "reasoning": 288,
+            "cache": {
+              "write": 0,
+              "read": 24064
+            }
+          },
+          {
+            "total": 30892,
+            "input": 1004,
+            "output": 815,
+            "reasoning": 2961,
+            "cache": {
+              "write": 0,
+              "read": 26112
+            }
+          }
+        ]
+      },
+      "candidateOracleFacts": {
+        "sourceUnchanged": true,
+        "usesReuse": true,
+        "auditLoop": false,
+        "jscpd": true,
+        "reviewer": true,
+        "skill": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "local-owner"
+    },
+    {
+      "baseline": {
+        "assistantChars": 1551,
+        "cleanup": true,
+        "elapsedMs": 74927,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": true,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18782,
+            "input": 18553,
+            "output": 107,
+            "reasoning": 122,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 26322,
+            "input": 8159,
+            "output": 170,
+            "reasoning": 73,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 27274,
+            "input": 1716,
+            "output": 411,
+            "reasoning": 59,
+            "cache": {
+              "write": 0,
+              "read": 25088
+            }
+          },
+          {
+            "total": 28730,
+            "input": 1923,
+            "output": 248,
+            "reasoning": 447,
+            "cache": {
+              "write": 0,
+              "read": 26112
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assistantChars": 4360,
+        "cleanup": true,
+        "elapsedMs": 157735,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": true,
+          "reviewer": true,
+          "skill": true
+        },
+        "tokenFacts": [
+          {
+            "total": 18825,
+            "input": 16157,
+            "output": 87,
+            "reasoning": 21,
+            "cache": {
+              "write": 0,
+              "read": 2560
+            }
+          },
+          {
+            "total": 20639,
+            "input": 2325,
+            "output": 304,
+            "reasoning": 90,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21402,
+            "input": 929,
+            "output": 436,
+            "reasoning": 69,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 22780,
+            "input": 2244,
+            "output": 432,
+            "reasoning": 136,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 24684,
+            "input": 1417,
+            "output": 686,
+            "reasoning": 565,
+            "cache": {
+              "write": 0,
+              "read": 22016
+            }
+          },
+          {
+            "total": 27646,
+            "input": 2637,
+            "output": 935,
+            "reasoning": 1034,
+            "cache": {
+              "write": 0,
+              "read": 23040
+            }
+          }
+        ]
+      },
+      "candidateOracleFacts": {
+        "exactClassification": true,
+        "hasCanonicalOwner": true,
+        "hasRuntimeProof": true,
+        "reviewerUsed": true,
+        "sourceUnchanged": true,
+        "auditLoop": false,
+        "jscpd": true,
+        "reviewer": true,
+        "skill": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "exact-clone"
+    },
+    {
+      "baseline": {
+        "assistantChars": 4027,
+        "cleanup": true,
+        "elapsedMs": 105747,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": true,
+          "reviewer": false,
+          "skill": true
+        },
+        "tokenFacts": [
+          {
+            "total": 18772,
+            "input": 16160,
+            "output": 52,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 2560
+            }
+          },
+          {
+            "total": 20464,
+            "input": 2272,
+            "output": 175,
+            "reasoning": 97,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 20980,
+            "input": 721,
+            "output": 199,
+            "reasoning": 92,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 21463,
+            "input": 1061,
+            "output": 326,
+            "reasoning": 108,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 22882,
+            "input": 2384,
+            "output": 377,
+            "reasoning": 153,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 25357,
+            "input": 2614,
+            "output": 211,
+            "reasoning": 516,
+            "cache": {
+              "write": 0,
+              "read": 22016
+            }
+          },
+          {
+            "total": 27212,
+            "input": 1342,
+            "output": 772,
+            "reasoning": 1034,
+            "cache": {
+              "write": 0,
+              "read": 24064
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assistantChars": 3816,
+        "cleanup": true,
+        "elapsedMs": 123765,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": true,
+          "reviewer": false,
+          "skill": true
+        },
+        "tokenFacts": [
+          {
+            "total": 18819,
+            "input": 16158,
+            "output": 74,
+            "reasoning": 27,
+            "cache": {
+              "write": 0,
+              "read": 2560
+            }
+          },
+          {
+            "total": 20589,
+            "input": 2319,
+            "output": 223,
+            "reasoning": 127,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21256,
+            "input": 846,
+            "output": 135,
+            "reasoning": 307,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 21719,
+            "input": 1337,
+            "output": 373,
+            "reasoning": 41,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 23276,
+            "input": 1604,
+            "output": 371,
+            "reasoning": 309,
+            "cache": {
+              "write": 0,
+              "read": 20992
+            }
+          },
+          {
+            "total": 25176,
+            "input": 1856,
+            "output": 188,
+            "reasoning": 1116,
+            "cache": {
+              "write": 0,
+              "read": 22016
+            }
+          },
+          {
+            "total": 27598,
+            "input": 2535,
+            "output": 802,
+            "reasoning": 1221,
+            "cache": {
+              "write": 0,
+              "read": 23040
+            }
+          }
+        ]
+      },
+      "candidateOracleFacts": {
+        "cautiousClassification": true,
+        "sourceUnchanged": true,
+        "auditLoop": false,
+        "jscpd": true,
+        "reviewer": false,
+        "skill": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "semantic-near-clone"
+    },
+    {
+      "baseline": {
+        "assistantChars": 1803,
+        "cleanup": true,
+        "elapsedMs": 61460,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18654,
+            "input": 18553,
+            "output": 101,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 23736,
+            "input": 5589,
+            "output": 174,
+            "reasoning": 53,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 25066,
+            "input": 1204,
+            "output": 266,
+            "reasoning": 556,
+            "cache": {
+              "write": 0,
+              "read": 23040
+            }
+          },
+          {
+            "total": 26849,
+            "input": 1516,
+            "output": 316,
+            "reasoning": 953,
+            "cache": {
+              "write": 0,
+              "read": 24064
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assistantChars": 4617,
+        "cleanup": true,
+        "elapsedMs": 225044,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": true,
+          "reviewer": true,
+          "skill": true
+        },
+        "tokenFacts": [
+          {
+            "total": 18814,
+            "input": 18719,
+            "output": 58,
+            "reasoning": 37,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 20597,
+            "input": 2314,
+            "output": 256,
+            "reasoning": 107,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21136,
+            "input": 925,
+            "output": 200,
+            "reasoning": 43,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 21546,
+            "input": 1215,
+            "output": 321,
+            "reasoning": 42,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 23946,
+            "input": 1361,
+            "output": 329,
+            "reasoning": 1264,
+            "cache": {
+              "write": 0,
+              "read": 20992
+            }
+          },
+          {
+            "total": 25514,
+            "input": 2494,
+            "output": 816,
+            "reasoning": 188,
+            "cache": {
+              "write": 0,
+              "read": 22016
+            }
+          },
+          {
+            "total": 28251,
+            "input": 2455,
+            "output": 269,
+            "reasoning": 1463,
+            "cache": {
+              "write": 0,
+              "read": 24064
+            }
+          },
+          {
+            "total": 31273,
+            "input": 2803,
+            "output": 897,
+            "reasoning": 1461,
+            "cache": {
+              "write": 0,
+              "read": 26112
+            }
+          }
+        ]
+      },
+      "candidateOracleFacts": {
+        "namesUniqueOracle": true,
+        "retainsOracle": true,
+        "sourceUnchanged": true,
+        "auditLoop": false,
+        "jscpd": true,
+        "reviewer": true,
+        "skill": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "unique-compatibility-test"
+    },
+    {
+      "baseline": {
+        "assistantChars": 675,
+        "cleanup": true,
+        "elapsedMs": 19098,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18619,
+            "input": 18552,
+            "output": 49,
+            "reasoning": 18,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18731,
+            "input": 745,
+            "output": 56,
+            "reasoning": 10,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19246,
+            "input": 917,
+            "output": 112,
+            "reasoning": 297,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assistantChars": 1892,
+        "cleanup": true,
+        "elapsedMs": 71223,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": true,
+          "reviewer": false,
+          "skill": true
+        },
+        "tokenFacts": [
+          {
+            "total": 18771,
+            "input": 18716,
+            "output": 55,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 20478,
+            "input": 2271,
+            "output": 159,
+            "reasoning": 128,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21035,
+            "input": 668,
+            "output": 136,
+            "reasoning": 263,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 21572,
+            "input": 1100,
+            "output": 373,
+            "reasoning": 131,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 22510,
+            "input": 1971,
+            "output": 112,
+            "reasoning": 459,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          },
+          {
+            "total": 23536,
+            "input": 1659,
+            "output": 407,
+            "reasoning": 478,
+            "cache": {
+              "write": 0,
+              "read": 20992
+            }
+          }
+        ]
+      },
+      "candidateOracleFacts": {
+        "noReviewerCeremony": true,
+        "noSpeculativeExtraction": true,
+        "sourceUnchanged": true,
+        "auditLoop": false,
+        "jscpd": true,
+        "reviewer": false,
+        "skill": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "no-match-helper"
+    },
+    {
+      "baseline": {
+        "assistantChars": 338,
+        "cleanup": true,
+        "elapsedMs": 42403,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18636,
+            "input": 18553,
+            "output": 52,
+            "reasoning": 31,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18728,
+            "input": 758,
+            "output": 50,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 18897,
+            "input": 904,
+            "output": 53,
+            "reasoning": 20,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 18974,
+            "input": 1024,
+            "output": 23,
+            "reasoning": 7,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19072,
+            "input": 1099,
+            "output": 53,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19298,
+            "input": 1249,
+            "output": 95,
+            "reasoning": 34,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19412,
+            "input": 418,
+            "output": 50,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          },
+          {
+            "total": 19660,
+            "input": 576,
+            "output": 84,
+            "reasoning": 56,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          },
+          {
+            "total": 20418,
+            "input": 1065,
+            "output": 68,
+            "reasoning": 341,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          }
+        ]
+      },
+      "candidate": {
+        "assistantChars": 583,
+        "cleanup": true,
+        "elapsedMs": 41692,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18735,
+            "input": 16076,
+            "output": 50,
+            "reasoning": 49,
+            "cache": {
+              "write": 0,
+              "read": 2560
+            }
+          },
+          {
+            "total": 18827,
+            "input": 857,
+            "output": 50,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 18965,
+            "input": 1003,
+            "output": 23,
+            "reasoning": 19,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19063,
+            "input": 1090,
+            "output": 53,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19272,
+            "input": 1240,
+            "output": 73,
+            "reasoning": 39,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19418,
+            "input": 424,
+            "output": 50,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          },
+          {
+            "total": 20159,
+            "input": 582,
+            "output": 117,
+            "reasoning": 516,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          }
+        ]
+      },
+      "candidateOracleFacts": {
+        "noAuditLoop": true,
+        "noJscpd": true,
+        "noReviewer": true,
+        "noSkill": true,
+        "sourceUnchanged": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "trivial-fix"
+    }
+  ],
+  "schemaVersion": 1
+}

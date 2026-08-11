@@ -410,3 +410,68 @@ If compaction cannot write files, its summary SHALL emit structured pending hist
 - **WHEN** compaction detects stagnation but has no file-write capability
 - **THEN** the summary includes a structured pending history entry and a different next strategy
 - **AND** the next session persists the entry before continuing implementation.
+
+### Requirement: Maintained planning surfaces preserve shift-left cadence
+
+The canonical Universal Development Loop, reusable project instructions, project template, repository maintainer instructions, qualification skill, roadmap/planning skills, OpenSpec project context, evidence guidance, and quality-gate documentation SHALL route behavior slices toward the earliest safely reachable real boundary. Planning surfaces SHALL require a current fidelity rung, next real boundary, exact blocker and unblocking task when deferred, and a dependency-chain stop rule.
+
+The complete policy SHALL remain in always-loaded `global/AGENTS.md`; other surfaces SHALL contain only concise shared markers or role-specific deltas.
+
+#### Scenario: OpenSpec tasks are generated for a real-backed feature
+
+- **WHEN** a proposal or task graph includes behavior that models, integrates with, or substitutes a real system
+- **THEN** its first dependency-valid tasks minimize time-to-first-real-signal
+- **AND** later dependent behavior does not precede an already reachable safe characterization task.
+
+### Requirement: Shift-left markers are deterministic drift tripwires
+
+The repository validator SHALL require exact shift-left markers in the canonical runtime authority and explicitly maintained mirror list. The validator SHALL report the missing marker and artifact, SHALL inspect operative text rather than fenced examples, and SHALL NOT claim that marker presence proves semantic model behavior.
+
+#### Scenario: Project template drops the real-boundary cadence
+
+- **WHEN** a maintained project template omits the earliest-safe-real-boundary marker
+- **THEN** repository validation fails and names that template
+- **AND** same-model workflow evaluation remains required for semantic adherence.
+
+### Requirement: Behavior evaluation preserves safety and demonstrates cadence
+
+The shift-left instruction change SHALL use a bounded same-model baseline/candidate workflow with identical prompt, model, variant, workspace, and active config. Candidate retention SHALL require preservation of baseline authorization, physical-safety, restoration, cleanup, equivalence, and dependency-stop behavior plus explicit fidelity-ladder and deferred-boundary-unblocker evidence.
+
+#### Scenario: Candidate says test early but bypasses authorization
+
+- **WHEN** candidate output moves a real test earlier but omits separate authorization or applicable safety and restoration gates
+- **THEN** the candidate fails behavior evaluation
+- **AND** the durable instruction change is not qualified.
+
+### Requirement: Completion arbiter is a hidden machine adjudicator
+The `session-completion-arbiter` SHALL be a hidden read-only subagent invoked only by the completion guard. It SHALL return the versioned completion verdict contract and SHALL not be governed as an optional reviewer, manually dispatched as a lifecycle gate, or permitted to edit, test, dispatch agents, ask the user, or approve Development-Stage.
+
+#### Scenario: Arbiter agent is inspected
+- **WHEN** repository validation reads the arbiter frontmatter and body
+- **THEN** it SHALL require the guard-supplied bounded session-delivery evidence, deny all tool/mutation/orchestration/user-question capabilities, omit model pins, and define only completion-adjudication authority
+- **AND** it SHALL not reference the optional leaf-reviewer output contract as its verdict authority.
+
+### Requirement: Automatic guard replaces active delivery-reviewer routing
+Loaded global authority, reusable project instructions, templates, README catalogs, agent inventories, profiles, validators, and current tests SHALL describe the automatic completion guard instead of instructing main to dispatch `session-delivery-reviewer`. The old active agent file SHALL be removed only after current guard proof.
+
+#### Scenario: Active instruction inventory after migration
+- **WHEN** instruction and agent inventories run on the migrated candidate
+- **THEN** they SHALL find `session-completion-arbiter` and automatic guard routing in the maintained active surfaces
+- **AND** they SHALL find no active `session-delivery-reviewer` agent, config key, profile key, validator binding, or invocation instruction.
+
+### Requirement: Historical delivery-reviewer evidence remains attributable
+Archived OpenSpec artifacts, implementation evidence, and feedback ledgers MAY retain `session-delivery-reviewer` references when they describe work that agent actually performed. Such references SHALL be treated as superseded historical evidence and SHALL not re-register or route the retired agent.
+
+#### Scenario: Historical archive contains retired name
+- **WHEN** validation encounters the retired name under archived change evidence or feedback history
+- **THEN** it SHALL preserve the historical attribution
+- **AND** it SHALL exclude that occurrence from active-agent and active-routing drift failures.
+
+### Requirement: Main honors guard continuation without self-approval
+Loaded main-session authority SHALL require a current completion-guard continuation to be processed as synthetic control evidence, while preserving main ownership of implementation, proof, specialist dispatch, and exact owner handoff. Main SHALL not mark guard todos complete, rewrite the root goal, or treat a prior Passed audit as approval of a changed revision.
+
+#### Scenario: Guard resumes incomplete root
+- **WHEN** main receives a current synthetic continuation with unresolved requirement refs
+- **THEN** main SHALL continue the bounded work or invoke the required troubleshooter route
+- **AND** a production mutation or new human requirement SHALL require a new completion audit.
+

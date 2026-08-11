@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "dedup-candidate-1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/agents/code-quality-reviewer.md": "56a0d1020434314697a27db1abfcb6ab39d7ff08eec954db0e17bc2c25e7195a",
+      "global/commands/dedup.md": "4f403b94a6b7d75045506a95eea169a293692bde946ef0b1b80be9bd6d3223b3",
+      "global/skills/deduplication-audit/SKILL.md": "ce788616ae0df0689ec6d95c107d209da4d3c52f6e038421a29c8546d0bc5071",
+      "tools/proofs/deduplication-audit.ts": "607416baed74dce0d8cd2a63aeae0aac1fcf2bb2d7a85c482023f3aaff2e27f7"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_0103028ddffeFwZONWSNvqAbPu",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "dedup-candidate-exact-clone",
+      "--command",
+      "dedup",
+      "src"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786434810220,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefcff167001NgkFFieJdzDoVC\",\"messageID\":\"msg_fefcfe085001ARbxMluNYphpll\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434812593,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefcff366001pLjOvLOG3SG2YG\",\"messageID\":\"msg_fefcfe085001ARbxMluNYphpll\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"text\",\"text\":\"I’ll resolve `src` within the repository, inventory its code and test boundaries, then run installed `jscpd` only to generate clone candidates. Each candidate will be classified from direct evidence about symbols, ownership, callers, and tests; no files or dependencies will be changed.\",\"time\":{\"start\":1786434810727,\"end\":1786434812591},\"metadata\":{\"openai\":{\"itemId\":\"msg_0e66ed8400183837016a7ad4fb1cc88191bdc6cd876cd50ac7\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434813637,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"skill\",\"callID\":\"call_G1CrThX5Hj6QsXuE67U9LRPD\",\"state\":{\"status\":\"completed\",\"input\":{\"name\":\"deduplication-audit\"},\"output\":\"<skill_content name=\\\"deduplication-audit\\\">\\n# Skill: deduplication-audit\\n\\n# Deduplication Audit\\n\\nUse this skill only when the user explicitly invokes `/dedup`, requests a scoped deduplication audit, or asks for clone analysis. Keep it unloaded for trivial owner-local fixes, ordinary implementation, general maintainability review, and broad exhaustive audits. Use `codebase-audit-loop` only when the user separately requests exhaustive coverage.\\n\\nThis workflow is read-only. It discovers and classifies candidates; it never edits production, removes tests, installs dependencies, or authorizes a refactor.\\n\\n## Scope And Tool Gate\\n\\n1. Interpret the complete command argument as scope intent. Resolve one explicit path or bounded path set inside the current repository. If it is missing, ambiguous, or escapes the repository, ask one precise scope question and do not scan yet.\\n2. Record the repository root, resolved scope, and exclusions. Preserve default `.gitignore` behavior; never pass `--no-gitignore`.\\n3. Run `jscpd --version`. Require major version 5. If unavailable or incompatible, report the tool layer blocked; do not install it or add a target-repository dependency.\\n4. Start with this read-only compact scan, adapting only the final scope path:\\n\\n```sh\\njscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" <scope>\\n```\\n\\n5. For a narrow scope where smaller clones materially affect the request, one targeted follow-up may use `--min-tokens 20`; label the changed sensitivity. Do not broaden scope merely because the first scan has no match.\\n\\nDo not write `.jscpd.json` or use file reporters in the target repository. A non-zero process exit is a failed scan, not \\\"no duplicates\\\". Exact and near textual clones are candidate locations only: `jscpd` output, token counts, and similarity never prove semantic equivalence, safe deletion, or safe extraction.\\n\\n## Semantic Evidence\\n\\nFor every material candidate, inspect both source blocks and gather bounded evidence inside the selected scope and direct relationships:\\n\\n- declarations, symbols, exports, and owning modules;\\n- callers, importers, adapters, and actual integration paths;\\n- tests, fixtures, snapshots, protocol vectors, and compatibility contracts;\\n- input/output contract and validation differences;\\n- errors, status mapping, fallback, and recovery differences;\\n- side effects, mutation, I/O, persistence, timing, concurrency, cleanup, activation, and lifecycle differences.\\n\\nPrefer graph or LSP symbol/caller relationships only when they resolve the exact current repository. Never enumerate unrelated indexed projects. Use targeted source search when graph/LSP evidence is unavailable. Missing evidence remains `unknown` and normally yields `not proven`; do not infer an owner or contract.\\n\\nChoose a canonical owner only when current callers, module responsibility, and the complete reachable contract support it. The oldest or shortest copy is not automatically canonical.\\n\\n## Classification And Recommendation\\n\\nAssign exactly one classification:\\n\\n- `exact duplicate`: text/token duplicate with no observed contract, error, effect, or lifecycle difference after evidence review;\\n- `near duplicate`: materially similar implementation with explicit differences still suitable for comparison;\\n- `overlapping responsibility`: different code owns intersecting behavior that should have one current owner;\\n- `redundant wrapper`: pass-through layer with no unique current contract, effect, lifecycle, or compatibility role;\\n- `keep separate by design`: similarity is intentional because contracts, effects, ownership, lifecycle, or compatibility differ;\\n- `not proven`: available evidence cannot establish safe equivalence or ownership.\\n\\nRecommend exactly one of `remove | reuse | extract | parameterize | keep separate`.\\n\\nPrefer `remove`, then `reuse`. Recommend `extract` or `parameterize` only when it reduces total current concepts or branches and does not increase coupling, public surface, lifecycle states, or navigation cost. Line reduction alone is insufficient. When differences require flags that recreate both implementations inside a generic helper, prefer `keep separate`.\\n\\nPreserve every unique critical or compatibility test oracle. Propose a test for removal only when a named retained test proves the same externally meaningful behavior and no critical or compatibility signal is lost.\\n\\n## Existing Reviewer\\n\\nAfter source/caller/test enrichment, invoke the existing `code-quality-reviewer` once when at least one material `remove`, `reuse`, `extract`, or `parameterize` candidate remains. Give it the exact candidate reference and source/test locations; request its normal Reduction Matrix. Do not create or invoke a `deduplicator` agent.\\n\\nThe reviewer is independent read-only evidence. Main reconciles its matrix with the clone and semantic evidence. Reviewer absence or disagreement is an evidence gap, not refactoring authority. Do not launch it for a no-match result, candidates already classified `keep separate by design`, or a trivial-fix request.\\n\\n## Production Boundary\\n\\nEnd the audit before mutation. If a later accepted task selects one recommendation, main implements the smallest bounded production slice, retains named critical/compatibility oracles, and proves affected callers at a representative runtime boundary. Clone disappearance is never Runtime Proof.\\n\\n## Output\\n\\nReturn:\\n\\n- `Scope`: repository-relative paths, exclusions, and whether coverage was bounded or truncated.\\n- `Tool Evidence`: exact `jscpd` version/invocation, exit status, clone count, stdout/stderr summary, and sensitivity changes.\\n- `Candidate Matrix`: one row per material candidate with:\\n  - classification and exact locations;\\n  - canonical owner or `unknown`;\\n  - contract, error, effect, and lifecycle differences;\\n  - callers and tests inspected;\\n  - retained critical/compatibility test oracles;\\n  - `remove | reuse | extract | parameterize | keep separate`;\\n  - estimated net line delta and net concept delta;\\n  - coupling/public-surface effect;\\n  - confidence and evidence gaps;\\n  - required Runtime Proof before any later production change.\\n- `Reviewer Evidence`: inspected candidate reference and reduction rows, or `not run` with reason.\\n- `No Safe Reduction`: explicit evidence when every result is `keep separate by design`, `not proven`, or no clone matched.\\n- `Audit Effects`: confirm production source/tests were unchanged and list any disposable evidence cleanup.\\n\\nDo not return an automatic edit plan, semantic-equivalence claim, exhaustive-audit claim, or permission to delete a unique test oracle.\\n\\nBase directory for this skill: <kit-root>\\\\global\\\\skills\\\\deduplication-audit\\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\\nNote: file list is sampled.\\n\\n<skill_files>\\n\\n</skill_files>\\n</skill_content>\",\"metadata\":{\"name\":\"deduplication-audit\",\"dir\":\"<kit-root>\\\\global\\\\skills\\\\deduplication-audit\",\"truncated\":false},\"title\":\"Loaded skill: deduplication-audit\",\"time\":{\"start\":1786434813560,\"end\":1786434813633}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e66ed8400183837016a7ad4fc333c8191b2b13c071ff3641e\"}},\"id\":\"prt_fefcffb78001qPs8a1Kg5eHcN7\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefcfe085001ARbxMluNYphpll\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434813669,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefcffed6001m7yOd3DZwspFfR\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefcfe085001ARbxMluNYphpll\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-finish\",\"tokens\":{\"total\":18825,\"input\":16157,\"output\":87,\"reasoning\":21,\"cache\":{\"write\":0,\"read\":2560}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434816951,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd00bb2001oonr2UWU7z94dT\",\"messageID\":\"msg_fefcffee00019clWUOmPmCS5nx\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434824172,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_LcbHrMJYGloZxlcZnBZjDMgN\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\"},\"output\":\"<path><proof-root>\\\\project</path>\\n<type>directory</type>\\n<entries>\\n.gitignore\\ngenerated/\\npackage.json\\nsrc/\\ntask.md\\nvendor/\\n\\n(6 entries)\\n</entries>\",\"metadata\":{\"preview\":\".gitignore\\ngenerated/\\npackage.json\\nsrc/\\ntask.md\\nvendor/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\project\",\"entries\":[\".gitignore\",\"generated/\",\"package.json\",\"src/\",\"task.md\",\"vendor/\"],\"offset\":1,\"totalEntries\":6,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\",\"time\":{\"start\":1786434824062,\"end\":1786434824076}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bbaab66c40dff11016a7ad5085d68819191eb338e083e73ec\"}},\"id\":\"prt_fefd027570015GZU4Yzbwun2dR\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefcffee00019clWUOmPmCS5nx\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434824204,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_Qznk2uWd3aHfgFvYiZm19oDs\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"src/**\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\owner.ts\\n<proof-root>\\\\project\\\\src\\\\owner.test.ts\\n<proof-root>\\\\project\\\\src\\\\copy.ts\",\"metadata\":{\"count\":3,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\",\"time\":{\"start\":1786434824085,\"end\":1786434824178}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bbaab66c40dff11016a7ad5085d7c81919091a6df5af27c0f\"}},\"id\":\"prt_fefd0278f001A053A32pSOPAaj\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefcffee00019clWUOmPmCS5nx\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434824242,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_xZ3JmNDRfZ4mkbzRY0SUYKN8\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"**/{package.json,pyproject.toml,Cargo.toml,go.mod,*.sln,*.csproj,vitest.config.*,jest.config.*,pytest.ini}\"},\"output\":\"<proof-root>\\\\project\\\\package.json\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\",\"time\":{\"start\":1786434824108,\"end\":1786434824229}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bbaab66c40dff11016a7ad5085d848191b0abe6902ac9ac60\"}},\"id\":\"prt_fefd02797001bTacs7H3gNKv2E\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefcffee00019clWUOmPmCS5nx\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434824247,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_7eGY5uEvBlujndd18VrArYwu\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"**/{test,tests,__tests__}/**\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\",\"time\":{\"start\":1786434824115,\"end\":1786434824244}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bbaab66c40dff11016a7ad5085d8c819193f98c616628aa75\"}},\"id\":\"prt_fefd027ae0018XdtnJ8Dxoz0Wm\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefcffee00019clWUOmPmCS5nx\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434824673,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_Gw7BLPlpcTMJtW0fHtA5Rx4Q\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"jscpd --version\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"cpd 5.0.14\\n\",\"metadata\":{\"output\":\"cpd 5.0.14\\n\",\"exit\":0,\"truncated\":false},\"title\":\"jscpd --version\",\"time\":{\"start\":1786434824589,\"end\":1786434824644}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bbaab66c40dff11016a7ad5085d908191a8ffc20c9d3de727\"}},\"id\":\"prt_fefd027b6001tmiyegnXfHYLd0\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefcffee00019clWUOmPmCS5nx\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434824673,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd029c6001NJF8U3oui6ph1s\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefcffee00019clWUOmPmCS5nx\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-finish\",\"tokens\":{\"total\":20639,\"input\":2325,\"output\":304,\"reasoning\":90,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434831277,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd043a8001UQKGSdUTrUx0mH\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434840551,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_JtPmNexVoRRPIvqoHh9SR45B\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\package.json\"},\"output\":\"<path><proof-root>\\\\project\\\\package.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"name\\\": \\\"dedup-proof-exact-clone\\\",\\n3:   \\\"private\\\": true,\\n4:   \\\"type\\\": \\\"module\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"name\\\": \\\"dedup-proof-exact-clone\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\package.json\",\"text\":\"{\\n  \\\"name\\\": \\\"dedup-proof-exact-clone\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\\\\package.json\",\"time\":{\"start\":1786434840455,\"end\":1786434840535}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03661abf92f00ee7016a7ad518cf808191b86e990d0f1daafb\"}},\"id\":\"prt_fefd0677e001UEdQd1Ap46I4dG\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434840551,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_XGG9XDFW1LlMdbs4SYwYYApc\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\task.md\"},\"output\":\"<path><proof-root>\\\\project\\\\task.md</path>\\n<type>file</type>\\n<content>\\n1: Synthetic scenario: exact-clone. Audit scope is src. Source must remain unchanged.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"Synthetic scenario: exact-clone. Audit scope is src. Source must remain unchanged.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\task.md\",\"text\":\"Synthetic scenario: exact-clone. Audit scope is src. Source must remain unchanged.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\\\\task.md\",\"time\":{\"start\":1786434840503,\"end\":1786434840540}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03661abf92f00ee7016a7ad518cfa48191974de3ab3ea209b8\"}},\"id\":\"prt_fefd067b3001cuZQvZU1AC2nLU\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434840551,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_H2eXwY3RA2zQfkO1eSYdcPbG\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\.gitignore\"},\"output\":\"<path><proof-root>\\\\project\\\\.gitignore</path>\\n<type>file</type>\\n<content>\\n1: node_modules/\\n2: dist/\\n3: build/\\n4: coverage/\\n5: vendor/\\n6: generated/\\n\\n(End of file - total 6 lines)\\n</content>\",\"metadata\":{\"preview\":\"node_modules/\\ndist/\\nbuild/\\ncoverage/\\nvendor/\\ngenerated/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\.gitignore\",\"text\":\"node_modules/\\ndist/\\nbuild/\\ncoverage/\\nvendor/\\ngenerated/\",\"lineStart\":1,\"lineEnd\":6,\"totalLines\":6,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\\\\.gitignore\",\"time\":{\"start\":1786434840498,\"end\":1786434840543}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03661abf92f00ee7016a7ad518cf9c8191a3280897b0c4a6cc\"}},\"id\":\"prt_fefd067ad001bet48f4aA20Sqp\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434840551,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_M7MBAGe9NFQHugxlh8UM4yVL\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\owner.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\owner.ts</path>\\n<type>file</type>\\n<content>\\n1: export function normalizeOwner(input: string): string {\\n2:   const normalized = input.trim().toLowerCase();\\n3:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n4:   const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n5:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n6:   if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n7:   return selected.join(\\\"/\\\");\\n8: }\\n\\n(End of file - total 8 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function normalizeOwner(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\owner.ts\",\"text\":\"export function normalizeOwner(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"lineStart\":1,\"lineEnd\":8,\"totalLines\":8,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\\\\src\\\\owner.ts\",\"time\":{\"start\":1786434840466,\"end\":1786434840545}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03661abf92f00ee7016a7ad518cf888191b6dc0dd0d79d1e40\"}},\"id\":\"prt_fefd0678b001EFN2DAovj6uzyr\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434840551,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_N1XTGedGbWcWyqJQJgOqAb1b\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\copy.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\copy.ts</path>\\n<type>file</type>\\n<content>\\n1: export function normalizeCopy(input: string): string {\\n2:   const normalized = input.trim().toLowerCase();\\n3:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n4:   const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n5:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n6:   if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n7:   return selected.join(\\\"/\\\");\\n8: }\\n\\n(End of file - total 8 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function normalizeCopy(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\copy.ts\",\"text\":\"export function normalizeCopy(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"lineStart\":1,\"lineEnd\":8,\"totalLines\":8,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\\\\src\\\\copy.ts\",\"time\":{\"start\":1786434840474,\"end\":1786434840548}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03661abf92f00ee7016a7ad518cf9081919ed5491e75983da5\"}},\"id\":\"prt_fefd06795001PulI772uFnXDI3\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434840570,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_S4cXsy6gMH78CbJSugn7JFSR\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\owner.test.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\owner.test.ts</path>\\n<type>file</type>\\n<content>\\n1: import { normalizeOwner } from './owner.js';\\n2: if (normalizeOwner(' A/B ') !== 'a/b') throw new Error('owner oracle');\\n\\n(End of file - total 2 lines)\\n</content>\",\"metadata\":{\"preview\":\"import { normalizeOwner } from './owner.js';\\nif (normalizeOwner(' A/B ') !== 'a/b') throw new Error('owner oracle');\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\owner.test.ts\",\"text\":\"import { normalizeOwner } from './owner.js';\\nif (normalizeOwner(' A/B ') !== 'a/b') throw new Error('owner oracle');\",\"lineStart\":1,\"lineEnd\":2,\"totalLines\":2,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\\\\src\\\\owner.test.ts\",\"time\":{\"start\":1786434840491,\"end\":1786434840567}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03661abf92f00ee7016a7ad518cf988191a83a0f225b404dff\"}},\"id\":\"prt_fefd0679c001ldLpw6HdxqNJ1J\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434840976,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_rt4UN4cN2qfymTBdeZNidNTR\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" src\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"Clones:\\ncopy.ts:1-8 ~ owner.ts:1-8\\n---\\n1 clones · 43.8% duplication\\ntime: 10.884ms\\n\",\"metadata\":{\"output\":\"Clones:\\ncopy.ts:1-8 ~ owner.ts:1-8\\n---\\n1 clones · 43.8% duplication\\ntime: 10.884ms\\n\",\"exit\":0,\"truncated\":false},\"title\":\"jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" src\",\"time\":{\"start\":1786434840880,\"end\":1786434840946}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03661abf92f00ee7016a7ad518cf688191ad1c5f278e2b2e09\"}},\"id\":\"prt_fefd067660018Eu7POtNPa0G4o\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434840976,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd069760016ELn7tyjXnzeiC\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefd029cd001YfsNjBKKBjx59W\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-finish\",\"tokens\":{\"total\":21402,\"input\":929,\"output\":436,\"reasoning\":69,\"cache\":{\"write\":0,\"read\":19968}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434846581,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd07f71001JzHFfg84OOIP0C\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434857080,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd08e61001f3bJOKysy2LK8i\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"text\",\"text\":\"The initial scan found one 8-line candidate pair: `src/copy.ts:1-8` and `src/owner.ts:1-8`. I’m now checking repository-wide references and test ownership to determine whether this is a safe reuse/removal candidate rather than treating textual similarity as semantic proof.\",\"time\":{\"start\":1786434850401,\"end\":1786434857078},\"metadata\":{\"openai\":{\"itemId\":\"msg_0fc15ebbf1298051016a7ad522cefc8191b570af71cffe77fb\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434857243,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_SFG96GGMM1BOOxRuw3Jasb0i\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"\\\\bnormalize(?:Owner|Copy)\\\\b\"},\"output\":\"Found 4 matches\\n<proof-root>\\\\project\\\\src\\\\copy.ts:\\n  Line 1: export function normalizeCopy(input: string): string {\\n\\n\\n<proof-root>\\\\project\\\\src\\\\owner.ts:\\n  Line 1: export function normalizeOwner(input: string): string {\\n\\n\\n<proof-root>\\\\project\\\\src\\\\owner.test.ts:\\n  Line 1: import { normalizeOwner } from './owner.js';\\n\\n  Line 2: if (normalizeOwner(' A/B ') !== 'a/b') throw new Error('owner oracle');\\n\",\"metadata\":{\"matches\":4,\"truncated\":false},\"title\":\"\\\\bnormalize(?:Owner|Copy)\\\\b\",\"time\":{\"start\":1786434857115,\"end\":1786434857235}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fc15ebbf1298051016a7ad52969dc819181082ae4ead44168\"}},\"id\":\"prt_fefd0a8870012Hkdc5qQ4fQvx0\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434857301,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_K4l113MacwcJ9kVX6Btohq3M\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"(?:from\\\\s+['\\\"][^'\\\"]*(?:owner|copy)|import\\\\s*\\\\([^)]*(?:owner|copy))\",\"include\":\"*.{ts,tsx,js,jsx,mts,mjs,cts,cjs}\"},\"output\":\"Found 1 matches\\n<proof-root>\\\\project\\\\src\\\\owner.test.ts:\\n  Line 1: import { normalizeOwner } from './owner.js';\\n\",\"metadata\":{\"matches\":1,\"truncated\":false},\"title\":\"(?:from\\\\s+['\\\"][^'\\\"]*(?:owner|copy)|import\\\\s*\\\\([^)]*(?:owner|copy))\",\"time\":{\"start\":1786434857180,\"end\":1786434857292}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fc15ebbf1298051016a7ad52969f48191bfddab8e237525f9\"}},\"id\":\"prt_fefd0a8a70013nsAjClv58QoUk\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434857330,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_t3aap1X1KStVoyFGKJMFLMK4\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"**/*.{ts,tsx,js,jsx,mts,mjs,cts,cjs}\"},\"output\":\"<proof-root>\\\\project\\\\vendor\\\\ignored.ts\\n<proof-root>\\\\project\\\\src\\\\owner.ts\\n<proof-root>\\\\project\\\\src\\\\owner.test.ts\\n<proof-root>\\\\project\\\\src\\\\copy.ts\\n<proof-root>\\\\project\\\\generated\\\\ignored.ts\",\"metadata\":{\"count\":5,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\",\"time\":{\"start\":1786434857246,\"end\":1786434857326}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fc15ebbf1298051016a7ad52969fc8191984dc02ffa40c822\"}},\"id\":\"prt_fefd0a8e7001mUc8QMTvoL1RNS\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434857366,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_0GjwEW2KLR0IZqVmMgJRqgtr\",\"state\":{\"status\":\"error\",\"input\":{\"command\":\"git status --short\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"error\":\"The user has specified a rule which prevents you from using this specific tool call. Here are some of the relevant rules [{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"allow\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"jscpd *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"jscpd.exe *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*;*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*&&*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*|*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*>*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*<*\\\",\\\"action\\\":\\\"deny\\\"}]\",\"time\":{\"start\":1786434857361,\"end\":1786434857364}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fc15ebbf1298051016a7ad5296a088191a664f5c6692bedfc\"}},\"id\":\"prt_fefd0a970001pG6bfj0JkiZcST\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434857381,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_REZFtzAGuBA5zDKmI2xDQOyt\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"**/*.{test,spec}.{ts,tsx,js,jsx,mts,mjs,cts,cjs}\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\owner.test.ts\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-exact-clone-TwYjdP\\\\project\",\"time\":{\"start\":1786434857304,\"end\":1786434857379}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fc15ebbf1298051016a7ad5296a048191895547143162ac75\"}},\"id\":\"prt_fefd0a920001Of7WQnXdGv8Wz6\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434857401,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd0a9ae001Y1S5wTtpMeG6zB\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefd06980001CXf2VzcP3fazZH\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-finish\",\"tokens\":{\"total\":22780,\"input\":2244,\"output\":432,\"reasoning\":136,\"cache\":{\"write\":0,\"read\":19968}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434861290,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd0b8e5001gYiKdPvIa612Kq\",\"messageID\":\"msg_fefd0a9b5001WX3ACyeWG3B7p7\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434919129,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_ToDOwK3mhCzoEvViOuSMuufm\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"code-quality-reviewer\",\"description\":\"Review exact clone reduction\",\"prompt\":\"Role: independent read-only code-quality reduction reviewer.\\nOutcome/value objective: assess whether the single enriched clone candidate can be safely reduced while preserving current behavior and unique test oracles.\\nObserved evidence: repository root is <proof-root>\\\\project (this workspace has no usable Git repository identity). Requested and resolved scope is repository-contained `src`. Candidate Reference: DEDUP-1@workspace-current. Installed jscpd 5.0.14, invoked at sensitivity min-tokens 50/min-lines 5/mode mild, reported one clone: `src/copy.ts:1-8 ~ src/owner.ts:1-8`. Both implementations trim/lowercase, reject empty input, split/filter slash segments, strip non `[a-z0-9-]`, reject emptied segments, and join with slash; their exported function names differ (`normalizeCopy` versus `normalizeOwner`). Repository-wide targeted search found `normalizeOwner` imported/called only by `src/owner.test.ts:1-2`; `normalizeCopy` has no caller/importer. The only test file is `src/owner.test.ts`, whose oracle verifies `' A/B '` becomes `'a/b'`. `package.json` is private and declares no exports or scripts. Excluded generated/vendor paths exist but are outside audit scope and ignored by scan. External consumers are unknown.\\nDeliverable: return only your normal Reduction Matrix. Include exact deletion/reuse target, estimated net line/concept delta, behavior and compatibility obligations, retained unique critical/compatibility test oracles, confidence, and proof needed after any later implementation. Address whether `src/owner.ts` is the supported canonical owner and whether removing `src/copy.ts` is justified; identify compatibility uncertainty rather than assuming it away.\\nIn scope/read scope: `src/copy.ts`, `src/owner.ts`, `src/owner.test.ts`, `package.json`, `.gitignore`, and targeted repository-contained reference searches needed to verify the evidence.\\nOut of scope/write scope: no writes anywhere; no production/test/config edits; no dependency installation; no commands that mutate files; no broad/exhaustive codebase audit; no nested agents; no user questions; no commit or remote action.\\nRequired invariants/resolved decisions: preserve `src/owner.test.ts` as the sole observed behavioral oracle; textual equality alone is not semantic authority; current repository callers and module responsibility determine canonical ownership; unknown external compatibility must remain explicit.\\nAcceptance/checks: inspect both full source blocks, all repository-contained caller/import evidence, package exposure, and the sole test before producing the matrix. Do not claim runtime validation ran.\\nReturn evidence: exact paths/lines inspected, reduction target, deltas, obligations/oracles, confidence/evidence gaps, and required future proof; report Effective Model if available.\\nBlocker policy: if evidence is insufficient, return the gap in the matrix as read-only evidence; do not ask the user or alter files.\",\"command\":\"Load the deduplication-audit skill and execute its complete read-only workflow for this scope intent: src\"},\"output\":\"<task id=\\\"ses_0102ed624ffe8GBJnPgJsRXgvX\\\" state=\\\"completed\\\">\\n<task_result>\\n- **Candidate Reference / RC**: `DEDUP-1@workspace-current`\\n- **Effective Model**: `xai/grok-4.5`\\n\\n- **Reduction Matrix**\\n\\n| Field | Content |\\n| --- | --- |\\n| **Row ID** | R1 |\\n| **Source / test locations** | `src/copy.ts:1-8` (full file: `normalizeCopy`); twin body `src/owner.ts:1-8` (`normalizeOwner`); sole in-repo use `src/owner.test.ts:1-2`; package surface `package.json:1-5` (`private: true`, no `exports`/`main`/`scripts`); ignore noise only `.gitignore:1-6` (`vendor/`, `generated/` out of audit). Repo search: `normalizeCopy` defined only at `src/copy.ts:1`; `normalizeOwner` defined `src/owner.ts:1`, imported/called only `src/owner.test.ts:1-2`. |\\n| **Deletion / reuse target** | **Delete** entire dead duplicate module `src/copy.ts` (`normalizeCopy`). **Keep** `src/owner.ts` / `normalizeOwner` as the **supported canonical owner**: only symbol with a repository caller and the only exercised behavioral oracle. Do **not** merge names, add a shared helper, or retarget the test. Textual equality of bodies is not authority; ownership follows in-repo callers + module responsibility. |\\n| **Est. net line / concept delta** | **−8 lines**, **−0 concepts added**; **−1** dead export/module concept (`normalizeCopy` / `copy` path). No new abstraction. |\\n| **Behavior & compatibility obligations** | Preserve `normalizeOwner` semantics byte-for-byte for the current path (trim/lower, empty reject, `/` split+filter, strip `[^a-z0-9-]`, empty-segment reject, join `/`). In-repo behavior unchanged: no production importer of either symbol exists; only `owner.test.ts` calls `normalizeOwner`. **Compatibility uncertainty (explicit, not assumed away):** external/unpublished consumers of `normalizeCopy` or deep import of `src/copy.ts` are **unknown**—`package.json` does not advertise exports, but absence of in-repo callers ≠ proof of zero out-of-tree importers. Deleting `copy.ts` is justified **inside this repository** as dead duplicated capability; any external contract on `normalizeCopy` is unproven and owner-disposition only. |\\n| **Retained unique critical / compatibility test oracles** | **Retain** `src/owner.test.ts:1-2` entire file — sole observed oracle: `normalizeOwner(' A/B ') === 'a/b'` (throws `'owner oracle'` on failure). No second test duplicates this externally meaningful check. Do **not** delete or rewrite the oracle to `normalizeCopy`. No test targets `copy.ts`; none proposed for deletion. |\\n| **Confidence** | **High** for in-repo dead-code removal and owner canonicity of `src/owner.ts`. **Low/unknown** for external binary/source compatibility of removing `normalizeCopy`. |\\n| **Proof needed after any later implementation** | (1) Confirm `src/copy.ts` gone and no remaining repo references to `normalizeCopy` / `./copy`. (2) Re-run sole oracle: execute `src/owner.test.ts` (or equivalent) and observe pass on `' A/B '` → `'a/b'`. (3) Optional owner gate if external API freeze is claimed: search consumers outside this workspace—**not performed here**; do not claim runtime validation ran in this review. |\\n\\n- **No Safe Reduction**: N/A — R1 qualifies under in-repo evidence (dead duplicate; canonical owner retained).\\n\\n- **Evidence Gaps And Residual Risks**\\n  - No usable Git identity; Candidate Reference is workspace-current only.\\n  - External consumers of `src/copy.ts` / `normalizeCopy` **unknown**; package is private and export-less, which weakens but does not close out-of-tree risk.\\n  - This review did **not** execute tests or runtime proof.\\n  - `vendor/ignored.ts` and `generated/ignored.ts` exist but are outside requested `src` scope and ignored by scan; not used as ownership evidence.\\n  - Residual risk if main deletes `copy.ts` without owner confirmation of external API: possible break for unobserved importers only.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"sessionId\":\"ses_0102ed624ffe8GBJnPgJsRXgvX\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.5\"},\"truncated\":false},\"title\":\"Review exact clone reduction\",\"time\":{\"start\":1786434890207,\"end\":1786434919105}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03e5537aa991706f016a7ad53b49648191a4293a1653481dfc\"}},\"id\":\"prt_fefd0ef83001q4FVDI74bpK4ej\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"messageID\":\"msg_fefd0a9b5001WX3ACyeWG3B7p7\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434919129,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd19ac60016028aJZaqzEYEx\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefd0a9b5001WX3ACyeWG3B7p7\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-finish\",\"tokens\":{\"total\":24684,\"input\":1417,\"output\":686,\"reasoning\":565,\"cache\":{\"write\":0,\"read\":22016}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434921592,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd1a474001cM2HaPhBccfNGK\",\"messageID\":\"msg_fefd19ad1001GyH8ZNwPf4k5yg\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434959626,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd1fcc4001OvaKfBm51VtsVj\",\"messageID\":\"msg_fefd19ad1001GyH8ZNwPf4k5yg\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"text\",\"text\":\"**Scope**\\n- Root: `<proof-root>\\\\project`\\n- Resolved scope: `src`\\n- Coverage: complete and bounded; not truncated.\\n- Excluded: `node_modules`, `vendor`, `generated`, `dist`, `build`, `coverage`, `.cache`, `out`, `target`.\\n- Default `.gitignore` behavior preserved. Workspace has no Git metadata.\\n\\n**Tool Evidence**\\n- Version: `cpd 5.0.14`\\n- Invocation:\\n  ```text\\n  jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" src\\n  ```\\n- Exit status: `0`\\n- Result: 1 clone, reported duplication `43.8%`.\\n- Candidate: `src/copy.ts:1-8 ~ src/owner.ts:1-8`.\\n- Stderr: none observed.\\n- Sensitivity changes: none; no broader or lower-token scan was needed.\\n\\n**Candidate Matrix**\\n\\n| Field | DEDUP-1 |\\n|---|---|\\n| Classification | `exact duplicate` implementation with a differently named exported symbol |\\n| Locations | `src/copy.ts:1-8`; `src/owner.ts:1-8` |\\n| Canonical owner | `src/owner.ts::normalizeOwner` |\\n| Ownership evidence | `normalizeOwner` has the sole repository caller and behavioral test. `normalizeCopy` has no repository-contained callers or importers. |\\n| Contract differences | No behavioral difference observed. Both accept a string, normalize case/whitespace and path segments, then return a slash-joined string. Exported names and module paths differ. |\\n| Error differences | None observed: both throw `Error(\\\"empty input\\\")` and `Error(\\\"invalid segment\\\")` under identical conditions. |\\n| Effect/lifecycle differences | None observed. Both are synchronous, perform no I/O or mutation, and have no lifecycle responsibilities. |\\n| Callers inspected | Repository-wide references to `normalizeOwner`, `normalizeCopy`, `owner`, and `copy`. Only `src/owner.test.ts:1-2` imports/calls either implementation. |\\n| Tests inspected | `src/owner.test.ts:1-2`, the only test found. |\\n| Retained oracle | Retain all of `src/owner.test.ts`; it uniquely verifies `' A/B '` becomes `'a/b'`. |\\n| Recommendation | `remove` `src/copy.ts`, subject to confirming there are no out-of-workspace consumers |\\n| Estimated delta | `-8` lines; `-1` dead module/export concept; no abstraction added |\\n| Coupling/public surface | No coupling added. Source-level surface narrows by removing `normalizeCopy` and the `copy.ts` deep-import path. `package.json` is private and declares no package exports, but external deep-import compatibility remains unknown. |\\n| Confidence | High for repository-contained ownership and redundancy; low/unknown for out-of-workspace compatibility. |\\n| Evidence gap | External consumers of `src/copy.ts` or `normalizeCopy` were outside the permitted repository-contained evidence boundary. |\\n| Required future Runtime Proof | Confirm no remaining `normalizeCopy`/`./copy` references, execute the retained owner oracle through a project-supported TypeScript runtime, and observe `normalizeOwner(' A/B ') === 'a/b'`. No runtime runner is currently declared in `package.json`. |\\n\\n**Reviewer Evidence**\\n- Candidate inspected: `DEDUP-1@workspace-current`\\n- Effective model: `xai/grok-4.5`\\n- Reviewer agreed that `src/owner.ts` is the canonical owner and that removing `src/copy.ts` reduces 8 lines and one dead module/export concept without adding coupling.\\n- Reviewer explicitly retained `src/owner.test.ts` and identified unknown external deep-import consumers as the remaining compatibility risk.\\n\\n**No Safe Reduction**\\nNot applicable. One repository-contained reduction candidate remains, with external compatibility explicitly unproven.\\n\\n**Audit Effects**\\n- Production source and tests were unchanged.\\n- No dependencies, configuration, reports, or agents were created.\\n- No disposable files were generated; no cleanup was required.\",\"time\":{\"start\":1786434944196,\"end\":1786434959581},\"metadata\":{\"openai\":{\"itemId\":\"msg_0a0cd0416bcc718a016a7ad580a1788191a5d3a3f32048ab32\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434959673,\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"part\":{\"id\":\"prt_fefd2392a001jsaTbK3RsH7QBJ\",\"reason\":\"stop\",\"messageID\":\"msg_fefd19ad1001GyH8ZNwPf4k5yg\",\"sessionID\":\"ses_0103028ddffeFwZONWSNvqAbPu\",\"type\":\"step-finish\",\"tokens\":{\"total\":27646,\"input\":2637,\"output\":935,\"reasoning\":1034,\"cache\":{\"write\":0,\"read\":23040}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: jscpd only; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: code-quality-reviewer only",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll resolve `src` within the repository, inventory its code and test boundaries, then run installed `jscpd` only to generate clone candidates. Each candidate will be classified from direct evidence about symbols, ownership, callers, and tests; no files or dependencies will be changed.The initial scan found one 8-line candidate pair: `src/copy.ts:1-8` and `src/owner.ts:1-8`. I’m now checking repository-wide references and test ownership to determine whether this is a safe reuse/removal candidate rather than treating textual similarity as semantic proof.**Scope**\n- Root: `<proof-root>\\project`\n- Resolved scope: `src`\n- Coverage: complete and bounded; not truncated.\n- Excluded: `node_modules`, `vendor`, `generated`, `dist`, `build`, `coverage`, `.cache`, `out`, `target`.\n- Default `.gitignore` behavior preserved. Workspace has no Git metadata.\n\n**Tool Evidence**\n- Version: `cpd 5.0.14`\n- Invocation:\n  ```text\n  jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\" src\n  ```\n- Exit status: `0`\n- Result: 1 clone, reported duplication `43.8%`.\n- Candidate: `src/copy.ts:1-8 ~ src/owner.ts:1-8`.\n- Stderr: none observed.\n- Sensitivity changes: none; no broader or lower-token scan was needed.\n\n**Candidate Matrix**\n\n| Field | DEDUP-1 |\n|---|---|\n| Classification | `exact duplicate` implementation with a differently named exported symbol |\n| Locations | `src/copy.ts:1-8`; `src/owner.ts:1-8` |\n| Canonical owner | `src/owner.ts::normalizeOwner` |\n| Ownership evidence | `normalizeOwner` has the sole repository caller and behavioral test. `normalizeCopy` has no repository-contained callers or importers. |\n| Contract differences | No behavioral difference observed. Both accept a string, normalize case/whitespace and path segments, then return a slash-joined string. Exported names and module paths differ. |\n| Error differences | None observed: both throw `Error(\"empty input\")` and `Error(\"invalid segment\")` under identical conditions. |\n| Effect/lifecycle differences | None observed. Both are synchronous, perform no I/O or mutation, and have no lifecycle responsibilities. |\n| Callers inspected | Repository-wide references to `normalizeOwner`, `normalizeCopy`, `owner`, and `copy`. Only `src/owner.test.ts:1-2` imports/calls either implementation. |\n| Tests inspected | `src/owner.test.ts:1-2`, the only test found. |\n| Retained oracle | Retain all of `src/owner.test.ts`; it uniquely verifies `' A/B '` becomes `'a/b'`. |\n| Recommendation | `remove` `src/copy.ts`, subject to confirming there are no out-of-workspace consumers |\n| Estimated delta | `-8` lines; `-1` dead module/export concept; no abstraction added |\n| Coupling/public surface | No coupling added. Source-level surface narrows by removing `normalizeCopy` and the `copy.ts` deep-import path. `package.json` is private and declares no package exports, but external deep-import compatibility remains unknown. |\n| Confidence | High for repository-contained ownership and redundancy; low/unknown for out-of-workspace compatibility. |\n| Evidence gap | External consumers of `src/copy.ts` or `normalizeCopy` were outside the permitted repository-contained evidence boundary. |\n| Required future Runtime Proof | Confirm no remaining `normalizeCopy`/`./copy` references, execute the retained owner oracle through a project-supported TypeScript runtime, and observe `normalizeOwner(' A/B ') === 'a/b'`. No runtime runner is currently declared in `package.json`. |\n\n**Reviewer Evidence**\n- Candidate inspected: `DEDUP-1@workspace-current`\n- Effective model: `xai/grok-4.5`\n- Reviewer agreed that `src/owner.ts` is the canonical owner and that removing `src/copy.ts` reduces 8 lines and one dead module/export concept without adding coupling.\n- Reviewer explicitly retained `src/owner.test.ts` and identified unknown external deep-import consumers as the remaining compatibility risk.\n\n**No Safe Reduction**\nNot applicable. One repository-contained reduction candidate remains, with external compatibility explicitly unproven.\n\n**Audit Effects**\n- Production source and tests were unchanged.\n- No dependencies, configuration, reports, or agents were created.\n- No disposable files were generated; no cleanup was required.",
+    "costs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 157735,
+    "eventCount": 34,
+    "modelIds": [
+      "grok-4.5"
+    ],
+    "sessionIds": [
+      "ses_0103028ddffeFwZONWSNvqAbPu"
+    ],
+    "tokens": [
+      {
+        "total": 18825,
+        "input": 16157,
+        "output": 87,
+        "reasoning": 21,
+        "cache": {
+          "write": 0,
+          "read": 2560
+        }
+      },
+      {
+        "total": 20639,
+        "input": 2325,
+        "output": 304,
+        "reasoning": 90,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 21402,
+        "input": 929,
+        "output": 436,
+        "reasoning": 69,
+        "cache": {
+          "write": 0,
+          "read": 19968
+        }
+      },
+      {
+        "total": 22780,
+        "input": 2244,
+        "output": 432,
+        "reasoning": 136,
+        "cache": {
+          "write": 0,
+          "read": 19968
+        }
+      },
+      {
+        "total": 24684,
+        "input": 1417,
+        "output": 686,
+        "reasoning": 565,
+        "cache": {
+          "write": 0,
+          "read": 22016
+        }
+      },
+      {
+        "total": 27646,
+        "input": 2637,
+        "output": 935,
+        "reasoning": 1034,
+        "cache": {
+          "write": 0,
+          "read": 23040
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "name": "deduplication-audit"
+        },
+        "name": "skill",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "src/**"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "**/{package.json,pyproject.toml,Cargo.toml,go.mod,*.sln,*.csproj,vitest.config.*,jest.config.*,pytest.ini}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "**/{test,tests,__tests__}/**"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "jscpd --version",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\package.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\task.md"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\.gitignore"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\owner.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\copy.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\owner.test.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\" src",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "\\bnormalize(?:Owner|Copy)\\b"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "(?:from\\s+['\"][^'\"]*(?:owner|copy)|import\\s*\\([^)]*(?:owner|copy))",
+          "include": "*.{ts,tsx,js,jsx,mts,mjs,cts,cjs}"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "**/*.{ts,tsx,js,jsx,mts,mjs,cts,cjs}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "git status --short",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "error"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "**/*.{test,spec}.{ts,tsx,js,jsx,mts,mjs,cts,cjs}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "subagent_type": "code-quality-reviewer",
+          "description": "Review exact clone reduction",
+          "prompt": "Role: independent read-only code-quality reduction reviewer.\nOutcome/value objective: assess whether the single enriched clone candidate can be safely reduced while preserving current behavior and unique test oracles.\nObserved evidence: repository root is <proof-root>\\project (this workspace has no usable Git repository identity). Requested and resolved scope is repository-contained `src`. Candidate Reference: DEDUP-1@workspace-current. Installed jscpd 5.0.14, invoked at sensitivity min-tokens 50/min-lines 5/mode mild, reported one clone: `src/copy.ts:1-8 ~ src/owner.ts:1-8`. Both implementations trim/lowercase, reject empty input, split/filter slash segments, strip non `[a-z0-9-]`, reject emptied segments, and join with slash; their exported function names differ (`normalizeCopy` versus `normalizeOwner`). Repository-wide targeted search found `normalizeOwner` imported/called only by `src/owner.test.ts:1-2`; `normalizeCopy` has no caller/importer. The only test file is `src/owner.test.ts`, whose oracle verifies `' A/B '` becomes `'a/b'`. `package.json` is private and declares no exports or scripts. Excluded generated/vendor paths exist but are outside audit scope and ignored by scan. External consumers are unknown.\nDeliverable: return only your normal Reduction Matrix. Include exact deletion/reuse target, estimated net line/concept delta, behavior and compatibility obligations, retained unique critical/compatibility test oracles, confidence, and proof needed after any later implementation. Address whether `src/owner.ts` is the supported canonical owner and whether removing `src/copy.ts` is justified; identify compatibility uncertainty rather than assuming it away.\nIn scope/read scope: `src/copy.ts`, `src/owner.ts`, `src/owner.test.ts`, `package.json`, `.gitignore`, and targeted repository-contained reference searches needed to verify the evidence.\nOut of scope/write scope: no writes anywhere; no production/test/config edits; no dependency installation; no commands that mutate files; no broad/exhaustive codebase audit; no nested agents; no user questions; no commit or remote action.\nRequired invariants/resolved decisions: preserve `src/owner.test.ts` as the sole observed behavioral oracle; textual equality alone is not semantic authority; current repository callers and module responsibility determine canonical ownership; unknown external compatibility must remain explicit.\nAcceptance/checks: inspect both full source blocks, all repository-contained caller/import evidence, package exposure, and the sole test before producing the matrix. Do not claim runtime validation ran.\nReturn evidence: exact paths/lines inspected, reduction target, deltas, obligations/oracles, confidence/evidence gaps, and required future proof; report Effective Model if available.\nBlocker policy: if evidence is insufficient, return the gap in the matrix as read-only evidence; do not ask the user or alter files.",
+          "command": "Load the deduplication-audit skill and execute its complete read-only workflow for this scope intent: src"
+        },
+        "name": "task",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "command": "dedup",
+    "message": "src",
+    "scenario": "exact-clone"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "hash": "99a7ede8142a8237bf31b8af52d4eddef169f7033b89dc81b8dc78e92334a55f",
+        "path": "src/copy.ts"
+      },
+      {
+        "hash": "3ab266edbb4ca4aed1eff84d82d23034371a888def113813af9f24009ebd1f51",
+        "path": "src/owner.test.ts"
+      },
+      {
+        "hash": "bc31ed3581a6f9fa3acb836799f475fded54d3b210d1fee6059cfcba0ec9a6fd",
+        "path": "src/owner.ts"
+      }
+    ],
+    "before": [
+      {
+        "hash": "99a7ede8142a8237bf31b8af52d4eddef169f7033b89dc81b8dc78e92334a55f",
+        "path": "src/copy.ts"
+      },
+      {
+        "hash": "3ab266edbb4ca4aed1eff84d82d23034371a888def113813af9f24009ebd1f51",
+        "path": "src/owner.test.ts"
+      },
+      {
+        "hash": "bc31ed3581a6f9fa3acb836799f475fded54d3b210d1fee6059cfcba0ec9a6fd",
+        "path": "src/owner.ts"
+      }
+    ]
+  }
+}

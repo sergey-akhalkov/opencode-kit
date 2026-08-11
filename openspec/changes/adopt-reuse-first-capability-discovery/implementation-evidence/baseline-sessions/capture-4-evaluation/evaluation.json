@@ -1,0 +1,574 @@
+{
+  "baselineComplete": true,
+  "candidateComplete": null,
+  "note": "Facts only. Semantic retention oracles require explicit main disposition; no synthetic quality score is derived.",
+  "rows": [
+    {
+      "baseline": {
+        "assistantChars": 2474,
+        "cleanup": true,
+        "elapsedMs": 154113,
+        "status": 0,
+        "toolCalls": [
+          "bash",
+          "glob",
+          "glob",
+          "glob",
+          "glob",
+          "grep",
+          "read",
+          "read",
+          "read",
+          "read",
+          "read",
+          "list_mcp_resources",
+          "list_mcp_resource_templates",
+          "bash",
+          "read",
+          "glob",
+          "glob"
+        ],
+        "tokenFacts": [
+          {
+            "total": 18248,
+            "input": 16360,
+            "output": 228,
+            "reasoning": 124,
+            "cache": {
+              "write": 0,
+              "read": 1536
+            }
+          },
+          {
+            "total": 19191,
+            "input": 1957,
+            "output": 280,
+            "reasoning": 58,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 25001,
+            "input": 21973,
+            "output": 180,
+            "reasoning": 2848,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 25785,
+            "input": 4250,
+            "output": 224,
+            "reasoning": 319,
+            "cache": {
+              "write": 0,
+              "read": 20992
+            }
+          },
+          {
+            "total": 27190,
+            "input": 1036,
+            "output": 313,
+            "reasoning": 753,
+            "cache": {
+              "write": 0,
+              "read": 25088
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "inventory-refresh"
+    },
+    {
+      "baseline": {
+        "assistantChars": 2204,
+        "cleanup": true,
+        "elapsedMs": 123134,
+        "status": 0,
+        "toolCalls": [
+          "glob",
+          "glob",
+          "glob",
+          "glob",
+          "grep",
+          "read",
+          "read",
+          "read",
+          "read",
+          "bash",
+          "glob",
+          "glob",
+          "glob",
+          "glob"
+        ],
+        "tokenFacts": [
+          {
+            "total": 18094,
+            "input": 17830,
+            "output": 214,
+            "reasoning": 50,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18639,
+            "input": 1508,
+            "output": 192,
+            "reasoning": 43,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 20762,
+            "input": 1331,
+            "output": 138,
+            "reasoning": 1373,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 22623,
+            "input": 2060,
+            "output": 89,
+            "reasoning": 1530,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          },
+          {
+            "total": 24055,
+            "input": 2701,
+            "output": 352,
+            "reasoning": 1034,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "local-owner"
+    },
+    {
+      "baseline": {
+        "assistantChars": 1439,
+        "cleanup": true,
+        "elapsedMs": 115289,
+        "status": 0,
+        "toolCalls": [
+          "bash",
+          "glob",
+          "read",
+          "read",
+          "read",
+          "bash"
+        ],
+        "tokenFacts": [
+          {
+            "total": 18243,
+            "input": 17873,
+            "output": 140,
+            "reasoning": 230,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18873,
+            "input": 1751,
+            "output": 157,
+            "reasoning": 69,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 20497,
+            "input": 1519,
+            "output": 130,
+            "reasoning": 928,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21750,
+            "input": 1795,
+            "output": 191,
+            "reasoning": 820,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "registered-peer"
+    },
+    {
+      "baseline": {
+        "assistantChars": 1966,
+        "cleanup": true,
+        "elapsedMs": 93803,
+        "status": 0,
+        "toolCalls": [
+          "list_mcp_resources",
+          "list_mcp_resource_templates",
+          "bash",
+          "glob",
+          "read",
+          "read",
+          "grep",
+          "grep",
+          "bash"
+        ],
+        "tokenFacts": [
+          {
+            "total": 18077,
+            "input": 16336,
+            "output": 164,
+            "reasoning": 41,
+            "cache": {
+              "write": 0,
+              "read": 1536
+            }
+          },
+          {
+            "total": 18722,
+            "input": 1623,
+            "output": 112,
+            "reasoning": 91,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 19505,
+            "input": 1057,
+            "output": 113,
+            "reasoning": 415,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21406,
+            "input": 2659,
+            "output": 141,
+            "reasoning": 686,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 22964,
+            "input": 1680,
+            "output": 282,
+            "reasoning": 1034,
+            "cache": {
+              "write": 0,
+              "read": 19968
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "stale-record"
+    },
+    {
+      "baseline": {
+        "assistantChars": 2078,
+        "cleanup": true,
+        "elapsedMs": 100211,
+        "status": 0,
+        "toolCalls": [
+          "glob",
+          "bash",
+          "glob",
+          "glob",
+          "glob",
+          "read",
+          "read",
+          "read",
+          "read",
+          "read",
+          "bash",
+          "grep",
+          "glob",
+          "glob"
+        ],
+        "tokenFacts": [
+          {
+            "total": 18140,
+            "input": 17833,
+            "output": 236,
+            "reasoning": 71,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18875,
+            "input": 1687,
+            "output": 257,
+            "reasoning": 35,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 21875,
+            "input": 3639,
+            "output": 129,
+            "reasoning": 187,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 22556,
+            "input": 1125,
+            "output": 243,
+            "reasoning": 196,
+            "cache": {
+              "write": 0,
+              "read": 20992
+            }
+          },
+          {
+            "total": 24196,
+            "input": 819,
+            "output": 327,
+            "reasoning": 1034,
+            "cache": {
+              "write": 0,
+              "read": 22016
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "typical-external"
+    },
+    {
+      "baseline": {
+        "assistantChars": 1482,
+        "cleanup": true,
+        "elapsedMs": 78499,
+        "status": 0,
+        "toolCalls": [
+          "glob",
+          "glob",
+          "glob",
+          "glob",
+          "read",
+          "read",
+          "read",
+          "bash",
+          "bash",
+          "glob",
+          "glob",
+          "grep"
+        ],
+        "tokenFacts": [
+          {
+            "total": 17948,
+            "input": 17834,
+            "output": 114,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18422,
+            "input": 1323,
+            "output": 203,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 19619,
+            "input": 1221,
+            "output": 119,
+            "reasoning": 359,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 20771,
+            "input": 917,
+            "output": 146,
+            "reasoning": 764,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          },
+          {
+            "total": 21702,
+            "input": 2015,
+            "output": 227,
+            "reasoning": 516,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "no-match"
+    },
+    {
+      "baseline": {
+        "assistantChars": 370,
+        "cleanup": true,
+        "elapsedMs": 52502,
+        "status": 0,
+        "toolCalls": [
+          "glob",
+          "read",
+          "glob",
+          "read",
+          "read"
+        ],
+        "tokenFacts": [
+          {
+            "total": 17948,
+            "input": 16298,
+            "output": 54,
+            "reasoning": 60,
+            "cache": {
+              "write": 0,
+              "read": 1536
+            }
+          },
+          {
+            "total": 18120,
+            "input": 1092,
+            "output": 111,
+            "reasoning": 21,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 18606,
+            "input": 1557,
+            "output": 114,
+            "reasoning": 39,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 19798,
+            "input": 1092,
+            "output": 69,
+            "reasoning": 717,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "trivial-fix"
+    },
+    {
+      "baseline": {
+        "assistantChars": 2162,
+        "cleanup": true,
+        "elapsedMs": 81443,
+        "status": 0,
+        "toolCalls": [
+          "bash",
+          "glob",
+          "grep",
+          "read",
+          "read",
+          "read",
+          "bash"
+        ],
+        "tokenFacts": [
+          {
+            "total": 18197,
+            "input": 16339,
+            "output": 181,
+            "reasoning": 141,
+            "cache": {
+              "write": 0,
+              "read": 1536
+            }
+          },
+          {
+            "total": 19287,
+            "input": 1986,
+            "output": 157,
+            "reasoning": 248,
+            "cache": {
+              "write": 0,
+              "read": 16896
+            }
+          },
+          {
+            "total": 20244,
+            "input": 1935,
+            "output": 150,
+            "reasoning": 239,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21845,
+            "input": 1542,
+            "output": 325,
+            "reasoning": 1034,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "scenario": "registry-unavailable"
+    }
+  ],
+  "schemaVersion": 1
+}

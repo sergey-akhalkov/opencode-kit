@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "dedup-candidate-1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/agents/code-quality-reviewer.md": "56a0d1020434314697a27db1abfcb6ab39d7ff08eec954db0e17bc2c25e7195a",
+      "global/commands/dedup.md": "4f403b94a6b7d75045506a95eea169a293692bde946ef0b1b80be9bd6d3223b3",
+      "global/skills/deduplication-audit/SKILL.md": "ce788616ae0df0689ec6d95c107d209da4d3c52f6e038421a29c8546d0bc5071",
+      "tools/proofs/deduplication-audit.ts": "88d845f0e5802e7afeff85836a003c03147852e6db076a5a377439fac7191534"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_01023a88affejloWp3xe48XeVK",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "dedup-candidate-no-match-helper",
+      "--command",
+      "dedup",
+      "src"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786435628196,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdc6ca0001xYdJ67IHTRXRZe\",\"messageID\":\"msg_fefdc5f110012RMzBASLr5QrSk\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786435628974,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdc6ca3001aNogg3wGkTqo9A\",\"messageID\":\"msg_fefdc5f110012RMzBASLr5QrSk\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"text\",\"text\":\"I’ll load the deduplication workflow, resolve `src` within the workspace, then run its read-only candidate and ownership checks.\",\"time\":{\"start\":1786435628195,\"end\":1786435628968},\"metadata\":{\"openai\":{\"itemId\":\"msg_01dbeddcc6760612016a7ad82cb1208191a6e42e54139d2c0e\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435629328,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"skill\",\"callID\":\"call_rnk5HeWUZGWLkO5wolEGRLU3\",\"state\":{\"status\":\"completed\",\"input\":{\"name\":\"deduplication-audit\"},\"output\":\"<skill_content name=\\\"deduplication-audit\\\">\\n# Skill: deduplication-audit\\n\\n# Deduplication Audit\\n\\nUse this skill only when the user explicitly invokes `/dedup`, requests a scoped deduplication audit, or asks for clone analysis. Keep it unloaded for trivial owner-local fixes, ordinary implementation, general maintainability review, and broad exhaustive audits. Use `codebase-audit-loop` only when the user separately requests exhaustive coverage.\\n\\nThis workflow is read-only. It discovers and classifies candidates; it never edits production, removes tests, installs dependencies, or authorizes a refactor.\\n\\n## Scope And Tool Gate\\n\\n1. Interpret the complete command argument as scope intent. Resolve one explicit path or bounded path set inside the current repository. If it is missing, ambiguous, or escapes the repository, ask one precise scope question and do not scan yet.\\n2. Record the repository root, resolved scope, and exclusions. Preserve default `.gitignore` behavior; never pass `--no-gitignore`.\\n3. Run `jscpd --version`. Require major version 5. If unavailable or incompatible, report the tool layer blocked; do not install it or add a target-repository dependency.\\n4. Start with this read-only compact scan, adapting only the final scope path:\\n\\n```sh\\njscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" <scope>\\n```\\n\\n5. For a narrow scope where smaller clones materially affect the request, one targeted follow-up may use `--min-tokens 20`; label the changed sensitivity. Do not broaden scope merely because the first scan has no match.\\n\\nDo not write `.jscpd.json` or use file reporters in the target repository. A non-zero process exit is a failed scan, not \\\"no duplicates\\\". Exact and near textual clones are candidate locations only: `jscpd` output, token counts, and similarity never prove semantic equivalence, safe deletion, or safe extraction.\\n\\n## Semantic Evidence\\n\\nFor every material candidate, inspect both source blocks and gather bounded evidence inside the selected scope and direct relationships:\\n\\n- declarations, symbols, exports, and owning modules;\\n- callers, importers, adapters, and actual integration paths;\\n- tests, fixtures, snapshots, protocol vectors, and compatibility contracts;\\n- input/output contract and validation differences;\\n- errors, status mapping, fallback, and recovery differences;\\n- side effects, mutation, I/O, persistence, timing, concurrency, cleanup, activation, and lifecycle differences.\\n\\nPrefer graph or LSP symbol/caller relationships only when they resolve the exact current repository. Never enumerate unrelated indexed projects. Use targeted source search when graph/LSP evidence is unavailable. Missing evidence remains `unknown` and normally yields `not proven`; do not infer an owner or contract.\\n\\nChoose a canonical owner only when current callers, module responsibility, and the complete reachable contract support it. The oldest or shortest copy is not automatically canonical.\\n\\n## Classification And Recommendation\\n\\nAssign exactly one classification:\\n\\n- `exact duplicate`: text/token duplicate with no observed contract, error, effect, or lifecycle difference after evidence review;\\n- `near duplicate`: materially similar implementation with explicit differences still suitable for comparison;\\n- `overlapping responsibility`: different code owns intersecting behavior that should have one current owner;\\n- `redundant wrapper`: pass-through layer with no unique current contract, effect, lifecycle, or compatibility role;\\n- `keep separate by design`: similarity is intentional because contracts, effects, ownership, lifecycle, or compatibility differ;\\n- `not proven`: available evidence cannot establish safe equivalence or ownership.\\n\\nRecommend exactly one of `remove | reuse | extract | parameterize | keep separate`.\\n\\nPrefer `remove`, then `reuse`. Recommend `extract` or `parameterize` only when it reduces total current concepts or branches and does not increase coupling, public surface, lifecycle states, or navigation cost. Line reduction alone is insufficient. When differences require flags that recreate both implementations inside a generic helper, prefer `keep separate`.\\n\\nPreserve every unique critical or compatibility test oracle. Propose a test for removal only when a named retained test proves the same externally meaningful behavior and no critical or compatibility signal is lost.\\n\\n## Existing Reviewer\\n\\nAfter source/caller/test enrichment, invoke the existing `code-quality-reviewer` once when at least one material `remove`, `reuse`, `extract`, or `parameterize` candidate remains. Give it the exact candidate reference and source/test locations; request its normal Reduction Matrix. Do not create or invoke a `deduplicator` agent.\\n\\nThe reviewer is independent read-only evidence. Main reconciles its matrix with the clone and semantic evidence. Reviewer absence or disagreement is an evidence gap, not refactoring authority. Do not launch it for a no-match result, candidates already classified `keep separate by design`, or a trivial-fix request.\\n\\n## Production Boundary\\n\\nEnd the audit before mutation. If a later accepted task selects one recommendation, main implements the smallest bounded production slice, retains named critical/compatibility oracles, and proves affected callers at a representative runtime boundary. Clone disappearance is never Runtime Proof.\\n\\n## Output\\n\\nReturn:\\n\\n- `Scope`: repository-relative paths, exclusions, and whether coverage was bounded or truncated.\\n- `Tool Evidence`: exact `jscpd` version/invocation, exit status, clone count, stdout/stderr summary, and sensitivity changes.\\n- `Candidate Matrix`: one row per material candidate with:\\n  - classification and exact locations;\\n  - canonical owner or `unknown`;\\n  - contract, error, effect, and lifecycle differences;\\n  - callers and tests inspected;\\n  - retained critical/compatibility test oracles;\\n  - `remove | reuse | extract | parameterize | keep separate`;\\n  - estimated net line delta and net concept delta;\\n  - coupling/public-surface effect;\\n  - confidence and evidence gaps;\\n  - required Runtime Proof before any later production change.\\n- `Reviewer Evidence`: inspected candidate reference and reduction rows, or `not run` with reason.\\n- `No Safe Reduction`: explicit evidence when every result is `keep separate by design`, `not proven`, or no clone matched.\\n- `Audit Effects`: confirm production source/tests were unchanged and list any disposable evidence cleanup.\\n\\nDo not return an automatic edit plan, semantic-equivalence claim, exhaustive-audit claim, or permission to delete a unique test oracle.\\n\\nBase directory for this skill: <kit-root>\\\\global\\\\skills\\\\deduplication-audit\\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\\nNote: file list is sampled.\\n\\n<skill_files>\\n\\n</skill_files>\\n</skill_content>\",\"metadata\":{\"name\":\"deduplication-audit\",\"dir\":\"<kit-root>\\\\global\\\\skills\\\\deduplication-audit\",\"truncated\":false},\"title\":\"Loaded skill: deduplication-audit\",\"time\":{\"start\":1786435629239,\"end\":1786435629306}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01dbeddcc6760612016a7ad82d70048191931f5a24e7839d3a\"}},\"id\":\"prt_fefdc6fab001hpY6LN0D4U72jB\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdc5f110012RMzBASLr5QrSk\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786435629328,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdc70fd001uKVZRoJG93xQoj\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefdc5f110012RMzBASLr5QrSk\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-finish\",\"tokens\":{\"total\":18771,\"input\":18716,\"output\":55,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786435630581,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdc75f20013ID8Follc1vnNq\",\"messageID\":\"msg_fefdc71050010S4N1tVZDF7AaO\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435635880,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_f2lca2x9ZWfQ7m1wtxUsTRWE\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\"},\"output\":\"<path><proof-root>\\\\project</path>\\n<type>directory</type>\\n<entries>\\n.gitignore\\ngenerated/\\npackage.json\\nsrc/\\ntask.md\\nvendor/\\n\\n(6 entries)\\n</entries>\",\"metadata\":{\"preview\":\".gitignore\\ngenerated/\\npackage.json\\nsrc/\\ntask.md\\nvendor/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\project\",\"entries\":[\".gitignore\",\"generated/\",\"package.json\",\"src/\",\"task.md\",\"vendor/\"],\"offset\":1,\"totalEntries\":6,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\",\"time\":{\"start\":1786435635871,\"end\":1786435635878}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0b585a13c020c4e4016a7ad8343d408191aceb1a93001d07aa\"}},\"id\":\"prt_fefdc8a88001FfnFHGTkSnwcJs\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdc71050010S4N1tVZDF7AaO\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435635910,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_bjZDCqcovU8MbYDkzVwuAvpL\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\"},\"output\":\"<path><proof-root>\\\\project\\\\src</path>\\n<type>directory</type>\\n<entries>\\none-use-helper.ts\\n\\n(1 entries)\\n</entries>\",\"metadata\":{\"preview\":\"one-use-helper.ts\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\project\\\\src\",\"entries\":[\"one-use-helper.ts\"],\"offset\":1,\"totalEntries\":1,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\\\\src\",\"time\":{\"start\":1786435635890,\"end\":1786435635896}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0b585a13c020c4e4016a7ad8343d58819196e2e3047fabd443\"}},\"id\":\"prt_fefdc8aa3001E7fxZT16zCsNm9\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdc71050010S4N1tVZDF7AaO\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435636346,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_lN3Q5AkNhUMNgoMQdFZCVFxy\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"jscpd --version\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"cpd 5.0.14\\n\",\"metadata\":{\"output\":\"cpd 5.0.14\\n\",\"exit\":0,\"truncated\":false},\"title\":\"jscpd --version\",\"time\":{\"start\":1786435636277,\"end\":1786435636326}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0b585a13c020c4e4016a7ad8343d648191b80ac1734362fbff\"}},\"id\":\"prt_fefdc8ab4001N0bCcIuzDDsNSY\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdc71050010S4N1tVZDF7AaO\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786435636347,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdc8c68001ENTonr54JiWflX\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefdc71050010S4N1tVZDF7AaO\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-finish\",\"tokens\":{\"total\":20478,\"input\":2271,\"output\":159,\"reasoning\":128,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786435637717,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdc91d1001pZXSI8kIARNvBx\",\"messageID\":\"msg_fefdc8c6e0010TMxJVDHdenT6Q\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435645381,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_VRIOmPdI6kRlvYJI8vRsRZ5Z\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" src\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"Clones:\\n---\\n0 clones · 0.0% duplication\\ntime: 10.447ms\\n\",\"metadata\":{\"output\":\"Clones:\\n---\\n0 clones · 0.0% duplication\\ntime: 10.447ms\\n\",\"exit\":0,\"truncated\":false},\"title\":\"jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" src\",\"time\":{\"start\":1786435645310,\"end\":1786435645363}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e1e6fdeb4fa5da6016a7ad83b60b881919293363cd120a2d4\"}},\"id\":\"prt_fefdca61c0010twdoPlhadrrPL\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdc8c6e0010TMxJVDHdenT6Q\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786435645381,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdcafb50019LdY1vt7sLWUuA\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefdc8c6e0010TMxJVDHdenT6Q\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-finish\",\"tokens\":{\"total\":21035,\"input\":668,\"output\":136,\"reasoning\":263,\"cache\":{\"write\":0,\"read\":19968}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786435646894,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdcb5ab001oOJcW2ugxNLTrs\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786435656059,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdcca43001pCVsgYWFdvghkm\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"text\",\"text\":\"The required major-version-5 scan completed successfully with zero clone candidates. I’m checking scope completeness and repository test/caller context only to confirm the no-match result; the workflow does not permit a reviewer launch when nothing matched.\",\"time\":{\"start\":1786435652163,\"end\":1786435656057},\"metadata\":{\"openai\":{\"itemId\":\"msg_02f8fc5a65ed7f0e016a7ad8447c688191aaa43ca6938bce24\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435656101,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_ixcQGdMSvofrNq9PULCzS8VG\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\one-use-helper.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\one-use-helper.ts</path>\\n<type>file</type>\\n<content>\\n1: export function fixtureOnlyGlyph(value: string): string {\\n2:   return value.replaceAll('::glyph::', '#').trim();\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function fixtureOnlyGlyph(value: string): string {\\n  return value.replaceAll('::glyph::', '#').trim();\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\one-use-helper.ts\",\"text\":\"export function fixtureOnlyGlyph(value: string): string {\\n  return value.replaceAll('::glyph::', '#').trim();\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\\\\src\\\\one-use-helper.ts\",\"time\":{\"start\":1786435656084,\"end\":1786435656099}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02f8fc5a65ed7f0e016a7ad8486a588191a55bf98c8218aa68\"}},\"id\":\"prt_fefdcd98f001pw1MOrqlWdJHtm\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435656163,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_CnE2ya5ZjuclF7JZanpOBn5s\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\package.json\"},\"output\":\"<path><proof-root>\\\\project\\\\package.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"name\\\": \\\"dedup-proof-no-match-helper\\\",\\n3:   \\\"private\\\": true,\\n4:   \\\"type\\\": \\\"module\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"name\\\": \\\"dedup-proof-no-match-helper\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\package.json\",\"text\":\"{\\n  \\\"name\\\": \\\"dedup-proof-no-match-helper\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\\\\package.json\",\"time\":{\"start\":1786435656105,\"end\":1786435656160}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02f8fc5a65ed7f0e016a7ad8486a6c81918e1f22eca2ccdfe8\"}},\"id\":\"prt_fefdcd99f001KFKWuJHvZU6U2Z\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435656173,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_Fd88drrKZDPiujs7UhvbmjC0\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\.gitignore\"},\"output\":\"<path><proof-root>\\\\project\\\\.gitignore</path>\\n<type>file</type>\\n<content>\\n1: node_modules/\\n2: dist/\\n3: build/\\n4: coverage/\\n5: vendor/\\n6: generated/\\n\\n(End of file - total 6 lines)\\n</content>\",\"metadata\":{\"preview\":\"node_modules/\\ndist/\\nbuild/\\ncoverage/\\nvendor/\\ngenerated/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\.gitignore\",\"text\":\"node_modules/\\ndist/\\nbuild/\\ncoverage/\\nvendor/\\ngenerated/\",\"lineStart\":1,\"lineEnd\":6,\"totalLines\":6,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\\\\.gitignore\",\"time\":{\"start\":1786435656110,\"end\":1786435656171}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02f8fc5a65ed7f0e016a7ad8486a788191846ecb8c97a4656f\"}},\"id\":\"prt_fefdcd9ab001krWvPnotXx5DjI\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435656194,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_zqpWCY4J1jRkdc0dRwahNmAL\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/*.{test,spec}.{js,jsx,ts,tsx,mjs,cjs}\",\"path\":\"<proof-root>\\\\project\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\",\"time\":{\"start\":1786435656115,\"end\":1786435656190}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02f8fc5a65ed7f0e016a7ad8486a808191b05d4b91681805fe\"}},\"id\":\"prt_fefdcd9b0001xOT8Nk0rhV4tUn\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435656194,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_6kBF273gFG8tE83ocSAJ1n4Q\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"src/**/*\",\"path\":\"<proof-root>\\\\project\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\one-use-helper.ts\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\",\"time\":{\"start\":1786435656123,\"end\":1786435656193}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02f8fc5a65ed7f0e016a7ad8486a948191a5a387cf5a9d381d\"}},\"id\":\"prt_fefdcd9b8001Tix06g5s6s1nWd\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435656216,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_nyN7sT5V3Uk8Or9YY4eL3WVk\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"normalizeUser|one-use-helper\",\"path\":\"<proof-root>\\\\project\"},\"output\":\"No files found\",\"metadata\":{\"matches\":0,\"truncated\":false},\"title\":\"normalizeUser|one-use-helper\",\"time\":{\"start\":1786435656119,\"end\":1786435656200}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02f8fc5a65ed7f0e016a7ad8486a8c8191a8672c65deaa0529\"}},\"id\":\"prt_fefdcd9b4001wfdqafU7mNWu5g\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786435656216,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdcda09001xUJER3VWoYXFju\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefdcafbb001H8aAb6LEdaiN4A\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-finish\",\"tokens\":{\"total\":21572,\"input\":1100,\"output\":373,\"reasoning\":131,\"cache\":{\"write\":0,\"read\":19968}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786435659254,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdce5f1001zfFgPJgeWori54\",\"messageID\":\"msg_fefdcda0e001J3crgNCvvhNl6L\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435669644,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_Pda4vL6xr8fe6dZSPk3h4WfX\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\"},\"output\":\"<path><proof-root>\\\\project</path>\\n<type>directory</type>\\n<entries>\\n.gitignore\\ngenerated/\\npackage.json\\nsrc/\\ntask.md\\nvendor/\\n\\n(6 entries)\\n</entries>\",\"metadata\":{\"preview\":\".gitignore\\ngenerated/\\npackage.json\\nsrc/\\ntask.md\\nvendor/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\project\",\"entries\":[\".gitignore\",\"generated/\",\"package.json\",\"src/\",\"task.md\",\"vendor/\"],\"offset\":1,\"totalEntries\":6,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-no-match-helper-XHDhE0\\\\project\",\"time\":{\"start\":1786435669617,\"end\":1786435669642}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01cd5b54f5410d2a016a7ad85601988191bb682838ca61b8bb\"}},\"id\":\"prt_fefdd0e6d001Fm3IRvh4fIvVlC\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcda0e001J3crgNCvvhNl6L\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786435669699,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_5oN1jJRv1UaaKB57G9CegkaZ\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"fixtureOnlyGlyph\",\"path\":\"<proof-root>\\\\project\"},\"output\":\"Found 1 matches\\n<proof-root>\\\\project\\\\src\\\\one-use-helper.ts:\\n  Line 1: export function fixtureOnlyGlyph(value: string): string {\\n\",\"metadata\":{\"matches\":1,\"truncated\":false},\"title\":\"fixtureOnlyGlyph\",\"time\":{\"start\":1786435669611,\"end\":1786435669697}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01cd5b54f5410d2a016a7ad856018481918236c5a0ad2f5200\"}},\"id\":\"prt_fefdd0e67001a0uWfkTi3rKHtr\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"messageID\":\"msg_fefdcda0e001J3crgNCvvhNl6L\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786435669744,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdd0ee6001TQkC4x8HNqOoxb\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefdcda0e001J3crgNCvvhNl6L\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-finish\",\"tokens\":{\"total\":22510,\"input\":1971,\"output\":112,\"reasoning\":459,\"cache\":{\"write\":0,\"read\":19968}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786435673436,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdd1d59001CXnEMqIy2fiepG\",\"messageID\":\"msg_fefdd0eec001EiqLFFjxxNGuAI\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786435692670,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdd3c8e001M1z3YJ9asAlajE\",\"messageID\":\"msg_fefdd0eec001EiqLFFjxxNGuAI\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"text\",\"text\":\"**Scope**\\n- Repository root: `<proof-root>\\\\project`\\n- Resolved scope: `src`\\n- Coverage: complete within the requested scope; one file, not truncated.\\n- Exclusions: default `.gitignore`, plus `node_modules`, `vendor`, `generated`, `dist`, `build`, `coverage`, `.cache`, `out`, and `target`.\\n\\n**Tool Evidence**\\n- Version: `jscpd 5.0.14`\\n- Exit status: `0`\\n- Invocation:\\n\\n```text\\njscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \\\"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\\\" src\\n```\\n\\n- Result: `0 clones · 0.0% duplication`\\n- Runtime: `10.447ms`\\n- Stderr: none observed.\\n- Sensitivity unchanged. A 20-token follow-up was not warranted; the only source file is three lines and below the fixed five-line threshold.\\n\\n**Candidate Matrix**\\nNo material clone candidates.\\n\\nThe only symbol, `fixtureOnlyGlyph` at `src/one-use-helper.ts:1`, is exported from its owning module. Repository search found no callers/importers and no tests. This does not independently establish redundancy or authorize removal.\\n\\n**Reviewer Evidence**\\nNot run. The workflow prohibits launching `code-quality-reviewer` for a no-match result.\\n\\n**No Safe Reduction**\\nNo textual clone matched, so no semantic equivalence, canonical owner, or safe reduction recommendation was established.\\n\\n**Audit Effects**\\nProduction source and tests were unchanged. No evidence files or dependencies were created; no cleanup was needed.\",\"time\":{\"start\":1786435681422,\"end\":1786435692667},\"metadata\":{\"openai\":{\"itemId\":\"msg_0a1feb46bb3f2233016a7ad861e5008191bce712620b1984ac\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786435692758,\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"part\":{\"id\":\"prt_fefdd68cc001Df2odiL4ic912v\",\"reason\":\"stop\",\"messageID\":\"msg_fefdd0eec001EiqLFFjxxNGuAI\",\"sessionID\":\"ses_01023a88affejloWp3xe48XeVK\",\"type\":\"step-finish\",\"tokens\":{\"total\":23536,\"input\":1659,\"output\":407,\"reasoning\":478,\"cache\":{\"write\":0,\"read\":20992}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: jscpd only; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: code-quality-reviewer only",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll load the deduplication workflow, resolve `src` within the workspace, then run its read-only candidate and ownership checks.The required major-version-5 scan completed successfully with zero clone candidates. I’m checking scope completeness and repository test/caller context only to confirm the no-match result; the workflow does not permit a reviewer launch when nothing matched.**Scope**\n- Repository root: `<proof-root>\\project`\n- Resolved scope: `src`\n- Coverage: complete within the requested scope; one file, not truncated.\n- Exclusions: default `.gitignore`, plus `node_modules`, `vendor`, `generated`, `dist`, `build`, `coverage`, `.cache`, `out`, and `target`.\n\n**Tool Evidence**\n- Version: `jscpd 5.0.14`\n- Exit status: `0`\n- Invocation:\n\n```text\njscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\" src\n```\n\n- Result: `0 clones · 0.0% duplication`\n- Runtime: `10.447ms`\n- Stderr: none observed.\n- Sensitivity unchanged. A 20-token follow-up was not warranted; the only source file is three lines and below the fixed five-line threshold.\n\n**Candidate Matrix**\nNo material clone candidates.\n\nThe only symbol, `fixtureOnlyGlyph` at `src/one-use-helper.ts:1`, is exported from its owning module. Repository search found no callers/importers and no tests. This does not independently establish redundancy or authorize removal.\n\n**Reviewer Evidence**\nNot run. The workflow prohibits launching `code-quality-reviewer` for a no-match result.\n\n**No Safe Reduction**\nNo textual clone matched, so no semantic equivalence, canonical owner, or safe reduction recommendation was established.\n\n**Audit Effects**\nProduction source and tests were unchanged. No evidence files or dependencies were created; no cleanup was needed.",
+    "costs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 71223,
+    "eventCount": 28,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_01023a88affejloWp3xe48XeVK"
+    ],
+    "tokens": [
+      {
+        "total": 18771,
+        "input": 18716,
+        "output": 55,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 20478,
+        "input": 2271,
+        "output": 159,
+        "reasoning": 128,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 21035,
+        "input": 668,
+        "output": 136,
+        "reasoning": 263,
+        "cache": {
+          "write": 0,
+          "read": 19968
+        }
+      },
+      {
+        "total": 21572,
+        "input": 1100,
+        "output": 373,
+        "reasoning": 131,
+        "cache": {
+          "write": 0,
+          "read": 19968
+        }
+      },
+      {
+        "total": 22510,
+        "input": 1971,
+        "output": 112,
+        "reasoning": 459,
+        "cache": {
+          "write": 0,
+          "read": 19968
+        }
+      },
+      {
+        "total": 23536,
+        "input": 1659,
+        "output": 407,
+        "reasoning": 478,
+        "cache": {
+          "write": 0,
+          "read": 20992
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "name": "deduplication-audit"
+        },
+        "name": "skill",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "jscpd --version",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "jscpd --reporters ai --no-colors --no-tips --min-tokens 50 --min-lines 5 --mode mild --ignore \"**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**\" src",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\one-use-helper.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\package.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\.gitignore"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/*.{test,spec}.{js,jsx,ts,tsx,mjs,cjs}",
+          "path": "<proof-root>\\project"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "src/**/*",
+          "path": "<proof-root>\\project"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "normalizeUser|one-use-helper",
+          "path": "<proof-root>\\project"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "fixtureOnlyGlyph",
+          "path": "<proof-root>\\project"
+        },
+        "name": "grep",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "command": "dedup",
+    "message": "src",
+    "scenario": "no-match-helper"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "hash": "fcc21c0f8f470e530a6b1feb27ed96354e926e953dd491d846287564633a3b65",
+        "path": "src/one-use-helper.ts"
+      }
+    ],
+    "before": [
+      {
+        "hash": "fcc21c0f8f470e530a6b1feb27ed96354e926e953dd491d846287564633a3b65",
+        "path": "src/one-use-helper.ts"
+      }
+    ]
+  }
+}

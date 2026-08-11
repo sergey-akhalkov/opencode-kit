@@ -1,0 +1,29 @@
+node --version
+exit=0
+stdout:
+v24.18.0
+stderr:
+
+npm --version
+exit=0
+stdout:
+11.13.0
+stderr:
+
+git --version
+exit=0
+stdout:
+git version 2.55.0.windows.3
+stderr:
+
+openspec --version
+exit=0
+stdout:
+1.6.0
+stderr:
+
+opencode --version
+exit=0
+stdout:
+1.18.16
+stderr:

@@ -1,0 +1,408 @@
+{
+  "baselineComplete": true,
+  "candidateComplete": null,
+  "note": "Explicit observed facts only. No similarity, semantic-equivalence, confidence, or aggregate quality score is inferred.",
+  "rows": [
+    {
+      "baseline": {
+        "assistantChars": 1716,
+        "cleanup": true,
+        "elapsedMs": 69843,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": true,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18786,
+            "input": 18550,
+            "output": 154,
+            "reasoning": 82,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 19076,
+            "input": 986,
+            "output": 161,
+            "reasoning": 9,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 20164,
+            "input": 1622,
+            "output": 451,
+            "reasoning": 171,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21729,
+            "input": 2191,
+            "output": 269,
+            "reasoning": 325,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "candidateOracleFacts": null,
+      "scenario": "local-owner"
+    },
+    {
+      "baseline": {
+        "assistantChars": 1551,
+        "cleanup": true,
+        "elapsedMs": 74927,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": true,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18782,
+            "input": 18553,
+            "output": 107,
+            "reasoning": 122,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 26322,
+            "input": 8159,
+            "output": 170,
+            "reasoning": 73,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 27274,
+            "input": 1716,
+            "output": 411,
+            "reasoning": 59,
+            "cache": {
+              "write": 0,
+              "read": 25088
+            }
+          },
+          {
+            "total": 28730,
+            "input": 1923,
+            "output": 248,
+            "reasoning": 447,
+            "cache": {
+              "write": 0,
+              "read": 26112
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "candidateOracleFacts": null,
+      "scenario": "exact-clone"
+    },
+    {
+      "baseline": {
+        "assistantChars": 2147,
+        "cleanup": true,
+        "elapsedMs": 66515,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18707,
+            "input": 18553,
+            "output": 59,
+            "reasoning": 95,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 21253,
+            "input": 3303,
+            "output": 20,
+            "reasoning": 10,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 21559,
+            "input": 382,
+            "output": 173,
+            "reasoning": 12,
+            "cache": {
+              "write": 0,
+              "read": 20992
+            }
+          },
+          {
+            "total": 24036,
+            "input": 1092,
+            "output": 400,
+            "reasoning": 1552,
+            "cache": {
+              "write": 0,
+              "read": 20992
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "candidateOracleFacts": null,
+      "scenario": "semantic-near-clone"
+    },
+    {
+      "baseline": {
+        "assistantChars": 1803,
+        "cleanup": true,
+        "elapsedMs": 61460,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18654,
+            "input": 18553,
+            "output": 101,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 23736,
+            "input": 5589,
+            "output": 174,
+            "reasoning": 53,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 25066,
+            "input": 1204,
+            "output": 266,
+            "reasoning": 556,
+            "cache": {
+              "write": 0,
+              "read": 23040
+            }
+          },
+          {
+            "total": 26849,
+            "input": 1516,
+            "output": 316,
+            "reasoning": 953,
+            "cache": {
+              "write": 0,
+              "read": 24064
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "candidateOracleFacts": null,
+      "scenario": "unique-compatibility-test"
+    },
+    {
+      "baseline": {
+        "assistantChars": 675,
+        "cleanup": true,
+        "elapsedMs": 19098,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18619,
+            "input": 18552,
+            "output": 49,
+            "reasoning": 18,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18731,
+            "input": 745,
+            "output": 56,
+            "reasoning": 10,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19246,
+            "input": 917,
+            "output": 112,
+            "reasoning": 297,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "candidateOracleFacts": null,
+      "scenario": "no-match-helper"
+    },
+    {
+      "baseline": {
+        "assistantChars": 338,
+        "cleanup": true,
+        "elapsedMs": 42403,
+        "sourceUnchanged": true,
+        "status": 0,
+        "toolFacts": {
+          "auditLoop": false,
+          "jscpd": false,
+          "reviewer": false,
+          "skill": false
+        },
+        "tokenFacts": [
+          {
+            "total": 18636,
+            "input": 18553,
+            "output": 52,
+            "reasoning": 31,
+            "cache": {
+              "write": 0,
+              "read": 0
+            }
+          },
+          {
+            "total": 18728,
+            "input": 758,
+            "output": 50,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 18897,
+            "input": 904,
+            "output": 53,
+            "reasoning": 20,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 18974,
+            "input": 1024,
+            "output": 23,
+            "reasoning": 7,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19072,
+            "input": 1099,
+            "output": 53,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19298,
+            "input": 1249,
+            "output": 95,
+            "reasoning": 34,
+            "cache": {
+              "write": 0,
+              "read": 17920
+            }
+          },
+          {
+            "total": 19412,
+            "input": 418,
+            "output": 50,
+            "reasoning": 0,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          },
+          {
+            "total": 19660,
+            "input": 576,
+            "output": 84,
+            "reasoning": 56,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          },
+          {
+            "total": 20418,
+            "input": 1065,
+            "output": 68,
+            "reasoning": 341,
+            "cache": {
+              "write": 0,
+              "read": 18944
+            }
+          }
+        ]
+      },
+      "candidate": null,
+      "candidateOracleFacts": null,
+      "scenario": "trivial-fix"
+    }
+  ],
+  "schemaVersion": 1
+}

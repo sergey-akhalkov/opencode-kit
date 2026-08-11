@@ -1,0 +1,42 @@
+{
+  "candidateId": "reuse-core-initial",
+  "cleanup": "removed",
+  "commands": [
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "status",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "name": "status",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"pending\": [],\n  \"registry\": \"synthetic/reuse-registry\",\n  \"revision\": \"ca6adf0b4480888ed0b883c3737443ab1a969ebe4da9a448122ffe6b898688b7\",\n  \"source\": \"registry\",\n  \"status\": \"ok\"\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "validate",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "name": "validate",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"capabilities\": 1,\n  \"groups\": 2,\n  \"projects\": 3,\n  \"registry\": \"synthetic/reuse-registry\",\n  \"revision\": \"ca6adf0b4480888ed0b883c3737443ab1a969ebe4da9a448122ffe6b898688b7\",\n  \"status\": \"ok\"\n}\n"
+    }
+  ],
+  "modelCalls": 0,
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "c522bbc1743f9e58cfcaf4bbdc7861daddf4070fd1bc4e7a46a69c14506271e6",
+    "global/commands/reuse-inventory.md": null,
+    "global/skills/change-ready-sdlc/SKILL.md": "b41bb3c1d8f82e522c14f7e4ab573b30dfd21d25c8d8499030eb078f1ecf4113",
+    "global/skills/reuse-discovery/SKILL.md": null,
+    "global/bin/reuse-registry.ts": "81c4214a81a95bdf2b081941ccbc67ea16d6200386f1e386a625d412e5fe46b2",
+    "tools/proofs/reuse-discovery.ts": "55f1be718de512482088eaceb79582098792b79e39aeadd7f3469698a78a75ea"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "candidateId": "pre-dedup-baseline",
+  "captureKind": "baseline",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "scenarios": [
+    "local-owner",
+    "exact-clone",
+    "semantic-near-clone",
+    "unique-compatibility-test",
+    "no-match-helper",
+    "trivial-fix"
+  ],
+  "sourceHashes": {
+    "global/agents/code-quality-reviewer.md": "56a0d1020434314697a27db1abfcb6ab39d7ff08eec954db0e17bc2c25e7195a",
+    "global/commands/dedup.md": null,
+    "global/skills/deduplication-audit/SKILL.md": null,
+    "tools/proofs/deduplication-audit.ts": "6be0d15f6818a43aee380722163612c9f1e885764a8bb617819953364ba2bc52"
+  },
+  "toolPolicy": [
+    "bash: jscpd only; shell metacharacters denied last",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: code-quality-reviewer only",
+    "webfetch: deny"
+  ],
+  "version": 1,
+  "credentials": {
+    "count": 4,
+    "status": 0
+  },
+  "loader": {
+    "agentStatus": 0,
+    "configStatus": 0,
+    "dedupSkillLoaded": false,
+    "expectedSkillLoaded": false,
+    "skillStatus": 0
+  },
+  "permission": {
+    "exactFinalPolicy": true
+  },
+  "agentEnvelope": {
+    "steps": 24
+  },
+  "opencodeVersion": "1.18.16"
+}

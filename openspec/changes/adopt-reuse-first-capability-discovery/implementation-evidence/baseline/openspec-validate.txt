@@ -1,0 +1,21 @@
+command: rtk npm run openspec:validate
+exit: 0
+stdout:
+> openspec:validate
+> openspec validate --all
+
+✓ change/add-session-completion-guard
+✓ change/adopt-reuse-first-capability-discovery
+✓ change/enforce-shift-left-real-boundary-testing
+✓ spec/library-change-ready-sdlc
+✓ spec/library-config-portability
+✓ spec/library-install-init-resilience
+✓ spec/library-instruction-artifacts
+✓ spec/library-model-routing
+✓ spec/library-plugin-architecture
+✓ spec/library-spec-workflow-integrity
+✓ spec/library-tools-architecture
+Totals: 11 passed, 0 failed (11 items)
+stderr:
+[rtk] /!\ No hook installed - run `rtk init -g` for automatic token savings
+- Validating...

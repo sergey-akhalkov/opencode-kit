@@ -1,0 +1,23 @@
+{
+  "cleanup": "removed",
+  "modelCalls": 0,
+  "rows": [
+    {
+      "cloneCount": 1,
+      "scenario": "local-owner",
+      "sourceUnchanged": true,
+      "status": 0,
+      "stderr": "",
+      "stdout": "Clones:\ncanonical-owner.ts:1-8 ~ duplicate.ts:1-8\n---\n1 clones · 43.8% duplication\ntime: 24.578ms\n"
+    },
+    {
+      "cloneCount": 1,
+      "scenario": "semantic-near-clone",
+      "sourceUnchanged": true,
+      "status": 0,
+      "stderr": "",
+      "stdout": "Clones:\naudit-path.ts:4-10 ~ request-path.ts:3-9\n---\n1 clones · 25.0% duplication\ntime: 19.832ms\n"
+    }
+  ],
+  "schemaVersion": 1
+}

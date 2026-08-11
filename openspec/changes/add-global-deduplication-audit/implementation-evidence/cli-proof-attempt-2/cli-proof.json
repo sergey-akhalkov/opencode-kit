@@ -1,0 +1,76 @@
+{
+  "cleanup": "removed",
+  "schemaVersion": 1,
+  "environment": {
+    "command": "jscpd",
+    "helpHasGitignoreDefault": true,
+    "helpHasIgnore": true,
+    "version": "cpd 5.0.14",
+    "versionStatus": 0
+  },
+  "fixture": {
+    "after": [
+      {
+        "hash": "d31116dfb7dce4eb557fc52d5e2f9994add2d077219510c077e6c4567daac217",
+        "path": "src/one.ts"
+      },
+      {
+        "hash": "d955d612d25e156cbf2bc242ecebfa82c0336f47fb81df4211100f8df2d16621",
+        "path": "src/two.ts"
+      }
+    ],
+    "before": [
+      {
+        "hash": "d31116dfb7dce4eb557fc52d5e2f9994add2d077219510c077e6c4567daac217",
+        "path": "src/one.ts"
+      },
+      {
+        "hash": "d955d612d25e156cbf2bc242ecebfa82c0336f47fb81df4211100f8df2d16621",
+        "path": "src/two.ts"
+      }
+    ],
+    "cloneLocationsPresent": true,
+    "ignoredLocationsAbsent": true,
+    "invocation": [
+      "jscpd",
+      "--reporters",
+      "ai",
+      "--no-colors",
+      "--no-tips",
+      "--min-tokens",
+      "20",
+      "--min-lines",
+      "5",
+      "--mode",
+      "mild",
+      "--ignore",
+      "**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**",
+      "src"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "Clones:\none.ts:1-8 ~ two.ts:1-8\n---\n1 clones · 43.8% duplication\ntime: 16.382ms\n"
+  },
+  "repository": {
+    "invocation": [
+      "jscpd",
+      "--reporters",
+      "ai",
+      "--no-colors",
+      "--no-tips",
+      "--min-tokens",
+      "50",
+      "--min-lines",
+      "5",
+      "--mode",
+      "mild",
+      "--ignore",
+      "**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**",
+      "tools/validators"
+    ],
+    "scope": "tools/validators",
+    "status": 0,
+    "stderr": "",
+    "stdout": "Clones:\ncontext.ts 49-54 ~ 57-62\ncontext.ts 66-75 ~ 84-93\ndevkit-contract.ts:24-41 ~ routing.ts:65-83\n---\n3 clones · 0.7% duplication\ntime: 15.356ms\n"
+  }
+}

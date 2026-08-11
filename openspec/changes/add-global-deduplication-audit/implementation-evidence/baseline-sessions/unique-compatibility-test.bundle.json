@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "pre-dedup-baseline",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/agents/code-quality-reviewer.md": "56a0d1020434314697a27db1abfcb6ab39d7ff08eec954db0e17bc2c25e7195a",
+      "global/commands/dedup.md": null,
+      "global/skills/deduplication-audit/SKILL.md": null,
+      "tools/proofs/deduplication-audit.ts": "6be0d15f6818a43aee380722163612c9f1e885764a8bb617819953364ba2bc52"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_01035beecffermoe7HBBaLWK9M",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "dedup-baseline-unique-compatibility-test",
+      "--command",
+      "dedup",
+      "src"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786434443458,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefca58bb001w8VUgf7Jw7iLHs\",\"messageID\":\"msg_fefca4c0f001aVLMY7lUf7gkNP\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434445316,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefca58be001xNylwoo9hc9Q5m\",\"messageID\":\"msg_fefca4c0f001aVLMY7lUf7gkNP\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"text\",\"text\":\"I’ll inventory `src`, then compare repeated structures and semantics without modifying or executing project code.\",\"time\":{\"start\":1786434443454,\"end\":1786434445314},\"metadata\":{\"openai\":{\"itemId\":\"msg_002c40e571abe9ee016a7ad38bec1481919b3d66a9763a725f\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434445457,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_tM9tQLnarCKG7UVLlzhpyaGF\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"src/**/*\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\modern.ts\\n<proof-root>\\\\project\\\\src\\\\legacy.ts\\n<proof-root>\\\\project\\\\src\\\\legacy-client-compatibility.test.ts\",\"metadata\":{\"count\":3,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-unique-compatibility-test-WLCRQt\\\\project\",\"time\":{\"start\":1786434445342,\"end\":1786434445443}},\"metadata\":{\"openai\":{\"itemId\":\"fc_002c40e571abe9ee016a7ad38dae288191a85917ee27a9af42\"}},\"id\":\"prt_fefca60160010FRVRMahVTnCO2\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca4c0f001aVLMY7lUf7gkNP\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434445484,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_ar5o9FSKMZM7kQxYDzAwfvXE\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"TODO|FIXME|copy|duplicate|duplicat\",\"path\":\"src\"},\"output\":\"No files found\",\"metadata\":{\"matches\":0,\"truncated\":false},\"title\":\"TODO|FIXME|copy|duplicate|duplicat\",\"time\":{\"start\":1786434445355,\"end\":1786434445473}},\"metadata\":{\"openai\":{\"itemId\":\"fc_002c40e571abe9ee016a7ad38daec88191a965574ec532dccf\"}},\"id\":\"prt_fefca6027001bPjC1DxivIh02l\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca4c0f001aVLMY7lUf7gkNP\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434445927,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_ZQe35avUJHUv1KJSE7h3xGHJ\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"*\"},\"output\":\"<proof-root>\\\\project\\\\vendor\\\\ignored.ts\\n<proof-root>\\\\project\\\\task.md\\n<proof-root>\\\\project\\\\.gitignore\\n<proof-root>\\\\project\\\\package.json\\n<proof-root>\\\\project\\\\src\\\\modern.ts\\n<proof-root>\\\\project\\\\src\\\\legacy.ts\\n<proof-root>\\\\project\\\\src\\\\legacy-client-compatibility.test.ts\\n<proof-root>\\\\project\\\\generated\\\\ignored.ts\\n<proof-root>\\\\project\\\\.opencode\\\\package.json\\n<proof-root>\\\\project\\\\.opencode\\\\package-lock.json\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4-mini\\\\package.json\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4-mini\\\\index.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4-mini\\\\index.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4-mini\\\\index.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4-mini\\\\index.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\package.json\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\schemas.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\schemas.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\schemas.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\schemas.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\parse.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\parse.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\parse.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\parse.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\package.json\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\iso.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\iso.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\iso.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\iso.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\index.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\index.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\index.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\index.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\external.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\external.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\external.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\external.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\coerce.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\coerce.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\coerce.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\coerce.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\checks.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\checks.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\checks.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\mini\\\\checks.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\index.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\README.md\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\cs.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fr-CA.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\index.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\zh-TW.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\az.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\index.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\index.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\eo.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\eo.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\eo.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\eo.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\en.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\en.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\en.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\LICENSE\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fr-CA.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fr-CA.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fr-CA.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fi.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fi.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fi.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fi.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fa.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fa.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fa.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\fa.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\es.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\es.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\es.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\es.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\index.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ja.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\index.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ja.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\index.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ja.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\index.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ja.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\it.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\it.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\it.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\it.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\is.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\is.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\is.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\cs.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\cs.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\cs.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ca.js\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ca.d.ts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ca.d.cts\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\ca.cjs\\n<proof-root>\\\\project\\\\.opencode\\\\node_modules\\\\zod\\\\v4\\\\locales\\\\bg.js\\n\\n(Results are truncated: showing first 100 results. Consider using a more specific path or pattern.)\",\"metadata\":{\"count\":100,\"truncated\":true},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-unique-compatibility-test-WLCRQt\\\\project\",\"time\":{\"start\":1786434445349,\"end\":1786434445904}},\"metadata\":{\"openai\":{\"itemId\":\"fc_002c40e571abe9ee016a7ad38daebc8191813ecb39ed8a5ab3\"}},\"id\":\"prt_fefca6021001UT11TT9I8NhJzO\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca4c0f001aVLMY7lUf7gkNP\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434445927,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefca6254001pOjO5UVIK3HS8I\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefca4c0f001aVLMY7lUf7gkNP\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-finish\",\"tokens\":{\"total\":18654,\"input\":18553,\"output\":101,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434448892,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefca6df8001if3b6Y3gAiTzKJ\",\"messageID\":\"msg_fefca625b001cBF4wMiHLz4tVo\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434453096,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_mkZ4s6j8zAcvE7ArWPjmOapt\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\modern.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\modern.ts</path>\\n<type>file</type>\\n<content>\\n1: export function normalizeModern(input: string): string {\\n2:   const normalized = input.trim().toLowerCase();\\n3:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n4:   const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n5:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n6:   if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n7:   return selected.join(\\\"/\\\");\\n8: }\\n\\n(End of file - total 8 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function normalizeModern(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\modern.ts\",\"text\":\"export function normalizeModern(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"lineStart\":1,\"lineEnd\":8,\"totalLines\":8,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-unique-compatibility-test-WLCRQt\\\\project\\\\src\\\\modern.ts\",\"time\":{\"start\":1786434453056,\"end\":1786434453092}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0a9501ccf267f83a016a7ad39572e88191abb3d5224e6354e9\"}},\"id\":\"prt_fefca7e38001WNmUSQ79TXJA4X\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca625b001cBF4wMiHLz4tVo\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434453096,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_5txhgyu21PQMVwcw6rLuT5NL\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\legacy.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\legacy.ts</path>\\n<type>file</type>\\n<content>\\n1: export function normalizeLegacy(input: string): string {\\n2:   const normalized = input.trim().toLowerCase();\\n3:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n4:   const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n5:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n6:   if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n7:   return selected.join(\\\"/\\\");\\n8: }\\n\\n(End of file - total 8 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function normalizeLegacy(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\legacy.ts\",\"text\":\"export function normalizeLegacy(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"lineStart\":1,\"lineEnd\":8,\"totalLines\":8,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-unique-compatibility-test-WLCRQt\\\\project\\\\src\\\\legacy.ts\",\"time\":{\"start\":1786434453070,\"end\":1786434453094}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0a9501ccf267f83a016a7ad39572f881918dd989f3142dbcb2\"}},\"id\":\"prt_fefca7e42001kDiGbMr9ucDB5o\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca625b001cBF4wMiHLz4tVo\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434453108,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_kWZOqDw6XQLX3ZeWc1AZCcVI\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\legacy-client-compatibility.test.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\legacy-client-compatibility.test.ts</path>\\n<type>file</type>\\n<content>\\n1: import { normalizeLegacy } from './legacy.js';\\n2: // Unique shipped-client oracle: uppercase and repeated separators must retain the v1 result.\\n3: if (normalizeLegacy(' A//B ') !== 'a/b') throw new Error('v1 compatibility regression');\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"import { normalizeLegacy } from './legacy.js';\\n// Unique shipped-client oracle: uppercase and repeated separators must retain the v1 result.\\nif (normalizeLegacy(' A//B ') !== 'a/b') throw new Error('v1 compatibility regression');\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\legacy-client-compatibility.test.ts\",\"text\":\"import { normalizeLegacy } from './legacy.js';\\n// Unique shipped-client oracle: uppercase and repeated separators must retain the v1 result.\\nif (normalizeLegacy(' A//B ') !== 'a/b') throw new Error('v1 compatibility regression');\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-unique-compatibility-test-WLCRQt\\\\project\\\\src\\\\legacy-client-compatibility.test.ts\",\"time\":{\"start\":1786434453085,\"end\":1786434453106}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0a9501ccf267f83a016a7ad39572fc8191b0796746ad87bceb\"}},\"id\":\"prt_fefca7e50001PhLVHwNcMB6pbR\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca625b001cBF4wMiHLz4tVo\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434453195,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefca7ec2001lvTromWnsXKWtJ\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefca625b001cBF4wMiHLz4tVo\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-finish\",\"tokens\":{\"total\":23736,\"input\":5589,\"output\":174,\"reasoning\":53,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434454322,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefca831c001AbhsaaU0sXoY4c\",\"messageID\":\"msg_fefca7ec8001eXDM0bLmuZU9nN\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434469242,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefcab179001BzpzpYg0WapPJN\",\"messageID\":\"msg_fefca7ec8001eXDM0bLmuZU9nN\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"text\",\"text\":\"The two production functions are byte-for-byte equivalent apart from their exported names. I’m checking in-scope callers to distinguish removable implementation duplication from compatibility surface that must remain.\",\"time\":{\"start\":1786434466169,\"end\":1786434469239},\"metadata\":{\"openai\":{\"itemId\":\"msg_04b69a11dac138a5016a7ad3a29f4c81918c4ce9264a7ecbb0\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434469366,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_7JjXnws0muxNjQgL9aBOfx0X\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"normalize(?:Modern|Legacy)\",\"path\":\"<proof-root>\\\\project\\\\src\",\"include\":\"*.ts\"},\"output\":\"Found 4 matches\\n<proof-root>\\\\project\\\\src\\\\modern.ts:\\n  Line 1: export function normalizeModern(input: string): string {\\n\\n\\n<proof-root>\\\\project\\\\src\\\\legacy-client-compatibility.test.ts:\\n  Line 1: import { normalizeLegacy } from './legacy.js';\\n\\n  Line 3: if (normalizeLegacy(' A//B ') !== 'a/b') throw new Error('v1 compatibility regression');\\n\\n\\n<proof-root>\\\\project\\\\src\\\\legacy.ts:\\n  Line 1: export function normalizeLegacy(input: string): string {\\n\",\"metadata\":{\"matches\":4,\"truncated\":false},\"title\":\"normalize(?:Modern|Legacy)\",\"time\":{\"start\":1786434469277,\"end\":1786434469358}},\"metadata\":{\"openai\":{\"itemId\":\"fc_04b69a11dac138a5016a7ad3a598cc8191bc2fd603cbda1141\"}},\"id\":\"prt_fefcabd79001Tba4QxGmN3hewO\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca7ec8001eXDM0bLmuZU9nN\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434469383,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_rjxwRN2sXynC0k6zxx70xeAk\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"from\\\\s+['\\\"]\\\\./(?:modern|legacy)\\\\.js['\\\"]\",\"path\":\"<proof-root>\\\\project\\\\src\",\"include\":\"*.ts\"},\"output\":\"Found 1 matches\\n<proof-root>\\\\project\\\\src\\\\legacy-client-compatibility.test.ts:\\n  Line 1: import { normalizeLegacy } from './legacy.js';\\n\",\"metadata\":{\"matches\":1,\"truncated\":false},\"title\":\"from\\\\s+['\\\"]\\\\./(?:modern|legacy)\\\\.js['\\\"]\",\"time\":{\"start\":1786434469300,\"end\":1786434469375}},\"metadata\":{\"openai\":{\"itemId\":\"fc_04b69a11dac138a5016a7ad3a598dc8191a634f44791aee1b7\"}},\"id\":\"prt_fefcabd9f001ukXgSSDK3jftTd\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca7ec8001eXDM0bLmuZU9nN\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434469407,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_YOKtCsoHZblGTntrYjNSdifo\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"empty input|invalid segment|\\\\[\\\\^a-z0-9-\\\\]\",\"path\":\"<proof-root>\\\\project\\\\src\",\"include\":\"*.ts\"},\"output\":\"Found 6 matches\\n<proof-root>\\\\project\\\\src\\\\modern.ts:\\n  Line 3:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n\\n  Line 5:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n\\n  Line 6:   if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n\\n\\n<proof-root>\\\\project\\\\src\\\\legacy.ts:\\n  Line 3:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n\\n  Line 5:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n\\n  Line 6:   if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n\",\"metadata\":{\"matches\":6,\"truncated\":false},\"title\":\"empty input|invalid segment|\\\\[\\\\^a-z0-9-\\\\]\",\"time\":{\"start\":1786434469306,\"end\":1786434469386}},\"metadata\":{\"openai\":{\"itemId\":\"fc_04b69a11dac138a5016a7ad3a598e48191833b6814b7b18199\"}},\"id\":\"prt_fefcabdb60018xIYLOqwFIaY5S\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"messageID\":\"msg_fefca7ec8001eXDM0bLmuZU9nN\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434469407,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefcabe0c0018QZd9xP0ol09uj\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefca7ec8001eXDM0bLmuZU9nN\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-finish\",\"tokens\":{\"total\":25066,\"input\":1204,\"output\":266,\"reasoning\":556,\"cache\":{\"write\":0,\"read\":23040}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434473937,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefcacfcd001Xg1yyTDpMDh8MJ\",\"messageID\":\"msg_fefcabe13001GaAo4vHA35aX6V\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434497123,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefcb187c0017Q6BbuxTij6Acn\",\"messageID\":\"msg_fefcabe13001GaAo4vHA35aX6V\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"text\",\"text\":\"**Duplication Candidate**\\n\\n| Locations | Duplication | Meaningful differences | Recommendation |\\n|---|---|---|---|\\n| `src/modern.ts:1-8` and `src/legacy.ts:1-8` | Function bodies are identical. | Exported names and module paths differ. `normalizeLegacy` is explicitly exercised by the shipped-client oracle at `src/legacy-client-compatibility.test.ts:1-3`. | Keep `normalizeModern` as the implementation and make `normalizeLegacy` a thin named delegating wrapper. |\\n\\nDo not delete or merge away `src/legacy-client-compatibility.test.ts`. It uniquely protects the legacy entry point and the uppercase/repeated-separator behavior.\\n\\nA direct re-export would reduce more code, but could change `Function.name` and error-stack identity. A named wrapper is the safer reduction unless those details are proven irrelevant.\\n\\n**Proof Needed**\\n\\n- Confirm `normalizeLegacy` remains exported from `src/legacy.ts`.\\n- Run the existing compatibility oracle and preserve `' A//B ' -> 'a/b'`.\\n- Differentially check representative valid, empty, repeated-separator, punctuation-only, and Unicode inputs.\\n- Verify equivalent error types and messages: `\\\"empty input\\\"` and `\\\"invalid segment\\\"`.\\n- Run project type-check/build and existing tests.\\n- Determine whether function identity, `.name`, or stack locations are compatibility requirements before considering a direct re-export.\\n\\nNo other meaningful duplication candidates were found within the three files under `src`. No files were changed.\",\"time\":{\"start\":1786434492541,\"end\":1786434497102},\"metadata\":{\"openai\":{\"itemId\":\"msg_05ce31c62fe831d4016a7ad3bcf44c8191bd39c62adf22c042\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434497221,\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"part\":{\"id\":\"prt_fefcb2ab3001JkRt20tWpJZKAn\",\"reason\":\"stop\",\"messageID\":\"msg_fefcabe13001GaAo4vHA35aX6V\",\"sessionID\":\"ses_01035beecffermoe7HBBaLWK9M\",\"type\":\"step-finish\",\"tokens\":{\"total\":26849,\"input\":1516,\"output\":316,\"reasoning\":953,\"cache\":{\"write\":0,\"read\":24064}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: jscpd only; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: code-quality-reviewer only",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inventory `src`, then compare repeated structures and semantics without modifying or executing project code.The two production functions are byte-for-byte equivalent apart from their exported names. I’m checking in-scope callers to distinguish removable implementation duplication from compatibility surface that must remain.**Duplication Candidate**\n\n| Locations | Duplication | Meaningful differences | Recommendation |\n|---|---|---|---|\n| `src/modern.ts:1-8` and `src/legacy.ts:1-8` | Function bodies are identical. | Exported names and module paths differ. `normalizeLegacy` is explicitly exercised by the shipped-client oracle at `src/legacy-client-compatibility.test.ts:1-3`. | Keep `normalizeModern` as the implementation and make `normalizeLegacy` a thin named delegating wrapper. |\n\nDo not delete or merge away `src/legacy-client-compatibility.test.ts`. It uniquely protects the legacy entry point and the uppercase/repeated-separator behavior.\n\nA direct re-export would reduce more code, but could change `Function.name` and error-stack identity. A named wrapper is the safer reduction unless those details are proven irrelevant.\n\n**Proof Needed**\n\n- Confirm `normalizeLegacy` remains exported from `src/legacy.ts`.\n- Run the existing compatibility oracle and preserve `' A//B ' -> 'a/b'`.\n- Differentially check representative valid, empty, repeated-separator, punctuation-only, and Unicode inputs.\n- Verify equivalent error types and messages: `\"empty input\"` and `\"invalid segment\"`.\n- Run project type-check/build and existing tests.\n- Determine whether function identity, `.name`, or stack locations are compatibility requirements before considering a direct re-export.\n\nNo other meaningful duplication candidates were found within the three files under `src`. No files were changed.",
+    "costs": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 61460,
+    "eventCount": 20,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_01035beecffermoe7HBBaLWK9M"
+    ],
+    "tokens": [
+      {
+        "total": 18654,
+        "input": 18553,
+        "output": 101,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 23736,
+        "input": 5589,
+        "output": 174,
+        "reasoning": 53,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 25066,
+        "input": 1204,
+        "output": 266,
+        "reasoning": 556,
+        "cache": {
+          "write": 0,
+          "read": 23040
+        }
+      },
+      {
+        "total": 26849,
+        "input": 1516,
+        "output": 316,
+        "reasoning": 953,
+        "cache": {
+          "write": 0,
+          "read": 24064
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "src/**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "TODO|FIXME|copy|duplicate|duplicat",
+          "path": "src"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\modern.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\legacy.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\legacy-client-compatibility.test.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "normalize(?:Modern|Legacy)",
+          "path": "<proof-root>\\project\\src",
+          "include": "*.ts"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "from\\s+['\"]\\./(?:modern|legacy)\\.js['\"]",
+          "path": "<proof-root>\\project\\src",
+          "include": "*.ts"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "empty input|invalid segment|\\[\\^a-z0-9-\\]",
+          "path": "<proof-root>\\project\\src",
+          "include": "*.ts"
+        },
+        "name": "grep",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "command": "dedup",
+    "message": "src",
+    "scenario": "unique-compatibility-test"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "hash": "9fe640f6727b5d3051ad3f9195bd4b9c47ed7395d9770cf6d01058130e73a390",
+        "path": "src/legacy-client-compatibility.test.ts"
+      },
+      {
+        "hash": "60a5eb1b1d748c1084ba71f72b6b1c12087aaa7a35d41862f91af05b02263b5b",
+        "path": "src/legacy.ts"
+      },
+      {
+        "hash": "d95350f24e0292ee8c1ca696aa16fb58198a82bb7f613dc14c8f760e52ef7635",
+        "path": "src/modern.ts"
+      }
+    ],
+    "before": [
+      {
+        "hash": "9fe640f6727b5d3051ad3f9195bd4b9c47ed7395d9770cf6d01058130e73a390",
+        "path": "src/legacy-client-compatibility.test.ts"
+      },
+      {
+        "hash": "60a5eb1b1d748c1084ba71f72b6b1c12087aaa7a35d41862f91af05b02263b5b",
+        "path": "src/legacy.ts"
+      },
+      {
+        "hash": "d95350f24e0292ee8c1ca696aa16fb58198a82bb7f613dc14c8f760e52ef7635",
+        "path": "src/modern.ts"
+      }
+    ]
+  }
+}

@@ -79,6 +79,39 @@ const ACTIVE_CATALOG_SURFACES = [
   "global/opencode.json.template",
 ] as const;
 
+/** OpenSpec change that retired session-delivery-reviewer; history may be active or uniquely archived. */
+const SESSION_COMPLETION_GUARD_CHANGE = "add-session-completion-guard";
+
+/**
+ * Resolve the single attributable history.md for the completion-guard change.
+ * Valid states: active `openspec/changes/<id>/history.md`, or exactly one
+ * `openspec/changes/archive/*-<id>/history.md` (or archive dir named `<id>`).
+ * Zero or multiple matches fail closed — never pick an ambiguous archive.
+ */
+function resolveSessionCompletionGuardHistoryPaths(): string[] {
+  const found: string[] = [];
+  const activeHistory = path.join(root, "openspec", "changes", SESSION_COMPLETION_GUARD_CHANGE, "history.md");
+  if (fs.existsSync(activeHistory)) found.push(activeHistory);
+
+  const archiveRoot = path.join(root, "openspec", "changes", "archive");
+  if (fs.existsSync(archiveRoot)) {
+    const archiveDirs = fs
+      .readdirSync(archiveRoot, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .filter(
+        (name) =>
+          name === SESSION_COMPLETION_GUARD_CHANGE || name.endsWith(`-${SESSION_COMPLETION_GUARD_CHANGE}`),
+      )
+      .sort();
+    for (const name of archiveDirs) {
+      const archivedHistory = path.join(archiveRoot, name, "history.md");
+      if (fs.existsSync(archivedHistory)) found.push(archivedHistory);
+    }
+  }
+  return found;
+}
+
 export const changeReadyDeliveryContractTests: TestCase[] = [
   {
     name: "contracts: current copied authority passes active structural checks",
@@ -189,11 +222,20 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     run: () => {
       const feedback = fs.readFileSync(path.join(root, "docs", "feedbacks", "session-delivery-reviewer.md"), "utf8");
       assert(feedback.includes("session-delivery-reviewer"), "Historical feedback ledger may retain retired agent attribution.");
-      const changeHistory = fs.readFileSync(
-        path.join(root, "openspec", "changes", "add-session-completion-guard", "history.md"),
-        "utf8",
+      const historyPaths = resolveSessionCompletionGuardHistoryPaths();
+      const activeRel = `openspec/changes/${SESSION_COMPLETION_GUARD_CHANGE}/history.md`;
+      const archiveRel = `openspec/changes/archive/*-${SESSION_COMPLETION_GUARD_CHANGE}/history.md`;
+      assert(
+        historyPaths.length === 1,
+        historyPaths.length === 0
+          ? `Expected exactly one attributable history for ${SESSION_COMPLETION_GUARD_CHANGE} at ${activeRel} or a unique ${archiveRel}; found none.`
+          : `Expected exactly one attributable history for ${SESSION_COMPLETION_GUARD_CHANGE}; found ${historyPaths.length}: ${historyPaths.join(", ")}. Resolve active vs archive ambiguity before attributing retired reviewer evidence.`,
       );
-      assert(changeHistory.includes("session-delivery-reviewer"), "Active change history may retain superseded approach attribution.");
+      const changeHistory = fs.readFileSync(historyPaths[0]!, "utf8");
+      assert(
+        changeHistory.includes("session-delivery-reviewer"),
+        `Change history at ${historyPaths[0]} may retain superseded approach attribution.`,
+      );
       const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
       assert(!agents.includes("session-delivery-reviewer"), "Loaded global authority must not route the retired reviewer.");
     },

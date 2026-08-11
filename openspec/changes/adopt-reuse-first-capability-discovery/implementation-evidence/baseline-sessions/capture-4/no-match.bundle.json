@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "baseline-35f5f351",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "c522bbc1743f9e58cfcaf4bbdc7861daddf4070fd1bc4e7a46a69c14506271e6",
+      "global/commands/reuse-inventory.md": null,
+      "global/skills/change-ready-sdlc/SKILL.md": "b41bb3c1d8f82e522c14f7e4ab573b30dfd21d25c8d8499030eb078f1ecf4113",
+      "global/skills/reuse-discovery/SKILL.md": null,
+      "global/bin/reuse-registry.ts": null,
+      "tools/proofs/reuse-discovery.ts": "90994831efc84cb06d5bba868125ea3e00ad4c10f1d7265d6f230bfd0d0a75d4"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_013dc826bffeK46vZDTyb0T1az",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "reuse-baseline-no-match",
+      "Prepare the implementation decision for decoding the fixture specific frobnicated glyph tuple described in task.md. Do not modify files. Return the smallest concrete ownership and proof plan without inventing a reusable API for hypothetical consumers. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786373183939,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec2399bb0014FADnOY7yZRV45\",\"messageID\":\"msg_fec237eee0015W1c0Wq7XJdsMR\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"snapshot\":\"d87ea4934556b8645f4a6b5053fc698695624700\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786373185962,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec2399bf001lj0z0al8rooO3g\",\"messageID\":\"msg_fec237eee0015W1c0Wq7XJdsMR\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"text\",\"text\":\"I’ll inspect the local task and only the directly relevant implementation/test context, then return a read-only ownership and proof decision.\",\"time\":{\"start\":1786373183935,\"end\":1786373185957},\"metadata\":{\"openai\":{\"itemId\":\"msg_035a02143b350931016a79e44179708191b8cf55fe96647a9b\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373186117,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_vT9B2OoLliWXC60A5JjwhTt4\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/task.md\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786373185986,\"end\":1786373186104}},\"metadata\":{\"openai\":{\"itemId\":\"fc_035a02143b350931016a79e4436d6081919a23240f3670d6fc\"}},\"id\":\"prt_fec23a1a8001sYLn0NFnXhpeTB\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec237eee0015W1c0Wq7XJdsMR\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373186135,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_0JUE8B6UKSW06XHsuDhqHMxq\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/AGENTS.md\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786373186000,\"end\":1786373186120}},\"metadata\":{\"openai\":{\"itemId\":\"fc_035a02143b350931016a79e4436d7c8191a0d5b199ee54e32f\"}},\"id\":\"prt_fec23a1cb001g1JVLlEq27ZSlE\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec237eee0015W1c0Wq7XJdsMR\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373186135,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_1iEuw7ZebCtzrfOlYAZ27y8U\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"*\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\\n<proof-root>\\\\workspace\\\\opencode.json\\n<proof-root>\\\\workspace\\\\fixture-format.md\\n<proof-root>\\\\workspace\\\\.serena\\\\project.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\project.local.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\.gitignore\",\"metadata\":{\"count\":6,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786373185993,\"end\":1786373186123}},\"metadata\":{\"openai\":{\"itemId\":\"fc_035a02143b350931016a79e4436d7081918f8260542abbe975\"}},\"id\":\"prt_fec23a1c5001T1Vsw9e1RYlSZU\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec237eee0015W1c0Wq7XJdsMR\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373186154,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_lEyBVKJJlipDA4wjRpQ7JCEj\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/*fixture*\"},\"output\":\"<proof-root>\\\\workspace\\\\fixture-format.md\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786373186006,\"end\":1786373186138}},\"metadata\":{\"openai\":{\"itemId\":\"fc_035a02143b350931016a79e4436d888191aff3933ec58157a5\"}},\"id\":\"prt_fec23a1d2001JoVd0p523GHZgJ\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec237eee0015W1c0Wq7XJdsMR\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786373186682,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec23a475001UKHgrI5meUg6uh\",\"reason\":\"tool-calls\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"messageID\":\"msg_fec237eee0015W1c0Wq7XJdsMR\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"step-finish\",\"tokens\":{\"total\":17948,\"input\":17834,\"output\":114,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786373193308,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec23be56001rAyt92E5D5TqYy\",\"messageID\":\"msg_fec23a5d4001NlFIcd1nWK3km4\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373193448,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_pOTq0YPsI4v0lGWY8PWcX0M3\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\fixture-format.md\"},\"output\":\"<path><proof-root>\\\\workspace\\\\fixture-format.md</path>\\n<type>file</type>\\n<content>\\n1: A frobnicated glyph tuple is exactly three ASCII letters separated by colon. Decode by reversing the letters.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"A frobnicated glyph tuple is exactly three ASCII letters separated by colon. Decode by reversing the letters.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\fixture-format.md\",\"text\":\"A frobnicated glyph tuple is exactly three ASCII letters separated by colon. Decode by reversing the letters.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"fixture-format.md\",\"time\":{\"start\":1786373193407,\"end\":1786373193443}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bf2837647d29714016a79e44abfa88191b8b24ce0843f9f9e\"}},\"id\":\"prt_fec23beb9001z0VIhZGDXk032g\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23a5d4001NlFIcd1nWK3km4\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373193459,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_K5ccjQCEusveQMS1TuARg2Dx\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\task.md\"},\"output\":\"<path><proof-root>\\\\workspace\\\\task.md</path>\\n<type>file</type>\\n<content>\\n1: Prepare the implementation decision for decoding the fixture specific frobnicated glyph tuple described in task.md. Do not modify files. Return the smallest concrete ownership and proof plan without inventing a reusable API for hypothetical consumers. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"Prepare the implementation decision for decoding the fixture specific frobnicated glyph tuple described in task.md. Do not modify files. Return the smallest concrete ownership and proof plan without inventing a reusable API for hypothetical consumers. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\task.md\",\"text\":\"Prepare the implementation decision for decoding the fixture specific frobnicated glyph tuple described in task.md. Do not modify files. Return the smallest concrete ownership and proof plan without inventing a reusable API for hypothetical consumers. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"task.md\",\"time\":{\"start\":1786373193399,\"end\":1786373193456}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bf2837647d29714016a79e44abea48191a150de8074166d1c\"}},\"id\":\"prt_fec23be59001Qo8YZpGDqHKu1x\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23a5d4001NlFIcd1nWK3km4\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373193546,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_6yhNThjckUym4gKAHEk7QjVn\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\opencode.json\"},\"output\":\"<path><proof-root>\\\\workspace\\\\opencode.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n3:   \\\"permission\\\": {\\n4:     \\\"*\\\": \\\"deny\\\",\\n5:     \\\"bash\\\": {\\n6:       \\\"*\\\": \\\"deny\\\",\\n7:       \\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR/bin/reuse-registry.ts\\\\\\\" *\\\": \\\"allow\\\",\\n8:       \\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR\\\\\\\\bin\\\\\\\\reuse-registry.ts\\\\\\\" *\\\": \\\"allow\\\",\\n9:       \\\"*;*\\\": \\\"deny\\\",\\n10:       \\\"*&&*\\\": \\\"deny\\\",\\n11:       \\\"*|*\\\": \\\"deny\\\",\\n12:       \\\"*>*\\\": \\\"deny\\\",\\n13:       \\\"*<*\\\": \\\"deny\\\"\\n14:     },\\n15:     \\\"edit\\\": \\\"deny\\\",\\n16:     \\\"external_directory\\\": \\\"deny\\\",\\n17:     \\\"glob\\\": \\\"allow\\\",\\n18:     \\\"grep\\\": \\\"allow\\\",\\n19:     \\\"question\\\": \\\"deny\\\",\\n20:     \\\"read\\\": \\\"allow\\\",\\n21:     \\\"skill\\\": \\\"allow\\\",\\n22:     \\\"task\\\": \\\"deny\\\",\\n23:     \\\"webfetch\\\": \\\"deny\\\"\\n24:   }\\n25: }\\n\\n(End of file - total 25 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n  \\\"permission\\\": {\\n    \\\"*\\\": \\\"deny\\\",\\n    \\\"bash\\\": {\\n      \\\"*\\\": \\\"deny\\\",\\n      \\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR/bin/reuse-registry.ts\\\\\\\" *\\\": \\\"allow\\\",\\n      \\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR\\\\\\\\bin\\\\\\\\reuse-registry.ts\\\\\\\" *\\\": \\\"allow\\\",\\n      \\\"*;*\\\": \\\"deny\\\",\\n      \\\"*&&*\\\": \\\"deny\\\",\\n      \\\"*|*\\\": \\\"deny\\\",\\n      \\\"*>*\\\": \\\"deny\\\",\\n      \\\"*<*\\\": \\\"deny\\\"\\n    },\\n    \\\"edit\\\": \\\"deny\\\",\\n    \\\"external_directory\\\": \\\"deny\\\",\\n    \\\"glob\\\": \\\"allow\\\",\\n    \\\"grep\\\": \\\"allow\\\",\\n    \\\"question\\\": \\\"deny\\\",\\n    \\\"read\\\": \\\"allow\\\",\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\opencode.json\",\"text\":\"{\\n  \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n  \\\"permission\\\": {\\n    \\\"*\\\": \\\"deny\\\",\\n    \\\"bash\\\": {\\n      \\\"*\\\": \\\"deny\\\",\\n      \\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR/bin/reuse-registry.ts\\\\\\\" *\\\": \\\"allow\\\",\\n      \\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR\\\\\\\\bin\\\\\\\\reuse-registry.ts\\\\\\\" *\\\": \\\"allow\\\",\\n      \\\"*;*\\\": \\\"deny\\\",\\n      \\\"*&&*\\\": \\\"deny\\\",\\n      \\\"*|*\\\": \\\"deny\\\",\\n      \\\"*>*\\\": \\\"deny\\\",\\n      \\\"*<*\\\": \\\"deny\\\"\\n    },\\n    \\\"edit\\\": \\\"deny\\\",\\n    \\\"external_directory\\\": \\\"deny\\\",\\n    \\\"glob\\\": \\\"allow\\\",\\n    \\\"grep\\\": \\\"allow\\\",\\n    \\\"question\\\": \\\"deny\\\",\\n    \\\"read\\\": \\\"allow\\\",\\n    \\\"skill\\\": \\\"allow\\\",\\n    \\\"task\\\": \\\"deny\\\",\\n    \\\"webfetch\\\": \\\"deny\\\"\\n  }\\n}\",\"lineStart\":1,\"lineEnd\":25,\"totalLines\":25,\"truncated\":false}},\"title\":\"opencode.json\",\"time\":{\"start\":1786373193426,\"end\":1786373193501}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bf2837647d29714016a79e44abfbc81918a1d7e3c85df8141\"}},\"id\":\"prt_fec23becd001nCC7T63qgAwWoL\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23a5d4001NlFIcd1nWK3km4\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373193546,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_1mkr7yP68wrW6Momb6qg770F\",\"state\":{\"status\":\"error\",\"input\":{\"command\":\"git status --short && git log --oneline -5 && git ls-files\",\"workdir\":\"<proof-root>\\\\workspace\"},\"error\":\"The user has specified a rule which prevents you from using this specific tool call. Here are some of the relevant rules [{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"allow\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR/bin/reuse-registry.ts\\\\\\\" *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"node \\\\\\\"$env:OPENCODE_CONFIG_DIR\\\\\\\\bin\\\\\\\\reuse-registry.ts\\\\\\\" *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*;*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*&&*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*|*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*>*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*<*\\\",\\\"action\\\":\\\"deny\\\"}]\",\"time\":{\"start\":1786373193464,\"end\":1786373193517}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bf2837647d29714016a79e44abfcc8191ba834c01d0d38acc\"}},\"id\":\"prt_fec23bed4001cofRM40Fjc8tGg\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23a5d4001NlFIcd1nWK3km4\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786373193847,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec23c072001WKznQZHNI2H4jY\",\"reason\":\"tool-calls\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"messageID\":\"msg_fec23a5d4001NlFIcd1nWK3km4\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"step-finish\",\"tokens\":{\"total\":18422,\"input\":1323,\"output\":203,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786373196457,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec23caa5001DNbolu9FEQetfz\",\"messageID\":\"msg_fec23c17f001xdzeKf0fkDnyQq\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786373208252,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec23f1d3001jJ4hMoOitwBHOH\",\"messageID\":\"msg_fec23c17f001xdzeKf0fkDnyQq\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"text\",\"text\":\"The local format defines only `letter:letter:letter` and reversal; `task.md` contains no actual tuple value. I’m checking the authorized local reuse inventory once so the plan can assign ownership without proposing an unnecessary abstraction.\",\"time\":{\"start\":1786373206483,\"end\":1786373208247},\"metadata\":{\"openai\":{\"itemId\":\"msg_02ac9b9f5f9c03f7016a79e457bd988191b6615e1f025ee5e4\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373208675,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_B2TjGGk4ejsQ7H35zZOsmXnA\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node \\\"$env:OPENCODE_CONFIG_DIR/bin/reuse-registry.ts\\\" --help\",\"workdir\":\"<proof-root>\\\\workspace\"},\"output\":\"node:internal/modules/cjs/loader:1520\\r\\n  throw err;\\r\\n  ^\\r\\n\\r\\nError: Cannot find module '<kit-root>\\\\global\\\\bin\\\\reuse-registry.ts'\\r\\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1517:15)\\r\\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\\r\\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\\r\\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)\\r\\n    at Module._load (node:internal/modules/cjs/loader:1294:5)\\r\\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\\r\\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\\r\\n    at node:internal/main/run_main_module:33:47 {\\r\\n  code: 'MODULE_NOT_FOUND',\\r\\n  requireStack: []\\r\\n}\\r\\n\\r\\nNode.js v24.18.0\\r\\n\",\"metadata\":{\"output\":\"node:internal/modules/cjs/loader:1520\\r\\n  throw err;\\r\\n  ^\\r\\n\\r\\nError: Cannot find module '<kit-root>\\\\global\\\\bin\\\\reuse-registry.ts'\\r\\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1517:15)\\r\\n    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)\\r\\n    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)\\r\\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)\\r\\n    at Module._load (node:internal/modules/cjs/loader:1294:5)\\r\\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\\r\\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\\r\\n    at node:internal/main/run_main_module:33:47 {\\r\\n  code: 'MODULE_NOT_FOUND',\\r\\n  requireStack: []\\r\\n}\\r\\n\\r\\nNode.js v24.18.0\\r\\n\",\"exit\":1,\"truncated\":false},\"title\":\"node \\\"$env:OPENCODE_CONFIG_DIR/bin/reuse-registry.ts\\\" --help\",\"time\":{\"start\":1786373208629,\"end\":1786373208673}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02ac9b9f5f9c03f7016a79e45899b88191bfc57538aa98c966\"}},\"id\":\"prt_fec23f8ba001s139E3v8rcEGQe\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23c17f001xdzeKf0fkDnyQq\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786373208933,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec23fb58001Q0f2pAyeNYkKla\",\"reason\":\"tool-calls\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"messageID\":\"msg_fec23c17f001xdzeKf0fkDnyQq\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"step-finish\",\"tokens\":{\"total\":19619,\"input\":1221,\"output\":119,\"reasoning\":359,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786373213201,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec240c0e0013415rKRzfPR52T\",\"messageID\":\"msg_fec23fc62001S4sCosa2pkedgQ\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373231864,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_XdIyIDlcEsyD2zQOWpnpE4Ay\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/*.{js,jsx,ts,tsx,py,rs,go,java,cs,cpp,c,h,rb,php}\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786373231778,\"end\":1786373231861}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0611a05f3a6cc2cc016a79e47135dc8191a8b8b9dad9b04259\"}},\"id\":\"prt_fec245491001VbkqUjse3naqne\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23fc62001S4sCosa2pkedgQ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373231864,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_5WZ0ZPuByhqlpUYeFYTpmBR0\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/{test,tests,spec,specs,src,lib,app}/**/*\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786373231783,\"end\":1786373231863}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0611a05f3a6cc2cc016a79e47135f48191a4a89278c0b92732\"}},\"id\":\"prt_fec2454a40010DRSINqCP0Gs3J\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23fc62001S4sCosa2pkedgQ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786373231880,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_1CdtwbdwNIzXfvTOqyHndlfz\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"frobnicated|glyph|tuple|decode|fixture\",\"path\":\"<proof-root>\\\\workspace\"},\"output\":\"Found 2 matches\\n<proof-root>\\\\workspace\\\\task.md:\\n  Line 1: Prepare the implementation decision for decoding the fixture specific frobnicated glyph tuple described in task.md. Do not modify files. Return the smallest concrete ownership and proof plan without inventing a reusable API for hypothetical consumers. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.\\n\\n\\n<proof-root>\\\\workspace\\\\fixture-format.md:\\n  Line 1: A frobnicated glyph tuple is exactly three ASCII letters separated by colon. Decode by reversing the letters.\\n\",\"metadata\":{\"matches\":2,\"truncated\":false},\"title\":\"frobnicated|glyph|tuple|decode|fixture\",\"time\":{\"start\":1786373231790,\"end\":1786373231878}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0611a05f3a6cc2cc016a79e47136008191ade3b5bfc6209b94\"}},\"id\":\"prt_fec2454a9001TpUxO4CW8NyKlS\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"messageID\":\"msg_fec23fc62001S4sCosa2pkedgQ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786373232145,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec24560c001VaAeSiRbzHLghQ\",\"reason\":\"tool-calls\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"messageID\":\"msg_fec23fc62001S4sCosa2pkedgQ\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"step-finish\",\"tokens\":{\"total\":20771,\"input\":917,\"output\":146,\"reasoning\":764,\"cache\":{\"write\":0,\"read\":18944}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786373234876,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec2460b9001ZGT8xcSp9JN2aZ\",\"messageID\":\"msg_fec24571b001YqLtafpKMC2885\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786373252962,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec24952e001r3B9JivWFRybQQ\",\"messageID\":\"msg_fec24571b001YqLtafpKMC2885\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"text\",\"text\":\"**Decision**\\n- `fixture-format.md:1` defines `a:b:c` decoding as `c:b:a`, preserving colons.\\n- Implement the reversal inline at the fixture’s consuming assertion/reader. Do not create an exported decoder, shared module, or reusable API.\\n- Stop after the one fixture tuple decodes correctly. Malformed-input handling and hypothetical consumers are out of scope.\\n\\n**Ownership And Proof**\\n- Production ownership: the existing fixture consumer. No such source/test file currently exists, so inventing a path or symbol would be unsupported.\\n- Proof: run that consumer with the concrete tuple and assert the exact reversed tuple at the real fixture boundary.\\n- Regression: one fixture-specific assertion only, using the same concrete input/output.\\n- Evidence: exact invocation, input, observed output, and exit status.\\n\\n**Current Blocker**\\n`task.md:1` does not provide the tuple, expected output, or consuming code location. The workspace contains no implementation or tests, so those details are required before ownership and an executable proof command can be made path-specific. No files were modified.\",\"time\":{\"start\":1786373248302,\"end\":1786373252939},\"metadata\":{\"openai\":{\"itemId\":\"msg_0a7abdf52b434aee016a79e481cf5481919220d055b965e685\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786373253288,\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"part\":{\"id\":\"prt_fec24a8900012ERlmW7qbFqvgh\",\"reason\":\"stop\",\"snapshot\":\"5234f41955f80c04b65538f2f8fbdc150a0359a7\",\"messageID\":\"msg_fec24571b001YqLtafpKMC2885\",\"sessionID\":\"ses_013dc826bffeK46vZDTyb0T1az\",\"type\":\"step-finish\",\"tokens\":{\"total\":21702,\"input\":2015,\"output\":227,\"reasoning\":516,\"cache\":{\"write\":0,\"read\":18944}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: only literal OPENCODE_CONFIG_DIR/bin/reuse-registry.ts argv; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect the local task and only the directly relevant implementation/test context, then return a read-only ownership and proof decision.The local format defines only `letter:letter:letter` and reversal; `task.md` contains no actual tuple value. I’m checking the authorized local reuse inventory once so the plan can assign ownership without proposing an unnecessary abstraction.**Decision**\n- `fixture-format.md:1` defines `a:b:c` decoding as `c:b:a`, preserving colons.\n- Implement the reversal inline at the fixture’s consuming assertion/reader. Do not create an exported decoder, shared module, or reusable API.\n- Stop after the one fixture tuple decodes correctly. Malformed-input handling and hypothetical consumers are out of scope.\n\n**Ownership And Proof**\n- Production ownership: the existing fixture consumer. No such source/test file currently exists, so inventing a path or symbol would be unsupported.\n- Proof: run that consumer with the concrete tuple and assert the exact reversed tuple at the real fixture boundary.\n- Regression: one fixture-specific assertion only, using the same concrete input/output.\n- Evidence: exact invocation, input, observed output, and exit status.\n\n**Current Blocker**\n`task.md:1` does not provide the tuple, expected output, or consuming code location. The workspace contains no implementation or tests, so those details are required before ownership and an executable proof command can be made path-specific. No files were modified.",
+    "costs": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 78499,
+    "eventCount": 25,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_013dc826bffeK46vZDTyb0T1az"
+    ],
+    "tokens": [
+      {
+        "total": 17948,
+        "input": 17834,
+        "output": 114,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 18422,
+        "input": 1323,
+        "output": 203,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      },
+      {
+        "total": 19619,
+        "input": 1221,
+        "output": 119,
+        "reasoning": 359,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 20771,
+        "input": 917,
+        "output": 146,
+        "reasoning": 764,
+        "cache": {
+          "write": 0,
+          "read": 18944
+        }
+      },
+      {
+        "total": 21702,
+        "input": 2015,
+        "output": 227,
+        "reasoning": 516,
+        "cache": {
+          "write": 0,
+          "read": 18944
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/task.md"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/AGENTS.md"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/*fixture*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\fixture-format.md"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\task.md"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\opencode.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "git status --short && git log --oneline -5 && git ls-files",
+          "workdir": "<proof-root>\\workspace"
+        },
+        "name": "bash",
+        "status": "error"
+      },
+      {
+        "input": {
+          "command": "node \"$env:OPENCODE_CONFIG_DIR/bin/reuse-registry.ts\" --help",
+          "workdir": "<proof-root>\\workspace"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/*.{js,jsx,ts,tsx,py,rs,go,java,cs,cpp,c,h,rb,php}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/{test,tests,spec,specs,src,lib,app}/**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "frobnicated|glyph|tuple|decode|fixture",
+          "path": "<proof-root>\\workspace"
+        },
+        "name": "grep",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "Prepare the implementation decision for decoding the fixture specific frobnicated glyph tuple described in task.md. Do not modify files. Return the smallest concrete ownership and proof plan without inventing a reusable API for hypothetical consumers. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
+    "scenario": "no-match"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "projects/alpha/package.json"
+      },
+      {
+        "bytes": 84,
+        "hash": "de7f89ea531585f881c14eeb8ec04c2e2e2bea35fcbda3ba8b91146063cd4971",
+        "path": "projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "projects/alpha/README.md"
+      },
+      {
+        "bytes": 113,
+        "hash": "0ff13701357b08494f42e4a9a7707739528b4387860f7269b8a5871bb3c2b47c",
+        "path": "projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 720,
+        "hash": "675c3e0e62da6cece4987ea087dac4f529aa777a99836f33378e23f936b4c057",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 70,
+        "hash": "a1e2e8cc466be83fbedcb0800ddd9fd9bece376315b4b0c8b836ecdb8222ceb5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "22038107217cfd3d1801404a34b06ed6718eed8d8b057b801beced5e5f023f06",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 972,
+        "hash": "e954c269ce4a64af1d20d338295aa1d2dc684fbca3060e312d473723ba4a155f",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 28,
+        "hash": "441f89b8bba2252c9f7797ebc2fca741b760712e1c8261a7ad5c282175dd52f2",
+        "path": "workspace/.serena/.gitignore"
+      },
+      {
+        "bytes": 402,
+        "hash": "7b5753e9fcf8348db026f8d23ff601b1cf90d9543532fe979f31650e27b15d2b",
+        "path": "workspace/.serena/project.local.yml"
+      },
+      {
+        "bytes": 7646,
+        "hash": "baff811a80d8fe77959b3b3b3fc1d8e3a1ab451dc3ad1e559742d515b366dcbd",
+        "path": "workspace/.serena/project.yml"
+      },
+      {
+        "bytes": 110,
+        "hash": "ebb9f72f0db6c6678818da81d1f05b0f598c3335f6fa466d10f769e568aec4ab",
+        "path": "workspace/fixture-format.md"
+      },
+      {
+        "bytes": 596,
+        "hash": "b25471235c5c5343d68da0fcd6ecfbcd1301978b83905c82ad29c7986a61bb47",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 336,
+        "hash": "ca5f81e364f1c846d2e6e79e524a0c2cfc722fd5714ff8210083d87fbfa061f4",
+        "path": "workspace/task.md"
+      }
+    ],
+    "before": [
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "projects/alpha/package.json"
+      },
+      {
+        "bytes": 84,
+        "hash": "de7f89ea531585f881c14eeb8ec04c2e2e2bea35fcbda3ba8b91146063cd4971",
+        "path": "projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "projects/alpha/README.md"
+      },
+      {
+        "bytes": 113,
+        "hash": "0ff13701357b08494f42e4a9a7707739528b4387860f7269b8a5871bb3c2b47c",
+        "path": "projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 720,
+        "hash": "675c3e0e62da6cece4987ea087dac4f529aa777a99836f33378e23f936b4c057",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 70,
+        "hash": "a1e2e8cc466be83fbedcb0800ddd9fd9bece376315b4b0c8b836ecdb8222ceb5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "22038107217cfd3d1801404a34b06ed6718eed8d8b057b801beced5e5f023f06",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 972,
+        "hash": "e954c269ce4a64af1d20d338295aa1d2dc684fbca3060e312d473723ba4a155f",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 110,
+        "hash": "ebb9f72f0db6c6678818da81d1f05b0f598c3335f6fa466d10f769e568aec4ab",
+        "path": "workspace/fixture-format.md"
+      },
+      {
+        "bytes": 596,
+        "hash": "b25471235c5c5343d68da0fcd6ecfbcd1301978b83905c82ad29c7986a61bb47",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 336,
+        "hash": "ca5f81e364f1c846d2e6e79e524a0c2cfc722fd5714ff8210083d87fbfa061f4",
+        "path": "workspace/task.md"
+      }
+    ]
+  }
+}

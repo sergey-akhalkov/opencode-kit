@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "baseline-35f5f351",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "c522bbc1743f9e58cfcaf4bbdc7861daddf4070fd1bc4e7a46a69c14506271e6",
+      "global/commands/reuse-inventory.md": null,
+      "global/skills/change-ready-sdlc/SKILL.md": "b41bb3c1d8f82e522c14f7e4ab573b30dfd21d25c8d8499030eb078f1ecf4113",
+      "global/skills/reuse-discovery/SKILL.md": null,
+      "global/bin/reuse-registry.ts": null,
+      "tools/proofs/reuse-discovery.ts": "77c4f21e4072e9e8701d92224fda27fc4a5131d49dd605d7fea3c17bf51dffda"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true
+  },
+  "command": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "<kit-root>\\tools\\model-profile.ts",
+      "quality-independent",
+      "--",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "reuse-baseline-inventory-refresh",
+      "Use the intended reuse inventory workflow now for the configured Alpha and Beta projects in the personal group. Build current structure knowledge and make only a source verified JSONC parsing capability discoverable. Work only in this disposable environment. Do not edit project source, install dependencies, use remote tools, clone, fetch, pull, commit, or push. Return the resolved logical projects, scan modes, checkpoints, candidate disposition, local effects, proof, and cleanup."
+    ],
+    "status": 1,
+    "stderr": "",
+    "stdout": "Using model profile=quality-independent source=committed model=openai/gpt-5.6-sol\n{\"type\":\"error\",\"timestamp\":1786370007973,\"sessionID\":\"ses_0140cddf4fferl4RpDPgaIptOR\",\"error\":{\"name\":\"UnknownError\",\"data\":{\"message\":\"Unexpected server error. Check server logs for details.\",\"ref\":\"err_c7475805\"}}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: only node commands containing reuse-registry",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "",
+    "costs": [],
+    "elapsedMs": 1974,
+    "eventCount": 1,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_0140cddf4fferl4RpDPgaIptOR"
+    ],
+    "tokens": [],
+    "toolCalls": []
+  },
+  "input": {
+    "prompt": "Use the intended reuse inventory workflow now for the configured Alpha and Beta projects in the personal group. Build current structure knowledge and make only a source verified JSONC parsing capability discoverable. Work only in this disposable environment. Do not edit project source, install dependencies, use remote tools, clone, fetch, pull, commit, or push. Return the resolved logical projects, scan modes, checkpoints, candidate disposition, local effects, proof, and cleanup.",
+    "scenario": "inventory-refresh"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "projects/alpha/package.json"
+      },
+      {
+        "bytes": 84,
+        "hash": "de7f89ea531585f881c14eeb8ec04c2e2e2bea35fcbda3ba8b91146063cd4971",
+        "path": "projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "projects/alpha/README.md"
+      },
+      {
+        "bytes": 113,
+        "hash": "0ff13701357b08494f42e4a9a7707739528b4387860f7269b8a5871bb3c2b47c",
+        "path": "projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 720,
+        "hash": "675c3e0e62da6cece4987ea087dac4f529aa777a99836f33378e23f936b4c057",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 70,
+        "hash": "a1e2e8cc466be83fbedcb0800ddd9fd9bece376315b4b0c8b836ecdb8222ceb5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "22038107217cfd3d1801404a34b06ed6718eed8d8b057b801beced5e5f023f06",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 1026,
+        "hash": "6d909d441b32f4dc4cae467b74a9f0bd20ee094927ed3d2ab3f6a8cb471fc37c",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 420,
+        "hash": "6e49d20abc74782c6b5eb84ff53a7520b0e16d202d1fa69234d3ed47d3eb02ba",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "195b9012b462bd5758ba035dc00782382e90f8993534cd3c70ec59eefac16d67",
+        "path": "workspace/src/loader.ts"
+      },
+      {
+        "bytes": 485,
+        "hash": "a52e86c35b3013502584d5326c7d6d7fe10313c2ea00d836097e48deb236ee69",
+        "path": "workspace/task.md"
+      }
+    ],
+    "before": [
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "projects/alpha/package.json"
+      },
+      {
+        "bytes": 84,
+        "hash": "de7f89ea531585f881c14eeb8ec04c2e2e2bea35fcbda3ba8b91146063cd4971",
+        "path": "projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "projects/alpha/README.md"
+      },
+      {
+        "bytes": 113,
+        "hash": "0ff13701357b08494f42e4a9a7707739528b4387860f7269b8a5871bb3c2b47c",
+        "path": "projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 720,
+        "hash": "675c3e0e62da6cece4987ea087dac4f529aa777a99836f33378e23f936b4c057",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 70,
+        "hash": "a1e2e8cc466be83fbedcb0800ddd9fd9bece376315b4b0c8b836ecdb8222ceb5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "22038107217cfd3d1801404a34b06ed6718eed8d8b057b801beced5e5f023f06",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 1026,
+        "hash": "6d909d441b32f4dc4cae467b74a9f0bd20ee094927ed3d2ab3f6a8cb471fc37c",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 420,
+        "hash": "6e49d20abc74782c6b5eb84ff53a7520b0e16d202d1fa69234d3ed47d3eb02ba",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "195b9012b462bd5758ba035dc00782382e90f8993534cd3c70ec59eefac16d67",
+        "path": "workspace/src/loader.ts"
+      },
+      {
+        "bytes": 485,
+        "hash": "a52e86c35b3013502584d5326c7d6d7fe10313c2ea00d836097e48deb236ee69",
+        "path": "workspace/task.md"
+      }
+    ]
+  }
+}

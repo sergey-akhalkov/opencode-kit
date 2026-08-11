@@ -1,0 +1,417 @@
+{
+  "candidateId": "reuse-mvp-initial",
+  "cleanup": "removed",
+  "commands": [
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "status",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 186,
+      "name": "status-before",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"pending\": [],\n  \"registry\": \"synthetic/reuse-registry\",\n  \"revision\": \"9527d7e7badd5e2dc2dbfa65dd7f35775c9a5d9fc9f9faeee3c7304fba418fb9\",\n  \"source\": \"registry\",\n  \"status\": \"ok\"\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "validate",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 149,
+      "name": "validate-before",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"capabilities\": 0,\n  \"groups\": 2,\n  \"projects\": 3,\n  \"registry\": \"synthetic/reuse-registry\",\n  \"revision\": \"9527d7e7badd5e2dc2dbfa65dd7f35775c9a5d9fc9f9faeee3c7304fba418fb9\",\n  \"status\": \"ok\"\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "bootstrap",
+        "--plan",
+        "<proof-root>\\state\\plan.json",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 1028,
+      "name": "bootstrap",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"candidates\": 3,\n  \"curatedCapabilities\": 0,\n  \"mode\": \"initial\",\n  \"projects\": [\n    {\n      \"candidates\": 2,\n      \"commit\": \"bf0d6581914cb4600954914abc1ebf64baa565a5\",\n      \"entrypoints\": 2,\n      \"id\": \"shared/alpha\",\n      \"tree\": \"974860498af103b355b5b02eced9cae11f8ff245\"\n    },\n    {\n      \"candidates\": 1,\n      \"commit\": \"eeda3a0ebe94122a95015ef23a3fa07aeabac024\",\n      \"entrypoints\": 1,\n      \"id\": \"shared/beta\",\n      \"tree\": \"821f67f981c06f7f7d35e48a05ab1e3e36c6ff74\"\n    }\n  ],\n  \"registry\": \"synthetic/reuse-registry\",\n  \"status\": \"ok\"\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "query",
+        "--need",
+        "jsonc",
+        "--groups",
+        "personal",
+        "--limit",
+        "10",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 162,
+      "name": "query-empty",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"groups\": [\n    \"personal\"\n  ],\n  \"hasMore\": false,\n  \"limit\": 10,\n  \"needs\": [\n    \"jsonc\"\n  ],\n  \"offset\": 0,\n  \"registry\": \"synthetic/reuse-registry\",\n  \"results\": [],\n  \"revision\": \"9527d7e7badd5e2dc2dbfa65dd7f35775c9a5d9fc9f9faeee3c7304fba418fb9\",\n  \"source\": \"registry\",\n  \"status\": \"ok\",\n  \"total\": 0\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "enqueue",
+        "--candidate",
+        "<proof-root>\\state\\candidate.json",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 144,
+      "name": "enqueue",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"capability\": \"text/jsonc-parse\",\n  \"registryImpact\": \"pending\",\n  \"status\": \"ok\"\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "status",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 164,
+      "name": "status-pending",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"pending\": [\n    \"text/jsonc-parse\"\n  ],\n  \"registry\": \"synthetic/reuse-registry\",\n  \"revision\": \"9527d7e7badd5e2dc2dbfa65dd7f35775c9a5d9fc9f9faeee3c7304fba418fb9\",\n  \"source\": \"registry\",\n  \"status\": \"ok\"\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "sync",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 174,
+      "name": "sync",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"pending\": 0,\n  \"registryImpact\": \"synced\",\n  \"status\": \"ok\",\n  \"synced\": [\n    \"text/jsonc-parse\"\n  ]\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "query",
+        "--need",
+        "jsonc",
+        "--groups",
+        "personal",
+        "--limit",
+        "10",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 610,
+      "name": "query-curated",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"groups\": [\n    \"personal\"\n  ],\n  \"hasMore\": false,\n  \"limit\": 10,\n  \"needs\": [\n    \"jsonc\"\n  ],\n  \"offset\": 0,\n  \"registry\": \"synthetic/reuse-registry\",\n  \"results\": [\n    {\n      \"binding\": \"bound\",\n      \"constraints\": [\n        \"node>=24\"\n      ],\n      \"effects\": [\n        \"none\"\n      ],\n      \"entrypoints\": [\n        {\n          \"path\": \"src/jsonc.ts\",\n          \"symbol\": \"parseJsonc\"\n        }\n      ],\n      \"evidence\": [\n        {\n          \"path\": \"proofs/jsonc.md\"\n        }\n      ],\n      \"id\": \"text/jsonc-parse\",\n      \"keywords\": [\n        \"comments\",\n        \"jsonc\",\n        \"parser\"\n      ],\n      \"kind\": \"library\",\n      \"maturity\": \"portable-proven\",\n      \"project\": \"shared/alpha\",\n      \"qualification\": {\n        \"basis\": \"unrelated-project-proof\",\n        \"consumers\": [\n          \"synthetic/consumer\"\n        ]\n      },\n      \"status\": \"active\",\n      \"summary\": \"Parse JSONC from a verified committed source entrypoint\",\n      \"verification\": {\n        \"commit\": \"bf0d6581914cb4600954914abc1ebf64baa565a5\",\n        \"entrypoints\": [\n          {\n            \"path\": \"src/jsonc.ts\",\n            \"status\": \"present\",\n            \"symbol\": \"parseJsonc\"\n          }\n        ],\n        \"evidence\": [\n          {\n            \"path\": \"proofs/jsonc.md\",\n            \"status\": \"present\"\n          }\n        ],\n        \"scanRef\": \"refs/heads/main\",\n        \"status\": \"verified\"\n      }\n    }\n  ],\n  \"revision\": \"33de283c0c0d63587b97259a5ba1f158d3383ba24011e4a96efbfd69e047e58f\",\n  \"source\": \"registry\",\n  \"status\": \"ok\",\n  \"total\": 1\n}\n"
+    },
+    {
+      "argv": [
+        "C:\\Program Files\\nodejs\\node.exe",
+        "<kit-root>\\global\\bin\\reuse-registry.ts",
+        "validate",
+        "--config",
+        "<proof-root>\\state\\reuse-config.json"
+      ],
+      "elapsedMs": 144,
+      "name": "validate-after",
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\n  \"capabilities\": 1,\n  \"groups\": 2,\n  \"projects\": 3,\n  \"registry\": \"synthetic/reuse-registry\",\n  \"revision\": \"33de283c0c0d63587b97259a5ba1f158d3383ba24011e4a96efbfd69e047e58f\",\n  \"status\": \"ok\"\n}\n"
+    }
+  ],
+  "expected": {
+    "bootstrapProjects": true,
+    "cleanupPending": true,
+    "curatedInitiallyEmpty": true,
+    "curatedOwner": true,
+    "emptyBeforePromotion": true,
+    "pendingVisible": true,
+    "privateSentinelAbsent": true,
+    "registryValid": true,
+    "statusBefore": true,
+    "syncStatus": true
+  },
+  "fixture": {
+    "commits": {
+      "alpha": {
+        "commit": "bf0d6581914cb4600954914abc1ebf64baa565a5",
+        "tree": "974860498af103b355b5b02eced9cae11f8ff245"
+      },
+      "beta": {
+        "commit": "eeda3a0ebe94122a95015ef23a3fa07aeabac024",
+        "tree": "821f67f981c06f7f7d35e48a05ab1e3e36c6ff74"
+      }
+    },
+    "generatedFiles": [
+      "06daf6f0376bf606.json",
+      "c4b142d87ccb4b5e.json"
+    ],
+    "gitStates": {
+      "alpha": "",
+      "beta": ""
+    },
+    "roots": "<proof-root>"
+  },
+  "manifests": {
+    "after": [
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "projects/alpha/package.json"
+      },
+      {
+        "bytes": 84,
+        "hash": "de7f89ea531585f881c14eeb8ec04c2e2e2bea35fcbda3ba8b91146063cd4971",
+        "path": "projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "projects/alpha/README.md"
+      },
+      {
+        "bytes": 113,
+        "hash": "0ff13701357b08494f42e4a9a7707739528b4387860f7269b8a5871bb3c2b47c",
+        "path": "projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 74,
+        "hash": "978c4f2d9bda4c8de3dfef59534e8b6dd84f5931529b7e92b98d8bb64b0cf44e",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 836,
+        "hash": "0209cafcb45a1ece0c1738cf78f31452be204a18feb812f797bc98dca5e0b0d5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 849,
+        "hash": "a027262fd501f68d6d652f8c161d4898339004e7c94cdd4f906b4e0c709df442",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 1892,
+        "hash": "1c145a4655fc0a7ea412857fe751d2a689f3e075346c557e892afacfacffd192",
+        "path": "registry/generated/projects/06daf6f0376bf606.json"
+      },
+      {
+        "bytes": 1334,
+        "hash": "d79ca91b5de6a12df762a45755109a70d10f392286942c2d999450c3f539beba",
+        "path": "registry/generated/projects/c4b142d87ccb4b5e.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 788,
+        "hash": "fc1f27cb57452ff8b41763845fcbf71d04c7a74f0c331edbb3e2ca5b960a1ed3",
+        "path": "state/candidate.json"
+      },
+      {
+        "bytes": 857,
+        "hash": "304fc26e2cfee61244d6b1af94c482b6471e2f475163366a7e920fcdb2f390db",
+        "path": "state/plan.json"
+      },
+      {
+        "bytes": 996,
+        "hash": "d3e7aafc78c17a38bbc4300f846a6f217c2ffa339275d6bc4ad218351cf29b96",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 596,
+        "hash": "b25471235c5c5343d68da0fcd6ecfbcd1301978b83905c82ad29c7986a61bb47",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "195b9012b462bd5758ba035dc00782382e90f8993534cd3c70ec59eefac16d67",
+        "path": "workspace/src/loader.ts"
+      },
+      {
+        "bytes": 642,
+        "hash": "04b21fb0f8da02c0d1f017c08f5a87e29651f16b371786f4f8b56ee04c594966",
+        "path": "workspace/task.md"
+      }
+    ],
+    "before": [
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "projects/alpha/package.json"
+      },
+      {
+        "bytes": 84,
+        "hash": "de7f89ea531585f881c14eeb8ec04c2e2e2bea35fcbda3ba8b91146063cd4971",
+        "path": "projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "projects/alpha/README.md"
+      },
+      {
+        "bytes": 113,
+        "hash": "0ff13701357b08494f42e4a9a7707739528b4387860f7269b8a5871bb3c2b47c",
+        "path": "projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 74,
+        "hash": "978c4f2d9bda4c8de3dfef59534e8b6dd84f5931529b7e92b98d8bb64b0cf44e",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 70,
+        "hash": "a1e2e8cc466be83fbedcb0800ddd9fd9bece376315b4b0c8b836ecdb8222ceb5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "22038107217cfd3d1801404a34b06ed6718eed8d8b057b801beced5e5f023f06",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 788,
+        "hash": "fc1f27cb57452ff8b41763845fcbf71d04c7a74f0c331edbb3e2ca5b960a1ed3",
+        "path": "state/candidate.json"
+      },
+      {
+        "bytes": 857,
+        "hash": "304fc26e2cfee61244d6b1af94c482b6471e2f475163366a7e920fcdb2f390db",
+        "path": "state/plan.json"
+      },
+      {
+        "bytes": 996,
+        "hash": "d3e7aafc78c17a38bbc4300f846a6f217c2ffa339275d6bc4ad218351cf29b96",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 596,
+        "hash": "b25471235c5c5343d68da0fcd6ecfbcd1301978b83905c82ad29c7986a61bb47",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 83,
+        "hash": "195b9012b462bd5758ba035dc00782382e90f8993534cd3c70ec59eefac16d67",
+        "path": "workspace/src/loader.ts"
+      },
+      {
+        "bytes": 642,
+        "hash": "04b21fb0f8da02c0d1f017c08f5a87e29651f16b371786f4f8b56ee04c594966",
+        "path": "workspace/task.md"
+      }
+    ]
+  },
+  "modelCalls": 0,
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "8a614b43c693a5451d6375d69157a88751b077b543aeadde1f86a6a1a5843302",
+    "global/commands/reuse-inventory.md": "ac63de019053375ac32a6e79e7e08b2cb85252b3f65fee7e23ab7035eb5359c3",
+    "global/skills/change-ready-sdlc/SKILL.md": "b41bb3c1d8f82e522c14f7e4ab573b30dfd21d25c8d8499030eb078f1ecf4113",
+    "global/skills/reuse-discovery/SKILL.md": "4836a9c12f8c3f7a0c5a290171edcaa4c7aa7e079f0e398c745c860e0b738b37",
+    "global/bin/reuse-registry.ts": "81c4214a81a95bdf2b081941ccbc67ea16d6200386f1e386a625d412e5fe46b2",
+    "tools/proofs/reuse-discovery.ts": "c8f3b76461a216c9639a23dc57e7bb4fdfa57bdc8cac247586d09df2dc1eb844"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "candidateId": "dedup-candidate-1",
+  "captureKind": "candidate",
+  "completed": [
+    "exact-clone"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1
+}

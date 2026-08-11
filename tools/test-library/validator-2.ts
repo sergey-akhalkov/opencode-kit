@@ -729,7 +729,7 @@ export const validatorTests2: TestCase[] = [
         "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
         "    \"__OPENCODE_CONFIG_DIR__/plugin/session-env.ts\",",
         "    \"__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts\",",
-        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"enabled\": true }]",
+        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"auditWindow\": { \"closePassedAfterMs\": 15000, \"enabled\": false, \"mode\": \"read-only-monitor\", \"scope\": \"per-root\", \"terminal\": \"powershell-shell\" }, \"enabled\": true }]",
         "  ]",
         "}",
       ]));
@@ -787,7 +787,7 @@ export const validatorTests2: TestCase[] = [
         "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
         "    \"__OPENCODE_CONFIG_DIR__/plugin/session-env.ts\",",
         "    \"__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts\",",
-        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"enabled\": true }]",
+        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"auditWindow\": { \"closePassedAfterMs\": 15000, \"enabled\": false, \"mode\": \"read-only-monitor\", \"scope\": \"per-root\", \"terminal\": \"powershell-shell\" }, \"enabled\": true }]",
         "  ],",
         "  \"permission\": \"allow\"",
         "}",
@@ -811,7 +811,7 @@ export const validatorTests2: TestCase[] = [
         "    \"__OPENCODE_CONFIG_DIR__/plugins/notify.ts\",",
         "    \"__OPENCODE_CONFIG_DIR__/plugin/session-env.ts\",",
         "    \"__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts\",",
-        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"enabled\": true }]",
+        "    [\"__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts\", { \"arbiterAgent\": \"session-completion-arbiter\", \"auditWindow\": { \"closePassedAfterMs\": 15000, \"enabled\": false, \"mode\": \"read-only-monitor\", \"scope\": \"per-root\", \"terminal\": \"powershell-shell\" }, \"enabled\": true }]",
         "  ]",
         "}",
       ]));

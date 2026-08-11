@@ -383,6 +383,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `next-step`: discover OpenSpec-backed workstreams and choose one serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
+- `reuse-discovery`: bounded reuse-first discovery for new mechanisms and free-form `/reuse-inventory` orchestration over explicit private bindings.
 - `root-cause-analysis`: evidence-backed 5 Whys/causal-chain analysis for symptoms, recurrence paths, unknown-cause investigations, and remediation-ready cause records.
 - `complain`: record current-session workflow friction, instruction conflicts, tooling pain, validation noise, or reusable improvement opportunities in `docs/feedbacks/**`.
 
@@ -392,6 +393,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 ### Documentation And Audit
 
+- `deduplication-audit`: explicit scoped `/dedup` clone audit using global `jscpd` candidate evidence plus symbols, owners, callers, tests, and the existing read-only code-quality reviewer.
 - `code-quality-audit`: pragmatic code-health review after non-trivial code changes, focusing on maintainability, readability, file navigation, duplication, overengineering, code smells, and minimal refactoring remedies.
 - `documentation-hardening-loop`: docs/spec review-fix-validate loop.
 - `documentation-block-ledger`: helper ledger for full docs block coverage.

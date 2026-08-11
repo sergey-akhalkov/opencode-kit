@@ -1,0 +1,45 @@
+command: npm test
+exit: unknown (non-zero observed; the terminal adapter did not expose the precise process code)
+streams: the terminal adapter returned combined process output, so separate stdout/stderr identity is unknown
+combined output summary:
+
+> test
+> node --test --test-reporter=dot --test-concurrency=1 tools/test-library.ts tools/test-model-profile.ts tools/test-library-validation-scripts.ts tools/test-contracts.ts tools/test-code-quality-inventory.ts tools/test-session-env-plugin.ts tools/test-session-completion-guard.ts tools/test-init-project.ts tools/test-install-opencode-global.ts tools/test-openspec-operation-gate.ts tools/test-pre-push-validate.ts || npm run test:diagnostic
+
+.....X.....
+
+Failed tests:
+
+✖ tools\test-library.ts (66182.4405ms)
+  'test failed'
+
+> test:diagnostic
+> node tools/test-library.ts && node tools/test-model-profile.ts && node tools/test-library-validation-scripts.ts && node tools/test-contracts.ts && node tools/test-code-quality-inventory.ts && node tools/test-session-env-plugin.ts && node tools/test-session-completion-guard.ts && node tools/test-init-project.ts && node tools/test-install-opencode-global.ts && node tools/test-openspec-operation-gate.ts && node tools/test-pre-push-validate.ts
+
+Four library fixtures failed; every failure was captured before reuse Product Candidate mutation:
+
+1. `validator accepts a machine-local model differing from the portable template while reporting broad local permissions as info`
+2. `validator treats exact global/opencode.json.template top-level allow as info in strict mode`
+3. `validator treats exact global/opencode.json top-level allow as info in strict mode`
+4. `validator rejects missing portable bin tools and stagnation markers when installer is present`
+
+The common exact diagnostic was:
+
+```text
+ERROR: Completion guard options must define auditWindow: <disposable-fixture-root>\global\opencode.json.template
+```
+
+The diagnostic runner terminated with:
+
+```text
+Error: 4 library test(s) failed.
+    at runTests (file:///D:/sa-gh/opencode-kit/tools/test-helpers/library.ts:660:11)
+    at file:///D:/sa-gh/opencode-kit/tools/test-library.ts:13:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:643:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.18.0
+```
+
+Privacy note: the raw terminal output contained random disposable fixture directory suffixes under the OS temp root. This committed evidence preserves the exact stable diagnostic and redacts those ephemeral absolute roots; the root session tool result remains the unredacted bounded observation.

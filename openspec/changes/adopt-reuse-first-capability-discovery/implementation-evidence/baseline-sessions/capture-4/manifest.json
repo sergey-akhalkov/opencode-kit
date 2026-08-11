@@ -1,0 +1,16 @@
+{
+  "candidateId": "baseline-35f5f351",
+  "captureKind": "baseline",
+  "completed": [
+    "inventory-refresh",
+    "local-owner",
+    "registered-peer",
+    "stale-record",
+    "typical-external",
+    "no-match",
+    "trivial-fix",
+    "registry-unavailable"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1
+}

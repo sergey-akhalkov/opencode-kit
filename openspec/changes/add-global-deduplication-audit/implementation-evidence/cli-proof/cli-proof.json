@@ -1,0 +1,72 @@
+{
+  "cleanup": "removed",
+  "schemaVersion": 1,
+  "environment": {
+    "command": "jscpd",
+    "helpHasGitignoreDefault": true,
+    "helpHasIgnore": true,
+    "version": "cpd 5.0.14",
+    "versionStatus": 0
+  },
+  "fixture": {
+    "after": [
+      {
+        "hash": "d31116dfb7dce4eb557fc52d5e2f9994add2d077219510c077e6c4567daac217",
+        "path": "src/one.ts"
+      },
+      {
+        "hash": "d955d612d25e156cbf2bc242ecebfa82c0336f47fb81df4211100f8df2d16621",
+        "path": "src/two.ts"
+      }
+    ],
+    "before": [
+      {
+        "hash": "d31116dfb7dce4eb557fc52d5e2f9994add2d077219510c077e6c4567daac217",
+        "path": "src/one.ts"
+      },
+      {
+        "hash": "d955d612d25e156cbf2bc242ecebfa82c0336f47fb81df4211100f8df2d16621",
+        "path": "src/two.ts"
+      }
+    ],
+    "cloneLocationsPresent": false,
+    "ignoredLocationsAbsent": true,
+    "invocation": [
+      "jscpd",
+      "--reporters",
+      "ai",
+      "--min-tokens",
+      "20",
+      "--min-lines",
+      "5",
+      "--mode",
+      "mild",
+      "--ignore",
+      "**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**",
+      "src"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "\u001b[1mClones\u001b[22m:\none.ts:1-8 ~ two.ts:1-8\n---\n\u001b[1m1\u001b[22m clones · \u001b[1m43.8%\u001b[22m duplication\n\u001b[90mtime: 16.274ms\u001b[39m\n\n\u001b[90m💡 Auto-refactor with AI: \u001b[1m\u001b[39mnpx skills add https://github.com/kucherenko/jscpd --skill dry-refactoring\u001b[90m\u001b[22m\n\u001b[90m🎩 New: Gangsta Agents — discipline your AI coding → gangsta.page\u001b[39m\n\u001b[90m💖 Support jscpd project → https://opencollective.com/jscpd\u001b[39m\n"
+  },
+  "repository": {
+    "invocation": [
+      "jscpd",
+      "--reporters",
+      "ai",
+      "--min-tokens",
+      "50",
+      "--min-lines",
+      "5",
+      "--mode",
+      "mild",
+      "--ignore",
+      "**/node_modules/**,**/vendor/**,**/generated/**,**/dist/**,**/build/**,**/coverage/**,**/.cache/**,**/out/**,**/target/**",
+      "tools/validators"
+    ],
+    "scope": "tools/validators",
+    "status": 0,
+    "stderr": "",
+    "stdout": "\u001b[1mClones\u001b[22m:\ncontext.ts 49-54 ~ 57-62\ncontext.ts 66-75 ~ 84-93\ndevkit-contract.ts:24-41 ~ routing.ts:65-83\n---\n\u001b[1m3\u001b[22m clones · \u001b[1m0.7%\u001b[22m duplication\n\u001b[90mtime: 15.611ms\u001b[39m\n\n\u001b[90m💡 Auto-refactor with AI: \u001b[1m\u001b[39mnpx skills add https://github.com/kucherenko/jscpd --skill dry-refactoring\u001b[90m\u001b[22m\n\u001b[90m🎩 New: Gangsta Agents — discipline your AI coding → gangsta.page\u001b[39m\n\u001b[90m💖 Support jscpd project → https://opencollective.com/jscpd\u001b[39m\n"
+  }
+}

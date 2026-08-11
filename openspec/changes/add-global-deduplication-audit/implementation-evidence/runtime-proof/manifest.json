@@ -1,0 +1,13 @@
+{
+  "candidateId": "dedup-candidate-1",
+  "captureKind": "candidate",
+  "completed": [
+    "local-owner",
+    "semantic-near-clone",
+    "unique-compatibility-test",
+    "no-match-helper",
+    "trivial-fix"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1
+}

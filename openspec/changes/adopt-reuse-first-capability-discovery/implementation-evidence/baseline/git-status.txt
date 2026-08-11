@@ -1,0 +1,7 @@
+command: rtk git status --short
+exit: 0
+stdout:
+ M .serena/project.yml
+?? openspec/changes/adopt-reuse-first-capability-discovery/
+stderr:
+[rtk] /!\ No hook installed - run `rtk init -g` for automatic token savings

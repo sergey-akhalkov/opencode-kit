@@ -1,0 +1,20 @@
+{
+  "baselineComplete": false,
+  "candidateComplete": null,
+  "note": "Facts only. Semantic retention oracles require explicit main disposition; no synthetic quality score is derived.",
+  "rows": [
+    {
+      "baseline": {
+        "assistantChars": 0,
+        "cleanup": true,
+        "elapsedMs": 1974,
+        "status": 1,
+        "toolCalls": [],
+        "tokenFacts": []
+      },
+      "candidate": null,
+      "scenario": "inventory-refresh"
+    }
+  ],
+  "schemaVersion": 1
+}

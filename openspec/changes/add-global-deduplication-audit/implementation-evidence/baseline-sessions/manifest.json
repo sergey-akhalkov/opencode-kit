@@ -1,0 +1,14 @@
+{
+  "candidateId": "pre-dedup-baseline",
+  "captureKind": "baseline",
+  "completed": [
+    "local-owner",
+    "exact-clone",
+    "semantic-near-clone",
+    "unique-compatibility-test",
+    "no-match-helper",
+    "trivial-fix"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1
+}

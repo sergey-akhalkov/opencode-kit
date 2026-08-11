@@ -1,0 +1,11 @@
+command: rtk npm run validate:strict
+exit: 0
+stdout:
+> validate:strict
+> node tools/validate-library.ts --fail-on-warnings
+
+INFO: OpenCode permission config uses top-level allow; this allows all tools by default: D:\sa-gh\opencode-kit\global\opencode.json
+INFO: OpenCode permission config uses top-level allow; this allows all tools by default: D:\sa-gh\opencode-kit\global\opencode.json.template
+OK: skills=24 agents=18 markdown=250 warnings=0 infos=2
+stderr:
+[rtk] /!\ No hook installed - run `rtk init -g` for automatic token savings

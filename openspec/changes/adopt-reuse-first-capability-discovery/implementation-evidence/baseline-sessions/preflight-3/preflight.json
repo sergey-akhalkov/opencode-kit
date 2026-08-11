@@ -1,0 +1,73 @@
+{
+  "candidateId": "baseline-35f5f351",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "scenarios": [
+    "inventory-refresh",
+    "local-owner",
+    "registered-peer",
+    "stale-record",
+    "typical-external",
+    "no-match",
+    "trivial-fix",
+    "registry-unavailable"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "c522bbc1743f9e58cfcaf4bbdc7861daddf4070fd1bc4e7a46a69c14506271e6",
+    "global/commands/reuse-inventory.md": null,
+    "global/skills/change-ready-sdlc/SKILL.md": "b41bb3c1d8f82e522c14f7e4ab573b30dfd21d25c8d8499030eb078f1ecf4113",
+    "global/skills/reuse-discovery/SKILL.md": null,
+    "global/bin/reuse-registry.ts": null,
+    "tools/proofs/reuse-discovery.ts": "90e068f8ba481afcfdfe24355382d238999edbda844704cf1327f828fadffccd"
+  },
+  "toolPolicy": [
+    "bash: only node commands containing reuse-registry",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: deny",
+    "webfetch: deny"
+  ],
+  "version": 1,
+  "credentials": {
+    "captureUsesExistingStore": true,
+    "existingCount": 4,
+    "existingStatus": 0,
+    "isolatedCount": 0,
+    "isolatedStatus": 0
+  },
+  "permission": {
+    "exactFinalPolicy": true
+  },
+  "loader": {
+    "agent": {
+      "outputBytes": 7391,
+      "outputHash": "210f918f020b8410c9549aea58b51503d1f4fed7167ffaeac4416b7c049de638",
+      "status": 0,
+      "stderrBytes": 3036,
+      "stderrHasError": false,
+      "stderrHash": "dd19ed4018cffd4cb387d800359ed2c6c4f4ab0dc994123b617f86dd9c3a9474"
+    },
+    "config": {
+      "outputBytes": 94673,
+      "outputHash": "4a83af24549853a1c44c73e317bb769419a26bfdc605e7c8c8ac95987a9e42aa",
+      "status": 0,
+      "stderrBytes": 2893,
+      "stderrHasError": false,
+      "stderrHash": "fdb7b99114accec3d65d3db48d19d46b16240451e89753be78976e9179eb7bbc"
+    }
+  },
+  "config": {
+    "explicitReuseConfig": true,
+    "globalSourceMatchesKit": true,
+    "ownerPathsUsed": false
+  },
+  "opencodeVersion": "1.18.16"
+}

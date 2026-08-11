@@ -1,0 +1,76 @@
+{
+  "candidateId": "baseline-35f5f351",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "scenarios": [
+    "inventory-refresh",
+    "local-owner",
+    "registered-peer",
+    "stale-record",
+    "typical-external",
+    "no-match",
+    "trivial-fix",
+    "registry-unavailable"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "c522bbc1743f9e58cfcaf4bbdc7861daddf4070fd1bc4e7a46a69c14506271e6",
+    "global/commands/reuse-inventory.md": null,
+    "global/skills/change-ready-sdlc/SKILL.md": "b41bb3c1d8f82e522c14f7e4ab573b30dfd21d25c8d8499030eb078f1ecf4113",
+    "global/skills/reuse-discovery/SKILL.md": null,
+    "global/bin/reuse-registry.ts": null,
+    "tools/proofs/reuse-discovery.ts": "90994831efc84cb06d5bba868125ea3e00ad4c10f1d7265d6f230bfd0d0a75d4"
+  },
+  "toolPolicy": [
+    "bash: only literal OPENCODE_CONFIG_DIR/bin/reuse-registry.ts argv; shell metacharacters denied last",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: deny",
+    "webfetch: deny"
+  ],
+  "version": 1,
+  "credentials": {
+    "captureUsesExistingStore": true,
+    "existingCount": 4,
+    "existingStatus": 0,
+    "isolatedCount": 0,
+    "isolatedStatus": 0
+  },
+  "permission": {
+    "exactFinalPolicy": true
+  },
+  "agentEnvelope": {
+    "steps": 12
+  },
+  "loader": {
+    "agent": {
+      "outputBytes": 7917,
+      "outputHash": "0134d34762cc53c4274aa7c98229cff78f8699ef0bb0c97ba2ae6f8643501e95",
+      "status": 0,
+      "stderrBytes": 3036,
+      "stderrHasError": false,
+      "stderrHash": "22ba84cf481b3974c09b115dd1a080c6780c468219e749aadaa1b3a45062168d"
+    },
+    "config": {
+      "outputBytes": 94868,
+      "outputHash": "8ad29540a58c01f810f713f8c8308a0af021a4059b423e40b5862f5ed1ab2496",
+      "status": 0,
+      "stderrBytes": 2893,
+      "stderrHasError": false,
+      "stderrHash": "739039e8999dcbc9d07df224946b9a44e2b3f3035a8109e7f57bd33544417db4"
+    }
+  },
+  "config": {
+    "explicitReuseConfig": true,
+    "globalSourceMatchesKit": true,
+    "ownerPathsUsed": false
+  },
+  "opencodeVersion": "1.18.16"
+}

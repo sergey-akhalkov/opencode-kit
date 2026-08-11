@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "pre-dedup-baseline",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/agents/code-quality-reviewer.md": "56a0d1020434314697a27db1abfcb6ab39d7ff08eec954db0e17bc2c25e7195a",
+      "global/commands/dedup.md": null,
+      "global/skills/deduplication-audit/SKILL.md": null,
+      "tools/proofs/deduplication-audit.ts": "6be0d15f6818a43aee380722163612c9f1e885764a8bb617819953364ba2bc52"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_01036c92effe6DTvM4oFlNP4v7",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "dedup-baseline-semantic-near-clone",
+      "--command",
+      "dedup",
+      "src"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786434373618,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc947ed001iYJjnKUPjiNlE6\",\"messageID\":\"msg_fefc9400b001zETBZAc9Xel8UM\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434376180,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc9516a001GfWhbIk1RrOS73\",\"messageID\":\"msg_fefc9400b001zETBZAc9Xel8UM\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"text\",\"text\":\"I’ll inventory `src`, identify exact and semantic duplicate candidates, then compare behavior differences and required proof. Scope remains read-only and limited to duplication.\",\"time\":{\"start\":1786434376042,\"end\":1786434376174},\"metadata\":{\"openai\":{\"itemId\":\"msg_09f14721fa67daea016a7ad348753c8191a81f443d3b39d3bc\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434376551,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"type\":\"tool\",\"tool\":\"skill\",\"callID\":\"call_LQBMKn8f4KjuNoj7hL1wuwgj\",\"state\":{\"status\":\"completed\",\"input\":{\"name\":\"code-quality-audit\"},\"output\":\"<skill_content name=\\\"code-quality-audit\\\">\\n# Skill: code-quality-audit\\n\\n# Code Quality Audit\\r\\n\\r\\nUse this skill after non-trivial code changes, before acceptance/merge, or when the user asks about maintainability, readability, DRY, SOLID, YAGNI, Design Patterns, large files, code smells, or refactoring.\\r\\n\\r\\nDo not use this skill for pure documentation edits, generated/vendor code, tiny mechanical edits, broad exhaustive audits, or block-by-block explanation of one file. Use `codebase-audit-loop` for whole-codebase audits.\\n\\r\\n## Core Standard\\r\\n\\r\\n- Code quality means future changes are easier and safer for both the agent and the human reader.\\n- Prefer the smallest design that keeps the code understandable, testable, and locally changeable.\\n- Treat agent context as an engineering resource: a routine change should be understandable through targeted reads of one cohesive owner and narrow neighbors, not by loading an unrelated subsystem or one god file.\\n- Treat smells as signals, not automatic guilt. A finding needs evidence, impact, likely root cause, and a minimal remedy.\\n- Do not require perfection. Main treats correction as accepted-scope work only when the current change worsens code health or creates a likely future defect/change-cost trap; unrelated debt remains a finding, not a reviewer-owned gate.\\n- Do not apply Design Patterns by default. Use a pattern only when it removes concrete duplication, branching, coupling, lifecycle complexity, or boundary confusion.\\r\\n- For behavior-changing fixes, require observable proof of the smallest complete happy path first. Material/explicit qualification then requires independent fresh-context risk testing. Ordinary Small uses focused validation and optional smallest post-proof regression. Production authors must not create or modify automated test artifacts.\\n\\r\\n## Evidence Basis\\r\\n\\r\\n- Google engineering review practice: review design, functionality, complexity, tests, naming, comments, context, and every relevant line; do not accept changes that degrade code health.\\r\\n- Fowler code smell principle: smells are quick indicators of possible deeper problems, not proof by themselves.\\r\\n- Refactoring catalog practice: long methods, large classes, duplication, shotgun surgery, speculative generality, and coupling smells should map to small refactorings such as Extract Method, Extract Class, Move Method, Introduce Parameter Object, Strategy, State, Facade, or Adapter.\\r\\n\\r\\n## When To Require Main Disposition\\n\\r\\nRequire main to correct the current change or record an explicit `split-or-justify` disposition before completing accepted scope when one or more of these is true:\\n\\r\\n- The reviewer cannot explain the changed behavior, ownership, and data flow after one careful pass through the touched code.\\n- Understanding the changed behavior requires loading unrelated responsibilities because the touched file has no cohesive ownership boundary.\\n- The change adds a new responsibility to a file/class/module that already mixes unrelated responsibilities.\\r\\n- The change makes a future likely edit require touching multiple unrelated places for one concept.\\r\\n- The same behavior, branching shape, validation rule, mapping, fixture, or protocol detail appears for the third time without a shared owner.\\r\\n- A method/function grows multiple phases, nested branches, local mutable state, or comments that compensate for unclear structure.\\r\\n- A public API, abstraction, interface, factory, generic type, or plugin point is added for hypothetical future needs rather than current requirements.\\r\\n- New code hides side effects, temporal coupling, global mutation, IO, caching, retries, or concurrency behind names that do not reveal those costs.\\r\\n- Tests or validation cannot prove the behavior after the refactor, or the code structure makes a focused test impractical.\\n- A catch/wrap/translation path discards the original exception cause/stack, or an owning runtime boundary lacks enough safe context to distinguish realistic failures without adding noisy duplicate logs.\\n- The file reaches a `split-candidate` navigation band and the touched change does not either split a coherent responsibility or justify why the file is still cohesive.\\r\\n\\r\\nDo not classify current-scope correction when the issue is generated code, vendor code, local style preference, a cohesive data table, a one-off emergency workaround with explicit follow-up, or pre-existing debt whose refactor would be larger/riskier than the scoped change.\\n\\r\\n## File Size And Navigation Signals\\r\\n\\r\\nLine count is a radar, not a rule. Use explicit bands to decide how much review pressure to apply:\\r\\n\\r\\n- `normal`: file is small enough that local review usually works without extra inventory.\\r\\n- `attention`: inspect top-level responsibilities, public exports, long functions, duplicated blocks, and whether the change makes navigation harder.\\r\\n- `split-candidate`: require a `split-or-justify` decision for human-written touched files.\\r\\n\\r\\nDefault helper bands are intentionally adjustable: `attention-lines=400`, `split-lines=800`. Lower them for dense languages, complex UI/state files, protocol implementations, or agent-hostile code; raise them for generated files, fixtures, cohesive lookup tables, or intentionally flat data declarations.\\r\\n\\r\\nIf this library tooling is available, gather deterministic evidence with:\\r\\n\\r\\n```sh\\r\\nnpm run code-quality:inventory -- --format markdown\\r\\n```\\r\\n\\r\\nOnly when a repository explicitly adopts a hard line threshold as local policy, use:\\n\\r\\n```sh\\r\\nnpm run code-quality:inventory -- --attention-lines 400 --split-lines 800 --fail-on-split-candidates\\r\\n```\\r\\n\\r\\nIf the command is not available in the target repository, use repository-native metrics or manually inventory touched files and top-level responsibilities. Never present line count as the finding by itself.\\r\\n\\r\\n## Smell-To-Remedy Map\\r\\n\\r\\n| Smell / Anti-pattern | Force When | Preferred Remedy |\\r\\n| --- | --- | --- |\\r\\n| Long method/function | Multiple phases, nested branches, unclear locals, or explanatory comments hide intent. | Extract Method, guard clauses, Decompose Conditional, Replace Method with Method Object only when extraction fails. |\\r\\n| Large file/class/module | Touched code mixes unrelated ownership such as IO, parsing, validation, UI, state, and persistence. | Extract Class/Module, Move Method, isolate domain model, keep a thin Facade if callers need one entrypoint. |\\r\\n| Duplicate code | Third occurrence or duplicated rules can drift and cause divergent fixes. | Extract Function, shared table, Template Method, Strategy only when variants truly differ. |\\r\\n| Shotgun surgery | One concept requires scattered edits across unrelated files. | Create a single owner, central registry/table, Facade, Adapter, or domain service boundary. |\\r\\n| Divergent change | One file changes for unrelated reasons across features. | Split by responsibility, move cohesive behavior, reduce public surface. |\\r\\n| Speculative generality | Abstraction exists for imagined future variants. | Inline Class/Method, delete unused extension points, keep concrete implementation. |\\r\\n| Primitive obsession / data clumps | Repeated groups of fields or raw strings/numbers carry domain meaning. | Value Object, Introduce Parameter Object, named constants, validated config/schema. |\\r\\n| Long parameter list | Callers must remember ordering or pass repeated groups. | Parameter Object, Preserve Whole Object, Builder only when construction has many optional named fields. |\\r\\n| Switch/if ladder by type/state | New variants require editing branches in several places or branches hide behavior. | Lookup table, Strategy, State, polymorphism, or explicit state machine. Keep a simple switch when variants are fixed and local. |\\r\\n| Feature envy / inappropriate intimacy | Code reads/mutates another module's internals more than its own. | Move Method, Encapsulate Field, narrow API, domain method on the owner. |\\r\\n| Message chain / hidden dependency walk | Callers know too much about object graph shape. | Hide Delegate, Facade, explicit query method, but avoid pointless middlemen. |\\r\\n| Middle man / wrapper soup | Abstractions only forward calls and add navigation cost. | Inline wrapper, remove lazy class, collapse hierarchy. |\\r\\n| Magic values | Reused constants or domain thresholds lack names/validation. | Named constant, enum, config schema with limits/defaults. |\\r\\n| Dead code / unused exports | Code is not reachable or maintained and increases review surface. | Delete, or mark explicit compatibility requirement if external consumers need it. |\\r\\n| Comment-dependent code | Comments explain what unclear code does rather than why it exists. | Rename, extract, simplify; keep comments for rationale, invariants, algorithms, and external contracts. |\\r\\n| Hidden side effects | Name looks pure but performs IO, mutation, caching, retries, or scheduling. | Rename, separate query from command, Command pattern for queued work, explicit effect boundary. |\\n| Context-heavy module | A local change requires unrelated code to understand ownership or control flow. | Extract one cohesive owner behind a narrow interface; avoid wrapper-only micro-files. |\\n| Opaque failure path | Errors lose cause/stack or reach an owning boundary without safe operation/correlation context. | Preserve the exception chain; log once at the owning boundary with structured context; capture proof artifacts. |\\n\\r\\n## Pattern Discipline\\r\\n\\r\\n- `Adapter`: use to isolate incompatible external/legacy APIs or SDKs.\\r\\n- `Facade`: use to hide a complex subsystem behind a small stable boundary, not to create pass-through layers.\\r\\n- `Strategy`: use when interchangeable algorithms or policies vary independently and are selected at runtime/config/test time.\\r\\n- `State`: use when state transitions are explicit and conditional logic is spreading.\\r\\n- `Factory Method` / small factory function: use when creation details are repeated, conditional, or dependency-heavy.\\r\\n- `Builder`: use for complex construction with many optional named fields or staged validation, not for simple data objects.\\r\\n- `Command`: use for queued, retryable, cancellable, auditable, or delayed operations.\\r\\n- `Observer` / event emitter: use for decoupled notifications, but require lifecycle/unsubscribe ownership.\\r\\n- Avoid `Singleton` unless process-wide identity is intrinsic and tests can isolate/reset it.\\r\\n\\r\\n## Review Workflow\\r\\n\\r\\n- Inspect the diff first, then enough surrounding code to understand ownership and data flow.\\n- Before accepting added behavior, map touched responsibilities and record `split-or-justify` for navigation-heavy or mixed-owner files. Line count remains evidence, never the finding by itself.\\n- Run or request deterministic inventory when file size/navigation is a material risk.\\n- Identify smells only when they affect change cost, readability, testability, or defect risk.\\r\\n- Prefer local refactors that reduce the current change's complexity before adding new abstractions.\\r\\n- If a refactor changes behavior, prove the resulting happy path through observable execution. Material/explicit qualification then routes realistic negative and end-to-end test authoring to a separate fresh-context testing subagent. Ordinary Small uses focused validation and optional smallest post-proof regression.\\n- Use `code-quality-reviewer` as the read-only post-change reviewer after non-trivial code edits when feasible.\\r\\n- Escalate to `test-coverage-reviewer`, `performance-reliability-reviewer`, `rust-concurrency-reviewer`, or protocol/deployment reviewers when the finding is primarily in those domains.\\r\\n- If the review yields several concrete out-of-scope follow-ups from the current session, recommend grouping them into OpenSpec follow-up changes; do not do this for isolated nits, local style preferences, or one obvious next step.\\r\\n\\r\\n## Output\\r\\n\\r\\nReturn:\\r\\n\\r\\n- `Verdict`: clean | minor findings | material findings | blocked | fixed | not applicable.\\r\\n- `Code Health Delta`: improves | neutral | worsens, with evidence.\\r\\n- `Findings`: severity, file/line, evidence, impact on agent work and human readability, likely root cause, minimal remedy, pattern/refactoring if useful, confidence.\\r\\n- `Navigation Signals`: attention/split-candidate files, responsibility map, and split-or-justify decisions.\\r\\n- `Smell Matrix`: smell -> evidence -> remedy -> force/optional/nit.\\r\\n- `Validation`: tests, inventory commands, reviewer gates, or skipped checks with reason.\\r\\n- `Residual Risks`: remaining maintainability risks or low-confidence areas.\\r\\n- `Actionable Continuation Items`: concrete fixes/gates, including OpenSpec follow-up candidates when several session-scoped items remain, or `none`.\\n\\nBase directory for this skill: <kit-root>\\\\global\\\\skills\\\\code-quality-audit\\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\\nNote: file list is sampled.\\n\\n<skill_files>\\n\\n</skill_files>\\n</skill_content>\",\"metadata\":{\"name\":\"code-quality-audit\",\"dir\":\"<kit-root>\\\\global\\\\skills\\\\code-quality-audit\",\"truncated\":false},\"title\":\"Loaded skill: code-quality-audit\",\"time\":{\"start\":1786434376477,\"end\":1786434376549}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09f14721fa67daea016a7ad348a4788191babf86d09499806c\"}},\"id\":\"prt_fefc951f0001xfGBEj5lpTSgzN\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"messageID\":\"msg_fefc9400b001zETBZAc9Xel8UM\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434376585,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc9537c0012WQC9zXKz9vkEJ\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefc9400b001zETBZAc9Xel8UM\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-finish\",\"tokens\":{\"total\":18707,\"input\":18553,\"output\":59,\"reasoning\":95,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434378916,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc95ca00012rS5xsebmu0f6X\",\"messageID\":\"msg_fefc95385001p9BnigEAKdiMkw\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434380122,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_eKgtOj9pIgIqYMO5lB0x85vD\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"src/**/*\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\request-path.ts\\n<proof-root>\\\\project\\\\src\\\\SEMANTICS.md\\n<proof-root>\\\\project\\\\src\\\\audit-path.ts\",\"metadata\":{\"count\":3,\"truncated\":false},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-semantic-near-clone-BATcy0\\\\project\",\"time\":{\"start\":1786434380048,\"end\":1786434380120}},\"metadata\":{\"openai\":{\"itemId\":\"fc_06280dca8d4fc798016a7ad34c58d08191992402955da0c1f7\"}},\"id\":\"prt_fefc960de001m76ELmIW2S4ex7\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"messageID\":\"msg_fefc95385001p9BnigEAKdiMkw\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434380247,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc961cd00120MZYyGn9XRKLI\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefc95385001p9BnigEAKdiMkw\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-finish\",\"tokens\":{\"total\":21253,\"input\":3303,\"output\":20,\"reasoning\":10,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434381647,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc9674c001poNnR401B6G9sY\",\"messageID\":\"msg_fefc961d2001p3WvcL4XUivSOW\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434385219,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_8Ikbmw4JZ1r399NninSdFKMl\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\request-path.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\request-path.ts</path>\\n<type>file</type>\\n<content>\\n1: export function normalizeRequest(input: string): string {\\n2:   const normalized = input.trim().toLowerCase();\\n3:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n4:   const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n5:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n6:   if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n7:   return selected.join(\\\"/\\\");\\n8: }\\n\\n(End of file - total 8 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function normalizeRequest(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\request-path.ts\",\"text\":\"export function normalizeRequest(input: string): string {\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) throw new Error(\\\"invalid segment\\\");\\n  return selected.join(\\\"/\\\");\\n}\",\"lineStart\":1,\"lineEnd\":8,\"totalLines\":8,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-semantic-near-clone-BATcy0\\\\project\\\\src\\\\request-path.ts\",\"time\":{\"start\":1786434385178,\"end\":1786434385215}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01c21310c0f51f39016a7ad351765c81918898e6afea3ebddf\"}},\"id\":\"prt_fefc974e9001nHzoUwrGuOvTWI\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"messageID\":\"msg_fefc961d2001p3WvcL4XUivSOW\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434385262,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_xwUANQNyLlWa0lU4h9w4m9xZ\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\audit-path.ts\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\audit-path.ts</path>\\n<type>file</type>\\n<content>\\n1: const auditEvents: Array<{ raw: string; at: number }> = [];\\n2: export function normalizeAudit(input: string): string {\\n3:   auditEvents.push({ raw: input, at: Date.now() });\\n4:   const normalized = input.trim().toLowerCase();\\n5:   if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n6:   const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n7:   const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n8:   if (selected.some((part) => part.length === 0)) return \\\"<legacy-invalid>\\\";\\n9:   return `audit:${selected.join(\\\"/\\\")}`;\\n10: }\\n\\n(End of file - total 10 lines)\\n</content>\",\"metadata\":{\"preview\":\"const auditEvents: Array<{ raw: string; at: number }> = [];\\nexport function normalizeAudit(input: string): string {\\n  auditEvents.push({ raw: input, at: Date.now() });\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) return \\\"<legacy-invalid>\\\";\\n  return `audit:${selected.join(\\\"/\\\")}`;\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\audit-path.ts\",\"text\":\"const auditEvents: Array<{ raw: string; at: number }> = [];\\nexport function normalizeAudit(input: string): string {\\n  auditEvents.push({ raw: input, at: Date.now() });\\n  const normalized = input.trim().toLowerCase();\\n  if (normalized.length === 0) throw new Error(\\\"empty input\\\");\\n  const parts = normalized.split(\\\"/\\\").filter(Boolean);\\n  const selected = parts.map((part) => part.replace(/[^a-z0-9-]/g, \\\"\\\"));\\n  if (selected.some((part) => part.length === 0)) return \\\"<legacy-invalid>\\\";\\n  return `audit:${selected.join(\\\"/\\\")}`;\\n}\",\"lineStart\":1,\"lineEnd\":10,\"totalLines\":10,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-semantic-near-clone-BATcy0\\\\project\\\\src\\\\audit-path.ts\",\"time\":{\"start\":1786434385250,\"end\":1786434385261}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01c21310c0f51f39016a7ad351766c8191a70cf818278e72ed\"}},\"id\":\"prt_fefc9751d0011kgNYv4oO0zniX\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"messageID\":\"msg_fefc961d2001p3WvcL4XUivSOW\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786434385318,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_xxq2eTW38D98xfPSVHW7gIPt\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\SEMANTICS.md\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\SEMANTICS.md</path>\\n<type>file</type>\\n<content>\\n1: request-path throws invalid input; audit-path records an event, preserves a legacy sentinel, and prefixes successful output. Keep these lifecycle/effect contracts separate unless equivalence is proved.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"request-path throws invalid input; audit-path records an event, preserves a legacy sentinel, and prefixes successful output. Keep these lifecycle/effect contracts separate unless equivalence is proved.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\SEMANTICS.md\",\"text\":\"request-path throws invalid input; audit-path records an event, preserves a legacy sentinel, and prefixes successful output. Keep these lifecycle/effect contracts separate unless equivalence is proved.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\<user>\\\\AppData\\\\Local\\\\Temp\\\\deduplication-audit-semantic-near-clone-BATcy0\\\\project\\\\src\\\\SEMANTICS.md\",\"time\":{\"start\":1786434385298,\"end\":1786434385315}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01c21310c0f51f39016a7ad35176788191a0bc5c292bfc72bc\"}},\"id\":\"prt_fefc975640016RsHqJJO6gcp0a\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"messageID\":\"msg_fefc961d2001p3WvcL4XUivSOW\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434385348,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc975bb001ya3LROQc7KWjMG\",\"reason\":\"tool-calls\",\"messageID\":\"msg_fefc961d2001p3WvcL4XUivSOW\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-finish\",\"tokens\":{\"total\":21559,\"input\":382,\"output\":173,\"reasoning\":12,\"cache\":{\"write\":0,\"read\":20992}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786434389256,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefc98504001uRmpsbM5I4KCDR\",\"messageID\":\"msg_fefc975c0001GVFaIt2SetRFbj\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786434434216,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefca124f0017svF17pNRqXxpm\",\"messageID\":\"msg_fefc975c0001GVFaIt2SetRFbj\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"text\",\"text\":\"**Verdict: Minor Finding**\\n\\n**Candidate**\\n- `src/request-path.ts:2-6`\\n- `src/audit-path.ts:4-8`\\n\\nThese blocks duplicate trimming, lowercasing, empty-input validation, slash splitting, segment filtering, and character sanitization.\\n\\n**Meaningful Differences**\\n- `src/audit-path.ts:3` records every raw attempt before validation.\\n- Invalid sanitized segments throw in `request-path.ts:6`, but return `\\\"<legacy-invalid>\\\"` in `audit-path.ts:8`.\\n- Successful audit output gains the `audit:` prefix at `audit-path.ts:9`.\\n- `src/SEMANTICS.md:1` explicitly requires preserving these lifecycle and effect differences.\\n\\n**Reduction Recommendation**\\nExtract only the pure shared normalization stage into a private helper returning the sanitized path or an invalid-segment result. Keep both exported functions as policy wrappers.\\n\\nDo not merge the exported functions or move audit recording after normalization. Given only two small occurrences, this is optional unless the normalization rules are expected to change; avoiding another module may currently be cheaper than removing five duplicated lines.\\n\\n**Proof Needed**\\nBefore any later refactor, characterize:\\n\\n- Whitespace-only input: both throw `\\\"empty input\\\"`; audit still records once.\\n- Valid mixed-case input: same normalized segments, with only the audit prefix differing.\\n- Repeated, leading, and trailing slashes: current collapsing behavior remains.\\n- Mixed punctuation: illegal characters are removed identically.\\n- Entirely invalid segment: request throws; audit returns the legacy sentinel.\\n- Audit event retains untouched raw input, one event per call, and occurs before validation.\\n- Existing exported names, signatures, errors, and output formats remain unchanged.\\n\\nThe private `auditEvents` array has no observable test seam within `src`, so runtime proof of that side effect would require an existing external observer or a narrowly designed test seam.\\n\\nNo files changed; analysis covered all files under `src`.\",\"time\":{\"start\":1786434425423,\"end\":1786434434214},\"metadata\":{\"openai\":{\"itemId\":\"msg_0174728f22e4ab6f016a7ad379dbf081919efe605aafa4d3ca\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786434434274,\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"part\":{\"id\":\"prt_fefca34d70017nLZmXUW4JcWn3\",\"reason\":\"stop\",\"messageID\":\"msg_fefc975c0001GVFaIt2SetRFbj\",\"sessionID\":\"ses_01036c92effe6DTvM4oFlNP4v7\",\"type\":\"step-finish\",\"tokens\":{\"total\":24036,\"input\":1092,\"output\":400,\"reasoning\":1552,\"cache\":{\"write\":0,\"read\":20992}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: jscpd only; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: code-quality-reviewer only",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inventory `src`, identify exact and semantic duplicate candidates, then compare behavior differences and required proof. Scope remains read-only and limited to duplication.**Verdict: Minor Finding**\n\n**Candidate**\n- `src/request-path.ts:2-6`\n- `src/audit-path.ts:4-8`\n\nThese blocks duplicate trimming, lowercasing, empty-input validation, slash splitting, segment filtering, and character sanitization.\n\n**Meaningful Differences**\n- `src/audit-path.ts:3` records every raw attempt before validation.\n- Invalid sanitized segments throw in `request-path.ts:6`, but return `\"<legacy-invalid>\"` in `audit-path.ts:8`.\n- Successful audit output gains the `audit:` prefix at `audit-path.ts:9`.\n- `src/SEMANTICS.md:1` explicitly requires preserving these lifecycle and effect differences.\n\n**Reduction Recommendation**\nExtract only the pure shared normalization stage into a private helper returning the sanitized path or an invalid-segment result. Keep both exported functions as policy wrappers.\n\nDo not merge the exported functions or move audit recording after normalization. Given only two small occurrences, this is optional unless the normalization rules are expected to change; avoiding another module may currently be cheaper than removing five duplicated lines.\n\n**Proof Needed**\nBefore any later refactor, characterize:\n\n- Whitespace-only input: both throw `\"empty input\"`; audit still records once.\n- Valid mixed-case input: same normalized segments, with only the audit prefix differing.\n- Repeated, leading, and trailing slashes: current collapsing behavior remains.\n- Mixed punctuation: illegal characters are removed identically.\n- Entirely invalid segment: request throws; audit returns the legacy sentinel.\n- Audit event retains untouched raw input, one event per call, and occurs before validation.\n- Existing exported names, signatures, errors, and output formats remain unchanged.\n\nThe private `auditEvents` array has no observable test seam within `src`, so runtime proof of that side effect would require an existing external observer or a narrowly designed test seam.\n\nNo files changed; analysis covered all files under `src`.",
+    "costs": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 66515,
+    "eventCount": 15,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_01036c92effe6DTvM4oFlNP4v7"
+    ],
+    "tokens": [
+      {
+        "total": 18707,
+        "input": 18553,
+        "output": 59,
+        "reasoning": 95,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 21253,
+        "input": 3303,
+        "output": 20,
+        "reasoning": 10,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 21559,
+        "input": 382,
+        "output": 173,
+        "reasoning": 12,
+        "cache": {
+          "write": 0,
+          "read": 20992
+        }
+      },
+      {
+        "total": 24036,
+        "input": 1092,
+        "output": 400,
+        "reasoning": 1552,
+        "cache": {
+          "write": 0,
+          "read": 20992
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "name": "code-quality-audit"
+        },
+        "name": "skill",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "src/**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\request-path.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\audit-path.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\SEMANTICS.md"
+        },
+        "name": "read",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "command": "dedup",
+    "message": "src",
+    "scenario": "semantic-near-clone"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "hash": "90d8c9467dc7660b1e5df965fbb85fa624826eb9372fef559ef0d413b0b31ad9",
+        "path": "src/audit-path.ts"
+      },
+      {
+        "hash": "6f4a807db1788c112c21541468d55b3341c22e60235fc79e378e2166dfd107ac",
+        "path": "src/request-path.ts"
+      },
+      {
+        "hash": "82f1896826e433314ef26b26f8247073721fa29e6738a70aab44490c0af7dab3",
+        "path": "src/SEMANTICS.md"
+      }
+    ],
+    "before": [
+      {
+        "hash": "90d8c9467dc7660b1e5df965fbb85fa624826eb9372fef559ef0d413b0b31ad9",
+        "path": "src/audit-path.ts"
+      },
+      {
+        "hash": "6f4a807db1788c112c21541468d55b3341c22e60235fc79e378e2166dfd107ac",
+        "path": "src/request-path.ts"
+      },
+      {
+        "hash": "82f1896826e433314ef26b26f8247073721fa29e6738a70aab44490c0af7dab3",
+        "path": "src/SEMANTICS.md"
+      }
+    ]
+  }
+}

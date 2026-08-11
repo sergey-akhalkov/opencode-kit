@@ -1,0 +1,10 @@
+{
+  "candidateId": "corrected-baseline",
+  "captureKind": "baseline",
+  "completed": [
+    "local-owner",
+    "semantic-near-clone"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1
+}
