@@ -12,7 +12,7 @@ const COMMITTED_PROFILE_NAMES = ["grok-only", "quality-independent", "sol-only"]
 const LOCAL_IGNORE_RULE = "/global/model-profiles/local/*.json";
 const SOL_MODEL = "openai/gpt-5.6-sol";
 const SOL_VARIANT = "xhigh";
-const GROK_MODEL = "xai/grok-4.5";
+const GROK_MODEL = "xai/grok-4.6";
 const GROK_VARIANT = "high";
 const QUALITY_CREATOR_AGENTS = new Set([
   "build",

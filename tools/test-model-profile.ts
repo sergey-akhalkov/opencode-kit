@@ -33,7 +33,7 @@ import {
 } from "./test-helpers/library.ts";
 
 const SOL_MODEL = "openai/gpt-5.6-sol";
-const GROK_MODEL = "xai/grok-4.5";
+const GROK_MODEL = "xai/grok-4.6";
 const QUALITY_CREATORS = new Set([
   "build",
   "compaction",

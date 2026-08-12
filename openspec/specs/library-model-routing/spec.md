@@ -45,7 +45,7 @@ The library SHALL provide a cross-platform launcher that applies one selected mo
 - **AND** the diagnostic SHALL identify the invalid profile selection without exposing unrelated paths or file content.
 
 ### Requirement: Shipped routing presets
-The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` committed presets. `quality-independent` SHALL route creation and diagnosis roles to GPT-5.6 Sol Xhigh and independent challenge roles to Grok 4.5 High. The single-model presets SHALL provide complete deterministic control matrices.
+The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` committed presets. `quality-independent` SHALL route creation and diagnosis roles to GPT-5.6 Sol Xhigh and independent challenge roles to Grok 4.6 High. The single-model presets SHALL provide complete deterministic control matrices.
 
 #### Scenario: Recommended creator roles
 - **WHEN** `quality-independent` is selected
@@ -53,11 +53,11 @@ The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` commit
 
 #### Scenario: Recommended challenge roles
 - **WHEN** `quality-independent` is selected
-- **THEN** `explore`, `title`, `summary`, `qwen-local-worker`, `sdet-quality-engineer`, and every reusable reviewer SHALL resolve to `xai/grok-4.5` with variant `high`.
+- **THEN** `explore`, `title`, `summary`, `qwen-local-worker`, `sdet-quality-engineer`, and every reusable reviewer SHALL resolve to `xai/grok-4.6` with variant `high`.
 
 #### Scenario: Single-model controls
 - **WHEN** `sol-only` or `grok-only` is validated
-- **THEN** every governed agent SHALL resolve respectively to `openai/gpt-5.6-sol`/`xhigh` or `xai/grok-4.5`/`high`
+- **THEN** every governed agent SHALL resolve respectively to `openai/gpt-5.6-sol`/`xhigh` or `xai/grok-4.6`/`high`
 - **AND** no governed agent SHALL rely on inherited routing inside those profiles.
 
 ### Requirement: Visible selection and override semantics
@@ -97,7 +97,7 @@ Repository validation SHALL check profile syntax, restricted shape, complete cat
 - **AND** it SHALL not send a provider prompt, mutate remote state, or require credentials.
 
 ### Requirement: Completion arbiter has complete configurable routing
-Every committed model profile SHALL explicitly route the hidden `session-completion-arbiter`. The arbiter Markdown SHALL omit model and variant frontmatter. `quality-independent` SHALL route it to `xai/grok-4.5` with variant `high`; `sol-only` and `grok-only` SHALL route it to their respective complete single-model settings.
+Every committed model profile SHALL explicitly route the hidden `session-completion-arbiter`. The arbiter Markdown SHALL omit model and variant frontmatter. `quality-independent` SHALL route it to `xai/grok-4.6` with variant `high`; `sol-only` and `grok-only` SHALL route it to their respective complete single-model settings.
 
 #### Scenario: Arbiter replaces retired profile key
 - **WHEN** the active delivery reviewer is retired

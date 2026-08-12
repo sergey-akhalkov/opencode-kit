@@ -26,7 +26,7 @@ export const instructionInventory = path.join(helperRoot, "tools", "instruction-
 
 const FIXTURE_MODEL_PROFILE_SCHEMA = "https://opencode.ai/config.json";
 const FIXTURE_SOL_MODEL = "openai/gpt-5.6-sol";
-const FIXTURE_GROK_MODEL = "xai/grok-4.5";
+const FIXTURE_GROK_MODEL = "xai/grok-4.6";
 const FIXTURE_QUALITY_CREATORS = new Set([
   "build",
   "compaction",

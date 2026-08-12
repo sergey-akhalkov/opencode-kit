@@ -103,7 +103,7 @@ export const modelProfileTests: TestCase[] = [
     run: () => {
       const fixture = newLibraryFixture("model-profile-preset-drift");
       const profile = readProfile(fixture, "quality-independent");
-      profile.agent.build = { model: "xai/grok-4.5", variant: "high" };
+      profile.agent.build = { model: "xai/grok-4.6", variant: "high" };
       writeProfile(fixture, "quality-independent", profile);
       const result = invokeValidator(fixture);
       assertFailure(result, "A valid but drifted committed route must fail exact preset validation.");

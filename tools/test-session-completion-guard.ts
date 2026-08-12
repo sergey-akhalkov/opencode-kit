@@ -345,7 +345,7 @@ const tests: TestCase[] = [
       const verdict = parseCompletionVerdict(validVerdict(), epoch());
       const continuation = buildContinuation(
         verdict,
-        { agent: "build", model: { providerID: "xai", modelID: "grok-4.5" }, tools: null, variant: "high" },
+        { agent: "build", model: { providerID: "xai", modelID: "grok-4.6" }, tools: null, variant: "high" },
         "docs/session-strategy-history/session_abcdef123456.md",
         false,
       );
@@ -861,7 +861,7 @@ const tests: TestCase[] = [
                 data: [{
                   id: "session-completion-arbiter",
                   hidden: true,
-                  model: { providerID: "xai", id: "grok-4.5" },
+                  model: { providerID: "xai", id: "grok-4.6" },
                 }],
               },
             }),
@@ -870,7 +870,7 @@ const tests: TestCase[] = [
         provider: {
           list: async () => ({
             data: {
-              all: [{ id: "xai", models: { "grok-4.5": { id: "grok-4.5" } } }],
+              all: [{ id: "xai", models: { "grok-4.6": { id: "grok-4.6" } } }],
               connected: ["xai"],
             },
           }),
@@ -1300,7 +1300,7 @@ const tests: TestCase[] = [
                   data: [{
                     id: "session-completion-arbiter",
                     hidden: true,
-                    model: { providerID: "xai", id: "grok-4.5" },
+                    model: { providerID: "xai", id: "grok-4.6" },
                   }],
                 },
               }),
@@ -1309,7 +1309,7 @@ const tests: TestCase[] = [
           provider: {
             list: async () => ({
               data: {
-                all: [{ id: "xai", models: { "grok-4.5": { id: "grok-4.5" } } }],
+                all: [{ id: "xai", models: { "grok-4.6": { id: "grok-4.6" } } }],
                 connected: ["xai"],
               },
             }),

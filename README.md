@@ -102,14 +102,14 @@ Model profiles are explicit launch-time overlays, not a fourth automatically loa
 npm run opencode:profile -- quality-independent
 npm run opencode:profile -- quality-independent --check
 npm run opencode:profile -- quality-independent --explain
-npm run opencode:profile -- quality-independent -- --model xai/grok-4.5
+npm run opencode:profile -- quality-independent -- --model xai/grok-4.6
 ```
 
 The presets have distinct purposes:
 
-- `quality-independent` is the recommended creator/challenger split. Primary creation, implementation, troubleshooting, and compaction use `openai/gpt-5.6-sol` with `xhigh`; discovery, SDET, and independent review use `xai/grok-4.5` with `high`.
+- `quality-independent` is the recommended creator/challenger split. Primary creation, implementation, troubleshooting, and compaction use `openai/gpt-5.6-sol` with `xhigh`; discovery, SDET, and independent review use `xai/grok-4.6` with `high`.
 - `sol-only` routes every governed agent to `openai/gpt-5.6-sol` with `xhigh`.
-- `grok-only` routes every governed agent to `xai/grok-4.5` with `high`.
+- `grok-only` routes every governed agent to `xai/grok-4.6` with `high`.
 
 For a personal complete matrix, create `global/model-profiles/local/<id>.json` and select it as `local:<id>`. Local JSON files are gitignored. `<id>` resolves only a committed profile and `local:<id>` resolves only a local profile, so equal filenames cannot silently shadow each other. Run `--check` before launch and `--explain` to inspect the selected source, resolved path, top-level models, and stable sorted agent matrix.
 
