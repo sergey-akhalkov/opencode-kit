@@ -76,6 +76,11 @@ When ready to implement, run /opsx-apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
+   d. **When the tasks artifact is authored, append the final history retrospective once**:
+      - Append exactly one unchecked final-history-retrospective task as the initially last checkbox in `tasks.md`; do not add a placeholder improvement or more than one analysis task.
+      - Require it to wait until every other currently known task is complete, then analyze the complete change `history.md` using the existing compaction `Quality`, `Cycle Speed`, and `Token Economy` rows across `Working Repository` and `opencode-kit`, the existing admission gate, target ownership, authority boundaries, and `Session-Derived Improvements` fields.
+      - Require it to append every admitted concrete small improvement under `## Session-Derived Improvements` and immediately continue apply work, or record `none` without inventing work. State that apply, archive, compaction, and generated tasks must not create or rerun this final analysis.
+
 5. **Create strategy history**
 
    Create `<changeRoot>/history.md` with `# Strategy History`. Record only materially distinct strategies actually considered or tried while preparing this change. Each entry contains objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. If no strategy has been tried, retain the heading and state that no attempts are recorded yet; do not invent history.
@@ -121,5 +126,6 @@ After completing all artifacts and both readiness checks, summarize:
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
 - Create `history.md` before readiness checks and never manufacture attempted strategies
+- Ensure every newly authored `tasks.md` has exactly one initially-last unchecked final-history-retrospective task; do not retrofit an existing change merely because this creation-time task is absent
 - Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable

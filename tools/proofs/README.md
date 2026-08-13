@@ -20,4 +20,5 @@ Reusable production proof runners, capture/evaluator utilities, and cleanup help
 - Its `evaluate` mode accepts `--baseline-override-root` and `--candidate-override-root` to compose corrected scenario-only captures without overwriting preserved earlier bundles.
 - A live-attempt gate, provider authorization, and evidence/cleanup plan remain mandatory; this inventory does not grant authority.
 - Output is privacy-safe and structural. Raw provider text and completion evidence are not printed.
+- Before any configured-provider OpenSpec command proof, provider-free preflight the disposable root for the candidate command/skill source, complete `openspec/config.yaml`, the project-native operation-gate adapter and exact argv, a writable contained root when authoring is required, and an evidence/cleanup plan. Stop before inference when any item is absent; command loading alone does not prove the complete project authoring contract.
 - Add every new proof runner or shared proof library to this table with its boundary, modes, effects, cleanup, and exact invocation.

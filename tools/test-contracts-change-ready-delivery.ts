@@ -189,6 +189,57 @@ const GLOBAL_CHECKPOINT_CONTINUE_MARKERS = [
   "Do not ask whether to continue while safe local/offline required work remains",
 ] as const;
 
+/**
+ * Critical lifecycle oracles for the final-history-retrospective policy.
+ * Dropping these tokens lets a new change archive without the one-time
+ * complete-history analysis, recur, invent scope, or lose admitted work.
+ */
+const FINAL_HISTORY_PROPOSE_SURFACES = [
+  "global/AGENTS.md",
+  ".opencode/skills/openspec-propose/SKILL.md",
+  ".opencode/commands/opsx-propose.md",
+] as const;
+
+const FINAL_HISTORY_APPLY_SURFACES = [
+  "global/AGENTS.md",
+  ".opencode/skills/openspec-apply-change/SKILL.md",
+  ".opencode/commands/opsx-apply.md",
+] as const;
+
+const FINAL_HISTORY_ARCHIVE_SURFACES = [
+  ".opencode/skills/openspec-archive-change/SKILL.md",
+  ".opencode/commands/opsx-archive.md",
+] as const;
+
+const FINAL_HISTORY_PROPOSE_MARKERS = [
+  "final-history-retrospective",
+  "exactly one",
+  "initially last",
+  "do not retrofit",
+] as const;
+
+const FINAL_HISTORY_APPLY_MARKERS = [
+  "history.md",
+  "`none`",
+  "every admitted",
+  "rerun",
+  "retrofit",
+] as const;
+
+const FINAL_HISTORY_ARCHIVE_MARKERS = [
+  "final-history-retrospective",
+  "every improvement it generated",
+  "Return incomplete work to apply",
+  "retrofit",
+] as const;
+
+const BASELINE_FINAL_HISTORY_AGENTS_FRAGMENT =
+  "After compaction or when a new session receives that matrix, verify every candidate against `Original User Goal` and reconcile all still-admissible entries before substantial work.";
+
+function missingTokens(text: string, tokens: readonly string[]): string[] {
+  return tokens.filter((token) => !text.includes(token));
+}
+
 const ARBITER_CHECKPOINT_CONTINUE_MARKERS = [
   "classify a question asking whether to continue in that state as autonomous",
   "progress checkpoint, completed or long work cycle, green validation pass, still-open task, locally resolvable failure, or blocked live/external gate is not an owner boundary",
@@ -430,6 +481,96 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         /all admitted|every admitted|every still-admissible|Pending Improvement Tasks/i.test(template) &&
           template.includes("Pending Improvement Tasks"),
         "Compaction prompt must require Pending Improvement Tasks for every not-yet-persisted admitted candidate",
+      );
+    },
+  },
+  {
+    name: "contracts: final-history retrospective stays one-shot, none-honest, and archive-blocking",
+    run: () => {
+      for (const relative of FINAL_HISTORY_PROPOSE_SURFACES) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assertEqual(
+          missingTokens(text, FINAL_HISTORY_PROPOSE_MARKERS).join("|"),
+          "",
+          `${relative} missing final-history propose markers: ${missingTokens(text, FINAL_HISTORY_PROPOSE_MARKERS).join(", ")}`,
+        );
+      }
+
+      for (const relative of FINAL_HISTORY_APPLY_SURFACES) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assertEqual(
+          missingTokens(text, FINAL_HISTORY_APPLY_MARKERS).join("|"),
+          "",
+          `${relative} missing final-history apply markers: ${missingTokens(text, FINAL_HISTORY_APPLY_MARKERS).join(", ")}`,
+        );
+      }
+
+      for (const relative of FINAL_HISTORY_ARCHIVE_SURFACES) {
+        const text = fs.readFileSync(path.join(root, relative), "utf8");
+        assertEqual(
+          missingTokens(text, FINAL_HISTORY_ARCHIVE_MARKERS).join("|"),
+          "",
+          `${relative} missing final-history archive markers: ${missingTokens(text, FINAL_HISTORY_ARCHIVE_MARKERS).join(", ")}`,
+        );
+      }
+
+      const config = fs.readFileSync(path.join(root, "openspec", "config.yaml"), "utf8");
+      assertTokens(
+        config,
+        ["initially-last", "history.md", "`none`"],
+        "openspec/config.yaml missing creation-time history-retrospective task rule",
+      );
+
+      const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
+      assert(
+        !/final-history-retrospective|final history retrospective/i.test(template),
+        "Hidden compaction prompt must not create or schedule the final-history retrospective",
+      );
+
+      assert(
+        missingTokens(BASELINE_FINAL_HISTORY_AGENTS_FRAGMENT, FINAL_HISTORY_PROPOSE_MARKERS).length > 0,
+        "Baseline pre-candidate AGENTS fragment must fail the final-history propose oracle",
+      );
+      assert(
+        missingTokens(BASELINE_FINAL_HISTORY_AGENTS_FRAGMENT, FINAL_HISTORY_APPLY_MARKERS).length > 0,
+        "Baseline pre-candidate AGENTS fragment must fail the final-history apply oracle",
+      );
+
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const proposeWithoutCreation = agents.replaceAll("final-history-retrospective", "ordinary wrap-up");
+      assert(
+        missingTokens(proposeWithoutCreation, FINAL_HISTORY_PROPOSE_MARKERS).includes("final-history-retrospective"),
+        "Dropping propose creation of the retrospective must fail closed",
+      );
+
+      const apply = fs.readFileSync(path.join(root, ".opencode", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      const applyWithoutNone = apply.replaceAll("`none`", "`todo`");
+      assert(
+        missingTokens(applyWithoutNone, FINAL_HISTORY_APPLY_MARKERS).includes("`none`"),
+        "Dropping honest none on apply must fail closed",
+      );
+      const applyWithRerun = apply.replaceAll("rerun", "repeat later");
+      assert(
+        missingTokens(applyWithRerun, FINAL_HISTORY_APPLY_MARKERS).includes("rerun"),
+        "Dropping no-rerun on apply must fail closed",
+      );
+
+      const archive = fs.readFileSync(path.join(root, ".opencode", "skills", "openspec-archive-change", "SKILL.md"), "utf8");
+      const archiveWithoutGeneratedGate = archive.replaceAll(
+        "every improvement it generated",
+        "the retrospective heading",
+      );
+      assert(
+        missingTokens(archiveWithoutGeneratedGate, FINAL_HISTORY_ARCHIVE_MARKERS).includes(
+          "every improvement it generated",
+        ),
+        "Dropping archive refusal of generated retrospective work must fail closed",
+      );
+
+      const compactionSchedulesRetrospective = `${template}\nCreate a final-history-retrospective task.\n`;
+      assert(
+        /final-history-retrospective|final history retrospective/i.test(compactionSchedulesRetrospective),
+        "Negative compaction mutation must be detectable",
       );
     },
   },

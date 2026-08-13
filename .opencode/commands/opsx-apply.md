@@ -65,6 +65,8 @@ Implement tasks from an OpenSpec change.
 
    Reconcile every admitted candidate from the current session and `Pending Improvement Tasks` before substantial work. Append every still-admissible owned item as an unchecked task under `## Session-Derived Improvements` in the active `tasks.md`; never retain only the highest-ROI item. Each task must state `Trigger/Evidence`, `Why`, `Prerequisites`, `Scope/Non-Goals`, `Implementation`, `Observable Proof`, and `Validation`, plus `Owner Blocker` only when applicable. If a candidate belongs to another repository, expands accepted outcome, or crosses a protected boundary, record that exact blocker without mutating across it. Do not silently drop the candidate or call the change complete.
 
+   If `tasks.md` contains the creation-authored final-history-retrospective task, keep it ineligible until every other currently known task is complete. Its absence in an older change does not authorize apply or archive to retrofit it.
+
 6. **Show current progress**
 
    Display:
@@ -85,6 +87,12 @@ Implement tasks from an OpenSpec change.
    - Continue to next task
 
    When an improvement candidate becomes admissible during implementation, append it immediately using the same section and fields. It is accepted completion scope; implement and prove it before normal completion while preserving dependency and safety-gate order.
+
+   When the creation-authored final-history-retrospective task becomes the only remaining task:
+   - Analyze the complete change `history.md` exactly through the canonical compaction improvement contract: rows `Quality`, `Cycle Speed`, and `Token Economy`; columns `Working Repository` and `opencode-kit`; each cell contains evidence, smallest cheap improvement, expected benefit, and cost/risk, or `none`.
+   - Use the accepted change outcome as `Original User Goal` and use the complete journal, not the current session, as evidence. Apply the existing observed-evidence, causal-link, local/reversible, low-cost, no-scope-expansion, target ownership, protected-boundary, and instruction-workflow-comparison rules without adding another algorithm.
+   - Append every admitted candidate under `## Session-Derived Improvements` with the existing required fields, record the generated task IDs in the retrospective task evidence, mark the analysis complete once its result is persisted, and immediately continue the normal apply loop until every generated task is implemented and proven.
+   - If no candidate passes, record `none`, mark the task complete, and create no improvement. Never create another final-history-retrospective task or rerun this analysis after generated work.
 
    **If proof or validation fails:**
    - Leave the task unchecked
@@ -169,6 +177,7 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 - Keep code changes minimal and scoped to each task
 - Update a task checkbox only after its required observable proof and focused validation pass
 - Persist every admitted session-derived improvement immediately and complete all such tasks before archive; never leave a non-selected candidate only in summary prose
+- Execute a creation-authored final-history retrospective exactly once from complete `history.md`; accept `none`, immediately process admitted tasks, and never synthesize the task for a pre-policy change
 - Do not infer RC/stable from completed task checkboxes; this command does not complete the separate archive and stable-handoff boundary
 - Diagnose and correct ordinary errors and locally resolvable blockers without asking whether to continue; do not guess across an exact owner boundary
 - Use contextFiles from CLI output, don't assume specific file names
