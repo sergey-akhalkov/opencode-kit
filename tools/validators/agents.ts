@@ -357,6 +357,7 @@ function validateSessionCompletionArbiter(
     "rootSessionRef",
     "inspectedRevision",
     "allow_stop | continue | owner_required | user_paused",
+    "questionAnswers",
     "one JSON object",
     "Do not wrap it in Markdown",
     "never run as an optional reviewer",

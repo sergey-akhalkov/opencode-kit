@@ -32,6 +32,7 @@ import {
 } from "../global/extensions/session-completion-guard/runtime-support.ts";
 import { GuardAuditMonitorLauncher } from "../global/extensions/session-completion-guard/audit-monitor.ts";
 import { GuardStatusReporter } from "../global/extensions/session-completion-guard/status.ts";
+import { normalizeQuestionRequest } from "../global/extensions/session-completion-guard/question.ts";
 import {
   buildContinuation,
   parseCompletionVerdict,
@@ -41,7 +42,7 @@ import type { AuditEpoch, CompletionVerdict, RootState } from "../global/extensi
 import { hashRef } from "../global/plugin/session-delivery-context/redaction.ts";
 
 const RUNAUDIT_DISABLE_ORACLE_FLAG = "--oracle-runaudit-disable-race";
-const QUESTION_CORRECTION_DISABLE_ORACLE_FLAG = "--oracle-question-correction-disable-race";
+const QUESTION_REPLY_DISABLE_ORACLE_FLAG = "--oracle-question-reply-disable-race";
 const RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG = "--oracle-retry-prompt-amplification";
 const isBunRuntime = typeof (globalThis as { Bun?: unknown }).Bun !== "undefined";
 
@@ -147,7 +148,7 @@ function epoch(overrides: Partial<AuditEpoch> = {}): AuditEpoch {
       todoDigest: "todo_1",
     },
     kind: "completion",
-    questionRequestID: null,
+    questionRequest: null,
     rootRef: "session_abcdef123456",
     rootSessionID: "session_root_secret",
     ...overrides,
@@ -163,6 +164,7 @@ function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVer
     goalSummary: "Complete the accepted task",
     inspectedRevision: "revision_1",
     ownerBoundary: null,
+    questionAnswers: null,
     requirementMatrix: [{
       evidenceRefs: ["evidence_1"],
       requirementRef: "req_1",
@@ -561,6 +563,93 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "critical: non-question verdicts require null questionAnswers; autonomous answers use exact offered labels",
+    run: () => {
+      const omitted = validVerdict();
+      delete (omitted as { questionAnswers?: unknown }).questionAnswers;
+      assertThrows(
+        () => parseCompletionVerdict(omitted, epoch()),
+        "questionAnswers",
+        "Omitted questionAnswers on a completion verdict must fail closed.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({ questionAnswers: [["Recommended"]] }), epoch()),
+        "questionAnswers",
+        "A non-question verdict must not carry an answer matrix.",
+      );
+
+      const request = normalizeQuestionRequest({
+        id: "question_fixture_1",
+        questions: [{
+          custom: false,
+          header: "Strategy",
+          multiple: false,
+          options: [
+            { label: "Recommended", description: "Safest reversible local choice" },
+            { label: "Alternative", description: "Another reversible local choice" },
+          ],
+          question: "Which safe local strategy should I use?",
+        }],
+      });
+      const questionEpoch = epoch({
+        kind: "question",
+        questionRequest: request,
+      });
+      const autonomous = parseCompletionVerdict(validVerdict({
+        questionAnswers: [["Recommended"]],
+        requirementMatrix: [{ evidenceRefs: ["e1"], requirementRef: "r1", status: "complete" }],
+        unresolved: [],
+        verdict: "allow_stop",
+      }), questionEpoch);
+      assert(autonomous.verdict === "allow_stop", "Autonomous question allow_stop must parse.");
+      assert(
+        autonomous.questionAnswers?.[0]?.[0] === "Recommended",
+        "Autonomous question answers must keep the exact offered label.",
+      );
+
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          questionAnswers: [["Invented"]],
+          requirementMatrix: [{ evidenceRefs: ["e1"], requirementRef: "r1", status: "complete" }],
+          unresolved: [],
+          verdict: "allow_stop",
+        }), questionEpoch),
+        "questionAnswers[0]",
+        "Unoffered label must fail closed.",
+      );
+
+      const owner = parseCompletionVerdict(validVerdict({
+        ownerBoundary: {
+          decision: "Owner must choose the protected action",
+          evidenceRefs: ["event_ref_1"],
+          reason: "The action requires owner authority",
+        },
+        questionAnswers: null,
+        requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
+        unresolved: [],
+        verdict: "owner_required",
+      }), questionEpoch);
+      assert(owner.verdict === "owner_required", "Owner-required question verdict must parse.");
+      assert(owner.questionAnswers === null, "Owner-required question verdict must carry null answers.");
+
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          ownerBoundary: {
+            decision: "Owner must choose the protected action",
+            evidenceRefs: ["event_ref_1"],
+            reason: "The action requires owner authority",
+          },
+          questionAnswers: [["Recommended"]],
+          requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
+          unresolved: [],
+          verdict: "owner_required",
+        }), questionEpoch),
+        "questionAnswers",
+        "Owner-required question verdict must not carry answers.",
+      );
+    },
+  },
+  {
     name: "critical: new roots default grind off; only explicit true enables",
     run: () => {
       const plain = initialRootState(sessionFixture());
@@ -925,7 +1014,7 @@ const tests: TestCase[] = [
         completionEvidence: { schemaVersion: 2, session: { sessionRef: rootRef } } as never,
         inspected: revision,
         kind: "completion",
-        questionRequestID: null,
+        questionRequest: null,
         rootRef,
         rootSessionID: rootID,
       };
@@ -946,7 +1035,6 @@ const tests: TestCase[] = [
       state.controlTurnPending = true;
       state.guardTurnPending = true;
       state.paused = false;
-      state.pendingQuestionCorrection = null;
       probe.cancelAudit(state, "disabled");
       state.grindEnabled = false;
       state.questions.clear();
@@ -970,12 +1058,12 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "critical: in-flight question correction must not continue root after grind disable",
+    name: "critical: in-flight official question reply must not apply after grind disable",
     run: async () => {
       // Same Bun boundary as runAudit oracle: controller pulls bun-pty.
       if (!isBunRuntime) {
         const self = fileURLToPath(import.meta.url);
-        const result = spawnSync("bun", [self, QUESTION_CORRECTION_DISABLE_ORACLE_FLAG], {
+        const result = spawnSync("bun", [self, QUESTION_REPLY_DISABLE_ORACLE_FLAG], {
           cwd: path.resolve(path.dirname(self), ".."),
           encoding: "utf8",
           shell: false,
@@ -983,10 +1071,10 @@ const tests: TestCase[] = [
         const combined = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
         assert(
           result.status === 0,
-          `Bun question-correction disable-race oracle failed (status=${result.status}):\n${combined}`,
+          `Bun official-reply disable-race oracle failed (status=${result.status}):\n${combined}`,
         );
         assert(
-          combined.includes("PASS critical: in-flight question correction must not continue root after grind disable"),
+          combined.includes("PASS critical: in-flight official question reply must not apply after grind disable"),
           `Bun oracle did not report PASS:\n${combined}`,
         );
         return;
@@ -995,15 +1083,20 @@ const tests: TestCase[] = [
       const { SessionCompletionController } = await import(
         "../global/extensions/session-completion-guard/controller.ts"
       );
-      const rootID = "session_root_qcorr_disable";
+      const rootID = "session_root_qreply_disable";
+      const requestID = "question_qreply_disable_1";
+      const rootRef = hashRef("session", rootID);
       let root: Session = sessionFixture({ id: rootID, directory: "." });
+      let replyCalls = 0;
+      let appliedReplies = 0;
+      let rejectCalls = 0;
       let promptAsyncCalls = 0;
       let sawAbortSignal = false;
-      let releasePrompt!: () => void;
-      const promptGate = new Promise<void>((resolve) => {
-        releasePrompt = resolve;
+      let releaseReply!: () => void;
+      const replyGate = new Promise<void>((resolve) => {
+        releaseReply = resolve;
       });
-      let promptEntered = false;
+      let replyEntered = false;
 
       const client = {
         session: {
@@ -1018,20 +1111,34 @@ const tests: TestCase[] = [
             }
             return { data: { id: args.sessionID, metadata: args.metadata } };
           },
-          promptAsync: async (
-            _body: unknown,
+          messages: async () => ({ data: [] }),
+          todo: async () => ({ data: [] }),
+          diff: async () => ({ data: [] }),
+          promptAsync: async () => {
+            promptAsyncCalls += 1;
+            return {};
+          },
+        },
+        question: {
+          reply: async (
+            _args: { requestID?: string; answers?: string[][] },
             opts?: { signal?: AbortSignal },
           ) => {
-            promptEntered = true;
-            promptAsyncCalls += 1;
+            replyEntered = true;
+            replyCalls += 1;
             if (opts?.signal != null) sawAbortSignal = true;
-            await promptGate;
+            await replyGate;
             if (opts?.signal?.aborted) {
               const error = new Error("aborted") as Error & { name: string };
               error.name = "AbortError";
               throw error;
             }
-            return {};
+            appliedReplies += 1;
+            return { data: true };
+          },
+          reject: async () => {
+            rejectCalls += 1;
+            return { data: true };
           },
         },
         tui: { showToast: async () => ({}) },
@@ -1043,39 +1150,81 @@ const tests: TestCase[] = [
         client as never,
       );
       type ControllerProbe = {
-        cancelAudit(state: RootState, next?: RootState["state"]): void;
-        deliverQuestionCorrection(state: RootState): Promise<void>;
-        leases: AsyncLeaseRegistry;
-        ptyFallback: { clearRoot(rootSessionID: string): void };
+        applyQuestionVerdict(state: RootState, epoch: AuditEpoch, verdict: CompletionVerdict): Promise<void>;
+        onCommand(
+          input: { arguments: string; command: string; sessionID: string },
+          output: { parts: unknown[] },
+        ): Promise<void>;
         roots: Map<string, RootState>;
       };
       const probe = controller as unknown as ControllerProbe;
 
+      const request = normalizeQuestionRequest({
+        id: requestID,
+        tool: { callID: "call_qreply_disable_1" },
+        questions: [{
+          custom: false,
+          header: "Strategy",
+          multiple: false,
+          options: [
+            { label: "Recommended", description: "Safest reversible local choice" },
+            { label: "Alternative", description: "Another reversible local choice" },
+          ],
+          question: "Which safe local strategy should I use?",
+        }],
+      });
+      const revision = {
+        assistantRef: "assistant_qreply",
+        diffDigest: "diff_qreply",
+        humanRef: "human_qreply",
+        journalDigest: "journal_qreply",
+        leaseGeneration: 0,
+        revisionDigest: "revision_qreply",
+        todoDigest: "todo_qreply",
+      };
+      const questionEpoch = epoch({
+        auditID: "audit_qreply_disable_1",
+        inspected: revision,
+        kind: "question",
+        questionRequest: request,
+        rootRef,
+        rootSessionID: rootID,
+      });
+      const verdict = parseCompletionVerdict(validVerdict({
+        auditID: questionEpoch.auditID,
+        inspectedRevision: revision.revisionDigest,
+        questionAnswers: [["Recommended"]],
+        requirementMatrix: [{ evidenceRefs: ["e1"], requirementRef: "r1", status: "complete" }],
+        rootSessionRef: rootRef,
+        unresolved: [],
+        verdict: "allow_stop",
+      }), questionEpoch);
+
       const state: RootState = {
         ...initialRootState(root),
+        activeAudit: questionEpoch,
+        auditAbort: new AbortController(),
         grindEnabled: true,
-        pendingQuestionCorrection: "question_ref_fixture",
-        state: "question-pending",
+        state: "question-auditing",
       };
+      state.questions.set(requestID, {
+        auditID: questionEpoch.auditID,
+        replyObserved: false,
+        request,
+        state: "open",
+      });
       probe.roots.set(rootID, state);
 
-      const runPromise = probe.deliverQuestionCorrection(state);
+      const runPromise = probe.applyQuestionVerdict(state, questionEpoch, verdict);
       await sleep(40);
-      assert(promptEntered, "question correction must reach promptAsync before disable injection.");
+      assert(replyEntered, "official question reply must be reached before disable injection.");
 
-      // Mirror /disable-grind while the unabortable promptAsync is in flight.
-      state.controlTurnPending = true;
-      state.guardTurnPending = true;
-      state.paused = false;
-      state.pendingQuestionCorrection = null;
-      probe.cancelAudit(state, "disabled");
-      state.grindEnabled = false;
-      state.questions.clear();
-      probe.leases.clearRoot(rootID);
-      probe.ptyFallback.clearRoot(rootID);
-      state.state = "disabled";
+      await probe.onCommand(
+        { arguments: "", command: "disable-grind", sessionID: rootID },
+        { parts: [] },
+      );
 
-      releasePrompt();
+      releaseReply();
       let thrown: unknown = null;
       try {
         await runPromise;
@@ -1083,26 +1232,20 @@ const tests: TestCase[] = [
         thrown = error;
       }
 
-      assert(
-        state.grindEnabled === false,
-        "Disable must leave grindEnabled false after question-correction race.",
-      );
+      assert(state.grindEnabled === false, "Disable must leave grindEnabled false after official-reply race.");
       assert(
         state.state === "disabled",
-        `Late question-correction completion must not revive disabled root (got state=${state.state}, promptAsyncCalls=${promptAsyncCalls}, sawAbortSignal=${sawAbortSignal}, thrown=${thrown instanceof Error ? thrown.name : String(thrown)})`,
+        `Late official reply must not revive disabled root (got state=${state.state}, replyCalls=${replyCalls}, appliedReplies=${appliedReplies}, rejectCalls=${rejectCalls}, promptAsyncCalls=${promptAsyncCalls}, sawAbortSignal=${sawAbortSignal}, thrown=${thrown instanceof Error ? thrown.name : String(thrown)})`,
       );
+      assert(appliedReplies === 0, `Disable must abort official reply effect; appliedReplies=${appliedReplies}`);
+      assert(rejectCalls === 0, `Disable must not reject the question; rejectCalls=${rejectCalls}`);
+      assert(promptAsyncCalls === 0, `Disable must not inject root continuation; promptAsyncCalls=${promptAsyncCalls}`);
+      assert(state.autonomousQuestionRefs.size === 0, "Disable must not confirm synthetic question authority.");
       assert(
-        state.activeAudit == null,
-        "Question-correction race must not leave an active audit epoch.",
+        state.pendingAutonomousQuestionRefs.size === 1,
+        `Disable during reply must retain fail-closed pending provenance; pending=${state.pendingAutonomousQuestionRefs.size}`,
       );
-      // Guard-owned root continuation after disable is non-deferrable. Either the in-flight
-      // promptAsync is abort-linked (cancelAudit aborts it) or it must not run at all once
-      // disable has flipped local state. Completing without abort linkage after disable is red.
-      if (promptAsyncCalls > 0 && !sawAbortSignal && thrown == null) {
-        throw new Error(
-          `Unabortable question-correction promptAsync completed after disable (promptAsyncCalls=${promptAsyncCalls}); disable must cancel guard-owned root continuation`,
-        );
-      }
+      assert(state.activeAudit == null, "Disable must clear the active question audit epoch.");
     },
   },
   {
@@ -1235,6 +1378,7 @@ const tests: TestCase[] = [
                   evidenceGaps: [],
                   evidenceRefs: [],
                   ownerBoundary: null,
+                  questionAnswers: null,
                   requirementMatrix: [{
                     evidenceRefs: [],
                     requirementRef: "req_1",
@@ -1267,6 +1411,7 @@ const tests: TestCase[] = [
                 evidenceGaps: [],
                 evidenceRefs: ["evidence_1"],
                 ownerBoundary: null,
+                questionAnswers: null,
                 requirementMatrix: [{
                   evidenceRefs: ["evidence_1"],
                   requirementRef: "req_1",
@@ -1382,7 +1527,7 @@ const tests: TestCase[] = [
           } as never,
           inspected: inspection.revision,
           kind: "completion",
-          questionRequestID: null,
+          questionRequest: null,
           rootRef,
           rootSessionID: rootID,
         };
@@ -1620,12 +1765,12 @@ const tests: TestCase[] = [
 ];
 
 const onlyRunauditOracle = process.argv.includes(RUNAUDIT_DISABLE_ORACLE_FLAG);
-const onlyQuestionCorrectionOracle = process.argv.includes(QUESTION_CORRECTION_DISABLE_ORACLE_FLAG);
+const onlyQuestionReplyOracle = process.argv.includes(QUESTION_REPLY_DISABLE_ORACLE_FLAG);
 const onlyRetryAmplificationOracle = process.argv.includes(RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG);
 const selectedTests = onlyRunauditOracle
   ? tests.filter((test) => test.name.includes("in-flight runAudit must not call arbiter prompt"))
-  : onlyQuestionCorrectionOracle
-    ? tests.filter((test) => test.name.includes("in-flight question correction must not continue root"))
+  : onlyQuestionReplyOracle
+    ? tests.filter((test) => test.name.includes("in-flight official question reply must not apply"))
     : onlyRetryAmplificationOracle
       ? tests.filter((test) => test.name.includes("same-epoch arbiter retry must not re-embed completionEvidence"))
       : tests;

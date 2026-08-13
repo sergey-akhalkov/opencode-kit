@@ -128,7 +128,7 @@ try {
       completionEvidence: null,
       inspected: revision,
       kind: "completion",
-      questionRequestID: null,
+      questionRequest: null,
       rootRef: "session_bounded_retry_proof",
       rootSessionID: sessions.root.id,
     };

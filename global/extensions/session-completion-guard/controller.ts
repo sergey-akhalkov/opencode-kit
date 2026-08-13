@@ -26,6 +26,7 @@ import {
 import { inspectRootEvidence, type RootInspection } from "./inspection.ts";
 import { AsyncLeaseRegistry } from "./leases.ts";
 import { PtyFallbackScheduler } from "./pty-fallback.ts";
+import { normalizeQuestionRequest } from "./question.ts";
 import {
   applyPermissionAllow,
   createAuditID,
@@ -50,10 +51,12 @@ import type {
   AuditEpoch,
   CompletionVerdict,
   GuardOptions,
+  NormalizedQuestionRequest,
   RootState,
 } from "./types.ts";
 import { buildContinuation, parseCompletionVerdictText } from "./verdict.ts";
 type LogLevel = "debug" | "error" | "info" | "warn";
+const MAX_AUTONOMOUS_QUESTION_REFS = 1_024;
 export class SessionCompletionController {
   readonly client: OpencodeClient;
   readonly leases: AsyncLeaseRegistry;
@@ -229,7 +232,6 @@ export class SessionCompletionController {
       variant: input.variant ?? stringValue(record(message.model)?.variant),
     };
     state.controlTurnPending = false;
-    this.cancelQuestionCorrection(state);
     this.cancelAudit(state);
     state.guardTurnPending = false;
     state.compacting = false;
@@ -259,7 +261,6 @@ export class SessionCompletionController {
     state.controlTurnPending = true;
     state.guardTurnPending = true;
     state.paused = false;
-    this.cancelQuestionCorrection(state);
     this.cancelAudit(state, action === "enable" ? "running" : "disabled");
     if (action === "enable") {
       state.grindEnabled = true;
@@ -330,7 +331,6 @@ export class SessionCompletionController {
     if (state == null || !state.grindEnabled) return;
     state.paused = true;
     state.guardTurnPending = false;
-    this.cancelQuestionCorrection(state);
     this.cancelAudit(state, "paused");
     await this.status.set(state, "paused", `Guard paused: ${reason}`, "warning");
   }
@@ -387,10 +387,6 @@ export class SessionCompletionController {
       state.guardTurnPending ||
       state.activeAudit != null
     ) return;
-    if (state.pendingQuestionCorrection != null) {
-      await this.deliverQuestionCorrection(state);
-      return;
-    }
     const statuses = await this.sessionStatuses();
     if (statuses[state.root.id] != null && statuses[state.root.id]?.type !== "idle") {
       state.state = "running";
@@ -431,10 +427,14 @@ export class SessionCompletionController {
     state: RootState,
     inspection: RootInspection,
     kind: AuditEpoch["kind"],
-    questionRequestID: string | null,
+    questionRequest: NormalizedQuestionRequest | null,
   ): Promise<void> {
     if (!state.grindEnabled || state.activeAudit != null) return;
-    const auditID = createAuditID(state.root.id, inspection.revision.revisionDigest, `${kind}:${questionRequestID ?? ""}`);
+    const auditID = createAuditID(
+      state.root.id,
+      inspection.revision.revisionDigest,
+      `${kind}:${questionRequest?.requestID ?? ""}`,
+    );
     const epoch: AuditEpoch = {
       auditID,
       attempt: 0,
@@ -442,7 +442,7 @@ export class SessionCompletionController {
       completionEvidence: null,
       inspected: inspection.revision,
       kind,
-      questionRequestID,
+      questionRequest,
       rootRef: hashRef("session", state.root.id),
       rootSessionID: state.root.id,
     };
@@ -666,7 +666,7 @@ export class SessionCompletionController {
     epoch: AuditEpoch,
     verdict: CompletionVerdict,
   ): Promise<void> {
-    const requestID = epoch.questionRequestID;
+    const requestID = epoch.questionRequest?.requestID;
     if (requestID == null) {
       this.cancelAudit(state, "stale");
       return;
@@ -692,34 +692,109 @@ export class SessionCompletionController {
     if (verdict.verdict !== "continue" && verdict.verdict !== "allow_stop") {
       throw new Error("Pending question audit requires autonomous, owner_required, or user_paused verdict");
     }
-    question.state = "guard-rejecting";
-    await ensureNoError(
-      this.client.question.reject(
-        { requestID, directory: this.input.directory },
-        { signal: state.auditAbort?.signal },
-      ) as Promise<unknown>,
-      "question.reject",
-    );
+    if (verdict.questionAnswers == null) {
+      throw new Error("Autonomous pending question verdict requires validated questionAnswers");
+    }
+    const requestRef = hashRef("question", requestID);
+    const callRef = question.request.toolCallID == null ? null : hashRef("call", question.request.toolCallID);
+    if (
+      !state.autonomousQuestionRefs.has(requestRef) &&
+      !state.pendingAutonomousQuestionRefs.has(requestRef) &&
+      state.autonomousQuestionRefs.size + state.pendingAutonomousQuestionRefs.size >= MAX_AUTONOMOUS_QUESTION_REFS
+    ) {
+      throw new Error("Autonomous question provenance capacity is exhausted");
+    }
+    question.state = "guard-answering";
+    state.pendingAutonomousQuestionRefs.add(requestRef);
+    if (callRef != null) state.pendingAutonomousQuestionCalls.set(requestRef, callRef);
+    await this.status.set(state, "question-answering", "Answering autonomous question", "info");
     if (!this.isCurrentAudit(state, epoch)) return;
-    if (state.questions.get(requestID)?.state === "human-replied") {
-      this.cancelAudit(state, "stale");
+    if (!await this.status.persist(state)) {
+      state.pendingAutonomousQuestionRefs.delete(requestRef);
+      state.pendingAutonomousQuestionCalls.delete(requestRef);
+      question.state = "open";
+      throw new Error("Autonomous question provenance persistence failed");
+    }
+    if (!this.isCurrentAudit(state, epoch) || question.state !== "guard-answering" || question.replyObserved) {
+      state.pendingAutonomousQuestionRefs.delete(requestRef);
+      state.pendingAutonomousQuestionCalls.delete(requestRef);
+      if (question.replyObserved) {
+        question.state = "human-replied";
+        this.cancelAudit(state, "running");
+      }
+      await this.status.persist(state);
       return;
     }
-    question.state = "guard-rejected";
-    state.pendingQuestionCorrection = hashRef("question", requestID);
-    await this.updateAuditMetadata(epoch, "question-rejected", undefined, verdict);
-    this.cancelAudit(state, "question-pending");
+    try {
+      await ensureNoError(this.client.question.reply({
+        requestID,
+        directory: this.input.directory,
+        answers: verdict.questionAnswers,
+      }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "question.reply");
+    } catch (error) {
+      if (!this.isCurrentAudit(state, epoch)) return;
+      if (hasErrorName(error, "QuestionNotFoundError") && !question.replyObserved) {
+        state.pendingAutonomousQuestionRefs.delete(requestRef);
+        state.pendingAutonomousQuestionCalls.delete(requestRef);
+        question.state = "human-replied";
+        await this.status.persist(state);
+        this.cancelAudit(state, "running");
+        return;
+      }
+      if (question.replyObserved) {
+        question.state = "resolution-unknown";
+        await this.status.persist(state);
+        this.cancelAudit(state, "running");
+        return;
+      }
+      state.pendingAutonomousQuestionRefs.delete(requestRef);
+      state.pendingAutonomousQuestionCalls.delete(requestRef);
+      question.state = "open";
+      await this.status.persist(state);
+      throw error;
+    }
+    if (!this.isCurrentAudit(state, epoch)) return;
+    if (question.replyObserved) {
+      question.state = "resolution-unknown";
+      this.cancelAudit(state, "running");
+      await this.status.persist(state);
+      return;
+    }
+    state.pendingAutonomousQuestionRefs.delete(requestRef);
+    state.pendingAutonomousQuestionCalls.delete(requestRef);
+    state.autonomousQuestionRefs.add(requestRef);
+    if (callRef != null) state.autonomousQuestionCalls.set(requestRef, callRef);
+    question.state = "guard-answered";
+    await this.updateAuditMetadata(epoch, "question-answered", undefined, verdict);
+    if (!this.isCurrentAudit(state, epoch)) return;
+    if (!await this.status.persist(state)) {
+      question.state = "resolution-unknown";
+      throw new Error("Autonomous question confirmation persistence failed");
+    }
+    this.cancelAudit(state, "running");
+    await this.status.persist(state);
   }
 
   private async onQuestionAsked(sessionID: string, properties: Record<string, unknown>): Promise<void> {
     const state = await this.tryRoot(sessionID);
     if (state == null || state.root.id !== sessionID || !state.grindEnabled || state.paused) return;
-    const requestID = stringValue(properties.id) ?? stringValue(properties.requestID);
-    if (requestID == null) return;
+    let request: NormalizedQuestionRequest;
+    try {
+      request = normalizeQuestionRequest(properties);
+    } catch (error) {
+      await this.owningFailure(state, "pending question normalization", error);
+      return;
+    }
+    const requestID = request.requestID;
     this.cancelAudit(state, "question-pending");
-    state.questions.set(requestID, { auditID: null, requestID, state: "open" });
+    state.questions.set(requestID, {
+      auditID: null,
+      replyObserved: false,
+      request,
+      state: "open",
+    });
     const inspection = await this.inspectRoot(state);
-    await this.beginAudit(state, inspection, "question", requestID);
+    await this.beginAudit(state, inspection, "question", request);
     const question = state.questions.get(requestID);
     if (question != null) question.auditID = state.activeAudit?.auditID ?? null;
   }
@@ -731,47 +806,10 @@ export class SessionCompletionController {
     if (state == null || !state.grindEnabled || question == null) return;
     if (question.state === "open") {
       question.state = "human-replied";
-      if (state.activeAudit?.questionRequestID === requestID) this.cancelAudit(state, "running");
+      if (state.activeAudit?.questionRequest?.requestID === requestID) this.cancelAudit(state, "running");
+      return;
     }
-  }
-
-  private async deliverQuestionCorrection(state: RootState): Promise<void> {
-    const requestRef = state.pendingQuestionCorrection;
-    if (requestRef == null || !state.grindEnabled || state.paused) return;
-    state.pendingQuestionCorrection = null;
-    const correctionAbort = new AbortController();
-    state.questionCorrectionAbort = correctionAbort;
-    const context = restoredPromptContext(state.root, state.promptContext);
-    try {
-      await ensureNoError(this.client.session.promptAsync({
-        sessionID: state.root.id,
-        directory: state.root.directory,
-        ...(context.agent == null ? {} : { agent: context.agent }),
-        ...(context.model == null ? {} : { model: context.model }),
-        ...(context.variant == null ? {} : { variant: context.variant }),
-        ...(context.tools == null ? {} : { tools: context.tools }),
-        parts: [{
-          type: "text",
-          synthetic: true,
-          text: `<completion_guard_question_correction request_ref="${requestRef}">The completion guard, not the human user, rejected this autonomous question. Continue the safe bounded work and preserve the unanswered owner boundary.</completion_guard_question_correction>`,
-          metadata: { provenance: "completion-guard", requestRef, intervention: "guard-rejected" },
-        }],
-      }, { signal: correctionAbort.signal }) as Promise<unknown>, "session.promptAsync question correction");
-    } catch (error) {
-      if (correctionAbort.signal.aborted) return;
-      throw error;
-    } finally {
-      if (state.questionCorrectionAbort === correctionAbort) state.questionCorrectionAbort = null;
-    }
-    if (correctionAbort.signal.aborted || !state.grindEnabled) return;
-    state.guardTurnPending = true;
-    state.state = "running";
-  }
-
-  private cancelQuestionCorrection(state: RootState): void {
-    state.questionCorrectionAbort?.abort();
-    state.questionCorrectionAbort = null;
-    state.pendingQuestionCorrection = null;
+    if (question.state === "guard-answering") question.replyObserved = true;
   }
 
   private async injectOwnerRequired(state: RootState, epoch: AuditEpoch, verdict: CompletionVerdict): Promise<void> {
@@ -851,7 +889,6 @@ export class SessionCompletionController {
       : [direct];
     for (const state of affected) {
       if (state.settleTimer != null) clearTimeout(state.settleTimer);
-      this.cancelQuestionCorrection(state);
       this.cancelAudit(state);
       this.leases.clearRoot(state.root.id);
       this.ptyFallback.clearRoot(state.root.id);
@@ -866,7 +903,6 @@ export class SessionCompletionController {
     this.ptyFallback.dispose();
     for (const state of this.roots.values()) {
       if (state.settleTimer != null) clearTimeout(state.settleTimer);
-      this.cancelQuestionCorrection(state);
       this.cancelAudit(state);
     }
     this.roots.clear();

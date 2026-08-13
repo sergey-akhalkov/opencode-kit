@@ -34,6 +34,7 @@ export type GuardStateName =
   | "passed"
   | "paused"
   | "question-auditing"
+  | "question-answering"
   | "question-pending"
   | "running"
   | "settling-idle"
@@ -59,6 +60,25 @@ export type Revision = {
 
 export type AuditKind = "completion" | "question";
 
+export type NormalizedQuestionOption = {
+  description: string;
+  label: string;
+};
+
+export type NormalizedQuestion = {
+  custom: boolean;
+  header: string;
+  multiple: boolean;
+  options: NormalizedQuestionOption[];
+  question: string;
+};
+
+export type NormalizedQuestionRequest = {
+  questions: NormalizedQuestion[];
+  requestID: string;
+  toolCallID: string | null;
+};
+
 export type AuditEpoch = {
   auditID: string;
   attempt: number;
@@ -66,7 +86,7 @@ export type AuditEpoch = {
   completionEvidence: SessionDeliveryContextResult | null;
   inspected: Revision;
   kind: AuditKind;
-  questionRequestID: string | null;
+  questionRequest: NormalizedQuestionRequest | null;
   rootRef: string;
   rootSessionID: string;
 };
@@ -106,6 +126,7 @@ export type CompletionVerdict = {
   goalSummary: string;
   inspectedRevision: string;
   ownerBoundary: OwnerBoundaryVerdict | null;
+  questionAnswers: string[][] | null;
   requirementMatrix: RequirementVerdict[];
   rootSessionRef: string;
   schemaVersion: 1;
@@ -116,14 +137,17 @@ export type CompletionVerdict = {
 
 export type QuestionState = {
   auditID: string | null;
-  requestID: string;
-  state: "guard-rejected" | "guard-rejecting" | "human-replied" | "open" | "owner-required";
+  replyObserved: boolean;
+  request: NormalizedQuestionRequest;
+  state: "guard-answered" | "guard-answering" | "human-replied" | "open" | "owner-required" | "resolution-unknown";
 };
 
 export type RootState = {
   activeAudit: AuditEpoch | null;
   auditChildSessionID: string | null;
   auditAbort: AbortController | null;
+  autonomousQuestionCalls: Map<string, string>;
+  autonomousQuestionRefs: Set<string>;
   compacting: boolean;
   continuationCycles: number;
   controlTurnPending: boolean;
@@ -135,9 +159,9 @@ export type RootState = {
   lastStatusKey: string | null;
   lastStrategyFingerprint: string | null;
   paused: boolean;
-  pendingQuestionCorrection: string | null;
+  pendingAutonomousQuestionCalls: Map<string, string>;
+  pendingAutonomousQuestionRefs: Set<string>;
   promptContext: RootPromptContext;
-  questionCorrectionAbort: AbortController | null;
   questions: Map<string, QuestionState>;
   retryTimer: ReturnType<typeof setTimeout> | null;
   root: Session;

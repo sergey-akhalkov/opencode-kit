@@ -3,6 +3,30 @@
 ## Purpose
 Defines evidence-bound OpenSpec authoring, task completion, operation gates, complete archive integrity, live status, and proportional workflow routing.
 ## Requirements
+### Requirement: OpenSpec controls remain mutable during outcome-preserving implementation
+
+OpenSpec proposal, design, specs, tasks, strategy history, attempt counts, and stop lines SHALL remain mutable implementation controls until completion. When implementation evidence invalidates a process assumption while accepted product semantics remain clear, the main session SHALL update the smallest coherent artifact set, add or reopen required tasks, preserve traceability and prior evidence, and continue without requesting owner approval for the artifact mutation itself.
+
+Apply and archive routing SHALL NOT treat an all-done task list, exhausted attempt count, or literal no-successor sentence as immutable owner scope. Archive SHALL return to apply for the required outcome-preserving artifact/task update. Owner approval SHALL remain required only when the update changes accepted outcome or crosses a protected boundary.
+
+#### Scenario: Apply revises an exhausted attempt boundary
+
+- **WHEN** current tasks prohibit another attempt but a diagnosed defect is corrected and the recorded retry/unlock evidence permits a materially changed successor
+- **THEN** apply updates the affected proposal/design/spec/tasks/history and continues through the successor
+- **AND** it does not emit an owner-action request solely for the changed attempt count.
+
+#### Scenario: Archive returns incomplete outcome to apply
+
+- **WHEN** archive reconciliation finds that checked tasks or a process stop line no longer represent the unfinished accepted outcome
+- **THEN** archive remains incomplete and routes the smallest coherent artifact/task correction back to apply
+- **AND** it does not require explicit owner scope expansion unless accepted semantics or a protected boundary changes.
+
+#### Scenario: Prior evidence remains attributable
+
+- **WHEN** a process-control artifact changes after an unsuccessful attempt
+- **THEN** strategy history preserves the prior attempt and causal reason for the successor
+- **AND** evidence invalidation remains dependency-scoped rather than erasing trustworthy raw observations.
+
 ### Requirement: Spec Capsule is injected at artifact generation
 The kit SHALL provide portable OpenSpec context and per-artifact rules that require every behavior-changing current increment to identify `Outcome`, `Operating Envelope`, `Non-Goals`, `Non-Deferrable Invariants`, `Observable Proof`, `Material Residual Risks`, and `Stop Line`, directly or through an explicit project-native equivalent. Proposal, design, specs, and tasks SHALL each receive only the fields relevant to their responsibility.
 
@@ -40,24 +64,6 @@ Before reporting all implementation tasks complete, the apply path SHALL reconci
 - **THEN** it appends every entry to the active `tasks.md` before substantial implementation work
 - **AND** each entry remains unchecked until its implementation, proof, and validation are complete.
 
-### Requirement: Complete archive fails closed
-The normal OpenSpec archive path SHALL refuse to archive a change as complete when required artifacts are incomplete, tasks remain unchecked, admitted session-derived improvements are not reconciled into `tasks.md`, delta specs require synchronization, or applicable validation evidence is absent or red. A confirmation prompt SHALL NOT waive these completion conditions.
-
-Immediately before invoking the deterministic archive helper, the archive path SHALL inspect the current session/continuation evidence for pending admitted improvements. It SHALL persist still-admissible owned items as unchecked tasks and return to apply, or stop on the exact owner/target blocker; it SHALL NOT archive first and leave the improvement only in a summary.
-
-The kit MAY preserve intentionally incomplete work through a distinct abandoned or incomplete disposition. That disposition SHALL retain the reason and residual state, SHALL NOT claim all artifacts or tasks are complete, and SHALL NOT synchronize undelivered requirements into main specs.
-
-#### Scenario: Unchecked task blocks complete archive
-- **WHEN** normal archive is requested for a change with an unchecked task
-- **THEN** the operation exits non-zero without moving the change into a complete archive
-- **AND** the diagnostic identifies the unchecked count.
-
-#### Scenario: Unpersisted admitted improvement blocks archive
-- **WHEN** current continuation evidence contains an admitted improvement not yet represented in the active `tasks.md`
-- **THEN** the archive path does not invoke complete archive
-- **AND** it persists the owned improvement as an unchecked task or reports the exact owner/target blocker.
-
-#### Scenario: Incomplete work is preserved honestly
 ### Requirement: Final history retrospective is an evidence-bound completion task
 
 For a change authored under the final-history-retrospective policy, the final analysis task SHALL remain unchecked until every other currently known task is complete and the full change `history.md` has been analyzed through the canonical compaction improvement contract. Its completion evidence SHALL identify the resulting admitted task IDs or `none`.
@@ -88,6 +94,24 @@ If the analysis appends tasks, they SHALL become ordinary accepted completion sc
 - **THEN** archive stops and returns the change to apply
 - **AND** confirmation cannot waive the incomplete task.
 
+### Requirement: Complete archive fails closed
+The normal OpenSpec archive path SHALL refuse to archive a change as complete when required artifacts are incomplete, tasks remain unchecked, admitted session-derived improvements are not reconciled into `tasks.md`, delta specs require synchronization, or applicable validation evidence is absent or red. A confirmation prompt SHALL NOT waive these completion conditions.
+
+Immediately before invoking the deterministic archive helper, the archive path SHALL inspect the current session/continuation evidence for pending admitted improvements. It SHALL persist still-admissible owned items as unchecked tasks and return to apply, or stop on the exact owner/target blocker; it SHALL NOT archive first and leave the improvement only in a summary.
+
+The kit MAY preserve intentionally incomplete work through a distinct abandoned or incomplete disposition. That disposition SHALL retain the reason and residual state, SHALL NOT claim all artifacts or tasks are complete, and SHALL NOT synchronize undelivered requirements into main specs.
+
+#### Scenario: Unchecked task blocks complete archive
+- **WHEN** normal archive is requested for a change with an unchecked task
+- **THEN** the operation exits non-zero without moving the change into a complete archive
+- **AND** the diagnostic identifies the unchecked count.
+
+#### Scenario: Unpersisted admitted improvement blocks archive
+- **WHEN** current continuation evidence contains an admitted improvement not yet represented in the active `tasks.md`
+- **THEN** the archive path does not invoke complete archive
+- **AND** it persists the owned improvement as an unchecked task or reports the exact owner/target blocker.
+
+#### Scenario: Incomplete work is preserved honestly
 - **WHEN** the owner explicitly chooses the supported incomplete-preservation disposition
 - **THEN** the retained change is labeled incomplete or abandoned with its reason
 - **AND** no output claims implementation or spec synchronization completed.

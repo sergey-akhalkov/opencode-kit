@@ -56,6 +56,43 @@ function assertOrderedTokens(text: string, tokens: readonly string[], message: s
   }
 }
 
+/**
+ * Critical process-control autonomy vs protected-action authority oracles.
+ * Pinned in the test file so weakening production marker arrays alone cannot drop them.
+ */
+const CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS = [
+  "attempt limit, or process stop line",
+  "does not authorize the underlying protected action",
+  "one-attempt rule",
+  "`no successor`",
+  "not owner scope by itself",
+  "never ask whether to expand the change",
+  "plan/spec/task update, successor attempt, attempt-limit change, or process stop-line change",
+] as const;
+
+const CRITICAL_PROCESS_CONTROL_SKILL_MARKERS = [
+  "attempt limits, and stop lines",
+  "underlying protected action retains separate authority",
+  "one-attempt or `no successor` wording is not owner scope by itself",
+  "continue without asking for process approval",
+] as const;
+
+const CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS = [
+  "attempt limits, and process stop lines are autonomous controls",
+  "`one attempt`, `no successor`, or checked-task rule is not human scope by itself",
+  "Classify questions asking whether to update those controls",
+  "as `continue`",
+  "underlying protected action, not its planning update",
+] as const;
+
+/** Baseline pre-candidate wording lacks process-control autonomy and protected-action separation. */
+const BASELINE_PROCESS_CONTROL_AGENTS_FRAGMENT =
+  "Implementation footprint may adapt after first mutation. Main MAY add/change a task, local write path, artifact, focused check, or action without approval only when evidenced necessary for the accepted outcome or a non-deferrable invariant, local and reversible, no protected boundary, the smallest sufficient dependency closure, and unrelated work preserved. Main records traceability, updates the brief, and invalidates only evidence affected under the evidence-topology rules above; only production-behavior mutation or a red happy path forces `development`. Reviewer/SDET/validation/delivery evidence never authorizes mutation; main owns reproduction, classification, authorized correction, parking, owner routing, and lifecycle disposition.";
+
+function missingTokens(text: string, tokens: readonly string[]): string[] {
+  return tokens.filter((token) => !text.includes(token));
+}
+
 const EXPECTED_LIFECYCLE_MARKERS = [
   "Profiles And Stage",
   "Authoritative Brief",
@@ -431,6 +468,98 @@ export const changeReadyContractTests: TestCase[] = [
       for (const stage of ["MVP", "RC1", "stable"] as const) {
         assert(!["deploy", "release", "publish"].includes(stage), `Stage ${stage} must not encode external-operation authority.`);
       }
+    },
+  },
+  {
+    name: "contracts: process-control autonomy stays paired with protected-action authority",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+
+      // Production contract arrays must retain the critical autonomy/separation pair.
+      assertTokens(
+        GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS.join("\n"),
+        ["attempt limit, or process stop line", "does not authorize the underlying protected action"],
+        "GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS dropped process-control pair",
+      );
+      assertTokens(
+        CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS.join("\n"),
+        ["attempt limits, and stop lines", "underlying protected action retains separate authority"],
+        "CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS dropped process-control pair",
+      );
+
+      // Current candidate must carry the full critical distinction, including arbiter routing.
+      assertEqual(
+        missingTokens(agents, CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS).join("|"),
+        "",
+        `global/AGENTS.md missing process-control critical markers: ${missingTokens(agents, CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS).join(", ")}`,
+      );
+      assertEqual(
+        missingTokens(skill, CRITICAL_PROCESS_CONTROL_SKILL_MARKERS).join("|"),
+        "",
+        `change-ready-sdlc missing process-control critical markers: ${missingTokens(skill, CRITICAL_PROCESS_CONTROL_SKILL_MARKERS).join(", ")}`,
+      );
+      assertEqual(
+        missingTokens(arbiter, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).join("|"),
+        "",
+        `session-completion-arbiter missing process-control critical markers: ${missingTokens(arbiter, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).join(", ")}`,
+      );
+
+      // Baseline / autonomy-without-separation mutations must fail the oracle.
+      assert(
+        missingTokens(BASELINE_PROCESS_CONTROL_AGENTS_FRAGMENT, CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS).length > 0,
+        "Baseline pre-candidate AGENTS fragment must fail the process-control oracle.",
+      );
+
+      const autonomyWithoutSeparation = agents.replaceAll(
+        "does not authorize the underlying protected action",
+        "may authorize the underlying protected action after plan update",
+      );
+      assert(
+        autonomyWithoutSeparation !== agents,
+        "Candidate AGENTS must contain the protected-action separation marker for mutation proof.",
+      );
+      assert(
+        missingTokens(autonomyWithoutSeparation, CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS).includes(
+          "does not authorize the underlying protected action",
+        ),
+        "Removing protected-action separation while keeping attempt-limit autonomy must fail closed.",
+      );
+
+      const withoutOneAttemptRule = agents.replaceAll("one-attempt rule", "retry ceiling");
+      assert(
+        missingTokens(withoutOneAttemptRule, CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS).includes("one-attempt rule"),
+        "Dropping agent-authored one-attempt classification must fail closed.",
+      );
+
+      const skillWithoutSeparation = skill.replaceAll(
+        "underlying protected action retains separate authority",
+        "underlying protected action may inherit plan authority",
+      );
+      assert(
+        missingTokens(skillWithoutSeparation, CRITICAL_PROCESS_CONTROL_SKILL_MARKERS).includes(
+          "underlying protected action retains separate authority",
+        ),
+        "Skill autonomy without separate protected-action authority must fail closed.",
+      );
+
+      const arbiterWithoutPlanningBoundary = arbiter.replaceAll(
+        "underlying protected action, not its planning update",
+        "underlying protected action including its planning update",
+      );
+      assert(
+        missingTokens(arbiterWithoutPlanningBoundary, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes(
+          "underlying protected action, not its planning update",
+        ),
+        "Arbiter must keep planning-update vs protected-action owner boundary.",
+      );
+
+      const arbiterWithoutContinue = arbiter.replaceAll("as `continue`", "as `owner_required`");
+      assert(
+        missingTokens(arbiterWithoutContinue, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes("as `continue`"),
+        "Arbiter process-only questions must remain classified as continue, not owner_required.",
+      );
     },
   },
 ];

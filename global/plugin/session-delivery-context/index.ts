@@ -65,6 +65,7 @@ function mergedQuestionInterventions(
     const existing = merged.get(requestRef);
     merged.set(requestRef, {
       actor: "guard",
+      answers: existing?.answers ?? [],
       eventRef: existing?.eventRef ?? message.eventRef,
       questions: existing?.questions ?? [],
       requestRef,
@@ -75,6 +76,52 @@ function mergedQuestionInterventions(
   return [...merged.values()].sort(
     (left, right) => (left.time ?? "").localeCompare(right.time ?? "") || left.eventRef.localeCompare(right.eventRef),
   );
+}
+
+function stringSet(value: unknown): Set<string> {
+  return new Set(
+    Array.isArray(value)
+      ? value.filter((item): item is string => typeof item === "string" && /^question_[A-Za-z0-9_-]+$/.test(item))
+      : [],
+  );
+}
+
+function questionProvenance(row: Record<string, unknown>): {
+  autonomous: Set<string>;
+  autonomousCalls: Map<string, string>;
+  pending: Set<string>;
+  pendingCalls: Map<string, string>;
+} {
+  const parse = (value: unknown): Record<string, unknown> | null => {
+    if (value != null && typeof value === "object" && !Array.isArray(value)) return value as Record<string, unknown>;
+    if (typeof value !== "string") return null;
+    try {
+      const parsed = JSON.parse(value) as unknown;
+      return parsed != null && typeof parsed === "object" && !Array.isArray(parsed)
+        ? parsed as Record<string, unknown>
+        : null;
+    } catch {
+      return null;
+    }
+  };
+  const metadata = parse(row.metadata);
+  const guard = parse(metadata?.completionGuard) ?? parse(metadata?.completion_guard);
+  const callMap = (value: unknown): Map<string, string> => new Map(
+    Array.isArray(value)
+      ? value.flatMap((item) => {
+          const entry = parse(item);
+          return typeof entry?.requestRef === "string" && typeof entry.callRef === "string"
+            ? [[entry.requestRef, entry.callRef] as const]
+            : [];
+        })
+      : [],
+  );
+  return {
+    autonomous: stringSet(guard?.autonomousQuestionRefs),
+    autonomousCalls: callMap(guard?.autonomousQuestionCalls),
+    pending: stringSet(guard?.pendingAutonomousQuestionRefs),
+    pendingCalls: callMap(guard?.pendingAutonomousQuestionCalls),
+  };
 }
 
 function requireHome(): string {
@@ -196,9 +243,43 @@ function contextForRow(
   const completion = readCompletionEvidence(db, schema, rawSessionId, warnings);
   const userMessages = completion.humanMessages;
   const requirementSignals = detectRequirementSignals(completion.humanMessages);
-  const events = readQuestionAndPermissionEvents(db, schema, rawSessionId, warnings);
+  const provenance = questionProvenance(row);
+  const events = readQuestionAndPermissionEvents(
+    db,
+    schema,
+    rawSessionId,
+    warnings,
+    provenance.autonomous,
+    provenance.pending,
+  );
   const questionInterventions = mergedQuestionInterventions(
-    events.questionInterventions,
+    [
+      ...events.questionInterventions,
+      ...[...provenance.autonomousCalls].flatMap(([requestRef, callRef]) => {
+        const reply = completion.questionToolReplies.find((candidate) => candidate.callRef === callRef);
+        return reply == null ? [] : [{
+          actor: "guard" as const,
+          answers: reply.answers,
+          eventRef: reply.eventRef,
+          questions: reply.questions,
+          requestRef,
+          status: "answered" as const,
+          time: reply.time,
+        }];
+      }),
+      ...[...provenance.pendingCalls].flatMap(([requestRef, callRef]) => {
+        const reply = completion.questionToolReplies.find((candidate) => candidate.callRef === callRef);
+        return reply == null ? [] : [{
+          actor: "guard" as const,
+          answers: reply.answers,
+          eventRef: reply.eventRef,
+          questions: reply.questions,
+          requestRef,
+          status: "resolution-unknown" as const,
+          time: reply.time,
+        }];
+      }),
+    ],
     completion.syntheticMessages,
   );
   return {

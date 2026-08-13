@@ -15,6 +15,7 @@
     "code-quality:inventory": "node tools/code-quality-inventory.ts",
     "proof:guard-retry": "bun tools/proofs/session-completion-guard-retry.ts",
     "proof:guard-question": "bun tools/proofs/session-completion-guard-question.ts",
+    "proof:guard-question-runtime": "bun tools/proofs/session-completion-guard-autonomous.ts",
     "proof:permissions": "node tools/proofs/opencode-permissions.ts",
     "proof:reuse-discovery": "node tools/proofs/reuse-discovery.ts",
     "reuse:registry": "node global/bin/reuse-registry.ts",

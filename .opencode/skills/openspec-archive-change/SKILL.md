@@ -27,6 +27,7 @@ Archive a completed OpenSpec change through the portable deterministic archive t
 - If a candidate targets another repository, expands accepted outcome, or crosses a protected boundary, record the exact `Owner Blocker` and stop for an authorized implementation path or explicit owner scope change. Never drop a non-selected candidate or leave it only in summary prose.
 - Invoke complete archive only after this reconciliation finds no unpersisted admitted candidate and every persisted improvement task is checked with current evidence.
 - If `tasks.md` contains the creation-authored final-history-retrospective task, invoke complete archive only after that task and every improvement it generated are checked with current evidence. Return incomplete work to apply; archive never runs the history analysis, creates another copy, or retrofits a pre-policy change that lacks the task.
+- If checked tasks, an exhausted attempt count, or a process stop line no longer represents the unfinished accepted outcome, update/reopen the smallest coherent artifacts and return to apply without asking for owner scope expansion. Stop only when accepted semantics change or the underlying protected action needs owner authority.
 
 ## Execute One Owner
 

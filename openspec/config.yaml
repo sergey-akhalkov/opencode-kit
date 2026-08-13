@@ -10,7 +10,10 @@ context: |
   focused validation; Material behavior uses fresh critical-only SDET after proof
   and accepted-scope completion. Minimize time-to-first-real-signal for every
   behavior dependency chain without bypassing owner authorization, safety,
-  restoration, cleanup, or live-attempt gates. Edits alone never complete a task.
+  restoration, cleanup, or live-attempt gates. Plans, artifacts, task inventories,
+  attempt limits, and stop lines remain autonomous implementation controls when
+  accepted semantics stay unchanged; their update never authorizes the underlying
+  protected action. Edits alone never complete a task.
 
 rules:
   proposal:
@@ -22,6 +25,7 @@ rules:
     - Record alternatives and why a simpler remove, narrow, reuse, or local-guard option is insufficient.
     - Keep future scale, variants, and compatibility out of the current design unless reachable in the enforced envelope.
     - Define the current fidelity rung, next real boundary, and exact authorization, safeguards, restoration, cleanup, and evidence needed to reach it.
+    - Treat agent-authored attempt ceilings and process stop lines as revisable controls, not owner scope; keep authority for the underlying protected action explicit.
   specs:
     - Give every current-increment requirement at least one observable acceptance scenario.
     - Do not use TBD, as appropriate, handle errors, or another vague placeholder in actionable requirements.
@@ -32,5 +36,6 @@ rules:
     - Put the earliest safely reachable real check before dependent behavior; if deferred, name the exact blocker, earliest unblocking task, and dependency-chain stop condition.
     - State the exact observable proof and applicable focused validation for each behavior task; keep it unchecked until both pass.
     - Put admitted session-derived improvements under `## Session-Derived Improvements` and state Trigger/Evidence, Why, Prerequisites, Scope/Non-Goals, Implementation, Observable Proof, Validation, and any exact Owner Blocker.
-    - Material test artifacts belong to a fresh test-only SDET after current proof and accepted-scope completion.
     - For each newly authored change, append exactly one unchecked initially-last task that waits for every other known task, analyzes complete `history.md` through the existing compaction improvement matrix/admission/task contract, immediately executes admitted improvements or records `none`, and never schedules another final-history analysis.
+    - Material test artifacts belong to a fresh test-only SDET after current proof and accepted-scope completion.
+    - When evidence invalidates an agent-authored plan or attempt limit without changing accepted semantics, update the affected artifacts/tasks/history and continue without an owner process-approval question.

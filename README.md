@@ -454,6 +454,7 @@ An enabled parentless root reacts to idle events as follows:
 
 - **waiting-async**: deterministic preflight found an awaited PTY, background child, unconsumed task result, unknown lease, compaction, or guard-owned turn. No completion model is called.
 - **auditing / audit-retrying**: async state is clear and one retained hidden `session-completion-arbiter` child is evaluating a root-correlated, redacted evidence snapshot. The configured model must return one exact JSON object; invalid JSON, provider failure, or stale correlation has no root side effect and retries with bounded exponential delay.
+- **question-auditing / question-answering**: a pending interactive multiple-choice request is classified independently. An autonomous verdict must select exact offered labels, after which the guard uses OpenCode's official reply API so the original tool call resumes. Human replies win races. Owner-only, custom-only, malformed, stale, or unbounded questions remain open/fail closed; the guard never treats rejection as an answer.
 - **continuing**: one validated `continue` verdict produced one synthetic root continuation under the original root agent/model/variant/tool context.
 - **passed**: the unchanged root revision may remain idle. This is not an RC, stable, release, deployment, or external-operation verdict, and it adds no transcript success message.
 - **paused**: a real in-flight user interrupt or explicit non-synthetic stop instruction won. A later ordinary human message resumes guard eligibility; synthetic PTY/task/guard text cannot do so.
@@ -467,6 +468,8 @@ Operational notes:
 - Plugin, agent, dependency, or config changes require a new OpenCode process. Updating kit files does not activate them in an already-running owner session.
 - If a root remains `waiting-async`, inspect current `pty_list`, background children, and whether the matching synthetic result/exit notification reached the root. Unknown liveness intentionally remains fail-closed.
 - If a root remains `audit-retrying`, verify the profile's arbiter provider/model is connected and available, then inspect the retained child metadata and the owning-boundary error. Do not paste a guessed verdict into the root.
+- If a root remains `question-auditing`, inspect the retained arbiter child. Invalid or invented labels are rejected and retried; `owner-required` intentionally waits for a human. Successful autonomous answers are stored as privacy-safe guard interventions rather than human `questionReplies`.
+- The maintained installed boundary proof is `npm run proof:guard-question-runtime -- --server-url http://127.0.0.1:<port>` against a fresh local `opencode serve`; it enables only the real `question` tool in its disposable root and deletes the root/children in `finally`.
 - If a root is `paused`, send a new ordinary human message only when work should resume. An explicit stop instruction keeps the current turn paused.
 - Roll back as one coherent version-controlled change: stop OpenCode, restore the previous config/template, dependency graph, profiles, validators, and agent inventory together, reinstall the selected profile, then restart. Do not remove only the guard while leaving a mismatched PTY source or partially migrated routing active.
 

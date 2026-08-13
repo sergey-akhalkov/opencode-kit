@@ -32,11 +32,20 @@ type CompletionEvidence = {
   descendants: DeliveryContextDescendantEvidence[];
   diffEvidence: DeliveryContextDiffEvidence[];
   humanMessages: DeliveryContextUserMessage[];
+  questionToolReplies: QuestionToolReplyEvidence[];
   strategyRefs: DeliveryContextStrategyRef[];
   syntheticMessages: DeliveryContextSyntheticMessage[];
   toolEvidence: DeliveryContextToolEvidence[];
   truncationWarnings: DeliveryContextTruncation[];
   validationEvidence: DeliveryContextValidationEvidence[];
+};
+
+export type QuestionToolReplyEvidence = {
+  answers: string[][];
+  callRef: string;
+  eventRef: string;
+  questions: string[];
+  time: string | null;
 };
 
 type MessageRow = Record<string, unknown> & {
@@ -295,12 +304,13 @@ function executionEvidence(
   parts: PartRow[],
   rawSessionId: string,
   truncations: DeliveryContextTruncation[],
-): Pick<CompletionEvidence, "assistantEvidence" | "background" | "diffEvidence" | "strategyRefs" | "toolEvidence" | "validationEvidence"> {
+): Pick<CompletionEvidence, "assistantEvidence" | "background" | "diffEvidence" | "questionToolReplies" | "strategyRefs" | "toolEvidence" | "validationEvidence"> {
   const messagesById = new Map(messages.map((row) => [String(row.id), parseRecord(row.data)]));
   const assistantText = new Map<string, string[]>();
   const assistantEvidence: DeliveryContextAssistantEvidence[] = [];
   const background: DeliveryContextBackgroundEvidence[] = [];
   const diffEvidence: DeliveryContextDiffEvidence[] = [];
+  const questionToolReplies: QuestionToolReplyEvidence[] = [];
   const strategyRefs = new Map<string, DeliveryContextStrategyRef>();
   const toolEvidence: DeliveryContextToolEvidence[] = [];
   const validationEvidence: DeliveryContextValidationEvidence[] = [];
@@ -354,6 +364,27 @@ function executionEvidence(
       truncated: boundedOutput?.truncated ?? false,
     };
     toolEvidence.push(toolRow);
+    if (tool === "question" && status === "completed") {
+      const answers = Array.isArray(metadata?.answers)
+        ? metadata.answers.map((row) => Array.isArray(row)
+            ? row.filter((answer): answer is string => typeof answer === "string").map((answer) => sanitizeText(answer, rawSessionId))
+            : [])
+        : [];
+      const questions = Array.isArray(input?.questions)
+        ? input.questions.flatMap((value) => {
+            const question = parseRecord(value);
+            const text = stringValue(question?.question) ?? stringValue(question?.header);
+            return text == null ? [] : [sanitizeText(text, rawSessionId)];
+          })
+        : [];
+      questionToolReplies.push({
+        answers,
+        callRef: toolRow.callRef,
+        eventRef: toolRow.eventRef,
+        questions,
+        time: toolRow.time,
+      });
+    }
     if (tool === "task") {
       const child = stringValue(metadata?.sessionID) ?? stringValue(metadata?.sessionId) ?? stringValue(metadata?.childSessionID);
       background.push({
@@ -408,6 +439,7 @@ function executionEvidence(
     assistantEvidence: cap(assistantEvidence, ASSISTANT_LIMIT, "assistantEvidence", truncations),
     background: cap(background, DESCENDANT_LIMIT, "background", truncations),
     diffEvidence: cap(diffEvidence, DIFF_LIMIT, "diffEvidence", truncations),
+    questionToolReplies: cap(questionToolReplies, TOOL_LIMIT, "questionToolReplies", truncations),
     strategyRefs: [...strategyRefs.values()],
     toolEvidence: cap(toolEvidence, TOOL_LIMIT, "toolEvidence", truncations),
     validationEvidence: cap(validationEvidence, VALIDATION_LIMIT, "validationEvidence", truncations),

@@ -695,14 +695,17 @@ export function readQuestionAndPermissionEvents(
   schema: DbSchema,
   rawSessionId: string,
   warnings: string[],
+  autonomousQuestionRefs: Set<string> = new Set(),
+  pendingAutonomousQuestionRefs: Set<string> = new Set(),
 ): {
   permissionReplies: Array<{ eventRef: string; reply: string | null; requestRef: string | null; time: string | null }>;
   questionInterventions: Array<{
     actor: "guard" | "unknown";
+    answers: string[][];
     eventRef: string;
     questions: string[];
     requestRef: string | null;
-    status: "rejected";
+    status: "answered" | "rejected" | "resolution-unknown";
     time: string | null;
   }>;
   questionReplies: Array<{
@@ -761,10 +764,11 @@ export function readQuestionAndPermissionEvents(
   }> = [];
   const questionInterventions: Array<{
     actor: "guard" | "unknown";
+    answers: string[][];
     eventRef: string;
     questions: string[];
     requestRef: string | null;
-    status: "rejected";
+    status: "answered" | "rejected" | "resolution-unknown";
     time: string | null;
   }> = [];
   const permissionReplies: Array<{
@@ -783,6 +787,22 @@ export function readQuestionAndPermissionEvents(
       continue;
     }
     if (type != null && QUESTION_REPLIED_EVENTS.has(type)) {
+      const requestRef = request == null ? null : hashRef("question", request);
+      if (
+        requestRef != null &&
+        (autonomousQuestionRefs.has(requestRef) || pendingAutonomousQuestionRefs.has(requestRef))
+      ) {
+        questionInterventions.push({
+          actor: "guard",
+          answers: answerMatrix(payload.answers, rawSessionId),
+          eventRef: deliveryEventRef(row, index, type, request),
+          questions: request == null ? [] : questionsByRequest.get(request) ?? [],
+          requestRef,
+          status: autonomousQuestionRefs.has(requestRef) ? "answered" : "resolution-unknown",
+          time: eventTime(row.time_created),
+        });
+        continue;
+      }
       questionReplies.push({
         answers: answerMatrix(payload.answers, rawSessionId),
         eventRef: deliveryEventRef(row, index, type, request),
@@ -797,6 +817,7 @@ export function readQuestionAndPermissionEvents(
       const provenance = `${String(payload.provenance ?? "")} ${String(payload.actor ?? "")}`.toLowerCase();
       questionInterventions.push({
         actor: provenance.includes("guard") ? "guard" : "unknown",
+        answers: [],
         eventRef: deliveryEventRef(row, index, type, request),
         questions: request == null ? [] : questionsByRequest.get(request) ?? [],
         requestRef: request == null ? null : hashRef("question", request),

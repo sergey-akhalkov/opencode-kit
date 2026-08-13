@@ -19,6 +19,8 @@ function assertClientCapabilities(client: OpencodeClient): void {
     ["session.children", client.session.children],
     ["session.messages", client.session.messages],
     ["session.promptAsync", client.session.promptAsync],
+    ["question.list", client.question.list],
+    ["question.reply", client.question.reply],
     ["question.reject", client.question.reject],
     ["provider.list", client.provider.list],
     ["tool.ids", client.tool.ids],

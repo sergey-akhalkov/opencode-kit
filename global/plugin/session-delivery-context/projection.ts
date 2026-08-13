@@ -117,10 +117,11 @@ export type DeliveryContextQuestionReply = {
 
 export type DeliveryContextQuestionIntervention = {
   actor: "guard" | "unknown";
+  answers: string[][];
   eventRef: string;
   questions: string[];
   requestRef: string | null;
-  status: "rejected";
+  status: "answered" | "rejected" | "resolution-unknown";
   time: string | null;
 };
 

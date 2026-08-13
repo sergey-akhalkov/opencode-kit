@@ -4,6 +4,7 @@ import {
 } from "../../plugin/session-delivery-context/index.ts";
 import { hashRef } from "../../plugin/session-delivery-context/redaction.ts";
 import type { RootInspection } from "./inspection.ts";
+import { questionRequestForArbiter } from "./question.ts";
 import type { AuditEpoch } from "./types.ts";
 
 const MAX_AUDIT_EVIDENCE_CHARS = 200_000;
@@ -31,9 +32,12 @@ export function buildArbiterAuditRequest(
   inspection: RootInspection,
   completionEvidence: SessionDeliveryContextResult,
 ): string {
-  const question = epoch.questionRequestID == null
+  const question = epoch.questionRequest == null
     ? null
-    : { requestRef: hashRef("question", epoch.questionRequestID), mode: "pending_question" };
+    : {
+        ...questionRequestForArbiter(epoch.questionRequest),
+        requestRef: hashRef("question", epoch.questionRequest.requestID),
+      };
   const request = {
     schemaVersion: 1,
     auditID: epoch.auditID,

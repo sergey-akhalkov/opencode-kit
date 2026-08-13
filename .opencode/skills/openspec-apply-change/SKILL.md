@@ -117,7 +117,7 @@ Implement tasks from an OpenSpec change.
    - Progress requires an exact user-owned decision or action under the active global owner-boundary contract → provide the required self-contained owner handoff
    - The user interrupts
 
-   A progress checkpoint, completed work cycle, green validation pass, still-open task, locally resolvable error, or blocked live/external gate is not by itself a reason to ask whether to continue. Continue safe local/offline required work, and stop only the affected action at its exact owner boundary. If implementation exposes an artifact or design mismatch but the accepted semantics are already clear, update the affected OpenSpec artifact as the smallest necessary dependency closure and continue.
+   A progress checkpoint, completed work cycle, green validation pass, still-open task, locally resolvable error, or blocked live/external gate is not by itself a reason to ask whether to continue. Continue safe local/offline required work, and stop only the affected action at its exact owner boundary. If implementation exposes an artifact or design mismatch but the accepted semantics are already clear, update the smallest coherent proposal/design/spec/tasks/history set and continue. This includes reopening or adding tasks and changing agent-authored candidate/revision labels, attempt limits, `no successor` rules, and process stop lines after causal correction and a satisfied retry/`Live-Attempt Gate`; never ask whether to expand the change for those controls. Updating them does not authorize the underlying protected action.
 
 8. **On completion or owner-blocked pause, show status**
 
@@ -195,4 +195,4 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 This skill supports the "actions on a change" model:
 
 - **Can be invoked anytime**: Before all artifacts are done (if tasks exist), after partial implementation, interleaved with other actions
-- **Allows artifact updates**: If implementation reveals an artifact or design mismatch, update the affected artifacts when accepted semantics are already clear; ask only for an exact owner-owned decision
+- **Allows artifact updates**: If implementation reveals an artifact or design mismatch, update the affected artifacts, tasks, revisions, attempt limits, and stop lines when accepted semantics are already clear; ask only for changed accepted semantics or the exact underlying protected action

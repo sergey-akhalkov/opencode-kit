@@ -10,19 +10,32 @@ type StatusDependencies = {
   log(level: "warn", message: string, extra: Record<string, unknown>): Promise<void>;
 };
 
+function provenanceSnapshot(state: RootState) {
+  return {
+    autonomousQuestionCalls: [...state.autonomousQuestionCalls].sort(([left], [right]) => left.localeCompare(right)).map(
+      ([requestRef, callRef]) => ({ requestRef, callRef }),
+    ),
+    autonomousQuestionRefs: [...state.autonomousQuestionRefs].sort(),
+    pendingAutonomousQuestionCalls: [...state.pendingAutonomousQuestionCalls].sort(
+      ([left], [right]) => left.localeCompare(right),
+    ).map(([requestRef, callRef]) => ({ requestRef, callRef })),
+    pendingAutonomousQuestionRefs: [...state.pendingAutonomousQuestionRefs].sort(),
+  };
+}
+
 export class GuardStatusReporter {
   private readonly dependencies: StatusDependencies;
-  private readonly writes = new Map<string, Promise<void>>();
+  private readonly writes = new Map<string, Promise<boolean>>();
 
   constructor(dependencies: StatusDependencies) {
     this.dependencies = dependencies;
   }
 
-  async persist(state: RootState): Promise<void> {
-    const previous = this.writes.get(state.root.id) ?? Promise.resolve();
-    const write = previous.catch(() => undefined).then(() => this.persistConverged(state));
+  async persist(state: RootState): Promise<boolean> {
+    const previous = this.writes.get(state.root.id) ?? Promise.resolve(true);
+    const write = previous.catch(() => false).then(() => this.persistConverged(state));
     this.writes.set(state.root.id, write);
-    await write;
+    const persisted = await write;
     if (this.writes.get(state.root.id) === write) this.writes.delete(state.root.id);
     if (state.grindEnabled) {
       try {
@@ -34,9 +47,10 @@ export class GuardStatusReporter {
         });
       }
     }
+    return persisted;
   }
 
-  private async persistConverged(state: RootState): Promise<void> {
+  private async persistConverged(state: RootState): Promise<boolean> {
     while (true) {
       const guard = {
         schemaVersion: 1,
@@ -46,6 +60,7 @@ export class GuardStatusReporter {
         continuationCycles: state.continuationCycles,
         lastAuditedRevision: state.lastAuditedRevision,
         lastStrategyFingerprint: state.lastStrategyFingerprint,
+        ...provenanceSnapshot(state),
         rootRef: hashRef("session", state.root.id),
         ...(state.statusMessage == null ? {} : { message: state.statusMessage.slice(0, 500) }),
         updatedAt: Date.now(),
@@ -65,8 +80,9 @@ export class GuardStatusReporter {
           error: safeError(error, state.root.id),
           rootRef: hashRef("session", state.root.id),
         });
-        return;
+        return false;
       }
+      const currentProvenance = provenanceSnapshot(state);
       if (
         guard.state === state.state &&
         guard.grindEnabled === state.grindEnabled &&
@@ -74,8 +90,12 @@ export class GuardStatusReporter {
         guard.continuationCycles === state.continuationCycles &&
         guard.lastAuditedRevision === state.lastAuditedRevision &&
         guard.lastStrategyFingerprint === state.lastStrategyFingerprint &&
+        JSON.stringify(guard.autonomousQuestionCalls) === JSON.stringify(currentProvenance.autonomousQuestionCalls) &&
+        JSON.stringify(guard.autonomousQuestionRefs) === JSON.stringify(currentProvenance.autonomousQuestionRefs) &&
+        JSON.stringify(guard.pendingAutonomousQuestionCalls) === JSON.stringify(currentProvenance.pendingAutonomousQuestionCalls) &&
+        JSON.stringify(guard.pendingAutonomousQuestionRefs) === JSON.stringify(currentProvenance.pendingAutonomousQuestionRefs) &&
         (guard.message ?? null) === (state.statusMessage?.slice(0, 500) ?? null)
-      ) return;
+      ) return true;
     }
   }
 

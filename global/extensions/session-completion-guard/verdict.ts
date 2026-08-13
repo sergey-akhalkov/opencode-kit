@@ -6,6 +6,7 @@ import type {
   OwnerBoundaryVerdict,
   RootPromptContext,
 } from "./types.ts";
+import { validateQuestionAnswers } from "./question.ts";
 
 const VERDICT_VALUES = new Set(["allow_stop", "continue", "owner_required", "user_paused"]);
 const CONFIDENCE_VALUES = new Set(["high", "medium", "low"]);
@@ -119,6 +120,11 @@ export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): Compl
   }
   const verdict = input.verdict as CompletionVerdict["verdict"];
   const parsedOwnerBoundary = ownerBoundary(input.ownerBoundary);
+  const questionAnswers = epoch.kind === "question" && (verdict === "allow_stop" || verdict === "continue")
+    ? validateQuestionAnswers(input.questionAnswers, epoch.questionRequest?.questions ?? [])
+    : input.questionAnswers === null
+      ? null
+      : (() => { throw new Error("Only an autonomous pending-question verdict may define questionAnswers"); })();
   if (verdict === "continue" && unresolved.length === 0) {
     throw new Error("A continue verdict requires at least one unresolved requirement");
   }
@@ -136,6 +142,7 @@ export function parseCompletionVerdict(value: unknown, epoch: AuditEpoch): Compl
     goalSummary: requiredString(input.goalSummary, "goalSummary", 2_000),
     inspectedRevision,
     ownerBoundary: parsedOwnerBoundary,
+    questionAnswers,
     requirementMatrix,
     rootSessionRef,
     schemaVersion: 1,

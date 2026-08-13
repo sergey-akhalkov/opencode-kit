@@ -240,10 +240,28 @@ export function initialRootState(root: Session): RootState {
   const metadata = record(root.metadata?.completionGuard);
   const grindEnabled = metadata?.grindEnabled === true;
   const paused = metadata?.paused === true;
+  const questionRefs = (value: unknown): Set<string> => new Set(
+    Array.isArray(value)
+      ? value.filter((item): item is string => typeof item === "string" && /^question_[A-Za-z0-9_-]+$/.test(item)).slice(0, 1_024)
+      : [],
+  );
+  const questionCalls = (value: unknown): Map<string, string> => new Map(
+    Array.isArray(value)
+      ? value.flatMap((item) => {
+          const entry = record(item);
+          return typeof entry?.requestRef === "string" && /^question_[A-Za-z0-9_-]+$/.test(entry.requestRef) &&
+              typeof entry.callRef === "string" && /^call_[A-Za-z0-9_-]+$/.test(entry.callRef)
+            ? [[entry.requestRef, entry.callRef] as const]
+            : [];
+        }).slice(0, 1_024)
+      : [],
+  );
   return {
     activeAudit: null,
     auditChildSessionID: null,
     auditAbort: null,
+    autonomousQuestionCalls: questionCalls(metadata?.autonomousQuestionCalls),
+    autonomousQuestionRefs: questionRefs(metadata?.autonomousQuestionRefs),
     compacting: false,
     continuationCycles: typeof metadata?.continuationCycles === "number" ? metadata.continuationCycles : 0,
     controlTurnPending: false,
@@ -255,9 +273,9 @@ export function initialRootState(root: Session): RootState {
     lastStatusKey: null,
     lastStrategyFingerprint: stringValue(metadata?.lastStrategyFingerprint),
     paused,
-    pendingQuestionCorrection: null,
+    pendingAutonomousQuestionCalls: questionCalls(metadata?.pendingAutonomousQuestionCalls),
+    pendingAutonomousQuestionRefs: questionRefs(metadata?.pendingAutonomousQuestionRefs),
     promptContext: restoredPromptContext(root, { agent: null, model: null, tools: null, variant: null }),
-    questionCorrectionAbort: null,
     questions: new Map(),
     retryTimer: null,
     root,

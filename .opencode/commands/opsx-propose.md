@@ -129,3 +129,4 @@ After completing all artifacts and both readiness checks, summarize:
 - Ensure every newly authored `tasks.md` has exactly one initially-last unchecked final-history-retrospective task; do not retrofit an existing change merely because this creation-time task is absent
 - Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable
+- Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.
