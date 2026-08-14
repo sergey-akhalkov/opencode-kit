@@ -1,0 +1,25 @@
+{
+  "candidateId": "loader-visible-budget-candidate-2",
+  "facts": {
+    "budgetCurrentPassed": true,
+    "budgetFixturePassed": true,
+    "budgetGrowthFailedClosed": true,
+    "budgetMalformedFailedClosed": true,
+    "catalogCompatibility": true,
+    "cleanupPassed": true,
+    "configDeclaredEvidence": true,
+    "conventionalEvidence": true,
+    "deterministicLoaderRerun": true,
+    "discoveryMetadataSeparated": true,
+    "loaderSchemaSeparated": true,
+    "noContentDisclosure": true,
+    "noVendorWalk": true,
+    "onDemandSeparated": true,
+    "runtimeObservedEvidence": true,
+    "startupSeparated": true,
+    "unknownsPreserved": true
+  },
+  "inputRawSha256": "bb5a341a46171e3cd6efd0047f6e16e29840802c12f5092f3108907f02da0b16",
+  "pass": true,
+  "schemaVersion": 1
+}

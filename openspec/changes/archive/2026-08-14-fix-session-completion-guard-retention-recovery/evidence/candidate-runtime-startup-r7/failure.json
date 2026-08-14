@@ -1,0 +1,15 @@
+{
+  "candidateId": "candidate-runtime-startup-r7",
+  "cleanup": "complete",
+  "error": "retention root create timed out after 5000ms",
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 0,
+    "requestKinds": []
+  },
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "serverLogTail": "timestamp=2026-08-14T13:08:31.343Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.config\\\\opencode\\\\config.json\"\ntimestamp=2026-08-14T13:08:31.355Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.config\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-14T13:08:31.361Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.config\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-14T13:08:31.665Z level=INFO run=85d28027 message=\"watcher backend\" directory=\"<fixture>\\\\project\" platform=win32 backend=windows\ntimestamp=2026-08-14T13:08:31.674Z level=INFO run=85d28027 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-14T13:08:31.678Z level=INFO run=85d28027 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-14T13:08:31.947Z level=INFO run=85d28027 message=\"booting location services\" directory=\"<fixture>\\\\project\" workspaceID=undefined\ntimestamp=2026-08-14T13:08:32.105Z level=INFO run=85d28027 message=\"creating instance\" directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-14T13:08:32.106Z level=INFO run=85d28027 message=fromDirectory directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-14T13:08:32.258Z level=INFO run=85d28027 message=bootstrapping directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-14T13:08:32.263Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.config\\\\opencode\\\\config.json\"\ntimestamp=2026-08-14T13:08:32.269Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.config\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-14T13:08:32.271Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.config\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-14T13:08:32.290Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.opencode\\\\opencode.json\"\ntimestamp=2026-08-14T13:08:32.290Z level=INFO run=85d28027 message=loading path=\"<home>\\\\.opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-14T13:08:32.295Z level=INFO run=85d28027 message=loading path=\"<fixture>\\\\config\\\\opencode.json\"\ntimestamp=2026-08-14T13:08:32.307Z level=INFO run=85d28027 message=loading path=\"<fixture>\\\\config\\\\opencode.jsonc\"\n",
+  "stage": "retention-server-1-ready",
+  "status": "failed"
+}

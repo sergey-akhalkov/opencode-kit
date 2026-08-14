@@ -1,0 +1,10 @@
+{
+  "candidateId": "candidate-runtime-r4",
+  "cleanup": "complete",
+  "fullTaskProof": false,
+  "recoveryBoundary": "passed",
+  "repeatRestartBoundary": "not-reached",
+  "runnerOracle": "invalid-single-call-assumption",
+  "schemaVersion": 1,
+  "status": "partial-complete"
+}

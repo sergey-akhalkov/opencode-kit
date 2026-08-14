@@ -25,6 +25,7 @@ import {
 } from "../global/extensions/session-completion-guard/grind-control.ts";
 import type { RootInspection } from "../global/extensions/session-completion-guard/inspection.ts";
 import { PtyFallbackScheduler } from "../global/extensions/session-completion-guard/pty-fallback.ts";
+import { ensureArbiterChild } from "../global/extensions/session-completion-guard/arbiter-child.ts";
 import {
   applyPermissionAllow,
   initialRootState,
@@ -152,6 +153,149 @@ function epoch(overrides: Partial<AuditEpoch> = {}): AuditEpoch {
     rootRef: "session_abcdef123456",
     rootSessionID: "session_root_secret",
     ...overrides,
+  };
+}
+
+type RetentionStatusResult = { data: Record<string, { type: string }> } | { error: { name: string; message: string } };
+
+async function runInterruptedRetention(options: {
+  childSessionID?: string | null;
+  firstUpdatedOffsetMs: number;
+  secondUpdatedOffsetMs: number;
+  statusForCall: (call: number, childIDs: { first: string; second: string }) => RetentionStatusResult;
+}): Promise<{
+  created: string[];
+  deleted: string[];
+  error: string | null;
+  firstPresent: boolean;
+  firstStatus: unknown;
+  secondPresent: boolean;
+  secondStatus: unknown;
+  unrelatedPresent: boolean;
+  updates: Array<{ id: string; status: unknown }>;
+  wrongOwnerPresent: boolean;
+  wrongOwnerStatus: unknown;
+}> {
+  const rootID = "session_root_retention";
+  const rootRef = hashRef("session", rootID);
+  const now = Date.now();
+  const firstID = "session_child_retention_first";
+  const secondID = "session_child_retention_second";
+  const unrelatedID = "session_child_retention_unrelated";
+  const wrongOwnerID = "session_child_retention_wrong_owner";
+  const createdID = "session_child_retention_created";
+  const guardMeta = (auditID: string, ref = rootRef) => ({
+    completionGuard: { auditID, rootSessionRef: ref, status: "auditing" },
+  });
+  const child = (id: string, offsetMs: number, metadata?: Session["metadata"]): Session =>
+    sessionFixture({
+      id,
+      parentID: rootID,
+      time: { created: now + offsetMs, updated: now + offsetMs },
+      ...(metadata == null ? {} : { metadata }),
+    });
+  const first = child(firstID, options.firstUpdatedOffsetMs, guardMeta("audit_retention_first"));
+  const second = child(secondID, options.secondUpdatedOffsetMs, guardMeta("audit_retention_second"));
+  const unrelated = child(unrelatedID, -130_000);
+  const wrongOwner = child(wrongOwnerID, -130_000, guardMeta("audit_wrong", "session_wrong_owner"));
+  const values = new Map<string, Session>([first, second, unrelated, wrongOwner].map((value) => [value.id, value]));
+  const created: string[] = [];
+  const deleted: string[] = [];
+  const updates: Array<{ id: string; status: unknown }> = [];
+  let statusCalls = 0;
+  const client = {
+    tool: { ids: async () => ({ data: ["read"] }) },
+    v2: {
+      agent: {
+        list: async () => ({
+          data: {
+            data: [{
+              id: "session-completion-arbiter",
+              hidden: true,
+              model: { providerID: "xai", id: "grok-4.6" },
+            }],
+          },
+        }),
+      },
+    },
+    provider: {
+      list: async () => ({
+        data: {
+          all: [{ id: "xai", models: { "grok-4.6": { id: "grok-4.6" } } }],
+          connected: ["xai"],
+        },
+      }),
+    },
+    session: {
+      children: async () => ({
+        data: [first, second, unrelated, wrongOwner].filter((value) => values.has(value.id)),
+      }),
+      get: async ({ sessionID }: { sessionID: string }) => {
+        const current = values.get(sessionID);
+        return current == null ? { error: { name: "NotFoundError" } } : { data: current };
+      },
+      status: async () => {
+        statusCalls += 1;
+        return options.statusForCall(statusCalls, { first: firstID, second: secondID });
+      },
+      update: async ({ sessionID, metadata }: { sessionID: string; metadata?: Session["metadata"] }) => {
+        const current = values.get(sessionID);
+        if (current == null) return { error: { name: "NotFoundError" } };
+        const next = { ...current, metadata, time: { ...current.time, updated: Date.now() } };
+        values.set(sessionID, next);
+        updates.push({
+          id: sessionID,
+          status: (metadata as { completionGuard?: { status?: unknown } } | undefined)?.completionGuard?.status,
+        });
+        return { data: next };
+      },
+      delete: async ({ sessionID }: { sessionID: string }) => {
+        deleted.push(sessionID);
+        values.delete(sessionID);
+        return { data: true };
+      },
+      create: async (args: { metadata?: Session["metadata"] }) => {
+        created.push(createdID);
+        const value = child(createdID, 0, args.metadata);
+        values.set(createdID, value);
+        return { data: value };
+      },
+    },
+  };
+  let error: string | null = null;
+  try {
+    await ensureArbiterChild(
+      client as never,
+      ".",
+      "session-completion-arbiter",
+      { ...initialRootState(sessionFixture({ id: rootID })), grindEnabled: true },
+      epoch({
+        auditID: "audit_retention_current",
+        attempt: 1,
+        childSessionID: options.childSessionID ?? null,
+        rootRef,
+        rootSessionID: rootID,
+      }),
+      2,
+      120_000,
+    );
+  } catch (cause) {
+    error = cause instanceof Error ? cause.message : String(cause);
+  }
+  const statusOf = (id: string): unknown =>
+    (values.get(id)?.metadata as { completionGuard?: { status?: unknown } } | undefined)?.completionGuard?.status ?? null;
+  return {
+    created,
+    deleted,
+    error,
+    firstPresent: values.has(firstID),
+    firstStatus: statusOf(firstID),
+    secondPresent: values.has(secondID),
+    secondStatus: statusOf(secondID),
+    unrelatedPresent: values.has(unrelatedID),
+    updates,
+    wrongOwnerPresent: values.has(wrongOwnerID),
+    wrongOwnerStatus: statusOf(wrongOwnerID),
   };
 }
 
@@ -1788,6 +1932,52 @@ const tests: TestCase[] = [
       } finally {
         fs.rmSync(dataDir, { recursive: true, force: true });
       }
+    },
+  },
+  {
+    name: "critical: old idle interrupted audits rotate one stale child and preserve unrelated ownership",
+    run: async () => {
+      const result = await runInterruptedRetention({
+        firstUpdatedOffsetMs: -130_000,
+        secondUpdatedOffsetMs: -129_000,
+        statusForCall: () => ({ data: {} }),
+      });
+      assert(result.error == null, `old idle recovery must not fail: ${result.error ?? "unknown"}`);
+      assert(result.created.length === 1, `must create exactly one replacement child, got ${JSON.stringify(result.created)}`);
+      assert(
+        result.deleted.length === 1 && result.deleted[0] === "session_child_retention_first",
+        `must delete only the oldest interrupted child, got ${JSON.stringify(result.deleted)}`,
+      );
+      assert(
+        result.updates.some((entry) => entry.id === "session_child_retention_first" && entry.status === "stale"),
+        `must mark the rotated child stale before deletion, updates=${JSON.stringify(result.updates)}`,
+      );
+      assert(result.firstPresent === false, "rotated interrupted child must be gone after deletion");
+      assert(result.secondPresent && result.secondStatus === "auditing", "newer interrupted sibling must remain auditing");
+      assert(result.unrelatedPresent, "unrelated child must be preserved");
+      assert(result.wrongOwnerPresent && result.wrongOwnerStatus === "auditing", "foreign-owned child must be preserved");
+    },
+  },
+  {
+    name: "critical: interrupted quarantine must not mutate a child that is busy on status re-check",
+    run: async () => {
+      const result = await runInterruptedRetention({
+        firstUpdatedOffsetMs: -130_000,
+        secondUpdatedOffsetMs: -129_000,
+        statusForCall: (call, childIDs) =>
+          call === 1 ? { data: {} } : { data: { [childIDs.first]: { type: "busy" } } },
+      });
+      assert(result.error == null, `remaining idle sibling must still recover: ${result.error ?? "unknown"}`);
+      assert(
+        result.deleted.length === 1 && result.deleted[0] === "session_child_retention_second",
+        `must rotate the still-idle sibling, not the busy child, got ${JSON.stringify(result.deleted)}`,
+      );
+      assert(
+        result.updates.every((entry) => entry.id !== "session_child_retention_first"),
+        `busy-on-recheck child must not be marked stale, updates=${JSON.stringify(result.updates)}`,
+      );
+      assert(result.firstPresent && result.firstStatus === "auditing", "busy-on-recheck child must remain auditing");
+      assert(result.unrelatedPresent && result.wrongOwnerPresent, "unrelated and foreign children must be preserved");
     },
   },
 ];

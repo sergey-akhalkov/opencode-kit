@@ -1,0 +1,8 @@
+{
+  "candidateId": "candidate-runtime-repeat-r10",
+  "cleanup": "complete",
+  "restartRecovery": "old-idle-interrupted-rotation-repeat-safe",
+  "scenario": "retention",
+  "schemaVersion": 1,
+  "status": "complete"
+}

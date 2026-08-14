@@ -256,3 +256,56 @@ Privacy-safe runtime diagnostics SHALL report resolved standard OpenSpec command
 - **THEN** diagnostics identify each safe location and unattended collision status
 - **AND** they do not claim precedence from source presence alone.
 
+### Requirement: Doctor SHALL compose canonical runtime-source collision evidence
+
+Doctor SHALL reuse the maintained privacy-safe runtime-source inspector to evaluate
+loader-visible collisions for canonical OpenSpec propose, apply, and archive skill
+and command names. A same-name collision with unknown precedence SHALL block both
+qualification and unattended readiness. Other additive instruction, config,
+plugin, agent, command, or skill sources SHALL remain visible without becoming a
+blocker unless an existing requirement identifies them as required authority.
+
+#### Scenario: Canonical project overlay blocks lifecycle gates
+- **WHEN** a project and global source both expose the same canonical OpenSpec apply skill or command and runtime precedence is unknown
+- **THEN** doctor names both privacy-safe locations and blocks qualification and unattended readiness
+
+#### Scenario: Ordinary additive instructions do not block
+- **WHEN** global, parent, and project instruction sources are all loader-visible without competing canonical authority
+- **THEN** doctor reports the sources and does not block a lifecycle gate solely because more than one instruction source exists
+
+### Requirement: Runtime-source CLI help SHALL be effect-free
+
+The runtime-source CLI SHALL parse `--help` and `-h` before resolving or walking
+any source root. Help SHALL list every supported option, perform no inventory or
+project effect, and exit `0`. An unknown option SHALL produce usage diagnostics and
+exit `1` without running the inventory.
+
+#### Scenario: Help performs no source scan
+- **WHEN** an operator invokes `opencode:sources --help`
+- **THEN** the CLI prints usage, exits `0`, and does not inspect host, custom, explicit, or project sources
+
+#### Scenario: Unknown option fails before inventory
+- **WHEN** an operator passes an unsupported runtime-source option
+- **THEN** the CLI prints a cause-preserving usage error, exits `1`, and does not emit a runtime-source report
+
+### Requirement: Loader-visible instruction discovery SHALL be bounded and evidence-classified
+
+Loader-visible instruction discovery SHALL reuse maintained runtime-source facts,
+conventional instruction locations, and supported explicit local filesystem entries
+from OpenCode `instructions` configuration. It SHALL read only the resulting
+bounded instruction manifest and SHALL NOT recursively scan unrelated project,
+vendor, generated, evidence, or build-output trees. Every source SHALL identify
+whether it was runtime-observed, config-declared, conventional, or unknown.
+
+#### Scenario: Explicit local instruction path is discovered
+- **WHEN** project OpenCode config declares a supported local Markdown instruction path
+- **THEN** discovery records the path as config-declared and inventories only that resolved file
+
+#### Scenario: Vendor tree is not part of instruction discovery
+- **WHEN** a project contains a large vendor tree with Markdown files that are not instruction sources
+- **THEN** loader-visible inventory does not walk or count that tree
+
+#### Scenario: Presence does not prove precedence
+- **WHEN** more than one instruction source is discovered without current loader evidence establishing a winner
+- **THEN** every source remains reported and the inventory does not claim precedence or final prompt inclusion
+

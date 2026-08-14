@@ -1,0 +1,53 @@
+{
+  "candidateId": "candidate-runtime-repeat-r10",
+  "cleanup": "complete",
+  "environment": {
+    "openCode": "1.18.18",
+    "platform": "win32"
+  },
+  "provider": {
+    "arbiterCalls": 2,
+    "primaryCalls": 2,
+    "requestKinds": [
+      "primary",
+      "primary",
+      "arbiter-1",
+      "arbiter-2"
+    ]
+  },
+  "retention": {
+    "guardChildrenAfterRecovery": 2,
+    "guardChildrenAfterVerification": 2,
+    "interruptedChildrenAfterRecovery": 1,
+    "recoveryState": "passed",
+    "seedStatusTypes": [
+      "absent-idle",
+      "absent-idle"
+    ],
+    "unrelatedPreservedAfterRecovery": true,
+    "unrelatedPreservedAfterVerification": true,
+    "verificationState": "passed"
+  },
+  "scenario": "retention",
+  "schemaVersion": 1,
+  "serverLogs": [
+    {
+      "ordinal": 1,
+      "retentionError": false,
+      "stderrChars": 9251,
+      "stdoutChars": 119
+    },
+    {
+      "ordinal": 2,
+      "retentionError": false,
+      "stderrChars": 6060,
+      "stdoutChars": 119
+    },
+    {
+      "ordinal": 3,
+      "retentionError": false,
+      "stderrChars": 6062,
+      "stdoutChars": 119
+    }
+  ]
+}

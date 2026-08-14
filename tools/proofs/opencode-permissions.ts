@@ -174,6 +174,7 @@ let explicitDeniedPermissions = 0;
 const specialistDeniedPermissions: Array<{ agent: string; permissions: string[] }> = [];
 let arbiterToolsAllFalse = false;
 let arbiterDisabledToolCount = 0;
+let sdetEditPermission: string | null = null;
 for (const name of agentNames) {
   const configured = record(agents[name]);
   if (configured == null) throw new Error(`Resolved agent config is invalid: ${name}`);
@@ -183,6 +184,7 @@ for (const name of agentNames) {
   for (const permission of PERMISSION_KINDS) {
     const expected = configuredAction(configured.permission, permission);
     const action = effectiveAction(effective.permission, permission);
+    if (name === "sdet-quality-engineer" && permission === "edit") sdetEditPermission = action;
     if (expected === "deny") {
       explicitDeniedPermissions += 1;
       deniedPermissions.push(permission);
@@ -203,6 +205,9 @@ for (const name of agentNames) {
 }
 if (explicitDeniedPermissions === 0) throw new Error("Resolved agents contain no explicit denied specialist permissions");
 if (!arbiterToolsAllFalse) throw new Error("Resolved agents contain no hidden completion arbiter");
+if (sdetEditPermission !== "allow") {
+  throw new Error(`Resolved SDET edit permission is not unattended: ${sdetEditPermission ?? "missing"}`);
+}
 
 const options = parseArgs(process.argv.slice(2));
 const summary = {
@@ -216,6 +221,9 @@ const summary = {
   arbiter: {
     disabledToolCount: arbiterDisabledToolCount,
     toolsAllFalse: arbiterToolsAllFalse,
+  },
+  sdet: {
+    editPermission: sdetEditPermission,
   },
   permissionKinds: PERMISSION_KINDS,
   outcome: "pass",
@@ -233,6 +241,7 @@ if (options.evidenceRoot != null && options.candidateId != null) {
       "global/extensions/session-completion-guard/runtime-support.ts",
       "global/extensions/session-completion-guard/arbiter-route.ts",
       "global/agents/session-completion-arbiter.md",
+      "global/agents/sdet-quality-engineer.md",
     ].map((relative) => ({ path: relative, sha256: sha256(fs.readFileSync(path.join(sourceRoot, relative))) })),
     runnerSource: {
       path: "tools/proofs/opencode-permissions.ts",

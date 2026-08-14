@@ -23,6 +23,7 @@ export const initProject = path.join(helperRoot, "tools", "init-project.ts");
 export const doctor = path.join(helperRoot, "tools", "doctor.ts");
 export const projectInventory = path.join(helperRoot, "tools", "project-inventory.ts");
 export const instructionInventory = path.join(helperRoot, "tools", "instruction-artifacts-inventory.ts");
+export const instructionBudget = path.join(helperRoot, "tools", "instruction-budget.ts");
 
 const FIXTURE_MODEL_PROFILE_SCHEMA = "https://opencode.ai/config.json";
 const FIXTURE_SOL_MODEL = "openai/gpt-5.6-sol";
@@ -470,8 +471,32 @@ export function invokeProjectInventory(args: string[]): ProcessResult {
   return invokeProcessCapture("node", [projectInventory, ...args], helperRoot);
 }
 
-export function invokeInstructionInventory(args: string[]): ProcessResult {
-  return invokeProcessCapture("node", [instructionInventory, ...args], helperRoot);
+export function isolatedOpenCodeEnv(
+  home: string,
+  extra: Record<string, string | undefined> = {},
+): Record<string, string | undefined> {
+  return {
+    HOME: home,
+    USERPROFILE: home,
+    OPENCODE_CONFIG: undefined,
+    OPENCODE_CONFIG_CONTENT: undefined,
+    OPENCODE_CONFIG_DIR: undefined,
+    ...extra,
+  };
+}
+
+export function invokeInstructionInventory(
+  args: string[],
+  envOverride?: Record<string, string | undefined>,
+): ProcessResult {
+  return invokeProcessCapture("node", [instructionInventory, ...args], helperRoot, envOverride);
+}
+
+export function invokeInstructionBudget(
+  args: string[],
+  envOverride?: Record<string, string | undefined>,
+): ProcessResult {
+  return invokeProcessCapture("node", [instructionBudget, ...args], helperRoot, envOverride);
 }
 
 export function assertSuccess(result: ProcessResult, message: string): void {

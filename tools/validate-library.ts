@@ -31,6 +31,7 @@ import {
 } from "./validators/devkit-contract.ts";
 import { validateImplementationWorkerRouting } from "./validators/routing.ts";
 import { validateEngineeringQualityContracts } from "./validators/engineering-quality.ts";
+import { validateInstructionBudget } from "./instruction-budget.ts";
 
 type Options = {
   failOnWarnings: boolean;
@@ -132,6 +133,15 @@ function getInstructionNames(root: string): string[] {
   return listFiles(instructionsDir, ".md").map((file) => path.basename(file));
 }
 
+function ownsInstructionBudget(root: string): boolean {
+  try {
+    const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")) as Record<string, unknown>;
+    return packageJson.name === "opencode-dev-kit";
+  } catch {
+    return false;
+  }
+}
+
 function main(): void {
   const options = parseArgs(process.argv.slice(2));
   const ctx: ValidationContext = createContext();
@@ -152,6 +162,18 @@ function main(): void {
   validateReadme(ctx, root, skillNames, agentNames, instructionNames);
   validateRepoAgentsMd(ctx, root);
   validateInstallerConfigDirModel(ctx, root);
+  if (ownsInstructionBudget(root)) {
+    try {
+      const budget = validateInstructionBudget(root);
+      for (const boundary of budget.boundaries.filter((item) => item.status === "failed")) {
+        ctx.addError(
+          `Instruction budget exceeded for ${boundary.name}: actual=${boundary.actual} maximum=${boundary.maximum}. Regenerate reviewed maxima with: ${budget.regenerationCommand}`,
+        );
+      }
+    } catch (error) {
+      ctx.addError(error instanceof Error ? error.message : String(error));
+    }
+  }
 
   const markdownFiles = getMarkdownFiles(root);
   for (const file of markdownFiles) {

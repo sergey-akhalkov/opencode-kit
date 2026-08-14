@@ -5,9 +5,9 @@ export const ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES: ReadonlyMap<string, "deny
   ["permission.bash", "deny"],
 ]);
 
-/** Scalar only: every SDET edit requires runtime approval for the supplied test-only scope. */
+/** Scalar only: SDET edits are pre-authorized for the supplied test-only scope. */
 export const ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES: ReadonlyMap<string, "deny" | "ask" | "allow"> = new Map([
-  ["permission.edit", "ask"],
+  ["permission.edit", "allow"],
 ]);
 
 export const SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS: readonly string[] = [
@@ -37,7 +37,7 @@ export const SDET_QUALITY_ENGINEER_REQUIRED_TEXT: readonly string[] = [
   "mock confidence gap",
   "blocked",
   "Never edit or repair production",
-  "Every edit requires runtime approval",
+  "Edit is pre-authorized only",
   "smallest test artifact",
   "Execution Request",
   "raw output",

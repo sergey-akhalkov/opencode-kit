@@ -1,0 +1,8 @@
+{
+  "candidateId": "candidate-runtime-startup-r8",
+  "cleanup": "complete",
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "seedStatus": "canonical-idle",
+  "status": "complete"
+}

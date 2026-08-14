@@ -11,6 +11,7 @@ The canonical loop definition lives at `instructions/universal-development-loop.
 | Focused validation | After each meaningful edit | Nearest test/build/lint command result |
 | Earliest real signal | Each behavior dependency chain, before dependent expansion | Current fidelity rung, earliest safely reachable real boundary result, or exact blocker/unblocking task plus authorization, safeguards, restoration, and evidence plan |
 | Happy-path proof | Behavior-changing code | Observable execution at the relevant user-facing or system boundary |
+| Project doctor | After bootstrap and before lifecycle automation | `npm run doctor -- --project <path> --require structural|qualification|unattended`; exit `0` and an empty selected blocker array |
 | Independent critical SDET | Material behavior, after MVP and accepted-scope completion | Fresh test-only SDET, reachable critical-risk matrix, smallest critical reproducer when needed, and mock confidence gaps |
 | Code-quality reduction reviewer | Optional after MVP for concrete maintainability risk | Read-only safe net-reduction matrix or evidence-backed empty matrix |
 | Test-coverage reviewer | Optional after MVP for concrete oracle risk | Requirement-to-test risk matrix and meaningful oracle gaps |
@@ -20,6 +21,8 @@ The canonical loop definition lives at `instructions/universal-development-loop.
 Ordinary Small uses main-owned Runtime Proof, focused validation, and realistic requirement-linked edge inspection. It does not acquire independent SDET or systematic reviewer gates solely because behavior changed.
 
 Shift-left changes evidence order, not authority: local preparation may proceed, but remote, shared, credentialed, costly, destructive, or physical execution remains separately owner-controlled and subject to restoration, cleanup, and live-attempt gates.
+
+Doctor automation must use an explicit `--require` gate. Exit `2` means the selected gate is blocked; exit `1` is reserved for invalid arguments or diagnostic failure. The no-selector command remains informational and can exit `0` while qualification is blocked, so it is not a qualification gate. Canonical OpenSpec workflow collisions fail closed for qualification and unattended modes; additive config or instruction layers remain diagnostic unless another requirement makes them authoritative.
 
 ## Adapter Commands
 

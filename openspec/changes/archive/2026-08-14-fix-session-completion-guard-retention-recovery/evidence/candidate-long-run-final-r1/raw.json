@@ -1,0 +1,225 @@
+{
+  "candidateId": "candidate-final-long-run-r1",
+  "duplicateRetryChildren": {
+    "action": "blocked-multiple-retrying-children",
+    "status": "error"
+  },
+  "environment": {
+    "bun": "1.3.11",
+    "platform": "win32"
+  },
+  "failureClasses": {
+    "immutablePromptCalls": 1,
+    "immutableStatus": "error",
+    "transientStatus": "error"
+  },
+  "overflow": {
+    "childCreates": 0,
+    "errorClass": "input-state",
+    "observedBytes": 533761,
+    "promptCalls": 0,
+    "stoppedLog": true
+  },
+  "projection": {
+    "counts": {
+      "assistantEvidence": 0,
+      "auditRefs": 0,
+      "background": 0,
+      "currentTodos": 64,
+      "descendants": 0,
+      "diffEvidence": 0,
+      "everTodos": 64,
+      "humanMessages": 32,
+      "openTodos": 64,
+      "permissionReplies": 32,
+      "questionInterventions": 0,
+      "questionReplies": 32,
+      "requirementSignals": 0,
+      "strategyRefs": 0,
+      "syntheticMessages": 0,
+      "todoToolCalls": 0,
+      "todos": 64,
+      "toolEvidence": 64,
+      "truncationWarnings": 18,
+      "unresolvedTodos": 64,
+      "userMessages": 32,
+      "validationEvidence": 24
+    },
+    "outputBytes": 481733,
+    "retained": {
+      "humanMessages": 32,
+      "permissionReplies": 32,
+      "questionReplies": 32,
+      "todos": 64,
+      "toolEvidence": 64
+    },
+    "truncationWarnings": [
+      {
+        "limit": 2000,
+        "omitted": 80000,
+        "surface": "toolEvidence.output"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "toolEvidence"
+      },
+      {
+        "limit": 24,
+        "omitted": 56,
+        "surface": "validationEvidence"
+      },
+      {
+        "limit": 32,
+        "omitted": 48,
+        "surface": "humanMessages"
+      },
+      {
+        "limit": 2000,
+        "omitted": 5643,
+        "surface": "humanMessages.text"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.current"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.current.content"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.ever"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.ever.content"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.open"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.open.content"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.unresolved"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.unresolved.content"
+      },
+      {
+        "limit": 32,
+        "omitted": 16,
+        "surface": "questionReplies"
+      },
+      {
+        "limit": 2000,
+        "omitted": 16310,
+        "surface": "questionReplies.answers.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 16374,
+        "surface": "questionReplies.questions.text"
+      },
+      {
+        "limit": 32,
+        "omitted": 16,
+        "surface": "permissionReplies"
+      },
+      {
+        "limit": 2000,
+        "omitted": 16278,
+        "surface": "permissionReplies.reply"
+      }
+    ]
+  },
+  "retention": {
+    "createdChild": "child-current",
+    "deleted": [
+      "child-oldest"
+    ],
+    "retainedChildCount": 2,
+    "unrelatedPreserved": true
+  },
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/extensions/session-completion-guard.ts",
+      "sha256": "22fe753f34b036e8a0199538df83f93ed58d8d33d18b54460f2395bae5a47970"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+      "sha256": "ced226bd4ae1c7809e721bf458f1ee1b7d30eef047bf18382fb6f9e2eb6ae030"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+      "sha256": "a986b46f071bc68f45cc146dea0be9d2d198763104b2be711a96f2e4769b1475"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/controller.ts",
+      "sha256": "977dc201a073a557510f447d20a6cf2e8194495edef127c4b2b54532970bc0cf"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/leases.ts",
+      "sha256": "5dc66c8bf200b2d4f9f02750f85861231f94f02aec2f4e50696c8247401365bd"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/runtime-support.ts",
+      "sha256": "479eeb31a26010d077319dae0abf637f9e973b8be0fe9153b00e6dda05280c93"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/status.ts",
+      "sha256": "41896f44d09f36e0e0ddc4155099685bb589194b918b960ec736a29c14717a7c"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/task-fallback.ts",
+      "sha256": "5ec88bdc3f8b2e33d691113f1300f48b54b64f6c8cf8655ba1a80de644761835"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/types.ts",
+      "sha256": "5dc6583e1074116bf885d607d1330c48a6bfb83c552acd9f5c00fa69c580f9c2"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/db.ts",
+      "sha256": "224e21ad62b19018dd6ed808965d4648e19831453f416e2d9fc64b48e1222f5b"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/evidence.ts",
+      "sha256": "9851b2abce4c460236b70845c19562519fd18a07414328501601a151cc99c79e"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/index.ts",
+      "sha256": "9c5acdbbd91ad054f1c792740d07cbf19d7c84eff3add3dfa625eb4c191bd0f0"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/projection.ts",
+      "sha256": "2b3d815a076c2e2aa1d058197b0b9238b3a517fe3781a039a6e48d18f94317ea"
+    },
+    {
+      "path": "global/opencode.json.template",
+      "sha256": "b93c682d21e1b1fa72d271c6387b5c1478ed14920ef2a7be580f6ce1dba666be"
+    }
+  ],
+  "taskFallback": {
+    "exactlyOnce": true,
+    "promptCount": 1,
+    "suppressedWhenDisabled": true
+  },
+  "waitExhaustion": {
+    "count": 1,
+    "status": "error"
+  }
+}

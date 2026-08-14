@@ -1,0 +1,141 @@
+{
+  "candidateId": "baseline-b8bb815-r1",
+  "cleanup": "complete",
+  "environment": {
+    "bun": "1.3.11",
+    "platform": "win32"
+  },
+  "mode": "baseline",
+  "scenarios": [
+    {
+      "created": [],
+      "deleted": [],
+      "error": "Retained completion arbiter child limit reached with no eligible terminal child",
+      "kind": "busy",
+      "preserved": {
+        "unrelated": true,
+        "wrongOwner": true
+      },
+      "statuses": {
+        "child-busy-first": "auditing",
+        "child-busy-second": "auditing",
+        "child-busy-unrelated": null,
+        "child-busy-wrong-owner": "auditing"
+      },
+      "updates": []
+    },
+    {
+      "created": [],
+      "deleted": [],
+      "error": null,
+      "kind": "current",
+      "preserved": {
+        "unrelated": true,
+        "wrongOwner": true
+      },
+      "statuses": {
+        "child-current-first": "auditing",
+        "child-current-second": "auditing",
+        "child-current-unrelated": null,
+        "child-current-wrong-owner": "auditing"
+      },
+      "updates": [
+        {
+          "id": "child-current-first",
+          "status": "auditing"
+        }
+      ]
+    },
+    {
+      "created": [],
+      "deleted": [],
+      "error": "Retained completion arbiter child limit reached with no eligible terminal child",
+      "kind": "old-idle",
+      "preserved": {
+        "unrelated": true,
+        "wrongOwner": true
+      },
+      "statuses": {
+        "child-old-idle-first": "auditing",
+        "child-old-idle-second": "auditing",
+        "child-old-idle-unrelated": null,
+        "child-old-idle-wrong-owner": "auditing"
+      },
+      "updates": []
+    },
+    {
+      "created": [],
+      "deleted": [],
+      "error": "Retained completion arbiter child limit reached with no eligible terminal child",
+      "kind": "ownership",
+      "preserved": {
+        "unrelated": true,
+        "wrongOwner": true
+      },
+      "statuses": {
+        "child-ownership-first": "auditing",
+        "child-ownership-second": "auditing",
+        "child-ownership-unrelated": null,
+        "child-ownership-wrong-owner": "auditing"
+      },
+      "updates": []
+    },
+    {
+      "created": [],
+      "deleted": [],
+      "error": "Retained completion arbiter child limit reached with no eligible terminal child",
+      "kind": "recent",
+      "preserved": {
+        "unrelated": true,
+        "wrongOwner": true
+      },
+      "statuses": {
+        "child-recent-first": "auditing",
+        "child-recent-second": "auditing",
+        "child-recent-unrelated": null,
+        "child-recent-wrong-owner": "auditing"
+      },
+      "updates": []
+    },
+    {
+      "created": [],
+      "deleted": [],
+      "error": "Retained completion arbiter child limit reached with no eligible terminal child",
+      "kind": "unknown",
+      "preserved": {
+        "unrelated": true,
+        "wrongOwner": true
+      },
+      "statuses": {
+        "child-unknown-first": "auditing",
+        "child-unknown-second": "auditing",
+        "child-unknown-unrelated": null,
+        "child-unknown-wrong-owner": "auditing"
+      },
+      "updates": []
+    }
+  ],
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+      "sha256": "1c9f9dc8dfc361335d2b1e554bdfcd3ffbc9de850b2866efcace85a5bef4f989"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+      "sha256": "1ee4193be8dfda72ed1a8b037972b8557559b0558c50b5dffba232145eabd6ad"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/runtime-support.ts",
+      "sha256": "479eeb31a26010d077319dae0abf637f9e973b8be0fe9153b00e6dda05280c93"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/types.ts",
+      "sha256": "5dc6583e1074116bf885d607d1330c48a6bfb83c552acd9f5c00fa69c580f9c2"
+    },
+    {
+      "path": "tools/proofs/session-completion-guard-retention-recovery.ts",
+      "sha256": "2aa5673171cfcd4b95a6c1942a8af7af7add2061711b51a7e4f2afba4de85730"
+    }
+  ]
+}

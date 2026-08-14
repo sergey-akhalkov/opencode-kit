@@ -1,0 +1,33 @@
+{
+  "candidateId": "candidate-runtime-r4",
+  "cleanup": "complete",
+  "environment": {
+    "openCode": "1.18.18",
+    "platform": "win32"
+  },
+  "evidenceProvenance": "facts established by successful assertions before the recorded call-count oracle failure",
+  "provider": {
+    "arbiterCalls": 2,
+    "primaryCalls": 2,
+    "requestKinds": [
+      "primary",
+      "primary",
+      "arbiter-1",
+      "arbiter-2"
+    ]
+  },
+  "recovery": {
+    "finiteGuardChildCount": 2,
+    "interruptedChildrenRemaining": 1,
+    "replacementAuditPassed": true,
+    "rootState": "passed",
+    "unrelatedChildPreserved": true
+  },
+  "runnerFailure": {
+    "actualArbiterCalls": 2,
+    "expectedArbiterCalls": 1,
+    "reason": "proof arbiterPromptTimeoutMs=200 caused one supported transient retry",
+    "repeatRestartReached": false
+  },
+  "schemaVersion": 1
+}

@@ -7,9 +7,11 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { SessionCompletionController } from "../../global/extensions/session-completion-guard/controller.ts";
+import { hashRef } from "../../global/plugin/session-delivery-context/redaction.ts";
 import { proofClient, requestData } from "./lib/opencode-proof-client.ts";
 
-type Options = { candidateId: string; evidenceRoot: string };
+type Scenario = "retention" | "retention-preflight" | "retention-recovery" | "retry";
+type Options = { candidateId: string; evidenceRoot: string; help: boolean; scenario: Scenario };
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const runnerPath = fileURLToPath(import.meta.url);
 
@@ -19,9 +21,25 @@ function required(args: string[], index: number, option: string): string {
   return value;
 }
 
+function usage(): string {
+  return [
+    "Usage:",
+    "  bun tools/proofs/session-completion-guard-restart.ts --help",
+    "  bun tools/proofs/session-completion-guard-restart.ts --candidate-id <id> --evidence-root <absolute-new-path> [--scenario retry|retention-preflight|retention-recovery|retention]",
+    "",
+    "Scenarios:",
+    "  retry       Prove persisted bounded retry resumes in the same child (default).",
+    "  retention-preflight   Capture canonical idle status for realistic interrupted child seeds only.",
+    "  retention-recovery    Capture one loaded stale rotation and stop before repeat restart.",
+    "  retention   Prove old idle interrupted children recover across two loaded restarts.",
+  ].join("\n");
+}
+
 function options(args: string[]): Options {
+  if (args[0] === "--help" || args[0] === "-h") return { candidateId: "help", evidenceRoot: "", help: true, scenario: "retry" };
   let candidateId = "";
   let evidenceRoot = "";
+  let scenario: Scenario = "retry";
   for (let index = 0; index < args.length; index++) {
     if (args[index] === "--candidate-id") {
       candidateId = required(args, index, args[index]);
@@ -29,11 +47,16 @@ function options(args: string[]): Options {
     } else if (args[index] === "--evidence-root") {
       evidenceRoot = required(args, index, args[index]);
       index++;
+    } else if (args[index] === "--scenario") {
+      const value = required(args, index, args[index]);
+      if (value !== "retention" && value !== "retention-preflight" && value !== "retention-recovery" && value !== "retry") throw new Error("Scenario must be retry, retention-preflight, retention-recovery, or retention");
+      scenario = value;
+      index++;
     } else throw new Error(`Unknown option: ${args[index]}`);
   }
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(candidateId)) throw new Error("Invalid candidate id");
   if (!path.isAbsolute(evidenceRoot)) throw new Error("Evidence root must be absolute");
-  return { candidateId, evidenceRoot: path.resolve(evidenceRoot) };
+  return { candidateId, evidenceRoot: path.resolve(evidenceRoot), help: false, scenario };
 }
 
 function record(value: unknown): Record<string, unknown> | null {
@@ -50,6 +73,20 @@ function stable(value: unknown): unknown {
 function json(value: unknown): string { return `${JSON.stringify(stable(value), null, 2)}\n`; }
 function assert(value: unknown, message: string): asserts value { if (!value) throw new Error(message); }
 function stage(name: string): void { console.error(JSON.stringify({ stage: name })); }
+
+async function boundedRequestData<T>(request: Promise<unknown>, label: string, timeoutMs = 15_000): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  try {
+    return await Promise.race([
+      requestData<T>(request, label),
+      new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => reject(new Error(`${label} timed out after ${timeoutMs}ms`)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer != null) clearTimeout(timer);
+  }
+}
 
 async function freePort(): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -185,7 +222,7 @@ async function offlineUnlockPreflight(): Promise<void> {
   }
 }
 
-function writeConfig(configDir: string, dataDir: string, providerUrl: string): void {
+function writeConfig(configDir: string, dataDir: string, providerUrl: string, scenario: Scenario = "retry"): void {
   fs.mkdirSync(path.join(configDir, "agents"), { recursive: true });
   fs.copyFileSync(
     path.join(sourceRoot, "global", "agents", "session-completion-arbiter.md"),
@@ -214,7 +251,7 @@ function writeConfig(configDir: string, dataDir: string, providerUrl: string): v
     },
     plugin: [bridge, [guard, {
       arbiterAgent: "session-completion-arbiter",
-      arbiterPromptTimeoutMs: 5_000,
+      arbiterPromptTimeoutMs: scenario === "retry" ? 5_000 : 2_000,
       auditWindow: { enabled: false, mode: "read-only-monitor", scope: "per-root", terminal: "powershell-shell" },
       enabled: true,
       initialDelayMs: 10_000,
@@ -225,7 +262,7 @@ function writeConfig(configDir: string, dataDir: string, providerUrl: string): v
       maxWaitRechecks: 3,
       retainAuditSessions: 2,
       retryMultiplier: 1,
-      settleMs: 50,
+      settleMs: scenario === "retry" ? 50 : 2_000,
       statusToasts: false,
       strategyFallback: "docs/session-strategy-history",
       waitRecheckMs: 100,
@@ -257,36 +294,39 @@ async function startOpenCode(configDir: string, dataDir: string, project: string
   child.stderr.on("data", (chunk) => stderr.push(String(chunk)));
   const url = `http://127.0.0.1:${port}`;
   const client = proofClient(url, project);
-  const deadline = Date.now() + 20_000;
+  const deadline = Date.now() + 30_000;
   let lastError: unknown = null;
   while (Date.now() < deadline) {
     if (child.exitCode != null) throw new Error(`OpenCode server exited ${child.exitCode}: ${stderr.join("").slice(-1_000)}`);
     try {
-      await requestData(client.v2.agent.list({ location: { directory: project } }), "server readiness");
+      await boundedRequestData(client.v2.agent.list({ location: { directory: project } }), "server agent readiness", 5_000);
+      await boundedRequestData(client.session.status({ directory: project }), "server session readiness", 15_000);
       return { child, stderr, stdout, url };
     } catch (error) {
       lastError = error;
       await Bun.sleep(100);
     }
   }
-  child.kill();
+  await stopOpenCode({ child, stderr, stdout, url });
   throw new Error(`OpenCode server readiness timed out: ${lastError instanceof Error ? lastError.message : String(lastError)}`);
 }
 
 async function stopOpenCode(server: ServerProcess): Promise<void> {
   if (server.child.exitCode != null) return;
-  await new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("OpenCode server did not stop")), 10_000);
-    server.child.once("exit", () => { clearTimeout(timer); resolve(); });
-    server.child.kill();
-  });
+  const exited = new Promise<void>((resolve) => server.child.once("exit", () => resolve()));
+  server.child.kill();
+  const graceful = await Promise.race([exited.then(() => true), Bun.sleep(10_000).then(() => false)]);
+  if (graceful) return;
+  spawnSync("taskkill", ["/PID", String(server.child.pid), "/T", "/F"], { shell: false, stdio: "ignore" });
+  const forced = await Promise.race([exited.then(() => true), Bun.sleep(10_000).then(() => false)]);
+  if (!forced) throw new Error("OpenCode server did not stop after forced termination");
 }
 
 async function waitGuard(client: ReturnType<typeof proofClient>, rootID: string, project: string, states: string[], timeoutMs: number) {
   const deadline = Date.now() + timeoutMs;
   let lastGuard: Record<string, unknown> = {};
   while (Date.now() < deadline) {
-    const root = await requestData<Record<string, unknown>>(client.session.get({ sessionID: rootID, directory: project }), "guard root");
+    const root = await boundedRequestData<Record<string, unknown>>(client.session.get({ sessionID: rootID, directory: project }), "guard root");
     const guard = record(record(root.metadata)?.completionGuard) ?? {};
     lastGuard = guard;
     if (states.includes(String(guard.state))) return { guard, root };
@@ -314,10 +354,14 @@ async function waitRetryChild(client: ReturnType<typeof proofClient>, rootID: st
   throw new Error("Retry child metadata did not converge");
 }
 
-async function run(opts: Options): Promise<void> {
+function proofFixture(opts: Options): string {
+  return path.join(os.tmpdir(), `guard-restart-proof-${opts.scenario}-${opts.candidateId}`);
+}
+
+async function runRetry(opts: Options): Promise<void> {
   if (fs.existsSync(opts.evidenceRoot)) throw new Error("Evidence root already exists");
   await offlineUnlockPreflight();
-  const fixture = path.join(os.tmpdir(), `guard-restart-proof-${opts.candidateId}`);
+  const fixture = proofFixture(opts);
   fs.mkdirSync(fixture, { recursive: false });
   const configDir = path.join(fixture, "config");
   const dataDir = path.join(fixture, "data");
@@ -325,7 +369,7 @@ async function run(opts: Options): Promise<void> {
   fs.mkdirSync(project, { recursive: true });
   fs.writeFileSync(path.join(project, "AGENTS.md"), "# Disposable restart proof\n", "utf8");
   const provider = simulator();
-  writeConfig(configDir, dataDir, `http://${provider.server.hostname}:${provider.server.port}`);
+  writeConfig(configDir, dataDir, `http://${provider.server.hostname}:${provider.server.port}`, opts.scenario);
   const serverLogs: Array<{ ordinal: number; stderr: string; stdout: string }> = [];
   let server: ServerProcess | null = null;
   let rootID: string | null = null;
@@ -484,9 +528,319 @@ async function run(opts: Options): Promise<void> {
   stage("capture-complete");
 }
 
+async function runRetention(opts: Options): Promise<void> {
+  if (fs.existsSync(opts.evidenceRoot)) throw new Error("Evidence root already exists");
+  await offlineUnlockPreflight();
+  const fixture = proofFixture(opts);
+  fs.mkdirSync(fixture, { recursive: false });
+  const configDir = path.join(fixture, "config");
+  const dataDir = path.join(fixture, "data");
+  const project = path.join(fixture, "project");
+  fs.mkdirSync(project, { recursive: true });
+  fs.writeFileSync(path.join(project, "AGENTS.md"), "# Disposable retention restart proof\n", "utf8");
+  const provider = simulator();
+  provider.recover();
+  writeConfig(configDir, dataDir, `http://${provider.server.hostname}:${provider.server.port}`, opts.scenario);
+  const serverLogs: Array<{ ordinal: number; retentionError: boolean; stderrChars: number; stdoutChars: number }> = [];
+  let server: ServerProcess | null = null;
+  let rootID: string | null = null;
+  let proofError: unknown = null;
+  let seedStatusTypes: string[] = [];
+  let currentStage = "setup";
+  try {
+    server = await startOpenCode(configDir, dataDir, project);
+    fs.writeFileSync(path.join(fixture, "server-pid.json"), json({ pid: server.child.pid }), "utf8");
+    currentStage = "retention-server-1-ready";
+    stage("retention-server-1-ready");
+    let client = proofClient(server.url, project);
+    const root = await boundedRequestData<Record<string, unknown>>(client.session.create({
+      directory: project,
+      title: "guard retention restart proof",
+      metadata: { completionGuard: { grindEnabled: false, state: "disabled" } },
+    }), "retention root create");
+    rootID = String(root.id);
+    const rootRef = hashRef("session", rootID);
+    const interrupted: string[] = [];
+    for (const ordinal of [1, 2]) {
+      const child = await boundedRequestData<Record<string, unknown>>(client.session.create({
+        directory: project,
+        parentID: rootID,
+        title: `interrupted retention audit ${ordinal}`,
+        metadata: {
+          completionGuard: {
+            schemaVersion: 1,
+            auditID: `audit_interrupted_${ordinal}`,
+            rootSessionRef: rootRef,
+            inspectedRevision: `revision_interrupted_${ordinal}`,
+            kind: "completion",
+            status: "auditing",
+            attempt: 1,
+          },
+        },
+      }), `interrupted child ${ordinal} create`);
+      const childID = String(child.id);
+      interrupted.push(childID);
+      const seedPrompt = await boundedRequestData<{ info: Record<string, unknown> }>(client.session.prompt({
+        sessionID: childID,
+        directory: project,
+        model: { providerID: "proof", modelID: "proof-model" },
+        system: "Return one short completion sentence and stop. Do not call tools.",
+        tools: {},
+        parts: [{ type: "text", text: `Complete interrupted audit seed ${ordinal}.` }],
+      }), `interrupted child ${ordinal} prompt`);
+      if (seedPrompt.info.error != null) throw new Error(`Interrupted child ${ordinal} seed prompt failed`);
+    }
+    const seedStatuses = await boundedRequestData<Record<string, { type: string }>>(client.session.status({ directory: project }), "interrupted seed statuses");
+    seedStatusTypes = interrupted.map((id) => String(seedStatuses[id]?.type ?? "absent-idle"));
+    assert(seedStatusTypes.every((status) => status === "absent-idle" || status === "idle"), `Interrupted seed children must be canonically idle, got ${seedStatusTypes.join(",")}`);
+    if (opts.scenario === "retention-preflight") {
+      fs.mkdirSync(opts.evidenceRoot, { recursive: false });
+      fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json({
+        candidateId: opts.candidateId,
+        cleanup: "pending",
+        environment: { openCode: String(root.version ?? "unknown"), platform: process.platform },
+        provider: provider.facts(),
+        scenario: opts.scenario,
+        schemaVersion: 1,
+        seedStatusTypes,
+      }), "utf8");
+      return;
+    }
+    const unrelated = await boundedRequestData<Record<string, unknown>>(client.session.create({
+      directory: project,
+      parentID: rootID,
+      title: "unrelated retained child",
+    }), "unrelated child create");
+    await boundedRequestData(client.session.update({
+      sessionID: rootID,
+      directory: project,
+      metadata: { completionGuard: { grindEnabled: true, state: "running" } },
+    }), "enable retention root");
+    await stopOpenCode(server);
+    fs.rmSync(path.join(fixture, "server-pid.json"), { force: true });
+    serverLogs.push({
+      ordinal: 1,
+      retentionError: `${server.stdout.join("")}\n${server.stderr.join("")}`.includes("Retained completion arbiter child limit reached"),
+      stderrChars: server.stderr.join("").length,
+      stdoutChars: server.stdout.join("").length,
+    });
+    server = null;
+    await Bun.sleep(2_500);
+
+    server = await startOpenCode(configDir, dataDir, project);
+    fs.writeFileSync(path.join(fixture, "server-pid.json"), json({ pid: server.child.pid }), "utf8");
+    currentStage = "retention-server-2-ready";
+    stage("retention-server-2-ready");
+    client = proofClient(server.url, project);
+    const recovered = await waitGuard(client, rootID, project, ["passed", "error"], 30_000);
+    assert(recovered.guard.state === "passed", `Retention recovery must pass, got ${String(recovered.guard.state)}`);
+    currentStage = "retention-recovery-passed";
+    const childrenAfterRecovery = await boundedRequestData<Array<Record<string, unknown>>>(
+      client.session.children({ sessionID: rootID, directory: project }),
+      "children after retention recovery",
+    );
+    const interruptedAfterRecovery = interrupted.filter((id) => childrenAfterRecovery.some((child) => child.id === id));
+    const guardAfterRecovery = childrenAfterRecovery.filter((child) =>
+      record(record(child.metadata)?.completionGuard)?.rootSessionRef === rootRef
+    );
+    assert(interruptedAfterRecovery.length === 1, "Retention recovery must rotate exactly one interrupted child");
+    assert(childrenAfterRecovery.some((child) => child.id === unrelated.id), "Retention recovery must preserve the unrelated child");
+    assert(guardAfterRecovery.length === 2, `Retention recovery must preserve finite capacity, got ${guardAfterRecovery.length}`);
+    assert(
+      guardAfterRecovery.some((child) => record(record(child.metadata)?.completionGuard)?.status === "passed"),
+      "Retention recovery must complete one replacement audit",
+    );
+    const callsAfterRecovery = provider.facts().arbiterCalls;
+    assert(callsAfterRecovery >= 1, "Retention recovery must reach the arbiter boundary");
+    serverLogs.push({
+      ordinal: 2,
+      retentionError: `${server.stdout.join("")}\n${server.stderr.join("")}`.includes("Retained completion arbiter child limit reached"),
+      stderrChars: server.stderr.join("").length,
+      stdoutChars: server.stdout.join("").length,
+    });
+    if (opts.scenario === "retention-recovery") {
+      assert(serverLogs.every((entry) => !entry.retentionError), "Loaded retention recovery emitted the original retention-limit error");
+      fs.mkdirSync(opts.evidenceRoot, { recursive: false });
+      fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json({
+        candidateId: opts.candidateId,
+        cleanup: "pending",
+        environment: { openCode: String(root.version ?? "unknown"), platform: process.platform },
+        provider: provider.facts(),
+        retention: {
+          guardChildrenAfterRecovery: guardAfterRecovery.length,
+          interruptedChildrenAfterRecovery: interruptedAfterRecovery.length,
+          recoveryState: recovered.guard.state,
+          seedStatusTypes,
+          unrelatedPreservedAfterRecovery: childrenAfterRecovery.some((child) => child.id === unrelated.id),
+        },
+        scenario: opts.scenario,
+        schemaVersion: 1,
+        serverLogs,
+      }), "utf8");
+      return;
+    }
+    await stopOpenCode(server);
+    fs.rmSync(path.join(fixture, "server-pid.json"), { force: true });
+    server = null;
+
+    server = await startOpenCode(configDir, dataDir, project);
+    fs.writeFileSync(path.join(fixture, "server-pid.json"), json({ pid: server.child.pid }), "utf8");
+    currentStage = "retention-server-3-ready";
+    stage("retention-server-3-ready");
+    client = proofClient(server.url, project);
+    const callDeadline = Date.now() + 30_000;
+    while (provider.facts().arbiterCalls <= callsAfterRecovery && Date.now() < callDeadline) await Bun.sleep(100);
+    assert(provider.facts().arbiterCalls > callsAfterRecovery, "Verification restart must reach a later arbiter boundary");
+    const verified = await waitGuard(client, rootID, project, ["passed", "error"], 10_000);
+    assert(verified.guard.state === "passed", `Verification restart must pass, got ${String(verified.guard.state)}`);
+    currentStage = "retention-verification-passed";
+    const childrenAfterVerification = await boundedRequestData<Array<Record<string, unknown>>>(
+      client.session.children({ sessionID: rootID, directory: project }),
+      "children after verification restart",
+    );
+    const guardAfterVerification = childrenAfterVerification.filter((child) =>
+      record(record(child.metadata)?.completionGuard)?.rootSessionRef === rootRef
+    );
+    assert(guardAfterVerification.length === 2, `Verification restart must retain exactly two guard children, got ${guardAfterVerification.length}`);
+    assert(childrenAfterVerification.some((child) => child.id === unrelated.id), "Verification restart must preserve the unrelated child");
+    serverLogs.push({
+      ordinal: 3,
+      retentionError: `${server.stdout.join("")}\n${server.stderr.join("")}`.includes("Retained completion arbiter child limit reached"),
+      stderrChars: server.stderr.join("").length,
+      stdoutChars: server.stdout.join("").length,
+    });
+    assert(serverLogs.every((entry) => !entry.retentionError), "Loaded retention recovery emitted the original retention-limit error");
+    fs.mkdirSync(opts.evidenceRoot, { recursive: false });
+    fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "pending",
+      environment: { openCode: String(root.version ?? "unknown"), platform: process.platform },
+      provider: provider.facts(),
+      retention: {
+        guardChildrenAfterRecovery: guardAfterRecovery.length,
+        guardChildrenAfterVerification: guardAfterVerification.length,
+        interruptedChildrenAfterRecovery: interruptedAfterRecovery.length,
+        unrelatedPreservedAfterRecovery: childrenAfterRecovery.some((child) => child.id === unrelated.id),
+        unrelatedPreservedAfterVerification: childrenAfterVerification.some((child) => child.id === unrelated.id),
+        recoveryState: recovered.guard.state,
+        verificationState: verified.guard.state,
+        seedStatusTypes,
+      },
+      scenario: opts.scenario,
+      schemaVersion: 1,
+      serverLogs,
+    }), "utf8");
+  } catch (error) {
+    proofError = error;
+    const stderr = server?.stderr.join("") ?? "";
+    const sanitized = stderr
+      .replaceAll(fixture.replaceAll("\\", "\\\\"), "<fixture>")
+      .replaceAll(sourceRoot.replaceAll("\\", "\\\\"), "<source-root>")
+      .replaceAll(os.homedir().replaceAll("\\", "\\\\"), "<home>")
+      .replaceAll(fixture, "<fixture>")
+      .replaceAll(sourceRoot, "<source-root>")
+      .replaceAll(os.homedir(), "<home>")
+      .slice(-4_000);
+    if (!fs.existsSync(opts.evidenceRoot)) fs.mkdirSync(opts.evidenceRoot, { recursive: false });
+    fs.writeFileSync(path.join(opts.evidenceRoot, "failure.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "pending",
+      error: error instanceof Error ? error.message : String(error),
+      provider: provider.facts(),
+      scenario: opts.scenario,
+      schemaVersion: 1,
+      serverLogTail: sanitized,
+      stage: currentStage,
+      status: "failed",
+    }), { encoding: "utf8", flag: "wx" });
+    throw new Error(`${error instanceof Error ? error.message : String(error)}; provider=${JSON.stringify(provider.facts())}; server=${JSON.stringify(sanitized)}`);
+  } finally {
+    if (server != null) {
+      try {
+        if (rootID != null) {
+          const client = proofClient(server.url, project);
+          const children = await boundedRequestData<Array<Record<string, unknown>>>(client.session.children({ sessionID: rootID, directory: project }), "retention cleanup children");
+          for (const child of children) await boundedRequestData(client.session.delete({ sessionID: String(child.id), directory: project }), "retention cleanup child delete");
+          await boundedRequestData(client.session.delete({ sessionID: rootID, directory: project }), "retention cleanup root delete");
+        }
+      } finally {
+        await stopOpenCode(server);
+        fs.rmSync(path.join(fixture, "server-pid.json"), { force: true });
+      }
+    }
+    provider.server.stop(true);
+    fs.rmSync(fixture, { recursive: true, force: true });
+    stage("cleanup-complete");
+    if (fs.existsSync(path.join(opts.evidenceRoot, "raw.json"))) {
+      const raw = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "raw.json"), "utf8")) as Record<string, unknown>;
+      raw.cleanup = "complete";
+      fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json(raw), "utf8");
+    } else if (fs.existsSync(path.join(opts.evidenceRoot, "failure.json"))) {
+      const failure = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "failure.json"), "utf8")) as Record<string, unknown>;
+      failure.cleanup = "complete";
+      fs.writeFileSync(path.join(opts.evidenceRoot, "failure.json"), json(failure), "utf8");
+    } else if (proofError == null) throw new Error("Retention restart proof did not publish evidence");
+  }
+  stage("capture-complete");
+}
+
 function evaluate(opts: Options): void {
   const rawPath = path.join(opts.evidenceRoot, "raw.json");
   const raw = JSON.parse(fs.readFileSync(rawPath, "utf8")) as Record<string, unknown>;
+  if (opts.scenario === "retention-preflight") {
+    assert(raw.candidateId === opts.candidateId && raw.scenario === "retention-preflight", "Retention preflight candidate correlation mismatch");
+    assert(raw.cleanup === "complete", "Retention preflight cleanup is incomplete");
+    assert(Array.isArray(raw.seedStatusTypes) && raw.seedStatusTypes.length === 2 && raw.seedStatusTypes.every((status) => status === "absent-idle" || status === "idle"), "Retention preflight seeds were not canonically idle");
+    fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "complete",
+      scenario: opts.scenario,
+      seedStatus: "canonical-idle",
+      schemaVersion: 1,
+      status: "complete",
+    }), { encoding: "utf8", flag: "wx" });
+    return;
+  }
+  if (opts.scenario === "retention-recovery") {
+    const retention = record(raw.retention) ?? {};
+    assert(raw.candidateId === opts.candidateId && raw.scenario === "retention-recovery", "Retention recovery capture candidate correlation mismatch");
+    assert(raw.cleanup === "complete", "Retention recovery capture cleanup is incomplete");
+    assert(retention.recoveryState === "passed", "Retention recovery capture did not reach passed");
+    assert(Number(retention.guardChildrenAfterRecovery) === 2 && Number(retention.interruptedChildrenAfterRecovery) === 1, "Retention recovery capture did not rotate within finite capacity");
+    assert(retention.unrelatedPreservedAfterRecovery === true, "Retention recovery capture changed the unrelated child");
+    const serverLogs = Array.isArray(raw.serverLogs) ? raw.serverLogs.map(record) : [];
+    assert(serverLogs.length === 2 && serverLogs.every((entry) => entry?.retentionError === false), "Retention recovery capture contains the original retention error");
+    fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "complete",
+      recovery: "old-idle-interrupted-rotation",
+      scenario: opts.scenario,
+      schemaVersion: 1,
+      status: "complete",
+    }), { encoding: "utf8", flag: "wx" });
+    return;
+  }
+  if (opts.scenario === "retention") {
+    const retention = record(raw.retention) ?? {};
+    assert(raw.candidateId === opts.candidateId && raw.scenario === "retention", "Retention restart capture candidate correlation mismatch");
+    assert(raw.cleanup === "complete", "Retention restart capture cleanup is incomplete");
+    assert(retention.recoveryState === "passed" && retention.verificationState === "passed", "Retention restart capture did not pass both loaded starts");
+    assert(Number(retention.guardChildrenAfterRecovery) === 2 && Number(retention.guardChildrenAfterVerification) === 2, "Retention restart capture exceeded finite capacity");
+    assert(Number(retention.interruptedChildrenAfterRecovery) === 1, "Retention restart capture did not rotate exactly one interrupted child");
+    assert(Array.isArray(retention.seedStatusTypes) && retention.seedStatusTypes.length === 2 && retention.seedStatusTypes.every((status) => status === "absent-idle" || status === "idle"), "Retention restart seeds were not canonically idle");
+    assert(retention.unrelatedPreservedAfterRecovery === true && retention.unrelatedPreservedAfterVerification === true, "Retention restart capture changed the unrelated child");
+    const serverLogs = Array.isArray(raw.serverLogs) ? raw.serverLogs.map(record) : [];
+    assert(serverLogs.length === 3 && serverLogs.every((entry) => entry?.retentionError === false), "Retention restart capture contains the original retention error");
+    fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "complete",
+      restartRecovery: "old-idle-interrupted-rotation-repeat-safe",
+      scenario: opts.scenario,
+      schemaVersion: 1,
+      status: "complete",
+    }), { encoding: "utf8", flag: "wx" });
+    return;
+  }
   const restart = record(raw.restart) ?? {};
   assert(raw.candidateId === opts.candidateId, "Restart capture candidate correlation mismatch");
   assert(raw.cleanup === "complete", "Restart capture cleanup is incomplete");
@@ -504,8 +858,8 @@ function evaluate(opts: Options): void {
 }
 
 async function supervise(opts: Options): Promise<void> {
-  const fixture = path.join(os.tmpdir(), `guard-restart-proof-${opts.candidateId}`);
-  const child = spawn(process.execPath, [runnerPath, "--internal-worker", "--candidate-id", opts.candidateId, "--evidence-root", opts.evidenceRoot], {
+  const fixture = proofFixture(opts);
+  const child = spawn(process.execPath, [runnerPath, "--internal-worker", "--candidate-id", opts.candidateId, "--evidence-root", opts.evidenceRoot, "--scenario", opts.scenario], {
     cwd: sourceRoot,
     env: process.env,
     shell: false,
@@ -537,7 +891,13 @@ async function supervise(opts: Options): Promise<void> {
 
 const internalWorker = process.argv[2] === "--internal-worker";
 const cliArgs = internalWorker ? process.argv.slice(3) : process.argv.slice(2);
-(internalWorker ? run(options(cliArgs)) : supervise(options(cliArgs))).catch((error) => {
+const parsed = options(cliArgs);
+  const execution = parsed.help
+  ? Promise.resolve().then(() => console.log(usage()))
+  : internalWorker
+    ? parsed.scenario === "retry" ? runRetry(parsed) : runRetention(parsed)
+    : supervise(parsed);
+execution.catch((error) => {
   console.error(json({ error: error instanceof Error ? error.message : String(error), status: "blocked" }).trimEnd());
   process.exitCode = 1;
 });

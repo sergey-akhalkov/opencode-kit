@@ -39,6 +39,28 @@ export type RuntimeSourceReport = {
   warnings: string[];
 };
 
+export type RuntimeSourceInventory = Pick<RuntimeSourceReport, "collisions" | "sources"> & {
+  canonicalWorkflow: RuntimeSourceReport["unattended"]["canonicalWorkflow"];
+  collisionStatus: RuntimeSourceReport["unattended"]["collisionStatus"];
+};
+
+export type InstructionEvidenceClass = "config-declared" | "conventional" | "runtime-observed" | "unknown";
+
+export type LoaderVisibleInstructionSource = {
+  category: "on-demand-body" | "startup-visible-candidate";
+  evidenceClass: InstructionEvidenceClass;
+  file: string | null;
+  identity: string;
+  kind: "agent" | "command" | "instruction" | "skill";
+  reason: string | null;
+  source: RuntimeSource["source"];
+};
+
+export type LoaderVisibleInstructionManifest = {
+  project: string;
+  sources: LoaderVisibleInstructionSource[];
+};
+
 const CANONICAL_SKILLS = new Set(["openspec-apply-change", "openspec-archive-change", "openspec-propose"]);
 const CANONICAL_COMMANDS = new Set(["opsx-apply", "opsx-archive", "opsx-propose"]);
 const GUARD_LIMITS = [
@@ -202,6 +224,265 @@ function collisions(sources: RuntimeSource[]): RuntimeSourceCollision[] {
     .sort((left, right) => left.kind.localeCompare(right.kind) || left.name.localeCompare(right.name));
 }
 
+function projectSearchRoots(root: string): string[] {
+  const selected = path.resolve(root);
+  const roots = [selected];
+  let current = selected;
+  for (let depth = 0; depth < 31; depth++) {
+    if (isDirectory(path.join(current, ".git")) || isFile(path.join(current, ".git"))) {
+      return roots;
+    }
+    const parent = path.dirname(current);
+    if (parent === current) {
+      return [selected];
+    }
+    roots.push(parent);
+    current = parent;
+  }
+  return [selected];
+}
+
+function safeManifestIdentity(scope: string, kind: LoaderVisibleInstructionSource["kind"], ordinal: number): string {
+  return `<${scope}:${kind}:${ordinal}>`;
+}
+
+function addManifestFile(
+  result: LoaderVisibleInstructionSource[],
+  file: string,
+  identity: string,
+  source: RuntimeSource["source"],
+  evidenceClass: InstructionEvidenceClass,
+  kind: LoaderVisibleInstructionSource["kind"],
+  category: LoaderVisibleInstructionSource["category"],
+): void {
+  if (!isFile(file)) return;
+  result.push({ category, evidenceClass, file, identity, kind, reason: null, source });
+}
+
+function addManifestArtifacts(
+  result: LoaderVisibleInstructionSource[],
+  root: string,
+  scope: string,
+  source: RuntimeSource["source"],
+  evidenceClass: InstructionEvidenceClass,
+): void {
+  for (const [kind, directories] of [
+    ["agent", ["agent", "agents"]],
+    ["command", ["command", "commands"]],
+  ] as const) {
+    const files = directories.flatMap((subdirectory) => {
+      const directory = path.join(root, subdirectory);
+      if (!isDirectory(directory)) return [];
+      return fs.readdirSync(directory, { withFileTypes: true })
+        .filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith(".md"))
+        .map((entry) => path.join(directory, entry.name));
+    }).sort((left, right) => left.localeCompare(right));
+    files.forEach((file, index) => addManifestFile(
+      result,
+      file,
+      safeManifestIdentity(scope, kind, index + 1),
+      source,
+      evidenceClass,
+      kind,
+      "on-demand-body",
+    ));
+  }
+
+  const skills = ["skill", "skills"].flatMap((subdirectory) => {
+    const directory = path.join(root, subdirectory);
+    if (!isDirectory(directory)) return [];
+    return fs.readdirSync(directory, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => path.join(directory, entry.name, "SKILL.md"))
+      .filter(isFile);
+  }).sort((left, right) => left.localeCompare(right));
+  skills.forEach((file, index) => addManifestFile(
+    result,
+    file,
+    safeManifestIdentity(scope, "skill", index + 1),
+    source,
+    evidenceClass,
+    "skill",
+    "on-demand-body",
+  ));
+}
+
+type ConfigCandidate = {
+  file: string;
+  identity: string;
+  source: RuntimeSource["source"];
+};
+
+function configCandidates(projectRoot: string): ConfigCandidate[] {
+  const result: ConfigCandidate[] = [];
+  const seen = new Set<string>();
+  const add = (file: string, identity: string, source: RuntimeSource["source"]): void => {
+    const key = normalize(path.resolve(file)).toLowerCase();
+    if (!isFile(file) || seen.has(key)) return;
+    seen.add(key);
+    result.push({ file, identity, source });
+  };
+
+  for (const sourceRoot of sourceRoots(projectRoot)) {
+    for (const configName of ["opencode.json", "opencode.jsonc"]) {
+      add(path.join(sourceRoot.root, configName), `<global:${sourceRoot.source}:config>`, sourceRoot.source);
+    }
+  }
+  const explicit = process.env.OPENCODE_CONFIG?.trim();
+  if (explicit) add(path.resolve(explicit), "<explicit:config>", "explicit");
+
+  projectSearchRoots(projectRoot).forEach((root, index) => {
+    const scope = index === 0 ? "project" : `parent:${index}`;
+    for (const configName of ["opencode.json", "opencode.jsonc"]) {
+      add(path.join(root, configName), `<${scope}:config>`, "project");
+      add(path.join(root, ".opencode", configName), `<${scope}:.opencode:config>`, "project");
+    }
+  });
+  return result;
+}
+
+function configInstructionSources(candidate: ConfigCandidate): LoaderVisibleInstructionSource[] {
+  let parsed: unknown;
+  const errors: jsoncParse.ParseError[] = [];
+  try {
+    parsed = jsoncParse(fs.readFileSync(candidate.file, "utf8"), errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    });
+  } catch {
+    parsed = null;
+    errors.push({ error: 0, length: 0, offset: 0 });
+  }
+  const unknown = (reason: string, index = 0): LoaderVisibleInstructionSource => ({
+    category: "startup-visible-candidate",
+    evidenceClass: "unknown",
+    file: null,
+    identity: `${candidate.identity}:instructions:${index}`,
+    kind: "instruction",
+    reason,
+    source: candidate.source,
+  });
+  if (errors.length > 0 || parsed == null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return [unknown("config-unreadable-or-malformed")];
+  }
+  const instructions = (parsed as Record<string, unknown>).instructions;
+  if (instructions === undefined) return [];
+  if (!Array.isArray(instructions)) return [unknown("unsupported-instructions-shape")];
+
+  return instructions.map((entry, index) => {
+    const identity = `${candidate.identity}:instructions:${index}`;
+    if (typeof entry !== "string" || entry.trim() === "") return unknown("unsupported-instruction-entry", index);
+    const value = entry.trim();
+    if (/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) return unknown("remote-instruction", index);
+    if (/[*?[\]{}]/.test(value)) return unknown("instruction-glob", index);
+    if (path.extname(value).toLowerCase() !== ".md") return unknown("unsupported-instruction-extension", index);
+    const resolved = path.isAbsolute(value) ? path.resolve(value) : path.resolve(path.dirname(candidate.file), value);
+    try {
+      const stat = fs.lstatSync(resolved);
+      if (!stat.isFile() || stat.isSymbolicLink()) return unknown("instruction-not-readable-file", index);
+    } catch {
+      return unknown("instruction-not-readable-file", index);
+    }
+    return {
+      category: "startup-visible-candidate",
+      evidenceClass: "config-declared",
+      file: resolved,
+      identity,
+      kind: "instruction",
+      reason: null,
+      source: candidate.source,
+    };
+  });
+}
+
+export function inspectLoaderVisibleInstructionManifest(root: string): LoaderVisibleInstructionManifest {
+  const project = path.resolve(root);
+  if (!isDirectory(project)) {
+    throw new Error("Project is not a directory: <redacted>");
+  }
+  const result: LoaderVisibleInstructionSource[] = [];
+
+  for (const sourceRoot of sourceRoots(project)) {
+    const scope = `global:${sourceRoot.source}`;
+    for (const instructionName of ["AGENTS.md", "opencode.local.instructions.md"]) {
+      addManifestFile(
+        result,
+        path.join(sourceRoot.root, instructionName),
+        `<${scope}:${instructionName}>`,
+        sourceRoot.source,
+        "runtime-observed",
+        "instruction",
+        "startup-visible-candidate",
+      );
+    }
+    addManifestArtifacts(result, sourceRoot.root, scope, sourceRoot.source, "runtime-observed");
+  }
+
+  projectSearchRoots(project).forEach((projectSourceRoot, index) => {
+    const scope = index === 0 ? "project" : `parent:${index}`;
+    for (const instructionName of ["AGENTS.md", "opencode.local.instructions.md"]) {
+      addManifestFile(
+        result,
+        path.join(projectSourceRoot, instructionName),
+        `<${scope}:${instructionName}>`,
+        "project",
+        "conventional",
+        "instruction",
+        "startup-visible-candidate",
+      );
+      addManifestFile(
+        result,
+        path.join(projectSourceRoot, ".opencode", instructionName),
+        `<${scope}:.opencode:${instructionName}>`,
+        "project",
+        "conventional",
+        "instruction",
+        "startup-visible-candidate",
+      );
+    }
+    addManifestArtifacts(result, path.join(projectSourceRoot, ".opencode"), `${scope}:.opencode`, "project", "conventional");
+  });
+
+  for (const candidate of configCandidates(project)) {
+    result.push(...configInstructionSources(candidate));
+  }
+  if (process.env.OPENCODE_CONFIG_CONTENT?.trim()) {
+    result.push({
+      category: "startup-visible-candidate",
+      evidenceClass: "unknown",
+      file: null,
+      identity: "<inline-config:instructions>",
+      kind: "instruction",
+      reason: "inline-config-not-inspected",
+      source: "inline",
+    });
+  }
+
+  const evidenceRank: Record<InstructionEvidenceClass, number> = {
+    unknown: 0,
+    conventional: 1,
+    "runtime-observed": 2,
+    "config-declared": 3,
+  };
+  const measured = new Map<string, LoaderVisibleInstructionSource>();
+  const unknown = result.filter((source) => source.file == null);
+  for (const source of result.filter((item) => item.file != null)) {
+    const key = `${source.category}:${normalize(path.resolve(source.file!)).toLowerCase()}`;
+    const current = measured.get(key);
+    if (current == null || evidenceRank[source.evidenceClass] > evidenceRank[current.evidenceClass]) {
+      measured.set(key, source);
+    }
+  }
+  const sources = [...measured.values(), ...unknown];
+  sources.sort(
+    (left, right) =>
+      left.category.localeCompare(right.category) ||
+      left.identity.localeCompare(right.identity) ||
+      left.evidenceClass.localeCompare(right.evidenceClass),
+  );
+  return { project, sources };
+}
+
 function activeGlobalRoot(): string {
   const custom = process.env.OPENCODE_CONFIG_DIR?.trim();
   return custom ? path.resolve(custom) : path.join(os.homedir(), ".config", "opencode");
@@ -239,7 +520,7 @@ function guardDiagnostics(globalRoot: string): RuntimeSourceReport["unattended"]
   }
 }
 
-export function inspectRuntimeSources(root: string): RuntimeSourceReport {
+export function inspectRuntimeSourceInventory(root: string): RuntimeSourceInventory {
   const sources: RuntimeSource[] = [];
   addProjectSources(sources, root);
   for (const sourceRoot of sourceRoots(root)) {
@@ -257,15 +538,25 @@ export function inspectRuntimeSources(root: string): RuntimeSourceReport {
     (source.kind === "skill" && CANONICAL_SKILLS.has(source.name)) ||
     (source.kind === "command" && CANONICAL_COMMANDS.has(source.name))
   );
+  return {
+    canonicalWorkflow,
+    collisionStatus: sourceCollisions.some((collision) =>
+      (collision.kind === "skill" && CANONICAL_SKILLS.has(collision.name)) ||
+      (collision.kind === "command" && CANONICAL_COMMANDS.has(collision.name))
+    ) ? "blocked" : "clear",
+    collisions: sourceCollisions,
+    sources,
+  };
+}
+
+export function inspectRuntimeSources(root: string): RuntimeSourceReport {
+  const inventory = inspectRuntimeSourceInventory(root);
   const globalRoot = activeGlobalRoot();
   return {
-    collisions: sourceCollisions,
+    collisions: inventory.collisions,
     unattended: {
-      canonicalWorkflow,
-      collisionStatus: sourceCollisions.some((collision) =>
-        (collision.kind === "skill" && CANONICAL_SKILLS.has(collision.name)) ||
-        (collision.kind === "command" && CANONICAL_COMMANDS.has(collision.name))
-      ) ? "blocked" : "clear",
+      canonicalWorkflow: inventory.canonicalWorkflow,
+      collisionStatus: inventory.collisionStatus,
       guard: guardDiagnostics(globalRoot),
       helpers: [
         "bin/openspec-operation-gate.ts",
@@ -278,7 +569,7 @@ export function inspectRuntimeSources(root: string): RuntimeSourceReport {
     },
     root: redactLocation(root),
     schemaVersion: 1,
-    sources,
+    sources: inventory.sources,
     warnings: [
       "Source presence does not prove precedence or that every source was loaded by a running process.",
       "Config-declared instruction globs are not expanded because resolved config may contain secrets; configured paths not represented by conventional locations require an isolated privacy-safe workflow.",
@@ -286,16 +577,35 @@ export function inspectRuntimeSources(root: string): RuntimeSourceReport {
   };
 }
 
-function parseRoot(args: string[]): string {
-  const index = args.indexOf("--root");
-  if (index === -1) {
-    return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+function usage(): string {
+  return `Usage:
+  npm run opencode:sources -- [options]
+
+Options:
+  --root <path>  Project directory to inspect. Default: repository root.
+  --help, -h     Show this help.`;
+}
+
+function parseArgs(args: string[]): { help: boolean; root: string } {
+  if (args.includes("--help") || args.includes("-h")) {
+    return { help: true, root: "" };
   }
-  const value = args[index + 1];
-  if (!value || value.startsWith("--")) {
-    throw new Error("Missing value for --root.");
+
+  let root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index];
+    if (arg === "--root") {
+      const value = args[index + 1];
+      if (!value || value.startsWith("--")) {
+        throw new Error("Missing value for --root.");
+      }
+      root = path.resolve(value);
+      index++;
+    } else {
+      throw new Error(`Unknown option: ${arg}`);
+    }
   }
-  return path.resolve(value);
+  return { help: false, root };
 }
 
 function isMainModule(): boolean {
@@ -305,9 +615,14 @@ function isMainModule(): boolean {
 
 if (isMainModule()) {
   try {
-    console.log(JSON.stringify(inspectRuntimeSources(parseRoot(process.argv.slice(2))), null, 2));
+    const options = parseArgs(process.argv.slice(2));
+    if (options.help) {
+      console.log(usage());
+    } else {
+      console.log(JSON.stringify(inspectRuntimeSources(options.root), null, 2));
+    }
   } catch (error) {
-    console.error(error instanceof Error ? error.message : String(error));
+    console.error(`${error instanceof Error ? error.message : String(error)}\n\n${usage()}`);
     process.exitCode = 1;
   }
 }

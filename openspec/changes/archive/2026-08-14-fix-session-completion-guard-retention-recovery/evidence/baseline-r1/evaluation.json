@@ -1,0 +1,16 @@
+{
+  "baselineDeadlockReproduced": true,
+  "candidateId": "baseline-b8bb815-r1",
+  "candidateRecovered": false,
+  "cleanup": "complete",
+  "currentEpochPreserved": true,
+  "mode": "baseline",
+  "protectedControls": [
+    "busy",
+    "ownership",
+    "recent",
+    "unknown"
+  ],
+  "schemaVersion": 1,
+  "status": "passed"
+}

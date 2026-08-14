@@ -1,0 +1,16 @@
+{
+  "baselineDeadlockReproduced": false,
+  "candidateId": "candidate-working-r1",
+  "candidateRecovered": true,
+  "cleanup": "complete",
+  "currentEpochPreserved": true,
+  "mode": "candidate",
+  "protectedControls": [
+    "busy",
+    "ownership",
+    "recent",
+    "unknown"
+  ],
+  "schemaVersion": 1,
+  "status": "passed"
+}

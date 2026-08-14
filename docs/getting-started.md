@@ -36,8 +36,10 @@ npm run init:project -- --target <project-path> --mode write
 Then check readiness:
 
 ```sh
-npm run doctor -- --project <project-path>
+npm run doctor -- --project <project-path> --require qualification
 ```
+
+Use `--require structural` for bootstrap integrity or `--require unattended` for the stricter unattended mission boundary. A selected gate exits `0` on pass, `2` when blocked, and names every blocker. Running without `--require` keeps the informational structural-exit contract for compatibility.
 
 ## First Task Prompt
 

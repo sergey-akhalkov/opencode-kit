@@ -1,0 +1,35 @@
+{
+  "candidateId": "candidate-final-retry-r1",
+  "cleanup": "complete",
+  "environment": {
+    "openCode": "1.18.18",
+    "platform": "win32"
+  },
+  "provider": {
+    "arbiterCalls": 3,
+    "primaryCalls": 1,
+    "requestKinds": [
+      "primary",
+      "arbiter-1",
+      "arbiter-2",
+      "arbiter-3"
+    ]
+  },
+  "restart": {
+    "attemptAfter": 2,
+    "attemptBefore": 1,
+    "auditPreserved": true,
+    "childReused": true,
+    "nonGuardChildrenObserved": 1,
+    "rootStateAfter": "passed",
+    "rootStateBefore": "audit-retrying"
+  },
+  "schemaVersion": 1,
+  "serverLogs": [
+    {
+      "ordinal": 1,
+      "stderrChars": 10083,
+      "stdoutChars": 119
+    }
+  ]
+}

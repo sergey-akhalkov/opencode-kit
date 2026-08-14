@@ -70,6 +70,7 @@ async function enforceRetention(
   state: RootState,
   epoch: AuditEpoch,
   limit: number,
+  interruptedAuditGraceMs: number,
 ): Promise<number> {
   const children = await fullChildren(client, directory, state.root.id);
   const guardChildren = children.filter((child) =>
@@ -80,14 +81,54 @@ async function enforceRetention(
     client.session.status({ directory }) as Promise<unknown>,
     "session.status audit retention",
   );
-  const eligible = guardChildren
-    .filter((child) => {
-      const metadata = record(child.metadata?.completionGuard);
-      return child.id !== epoch.childSessionID &&
-        statuses[child.id]?.type === "idle" &&
-        TERMINAL_AUDIT_STATUSES.has(String(metadata?.status ?? ""));
-    })
-    .sort((left, right) => left.time.updated - right.time.updated || left.id.localeCompare(right.id));
+  const isCurrent = (child: Session): boolean => {
+    const metadata = record(child.metadata?.completionGuard);
+    return child.id === epoch.childSessionID || metadata?.auditID === epoch.auditID;
+  };
+  const isIdle = (child: Session, currentStatuses: Record<string, { type: string }>): boolean =>
+    currentStatuses[child.id] == null || currentStatuses[child.id]?.type === "idle";
+  const eligible = guardChildren.filter((child) => {
+    const metadata = record(child.metadata?.completionGuard);
+    return !isCurrent(child) &&
+      isIdle(child, statuses) &&
+      TERMINAL_AUDIT_STATUSES.has(String(metadata?.status ?? ""));
+  });
+  const requiredRotations = guardChildren.length - limit + 1;
+  if (eligible.length < requiredRotations && Number.isFinite(interruptedAuditGraceMs)) {
+    const staleBefore = Date.now() - interruptedAuditGraceMs;
+    const interrupted = guardChildren
+      .filter((child) => !isCurrent(child) &&
+        isIdle(child, statuses) &&
+        child.time.updated <= staleBefore &&
+        record(child.metadata?.completionGuard)?.status === "auditing")
+      .sort((left, right) => left.time.updated - right.time.updated || left.id.localeCompare(right.id));
+    for (const candidate of interrupted) {
+      if (eligible.length >= requiredRotations) break;
+      const current = await session(client, directory, candidate.id);
+      validateChild(current, state, epoch);
+      const metadata = record(current.metadata?.completionGuard);
+      if (isCurrent(current) || metadata?.status !== "auditing" || current.time.updated > staleBefore) continue;
+      const currentStatuses = await dataOf<Record<string, { type: string }>>(
+        client.session.status({ directory }) as Promise<unknown>,
+        "session.status interrupted audit quarantine",
+      );
+      if (!isIdle(current, currentStatuses)) continue;
+      const stale = await dataOf<Session>(client.session.update({
+        sessionID: current.id,
+        directory,
+        metadata: {
+          ...(current.metadata ?? {}),
+          completionGuard: {
+            ...metadata,
+            status: "stale",
+            staleReason: "interrupted-audit-timeout",
+          },
+        },
+      }) as Promise<unknown>, "session.update interrupted audit quarantine");
+      eligible.push(stale);
+    }
+  }
+  eligible.sort((left, right) => left.time.updated - right.time.updated || left.id.localeCompare(right.id));
   let retained = guardChildren.length;
   for (const child of eligible) {
     if (retained < limit) break;
@@ -110,6 +151,7 @@ export async function ensureArbiterChild(
   state: RootState,
   epoch: AuditEpoch,
   retainAuditSessions: number,
+  interruptedAuditGraceMs = Number.POSITIVE_INFINITY,
 ) {
   const route = await resolveArbiterRoute(client, directory, arbiterAgent);
   const retained = await retainedChild(client, directory, state, epoch);
@@ -136,7 +178,14 @@ export async function ensureArbiterChild(
     state.auditChildSessionID = child.id;
     return { child, retainedChildCount: null, route };
   }
-  const retainedChildCount = await enforceRetention(client, directory, state, epoch, retainAuditSessions);
+  const retainedChildCount = await enforceRetention(
+    client,
+    directory,
+    state,
+    epoch,
+    retainAuditSessions,
+    interruptedAuditGraceMs,
+  );
   const child = await dataOf<Session>(client.session.create({
     directory,
     parentID: state.root.id,

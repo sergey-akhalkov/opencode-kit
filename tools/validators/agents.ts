@@ -536,7 +536,7 @@ function validateSdetQualityEngineer(
     frontmatter.has("permission.edit") &&
     typeof frontmatter.get("permission.edit") === "object"
   ) {
-    ctx.addError(`SDET quality engineer must use scalar edit: ask, not nested edit rules: ${file}`);
+    ctx.addError(`SDET quality engineer must use scalar edit: allow, not nested edit rules: ${file}`);
   }
   for (const permission of SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS) {
     const key = `permission.${permission}`;

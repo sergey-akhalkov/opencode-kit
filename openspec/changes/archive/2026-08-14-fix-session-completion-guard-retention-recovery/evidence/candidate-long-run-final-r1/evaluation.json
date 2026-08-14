@@ -1,0 +1,13 @@
+{
+  "candidateId": "candidate-final-long-run-r1",
+  "cleanup": "complete",
+  "failureClassesBounded": true,
+  "noPromptOnOverflow": true,
+  "projectionBounded": true,
+  "restartConflictPolicy": "duplicate-retrying-children-blocked",
+  "retainedChildPolicy": "oldest-idle-terminal-only",
+  "schemaVersion": 1,
+  "status": "complete",
+  "taskFallback": "exactly-once-disable-safe",
+  "waitRechecks": "finite-terminal-exhaustion"
+}

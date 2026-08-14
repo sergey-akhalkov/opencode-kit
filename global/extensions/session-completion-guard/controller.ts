@@ -670,6 +670,10 @@ export class SessionCompletionController {
         state,
         epoch,
         this.options.retainAuditSessions,
+        Math.min(
+          Number.MAX_SAFE_INTEGER,
+          this.options.arbiterPromptTimeoutMs + Math.max(this.options.settleMs, 1_000),
+        ),
       );
       if (retainedChildCount != null) state.auditDiagnostics.retainedChildCount = retainedChildCount;
       if (!this.isCurrentAudit(state, epoch)) return;

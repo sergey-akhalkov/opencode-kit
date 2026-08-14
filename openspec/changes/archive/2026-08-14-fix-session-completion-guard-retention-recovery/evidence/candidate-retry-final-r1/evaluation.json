@@ -1,0 +1,7 @@
+{
+  "candidateId": "candidate-final-retry-r1",
+  "cleanup": "complete",
+  "restartRecovery": "same-child-same-audit-bounded-attempt",
+  "schemaVersion": 1,
+  "status": "complete"
+}

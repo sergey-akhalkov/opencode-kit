@@ -294,7 +294,7 @@ export const changeReadyContractTests: TestCase[] = [
       assert(!/^model\s*:/m.test(frontmatter), "SDET must inherit the invoking primary model.");
       assert(!/^variant\s*:/m.test(frontmatter), "SDET must not pin a model variant.");
       assertEqual(ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES.get("permission.bash"), "deny", "SDET bash permission drifted.");
-      assertEqual(ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES.get("permission.edit"), "ask", "Every SDET edit must remain approval-gated.");
+      assertEqual(ALLOWED_SDET_QUALITY_ENGINEER_EDIT_RULES.get("permission.edit"), "allow", "SDET test-only edits must remain unattended.");
       assert(SDET_QUALITY_ENGINEER_DENIED_PERMISSION_KEYS.includes("task"), "SDET nested-agent denial drifted.");
       assertTokens(sdet, [
         ...SDET_QUALITY_ENGINEER_REQUIRED_TEXT,

@@ -1,0 +1,8 @@
+{
+  "candidateId": "candidate-status-preflight-r3",
+  "cleanup": "complete",
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "seedStatus": "canonical-idle",
+  "status": "complete"
+}

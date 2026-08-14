@@ -9,9 +9,11 @@ import {
   asArray,
   asRecord,
   assert,
+  assertDeepEqual,
   assertEqual,
   assertFailure,
   assertOutputContains,
+  assertOutputExcludes,
   assertSuccess,
   findBucket,
   invokeDoctor,
@@ -162,8 +164,13 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
   const doctorSource = fs.readFileSync(path.join(root, "tools", "doctor.ts"), "utf8")
     .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
   assert(doctorSource.includes('from "./validators/active-authority.ts"'), "Isolated doctor must retain its active-authority module edge.");
+  assert(doctorSource.includes('from "./opencode-runtime-sources.ts"'), "Isolated doctor must retain its runtime-source inspector module edge.");
   assert(!doctorSource.includes('from "js-yaml"'), "Doctor must not import js-yaml directly after active-authority extraction.");
   writeText(doctorPath, doctorSource);
+  const runtimeSourcesSource = fs.readFileSync(path.join(root, "tools", "opencode-runtime-sources.ts"), "utf8")
+    .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
+  assert(!runtimeSourcesSource.includes('from "jsonc-parser"'), "Isolated runtime-sources must resolve the real installed jsonc-parser module.");
+  writeText(path.join(fixtureRoot, "tools", "opencode-runtime-sources.ts"), runtimeSourcesSource);
   const authoritySource = fs.readFileSync(path.join(root, "tools", "validators", "active-authority.ts"), "utf8");
   assert(authoritySource.includes('from "js-yaml"'), "Active-authority must retain its real js-yaml parser edge.");
   const isolatedAuthoritySource = authoritySource
@@ -276,6 +283,16 @@ function parseDoctorV2(result: { output: string }): {
     "Current doctor fixtures do not claim unattended-ready; unattendedMissionStatus must stay independently blocked.",
   );
   return { checks, report, unattendedChecks };
+}
+
+function namedBlockers(report: Record<string, unknown>, gate: "qualification" | "structural" | "unattended"): string[] {
+  const blockers = asRecord(report.blockers, "Doctor blockers should be an object.");
+  const selected = blockers[gate];
+  assert(
+    Array.isArray(selected) && selected.every((item) => typeof item === "string"),
+    `Doctor ${gate} blockers must be a string array.`,
+  );
+  return selected as string[];
 }
 
 export const doctorTests: TestCase[] = [
@@ -1068,6 +1085,126 @@ export const doctorTests: TestCase[] = [
       assertSuccess(shown, "Doctor should expose the cwd only through --show-project.");
       const shownReport = parseDoctorV2(shown).report;
       assertEqual(shownReport.project, path.resolve(fixture.project), "--show-project must expose the exact default cwd project.");
+    },
+  },
+  {
+    name: "doctor selected gates fail closed and retain every named blocker",
+    run: () => {
+      const fixture = newIsolatedDoctorFixture("require-gate-blockers", "{\n  \"permission\": \"ask\"\n}\n");
+      writeText(path.join(fixture.project, "AGENTS.md"), "# Project Agent Instructions\n");
+      const expectedQualification = ["project AGENTS.md", "project adapter validation"];
+      const expectedUnattended = [
+        "unattended runtime authority",
+        "unattended aggregate validation argv",
+        "unattended checkpoint support",
+        "unattended canonical workflow",
+      ];
+
+      const informational = invokeIsolatedDoctor(fixture);
+      assertEqual(informational.exitCode, 0, "Default informational doctor must keep the structural-exit contract when only qualification is blocked.");
+      const informationalReport = parseDoctorV2(informational);
+      assertEqual(informationalReport.report.qualificationStatus, "blocked", "Missing project authority and validation must block qualification.");
+      assertDeepEqual(namedBlockers(informationalReport.report, "qualification"), expectedQualification, "Informational output must retain every qualification blocker in stable order.");
+      assertDeepEqual(namedBlockers(informationalReport.report, "unattended").slice(0, expectedUnattended.length), expectedUnattended, "Informational output must retain every unattended blocker without truncating to the first reason.");
+
+      const qualification = invokeIsolatedDoctorArgs(fixture, ["--project", fixture.project, "--format", "json", "--require", "qualification"]);
+      assertEqual(qualification.exitCode, 2, "Selected qualification gate must fail closed when qualificationStatus is blocked.");
+      const qualificationReport = parseDoctorV2(qualification);
+      assertEqual(qualificationReport.report.requiredGate, "qualification", "Selected qualification gate must be recorded on the report.");
+      assertEqual(qualificationReport.report.qualificationStatus, "blocked", "Selected qualification gate must remain blocked.");
+      assertDeepEqual(namedBlockers(qualificationReport.report, "qualification"), expectedQualification, "Selected qualification gate must name every qualification blocker.");
+
+      const unattended = invokeIsolatedDoctorArgs(fixture, ["--project", fixture.project, "--format", "json", "--require", "unattended"]);
+      assertEqual(unattended.exitCode, 2, "Selected unattended gate must fail closed when unattendedMissionStatus is blocked.");
+      const unattendedReport = parseDoctorV2(unattended);
+      assertEqual(unattendedReport.report.requiredGate, "unattended", "Selected unattended gate must be recorded on the report.");
+      assertEqual(unattendedReport.report.unattendedMissionStatus, "blocked", "Selected unattended gate must remain blocked.");
+      const unattendedBlockers = namedBlockers(unattendedReport.report, "unattended");
+      for (const name of expectedUnattended) {
+        assert(unattendedBlockers.includes(name), `Selected unattended gate must retain blocker ${name}.`);
+      }
+      assert(unattendedBlockers.length >= expectedUnattended.length, "Selected unattended gate must not truncate the blocker list.");
+
+      const structural = invokeIsolatedDoctorArgs(fixture, ["--project", fixture.project, "--format", "json", "--require", "structural"]);
+      assertEqual(structural.exitCode, 0, "Selected structural gate must still pass advisory-only structural warnings.");
+      assertEqual(parseDoctorV2(structural).report.status, "warn", "Advisory qualification blockers must remain structurally visible.");
+    },
+  },
+  {
+    name: "doctor rejects canonical project/global workflow collisions without leaking private content or running validation",
+    run: () => {
+      const fixture = newIsolatedDoctorFixture("canonical-collision-privacy", "{\n  \"permission\": \"ask\"\n}\n");
+      const isolatedHome = path.join(fixture.root, "isolated-home");
+      const marker = path.join(fixture.project, ".validation-command-executed");
+      const validationScript = path.join(fixture.project, "validation-must-not-run.mjs");
+      const privateSentinels = [
+        "private-config-content-must-not-leak",
+        "private-instruction-content-must-not-leak",
+        "private-project-skill-content-must-not-leak",
+        "private-global-skill-content-must-not-leak",
+      ];
+      writeText(
+        path.join(fixture.project, "opencode-dev-kit", "adapter.json"),
+        `${JSON.stringify({
+          unattended: {
+            checkpointModes: ["evidence-only", "external", "local-commit"],
+            localCommitRequiresAuthorization: true,
+            validationArgv: [process.execPath, validationScript, marker],
+            workflowOwner: "global-canonical",
+          },
+          validation: {
+            build: `node validation-must-not-run.mjs ${marker}`,
+            focusedTest: `node validation-must-not-run.mjs ${marker}`,
+            lint: `node validation-must-not-run.mjs ${marker}`,
+            test: `node validation-must-not-run.mjs ${marker}`,
+            typecheck: `node validation-must-not-run.mjs ${marker}`,
+          },
+        }, null, 2)}\n`,
+      );
+      writeText(validationScript, "import fs from 'node:fs';\nfs.writeFileSync(process.argv[2], 'executed');\n");
+      writeText(path.join(fixture.project, "opencode.json"), `{\n  "provider": "${privateSentinels[0]}"\n}\n`);
+      writeText(path.join(fixture.project, "AGENTS.md"), `# Project Agent Instructions\n\n## Runtime Authority\n\n${privateSentinels[1]}\n`);
+      writeText(path.join(fixture.globalDir, "skills", "openspec-apply-change", "SKILL.md"), `${privateSentinels[3]}\n`);
+      writeText(path.join(fixture.project, ".opencode", "skills", "openspec-apply-change", "SKILL.md"), `${privateSentinels[2]}\n`);
+      const env = { HOME: isolatedHome, USERPROFILE: isolatedHome };
+
+      const qualification = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", fixture.project, "--format", "json", "--require", "qualification"],
+        env,
+      );
+      assertEqual(qualification.exitCode, 2, "Canonical apply-skill collision must fail the selected qualification gate.");
+      const qualificationParsed = parseDoctorV2(qualification);
+      const identity = findBucket(qualificationParsed.checks, "name", "canonical runtime-source identity");
+      assertEqual(identity.status, "warn", "Canonical collision must stay structurally visible rather than crash.");
+      assertEqual(identity.blocksQualification, true, "Canonical collision must block qualification.");
+      assert(namedBlockers(qualificationParsed.report, "qualification").includes("canonical runtime-source identity"), "Qualification blockers must include canonical runtime-source identity.");
+      const identityDetail = String(identity.detail);
+      assert(identityDetail.includes("openspec-apply-change"), "Collision detail must name the canonical apply skill.");
+      assert(identityDetail.includes(".opencode/skills/openspec-apply-change/SKILL.md"), "Collision detail must name the project overlay location.");
+      assert(identityDetail.includes("/global/skills/openspec-apply-change/SKILL.md"), "Collision detail must name the privacy-safe global source location.");
+
+      const unattended = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", fixture.project, "--format", "json", "--require", "unattended"],
+        env,
+      );
+      assertEqual(unattended.exitCode, 2, "Canonical apply-skill collision must fail the selected unattended gate.");
+      const unattendedParsed = parseDoctorV2(unattended);
+      assert(namedBlockers(unattendedParsed.report, "unattended").includes("unattended canonical workflow"), "Unattended blockers must include unattended canonical workflow.");
+      const workflow = findBucket(unattendedParsed.unattendedChecks, "name", "unattended canonical workflow");
+      assertEqual(workflow.status, "blocked", "Unattended canonical workflow must be blocked by unknown precedence.");
+      assert(String(workflow.detail).includes("openspec-apply-change"), "Unattended workflow detail must name the colliding canonical skill.");
+
+      for (const result of [qualification, unattended]) {
+        for (const sentinel of privateSentinels) {
+          assertOutputExcludes(result, sentinel, "Doctor must not disclose private config, instruction, or skill content.");
+        }
+        assertOutputExcludes(result, fixture.root, "Doctor must not leak the absolute fixture path.");
+        assertOutputExcludes(result, fixture.project, "Doctor must not leak the absolute project path.");
+        assertOutputExcludes(result, fixture.globalDir, "Doctor must not leak the absolute global source path.");
+      }
+      assert(!fs.existsSync(marker), "Doctor must not execute project validation argv or create a validation marker.");
     },
   },
 ];

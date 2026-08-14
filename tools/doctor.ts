@@ -11,13 +11,19 @@ import {
 } from "./validators/active-authority.ts";
 import { engineeringQualityAuthorityProblem } from "./validators/engineering-quality.ts";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
+import {
+  inspectRuntimeSourceInventory,
+  type RuntimeSourceInventory,
+} from "./opencode-runtime-sources.ts";
 
 type OutputFormat = "json" | "markdown";
+type AutomationGate = "qualification" | "structural" | "unattended";
 
 type Options = {
   format: OutputFormat;
   mission: string | null;
   project: string;
+  requiredGate: AutomationGate | null;
   showProject: boolean;
 };
 
@@ -31,10 +37,18 @@ type Check = {
   status: CheckStatus;
 };
 
+type RuntimeSourceDiagnosis = {
+  collisions: RuntimeSourceInventory["collisions"];
+  sourceCount: number;
+};
+
 type DoctorReport = {
+  blockers: Record<AutomationGate, string[]>;
   checks: Check[];
   project: string;
   qualificationStatus: QualificationStatus;
+  requiredGate: AutomationGate | null;
+  runtimeSources: RuntimeSourceDiagnosis;
   status: CheckStatus;
   tool: "opencode-dev-kit-doctor";
   unattendedChecks: Check[];
@@ -101,8 +115,9 @@ Options:
   --project <path>          Project directory to inspect. Default: current directory.
   --mission <path>          Optional project-contained mission JSON to validate for unattended use.
   --format <json|markdown>  Output format. Default: markdown.
+  --require <gate>          Require structural, qualification, or unattended readiness.
   --show-project            Include the absolute project path. Hidden by default for privacy-safe output.
-  --help                   Show this help.
+  --help                    Show this help.
 `);
 }
 
@@ -121,8 +136,21 @@ function parseFormat(value: string): OutputFormat {
   throw new Error("--format must be json or markdown.");
 }
 
+function parseAutomationGate(value: string): AutomationGate {
+  if (value === "structural" || value === "qualification" || value === "unattended") {
+    return value;
+  }
+  throw new Error("--require must be structural, qualification, or unattended.");
+}
+
 function parseArgs(args: string[]): Options {
-  const options: Options = { format: "markdown", mission: null, project: defaultProject(), showProject: false };
+  const options: Options = {
+    format: "markdown",
+    mission: null,
+    project: defaultProject(),
+    requiredGate: null,
+    showProject: false,
+  };
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
     if (arg === "--help" || arg === "-h") {
@@ -149,6 +177,13 @@ function parseArgs(args: string[]): Options {
       index++;
     } else if (arg.startsWith("--format=")) {
       options.format = parseFormat(arg.slice("--format=".length));
+    } else if (arg === "--require") {
+      if (options.requiredGate != null) throw new Error("--require may be specified only once.");
+      options.requiredGate = parseAutomationGate(readValue(args, index, arg));
+      index++;
+    } else if (arg.startsWith("--require=")) {
+      if (options.requiredGate != null) throw new Error("--require may be specified only once.");
+      options.requiredGate = parseAutomationGate(arg.slice("--require=".length));
     } else if (arg === "--show-project") {
       options.showProject = true;
     } else {
@@ -354,17 +389,6 @@ function commandExists(executable: string, root = process.cwd()): boolean {
   );
 }
 
-function projectWorkflowOverlays(project: string): string[] {
-  return [
-    ...["skill", "skills"].flatMap((directory) =>
-      CANONICAL_SKILLS.map((name) => path.join(project, ".opencode", directory, name, "SKILL.md"))
-    ),
-    ...["command", "commands"].flatMap((directory) =>
-      CANONICAL_COMMANDS.map((name) => path.join(project, ".opencode", directory, `${name}.md`))
-    ),
-  ].filter(pathIsFile).map((file) => path.relative(project, file).replaceAll("\\", "/")).sort();
-}
-
 function guardLimitProblems(configPath: string): string[] {
   if (!pathIsFile(configPath)) return ["active opencode.json missing"];
   try {
@@ -528,10 +552,47 @@ function nodeMajor(): number {
   return match ? Number(match[1]) : 0;
 }
 
-function buildReport(project: string, showProject: boolean, mission: string | null): DoctorReport {
+function runtimeSourceDiagnosis(
+  inventory: RuntimeSourceInventory,
+  projectRoot: string,
+  showProject: boolean,
+): RuntimeSourceDiagnosis {
+  const normalizedProject = projectRoot.replaceAll("\\", "/").replace(/\/$/, "");
+  const redactProject = (location: string): string => {
+    if (showProject || location !== normalizedProject && !location.startsWith(`${normalizedProject}/`)) {
+      return location;
+    }
+    return `<project>${location.slice(normalizedProject.length)}`;
+  };
+  return {
+    collisions: inventory.collisions.map((collision) => ({
+      ...collision,
+      locations: collision.locations.map(redactProject),
+    })),
+    sourceCount: inventory.sources.length,
+  };
+}
+
+function buildReport(
+  project: string,
+  showProject: boolean,
+  mission: string | null,
+  requiredGate: AutomationGate | null,
+): DoctorReport {
   const checks: Check[] = [];
   const unattendedChecks: Check[] = [];
   const root = repoRoot();
+  const runtimeSourceInventory = inspectRuntimeSourceInventory(project);
+  const runtimeSources = runtimeSourceDiagnosis(runtimeSourceInventory, project, showProject);
+  const canonicalWorkflowKeys = new Set(runtimeSourceInventory.canonicalWorkflow.map((source) =>
+    `${source.kind}:${source.name.toLowerCase()}`
+  ));
+  const canonicalCollisions = runtimeSources.collisions.filter((collision) =>
+    canonicalWorkflowKeys.has(`${collision.kind}:${collision.name.toLowerCase()}`)
+  );
+  const canonicalCollisionDetail = canonicalCollisions.map((collision) =>
+    `${collision.kind} ${collision.name}: ${collision.locations.join(" and ")}`
+  ).join("; ");
 
   if (!fs.existsSync(project) || !fs.statSync(project).isDirectory()) {
     addCheck(checks, "project directory", "blocked", "Project path is missing or is not a directory.", true);
@@ -575,7 +636,9 @@ function buildReport(project: string, showProject: boolean, mission: string | nu
     checks,
     "project AGENTS.md",
     agentsOk ? "pass" : "warn",
-    "Project AGENTS.md should document runtime authority or the Universal Development Loop.",
+    agentsOk
+      ? "Project AGENTS.md documents runtime authority or the Universal Development Loop."
+      : "Project AGENTS.md must document runtime authority or the Universal Development Loop before qualification.",
     !agentsOk,
   );
 
@@ -693,6 +756,16 @@ function buildReport(project: string, showProject: boolean, mission: string | nu
     false,
   );
 
+  addCheck(
+    checks,
+    "canonical runtime-source identity",
+    canonicalCollisions.length > 0 ? "warn" : "pass",
+    canonicalCollisions.length > 0
+      ? `Canonical workflow precedence is unknown and blocks lifecycle qualification: ${canonicalCollisionDetail}.`
+      : `No canonical workflow collision was found across ${runtimeSources.sourceCount} inspected loader-visible sources; non-canonical additive collisions remain diagnostic only.`,
+    canonicalCollisions.length > 0,
+  );
+
   if (!dirExists) {
     addCheck(
       checks,
@@ -793,13 +866,19 @@ function buildReport(project: string, showProject: boolean, mission: string | nu
     true,
   );
 
-  const overlays = projectWorkflowOverlays(project);
   const adapterWorkflowBlocked = !missionDefinitionValid && !unattendedAdapter.workflowReady;
   const missingCanonicalWorkflow = [
     ...CANONICAL_SKILLS.map((name) => path.join("skills", name, "SKILL.md")),
     ...CANONICAL_COMMANDS.map((name) => path.join("commands", `${name}.md`)),
   ].filter((relative) => !pathIsFile(path.join(resolvedGlobalDir, relative)));
-  const workflowBlocked = adapterWorkflowBlocked || overlays.length > 0 || missingCanonicalWorkflow.length > 0;
+  const workflowBlocked = adapterWorkflowBlocked || canonicalCollisions.length > 0 || missingCanonicalWorkflow.length > 0;
+  const workflowProblems = [
+    adapterWorkflowBlocked ? "Project adapter unattended.workflowOwner must be global-canonical." : null,
+    canonicalCollisions.length > 0 ? `Canonical workflow precedence is unknown: ${canonicalCollisionDetail}.` : null,
+    missingCanonicalWorkflow.length > 0
+      ? `Active global source is missing canonical workflow files: ${missingCanonicalWorkflow.join(", ")}.`
+      : null,
+  ].filter((problem): problem is string => problem != null);
   const loadedWorkflow = workflowBlocked ? null : roadmapMissionInspection(project, resolvedGlobalDir, [
     "workflow",
     "--root",
@@ -811,13 +890,7 @@ function buildReport(project: string, showProject: boolean, mission: string | nu
     unattendedChecks,
     "unattended canonical workflow",
     workflowBlocked || loadedWorkflow?.passed !== true ? "blocked" : "pass",
-    adapterWorkflowBlocked
-      ? "Project adapter unattended.workflowOwner must be global-canonical."
-      : overlays.length > 0
-      ? `Project same-name overlays are unattended-incompatible and preserved: ${overlays.join(", ")}.`
-      : missingCanonicalWorkflow.length > 0
-        ? `Active global source is missing canonical workflow files: ${missingCanonicalWorkflow.join(", ")}.`
-        : loadedWorkflow?.detail ?? "Canonical workflow runtime identity is unknown.",
+    workflowProblems.join(" ") || loadedWorkflow?.detail || "Canonical workflow runtime identity is unknown.",
     true,
   );
 
@@ -944,30 +1017,51 @@ function buildReport(project: string, showProject: boolean, mission: string | nu
     );
   }
 
+  const blockers: Record<AutomationGate, string[]> = {
+    structural: checks.filter((check) => check.status === "blocked").map((check) => check.name),
+    qualification: checks.filter((check) => check.blocksQualification).map((check) => check.name),
+    unattended: unattendedChecks.filter((check) => check.status !== "pass").map((check) => check.name),
+  };
+
   let status: CheckStatus = "pass";
-  if (checks.some((check) => check.status === "blocked")) {
+  if (blockers.structural.length > 0) {
     status = "blocked";
   } else if (checks.some((check) => check.status === "warn")) {
     status = "warn";
   }
 
-  const qualificationStatus: QualificationStatus = checks.some((check) => check.blocksQualification)
-    ? "blocked"
-    : "pass";
+  const qualificationStatus: QualificationStatus = blockers.qualification.length > 0 ? "blocked" : "pass";
 
   return {
+    blockers,
     checks,
     project: formatProjectForOutput(project, showProject),
     qualificationStatus,
+    requiredGate,
+    runtimeSources,
     status,
     tool: "opencode-dev-kit-doctor",
     unattendedChecks,
-    unattendedMissionStatus: unattendedChecks.some((check) => check.status !== "pass") ? "blocked" : "pass",
+    unattendedMissionStatus: blockers.unattended.length > 0 ? "blocked" : "pass",
     version: 2,
   };
 }
 
+function automationGateStatus(report: DoctorReport, gate: AutomationGate): QualificationStatus {
+  if (gate === "structural") {
+    return report.status === "blocked" ? "blocked" : "pass";
+  }
+  return gate === "qualification" ? report.qualificationStatus : report.unattendedMissionStatus;
+}
+
 function renderMarkdown(report: DoctorReport): string {
+  const requiredGateLines = report.requiredGate == null
+    ? []
+    : [
+        `Required Gate: ${report.requiredGate}`,
+        `Required Gate Status: ${automationGateStatus(report, report.requiredGate)}`,
+        `Required Gate Blockers: ${report.blockers[report.requiredGate].join(", ") || "none"}`,
+      ];
   return [
     "# opencode-dev-kit Doctor",
     "",
@@ -975,6 +1069,7 @@ function renderMarkdown(report: DoctorReport): string {
     `Status: ${report.status}`,
     `Qualification Status: ${report.qualificationStatus}`,
     `Unattended Mission Status: ${report.unattendedMissionStatus}`,
+    ...requiredGateLines,
     "",
     "| Check | Status | Blocks Qualification | Detail |",
     "| --- | --- | --- | --- |",
@@ -991,14 +1086,32 @@ function renderMarkdown(report: DoctorReport): string {
       (check) => `| ${check.name} | ${check.status} | ${check.detail.replace(/\|/g, "\\|")} |`,
     ),
     "",
+    "## Runtime Source Collisions",
+    "",
+    `Inspected loader-visible sources: ${report.runtimeSources.sourceCount}`,
+    "",
+    ...(report.runtimeSources.collisions.length === 0
+      ? ["None."]
+      : [
+          "| Kind | Name | Locations |",
+          "| --- | --- | --- |",
+          ...report.runtimeSources.collisions.map((collision) =>
+            `| ${collision.kind} | ${collision.name} | ${collision.locations.join("<br>").replace(/\|/g, "\\|")} |`
+          ),
+        ]),
+    "",
   ].join("\n");
 }
 
 try {
   const options = parseArgs(process.argv.slice(2));
-  const report = buildReport(options.project, options.showProject, options.mission);
+  const report = buildReport(options.project, options.showProject, options.mission, options.requiredGate);
   console.log(options.format === "json" ? JSON.stringify(report, null, 2) : renderMarkdown(report));
-  if (report.status === "blocked") {
+  if (
+    options.requiredGate == null
+      ? report.status === "blocked"
+      : automationGateStatus(report, options.requiredGate) === "blocked"
+  ) {
     process.exitCode = 2;
   }
 } catch (error) {

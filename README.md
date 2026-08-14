@@ -157,7 +157,19 @@ Run the structural/bootstrap diagnostic after bootstrapping or install:
 npm run doctor -- --project <project-path>
 ```
 
-Doctor is a structural diagnostic, not lifecycle readiness certification. Report version 2 separates structural severity (`status: pass|warn|blocked`, process exit) from machine-readable qualification impact (`qualificationStatus: pass|blocked` and per-check `blocksQualification`). Only `qualificationStatus: blocked` or `blocksQualification: true` blocks RC/stable qualification; advisory warnings alone do not.
+Doctor is a structural diagnostic, not lifecycle readiness certification. Without an explicit gate, it remains informational. Report version 2 separates structural severity (`status: pass|warn|blocked`) from qualification and unattended readiness. Automation must select the intended diagnostic contract explicitly:
+
+Qualification remains machine-readable through `qualificationStatus: pass|blocked` and per-check `blocksQualification`. Only `qualificationStatus: blocked` or `blocksQualification: true` blocks RC/stable qualification; advisory warnings alone do not.
+
+```sh
+npm run doctor -- --project <project-path> --require structural
+npm run doctor -- --project <project-path> --require qualification
+npm run doctor -- --project <project-path> --require unattended
+```
+
+For a selected gate, exit `0` means pass, exit `2` means blocked, and exit `1` means invalid arguments or diagnostic failure. JSON exposes stable `blockers.structural`, `blockers.qualification`, and `blockers.unattended` arrays plus `requiredGate`; Markdown prints the selected result and all blockers beside the status. Structural warnings pass the structural gate. Without `--require`, the existing structural exit remains: qualification can be blocked while an advisory-only report exits `0`.
+
+Doctor composes the privacy-safe runtime-source inventory. Same-name canonical OpenSpec propose/apply/archive skill or command collisions with unknown precedence block qualification and unattended gates and report their redacted locations. Additive config and instruction layering remains visible under `runtimeSources.collisions` but does not block by multiplicity alone. Doctor does not read provider values for collision discovery, execute project validation commands, or claim which loader source wins. Use `npm run opencode:sources -- --help` for the standalone inventory CLI contract.
 
 Doctor inspects the kit custom directory selected by nonblank `OPENCODE_CONFIG_DIR`, or the host default `~/.config/opencode` when no custom directory is selected. This inspection does not claim other runtime sources are absent. Required kit authority is structurally conforming `AGENTS.md` and `skills/change-ready-sdlc/SKILL.md`: nonempty regular files with real Markdown sections, valid scalar skill frontmatter, and an ordered lifecycle skeleton through development, MVP proof, critical SDET when applicable, RC validation, and stable handoff. Missing, malformed, or lifecycle-incomplete required authority blocks qualification; source-path equality and template markers are informational only.
 

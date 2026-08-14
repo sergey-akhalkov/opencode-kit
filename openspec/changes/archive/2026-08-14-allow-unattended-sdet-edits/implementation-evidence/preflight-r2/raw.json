@@ -1,0 +1,51 @@
+{
+  "candidateId": "allow-unattended-sdet-edits-r1",
+  "cleanup": {
+    "fixtureDeleted": true,
+    "serverStopped": true,
+    "sessionsDeleted": true
+  },
+  "environment": {
+    "node": "v24.18.0",
+    "opencode": "1.18.18",
+    "platform": "win32"
+  },
+  "facts": {
+    "childAgent": "sdet-quality-engineer",
+    "childParentExact": true,
+    "correlatedChildren": 1,
+    "mode": "preflight",
+    "model": "xai/grok-4.6/high",
+    "pendingBefore": 0
+  },
+  "failure": null,
+  "invocation": [
+    "node",
+    "tools/proofs/sdet-unattended-edit.ts",
+    "--mode",
+    "preflight",
+    "--candidate-id",
+    "allow-unattended-sdet-edits-r1",
+    "--evidence-root",
+    "<evidence-root>"
+  ],
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/agents/sdet-quality-engineer.md",
+      "sha256": "27b594045322baa9cbe65f5faa2c715b36409d50d49ce1b7368f48a9ef05faa8"
+    },
+    {
+      "path": "tools/contracts/sdet-quality-engineer.ts",
+      "sha256": "fec35a73e4f5537abbf7386b8a7733b507a4f30de1893f52087ce0d26b17538c"
+    },
+    {
+      "path": "tools/proofs/lib/opencode-proof-client.ts",
+      "sha256": "39fa3148cd3b59cc524f8628b231e43bae7d7b7b1774227bfc589be11b430156"
+    },
+    {
+      "path": "tools/proofs/sdet-unattended-edit.ts",
+      "sha256": "4182389c4b4685cd7ade21502023f906c1a71a91eb371d6a6434bfda3ebfd8b3"
+    }
+  ]
+}

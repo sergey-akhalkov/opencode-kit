@@ -1,0 +1,10 @@
+{
+  "candidateId": "allow-unattended-sdet-edits-r1",
+  "cleanupPass": true,
+  "factsPass": true,
+  "fixtureAbsent": true,
+  "fixtureInsideApprovedTemp": true,
+  "inputRawSha256": "960797e0ad6deefb22e8d3728533e971a38ed02963a3f3b5ac009c9b9f92a8e4",
+  "productSourcesCurrent": true,
+  "schemaVersion": 1
+}

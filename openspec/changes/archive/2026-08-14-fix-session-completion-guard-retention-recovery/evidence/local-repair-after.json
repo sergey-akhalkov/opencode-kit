@@ -1,0 +1,43 @@
+{
+  "candidateId": "candidate-runtime-repeat-r10",
+  "directorySessionCount": 683,
+  "matchingErrorLogCount": 13,
+  "matchingErrorLogPattern": "level=ERROR and message=completion audit stopped and rootRef=session_229ed091dd35",
+  "projectSessionCount": 704,
+  "root": {
+    "children": [
+      {
+        "childRef": "session_dcd008026934",
+        "rootSessionRef": "session_229ed091dd35",
+        "status": "auditing",
+        "timeUpdated": 1786635447758
+      },
+      {
+        "childRef": "session_a6a01542fd37",
+        "rootSessionRef": "session_229ed091dd35",
+        "status": "passed",
+        "timeUpdated": 1786713699372
+      }
+    ],
+    "message": "Completion guard passed",
+    "rootRef": "session_229ed091dd35",
+    "state": "passed",
+    "timeUpdated": 1786713699384
+  },
+  "runs": [
+    {
+      "bootstrap": "session.status",
+      "completionAuditStopped": false,
+      "rootState": "passed",
+      "serverExit": "operator-ctrl-c"
+    },
+    {
+      "bootstrap": "session.status",
+      "completionAuditStopped": false,
+      "rootState": "passed",
+      "serverExit": "operator-ctrl-c"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "passed"
+}
