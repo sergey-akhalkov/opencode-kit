@@ -1,0 +1,285 @@
+{
+  "archives": [
+    "2026-08-14-change-a",
+    "2026-08-14-change-b"
+  ],
+  "candidateId": "roadmap-provider-simulate-r2",
+  "checkpoints": [
+    "66f6ea74624975537d74d596f2c11eeb1dfe3c38",
+    "3a16e0bdd306729eaa2607648dcd458a551565b5"
+  ],
+  "cleanup": "complete",
+  "controllerRuns": [
+    {
+      "attempts": 2,
+      "cursor": 0,
+      "operation": "run",
+      "status": "paused"
+    },
+    {
+      "attempts": 1,
+      "cursor": 1,
+      "operation": "resume",
+      "status": "paused"
+    },
+    {
+      "attempts": 0,
+      "cursor": 2,
+      "operation": "resume",
+      "status": "blocked"
+    }
+  ],
+  "environment": {
+    "executionMode": "simulation",
+    "model": "openai/gpt-5.6-sol",
+    "node": "v24.18.0",
+    "platform": "win32",
+    "profile": "quality-independent",
+    "variant": "xhigh"
+  },
+  "failure": null,
+  "markers": {
+    "alpha": "alpha\n",
+    "beta": "beta\n",
+    "changeCExists": false
+  },
+  "providerCalls": [
+    {
+      "command": "local-preflight",
+      "index": 1,
+      "kind": "local-failure",
+      "operation": "continue",
+      "sessionIds": [],
+      "sliceId": "slice-a",
+      "status": 75,
+      "stderrFile": null,
+      "stdoutFile": null
+    },
+    {
+      "command": "deterministic-executor",
+      "index": 2,
+      "kind": "simulation",
+      "operation": "continue",
+      "sessionIds": [],
+      "sliceId": "slice-a",
+      "status": 0,
+      "stderrFile": null,
+      "stdoutFile": null
+    },
+    {
+      "command": "deterministic-executor",
+      "index": 3,
+      "kind": "simulation",
+      "operation": "propose",
+      "sessionIds": [],
+      "sliceId": "slice-b",
+      "status": 0,
+      "stderrFile": null,
+      "stdoutFile": null
+    }
+  ],
+  "replay": {
+    "definitionDigest": "dd7d26b792d164d8941fb50de1a63e7cc7e8357d50c6b4cf478b37f859b22dee",
+    "exitCode": 0,
+    "lastTransitionDigest": "a11b3209b871583933fa7876f78b2538c2bf4cb3c7e7eed0e19dcde16a7032d4",
+    "missionId": "configured-provider-proof",
+    "operation": "state-replay",
+    "projectionStatus": "current",
+    "schemaVersion": 1,
+    "sequence": 17,
+    "stateDigest": "1f29966c75cc09c2120c7c6cd1d31ece216f1fde43f3ab3b59442552ac1ded58",
+    "status": "valid",
+    "tool": "roadmap-mission",
+    "transitionCount": 17,
+    "writerStatus": "clear"
+  },
+  "schemaVersion": 1,
+  "sessionCleanup": [],
+  "sourceHashes": {
+    "global/bin/openspec-archive.ts": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99",
+    "global/bin/openspec-operation-gate.ts": "e34efd7cadae8cd1db7e496658e8ed5b0a550df461318e2197d9f1ba0bd10984",
+    "global/bin/portable-process.ts": "6b4bd770a56c6e3dbaba5586358e9683eec1c08451f7444c0351abbf62f7769b",
+    "global/bin/roadmap-mission.ts": "9aed702bfdc189260c86dbcc69ef7abc9464856988e59ee7123b8c5bba18ebd3",
+    "global/bin/roadmap-mission/contracts.ts": "877bcf6365e67485de97257f3a41c0b32a37cdae35b8deb52ffbfd263fdc12a6",
+    "global/bin/roadmap-mission/controller.ts": "9933304b5f455457fc569344b99133d9cc400844d49385af4f1637d97f75f4e4",
+    "global/bin/roadmap-mission/preflight.ts": "61745ffd7cca67222dd1562ff16910ac48a277870612e2231ae1b02e4a7d94c0",
+    "global/bin/roadmap-mission/state.ts": "518d761691ecafa209b763e7ddd2f1692e56e827c48bfffc20689f0b7c62eac0",
+    "global/commands/opsx-apply.md": "063125fdcec6acc4493ecb936054ee3ca1e3e883396477bb50b088897b094b77",
+    "global/commands/opsx-propose.md": "afece3eaf31f012d629c6b91f2bba6b00a16947cb675a208b1b2587e2a5d9950",
+    "global/skills/openspec-apply-change/SKILL.md": "691f3ca2ecc1d78d626e4ea1ce319e7ec1845ae983a56297d397f87868ae1700",
+    "global/skills/openspec-propose/SKILL.md": "8a12941f48f35d3e8d3a69378ae573c52729b67b72f88a668c6d2740edfbb06f",
+    "tools/proofs/roadmap-mission-provider.ts": "9d64d87c48b786d62126064f49aa47c027457f0702d2fbf3f3245dfc546c77af"
+  },
+  "transitions": [
+    {
+      "cursor": 0,
+      "kind": "preflight",
+      "recovery": {
+        "attempts": 0,
+        "sliceStartedAt": null
+      },
+      "sequence": 1,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-launch",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 2,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-completion",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 3,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-launch",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 4,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-completion",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 5,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "archive-launch",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 6,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "archive",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 7,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "pause",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 8,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "checkpoint",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-14T05:10:46.421Z"
+      },
+      "sequence": 9,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 1,
+      "kind": "successor-activation",
+      "recovery": {
+        "attempts": 0,
+        "sliceStartedAt": null
+      },
+      "sequence": 10,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "session-launch",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:57.554Z"
+      },
+      "sequence": 11,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "session-completion",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:57.554Z"
+      },
+      "sequence": 12,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "archive-launch",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:57.554Z"
+      },
+      "sequence": 13,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "archive",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:57.554Z"
+      },
+      "sequence": 14,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "pause",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:57.554Z"
+      },
+      "sequence": 15,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "checkpoint",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:57.554Z"
+      },
+      "sequence": 16,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "terminal-stop",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-14T05:10:57.554Z"
+      },
+      "sequence": 17,
+      "sliceId": "slice-b"
+    }
+  ]
+}

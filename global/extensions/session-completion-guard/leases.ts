@@ -65,6 +65,7 @@ export class AsyncLeaseRegistry {
       this.tasksByCall.set(callID, {
         callID,
         childSessionID: null,
+        fallbackSent: false,
         resultConsumed: false,
         rootSessionID,
         status: "running",
@@ -190,6 +191,26 @@ export class AsyncLeaseRegistry {
     }
   }
 
+  terminalTaskAwaitingResult(rootSessionID: string, children: ChildStatus[]): TaskLease | null {
+    const childByID = new Map(children.map((child) => [child.id, child.status]));
+    const candidates = [...this.tasksByCall.values()].filter((lease) =>
+      lease.rootSessionID === rootSessionID &&
+      !lease.resultConsumed &&
+      !lease.fallbackSent &&
+      lease.childSessionID != null &&
+      childByID.get(lease.childSessionID) === "idle"
+    );
+    return candidates.length === 1 ? candidates[0] : null;
+  }
+
+  markTaskFallbackSent(callID: string): void {
+    const lease = this.tasksByCall.get(callID);
+    if (lease == null || lease.fallbackSent) return;
+    lease.fallbackSent = true;
+    lease.status = "completed";
+    this.changed(lease.rootSessionID);
+  }
+
   preflight(
     rootSessionID: string,
     managerSessions: PTYSessionInfo[],
@@ -223,7 +244,7 @@ export class AsyncLeaseRegistry {
       if (status === "unknown") {
         return { kind: "unknown", reason: "background child status is unknown", generation };
       }
-      if (status === "running" || lease.status === "running") {
+      if (status === "running") {
         return { kind: "waiting", reason: "background child is running", generation };
       }
       return { kind: "waiting", reason: "background result has not reached the root", generation };

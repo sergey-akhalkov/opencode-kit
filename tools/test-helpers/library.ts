@@ -128,6 +128,19 @@ export function lines(values: string[]): string {
   return values.join("\n");
 }
 
+function writePortableFixtureEntrypoint(file: string): void {
+  writeText(file, lines([
+    "#!/usr/bin/env node",
+    'import path from "node:path";',
+    'import { pathToFileURL } from "node:url";',
+    'const rootFlag = "--root";',
+    "if (process.argv[1] != null && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {",
+    '  console.log("main-executed");',
+    "}",
+    "",
+  ]));
+}
+
 export function appendReadmeAgentCatalogEntry(fixture: string, entry: string): void {
   const readmePath = path.join(fixture, "README.md");
   const readmeText = fs.readFileSync(readmePath, "utf8");
@@ -256,6 +269,16 @@ export function newLibraryFixture(name: string): string {
     "  \"validation\": {",
     "    \"focusedTest\": \"unknown\",",
     "    \"test\": \"unknown\"",
+    "  },",
+    "  \"unattended\": {",
+    "    \"validationArgv\": [],",
+    "    \"workflowOwner\": \"global-canonical\",",
+    "    \"checkpointModes\": [",
+    "      \"evidence-only\",",
+    "      \"external\",",
+    "      \"local-commit\"",
+    "    ],",
+    "    \"localCommitRequiresAuthorization\": true",
     "  }",
     "}",
     "",
@@ -273,6 +296,13 @@ export function newLibraryFixture(name: string): string {
   for (const tool of ["init-project.ts", "doctor.ts", "project-inventory.ts", "instruction-artifacts-inventory.ts", "pre-push-validate.ts"]) {
     writeText(path.join(dir, "tools", tool), lines(["#!/usr/bin/env node", "", ""]));
   }
+  writePortableFixtureEntrypoint(path.join(dir, "global", "bin", "openspec-operation-gate.ts"));
+  writePortableFixtureEntrypoint(path.join(dir, "global", "bin", "openspec-archive.ts"));
+  writeText(path.join(dir, "global", "bin", "portable-process.ts"), "export function noop(): void {}\n");
+  writePortableFixtureEntrypoint(path.join(dir, "global", "bin", "roadmap-mission.ts"));
+  writeText(path.join(dir, "global", "bin", "roadmap-mission", "contracts.ts"), "export {}\n");
+  writeText(path.join(dir, "global", "bin", "roadmap-mission", "preflight.ts"), "export {}\n");
+  writePortableFixtureEntrypoint(path.join(dir, "global", "bin", "validate-staged.ts"));
   writeText(path.join(dir, ".githooks", "pre-push"), lines(["#!/bin/sh", "node tools/pre-push-validate.ts", ""]));
   writeText(path.join(dir, "package.json"), lines([
     "{",
@@ -289,7 +319,7 @@ export function newLibraryFixture(name: string): string {
     "    \"instruction:inventory\": \"node tools/instruction-artifacts-inventory.ts\",",
     "    \"code-quality:inventory\": \"node tools/code-quality-inventory.ts\",",
     "    \"openspec:validate\": \"openspec validate --all\",",
-    "    \"openspec:gate\": \"node tools/openspec-operation-gate.ts\",",
+    "    \"openspec:gate\": \"node global/bin/openspec-operation-gate.ts --root .\",",
     "    \"prepush:validate\": \"node tools/pre-push-validate.ts\",",
     "    \"validate\": \"node tools/validate-library.ts\",",
     "    \"validate:strict\": \"node tools/validate-library.ts --fail-on-warnings\",",

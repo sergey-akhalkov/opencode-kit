@@ -58,6 +58,10 @@ export class GuardStatusReporter {
         grindEnabled: state.grindEnabled,
         paused: state.paused,
         continuationCycles: state.continuationCycles,
+        auditDiagnostics: { ...state.auditDiagnostics },
+        restartRecoveryAction: state.restartRecoveryAction,
+        waitReason: state.waitReason,
+        waitRecheckCount: state.waitRecheckCount,
         lastAuditedRevision: state.lastAuditedRevision,
         lastStrategyFingerprint: state.lastStrategyFingerprint,
         ...provenanceSnapshot(state),
@@ -90,6 +94,10 @@ export class GuardStatusReporter {
         guard.continuationCycles === state.continuationCycles &&
         guard.lastAuditedRevision === state.lastAuditedRevision &&
         guard.lastStrategyFingerprint === state.lastStrategyFingerprint &&
+        JSON.stringify(guard.auditDiagnostics) === JSON.stringify(state.auditDiagnostics) &&
+        guard.restartRecoveryAction === state.restartRecoveryAction &&
+        guard.waitReason === state.waitReason &&
+        guard.waitRecheckCount === state.waitRecheckCount &&
         JSON.stringify(guard.autonomousQuestionCalls) === JSON.stringify(currentProvenance.autonomousQuestionCalls) &&
         JSON.stringify(guard.autonomousQuestionRefs) === JSON.stringify(currentProvenance.autonomousQuestionRefs) &&
         JSON.stringify(guard.pendingAutonomousQuestionCalls) === JSON.stringify(currentProvenance.pendingAutonomousQuestionCalls) &&

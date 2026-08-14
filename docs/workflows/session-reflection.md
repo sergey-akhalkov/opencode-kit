@@ -60,6 +60,14 @@ For the costly evidence-chain transcript, the candidate additionally passes only
 17. Uses `unknown` and keeps the gate blocked if full replay coverage or the terminal result is missing.
 18. Classifies a live run needed solely for an unavailable raw observation as bounded evidence capture rather than proof.
 
+For improvement execution and reuse, the candidate additionally passes only when it:
+
+19. Classifies every evidence-backed candidate with `Impact Horizon`, `Concrete Consumers`, `Execution Class`, `Earliest Safe Point`, `Invalidated Evidence`, and `Observable Payback`, without inventing consumers or savings.
+20. Admits current-change work only when an exact remaining task consumes it and schedules `gate-closer`, `do-now`, and `before-task-<id>` work before that consumer after live-attempt and safety blockers.
+21. Uses `Impact Horizon: Working Repository` only when the current change consumes and proves an existing shared owner and at least one additional exact repository consumer is evidenced; it names but does not mutate the additional consumers.
+22. Emits evidence-backed no-current-consumer work under `Deferred Improvement Candidates` with `Execution Class: separate-change`, a reason it was not admitted, and an exact re-evaluation condition; deferred records do not become checkbox scope or block completion.
+23. Rejects unsupported generic ideas rather than creating either an admitted task or a deferred record.
+
 Record wall time and rework only from observable run output. Keep the candidate instruction only when quality is at least equal on the original transcript and the costly-chain transcript prevents the avoidable second live attempt without weakening required live safety or cleanup.
 
 ## 2026-08-08 Observation

@@ -11,9 +11,11 @@ import {
   SHARED_PTY_MANAGER,
 } from "../opencode-pty-bridge.ts";
 import {
+  AuditRequestOverflowError,
   buildArbiterAuditRequest,
   buildArbiterRetryRequest,
   captureArbiterEvidence,
+  requireBoundedRequest,
 } from "./arbiter-evidence.ts";
 import { ensureArbiterChild } from "./arbiter-child.ts";
 import { GuardAuditMonitorLauncher } from "./audit-monitor.ts";
@@ -43,6 +45,7 @@ import {
   stringValue,
 } from "./runtime-support.ts";
 import { GuardStatusReporter } from "./status.ts";
+import { sendTaskFallback } from "./task-fallback.ts";
 import {
   hasVerifiedTroubleshooter,
   strategyFingerprint,
@@ -57,6 +60,57 @@ import type {
 import { buildContinuation, parseCompletionVerdictText } from "./verdict.ts";
 type LogLevel = "debug" | "error" | "info" | "warn";
 const MAX_AUTONOMOUS_QUESTION_REFS = 1_024;
+class ArbiterPromptTimeoutError extends Error {
+  constructor(readonly timeoutMs: number) {
+    super(`Completion arbiter prompt timed out after ${timeoutMs}ms`);
+    this.name = "ArbiterPromptTimeoutError";
+  }
+}
+
+async function withTimeout<T>(
+  run: (signal: AbortSignal) => Promise<T>,
+  timeoutMs: number,
+  parentSignal?: AbortSignal,
+): Promise<T> {
+  const controller = new AbortController();
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, timeoutMs);
+  const abort = () => controller.abort();
+  parentSignal?.addEventListener("abort", abort, { once: true });
+  try {
+    return await Promise.race([
+      run(controller.signal),
+      new Promise<never>((_resolve, reject) => controller.signal.addEventListener("abort", () => {
+        reject(timedOut ? new ArbiterPromptTimeoutError(timeoutMs) : new Error("Completion arbiter prompt cancelled"));
+      }, { once: true })),
+    ]);
+  } finally {
+    clearTimeout(timer);
+    parentSignal?.removeEventListener("abort", abort);
+  }
+}
+
+function auditErrorClass(error: unknown): "capability" | "cancelled" | "input-state" | "transient" {
+  if (error instanceof AuditRequestOverflowError) return "input-state";
+  if (error instanceof ArbiterPromptTimeoutError) return "transient";
+  const details = safeError(error, "unknown");
+  const material = `${details.name} ${details.message ?? ""} ${details.cause?.name ?? ""} ${details.cause?.message ?? ""}`;
+  if (/abort|cancel|stale/i.test(material)) return "cancelled";
+  if (/configured hidden completion arbiter route|capability|unsupported/i.test(material)) return "capability";
+  if (/not found|ownership|multiple retained|limit reached|schema|correlation|evidence|invalid completion|exact json/i.test(material)) return "input-state";
+  if (/provider|network|temporar|rate|timeout|unavailable|connection|fetch/i.test(material)) return "transient";
+  return "transient";
+}
+
+function sessionRows(payload: unknown): Session[] {
+  if (Array.isArray(payload)) return payload as Session[];
+  const nested = record(payload)?.data;
+  if (Array.isArray(nested)) return nested as Session[];
+  throw new Error("session.list grind recovery returned an unsupported payload shape");
+}
 export class SessionCompletionController {
   readonly client: OpencodeClient;
   readonly leases: AsyncLeaseRegistry;
@@ -92,6 +146,12 @@ export class SessionCompletionController {
 
   async start(): Promise<Hooks> {
     registerSessionUpdateCallback(this.ptyUpdate);
+    setTimeout(() => {
+      if (this.disposed) return;
+      void this.reconcileRoots().catch((error) => this.log("error", "startup grind recovery failed", {
+        error: safeError(error, "startup"),
+      }));
+    }, 0);
     return {
       config: async (config) => {
         applyPermissionAllow(config);
@@ -137,6 +197,56 @@ export class SessionCompletionController {
       event: async ({ event }) => this.onEvent(event as unknown as Record<string, unknown>),
       dispose: async () => this.dispose(),
     };
+  }
+
+  private async reconcileRoots(): Promise<void> {
+    const roots = sessionRows(await dataOf<unknown>(
+      this.client.v2.session.list({ directory: this.input.directory, roots: true, limit: 500 }) as Promise<unknown>,
+      "session.list grind recovery",
+    ));
+    for (const candidate of roots.filter((row) => row.parentID == null)) {
+      const root = await this.session(candidate.id);
+      if (record(root.metadata?.completionGuard)?.grindEnabled !== true) continue;
+      const state = this.stateFor(root);
+      const listedChildren = await dataOf<Session[]>(
+        this.client.session.children({ sessionID: root.id, directory: this.input.directory }) as Promise<unknown>,
+        "session.children grind recovery",
+      );
+      const children = await Promise.all(listedChildren.map((child) => this.session(child.id)));
+      const guardChildren = children.filter((child) =>
+        record(child.metadata?.completionGuard)?.rootSessionRef === hashRef("session", root.id)
+      );
+      const retrying = guardChildren.filter((child) => record(child.metadata?.completionGuard)?.status === "retrying");
+      if (retrying.length > 1) {
+        state.restartRecoveryAction = "blocked-multiple-retrying-children";
+        await this.status.set(state, "error", "Restart recovery found multiple retrying arbiter children", "error");
+        continue;
+      }
+      if (retrying.length === 1) {
+        const child = retrying[0];
+        const metadata = record(child.metadata?.completionGuard) ?? {};
+        const attempt = typeof metadata.attempt === "number" && Number.isInteger(metadata.attempt) ? metadata.attempt : -1;
+        const kind = metadata.kind === "completion" || metadata.kind === "question" ? metadata.kind : null;
+        const auditID = stringValue(metadata.auditID);
+        const inspectedRevision = stringValue(metadata.inspectedRevision);
+        if (attempt < 0 || attempt >= this.options.maxRetryAttempts || kind == null || auditID == null || inspectedRevision == null) {
+          state.restartRecoveryAction = "blocked-invalid-retry-metadata";
+          await this.status.set(state, "error", "Restart recovery found invalid bounded retry metadata", "error");
+          continue;
+        }
+        if (kind === "question") {
+          state.restartRecoveryAction = "blocked-question-reply-unknown";
+          await this.status.set(state, "error", "Restart recovery cannot prove pending question reply ownership", "error");
+          continue;
+        }
+        state.recoveryAudit = { attempt, auditID, childSessionID: child.id, inspectedRevision, kind };
+        state.restartRecoveryAction = "resume-bounded-retry-after-settle";
+      } else {
+        state.restartRecoveryAction = "schedule-one-settle-pass";
+      }
+      await this.status.persist(state);
+      this.scheduleIdle(state);
+    }
   }
 
   private async log(level: LogLevel, message: string, extra: Record<string, unknown> = {}): Promise<void> {
@@ -268,6 +378,7 @@ export class SessionCompletionController {
       return;
     }
     state.grindEnabled = false;
+    this.clearWaitRecheck(state);
     state.questions.clear();
     this.leases.clearRoot(state.root.id);
     this.ptyFallback.clearRoot(state.root.id);
@@ -331,6 +442,7 @@ export class SessionCompletionController {
     if (state == null || !state.grindEnabled) return;
     state.paused = true;
     state.guardTurnPending = false;
+    this.clearWaitRecheck(state);
     this.cancelAudit(state, "paused");
     await this.status.set(state, "paused", `Guard paused: ${reason}`, "warning");
   }
@@ -351,6 +463,37 @@ export class SessionCompletionController {
       state.settleTimer = null;
       void this.handleSettledIdle(state, generation).catch((error) => this.owningFailure(state, "idle preflight", error));
     }, this.options.settleMs);
+  }
+
+  private clearWaitRecheck(state: RootState): void {
+    if (state.waitRecheckTimer != null) clearTimeout(state.waitRecheckTimer);
+    state.waitRecheckTimer = null;
+    state.waitReason = null;
+    state.waitRecheckCount = 0;
+  }
+
+  private scheduleWaitRecheck(state: RootState, reason: string): void {
+    if (state.waitRecheckTimer != null) return;
+    if (state.waitRecheckCount >= this.options.maxWaitRechecks) {
+      state.waitReason = reason;
+      void this.status.set(
+        state,
+        "error",
+        `Async wait recheck limit exhausted (${state.waitRecheckCount}/${this.options.maxWaitRechecks}): ${reason}`,
+        "error",
+      );
+      return;
+    }
+    state.waitReason = reason;
+    state.waitRecheckCount += 1;
+    state.waitRecheckTimer = setTimeout(() => {
+      state.waitRecheckTimer = null;
+      if (!state.grindEnabled || state.paused || this.disposed) return;
+      void this.handleSettledIdle(state, this.leases.generation(state.root.id)).catch((error) =>
+        this.owningFailure(state, "async wait recheck", error)
+      );
+    }, this.options.waitRecheckMs);
+    void this.status.persist(state);
   }
 
   private async sessionStatuses(): Promise<Record<string, { type: string }>> {
@@ -405,11 +548,49 @@ export class SessionCompletionController {
         preflight.reason,
         preflight.kind === "unknown" ? "error" : "info",
       );
+      if (preflight.kind === "waiting") {
+        const fallback = this.leases.terminalTaskAwaitingResult(state.root.id, children);
+        if (fallback?.childSessionID != null) {
+          await sendTaskFallback(this.client, this.leases, state, fallback.callID, fallback.childSessionID);
+        } else {
+          this.scheduleWaitRecheck(state, preflight.reason);
+        }
+      }
       return;
     }
+    this.clearWaitRecheck(state);
     const inspection = await this.inspectRoot(state);
     if (inspection.revision.leaseGeneration !== expectedGeneration) return;
     if (state.lastAuditedRevision === inspection.revision.revisionDigest && state.state === "passed") return;
+    const recovery = state.recoveryAudit;
+    if (recovery != null) {
+      if (recovery.inspectedRevision !== inspection.revision.revisionDigest) {
+        state.recoveryAudit = null;
+        state.restartRecoveryAction = "discarded-stale-retry";
+      } else {
+        const epoch: AuditEpoch = {
+          auditID: recovery.auditID,
+          attempt: recovery.attempt,
+          childSessionID: recovery.childSessionID,
+          completionEvidence: null,
+          inspected: inspection.revision,
+          kind: recovery.kind,
+          questionRequest: null,
+          rootRef: hashRef("session", state.root.id),
+          rootSessionID: state.root.id,
+        };
+        state.recoveryAudit = null;
+        state.activeAudit = epoch;
+        state.auditAbort = new AbortController();
+        state.state = "audit-retrying";
+        state.auditDiagnostics.attempt = recovery.attempt;
+        await this.status.persist(state);
+        void this.runAudit(state, inspection, epoch, "Runtime restarted during a bounded transient retry").catch((error) =>
+          this.owningFailure(state, "recovered completion audit", error)
+        );
+        return;
+      }
+    }
     await this.beginAudit(state, inspection, "completion", null);
   }
 
@@ -447,6 +628,16 @@ export class SessionCompletionController {
       rootSessionID: state.root.id,
     };
     state.activeAudit = epoch;
+    state.auditDiagnostics = {
+      allowedRequestBytes: this.options.maxRequestBytes,
+      attempt: 0,
+      attemptLimit: this.options.maxRetryAttempts,
+      endedAt: null,
+      errorClass: null,
+      requestBytes: null,
+      retainedChildCount: null,
+      startedAt: Date.now(),
+    };
     state.auditAbort = new AbortController();
     state.state = kind === "question" ? "question-auditing" : "auditing";
     await this.status.set(state, state.state, kind === "question" ? "Auditing pending question" : "Auditing completion", "info");
@@ -465,20 +656,27 @@ export class SessionCompletionController {
     try {
       const auditSignal = state.auditAbort?.signal;
       epoch.attempt += 1;
+      state.auditDiagnostics.attempt = epoch.attempt;
       const completionEvidence = epoch.completionEvidence ?? captureArbiterEvidence(epoch.rootSessionID, epoch.rootRef);
       epoch.completionEvidence = completionEvidence;
-      const { child, route } = await ensureArbiterChild(
+      const promptText = retryReason == null
+        ? buildArbiterAuditRequest(epoch, inspection, completionEvidence)
+        : buildArbiterRetryRequest(epoch, retryReason);
+      state.auditDiagnostics.requestBytes = requireBoundedRequest(promptText, this.options.maxRequestBytes);
+      const { child, retainedChildCount, route } = await ensureArbiterChild(
         this.client,
         this.input.directory,
         this.options.arbiterAgent,
         state,
         epoch,
+        this.options.retainAuditSessions,
       );
+      if (retainedChildCount != null) state.auditDiagnostics.retainedChildCount = retainedChildCount;
       if (!this.isCurrentAudit(state, epoch)) return;
       await this.status.persist(state);
       if (!this.isCurrentAudit(state, epoch)) return;
       const result = await dataOf<{ info: Record<string, unknown>; parts: unknown[] }>(
-        this.client.session.prompt({
+        withTimeout((signal) => this.client.session.prompt({
           sessionID: child.id,
           directory: this.input.directory,
           agent: this.options.arbiterAgent,
@@ -487,13 +685,11 @@ export class SessionCompletionController {
           tools: route.tools,
           parts: [{
             type: "text",
-            text: retryReason == null
-              ? buildArbiterAuditRequest(epoch, inspection, completionEvidence)
-              : buildArbiterRetryRequest(epoch, retryReason),
+            text: promptText,
             synthetic: true,
             metadata: { provenance: "completion-guard", auditID: epoch.auditID },
           }],
-        }, { signal: auditSignal }) as Promise<unknown>,
+        }, { signal }) as Promise<unknown>, this.options.arbiterPromptTimeoutMs, auditSignal),
         "session.prompt completion arbiter",
       );
       if (!this.isCurrentAudit(state, epoch)) return;
@@ -504,6 +700,7 @@ export class SessionCompletionController {
         throw error;
       }
       const verdict = parseCompletionVerdictText(result.parts, epoch);
+      state.auditDiagnostics.endedAt = Date.now();
       await this.applyVerdict(state, epoch, verdict);
     } catch (error) {
       if (state.auditAbort?.signal.aborted || state.activeAudit?.auditID !== epoch.auditID || state.paused) return;
@@ -513,6 +710,39 @@ export class SessionCompletionController {
 
   private async retryAudit(state: RootState, inspection: RootInspection, epoch: AuditEpoch, error: unknown): Promise<void> {
     if (!this.isCurrentAudit(state, epoch)) return;
+    const errorClass = auditErrorClass(error);
+    state.auditDiagnostics.errorClass = errorClass;
+    if (error instanceof AuditRequestOverflowError) {
+      state.auditDiagnostics.allowedRequestBytes = error.allowedBytes;
+      state.auditDiagnostics.requestBytes = error.observedBytes;
+    }
+    if (errorClass !== "transient" || epoch.attempt >= this.options.maxRetryAttempts) {
+      state.auditDiagnostics.endedAt = Date.now();
+      const details = safeError(error, epoch.rootSessionID);
+      await this.log("error", "completion audit stopped", {
+        attempt: epoch.attempt,
+        attemptLimit: this.options.maxRetryAttempts,
+        auditRef: hashRef("audit", epoch.auditID),
+        elapsedMs: Math.max(0, state.auditDiagnostics.endedAt - (state.auditDiagnostics.startedAt ?? state.auditDiagnostics.endedAt)),
+        error: details,
+        errorClass,
+        requestBytes: state.auditDiagnostics.requestBytes,
+        rootRef: epoch.rootRef,
+      });
+      await this.updateAuditMetadata(epoch, "error", undefined, undefined, errorClass);
+      if (!this.isCurrentAudit(state, epoch)) return;
+      await this.status.set(
+        state,
+        "error",
+        error instanceof AuditRequestOverflowError
+          ? `Completion evidence overflow: ${error.observedBytes} bytes exceeds ${error.allowedBytes}`
+          : `Completion audit stopped (${errorClass}) after ${epoch.attempt}/${this.options.maxRetryAttempts} attempts`,
+        "error",
+      );
+      if (!this.isCurrentAudit(state, epoch)) return;
+      this.cancelAudit(state, "error");
+      return;
+    }
     state.state = "audit-retrying";
     const delay = Math.min(
       this.options.maxDelayMs,
@@ -520,6 +750,7 @@ export class SessionCompletionController {
     );
     await this.log("warn", "completion audit retry scheduled", {
       attempt: epoch.attempt,
+      attemptLimit: this.options.maxRetryAttempts,
       auditRef: hashRef("audit", epoch.auditID),
       error: safeError(error, epoch.rootSessionID),
       nextDelayMs: delay,
@@ -543,8 +774,10 @@ export class SessionCompletionController {
     status: string,
     nextDelayMs?: number,
     verdict?: CompletionVerdict,
+    errorClass?: string,
   ): Promise<void> {
     if (epoch.childSessionID == null) return;
+    const state = this.roots.get(epoch.rootSessionID);
     try {
       const child = await this.session(epoch.childSessionID);
       await ensureNoError(this.client.session.update({
@@ -556,6 +789,18 @@ export class SessionCompletionController {
             ...(record(child.metadata?.completionGuard) ?? {}),
             status,
             attempt: epoch.attempt,
+            attemptLimit: this.options.maxRetryAttempts,
+            allowedRequestBytes: this.options.maxRequestBytes,
+            ...(state?.auditDiagnostics.startedAt == null ? {} : { startedAt: state.auditDiagnostics.startedAt }),
+            ...(state?.auditDiagnostics.endedAt == null ? {} : {
+              elapsedMs: Math.max(0, state.auditDiagnostics.endedAt - (state.auditDiagnostics.startedAt ?? state.auditDiagnostics.endedAt)),
+              endedAt: state.auditDiagnostics.endedAt,
+            }),
+            ...(state?.auditDiagnostics.requestBytes == null ? {} : { requestBytes: state.auditDiagnostics.requestBytes }),
+            ...(state?.auditDiagnostics.retainedChildCount == null ? {} : {
+              retainedChildCount: state.auditDiagnostics.retainedChildCount,
+            }),
+            ...(errorClass == null ? {} : { errorClass }),
             ...(nextDelayMs == null ? {} : { nextDelayMs }),
             ...(verdict == null ? {} : {
               confidence: verdict.confidence,
@@ -889,6 +1134,7 @@ export class SessionCompletionController {
       : [direct];
     for (const state of affected) {
       if (state.settleTimer != null) clearTimeout(state.settleTimer);
+      this.clearWaitRecheck(state);
       this.cancelAudit(state);
       this.leases.clearRoot(state.root.id);
       this.ptyFallback.clearRoot(state.root.id);
@@ -903,6 +1149,7 @@ export class SessionCompletionController {
     this.ptyFallback.dispose();
     for (const state of this.roots.values()) {
       if (state.settleTimer != null) clearTimeout(state.settleTimer);
+      this.clearWaitRecheck(state);
       this.cancelAudit(state);
     }
     this.roots.clear();

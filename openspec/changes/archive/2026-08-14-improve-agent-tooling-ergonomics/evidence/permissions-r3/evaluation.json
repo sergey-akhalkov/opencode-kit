@@ -1,0 +1,8 @@
+{
+  "candidateId": "candidate-contract-green-r4",
+  "hiddenArbiterTools": "all-false",
+  "mainDefault": "permissive",
+  "schemaVersion": 1,
+  "specialistRestrictions": "preserved",
+  "status": "complete"
+}

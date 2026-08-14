@@ -1,0 +1,1026 @@
+{
+  "candidateId": "p0-runtime-r6",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "productionEntrypointSha256": "49fcf4bd23c55c3abefa7714e540ccf7ff356ec1b91d259b7128dae1b9d14643",
+  "scenarios": [
+    {
+      "after": [
+        {
+          "path": ".git/COMMIT_EDITMSG",
+          "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+        },
+        {
+          "path": ".git/config",
+          "sha256": "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+        },
+        {
+          "path": ".git/description",
+          "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+        },
+        {
+          "path": ".git/HEAD",
+          "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+        },
+        {
+          "path": ".git/hooks/applypatch-msg.sample",
+          "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+        },
+        {
+          "path": ".git/hooks/commit-msg.sample",
+          "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+        },
+        {
+          "path": ".git/hooks/fsmonitor-watchman.sample",
+          "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+        },
+        {
+          "path": ".git/hooks/post-update.sample",
+          "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+        },
+        {
+          "path": ".git/hooks/pre-applypatch.sample",
+          "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+        },
+        {
+          "path": ".git/hooks/pre-commit.sample",
+          "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+        },
+        {
+          "path": ".git/hooks/pre-merge-commit.sample",
+          "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+        },
+        {
+          "path": ".git/hooks/pre-push.sample",
+          "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+        },
+        {
+          "path": ".git/hooks/pre-rebase.sample",
+          "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+        },
+        {
+          "path": ".git/hooks/pre-receive.sample",
+          "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+        },
+        {
+          "path": ".git/hooks/prepare-commit-msg.sample",
+          "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+        },
+        {
+          "path": ".git/hooks/push-to-checkout.sample",
+          "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+        },
+        {
+          "path": ".git/hooks/sendemail-validate.sample",
+          "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+        },
+        {
+          "path": ".git/hooks/update.sample",
+          "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+        },
+        {
+          "path": ".git/index",
+          "sha256": "f11b36763385cf9391bf9f7c6859a73db0773ea37c4236ed8a0566a594651925"
+        },
+        {
+          "path": ".git/info/exclude",
+          "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+        },
+        {
+          "path": ".git/logs/HEAD",
+          "sha256": "71d340dd26997a667ea63665d96b2f9a87d6808398c38b0fecd3c1a7ba7369d5"
+        },
+        {
+          "path": ".git/logs/refs/heads/master",
+          "sha256": "71d340dd26997a667ea63665d96b2f9a87d6808398c38b0fecd3c1a7ba7369d5"
+        },
+        {
+          "path": ".git/objects/1d/1c149925538eb4d43a7b67370f7dd2899d3a50",
+          "sha256": "ca3bdfbeff11bd5353f0ea98f2a083ed5619637bb0900bb52d0dabea8f2fb500"
+        },
+        {
+          "path": ".git/objects/25/3d8540edfb6b2f18a714929e69c14683daaa3a",
+          "sha256": "010c2d9c3887948579894b191fa6c444c2f0acf0fc8fbf559bb4d338861e1853"
+        },
+        {
+          "path": ".git/objects/35/0b17d5cfe15f2e50412469e72e0d76115107e1",
+          "sha256": "b897a7c58f973a19f42253e1b25294808a2678d6457b14f3d67f16a933188896"
+        },
+        {
+          "path": ".git/objects/5a/75509022db7f8465be949333082f7d23f83434",
+          "sha256": "f02589b25c472da12bf8f28393594edc0664cc6b9b68852b47471af63c70431e"
+        },
+        {
+          "path": ".git/objects/5e/4d67cdc136e729561022e0d800e21986c70dd4",
+          "sha256": "e87e388832bfa6493d63574ecd15d0a61666d645e58a5245f84f061869f7e123"
+        },
+        {
+          "path": ".git/objects/67/195833ee19fed26c568cbf83a52f5b7974b6c7",
+          "sha256": "2ccc082091797025dc0b95daebde28b3a0cebb6bb263b5ea230c9fc9151c8d6c"
+        },
+        {
+          "path": ".git/objects/76/eca72eef076ec01f7e88809947c6bcb95bef2d",
+          "sha256": "da620a96e4c51795448086b71240cb0ba749240a3c634574e6469632db42845d"
+        },
+        {
+          "path": ".git/objects/85/edf35c075f2d3e83191c4b9a3d21fcc48d6d5d",
+          "sha256": "64f660124deaa4ead96a777ac1da0f659f9d20b731f4971ed83167973e8db0bb"
+        },
+        {
+          "path": ".git/objects/dc/bbff6c9345887a27e6724659d9db223126705c",
+          "sha256": "265a55789598a9df6b49813fd0ca3fa9d77e8f023cc858f46dfed1100b2f8180"
+        },
+        {
+          "path": ".git/objects/e9/f5414aff5b80ecba75761f7131628a394163b0",
+          "sha256": "4b9a097343ac78a60f0dca02760a29578d377414c87aab85287b66fae4595285"
+        },
+        {
+          "path": ".git/refs/heads/master",
+          "sha256": "e9a011df7d541cfa44eb2a7b99290c2c162e91a5c69a4292cb02c92ab13276d6"
+        },
+        {
+          "path": "AGENTS.md",
+          "sha256": "be6c63718535a97acc1d27ba7cf47433e45bf3f409fc832a265f1b0a9b20df9e"
+        },
+        {
+          "path": "docs/roadmap.md",
+          "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+        },
+        {
+          "path": "mission.json",
+          "sha256": "0ad7bcfb47b6860c14666e231e27d0b02a91c22ce58ac76fef0144990987be1d"
+        },
+        {
+          "path": "opencode-dev-kit/adapter.json",
+          "sha256": "ef763e935495437ab02cad624b77bcd119f5ac37004229d71ea5aae2a2602397"
+        },
+        {
+          "path": "tools/validate.mjs",
+          "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+        }
+      ],
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "before": [
+        {
+          "path": ".git/COMMIT_EDITMSG",
+          "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+        },
+        {
+          "path": ".git/config",
+          "sha256": "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+        },
+        {
+          "path": ".git/description",
+          "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+        },
+        {
+          "path": ".git/HEAD",
+          "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+        },
+        {
+          "path": ".git/hooks/applypatch-msg.sample",
+          "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+        },
+        {
+          "path": ".git/hooks/commit-msg.sample",
+          "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+        },
+        {
+          "path": ".git/hooks/fsmonitor-watchman.sample",
+          "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+        },
+        {
+          "path": ".git/hooks/post-update.sample",
+          "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+        },
+        {
+          "path": ".git/hooks/pre-applypatch.sample",
+          "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+        },
+        {
+          "path": ".git/hooks/pre-commit.sample",
+          "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+        },
+        {
+          "path": ".git/hooks/pre-merge-commit.sample",
+          "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+        },
+        {
+          "path": ".git/hooks/pre-push.sample",
+          "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+        },
+        {
+          "path": ".git/hooks/pre-rebase.sample",
+          "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+        },
+        {
+          "path": ".git/hooks/pre-receive.sample",
+          "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+        },
+        {
+          "path": ".git/hooks/prepare-commit-msg.sample",
+          "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+        },
+        {
+          "path": ".git/hooks/push-to-checkout.sample",
+          "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+        },
+        {
+          "path": ".git/hooks/sendemail-validate.sample",
+          "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+        },
+        {
+          "path": ".git/hooks/update.sample",
+          "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+        },
+        {
+          "path": ".git/index",
+          "sha256": "f11b36763385cf9391bf9f7c6859a73db0773ea37c4236ed8a0566a594651925"
+        },
+        {
+          "path": ".git/info/exclude",
+          "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+        },
+        {
+          "path": ".git/logs/HEAD",
+          "sha256": "71d340dd26997a667ea63665d96b2f9a87d6808398c38b0fecd3c1a7ba7369d5"
+        },
+        {
+          "path": ".git/logs/refs/heads/master",
+          "sha256": "71d340dd26997a667ea63665d96b2f9a87d6808398c38b0fecd3c1a7ba7369d5"
+        },
+        {
+          "path": ".git/objects/1d/1c149925538eb4d43a7b67370f7dd2899d3a50",
+          "sha256": "ca3bdfbeff11bd5353f0ea98f2a083ed5619637bb0900bb52d0dabea8f2fb500"
+        },
+        {
+          "path": ".git/objects/25/3d8540edfb6b2f18a714929e69c14683daaa3a",
+          "sha256": "010c2d9c3887948579894b191fa6c444c2f0acf0fc8fbf559bb4d338861e1853"
+        },
+        {
+          "path": ".git/objects/35/0b17d5cfe15f2e50412469e72e0d76115107e1",
+          "sha256": "b897a7c58f973a19f42253e1b25294808a2678d6457b14f3d67f16a933188896"
+        },
+        {
+          "path": ".git/objects/5a/75509022db7f8465be949333082f7d23f83434",
+          "sha256": "f02589b25c472da12bf8f28393594edc0664cc6b9b68852b47471af63c70431e"
+        },
+        {
+          "path": ".git/objects/5e/4d67cdc136e729561022e0d800e21986c70dd4",
+          "sha256": "e87e388832bfa6493d63574ecd15d0a61666d645e58a5245f84f061869f7e123"
+        },
+        {
+          "path": ".git/objects/67/195833ee19fed26c568cbf83a52f5b7974b6c7",
+          "sha256": "2ccc082091797025dc0b95daebde28b3a0cebb6bb263b5ea230c9fc9151c8d6c"
+        },
+        {
+          "path": ".git/objects/76/eca72eef076ec01f7e88809947c6bcb95bef2d",
+          "sha256": "da620a96e4c51795448086b71240cb0ba749240a3c634574e6469632db42845d"
+        },
+        {
+          "path": ".git/objects/85/edf35c075f2d3e83191c4b9a3d21fcc48d6d5d",
+          "sha256": "64f660124deaa4ead96a777ac1da0f659f9d20b731f4971ed83167973e8db0bb"
+        },
+        {
+          "path": ".git/objects/dc/bbff6c9345887a27e6724659d9db223126705c",
+          "sha256": "265a55789598a9df6b49813fd0ca3fa9d77e8f023cc858f46dfed1100b2f8180"
+        },
+        {
+          "path": ".git/objects/e9/f5414aff5b80ecba75761f7131628a394163b0",
+          "sha256": "4b9a097343ac78a60f0dca02760a29578d377414c87aab85287b66fae4595285"
+        },
+        {
+          "path": ".git/refs/heads/master",
+          "sha256": "e9a011df7d541cfa44eb2a7b99290c2c162e91a5c69a4292cb02c92ab13276d6"
+        },
+        {
+          "path": "AGENTS.md",
+          "sha256": "be6c63718535a97acc1d27ba7cf47433e45bf3f409fc832a265f1b0a9b20df9e"
+        },
+        {
+          "path": "docs/roadmap.md",
+          "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+        },
+        {
+          "path": "mission.json",
+          "sha256": "0ad7bcfb47b6860c14666e231e27d0b02a91c22ce58ac76fef0144990987be1d"
+        },
+        {
+          "path": "opencode-dev-kit/adapter.json",
+          "sha256": "ef763e935495437ab02cad624b77bcd119f5ac37004229d71ea5aae2a2602397"
+        },
+        {
+          "path": "tools/validate.mjs",
+          "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+        }
+      ],
+      "exitCode": 0,
+      "name": "valid",
+      "stderr": "",
+      "stdout": "{\n  \"checks\": [\n    {\n      \"blocking\": false,\n      \"id\": \"definition:checkpoint\",\n      \"status\": \"passed\",\n      \"summary\": \"Checkpoint policy evidence-only is valid for this mission envelope.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:contained\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission, roadmap, and evidence paths are project-contained.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:effects\",\n      \"status\": \"passed\",\n      \"summary\": \"Every slice effect is explicitly allowed and protected effects carry an authority reference.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:schema\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission schema and explicit fields are valid.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:serial-order\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission has 2 explicitly ordered slice(s).\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"mission:next-effects\",\n      \"status\": \"passed\",\n      \"summary\": \"Next slice requires no unsupported owner-controlled effect.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"mission:writer-lease\",\n      \"status\": \"passed\",\n      \"summary\": \"No prior mission writer lease exists.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:git-state\",\n      \"status\": \"passed\",\n      \"summary\": \"Git worktree and index are clean.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:openspec-state\",\n      \"status\": \"passed\",\n      \"summary\": \"OpenSpec 1.6.0 has exactly the apply-ready active change change-a.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:runtime-authority\",\n      \"status\": \"passed\",\n      \"summary\": \"Project runtime authority marker is present.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:validation-adapter\",\n      \"status\": \"passed\",\n      \"summary\": \"Project validation adapter and aggregate validation executable are resolved.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"workflow:canonical-source\",\n      \"status\": \"passed\",\n      \"summary\": \"Canonical global workflow files and running mission entrypoint match.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"workflow:loaded-identity\",\n      \"status\": \"passed\",\n      \"summary\": \"Loaded standard OpenSpec skills and commands match the canonical global source.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"workflow:project-overlays\",\n      \"status\": \"passed\",\n      \"summary\": \"Project has no same-name standard OpenSpec workflow overlays.\"\n    }\n  ],\n  \"definitionDigest\": \"9eea2901b1e328b67cda768225f63e1847816a60dd624811acd11a59812f5b83\",\n  \"eligibleSlice\": {\n    \"changeId\": \"change-a\",\n    \"id\": \"slice-a\",\n    \"operation\": \"continue\"\n  },\n  \"exitCode\": 0,\n  \"missionId\": \"generic-two-slice\",\n  \"operation\": \"preflight\",\n  \"schemaVersion\": 1,\n  \"status\": \"eligible\",\n  \"tool\": \"roadmap-mission\"\n}\n"
+    },
+    {
+      "after": [
+        {
+          "path": ".git/COMMIT_EDITMSG",
+          "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+        },
+        {
+          "path": ".git/config",
+          "sha256": "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+        },
+        {
+          "path": ".git/description",
+          "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+        },
+        {
+          "path": ".git/HEAD",
+          "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+        },
+        {
+          "path": ".git/hooks/applypatch-msg.sample",
+          "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+        },
+        {
+          "path": ".git/hooks/commit-msg.sample",
+          "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+        },
+        {
+          "path": ".git/hooks/fsmonitor-watchman.sample",
+          "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+        },
+        {
+          "path": ".git/hooks/post-update.sample",
+          "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+        },
+        {
+          "path": ".git/hooks/pre-applypatch.sample",
+          "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+        },
+        {
+          "path": ".git/hooks/pre-commit.sample",
+          "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+        },
+        {
+          "path": ".git/hooks/pre-merge-commit.sample",
+          "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+        },
+        {
+          "path": ".git/hooks/pre-push.sample",
+          "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+        },
+        {
+          "path": ".git/hooks/pre-rebase.sample",
+          "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+        },
+        {
+          "path": ".git/hooks/pre-receive.sample",
+          "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+        },
+        {
+          "path": ".git/hooks/prepare-commit-msg.sample",
+          "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+        },
+        {
+          "path": ".git/hooks/push-to-checkout.sample",
+          "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+        },
+        {
+          "path": ".git/hooks/sendemail-validate.sample",
+          "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+        },
+        {
+          "path": ".git/hooks/update.sample",
+          "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+        },
+        {
+          "path": ".git/index",
+          "sha256": "7b983aa1ddbc8ab6f65ec2b5eee232d54aeb5d4c0e226e5e9d276fd782fcf25a"
+        },
+        {
+          "path": ".git/info/exclude",
+          "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+        },
+        {
+          "path": ".git/logs/HEAD",
+          "sha256": "b1fd62b5f1ee544eb0da2cee4fa88eca94be67c28723341aa6a30c99c68d0d0f"
+        },
+        {
+          "path": ".git/logs/refs/heads/master",
+          "sha256": "b1fd62b5f1ee544eb0da2cee4fa88eca94be67c28723341aa6a30c99c68d0d0f"
+        },
+        {
+          "path": ".git/objects/04/1bc7d4d25de5d2ca310e41c149aec58c0eebff",
+          "sha256": "61825017669997edffe3d4ed953d706af9b1a25240c1640b5af8b35747044d81"
+        },
+        {
+          "path": ".git/objects/1d/1c149925538eb4d43a7b67370f7dd2899d3a50",
+          "sha256": "ca3bdfbeff11bd5353f0ea98f2a083ed5619637bb0900bb52d0dabea8f2fb500"
+        },
+        {
+          "path": ".git/objects/25/3d8540edfb6b2f18a714929e69c14683daaa3a",
+          "sha256": "010c2d9c3887948579894b191fa6c444c2f0acf0fc8fbf559bb4d338861e1853"
+        },
+        {
+          "path": ".git/objects/35/0b17d5cfe15f2e50412469e72e0d76115107e1",
+          "sha256": "b897a7c58f973a19f42253e1b25294808a2678d6457b14f3d67f16a933188896"
+        },
+        {
+          "path": ".git/objects/5a/75509022db7f8465be949333082f7d23f83434",
+          "sha256": "f02589b25c472da12bf8f28393594edc0664cc6b9b68852b47471af63c70431e"
+        },
+        {
+          "path": ".git/objects/67/195833ee19fed26c568cbf83a52f5b7974b6c7",
+          "sha256": "2ccc082091797025dc0b95daebde28b3a0cebb6bb263b5ea230c9fc9151c8d6c"
+        },
+        {
+          "path": ".git/objects/76/eca72eef076ec01f7e88809947c6bcb95bef2d",
+          "sha256": "da620a96e4c51795448086b71240cb0ba749240a3c634574e6469632db42845d"
+        },
+        {
+          "path": ".git/objects/7e/7323458df8bba4a704f782160e27d0e565d625",
+          "sha256": "8ada194f95bbf165a4bbf28228747fe51a5926b1dbd4cde7620bd1ce474a3a47"
+        },
+        {
+          "path": ".git/objects/bc/9f0397df832b46c60a52ffec3f3f9ab1b5910a",
+          "sha256": "b95cc31012a66818d91e2297864b29e0b7c02dbabd9c29a00626f722b350f925"
+        },
+        {
+          "path": ".git/objects/dc/bbff6c9345887a27e6724659d9db223126705c",
+          "sha256": "265a55789598a9df6b49813fd0ca3fa9d77e8f023cc858f46dfed1100b2f8180"
+        },
+        {
+          "path": ".git/refs/heads/master",
+          "sha256": "fc0c83dd92a3bd7b819e49fded486e279723eb825fbd3b74b52723833d875f90"
+        },
+        {
+          "path": "AGENTS.md",
+          "sha256": "be6c63718535a97acc1d27ba7cf47433e45bf3f409fc832a265f1b0a9b20df9e"
+        },
+        {
+          "path": "docs/roadmap.md",
+          "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+        },
+        {
+          "path": "mission.json",
+          "sha256": "085f3a00c6908a9882ce049c858558e5bdaa3dfea34729ce54fa3505331ea744"
+        },
+        {
+          "path": "opencode-dev-kit/adapter.json",
+          "sha256": "ef763e935495437ab02cad624b77bcd119f5ac37004229d71ea5aae2a2602397"
+        },
+        {
+          "path": "tools/validate.mjs",
+          "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+        }
+      ],
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "before": [
+        {
+          "path": ".git/COMMIT_EDITMSG",
+          "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+        },
+        {
+          "path": ".git/config",
+          "sha256": "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+        },
+        {
+          "path": ".git/description",
+          "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+        },
+        {
+          "path": ".git/HEAD",
+          "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+        },
+        {
+          "path": ".git/hooks/applypatch-msg.sample",
+          "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+        },
+        {
+          "path": ".git/hooks/commit-msg.sample",
+          "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+        },
+        {
+          "path": ".git/hooks/fsmonitor-watchman.sample",
+          "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+        },
+        {
+          "path": ".git/hooks/post-update.sample",
+          "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+        },
+        {
+          "path": ".git/hooks/pre-applypatch.sample",
+          "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+        },
+        {
+          "path": ".git/hooks/pre-commit.sample",
+          "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+        },
+        {
+          "path": ".git/hooks/pre-merge-commit.sample",
+          "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+        },
+        {
+          "path": ".git/hooks/pre-push.sample",
+          "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+        },
+        {
+          "path": ".git/hooks/pre-rebase.sample",
+          "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+        },
+        {
+          "path": ".git/hooks/pre-receive.sample",
+          "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+        },
+        {
+          "path": ".git/hooks/prepare-commit-msg.sample",
+          "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+        },
+        {
+          "path": ".git/hooks/push-to-checkout.sample",
+          "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+        },
+        {
+          "path": ".git/hooks/sendemail-validate.sample",
+          "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+        },
+        {
+          "path": ".git/hooks/update.sample",
+          "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+        },
+        {
+          "path": ".git/index",
+          "sha256": "7b983aa1ddbc8ab6f65ec2b5eee232d54aeb5d4c0e226e5e9d276fd782fcf25a"
+        },
+        {
+          "path": ".git/info/exclude",
+          "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+        },
+        {
+          "path": ".git/logs/HEAD",
+          "sha256": "b1fd62b5f1ee544eb0da2cee4fa88eca94be67c28723341aa6a30c99c68d0d0f"
+        },
+        {
+          "path": ".git/logs/refs/heads/master",
+          "sha256": "b1fd62b5f1ee544eb0da2cee4fa88eca94be67c28723341aa6a30c99c68d0d0f"
+        },
+        {
+          "path": ".git/objects/04/1bc7d4d25de5d2ca310e41c149aec58c0eebff",
+          "sha256": "61825017669997edffe3d4ed953d706af9b1a25240c1640b5af8b35747044d81"
+        },
+        {
+          "path": ".git/objects/1d/1c149925538eb4d43a7b67370f7dd2899d3a50",
+          "sha256": "ca3bdfbeff11bd5353f0ea98f2a083ed5619637bb0900bb52d0dabea8f2fb500"
+        },
+        {
+          "path": ".git/objects/25/3d8540edfb6b2f18a714929e69c14683daaa3a",
+          "sha256": "010c2d9c3887948579894b191fa6c444c2f0acf0fc8fbf559bb4d338861e1853"
+        },
+        {
+          "path": ".git/objects/35/0b17d5cfe15f2e50412469e72e0d76115107e1",
+          "sha256": "b897a7c58f973a19f42253e1b25294808a2678d6457b14f3d67f16a933188896"
+        },
+        {
+          "path": ".git/objects/5a/75509022db7f8465be949333082f7d23f83434",
+          "sha256": "f02589b25c472da12bf8f28393594edc0664cc6b9b68852b47471af63c70431e"
+        },
+        {
+          "path": ".git/objects/67/195833ee19fed26c568cbf83a52f5b7974b6c7",
+          "sha256": "2ccc082091797025dc0b95daebde28b3a0cebb6bb263b5ea230c9fc9151c8d6c"
+        },
+        {
+          "path": ".git/objects/76/eca72eef076ec01f7e88809947c6bcb95bef2d",
+          "sha256": "da620a96e4c51795448086b71240cb0ba749240a3c634574e6469632db42845d"
+        },
+        {
+          "path": ".git/objects/7e/7323458df8bba4a704f782160e27d0e565d625",
+          "sha256": "8ada194f95bbf165a4bbf28228747fe51a5926b1dbd4cde7620bd1ce474a3a47"
+        },
+        {
+          "path": ".git/objects/bc/9f0397df832b46c60a52ffec3f3f9ab1b5910a",
+          "sha256": "b95cc31012a66818d91e2297864b29e0b7c02dbabd9c29a00626f722b350f925"
+        },
+        {
+          "path": ".git/objects/dc/bbff6c9345887a27e6724659d9db223126705c",
+          "sha256": "265a55789598a9df6b49813fd0ca3fa9d77e8f023cc858f46dfed1100b2f8180"
+        },
+        {
+          "path": ".git/refs/heads/master",
+          "sha256": "fc0c83dd92a3bd7b819e49fded486e279723eb825fbd3b74b52723833d875f90"
+        },
+        {
+          "path": "AGENTS.md",
+          "sha256": "be6c63718535a97acc1d27ba7cf47433e45bf3f409fc832a265f1b0a9b20df9e"
+        },
+        {
+          "path": "docs/roadmap.md",
+          "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+        },
+        {
+          "path": "mission.json",
+          "sha256": "085f3a00c6908a9882ce049c858558e5bdaa3dfea34729ce54fa3505331ea744"
+        },
+        {
+          "path": "opencode-dev-kit/adapter.json",
+          "sha256": "ef763e935495437ab02cad624b77bcd119f5ac37004229d71ea5aae2a2602397"
+        },
+        {
+          "path": "tools/validate.mjs",
+          "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+        }
+      ],
+      "exitCode": 2,
+      "name": "invalid-forward-dependency",
+      "stderr": "{\n  \"error\": \"slice slice-a dependency slice-b must appear earlier in serial order\",\n  \"exitCode\": 2,\n  \"operation\": \"preflight\",\n  \"schemaVersion\": 1,\n  \"status\": \"blocked\",\n  \"tool\": \"roadmap-mission\"\n}\n",
+      "stdout": ""
+    },
+    {
+      "after": [
+        {
+          "path": ".git/COMMIT_EDITMSG",
+          "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+        },
+        {
+          "path": ".git/config",
+          "sha256": "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+        },
+        {
+          "path": ".git/description",
+          "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+        },
+        {
+          "path": ".git/HEAD",
+          "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+        },
+        {
+          "path": ".git/hooks/applypatch-msg.sample",
+          "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+        },
+        {
+          "path": ".git/hooks/commit-msg.sample",
+          "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+        },
+        {
+          "path": ".git/hooks/fsmonitor-watchman.sample",
+          "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+        },
+        {
+          "path": ".git/hooks/post-update.sample",
+          "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+        },
+        {
+          "path": ".git/hooks/pre-applypatch.sample",
+          "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+        },
+        {
+          "path": ".git/hooks/pre-commit.sample",
+          "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+        },
+        {
+          "path": ".git/hooks/pre-merge-commit.sample",
+          "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+        },
+        {
+          "path": ".git/hooks/pre-push.sample",
+          "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+        },
+        {
+          "path": ".git/hooks/pre-rebase.sample",
+          "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+        },
+        {
+          "path": ".git/hooks/pre-receive.sample",
+          "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+        },
+        {
+          "path": ".git/hooks/prepare-commit-msg.sample",
+          "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+        },
+        {
+          "path": ".git/hooks/push-to-checkout.sample",
+          "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+        },
+        {
+          "path": ".git/hooks/sendemail-validate.sample",
+          "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+        },
+        {
+          "path": ".git/hooks/update.sample",
+          "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+        },
+        {
+          "path": ".git/index",
+          "sha256": "96030d1e0c7fcd1410059ecfc6bbc916f90894a6e818e928d214930035314768"
+        },
+        {
+          "path": ".git/info/exclude",
+          "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+        },
+        {
+          "path": ".git/logs/HEAD",
+          "sha256": "1af88224633010af160d1c48f9eb41c664516f62dbe4bcb00d54d2cd6504ee5f"
+        },
+        {
+          "path": ".git/logs/refs/heads/master",
+          "sha256": "1af88224633010af160d1c48f9eb41c664516f62dbe4bcb00d54d2cd6504ee5f"
+        },
+        {
+          "path": ".git/objects/05/9ab32dcc018a0fc7ad9b00e11b562808099c07",
+          "sha256": "7f970eeae81d6ac9fb8e186e88a23a96b2843eb8d9807afa1f818e3f4c0c6081"
+        },
+        {
+          "path": ".git/objects/0a/74b9acf9cbc116fd51ceeffc6b9da2616a2890",
+          "sha256": "9a3dd608e419d199c402470a3852c4131a6d110370b6609f509b60077650bfac"
+        },
+        {
+          "path": ".git/objects/1d/1c149925538eb4d43a7b67370f7dd2899d3a50",
+          "sha256": "ca3bdfbeff11bd5353f0ea98f2a083ed5619637bb0900bb52d0dabea8f2fb500"
+        },
+        {
+          "path": ".git/objects/21/a320b41d3895bc12af215f0bacbd26eea810b8",
+          "sha256": "85c61ab02b524312f9c7052b5925cec9f885705c64ddb365bba6d3cc04fddccb"
+        },
+        {
+          "path": ".git/objects/25/3d8540edfb6b2f18a714929e69c14683daaa3a",
+          "sha256": "010c2d9c3887948579894b191fa6c444c2f0acf0fc8fbf559bb4d338861e1853"
+        },
+        {
+          "path": ".git/objects/35/0b17d5cfe15f2e50412469e72e0d76115107e1",
+          "sha256": "b897a7c58f973a19f42253e1b25294808a2678d6457b14f3d67f16a933188896"
+        },
+        {
+          "path": ".git/objects/5a/75509022db7f8465be949333082f7d23f83434",
+          "sha256": "f02589b25c472da12bf8f28393594edc0664cc6b9b68852b47471af63c70431e"
+        },
+        {
+          "path": ".git/objects/67/195833ee19fed26c568cbf83a52f5b7974b6c7",
+          "sha256": "2ccc082091797025dc0b95daebde28b3a0cebb6bb263b5ea230c9fc9151c8d6c"
+        },
+        {
+          "path": ".git/objects/76/eca72eef076ec01f7e88809947c6bcb95bef2d",
+          "sha256": "da620a96e4c51795448086b71240cb0ba749240a3c634574e6469632db42845d"
+        },
+        {
+          "path": ".git/objects/85/edf35c075f2d3e83191c4b9a3d21fcc48d6d5d",
+          "sha256": "64f660124deaa4ead96a777ac1da0f659f9d20b731f4971ed83167973e8db0bb"
+        },
+        {
+          "path": ".git/objects/8a/7796d2a887180014bc6bdf33ba7862172dac20",
+          "sha256": "9f766949148a2aaab42954c612e77deba7bab7e3fd6cce0644cd4e50777a04f4"
+        },
+        {
+          "path": ".git/objects/dc/bbff6c9345887a27e6724659d9db223126705c",
+          "sha256": "265a55789598a9df6b49813fd0ca3fa9d77e8f023cc858f46dfed1100b2f8180"
+        },
+        {
+          "path": ".git/objects/ed/34fbda51df032c019b597475c0365b9b6e34ea",
+          "sha256": "6607a9f963d06c5e35ccbfdfc44efdc840b871223b721518ba7f5854357482d9"
+        },
+        {
+          "path": ".git/objects/f1/ad0875eac61649781e3dca1ec6b0f7e94ab050",
+          "sha256": "09d34c768b97fd172539544ecc0b78e2cd2da782274e8aadb7ae26e2d4ae7779"
+        },
+        {
+          "path": ".git/refs/heads/master",
+          "sha256": "a9483b788c6eb47030fe74f1369eae463fb3b0880b2f7eed663de34a10fb05ea"
+        },
+        {
+          "path": ".opencode/skills/openspec-apply-change/SKILL.md",
+          "sha256": "d4e3e6f8abef25e57de68c6616be657ddf71be9cc9e12364accb5096a67a7a1a"
+        },
+        {
+          "path": "AGENTS.md",
+          "sha256": "be6c63718535a97acc1d27ba7cf47433e45bf3f409fc832a265f1b0a9b20df9e"
+        },
+        {
+          "path": "docs/roadmap.md",
+          "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+        },
+        {
+          "path": "mission.json",
+          "sha256": "0ad7bcfb47b6860c14666e231e27d0b02a91c22ce58ac76fef0144990987be1d"
+        },
+        {
+          "path": "opencode-dev-kit/adapter.json",
+          "sha256": "ef763e935495437ab02cad624b77bcd119f5ac37004229d71ea5aae2a2602397"
+        },
+        {
+          "path": "tools/validate.mjs",
+          "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+        }
+      ],
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "before": [
+        {
+          "path": ".git/COMMIT_EDITMSG",
+          "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+        },
+        {
+          "path": ".git/config",
+          "sha256": "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+        },
+        {
+          "path": ".git/description",
+          "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+        },
+        {
+          "path": ".git/HEAD",
+          "sha256": "f6f2b945f6c411b02ba3da9c7ace88dcf71b6af65ba2e0d89aa82900042b5a10"
+        },
+        {
+          "path": ".git/hooks/applypatch-msg.sample",
+          "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+        },
+        {
+          "path": ".git/hooks/commit-msg.sample",
+          "sha256": "efc1401b0e99d1ff51494d154d98b46c1e99059bcd8bf9f73cecde19fd3eb23b"
+        },
+        {
+          "path": ".git/hooks/fsmonitor-watchman.sample",
+          "sha256": "9159720099ad5595b8e66645cbfd47763c1e920f46e0b50ae75e642bbec57ef0"
+        },
+        {
+          "path": ".git/hooks/post-update.sample",
+          "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+        },
+        {
+          "path": ".git/hooks/pre-applypatch.sample",
+          "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+        },
+        {
+          "path": ".git/hooks/pre-commit.sample",
+          "sha256": "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+        },
+        {
+          "path": ".git/hooks/pre-merge-commit.sample",
+          "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+        },
+        {
+          "path": ".git/hooks/pre-push.sample",
+          "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+        },
+        {
+          "path": ".git/hooks/pre-rebase.sample",
+          "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+        },
+        {
+          "path": ".git/hooks/pre-receive.sample",
+          "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+        },
+        {
+          "path": ".git/hooks/prepare-commit-msg.sample",
+          "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+        },
+        {
+          "path": ".git/hooks/push-to-checkout.sample",
+          "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+        },
+        {
+          "path": ".git/hooks/sendemail-validate.sample",
+          "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+        },
+        {
+          "path": ".git/hooks/update.sample",
+          "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+        },
+        {
+          "path": ".git/index",
+          "sha256": "96030d1e0c7fcd1410059ecfc6bbc916f90894a6e818e928d214930035314768"
+        },
+        {
+          "path": ".git/info/exclude",
+          "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+        },
+        {
+          "path": ".git/logs/HEAD",
+          "sha256": "1af88224633010af160d1c48f9eb41c664516f62dbe4bcb00d54d2cd6504ee5f"
+        },
+        {
+          "path": ".git/logs/refs/heads/master",
+          "sha256": "1af88224633010af160d1c48f9eb41c664516f62dbe4bcb00d54d2cd6504ee5f"
+        },
+        {
+          "path": ".git/objects/05/9ab32dcc018a0fc7ad9b00e11b562808099c07",
+          "sha256": "7f970eeae81d6ac9fb8e186e88a23a96b2843eb8d9807afa1f818e3f4c0c6081"
+        },
+        {
+          "path": ".git/objects/0a/74b9acf9cbc116fd51ceeffc6b9da2616a2890",
+          "sha256": "9a3dd608e419d199c402470a3852c4131a6d110370b6609f509b60077650bfac"
+        },
+        {
+          "path": ".git/objects/1d/1c149925538eb4d43a7b67370f7dd2899d3a50",
+          "sha256": "ca3bdfbeff11bd5353f0ea98f2a083ed5619637bb0900bb52d0dabea8f2fb500"
+        },
+        {
+          "path": ".git/objects/21/a320b41d3895bc12af215f0bacbd26eea810b8",
+          "sha256": "85c61ab02b524312f9c7052b5925cec9f885705c64ddb365bba6d3cc04fddccb"
+        },
+        {
+          "path": ".git/objects/25/3d8540edfb6b2f18a714929e69c14683daaa3a",
+          "sha256": "010c2d9c3887948579894b191fa6c444c2f0acf0fc8fbf559bb4d338861e1853"
+        },
+        {
+          "path": ".git/objects/35/0b17d5cfe15f2e50412469e72e0d76115107e1",
+          "sha256": "b897a7c58f973a19f42253e1b25294808a2678d6457b14f3d67f16a933188896"
+        },
+        {
+          "path": ".git/objects/5a/75509022db7f8465be949333082f7d23f83434",
+          "sha256": "f02589b25c472da12bf8f28393594edc0664cc6b9b68852b47471af63c70431e"
+        },
+        {
+          "path": ".git/objects/67/195833ee19fed26c568cbf83a52f5b7974b6c7",
+          "sha256": "2ccc082091797025dc0b95daebde28b3a0cebb6bb263b5ea230c9fc9151c8d6c"
+        },
+        {
+          "path": ".git/objects/76/eca72eef076ec01f7e88809947c6bcb95bef2d",
+          "sha256": "da620a96e4c51795448086b71240cb0ba749240a3c634574e6469632db42845d"
+        },
+        {
+          "path": ".git/objects/85/edf35c075f2d3e83191c4b9a3d21fcc48d6d5d",
+          "sha256": "64f660124deaa4ead96a777ac1da0f659f9d20b731f4971ed83167973e8db0bb"
+        },
+        {
+          "path": ".git/objects/8a/7796d2a887180014bc6bdf33ba7862172dac20",
+          "sha256": "9f766949148a2aaab42954c612e77deba7bab7e3fd6cce0644cd4e50777a04f4"
+        },
+        {
+          "path": ".git/objects/dc/bbff6c9345887a27e6724659d9db223126705c",
+          "sha256": "265a55789598a9df6b49813fd0ca3fa9d77e8f023cc858f46dfed1100b2f8180"
+        },
+        {
+          "path": ".git/objects/ed/34fbda51df032c019b597475c0365b9b6e34ea",
+          "sha256": "6607a9f963d06c5e35ccbfdfc44efdc840b871223b721518ba7f5854357482d9"
+        },
+        {
+          "path": ".git/objects/f1/ad0875eac61649781e3dca1ec6b0f7e94ab050",
+          "sha256": "09d34c768b97fd172539544ecc0b78e2cd2da782274e8aadb7ae26e2d4ae7779"
+        },
+        {
+          "path": ".git/refs/heads/master",
+          "sha256": "a9483b788c6eb47030fe74f1369eae463fb3b0880b2f7eed663de34a10fb05ea"
+        },
+        {
+          "path": ".opencode/skills/openspec-apply-change/SKILL.md",
+          "sha256": "d4e3e6f8abef25e57de68c6616be657ddf71be9cc9e12364accb5096a67a7a1a"
+        },
+        {
+          "path": "AGENTS.md",
+          "sha256": "be6c63718535a97acc1d27ba7cf47433e45bf3f409fc832a265f1b0a9b20df9e"
+        },
+        {
+          "path": "docs/roadmap.md",
+          "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+        },
+        {
+          "path": "mission.json",
+          "sha256": "0ad7bcfb47b6860c14666e231e27d0b02a91c22ce58ac76fef0144990987be1d"
+        },
+        {
+          "path": "opencode-dev-kit/adapter.json",
+          "sha256": "ef763e935495437ab02cad624b77bcd119f5ac37004229d71ea5aae2a2602397"
+        },
+        {
+          "path": "tools/validate.mjs",
+          "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+        }
+      ],
+      "exitCode": 1,
+      "name": "stale-project-overlay",
+      "stderr": "",
+      "stdout": "{\n  \"checks\": [\n    {\n      \"blocking\": false,\n      \"id\": \"definition:checkpoint\",\n      \"status\": \"passed\",\n      \"summary\": \"Checkpoint policy evidence-only is valid for this mission envelope.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:contained\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission, roadmap, and evidence paths are project-contained.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:effects\",\n      \"status\": \"passed\",\n      \"summary\": \"Every slice effect is explicitly allowed and protected effects carry an authority reference.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:schema\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission schema and explicit fields are valid.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:serial-order\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission has 2 explicitly ordered slice(s).\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"mission:next-effects\",\n      \"status\": \"passed\",\n      \"summary\": \"Next slice requires no unsupported owner-controlled effect.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"mission:writer-lease\",\n      \"status\": \"passed\",\n      \"summary\": \"No prior mission writer lease exists.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:git-state\",\n      \"status\": \"passed\",\n      \"summary\": \"Git worktree and index are clean.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:openspec-state\",\n      \"status\": \"passed\",\n      \"summary\": \"OpenSpec 1.6.0 has exactly the apply-ready active change change-a.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:runtime-authority\",\n      \"status\": \"passed\",\n      \"summary\": \"Project runtime authority marker is present.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"project:validation-adapter\",\n      \"status\": \"passed\",\n      \"summary\": \"Project validation adapter and aggregate validation executable are resolved.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"workflow:canonical-source\",\n      \"status\": \"passed\",\n      \"summary\": \"Canonical global workflow files and running mission entrypoint match.\"\n    },\n    {\n      \"blocking\": true,\n      \"id\": \"workflow:loaded-identity\",\n      \"status\": \"unknown\",\n      \"summary\": \"Loaded workflow inspection was not run because deterministic prerequisites failed.\"\n    },\n    {\n      \"blocking\": true,\n      \"id\": \"workflow:project-overlays\",\n      \"status\": \"blocked\",\n      \"summary\": \"Project shadows canonical workflow: .opencode/skills/openspec-apply-change/SKILL.md.\"\n    }\n  ],\n  \"definitionDigest\": \"9eea2901b1e328b67cda768225f63e1847816a60dd624811acd11a59812f5b83\",\n  \"eligibleSlice\": null,\n  \"exitCode\": 1,\n  \"missionId\": \"generic-two-slice\",\n  \"operation\": \"preflight\",\n  \"schemaVersion\": 1,\n  \"status\": \"blocked\",\n  \"tool\": \"roadmap-mission\"\n}\n"
+    }
+  ],
+  "schemaVersion": 1
+}

@@ -1,0 +1,8 @@
+{
+  "error": "evidenceRefs[1] must be a contained project-relative path",
+  "exitCode": 2,
+  "operation": "run",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "tool": "roadmap-mission"
+}

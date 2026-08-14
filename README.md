@@ -224,7 +224,11 @@ Global install is enough for fresh projects: when `docs/feedbacks` is missing, a
 
 ### Manual Commands
 
-OpenCode prompt commands are configured through `opencode.json` under `command`. This repository does not currently ship project commands.
+OpenCode prompt commands are configured through `opencode.json` under `command`. The standard `opsx-propose`, `opsx-apply`, and `opsx-archive` commands are globally owned by this kit and must not be copied into a project under the same names. Project-specific commands remain differently named domain helpers.
+
+Project bootstrap writes only runtime-authority, config, feedback, validation, and adapter files. It never copies the canonical OpenSpec skills or commands. Preview and doctor report legacy same-name overlays as unattended-incompatible safe paths and preserve them for manual migration.
+
+`opencode-dev-kit/adapter.json` keeps ordinary validation command discovery and a separate unattended contract. Unattended mode requires aggregate `validationArgv` as an argv array, canonical global workflow ownership, explicit checkpoint support, and per-mission authorization for local commits; it never infers a shell or package manager.
 
 ### Manual Instructions
 
@@ -401,6 +405,9 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 ### OpenSpec
 
+- `openspec-propose`: create one apply-ready OpenSpec change with proposal, design, specs, tasks, strategy history, and deterministic readiness checks.
+- `openspec-apply-change`: implement one OpenSpec change through evidence-bound tasks, happy-path runtime proof, and focused validation.
+- `openspec-archive-change`: validate and complete-archive one finished OpenSpec change through the portable deterministic helper.
 - `openspec-consistency-review`: review proposal/design/spec/tasks/docs/tests sync.
 
 ### Technical Domains

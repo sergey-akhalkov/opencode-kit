@@ -1,0 +1,46 @@
+{
+  "cleanup": "removed",
+  "cleanupError": null,
+  "failure": "Provider-free oracle preflight failed for source-placement",
+  "modelCalls": 0,
+  "rows": [
+    {
+      "accepted": {
+        "effectFreeHelp": true,
+        "helpComplete": true,
+        "scanExact": true,
+        "shortHelpComplete": true,
+        "sourceExists": true
+      },
+      "rejected": {
+        "effectFreeHelp": true,
+        "helpComplete": false,
+        "scanExact": false,
+        "shortHelpComplete": false,
+        "sourceExists": false
+      },
+      "scenario": "repeated-cli"
+    },
+    {
+      "accepted": {
+        "generatorExists": true,
+        "outputExact": true,
+        "regenerationStable": true,
+        "runsExitZero": true,
+        "seedExists": true,
+        "seedSemanticOnly": true
+      },
+      "rejected": {
+        "generatorExists": false,
+        "outputExact": false,
+        "regenerationStable": false,
+        "runsExitZero": false,
+        "seedExists": false,
+        "seedSemanticOnly": false
+      },
+      "scenario": "mechanical-artifact"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "blocked"
+}

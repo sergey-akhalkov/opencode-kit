@@ -1,0 +1,11 @@
+{
+  "files": [
+    {
+      "bytes": 628,
+      "path": "failure.json",
+      "sha256": "145b9bc6cceb84e3a3c971e4a70a431c72d95e46798ecf5270f5e7ef171e58a0"
+    }
+  ],
+  "role": "capture",
+  "schemaVersion": 1
+}

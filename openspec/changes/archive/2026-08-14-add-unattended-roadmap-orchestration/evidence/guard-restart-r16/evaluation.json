@@ -1,0 +1,7 @@
+{
+  "candidateId": "guard-restart-r16",
+  "cleanup": "complete",
+  "restartRecovery": "same-child-same-audit-bounded-attempt",
+  "schemaVersion": 1,
+  "status": "complete"
+}

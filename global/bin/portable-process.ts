@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 
 export type PortableCommandResult = {
   status: number | null;
@@ -12,6 +14,7 @@ export type PortableCommandOptions = {
   capture?: boolean;
   env?: NodeJS.ProcessEnv;
   input?: string;
+  timeoutMs?: number;
 };
 
 function quoteWindowsArg(value: string): string {
@@ -19,6 +22,26 @@ function quoteWindowsArg(value: string): string {
     throw new Error(`Windows command argument contains unsupported shell metacharacters: ${JSON.stringify(value)}`);
   }
   return /^[A-Za-z0-9._/:\\=@+-]+$/.test(value) ? value : `"${value}"`;
+}
+
+function resolveWindowsNativeExecutable(executable: string, environment: NodeJS.ProcessEnv): string | null {
+  if (/\.(?:exe|com)$/i.test(executable)) return executable;
+  if (executable.includes("/") || executable.includes("\\")) return null;
+  const searchPath = environment.PATH
+    ?? Object.entries(environment).find(([name]) => name.toUpperCase() === "PATH")?.[1]
+    ?? "";
+  for (const directory of searchPath.split(path.delimiter).filter(Boolean)) {
+    for (const extension of [".exe", ".com", ".EXE", ".COM"]) {
+      const candidate = path.join(directory, `${executable}${extension}`);
+      try {
+        const stat = fs.lstatSync(candidate);
+        if (stat.isFile() && !stat.isSymbolicLink()) return candidate;
+      } catch {
+        // Continue through PATH candidates.
+      }
+    }
+  }
+  return null;
 }
 
 export function formatArgv(argv: readonly string[]): string {
@@ -31,23 +54,31 @@ export function runPortableCommand(root: string, argv: readonly string[], option
   }
 
   const stdio = options.capture === true ? "pipe" : "inherit";
+  const environment = options.env ?? process.env;
   const common = {
     cwd: root,
     encoding: "utf8" as const,
-    env: options.env ?? process.env,
+    env: environment,
     ...(options.input == null ? {} : { input: options.input }),
+    ...(options.timeoutMs == null ? {} : { timeout: options.timeoutMs }),
     shell: false,
     stdio,
   };
-  const isWindowsNativeExecutable = process.platform === "win32" && /\.(?:exe|com)$/i.test(argv[0]);
-  const windowsCommandLine = process.platform === "win32" ? argv.map(quoteWindowsArg).join(" ") : "";
+  const windowsNativeExecutable = process.platform === "win32"
+    ? resolveWindowsNativeExecutable(argv[0], environment)
+    : null;
+  const windowsCommandLine = process.platform === "win32" && windowsNativeExecutable == null
+    ? argv.map(quoteWindowsArg).join(" ")
+    : "";
   const windowsShellCommand = /\s/.test(argv[0]) ? `"${windowsCommandLine}"` : windowsCommandLine;
-  const result = process.platform === "win32" && !isWindowsNativeExecutable
-    ? spawnSync(
+  const result = process.platform === "win32"
+    ? windowsNativeExecutable == null
+      ? spawnSync(
         process.env.ComSpec ?? "cmd.exe",
         ["/d", "/s", "/c", windowsShellCommand],
         common,
       )
+      : spawnSync(windowsNativeExecutable, argv.slice(1), common)
     : spawnSync(argv[0], argv.slice(1), common);
 
   return {

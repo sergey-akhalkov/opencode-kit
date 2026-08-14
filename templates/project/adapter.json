@@ -8,6 +8,16 @@
     "lint": "unknown",
     "build": "unknown"
   },
+  "unattended": {
+    "validationArgv": [],
+    "workflowOwner": "global-canonical",
+    "checkpointModes": [
+      "evidence-only",
+      "external",
+      "local-commit"
+    ],
+    "localCommitRequiresAuthorization": true
+  },
   "quality": {
     "focusedValidationFirst": true,
     "broadValidationBeforeHandoff": true

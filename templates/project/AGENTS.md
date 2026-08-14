@@ -12,11 +12,13 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 ## Project Adapter
 
 - Keep project-specific commands in `opencode-dev-kit/adapter.json` and/or `opencode-dev-kit/validation.md`.
+- Standard `openspec-propose`, `openspec-apply-change`, `openspec-archive-change`, and `opsx-*` lifecycle names are global-owned. Do not copy or customize those names under `.opencode`; keep domain helpers differently named.
 - Use explicit reusable workflow cores from the resolved kit `global/bin/` with an explicit project root and project command argv. Keep package-manager, shell, service, and repository-specific behavior in this project's thin adapter rather than modifying the portable core.
 - Before relying on a new or materially changed reusable tool, require proof from an unrelated disposable project; success only in the kit repository is component evidence.
 - Either complete source is sufficient for doctor validation qualification: concrete `adapter.json` validation entries, or a complete `validation.md` Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build.
 - Technology choices change commands and constraints, not the development loop.
 - If validation commands are unknown, discover them from project files and report `unknown` rather than guessing.
+- Unattended missions additionally require `unattended.validationArgv` as an argument array, `workflowOwner: global-canonical`, explicit supported checkpoint modes, and per-mission local-commit authorization. Shell command strings in `validation` remain human/ordinary-workflow adapters and do not substitute for aggregate argv.
 - `unknown`, blank, bare `N/A`, `TBD`/`TODO`, replace-me placeholders, or otherwise unresolved validation procedures must be discovered before qualification. An explicit reasoned `N/A` (`N/A - <reason>`, or validation.md Command `N/A` plus nonempty non-placeholder Notes) is a recorded decision, not unknown. Applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC.
 
 ## Autonomy

@@ -498,16 +498,17 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "critical: permission allow replaces immutable agent configs with allow",
+    name: "critical: permission allow preserves specialist maps while promoting main",
     run: () => {
       const build = Object.freeze({ permission: "ask" as const });
       const arbiter = Object.freeze({
         permission: Object.freeze({ edit: "deny", task: "deny", question: "deny" }),
       });
+      const sdet = Object.freeze({ permission: Object.freeze({ bash: "deny", edit: "ask" }) });
       const originalAgents = Object.freeze({
         build,
         "session-completion-arbiter": arbiter,
-        "sdet-quality-engineer": Object.freeze({ permission: Object.freeze({ bash: "deny", edit: "ask" }) }),
+        "sdet-quality-engineer": sdet,
         unused: null,
       });
       const config: {
@@ -523,20 +524,47 @@ const tests: TestCase[] = [
         "Top-level wildcard permission must become allow.",
       );
       assert(config.agent !== originalAgents, "Loaded agent config collection must be replaced, not mutated.");
-      for (const [name, agent] of Object.entries(config.agent ?? {})) {
-        if (agent == null) continue;
-        assert(
-          (agent.permission as Record<string, unknown>)["*"] === "allow",
-          `Configured agent ${name} permission must become allow.`,
-        );
-        assert(
-          (agent.permission as Record<string, unknown>).doom_loop === "allow",
-          `Configured agent ${name} doom_loop permission must become allow.`,
-        );
-      }
       assert(config.agent?.unused == null, "Null agent entries must remain null.");
       assert(build.permission === "ask", "Original immutable build config must remain unchanged.");
       assert(arbiter.permission.edit === "deny", "Original immutable arbiter config must remain unchanged.");
+      assert(sdet.permission.bash === "deny", "Original immutable specialist config must remain unchanged.");
+
+      const resolvedArbiter = config.agent?.["session-completion-arbiter"];
+      const resolvedSdet = config.agent?.["sdet-quality-engineer"];
+      const resolvedBuild = config.agent?.build;
+      assert(resolvedArbiter != null && resolvedArbiter !== arbiter, "Arbiter agent object must be copied.");
+      assert(
+        resolvedArbiter.permission === arbiter.permission,
+        "Arbiter permission map must remain the declared object.",
+      );
+      assert(
+        (resolvedArbiter.permission as Record<string, unknown>).edit === "deny",
+        "Arbiter edit must remain deny.",
+      );
+      assert(
+        (resolvedArbiter.permission as Record<string, unknown>)["*"] !== "allow",
+        "Arbiter must not receive allow-all from main normalization.",
+      );
+      assert(
+        (resolvedSdet?.permission as Record<string, unknown>).bash === "deny",
+        "SDET bash must remain deny.",
+      );
+      assert(
+        (resolvedSdet?.permission as Record<string, unknown>).edit === "ask",
+        "SDET edit must remain the declared ask.",
+      );
+      assert(
+        (resolvedSdet?.permission as Record<string, unknown>)["*"] !== "allow",
+        "SDET must not receive allow-all from main normalization.",
+      );
+      assert(
+        (resolvedSdet?.permission as Record<string, unknown>).doom_loop !== "allow",
+        "Specialist doom_loop must not be rewritten to allow.",
+      );
+      assert(
+        resolvedBuild?.permission === "ask",
+        "Build agent string permission must remain unchanged.",
+      );
     },
   },
   {

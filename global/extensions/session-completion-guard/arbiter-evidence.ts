@@ -7,7 +7,17 @@ import type { RootInspection } from "./inspection.ts";
 import { questionRequestForArbiter } from "./question.ts";
 import type { AuditEpoch } from "./types.ts";
 
-const MAX_AUDIT_EVIDENCE_CHARS = 200_000;
+export class AuditRequestOverflowError extends Error {
+  readonly allowedBytes: number;
+  readonly observedBytes: number;
+
+  constructor(observedBytes: number, allowedBytes: number) {
+    super(`Completion audit request exceeds byte limit (${observedBytes} > ${allowedBytes})`);
+    this.name = "AuditRequestOverflowError";
+    this.observedBytes = observedBytes;
+    this.allowedBytes = allowedBytes;
+  }
+}
 
 export function captureArbiterEvidence(
   rootSessionID: string,
@@ -21,10 +31,17 @@ export function captureArbiterEvidence(
   ) {
     throw new Error("Completion evidence does not match the inspected root session");
   }
-  if (JSON.stringify(evidence).length > MAX_AUDIT_EVIDENCE_CHARS) {
-    throw new Error("Completion evidence exceeds the bounded audit input limit");
-  }
   return evidence;
+}
+
+export function requestBytes(request: string): number {
+  return Buffer.byteLength(request, "utf8");
+}
+
+export function requireBoundedRequest(request: string, maxBytes: number): number {
+  const observed = requestBytes(request);
+  if (observed > maxBytes) throw new AuditRequestOverflowError(observed, maxBytes);
+  return observed;
 }
 
 export function buildArbiterAuditRequest(

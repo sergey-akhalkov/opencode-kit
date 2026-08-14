@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -15,6 +16,7 @@ type OutputFormat = "json" | "markdown";
 
 type Options = {
   format: OutputFormat;
+  mission: string | null;
   project: string;
   showProject: boolean;
 };
@@ -35,6 +37,8 @@ type DoctorReport = {
   qualificationStatus: QualificationStatus;
   status: CheckStatus;
   tool: "opencode-dev-kit-doctor";
+  unattendedChecks: Check[];
+  unattendedMissionStatus: QualificationStatus;
   version: 2;
 };
 
@@ -95,6 +99,7 @@ function printUsage(): void {
 
 Options:
   --project <path>          Project directory to inspect. Default: current directory.
+  --mission <path>          Optional project-contained mission JSON to validate for unattended use.
   --format <json|markdown>  Output format. Default: markdown.
   --show-project            Include the absolute project path. Hidden by default for privacy-safe output.
   --help                   Show this help.
@@ -117,7 +122,7 @@ function parseFormat(value: string): OutputFormat {
 }
 
 function parseArgs(args: string[]): Options {
-  const options: Options = { format: "markdown", project: defaultProject(), showProject: false };
+  const options: Options = { format: "markdown", mission: null, project: defaultProject(), showProject: false };
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
     if (arg === "--help" || arg === "-h") {
@@ -132,6 +137,13 @@ function parseArgs(args: string[]): Options {
         throw new Error("Missing value for --project.");
       }
       options.project = value;
+    } else if (arg === "--mission") {
+      options.mission = readValue(args, index, arg);
+      index++;
+    } else if (arg.startsWith("--mission=")) {
+      const value = arg.slice("--mission=".length);
+      if (value.trim() === "") throw new Error("Missing value for --mission.");
+      options.mission = value;
     } else if (arg === "--format") {
       options.format = parseFormat(readValue(args, index, arg));
       index++;
@@ -184,6 +196,13 @@ type ValidationSourceState =
   | { kind: "missing" }
   | { kind: "malformed" }
   | { kind: "unresolved"; purposes: string[] };
+
+type UnattendedAdapterState = {
+  checkpointReady: boolean;
+  problem: string | null;
+  validationArgv: string[] | null;
+  workflowReady: boolean;
+};
 
 /** Explicit unresolved template placeholders (case-insensitive exact match after trim). */
 const UNRESOLVED_VALIDATION_PLACEHOLDERS = new Set([
@@ -266,6 +285,148 @@ function adapterValidationState(adapterPath: string): ValidationSourceState {
     return unresolved.length === 0 ? { kind: "complete" } : { kind: "unresolved", purposes: unresolved };
   } catch {
     return { kind: "malformed" };
+  }
+}
+
+function unattendedAdapterState(adapterPath: string): UnattendedAdapterState {
+  if (!pathIsFile(adapterPath)) {
+    return { checkpointReady: false, problem: "adapter.json missing", validationArgv: null, workflowReady: false };
+  }
+  try {
+    const errors: jsoncParse.ParseError[] = [];
+    const parsed = jsoncParse(fs.readFileSync(adapterPath, "utf8"), errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    });
+    if (errors.length > 0 || typeof parsed !== "object" || parsed == null || Array.isArray(parsed)) {
+      return { checkpointReady: false, problem: "adapter.json malformed", validationArgv: null, workflowReady: false };
+    }
+    const unattended = (parsed as { unattended?: unknown }).unattended;
+    if (typeof unattended !== "object" || unattended == null || Array.isArray(unattended)) {
+      return { checkpointReady: false, problem: "adapter.json unattended object missing", validationArgv: null, workflowReady: false };
+    }
+    const value = unattended as Record<string, unknown>;
+    const workflowReady = value.workflowOwner === "global-canonical";
+    const checkpointModes = value.checkpointModes;
+    const checkpointReady = Array.isArray(checkpointModes) &&
+      checkpointModes.join(",") === "evidence-only,external,local-commit" &&
+      value.localCommitRequiresAuthorization === true;
+    const validationArgv = (
+      !Array.isArray(value.validationArgv) ||
+      value.validationArgv.length === 0 ||
+      value.validationArgv.some((item) => typeof item !== "string" || item.trim() === "" || /[\r\n\0]/.test(item))
+    ) ? null : value.validationArgv as string[];
+    const problems = [
+      workflowReady ? null : "adapter.json unattended.workflowOwner must be global-canonical",
+      checkpointReady ? null : "adapter.json unattended checkpoint contract is incomplete",
+      validationArgv == null ? "adapter.json unattended.validationArgv must be a non-empty argv array" : null,
+    ].filter((problem): problem is string => problem != null);
+    return { checkpointReady, problem: problems.join("; ") || null, validationArgv, workflowReady };
+  } catch {
+    return { checkpointReady: false, problem: "adapter.json malformed", validationArgv: null, workflowReady: false };
+  }
+}
+
+const CANONICAL_SKILLS = ["openspec-apply-change", "openspec-archive-change", "openspec-propose"] as const;
+const CANONICAL_COMMANDS = ["opsx-apply", "opsx-archive", "opsx-propose"] as const;
+const LONG_RUN_GUARD_LIMITS = [
+  "maxCycles",
+  "maxRetryAttempts",
+  "arbiterPromptTimeoutMs",
+  "waitRecheckMs",
+  "maxRequestBytes",
+  "maxWaitRechecks",
+  "retainAuditSessions",
+] as const;
+
+function commandExists(executable: string, root = process.cwd()): boolean {
+  if (executable.includes("/") || executable.includes("\\")) {
+    return pathIsFile(path.isAbsolute(executable) ? executable : path.resolve(root, executable));
+  }
+  const extensions = process.platform === "win32"
+    ? (process.env.PATHEXT ?? ".COM;.EXE;.BAT;.CMD").split(";").filter(Boolean)
+    : [""];
+  const candidates = process.platform === "win32" && path.extname(executable) !== ""
+    ? [executable]
+    : extensions.flatMap((extension) => [`${executable}${extension.toLowerCase()}`, `${executable}${extension.toUpperCase()}`]);
+  return (process.env.PATH ?? "").split(path.delimiter).filter(Boolean).some((directory) =>
+    candidates.some((candidate) => pathIsFile(path.join(directory, candidate)))
+  );
+}
+
+function projectWorkflowOverlays(project: string): string[] {
+  return [
+    ...["skill", "skills"].flatMap((directory) =>
+      CANONICAL_SKILLS.map((name) => path.join(project, ".opencode", directory, name, "SKILL.md"))
+    ),
+    ...["command", "commands"].flatMap((directory) =>
+      CANONICAL_COMMANDS.map((name) => path.join(project, ".opencode", directory, `${name}.md`))
+    ),
+  ].filter(pathIsFile).map((file) => path.relative(project, file).replaceAll("\\", "/")).sort();
+}
+
+function guardLimitProblems(configPath: string): string[] {
+  if (!pathIsFile(configPath)) return ["active opencode.json missing"];
+  try {
+    const errors: jsoncParse.ParseError[] = [];
+    const parsed = jsoncParse(fs.readFileSync(configPath, "utf8"), errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    }) as Record<string, unknown> | null;
+    if (errors.length > 0 || parsed == null || Array.isArray(parsed)) return ["active opencode.json malformed"];
+    const plugins = Array.isArray(parsed.plugin) ? parsed.plugin : [];
+    const tuple = plugins.find((plugin) =>
+      Array.isArray(plugin) && typeof plugin[0] === "string" && plugin[0].includes("session-completion-guard")
+    );
+    if (!Array.isArray(tuple) || typeof tuple[1] !== "object" || tuple[1] == null || Array.isArray(tuple[1])) {
+      return ["completion guard plugin tuple missing"];
+    }
+    const options = tuple[1] as Record<string, unknown>;
+    return LONG_RUN_GUARD_LIMITS.filter((name) =>
+      typeof options[name] !== "number" || !Number.isSafeInteger(options[name]) || (options[name] as number) <= 0
+    ).map((name) => `${name} must be a finite positive integer`);
+  } catch {
+    return ["completion guard options unreadable"];
+  }
+}
+
+function roadmapMissionInspection(
+  project: string,
+  globalSource: string,
+  args: string[],
+): { detail: string; passed: boolean } {
+  const entrypoint = path.join(globalSource, "bin", "roadmap-mission.ts");
+  if (!pathIsFile(entrypoint)) return { detail: "Installed roadmap mission entrypoint is missing.", passed: false };
+  const result = spawnSync(process.execPath, [entrypoint, ...args], {
+    cwd: project,
+    encoding: "utf8",
+    env: { ...process.env, OPENCODE_CONFIG_DIR: globalSource },
+    shell: false,
+  });
+  if (result.error != null) return { detail: result.error.message, passed: false };
+  const output = result.stdout.trim() || result.stderr.trim();
+  try {
+    const parsed = JSON.parse(output) as Record<string, unknown>;
+    if (result.status === 0 && parsed.status === "eligible") {
+      const check = typeof parsed.check === "object" && parsed.check != null
+        ? parsed.check as Record<string, unknown>
+        : null;
+      return {
+        detail: typeof check?.summary === "string" ? check.summary : "Roadmap mission inspection passed.",
+        passed: true,
+      };
+    }
+    const check = typeof parsed.check === "object" && parsed.check != null
+      ? parsed.check as Record<string, unknown>
+      : null;
+    return {
+      detail: typeof parsed.error === "string"
+        ? parsed.error
+        : typeof check?.summary === "string" ? check.summary : "Roadmap mission inspection blocked.",
+      passed: false,
+    };
+  } catch {
+    return { detail: `Roadmap mission inspection exited ${String(result.status)} with unreadable output.`, passed: false };
   }
 }
 
@@ -353,8 +514,12 @@ const ACTIVE_OPTIONAL_DEFAULT_ROLE_FILES = [
 ] as const;
 
 const ACTIVE_REQUIRED_PORTABLE_TOOL_FILES = [
+  path.join("bin", "openspec-operation-gate.ts"),
   path.join("bin", "openspec-archive.ts"),
   path.join("bin", "portable-process.ts"),
+  path.join("bin", "roadmap-mission.ts"),
+  path.join("bin", "roadmap-mission", "contracts.ts"),
+  path.join("bin", "roadmap-mission", "preflight.ts"),
   path.join("bin", "validate-staged.ts"),
 ] as const;
 
@@ -363,8 +528,9 @@ function nodeMajor(): number {
   return match ? Number(match[1]) : 0;
 }
 
-function buildReport(project: string, showProject: boolean): DoctorReport {
+function buildReport(project: string, showProject: boolean, mission: string | null): DoctorReport {
   const checks: Check[] = [];
+  const unattendedChecks: Check[] = [];
   const root = repoRoot();
 
   if (!fs.existsSync(project) || !fs.statSync(project).isDirectory()) {
@@ -416,6 +582,7 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
   const adapterPath = path.join(project, "opencode-dev-kit", "adapter.json");
   const validationPath = path.join(project, "opencode-dev-kit", "validation.md");
   const adapterState = adapterValidationState(adapterPath);
+  const unattendedAdapter = unattendedAdapterState(adapterPath);
   const docState = validationDocState(validationPath);
   const adapterComplete = adapterState.kind === "complete";
   const docComplete = docState.kind === "complete";
@@ -566,6 +733,116 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
     );
   }
 
+  addCheck(
+    unattendedChecks,
+    "unattended runtime authority",
+    agentsOk && hasRequiredAuthority ? "pass" : "blocked",
+    agentsOk && hasRequiredAuthority
+      ? "Project and active global runtime authority are present."
+      : "Project or active global runtime authority is incomplete.",
+    true,
+  );
+
+  let missionDefinitionValid = false;
+  if (mission == null) {
+    addCheck(unattendedChecks, "unattended mission definition", "pass", "No mission was selected; project capability only was inspected.", false);
+  } else {
+    const inspection = roadmapMissionInspection(project, resolvedGlobalDir, [
+      "definition",
+      "--root",
+      project,
+      "--mission",
+      mission,
+    ]);
+    missionDefinitionValid = inspection.passed;
+    addCheck(
+      unattendedChecks,
+      "unattended mission definition",
+      inspection.passed ? "pass" : "blocked",
+      inspection.detail,
+      true,
+    );
+  }
+
+  const aggregateArgv = unattendedAdapter.validationArgv;
+  const aggregateProblem = missionDefinitionValid
+    ? null
+    : aggregateArgv == null
+      ? unattendedAdapter.problem ?? "aggregate validation argv is unresolved"
+      : commandExists(aggregateArgv[0], project) ? null : `aggregate validation executable is unavailable: ${aggregateArgv[0]}`;
+  addCheck(
+    unattendedChecks,
+    "unattended aggregate validation argv",
+    aggregateProblem == null ? "pass" : "blocked",
+    aggregateProblem == null
+      ? missionDefinitionValid
+        ? "Selected mission supplies a schema-valid aggregate validation argv."
+        : "A complete adapter aggregate validation argv and executable are available."
+      : aggregateProblem,
+    true,
+  );
+
+  const checkpointReady = missionDefinitionValid || unattendedAdapter.checkpointReady;
+  addCheck(
+    unattendedChecks,
+    "unattended checkpoint support",
+    checkpointReady ? "pass" : "blocked",
+    checkpointReady
+      ? "Evidence-only, external, and explicitly authorized local-commit checkpoint policy is represented."
+      : "Unattended checkpoint modes or local-commit authorization policy are unresolved.",
+    true,
+  );
+
+  const overlays = projectWorkflowOverlays(project);
+  const adapterWorkflowBlocked = !missionDefinitionValid && !unattendedAdapter.workflowReady;
+  const missingCanonicalWorkflow = [
+    ...CANONICAL_SKILLS.map((name) => path.join("skills", name, "SKILL.md")),
+    ...CANONICAL_COMMANDS.map((name) => path.join("commands", `${name}.md`)),
+  ].filter((relative) => !pathIsFile(path.join(resolvedGlobalDir, relative)));
+  const workflowBlocked = adapterWorkflowBlocked || overlays.length > 0 || missingCanonicalWorkflow.length > 0;
+  const loadedWorkflow = workflowBlocked ? null : roadmapMissionInspection(project, resolvedGlobalDir, [
+    "workflow",
+    "--root",
+    project,
+    "--global-source",
+    resolvedGlobalDir,
+  ]);
+  addCheck(
+    unattendedChecks,
+    "unattended canonical workflow",
+    workflowBlocked || loadedWorkflow?.passed !== true ? "blocked" : "pass",
+    adapterWorkflowBlocked
+      ? "Project adapter unattended.workflowOwner must be global-canonical."
+      : overlays.length > 0
+      ? `Project same-name overlays are unattended-incompatible and preserved: ${overlays.join(", ")}.`
+      : missingCanonicalWorkflow.length > 0
+        ? `Active global source is missing canonical workflow files: ${missingCanonicalWorkflow.join(", ")}.`
+        : loadedWorkflow?.detail ?? "Canonical workflow runtime identity is unknown.",
+    true,
+  );
+
+  const missingBinaries = ["node", "git", "openspec", "opencode"].filter((name) => !commandExists(name));
+  addCheck(
+    unattendedChecks,
+    "unattended installed binaries",
+    missingBinaries.length === 0 ? "pass" : "blocked",
+    missingBinaries.length === 0
+      ? "Required local unattended executables are available."
+      : `Required unattended executables are unavailable: ${missingBinaries.join(", ")}.`,
+    true,
+  );
+
+  const guardProblems = guardLimitProblems(localPath);
+  addCheck(
+    unattendedChecks,
+    "unattended long-run guard limits",
+    guardProblems.length === 0 ? "pass" : "blocked",
+    guardProblems.length === 0
+      ? "Completion guard has finite positive unattended continuation, retry, timeout, request, recheck, and retention limits."
+      : `Completion guard is not unattended-ready: ${guardProblems.join("; ")}.`,
+    true,
+  );
+
   if (!hasRequiredAuthority) {
     const sourceLabel = fromOverride ? "OPENCODE_CONFIG_DIR" : "host default ~/.config/opencode";
     addCheck(
@@ -684,6 +961,8 @@ function buildReport(project: string, showProject: boolean): DoctorReport {
     qualificationStatus,
     status,
     tool: "opencode-dev-kit-doctor",
+    unattendedChecks,
+    unattendedMissionStatus: unattendedChecks.some((check) => check.status !== "pass") ? "blocked" : "pass",
     version: 2,
   };
 }
@@ -695,6 +974,7 @@ function renderMarkdown(report: DoctorReport): string {
     `Project: ${report.project}`,
     `Status: ${report.status}`,
     `Qualification Status: ${report.qualificationStatus}`,
+    `Unattended Mission Status: ${report.unattendedMissionStatus}`,
     "",
     "| Check | Status | Blocks Qualification | Detail |",
     "| --- | --- | --- | --- |",
@@ -703,12 +983,20 @@ function renderMarkdown(report: DoctorReport): string {
         `| ${check.name} | ${check.status} | ${check.blocksQualification ? "yes" : "no"} | ${check.detail.replace(/\|/g, "\\|")} |`,
     ),
     "",
+    "## Unattended Mission",
+    "",
+    "| Check | Status | Detail |",
+    "| --- | --- | --- |",
+    ...report.unattendedChecks.map(
+      (check) => `| ${check.name} | ${check.status} | ${check.detail.replace(/\|/g, "\\|")} |`,
+    ),
+    "",
   ].join("\n");
 }
 
 try {
   const options = parseArgs(process.argv.slice(2));
-  const report = buildReport(options.project, options.showProject);
+  const report = buildReport(options.project, options.showProject, options.mission);
   console.log(options.format === "json" ? JSON.stringify(report, null, 2) : renderMarkdown(report));
   if (report.status === "blocked") {
     process.exitCode = 2;

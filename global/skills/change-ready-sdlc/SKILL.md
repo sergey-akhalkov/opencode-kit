@@ -47,6 +47,8 @@ After MVP:
 
 - incomplete accepted scope remains required work;
 - evidence-backed session improvements admitted into the active change's `tasks.md` under the global persistence contract are accepted scope and remain required until implemented and proven or the owner explicitly changes scope;
+- admitted improvements execute at their earliest safe current-consumer boundary after live-attempt and non-deferrable safety blockers; a physical task-list position cannot postpone them past that consumer;
+- evidence-backed candidates without an exact remaining current-change consumer remain non-blocking deferred history records and do not become accepted scope;
 - a reproduced accepted-outcome, critical, or non-deferrable defect authorizes its smallest correction;
 - known non-critical bugs, optional coverage, pre-existing maintainability debt, style, wording, report formatting, optional diagnostic polish, optimization, and future-scale work are recorded and parked;
 - parked non-critical work never blocks RC or stable.

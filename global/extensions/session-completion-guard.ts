@@ -15,8 +15,10 @@ function assertClientCapabilities(client: OpencodeClient): void {
   const required: Array<[string, unknown]> = [
     ["session.create", client.session.create],
     ["session.get", client.session.get],
+    ["v2.session.list", client.v2.session.list],
     ["session.status", client.session.status],
     ["session.children", client.session.children],
+    ["session.delete", client.session.delete],
     ["session.messages", client.session.messages],
     ["session.promptAsync", client.session.promptAsync],
     ["question.list", client.question.list],

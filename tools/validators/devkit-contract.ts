@@ -170,6 +170,25 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
           `Project adapter template must define validation commands object: ${adapterTemplate}`,
         );
       }
+      if (!isPlainRecord(adapter.unattended)) {
+        ctx.addError(`Project adapter template must define an unattended mission object: ${adapterTemplate}`);
+      } else {
+        const unattended = adapter.unattended;
+        if (!Array.isArray(unattended.validationArgv)) {
+          ctx.addError(`Project adapter unattended.validationArgv must be an argv array: ${adapterTemplate}`);
+        }
+        if (unattended.workflowOwner !== "global-canonical") {
+          ctx.addError(`Project adapter unattended.workflowOwner must be global-canonical: ${adapterTemplate}`);
+        }
+        const checkpointModes = unattended.checkpointModes;
+        if (
+          !Array.isArray(checkpointModes) ||
+          checkpointModes.join(",") !== "evidence-only,external,local-commit" ||
+          unattended.localCommitRequiresAuthorization !== true
+        ) {
+          ctx.addError(`Project adapter must declare supported unattended checkpoint modes and local-commit authorization: ${adapterTemplate}`);
+        }
+      }
     }
   }
 
@@ -234,8 +253,8 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
   if (scripts["openspec:validate"] && scripts["openspec:validate"] !== "openspec validate --all") {
     ctx.addError("package.json script 'openspec:validate' must run openspec validate --all.");
   }
-  if (scripts["openspec:gate"] && scripts["openspec:gate"] !== "node tools/openspec-operation-gate.ts") {
-    ctx.addError("package.json script 'openspec:gate' must run node tools/openspec-operation-gate.ts.");
+  if (scripts["openspec:gate"] && scripts["openspec:gate"] !== "node global/bin/openspec-operation-gate.ts --root .") {
+    ctx.addError("package.json script 'openspec:gate' must run the portable global/bin gate with explicit --root .");
   }
   if (scripts.test && !scripts.test.includes("tools/test-install-opencode-global.ts")) {
     ctx.addError("package.json script 'test' must include node tools/test-install-opencode-global.ts.");
@@ -298,13 +317,13 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
       ctx.addError(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
     }
   }
-  for (const required of ["bin/openspec-archive.ts", "bin/portable-process.ts", "bin/validate-staged.ts"]) {
+  for (const required of ["bin/openspec-operation-gate.ts", "bin/openspec-archive.ts", "bin/portable-process.ts", "bin/roadmap-mission.ts", "bin/roadmap-mission/contracts.ts", "bin/roadmap-mission/preflight.ts", "bin/validate-staged.ts"]) {
     const candidate = path.join(globalDir, required);
     if (!fileExists(candidate)) {
       ctx.addError(`Missing global/${required}: portable project workflow tooling is incomplete.`);
     }
   }
-  for (const entrypoint of ["openspec-archive.ts", "validate-staged.ts"]) {
+  for (const entrypoint of ["openspec-operation-gate.ts", "openspec-archive.ts", "roadmap-mission.ts", "validate-staged.ts"]) {
     const candidate = path.join(globalDir, "bin", entrypoint);
     if (!fileExists(candidate)) continue;
     const text = readText(candidate);

@@ -11,6 +11,7 @@ import {
   isExportLineFor,
   removeExportLine,
 } from "./install-opencode-global.ts";
+import { runPortableCommand } from "../global/bin/portable-process.ts";
 type ProcessResult = {
   exitCode: number;
   output: string;
@@ -139,8 +140,18 @@ const LOCAL_INSTRUCTIONS_EXAMPLE = "# Machine-Local OpenCode Preferences\n\nFixt
 function writeFixturePortableTools(fixtureGlobal: string): void {
   const binDir = path.join(fixtureGlobal, "bin");
   fs.mkdirSync(binDir, { recursive: true });
-  for (const name of ["openspec-archive.ts", "portable-process.ts", "validate-staged.ts"]) {
-    fs.writeFileSync(path.join(binDir, name), `// fixture portable tool ${name}\n`, "utf8");
+  for (const name of [
+    "openspec-operation-gate.ts",
+    "openspec-archive.ts",
+    "portable-process.ts",
+    "roadmap-mission.ts",
+    "roadmap-mission/contracts.ts",
+    "roadmap-mission/preflight.ts",
+    "validate-staged.ts",
+  ]) {
+    const target = path.join(binDir, name);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, `// fixture portable tool ${name}\n`, "utf8");
   }
   fs.writeFileSync(path.join(fixtureGlobal, "package.json"), '{\n  "private": true,\n  "type": "module"\n}\n', "utf8");
 }
@@ -213,8 +224,68 @@ const tests: { name: string; run: () => void }[] = [
         assertOutputContains(captured, "Missing global/bin", "Missing bin directory must be named.");
         assertOutputContains(captured, "Missing global/package.json", "Missing package.json must be named.");
         assertOutputContains(captured, "Missing global/bin/openspec-archive.ts", "Missing archive tool must be named.");
+        assertOutputContains(captured, "Missing global/bin/openspec-operation-gate.ts", "Missing operation-gate tool must be named.");
+        assertOutputContains(captured, "Missing global/bin/roadmap-mission.ts", "Missing roadmap-mission tool must be named.");
+        assertOutputContains(captured, "Missing global/bin/roadmap-mission/contracts.ts", "Missing roadmap-mission contracts must be named.");
+        assertOutputContains(captured, "Missing global/bin/roadmap-mission/preflight.ts", "Missing roadmap-mission preflight must be named.");
         assertOutputContains(captured, "Missing global/bin/validate-staged.ts", "Missing staged tool must be named.");
         assert(!captured.output.includes(secret), "Missing-tool diagnostics must not expose machine-local config contents.");
+      } finally {
+        rmTempDir(dir);
+      }
+    },
+  },
+  {
+    name: "portable process delivers literal native argv including metacharacters without a second shell",
+    run: () => {
+      if (process.platform !== "win32") return;
+      const dir = makeTempDir();
+      try {
+        const probe = path.join(dir, "echo-argv.mjs");
+        fs.writeFileSync(probe, "console.log(JSON.stringify(process.argv.slice(2)));\n", "utf8");
+        const literal = "evil&echo\nSHELL_RAN";
+        for (const executable of [process.execPath, "node"]) {
+          const result = runPortableCommand(dir, [executable, probe, literal], { capture: true });
+          const combined = `${result.stdout}${result.stderr}`;
+          assert((result.status ?? 1) === 0, `Direct native ${executable} must succeed.\nstderr: ${result.stderr}\nstdout: ${result.stdout}`);
+          assert(
+            result.stdout.includes(JSON.stringify(literal)),
+            `Direct native ${executable} must pass the exact metacharacter/multiline argv to the child.`,
+          );
+          assert(
+            !combined.includes("unsupported shell metacharacters"),
+            `Direct native ${executable} must not apply shell-fallback rejection.`,
+          );
+          assert(
+            !/^SHELL_RAN$/m.test(combined),
+            `Direct native ${executable} must not launch a second shell command from the literal argv.`,
+          );
+        }
+      } finally {
+        rmTempDir(dir);
+      }
+    },
+  },
+  {
+    name: "portable process rejects shell-fallback metacharacters before child execution",
+    run: () => {
+      if (process.platform !== "win32") return;
+      const dir = makeTempDir();
+      try {
+        const marker = path.join(dir, "shell-ran.txt");
+        const command = path.join(dir, "mark.cmd");
+        fs.writeFileSync(command, `@echo off\r\necho ran>"${marker}"\r\n`, "utf8");
+        let error: unknown;
+        try {
+          runPortableCommand(dir, [command, "evil&echo"], { capture: true });
+        } catch (caught) {
+          error = caught;
+        }
+        assert(
+          error instanceof Error && error.message.includes("unsupported shell metacharacters"),
+          "Shell fallback must reject metacharacters before child execution.",
+        );
+        assert(!fs.existsSync(marker), "Shell-fallback child must not execute when metacharacters are present.");
       } finally {
         rmTempDir(dir);
       }

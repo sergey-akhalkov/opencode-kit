@@ -1,0 +1,9 @@
+{
+  "candidateId": "guard-long-run-r3",
+  "cleanup": "complete",
+  "noPromptOnOverflow": true,
+  "projectionBounded": true,
+  "retainedChildPolicy": "oldest-idle-terminal-only",
+  "schemaVersion": 1,
+  "status": "complete"
+}

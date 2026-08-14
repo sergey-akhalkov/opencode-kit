@@ -11,17 +11,41 @@ export type AuditWindowOptions = {
 };
 
 export type GuardOptions = {
+  arbiterPromptTimeoutMs: number;
   auditWindow: AuditWindowOptions;
   arbiterAgent: string;
   enabled: boolean;
   initialDelayMs: number;
   maxCycles: number;
   maxDelayMs: number;
+  maxRequestBytes: number;
+  maxRetryAttempts: number;
+  maxWaitRechecks: number;
   retainAuditSessions: number;
   retryMultiplier: number;
   settleMs: number;
   statusToasts: boolean;
   strategyFallback: string;
+  waitRecheckMs: number;
+};
+
+export type AuditDiagnostics = {
+  allowedRequestBytes: number;
+  attempt: number;
+  attemptLimit: number;
+  endedAt: number | null;
+  errorClass: string | null;
+  requestBytes: number | null;
+  retainedChildCount: number | null;
+  startedAt: number | null;
+};
+
+export type RecoveryAudit = {
+  attempt: number;
+  auditID: string;
+  childSessionID: string;
+  inspectedRevision: string;
+  kind: AuditKind;
 };
 
 export type GuardStateName =
@@ -144,6 +168,7 @@ export type QuestionState = {
 
 export type RootState = {
   activeAudit: AuditEpoch | null;
+  auditDiagnostics: AuditDiagnostics;
   auditChildSessionID: string | null;
   auditAbort: AbortController | null;
   autonomousQuestionCalls: Map<string, string>;
@@ -163,11 +188,16 @@ export type RootState = {
   pendingAutonomousQuestionRefs: Set<string>;
   promptContext: RootPromptContext;
   questions: Map<string, QuestionState>;
+  recoveryAudit: RecoveryAudit | null;
+  restartRecoveryAction: string | null;
   retryTimer: ReturnType<typeof setTimeout> | null;
   root: Session;
   settleTimer: ReturnType<typeof setTimeout> | null;
   state: GuardStateName;
   statusMessage: string | null;
+  waitReason: string | null;
+  waitRecheckCount: number;
+  waitRecheckTimer: ReturnType<typeof setTimeout> | null;
 };
 
 export type GuardContinuation = {
@@ -195,6 +225,7 @@ export type PtyLease = {
 export type TaskLease = {
   callID: string;
   childSessionID: string | null;
+  fallbackSent: boolean;
   resultConsumed: boolean;
   rootSessionID: string;
   status: "completed" | "error" | "running" | "unknown";

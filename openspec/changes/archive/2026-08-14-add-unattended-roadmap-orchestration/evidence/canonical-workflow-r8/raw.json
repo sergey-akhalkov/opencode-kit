@@ -1,0 +1,586 @@
+{
+  "candidateId": "roadmap-external-checkpoint-r1",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "productionSources": [
+    {
+      "path": "global/bin/openspec-operation-gate.ts",
+      "sha256": "e34efd7cadae8cd1db7e496658e8ed5b0a550df461318e2197d9f1ba0bd10984"
+    },
+    {
+      "path": "global/bin/roadmap-mission.ts",
+      "sha256": "9aed702bfdc189260c86dbcc69ef7abc9464856988e59ee7123b8c5bba18ebd3"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "877bcf6365e67485de97257f3a41c0b32a37cdae35b8deb52ffbfd263fdc12a6"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller.ts",
+      "sha256": "9933304b5f455457fc569344b99133d9cc400844d49385af4f1637d97f75f4e4"
+    },
+    {
+      "path": "global/bin/roadmap-mission/preflight.ts",
+      "sha256": "61745ffd7cca67222dd1562ff16910ac48a277870612e2231ae1b02e4a7d94c0"
+    },
+    {
+      "path": "global/bin/roadmap-mission/state.ts",
+      "sha256": "518d761691ecafa209b763e7ddd2f1692e56e827c48bfffc20689f0b7c62eac0"
+    }
+  ],
+  "scenarios": [
+    {
+      "afterDigest": "1a78b24ad046b1612f1f6e469f622c12d73e46c3ab3850ffaf966a5be0581a53",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "1a78b24ad046b1612f1f6e469f622c12d73e46c3ab3850ffaf966a5be0581a53",
+      "checks": [
+        {
+          "id": "definition:checkpoint",
+          "status": "passed"
+        },
+        {
+          "id": "definition:contained",
+          "status": "passed"
+        },
+        {
+          "id": "definition:effects",
+          "status": "passed"
+        },
+        {
+          "id": "definition:schema",
+          "status": "passed"
+        },
+        {
+          "id": "definition:serial-order",
+          "status": "passed"
+        },
+        {
+          "id": "mission:next-effects",
+          "status": "passed"
+        },
+        {
+          "id": "mission:writer-lease",
+          "status": "passed"
+        },
+        {
+          "id": "project:git-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:openspec-state",
+          "status": "blocked"
+        },
+        {
+          "id": "project:runtime-authority",
+          "status": "passed"
+        },
+        {
+          "id": "project:validation-adapter",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:canonical-source",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:loaded-identity",
+          "status": "unknown"
+        },
+        {
+          "id": "workflow:project-overlays",
+          "status": "passed"
+        }
+      ],
+      "error": null,
+      "exitCode": 1,
+      "fileCount": 40,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "ambiguous",
+      "status": "blocked"
+    },
+    {
+      "afterDigest": "6968f685aa87a58852bd744d786fd76722edc9b90361c34446b5e59b098d7fdd",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "6968f685aa87a58852bd744d786fd76722edc9b90361c34446b5e59b098d7fdd",
+      "checks": [
+        {
+          "id": "definition:checkpoint",
+          "status": "passed"
+        },
+        {
+          "id": "definition:contained",
+          "status": "passed"
+        },
+        {
+          "id": "definition:effects",
+          "status": "passed"
+        },
+        {
+          "id": "definition:schema",
+          "status": "passed"
+        },
+        {
+          "id": "definition:serial-order",
+          "status": "passed"
+        },
+        {
+          "id": "mission:next-effects",
+          "status": "passed"
+        },
+        {
+          "id": "mission:writer-lease",
+          "status": "passed"
+        },
+        {
+          "id": "project:git-state",
+          "status": "blocked"
+        },
+        {
+          "id": "project:openspec-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:runtime-authority",
+          "status": "passed"
+        },
+        {
+          "id": "project:validation-adapter",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:canonical-source",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:loaded-identity",
+          "status": "unknown"
+        },
+        {
+          "id": "workflow:project-overlays",
+          "status": "passed"
+        }
+      ],
+      "error": null,
+      "exitCode": 1,
+      "fileCount": 41,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "dirty",
+      "status": "blocked"
+    },
+    {
+      "afterDigest": "48b84c2c9fe159a480d7739e671605f51fe250f211a510d9997ffc9dca3bcc79",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "48b84c2c9fe159a480d7739e671605f51fe250f211a510d9997ffc9dca3bcc79",
+      "checks": [],
+      "error": "slice slice-a dependency slice-b must appear earlier in serial order",
+      "exitCode": 2,
+      "fileCount": 40,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "invalid",
+      "status": "blocked"
+    },
+    {
+      "afterDigest": "79157800c668bfa88406b4fd4fe588b6177226c659c75a456bc9598194b6b935",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "79157800c668bfa88406b4fd4fe588b6177226c659c75a456bc9598194b6b935",
+      "checks": [],
+      "error": "multi-slice evidence-only missions require checkpoint.workspace=disposable",
+      "exitCode": 2,
+      "fileCount": 40,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "invalid-checkpoint",
+      "status": "blocked"
+    },
+    {
+      "afterDigest": "f436aa1729fc0093c312273799dbcd27c4ff16af59020f9edc4c1c52f91b03be",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "f436aa1729fc0093c312273799dbcd27c4ff16af59020f9edc4c1c52f91b03be",
+      "checks": [
+        {
+          "id": "definition:checkpoint",
+          "status": "passed"
+        },
+        {
+          "id": "definition:contained",
+          "status": "passed"
+        },
+        {
+          "id": "definition:effects",
+          "status": "passed"
+        },
+        {
+          "id": "definition:schema",
+          "status": "passed"
+        },
+        {
+          "id": "definition:serial-order",
+          "status": "passed"
+        },
+        {
+          "id": "mission:next-effects",
+          "status": "passed"
+        },
+        {
+          "id": "mission:writer-lease",
+          "status": "passed"
+        },
+        {
+          "id": "project:git-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:openspec-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:runtime-authority",
+          "status": "passed"
+        },
+        {
+          "id": "project:validation-adapter",
+          "status": "blocked"
+        },
+        {
+          "id": "workflow:canonical-source",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:loaded-identity",
+          "status": "unknown"
+        },
+        {
+          "id": "workflow:project-overlays",
+          "status": "passed"
+        }
+      ],
+      "error": null,
+      "exitCode": 1,
+      "fileCount": 37,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "missing-adapter",
+      "status": "blocked"
+    },
+    {
+      "afterDigest": "360e38e27757ab203cbb64c6fa6285b8f30937dd8089c580ba10a6c0b8df80a6",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "360e38e27757ab203cbb64c6fa6285b8f30937dd8089c580ba10a6c0b8df80a6",
+      "checks": [
+        {
+          "id": "definition:checkpoint",
+          "status": "passed"
+        },
+        {
+          "id": "definition:contained",
+          "status": "passed"
+        },
+        {
+          "id": "definition:effects",
+          "status": "passed"
+        },
+        {
+          "id": "definition:schema",
+          "status": "passed"
+        },
+        {
+          "id": "definition:serial-order",
+          "status": "passed"
+        },
+        {
+          "id": "mission:next-effects",
+          "status": "passed"
+        },
+        {
+          "id": "mission:writer-lease",
+          "status": "passed"
+        },
+        {
+          "id": "project:git-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:openspec-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:runtime-authority",
+          "status": "passed"
+        },
+        {
+          "id": "project:validation-adapter",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:canonical-source",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:loaded-identity",
+          "status": "unknown"
+        },
+        {
+          "id": "workflow:project-overlays",
+          "status": "blocked"
+        }
+      ],
+      "error": null,
+      "exitCode": 1,
+      "fileCount": 45,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "overlay",
+      "status": "blocked"
+    },
+    {
+      "afterDigest": "3bcbf2d4f06396cd7890015ab3d927ebf1e3db5011831f9f6ae700550a3ba34e",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "3bcbf2d4f06396cd7890015ab3d927ebf1e3db5011831f9f6ae700550a3ba34e",
+      "checks": [
+        {
+          "id": "definition:checkpoint",
+          "status": "passed"
+        },
+        {
+          "id": "definition:contained",
+          "status": "passed"
+        },
+        {
+          "id": "definition:effects",
+          "status": "passed"
+        },
+        {
+          "id": "definition:schema",
+          "status": "passed"
+        },
+        {
+          "id": "definition:serial-order",
+          "status": "passed"
+        },
+        {
+          "id": "mission:next-effects",
+          "status": "blocked"
+        },
+        {
+          "id": "mission:writer-lease",
+          "status": "passed"
+        },
+        {
+          "id": "project:git-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:openspec-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:runtime-authority",
+          "status": "passed"
+        },
+        {
+          "id": "project:validation-adapter",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:canonical-source",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:loaded-identity",
+          "status": "unknown"
+        },
+        {
+          "id": "workflow:project-overlays",
+          "status": "passed"
+        }
+      ],
+      "error": null,
+      "exitCode": 1,
+      "fileCount": 40,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "protected",
+      "status": "blocked"
+    },
+    {
+      "afterDigest": "965c453e184d4bea39ac687e4216e2de888f816c55e97fcc3825ddb4bb6b874d",
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--global-source",
+        "<global-source>",
+        "--mission",
+        "mission.json"
+      ],
+      "beforeDigest": "965c453e184d4bea39ac687e4216e2de888f816c55e97fcc3825ddb4bb6b874d",
+      "checks": [
+        {
+          "id": "definition:checkpoint",
+          "status": "passed"
+        },
+        {
+          "id": "definition:contained",
+          "status": "passed"
+        },
+        {
+          "id": "definition:effects",
+          "status": "passed"
+        },
+        {
+          "id": "definition:schema",
+          "status": "passed"
+        },
+        {
+          "id": "definition:serial-order",
+          "status": "passed"
+        },
+        {
+          "id": "mission:next-effects",
+          "status": "passed"
+        },
+        {
+          "id": "mission:writer-lease",
+          "status": "passed"
+        },
+        {
+          "id": "project:git-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:openspec-state",
+          "status": "passed"
+        },
+        {
+          "id": "project:runtime-authority",
+          "status": "passed"
+        },
+        {
+          "id": "project:validation-adapter",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:canonical-source",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:loaded-identity",
+          "status": "passed"
+        },
+        {
+          "id": "workflow:project-overlays",
+          "status": "passed"
+        }
+      ],
+      "error": null,
+      "exitCode": 0,
+      "fileCount": 40,
+      "mutation": {
+        "added": [],
+        "changed": [],
+        "removed": []
+      },
+      "name": "valid",
+      "status": "eligible"
+    }
+  ],
+  "schemaVersion": 1
+}

@@ -1,0 +1,70 @@
+{
+  "cleanup": "removed",
+  "modelCalls": 0,
+  "nativeArgumentBoundary": {
+    "exact": true,
+    "status": 0,
+    "stderr": ""
+  },
+  "rows": [
+    {
+      "accepted": {
+        "effectFreeHelp": true,
+        "helpComplete": true,
+        "scanExact": true,
+        "shortHelpComplete": true,
+        "sourceExists": true
+      },
+      "rejected": {
+        "effectFreeHelp": true,
+        "helpComplete": false,
+        "scanExact": false,
+        "shortHelpComplete": false,
+        "sourceExists": false
+      },
+      "scenario": "repeated-cli"
+    },
+    {
+      "accepted": {
+        "generatorExists": true,
+        "outputExact": true,
+        "regenerationStable": true,
+        "runsExitZero": true,
+        "seedExists": true,
+        "seedSemanticOnly": true
+      },
+      "rejected": {
+        "generatorExists": false,
+        "outputExact": false,
+        "regenerationStable": false,
+        "runsExitZero": false,
+        "seedExists": false,
+        "seedSemanticOnly": false
+      },
+      "scenario": "mechanical-artifact"
+    },
+    {
+      "accepted": {
+        "casesExact": true,
+        "generatorRunsExitZero": true,
+        "generatedOutputsStable": true,
+        "oneOffExact": true,
+        "oneOffRemainsManual": true,
+        "sourceMaintained": true
+      },
+      "rejected": {
+        "casesExact": false,
+        "generatorRunsExitZero": false,
+        "generatedOutputsStable": false,
+        "oneOffExact": false,
+        "oneOffRemainsManual": true,
+        "sourceMaintained": false
+      },
+      "scenario": "source-placement"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "complete",
+  "cleanupError": null,
+  "failure": null
+}

@@ -135,8 +135,12 @@ Report Development-Stage and Runtime Proof.
 
 function writePortableWorkflowTools(globalDir: string): void {
   for (const relative of [
+    path.join("bin", "openspec-operation-gate.ts"),
     path.join("bin", "openspec-archive.ts"),
     path.join("bin", "portable-process.ts"),
+    path.join("bin", "roadmap-mission.ts"),
+    path.join("bin", "roadmap-mission", "contracts.ts"),
+    path.join("bin", "roadmap-mission", "preflight.ts"),
     path.join("bin", "validate-staged.ts"),
   ]) {
     writeText(path.join(globalDir, relative), `// fixture portable tool ${relative}\n`);
@@ -223,25 +227,55 @@ function invokeIsolatedDoctorArgs(
 function parseDoctorV2(result: { output: string }): {
   checks: Array<Record<string, unknown>>;
   report: Record<string, unknown>;
+  unattendedChecks: Array<Record<string, unknown>>;
 } {
   const report = asRecord(parseJsonOutput(result), "Doctor JSON root should be an object.");
   assertEqual(report.tool, "opencode-dev-kit-doctor", "Doctor tool id drifted.");
   assertEqual(report.version, 2, "Doctor report version must be 2.");
   assert(report.status === "pass" || report.status === "warn" || report.status === "blocked", "Doctor structural status is invalid.");
   assert(report.qualificationStatus === "pass" || report.qualificationStatus === "blocked", "Doctor qualificationStatus is invalid.");
+  assert(report.unattendedMissionStatus === "pass" || report.unattendedMissionStatus === "blocked", "Doctor unattendedMissionStatus is invalid.");
   const checks = asArray(report.checks, "Doctor checks should be an array.");
   for (const check of checks) {
     assert(typeof check.name === "string", "Every doctor check must have a name.");
     assert(typeof check.detail === "string", "Every doctor check must have detail.");
     assert(check.status === "pass" || check.status === "warn" || check.status === "blocked", "Every doctor check must have a valid structural status.");
     assert(typeof check.blocksQualification === "boolean", "Every doctor check must expose blocksQualification.");
+    assert(!String(check.name).startsWith("unattended "), "Ordinary qualification checks must not include unattended readiness rows.");
+  }
+  const unattendedChecks = asArray(report.unattendedChecks, "Doctor unattendedChecks should be an array.");
+  for (const check of unattendedChecks) {
+    assert(typeof check.name === "string", "Every unattended check must have a name.");
+    assert(typeof check.detail === "string", "Every unattended check must have detail.");
+    assert(check.status === "pass" || check.status === "warn" || check.status === "blocked", "Every unattended check must have a valid status.");
+  }
+  for (const name of [
+    "unattended runtime authority",
+    "unattended mission definition",
+    "unattended aggregate validation argv",
+    "unattended checkpoint support",
+    "unattended canonical workflow",
+    "unattended installed binaries",
+    "unattended long-run guard limits",
+  ]) {
+    findBucket(unattendedChecks, "name", name);
   }
   assertEqual(
     report.qualificationStatus,
     checks.some((check) => check.blocksQualification === true) ? "blocked" : "pass",
-    "Top-level qualificationStatus must derive from per-check blocksQualification fields.",
+    "Top-level qualificationStatus must derive from ordinary per-check blocksQualification fields only.",
   );
-  return { checks, report };
+  assertEqual(
+    report.unattendedMissionStatus,
+    unattendedChecks.some((check) => check.status !== "pass") ? "blocked" : "pass",
+    "unattendedMissionStatus must derive from unattendedChecks only.",
+  );
+  assertEqual(
+    report.unattendedMissionStatus,
+    "blocked",
+    "Current doctor fixtures do not claim unattended-ready; unattendedMissionStatus must stay independently blocked.",
+  );
+  return { checks, report, unattendedChecks };
 }
 
 export const doctorTests: TestCase[] = [
@@ -509,8 +543,10 @@ export const doctorTests: TestCase[] = [
       assertSuccess(result, "Advisory-only markdown report should retain exit 0.");
       assertOutputContains(result, "Status: warn", "Markdown must display structural status.");
       assertOutputContains(result, "Qualification Status: pass", "Markdown must display qualification status independently.");
+      assertOutputContains(result, "Unattended Mission Status: blocked", "Markdown must display unattended readiness independently of ordinary qualification.");
       assertOutputContains(result, "| Check | Status | Blocks Qualification | Detail |", "Markdown must display the qualification-impact column.");
       assertOutputContains(result, "| project opencode config | warn | no |", "Markdown must render advisory warning impact as no.");
+      assertOutputContains(result, "## Unattended Mission", "Markdown must keep unattended checks in a separate section.");
     },
   },
   {

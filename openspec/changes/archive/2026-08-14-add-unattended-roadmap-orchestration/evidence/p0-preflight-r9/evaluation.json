@@ -1,0 +1,17 @@
+{
+  "candidateId": "p0-preflight-r9",
+  "cleanup": "complete",
+  "projectMutationCount": 0,
+  "scenarios": {
+    "ambiguousActiveChange": "blocked",
+    "dirtyOwnedPath": "blocked",
+    "invalidCheckpoint": "blocked",
+    "invalidForwardDependency": "blocked",
+    "missingAdapter": "blocked",
+    "protectedEffect": "blocked",
+    "staleProjectOverlay": "blocked",
+    "valid": "eligible"
+  },
+  "schemaVersion": 1,
+  "status": "complete"
+}

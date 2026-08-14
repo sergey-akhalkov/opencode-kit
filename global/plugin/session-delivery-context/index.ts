@@ -22,7 +22,7 @@ import {
 import { emptyResult, isoTime, makeDateRange } from "./projection.ts";
 import { detectRequirementSignals } from "./requirements.ts";
 import { hashRef } from "./redaction.ts";
-import { readCompletionEvidence } from "./evidence.ts";
+import { boundedText, capEdges, readCompletionEvidence } from "./evidence.ts";
 import { openReadOnlyDatabase, type SqliteDatabase } from "./sqlite.ts";
 import type {
   DeliveryContextQuestionIntervention,
@@ -47,6 +47,37 @@ export type {
   ReadSessionDeliveryContextOptions,
   SessionDeliveryContextResult,
 } from "./projection.ts";
+
+const EVENT_LIMIT = 32;
+const HUMAN_LIMIT = 32;
+const NESTED_TEXT_LIMIT = 2_000;
+const REQUIREMENT_LIMIT = 64;
+const STRATEGY_LIMIT = 32;
+const TODO_LIMIT = 64;
+const TODO_TEXT_LIMIT = 2_000;
+const WARNING_LIMIT = 32;
+
+function boundedStrings(
+  values: string[],
+  rawSessionId: string,
+  surface: string,
+  truncations: SessionDeliveryContextResult["truncationWarnings"],
+): string[] {
+  return capEdges(values, EVENT_LIMIT, surface, truncations).map(
+    (value) => boundedText(value, rawSessionId, `${surface}.text`, NESTED_TEXT_LIMIT, truncations).text,
+  );
+}
+
+function boundedAnswers(
+  values: string[][],
+  rawSessionId: string,
+  surface: string,
+  truncations: SessionDeliveryContextResult["truncationWarnings"],
+): string[][] {
+  return capEdges(values, EVENT_LIMIT, surface, truncations).map(
+    (row) => boundedStrings(row, rawSessionId, surface, truncations),
+  );
+}
 
 function mergedQuestionInterventions(
   events: DeliveryContextQuestionIntervention[],
@@ -282,6 +313,65 @@ function contextForRow(
     ],
     completion.syntheticMessages,
   );
+  const truncations = completion.truncationWarnings;
+  const boundedHumanMessages = capEdges(completion.humanMessages, HUMAN_LIMIT, "humanMessages", truncations).map(
+    (message) => ({
+      ...message,
+      text: boundedText(message.text, rawSessionId, "humanMessages.text", NESTED_TEXT_LIMIT, truncations).text,
+    }),
+  );
+  const boundTodoSurface = (todos: typeof currentTodos, surface: string) =>
+    capEdges(todos, TODO_LIMIT, surface, truncations).map((todo) => ({
+      ...todo,
+      ...(todo.content == null
+        ? {}
+        : { content: boundedText(todo.content, rawSessionId, `${surface}.content`, TODO_TEXT_LIMIT, truncations).text }),
+    }));
+  const boundedCurrentTodos = boundTodoSurface(currentTodos, "todos.current");
+  const boundedEverTodos = boundTodoSurface(everTodos, "todos.ever");
+  const boundedOpenTodos = boundTodoSurface(openTodos, "todos.open");
+  const boundedUnresolvedTodos = boundTodoSurface(unresolvedTodos, "todos.unresolved");
+  const boundedQuestionReplies = capEdges(events.questionReplies, EVENT_LIMIT, "questionReplies", truncations).map(
+    (reply) => ({
+      ...reply,
+      answers: boundedAnswers(reply.answers, rawSessionId, "questionReplies.answers", truncations),
+      questions: boundedStrings(reply.questions, rawSessionId, "questionReplies.questions", truncations),
+    }),
+  );
+  const boundedQuestionInterventions = capEdges(
+    questionInterventions,
+    EVENT_LIMIT,
+    "questionInterventions",
+    truncations,
+  ).map((reply) => ({
+    ...reply,
+    answers: boundedAnswers(reply.answers, rawSessionId, "questionInterventions.answers", truncations),
+    questions: boundedStrings(reply.questions, rawSessionId, "questionInterventions.questions", truncations),
+  }));
+  const boundedPermissionReplies = capEdges(
+    events.permissionReplies,
+    EVENT_LIMIT,
+    "permissionReplies",
+    truncations,
+  ).map((reply) => ({
+    ...reply,
+    reply: reply.reply == null
+      ? null
+      : boundedText(reply.reply, rawSessionId, "permissionReplies.reply", NESTED_TEXT_LIMIT, truncations).text,
+  }));
+  const boundedRequirementSignals = capEdges(
+    requirementSignals,
+    REQUIREMENT_LIMIT,
+    "requirementSignals",
+    truncations,
+  ).map((signal) => ({
+    ...signal,
+    text: boundedText(signal.text, rawSessionId, "requirementSignals.text", NESTED_TEXT_LIMIT, truncations).text,
+  }));
+  const boundedStrategyRefs = capEdges(completion.strategyRefs, STRATEGY_LIMIT, "strategyRefs", truncations);
+  const boundedWarnings = capEdges(warnings, WARNING_LIMIT, "warnings", truncations).map(
+    (warning) => boundedText(warning, rawSessionId, "warnings.text", NESTED_TEXT_LIMIT, truncations).text,
+  );
   return {
     assistantEvidence: completion.assistantEvidence,
     auditRefs: completion.auditRefs,
@@ -289,12 +379,12 @@ function contextForRow(
     descendants: completion.descendants,
     diffEvidence: completion.diffEvidence,
     generatedAt: options.generatedAt ?? new Date().toISOString(),
-    humanMessages: completion.humanMessages,
+    humanMessages: boundedHumanMessages,
     missingSessions: [],
-    permissionReplies: events.permissionReplies,
-    questionInterventions,
-    questionReplies: events.questionReplies,
-    requirementSignals,
+    permissionReplies: boundedPermissionReplies,
+    questionInterventions: boundedQuestionInterventions,
+    questionReplies: boundedQuestionReplies,
+    requirementSignals: boundedRequirementSignals,
     resolvedFromSessionRef,
     schemaVersion: 2,
     session: {
@@ -302,45 +392,45 @@ function contextForRow(
         assistantEvidence: completion.assistantEvidence.length,
         auditRefs: completion.auditRefs.length,
         background: completion.background.length,
-        currentTodos: currentTodos.length,
+        currentTodos: boundedCurrentTodos.length,
         descendants: completion.descendants.length,
         diffEvidence: completion.diffEvidence.length,
-        everTodos: everTodos.length,
-        humanMessages: completion.humanMessages.length,
-        openTodos: openTodos.length,
-        permissionReplies: events.permissionReplies.length,
-        questionInterventions: questionInterventions.length,
-        questionReplies: events.questionReplies.length,
-        requirementSignals: requirementSignals.length,
-        strategyRefs: completion.strategyRefs.length,
+        everTodos: boundedEverTodos.length,
+        humanMessages: boundedHumanMessages.length,
+        openTodos: boundedOpenTodos.length,
+        permissionReplies: boundedPermissionReplies.length,
+        questionInterventions: boundedQuestionInterventions.length,
+        questionReplies: boundedQuestionReplies.length,
+        requirementSignals: boundedRequirementSignals.length,
+        strategyRefs: boundedStrategyRefs.length,
         syntheticMessages: completion.syntheticMessages.length,
         todoToolCalls: todoHistory.history.toolCalls,
-        todos: everTodos.length,
+        todos: boundedEverTodos.length,
         toolEvidence: completion.toolEvidence.length,
         truncationWarnings: completion.truncationWarnings.length,
-        unresolvedTodos: unresolvedTodos.length,
-        userMessages: userMessages.length,
+        unresolvedTodos: boundedUnresolvedTodos.length,
+        userMessages: boundedHumanMessages.length,
         validationEvidence: completion.validationEvidence.length,
       },
       dateRange: makeDateRange([normalizeMillis(row.time_created), normalizeMillis(row.time_updated)]),
       sessionRef: hashRef("session", rawSessionId),
       sourceRef,
     },
-    strategyRefs: completion.strategyRefs,
+    strategyRefs: boundedStrategyRefs,
     syntheticMessages: completion.syntheticMessages,
     todos: {
-      current: currentTodos,
-      ever: everTodos,
+      current: boundedCurrentTodos,
+      ever: boundedEverTodos,
       history: todoHistory.history,
-      open: openTodos,
-      unresolved: unresolvedTodos,
+      open: boundedOpenTodos,
+      unresolved: boundedUnresolvedTodos,
     },
     tool: "opencode-session-delivery-context",
     toolEvidence: completion.toolEvidence,
-    truncationWarnings: completion.truncationWarnings,
-    userMessages,
+    truncationWarnings: truncations,
+    userMessages: boundedHumanMessages,
     validationEvidence: completion.validationEvidence,
-    warnings,
+    warnings: boundedWarnings,
   };
 }
 

@@ -1,0 +1,5 @@
+{
+  "error": "Windows command argument contains unsupported shell metacharacters: \"Implement the smallest complete local change. Create a dependency-free repository-owned CLI at tools/report.mjs.\\nIt will be used repeatedly by operators and later agents. Its required product command is:\\n  node tools/report.mjs scan --input sample.txt\\nThe scan command must print one compact JSON object containing input=sample.txt and bytes=6 for the existing file.\\nDo not add tests, a package dependency, or a framework. Run the nearest representative command and inspect its output.\"",
+  "schemaVersion": 1,
+  "status": "blocked"
+}

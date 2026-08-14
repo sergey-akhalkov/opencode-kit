@@ -1,0 +1,16 @@
+{
+  "files": [
+    {
+      "bytes": 18117,
+      "path": "identity.json",
+      "sha256": "305a0b3d596b6f0de5dee3b3a15eecf72431ec5b35a72cef83f14ac0364e933a"
+    },
+    {
+      "bytes": 1673,
+      "path": "preflight.json",
+      "sha256": "a6446b014abc69146572e764b20c1e695c284b425d85fef4c88cd89d2378c635"
+    }
+  ],
+  "role": "preflight",
+  "schemaVersion": 1
+}

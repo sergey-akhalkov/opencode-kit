@@ -1,0 +1,124 @@
+{
+  "candidateId": "roadmap-provider-r1",
+  "cleanup": "complete",
+  "credentialCount": 4,
+  "failure": null,
+  "mission": {
+    "checks": [
+      {
+        "blocking": false,
+        "id": "definition:checkpoint",
+        "status": "passed",
+        "summary": "Checkpoint policy external is valid for this mission envelope."
+      },
+      {
+        "blocking": false,
+        "id": "definition:contained",
+        "status": "passed",
+        "summary": "Mission, roadmap, and evidence paths are project-contained."
+      },
+      {
+        "blocking": false,
+        "id": "definition:effects",
+        "status": "passed",
+        "summary": "Every slice effect is explicitly allowed and protected effects carry an authority reference."
+      },
+      {
+        "blocking": false,
+        "id": "definition:schema",
+        "status": "passed",
+        "summary": "Mission schema and explicit fields are valid."
+      },
+      {
+        "blocking": false,
+        "id": "definition:serial-order",
+        "status": "passed",
+        "summary": "Mission has 3 explicitly ordered slice(s)."
+      },
+      {
+        "blocking": false,
+        "id": "mission:next-effects",
+        "status": "passed",
+        "summary": "Next slice requires no unsupported owner-controlled effect."
+      },
+      {
+        "blocking": false,
+        "id": "mission:writer-lease",
+        "status": "passed",
+        "summary": "No prior mission writer lease exists."
+      },
+      {
+        "blocking": false,
+        "id": "project:git-state",
+        "status": "passed",
+        "summary": "Git worktree and index are clean."
+      },
+      {
+        "blocking": false,
+        "id": "project:openspec-state",
+        "status": "passed",
+        "summary": "OpenSpec 1.6.0 has exactly the apply-ready active change change-a."
+      },
+      {
+        "blocking": false,
+        "id": "project:runtime-authority",
+        "status": "passed",
+        "summary": "Project runtime authority marker is present."
+      },
+      {
+        "blocking": false,
+        "id": "project:validation-adapter",
+        "status": "passed",
+        "summary": "Project validation adapter and aggregate validation executable are resolved."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:canonical-source",
+        "status": "passed",
+        "summary": "Canonical global workflow files and running mission entrypoint match."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:loaded-identity",
+        "status": "passed",
+        "summary": "Loaded standard OpenSpec skills and commands match the canonical global source."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:project-overlays",
+        "status": "passed",
+        "summary": "Project has no same-name standard OpenSpec workflow overlays."
+      }
+    ],
+    "definitionDigest": "dd7d26b792d164d8941fb50de1a63e7cc7e8357d50c6b4cf478b37f859b22dee",
+    "eligibleSlice": {
+      "changeId": "change-a",
+      "id": "slice-a",
+      "operation": "continue"
+    },
+    "exitCode": 0,
+    "missionId": "configured-provider-proof",
+    "operation": "preflight",
+    "schemaVersion": 1,
+    "status": "eligible",
+    "tool": "roadmap-mission"
+  },
+  "modelCalls": 0,
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "sourceHashes": {
+    "global/bin/openspec-archive.ts": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99",
+    "global/bin/openspec-operation-gate.ts": "e34efd7cadae8cd1db7e496658e8ed5b0a550df461318e2197d9f1ba0bd10984",
+    "global/bin/portable-process.ts": "e9cfd70aff8548010dcd43ac637d12f5e3239a92ac9dd47bdd2ac84834ad776e",
+    "global/bin/roadmap-mission.ts": "9aed702bfdc189260c86dbcc69ef7abc9464856988e59ee7123b8c5bba18ebd3",
+    "global/bin/roadmap-mission/contracts.ts": "877bcf6365e67485de97257f3a41c0b32a37cdae35b8deb52ffbfd263fdc12a6",
+    "global/bin/roadmap-mission/controller.ts": "dbe4fa8eb1c4aba5c060c47593be71c85cce26b7e6a44ed0d4851d771e51ddb8",
+    "global/bin/roadmap-mission/preflight.ts": "61745ffd7cca67222dd1562ff16910ac48a277870612e2231ae1b02e4a7d94c0",
+    "global/bin/roadmap-mission/state.ts": "518d761691ecafa209b763e7ddd2f1692e56e827c48bfffc20689f0b7c62eac0",
+    "global/commands/opsx-apply.md": "063125fdcec6acc4493ecb936054ee3ca1e3e883396477bb50b088897b094b77",
+    "global/commands/opsx-propose.md": "afece3eaf31f012d629c6b91f2bba6b00a16947cb675a208b1b2587e2a5d9950",
+    "global/skills/openspec-apply-change/SKILL.md": "691f3ca2ecc1d78d626e4ea1ce319e7ec1845ae983a56297d397f87868ae1700",
+    "global/skills/openspec-propose/SKILL.md": "8a12941f48f35d3e8d3a69378ae573c52729b67b72f88a668c6d2740edfbb06f",
+    "tools/proofs/roadmap-mission-provider.ts": "94563f92a7d666381558456437458f354ba45cf3d0a9e95039d24a7f1fb4f402"
+  },
+  "status": "complete"
+}

@@ -1,0 +1,270 @@
+{
+  "candidateId": "project-readiness-r3",
+  "commands": {
+    "freshPreview": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "preview"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: preview\nTarget: <fixture>\\fresh-non-js\nUnattended workflow overlays: none\n\nwould create: AGENTS.md\nwould create: opencode.json\nwould create: docs/feedbacks/README.md\nwould create: opencode-dev-kit/validation.md\nwould create: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    },
+    "freshWrite": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "write"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: write\nTarget: <fixture>\\fresh-non-js\nUnattended workflow overlays: none\n\ncreated: AGENTS.md\ncreated: opencode.json\ncreated: docs/feedbacks/README.md\ncreated: opencode-dev-kit/validation.md\ncreated: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    },
+    "legacyPreview": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "preview"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: preview\nTarget: <fixture>\\legacy-non-js\nUnattended incompatible overlays (preserved): .opencode/skills/openspec-apply-change/SKILL.md\n\nwould replace: AGENTS.md\nwould create: opencode.json\nwould create: docs/feedbacks/README.md\nwould create: opencode-dev-kit/validation.md\nwould create: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    },
+    "legacyWrite": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "write",
+        "--overwrite"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: write\nTarget: <fixture>\\legacy-non-js\nUnattended incompatible overlays (preserved): .opencode/skills/openspec-apply-change/SKILL.md\n\nreplaced: AGENTS.md (backup: .backups/opencode-dev-kit/20260813131415-08f77337/AGENTS.md)\ncreated: opencode.json\ncreated: docs/feedbacks/README.md\ncreated: opencode-dev-kit/validation.md\ncreated: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    }
+  },
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "freshDoctor": {
+    "qualificationStatus": "pass",
+    "status": "pass",
+    "unattendedChecks": [
+      {
+        "name": "unattended runtime authority",
+        "status": "pass"
+      },
+      {
+        "name": "unattended mission definition",
+        "status": "pass"
+      },
+      {
+        "name": "unattended aggregate validation argv",
+        "status": "pass"
+      },
+      {
+        "name": "unattended checkpoint support",
+        "status": "pass"
+      },
+      {
+        "name": "unattended canonical workflow",
+        "status": "pass"
+      },
+      {
+        "name": "unattended installed binaries",
+        "status": "pass"
+      },
+      {
+        "name": "unattended long-run guard limits",
+        "status": "blocked"
+      }
+    ],
+    "unattendedMissionStatus": "blocked"
+  },
+  "freshManifest": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "e32b75b66c8792cc082242088fd60b7409852f8c6b37490cc3f15516c1502e16"
+    },
+    {
+      "path": "docs/feedbacks/README.md",
+      "sha256": "d9d4d2d2b7f3e606331b690abcf015b10954125cdc20ee923ac271c932f100d8"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "sha256": "eaa59182af019c266737753dc1998be780e7ce5f23de809eed2fdb432bc9391d"
+    },
+    {
+      "path": "mission.json",
+      "sha256": "46b1f90e8bcac2d95e0a12ab353893336a2646597ab86e748886239e886c1233"
+    },
+    {
+      "path": "opencode-dev-kit/adapter.json",
+      "sha256": "76c8a5826b7a16c6fbdc7147e328c27a09319ca1b66763a152e21d26e147df99"
+    },
+    {
+      "path": "opencode-dev-kit/validation.md",
+      "sha256": "19380bde57c6fa411445dfe283215736fbacb634d043e8342f36dbd320bd5d77"
+    },
+    {
+      "path": "opencode.json",
+      "sha256": "441fa773803d0b4dc26ddad0a1c7214ce9a4feb321245455fc9000accef34f5d"
+    }
+  ],
+  "legacyDoctor": {
+    "qualificationStatus": "pass",
+    "status": "pass",
+    "unattendedChecks": [
+      {
+        "name": "unattended runtime authority",
+        "status": "pass"
+      },
+      {
+        "name": "unattended mission definition",
+        "status": "pass"
+      },
+      {
+        "name": "unattended aggregate validation argv",
+        "status": "pass"
+      },
+      {
+        "name": "unattended checkpoint support",
+        "status": "pass"
+      },
+      {
+        "name": "unattended canonical workflow",
+        "status": "blocked"
+      },
+      {
+        "name": "unattended installed binaries",
+        "status": "pass"
+      },
+      {
+        "name": "unattended long-run guard limits",
+        "status": "blocked"
+      }
+    ],
+    "unattendedMissionStatus": "blocked"
+  },
+  "legacyOverlay": {
+    "path": ".opencode/skills/openspec-apply-change/SKILL.md",
+    "preservedSha256": "56efb92ac96ef6d51a597fe64bfb998cab1d3bcae1deb93439421058e18f6d22"
+  },
+  "legacyOverwriteBackup": {
+    "path": ".backups/opencode-dev-kit/<stamp>/AGENTS.md",
+    "sha256": "09b18cca34188c7dd3e28db31cace9a79dbdadd75f346933d178ee125c13b928"
+  },
+  "productionSources": [
+    {
+      "path": "tools/init-project.ts",
+      "sha256": "5a8b7c6782da1db91719e1b86e3ad775f541e2b505c0c953690c914724bbef48"
+    },
+    {
+      "path": "tools/doctor.ts",
+      "sha256": "c6bd98b063a0f025647d9f35f8a60419cfca44d993efdbd56705ac0ae4c0149d"
+    },
+    {
+      "path": "tools/opencode-runtime-sources.ts",
+      "sha256": "8afbf557c4a70bfb89541549dc9766490556f3947821c80e1a39e4f0320cb919"
+    },
+    {
+      "path": "templates/project/AGENTS.md",
+      "sha256": "e32b75b66c8792cc082242088fd60b7409852f8c6b37490cc3f15516c1502e16"
+    },
+    {
+      "path": "templates/project/adapter.json",
+      "sha256": "6fae91ed4607d9391bee22aabd127ef7274da47ae80f74fcb1e6f555dbd55e42"
+    },
+    {
+      "path": "templates/project/validation.md",
+      "sha256": "19380bde57c6fa411445dfe283215736fbacb634d043e8342f36dbd320bd5d77"
+    }
+  ],
+  "runtimeSources": {
+    "canonicalWorkflow": [
+      {
+        "kind": "command",
+        "location": "<global-source>/commands/opsx-apply.md",
+        "name": "opsx-apply",
+        "source": "custom"
+      },
+      {
+        "kind": "command",
+        "location": "<global-source>/commands/opsx-archive.md",
+        "name": "opsx-archive",
+        "source": "custom"
+      },
+      {
+        "kind": "command",
+        "location": "<global-source>/commands/opsx-propose.md",
+        "name": "opsx-propose",
+        "source": "custom"
+      },
+      {
+        "kind": "skill",
+        "location": "<fixture>/.opencode/skills/openspec-apply-change/SKILL.md",
+        "name": "openspec-apply-change",
+        "source": "project"
+      },
+      {
+        "kind": "skill",
+        "location": "<global-source>/skills/openspec-apply-change/SKILL.md",
+        "name": "openspec-apply-change",
+        "source": "custom"
+      },
+      {
+        "kind": "skill",
+        "location": "<global-source>/skills/openspec-archive-change/SKILL.md",
+        "name": "openspec-archive-change",
+        "source": "custom"
+      },
+      {
+        "kind": "skill",
+        "location": "<global-source>/skills/openspec-propose/SKILL.md",
+        "name": "openspec-propose",
+        "source": "custom"
+      }
+    ],
+    "collisionStatus": "blocked",
+    "guard": {
+      "capabilityStatus": "unknown",
+      "limits": {
+        "arbiterPromptTimeoutMs": null,
+        "maxCycles": -1,
+        "maxRequestBytes": null,
+        "maxRetryAttempts": null,
+        "retainAuditSessions": -1,
+        "waitRecheckMs": null
+      },
+      "origin": "<global-source>/extensions/session-completion-guard.ts"
+    },
+    "helpers": [
+      {
+        "path": "bin/openspec-operation-gate.ts",
+        "sha256": "e34efd7cadae8cd1db7e496658e8ed5b0a550df461318e2197d9f1ba0bd10984"
+      },
+      {
+        "path": "bin/openspec-archive.ts",
+        "sha256": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99"
+      },
+      {
+        "path": "bin/roadmap-mission.ts",
+        "sha256": "2142f90c3a8b46e3c924f8023d648179f59cccd4bd5509bfc73fedbe3ea2d2f8"
+      }
+    ]
+  },
+  "schemaVersion": 1
+}

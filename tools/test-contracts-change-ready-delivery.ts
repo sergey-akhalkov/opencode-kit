@@ -114,8 +114,8 @@ function resolveSessionCompletionGuardHistoryPaths(): string[] {
 
 /** Active OpenSpec apply surfaces that must share the owner-only pause contract. */
 const OPENSPEC_APPLY_AUTONOMY_SURFACES = [
-  ".opencode/skills/openspec-apply-change/SKILL.md",
-  ".opencode/commands/opsx-apply.md",
+  "global/skills/openspec-apply-change/SKILL.md",
+  "global/commands/opsx-apply.md",
 ] as const;
 
 /**
@@ -126,19 +126,19 @@ const OPENSPEC_APPLY_AUTONOMY_SURFACES = [
  */
   const SESSION_IMPROVEMENT_PERSISTENCE_SURFACES = [
   "global/AGENTS.md",
-  ".opencode/skills/openspec-apply-change/SKILL.md",
-  ".opencode/commands/opsx-apply.md",
-  ".opencode/skills/openspec-archive-change/SKILL.md",
+  "global/skills/openspec-apply-change/SKILL.md",
+  "global/commands/opsx-apply.md",
+  "global/skills/openspec-archive-change/SKILL.md",
   // Apply completion points operators at `/opsx-archive`; that command is a real
   // archive entry point and must not skip pre-helper pending reconciliation.
-  ".opencode/commands/opsx-archive.md",
+  "global/commands/opsx-archive.md",
   "global/opencode.json.template",
 ] as const;
 
 /** Archive skill + slash command must both refuse complete archive over unpersisted admits. */
 const SESSION_IMPROVEMENT_ARCHIVE_SURFACES = [
-  ".opencode/skills/openspec-archive-change/SKILL.md",
-  ".opencode/commands/opsx-archive.md",
+  "global/skills/openspec-archive-change/SKILL.md",
+  "global/commands/opsx-archive.md",
 ] as const;
 
 const SESSION_IMPROVEMENT_REQUIRED_MARKERS = [
@@ -150,7 +150,7 @@ const SESSION_IMPROVEMENT_REQUIRED_MARKERS = [
 const SESSION_IMPROVEMENT_AGENTS_SAFETY_MARKERS = [
   "no improvement task may preempt",
   "do not mutate silently",
-  "All admitted tasks still remain mandatory before normal complete archive",
+  "Every admitted task remains mandatory before normal complete archive",
   "direct causal link to `Original User Goal`",
   "no scope expansion",
 ] as const;
@@ -196,19 +196,19 @@ const GLOBAL_CHECKPOINT_CONTINUE_MARKERS = [
  */
 const FINAL_HISTORY_PROPOSE_SURFACES = [
   "global/AGENTS.md",
-  ".opencode/skills/openspec-propose/SKILL.md",
-  ".opencode/commands/opsx-propose.md",
+  "global/skills/openspec-propose/SKILL.md",
+  "global/commands/opsx-propose.md",
 ] as const;
 
 const FINAL_HISTORY_APPLY_SURFACES = [
   "global/AGENTS.md",
-  ".opencode/skills/openspec-apply-change/SKILL.md",
-  ".opencode/commands/opsx-apply.md",
+  "global/skills/openspec-apply-change/SKILL.md",
+  "global/commands/opsx-apply.md",
 ] as const;
 
 const FINAL_HISTORY_ARCHIVE_SURFACES = [
-  ".opencode/skills/openspec-archive-change/SKILL.md",
-  ".opencode/commands/opsx-archive.md",
+  "global/skills/openspec-archive-change/SKILL.md",
+  "global/commands/opsx-archive.md",
 ] as const;
 
 const FINAL_HISTORY_PROPOSE_MARKERS = [
@@ -456,8 +456,8 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
           `${relative} must reconcile session-derived improvements before the deterministic helper`,
         );
         assert(
-          archive.includes("every persisted improvement task is checked") ||
-            /every persisted improvement task is checked/i.test(archive),
+          archive.includes("every persisted admitted improvement task is checked") ||
+            /every persisted admitted improvement task is checked/i.test(archive),
           `${relative} must refuse complete archive while improvement tasks remain unchecked`,
         );
         assert(
@@ -543,7 +543,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "Dropping propose creation of the retrospective must fail closed",
       );
 
-      const apply = fs.readFileSync(path.join(root, ".opencode", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
       const applyWithoutNone = apply.replaceAll("`none`", "`todo`");
       assert(
         missingTokens(applyWithoutNone, FINAL_HISTORY_APPLY_MARKERS).includes("`none`"),
@@ -555,7 +555,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "Dropping no-rerun on apply must fail closed",
       );
 
-      const archive = fs.readFileSync(path.join(root, ".opencode", "skills", "openspec-archive-change", "SKILL.md"), "utf8");
+      const archive = fs.readFileSync(path.join(root, "global", "skills", "openspec-archive-change", "SKILL.md"), "utf8");
       const archiveWithoutGeneratedGate = archive.replaceAll(
         "every improvement it generated",
         "the retrospective heading",

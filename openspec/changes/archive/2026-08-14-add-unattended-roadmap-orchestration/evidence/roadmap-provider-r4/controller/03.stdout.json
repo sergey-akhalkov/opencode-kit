@@ -1,0 +1,64 @@
+{
+  "attempts": 0,
+  "cursor": 2,
+  "definitionDigest": "dd7d26b792d164d8941fb50de1a63e7cc7e8357d50c6b4cf478b37f859b22dee",
+  "exitCode": 1,
+  "missionId": "configured-provider-proof",
+  "operation": "resume",
+  "processEvidence": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": "95d2817b8935b2c256e40e3efabe43f3689e1cf6\n"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-renames",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--no-renames",
+        "--name-only",
+        "-z"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": ".opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/state.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000001-d7b3c208f3d6c746.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000002-03efaa020625f286.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000003-4f7e28b024874e3e.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000004-015f285bcfb72c5a.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000005-4a299d6fbeacb1cf.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000006-60559c9a3a32ee7c.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000007-6e9910477101ff01.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000008-4f5f79d3b9a74da8.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000009-00b1efb7c1db5de7.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000010-bde09fc30c0f38da.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000011-6ba9cfc2c1ea432a.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000012-11c67cafcf6137db.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000013-ed684f4237869b7e.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000014-32103470153d72c0.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/transitions/00000015-d69d9e4e0379a35b.json\u0000.opencode-dev-kit/runtime/roadmap-missions/configured-provider-proof/writer.lock\u0000"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "blocked",
+  "tool": "roadmap-mission"
+}

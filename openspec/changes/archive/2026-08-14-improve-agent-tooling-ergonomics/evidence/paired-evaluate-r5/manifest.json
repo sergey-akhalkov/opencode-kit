@@ -1,0 +1,11 @@
+{
+  "files": [
+    {
+      "bytes": 7002,
+      "path": "evaluation.json",
+      "sha256": "15679a0c147b8b8d39019b1e17651eab4fce725b615750ca35fe77cf89a62fb8"
+    }
+  ],
+  "role": "evaluate",
+  "schemaVersion": 1
+}

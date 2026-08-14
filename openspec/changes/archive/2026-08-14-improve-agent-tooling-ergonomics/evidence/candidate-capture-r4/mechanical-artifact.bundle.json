@@ -1,0 +1,608 @@
+{
+  "candidate": {
+    "id": "candidate-contract-green-r4",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "4b5b79af042fd2688dbfca747373ad42a5dc0e131469a9570397fb219d5cc183",
+      "global/agents/implementation-worker.md": "d9c5216fccd6fe1dd57a4f72fdcd45d2f5d3964a766f0dfa4c2d0c56a10d1465",
+      "global/agents/instruction-artifact-reviewer.md": "d9c9ed43e3f0de8c373d672c1ab3d100130a3e9032b477573a707742c0658213",
+      "global/agents/sdet-quality-engineer.md": "3beb08a020bcb1a1543c5c1c0f20f6feb9c36db44d2e5bcfe1b1edf0f347ce05",
+      "global/skills/instruction-artifact-tuning/SKILL.md": "defe7566779f3010eddc6d0bd348ac77be41e3cb9ee9c68267d9d3e1804f98ef",
+      "README.md": "2a4a691becf2e84990669683721426934642b9fd8f6f63a682173dd5862311d3",
+      "package.json": "8e5e8dbcaafd152bc0b6090cc4b3703bb3071205e60749ed958aa45ff06735b5",
+      "tools/proofs/agent-tooling-ergonomics.ts": "e6dd2cd9d24a10102fba5a124fcc9bd9f150ecdc071d60d69ae52bb8960b0ddb"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_00142914dffe5qt0wZiB1Z54r4",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "tooling-ergonomics-candidate-mechanical-artifact",
+      "Implement the smallest complete local change. Produce authoritative data/artifacts.json for inputs/a.txt and inputs/b.txt.\nThe JSON is an ordinally sorted array with ids variant-a and variant-b, ordinals 1 and 2, source paths, exact byteLength, and uppercase SHA-256 for each source.\nThese artifacts will be regenerated after input changes and more variants are expected later. Keep semantic ids, source paths, and ordinals reviewable.\nDo not add tests, a package dependency, or a generic framework. If automation is needed, use tools/materialize.mjs. Run the nearest proof and inspect the output."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786685264261,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebd917d001Z6DFPLZjO1YjUt\",\"messageID\":\"msg_ffebd7038001VQfRyw0tOTN7kx\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786685269907,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebda5d2001jvMU6ho64XkjeE\",\"messageID\":\"msg_ffebd7038001VQfRyw0tOTN7kx\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"text\",\"text\":\"Сначала проверю текущую структуру, байты входных файлов и существующие соглашения по генерации. Затем внесу минимальный seed-driven материализатор и проверю фактический JSON через его реальную CLI-точку входа.\",\"time\":{\"start\":1786685269458,\"end\":1786685269902},\"metadata\":{\"openai\":{\"itemId\":\"msg_026637fca9d83648016a7ea755762081918dc4095f733da20e\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685271269,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"todowrite\",\"callID\":\"call_c6cx9uInWUnnAqSoMV0exCpq\",\"state\":{\"status\":\"completed\",\"input\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"pending\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}]},\"output\":\"[\\n  {\\n    \\\"content\\\": \\\"Inspect inputs and existing project tooling conventions\\\",\\n    \\\"status\\\": \\\"in_progress\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Implement reviewable artifact seed and tools/materialize.mjs\\\",\\n    \\\"status\\\": \\\"pending\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Run materializer and inspect authoritative data/artifacts.json\\\",\\n    \\\"status\\\": \\\"pending\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"pending\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"3 todos\",\"time\":{\"start\":1786685271262,\"end\":1786685271266}},\"metadata\":{\"openai\":{\"itemId\":\"fc_026637fca9d83648016a7ea755f4708191822e878209fcd826\"}},\"id\":\"prt_ffebda791001pAkNHP0i80a20o\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebd7038001VQfRyw0tOTN7kx\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685271352,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebdad2a001HuogGmzjV7nFJG\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebd7038001VQfRyw0tOTN7kx\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":28209,\"input\":18096,\"output\":142,\"reasoning\":243,\"cache\":{\"write\":0,\"read\":9728}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685276940,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebdc308001EKU7yJNlbMU0pn\",\"messageID\":\"msg_ffebdad33001O3OSjmt6JDeNjM\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685277078,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_B9G3fKlOZJSPvipzpxFrd447\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\"},\"output\":\"<path><proof-root>\\\\project</path>\\n<type>directory</type>\\n<entries>\\n.gitignore\\ninputs/\\npackage.json\\n\\n(3 entries)\\n</entries>\",\"metadata\":{\"preview\":\".gitignore\\ninputs/\\npackage.json\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\project\",\"entries\":[\".gitignore\",\"inputs/\",\"package.json\"],\"offset\":1,\"totalEntries\":3,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\",\"time\":{\"start\":1786685277014,\"end\":1786685277026}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05c240e4e2b36356016a7ea75cf8248191926475494421ef8f\"}},\"id\":\"prt_ffebdc30a0018K8CFh1O52yeOo\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdad33001O3OSjmt6JDeNjM\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685277135,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_m2nBINg5N5dIrzMYyqTbvAag\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"**/*\"},\"output\":\"<proof-root>\\\\project\\\\package.json\\n<proof-root>\\\\project\\\\inputs\\\\b.txt\\n<proof-root>\\\\project\\\\inputs\\\\a.txt\\n<proof-root>\\\\project\\\\.gitignore\",\"metadata\":{\"count\":4,\"truncated\":false},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\",\"time\":{\"start\":1786685277023,\"end\":1786685277123}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05c240e4e2b36356016a7ea75cf83881918708d5f25adc1885\"}},\"id\":\"prt_ffebdc359001FO1vR7z4Kpi4a8\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdad33001O3OSjmt6JDeNjM\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685277139,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_slZFQZ2H1yCvF7SR4wquiTD4\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"tools/**/*\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\",\"time\":{\"start\":1786685277036,\"end\":1786685277137}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05c240e4e2b36356016a7ea75cf84081919ccc78ea21e16918\"}},\"id\":\"prt_ffebdc367001qbHNIuuWgqCAYE\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdad33001O3OSjmt6JDeNjM\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685277178,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_CRgrM2Anw2Fd2WyxfjVOOsVu\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"data/**/*\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\",\"time\":{\"start\":1786685277055,\"end\":1786685277155}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05c240e4e2b36356016a7ea75cf8448191a6f9e7f975e870d0\"}},\"id\":\"prt_ffebdc36e001lCnL04PxKHBbPL\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdad33001O3OSjmt6JDeNjM\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685277178,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebdc3e5001kKh2N5z5s1usDe\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebdad33001O3OSjmt6JDeNjM\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":28541,\"input\":1189,\"output\":216,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":27136}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685278425,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebdc8d5001MwQ2kC2v4V6KPj\",\"messageID\":\"msg_ffebdc3eb001ncE91w6yircwvr\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685282776,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_gd9WTpe2oCmwfWk5kGTlzq2a\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\inputs\\\\b.txt\"},\"output\":\"<path><proof-root>\\\\project\\\\inputs\\\\b.txt</path>\\n<type>file</type>\\n<content>\\n1: beta-data\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"beta-data\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\inputs\\\\b.txt\",\"text\":\"beta-data\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\\\\inputs\\\\b.txt\",\"time\":{\"start\":1786685282747,\"end\":1786685282774}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0538b221ee852307016a7ea762b1a08191ab4258382520e765\"}},\"id\":\"prt_ffebdd9b7001u0ufKq7J53Eavz\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdc3eb001ncE91w6yircwvr\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685282789,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_zYbsmEGBW05JSrDeVxTFxqSb\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\package.json\"},\"output\":\"<path><proof-root>\\\\project\\\\package.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"name\\\": \\\"tooling-ergonomics-mechanical-artifact\\\",\\n3:   \\\"private\\\": true,\\n4:   \\\"type\\\": \\\"module\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"name\\\": \\\"tooling-ergonomics-mechanical-artifact\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\package.json\",\"text\":\"{\\n  \\\"name\\\": \\\"tooling-ergonomics-mechanical-artifact\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\\\\package.json\",\"time\":{\"start\":1786685282736,\"end\":1786685282785}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0538b221ee852307016a7ea762b1888191a4554031eb7ecf64\"}},\"id\":\"prt_ffebdd9aa001O9aiSlWraAlguj\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdc3eb001ncE91w6yircwvr\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685282789,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_t6W9iiDMRh34mOuAdZ54xgfm\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\inputs\\\\a.txt\"},\"output\":\"<path><proof-root>\\\\project\\\\inputs\\\\a.txt</path>\\n<type>file</type>\\n<content>\\n1: alpha\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"alpha\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\inputs\\\\a.txt\",\"text\":\"alpha\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\\\\inputs\\\\a.txt\",\"time\":{\"start\":1786685282741,\"end\":1786685282788}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0538b221ee852307016a7ea762b19881918902ff528343175e\"}},\"id\":\"prt_ffebdd9b2001n8WxQruAPesJiO\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdc3eb001ncE91w6yircwvr\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685282791,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_P9qUfRwpadMlT8icFFfJ65Ap\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\.gitignore\"},\"output\":\"<path><proof-root>\\\\project\\\\.gitignore</path>\\n<type>file</type>\\n<content>\\n1: target/\\n2: node_modules/\\n\\n(End of file - total 2 lines)\\n</content>\",\"metadata\":{\"preview\":\"target/\\nnode_modules/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\.gitignore\",\"text\":\"target/\\nnode_modules/\",\"lineStart\":1,\"lineEnd\":2,\"totalLines\":2,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\\\\.gitignore\",\"time\":{\"start\":1786685282753,\"end\":1786685282790}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0538b221ee852307016a7ea762b1a4819182a18d4e88e4a792\"}},\"id\":\"prt_ffebdd9bd0015laJ4Q6XYgircS\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdc3eb001ncE91w6yircwvr\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685282832,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebdda06001ZjPYRI4GeGeM3j\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebdc3eb001ncE91w6yircwvr\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":29022,\"input\":628,\"output\":222,\"reasoning\":12,\"cache\":{\"write\":0,\"read\":28160}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685284090,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebddef7001fTqX5Ab0C4AG1Q\",\"messageID\":\"msg_ffebdda0d001fJf1S5OXmI9yf1\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786685308981,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebe3aa8001RZKG3wC5ty6M2E\",\"messageID\":\"msg_ffebdda0d001fJf1S5OXmI9yf1\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"text\",\"text\":\"Структура минимальна: готовых генераторов и derived-индексов нет. Сохраню ревьюируемые поля `id`, `ordinal`, `source` в отдельном seed-файле, а `tools/materialize.mjs` будет валидировать их, сортировать по `ordinal` и вычислять только производные `byteLength`/`sha256`; это не потребует зависимостей.\",\"time\":{\"start\":1786685307560,\"end\":1786685308979},\"metadata\":{\"openai\":{\"itemId\":\"msg_09a83dcd76390df4016a7ea77b94588191a3fd377ab58a753b\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685310669,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"todowrite\",\"callID\":\"call_2dDoGBa9cGmXNf6N68uumEqa\",\"state\":{\"status\":\"completed\",\"input\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}]},\"output\":\"[\\n  {\\n    \\\"content\\\": \\\"Inspect inputs and existing project tooling conventions\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Implement reviewable artifact seed and tools/materialize.mjs\\\",\\n    \\\"status\\\": \\\"in_progress\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Run materializer and inspect authoritative data/artifacts.json\\\",\\n    \\\"status\\\": \\\"pending\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"2 todos\",\"time\":{\"start\":1786685310665,\"end\":1786685310667}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09a83dcd76390df4016a7ea77d07c88191bd14ebc9389c5d7e\"}},\"id\":\"prt_ffebe40360016UG3rNA6EnaFy4\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebdda0d001fJf1S5OXmI9yf1\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685310781,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebe4733001g9Ow6wO8mr1BKN\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebdda0d001fJf1S5OXmI9yf1\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":30823,\"input\":1209,\"output\":177,\"reasoning\":1277,\"cache\":{\"write\":0,\"read\":28160}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685318462,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebe6530001vNfwRxZJqwvAOL\",\"messageID\":\"msg_ffebe4739001HrfTPXxHKeCkXM\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685318874,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_Phti9VTztoU9uNBk0wq61fIG\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node --version\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"v24.18.0\\r\\n\",\"metadata\":{\"output\":\"v24.18.0\\r\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node --version\",\"time\":{\"start\":1786685318834,\"end\":1786685318871}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01181371bbf02110016a7ea7867a7081919650d9b9b7627dce\"}},\"id\":\"prt_ffebe653c001B5QiQb23tAwZbx\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebe4739001HrfTPXxHKeCkXM\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685318921,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_5tphRGisdM79TJvzF6wYnXkV\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node -e \\\"const fs=require('node:fs'); const crypto=require('node:crypto'); for (const source of ['inputs/a.txt','inputs/b.txt']) { const bytes=fs.readFileSync(source); console.log(JSON.stringify({source,byteLength:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase()})); }\\\"\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"{\\\"source\\\":\\\"inputs/a.txt\\\",\\\"byteLength\\\":6,\\\"sha256\\\":\\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"}\\n{\\\"source\\\":\\\"inputs/b.txt\\\",\\\"byteLength\\\":10,\\\"sha256\\\":\\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"}\\n\",\"metadata\":{\"output\":\"{\\\"source\\\":\\\"inputs/a.txt\\\",\\\"byteLength\\\":6,\\\"sha256\\\":\\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"}\\n{\\\"source\\\":\\\"inputs/b.txt\\\",\\\"byteLength\\\":10,\\\"sha256\\\":\\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"}\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node -e \\\"const fs=require('node:fs'); const crypto=require('node:crypto'); for (const source of ['inputs/a.txt','inputs/b.txt']) { const bytes=fs.readFileSync(source); console.log(JSON.stringify({source,byteLength:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase()})); }\\\"\",\"time\":{\"start\":1786685318868,\"end\":1786685318902}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01181371bbf02110016a7ea7867a7c8191bf0ef69a14bbeb44\"}},\"id\":\"prt_ffebe659d001uW52D76aX6jSav\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebe4739001HrfTPXxHKeCkXM\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685318921,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebe66f8001wTzoIjKu7BZ0vC\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebe4739001HrfTPXxHKeCkXM\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":31143,\"input\":1755,\"output\":204,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":29184}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685320082,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebe6b8f0014stQ3AE38DVirO\",\"messageID\":\"msg_ffebe66fe001xeR3ZwziN4f9LZ\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786685337678,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebeab35001RiL3W79Bhg4jSW\",\"messageID\":\"msg_ffebe66fe001xeR3ZwziN4f9LZ\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"text\",\"text\":\"Редактирую только два исходных артефакта: компактный manifest с тремя семантическими полями и специализированный materializer. CLI также получит безэффектный `--help`, строгую проверку дубликатов/выхода за корень и причинные ошибки чтения.\",\"time\":{\"start\":1786685336373,\"end\":1786685337674},\"metadata\":{\"openai\":{\"itemId\":\"msg_03cbc0b8a4411c2c016a7ea798666081919f2a35efa7df481e\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685362377,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_E0MExEjxIjNvMFSwbNjtvuyQ\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: data/artifacts.sources.json\\n+[\\n+  {\\n+    \\\"id\\\": \\\"variant-a\\\",\\n+    \\\"ordinal\\\": 1,\\n+    \\\"source\\\": \\\"inputs/a.txt\\\"\\n+  },\\n+  {\\n+    \\\"id\\\": \\\"variant-b\\\",\\n+    \\\"ordinal\\\": 2,\\n+    \\\"source\\\": \\\"inputs/b.txt\\\"\\n+  }\\n+]\\n*** Add File: tools/materialize.mjs\\n+#!/usr/bin/env node\\n+\\n+import { createHash } from \\\"node:crypto\\\";\\n+import { readFile, writeFile } from \\\"node:fs/promises\\\";\\n+import { dirname, isAbsolute, relative, resolve } from \\\"node:path\\\";\\n+import { fileURLToPath } from \\\"node:url\\\";\\n+\\n+const rootDirectory = fileURLToPath(new URL(\\\"../\\\", import.meta.url));\\n+const definitionsPath = resolve(rootDirectory, \\\"data/artifacts.sources.json\\\");\\n+const outputPath = resolve(rootDirectory, \\\"data/artifacts.json\\\");\\n+const args = process.argv.slice(2);\\n+\\n+if (args.includes(\\\"--help\\\") || args.includes(\\\"-h\\\")) {\\n+  console.log(`Usage: node tools/materialize.mjs\\n+\\n+Materialize data/artifacts.json from data/artifacts.sources.json and its source files.`);\\n+} else {\\n+  try {\\n+    if (args.length > 0) {\\n+      throw new Error(`Unknown argument: ${args[0]}`);\\n+    }\\n+\\n+    await materialize();\\n+  } catch (error) {\\n+    console.error(error);\\n+    process.exitCode = 1;\\n+  }\\n+}\\n+\\n+async function materialize() {\\n+  let definitions;\\n+\\n+  try {\\n+    definitions = JSON.parse(await readFile(definitionsPath, \\\"utf8\\\"));\\n+  } catch (cause) {\\n+    throw new Error(\\\"Unable to read data/artifacts.sources.json\\\", { cause });\\n+  }\\n+\\n+  validateDefinitions(definitions);\\n+\\n+  const artifacts = [];\\n+  for (const definition of definitions.toSorted((left, right) => left.ordinal - right.ordinal)) {\\n+    const sourcePath = resolve(rootDirectory, definition.source);\\n+    const relativeSourcePath = relative(rootDirectory, sourcePath);\\n+    if (relativeSourcePath.startsWith(\\\"..\\\") || isAbsolute(relativeSourcePath)) {\\n+      throw new Error(`Source path escapes the repository: ${definition.source}`);\\n+    }\\n+\\n+    let source;\\n+    try {\\n+      source = await readFile(sourcePath);\\n+    } catch (cause) {\\n+      throw new Error(`Unable to read source: ${definition.source}`, { cause });\\n+    }\\n+\\n+    artifacts.push({\\n+      ...definition,\\n+      byteLength: source.byteLength,\\n+      sha256: createHash(\\\"sha256\\\").update(source).digest(\\\"hex\\\").toUpperCase(),\\n+    });\\n+  }\\n+\\n+  const serialized = `${JSON.stringify(artifacts, null, 2)}\\\\n`;\\n+  try {\\n+    await writeFile(outputPath, serialized, \\\"utf8\\\");\\n+  } catch (cause) {\\n+    throw new Error(\\\"Unable to write data/artifacts.json\\\", { cause });\\n+  }\\n+\\n+  if ((await readFile(outputPath, \\\"utf8\\\")) !== serialized) {\\n+    throw new Error(\\\"data/artifacts.json did not match the materialized output after writing\\\");\\n+  }\\n+\\n+  console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\\n+}\\n+\\n+function validateDefinitions(definitions) {\\n+  if (!Array.isArray(definitions)) {\\n+    throw new TypeError(\\\"data/artifacts.sources.json must contain an array\\\");\\n+  }\\n+\\n+  const ids = new Set();\\n+  const ordinals = new Set();\\n+  const sources = new Set();\\n+  const expectedKeys = [\\\"id\\\", \\\"ordinal\\\", \\\"source\\\"];\\n+\\n+  for (const [index, definition] of definitions.entries()) {\\n+    if (\\n+      definition === null ||\\n+      typeof definition !== \\\"object\\\" ||\\n+      Array.isArray(definition)\\n+    ) {\\n+      throw new TypeError(`Definition at index ${index} must be an object`);\\n+    }\\n+\\n+    const keys = Object.keys(definition).sort();\\n+    if (keys.join(\\\",\\\") !== expectedKeys.toSorted().join(\\\",\\\")) {\\n+      throw new TypeError(\\n+        `Definition at index ${index} must contain only id, ordinal, and source`,\\n+      );\\n+    }\\n+\\n+    if (typeof definition.id !== \\\"string\\\" || definition.id.length === 0) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid id`);\\n+    }\\n+    if (!Number.isSafeInteger(definition.ordinal) || definition.ordinal < 1) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid ordinal`);\\n+    }\\n+    if (typeof definition.source !== \\\"string\\\" || definition.source.length === 0) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid source`);\\n+    }\\n+\\n+    assertUnique(ids, definition.id, \\\"id\\\");\\n+    assertUnique(ordinals, definition.ordinal, \\\"ordinal\\\");\\n+    assertUnique(sources, definition.source, \\\"source\\\");\\n+  }\\n+}\\n+\\n+function assertUnique(values, value, field) {\\n+  if (values.has(value)) {\\n+    throw new Error(`Duplicate ${field}: ${value}`);\\n+  }\\n+  values.add(value);\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/data/artifacts.sources.json\\nA Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/tools/materialize.mjs\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\project\\\\data\\\\artifacts.sources.json\\n===================================================================\\n--- <proof-root>\\\\project\\\\data\\\\artifacts.sources.json\\n+++ <proof-root>\\\\project\\\\data\\\\artifacts.sources.json\\n@@ -0,0 +1,12 @@\\n+[\\n+  {\\n+    \\\"id\\\": \\\"variant-a\\\",\\n+    \\\"ordinal\\\": 1,\\n+    \\\"source\\\": \\\"inputs/a.txt\\\"\\n+  },\\n+  {\\n+    \\\"id\\\": \\\"variant-b\\\",\\n+    \\\"ordinal\\\": 2,\\n+    \\\"source\\\": \\\"inputs/b.txt\\\"\\n+  }\\n+]\\n\\nIndex: <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n===================================================================\\n--- <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n+++ <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n@@ -0,0 +1,124 @@\\n+#!/usr/bin/env node\\n+\\n+import { createHash } from \\\"node:crypto\\\";\\n+import { readFile, writeFile } from \\\"node:fs/promises\\\";\\n+import { dirname, isAbsolute, relative, resolve } from \\\"node:path\\\";\\n+import { fileURLToPath } from \\\"node:url\\\";\\n+\\n+const rootDirectory = fileURLToPath(new URL(\\\"../\\\", import.meta.url));\\n+const definitionsPath = resolve(rootDirectory, \\\"data/artifacts.sources.json\\\");\\n+const outputPath = resolve(rootDirectory, \\\"data/artifacts.json\\\");\\n+const args = process.argv.slice(2);\\n+\\n+if (args.includes(\\\"--help\\\") || args.includes(\\\"-h\\\")) {\\n+  console.log(`Usage: node tools/materialize.mjs\\n+\\n+Materialize data/artifacts.json from data/artifacts.sources.json and its source files.`);\\n+} else {\\n+  try {\\n+    if (args.length > 0) {\\n+      throw new Error(`Unknown argument: ${args[0]}`);\\n+    }\\n+\\n+    await materialize();\\n+  } catch (error) {\\n+    console.error(error);\\n+    process.exitCode = 1;\\n+  }\\n+}\\n+\\n+async function materialize() {\\n+  let definitions;\\n+\\n+  try {\\n+    definitions = JSON.parse(await readFile(definitionsPath, \\\"utf8\\\"));\\n+  } catch (cause) {\\n+    throw new Error(\\\"Unable to read data/artifacts.sources.json\\\", { cause });\\n+  }\\n+\\n+  validateDefinitions(definitions);\\n+\\n+  const artifacts = [];\\n+  for (const definition of definitions.toSorted((left, right) => left.ordinal - right.ordinal)) {\\n+    const sourcePath = resolve(rootDirectory, definition.source);\\n+    const relativeSourcePath = relative(rootDirectory, sourcePath);\\n+    if (relativeSourcePath.startsWith(\\\"..\\\") || isAbsolute(relativeSourcePath)) {\\n+      throw new Error(`Source path escapes the repository: ${definition.source}`);\\n+    }\\n+\\n+    let source;\\n+    try {\\n+      source = await readFile(sourcePath);\\n+    } catch (cause) {\\n+      throw new Error(`Unable to read source: ${definition.source}`, { cause });\\n+    }\\n+\\n+    artifacts.push({\\n+      ...definition,\\n+      byteLength: source.byteLength,\\n+      sha256: createHash(\\\"sha256\\\").update(source).digest(\\\"hex\\\").toUpperCase(),\\n+    });\\n+  }\\n+\\n+  const serialized = `${JSON.stringify(artifacts, null, 2)}\\\\n`;\\n+  try {\\n+    await writeFile(outputPath, serialized, \\\"utf8\\\");\\n+  } catch (cause) {\\n+    throw new Error(\\\"Unable to write data/artifacts.json\\\", { cause });\\n+  }\\n+\\n+  if ((await readFile(outputPath, \\\"utf8\\\")) !== serialized) {\\n+    throw new Error(\\\"data/artifacts.json did not match the materialized output after writing\\\");\\n+  }\\n+\\n+  console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\\n+}\\n+\\n+function validateDefinitions(definitions) {\\n+  if (!Array.isArray(definitions)) {\\n+    throw new TypeError(\\\"data/artifacts.sources.json must contain an array\\\");\\n+  }\\n+\\n+  const ids = new Set();\\n+  const ordinals = new Set();\\n+  const sources = new Set();\\n+  const expectedKeys = [\\\"id\\\", \\\"ordinal\\\", \\\"source\\\"];\\n+\\n+  for (const [index, definition] of definitions.entries()) {\\n+    if (\\n+      definition === null ||\\n+      typeof definition !== \\\"object\\\" ||\\n+      Array.isArray(definition)\\n+    ) {\\n+      throw new TypeError(`Definition at index ${index} must be an object`);\\n+    }\\n+\\n+    const keys = Object.keys(definition).sort();\\n+    if (keys.join(\\\",\\\") !== expectedKeys.toSorted().join(\\\",\\\")) {\\n+      throw new TypeError(\\n+        `Definition at index ${index} must contain only id, ordinal, and source`,\\n+      );\\n+    }\\n+\\n+    if (typeof definition.id !== \\\"string\\\" || definition.id.length === 0) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid id`);\\n+    }\\n+    if (!Number.isSafeInteger(definition.ordinal) || definition.ordinal < 1) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid ordinal`);\\n+    }\\n+    if (typeof definition.source !== \\\"string\\\" || definition.source.length === 0) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid source`);\\n+    }\\n+\\n+    assertUnique(ids, definition.id, \\\"id\\\");\\n+    assertUnique(ordinals, definition.ordinal, \\\"ordinal\\\");\\n+    assertUnique(sources, definition.source, \\\"source\\\");\\n+  }\\n+}\\n+\\n+function assertUnique(values, value, field) {\\n+  if (values.has(value)) {\\n+    throw new Error(`Duplicate ${field}: ${value}`);\\n+  }\\n+  values.add(value);\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\project\\\\data\\\\artifacts.sources.json\",\"relativePath\":\"Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/data/artifacts.sources.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\project\\\\data\\\\artifacts.sources.json\\n===================================================================\\n--- <proof-root>\\\\project\\\\data\\\\artifacts.sources.json\\n+++ <proof-root>\\\\project\\\\data\\\\artifacts.sources.json\\n@@ -0,0 +1,12 @@\\n+[\\n+  {\\n+    \\\"id\\\": \\\"variant-a\\\",\\n+    \\\"ordinal\\\": 1,\\n+    \\\"source\\\": \\\"inputs/a.txt\\\"\\n+  },\\n+  {\\n+    \\\"id\\\": \\\"variant-b\\\",\\n+    \\\"ordinal\\\": 2,\\n+    \\\"source\\\": \\\"inputs/b.txt\\\"\\n+  }\\n+]\\n\",\"additions\":12,\"deletions\":0},{\"filePath\":\"<proof-root>\\\\project\\\\tools\\\\materialize.mjs\",\"relativePath\":\"Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/tools/materialize.mjs\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n===================================================================\\n--- <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n+++ <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n@@ -0,0 +1,124 @@\\n+#!/usr/bin/env node\\n+\\n+import { createHash } from \\\"node:crypto\\\";\\n+import { readFile, writeFile } from \\\"node:fs/promises\\\";\\n+import { dirname, isAbsolute, relative, resolve } from \\\"node:path\\\";\\n+import { fileURLToPath } from \\\"node:url\\\";\\n+\\n+const rootDirectory = fileURLToPath(new URL(\\\"../\\\", import.meta.url));\\n+const definitionsPath = resolve(rootDirectory, \\\"data/artifacts.sources.json\\\");\\n+const outputPath = resolve(rootDirectory, \\\"data/artifacts.json\\\");\\n+const args = process.argv.slice(2);\\n+\\n+if (args.includes(\\\"--help\\\") || args.includes(\\\"-h\\\")) {\\n+  console.log(`Usage: node tools/materialize.mjs\\n+\\n+Materialize data/artifacts.json from data/artifacts.sources.json and its source files.`);\\n+} else {\\n+  try {\\n+    if (args.length > 0) {\\n+      throw new Error(`Unknown argument: ${args[0]}`);\\n+    }\\n+\\n+    await materialize();\\n+  } catch (error) {\\n+    console.error(error);\\n+    process.exitCode = 1;\\n+  }\\n+}\\n+\\n+async function materialize() {\\n+  let definitions;\\n+\\n+  try {\\n+    definitions = JSON.parse(await readFile(definitionsPath, \\\"utf8\\\"));\\n+  } catch (cause) {\\n+    throw new Error(\\\"Unable to read data/artifacts.sources.json\\\", { cause });\\n+  }\\n+\\n+  validateDefinitions(definitions);\\n+\\n+  const artifacts = [];\\n+  for (const definition of definitions.toSorted((left, right) => left.ordinal - right.ordinal)) {\\n+    const sourcePath = resolve(rootDirectory, definition.source);\\n+    const relativeSourcePath = relative(rootDirectory, sourcePath);\\n+    if (relativeSourcePath.startsWith(\\\"..\\\") || isAbsolute(relativeSourcePath)) {\\n+      throw new Error(`Source path escapes the repository: ${definition.source}`);\\n+    }\\n+\\n+    let source;\\n+    try {\\n+      source = await readFile(sourcePath);\\n+    } catch (cause) {\\n+      throw new Error(`Unable to read source: ${definition.source}`, { cause });\\n+    }\\n+\\n+    artifacts.push({\\n+      ...definition,\\n+      byteLength: source.byteLength,\\n+      sha256: createHash(\\\"sha256\\\").update(source).digest(\\\"hex\\\").toUpperCase(),\\n+    });\\n+  }\\n+\\n+  const serialized = `${JSON.stringify(artifacts, null, 2)}\\\\n`;\\n+  try {\\n+    await writeFile(outputPath, serialized, \\\"utf8\\\");\\n+  } catch (cause) {\\n+    throw new Error(\\\"Unable to write data/artifacts.json\\\", { cause });\\n+  }\\n+\\n+  if ((await readFile(outputPath, \\\"utf8\\\")) !== serialized) {\\n+    throw new Error(\\\"data/artifacts.json did not match the materialized output after writing\\\");\\n+  }\\n+\\n+  console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\\n+}\\n+\\n+function validateDefinitions(definitions) {\\n+  if (!Array.isArray(definitions)) {\\n+    throw new TypeError(\\\"data/artifacts.sources.json must contain an array\\\");\\n+  }\\n+\\n+  const ids = new Set();\\n+  const ordinals = new Set();\\n+  const sources = new Set();\\n+  const expectedKeys = [\\\"id\\\", \\\"ordinal\\\", \\\"source\\\"];\\n+\\n+  for (const [index, definition] of definitions.entries()) {\\n+    if (\\n+      definition === null ||\\n+      typeof definition !== \\\"object\\\" ||\\n+      Array.isArray(definition)\\n+    ) {\\n+      throw new TypeError(`Definition at index ${index} must be an object`);\\n+    }\\n+\\n+    const keys = Object.keys(definition).sort();\\n+    if (keys.join(\\\",\\\") !== expectedKeys.toSorted().join(\\\",\\\")) {\\n+      throw new TypeError(\\n+        `Definition at index ${index} must contain only id, ordinal, and source`,\\n+      );\\n+    }\\n+\\n+    if (typeof definition.id !== \\\"string\\\" || definition.id.length === 0) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid id`);\\n+    }\\n+    if (!Number.isSafeInteger(definition.ordinal) || definition.ordinal < 1) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid ordinal`);\\n+    }\\n+    if (typeof definition.source !== \\\"string\\\" || definition.source.length === 0) {\\n+      throw new TypeError(`Definition at index ${index} has an invalid source`);\\n+    }\\n+\\n+    assertUnique(ids, definition.id, \\\"id\\\");\\n+    assertUnique(ordinals, definition.ordinal, \\\"ordinal\\\");\\n+    assertUnique(sources, definition.source, \\\"source\\\");\\n+  }\\n+}\\n+\\n+function assertUnique(values, value, field) {\\n+  if (values.has(value)) {\\n+    throw new Error(`Duplicate ${field}: ${value}`);\\n+  }\\n+  values.add(value);\\n+}\\n\",\"additions\":124,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/data/artifacts.sources.json\\nA Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/tools/materialize.mjs\",\"time\":{\"start\":1786685362336,\"end\":1786685362357}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03cbc0b8a4411c2c016a7ea799a73081918c733cb36229b970\"}},\"id\":\"prt_ffebeb06100174vueASlv6kCW1\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebe66fe001xeR3ZwziN4f9LZ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685362377,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf10b9001w2Kw5uH6idImnF\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebe66fe001xeR3ZwziN4f9LZ\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":33623,\"input\":1071,\"output\":1453,\"reasoning\":891,\"cache\":{\"write\":0,\"read\":30208}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685363679,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf15dc001vRztdgeZNJ6QBO\",\"messageID\":\"msg_ffebf10c2001n9fLwqx61rEnrD\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685381094,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"todowrite\",\"callID\":\"call_rEBPABV8RbtYFWb3fvWRqmst\",\"state\":{\"status\":\"completed\",\"input\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"in_progress\",\"priority\":\"high\"}]},\"output\":\"[\\n  {\\n    \\\"content\\\": \\\"Inspect inputs and existing project tooling conventions\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Implement reviewable artifact seed and tools/materialize.mjs\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Run materializer and inspect authoritative data/artifacts.json\\\",\\n    \\\"status\\\": \\\"in_progress\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"in_progress\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"1 todos\",\"time\":{\"start\":1786685381067,\"end\":1786685381070}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0965750b7a685dba016a7ea7c3db988191a3717e2a6e5d9b41\"}},\"id\":\"prt_ffebf54fb001uT8P1dBb2tRebA\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebf10c2001n9fLwqx61rEnrD\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685381094,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf59d1001RNy7KCXM1wS02G\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebf10c2001n9fLwqx61rEnrD\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":34663,\"input\":3504,\"output\":84,\"reasoning\":867,\"cache\":{\"write\":0,\"read\":30208}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685384088,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf6592001ZN8Ud6mKentdQY\",\"messageID\":\"msg_ffebf59d7001WdnA0KcO6Q9Ul1\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786685385303,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf659400157S9OoM0E4z4Js\",\"messageID\":\"msg_ffebf59d7001WdnA0KcO6Q9Ul1\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"text\",\"text\":\"Перехожу к доказательству через фактическую CLI-точку входа: сначала проверю безэффектный help, затем выполню материализацию, независимо пересчитаю байты/хэши и прочитаю конечный файл.\",\"time\":{\"start\":1786685384084,\"end\":1786685385300},\"metadata\":{\"openai\":{\"itemId\":\"msg_07b22248c0b16c72016a7ea7c8250481919e45e9702ad52e9d\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685386674,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_7tB9bevGpzjuLQakclO5w6z8\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node tools/materialize.mjs --help\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"Usage: node tools/materialize.mjs\\n\\nMaterialize data/artifacts.json from data/artifacts.sources.json and its source files.\\n\",\"metadata\":{\"output\":\"Usage: node tools/materialize.mjs\\n\\nMaterialize data/artifacts.json from data/artifacts.sources.json and its source files.\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node tools/materialize.mjs --help\",\"time\":{\"start\":1786685386606,\"end\":1786685386656}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07b22248c0b16c72016a7ea7c95ad08191bc787a4ce7eb0f16\"}},\"id\":\"prt_ffebf6a55001UQbIReCKTvYpcC\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebf59d7001WdnA0KcO6Q9Ul1\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685386674,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf6fa1001fbxwgbRUbj8yYl\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebf59d7001WdnA0KcO6Q9Ul1\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":34900,\"input\":1499,\"output\":121,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":33280}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685390614,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf7f10001f1xdqP1eh3EsiU\",\"messageID\":\"msg_ffebf6fa7001kAUhe0oqP9WR5l\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685391923,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_RkorrXnHGvumd2GN80NzBd1P\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node tools/materialize.mjs\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"Materialized 2 artifacts to data/artifacts.json\\n\",\"metadata\":{\"output\":\"Materialized 2 artifacts to data/artifacts.json\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node tools/materialize.mjs\",\"time\":{\"start\":1786685391856,\"end\":1786685391899}},\"metadata\":{\"openai\":{\"itemId\":\"fc_050865ea0220f2c7016a7ea7ce96d4819189b2f803bbd5331a\"}},\"id\":\"prt_ffebf7f13001oNSJkAIOk3H2NP\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebf6fa7001kAUhe0oqP9WR5l\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685391923,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf841d0012BfJY1bbr7Rtbx\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebf6fa7001kAUhe0oqP9WR5l\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":34997,\"input\":633,\"output\":60,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":34304}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685393184,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebf891d001mojINxmzS2qgN7\",\"messageID\":\"msg_ffebf8426001VlhYfIf2ofIBpH\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685403639,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_UUPiBzyGhd3Rr1FoHG7Y1BQY\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\data\\\\artifacts.json\"},\"output\":\"<path><proof-root>\\\\project\\\\data\\\\artifacts.json</path>\\n<type>file</type>\\n<content>\\n1: [\\n2:   {\\n3:     \\\"id\\\": \\\"variant-a\\\",\\n4:     \\\"ordinal\\\": 1,\\n5:     \\\"source\\\": \\\"inputs/a.txt\\\",\\n6:     \\\"byteLength\\\": 6,\\n7:     \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n8:   },\\n9:   {\\n10:     \\\"id\\\": \\\"variant-b\\\",\\n11:     \\\"ordinal\\\": 2,\\n12:     \\\"source\\\": \\\"inputs/b.txt\\\",\\n13:     \\\"byteLength\\\": 10,\\n14:     \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n15:   }\\n16: ]\\n\\n(End of file - total 16 lines)\\n</content>\",\"metadata\":{\"preview\":\"[\\n  {\\n    \\\"id\\\": \\\"variant-a\\\",\\n    \\\"ordinal\\\": 1,\\n    \\\"source\\\": \\\"inputs/a.txt\\\",\\n    \\\"byteLength\\\": 6,\\n    \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"variant-b\\\",\\n    \\\"ordinal\\\": 2,\\n    \\\"source\\\": \\\"inputs/b.txt\\\",\\n    \\\"byteLength\\\": 10,\\n    \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n  }\\n]\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\data\\\\artifacts.json\",\"text\":\"[\\n  {\\n    \\\"id\\\": \\\"variant-a\\\",\\n    \\\"ordinal\\\": 1,\\n    \\\"source\\\": \\\"inputs/a.txt\\\",\\n    \\\"byteLength\\\": 6,\\n    \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"variant-b\\\",\\n    \\\"ordinal\\\": 2,\\n    \\\"source\\\": \\\"inputs/b.txt\\\",\\n    \\\"byteLength\\\": 10,\\n    \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n  }\\n]\",\"lineStart\":1,\"lineEnd\":16,\"totalLines\":16,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\\\\data\\\\artifacts.json\",\"time\":{\"start\":1786685403618,\"end\":1786685403638}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07b1e1d5b157954e016a7ea7db8bf4819197eef458fbea9499\"}},\"id\":\"prt_ffebfb1cf001aXXSOHAplVYUif\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebf8426001VlhYfIf2ofIBpH\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685404010,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_7A1r2W65GYH8kO6gWpToP52J\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node -e \\\"const fs=require('node:fs'); const crypto=require('node:crypto'); const artifacts=JSON.parse(fs.readFileSync('data/artifacts.json','utf8')); const expected=[{id:'variant-a',ordinal:1,source:'inputs/a.txt'},{id:'variant-b',ordinal:2,source:'inputs/b.txt'}]; if (artifacts.length!==expected.length) throw new Error('Unexpected artifact count'); for (let i=0;i<expected.length;i++) { const artifact=artifacts[i], wanted=expected[i], bytes=fs.readFileSync(wanted.source), hash=crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase(); if (artifact.id!==wanted.id || artifact.ordinal!==wanted.ordinal || artifact.source!==wanted.source || artifact.byteLength!==bytes.length || artifact.sha256!==hash || !/^[0-9A-F]{64}$/.test(artifact.sha256)) throw new Error('Artifact mismatch at index '+i); } console.log('Verified sorted records, exact byte lengths, and uppercase SHA-256 values');\\\"\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"Verified sorted records, exact byte lengths, and uppercase SHA-256 values\\n\",\"metadata\":{\"output\":\"Verified sorted records, exact byte lengths, and uppercase SHA-256 values\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node -e \\\"const fs=require('node:fs'); const crypto=require('node:crypto'); const artifacts=JSON.parse(fs.readFileSync('data/artifacts.json','utf8')); const expected=[{id:'variant-a',ordinal:1,source:'inputs/a.txt'},{id:'variant-b',ordinal:2,source:'inputs/b.txt'}]; if (artifacts.length!==expected.length) throw new Error('Unexpected artifact count'); for (let i=0;i<expected.length;i++) { const artifact=artifacts[i], wanted=expected[i], bytes=fs.readFileSync(wanted.source), hash=crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase(); if (artifact.id!==wanted.id || artifact.ordinal!==wanted.ordinal || artifact.source!==wanted.source || artifact.byteLength!==bytes.length || artifact.sha256!==hash || !/^[0-9A-F]{64}$/.test(artifact.sha256)) throw new Error('Artifact mismatch at index '+i); } console.log('Verified sorted records, exact byte lengths, and uppercase SHA-256 values');\\\"\",\"time\":{\"start\":1786685403945,\"end\":1786685403985}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07b1e1d5b157954e016a7ea7db8c0481918e4abd438d46e862\"}},\"id\":\"prt_ffebfb1f0001GiQwsLy7T6hmDG\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebf8426001VlhYfIf2ofIBpH\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685404010,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebfb353001yQA4jIZjZzEtmM\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebf8426001VlhYfIf2ofIBpH\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":35591,\"input\":715,\"output\":352,\"reasoning\":220,\"cache\":{\"write\":0,\"read\":34304}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685405812,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebfba6e001of9s3yXecn62Ix\",\"messageID\":\"msg_ffebfb35a001DVqcUcIcZ3mmSW\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786685413808,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebfd5b6001SfpnSIcYfSM1nH\",\"messageID\":\"msg_ffebfb35a001DVqcUcIcZ3mmSW\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"text\",\"text\":\"Проверка подтвердила требуемые значения. Перед финальной фиксацией удаляю один неиспользуемый импорт из materializer; после этого повторю ту же реальную материализацию, поскольку изменился исполняемый кандидат.\",\"time\":{\"start\":1786685412790,\"end\":1786685413805},\"metadata\":{\"openai\":{\"itemId\":\"msg_00640b9868bd5b7f016a7ea7e4cf308191b08351ebd2829359\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685415076,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_ctwAT5bxbyQVYwgSb2qvtxhR\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: tools/materialize.mjs\\n@@\\n-import { dirname, isAbsolute, relative, resolve } from \\\"node:path\\\";\\n+import { isAbsolute, relative, resolve } from \\\"node:path\\\";\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/tools/materialize.mjs\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n===================================================================\\n--- <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n+++ <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n@@ -1,9 +1,9 @@\\n #!/usr/bin/env node\\n \\n import { createHash } from \\\"node:crypto\\\";\\n import { readFile, writeFile } from \\\"node:fs/promises\\\";\\n-import { dirname, isAbsolute, relative, resolve } from \\\"node:path\\\";\\n+import { isAbsolute, relative, resolve } from \\\"node:path\\\";\\n import { fileURLToPath } from \\\"node:url\\\";\\n \\n const rootDirectory = fileURLToPath(new URL(\\\"../\\\", import.meta.url));\\n const definitionsPath = resolve(rootDirectory, \\\"data/artifacts.sources.json\\\");\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\project\\\\tools\\\\materialize.mjs\",\"relativePath\":\"Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/tools/materialize.mjs\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n===================================================================\\n--- <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n+++ <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n@@ -1,9 +1,9 @@\\n #!/usr/bin/env node\\n \\n import { createHash } from \\\"node:crypto\\\";\\n import { readFile, writeFile } from \\\"node:fs/promises\\\";\\n-import { dirname, isAbsolute, relative, resolve } from \\\"node:path\\\";\\n+import { isAbsolute, relative, resolve } from \\\"node:path\\\";\\n import { fileURLToPath } from \\\"node:url\\\";\\n \\n const rootDirectory = fileURLToPath(new URL(\\\"../\\\", import.meta.url));\\n const definitionsPath = resolve(rootDirectory, \\\"data/artifacts.sources.json\\\");\\n\",\"additions\":1,\"deletions\":1}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-ADvE8f/project/tools/materialize.mjs\",\"time\":{\"start\":1786685415067,\"end\":1786685415074}},\"metadata\":{\"openai\":{\"itemId\":\"fc_00640b9868bd5b7f016a7ea7e5daf48191b3af831a20641cfd\"}},\"id\":\"prt_ffebfd9af001Z2iCaND80nToH2\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebfb35a001DVqcUcIcZ3mmSW\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685415189,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebfdf03001uyqSj7xZF3S4PV\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebfb35a001DVqcUcIcZ3mmSW\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":36395,\"input\":1583,\"output\":133,\"reasoning\":375,\"cache\":{\"write\":0,\"read\":34304}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685416689,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebfe4e1001Xs7elPMZZzj1mI\",\"messageID\":\"msg_ffebfdf0e001etVlAVfIIVAeMe\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685418914,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_cfAafKTYEcGqed3FS4xgQGUl\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node tools/materialize.mjs\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"Materialized 2 artifacts to data/artifacts.json\\n\",\"metadata\":{\"output\":\"Materialized 2 artifacts to data/artifacts.json\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node tools/materialize.mjs\",\"time\":{\"start\":1786685418861,\"end\":1786685418904}},\"metadata\":{\"openai\":{\"itemId\":\"fc_017cfc02bb27ea0d016a7ea7ea219c8191b9c46a989cae938b\"}},\"id\":\"prt_ffebfea8c001JwIvGtCePHcOZV\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebfdf0e001etVlAVfIIVAeMe\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685418914,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffebfed9a0012zFcKIeEzyMsEA\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebfdf0e001etVlAVfIIVAeMe\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":36549,\"input\":1120,\"output\":62,\"reasoning\":39,\"cache\":{\"write\":0,\"read\":35328}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685426690,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffec00bfd001PWx3IkWjH51EXJ\",\"messageID\":\"msg_ffebfed9f001HBEZ9I9abEzbGJ\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685426980,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_jjYH3wNzi1WnFb02rX6aUFfM\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\data\\\\artifacts.json\"},\"output\":\"<path><proof-root>\\\\project\\\\data\\\\artifacts.json</path>\\n<type>file</type>\\n<content>\\n1: [\\n2:   {\\n3:     \\\"id\\\": \\\"variant-a\\\",\\n4:     \\\"ordinal\\\": 1,\\n5:     \\\"source\\\": \\\"inputs/a.txt\\\",\\n6:     \\\"byteLength\\\": 6,\\n7:     \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n8:   },\\n9:   {\\n10:     \\\"id\\\": \\\"variant-b\\\",\\n11:     \\\"ordinal\\\": 2,\\n12:     \\\"source\\\": \\\"inputs/b.txt\\\",\\n13:     \\\"byteLength\\\": 10,\\n14:     \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n15:   }\\n16: ]\\n\\n(End of file - total 16 lines)\\n</content>\",\"metadata\":{\"preview\":\"[\\n  {\\n    \\\"id\\\": \\\"variant-a\\\",\\n    \\\"ordinal\\\": 1,\\n    \\\"source\\\": \\\"inputs/a.txt\\\",\\n    \\\"byteLength\\\": 6,\\n    \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"variant-b\\\",\\n    \\\"ordinal\\\": 2,\\n    \\\"source\\\": \\\"inputs/b.txt\\\",\\n    \\\"byteLength\\\": 10,\\n    \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n  }\\n]\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\data\\\\artifacts.json\",\"text\":\"[\\n  {\\n    \\\"id\\\": \\\"variant-a\\\",\\n    \\\"ordinal\\\": 1,\\n    \\\"source\\\": \\\"inputs/a.txt\\\",\\n    \\\"byteLength\\\": 6,\\n    \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"variant-b\\\",\\n    \\\"ordinal\\\": 2,\\n    \\\"source\\\": \\\"inputs/b.txt\\\",\\n    \\\"byteLength\\\": 10,\\n    \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n  }\\n]\",\"lineStart\":1,\"lineEnd\":16,\"totalLines\":16,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-ADvE8f\\\\project\\\\data\\\\artifacts.json\",\"time\":{\"start\":1786685426767,\"end\":1786685426789}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b36c1c8d97a53c016a7ea7f2b2548191a369ecaf70535126\"}},\"id\":\"prt_ffec00c00001Rr8th6a4lFUyIo\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebfed9f001HBEZ9I9abEzbGJ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685427298,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_8pFqTsD8O3okUCa4rEiIaqKW\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node -e \\\"const fs=require('node:fs'); const crypto=require('node:crypto'); const artifacts=JSON.parse(fs.readFileSync('data/artifacts.json','utf8')); const expected=[{id:'variant-a',ordinal:1,source:'inputs/a.txt'},{id:'variant-b',ordinal:2,source:'inputs/b.txt'}]; if (artifacts.length!==expected.length) throw new Error('Unexpected artifact count'); for (let i=0;i<expected.length;i++) { const artifact=artifacts[i], wanted=expected[i], bytes=fs.readFileSync(wanted.source), hash=crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase(); if (artifact.id!==wanted.id || artifact.ordinal!==wanted.ordinal || artifact.source!==wanted.source || artifact.byteLength!==bytes.length || artifact.sha256!==hash || !/^[0-9A-F]{64}$/.test(artifact.sha256)) throw new Error('Artifact mismatch at index '+i); } console.log('Verified sorted records, exact byte lengths, and uppercase SHA-256 values');\\\"\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"Verified sorted records, exact byte lengths, and uppercase SHA-256 values\\n\",\"metadata\":{\"output\":\"Verified sorted records, exact byte lengths, and uppercase SHA-256 values\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node -e \\\"const fs=require('node:fs'); const crypto=require('node:crypto'); const artifacts=JSON.parse(fs.readFileSync('data/artifacts.json','utf8')); const expected=[{id:'variant-a',ordinal:1,source:'inputs/a.txt'},{id:'variant-b',ordinal:2,source:'inputs/b.txt'}]; if (artifacts.length!==expected.length) throw new Error('Unexpected artifact count'); for (let i=0;i<expected.length;i++) { const artifact=artifacts[i], wanted=expected[i], bytes=fs.readFileSync(wanted.source), hash=crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase(); if (artifact.id!==wanted.id || artifact.ordinal!==wanted.ordinal || artifact.source!==wanted.source || artifact.byteLength!==bytes.length || artifact.sha256!==hash || !/^[0-9A-F]{64}$/.test(artifact.sha256)) throw new Error('Artifact mismatch at index '+i); } console.log('Verified sorted records, exact byte lengths, and uppercase SHA-256 values');\\\"\",\"time\":{\"start\":1786685427234,\"end\":1786685427278}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b36c1c8d97a53c016a7ea7f2b26081918e4a9a402c21f4d6\"}},\"id\":\"prt_ffec00c52001K8AZrae5J3rV12\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffebfed9f001HBEZ9I9abEzbGJ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685427298,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffec00e50001Mc5CeyQUGw5JQN\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffebfed9f001HBEZ9I9abEzbGJ\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":36921,\"input\":219,\"output\":350,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":36352}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685429112,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffec01573001cb1cCKXJJIj7jU\",\"messageID\":\"msg_ffec00e57001cedRL3MmcMk4d3\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786685431891,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"type\":\"tool\",\"tool\":\"todowrite\",\"callID\":\"call_yzbaop0XgXyDhBsUg6Kw8qwK\",\"state\":{\"status\":\"completed\",\"input\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"completed\",\"priority\":\"high\"}]},\"output\":\"[\\n  {\\n    \\\"content\\\": \\\"Inspect inputs and existing project tooling conventions\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Implement reviewable artifact seed and tools/materialize.mjs\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Run materializer and inspect authoritative data/artifacts.json\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Inspect inputs and existing project tooling conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact seed and tools/materialize.mjs\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Run materializer and inspect authoritative data/artifacts.json\",\"status\":\"completed\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"0 todos\",\"time\":{\"start\":1786685431886,\"end\":1786685431889}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e4dbad5078b817b016a7ea7f6ee6c8191bc97900e0fa6e4de\"}},\"id\":\"prt_ffec01c78001Z6D6Xz6lWkmGzc\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"messageID\":\"msg_ffec00e57001cedRL3MmcMk4d3\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685431919,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffec020620019GyozE2gFXEGDm\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffec00e57001cedRL3MmcMk4d3\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":37366,\"input\":865,\"output\":83,\"reasoning\":66,\"cache\":{\"write\":0,\"read\":36352}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786685433127,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffec02523001FfFuSMj7Gaaxis\",\"messageID\":\"msg_ffec0206a001hVT5EF7N02nfeB\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786685436026,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffec02525001gMX0UdUrclKoSo\",\"messageID\":\"msg_ffec0206a001hVT5EF7N02nfeB\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"text\",\"text\":\"Созданы:\\n\\n- `data/artifacts.json` с отсортированными вариантами, точными размерами `6`/`10` байт и uppercase SHA-256.\\n- `data/artifacts.sources.json` с ревьюируемыми `id`, `ordinal`, `source`.\\n- `tools/materialize.mjs` для повторной генерации без зависимостей.\\n\\nПроверено:\\n\\n- `node tools/materialize.mjs --help`\\n- `node tools/materialize.mjs`\\n- Независимый пересчёт размеров и SHA-256 совпал.\\n- Итоговый JSON прочитан и проверен.\\n\\nТесты и зависимости не добавлялись.\\n\\n`Development-Stage: stable`  \\n`Stable Candidate: RC1`\",\"time\":{\"start\":1786685433125,\"end\":1786685436024},\"metadata\":{\"openai\":{\"itemId\":\"msg_02212803734558f4016a7ea7f92f7881918239b6e022a7cb22\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786685436151,\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"part\":{\"id\":\"prt_ffec030ee001udUr5I9YvciWoB\",\"reason\":\"stop\",\"messageID\":\"msg_ffec0206a001hVT5EF7N02nfeB\",\"sessionID\":\"ses_00142914dffe5qt0wZiB1Z54r4\",\"type\":\"step-finish\",\"tokens\":{\"total\":37637,\"input\":1129,\"output\":156,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":36352}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: node only; shell metacharacters denied last",
+      "edit: allow inside disposable project",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: deny",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "Сначала проверю текущую структуру, байты входных файлов и существующие соглашения по генерации. Затем внесу минимальный seed-driven материализатор и проверю фактический JSON через его реальную CLI-точку входа.Структура минимальна: готовых генераторов и derived-индексов нет. Сохраню ревьюируемые поля `id`, `ordinal`, `source` в отдельном seed-файле, а `tools/materialize.mjs` будет валидировать их, сортировать по `ordinal` и вычислять только производные `byteLength`/`sha256`; это не потребует зависимостей.Редактирую только два исходных артефакта: компактный manifest с тремя семантическими полями и специализированный materializer. CLI также получит безэффектный `--help`, строгую проверку дубликатов/выхода за корень и причинные ошибки чтения.Перехожу к доказательству через фактическую CLI-точку входа: сначала проверю безэффектный help, затем выполню материализацию, независимо пересчитаю байты/хэши и прочитаю конечный файл.Проверка подтвердила требуемые значения. Перед финальной фиксацией удаляю один неиспользуемый импорт из materializer; после этого повторю ту же реальную материализацию, поскольку изменился исполняемый кандидат.Созданы:\n\n- `data/artifacts.json` с отсортированными вариантами, точными размерами `6`/`10` байт и uppercase SHA-256.\n- `data/artifacts.sources.json` с ревьюируемыми `id`, `ordinal`, `source`.\n- `tools/materialize.mjs` для повторной генерации без зависимостей.\n\nПроверено:\n\n- `node tools/materialize.mjs --help`\n- `node tools/materialize.mjs`\n- Независимый пересчёт размеров и SHA-256 совпал.\n- Итоговый JSON прочитан и проверен.\n\nТесты и зависимости не добавлялись.\n\n`Development-Stage: stable`  \n`Stable Candidate: RC1`",
+    "costs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 182241,
+    "eventCount": 59,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_00142914dffe5qt0wZiB1Z54r4"
+    ],
+    "tokens": [
+      {
+        "total": 28209,
+        "input": 18096,
+        "output": 142,
+        "reasoning": 243,
+        "cache": {
+          "write": 0,
+          "read": 9728
+        }
+      },
+      {
+        "total": 28541,
+        "input": 1189,
+        "output": 216,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 27136
+        }
+      },
+      {
+        "total": 29022,
+        "input": 628,
+        "output": 222,
+        "reasoning": 12,
+        "cache": {
+          "write": 0,
+          "read": 28160
+        }
+      },
+      {
+        "total": 30823,
+        "input": 1209,
+        "output": 177,
+        "reasoning": 1277,
+        "cache": {
+          "write": 0,
+          "read": 28160
+        }
+      },
+      {
+        "total": 31143,
+        "input": 1755,
+        "output": 204,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 29184
+        }
+      },
+      {
+        "total": 33623,
+        "input": 1071,
+        "output": 1453,
+        "reasoning": 891,
+        "cache": {
+          "write": 0,
+          "read": 30208
+        }
+      },
+      {
+        "total": 34663,
+        "input": 3504,
+        "output": 84,
+        "reasoning": 867,
+        "cache": {
+          "write": 0,
+          "read": 30208
+        }
+      },
+      {
+        "total": 34900,
+        "input": 1499,
+        "output": 121,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 33280
+        }
+      },
+      {
+        "total": 34997,
+        "input": 633,
+        "output": 60,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 34304
+        }
+      },
+      {
+        "total": 35591,
+        "input": 715,
+        "output": 352,
+        "reasoning": 220,
+        "cache": {
+          "write": 0,
+          "read": 34304
+        }
+      },
+      {
+        "total": 36395,
+        "input": 1583,
+        "output": 133,
+        "reasoning": 375,
+        "cache": {
+          "write": 0,
+          "read": 34304
+        }
+      },
+      {
+        "total": 36549,
+        "input": 1120,
+        "output": 62,
+        "reasoning": 39,
+        "cache": {
+          "write": 0,
+          "read": 35328
+        }
+      },
+      {
+        "total": 36921,
+        "input": 219,
+        "output": 350,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 36352
+        }
+      },
+      {
+        "total": 37366,
+        "input": 865,
+        "output": 83,
+        "reasoning": 66,
+        "cache": {
+          "write": 0,
+          "read": 36352
+        }
+      },
+      {
+        "total": 37637,
+        "input": 1129,
+        "output": 156,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 36352
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "todos": [
+            {
+              "content": "Inspect inputs and existing project tooling conventions",
+              "status": "in_progress",
+              "priority": "high"
+            },
+            {
+              "content": "Implement reviewable artifact seed and tools/materialize.mjs",
+              "status": "pending",
+              "priority": "high"
+            },
+            {
+              "content": "Run materializer and inspect authoritative data/artifacts.json",
+              "status": "pending",
+              "priority": "high"
+            }
+          ]
+        },
+        "name": "todowrite",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "tools/**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "data/**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\inputs\\b.txt"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\package.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\inputs\\a.txt"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\.gitignore"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "todos": [
+            {
+              "content": "Inspect inputs and existing project tooling conventions",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Implement reviewable artifact seed and tools/materialize.mjs",
+              "status": "in_progress",
+              "priority": "high"
+            },
+            {
+              "content": "Run materializer and inspect authoritative data/artifacts.json",
+              "status": "pending",
+              "priority": "high"
+            }
+          ]
+        },
+        "name": "todowrite",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node --version",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node -e \"const fs=require('node:fs'); const crypto=require('node:crypto'); for (const source of ['inputs/a.txt','inputs/b.txt']) { const bytes=fs.readFileSync(source); console.log(JSON.stringify({source,byteLength:bytes.length,sha256:crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase()})); }\"",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "patchText": "*** Begin Patch\n*** Add File: data/artifacts.sources.json\n+[\n+  {\n+    \"id\": \"variant-a\",\n+    \"ordinal\": 1,\n+    \"source\": \"inputs/a.txt\"\n+  },\n+  {\n+    \"id\": \"variant-b\",\n+    \"ordinal\": 2,\n+    \"source\": \"inputs/b.txt\"\n+  }\n+]\n*** Add File: tools/materialize.mjs\n+#!/usr/bin/env node\n+\n+import { createHash } from \"node:crypto\";\n+import { readFile, writeFile } from \"node:fs/promises\";\n+import { dirname, isAbsolute, relative, resolve } from \"node:path\";\n+import { fileURLToPath } from \"node:url\";\n+\n+const rootDirectory = fileURLToPath(new URL(\"../\", import.meta.url));\n+const definitionsPath = resolve(rootDirectory, \"data/artifacts.sources.json\");\n+const outputPath = resolve(rootDirectory, \"data/artifacts.json\");\n+const args = process.argv.slice(2);\n+\n+if (args.includes(\"--help\") || args.includes(\"-h\")) {\n+  console.log(`Usage: node tools/materialize.mjs\n+\n+Materialize data/artifacts.json from data/artifacts.sources.json and its source files.`);\n+} else {\n+  try {\n+    if (args.length > 0) {\n+      throw new Error(`Unknown argument: ${args[0]}`);\n+    }\n+\n+    await materialize();\n+  } catch (error) {\n+    console.error(error);\n+    process.exitCode = 1;\n+  }\n+}\n+\n+async function materialize() {\n+  let definitions;\n+\n+  try {\n+    definitions = JSON.parse(await readFile(definitionsPath, \"utf8\"));\n+  } catch (cause) {\n+    throw new Error(\"Unable to read data/artifacts.sources.json\", { cause });\n+  }\n+\n+  validateDefinitions(definitions);\n+\n+  const artifacts = [];\n+  for (const definition of definitions.toSorted((left, right) => left.ordinal - right.ordinal)) {\n+    const sourcePath = resolve(rootDirectory, definition.source);\n+    const relativeSourcePath = relative(rootDirectory, sourcePath);\n+    if (relativeSourcePath.startsWith(\"..\") || isAbsolute(relativeSourcePath)) {\n+      throw new Error(`Source path escapes the repository: ${definition.source}`);\n+    }\n+\n+    let source;\n+    try {\n+      source = await readFile(sourcePath);\n+    } catch (cause) {\n+      throw new Error(`Unable to read source: ${definition.source}`, { cause });\n+    }\n+\n+    artifacts.push({\n+      ...definition,\n+      byteLength: source.byteLength,\n+      sha256: createHash(\"sha256\").update(source).digest(\"hex\").toUpperCase(),\n+    });\n+  }\n+\n+  const serialized = `${JSON.stringify(artifacts, null, 2)}\\n`;\n+  try {\n+    await writeFile(outputPath, serialized, \"utf8\");\n+  } catch (cause) {\n+    throw new Error(\"Unable to write data/artifacts.json\", { cause });\n+  }\n+\n+  if ((await readFile(outputPath, \"utf8\")) !== serialized) {\n+    throw new Error(\"data/artifacts.json did not match the materialized output after writing\");\n+  }\n+\n+  console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\n+}\n+\n+function validateDefinitions(definitions) {\n+  if (!Array.isArray(definitions)) {\n+    throw new TypeError(\"data/artifacts.sources.json must contain an array\");\n+  }\n+\n+  const ids = new Set();\n+  const ordinals = new Set();\n+  const sources = new Set();\n+  const expectedKeys = [\"id\", \"ordinal\", \"source\"];\n+\n+  for (const [index, definition] of definitions.entries()) {\n+    if (\n+      definition === null ||\n+      typeof definition !== \"object\" ||\n+      Array.isArray(definition)\n+    ) {\n+      throw new TypeError(`Definition at index ${index} must be an object`);\n+    }\n+\n+    const keys = Object.keys(definition).sort();\n+    if (keys.join(\",\") !== expectedKeys.toSorted().join(\",\")) {\n+      throw new TypeError(\n+        `Definition at index ${index} must contain only id, ordinal, and source`,\n+      );\n+    }\n+\n+    if (typeof definition.id !== \"string\" || definition.id.length === 0) {\n+      throw new TypeError(`Definition at index ${index} has an invalid id`);\n+    }\n+    if (!Number.isSafeInteger(definition.ordinal) || definition.ordinal < 1) {\n+      throw new TypeError(`Definition at index ${index} has an invalid ordinal`);\n+    }\n+    if (typeof definition.source !== \"string\" || definition.source.length === 0) {\n+      throw new TypeError(`Definition at index ${index} has an invalid source`);\n+    }\n+\n+    assertUnique(ids, definition.id, \"id\");\n+    assertUnique(ordinals, definition.ordinal, \"ordinal\");\n+    assertUnique(sources, definition.source, \"source\");\n+  }\n+}\n+\n+function assertUnique(values, value, field) {\n+  if (values.has(value)) {\n+    throw new Error(`Duplicate ${field}: ${value}`);\n+  }\n+  values.add(value);\n+}\n*** End Patch"
+        },
+        "name": "apply_patch",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "todos": [
+            {
+              "content": "Inspect inputs and existing project tooling conventions",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Implement reviewable artifact seed and tools/materialize.mjs",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Run materializer and inspect authoritative data/artifacts.json",
+              "status": "in_progress",
+              "priority": "high"
+            }
+          ]
+        },
+        "name": "todowrite",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node tools/materialize.mjs --help",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node tools/materialize.mjs",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\data\\artifacts.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node -e \"const fs=require('node:fs'); const crypto=require('node:crypto'); const artifacts=JSON.parse(fs.readFileSync('data/artifacts.json','utf8')); const expected=[{id:'variant-a',ordinal:1,source:'inputs/a.txt'},{id:'variant-b',ordinal:2,source:'inputs/b.txt'}]; if (artifacts.length!==expected.length) throw new Error('Unexpected artifact count'); for (let i=0;i<expected.length;i++) { const artifact=artifacts[i], wanted=expected[i], bytes=fs.readFileSync(wanted.source), hash=crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase(); if (artifact.id!==wanted.id || artifact.ordinal!==wanted.ordinal || artifact.source!==wanted.source || artifact.byteLength!==bytes.length || artifact.sha256!==hash || !/^[0-9A-F]{64}$/.test(artifact.sha256)) throw new Error('Artifact mismatch at index '+i); } console.log('Verified sorted records, exact byte lengths, and uppercase SHA-256 values');\"",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "patchText": "*** Begin Patch\n*** Update File: tools/materialize.mjs\n@@\n-import { dirname, isAbsolute, relative, resolve } from \"node:path\";\n+import { isAbsolute, relative, resolve } from \"node:path\";\n*** End Patch"
+        },
+        "name": "apply_patch",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node tools/materialize.mjs",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\data\\artifacts.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node -e \"const fs=require('node:fs'); const crypto=require('node:crypto'); const artifacts=JSON.parse(fs.readFileSync('data/artifacts.json','utf8')); const expected=[{id:'variant-a',ordinal:1,source:'inputs/a.txt'},{id:'variant-b',ordinal:2,source:'inputs/b.txt'}]; if (artifacts.length!==expected.length) throw new Error('Unexpected artifact count'); for (let i=0;i<expected.length;i++) { const artifact=artifacts[i], wanted=expected[i], bytes=fs.readFileSync(wanted.source), hash=crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase(); if (artifact.id!==wanted.id || artifact.ordinal!==wanted.ordinal || artifact.source!==wanted.source || artifact.byteLength!==bytes.length || artifact.sha256!==hash || !/^[0-9A-F]{64}$/.test(artifact.sha256)) throw new Error('Artifact mismatch at index '+i); } console.log('Verified sorted records, exact byte lengths, and uppercase SHA-256 values');\"",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "todos": [
+            {
+              "content": "Inspect inputs and existing project tooling conventions",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Implement reviewable artifact seed and tools/materialize.mjs",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Run materializer and inspect authoritative data/artifacts.json",
+              "status": "completed",
+              "priority": "high"
+            }
+          ]
+        },
+        "name": "todowrite",
+        "status": "completed"
+      }
+    ]
+  },
+  "filesAfterOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 368,
+      "content": "[\n  {\n    \"id\": \"variant-a\",\n    \"ordinal\": 1,\n    \"source\": \"inputs/a.txt\",\n    \"byteLength\": 6,\n    \"sha256\": \"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\"\n  },\n  {\n    \"id\": \"variant-b\",\n    \"ordinal\": 2,\n    \"source\": \"inputs/b.txt\",\n    \"byteLength\": 10,\n    \"sha256\": \"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\"\n  }\n]\n",
+      "path": "data/artifacts.json",
+      "sha256": "31f37cea0279eb4f42b1acf762cd1374422ec52c80b05232b8de16264660dde3"
+    },
+    {
+      "bytes": 161,
+      "content": "[\n  {\n    \"id\": \"variant-a\",\n    \"ordinal\": 1,\n    \"source\": \"inputs/a.txt\"\n  },\n  {\n    \"id\": \"variant-b\",\n    \"ordinal\": 2,\n    \"source\": \"inputs/b.txt\"\n  }\n]\n",
+      "path": "data/artifacts.sources.json",
+      "sha256": "370642874a3d8f279b230344f8dc45fab33484c0f04c8e94f505e34af34d5a12"
+    },
+    {
+      "bytes": 6,
+      "content": "alpha\n",
+      "path": "inputs/a.txt",
+      "sha256": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060"
+    },
+    {
+      "bytes": 10,
+      "content": "beta-data\n",
+      "path": "inputs/b.txt",
+      "sha256": "80a462c67119e54a072a9481125b1df63d2cb9fcd3bcced0a772e68ff3daa3ad"
+    },
+    {
+      "bytes": 94,
+      "content": "{\n  \"name\": \"tooling-ergonomics-mechanical-artifact\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "a34bd2d2e877f32825848d1470238696b11cfb1a2eea241fb1e8051b1674b928"
+    },
+    {
+      "bytes": 4011,
+      "content": "#!/usr/bin/env node\n\nimport { createHash } from \"node:crypto\";\nimport { readFile, writeFile } from \"node:fs/promises\";\nimport { isAbsolute, relative, resolve } from \"node:path\";\nimport { fileURLToPath } from \"node:url\";\n\nconst rootDirectory = fileURLToPath(new URL(\"../\", import.meta.url));\nconst definitionsPath = resolve(rootDirectory, \"data/artifacts.sources.json\");\nconst outputPath = resolve(rootDirectory, \"data/artifacts.json\");\nconst args = process.argv.slice(2);\n\nif (args.includes(\"--help\") || args.includes(\"-h\")) {\n  console.log(`Usage: node tools/materialize.mjs\n\nMaterialize data/artifacts.json from data/artifacts.sources.json and its source files.`);\n} else {\n  try {\n    if (args.length > 0) {\n      throw new Error(`Unknown argument: ${args[0]}`);\n    }\n\n    await materialize();\n  } catch (error) {\n    console.error(error);\n    process.exitCode = 1;\n  }\n}\n\nasync function materialize() {\n  let definitions;\n\n  try {\n    definitions = JSON.parse(await readFile(definitionsPath, \"utf8\"));\n  } catch (cause) {\n    throw new Error(\"Unable to read data/artifacts.sources.json\", { cause });\n  }\n\n  validateDefinitions(definitions);\n\n  const artifacts = [];\n  for (const definition of definitions.toSorted((left, right) => left.ordinal - right.ordinal)) {\n    const sourcePath = resolve(rootDirectory, definition.source);\n    const relativeSourcePath = relative(rootDirectory, sourcePath);\n    if (relativeSourcePath.startsWith(\"..\") || isAbsolute(relativeSourcePath)) {\n      throw new Error(`Source path escapes the repository: ${definition.source}`);\n    }\n\n    let source;\n    try {\n      source = await readFile(sourcePath);\n    } catch (cause) {\n      throw new Error(`Unable to read source: ${definition.source}`, { cause });\n    }\n\n    artifacts.push({\n      ...definition,\n      byteLength: source.byteLength,\n      sha256: createHash(\"sha256\").update(source).digest(\"hex\").toUpperCase(),\n    });\n  }\n\n  const serialized = `${JSON.stringify(artifacts, null, 2)}\\n`;\n  try {\n    await writeFile(outputPath, serialized, \"utf8\");\n  } catch (cause) {\n    throw new Error(\"Unable to write data/artifacts.json\", { cause });\n  }\n\n  if ((await readFile(outputPath, \"utf8\")) !== serialized) {\n    throw new Error(\"data/artifacts.json did not match the materialized output after writing\");\n  }\n\n  console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\n}\n\nfunction validateDefinitions(definitions) {\n  if (!Array.isArray(definitions)) {\n    throw new TypeError(\"data/artifacts.sources.json must contain an array\");\n  }\n\n  const ids = new Set();\n  const ordinals = new Set();\n  const sources = new Set();\n  const expectedKeys = [\"id\", \"ordinal\", \"source\"];\n\n  for (const [index, definition] of definitions.entries()) {\n    if (\n      definition === null ||\n      typeof definition !== \"object\" ||\n      Array.isArray(definition)\n    ) {\n      throw new TypeError(`Definition at index ${index} must be an object`);\n    }\n\n    const keys = Object.keys(definition).sort();\n    if (keys.join(\",\") !== expectedKeys.toSorted().join(\",\")) {\n      throw new TypeError(\n        `Definition at index ${index} must contain only id, ordinal, and source`,\n      );\n    }\n\n    if (typeof definition.id !== \"string\" || definition.id.length === 0) {\n      throw new TypeError(`Definition at index ${index} has an invalid id`);\n    }\n    if (!Number.isSafeInteger(definition.ordinal) || definition.ordinal < 1) {\n      throw new TypeError(`Definition at index ${index} has an invalid ordinal`);\n    }\n    if (typeof definition.source !== \"string\" || definition.source.length === 0) {\n      throw new TypeError(`Definition at index ${index} has an invalid source`);\n    }\n\n    assertUnique(ids, definition.id, \"id\");\n    assertUnique(ordinals, definition.ordinal, \"ordinal\");\n    assertUnique(sources, definition.source, \"source\");\n  }\n}\n\nfunction assertUnique(values, value, field) {\n  if (values.has(value)) {\n    throw new Error(`Duplicate ${field}: ${value}`);\n  }\n  values.add(value);\n}\n",
+      "path": "tools/materialize.mjs",
+      "sha256": "0045a68c987ca3b24a1615b40615a524d29da98bb9dc2f9bd84484c2ee00e8e7"
+    }
+  ],
+  "filesBeforeOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 368,
+      "content": "[\n  {\n    \"id\": \"variant-a\",\n    \"ordinal\": 1,\n    \"source\": \"inputs/a.txt\",\n    \"byteLength\": 6,\n    \"sha256\": \"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\"\n  },\n  {\n    \"id\": \"variant-b\",\n    \"ordinal\": 2,\n    \"source\": \"inputs/b.txt\",\n    \"byteLength\": 10,\n    \"sha256\": \"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\"\n  }\n]\n",
+      "path": "data/artifacts.json",
+      "sha256": "31f37cea0279eb4f42b1acf762cd1374422ec52c80b05232b8de16264660dde3"
+    },
+    {
+      "bytes": 161,
+      "content": "[\n  {\n    \"id\": \"variant-a\",\n    \"ordinal\": 1,\n    \"source\": \"inputs/a.txt\"\n  },\n  {\n    \"id\": \"variant-b\",\n    \"ordinal\": 2,\n    \"source\": \"inputs/b.txt\"\n  }\n]\n",
+      "path": "data/artifacts.sources.json",
+      "sha256": "370642874a3d8f279b230344f8dc45fab33484c0f04c8e94f505e34af34d5a12"
+    },
+    {
+      "bytes": 6,
+      "content": "alpha\n",
+      "path": "inputs/a.txt",
+      "sha256": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060"
+    },
+    {
+      "bytes": 10,
+      "content": "beta-data\n",
+      "path": "inputs/b.txt",
+      "sha256": "80a462c67119e54a072a9481125b1df63d2cb9fcd3bcced0a772e68ff3daa3ad"
+    },
+    {
+      "bytes": 94,
+      "content": "{\n  \"name\": \"tooling-ergonomics-mechanical-artifact\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "a34bd2d2e877f32825848d1470238696b11cfb1a2eea241fb1e8051b1674b928"
+    },
+    {
+      "bytes": 4011,
+      "content": "#!/usr/bin/env node\n\nimport { createHash } from \"node:crypto\";\nimport { readFile, writeFile } from \"node:fs/promises\";\nimport { isAbsolute, relative, resolve } from \"node:path\";\nimport { fileURLToPath } from \"node:url\";\n\nconst rootDirectory = fileURLToPath(new URL(\"../\", import.meta.url));\nconst definitionsPath = resolve(rootDirectory, \"data/artifacts.sources.json\");\nconst outputPath = resolve(rootDirectory, \"data/artifacts.json\");\nconst args = process.argv.slice(2);\n\nif (args.includes(\"--help\") || args.includes(\"-h\")) {\n  console.log(`Usage: node tools/materialize.mjs\n\nMaterialize data/artifacts.json from data/artifacts.sources.json and its source files.`);\n} else {\n  try {\n    if (args.length > 0) {\n      throw new Error(`Unknown argument: ${args[0]}`);\n    }\n\n    await materialize();\n  } catch (error) {\n    console.error(error);\n    process.exitCode = 1;\n  }\n}\n\nasync function materialize() {\n  let definitions;\n\n  try {\n    definitions = JSON.parse(await readFile(definitionsPath, \"utf8\"));\n  } catch (cause) {\n    throw new Error(\"Unable to read data/artifacts.sources.json\", { cause });\n  }\n\n  validateDefinitions(definitions);\n\n  const artifacts = [];\n  for (const definition of definitions.toSorted((left, right) => left.ordinal - right.ordinal)) {\n    const sourcePath = resolve(rootDirectory, definition.source);\n    const relativeSourcePath = relative(rootDirectory, sourcePath);\n    if (relativeSourcePath.startsWith(\"..\") || isAbsolute(relativeSourcePath)) {\n      throw new Error(`Source path escapes the repository: ${definition.source}`);\n    }\n\n    let source;\n    try {\n      source = await readFile(sourcePath);\n    } catch (cause) {\n      throw new Error(`Unable to read source: ${definition.source}`, { cause });\n    }\n\n    artifacts.push({\n      ...definition,\n      byteLength: source.byteLength,\n      sha256: createHash(\"sha256\").update(source).digest(\"hex\").toUpperCase(),\n    });\n  }\n\n  const serialized = `${JSON.stringify(artifacts, null, 2)}\\n`;\n  try {\n    await writeFile(outputPath, serialized, \"utf8\");\n  } catch (cause) {\n    throw new Error(\"Unable to write data/artifacts.json\", { cause });\n  }\n\n  if ((await readFile(outputPath, \"utf8\")) !== serialized) {\n    throw new Error(\"data/artifacts.json did not match the materialized output after writing\");\n  }\n\n  console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\n}\n\nfunction validateDefinitions(definitions) {\n  if (!Array.isArray(definitions)) {\n    throw new TypeError(\"data/artifacts.sources.json must contain an array\");\n  }\n\n  const ids = new Set();\n  const ordinals = new Set();\n  const sources = new Set();\n  const expectedKeys = [\"id\", \"ordinal\", \"source\"];\n\n  for (const [index, definition] of definitions.entries()) {\n    if (\n      definition === null ||\n      typeof definition !== \"object\" ||\n      Array.isArray(definition)\n    ) {\n      throw new TypeError(`Definition at index ${index} must be an object`);\n    }\n\n    const keys = Object.keys(definition).sort();\n    if (keys.join(\",\") !== expectedKeys.toSorted().join(\",\")) {\n      throw new TypeError(\n        `Definition at index ${index} must contain only id, ordinal, and source`,\n      );\n    }\n\n    if (typeof definition.id !== \"string\" || definition.id.length === 0) {\n      throw new TypeError(`Definition at index ${index} has an invalid id`);\n    }\n    if (!Number.isSafeInteger(definition.ordinal) || definition.ordinal < 1) {\n      throw new TypeError(`Definition at index ${index} has an invalid ordinal`);\n    }\n    if (typeof definition.source !== \"string\" || definition.source.length === 0) {\n      throw new TypeError(`Definition at index ${index} has an invalid source`);\n    }\n\n    assertUnique(ids, definition.id, \"id\");\n    assertUnique(ordinals, definition.ordinal, \"ordinal\");\n    assertUnique(sources, definition.source, \"source\");\n  }\n}\n\nfunction assertUnique(values, value, field) {\n  if (values.has(value)) {\n    throw new Error(`Duplicate ${field}: ${value}`);\n  }\n  values.add(value);\n}\n",
+      "path": "tools/materialize.mjs",
+      "sha256": "0045a68c987ca3b24a1615b40615a524d29da98bb9dc2f9bd84484c2ee00e8e7"
+    }
+  ],
+  "input": {
+    "message": "Implement the smallest complete local change. Produce authoritative data/artifacts.json for inputs/a.txt and inputs/b.txt.\nThe JSON is an ordinally sorted array with ids variant-a and variant-b, ordinals 1 and 2, source paths, exact byteLength, and uppercase SHA-256 for each source.\nThese artifacts will be regenerated after input changes and more variants are expected later. Keep semantic ids, source paths, and ordinals reviewable.\nDo not add tests, a package dependency, or a generic framework. If automation is needed, use tools/materialize.mjs. Run the nearest proof and inspect the output.",
+    "promptSha256": "629d77f52109040e86873b8e64137caa2bbf8b88b77aa8d12fbe8dc9bc668f21",
+    "scenario": "mechanical-artifact"
+  },
+  "oracle": {
+    "facts": {
+      "generatorExists": true,
+      "outputExact": true,
+      "regenerationStable": true,
+      "runsExitZero": true,
+      "seedExists": true,
+      "seedSemanticOnly": true
+    },
+    "pass": true,
+    "postCommands": [
+      {
+        "argv": [
+          "node",
+          "tools/materialize.mjs"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "Materialized 2 artifacts to data/artifacts.json\n"
+      },
+      {
+        "argv": [
+          "node",
+          "tools/materialize.mjs"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "Materialized 2 artifacts to data/artifacts.json\n"
+      }
+    ]
+  },
+  "schemaVersion": 1
+}

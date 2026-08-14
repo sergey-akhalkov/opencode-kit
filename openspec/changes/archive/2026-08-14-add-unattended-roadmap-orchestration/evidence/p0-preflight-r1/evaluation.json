@@ -1,0 +1,11 @@
+{
+  "candidateId": "p0-structure-r1",
+  "cleanup": "complete",
+  "projectMutationCount": 0,
+  "scenarios": {
+    "invalidForwardDependency": "blocked",
+    "valid": "eligible"
+  },
+  "schemaVersion": 1,
+  "status": "complete"
+}

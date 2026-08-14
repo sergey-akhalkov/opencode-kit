@@ -17,6 +17,7 @@ export type SafeErrorDetails = {
 };
 
 const DEFAULT_OPTIONS: GuardOptions = {
+  arbiterPromptTimeoutMs: 120_000,
   auditWindow: {
     closePassedAfterMs: 15_000,
     enabled: false,
@@ -28,13 +29,17 @@ const DEFAULT_OPTIONS: GuardOptions = {
   arbiterAgent: "session-completion-arbiter",
   enabled: true,
   initialDelayMs: 2_000,
-  maxCycles: -1,
+  maxCycles: 100,
   maxDelayMs: 60_000,
-  retainAuditSessions: -1,
+  maxRequestBytes: 200_000,
+  maxRetryAttempts: 3,
+  maxWaitRechecks: 30,
+  retainAuditSessions: 2,
   retryMultiplier: 2,
   settleMs: 750,
   statusToasts: true,
   strategyFallback: "docs/session-strategy-history",
+  waitRecheckMs: 2_000,
 };
 
 const PERMISSION_ALLOW = {
@@ -90,7 +95,7 @@ export function applyPermissionAllow(config: Config): void {
   config.agent = Object.fromEntries(
     Object.entries(config.agent ?? {}).map(([name, agent]) => [
       name,
-      agent == null ? agent : { ...agent, permission: PERMISSION_ALLOW },
+      agent == null ? agent : { ...agent },
     ]),
   );
 }
@@ -122,17 +127,22 @@ export function parseGuardOptions(value: Record<string, unknown>): GuardOptions 
     ? value.retryMultiplier
     : DEFAULT_OPTIONS.retryMultiplier;
   return {
+    arbiterPromptTimeoutMs: boundedInteger(value.arbiterPromptTimeoutMs, DEFAULT_OPTIONS.arbiterPromptTimeoutMs, 1),
     auditWindow: parseAuditWindowOptions(value.auditWindow),
     arbiterAgent: stringValue(value.arbiterAgent) ?? DEFAULT_OPTIONS.arbiterAgent,
     enabled: value.enabled !== false,
     initialDelayMs: boundedInteger(value.initialDelayMs, DEFAULT_OPTIONS.initialDelayMs, 1),
     maxCycles,
     maxDelayMs: boundedInteger(value.maxDelayMs, DEFAULT_OPTIONS.maxDelayMs, 1),
+    maxRequestBytes: boundedInteger(value.maxRequestBytes, DEFAULT_OPTIONS.maxRequestBytes, 1),
+    maxRetryAttempts: boundedInteger(value.maxRetryAttempts, DEFAULT_OPTIONS.maxRetryAttempts, 1),
+    maxWaitRechecks: boundedInteger(value.maxWaitRechecks, DEFAULT_OPTIONS.maxWaitRechecks, 1),
     retainAuditSessions,
     retryMultiplier,
     settleMs: boundedInteger(value.settleMs, DEFAULT_OPTIONS.settleMs, 0),
     statusToasts: value.statusToasts !== false,
     strategyFallback: stringValue(value.strategyFallback) ?? DEFAULT_OPTIONS.strategyFallback,
+    waitRecheckMs: boundedInteger(value.waitRecheckMs, DEFAULT_OPTIONS.waitRecheckMs, 1),
   };
 }
 
@@ -238,6 +248,7 @@ export function restoredPromptContext(root: Session, context: RootPromptContext)
 
 export function initialRootState(root: Session): RootState {
   const metadata = record(root.metadata?.completionGuard);
+  const auditDiagnostics = record(metadata?.auditDiagnostics);
   const grindEnabled = metadata?.grindEnabled === true;
   const paused = metadata?.paused === true;
   const questionRefs = (value: unknown): Set<string> => new Set(
@@ -258,6 +269,18 @@ export function initialRootState(root: Session): RootState {
   );
   return {
     activeAudit: null,
+    auditDiagnostics: {
+      allowedRequestBytes: boundedInteger(auditDiagnostics?.allowedRequestBytes, DEFAULT_OPTIONS.maxRequestBytes, 1),
+      attempt: boundedInteger(auditDiagnostics?.attempt, 0, 0),
+      attemptLimit: boundedInteger(auditDiagnostics?.attemptLimit, DEFAULT_OPTIONS.maxRetryAttempts, 1),
+      endedAt: typeof auditDiagnostics?.endedAt === "number" ? auditDiagnostics.endedAt : null,
+      errorClass: stringValue(auditDiagnostics?.errorClass),
+      requestBytes: typeof auditDiagnostics?.requestBytes === "number" ? auditDiagnostics.requestBytes : null,
+      retainedChildCount: typeof auditDiagnostics?.retainedChildCount === "number"
+        ? auditDiagnostics.retainedChildCount
+        : null,
+      startedAt: typeof auditDiagnostics?.startedAt === "number" ? auditDiagnostics.startedAt : null,
+    },
     auditChildSessionID: null,
     auditAbort: null,
     autonomousQuestionCalls: questionCalls(metadata?.autonomousQuestionCalls),
@@ -277,11 +300,16 @@ export function initialRootState(root: Session): RootState {
     pendingAutonomousQuestionRefs: questionRefs(metadata?.pendingAutonomousQuestionRefs),
     promptContext: restoredPromptContext(root, { agent: null, model: null, tools: null, variant: null }),
     questions: new Map(),
+    recoveryAudit: null,
+    restartRecoveryAction: stringValue(metadata?.restartRecoveryAction),
     retryTimer: null,
     root,
     settleTimer: null,
     state: grindEnabled ? (paused ? "paused" : "running") : "disabled",
     statusMessage: null,
+    waitReason: stringValue(metadata?.waitReason),
+    waitRecheckCount: boundedInteger(metadata?.waitRecheckCount, 0, 0),
+    waitRecheckTimer: null,
   };
 }
 

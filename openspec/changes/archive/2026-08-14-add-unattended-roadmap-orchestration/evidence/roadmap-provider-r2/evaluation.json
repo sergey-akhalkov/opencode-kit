@@ -1,0 +1,13 @@
+{
+  "archiveCount": 0,
+  "candidateId": "roadmap-provider-r2",
+  "cleanup": "complete",
+  "configuredProviderCalls": 3,
+  "controllerProcesses": 0,
+  "localRecoverableFailures": 1,
+  "processRestart": "not-proven",
+  "protectedSlice": "not-proven",
+  "schemaVersion": 1,
+  "sessionCleanup": "complete",
+  "status": "blocked"
+}

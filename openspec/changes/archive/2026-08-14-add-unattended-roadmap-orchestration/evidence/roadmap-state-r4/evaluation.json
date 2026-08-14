@@ -1,0 +1,11 @@
+{
+  "archiveCount": 1,
+  "candidateId": "roadmap-state-r4",
+  "cleanup": "complete",
+  "duplicateArchive": "blocked",
+  "missingTransition": "blocked",
+  "restartReconciliation": "complete",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unknownWriter": "blocked"
+}

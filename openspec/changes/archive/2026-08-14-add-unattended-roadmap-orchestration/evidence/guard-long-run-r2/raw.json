@@ -1,0 +1,509 @@
+{
+  "candidateId": "guard-long-run-r2",
+  "environment": {
+    "bun": "1.3.11",
+    "platform": "win32"
+  },
+  "overflow": {
+    "childCreates": 0,
+    "errorClass": "input-state",
+    "observedBytes": 541219,
+    "promptCalls": 0,
+    "stoppedLog": true
+  },
+  "projection": {
+    "counts": {
+      "assistantEvidence": 0,
+      "auditRefs": 0,
+      "background": 0,
+      "currentTodos": 64,
+      "descendants": 0,
+      "diffEvidence": 0,
+      "everTodos": 64,
+      "humanMessages": 32,
+      "openTodos": 64,
+      "permissionReplies": 32,
+      "questionInterventions": 0,
+      "questionReplies": 32,
+      "requirementSignals": 0,
+      "strategyRefs": 0,
+      "syntheticMessages": 0,
+      "todoToolCalls": 0,
+      "todos": 64,
+      "toolEvidence": 64,
+      "truncationWarnings": 80,
+      "unresolvedTodos": 64,
+      "userMessages": 32,
+      "validationEvidence": 24
+    },
+    "outputBytes": 486463,
+    "retained": {
+      "humanMessages": 32,
+      "permissionReplies": 32,
+      "questionReplies": 32,
+      "todos": 64,
+      "toolEvidence": 64
+    },
+    "truncationWarnings": [
+      {
+        "limit": 2000,
+        "omitted": 80000,
+        "surface": "toolEvidence.output"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "toolEvidence"
+      },
+      {
+        "limit": 24,
+        "omitted": 56,
+        "surface": "validationEvidence"
+      },
+      {
+        "limit": 32,
+        "omitted": 48,
+        "surface": "humanMessages"
+      },
+      {
+        "limit": 2000,
+        "omitted": 5643,
+        "surface": "humanMessages.text"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.current"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.current.content"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.ever"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.ever.content"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.open"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.open.content"
+      },
+      {
+        "limit": 64,
+        "omitted": 16,
+        "surface": "todos.unresolved"
+      },
+      {
+        "limit": 2000,
+        "omitted": 808,
+        "surface": "todos.unresolved.content"
+      },
+      {
+        "limit": 32,
+        "omitted": 16,
+        "surface": "questionReplies"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[0].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[0].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[1].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[1].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[2].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[2].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[3].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[3].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[4].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[4].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[5].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[5].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[6].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[6].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[7].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[7].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[8].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[8].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 509,
+        "surface": "questionReplies[9].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 511,
+        "surface": "questionReplies[9].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[10].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[10].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[11].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[11].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[12].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[12].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[13].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[13].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[14].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[14].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[15].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[15].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[16].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[16].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[17].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[17].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[18].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[18].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[19].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[19].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[20].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[20].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[21].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[21].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[22].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[22].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[23].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[23].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[24].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[24].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[25].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[25].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[26].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[26].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[27].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[27].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[28].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[28].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[29].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[29].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[30].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[30].questions.text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 510,
+        "surface": "questionReplies[31].answers[0].text"
+      },
+      {
+        "limit": 2000,
+        "omitted": 512,
+        "surface": "questionReplies[31].questions.text"
+      },
+      {
+        "limit": 32,
+        "omitted": 16,
+        "surface": "permissionReplies"
+      },
+      {
+        "limit": 2000,
+        "omitted": 16278,
+        "surface": "permissionReplies.reply"
+      }
+    ]
+  },
+  "retention": {
+    "createdChild": "child-current",
+    "deleted": [
+      "child-oldest"
+    ],
+    "retainedChildCount": 2,
+    "unrelatedPreserved": true
+  },
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/extensions/session-completion-guard.ts",
+      "sha256": "38206efaaafd65b0b7caa047c8730e11c70317a702e5a0422c06ad1bed29f4e6"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+      "sha256": "5132389e1c4165725dc2f6cff4fd59b7dfbd8bc2a3bfd68acbd88ad4179adc4c"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+      "sha256": "a986b46f071bc68f45cc146dea0be9d2d198763104b2be711a96f2e4769b1475"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/controller.ts",
+      "sha256": "e5bf969291e8778f228ce6decd8e6f4b4cd2730f71aafca19a77fa00521bc4d0"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/runtime-support.ts",
+      "sha256": "b3f2e58ce538a5f8657e120885f41aa5744c76873f18cdebda46e464643ac1e6"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/status.ts",
+      "sha256": "0ffe84ea30bc5389eb6fb7ec5a95f3d793dfcde5dac35cdf5a157aecc9510acc"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/types.ts",
+      "sha256": "b634a10e046f03f55991c7dc3daebc4e4113f99eb47354cefb36345b418a81a3"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/db.ts",
+      "sha256": "224e21ad62b19018dd6ed808965d4648e19831453f416e2d9fc64b48e1222f5b"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/evidence.ts",
+      "sha256": "9851b2abce4c460236b70845c19562519fd18a07414328501601a151cc99c79e"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/index.ts",
+      "sha256": "06875df4a347b4066eb569ac85d340a5f14193a52e5827111d4f509f9f17de0c"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/projection.ts",
+      "sha256": "2b3d815a076c2e2aa1d058197b0b9238b3a517fe3781a039a6e48d18f94317ea"
+    },
+    {
+      "path": "global/opencode.json.template",
+      "sha256": "b29de3522078e78da9ef336bb21641c6a219b812446867c58fc1366779e5234a"
+    }
+  ]
+}

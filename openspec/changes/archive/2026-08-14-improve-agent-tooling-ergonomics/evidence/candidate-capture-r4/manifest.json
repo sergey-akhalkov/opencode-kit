@@ -1,0 +1,26 @@
+{
+  "files": [
+    {
+      "bytes": 1112,
+      "path": "capture.json",
+      "sha256": "3b68e9cef2ac0f7687913463436a2af5899f331f539ce94edbc2df1714724b9d"
+    },
+    {
+      "bytes": 104708,
+      "path": "mechanical-artifact.bundle.json",
+      "sha256": "464b5c1ca1e16b842f5278d0ece25ec2edb815f81f40baecf5042069de5a83ba"
+    },
+    {
+      "bytes": 31172,
+      "path": "repeated-cli.bundle.json",
+      "sha256": "805029143c8e56b1f03f1d1f92eb620d1abf85fdf681144843d116f3b06339f1"
+    },
+    {
+      "bytes": 70016,
+      "path": "source-placement.bundle.json",
+      "sha256": "fd20a3ee0e40f7576326eed886728bdf78e1737888f50a256cd79eca35e52fef"
+    }
+  ],
+  "role": "capture-candidate",
+  "schemaVersion": 1
+}

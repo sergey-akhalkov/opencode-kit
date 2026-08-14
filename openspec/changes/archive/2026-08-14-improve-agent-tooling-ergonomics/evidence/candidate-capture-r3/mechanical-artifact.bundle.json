@@ -1,0 +1,468 @@
+{
+  "candidate": {
+    "id": "candidate-validated-marker-r3",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "10d880154783cc6cfb33a819766879a56e2acd9cd4a25e4d8b4c4a47420a73c8",
+      "global/agents/implementation-worker.md": "d9c5216fccd6fe1dd57a4f72fdcd45d2f5d3964a766f0dfa4c2d0c56a10d1465",
+      "global/agents/instruction-artifact-reviewer.md": "d9c9ed43e3f0de8c373d672c1ab3d100130a3e9032b477573a707742c0658213",
+      "global/agents/sdet-quality-engineer.md": "3beb08a020bcb1a1543c5c1c0f20f6feb9c36db44d2e5bcfe1b1edf0f347ce05",
+      "global/skills/instruction-artifact-tuning/SKILL.md": "defe7566779f3010eddc6d0bd348ac77be41e3cb9ee9c68267d9d3e1804f98ef",
+      "README.md": "2a4a691becf2e84990669683721426934642b9fd8f6f63a682173dd5862311d3",
+      "package.json": "8e5e8dbcaafd152bc0b6090cc4b3703bb3071205e60749ed958aa45ff06735b5",
+      "tools/proofs/agent-tooling-ergonomics.ts": "e6dd2cd9d24a10102fba5a124fcc9bd9f150ecdc071d60d69ae52bb8960b0ddb"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_00148c080ffe7IUgsOLZ48dhTw",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "tooling-ergonomics-candidate-mechanical-artifact",
+      "Implement the smallest complete local change. Produce authoritative data/artifacts.json for inputs/a.txt and inputs/b.txt.\nThe JSON is an ordinally sorted array with ids variant-a and variant-b, ordinals 1 and 2, source paths, exact byteLength, and uppercase SHA-256 for each source.\nThese artifacts will be regenerated after input changes and more variants are expected later. Keep semantic ids, source paths, and ordinals reviewable.\nDo not add tests, a package dependency, or a generic framework. If automation is needed, use tools/materialize.mjs. Run the nearest proof and inspect the output."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786684859169,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb7631b001wogU2qxtmFRuQp\",\"messageID\":\"msg_ffeb740e1001Bp6pNkkDri4jBB\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786684862435,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb76fc8001cq96zFDKKdIzQk\",\"messageID\":\"msg_ffeb740e1001Bp6pNkkDri4jBB\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"text\",\"text\":\"Сначала проверю структуру проекта, входные байты и существующие соглашения, затем добавлю минимальный материализатор и прогоню его через реальную CLI-точку входа с проверкой итогового JSON.\",\"time\":{\"start\":1786684862408,\"end\":1786684862425},\"metadata\":{\"openai\":{\"itemId\":\"msg_097751561c9f1a88016a7ea5be64988191b6a21602988987b3\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684863786,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"todowrite\",\"callID\":\"call_hd7qcEkwprZj0KfNLrY6JwQo\",\"state\":{\"status\":\"completed\",\"input\":{\"todos\":[{\"content\":\"Inspect project structure, input bytes, and existing conventions\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact materialization in tools/materialize.mjs\",\"status\":\"pending\",\"priority\":\"high\"},{\"content\":\"Run the CLI proof and inspect data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}]},\"output\":\"[\\n  {\\n    \\\"content\\\": \\\"Inspect project structure, input bytes, and existing conventions\\\",\\n    \\\"status\\\": \\\"in_progress\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Implement reviewable artifact materialization in tools/materialize.mjs\\\",\\n    \\\"status\\\": \\\"pending\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Run the CLI proof and inspect data/artifacts.json\\\",\\n    \\\"status\\\": \\\"pending\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Inspect project structure, input bytes, and existing conventions\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact materialization in tools/materialize.mjs\",\"status\":\"pending\",\"priority\":\"high\"},{\"content\":\"Run the CLI proof and inspect data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"3 todos\",\"time\":{\"start\":1786684863781,\"end\":1786684863784}},\"metadata\":{\"openai\":{\"itemId\":\"fc_097751561c9f1a88016a7ea5be725081918b0d5ed65165751b\"}},\"id\":\"prt_ffeb76fdc001Lhvz7jXu4SyX77\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb740e1001Bp6pNkkDri4jBB\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684863918,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb7759f001hRl7wai3spubMQ\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb740e1001Bp6pNkkDri4jBB\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":28067,\"input\":18088,\"output\":142,\"reasoning\":109,\"cache\":{\"write\":0,\"read\":9728}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684865359,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb77b4a001b9cktEo391nhdu\",\"messageID\":\"msg_ffeb775a8001zW38AVbmf7I42K\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684870443,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_8hxp6ZBvUimLnASHus3ld9Ib\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\"},\"output\":\"<path><proof-root>\\\\project</path>\\n<type>directory</type>\\n<entries>\\n.gitignore\\ninputs/\\npackage.json\\n\\n(3 entries)\\n</entries>\",\"metadata\":{\"preview\":\".gitignore\\ninputs/\\npackage.json\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\project\",\"entries\":[\".gitignore\",\"inputs/\",\"package.json\"],\"offset\":1,\"totalEntries\":3,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-scpq1K\\\\project\",\"time\":{\"start\":1786684870404,\"end\":1786684870426}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09d18cf2eefe98ff016a7ea5c656308191844743f853b9eb6f\"}},\"id\":\"prt_ffeb78ebf001fzQfhAFQVUX7Cu\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb775a8001zW38AVbmf7I42K\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684870470,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_YAJ2LtAY8tlDLg3mdrZMSD5b\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\inputs\\\\a.txt\"},\"output\":\"<path><proof-root>\\\\project\\\\inputs\\\\a.txt</path>\\n<type>file</type>\\n<content>\\n1: alpha\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"alpha\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\inputs\\\\a.txt\",\"text\":\"alpha\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-scpq1K\\\\project\\\\inputs\\\\a.txt\",\"time\":{\"start\":1786684870416,\"end\":1786684870465}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09d18cf2eefe98ff016a7ea5c6564c8191bd0058adbfc72b15\"}},\"id\":\"prt_ffeb78f0d001Tmkv6G15zv2Ub6\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb775a8001zW38AVbmf7I42K\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684870470,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_PLltolQxeRo9hnoB3wKz3x6H\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\inputs\\\\b.txt\"},\"output\":\"<path><proof-root>\\\\project\\\\inputs\\\\b.txt</path>\\n<type>file</type>\\n<content>\\n1: beta-data\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"beta-data\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\inputs\\\\b.txt\",\"text\":\"beta-data\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-scpq1K\\\\project\\\\inputs\\\\b.txt\",\"time\":{\"start\":1786684870423,\"end\":1786684870467}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09d18cf2eefe98ff016a7ea5c656548191955118fd59b0838a\"}},\"id\":\"prt_ffeb78f14001ZPIJujpgcp3n1E\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb775a8001zW38AVbmf7I42K\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684870514,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_iHMs9iYW9cpiJkhcKTzYntx8\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"**/*\"},\"output\":\"<proof-root>\\\\project\\\\package.json\\n<proof-root>\\\\project\\\\.gitignore\\n<proof-root>\\\\project\\\\inputs\\\\b.txt\\n<proof-root>\\\\project\\\\inputs\\\\a.txt\",\"metadata\":{\"count\":4,\"truncated\":false},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-scpq1K\\\\project\",\"time\":{\"start\":1786684870411,\"end\":1786684870501}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09d18cf2eefe98ff016a7ea5c6564481919c8a1750b49ec430\"}},\"id\":\"prt_ffeb78f06001GS2ofMGE4lO400\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb775a8001zW38AVbmf7I42K\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684870514,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb78f68001YYwwD3NIXtAeX1\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb775a8001zW38AVbmf7I42K\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":28462,\"input\":1051,\"output\":216,\"reasoning\":59,\"cache\":{\"write\":0,\"read\":27136}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684873146,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb799b6001Q1pUgeRsG3ikDA\",\"messageID\":\"msg_ffeb78f6e001FUjGvOOaBq3pIW\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684875536,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_Q38ELjtQVTLkX9jhHHRXyJqW\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\package.json\"},\"output\":\"<path><proof-root>\\\\project\\\\package.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"name\\\": \\\"tooling-ergonomics-mechanical-artifact\\\",\\n3:   \\\"private\\\": true,\\n4:   \\\"type\\\": \\\"module\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"name\\\": \\\"tooling-ergonomics-mechanical-artifact\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\package.json\",\"text\":\"{\\n  \\\"name\\\": \\\"tooling-ergonomics-mechanical-artifact\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-scpq1K\\\\project\\\\package.json\",\"time\":{\"start\":1786684875512,\"end\":1786684875530}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05beebc4b5d4289b016a7ea5cb7994819187f24e0b6ce58796\"}},\"id\":\"prt_ffeb7a2e9001OmbvwxQlw7CA40\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb78f6e001FUjGvOOaBq3pIW\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684875551,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_3AcKF7IPc3vVDNCXakVwcB1p\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\.gitignore\"},\"output\":\"<path><proof-root>\\\\project\\\\.gitignore</path>\\n<type>file</type>\\n<content>\\n1: target/\\n2: node_modules/\\n\\n(End of file - total 2 lines)\\n</content>\",\"metadata\":{\"preview\":\"target/\\nnode_modules/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\.gitignore\",\"text\":\"target/\\nnode_modules/\",\"lineStart\":1,\"lineEnd\":2,\"totalLines\":2,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-scpq1K\\\\project\\\\.gitignore\",\"time\":{\"start\":1786684875533,\"end\":1786684875549}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05beebc4b5d4289b016a7ea5cb79a481918d5c798ed4402aae\"}},\"id\":\"prt_ffeb7a2fa001h8FByaNEIw4DQB\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb78f6e001FUjGvOOaBq3pIW\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684875639,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb7a36b001XDJfAj0X5SRQaW\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb78f6e001FUjGvOOaBq3pIW\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":28961,\"input\":1697,\"output\":118,\"reasoning\":10,\"cache\":{\"write\":0,\"read\":27136}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684878349,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb7ae0a001R81kdzOFoGv7ob\",\"messageID\":\"msg_ffeb7a373001xJDpZQcG3H9p8W\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684890059,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"todowrite\",\"callID\":\"call_5V9ShZ8k6waOdmLzdj9PH7Hm\",\"state\":{\"status\":\"completed\",\"input\":{\"todos\":[{\"content\":\"Inspect project structure, input bytes, and existing conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact materialization in tools/materialize.mjs\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Run the CLI proof and inspect data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}]},\"output\":\"[\\n  {\\n    \\\"content\\\": \\\"Inspect project structure, input bytes, and existing conventions\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Implement reviewable artifact materialization in tools/materialize.mjs\\\",\\n    \\\"status\\\": \\\"in_progress\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Run the CLI proof and inspect data/artifacts.json\\\",\\n    \\\"status\\\": \\\"pending\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Inspect project structure, input bytes, and existing conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact materialization in tools/materialize.mjs\",\"status\":\"in_progress\",\"priority\":\"high\"},{\"content\":\"Run the CLI proof and inspect data/artifacts.json\",\"status\":\"pending\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"2 todos\",\"time\":{\"start\":1786684890055,\"end\":1786684890058}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e5f37e8402cea0f016a7ea5d8e93487d0828df7fc359d57e6\"}},\"id\":\"prt_ffeb7d748001kERQjMEh6kJtYW\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb7a373001xJDpZQcG3H9p8W\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684890152,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb7dc1e0018KtPfuzvdB4K3A\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb7a373001xJDpZQcG3H9p8W\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":29799,\"input\":993,\"output\":88,\"reasoning\":558,\"cache\":{\"write\":0,\"read\":28160}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684891992,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb7e355001vxjCsmKjBlZkkt\",\"messageID\":\"msg_ffeb7dc250017PbraiGtnaxihE\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786684893440,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb7e357001k1KXWAS1T80pBN\",\"messageID\":\"msg_ffeb7dc250017PbraiGtnaxihE\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"text\",\"text\":\"В проекте нет существующего генератора или схемы. Добавляю один локальный `tools/materialize.mjs`: ревьюируемый список вариантов останется рядом с кодом, а длина и хеш будут вычисляться из сырых байтов; CLI также получит безэффектный `--help`.\",\"time\":{\"start\":1786684891991,\"end\":1786684893436},\"metadata\":{\"openai\":{\"itemId\":\"msg_0cd0bdb1e45758ba016a7ea5dc0a2c8191ad66a1d6baf2a5b4\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684903114,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_J49meiiJMltKC5jxbdO0VsP9\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: tools/materialize.mjs\\n+import { createHash } from \\\"node:crypto\\\";\\n+import { mkdir, readFile, writeFile } from \\\"node:fs/promises\\\";\\n+import { dirname, resolve } from \\\"node:path\\\";\\n+import { fileURLToPath } from \\\"node:url\\\";\\n+\\n+const variants = [\\n+  { id: \\\"variant-a\\\", ordinal: 1, source: \\\"inputs/a.txt\\\" },\\n+  { id: \\\"variant-b\\\", ordinal: 2, source: \\\"inputs/b.txt\\\" },\\n+];\\n+\\n+const root = resolve(dirname(fileURLToPath(import.meta.url)), \\\"..\\\");\\n+const outputPath = resolve(root, \\\"data/artifacts.json\\\");\\n+\\n+if (process.argv.includes(\\\"--help\\\") || process.argv.includes(\\\"-h\\\")) {\\n+  console.log(\\\"Usage: node tools/materialize.mjs\\\\n\\\\nMaterialize data/artifacts.json from the configured input variants.\\\");\\n+  process.exit(0);\\n+}\\n+\\n+if (process.argv.length > 2) {\\n+  throw new Error(`Unknown argument: ${process.argv[2]}`);\\n+}\\n+\\n+const artifacts = [];\\n+\\n+for (const variant of variants) {\\n+  const bytes = await readFile(resolve(root, variant.source));\\n+  artifacts.push({\\n+    ...variant,\\n+    byteLength: bytes.length,\\n+    sha256: createHash(\\\"sha256\\\").update(bytes).digest(\\\"hex\\\").toUpperCase(),\\n+  });\\n+}\\n+\\n+artifacts.sort((left, right) => left.ordinal - right.ordinal);\\n+\\n+const output = `${JSON.stringify(artifacts, null, 2)}\\\\n`;\\n+await mkdir(dirname(outputPath), { recursive: true });\\n+await writeFile(outputPath, output, \\\"utf8\\\");\\n+\\n+const writtenOutput = await readFile(outputPath, \\\"utf8\\\");\\n+if (writtenOutput !== output) {\\n+  throw new Error(\\\"data/artifacts.json did not match the materialized output\\\");\\n+}\\n+\\n+console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-scpq1K/project/tools/materialize.mjs\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n===================================================================\\n--- <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n+++ <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n@@ -0,0 +1,45 @@\\n+import { createHash } from \\\"node:crypto\\\";\\n+import { mkdir, readFile, writeFile } from \\\"node:fs/promises\\\";\\n+import { dirname, resolve } from \\\"node:path\\\";\\n+import { fileURLToPath } from \\\"node:url\\\";\\n+\\n+const variants = [\\n+  { id: \\\"variant-a\\\", ordinal: 1, source: \\\"inputs/a.txt\\\" },\\n+  { id: \\\"variant-b\\\", ordinal: 2, source: \\\"inputs/b.txt\\\" },\\n+];\\n+\\n+const root = resolve(dirname(fileURLToPath(import.meta.url)), \\\"..\\\");\\n+const outputPath = resolve(root, \\\"data/artifacts.json\\\");\\n+\\n+if (process.argv.includes(\\\"--help\\\") || process.argv.includes(\\\"-h\\\")) {\\n+  console.log(\\\"Usage: node tools/materialize.mjs\\\\n\\\\nMaterialize data/artifacts.json from the configured input variants.\\\");\\n+  process.exit(0);\\n+}\\n+\\n+if (process.argv.length > 2) {\\n+  throw new Error(`Unknown argument: ${process.argv[2]}`);\\n+}\\n+\\n+const artifacts = [];\\n+\\n+for (const variant of variants) {\\n+  const bytes = await readFile(resolve(root, variant.source));\\n+  artifacts.push({\\n+    ...variant,\\n+    byteLength: bytes.length,\\n+    sha256: createHash(\\\"sha256\\\").update(bytes).digest(\\\"hex\\\").toUpperCase(),\\n+  });\\n+}\\n+\\n+artifacts.sort((left, right) => left.ordinal - right.ordinal);\\n+\\n+const output = `${JSON.stringify(artifacts, null, 2)}\\\\n`;\\n+await mkdir(dirname(outputPath), { recursive: true });\\n+await writeFile(outputPath, output, \\\"utf8\\\");\\n+\\n+const writtenOutput = await readFile(outputPath, \\\"utf8\\\");\\n+if (writtenOutput !== output) {\\n+  throw new Error(\\\"data/artifacts.json did not match the materialized output\\\");\\n+}\\n+\\n+console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\project\\\\tools\\\\materialize.mjs\",\"relativePath\":\"Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-scpq1K/project/tools/materialize.mjs\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n===================================================================\\n--- <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n+++ <proof-root>\\\\project\\\\tools\\\\materialize.mjs\\n@@ -0,0 +1,45 @@\\n+import { createHash } from \\\"node:crypto\\\";\\n+import { mkdir, readFile, writeFile } from \\\"node:fs/promises\\\";\\n+import { dirname, resolve } from \\\"node:path\\\";\\n+import { fileURLToPath } from \\\"node:url\\\";\\n+\\n+const variants = [\\n+  { id: \\\"variant-a\\\", ordinal: 1, source: \\\"inputs/a.txt\\\" },\\n+  { id: \\\"variant-b\\\", ordinal: 2, source: \\\"inputs/b.txt\\\" },\\n+];\\n+\\n+const root = resolve(dirname(fileURLToPath(import.meta.url)), \\\"..\\\");\\n+const outputPath = resolve(root, \\\"data/artifacts.json\\\");\\n+\\n+if (process.argv.includes(\\\"--help\\\") || process.argv.includes(\\\"-h\\\")) {\\n+  console.log(\\\"Usage: node tools/materialize.mjs\\\\n\\\\nMaterialize data/artifacts.json from the configured input variants.\\\");\\n+  process.exit(0);\\n+}\\n+\\n+if (process.argv.length > 2) {\\n+  throw new Error(`Unknown argument: ${process.argv[2]}`);\\n+}\\n+\\n+const artifacts = [];\\n+\\n+for (const variant of variants) {\\n+  const bytes = await readFile(resolve(root, variant.source));\\n+  artifacts.push({\\n+    ...variant,\\n+    byteLength: bytes.length,\\n+    sha256: createHash(\\\"sha256\\\").update(bytes).digest(\\\"hex\\\").toUpperCase(),\\n+  });\\n+}\\n+\\n+artifacts.sort((left, right) => left.ordinal - right.ordinal);\\n+\\n+const output = `${JSON.stringify(artifacts, null, 2)}\\\\n`;\\n+await mkdir(dirname(outputPath), { recursive: true });\\n+await writeFile(outputPath, output, \\\"utf8\\\");\\n+\\n+const writtenOutput = await readFile(outputPath, \\\"utf8\\\");\\n+if (writtenOutput !== output) {\\n+  throw new Error(\\\"data/artifacts.json did not match the materialized output\\\");\\n+}\\n+\\n+console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\\n\",\"additions\":45,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA Users/Sergey/AppData/Local/Temp/agent-tooling-ergonomics-mechanical-artifact-scpq1K/project/tools/materialize.mjs\",\"time\":{\"start\":1786684903090,\"end\":1786684903113}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cd0bdb1e45758ba016a7ea5dd7bf881919b4048afaeab1ca1\"}},\"id\":\"prt_ffeb7e8fe0017XSqjggsM7h7UD\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb7dc250017PbraiGtnaxihE\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684903193,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb80f11001YkMFo7I3NMGUGP\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb7dc250017PbraiGtnaxihE\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":30531,\"input\":1759,\"output\":612,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":28160}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684905339,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb817790013h12P263Z76oOs\",\"messageID\":\"msg_ffeb80f16001ffloclG8AN9BjB\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684916579,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_RjDdxmE1Pe2Etf5y92XhavFO\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node tools/materialize.mjs --help\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"Usage: node tools/materialize.mjs\\n\\nMaterialize data/artifacts.json from the configured input variants.\\n\",\"metadata\":{\"output\":\"Usage: node tools/materialize.mjs\\n\\nMaterialize data/artifacts.json from the configured input variants.\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node tools/materialize.mjs --help\",\"time\":{\"start\":1786684916519,\"end\":1786684916551}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0a08628880377a7c016a7ea5f42d9881918a9f530546f128eb\"}},\"id\":\"prt_ffeb841e6001G5cN7H1XXQxFHV\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb80f16001ffloclG8AN9BjB\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684916579,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_iDf9XaN7ovGvRQYwxuQt4AFk\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"Test-Path -LiteralPath \\\".\\\"\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"True\\r\\n\",\"metadata\":{\"output\":\"True\\r\\n\",\"exit\":0,\"truncated\":false},\"title\":\"Test-Path -LiteralPath \\\".\\\"\",\"time\":{\"start\":1786684916514,\"end\":1786684916556}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0a08628880377a7c016a7ea5f42da48191899fbf3118ed529f\"}},\"id\":\"prt_ffeb841ee001mBnlLOINp5Bjq3\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb80f16001ffloclG8AN9BjB\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684916579,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb84350001HQkTaNfhmwVWHS\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb80f16001ffloclG8AN9BjB\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":31184,\"input\":1399,\"output\":147,\"reasoning\":454,\"cache\":{\"write\":0,\"read\":29184}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684919197,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb84d9a001ssOXRoDeeAk2x4\",\"messageID\":\"msg_ffeb84357001rKqV6Ny4QLpEUp\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684920944,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_XvYKweRTdfRucpA9nlFE4l1c\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node tools/materialize.mjs\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"Materialized 2 artifacts to data/artifacts.json\\n\",\"metadata\":{\"output\":\"Materialized 2 artifacts to data/artifacts.json\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node tools/materialize.mjs\",\"time\":{\"start\":1786684920889,\"end\":1786684920933}},\"metadata\":{\"openai\":{\"itemId\":\"fc_08ea402b456bfc49016a7ea5f7b3848191adff930ff7255574\"}},\"id\":\"prt_ffeb84f82001j9Jzz9B38j1u7L\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb84357001rKqV6Ny4QLpEUp\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684920951,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb85467001Ui01Ql8mcCb2Cc\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb84357001rKqV6Ny4QLpEUp\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":31300,\"input\":1019,\"output\":66,\"reasoning\":7,\"cache\":{\"write\":0,\"read\":30208}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684924650,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb862e6001QUN2k7zDI1JGJ3\",\"messageID\":\"msg_ffeb8546c001wTcGtZxV7OVAgr\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684929710,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_HB5vlude7ljQEcy5DdRw6xAn\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\data\\\\artifacts.json\"},\"output\":\"<path><proof-root>\\\\project\\\\data\\\\artifacts.json</path>\\n<type>file</type>\\n<content>\\n1: [\\n2:   {\\n3:     \\\"id\\\": \\\"variant-a\\\",\\n4:     \\\"ordinal\\\": 1,\\n5:     \\\"source\\\": \\\"inputs/a.txt\\\",\\n6:     \\\"byteLength\\\": 6,\\n7:     \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n8:   },\\n9:   {\\n10:     \\\"id\\\": \\\"variant-b\\\",\\n11:     \\\"ordinal\\\": 2,\\n12:     \\\"source\\\": \\\"inputs/b.txt\\\",\\n13:     \\\"byteLength\\\": 10,\\n14:     \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n15:   }\\n16: ]\\n\\n(End of file - total 16 lines)\\n</content>\",\"metadata\":{\"preview\":\"[\\n  {\\n    \\\"id\\\": \\\"variant-a\\\",\\n    \\\"ordinal\\\": 1,\\n    \\\"source\\\": \\\"inputs/a.txt\\\",\\n    \\\"byteLength\\\": 6,\\n    \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"variant-b\\\",\\n    \\\"ordinal\\\": 2,\\n    \\\"source\\\": \\\"inputs/b.txt\\\",\\n    \\\"byteLength\\\": 10,\\n    \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n  }\\n]\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\data\\\\artifacts.json\",\"text\":\"[\\n  {\\n    \\\"id\\\": \\\"variant-a\\\",\\n    \\\"ordinal\\\": 1,\\n    \\\"source\\\": \\\"inputs/a.txt\\\",\\n    \\\"byteLength\\\": 6,\\n    \\\"sha256\\\": \\\"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\\"\\n  },\\n  {\\n    \\\"id\\\": \\\"variant-b\\\",\\n    \\\"ordinal\\\": 2,\\n    \\\"source\\\": \\\"inputs/b.txt\\\",\\n    \\\"byteLength\\\": 10,\\n    \\\"sha256\\\": \\\"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\\"\\n  }\\n]\",\"lineStart\":1,\"lineEnd\":16,\"totalLines\":16,\"truncated\":false}},\"title\":\"Users\\\\Sergey\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-mechanical-artifact-scpq1K\\\\project\\\\data\\\\artifacts.json\",\"time\":{\"start\":1786684929699,\"end\":1786684929708}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e31a3cc63e9359c016a7ea6019f7c87d0a618e806a8aa9b14\"}},\"id\":\"prt_ffeb8768a001lOe087bvTDP5T9\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb8546c001wTcGtZxV7OVAgr\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684930251,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_wVieg4XunFdCafPlTRmLezoF\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"$files = @(\\\"inputs/a.txt\\\", \\\"inputs/b.txt\\\"); foreach ($file in $files) { $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $file)); $hash = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash; \\\"${file}`t$($bytes.Length)`t${hash}\\\" }\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"inputs/a.txt\\t6\\tB6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\r\\ninputs/b.txt\\t10\\t80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\r\\n\",\"metadata\":{\"output\":\"inputs/a.txt\\t6\\tB6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\\r\\ninputs/b.txt\\t10\\t80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\\r\\n\",\"exit\":0,\"truncated\":false},\"title\":\"$files = @(\\\"inputs/a.txt\\\", \\\"inputs/b.txt\\\"); foreach ($file in $files) { $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $file)); $hash = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash; \\\"${file}`t$($bytes.Length)`t${hash}\\\" }\",\"time\":{\"start\":1786684930193,\"end\":1786684930230}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e31a3cc63e9359c016a7ea6019f8c87d0b0797609865981c6\"}},\"id\":\"prt_ffeb876a5001r6k9krBYRxzQgL\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb8546c001wTcGtZxV7OVAgr\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684930251,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb878b8001fGnn6pkywGjYMo\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb8546c001wTcGtZxV7OVAgr\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":31599,\"input\":1114,\"output\":207,\"reasoning\":70,\"cache\":{\"write\":0,\"read\":30208}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684933042,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb883af0010GWdHV8gfdC3wc\",\"messageID\":\"msg_ffeb878bf001ENSiNzEEGeXvIc\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786684938125,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb893a7001CAh0ve9qLpmd1p\",\"messageID\":\"msg_ffeb878bf001ENSiNzEEGeXvIc\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"text\",\"text\":\"Материализатор отработал через заявленную CLI-точку входа. Независимая проверка исходных файлов подтвердила обе длины и оба SHA-256; теперь фиксирую итог и состояние проверки.\",\"time\":{\"start\":1786684937128,\"end\":1786684938110},\"metadata\":{\"openai\":{\"itemId\":\"msg_0e9b4759aacc15e3016a7ea609273c81918782e1e921386b33\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786684939747,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"type\":\"tool\",\"tool\":\"todowrite\",\"callID\":\"call_2v2jWNYDNxNIgtujV8QSUleJ\",\"state\":{\"status\":\"completed\",\"input\":{\"todos\":[{\"content\":\"Inspect project structure, input bytes, and existing conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact materialization in tools/materialize.mjs\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Run the CLI proof and inspect data/artifacts.json\",\"status\":\"completed\",\"priority\":\"high\"}]},\"output\":\"[\\n  {\\n    \\\"content\\\": \\\"Inspect project structure, input bytes, and existing conventions\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Implement reviewable artifact materialization in tools/materialize.mjs\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Run the CLI proof and inspect data/artifacts.json\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Inspect project structure, input bytes, and existing conventions\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement reviewable artifact materialization in tools/materialize.mjs\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Run the CLI proof and inspect data/artifacts.json\",\"status\":\"completed\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"0 todos\",\"time\":{\"start\":1786684939743,\"end\":1786684939745}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e9b4759aacc15e3016a7ea60a28948191b97a27d336e8046e\"}},\"id\":\"prt_ffeb8978b001Oj9EdNMrqYcTDi\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"messageID\":\"msg_ffeb878bf001ENSiNzEEGeXvIc\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684939876,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb89e580012w8zNBp3KShNs3\",\"reason\":\"tool-calls\",\"messageID\":\"msg_ffeb878bf001ENSiNzEEGeXvIc\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":32325,\"input\":737,\"output\":143,\"reasoning\":213,\"cache\":{\"write\":0,\"read\":31232}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786684941892,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb8a640001mm0cTxWWctkkSh\",\"messageID\":\"msg_ffeb89e600011F14e14jx5wn4b\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786684947631,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb8b0fd001hPPcdOX953h4Yn\",\"messageID\":\"msg_ffeb89e600011F14e14jx5wn4b\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"text\",\"text\":\"Созданы:\\n\\n- `data/artifacts.json` с отсортированными `variant-a` и `variant-b`.\\n- `tools/materialize.mjs` с ревьюируемым списком вариантов и вычислением длины/SHA-256 из сырых байтов.\\n- `--help` работает без побочных эффектов.\\n\\nПроверено через `node tools/materialize.mjs`. Независимая проверка подтвердила длины `6` и `10` байт и оба хеша. Зависимости и тесты не добавлялись.\\n\\nDevelopment-Stage: stable  \\nStable Candidate: RC1\",\"time\":{\"start\":1786684944637,\"end\":1786684947629},\"metadata\":{\"openai\":{\"itemId\":\"msg_00a1daaee2b757aa016a7ea610a2b0819193f26ae70b6d5991\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786684947792,\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"part\":{\"id\":\"prt_ffeb8bd47001KyT1dg5z10dWT7\",\"reason\":\"stop\",\"messageID\":\"msg_ffeb89e600011F14e14jx5wn4b\",\"sessionID\":\"ses_00148c080ffe7IUgsOLZ48dhTw\",\"type\":\"step-finish\",\"tokens\":{\"total\":32706,\"input\":1212,\"output\":133,\"reasoning\":129,\"cache\":{\"write\":0,\"read\":31232}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: node only; shell metacharacters denied last",
+      "edit: allow inside disposable project",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: deny",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "Сначала проверю структуру проекта, входные байты и существующие соглашения, затем добавлю минимальный материализатор и прогоню его через реальную CLI-точку входа с проверкой итогового JSON.В проекте нет существующего генератора или схемы. Добавляю один локальный `tools/materialize.mjs`: ревьюируемый список вариантов останется рядом с кодом, а длина и хеш будут вычисляться из сырых байтов; CLI также получит безэффектный `--help`.Материализатор отработал через заявленную CLI-точку входа. Независимая проверка исходных файлов подтвердила обе длины и оба SHA-256; теперь фиксирую итог и состояние проверки.Созданы:\n\n- `data/artifacts.json` с отсортированными `variant-a` и `variant-b`.\n- `tools/materialize.mjs` с ревьюируемым списком вариантов и вычислением длины/SHA-256 из сырых байтов.\n- `--help` работает без побочных эффектов.\n\nПроверено через `node tools/materialize.mjs`. Независимая проверка подтвердила длины `6` и `10` байт и оба хеша. Зависимости и тесты не добавлялись.\n\nDevelopment-Stage: stable  \nStable Candidate: RC1",
+    "costs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 99055,
+    "eventCount": 39,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_00148c080ffe7IUgsOLZ48dhTw"
+    ],
+    "tokens": [
+      {
+        "total": 28067,
+        "input": 18088,
+        "output": 142,
+        "reasoning": 109,
+        "cache": {
+          "write": 0,
+          "read": 9728
+        }
+      },
+      {
+        "total": 28462,
+        "input": 1051,
+        "output": 216,
+        "reasoning": 59,
+        "cache": {
+          "write": 0,
+          "read": 27136
+        }
+      },
+      {
+        "total": 28961,
+        "input": 1697,
+        "output": 118,
+        "reasoning": 10,
+        "cache": {
+          "write": 0,
+          "read": 27136
+        }
+      },
+      {
+        "total": 29799,
+        "input": 993,
+        "output": 88,
+        "reasoning": 558,
+        "cache": {
+          "write": 0,
+          "read": 28160
+        }
+      },
+      {
+        "total": 30531,
+        "input": 1759,
+        "output": 612,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 28160
+        }
+      },
+      {
+        "total": 31184,
+        "input": 1399,
+        "output": 147,
+        "reasoning": 454,
+        "cache": {
+          "write": 0,
+          "read": 29184
+        }
+      },
+      {
+        "total": 31300,
+        "input": 1019,
+        "output": 66,
+        "reasoning": 7,
+        "cache": {
+          "write": 0,
+          "read": 30208
+        }
+      },
+      {
+        "total": 31599,
+        "input": 1114,
+        "output": 207,
+        "reasoning": 70,
+        "cache": {
+          "write": 0,
+          "read": 30208
+        }
+      },
+      {
+        "total": 32325,
+        "input": 737,
+        "output": 143,
+        "reasoning": 213,
+        "cache": {
+          "write": 0,
+          "read": 31232
+        }
+      },
+      {
+        "total": 32706,
+        "input": 1212,
+        "output": 133,
+        "reasoning": 129,
+        "cache": {
+          "write": 0,
+          "read": 31232
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "todos": [
+            {
+              "content": "Inspect project structure, input bytes, and existing conventions",
+              "status": "in_progress",
+              "priority": "high"
+            },
+            {
+              "content": "Implement reviewable artifact materialization in tools/materialize.mjs",
+              "status": "pending",
+              "priority": "high"
+            },
+            {
+              "content": "Run the CLI proof and inspect data/artifacts.json",
+              "status": "pending",
+              "priority": "high"
+            }
+          ]
+        },
+        "name": "todowrite",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\inputs\\a.txt"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\inputs\\b.txt"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\package.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\.gitignore"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "todos": [
+            {
+              "content": "Inspect project structure, input bytes, and existing conventions",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Implement reviewable artifact materialization in tools/materialize.mjs",
+              "status": "in_progress",
+              "priority": "high"
+            },
+            {
+              "content": "Run the CLI proof and inspect data/artifacts.json",
+              "status": "pending",
+              "priority": "high"
+            }
+          ]
+        },
+        "name": "todowrite",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "patchText": "*** Begin Patch\n*** Add File: tools/materialize.mjs\n+import { createHash } from \"node:crypto\";\n+import { mkdir, readFile, writeFile } from \"node:fs/promises\";\n+import { dirname, resolve } from \"node:path\";\n+import { fileURLToPath } from \"node:url\";\n+\n+const variants = [\n+  { id: \"variant-a\", ordinal: 1, source: \"inputs/a.txt\" },\n+  { id: \"variant-b\", ordinal: 2, source: \"inputs/b.txt\" },\n+];\n+\n+const root = resolve(dirname(fileURLToPath(import.meta.url)), \"..\");\n+const outputPath = resolve(root, \"data/artifacts.json\");\n+\n+if (process.argv.includes(\"--help\") || process.argv.includes(\"-h\")) {\n+  console.log(\"Usage: node tools/materialize.mjs\\n\\nMaterialize data/artifacts.json from the configured input variants.\");\n+  process.exit(0);\n+}\n+\n+if (process.argv.length > 2) {\n+  throw new Error(`Unknown argument: ${process.argv[2]}`);\n+}\n+\n+const artifacts = [];\n+\n+for (const variant of variants) {\n+  const bytes = await readFile(resolve(root, variant.source));\n+  artifacts.push({\n+    ...variant,\n+    byteLength: bytes.length,\n+    sha256: createHash(\"sha256\").update(bytes).digest(\"hex\").toUpperCase(),\n+  });\n+}\n+\n+artifacts.sort((left, right) => left.ordinal - right.ordinal);\n+\n+const output = `${JSON.stringify(artifacts, null, 2)}\\n`;\n+await mkdir(dirname(outputPath), { recursive: true });\n+await writeFile(outputPath, output, \"utf8\");\n+\n+const writtenOutput = await readFile(outputPath, \"utf8\");\n+if (writtenOutput !== output) {\n+  throw new Error(\"data/artifacts.json did not match the materialized output\");\n+}\n+\n+console.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\n*** End Patch"
+        },
+        "name": "apply_patch",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node tools/materialize.mjs --help",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "Test-Path -LiteralPath \".\"",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node tools/materialize.mjs",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\data\\artifacts.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "$files = @(\"inputs/a.txt\", \"inputs/b.txt\"); foreach ($file in $files) { $bytes = [System.IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $file)); $hash = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash; \"${file}`t$($bytes.Length)`t${hash}\" }",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "todos": [
+            {
+              "content": "Inspect project structure, input bytes, and existing conventions",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Implement reviewable artifact materialization in tools/materialize.mjs",
+              "status": "completed",
+              "priority": "high"
+            },
+            {
+              "content": "Run the CLI proof and inspect data/artifacts.json",
+              "status": "completed",
+              "priority": "high"
+            }
+          ]
+        },
+        "name": "todowrite",
+        "status": "completed"
+      }
+    ]
+  },
+  "filesAfterOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 368,
+      "content": "[\n  {\n    \"id\": \"variant-a\",\n    \"ordinal\": 1,\n    \"source\": \"inputs/a.txt\",\n    \"byteLength\": 6,\n    \"sha256\": \"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\"\n  },\n  {\n    \"id\": \"variant-b\",\n    \"ordinal\": 2,\n    \"source\": \"inputs/b.txt\",\n    \"byteLength\": 10,\n    \"sha256\": \"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\"\n  }\n]\n",
+      "path": "data/artifacts.json",
+      "sha256": "31f37cea0279eb4f42b1acf762cd1374422ec52c80b05232b8de16264660dde3"
+    },
+    {
+      "bytes": 6,
+      "content": "alpha\n",
+      "path": "inputs/a.txt",
+      "sha256": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060"
+    },
+    {
+      "bytes": 10,
+      "content": "beta-data\n",
+      "path": "inputs/b.txt",
+      "sha256": "80a462c67119e54a072a9481125b1df63d2cb9fcd3bcced0a772e68ff3daa3ad"
+    },
+    {
+      "bytes": 94,
+      "content": "{\n  \"name\": \"tooling-ergonomics-mechanical-artifact\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "a34bd2d2e877f32825848d1470238696b11cfb1a2eea241fb1e8051b1674b928"
+    },
+    {
+      "bytes": 1518,
+      "content": "import { createHash } from \"node:crypto\";\nimport { mkdir, readFile, writeFile } from \"node:fs/promises\";\nimport { dirname, resolve } from \"node:path\";\nimport { fileURLToPath } from \"node:url\";\n\nconst variants = [\n  { id: \"variant-a\", ordinal: 1, source: \"inputs/a.txt\" },\n  { id: \"variant-b\", ordinal: 2, source: \"inputs/b.txt\" },\n];\n\nconst root = resolve(dirname(fileURLToPath(import.meta.url)), \"..\");\nconst outputPath = resolve(root, \"data/artifacts.json\");\n\nif (process.argv.includes(\"--help\") || process.argv.includes(\"-h\")) {\n  console.log(\"Usage: node tools/materialize.mjs\\n\\nMaterialize data/artifacts.json from the configured input variants.\");\n  process.exit(0);\n}\n\nif (process.argv.length > 2) {\n  throw new Error(`Unknown argument: ${process.argv[2]}`);\n}\n\nconst artifacts = [];\n\nfor (const variant of variants) {\n  const bytes = await readFile(resolve(root, variant.source));\n  artifacts.push({\n    ...variant,\n    byteLength: bytes.length,\n    sha256: createHash(\"sha256\").update(bytes).digest(\"hex\").toUpperCase(),\n  });\n}\n\nartifacts.sort((left, right) => left.ordinal - right.ordinal);\n\nconst output = `${JSON.stringify(artifacts, null, 2)}\\n`;\nawait mkdir(dirname(outputPath), { recursive: true });\nawait writeFile(outputPath, output, \"utf8\");\n\nconst writtenOutput = await readFile(outputPath, \"utf8\");\nif (writtenOutput !== output) {\n  throw new Error(\"data/artifacts.json did not match the materialized output\");\n}\n\nconsole.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\n",
+      "path": "tools/materialize.mjs",
+      "sha256": "2c2420b552ae0b313019e2d2045c5f957ff72d5b444960be66b5f2b5a41038b1"
+    }
+  ],
+  "filesBeforeOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 368,
+      "content": "[\n  {\n    \"id\": \"variant-a\",\n    \"ordinal\": 1,\n    \"source\": \"inputs/a.txt\",\n    \"byteLength\": 6,\n    \"sha256\": \"B6A98D9CE9A2D9149288FA3DF42D377C3E42737AFDCDAF714E33C0A100B51060\"\n  },\n  {\n    \"id\": \"variant-b\",\n    \"ordinal\": 2,\n    \"source\": \"inputs/b.txt\",\n    \"byteLength\": 10,\n    \"sha256\": \"80A462C67119E54A072A9481125B1DF63D2CB9FCD3BCCED0A772E68FF3DAA3AD\"\n  }\n]\n",
+      "path": "data/artifacts.json",
+      "sha256": "31f37cea0279eb4f42b1acf762cd1374422ec52c80b05232b8de16264660dde3"
+    },
+    {
+      "bytes": 6,
+      "content": "alpha\n",
+      "path": "inputs/a.txt",
+      "sha256": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060"
+    },
+    {
+      "bytes": 10,
+      "content": "beta-data\n",
+      "path": "inputs/b.txt",
+      "sha256": "80a462c67119e54a072a9481125b1df63d2cb9fcd3bcced0a772e68ff3daa3ad"
+    },
+    {
+      "bytes": 94,
+      "content": "{\n  \"name\": \"tooling-ergonomics-mechanical-artifact\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "a34bd2d2e877f32825848d1470238696b11cfb1a2eea241fb1e8051b1674b928"
+    },
+    {
+      "bytes": 1518,
+      "content": "import { createHash } from \"node:crypto\";\nimport { mkdir, readFile, writeFile } from \"node:fs/promises\";\nimport { dirname, resolve } from \"node:path\";\nimport { fileURLToPath } from \"node:url\";\n\nconst variants = [\n  { id: \"variant-a\", ordinal: 1, source: \"inputs/a.txt\" },\n  { id: \"variant-b\", ordinal: 2, source: \"inputs/b.txt\" },\n];\n\nconst root = resolve(dirname(fileURLToPath(import.meta.url)), \"..\");\nconst outputPath = resolve(root, \"data/artifacts.json\");\n\nif (process.argv.includes(\"--help\") || process.argv.includes(\"-h\")) {\n  console.log(\"Usage: node tools/materialize.mjs\\n\\nMaterialize data/artifacts.json from the configured input variants.\");\n  process.exit(0);\n}\n\nif (process.argv.length > 2) {\n  throw new Error(`Unknown argument: ${process.argv[2]}`);\n}\n\nconst artifacts = [];\n\nfor (const variant of variants) {\n  const bytes = await readFile(resolve(root, variant.source));\n  artifacts.push({\n    ...variant,\n    byteLength: bytes.length,\n    sha256: createHash(\"sha256\").update(bytes).digest(\"hex\").toUpperCase(),\n  });\n}\n\nartifacts.sort((left, right) => left.ordinal - right.ordinal);\n\nconst output = `${JSON.stringify(artifacts, null, 2)}\\n`;\nawait mkdir(dirname(outputPath), { recursive: true });\nawait writeFile(outputPath, output, \"utf8\");\n\nconst writtenOutput = await readFile(outputPath, \"utf8\");\nif (writtenOutput !== output) {\n  throw new Error(\"data/artifacts.json did not match the materialized output\");\n}\n\nconsole.log(`Materialized ${artifacts.length} artifacts to data/artifacts.json`);\n",
+      "path": "tools/materialize.mjs",
+      "sha256": "2c2420b552ae0b313019e2d2045c5f957ff72d5b444960be66b5f2b5a41038b1"
+    }
+  ],
+  "input": {
+    "message": "Implement the smallest complete local change. Produce authoritative data/artifacts.json for inputs/a.txt and inputs/b.txt.\nThe JSON is an ordinally sorted array with ids variant-a and variant-b, ordinals 1 and 2, source paths, exact byteLength, and uppercase SHA-256 for each source.\nThese artifacts will be regenerated after input changes and more variants are expected later. Keep semantic ids, source paths, and ordinals reviewable.\nDo not add tests, a package dependency, or a generic framework. If automation is needed, use tools/materialize.mjs. Run the nearest proof and inspect the output.",
+    "promptSha256": "629d77f52109040e86873b8e64137caa2bbf8b88b77aa8d12fbe8dc9bc668f21",
+    "scenario": "mechanical-artifact"
+  },
+  "oracle": {
+    "facts": {
+      "generatorExists": true,
+      "outputExact": true,
+      "regenerationStable": true,
+      "runsExitZero": true,
+      "seedExists": false,
+      "seedSemanticOnly": false
+    },
+    "pass": false,
+    "postCommands": [
+      {
+        "argv": [
+          "node",
+          "tools/materialize.mjs"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "Materialized 2 artifacts to data/artifacts.json\n"
+      },
+      {
+        "argv": [
+          "node",
+          "tools/materialize.mjs"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "Materialized 2 artifacts to data/artifacts.json\n"
+      }
+    ]
+  },
+  "schemaVersion": 1
+}

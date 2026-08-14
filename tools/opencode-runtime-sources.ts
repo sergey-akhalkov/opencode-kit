@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { parse as jsoncParse } from "jsonc-parser";
 
 export type RuntimeSourceKind = "agent" | "command" | "config" | "instruction" | "plugin" | "skill";
 
@@ -21,11 +23,33 @@ export type RuntimeSourceCollision = {
 
 export type RuntimeSourceReport = {
   collisions: RuntimeSourceCollision[];
+  unattended: {
+    canonicalWorkflow: Array<Pick<RuntimeSource, "kind" | "location" | "name" | "source">>;
+    collisionStatus: "blocked" | "clear";
+    guard: {
+      capabilityStatus: "passed" | "unknown";
+      limits: Record<string, number | null>;
+      origin: string | null;
+    };
+    helpers: Array<{ path: string; sha256: string }>;
+  };
   root: string;
   schemaVersion: 1;
   sources: RuntimeSource[];
   warnings: string[];
 };
+
+const CANONICAL_SKILLS = new Set(["openspec-apply-change", "openspec-archive-change", "openspec-propose"]);
+const CANONICAL_COMMANDS = new Set(["opsx-apply", "opsx-archive", "opsx-propose"]);
+const GUARD_LIMITS = [
+  "maxCycles",
+  "maxRetryAttempts",
+  "arbiterPromptTimeoutMs",
+  "waitRecheckMs",
+  "maxRequestBytes",
+  "maxWaitRechecks",
+  "retainAuditSessions",
+] as const;
 
 type SourceRoot = Pick<RuntimeSource, "source"> & { root: string };
 
@@ -178,6 +202,43 @@ function collisions(sources: RuntimeSource[]): RuntimeSourceCollision[] {
     .sort((left, right) => left.kind.localeCompare(right.kind) || left.name.localeCompare(right.name));
 }
 
+function activeGlobalRoot(): string {
+  const custom = process.env.OPENCODE_CONFIG_DIR?.trim();
+  return custom ? path.resolve(custom) : path.join(os.homedir(), ".config", "opencode");
+}
+
+function guardDiagnostics(globalRoot: string): RuntimeSourceReport["unattended"]["guard"] {
+  const config = path.join(globalRoot, "opencode.json");
+  const empty = Object.fromEntries(GUARD_LIMITS.map((name) => [name, null]));
+  if (!isFile(config)) return { capabilityStatus: "unknown", limits: empty, origin: null };
+  try {
+    const errors: jsoncParse.ParseError[] = [];
+    const parsed = jsoncParse(fs.readFileSync(config, "utf8"), errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    }) as Record<string, unknown> | null;
+    if (errors.length > 0 || parsed == null || Array.isArray(parsed)) {
+      return { capabilityStatus: "unknown", limits: empty, origin: null };
+    }
+    const tuple = (Array.isArray(parsed.plugin) ? parsed.plugin : []).find((plugin) =>
+      Array.isArray(plugin) && typeof plugin[0] === "string" && plugin[0].includes("session-completion-guard")
+    );
+    if (!Array.isArray(tuple) || typeof tuple[1] !== "object" || tuple[1] == null || Array.isArray(tuple[1])) {
+      return { capabilityStatus: "unknown", limits: empty, origin: null };
+    }
+    const options = tuple[1] as Record<string, unknown>;
+    return {
+      capabilityStatus: "unknown",
+      limits: Object.fromEntries(GUARD_LIMITS.map((name) => [name, typeof options[name] === "number" ? options[name] : null])),
+      origin: typeof tuple[0] === "string" && tuple[0].startsWith("file:")
+        ? redactLocation(fileURLToPath(tuple[0]))
+        : typeof tuple[0] === "string" ? tuple[0] : null,
+    };
+  } catch {
+    return { capabilityStatus: "unknown", limits: empty, origin: null };
+  }
+}
+
 export function inspectRuntimeSources(root: string): RuntimeSourceReport {
   const sources: RuntimeSource[] = [];
   addProjectSources(sources, root);
@@ -191,8 +252,30 @@ export function inspectRuntimeSources(root: string): RuntimeSourceReport {
       left.name.localeCompare(right.name) ||
       left.location.localeCompare(right.location),
   );
+  const sourceCollisions = collisions(sources);
+  const canonicalWorkflow = sources.filter((source) =>
+    (source.kind === "skill" && CANONICAL_SKILLS.has(source.name)) ||
+    (source.kind === "command" && CANONICAL_COMMANDS.has(source.name))
+  );
+  const globalRoot = activeGlobalRoot();
   return {
-    collisions: collisions(sources),
+    collisions: sourceCollisions,
+    unattended: {
+      canonicalWorkflow,
+      collisionStatus: sourceCollisions.some((collision) =>
+        (collision.kind === "skill" && CANONICAL_SKILLS.has(collision.name)) ||
+        (collision.kind === "command" && CANONICAL_COMMANDS.has(collision.name))
+      ) ? "blocked" : "clear",
+      guard: guardDiagnostics(globalRoot),
+      helpers: [
+        "bin/openspec-operation-gate.ts",
+        "bin/openspec-archive.ts",
+        "bin/roadmap-mission.ts",
+      ].filter((relative) => isFile(path.join(globalRoot, relative))).map((relative) => ({
+        path: relative,
+        sha256: crypto.createHash("sha256").update(fs.readFileSync(path.join(globalRoot, relative))).digest("hex"),
+      })),
+    },
     root: redactLocation(root),
     schemaVersion: 1,
     sources,

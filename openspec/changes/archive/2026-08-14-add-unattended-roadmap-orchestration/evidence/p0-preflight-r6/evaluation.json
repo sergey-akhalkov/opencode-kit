@@ -1,0 +1,12 @@
+{
+  "candidateId": "p0-runtime-r6",
+  "cleanup": "complete",
+  "projectMutationCount": 0,
+  "scenarios": {
+    "invalidForwardDependency": "blocked",
+    "staleProjectOverlay": "blocked",
+    "valid": "eligible"
+  },
+  "schemaVersion": 1,
+  "status": "complete"
+}

@@ -18,6 +18,9 @@ type PlannedFile = {
   source: string;
 };
 
+const CANONICAL_SKILLS = ["openspec-apply-change", "openspec-archive-change", "openspec-propose"] as const;
+const CANONICAL_COMMANDS = ["opsx-apply", "opsx-archive", "opsx-propose"] as const;
+
 function defaultRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 }
@@ -112,6 +115,20 @@ function plannedFiles(repoRoot: string, targetRoot: string): PlannedFile[] {
   ];
 }
 
+function workflowOverlays(targetRoot: string): string[] {
+  return [
+    ...["skill", "skills"].flatMap((directory) =>
+      CANONICAL_SKILLS.map((name) => path.join(targetRoot, ".opencode", directory, name, "SKILL.md"))
+    ),
+    ...["command", "commands"].flatMap((directory) =>
+      CANONICAL_COMMANDS.map((name) => path.join(targetRoot, ".opencode", directory, `${name}.md`))
+    ),
+  ]
+    .filter((file) => fs.existsSync(file) && fs.statSync(file).isFile())
+    .map((file) => path.relative(targetRoot, file).replaceAll("\\", "/"))
+    .sort();
+}
+
 function main(): void {
   const options = parseArgs(process.argv.slice(2));
   if (!options.target) {
@@ -137,6 +154,10 @@ function main(): void {
   console.log(`# opencode-dev-kit project bootstrap`);
   console.log(`Mode: ${options.mode}`);
   console.log(`Target: ${targetRoot}`);
+  const overlays = workflowOverlays(targetRoot);
+  console.log(overlays.length === 0
+    ? "Unattended workflow overlays: none"
+    : `Unattended incompatible overlays (preserved): ${overlays.join(", ")}`);
   console.log("");
 
   for (const file of files) {

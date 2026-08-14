@@ -1,0 +1,259 @@
+{
+  "baselineComplete": true,
+  "candidateComplete": false,
+  "mode": "replay",
+  "note": "Exact command, file, hash, placement, and cleanup facts only; no prose scoring or inferred intent.",
+  "rows": [
+    {
+      "baseline": {
+        "control": null,
+        "cleanup": true,
+        "expectation": "gap",
+        "expectationMet": true,
+        "gapReproduced": true,
+        "oracle": {
+          "facts": {
+            "effectFreeHelp": true,
+            "helpComplete": false,
+            "scanExact": true,
+            "shortHelpComplete": false,
+            "sourceExists": true
+          },
+          "pass": false,
+          "postCommands": [
+            {
+              "argv": [
+                "node",
+                "tools/report.mjs",
+                "--help"
+              ],
+              "status": 1,
+              "stderr": "Usage: node tools/report.mjs scan --input <file>\n",
+              "stdout": ""
+            },
+            {
+              "argv": [
+                "node",
+                "tools/report.mjs",
+                "-h"
+              ],
+              "status": 1,
+              "stderr": "Usage: node tools/report.mjs scan --input <file>\n",
+              "stdout": ""
+            },
+            {
+              "argv": [
+                "node",
+                "tools/report.mjs",
+                "scan",
+                "--input",
+                "sample.txt"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": "{\"input\":\"sample.txt\",\"bytes\":6}\n"
+            }
+          ]
+        },
+        "status": 0
+      },
+      "candidate": {
+        "cleanup": true,
+        "oracle": {
+          "facts": {
+            "effectFreeHelp": true,
+            "helpComplete": true,
+            "scanExact": true,
+            "shortHelpComplete": true,
+            "sourceExists": true
+          },
+          "pass": true,
+          "postCommands": [
+            {
+              "argv": [
+                "node",
+                "tools/report.mjs",
+                "--help"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": "Usage: node tools/report.mjs <command> [options]\n\nCommands:\n  scan --input <path>  Report the input path and file size as JSON\n\nOptions:\n  --input <path>       Required for scan\n  -h, --help           Show this help\n"
+            },
+            {
+              "argv": [
+                "node",
+                "tools/report.mjs",
+                "-h"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": "Usage: node tools/report.mjs <command> [options]\n\nCommands:\n  scan --input <path>  Report the input path and file size as JSON\n\nOptions:\n  --input <path>       Required for scan\n  -h, --help           Show this help\n"
+            },
+            {
+              "argv": [
+                "node",
+                "tools/report.mjs",
+                "scan",
+                "--input",
+                "sample.txt"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": "{\"input\":\"sample.txt\",\"bytes\":6}\n"
+            }
+          ]
+        },
+        "status": 0
+      },
+      "pairMatches": true,
+      "scenario": "repeated-cli"
+    },
+    {
+      "baseline": {
+        "control": null,
+        "cleanup": true,
+        "expectation": "gap",
+        "expectationMet": true,
+        "gapReproduced": true,
+        "oracle": {
+          "facts": {
+            "generatorExists": true,
+            "outputExact": false,
+            "regenerationStable": true,
+            "runsExitZero": true,
+            "seedExists": false,
+            "seedSemanticOnly": false
+          },
+          "pass": false,
+          "postCommands": [
+            {
+              "argv": [
+                "node",
+                "tools/materialize.mjs"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "argv": [
+                "node",
+                "tools/materialize.mjs"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "status": 0
+      },
+      "candidate": {
+        "cleanup": true,
+        "oracle": {
+          "facts": {
+            "generatorExists": true,
+            "outputExact": false,
+            "regenerationStable": false,
+            "runsExitZero": true,
+            "seedExists": false,
+            "seedSemanticOnly": false
+          },
+          "pass": false,
+          "postCommands": [
+            {
+              "argv": [
+                "node",
+                "tools/materialize.mjs"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "argv": [
+                "node",
+                "tools/materialize.mjs"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "status": 0
+      },
+      "pairMatches": true,
+      "scenario": "mechanical-artifact"
+    },
+    {
+      "baseline": {
+        "control": {
+          "facts": {
+            "casesExact": true,
+            "generatorInvocationObserved": true,
+            "oneOffExact": true,
+            "oneOffRemainsManual": true,
+            "sourceMaintained": true
+          },
+          "pass": true
+        },
+        "cleanup": true,
+        "expectation": "control-pass",
+        "expectationMet": true,
+        "gapReproduced": false,
+        "oracle": {
+          "facts": {
+            "casesExact": true,
+            "generatorRunsExitZero": false,
+            "generatedOutputsStable": true,
+            "oneOffExact": true,
+            "oneOffRemainsManual": true,
+            "sourceMaintained": false
+          },
+          "pass": false,
+          "postCommands": []
+        },
+        "status": 0
+      },
+      "candidate": {
+        "cleanup": true,
+        "oracle": {
+          "facts": {
+            "casesExact": true,
+            "generatorRunsExitZero": true,
+            "generatedOutputsStable": true,
+            "oneOffExact": true,
+            "oneOffRemainsManual": true,
+            "sourceMaintained": true
+          },
+          "pass": true,
+          "postCommands": [
+            {
+              "argv": [
+                "node",
+                "scripts/generate-cases.js"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "argv": [
+                "node",
+                "scripts/generate-cases.js"
+              ],
+              "status": 0,
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "status": 0
+      },
+      "pairMatches": true,
+      "scenario": "source-placement"
+    }
+  ],
+  "schemaVersion": 1
+}

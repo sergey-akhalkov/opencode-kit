@@ -1,0 +1,8 @@
+{
+  "error": "external checkpoint does not contain current mission paths: evidence/mission/provider-03.stderr.log, evidence/mission/provider-03.stdout.jsonl, evidence/mission/provider-04.stderr.log, evidence/mission/provider-04.stdout.jsonl, evidence/mission/provider-calls.json, openspec/changes/archive/2026-08-14-change-b/.openspec.yaml, openspec/changes/archive/2026-08-14-change-b/design.md, openspec/changes/archive/2026-08-14-change-b/history.md, openspec/changes/archive/2026-08-14-change-b/proposal.md, openspec/changes/archive/2026-08-14-change-b/specs/synthetic-beta/spec.md, openspec/changes/archive/2026-08-14-change-b/tasks.md, openspec/specs/synthetic-beta/spec.md, src/beta.txt",
+  "exitCode": 1,
+  "operation": "resume",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "tool": "roadmap-mission"
+}

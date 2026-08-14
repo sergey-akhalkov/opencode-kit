@@ -47,7 +47,9 @@ An OpenSpec implementation task, including a session-derived improvement task, S
 
 On failed proof or validation, the apply path SHALL preserve the command, exit status, relevant stdout/stderr and diagnostics, leave the task unchecked, and continue autonomous diagnosis when the failure is locally resolvable.
 
-Before reporting all implementation tasks complete, the apply path SHALL reconcile admitted improvements from the current session and any `Pending Improvement Tasks` continuation section into the active `tasks.md`. Every record SHALL identify its trigger/evidence, causal reason, prerequisites, scope/non-goals, implementation outcome, observable proof, and validation so a later session can execute it without reconstructing prior chat.
+Before substantial implementation work, the apply path SHALL reconcile admitted improvements from the current session and any `Pending Improvement Tasks` continuation section into the active `tasks.md`, and SHALL persist `Deferred Improvement Candidates` as non-checkbox records in `history.md`. Every admitted record SHALL identify its trigger/evidence, causal reason, prerequisites, scope/non-goals, implementation outcome, observable proof, validation, impact horizon, concrete consumers, execution class, earliest safe point, invalidated evidence, and observable payback so a later session can execute it without reconstructing prior chat.
+
+After safety and live-attempt blockers, apply SHALL execute each admitted improvement at its earliest safe point before the first named current-change consumer. Physical placement under `## Session-Derived Improvements` SHALL NOT postpone a `gate-closer`, `do-now`, or `before-task-<id>` task until the end of the original task list. `before-freeze` work SHALL complete before qualification freeze. `separate-change` records SHALL remain non-blocking deferred evidence until another owning change admits them.
 
 #### Scenario: Edit without proof remains incomplete
 - **WHEN** an apply session changes the requested files but has not run the task's required observable proof
@@ -60,15 +62,25 @@ Before reporting all implementation tasks complete, the apply path SHALL reconci
 - **AND** it may continue to the next unblocked task without a routine user question.
 
 #### Scenario: Continuation carries pending improvements
-- **WHEN** an apply session receives one or more still-admissible `Pending Improvement Tasks`
-- **THEN** it appends every entry to the active `tasks.md` before substantial implementation work
-- **AND** each entry remains unchecked until its implementation, proof, and validation are complete.
+- **WHEN** an apply session receives still-valid `Pending Improvement Tasks` and `Deferred Improvement Candidates`
+- **THEN** it persists every record in the correct owning artifact before substantial implementation work
+- **AND** only admitted task entries become unchecked completion scope.
+
+#### Scenario: Improvement precedes first consumer
+- **WHEN** an admitted improvement names current task 4.2 as its first consumer and its prerequisites are satisfied
+- **THEN** apply implements and proves that improvement before starting task 4.2
+- **AND** later task-list position does not postpone it.
+
+#### Scenario: Repository multiplier does not expand consumer scope
+- **WHEN** the current change proves a shared owner also named by another active change or repository workflow
+- **THEN** apply completes the shared implementation needed by the current consumer
+- **AND** leaves mutation of the additional consumer to its own owning path.
 
 ### Requirement: Final history retrospective is an evidence-bound completion task
 
-For a change authored under the final-history-retrospective policy, the final analysis task SHALL remain unchecked until every other currently known task is complete and the full change `history.md` has been analyzed through the canonical compaction improvement contract. Its completion evidence SHALL identify the resulting admitted task IDs or `none`.
+For a change authored under the final-history-retrospective policy, the final analysis task SHALL remain unchecked until every other currently known task is complete and the full change `history.md` has been analyzed through the canonical compaction improvement contract. Its completion evidence SHALL identify the resulting admitted task IDs, deferred record IDs, or `none`.
 
-If the analysis appends tasks, they SHALL become ordinary accepted completion scope and remain unchecked until their implementation, observable proof, and validation pass. Apply SHALL continue without a routine user question. Complete archive SHALL remain unavailable while the analysis task or any generated task is unchecked.
+If the analysis appends tasks, they SHALL become ordinary accepted completion scope and remain unchecked until their implementation, observable proof, and validation pass. Deferred non-checkbox records SHALL remain non-blocking. Apply SHALL continue without a routine user question. Complete archive SHALL remain unavailable while the analysis task or any generated admitted task is unchecked.
 
 #### Scenario: Compaction adds work before final analysis
 
@@ -97,7 +109,7 @@ If the analysis appends tasks, they SHALL become ordinary accepted completion sc
 ### Requirement: Complete archive fails closed
 The normal OpenSpec archive path SHALL refuse to archive a change as complete when required artifacts are incomplete, tasks remain unchecked, admitted session-derived improvements are not reconciled into `tasks.md`, delta specs require synchronization, or applicable validation evidence is absent or red. A confirmation prompt SHALL NOT waive these completion conditions.
 
-Immediately before invoking the deterministic archive helper, the archive path SHALL inspect the current session/continuation evidence for pending admitted improvements. It SHALL persist still-admissible owned items as unchecked tasks and return to apply, or stop on the exact owner/target blocker; it SHALL NOT archive first and leave the improvement only in a summary.
+Immediately before invoking the deterministic archive helper, the archive path SHALL inspect the current session/continuation evidence for pending admitted and deferred improvements. It SHALL persist current-consumer owned items as unchecked tasks and return to apply, persist no-current-consumer evidence as non-checkbox history records, or stop only the required dependency chain on an exact owner/target blocker; it SHALL NOT archive first and leave a valid record only in a summary.
 
 The kit MAY preserve intentionally incomplete work through a distinct abandoned or incomplete disposition. That disposition SHALL retain the reason and residual state, SHALL NOT claim all artifacts or tasks are complete, and SHALL NOT synchronize undelivered requirements into main specs.
 
@@ -153,4 +165,25 @@ Getting-started guidance SHALL teach Ordinary Small focused proof and validation
 - **WHEN** a new project user requests a clear bounded local reversible first task without a named Material boundary
 - **THEN** getting-started guidance routes main-owned happy-path proof and focused validation
 - **AND** it does not require a fresh SDET or optional reviewer.
+
+### Requirement: Unattended OpenSpec workflow has one runtime-resolved owner
+The kit SHALL install one canonical global owner for the standard OpenSpec propose, apply, and complete-archive skill and command names. Project-specific requirements SHALL live in OpenSpec config, repository instructions, validation adapters, or differently named domain helpers. Unattended operation SHALL fail closed when a project-local same-name skill or command shadows or competes with the canonical owner.
+
+#### Scenario: Canonical global workflow is loaded
+- **WHEN** unattended preflight inspects the resolved runtime for an unrelated project with no same-name overrides
+- **THEN** every standard propose/apply/archive command and skill resolves to the active kit global source
+- **AND** the project context remains available without copying the lifecycle workflow.
+
+#### Scenario: Legacy overlay remains
+- **WHEN** a target project retains an older same-name OpenSpec overlay
+- **THEN** ordinary manual use remains outside this capability's claim
+- **AND** unattended preflight blocks with migration guidance instead of silently selecting either copy.
+
+### Requirement: Canonical workflow entrypoints use portable deterministic gates
+Canonical propose and apply entrypoints SHALL invoke the portable operation gate from the resolved global source with an explicit project root and change id. Canonical complete archive SHALL invoke the existing portable archive helper with explicit validation argv. They SHALL NOT require the target project to define an opencode-kit npm script.
+
+#### Scenario: Rust project has no npm scripts
+- **WHEN** a target project supplies explicit Rust validation argv and invokes canonical apply/archive
+- **THEN** the global operation gate and archive helper run without a target npm dependency
+- **AND** project-specific commands remain only in its adapter/mission definition.
 

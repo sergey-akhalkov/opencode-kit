@@ -1,0 +1,77 @@
+{
+  "candidateId": "p0-structure-r1",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "fixtureAfter": [
+    {
+      "path": "docs/roadmap.md",
+      "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+    },
+    {
+      "path": "mission-invalid.json",
+      "sha256": "085f3a00c6908a9882ce049c858558e5bdaa3dfea34729ce54fa3505331ea744"
+    },
+    {
+      "path": "mission-valid.json",
+      "sha256": "0ad7bcfb47b6860c14666e231e27d0b02a91c22ce58ac76fef0144990987be1d"
+    },
+    {
+      "path": "tools/validate.mjs",
+      "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+    }
+  ],
+  "fixtureBefore": [
+    {
+      "path": "docs/roadmap.md",
+      "sha256": "a55015444a51c05947225df7105a25c0c3b8d53de695be4d39c83746bbcbc4a6"
+    },
+    {
+      "path": "mission-invalid.json",
+      "sha256": "085f3a00c6908a9882ce049c858558e5bdaa3dfea34729ce54fa3505331ea744"
+    },
+    {
+      "path": "mission-valid.json",
+      "sha256": "0ad7bcfb47b6860c14666e231e27d0b02a91c22ce58ac76fef0144990987be1d"
+    },
+    {
+      "path": "tools/validate.mjs",
+      "sha256": "8bd84068849db1cf74863fdff2bc74704c33efb8fafe33347274fc758a63b302"
+    }
+  ],
+  "productionEntrypointSha256": "0923c90d61e1b57385d89925fc5483d30c9991fd8ad60cf177a2c330f100e33a",
+  "scenarios": [
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission-valid.json"
+      ],
+      "exitCode": 0,
+      "name": "valid",
+      "stderr": "",
+      "stdout": "{\n  \"checks\": [\n    {\n      \"blocking\": false,\n      \"id\": \"definition:checkpoint\",\n      \"status\": \"passed\",\n      \"summary\": \"Checkpoint policy evidence-only is valid for this mission envelope.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:contained\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission, roadmap, and evidence paths are project-contained.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:effects\",\n      \"status\": \"passed\",\n      \"summary\": \"Every slice effect is explicitly allowed and protected effects carry an authority reference.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:schema\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission schema and explicit fields are valid.\"\n    },\n    {\n      \"blocking\": false,\n      \"id\": \"definition:serial-order\",\n      \"status\": \"passed\",\n      \"summary\": \"Mission has 2 explicitly ordered slice(s).\"\n    }\n  ],\n  \"definitionDigest\": \"9eea2901b1e328b67cda768225f63e1847816a60dd624811acd11a59812f5b83\",\n  \"eligibleSlice\": {\n    \"changeId\": \"change-a\",\n    \"id\": \"slice-a\",\n    \"operation\": \"continue\"\n  },\n  \"exitCode\": 0,\n  \"missionId\": \"generic-two-slice\",\n  \"operation\": \"preflight\",\n  \"schemaVersion\": 1,\n  \"status\": \"eligible\",\n  \"tool\": \"roadmap-mission\"\n}\n"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "preflight",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission-invalid.json"
+      ],
+      "exitCode": 2,
+      "name": "invalid-forward-dependency",
+      "stderr": "{\n  \"error\": \"slice slice-a dependency slice-b must appear earlier in serial order\",\n  \"exitCode\": 2,\n  \"operation\": \"preflight\",\n  \"schemaVersion\": 1,\n  \"status\": \"blocked\",\n  \"tool\": \"roadmap-mission\"\n}\n",
+      "stdout": ""
+    }
+  ],
+  "schemaVersion": 1
+}

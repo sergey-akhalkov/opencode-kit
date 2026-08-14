@@ -1,0 +1,572 @@
+{
+  "candidateId": "candidate-last-resort-r3",
+  "captureKind": "candidate",
+  "diff": {
+    "sha256": "fefcaf2d3c28bd67771866de0cdf387885598c0ff183d58612d56fbac702934b",
+    "statusEntries": 64
+  },
+  "instructionInventory": {
+    "artifacts": [
+      {
+        "chars": 66400,
+        "descriptionChars": null,
+        "kind": "instruction",
+        "lines": 329,
+        "path": "global/AGENTS.md",
+        "tokenProxy": 16600
+      },
+      {
+        "chars": 50198,
+        "descriptionChars": null,
+        "kind": "root",
+        "lines": 517,
+        "path": "README.md",
+        "tokenProxy": 12550
+      },
+      {
+        "chars": 19302,
+        "descriptionChars": 329,
+        "kind": "skill",
+        "lines": 166,
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "tokenProxy": 4826
+      },
+      {
+        "chars": 14478,
+        "descriptionChars": 135,
+        "kind": "skill",
+        "lines": 203,
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "tokenProxy": 3620
+      },
+      {
+        "chars": 12853,
+        "descriptionChars": 201,
+        "kind": "skill",
+        "lines": 129,
+        "path": "global/skills/code-quality-audit/SKILL.md",
+        "tokenProxy": 3214
+      },
+      {
+        "chars": 11148,
+        "descriptionChars": null,
+        "kind": "instruction",
+        "lines": 93,
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "tokenProxy": 2787
+      },
+      {
+        "chars": 10705,
+        "descriptionChars": null,
+        "kind": "root",
+        "lines": 72,
+        "path": "REPO_AGENTS.md",
+        "tokenProxy": 2677
+      },
+      {
+        "chars": 10356,
+        "descriptionChars": null,
+        "kind": "template",
+        "lines": 70,
+        "path": "templates/project/AGENTS.md",
+        "tokenProxy": 2589
+      },
+      {
+        "chars": 9086,
+        "descriptionChars": 152,
+        "kind": "agent",
+        "lines": 181,
+        "path": "global/agents/troubleshooter.md",
+        "tokenProxy": 2272
+      },
+      {
+        "chars": 9014,
+        "descriptionChars": 214,
+        "kind": "skill",
+        "lines": 136,
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "tokenProxy": 2254
+      },
+      {
+        "chars": 8474,
+        "descriptionChars": 233,
+        "kind": "agent",
+        "lines": 112,
+        "path": "global/agents/implementation-worker.md",
+        "tokenProxy": 2119
+      },
+      {
+        "chars": 7473,
+        "descriptionChars": 217,
+        "kind": "skill",
+        "lines": 85,
+        "path": "global/skills/codebase-audit-loop/SKILL.md",
+        "tokenProxy": 1869
+      },
+      {
+        "chars": 7429,
+        "descriptionChars": null,
+        "kind": "instruction",
+        "lines": 102,
+        "path": "instructions/instruction-artifact-audit-runbook.md",
+        "tokenProxy": 1858
+      },
+      {
+        "chars": 7406,
+        "descriptionChars": null,
+        "kind": "instruction",
+        "lines": 121,
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "tokenProxy": 1852
+      },
+      {
+        "chars": 6902,
+        "descriptionChars": 155,
+        "kind": "skill",
+        "lines": 91,
+        "path": "global/skills/deduplication-audit/SKILL.md",
+        "tokenProxy": 1726
+      },
+      {
+        "chars": 6772,
+        "descriptionChars": 144,
+        "kind": "skill",
+        "lines": 79,
+        "path": "global/skills/reuse-discovery/SKILL.md",
+        "tokenProxy": 1693
+      },
+      {
+        "chars": 6506,
+        "descriptionChars": 159,
+        "kind": "agent",
+        "lines": 80,
+        "path": "global/agents/test-coverage-reviewer.md",
+        "tokenProxy": 1627
+      },
+      {
+        "chars": 6382,
+        "descriptionChars": 191,
+        "kind": "agent",
+        "lines": 73,
+        "path": "global/agents/session-completion-arbiter.md",
+        "tokenProxy": 1596
+      },
+      {
+        "chars": 6012,
+        "descriptionChars": 182,
+        "kind": "skill",
+        "lines": 60,
+        "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+        "tokenProxy": 1503
+      },
+      {
+        "chars": 5559,
+        "descriptionChars": null,
+        "kind": "instruction",
+        "lines": 48,
+        "path": "instructions/universal-development-loop.md",
+        "tokenProxy": 1390
+      },
+      {
+        "chars": 5430,
+        "descriptionChars": 201,
+        "kind": "agent",
+        "lines": 92,
+        "path": "global/agents/sdet-quality-engineer.md",
+        "tokenProxy": 1358
+      },
+      {
+        "chars": 5413,
+        "descriptionChars": 205,
+        "kind": "skill",
+        "lines": 70,
+        "path": "global/skills/next-step/SKILL.md",
+        "tokenProxy": 1354
+      },
+      {
+        "chars": 5406,
+        "descriptionChars": 160,
+        "kind": "skill",
+        "lines": 45,
+        "path": "global/skills/deep-task-planning/SKILL.md",
+        "tokenProxy": 1352
+      },
+      {
+        "chars": 5187,
+        "descriptionChars": 163,
+        "kind": "skill",
+        "lines": 63,
+        "path": "global/skills/openspec-archive-change/SKILL.md",
+        "tokenProxy": 1297
+      },
+      {
+        "chars": 5078,
+        "descriptionChars": 172,
+        "kind": "agent",
+        "lines": 66,
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "tokenProxy": 1270
+      },
+      {
+        "chars": 4919,
+        "descriptionChars": 150,
+        "kind": "agent",
+        "lines": 67,
+        "path": "global/agents/instruction-artifact-reviewer.md",
+        "tokenProxy": 1230
+      },
+      {
+        "chars": 4336,
+        "descriptionChars": 177,
+        "kind": "skill",
+        "lines": 105,
+        "path": "global/skills/complain/SKILL.md",
+        "tokenProxy": 1084
+      },
+      {
+        "chars": 4080,
+        "descriptionChars": 135,
+        "kind": "skill",
+        "lines": 49,
+        "path": "global/skills/root-cause-analysis/SKILL.md",
+        "tokenProxy": 1020
+      },
+      {
+        "chars": 4036,
+        "descriptionChars": null,
+        "kind": "instruction",
+        "lines": 57,
+        "path": "instructions/evidence-and-validation.md",
+        "tokenProxy": 1009
+      },
+      {
+        "chars": 3943,
+        "descriptionChars": 160,
+        "kind": "agent",
+        "lines": 76,
+        "path": "global/agents/final-candidate-reviewer.md",
+        "tokenProxy": 986
+      },
+      {
+        "chars": 3931,
+        "descriptionChars": 177,
+        "kind": "agent",
+        "lines": 77,
+        "path": "global/agents/qwen-local-worker.md",
+        "tokenProxy": 983
+      },
+      {
+        "chars": 3908,
+        "descriptionChars": 151,
+        "kind": "skill",
+        "lines": 49,
+        "path": "global/skills/documentation-hardening-loop/SKILL.md",
+        "tokenProxy": 977
+      },
+      {
+        "chars": 3237,
+        "descriptionChars": 164,
+        "kind": "skill",
+        "lines": 65,
+        "path": "global/skills/merge-request-author/SKILL.md",
+        "tokenProxy": 810
+      },
+      {
+        "chars": 3228,
+        "descriptionChars": 181,
+        "kind": "skill",
+        "lines": 64,
+        "path": "global/skills/codebase-audit-ledger/SKILL.md",
+        "tokenProxy": 807
+      },
+      {
+        "chars": 3118,
+        "descriptionChars": null,
+        "kind": "instruction",
+        "lines": 40,
+        "path": "instructions/porting-checklist.md",
+        "tokenProxy": 780
+      },
+      {
+        "chars": 3066,
+        "descriptionChars": 178,
+        "kind": "agent",
+        "lines": 57,
+        "path": "global/agents/code-quality-reviewer.md",
+        "tokenProxy": 767
+      },
+      {
+        "chars": 3064,
+        "descriptionChars": 166,
+        "kind": "agent",
+        "lines": 59,
+        "path": "global/agents/openspec-architecture-reviewer.md",
+        "tokenProxy": 766
+      },
+      {
+        "chars": 2868,
+        "descriptionChars": 167,
+        "kind": "skill",
+        "lines": 59,
+        "path": "global/skills/documentation-block-ledger/SKILL.md",
+        "tokenProxy": 717
+      },
+      {
+        "chars": 2855,
+        "descriptionChars": 151,
+        "kind": "agent",
+        "lines": 58,
+        "path": "global/agents/performance-reliability-reviewer.md",
+        "tokenProxy": 714
+      },
+      {
+        "chars": 2769,
+        "descriptionChars": 170,
+        "kind": "agent",
+        "lines": 60,
+        "path": "global/agents/wire-protocol-reviewer.md",
+        "tokenProxy": 693
+      },
+      {
+        "chars": 2764,
+        "descriptionChars": 167,
+        "kind": "agent",
+        "lines": 57,
+        "path": "global/agents/deployment-config-reviewer.md",
+        "tokenProxy": 691
+      },
+      {
+        "chars": 2731,
+        "descriptionChars": 160,
+        "kind": "agent",
+        "lines": 59,
+        "path": "global/agents/rust-concurrency-reviewer.md",
+        "tokenProxy": 683
+      },
+      {
+        "chars": 2660,
+        "descriptionChars": 167,
+        "kind": "skill",
+        "lines": 29,
+        "path": "global/skills/service-architecture-design/SKILL.md",
+        "tokenProxy": 665
+      },
+      {
+        "chars": 2641,
+        "descriptionChars": 179,
+        "kind": "agent",
+        "lines": 57,
+        "path": "global/agents/protocol-api-reviewer.md",
+        "tokenProxy": 661
+      },
+      {
+        "chars": 2631,
+        "descriptionChars": 167,
+        "kind": "agent",
+        "lines": 56,
+        "path": "global/agents/legacy-client-compatibility-reviewer.md",
+        "tokenProxy": 658
+      },
+      {
+        "chars": 2571,
+        "descriptionChars": 185,
+        "kind": "agent",
+        "lines": 57,
+        "path": "global/agents/legacy-evidence-reviewer.md",
+        "tokenProxy": 643
+      },
+      {
+        "chars": 2511,
+        "descriptionChars": null,
+        "kind": "template",
+        "lines": 25,
+        "path": "templates/project/validation.md",
+        "tokenProxy": 628
+      },
+      {
+        "chars": 2423,
+        "descriptionChars": 154,
+        "kind": "skill",
+        "lines": 37,
+        "path": "global/skills/windows-service-packaging/SKILL.md",
+        "tokenProxy": 606
+      },
+      {
+        "chars": 2328,
+        "descriptionChars": 170,
+        "kind": "skill",
+        "lines": 36,
+        "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+        "tokenProxy": 582
+      },
+      {
+        "chars": 2306,
+        "descriptionChars": 148,
+        "kind": "skill",
+        "lines": 34,
+        "path": "global/skills/openspec-consistency-review/SKILL.md",
+        "tokenProxy": 577
+      },
+      {
+        "chars": 2274,
+        "descriptionChars": 177,
+        "kind": "skill",
+        "lines": 37,
+        "path": "global/skills/config-schema-validation/SKILL.md",
+        "tokenProxy": 569
+      },
+      {
+        "chars": 2106,
+        "descriptionChars": 138,
+        "kind": "skill",
+        "lines": 35,
+        "path": "global/skills/external-service-simulator-harness/SKILL.md",
+        "tokenProxy": 527
+      },
+      {
+        "chars": 2064,
+        "descriptionChars": 172,
+        "kind": "skill",
+        "lines": 36,
+        "path": "global/skills/framed-protocol-implementation/SKILL.md",
+        "tokenProxy": 516
+      },
+      {
+        "chars": 2012,
+        "descriptionChars": 174,
+        "kind": "skill",
+        "lines": 36,
+        "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+        "tokenProxy": 503
+      },
+      {
+        "chars": 1982,
+        "descriptionChars": 159,
+        "kind": "skill",
+        "lines": 38,
+        "path": "global/skills/latency-benchmark-pack/SKILL.md",
+        "tokenProxy": 496
+      },
+      {
+        "chars": 1915,
+        "descriptionChars": 154,
+        "kind": "skill",
+        "lines": 34,
+        "path": "global/skills/legacy-contract-extract/SKILL.md",
+        "tokenProxy": 479
+      },
+      {
+        "chars": 1827,
+        "descriptionChars": 155,
+        "kind": "skill",
+        "lines": 37,
+        "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+        "tokenProxy": 457
+      },
+      {
+        "chars": 1262,
+        "descriptionChars": 166,
+        "kind": "skill",
+        "lines": 31,
+        "path": "global/skills/documentation-learning-quest/SKILL.md",
+        "tokenProxy": 316
+      }
+    ],
+    "counts": {
+      "agent": 18,
+      "instruction": 7,
+      "root": 2,
+      "skill": 29,
+      "template": 2
+    },
+    "repeatedLines": [
+      {
+        "line": "`instructions/leaf-reviewer-agent-contract.md`",
+        "count": 13
+      },
+      {
+        "line": "- `Effective Model`: effective inherited model id or `unknown`.",
+        "count": 12
+      },
+      {
+        "line": "- `Candidate Reference / RC`: exact candidate inspected.",
+        "count": 11
+      },
+      {
+        "line": "- `Risk Matrix`: stable `Risk ID`, requirement/invariant, reachable scenario and enforced envelope, path/line or live evidence, business consequence, likelihood or `unknown`, confidence, reproduction procedure when feasible, and smallest mitigation note.",
+        "count": 11
+      },
+      {
+        "line": "- No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.",
+        "count": 8
+      },
+      {
+        "line": "Do not return an acceptance verdict, lifecycle blocker, or work-authoring action list. Main owns reproduction, disposition, and any authorized correction.",
+        "count": 7
+      },
+      {
+        "line": "- `Evidence Gaps And Residual Risks`: unreadable/missing evidence, unknown effective model, future-scope risks, or `none`.",
+        "count": 3
+      },
+      {
+        "line": "- `Findings`: severity, evidence, impact, likely root cause, recommendation, confidence.",
+        "count": 3
+      },
+      {
+        "line": "- After MVP on Material behavior work, complete accepted scope and use fresh critical-only `sdet-quality-engineer`; optional reviewers never become mandatory gates. Never assign Material test authorship to a production author.",
+        "count": 3
+      },
+      {
+        "line": "- When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.",
+        "count": 3
+      }
+    ],
+    "root": "<redacted>",
+    "totals": {
+      "artifacts": 58,
+      "chars": 403335,
+      "lines": 4756,
+      "tokenProxy": 100853
+    },
+    "tool": "opencode-dev-kit-instruction-artifacts-inventory",
+    "version": 1
+  },
+  "model": "openai/gpt-5.6-sol",
+  "opencodeVersion": "1.18.18",
+  "profile": "quality-independent",
+  "promptHashes": {
+    "repeated-cli": "5f3457ebc621862fbcdc3fe77400c07cdbdd712afac1d39b6c225c41730e9605",
+    "mechanical-artifact": "629d77f52109040e86873b8e64137caa2bbf8b88b77aa8d12fbe8dc9bc668f21",
+    "source-placement": "0b7238b828b252625bc64fbf1f28e5dcb098724e9aa2c60b788dae38ef0a4fc1"
+  },
+  "prompts": {
+    "repeated-cli": "Implement the smallest complete local change. Create a dependency-free repository-owned CLI at tools/report.mjs.\nIt will be used repeatedly by operators and later agents. Its required product command is:\n  node tools/report.mjs scan --input sample.txt\nThe scan command must print one compact JSON object containing input=sample.txt and bytes=6 for the existing file.\nDo not add tests, a package dependency, or a framework. Run the nearest representative command and inspect its output.",
+    "mechanical-artifact": "Implement the smallest complete local change. Produce authoritative data/artifacts.json for inputs/a.txt and inputs/b.txt.\nThe JSON is an ordinally sorted array with ids variant-a and variant-b, ordinals 1 and 2, source paths, exact byteLength, and uppercase SHA-256 for each source.\nThese artifacts will be regenerated after input changes and more variants are expected later. Keep semantic ids, source paths, and ordinals reviewable.\nDo not add tests, a package dependency, or a generic framework. If automation is needed, use tools/materialize.mjs. Run the nearest proof and inspect the output.",
+    "source-placement": "Implement the smallest complete local change. target/ is ignored and is the required output root for three generated challenge cases named alpha, beta, and gamma.\nCreate a dependency-free generator intended for repeated later runs. Each target/cases/<id>.json contains exactly {\"case\":\"<id>\"} plus a newline.\nAlso create the tiny one-off semantic record config/one-off.json containing exactly {\"message\":\"ready\"} plus a newline.\nDo not add tests, a package dependency, or a generic framework. Run the generator and inspect its outputs."
+  },
+  "runner": "agent-tooling-ergonomics/1",
+  "sourceHashes": {
+    "global/AGENTS.md": "b94fb8dd0dc0d4c5319804511a76d21aa32caa3c66ac0ecbf70407bc96f18853",
+    "global/agents/implementation-worker.md": "d9c5216fccd6fe1dd57a4f72fdcd45d2f5d3964a766f0dfa4c2d0c56a10d1465",
+    "global/agents/instruction-artifact-reviewer.md": "d9c9ed43e3f0de8c373d672c1ab3d100130a3e9032b477573a707742c0658213",
+    "global/agents/sdet-quality-engineer.md": "3beb08a020bcb1a1543c5c1c0f20f6feb9c36db44d2e5bcfe1b1edf0f347ce05",
+    "global/skills/instruction-artifact-tuning/SKILL.md": "defe7566779f3010eddc6d0bd348ac77be41e3cb9ee9c68267d9d3e1804f98ef",
+    "README.md": "2a4a691becf2e84990669683721426934642b9fd8f6f63a682173dd5862311d3",
+    "package.json": "8e5e8dbcaafd152bc0b6090cc4b3703bb3071205e60749ed958aa45ff06735b5",
+    "tools/proofs/agent-tooling-ergonomics.ts": "e6dd2cd9d24a10102fba5a124fcc9bd9f150ecdc071d60d69ae52bb8960b0ddb"
+  },
+  "sourceRoot": "<kit-root>",
+  "toolPolicy": [
+    "bash: node only; shell metacharacters denied last",
+    "edit: allow inside disposable project",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: deny",
+    "task: deny",
+    "webfetch: deny"
+  ],
+  "variant": "xhigh"
+}

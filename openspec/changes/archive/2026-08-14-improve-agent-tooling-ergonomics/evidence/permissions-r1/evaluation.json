@@ -1,0 +1,8 @@
+{
+  "candidateId": "candidate-reviewed-seed-r2",
+  "hiddenArbiterTools": "all-false",
+  "mainDefault": "permissive",
+  "schemaVersion": 1,
+  "specialistRestrictions": "preserved",
+  "status": "complete"
+}

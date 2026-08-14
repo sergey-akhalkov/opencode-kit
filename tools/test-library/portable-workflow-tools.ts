@@ -299,16 +299,17 @@ export const portableWorkflowToolTests: TestCase[] = [
     },
   },
   {
-    name: "portable process rejects Windows shell metacharacters before execution",
+    name: "portable process delivers literal native argv through staged validation without a second shell",
     run: () => {
       if (process.platform !== "win32") {
         return;
       }
-      withTempDir("portable-meta", (dir) => {
+      withTempDir("portable-native-literal", (dir) => {
         git(dir, ["init"]);
         git(dir, ["config", "user.email", "sdet@example.invalid"]);
         git(dir, ["config", "user.name", "SDET"]);
-        writeText(path.join(dir, "validate.mjs"), "console.log('should-not-run');\n");
+        const literal = "evil&echo\nSHELL_RAN";
+        writeText(path.join(dir, "validate.mjs"), "console.log(JSON.stringify(process.argv.slice(2)));\n");
         git(dir, ["add", "validate.mjs"]);
         git(dir, ["commit", "-m", "seed"]);
         const tempParent = path.join(dir, "tmp-parent");
@@ -320,11 +321,51 @@ export const portableWorkflowToolTests: TestCase[] = [
           "--",
           "node",
           "validate.mjs",
+          literal,
+        ], dir);
+        assertSuccess(result, "Direct native node must accept literal metacharacter/multiline argv through staged validation.");
+        assertOutputContains(result, JSON.stringify(literal), "Staged validation must pass the exact literal argv to the native child.");
+        assert(
+          !result.output.includes("unsupported shell metacharacters"),
+          "Direct native must not apply shell-fallback rejection.",
+        );
+        assert(
+          !/^SHELL_RAN$/m.test(result.output),
+          "Direct native must not launch a second shell command from the literal argv.",
+        );
+        assertEqual(fs.readdirSync(tempParent).length, 0, "Successful native literal argv must still clean disposable worktree.");
+      });
+    },
+  },
+  {
+    name: "portable process rejects shell-fallback metacharacters before staged execution",
+    run: () => {
+      if (process.platform !== "win32") {
+        return;
+      }
+      withTempDir("portable-shell-meta", (dir) => {
+        git(dir, ["init"]);
+        git(dir, ["config", "user.email", "sdet@example.invalid"]);
+        git(dir, ["config", "user.name", "SDET"]);
+        writeText(path.join(dir, "seed.txt"), "seed\n");
+        git(dir, ["add", "seed.txt"]);
+        git(dir, ["commit", "-m", "seed"]);
+        const tempParent = path.join(dir, "tmp-parent");
+        fs.mkdirSync(tempParent, { recursive: true });
+        const marker = path.join(dir, "shell-ran.txt");
+        const command = path.join(dir, "mark.cmd");
+        writeText(command, `@echo off\r\necho ran>"${marker}"\r\n`);
+        const result = invokeProcessCapture(process.execPath, [
+          stagedTool,
+          "--root", dir,
+          "--temp-parent", tempParent,
+          "--",
+          command,
           "evil&echo",
         ], dir);
-        assertFailure(result, "Arguments with Windows shell metacharacters must fail closed.");
+        assertFailure(result, "Shell-fallback arguments with Windows metacharacters must fail closed.");
         assertOutputContains(result, "unsupported shell metacharacters", "Metacharacter rejection must be explicit before shell execution.");
-        assert(!result.output.includes("should-not-run"), "Child must not execute when metacharacters are present.");
+        assert(!fs.existsSync(marker), "Shell-fallback child must not execute when metacharacters are present.");
         assertEqual(fs.readdirSync(tempParent).length, 0, "Metacharacter rejection must still clean disposable worktree.");
       });
     },

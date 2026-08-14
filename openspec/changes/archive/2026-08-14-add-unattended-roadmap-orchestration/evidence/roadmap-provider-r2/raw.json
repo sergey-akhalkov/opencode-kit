@@ -1,0 +1,97 @@
+{
+  "archives": [],
+  "candidateId": "roadmap-provider-r2",
+  "checkpoints": [
+    "8fd6dd9535712f3f94374db7286c58df89086ff2"
+  ],
+  "cleanup": "complete",
+  "controllerRuns": [],
+  "environment": {
+    "model": "openai/gpt-5.6-sol",
+    "node": "v24.18.0",
+    "platform": "win32",
+    "profile": "quality-independent",
+    "variant": "xhigh"
+  },
+  "failure": "controller-resume returned invalid JSON (exit 1): {\n  \"error\": \"external checkpoint does not contain current mission paths: evidence/mission/provider-03.stderr.log, evidence/mission/provider-03.stdout.jsonl, evidence/mission/provider-04.stderr.log, evidence/mission/provider-04.stdout.jsonl, evidence/mission/provider-calls.json, openspec/changes/archive/2026-08-14-change-b/.openspec.yaml, openspec/changes/archive/2026-08-14-change-b/design.md, openspec/changes/archive/2026-08-14-change-b/history.md, openspec/changes/archive/2026-08-14-change-b/proposal.md, openspec/changes/archive/2026-08-14-change-b/specs/synthetic-beta/spec.md, openspec/changes/archive/2026-08-14-change-b/tasks.md, openspec/specs/synthetic-beta/spec.md, src/beta.txt\",\n  \"exitCode\": 1,\n  \"operation\": \"resume\",\n  \"schemaVersion\": 1,\n  \"status\": \"blocked\",\n  \"tool\": \"roadmap-mission\"\n}\n",
+  "markers": {},
+  "providerCalls": [
+    {
+      "command": "local-preflight",
+      "index": 1,
+      "kind": "local-failure",
+      "operation": "continue",
+      "sessionIds": [],
+      "sliceId": "slice-a",
+      "status": 75,
+      "stderrFile": null,
+      "stdoutFile": null
+    },
+    {
+      "command": "opsx-apply",
+      "index": 2,
+      "kind": "configured-provider",
+      "operation": "continue",
+      "sessionIds": [
+        "ses_00193501effeO7T8623rz5gnQ7"
+      ],
+      "sliceId": "slice-a",
+      "status": 0,
+      "stderrFile": "evidence/mission/provider-02.stderr.log",
+      "stdoutFile": "evidence/mission/provider-02.stdout.jsonl"
+    },
+    {
+      "command": "opsx-propose",
+      "index": 3,
+      "kind": "configured-provider",
+      "operation": "propose",
+      "sessionIds": [
+        "ses_00191799cffebW2dm5UhCQBUnB"
+      ],
+      "sliceId": "slice-b",
+      "status": 0,
+      "stderrFile": "evidence/mission/provider-03.stderr.log",
+      "stdoutFile": "evidence/mission/provider-03.stdout.jsonl"
+    },
+    {
+      "command": "opsx-apply",
+      "index": 4,
+      "kind": "configured-provider",
+      "operation": "propose",
+      "sessionIds": [
+        "ses_00191799cffebW2dm5UhCQBUnB"
+      ],
+      "sliceId": "slice-b",
+      "status": 0,
+      "stderrFile": "evidence/mission/provider-04.stderr.log",
+      "stdoutFile": "evidence/mission/provider-04.stdout.jsonl"
+    }
+  ],
+  "schemaVersion": 1,
+  "sessionCleanup": [
+    {
+      "sessionId": "ses_00193501effeO7T8623rz5gnQ7",
+      "status": 0
+    },
+    {
+      "sessionId": "ses_00191799cffebW2dm5UhCQBUnB",
+      "status": 0
+    }
+  ],
+  "sourceHashes": {
+    "global/bin/openspec-archive.ts": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99",
+    "global/bin/openspec-operation-gate.ts": "e34efd7cadae8cd1db7e496658e8ed5b0a550df461318e2197d9f1ba0bd10984",
+    "global/bin/portable-process.ts": "e9cfd70aff8548010dcd43ac637d12f5e3239a92ac9dd47bdd2ac84834ad776e",
+    "global/bin/roadmap-mission.ts": "9aed702bfdc189260c86dbcc69ef7abc9464856988e59ee7123b8c5bba18ebd3",
+    "global/bin/roadmap-mission/contracts.ts": "877bcf6365e67485de97257f3a41c0b32a37cdae35b8deb52ffbfd263fdc12a6",
+    "global/bin/roadmap-mission/controller.ts": "dd498b1749a99dfdf98007536a9942e83cffb524b400c5d21c9dc88935f5049b",
+    "global/bin/roadmap-mission/preflight.ts": "61745ffd7cca67222dd1562ff16910ac48a277870612e2231ae1b02e4a7d94c0",
+    "global/bin/roadmap-mission/state.ts": "518d761691ecafa209b763e7ddd2f1692e56e827c48bfffc20689f0b7c62eac0",
+    "global/commands/opsx-apply.md": "063125fdcec6acc4493ecb936054ee3ca1e3e883396477bb50b088897b094b77",
+    "global/commands/opsx-propose.md": "afece3eaf31f012d629c6b91f2bba6b00a16947cb675a208b1b2587e2a5d9950",
+    "global/skills/openspec-apply-change/SKILL.md": "691f3ca2ecc1d78d626e4ea1ce319e7ec1845ae983a56297d397f87868ae1700",
+    "global/skills/openspec-propose/SKILL.md": "8a12941f48f35d3e8d3a69378ae573c52729b67b72f88a668c6d2740edfbb06f",
+    "tools/proofs/roadmap-mission-provider.ts": "94563f92a7d666381558456437458f354ba45cf3d0a9e95039d24a7f1fb4f402"
+  },
+  "transitions": []
+}

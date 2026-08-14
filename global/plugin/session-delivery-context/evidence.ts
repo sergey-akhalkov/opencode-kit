@@ -19,7 +19,9 @@ import type {
 const ASSISTANT_LIMIT = 16;
 const DESCENDANT_LIMIT = 32;
 const DIFF_LIMIT = 24;
+const DIFF_FILE_LIMIT = 64;
 const EXECUTION_TEXT_LIMIT = 2_000;
+const LABEL_TEXT_LIMIT = 256;
 const SYNTHETIC_LIMIT = 32;
 const SYNTHETIC_TEXT_LIMIT = 4_000;
 const TOOL_LIMIT = 64;
@@ -94,7 +96,22 @@ function textIdentity(text: string): string {
   return text.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
-function boundedText(
+export function addTruncation(
+  truncations: DeliveryContextTruncation[],
+  surface: string,
+  limit: number,
+  omitted: number,
+): void {
+  if (omitted <= 0) return;
+  const existing = truncations.find((entry) => entry.surface === surface && entry.limit === limit);
+  if (existing == null) {
+    truncations.push({ limit, omitted, surface });
+  } else {
+    existing.omitted += omitted;
+  }
+}
+
+export function boundedText(
   raw: string,
   rawSessionId: string,
   surface: string,
@@ -105,19 +122,31 @@ function boundedText(
   if (sanitized.length <= limit) {
     return { text: sanitized, truncated: false };
   }
-  truncations.push({ limit, omitted: sanitized.length - limit, surface });
+  addTruncation(truncations, surface, limit, sanitized.length - limit);
   return { text: sanitized.slice(0, limit), truncated: true };
 }
 
-function cap<T>(
+export function cap<T>(
   values: T[],
   limit: number,
   surface: string,
   truncations: DeliveryContextTruncation[],
 ): T[] {
   if (values.length <= limit) return values;
-  truncations.push({ limit, omitted: values.length - limit, surface });
+  addTruncation(truncations, surface, limit, values.length - limit);
   return values.slice(values.length - limit);
+}
+
+export function capEdges<T>(
+  values: T[],
+  limit: number,
+  surface: string,
+  truncations: DeliveryContextTruncation[],
+): T[] {
+  if (values.length <= limit) return values;
+  addTruncation(truncations, surface, limit, values.length - limit);
+  const head = Math.ceil(limit / 2);
+  return [...values.slice(0, head), ...values.slice(values.length - (limit - head))];
 }
 
 function partProvenance(part: Record<string, unknown>, text: string): DeliveryContextSyntheticMessage["provenance"] {
@@ -334,7 +363,7 @@ function executionEvidence(
         : [];
       diffEvidence.push({
         eventRef: hashRef("diff", String(row.id)),
-        files,
+        files: cap(files, DIFF_FILE_LIMIT, "diffEvidence.files", truncations),
         patchRef: hashRef("patch", stringValue(parsed.hash) ?? JSON.stringify(files)),
         time: eventTime(row.time_created),
       });
@@ -344,7 +373,8 @@ function executionEvidence(
     const state = parseRecord(parsed.state);
     const input = parseRecord(state?.input);
     const metadata = parseRecord(state?.metadata) ?? parseRecord(parsed.metadata);
-    const tool = stringValue(parsed.tool) ?? "unknown";
+    const rawTool = stringValue(parsed.tool) ?? "unknown";
+    const tool = boundedText(rawTool, rawSessionId, "toolEvidence.tool", LABEL_TEXT_LIMIT, truncations).text;
     const status = stringValue(state?.status) ?? "unknown";
     const title = stringValue(state?.title);
     const output = stringValue(state?.output) ?? stringValue(state?.error);
@@ -359,7 +389,9 @@ function executionEvidence(
       output: boundedOutput?.text ?? null,
       status,
       time: eventTime(row.time_created),
-      title: title == null ? null : sanitizeText(title, rawSessionId),
+      title: title == null
+        ? null
+        : boundedText(title, rawSessionId, "toolEvidence.title", LABEL_TEXT_LIMIT, truncations).text,
       tool,
       truncated: boundedOutput?.truncated ?? false,
     };
@@ -388,7 +420,10 @@ function executionEvidence(
     if (tool === "task") {
       const child = stringValue(metadata?.sessionID) ?? stringValue(metadata?.sessionId) ?? stringValue(metadata?.childSessionID);
       background.push({
-        agent: stringValue(input?.subagent_type) ?? stringValue(input?.agent),
+        agent: (() => {
+          const agent = stringValue(input?.subagent_type) ?? stringValue(input?.agent);
+          return agent == null ? null : boundedText(agent, rawSessionId, "background.agent", LABEL_TEXT_LIMIT, truncations).text;
+        })(),
         callRef: toolRow.callRef,
         childRef: child == null ? null : hashRef("session", child),
         resultConsumed: status === "completed" ? "unknown" : false,
@@ -399,7 +434,9 @@ function executionEvidence(
     if (/\b(?:test|validate|lint|build|check|doctor|openspec\s+validate)\b/i.test(commandText)) {
       validationEvidence.push({
         callRef: toolRow.callRef,
-        command: command == null ? null : sanitizeText(command, rawSessionId),
+        command: command == null
+          ? null
+          : boundedText(command, rawSessionId, "validationEvidence.command", EXECUTION_TEXT_LIMIT, truncations).text,
         eventRef: toolRow.eventRef,
         status,
         summary: boundedOutput?.text ?? null,
@@ -424,7 +461,10 @@ function executionEvidence(
     const bounded = boundedText(text, rawSessionId, "assistantEvidence.text", EXECUTION_TEXT_LIMIT, truncations);
     const error = parseRecord(message.error);
     assistantEvidence.push({
-      agent: stringValue(message.agent),
+      agent: (() => {
+        const agent = stringValue(message.agent);
+        return agent == null ? null : boundedText(agent, rawSessionId, "assistantEvidence.agent", LABEL_TEXT_LIMIT, truncations).text;
+      })(),
       error: stringValue(error?.name),
       eventRef: hashRef("assistant", messageId),
       finish: stringValue(message.finish),
@@ -491,7 +531,10 @@ function descendantEvidence(
     const id = String(row.id);
     const metadata = parseRecord(row.metadata);
     const guard = parseRecord(metadata?.completionGuard) ?? parseRecord(metadata?.completion_guard);
-    const agent = stringValue(row.agent) ?? stringValue(metadata?.agent);
+    const rawAgent = stringValue(row.agent) ?? stringValue(metadata?.agent);
+    const agent = rawAgent == null
+      ? null
+      : boundedText(rawAgent, rawSessionId, "descendants.agent", LABEL_TEXT_LIMIT, truncations).text;
     const childRef = hashRef("session", id);
     if (agent === "session-completion-arbiter" || guard != null) {
       auditRefs.push({

@@ -1,0 +1,21 @@
+{
+  "candidateId": "candidate-contract-green-r4",
+  "captureKind": "candidate",
+  "completed": [
+    "repeated-cli",
+    "mechanical-artifact",
+    "source-placement"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "4b5b79af042fd2688dbfca747373ad42a5dc0e131469a9570397fb219d5cc183",
+    "global/agents/implementation-worker.md": "d9c5216fccd6fe1dd57a4f72fdcd45d2f5d3964a766f0dfa4c2d0c56a10d1465",
+    "global/agents/instruction-artifact-reviewer.md": "d9c9ed43e3f0de8c373d672c1ab3d100130a3e9032b477573a707742c0658213",
+    "global/agents/sdet-quality-engineer.md": "3beb08a020bcb1a1543c5c1c0f20f6feb9c36db44d2e5bcfe1b1edf0f347ce05",
+    "global/skills/instruction-artifact-tuning/SKILL.md": "defe7566779f3010eddc6d0bd348ac77be41e3cb9ee9c68267d9d3e1804f98ef",
+    "README.md": "2a4a691becf2e84990669683721426934642b9fd8f6f63a682173dd5862311d3",
+    "package.json": "8e5e8dbcaafd152bc0b6090cc4b3703bb3071205e60749ed958aa45ff06735b5",
+    "tools/proofs/agent-tooling-ergonomics.ts": "e6dd2cd9d24a10102fba5a124fcc9bd9f150ecdc071d60d69ae52bb8960b0ddb"
+  }
+}
