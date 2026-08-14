@@ -299,6 +299,102 @@ async function runInterruptedRetention(options: {
   };
 }
 
+async function runRouteSettle(options: {
+  abortMs?: number;
+  holdLookups?: boolean;
+  readyAfterLookups: number;
+  releaseHeldAfter?: "abort" | "settle";
+}): Promise<{
+  created: number;
+  elapsedMs: number;
+  error: Error | null;
+  lookups: number;
+  tools: Record<string, boolean> | null;
+}> {
+  const rootID = "session_root_route_settle";
+  const abort = new AbortController();
+  let lookups = 0;
+  let created = 0;
+  let releaseHeldLookups = () => {};
+  const heldLookups = options.holdLookups === true
+    ? new Promise<void>((resolve) => {
+      releaseHeldLookups = resolve;
+    })
+    : Promise.resolve();
+  const readyAgent = {
+    hidden: true,
+    id: "session-completion-arbiter",
+    model: { id: "grok-4.6", providerID: "xai" },
+  };
+  const client = {
+    provider: {
+      list: async () => ({
+        data: {
+          all: [{ id: "xai", models: { "grok-4.6": { id: "grok-4.6" } } }],
+          connected: ["xai"],
+        },
+      }),
+    },
+    session: {
+      children: async () => ({ data: [] }),
+      create: async () => {
+        created += 1;
+        return { data: sessionFixture({ id: "session_child_route_settle", parentID: rootID }) };
+      },
+      delete: async () => ({ data: true }),
+      get: async () => ({ error: { name: "NotFoundError" } }),
+      status: async () => ({ data: {} }),
+      update: async () => ({ error: { name: "NotFoundError" } }),
+    },
+    tool: {
+      ids: async () => {
+        lookups += 1;
+        await heldLookups;
+        return { data: ["read", "edit", "bash"] };
+      },
+    },
+    v2: {
+      agent: {
+        list: async () => ({
+          data: { data: lookups >= options.readyAfterLookups ? [readyAgent] : [] },
+        }),
+      },
+    },
+  };
+  const started = Date.now();
+  if (options.releaseHeldAfter === "abort") {
+    abort.signal.addEventListener("abort", () => {
+      setTimeout(releaseHeldLookups, 5);
+    }, { once: true });
+  }
+  if (options.abortMs != null) setTimeout(() => abort.abort(), options.abortMs);
+  let error: Error | null = null;
+  let tools: Record<string, boolean> | null = null;
+  try {
+    const result = await ensureArbiterChild(
+      client as never,
+      ".",
+      "session-completion-arbiter",
+      { ...initialRootState(sessionFixture({ id: rootID })), auditAbort: abort, grindEnabled: true },
+      epoch({
+        auditID: "audit_route_settle",
+        childSessionID: null,
+        rootRef: hashRef("session", rootID),
+        rootSessionID: rootID,
+      }),
+      2,
+    );
+    tools = result.route.tools;
+  } catch (cause) {
+    error = cause instanceof Error ? cause : new Error(String(cause));
+  }
+  if (options.releaseHeldAfter === "settle") {
+    releaseHeldLookups();
+    await sleep(30);
+  }
+  return { created, elapsedMs: Date.now() - started, error, lookups, tools };
+}
+
 function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVerdict {
   return {
     auditID: "audit_fixture_1",
@@ -1978,6 +2074,106 @@ const tests: TestCase[] = [
       );
       assert(result.firstPresent && result.firstStatus === "auditing", "busy-on-recheck child must remain auditing");
       assert(result.unrelatedPresent && result.wrongOwnerPresent, "unrelated and foreign children must be preserved");
+    },
+  },
+  {
+    name: "critical: hidden route becoming ready during settle creates one child and no earlier child",
+    run: async () => {
+      const result = await runRouteSettle({ readyAfterLookups: 2 });
+      assert(result.error == null, `ready-during-settle must not fail: ${result.error?.message ?? "unknown"}`);
+      assert(result.lookups >= 2, `must retry provider-free lookup until ready, lookups=${result.lookups}`);
+      assert(result.created === 1, `must create exactly one child after readiness, created=${result.created}`);
+      assert(result.tools != null, "ready route must return a tool map");
+      assert(
+        Object.values(result.tools ?? {}).every((enabled) => enabled === false),
+        `hidden route must disable every tool before child creation, tools=${JSON.stringify(result.tools)}`,
+      );
+    },
+  },
+  {
+    name: "critical: interrupting route settle creates no child and preserves cancellation",
+    run: async () => {
+      const result = await runRouteSettle({ abortMs: 30, readyAfterLookups: Number.POSITIVE_INFINITY });
+      assert(result.created === 0, `interrupt must not create an audit child, created=${result.created}`);
+      assert(result.error != null, "interrupt must fail closed instead of succeeding a late route");
+      assert(
+        result.error?.name === "AbortError" || (result.error?.message ?? "").includes("cancelled"),
+        `interrupt must surface cancellation, error=${result.error?.name}:${result.error?.message}`,
+      );
+    },
+  },
+  {
+    name: "critical: exhausted hidden route stays capability-blocked with last cause and no child",
+    run: async () => {
+      const result = await runRouteSettle({ readyAfterLookups: Number.POSITIVE_INFINITY });
+      assert(result.created === 0, `exhaustion must not create an audit child, created=${result.created}`);
+      assert(result.lookups >= 2, `exhaustion must retry provider-free lookup, lookups=${result.lookups}`);
+      assert(
+        result.elapsedMs >= 4_500 && result.elapsedMs < 8_000,
+        `exhaustion must stay inside the finite settle window, elapsedMs=${result.elapsedMs}`,
+      );
+      assert(
+        (result.error?.message ?? "").includes(
+          "Configured hidden completion arbiter route is unavailable after bounded readiness settle",
+        ),
+        `exhaustion must keep the capability-shaped wrapper, error=${result.error?.message ?? "none"}`,
+      );
+      const cause = (result.error as Error & { cause?: unknown } | null)?.cause;
+      const causeMessage = cause instanceof Error ? cause.message : String(cause ?? "");
+      assert(
+        causeMessage.includes("Configured hidden completion arbiter route is unavailable"),
+        `exhaustion must preserve the last route error as cause, cause=${causeMessage}`,
+      );
+    },
+  },
+  {
+    name: "critical: abort during in-flight route lookup creates no child after late ready read",
+    run: async () => {
+      const result = await runRouteSettle({
+        abortMs: 20,
+        holdLookups: true,
+        readyAfterLookups: 1,
+        releaseHeldAfter: "abort",
+      });
+      assert(result.created === 0, `in-flight abort must not create an audit child, created=${result.created}`);
+      assert(result.lookups >= 1, `in-flight abort must start a provider-free lookup, lookups=${result.lookups}`);
+      assert(
+        result.elapsedMs < 2_000,
+        `in-flight abort must not wait out the settle window, elapsedMs=${result.elapsedMs}`,
+      );
+      assert(result.error != null, "in-flight abort must fail closed instead of returning a late route");
+      assert(
+        result.error?.name === "AbortError" || (result.error?.message ?? "").includes("cancelled"),
+        `in-flight abort must surface cancellation, error=${result.error?.name}:${result.error?.message}`,
+      );
+    },
+  },
+  {
+    name: "critical: hung route lookup cannot outlive settle or create a child after late ready read",
+    run: async () => {
+      const result = await runRouteSettle({
+        holdLookups: true,
+        readyAfterLookups: 1,
+        releaseHeldAfter: "settle",
+      });
+      assert(result.created === 0, `hung lookup must not create an audit child, created=${result.created}`);
+      assert(result.lookups >= 1, `hung lookup must start a provider-free attempt, lookups=${result.lookups}`);
+      assert(
+        result.elapsedMs >= 4_500 && result.elapsedMs < 8_000,
+        `hung lookup must stay inside the finite settle window, elapsedMs=${result.elapsedMs}`,
+      );
+      assert(
+        (result.error?.message ?? "").includes(
+          "Configured hidden completion arbiter route is unavailable after bounded readiness settle",
+        ),
+        `hung lookup must keep the capability-shaped wrapper, error=${result.error?.message ?? "none"}`,
+      );
+      const cause = (result.error as Error & { cause?: unknown } | null)?.cause;
+      const causeMessage = cause instanceof Error ? cause.message : String(cause ?? "");
+      assert(
+        causeMessage.includes("timed out"),
+        `hung lookup must preserve the per-attempt deadline as cause, cause=${causeMessage}`,
+      );
     },
   },
 ];

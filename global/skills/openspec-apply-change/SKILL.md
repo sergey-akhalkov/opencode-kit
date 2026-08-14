@@ -114,11 +114,11 @@ Use this skill when the user asks to start or continue implementation of one Ope
    - Pause only for an exact user-owned blocker; do not convert an ordinary failure into a routine approval question
 
    **Pause only if:**
-   - A task is materially ambiguous and no evidence-backed safe reversible interpretation exists → ask one exact clarification question
+   - A task's accepted behavior or protected semantics are materially ambiguous and no evidence-backed safe reversible interpretation exists → ask one exact clarification question
    - Progress requires an exact user-owned decision or action under the active global owner-boundary contract → provide the required self-contained owner handoff
    - The user interrupts
 
-   A progress checkpoint, completed work cycle, green validation pass, still-open task, locally resolvable error, or blocked live/external gate is not by itself a reason to ask whether to continue. Continue safe local/offline required work, and stop only the affected action at its exact owner boundary. If implementation exposes an artifact or design mismatch but the accepted semantics are already clear, update the smallest coherent proposal/design/spec/tasks/history set and continue. This includes reopening or adding tasks and changing agent-authored candidate/revision labels, attempt limits, `no successor` rules, and process stop lines after causal correction and a satisfied retry/`Live-Attempt Gate`; never ask whether to expand the change for those controls. Updating them does not authorize the underlying protected action.
+   A progress checkpoint, locally resolvable error, or blocked live/external gate is not by itself a reason to ask whether to continue. With clear accepted semantics, autonomously update proposal/design/spec/tasks/history, candidate/revision labels, attempt limits, `no successor` rules, and stop lines after causal correction and a satisfied retry/`Live-Attempt Gate`; never ask whether to expand the change for those controls. This does not authorize the underlying protected action.
 
 8. **On completion or owner-blocked pause, show status**
 
@@ -183,9 +183,9 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 ```
 
 **Guardrails**
-- Keep going through tasks until done, interrupted, or stopped by an exact owner boundary
+- Choose smallest dependency-valid pending slice to the earliest real boundary; continue until done unless the user bounded this request, interrupts, or an exact owner boundary stops it
 - Always read context files before starting (from the apply instructions output)
-- If a task is materially ambiguous and lacks a safe reversible interpretation, pause and ask one exact question
+- If a task's accepted behavior or protected semantics are materially ambiguous and lack a safe reversible interpretation, pause and ask one exact question
 - If implementation reveals an artifact or design mismatch with already resolved semantics, update the affected artifact and continue
 - Keep code changes minimal and scoped to each task
 - Update a task checkbox only after its required observable proof and focused validation pass

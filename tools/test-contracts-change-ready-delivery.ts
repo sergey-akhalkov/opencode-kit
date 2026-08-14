@@ -246,6 +246,49 @@ const ARBITER_CHECKPOINT_CONTINUE_MARKERS = [
   "use `owner_required` only when the question crosses an exact owner boundary",
 ] as const;
 
+/** Strip fenced examples so sequencing/owner-stop oracles inspect operative instructions only. */
+function operativeInstructionText(source: string): string {
+  return source.replace(/```[\s\S]*?```/g, "\n");
+}
+
+const TASK_SEQUENCING_APPLY_SURFACES = [
+  "global/skills/openspec-apply-change/SKILL.md",
+  "global/commands/opsx-apply.md",
+] as const;
+
+const TASK_SEQUENCING_GLOBAL_MARKERS = [
+  "Task order/batching, tool/reviewer choice, and cycle size are agent-owned",
+  "pending tasks remain accepted unless the user bounded this request",
+  "smallest dependency-valid slice to earliest safe real boundary",
+  "stop only the affected action at its exact owner boundary",
+] as const;
+
+const TASK_SEQUENCING_APPLY_MARKERS = [
+  "smallest dependency-valid pending slice",
+  "unless the user bounded this request",
+  "an exact owner boundary stops it",
+  "This does not authorize the underlying protected action",
+] as const;
+
+const TASK_SEQUENCING_ARBITER_MARKERS = [
+  "unbounded task-range/batch/review/cycle question is autonomous",
+  "every advancing option",
+  "Use `owner_required` only for an exact protected decision/action",
+] as const;
+
+/** Current compressed arbiter rule: mixed protected+review menus stay autonomous. */
+const WEAK_ARBITER_EVERY_OPTION_FRAGMENT =
+  "An unbounded task-range/batch/review/cycle question is autonomous: choose the smallest dependency-valid slice unless every option is `owner_required`. Use `owner_required` only for an exact protected decision/action";
+
+/** Pre-candidate wording: generic `scope` ask plus apply-until-done without an explicit user task limit. */
+const BASELINE_TASK_SEQUENCING_FRAGMENT = [
+  "Think before coding: do not assume, hide confusion, or silently choose between meaningful interpretations. If ambiguity affects outcome, risk, scope, data, or public API, stop and ask one concise question; if a safe reversible default exists, state the assumption and continue.",
+  "Keep going through tasks until done, interrupted, or stopped by an exact owner boundary",
+].join("\n");
+
+const TASK_SEQUENCING_FORBIDDEN_GENERIC_SCOPE =
+  "If ambiguity affects outcome, risk, scope, data, or public API";
+
 export const changeReadyDeliveryContractTests: TestCase[] = [
   {
     name: "contracts: OpenSpec apply skill and slash command keep owner-only pause autonomy",
@@ -571,6 +614,96 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       assert(
         /final-history-retrospective|final history retrospective/i.test(compactionSchedulesRetrospective),
         "Negative compaction mutation must be detectable",
+      );
+    },
+  },
+  {
+    name: "contracts: task-range sequencing stays autonomous without bypassing user limits or protected actions",
+    run: () => {
+      const agents = operativeInstructionText(
+        fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8"),
+      );
+      const arbiter = operativeInstructionText(
+        fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8"),
+      );
+
+      assertEqual(
+        missingTokens(agents, TASK_SEQUENCING_GLOBAL_MARKERS).join("|"),
+        "",
+        `global/AGENTS.md missing task-sequencing pair: ${missingTokens(agents, TASK_SEQUENCING_GLOBAL_MARKERS).join(", ")}`,
+      );
+      assert(
+        !agents.includes(TASK_SEQUENCING_FORBIDDEN_GENERIC_SCOPE),
+        "global/AGENTS.md must not restore the generic scope ambiguity trigger",
+      );
+
+      for (const relative of TASK_SEQUENCING_APPLY_SURFACES) {
+        const text = operativeInstructionText(fs.readFileSync(path.join(root, relative), "utf8"));
+        assertEqual(
+          missingTokens(text, TASK_SEQUENCING_APPLY_MARKERS).join("|"),
+          "",
+          `${relative} missing task-sequencing pair: ${missingTokens(text, TASK_SEQUENCING_APPLY_MARKERS).join(", ")}`,
+        );
+      }
+
+      assertEqual(
+        missingTokens(arbiter, TASK_SEQUENCING_ARBITER_MARKERS).join("|"),
+        "",
+        `session-completion-arbiter missing task-sequencing pair: ${missingTokens(arbiter, TASK_SEQUENCING_ARBITER_MARKERS).join(", ")}`,
+      );
+
+      assert(
+        missingTokens(BASELINE_TASK_SEQUENCING_FRAGMENT, TASK_SEQUENCING_GLOBAL_MARKERS).length > 0,
+        "Baseline pre-candidate wording must fail the global sequencing/user-bound oracle",
+      );
+      assert(
+        missingTokens(BASELINE_TASK_SEQUENCING_FRAGMENT, TASK_SEQUENCING_APPLY_MARKERS).length > 0,
+        "Baseline pre-candidate wording must fail the apply sequencing/user-bound oracle",
+      );
+      assert(
+        missingTokens(BASELINE_TASK_SEQUENCING_FRAGMENT, TASK_SEQUENCING_ARBITER_MARKERS).length > 0,
+        "Baseline pre-candidate wording must fail the arbiter sequencing/owner-stop oracle",
+      );
+
+      const apply = operativeInstructionText(
+        fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8"),
+      );
+      const applyWithoutUserBound = apply.replaceAll(
+        "unless the user bounded this request",
+        "unless the session is tired",
+      );
+      assert(
+        missingTokens(applyWithoutUserBound, TASK_SEQUENCING_APPLY_MARKERS).includes(
+          "unless the user bounded this request",
+        ),
+        "Dropping the explicit user task-limit stop must fail closed",
+      );
+      const applyWithoutOwnerStop = apply.replaceAll(
+        "an exact owner boundary stops it",
+        "an exact owner boundary may be deferred",
+      );
+      assert(
+        missingTokens(applyWithoutOwnerStop, TASK_SEQUENCING_APPLY_MARKERS).includes(
+          "an exact owner boundary stops it",
+        ),
+        "Dropping the exact owner-boundary stop while keeping sequencing autonomy must fail closed",
+      );
+
+      assert(
+        missingTokens(WEAK_ARBITER_EVERY_OPTION_FRAGMENT, TASK_SEQUENCING_ARBITER_MARKERS).includes(
+          "every advancing option",
+        ),
+        "Arbiter wording that treats mixed protected+non-advancing menus as autonomous must fail closed",
+      );
+      const arbiterWithoutAdvancingStop = arbiter.replaceAll(
+        "every advancing option",
+        "every option",
+      );
+      assert(
+        missingTokens(arbiterWithoutAdvancingStop, TASK_SEQUENCING_ARBITER_MARKERS).includes(
+          "every advancing option",
+        ),
+        "Dropping advancing-option owner_required retention for mixed protected menus must fail closed",
       );
     },
   },

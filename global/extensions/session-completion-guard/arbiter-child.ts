@@ -153,7 +153,7 @@ export async function ensureArbiterChild(
   retainAuditSessions: number,
   interruptedAuditGraceMs = Number.POSITIVE_INFINITY,
 ) {
-  const route = await resolveArbiterRoute(client, directory, arbiterAgent);
+  const route = await resolveArbiterRoute(client, directory, arbiterAgent, state.auditAbort?.signal);
   const retained = await retainedChild(client, directory, state, epoch);
   if (retained != null) {
     const child = await dataOf<Session>(client.session.update({
