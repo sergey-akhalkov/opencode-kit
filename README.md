@@ -386,7 +386,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `next-step`: discover OpenSpec-backed workstreams and choose one serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
-- `reuse-discovery`: bounded reuse-first discovery for new mechanisms and free-form `/reuse-inventory` orchestration over explicit private bindings.
+- `reuse-discovery`: bounded reuse-first discovery for new mechanisms across current-repository, platform/dependency, explicitly configured cross-project, and read-only ecosystem evidence.
 - `root-cause-analysis`: evidence-backed 5 Whys/causal-chain analysis for symptoms, recurrence paths, unknown-cause investigations, and remediation-ready cause records.
 - `complain`: record current-session workflow friction, instruction conflicts, tooling pain, validation noise, or reusable improvement opportunities in `docs/feedbacks/**`.
 

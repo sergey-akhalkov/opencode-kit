@@ -1,0 +1,76 @@
+{
+  "candidateId": "pre-simplify-source",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "scenarios": [
+    "inventory-refresh",
+    "local-owner",
+    "registered-peer",
+    "stale-record",
+    "typical-external",
+    "no-match",
+    "trivial-fix",
+    "registry-unavailable"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "4b5b79af042fd2688dbfca747373ad42a5dc0e131469a9570397fb219d5cc183",
+    "global/commands/reuse-inventory.md": "ac63de019053375ac32a6e79e7e08b2cb85252b3f65fee7e23ab7035eb5359c3",
+    "global/skills/change-ready-sdlc/SKILL.md": "e2fd693672964c5ea4f404159a982954a913e80af9c34a34d13e2f88502cf8f1",
+    "global/skills/reuse-discovery/SKILL.md": "e6f45c67238102610fb1c47a8924e79d02baeff115dc24074769e4b206bbe090",
+    "global/bin/reuse-registry.ts": "f2c2b47ffb0fd925679760928923b96a474a10da77fd609752b7cb0da313a650",
+    "tools/proofs/reuse-discovery.ts": "2a1554a3d55415b261ecf35495146324f8741effd54b06f575b7f604965a8db4"
+  },
+  "toolPolicy": [
+    "bash: only literal OPENCODE_CONFIG_DIR/bin/reuse-registry.ts argv; shell metacharacters denied last",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: deny",
+    "webfetch: deny"
+  ],
+  "version": 1,
+  "credentials": {
+    "captureUsesExistingStore": true,
+    "existingCount": 4,
+    "existingStatus": 0,
+    "isolatedCount": 0,
+    "isolatedStatus": 0
+  },
+  "permission": {
+    "exactFinalPolicy": true
+  },
+  "agentEnvelope": {
+    "steps": 12
+  },
+  "loader": {
+    "agent": {
+      "outputBytes": 8710,
+      "outputHash": "eda96f77afdbc5c0e01bd6eb5e4ae27758ddff81b404eae3c70f790468615ad2",
+      "status": 0,
+      "stderrBytes": 3036,
+      "stderrHasError": false,
+      "stderrHash": "cced4988e81e833b7dbef3385c2276d45323e9a140dd14443218bf34799c9afe"
+    },
+    "config": {
+      "outputBytes": 129593,
+      "outputHash": "c4621938386ab9970ae37e41118cc25c79cd8be1f96d517ce6d9c0c6db7e87a6",
+      "status": 0,
+      "stderrBytes": 2893,
+      "stderrHasError": false,
+      "stderrHash": "fecb019693bf4dc4b84512be135fac79be4cfb4f9f76c5f55fd2a9464f455492"
+    }
+  },
+  "config": {
+    "explicitReuseConfig": true,
+    "globalSourceMatchesKit": true,
+    "ownerPathsUsed": false
+  },
+  "opencodeVersion": "1.18.18"
+}

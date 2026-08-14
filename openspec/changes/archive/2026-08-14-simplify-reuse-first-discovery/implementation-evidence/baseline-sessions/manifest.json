@@ -1,0 +1,10 @@
+{
+  "candidateId": "pre-simplify-source",
+  "captureKind": "baseline",
+  "completed": [
+    "local-owner",
+    "trivial-fix"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1
+}

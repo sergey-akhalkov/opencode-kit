@@ -1,0 +1,34 @@
+{
+  "baselineRoot": "<baseline-root>",
+  "candidateComplete": true,
+  "candidateRoot": "<candidate-root>",
+  "facts": {
+    "baseline": {
+      "localElapsedMs": 99607,
+      "localLoadedSkill": true,
+      "localRegistryCall": false,
+      "trivialElapsedMs": 42684,
+      "trivialLoadedSkill": false,
+      "trivialRegistryCall": false
+    },
+    "candidate": {
+      "localCleanup": true,
+      "localDisposition": true,
+      "localLoadedReuseSkill": true,
+      "localNoBashCall": true,
+      "localNoRegistryCall": true,
+      "localSourceStable": true,
+      "localStatus": 0,
+      "localCrossProjectState": true,
+      "trivialCleanup": true,
+      "trivialNoBashCall": true,
+      "trivialNoCrossProjectTool": true,
+      "trivialNoReuseSkill": true,
+      "trivialNoRegistryCall": true,
+      "trivialSourceStable": true,
+      "trivialStatus": 0
+    }
+  },
+  "modelCalls": 0,
+  "schemaVersion": 1
+}

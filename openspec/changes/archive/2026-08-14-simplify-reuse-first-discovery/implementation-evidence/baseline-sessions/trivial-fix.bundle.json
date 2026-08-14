@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "pre-simplify-source",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "4b5b79af042fd2688dbfca747373ad42a5dc0e131469a9570397fb219d5cc183",
+      "global/commands/reuse-inventory.md": "ac63de019053375ac32a6e79e7e08b2cb85252b3f65fee7e23ab7035eb5359c3",
+      "global/skills/change-ready-sdlc/SKILL.md": "e2fd693672964c5ea4f404159a982954a913e80af9c34a34d13e2f88502cf8f1",
+      "global/skills/reuse-discovery/SKILL.md": "e6f45c67238102610fb1c47a8924e79d02baeff115dc24074769e4b206bbe090",
+      "global/bin/reuse-registry.ts": "f2c2b47ffb0fd925679760928923b96a474a10da77fd609752b7cb0da313a650",
+      "tools/proofs/reuse-discovery.ts": "2a1554a3d55415b261ecf35495146324f8741effd54b06f575b7f604965a8db4"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_000adf331ffegCl8NZ69J7WxBZ",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "reuse-baseline-trivial-fix",
+      "Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform registry discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786695007153,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff523bac001ISVqE8UC7PiUj6\",\"messageID\":\"msg_fff520e6f0011gBjd6Pjx2Q6tv\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"snapshot\":\"2bcf9dae8d46ececab96c076d0b5db80f11b2c85\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786695011557,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff52460d0014pVue4YQG4dJ7B\",\"messageID\":\"msg_fff520e6f0011gBjd6Pjx2Q6tv\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"type\":\"text\",\"text\":\"Проверю `task.md` и локальную реализацию greeting, затем назову только минимальную правку и ближайшую проверку без изменений файлов и внешних действий.\",\"time\":{\"start\":1786695009805,\"end\":1786695011554},\"metadata\":{\"openai\":{\"itemId\":\"msg_058b824b5351e916016a7ecd62031c819199657c1ef2f870a0\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786695011691,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_HWENRLmMner7GMjabwQUwDnD\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/task.md\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786695011575,\"end\":1786695011682}},\"metadata\":{\"openai\":{\"itemId\":\"fc_058b824b5351e916016a7ecd63b5b8819180aea2dc48a51579\"}},\"id\":\"prt_fff524cee0018LbuY1sN18kkUy\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"messageID\":\"msg_fff520e6f0011gBjd6Pjx2Q6tv\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786695011710,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_eoGEHmXiDsGJ3qPI0Lqg6Gfd\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"greet|greeting|hello|punctuation\",\"path\":\".\"},\"output\":\"Found 2 matches\\n<proof-root>\\\\workspace\\\\task.md:\\n  Line 1: Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform registry discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\\n\\n\\n<proof-root>\\\\workspace\\\\src\\\\greeting.ts:\\n  Line 1: export function greeting(name: string): string {\\n\",\"metadata\":{\"matches\":2,\"truncated\":false},\"title\":\"greet|greeting|hello|punctuation\",\"time\":{\"start\":1786695011598,\"end\":1786695011699}},\"metadata\":{\"openai\":{\"itemId\":\"fc_058b824b5351e916016a7ecd63b5c88191afc0f9372520206d\"}},\"id\":\"prt_fff524d06001rqnU1dvho45p22\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"messageID\":\"msg_fff520e6f0011gBjd6Pjx2Q6tv\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786695012367,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff52500a0012zfU3kEoyFd3fa\",\"reason\":\"tool-calls\",\"snapshot\":\"5c4ee6a28eb045b33683d51a1a6b21cee1a03219\",\"messageID\":\"msg_fff520e6f0011gBjd6Pjx2Q6tv\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"type\":\"step-finish\",\"tokens\":{\"total\":28019,\"input\":27777,\"output\":108,\"reasoning\":134,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786695014947,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff525a1f001gY1Eex8Qm3l2pB\",\"messageID\":\"msg_fff52519a001TpgC3R2XgJy9UD\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"snapshot\":\"5c4ee6a28eb045b33683d51a1a6b21cee1a03219\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786695018876,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_n85JAwmFfBtC3qQogcqsIpxH\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\task.md\"},\"output\":\"<path><proof-root>\\\\workspace\\\\task.md</path>\\n<type>file</type>\\n<content>\\n1: Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform registry discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform registry discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\task.md\",\"text\":\"Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform registry discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"task.md\",\"time\":{\"start\":1786695018813,\"end\":1786695018872}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cc041384778d314016a7ecd6aed14819181130d0504a737ef\"}},\"id\":\"prt_fff526937001n8Mex0dy1fWrfX\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"messageID\":\"msg_fff52519a001TpgC3R2XgJy9UD\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786695018890,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_ODgihgN6H85hrZPTCf4B4M8w\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\greeting.ts</path>\\n<type>file</type>\\n<content>\\n1: export function greeting(name: string): string {\\n2:   return `Hello, ${name}.`;\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\",\"text\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"src\\\\greeting.ts\",\"time\":{\"start\":1786695018820,\"end\":1786695018887}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cc041384778d314016a7ecd6aed288191a02762d4ab67d07c\"}},\"id\":\"prt_fff52693f00181QSoOhZ5NqsxK\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"messageID\":\"msg_fff52519a001TpgC3R2XgJy9UD\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786695018929,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_fDF0jW9YsMqn8LIUrmfo2J1Q\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"{package.json,deno.json,deno.jsonc,bun.lock,**/*.{test,spec}.{ts,tsx,js,jsx}}\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786695018827,\"end\":1786695018927}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cc041384778d314016a7ecd6aed308191af58ef5962b474ad\"}},\"id\":\"prt_fff526947001R0gyyFG5OrjIHu\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"messageID\":\"msg_fff52519a001TpgC3R2XgJy9UD\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1786695018940,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_qRTTvPwsASG8K35VCVGOK0bE\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"*\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\\n<proof-root>\\\\workspace\\\\src\\\\greeting.ts\\n<proof-root>\\\\workspace\\\\projects\\\\beta\\\\src\\\\text.ts\\n<proof-root>\\\\workspace\\\\projects\\\\beta\\\\README.md\\n<proof-root>\\\\workspace\\\\projects\\\\beta\\\\package.json\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\proof-jsonc.ts\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\README.md\\n<proof-root>\\\\workspace\\\\opencode.json\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\package.json\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\src\\\\jsonc.ts\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\proofs\\\\jsonc.md\\n<proof-root>\\\\workspace\\\\.serena\\\\project.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\project.local.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\.gitignore\",\"metadata\":{\"count\":14,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1786695018834,\"end\":1786695018937}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cc041384778d314016a7ecd6aed388191b3fc7ae13b143eda\"}},\"id\":\"prt_fff52694d001faND6iH6jpj4CF\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"messageID\":\"msg_fff52519a001TpgC3R2XgJy9UD\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786695019334,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff526b430013BVb6qeT1GhDez\",\"reason\":\"tool-calls\",\"snapshot\":\"5c4ee6a28eb045b33683d51a1a6b21cee1a03219\",\"messageID\":\"msg_fff52519a001TpgC3R2XgJy9UD\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"type\":\"step-finish\",\"tokens\":{\"total\":28425,\"input\":1077,\"output\":169,\"reasoning\":43,\"cache\":{\"write\":0,\"read\":27136}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1786695023986,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff527d6e0011oy8dM6FKmosgM\",\"messageID\":\"msg_fff526c7d001utSdgSbwXMIYQ3\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"snapshot\":\"5c4ee6a28eb045b33683d51a1a6b21cee1a03219\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786695035251,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff52a65d0012T4TAGGxb3fnp6\",\"messageID\":\"msg_fff526c7d001utSdgSbwXMIYQ3\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"type\":\"text\",\"text\":\"- Минимальная правка: в `src/greeting.ts:2` заменить конечную точку на `!`: ``Hello, ${name}!``.\\n- Ближайшая проверка: вызвать `greeting(\\\"World\\\")` и подтвердить точный результат `Hello, World!`.\\n\\nФайлы не изменялись; проверка не запускалась.\",\"time\":{\"start\":1786695034462,\"end\":1786695035249},\"metadata\":{\"openai\":{\"itemId\":\"msg_0a7839f6cda75a6e016a7ecd7a9afc8191bc18b5429f296588\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786695035690,\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"part\":{\"id\":\"prt_fff52ab26001AMae8vZf4iOkyK\",\"reason\":\"stop\",\"snapshot\":\"5c4ee6a28eb045b33683d51a1a6b21cee1a03219\",\"messageID\":\"msg_fff526c7d001utSdgSbwXMIYQ3\",\"sessionID\":\"ses_000adf331ffegCl8NZ69J7WxBZ\",\"type\":\"step-finish\",\"tokens\":{\"total\":29751,\"input\":2018,\"output\":81,\"reasoning\":516,\"cache\":{\"write\":0,\"read\":27136}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: only literal OPENCODE_CONFIG_DIR/bin/reuse-registry.ts argv; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "Проверю `task.md` и локальную реализацию greeting, затем назову только минимальную правку и ближайшую проверку без изменений файлов и внешних действий.- Минимальная правка: в `src/greeting.ts:2` заменить конечную точку на `!`: ``Hello, ${name}!``.\n- Ближайшая проверка: вызвать `greeting(\"World\")` и подтвердить точный результат `Hello, World!`.\n\nФайлы не изменялись; проверка не запускалась.",
+    "costs": [
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 42684,
+    "eventCount": 14,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_000adf331ffegCl8NZ69J7WxBZ"
+    ],
+    "tokens": [
+      {
+        "total": 28019,
+        "input": 27777,
+        "output": 108,
+        "reasoning": 134,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 28425,
+        "input": 1077,
+        "output": 169,
+        "reasoning": 43,
+        "cache": {
+          "write": 0,
+          "read": 27136
+        }
+      },
+      {
+        "total": 29751,
+        "input": 2018,
+        "output": 81,
+        "reasoning": 516,
+        "cache": {
+          "write": 0,
+          "read": 27136
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/task.md"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "greet|greeting|hello|punctuation",
+          "path": "."
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\task.md"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\greeting.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "{package.json,deno.json,deno.jsonc,bun.lock,**/*.{test,spec}.{ts,tsx,js,jsx}}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "*"
+        },
+        "name": "glob",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform registry discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
+    "scenario": "trivial-fix"
+  },
+  "sideEffects": {
+    "after": [
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 739,
+        "hash": "4c53c81b5a3a486c98b9d956a6c682611f97019f7c687744b0b637aeeafb8ffa",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 70,
+        "hash": "a1e2e8cc466be83fbedcb0800ddd9fd9bece376315b4b0c8b836ecdb8222ceb5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 748,
+        "hash": "f16f659f5f80df367c670652adffb993ebab14c1a6abfa90dfe4d17ca2879bd3",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 1012,
+        "hash": "083cf62db54d24cf414ae698367efc29ac40a99fd29202be7a2e9158373bfdd1",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 28,
+        "hash": "441f89b8bba2252c9f7797ebc2fca741b760712e1c8261a7ad5c282175dd52f2",
+        "path": "workspace/.serena/.gitignore"
+      },
+      {
+        "bytes": 402,
+        "hash": "7b5753e9fcf8348db026f8d23ff601b1cf90d9543532fe979f31650e27b15d2b",
+        "path": "workspace/.serena/project.local.yml"
+      },
+      {
+        "bytes": 7657,
+        "hash": "99488d983104712e6fb886078fc9d4687503f8605ae1259f7a3845b56a6ef288",
+        "path": "workspace/.serena/project.yml"
+      },
+      {
+        "bytes": 596,
+        "hash": "b25471235c5c5343d68da0fcd6ecfbcd1301978b83905c82ad29c7986a61bb47",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "workspace/projects/alpha/package.json"
+      },
+      {
+        "bytes": 609,
+        "hash": "119a3e6dc14b92bde436b2037a9faa8d16c40c384abe964b3e5d6d216acb0fe0",
+        "path": "workspace/projects/alpha/proof-jsonc.ts"
+      },
+      {
+        "bytes": 280,
+        "hash": "3048e5342dfbed3de0f79d512e44bb23383e13d5543c64064cff47d91e6562cf",
+        "path": "workspace/projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "workspace/projects/alpha/README.md"
+      },
+      {
+        "bytes": 1880,
+        "hash": "39d65bd28b516994d0af55779712b808b49abc57deb388d1715c2de79f144de6",
+        "path": "workspace/projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "workspace/projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "workspace/projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "workspace/projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 79,
+        "hash": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+        "path": "workspace/src/greeting.ts"
+      },
+      {
+        "bytes": 293,
+        "hash": "ba4dd7983ae2ba0b7b6a7f313e52cf4a47b21df5386e4b6b9678ddb5276a02db",
+        "path": "workspace/task.md"
+      }
+    ],
+    "before": [
+      {
+        "bytes": 66,
+        "hash": "5ce35e64234127294c5bccd53ca80f24d56a7f327b7fd9733a03f22e118e47ce",
+        "path": "registry/capabilities/external.json"
+      },
+      {
+        "bytes": 739,
+        "hash": "4c53c81b5a3a486c98b9d956a6c682611f97019f7c687744b0b637aeeafb8ffa",
+        "path": "registry/capabilities/private-sentinel.json"
+      },
+      {
+        "bytes": 70,
+        "hash": "a1e2e8cc466be83fbedcb0800ddd9fd9bece376315b4b0c8b836ecdb8222ceb5",
+        "path": "registry/capabilities/shared-alpha.json"
+      },
+      {
+        "bytes": 69,
+        "hash": "43a39753af505a66bae3480cc78104b007f6c56a649ffb19eb985c9a301bb96c",
+        "path": "registry/capabilities/shared-beta.json"
+      },
+      {
+        "bytes": 748,
+        "hash": "f16f659f5f80df367c670652adffb993ebab14c1a6abfa90dfe4d17ca2879bd3",
+        "path": "registry/generated/capability-index.json"
+      },
+      {
+        "bytes": 242,
+        "hash": "aba963b99c74460e77d998659bb963fb807cf8dca28e087e34b24ce0eb6e8377",
+        "path": "registry/groups.json"
+      },
+      {
+        "bytes": 287,
+        "hash": "be52104e887395d8263cf4c4c63fdf148c63e23fd95e82d2e28cae439da07fd3",
+        "path": "registry/projects.json"
+      },
+      {
+        "bytes": 55,
+        "hash": "2032045b144b6353cf11d95ef6f5aa2412d4df9223f11d96d6c02a0f74d8def3",
+        "path": "registry/registry.json"
+      },
+      {
+        "bytes": 1012,
+        "hash": "083cf62db54d24cf414ae698367efc29ac40a99fd29202be7a2e9158373bfdd1",
+        "path": "state/reuse-config.json"
+      },
+      {
+        "bytes": 596,
+        "hash": "b25471235c5c5343d68da0fcd6ecfbcd1301978b83905c82ad29c7986a61bb47",
+        "path": "workspace/opencode.json"
+      },
+      {
+        "bytes": 178,
+        "hash": "f05a258a0a081cea7c51e919795378825263221a93d499f955feed6793d6e2d9",
+        "path": "workspace/projects/alpha/package.json"
+      },
+      {
+        "bytes": 609,
+        "hash": "119a3e6dc14b92bde436b2037a9faa8d16c40c384abe964b3e5d6d216acb0fe0",
+        "path": "workspace/projects/alpha/proof-jsonc.ts"
+      },
+      {
+        "bytes": 280,
+        "hash": "3048e5342dfbed3de0f79d512e44bb23383e13d5543c64064cff47d91e6562cf",
+        "path": "workspace/projects/alpha/proofs/jsonc.md"
+      },
+      {
+        "bytes": 18,
+        "hash": "07350885b49fff267fc7f328c12c3d237ced8211984fecbeba441c6bdb415444",
+        "path": "workspace/projects/alpha/README.md"
+      },
+      {
+        "bytes": 1880,
+        "hash": "39d65bd28b516994d0af55779712b808b49abc57deb388d1715c2de79f144de6",
+        "path": "workspace/projects/alpha/src/jsonc.ts"
+      },
+      {
+        "bytes": 132,
+        "hash": "f4e50fa1d202806f92e19a51a5a0228a94b3b4edd964ffafd51251bcced44a56",
+        "path": "workspace/projects/beta/package.json"
+      },
+      {
+        "bytes": 17,
+        "hash": "f4f08c5fb8606a1bf9d8d2c4cc42c29acab2ded0677e3e2064ec2de4ea4341ca",
+        "path": "workspace/projects/beta/README.md"
+      },
+      {
+        "bytes": 80,
+        "hash": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408",
+        "path": "workspace/projects/beta/src/text.ts"
+      },
+      {
+        "bytes": 79,
+        "hash": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+        "path": "workspace/src/greeting.ts"
+      },
+      {
+        "bytes": 293,
+        "hash": "ba4dd7983ae2ba0b7b6a7f313e52cf4a47b21df5386e4b6b9678ddb5276a02db",
+        "path": "workspace/task.md"
+      }
+    ],
+    "producerProof": {
+      "status": 0,
+      "stderr": "",
+      "stdout": "{\"status\":\"ok\",\"cases\":3}\n"
+    }
+  }
+}

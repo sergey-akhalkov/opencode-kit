@@ -1,9 +1,0 @@
-{
-  "group": "replace-with-enabled-group",
-  "mode": "initial",
-  "operation": "bootstrap",
-  "projects": [],
-  "registry": "replace-with-private-registry-id",
-  "tempParent": "<absolute-existing-temporary-parent>",
-  "version": 1
-}

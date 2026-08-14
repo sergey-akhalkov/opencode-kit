@@ -1,0 +1,54 @@
+{
+  "candidateId": "simplify-r2",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "scenarios": [
+    "local-owner",
+    "trivial-fix"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "09dcd9530c1a4ea1f176ab28c2bc39586acc91ff86e5ac79987681b0850c7514",
+    "global/commands/reuse-inventory.md": null,
+    "global/skills/reuse-discovery/SKILL.md": "9c0f51aa607f04903ed16665299234e0c3637bfed160bb18df047eb340deb073",
+    "global/bin/reuse-registry.ts": null,
+    "README.md": "efa14cb1f373decc0a33acb10f43312a1d8fe1f7bff346e0c1beb536446c2e7b",
+    "package.json": "20e19fe085d504abdc813dfb25bf22875735a33114563a5afe93882b2302dc90",
+    "tools/proofs/reuse-discovery.ts": "f91edcf1a70373f4b5b2f531546346d9d3d994996a8ebdf48531dea8a6969fb5"
+  },
+  "toolPolicy": [
+    "bash: only the removed registry argv shape remains allowed as a baseline-compatible no-target sentinel; all shell metacharacters are denied last",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: deny",
+    "webfetch: deny"
+  ],
+  "version": 2,
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "credentials": {
+    "count": 4,
+    "valuesCaptured": false
+  },
+  "loader": {
+    "agentStatus": 0,
+    "commandNames": [
+      "dedup",
+      "opsx-apply",
+      "opsx-archive",
+      "opsx-propose"
+    ],
+    "configStatus": 0,
+    "hasReuseDiscovery": true,
+    "hasReuseInventory": false,
+    "permissionExact": true,
+    "skillStatus": 0
+  },
+  "opencodeVersion": "1.18.18",
+  "cleanupError": null
+}
