@@ -166,6 +166,7 @@ export function buildContinuation(
   context: RootPromptContext,
   journalPath: string,
   requireTroubleshooter: boolean,
+  failureChain?: string,
 ): GuardContinuation {
   const unresolved = verdict.unresolved.map((item) => ({
     requirementRef: item.requirementRef,
@@ -182,10 +183,11 @@ export function buildContinuation(
     unresolved,
     prohibitedStrategies: verdict.strategyAssessment.prohibitedStrategies,
     requiredRetryEvidence: verdict.strategyAssessment.requiredRetryEvidence,
+    ...(failureChain == null ? {} : { failureChain }),
     journalPath,
     requireTroubleshooter,
     instruction: requireTroubleshooter
-      ? "Invoke the diagnosis-only troubleshooter through the task adapter with the complete recorded case file. Verify its report before selecting a distinct mechanism."
+      ? `Invoke the diagnosis-only troubleshooter through the task adapter with the complete recorded case file. Include the exact line \"Failure Chain: ${failureChain}\" in its prompt. Verify its report before selecting a distinct mechanism.`
       : "Continue only the bounded unresolved work. Preserve user authority and stop at the stated condition.",
   };
   const text = `<completion_guard schema_version="1">\n${bounded(JSON.stringify(payload, null, 2), 8_000)}\n</completion_guard>`;

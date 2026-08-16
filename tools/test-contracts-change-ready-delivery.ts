@@ -258,7 +258,7 @@ const TASK_SEQUENCING_APPLY_SURFACES = [
 
 const TASK_SEQUENCING_GLOBAL_MARKERS = [
   "Task order/batching, tool/reviewer choice, and cycle size are agent-owned",
-  "pending tasks remain accepted unless the user bounded this request",
+  "pending tasks remain accepted unless user-bounded",
   "smallest dependency-valid slice to earliest safe real boundary",
   "stop only the affected action at its exact owner boundary",
 ] as const;

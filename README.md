@@ -228,7 +228,7 @@ OpenCode agents are loaded from project or global agent folders. Copy selected f
 - Project: `.opencode/agents/<name>.md`
 - Global: `<active-global-config-dir>/agents/<name>.md`
 
-Copy only the agents that are useful for the target project. They are read-only leaf validators or bounded read-only workers by default with a scoped `docs/feedbacks/**` write exception through `complain`; `implementation-worker` and `sdet-quality-engineer` are separately validated write-capable exceptions (production-only and test-only respectively), `troubleshooter` remains an escalation write-capable exception, and `final-candidate-reviewer` is an optional read-only risk reviewer.
+Copy only useful agents. They are read-only validators/workers by default with scoped `docs/feedbacks/**` writes through `complain`; `implementation-worker` and `sdet-quality-engineer` are validated production-only and test-only writers, `troubleshooter` is diagnosis-only with permission-gated instrumentation but no production/test authorship, and `final-candidate-reviewer` is an optional read-only risk reviewer.
 
 The `docs/feedbacks/**` path boundary is a model contract, not runtime permission enforcement; `complain` remains the required contract for entry shape and privacy checks. Use a semantic plugin/tool later if hard append-only or skill-mediated enforcement is required.
 
@@ -356,7 +356,7 @@ Routing and reviewer maps assume the default `all` install profile.
 - Material critical test risk/evidence after MVP and accepted-scope completion -> fresh `sdet-quality-engineer` when installed.
 - Optional post-MVP candidate risk review -> `final-candidate-reviewer` when concrete risk, policy, or the owner requires it.
 - Bounded first-pass helper work such as long-context retrieval, JSON extraction, scoped review, test ideas, planning, or tool-call checks -> `qwen-local-worker`; it inherits the invoking primary model and does not imply local/offline execution.
-- Exceptional hard blockers, complex bugs, or root-cause investigations where normal agents/tools already failed -> `troubleshooter`; provide prior failed attempts, allowed write scope, forbidden paths, and validation gate.
+- Technical or uncertain blockers immediately before owner escalation, after safe distinct local routes are exhausted -> one `troubleshooter` consultation; provide the original goal/envelope, diagnostics, prior attempts, remaining mechanisms, write/forbidden bounds, protected boundaries, and validation gate. Proven exact owner-only actions bypass specialist delay.
 - Opt-in root completion enforcement -> `/enable-grind` enables deterministic async preflight and the hidden `session-completion-arbiter` for only the current root; `/disable-grind` returns it to ordinary chat. New roots default off.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; current-session friction notes -> `complain`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
@@ -448,7 +448,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `implementation-worker`: optional write-capable production-only worker for one evidenced isolated non-overlapping production slice, with scoped production edits, parent raw-output run-observe-correct, and report-only return; never authors automated tests.
 - `sdet-quality-engineer`: write-capable test-only SDET for independent risk/oracle assessment and automated-test evidence after applicable proof; never edits production or claims readiness.
 - `final-candidate-reviewer`: optional fresh read-only post-MVP risk reviewer; returns an evidence-backed risk matrix and never edits candidate artifacts or approves a stage.
-- `troubleshooter`: inherited-model escalation-only problem solver for exceptional blockers, complex bugs, and root-cause investigations after normal agents/tools failed; can run safe experiments, web research, debugging, and permission-gated diagnostic instrumentation; routes production corrections to the production author and test corrections to a fresh SDET.
+- `troubleshooter`: inherited-model diagnosis-only pre-escalation consultant for hard or uncertain technical blockers after safe distinct mechanisms are exhausted; returns one goal-preserving route or proves the exact owner action, while main retains correction/proof and fresh SDET retains test authorship.
 - `qwen-local-worker`: inherited-model first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks.
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.

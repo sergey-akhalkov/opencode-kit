@@ -310,6 +310,8 @@ const EXPECTED_TROUBLESHOOTER_DENIED_PERMISSION_KEYS = [
 const EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT = [
   "## Runtime Preconditions",
   "prior failed attempts",
+  "Original User Goal",
+  "remaining mechanisms",
   "Allowed write scope",
   "Forbidden paths",
   "Validation gate",
@@ -318,9 +320,68 @@ const EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT = [
   "Do not write or modify tests",
   "Use web research only",
   "smallest targeted fix",
+  "Recovery Disposition",
+  "Missing Decision-Changing Evidence",
+  "Best Goal-Preserving Route",
+  "Rejected Routes",
+  "Exact Owner Action",
+  "owner-action-proven",
   "TROUBLESHOOTER_REPORT",
   "Continuation Items",
 ];
+
+/**
+ * Independent pre-escalation critical pairs. Pinned here so shrinking the
+ * production marker arrays cannot drop owner-bypass, one-consult, recovery,
+ * unavailable-fallback, diagnosis-only, or protected-action non-substitution.
+ */
+const CRITICAL_PRE_ESCALATION_AGENTS_MARKERS = [
+  "exact protected action plus proof no unused safe distinct mechanism",
+  "hand off without `troubleshooter`",
+  "technical/uncertain blocker",
+  "at most one diagnosis-only `troubleshooter`",
+  "Main verifies/runs recovery and asks nothing when task advances",
+  "Reconsult only with new decision-changing evidence or a distinct mechanism",
+  "If unavailable, main performs same pass",
+  "absence alone is not a stage blocker",
+] as const;
+
+const CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS = [
+  "do not author production or test corrections",
+  "Do not write or modify tests",
+  "Never simulate, authorize, or weaken",
+  "Recovery Disposition: autonomous-route-found | owner-action-proven | more-evidence-required | no-safe-route",
+  "Missing Decision-Changing Evidence",
+  "Best Goal-Preserving Route",
+  "Exact Owner Action",
+  "Main verifies every route",
+] as const;
+
+const CRITICAL_TROUBLESHOOTER_CONTRACT_MARKERS = [
+  "Original User Goal",
+  "remaining mechanisms",
+  "Recovery Disposition",
+  "Missing Decision-Changing Evidence",
+  "Best Goal-Preserving Route",
+  "Rejected Routes",
+  "Exact Owner Action",
+  "owner-action-proven",
+] as const;
+
+const PRE_ESCALATION_POINTER_MIRRORS = [
+  {
+    relative: "instructions/reusable-project-agent-instructions.md",
+    pointer: "follow the active global pre-escalation recovery contract",
+  },
+  {
+    relative: "templates/project/AGENTS.md",
+    pointer: "pre-escalation recovery contracts without copying them",
+  },
+] as const;
+
+function missingTokens(text: string, tokens: readonly string[]): string[] {
+  return tokens.filter((token) => !text.includes(token));
+}
 
 const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
   "Intake",
@@ -730,6 +791,138 @@ const tests: TestCase[] = [
         [...TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS],
         EXPECTED_TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS,
         "TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS drifted.",
+      );
+    },
+  },
+  {
+    name: "contracts: pre-escalation recovery pins owner-bypass, one-consult, and diagnosis-only pairs",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const troubleshooter = fs.readFileSync(path.join(root, "global", "agents", "troubleshooter.md"), "utf8");
+
+      assertEqual(
+        missingTokens(agents, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).join("|"),
+        "",
+        `global/AGENTS.md missing pre-escalation critical markers: ${missingTokens(agents, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).join(", ")}`,
+      );
+      assertEqual(
+        missingTokens(troubleshooter, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).join("|"),
+        "",
+        `troubleshooter.md missing diagnosis-only critical markers: ${missingTokens(troubleshooter, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).join(", ")}`,
+      );
+      for (const marker of CRITICAL_TROUBLESHOOTER_CONTRACT_MARKERS) {
+        assert(
+          EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT.includes(marker),
+          `Independent expected troubleshooter contract must pin ${marker}.`,
+        );
+        assert(
+          TROUBLESHOOTER_REQUIRED_TEXT.includes(marker),
+          `Production TROUBLESHOOTER_REQUIRED_TEXT must retain ${marker}.`,
+        );
+      }
+
+      for (const mirror of PRE_ESCALATION_POINTER_MIRRORS) {
+        const text = fs.readFileSync(path.join(root, mirror.relative), "utf8");
+        assert(text.includes(mirror.pointer), `${mirror.relative} must keep a pointer-only pre-escalation recovery route.`);
+        for (const completePolicy of [
+          "hand off without `troubleshooter`",
+          "at most one diagnosis-only `troubleshooter`",
+          "asks nothing when task advances",
+        ]) {
+          assert(
+            !text.includes(completePolicy),
+            `${mirror.relative} must not copy the complete pre-escalation policy (${completePolicy}).`,
+          );
+        }
+      }
+
+      const ownerDelay = agents.replaceAll(
+        "hand off without `troubleshooter`",
+        "hand off after consulting `troubleshooter`",
+      );
+      assert(
+        ownerDelay !== agents &&
+          missingTokens(ownerDelay, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes("hand off without `troubleshooter`"),
+        "Owner-only must fail closed when specialist delay is substituted for the no-consult bypass.",
+      );
+
+      const escalateAfterRecovery = agents.replaceAll(
+        "asks nothing when task advances",
+        "may ask when task advances",
+      );
+      assert(
+        escalateAfterRecovery !== agents &&
+          missingTokens(escalateAfterRecovery, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "Main verifies/runs recovery and asks nothing when task advances",
+          ),
+        "Authorized recovery must fail closed if main may still escalate.",
+      );
+
+      const unboundedConsult = agents.replaceAll(
+        "at most one diagnosis-only `troubleshooter`",
+        "any number of diagnosis-only `troubleshooter`",
+      );
+      assert(
+        unboundedConsult !== agents &&
+          missingTokens(unboundedConsult, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "at most one diagnosis-only `troubleshooter`",
+          ),
+        "Equivalent consultation bound must fail closed when the one-consult limit is removed.",
+      );
+
+      const unavailableBlocks = agents.replaceAll(
+        "absence alone is not a stage blocker",
+        "absence alone is a stage blocker",
+      );
+      assert(
+        unavailableBlocks !== agents &&
+          missingTokens(unavailableBlocks, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "absence alone is not a stage blocker",
+          ),
+        "Missing specialist capability must not become a lifecycle blocker.",
+      );
+
+      const falseOwnerOnly = agents.replaceAll(
+        "exact protected action plus proof no unused safe distinct mechanism",
+        "an owner-like blocker without proving a protected action",
+      );
+      assert(
+        falseOwnerOnly !== agents &&
+          missingTokens(falseOwnerOnly, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "exact protected action plus proof no unused safe distinct mechanism",
+          ),
+        "Uncertain owner-like blockers must not classify as owner-only.",
+      );
+
+      const childMutation = troubleshooter.replaceAll(
+        "do not author production or test corrections",
+        "may author production or test corrections",
+      );
+      assert(
+        childMutation !== troubleshooter &&
+          missingTokens(childMutation, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).includes(
+            "do not author production or test corrections",
+          ),
+        "Troubleshooter production/test mutation authority must fail closed.",
+      );
+
+      const protectedSubstitution = troubleshooter.replaceAll(
+        "Never simulate, authorize, or weaken",
+        "May simulate, authorize, or weaken",
+      );
+      assert(
+        protectedSubstitution !== troubleshooter &&
+          missingTokens(protectedSubstitution, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).includes(
+            "Never simulate, authorize, or weaken",
+          ),
+        "Protected-action non-substitution must fail closed.",
+      );
+
+      const missingOwnerAction = troubleshooter.replaceAll("Exact Owner Action", "Suggested Owner Option");
+      assert(
+        missingOwnerAction !== troubleshooter &&
+          missingTokens(missingOwnerAction, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).includes("Exact Owner Action"),
+        "Report schema must keep Exact Owner Action as a proven-or-none field.",
       );
     },
   },

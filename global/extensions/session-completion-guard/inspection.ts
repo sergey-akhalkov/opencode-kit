@@ -12,7 +12,7 @@ import type { GuardOptions, Revision } from "./types.ts";
 
 export type RuntimeContext = {
   assistantEvidence: Array<{ eventRef: string }>;
-  background: Array<{ agent: string | null; status: string }>;
+  background: Array<{ agent: string | null; failureChain: string | null; status: string }>;
   humanMessages: Array<{ eventRef: string; text: string }>;
 };
 
@@ -27,7 +27,7 @@ function runtimeContext(
   messages: Array<{ info: Record<string, unknown>; parts: unknown[] }>,
 ): RuntimeContext {
   const assistantEvidence: Array<{ eventRef: string }> = [];
-  const background: Array<{ agent: string | null; status: string }> = [];
+  const background: Array<{ agent: string | null; failureChain: string | null; status: string }> = [];
   const humanMessages: Array<{ eventRef: string; text: string }> = [];
   for (const [index, message] of messages.entries()) {
     const info = record(message.info) ?? {};
@@ -56,8 +56,13 @@ function runtimeContext(
       if (part?.type !== "tool" || part.tool !== "task") continue;
       const state = record(part.state);
       const input = record(state?.input);
+      const taskText = [input?.prompt, input?.description, input?.command]
+        .filter((item): item is string => typeof item === "string")
+        .join("\n");
+      const failureChain = taskText.match(/(?:^|\n)Failure Chain:\s*([a-f0-9]{64})(?:\n|$)/iu)?.[1] ?? null;
       background.push({
         agent: stringValue(input?.subagent_type) ?? stringValue(input?.agent),
+        failureChain,
         status: stringValue(state?.status) ?? "unknown",
       });
     }

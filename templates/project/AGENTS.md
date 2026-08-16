@@ -23,7 +23,7 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 
 ## Autonomy
 
-- Follow active global quality/safety -> autonomy -> speed without copying it. Continue when evidence or a safe reversible default is enough.
+- Follow active global quality/safety -> autonomy -> speed and pre-escalation recovery contracts without copying them. Continue when evidence or a safe reversible default is enough.
 - Ask the user only for exact user-owned blockers: credentials/elevation, missing external systems, destructive/remote actions, owner/product/security/legal decisions, protected-boundary semantic expansion, material residual-risk acceptance, or MR/PR outcomes. Plans, OpenSpec artifacts, tasks, revisions, attempt limits, and stop lines adapt autonomously when accepted semantics remain unchanged; never ask solely to approve those controls, a successor attempt, or another process counter. The underlying protected action remains separately gated.
 - A progress checkpoint, long work cycle, green validation, still-open task, locally resolvable failure, or blocked live/external gate does not justify asking whether to continue. Continue safe local/offline required work and stop only the affected action at its exact owner boundary.
 - Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.

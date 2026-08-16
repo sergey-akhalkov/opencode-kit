@@ -10,7 +10,10 @@ import {
   initialRootState,
   stableDigest,
 } from "../../global/extensions/session-completion-guard/runtime-support.ts";
-import { discoverStrategyJournal } from "../../global/extensions/session-completion-guard/strategy.ts";
+import {
+  discoverStrategyJournal,
+  strategyFingerprint,
+} from "../../global/extensions/session-completion-guard/strategy.ts";
 import type {
   AuditEpoch,
   CompletionVerdict,
@@ -70,6 +73,8 @@ let child = {
 const replies: string[][][] = [];
 let questionRejectCalls = 0;
 let rootPromptCalls = 0;
+const rootPromptTexts: string[] = [];
+let runtimeMessages: Array<{ info: Record<string, unknown>; parts: unknown[] }> = [];
 
 const client = {
   session: {
@@ -86,11 +91,17 @@ const client = {
       child = { ...child, metadata: args.metadata };
       return { data: child };
     },
-    messages: async () => ({ data: [] }),
+    messages: async () => ({ data: runtimeMessages }),
     todo: async () => ({ data: [] }),
     diff: async () => ({ data: [] }),
-    promptAsync: async () => {
+    promptAsync: async (args: { parts?: unknown[] }) => {
       rootPromptCalls += 1;
+      const first = args.parts?.[0];
+      rootPromptTexts.push(
+        first != null && typeof first === "object" && typeof (first as { text?: unknown }).text === "string"
+          ? (first as { text: string }).text
+          : "",
+      );
       return { data: true };
     },
   },
@@ -407,6 +418,182 @@ const ownerVerdict = parseCompletionVerdict({
   confidence: "high",
 }, ownerEpoch);
 await probe.applyVerdict(ownerState, ownerEpoch, ownerVerdict);
+const ownerRootAfterVerdict = root;
+
+root = {
+  ...root,
+  metadata: { completionGuard: { grindEnabled: true, state: "running" } },
+};
+const repeatedEpoch: AuditEpoch = {
+  ...epoch("audit_repeated_technical_proof"),
+  kind: "completion",
+  questionRequest: null,
+};
+const repeatedState: RootState = {
+  ...initialRootState(root),
+  activeAudit: repeatedEpoch,
+  auditAbort: new AbortController(),
+  grindEnabled: true,
+  state: "auditing",
+};
+const repeatedVerdict = parseCompletionVerdict({
+  schemaVersion: 1,
+  auditID: repeatedEpoch.auditID,
+  rootSessionRef: rootRef,
+  inspectedRevision: revision.revisionDigest,
+  verdict: "continue",
+  goalSummary: "Resolve the repeated technical blocker",
+  requirementMatrix: [{
+    requirementRef: "requirement_repeated_technical",
+    status: "unresolved",
+    evidenceRefs: ["evidence_repeated_strategy"],
+  }],
+  unresolved: [{
+    requirementRef: "requirement_repeated_technical",
+    evidenceGap: "The repeated mechanism did not advance the task",
+    nextAction: "Select a causally distinct mechanism",
+    nextEvidence: "Observed advancement through a distinct mechanism",
+    stopCondition: "The accepted technical outcome is observed",
+  }],
+  strategyAssessment: {
+    fingerprint: "repeated-technical-proof",
+    repeated: true,
+    prohibitedStrategies: ["repeat the unchanged mechanism"],
+    requiredRetryEvidence: ["decision-changing evidence"],
+  },
+  questionAnswers: null,
+  ownerBoundary: null,
+  evidenceRefs: ["evidence_repeated_strategy"],
+  evidenceGaps: ["A distinct mechanism has not run"],
+  confidence: "high",
+}, repeatedEpoch);
+await probe.applyVerdict(repeatedState, repeatedEpoch, repeatedVerdict);
+const repeatedContinuation = rootPromptTexts[rootPromptTexts.length - 1] ?? "";
+
+const completedTroubleshooterMessageID = "message_completed_troubleshooter_other_chain";
+runtimeMessages = [{
+  info: { id: completedTroubleshooterMessageID, role: "assistant" },
+  parts: [{
+    type: "tool",
+    tool: "task",
+    state: {
+      status: "completed",
+      input: {
+        subagent_type: "troubleshooter",
+        description: "Completed diagnosis for a different failure chain",
+      },
+    },
+  }],
+}];
+const completedRevisionBase = {
+  ...revisionBase,
+  assistantRef: hashRef("assistant", completedTroubleshooterMessageID),
+};
+const completedRevision = {
+  ...completedRevisionBase,
+  revisionDigest: stableDigest(completedRevisionBase),
+};
+root = {
+  ...ownerRootAfterVerdict,
+  metadata: { completionGuard: { grindEnabled: true, state: "running" } },
+};
+const distinctEpoch: AuditEpoch = {
+  ...epoch("audit_distinct_repeated_technical_proof"),
+  inspected: completedRevision,
+  kind: "completion",
+  questionRequest: null,
+};
+const distinctState: RootState = {
+  ...initialRootState(root),
+  activeAudit: distinctEpoch,
+  auditAbort: new AbortController(),
+  grindEnabled: true,
+  state: "auditing",
+};
+const distinctVerdict = parseCompletionVerdict({
+  schemaVersion: 1,
+  auditID: distinctEpoch.auditID,
+  rootSessionRef: rootRef,
+  inspectedRevision: completedRevision.revisionDigest,
+  verdict: "continue",
+  goalSummary: "Resolve a different repeated technical blocker",
+  requirementMatrix: [{
+    requirementRef: "requirement_distinct_repeated_technical",
+    status: "unresolved",
+    evidenceRefs: ["evidence_distinct_repeated_strategy"],
+  }],
+  unresolved: [{
+    requirementRef: "requirement_distinct_repeated_technical",
+    evidenceGap: "A different repeated mechanism did not advance the task",
+    nextAction: "Diagnose this distinct failure chain",
+    nextEvidence: "Observed advancement for this failure chain",
+    stopCondition: "The distinct technical outcome is observed",
+  }],
+  strategyAssessment: {
+    fingerprint: "distinct-repeated-technical-proof",
+    repeated: true,
+    prohibitedStrategies: ["repeat the different unchanged mechanism"],
+    requiredRetryEvidence: ["decision-changing evidence for this chain"],
+  },
+  questionAnswers: null,
+  ownerBoundary: null,
+  evidenceRefs: ["evidence_distinct_repeated_strategy"],
+  evidenceGaps: ["A distinct mechanism has not run for this chain"],
+  confidence: "high",
+}, distinctEpoch);
+await probe.applyVerdict(distinctState, distinctEpoch, distinctVerdict);
+const distinctContinuation = rootPromptTexts[rootPromptTexts.length - 1] ?? "";
+
+const distinctFailureChain = strategyFingerprint(distinctVerdict);
+const matchingTroubleshooterMessageID = "message_completed_troubleshooter_matching_chain";
+runtimeMessages = [{
+  info: { id: matchingTroubleshooterMessageID, role: "assistant" },
+  parts: [{
+    type: "tool",
+    tool: "task",
+    state: {
+      status: "completed",
+      input: {
+        subagent_type: "troubleshooter",
+        prompt: `Failure Chain: ${distinctFailureChain}\nMatched diagnosis case file`,
+      },
+    },
+  }],
+}];
+const matchingRevisionBase = {
+  ...revisionBase,
+  assistantRef: hashRef("assistant", matchingTroubleshooterMessageID),
+};
+const matchingRevision = {
+  ...matchingRevisionBase,
+  revisionDigest: stableDigest(matchingRevisionBase),
+};
+root = {
+  ...ownerRootAfterVerdict,
+  metadata: { completionGuard: { grindEnabled: true, state: "running" } },
+};
+const matchingEpoch: AuditEpoch = {
+  ...epoch("audit_matching_repeated_technical_proof"),
+  inspected: matchingRevision,
+  kind: "completion",
+  questionRequest: null,
+};
+const matchingState: RootState = {
+  ...initialRootState(root),
+  activeAudit: matchingEpoch,
+  auditAbort: new AbortController(),
+  grindEnabled: true,
+  state: "auditing",
+};
+const matchingVerdict: CompletionVerdict = {
+  ...distinctVerdict,
+  auditID: matchingEpoch.auditID,
+  inspectedRevision: matchingRevision.revisionDigest,
+};
+await probe.applyVerdict(matchingState, matchingEpoch, matchingVerdict);
+const matchingContinuation = rootPromptTexts[rootPromptTexts.length - 1] ?? "";
+runtimeMessages = [];
+root = ownerRootAfterVerdict;
 
 const multiRequest = normalizeQuestionRequest({
   id: "question_multi_proof",
@@ -763,6 +950,18 @@ try {
     projectedInterventionAnswers: projected.questionInterventions[0]?.answers ?? [],
     projectedInterventionStatus: projected.questionInterventions[0]?.status ?? null,
     questionRejectCalls,
+    distinctContinuationPending: distinctState.guardTurnPending,
+    distinctRequiresTroubleshooter:
+      distinctContinuation.includes('"requireTroubleshooter": true') &&
+      distinctContinuation.includes("Invoke the diagnosis-only troubleshooter through the task adapter"),
+    matchingContinuationPending: matchingState.guardTurnPending,
+    matchingSuppressesTroubleshooter:
+      matchingContinuation.includes('"requireTroubleshooter": false') &&
+      !matchingContinuation.includes("Invoke the diagnosis-only troubleshooter through the task adapter"),
+    repeatedContinuationPending: repeatedState.guardTurnPending,
+    repeatedRequiresTroubleshooter:
+      repeatedContinuation.includes('"requireTroubleshooter": true') &&
+      repeatedContinuation.includes("Invoke the diagnosis-only troubleshooter through the task adapter"),
     replyCalls: replies.length,
     rootPromptCalls,
   };
@@ -777,8 +976,14 @@ try {
     result.projectedInterventionAnswers[0]?.[0] !== "Recommended" ||
     result.projectedInterventionStatus !== "answered" ||
     result.questionRejectCalls !== 0 ||
+    result.distinctContinuationPending !== true ||
+    result.distinctRequiresTroubleshooter !== true ||
+    result.matchingContinuationPending !== true ||
+    result.matchingSuppressesTroubleshooter !== true ||
+    result.repeatedContinuationPending !== true ||
+    result.repeatedRequiresTroubleshooter !== true ||
     result.replyCalls !== 1 ||
-    result.rootPromptCalls !== 0
+    result.rootPromptCalls !== 3
   ) throw new Error(`Autonomous-question proof failed: ${JSON.stringify(result)}`);
 } finally {
   await controller.dispose();

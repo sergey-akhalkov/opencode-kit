@@ -263,6 +263,10 @@ export const GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
   "evidence never authorizes mutation",
   "critical-risks-reported | no-critical-risk | blocked",
   "Never ask solely to approve an internal revision",
+  "Before a blocker question",
+  "at most one diagnosis-only `troubleshooter`",
+  "new decision-changing evidence or a distinct mechanism",
+  "absence alone is not a stage blocker",
   "Known non-critical limitations",
 ];
 

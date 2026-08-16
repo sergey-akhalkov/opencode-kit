@@ -4,7 +4,7 @@ import path from "node:path";
 import type { CompletionVerdict } from "./types.ts";
 
 type StrategyContext = {
-  background: Array<{ agent: string | null; status: string }>;
+  background: Array<{ agent: string | null; failureChain: string | null; status: string }>;
   humanMessages: Array<{ text: string }>;
 };
 
@@ -83,9 +83,12 @@ export function strategyFingerprint(verdict: CompletionVerdict): string {
   return digest(JSON.stringify(material));
 }
 
-export function hasVerifiedTroubleshooter(context: StrategyContext): boolean {
+export function hasVerifiedTroubleshooter(context: StrategyContext, failureChain: string): boolean {
   return context.background.some(
-    (item) => item.agent === "troubleshooter" && item.status === "completed",
+    (item) =>
+      item.agent === "troubleshooter" &&
+      item.status === "completed" &&
+      item.failureChain === failureChain,
   );
 }
 

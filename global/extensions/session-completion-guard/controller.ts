@@ -877,7 +877,7 @@ export class SessionCompletionController {
     }
     const fingerprint = strategyFingerprint(verdict);
     const repeated = verdict.strategyAssessment.repeated || state.lastStrategyFingerprint === fingerprint;
-    const requireTroubleshooter = repeated && !hasVerifiedTroubleshooter(current.context);
+    const requireTroubleshooter = repeated && !hasVerifiedTroubleshooter(current.context, fingerprint);
     if (this.options.maxCycles >= 0 && state.continuationCycles >= this.options.maxCycles) {
       await this.injectCycleBudgetHandoff(state, epoch);
       return;
@@ -887,6 +887,7 @@ export class SessionCompletionController {
       restoredPromptContext(state.root, state.promptContext),
       current.journal.relativePath,
       requireTroubleshooter,
+      fingerprint,
     );
     const final = await this.currentInspection(state, epoch);
     if (final == null) return;

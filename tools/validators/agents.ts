@@ -123,6 +123,9 @@ const FINAL_CANDIDATE_REVIEWER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
  */
 const TROUBLESHOOTER_REPORT_SCHEMA_ONLY_MARKERS: readonly string[] = [
   "TROUBLESHOOTER_REPORT",
+  "Missing Decision-Changing Evidence",
+  "Best Goal-Preserving Route",
+  "Rejected Routes",
   "Continuation Items",
 ];
 
