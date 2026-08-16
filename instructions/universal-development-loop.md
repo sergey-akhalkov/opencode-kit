@@ -6,10 +6,10 @@ Use this loop for AI-assisted development in any project. Technology adapters ma
 
 1. `Intake`: state the accepted `Outcome`, technically enforced operating envelope, `Non-Goals`, non-deferrable invariants, happy path, validation boundary, touched ownership, and meaningful failure boundaries.
 2. `Evidence`: inspect source, tests, schemas, config, preserved stdout/stderr, logs, exceptions, and artifacts before trusting summaries.
-3. `Baseline Proof`: reproduce current behavior at the earliest safely reachable real boundary; when deferred, name the exact blocker and earliest unblocking task.
+3. `Baseline Proof`: reproduce current behavior at the first safely reachable real boundary sufficient to observe the accepted effect; when deferred, name the exact blocker and earliest unblocking or goal-preserving replan task.
 4. `Small Slice`: implement the smallest useful increment as a vertical slice that minimizes time-to-first-real-signal; prefer remove/narrow/reuse/local guard, preserve unrelated work, and use `split-or-justify` rather than adding a responsibility to an already mixed file.
 5. `Happy Path`: main is the default production author for Ordinary Small and Material.
-6. `Runtime Proof`: run-observe-correct at the earliest safely reachable real boundary and retain invocation/input, identity, exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Use offline/replay -> integration/simulator -> shadow or independently effect-blocked read-only real -> bounded live -> end-to-end as the fidelity ladder; once a safe authorized real rung is reachable, run it before dependent expansion. Compilation or unit checks alone are not proof. Current proof sets `Development-Stage: MVP`.
+6. `Runtime Proof`: run-observe-correct at the first safely reachable real boundary sufficient to observe the accepted effect; retain invocation/input, identity, exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Use offline/replay -> integration/simulator -> shadow or independently effect-blocked read-only real -> bounded live -> end-to-end; climb only for a current requirement, invariant, or unresolved equivalence risk. Compilation or unit checks alone are not proof. Current proof sets `Development-Stage: MVP`.
 7. `Accepted Scope`: complete required scope without optional polishing. Product Candidate mutation returns to development and invalidates dependent proof; runner, evaluator, environment, and report changes invalidate only affected evidence. Current affected proof restores MVP.
 8. `Optional Risk Discovery`: Optional final-candidate, delivery, code-quality, or domain review may run after MVP only for concrete risk, project policy, or the owner. Missing or unusable optional evidence is not itself a stage blocker; reviewers never authorize mutation.
 9. `Critical SDET`: Material behavior uses fresh test-only critical SDET returning `critical-risks-reported | no-critical-risk | blocked`. Continue only after a main-confirmed critical defect, fix, and new proof; the first valid no-critical attempt permanently stops the loop. Non-critical findings are parked.
@@ -19,7 +19,7 @@ Use this loop for AI-assisted development in any project. Technology adapters ma
 
 Trade-offs follow quality/safety -> autonomy -> speed; speed never weakens proof. Profiles remain `Ordinary Small | Material`. User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. A partial slice handoff must not end an unfinished root goal.
 
-Shift-left sequencing does not authorize external operations. A deferred real rung records authorization, safeguards, restoration/cleanup, immutable evidence, and its dependency-chain stop condition; independent work may continue while the affected chain waits.
+Shift-left sequencing does not authorize external operations. A deferred rung records authorization, safeguards, restoration/cleanup, immutable evidence, and its path-scoped stop condition. A path-only gate remains blocked and unclaimed while an alternate sufficient route continues; only outcome-required owner action stops the outcome.
 
 ## Quality Defaults
 

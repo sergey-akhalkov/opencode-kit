@@ -258,8 +258,8 @@ const TASK_SEQUENCING_APPLY_SURFACES = [
 
 const TASK_SEQUENCING_GLOBAL_MARKERS = [
   "Task order/batching, tool/reviewer choice, and cycle size are agent-owned",
-  "pending tasks remain accepted unless user-bounded",
-  "smallest dependency-valid slice to earliest safe real boundary",
+  "Pending tasks remain required only while consistent with the current user-bounded outcome",
+  "smallest dependency-valid slice to the first sufficient real boundary",
   "stop only the affected action at its exact owner boundary",
 ] as const;
 
@@ -663,6 +663,29 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       assert(
         missingTokens(BASELINE_TASK_SEQUENCING_FRAGMENT, TASK_SEQUENCING_ARBITER_MARKERS).length > 0,
         "Baseline pre-candidate wording must fail the arbiter sequencing/owner-stop oracle",
+      );
+
+      const agentsWithAcceptedTasks = agents.replaceAll(
+        "Pending tasks remain required only while consistent with the current user-bounded outcome",
+        "pending tasks remain accepted unless user-bounded",
+      );
+      assert(
+        agentsWithAcceptedTasks !== agents &&
+          missingTokens(agentsWithAcceptedTasks, TASK_SEQUENCING_GLOBAL_MARKERS).includes(
+            "Pending tasks remain required only while consistent with the current user-bounded outcome",
+          ),
+        "Restoring accepted-pending-task owner-scope wording must fail closed",
+      );
+      const agentsWithoutSufficientSlice = agents.replaceAll(
+        "smallest dependency-valid slice to the first sufficient real boundary",
+        "smallest dependency-valid slice to earliest safe real boundary",
+      );
+      assert(
+        agentsWithoutSufficientSlice !== agents &&
+          missingTokens(agentsWithoutSufficientSlice, TASK_SEQUENCING_GLOBAL_MARKERS).includes(
+            "smallest dependency-valid slice to the first sufficient real boundary",
+          ),
+        "Restoring earliest-boundary slice wording without sufficiency must fail closed",
       );
 
       const apply = operativeInstructionText(

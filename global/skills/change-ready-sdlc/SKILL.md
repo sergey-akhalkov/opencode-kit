@@ -59,8 +59,8 @@ The phrase "all critical bugs are fixed" means no **known confirmed reachable** 
 
 ## Shift-Left Proof Cadence
 
-- For each behavior dependency chain, minimize `time-to-first-real-signal`: execute the earliest safely reachable real boundary now, progressing from offline/preserved replay through local integration/simulator, shadow or independently effect-blocked read-only real use, bounded live effects, and end-to-end operation. Unit/mock/component checks remain fast feedback, not substitutes for a reachable real boundary.
-- Roadmaps SHALL state the fidelity ladder once, and every behavior-slice item SHALL include `Current Rung`, `Next Real Boundary`, `Blocker/Unblocker`, and `Observable Proof`, plus owner authorization, safeguards, restoration/cleanup, and expected immutable evidence; omission makes the plan incomplete. Once a safe real rung is reachable, run it before expanding behavior that depends on its unverified semantics. Stop only the affected dependency chain; continue independent work.
+- For each behavior dependency chain, minimize `time-to-first-real-signal`: execute the first safely reachable real boundary sufficient to observe the accepted effect, from offline/preserved replay through local integration/simulator, shadow or independently effect-blocked read-only real use, bounded live effects, and end-to-end operation. Unit/mock/component checks are support, not real-boundary proof. Authority is a ceiling, not a fidelity target; climb only for a current requirement, invariant, or unresolved equivalence risk.
+- Roadmaps SHALL state the ladder once. Each behavior-slice item SHALL include `Current Rung`, `Next Real Boundary`, `Blocker/Unblocker`, `Observable Proof`, owner authorization, safeguards, restoration/cleanup, and expected immutable evidence; omission is incomplete. Run the sufficient boundary before dependent expansion. A path-only action/gate stays blocked; reconcile controls and use an alternate sufficient route without claiming that path. Stop the accepted outcome only when every sufficient route requires owner action.
 - Before emulation, replacement, replay, caching, skipping, or another substitution depends on a model of the real system, safely characterize the smallest relevant real baseline when separately authorized. Compare baseline and candidate from the same actor request, environment and initial state through outputs, state/effects/order/timing, faults/recovery, cleanup, and terminal observation.
 - This cadence does not authorize external operations or weaken protected boundaries, physical-effect suppression, `Live-Attempt Gate`, identity, restoration, cleanup, cost, or remote/destructive/deploy/install/release controls. Early characterization is production-owned run-observe-correct; fresh Material SDET remains after current MVP proof and accepted-scope completion.
 
@@ -150,7 +150,7 @@ After restart or compaction, reconstruct the accepted outcome, current Candidate
 - `Outcome`: working | not working | unknown
 - `Candidate Reference`: readable Product Candidate plus runner/evaluator/environment identities when applicable, or none
 - `Raw Evidence Bundle`: immutable observations and lane status, or N/A with reason
-- `Live-Attempt Gate`: clear | blocked | unknown; include failure chain, replay coverage/result, and unlock condition when not clear
+- `Live-Attempt Gate`: clear | blocked | unknown plus governed path/lane; include failure chain, replay coverage/result, and unlock condition when not clear
 - `Runtime Proof`: boundary, input, expected/actual observation, side effects, outcome
 - `Architecture`: touched responsibilities and `split-or-justify` decisions, or N/A with reason
 - `Diagnostics`: exit status, stdout/stderr, relevant log/exception and artifact paths, or N/A with reason

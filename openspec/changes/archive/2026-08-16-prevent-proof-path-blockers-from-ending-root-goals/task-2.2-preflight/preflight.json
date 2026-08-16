@@ -1,0 +1,70 @@
+{
+  "candidateId": "candidate-626ccedea932",
+  "captureKind": "candidate",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "scenarios": [
+    "stale-proof-path",
+    "owner-only"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "626ccedea9324b8bded9f92695868c077f70f321e1d14b7a95f1ae188fc445dd",
+    "global/agents/troubleshooter.md": "cef44fe3286b584a04788cc7e1f9af20a476050e33e855bf1e98c6ee945e94a0",
+    "global/extensions/session-completion-guard/controller.ts": "a628b23db65c2833556145edc471bbd882891a84a7dbb88567c8254c48453f81",
+    "global/extensions/session-completion-guard/inspection.ts": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6",
+    "global/extensions/session-completion-guard/strategy.ts": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6",
+    "global/extensions/session-completion-guard/verdict.ts": "27477e89095a79da5ab75845220366142821875d16c3a76f20ad5727b34b64f1",
+    "global/skills/change-ready-sdlc/SKILL.md": "a3225db287badb54722c79c5ba214130a2f933eeb413d18749c1919fd5a8df6b",
+    "instructions/reusable-project-agent-instructions.md": "b505132bf71d0ee55ae5e77b3198752f3f4225125fe3f561c7f0f76154323f0f",
+    "instructions/universal-development-loop.md": "8db2fb83416a1b2f753f8c5f250330bf98e4bc8067cd5d8ea60639df9f762c5e",
+    "templates/project/AGENTS.md": "5ba222021107174a8f295a25b222a017dcd4b733063b6455d7f028ac79372f5c",
+    "README.md": "fac56caa4cc954514cfc6c8a28fe0847477488aa7c6386a570d6021943b321f3",
+    "package.json": "2ac7e806c7b329093d2a8b697674b22de2fe2a830c0ccfee203ace845ffaf6b3",
+    "tools/contracts/troubleshooter.ts": "a563e5540de98b692e38ef1fca50988aac75891c0883ffa129ac4a94a28275ef",
+    "tools/proofs/pre-escalation-recovery.ts": "cc2cb087189b81478f3bfe88db6e6c67373069a9e66b07d1c6307cbecce173f1",
+    "tools/proofs/session-completion-guard-question.ts": "7e1adf3c292909558cd55e81384a454e60a583b3f6769d719cb740a18e8690a6",
+    "tools/proofs/README.md": "71d86b4d36bc4f49c1ae07c4ba948f7afab318612604b576ba6886d3576a6567"
+  },
+  "loader": {
+    "buildStatus": 0,
+    "configStatus": 0,
+    "troubleshooterMode": "subagent",
+    "troubleshooterPermission": {
+      "read": "allow",
+      "bash": "deny",
+      "doom_loop": "deny",
+      "edit": "deny",
+      "external_directory": "deny",
+      "glob": "deny",
+      "grep": "deny",
+      "lsp": "deny",
+      "question": "deny",
+      "skill": "deny",
+      "task": "deny",
+      "todowrite": "deny",
+      "webfetch": "deny",
+      "websearch": "deny"
+    },
+    "troubleshooterStatus": 0
+  },
+  "mcpDisabled": true,
+  "permission": {
+    "exact": true
+  },
+  "stalePathPermission": {
+    "arbitraryBashMutationRejected": true,
+    "editMutationRejected": true,
+    "exact": true,
+    "status": 0
+  },
+  "credentials": {
+    "count": 2,
+    "status": 0
+  },
+  "opencodeVersion": "1.18.18",
+  "steps": 24,
+  "cleanupError": null
+}

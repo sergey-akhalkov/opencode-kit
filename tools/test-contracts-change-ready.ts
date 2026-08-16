@@ -115,9 +115,39 @@ const EXPECTED_DEVELOPMENT_STAGE_MARKERS = [
 
 const EXPECTED_SHIFT_LEFT_REAL_BOUNDARY_MARKERS = [
   "time-to-first-real-signal",
-  "earliest safely reachable real boundary",
+  "first safely reachable real boundary sufficient",
   "does not authorize external operations",
 ];
+
+/**
+ * Path-versus-outcome critical oracles. Pinned here so shrinking production
+ * marker arrays cannot drop outcome necessity, no-safe-route, path-scoped
+ * gates, claim ceiling, or owner-only fail-closed behavior.
+ */
+const CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS = [
+  "first safely reachable real boundary sufficient",
+  "Authority is a ceiling, not a fidelity target",
+  "If path-only, keep its action/gate blocked",
+  "reconcile conflicting planning controls",
+  "do not claim the blocked path",
+  "exact protected action necessary for the original accepted outcome",
+  "no unused safe goal-preserving real route can advance that outcome",
+  "hand off without `troubleshooter`",
+  "asks nothing if the outcome advances",
+] as const;
+
+const CRITICAL_PATH_VS_OUTCOME_SKILL_MARKERS = [
+  "Authority is a ceiling, not a fidelity target",
+  "A path-only action/gate stays blocked",
+  "without claiming that path",
+  "every sufficient route requires owner action",
+] as const;
+
+const SUPERSEDED_PATH_VS_OUTCOME_OPERATORS = [
+  "The autonomous target is the highest rung allowed by current authority",
+  "Active-change pending tasks remain accepted unless user-bounded",
+  "no unused safe distinct mechanism can advance the chain",
+] as const;
 
 const EXPECTED_SHIFT_LEFT_REAL_BOUNDARY_SURFACES = [
   "REPO_AGENTS.md",
@@ -217,6 +247,25 @@ export const changeReadyContractTests: TestCase[] = [
             error.replace(/\\/g, "/").includes(targetRelative),
         ),
         `Fenced-only marker text must not satisfy operative shift-left cadence. errors=${JSON.stringify(fencedErrors)}`,
+      );
+
+      const sufficiency = "first safely reachable real boundary sufficient";
+      assert(baseline.includes(sufficiency), `Baseline ${targetRelative} must keep the sufficient-boundary marker.`);
+      const supersededFixture = newTempDir("shift-left-superseded-earliest");
+      seedShiftLeftSurfaces(supersededFixture);
+      writeText(
+        path.join(supersededFixture, targetRelative),
+        baseline.replace(sufficiency, "earliest safely reachable real boundary"),
+      );
+      const supersededErrors = shiftLeftCadenceErrors(supersededFixture);
+      assert(
+        supersededErrors.some(
+          (error) =>
+            error.includes("shift-left real-boundary cadence") &&
+            error.includes(`'${sufficiency}'`) &&
+            error.replace(/\\/g, "/").includes(targetRelative),
+        ),
+        `Restoring superseded earliest-boundary wording without sufficiency must fail closed. errors=${JSON.stringify(supersededErrors)}`,
       );
     },
   },
@@ -559,6 +608,157 @@ export const changeReadyContractTests: TestCase[] = [
       assert(
         missingTokens(arbiterWithoutContinue, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes("as `continue`"),
         "Arbiter process-only questions must remain classified as continue, not owner_required.",
+      );
+    },
+  },
+  {
+    name: "contracts: path-only blockers cannot become owner scope or clear a blocked gate",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const troubleshooter = fs.readFileSync(path.join(root, "global", "agents", "troubleshooter.md"), "utf8");
+
+      assertTokens(
+        GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS.join("\n"),
+        [
+          "necessary for the original accepted outcome",
+          "no unused safe goal-preserving real route can advance that outcome",
+          "reconcile conflicting planning controls",
+          "Authority is a ceiling, not a fidelity target",
+        ],
+        "GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS dropped path-versus-outcome pair",
+      );
+      assertTokens(
+        CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS.join("\n"),
+        ["Authority is a ceiling, not a fidelity target", "every sufficient route requires owner action"],
+        "CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS dropped path-versus-outcome pair",
+      );
+
+      assertEqual(
+        missingTokens(agents, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).join("|"),
+        "",
+        `global/AGENTS.md missing path-versus-outcome markers: ${missingTokens(agents, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).join(", ")}`,
+      );
+      assertEqual(
+        missingTokens(skill, CRITICAL_PATH_VS_OUTCOME_SKILL_MARKERS).join("|"),
+        "",
+        `change-ready-sdlc missing path-versus-outcome markers: ${missingTokens(skill, CRITICAL_PATH_VS_OUTCOME_SKILL_MARKERS).join(", ")}`,
+      );
+      for (const superseded of SUPERSEDED_PATH_VS_OUTCOME_OPERATORS) {
+        assert(!agents.includes(superseded), `global/AGENTS.md restored superseded operator: ${superseded}`);
+        assert(!skill.includes(superseded), `change-ready-sdlc restored superseded operator: ${superseded}`);
+      }
+
+      for (const superseded of SUPERSEDED_PATH_VS_OUTCOME_OPERATORS) {
+        assert(
+          FORBIDDEN_PRODUCTION_ROUTING_PATTERNS.some((pattern) => pattern.needle === superseded),
+          `Production forbidden-routing array dropped superseded operator: ${superseded}`,
+        );
+        const restored = `${agents}\n${superseded}\n`;
+        assert(
+          !agents.includes(superseded) && restored.includes(superseded),
+          `Restoring superseded operator must be distinguishable from the current candidate: ${superseded}`,
+        );
+      }
+
+      const withoutOutcomeNecessity = agents.replaceAll(
+        "exact protected action necessary for the original accepted outcome",
+        "exact protected action plus proof no unused safe distinct mechanism",
+      );
+      assert(
+        withoutOutcomeNecessity !== agents &&
+          missingTokens(withoutOutcomeNecessity, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).includes(
+            "exact protected action necessary for the original accepted outcome",
+          ),
+        "Dropping outcome necessity while restoring the superseded owner-only conjunct must fail closed.",
+      );
+
+      const withoutNoSafeRoute = agents.replaceAll(
+        "no unused safe goal-preserving real route can advance that outcome",
+        "no unused safe distinct mechanism can advance the chain",
+      );
+      assert(
+        withoutNoSafeRoute !== agents &&
+          missingTokens(withoutNoSafeRoute, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).includes(
+            "no unused safe goal-preserving real route can advance that outcome",
+          ),
+        "Replacing the no-safe-route conjunct with the superseded chain test must fail closed.",
+      );
+
+      const pathOnlyOwnerHandoff = agents.replaceAll(
+        "If path-only, keep its action/gate blocked",
+        "If path-only, hand off to the owner",
+      );
+      assert(
+        pathOnlyOwnerHandoff !== agents &&
+          missingTokens(pathOnlyOwnerHandoff, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).includes(
+            "If path-only, keep its action/gate blocked",
+          ),
+        "Path-only owner handoff must fail closed.",
+      );
+
+      const clearedBlockedGate = agents.replaceAll(
+        "keep its action/gate blocked",
+        "clear its action/gate",
+      );
+      assert(
+        clearedBlockedGate !== agents &&
+          missingTokens(clearedBlockedGate, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).includes(
+            "If path-only, keep its action/gate blocked",
+          ),
+        "Treating a blocked path as clear must fail closed.",
+      );
+
+      const claimedBlockedPath = agents.replaceAll(
+        "do not claim the blocked path",
+        "may claim the blocked path",
+      );
+      assert(
+        claimedBlockedPath !== agents &&
+          missingTokens(claimedBlockedPath, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).includes(
+            "do not claim the blocked path",
+          ),
+        "Weakening the blocked-path claim ceiling must fail closed.",
+      );
+
+      const ownerDelay = agents.replaceAll(
+        "hand off without `troubleshooter`",
+        "hand off after consulting `troubleshooter`",
+      );
+      assert(
+        ownerDelay !== agents &&
+          missingTokens(ownerDelay, CRITICAL_PATH_VS_OUTCOME_GLOBAL_MARKERS).includes(
+            "hand off without `troubleshooter`",
+          ),
+        "Owner-only must fail closed when specialist delay is substituted for the no-consult bypass.",
+      );
+
+      const unboundedConsult = agents.replaceAll(
+        "at most one diagnosis-only `troubleshooter`",
+        "any number of diagnosis-only `troubleshooter`",
+      );
+      assert(
+        unboundedConsult !== agents && !unboundedConsult.includes("at most one diagnosis-only `troubleshooter`"),
+        "Equivalent consultation bound must fail closed when the one-consult limit is removed.",
+      );
+
+      const unavailableBlocks = agents.replaceAll(
+        "absence alone is not a stage blocker",
+        "absence alone is a stage blocker",
+      );
+      assert(
+        unavailableBlocks !== agents && !unavailableBlocks.includes("absence alone is not a stage blocker"),
+        "Missing specialist capability must not become a lifecycle blocker.",
+      );
+
+      const protectedSubstitution = troubleshooter.replaceAll(
+        "Never simulate, authorize, or weaken",
+        "May simulate, authorize, or weaken",
+      );
+      assert(
+        protectedSubstitution !== troubleshooter &&
+          !protectedSubstitution.includes("Never simulate, authorize, or weaken"),
+        "Protected-action non-substitution must fail closed.",
       );
     },
   },

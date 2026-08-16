@@ -1,0 +1,52 @@
+{
+  "baselineComplete": true,
+  "candidateComplete": null,
+  "mode": "evaluate",
+  "rows": [
+    {
+      "baseline": {
+        "allowedBashOnly": true,
+        "authorizedRecoveryExecuted": false,
+        "bashCalls": 0,
+        "blockedPathReported": false,
+        "claimCeilingReported": false,
+        "commandSucceeded": true,
+        "consultationContinuations": 0,
+        "consultationStarts": 0,
+        "filesUnchanged": true,
+        "finalRoute": "OWNER_REQUIRED",
+        "localRouteExecuted": false,
+        "noQuestion": true,
+        "taskCalls": 0,
+        "cleanupComplete": true
+      },
+      "baselineComplete": true,
+      "candidate": null,
+      "candidateOraclePass": null,
+      "scenario": "owner-only"
+    },
+    {
+      "baseline": {
+        "allowedBashOnly": true,
+        "authorizedRecoveryExecuted": false,
+        "bashCalls": 1,
+        "blockedPathReported": true,
+        "claimCeilingReported": true,
+        "commandSucceeded": true,
+        "consultationContinuations": 0,
+        "consultationStarts": 0,
+        "filesUnchanged": true,
+        "finalRoute": "REPLAN_NO_OWNER",
+        "localRouteExecuted": true,
+        "noQuestion": true,
+        "taskCalls": 0,
+        "cleanupComplete": true
+      },
+      "baselineComplete": true,
+      "candidate": null,
+      "candidateOraclePass": null,
+      "scenario": "stale-proof-path"
+    }
+  ],
+  "schemaVersion": 1
+}

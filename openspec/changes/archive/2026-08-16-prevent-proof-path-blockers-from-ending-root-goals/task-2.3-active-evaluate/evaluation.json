@@ -1,0 +1,82 @@
+{
+  "baselineComplete": true,
+  "candidateComplete": true,
+  "mode": "evaluate",
+  "rows": [
+    {
+      "baseline": {
+        "allowedBashOnly": true,
+        "authorizedRecoveryExecuted": false,
+        "bashCalls": 0,
+        "blockedPathReported": false,
+        "claimCeilingReported": false,
+        "commandSucceeded": true,
+        "consultationContinuations": 0,
+        "consultationStarts": 0,
+        "filesUnchanged": true,
+        "finalRoute": "OWNER_REQUIRED",
+        "localRouteExecuted": false,
+        "noQuestion": true,
+        "taskCalls": 0,
+        "cleanupComplete": true
+      },
+      "baselineComplete": true,
+      "candidate": {
+        "allowedBashOnly": true,
+        "authorizedRecoveryExecuted": false,
+        "bashCalls": 0,
+        "blockedPathReported": false,
+        "claimCeilingReported": false,
+        "commandSucceeded": true,
+        "consultationContinuations": 0,
+        "consultationStarts": 0,
+        "filesUnchanged": true,
+        "finalRoute": "OWNER_REQUIRED",
+        "localRouteExecuted": false,
+        "noQuestion": true,
+        "taskCalls": 0,
+        "cleanupComplete": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "owner-only"
+    },
+    {
+      "baseline": {
+        "allowedBashOnly": true,
+        "authorizedRecoveryExecuted": false,
+        "bashCalls": 1,
+        "blockedPathReported": true,
+        "claimCeilingReported": true,
+        "commandSucceeded": true,
+        "consultationContinuations": 0,
+        "consultationStarts": 0,
+        "filesUnchanged": true,
+        "finalRoute": "REPLAN_NO_OWNER",
+        "localRouteExecuted": true,
+        "noQuestion": true,
+        "taskCalls": 0,
+        "cleanupComplete": true
+      },
+      "baselineComplete": true,
+      "candidate": {
+        "allowedBashOnly": true,
+        "authorizedRecoveryExecuted": false,
+        "bashCalls": 1,
+        "blockedPathReported": true,
+        "claimCeilingReported": true,
+        "commandSucceeded": true,
+        "consultationContinuations": 0,
+        "consultationStarts": 0,
+        "filesUnchanged": true,
+        "finalRoute": "REPLAN_NO_OWNER",
+        "localRouteExecuted": true,
+        "noQuestion": true,
+        "taskCalls": 0,
+        "cleanupComplete": true
+      },
+      "candidateOraclePass": true,
+      "scenario": "stale-proof-path"
+    }
+  ],
+  "schemaVersion": 1
+}

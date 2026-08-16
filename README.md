@@ -350,7 +350,7 @@ Routing and reviewer maps assume the default `all` install profile.
 - Several session-scoped follow-ups from an audit, reviewer gate, broad discovery, or validation failure -> group them into lightweight OpenSpec changes when OpenSpec exists or is approved; otherwise return grouped continuation candidates.
 - Initial MR/PR title/body preparation -> `merge-request-author`.
 - Ordinary Small clear/bounded/local/reversible work -> main-default implementation, Runtime Proof to MVP, accepted-scope completion, focused validation, RC, and stable handoff.
-- Behavior roadmaps and feature slices -> minimize time-to-first-real-signal; run the earliest safely reachable real boundary before dependent expansion, or make its exact blocker and earliest unblocking task the next evidence slice. External/live authority remains separate.
+- Behavior roadmaps and feature slices -> use the first safely reachable real boundary sufficient for the accepted effect. Keep a blocked path/gate unclaimed and replan to another sufficient route; ask only when the outcome requires owner action.
 - Explicit stable/full qualification, project-required qualification, or concrete Material risk -> load `change-ready-sdlc` before the first mutation.
 - Optional delegated production slices -> `implementation-worker` only when isolation, proof boundary, and evidenced benefit justify handoff; main remains default author.
 - Material critical test risk/evidence after MVP and accepted-scope completion -> fresh `sdet-quality-engineer` when installed.

@@ -1,0 +1,28 @@
+{
+  "candidateId": "baseline-d7d7770615e85218dad0d475dd443f6045f4ef0e",
+  "captureKind": "baseline",
+  "completed": [
+    "stale-proof-path",
+    "owner-only"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "bb93b1797563ca1b717c161f08b06363adda5e2a954ffdd14904b85baf4f9cab",
+    "global/agents/troubleshooter.md": "cef44fe3286b584a04788cc7e1f9af20a476050e33e855bf1e98c6ee945e94a0",
+    "global/extensions/session-completion-guard/controller.ts": "a628b23db65c2833556145edc471bbd882891a84a7dbb88567c8254c48453f81",
+    "global/extensions/session-completion-guard/inspection.ts": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6",
+    "global/extensions/session-completion-guard/strategy.ts": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6",
+    "global/extensions/session-completion-guard/verdict.ts": "27477e89095a79da5ab75845220366142821875d16c3a76f20ad5727b34b64f1",
+    "global/skills/change-ready-sdlc/SKILL.md": "6a22e8b52b6724527e1bd7695d6a22ce990a0c368f5175702b03e073c7a622d3",
+    "instructions/reusable-project-agent-instructions.md": "d77608ba69182a97865f79992925f91e8ad76da964b60816510a4a275f66fcfe",
+    "instructions/universal-development-loop.md": "9f534dfcbed4fd4e9c43b91343cae8ba04c6915a112946e06b1d0f714f450a6d",
+    "templates/project/AGENTS.md": "a2219674229895adf6aa3d40fd56f94e5fef8a607c5f3c6ed75bb926a5890133",
+    "README.md": "fac56caa4cc954514cfc6c8a28fe0847477488aa7c6386a570d6021943b321f3",
+    "package.json": "2ac7e806c7b329093d2a8b697674b22de2fe2a830c0ccfee203ace845ffaf6b3",
+    "tools/contracts/troubleshooter.ts": "a563e5540de98b692e38ef1fca50988aac75891c0883ffa129ac4a94a28275ef",
+    "tools/proofs/pre-escalation-recovery.ts": "cc2cb087189b81478f3bfe88db6e6c67373069a9e66b07d1c6307cbecce173f1",
+    "tools/proofs/session-completion-guard-question.ts": "7e1adf3c292909558cd55e81384a454e60a583b3f6769d719cb740a18e8690a6",
+    "tools/proofs/README.md": "71d86b4d36bc4f49c1ae07c4ba948f7afab318612604b576ba6886d3576a6567"
+  }
+}

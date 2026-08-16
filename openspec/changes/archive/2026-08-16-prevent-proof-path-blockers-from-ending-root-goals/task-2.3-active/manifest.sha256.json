@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "path": "capture.json",
+      "sha256": "67fffd42153e49ba7933f336929e7641302db4f5078c75f607eb783b3b904844"
+    },
+    {
+      "path": "owner-only.bundle.json",
+      "sha256": "a912c1dc7893e171e865f8fddaa2c16f98375ae53937a40b273b498ef6c508a2"
+    },
+    {
+      "path": "stale-proof-path.bundle.json",
+      "sha256": "a1608c1f5b6eb425ca915a4f818cccaff23f15955786a18c75bca0e7635dcda5"
+    }
+  ],
+  "label": "capture-candidate",
+  "schemaVersion": 1
+}

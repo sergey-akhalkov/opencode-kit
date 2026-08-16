@@ -336,13 +336,16 @@ const EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT = [
  * unavailable-fallback, diagnosis-only, or protected-action non-substitution.
  */
 const CRITICAL_PRE_ESCALATION_AGENTS_MARKERS = [
-  "exact protected action plus proof no unused safe distinct mechanism",
+  "exact protected action necessary for the original accepted outcome",
+  "no unused safe goal-preserving real route can advance that outcome",
+  "If path-only, keep its action/gate blocked",
+  "reconcile conflicting planning controls",
   "hand off without `troubleshooter`",
-  "technical/uncertain blocker",
+  "technical/uncertain failure chain",
   "at most one diagnosis-only `troubleshooter`",
-  "Main verifies/runs recovery and asks nothing when task advances",
+  "asks nothing if the outcome advances",
   "Reconsult only with new decision-changing evidence or a distinct mechanism",
-  "If unavailable, main performs same pass",
+  "If unavailable, main performs the same pass",
   "absence alone is not a stage blocker",
 ] as const;
 
@@ -827,7 +830,7 @@ const tests: TestCase[] = [
         for (const completePolicy of [
           "hand off without `troubleshooter`",
           "at most one diagnosis-only `troubleshooter`",
-          "asks nothing when task advances",
+          "asks nothing if the outcome advances",
         ]) {
           assert(
             !text.includes(completePolicy),
@@ -836,26 +839,64 @@ const tests: TestCase[] = [
         }
       }
 
-      const ownerDelay = agents.replaceAll(
-        "hand off without `troubleshooter`",
-        "hand off after consulting `troubleshooter`",
-      );
-      assert(
-        ownerDelay !== agents &&
-          missingTokens(ownerDelay, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes("hand off without `troubleshooter`"),
-        "Owner-only must fail closed when specialist delay is substituted for the no-consult bypass.",
-      );
-
       const escalateAfterRecovery = agents.replaceAll(
-        "asks nothing when task advances",
-        "may ask when task advances",
+        "asks nothing if the outcome advances",
+        "may ask if the outcome advances",
       );
       assert(
         escalateAfterRecovery !== agents &&
           missingTokens(escalateAfterRecovery, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
-            "Main verifies/runs recovery and asks nothing when task advances",
+            "asks nothing if the outcome advances",
           ),
         "Authorized recovery must fail closed if main may still escalate.",
+      );
+
+      const withoutOutcomeNecessity = agents.replaceAll(
+        "exact protected action necessary for the original accepted outcome",
+        "exact protected action plus proof no unused safe distinct mechanism",
+      );
+      assert(
+        withoutOutcomeNecessity !== agents &&
+          missingTokens(withoutOutcomeNecessity, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "exact protected action necessary for the original accepted outcome",
+          ),
+        "Dropping outcome necessity must fail closed.",
+      );
+
+      const withoutNoSafeRoute = agents.replaceAll(
+        "no unused safe goal-preserving real route can advance that outcome",
+        "no unused safe distinct mechanism can advance the chain",
+      );
+      assert(
+        withoutNoSafeRoute !== agents &&
+          missingTokens(withoutNoSafeRoute, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "no unused safe goal-preserving real route can advance that outcome",
+          ),
+        "Dropping the no-safe-route requirement must fail closed.",
+      );
+
+      const withoutReconcile = agents.replaceAll(
+        "reconcile conflicting planning controls",
+        "leave conflicting planning controls in place",
+      );
+      assert(
+        withoutReconcile !== agents &&
+          missingTokens(withoutReconcile, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "reconcile conflicting planning controls",
+          ),
+        "Dropping alternate-route reconciliation must fail closed.",
+      );
+
+      const withoutPathScopedGate = agents.replaceAll(
+        "If path-only, keep its action/gate blocked",
+        "If path-only, hand off to the owner",
+      );
+      assert(
+        withoutPathScopedGate !== agents &&
+          missingTokens(withoutPathScopedGate, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
+            "If path-only, keep its action/gate blocked",
+          ),
+        "Dropping the path-scoped blocked action/gate must fail closed.",
       );
 
       const unboundedConsult = agents.replaceAll(
@@ -880,18 +921,6 @@ const tests: TestCase[] = [
             "absence alone is not a stage blocker",
           ),
         "Missing specialist capability must not become a lifecycle blocker.",
-      );
-
-      const falseOwnerOnly = agents.replaceAll(
-        "exact protected action plus proof no unused safe distinct mechanism",
-        "an owner-like blocker without proving a protected action",
-      );
-      assert(
-        falseOwnerOnly !== agents &&
-          missingTokens(falseOwnerOnly, CRITICAL_PRE_ESCALATION_AGENTS_MARKERS).includes(
-            "exact protected action plus proof no unused safe distinct mechanism",
-          ),
-        "Uncertain owner-like blockers must not classify as owner-only.",
       );
 
       const childMutation = troubleshooter.replaceAll(

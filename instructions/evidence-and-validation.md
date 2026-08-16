@@ -25,7 +25,7 @@ Low confidence:
 - Do not claim production readiness without acceptance tests, validation output, benchmark/manual gates where relevant, and residual risk review.
 - For Material behavior changes, first prove MVP through observable execution, complete accepted scope, then delegate critical risk discovery and automated test authoring to a separate fresh-context SDET that did not author production. Optional reviewers run only for concrete risk.
 - Optimize test scenarios for realistic business and operational failures, not coverage percentages. Prioritize real-boundary end-to-end evidence and document every material mock exception or unavailable dependency.
-- For each behavior dependency chain, execute the earliest safely reachable real boundary before dependent expansion. When deferred, record the current fidelity rung, exact blocker, earliest unblocking task, authorization/safety/restoration needs, expected immutable evidence, and stop condition; shift-left never grants external-operation authority.
+- Per behavior dependency chain, execute the first safely reachable real boundary sufficient for the accepted effect before dependent expansion. If deferred, record the current rung, path-scoped blocker, unblocker/replan, authorization, safeguards, restoration, evidence, and stop condition; shift-left never authorizes external operations.
 - If validation cannot run, report `Validation skipped` with reason and risk.
 - For performance claims, include measurement, environment, profile, and before/after comparison when relevant.
 
@@ -46,7 +46,7 @@ Use this format for material risk rows:
 ## Validation Loop
 
 1. Read the original requirements and define the observable happy path, business invariants, boundaries, and acceptance evidence.
-2. Reproduce or prove current behavior at the earliest safely reachable real boundary; characterize the real baseline before modeling or substitution when authorized.
+2. Reproduce or prove current behavior at the first safely reachable real boundary sufficient for the accepted effect; characterize the real baseline before modeling or substitution when authorized.
 3. Make the smallest complete happy-path change.
 4. Prove the happy path through observable execution at the current fidelity rung; do not defer an already reachable real rung before dependent work.
 5. Optionally collect reviewer evidence only for concrete risk; main dispositions any invoked findings.

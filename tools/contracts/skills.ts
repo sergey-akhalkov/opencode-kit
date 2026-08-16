@@ -121,6 +121,18 @@ export const FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES = [
  */
 export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
   {
+    needle: "The autonomous target is the highest rung allowed by current authority",
+    diagnostic: "superseded authority-as-fidelity-target routing",
+  },
+  {
+    needle: "Active-change pending tasks remain accepted unless user-bounded",
+    diagnostic: "superseded task-inventory-as-owner-scope routing",
+  },
+  {
+    needle: "no unused safe distinct mechanism can advance the chain",
+    diagnostic: "superseded dependency-chain owner-only test",
+  },
+  {
     needle: "Any false or unknown condition selects Material",
     diagnostic: "old universal unknown-forces-Material routing",
   },
@@ -243,6 +255,8 @@ export const FORBIDDEN_PRODUCTION_ROUTING_PATTERNS = [
 /** Outcome-authority markers required in the canonical Change-Ready skill body. */
 export const CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
   "accepted outcome",
+  "Authority is a ceiling, not a fidelity target",
+  "every sufficient route requires owner action",
   "protected boundaries",
   "smallest sufficient dependency closure",
   "attempt limits, and stop lines",
@@ -256,6 +270,10 @@ export const CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
 /** Outcome-authority markers required in always-loaded global AGENTS routing. */
 export const GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
   "accepted outcome",
+  "necessary for the original accepted outcome",
+  "no unused safe goal-preserving real route can advance that outcome",
+  "reconcile conflicting planning controls",
+  "Authority is a ceiling, not a fidelity target",
   "protected boundaries",
   "smallest sufficient dependency closure",
   "attempt limit, or process stop line",
@@ -403,7 +421,7 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "bounded accepted outcome and non-goals",
   "real-boundary happy-path proof",
   "time-to-first-real-signal",
-  "earliest safely reachable real boundary",
+  "first safely reachable real boundary sufficient",
   "green applicable project-native validation",
   "critical safety/data/authorization",
   "failure visibility",
@@ -421,7 +439,7 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
 /** Exact shift-left cadence markers required on maintained runtime/project mirrors. */
 export const SHIFT_LEFT_REAL_BOUNDARY_MARKERS: readonly string[] = [
   "time-to-first-real-signal",
-  "earliest safely reachable real boundary",
+  "first safely reachable real boundary sufficient",
   "does not authorize external operations",
 ];
 

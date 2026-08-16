@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "path": "capture.json",
+      "sha256": "64094f7461dea03268f1ce7982c8045f4cb6afa44cc7ba338a607c40d1f7455c"
+    },
+    {
+      "path": "owner-only.bundle.json",
+      "sha256": "6f39e0940c3ba0897a7879eb81a0467421eff67005ef371948ac49a33c74730c"
+    },
+    {
+      "path": "stale-proof-path.bundle.json",
+      "sha256": "e08080b0823606de9dbab016e0e38a50f2152787db71894ca318152f18f4aeb9"
+    }
+  ],
+  "label": "capture-baseline",
+  "schemaVersion": 1
+}

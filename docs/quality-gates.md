@@ -9,7 +9,7 @@ The canonical loop definition lives at `instructions/universal-development-loop.
 | Gate | When | Evidence |
 | --- | --- | --- |
 | Focused validation | After each meaningful edit | Nearest test/build/lint command result |
-| Earliest real signal | Each behavior dependency chain, before dependent expansion | Current fidelity rung, earliest safely reachable real boundary result, or exact blocker/unblocking task plus authorization, safeguards, restoration, and evidence plan |
+| First sufficient real signal | Each behavior dependency chain, before dependent expansion | Current rung, first safely reachable real boundary sufficient for the accepted effect, or a path-scoped blocker/unblocker or goal-preserving replan plus authorization, safeguards, restoration, and evidence plan |
 | Happy-path proof | Behavior-changing code | Observable execution at the relevant user-facing or system boundary |
 | Project doctor | After bootstrap and before lifecycle automation | `npm run doctor -- --project <path> --require structural|qualification|unattended`; exit `0` and an empty selected blocker array |
 | Independent critical SDET | Material behavior, after MVP and accepted-scope completion | Fresh test-only SDET, reachable critical-risk matrix, smallest critical reproducer when needed, and mock confidence gaps |
