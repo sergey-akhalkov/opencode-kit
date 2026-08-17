@@ -229,6 +229,87 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     );
   }
 
+  const workflowSurfaces = [
+    "global/AGENTS.md",
+    "global/skills/openspec-propose/SKILL.md",
+    "global/commands/opsx-propose.md",
+    "global/skills/openspec-apply-change/SKILL.md",
+    "global/commands/opsx-apply.md",
+    "global/skills/openspec-archive-change/SKILL.md",
+    "global/commands/opsx-archive.md",
+    "openspec/config.yaml",
+    "openspec/project.md",
+  ];
+  for (const relative of workflowSurfaces) {
+    const candidate = path.join(root, relative);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const forbidden of [
+      "final-history-retrospective",
+      "Pending Improvement Tasks",
+      "Deferred Improvement Candidates",
+      "Session-Derived Improvements",
+    ]) {
+      if (text.includes(forbidden)) {
+        ctx.addError(`OpenSpec workflow retains removed completion ceremony '${forbidden}': ${candidate}`);
+      }
+    }
+  }
+
+  for (const relative of [
+    "global/skills/openspec-apply-change/SKILL.md",
+    "global/commands/opsx-apply.md",
+  ]) {
+    const candidate = path.join(root, relative);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const marker of ["state: \"all_done\"", "accepted outcome", "required observable proof", "smallest ordinary task", "incomplete/abandoned disposition"]) {
+      requireTextContains(ctx, text, marker, "OpenSpec apply outcome reconciliation", candidate);
+    }
+  }
+
+  for (const relative of [
+    "global/skills/openspec-archive-change/SKILL.md",
+    "global/commands/opsx-archive.md",
+  ]) {
+    const candidate = path.join(root, relative);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const marker of ["Reconcile Accepted Outcome", "all-checked tasks", "smallest ordinary task", "incomplete/abandoned preservation flow"]) {
+      requireTextContains(ctx, text, marker, "OpenSpec archive outcome reconciliation", candidate);
+    }
+  }
+
+  const helperSurfaces: Array<{ helper: string; relative: string }> = [
+    { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-propose/SKILL.md" },
+    { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-propose.md" },
+    { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-apply-change/SKILL.md" },
+    { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-apply.md" },
+    { helper: "bin/openspec-archive.ts", relative: "global/skills/openspec-archive-change/SKILL.md" },
+    { helper: "bin/openspec-archive.ts", relative: "global/commands/opsx-archive.md" },
+  ];
+  for (const surface of helperSurfaces) {
+    const candidate = path.join(root, surface.relative);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const marker of ["OPENCODE_CONFIG_DIR", surface.helper, "privacy-safe runtime-source/collision evidence", "Never strip a final `global` segment"]) {
+      requireTextContains(ctx, text, marker, "portable active-global helper resolution", candidate);
+    }
+  }
+
+  const compactionTemplate = path.join(root, "global", "opencode.json.template");
+  if (fileExists(compactionTemplate)) {
+    const text = readText(compactionTemplate);
+    for (const forbidden of ["Improvement Matrix", "Pending Improvement Tasks", "Deferred Improvement Candidates", "Session-Derived Improvements"]) {
+      if (text.includes(forbidden)) {
+        ctx.addError(`Compaction prompt retains removed product-task expansion '${forbidden}': ${compactionTemplate}`);
+      }
+    }
+    for (const marker of ["optional evidence outside product completion scope", "must not create or schedule product work", "separately owned change"]) {
+      requireTextContains(ctx, text, marker, "compaction reflection separation", compactionTemplate);
+    }
+  }
+
   const scripts = readPackageScripts(ctx, root);
   for (const script of [
     "setup:global",
@@ -350,7 +431,9 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
         "Treat the session as stagnant",
         "Attempt control and stagnation",
         "diagnosis, not outcome progress",
-        "immediately blocks another live attempt",
+        "blocks unchanged live repetition",
+        "invocation remains finalized and non-reusable",
+        "does not impose a fixed mission-wide attempt ceiling",
         "`unknown` gate state remains blocked",
         "openspec/changes/<change>/history.md",
         "Pending Strategy History",

@@ -1,0 +1,35 @@
+{
+  "excluded": [
+    "global/node_modules"
+  ],
+  "gitRef": "working-tree",
+  "materialized": [],
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "7f4bed644510ed83f519a2d8a587e2a831ed778e9945cdec7eed84e9d127c603",
+    "global/agents/troubleshooter.md": "fa5eabe1b5b0c8a3158ba82dcafe07b80efdf15d0de565df61cdd6fd1b0faf18",
+    "global/agents/session-completion-arbiter.md": "ac7fb54e9fbce0bd86d5288fb4333c65342d646a1825ff48d937718346a1c2d8",
+    "global/bin/openspec-operation-gate.ts": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b",
+    "global/commands/opsx-apply.md": "68933f170ea1b22badc443a19d983bf7c85f4d68b79fcef31e825e388ab3dedd",
+    "global/commands/opsx-archive.md": "a6bc43ec5f8f451f7517d4909983fcee729f65f34eea22540e2ff8d8bd1d7ab7",
+    "global/commands/opsx-propose.md": "8719cd8054b39f96880782643463a0d3e24591b65c0d719709262636a2a711c7",
+    "global/extensions/session-completion-guard/controller.ts": "92d3b7fd3e1205fe3c81aaf24b103ad3eaba1f9e08da99268c685e8b441ee0c2",
+    "global/extensions/session-completion-guard/inspection.ts": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6",
+    "global/extensions/session-completion-guard/strategy.ts": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6",
+    "global/extensions/session-completion-guard/verdict.ts": "27477e89095a79da5ab75845220366142821875d16c3a76f20ad5727b34b64f1",
+    "global/skills/change-ready-sdlc/SKILL.md": "ef99bcc9af249bc0878d7bd6c2e6aba25b28ab7aec033a22bbb092906b9b9a6d",
+    "global/skills/openspec-apply-change/SKILL.md": "8ec4a024e21ce2c2289975fb8625776a25f06c9051e1049c5b8d5cfafafdca2b",
+    "global/skills/openspec-archive-change/SKILL.md": "d40fac3e2d338858a8685b44fd72ba450b512f5d517b9f2b0c61414487c932b3",
+    "global/skills/openspec-propose/SKILL.md": "4f3e4bfa72f865aa7bca412c2b0f31e5e0b76cca8b20aba887081bc3e48d702b",
+    "instructions/reusable-project-agent-instructions.md": null,
+    "instructions/universal-development-loop.md": null,
+    "templates/project/AGENTS.md": null,
+    "README.md": null,
+    "package.json": null,
+    "tools/contracts/troubleshooter.ts": null,
+    "tools/proofs/pre-escalation-recovery.ts": null,
+    "tools/proofs/session-completion-guard-autonomous.ts": null,
+    "tools/proofs/session-completion-guard-question.ts": null,
+    "tools/proofs/README.md": null
+  }
+}

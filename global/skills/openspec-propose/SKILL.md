@@ -79,18 +79,13 @@ When ready to implement, run /opsx-apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
-   d. **When the tasks artifact is authored, append the final history retrospective once**:
-      - Append exactly one unchecked final-history-retrospective task as the initially last checkbox in `tasks.md`; do not add a placeholder improvement or more than one analysis task.
-      - Require it to wait until every other currently known task is complete, then analyze the complete change `history.md` using the existing compaction `Quality`, `Cycle Speed`, and `Token Economy` rows across `Working Repository` and `opencode-kit`, the canonical impact/consumer/execution classification, admission/deferral gate, target ownership, authority boundaries, and record fields.
-      - Require it to append and immediately execute every admitted current-consumer improvement under `## Session-Derived Improvements`, preserve no-current-consumer evidence as non-checkbox deferred history records, or record `none` without inventing work. State that apply, archive, compaction, and generated tasks must not create or rerun this final analysis.
-
 5. **Create strategy history**
 
    Create `<changeRoot>/history.md` with `# Strategy History`. Record only materially distinct strategies actually considered or tried while preparing this change. Each entry contains objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. If no strategy has been tried, retain the heading and state that no attempts are recorded yet; do not invent history.
 
 6. **Validate operation readiness**
 
-   Resolve the current project root and the active kit global source explicitly. Run the portable gate from that source; do not require a target-project package script.
+   Resolve the current project root and active kit global source explicitly. Use `OPENCODE_CONFIG_DIR` first when it is non-empty and contains the exact `bin/openspec-operation-gate.ts` helper. Otherwise inspect the supported host-default source and privacy-safe runtime-source/collision evidence. Never strip a final `global` segment or guess a repository-parent `bin`. Run the portable gate from the verified source; do not require a target-project package script.
    Run `node "<global-source>/bin/openspec-operation-gate.ts" --root "<project-root>" --operation propose --change "<name>"`, then `openspec validate "<name>" --strict`.
 
    Stop if either command exits non-zero. Do not describe the change as ready from
@@ -130,7 +125,7 @@ Return the change identity and resolved location, created artifact list, exact r
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
 - Create `history.md` before readiness checks and never manufacture attempted strategies
-- Ensure every newly authored `tasks.md` has exactly one initially-last unchecked final-history-retrospective task; do not retrofit an existing change merely because this creation-time task is absent
+- Do not append a mandatory final retrospective or process-improvement task; keep optional workflow reflection outside product completion scope
 - Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable
 - Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.

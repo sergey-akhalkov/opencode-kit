@@ -1,0 +1,616 @@
+{
+  "candidateId": "outcome-continuation-candidate-wip",
+  "commands": {
+    "freshPreview": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "preview"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: preview\nTarget: <fixture>\\fresh-non-js\nUnattended workflow overlays: none\n\nwould create: AGENTS.md\nwould create: opencode.json\nwould create: docs/feedbacks/README.md\nwould create: opencode-dev-kit/validation.md\nwould create: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    },
+    "freshWrite": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "write"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: write\nTarget: <fixture>\\fresh-non-js\nUnattended workflow overlays: none\n\ncreated: AGENTS.md\ncreated: opencode.json\ncreated: docs/feedbacks/README.md\ncreated: opencode-dev-kit/validation.md\ncreated: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    },
+    "legacyPreview": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "preview"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: preview\nTarget: <fixture>\\legacy-non-js\nUnattended incompatible overlays (preserved): .opencode/skills/openspec-apply-change/SKILL.md\n\nwould replace: AGENTS.md\nwould create: opencode.json\nwould create: docs/feedbacks/README.md\nwould create: opencode-dev-kit/validation.md\nwould create: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    },
+    "legacyWrite": {
+      "argv": [
+        "node",
+        "tools/init-project.ts",
+        "--target",
+        "<fixture>",
+        "--mode",
+        "write",
+        "--overwrite"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "# opencode-dev-kit project bootstrap\nMode: write\nTarget: <fixture>\\legacy-non-js\nUnattended incompatible overlays (preserved): .opencode/skills/openspec-apply-change/SKILL.md\n\nreplaced: AGENTS.md (backup: .backups/opencode-dev-kit/20260817131152-1cca9121/AGENTS.md)\ncreated: opencode.json\ncreated: docs/feedbacks/README.md\ncreated: opencode-dev-kit/validation.md\ncreated: opencode-dev-kit/adapter.json\n\nNext: run `npm run doctor -- --project <project-path>` from opencode-dev-kit, then start tasks with the Universal Development Loop.\n"
+    }
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "freshDoctor": {
+    "qualificationStatus": "pass",
+    "status": "pass",
+    "unattendedChecks": [
+      {
+        "name": "unattended runtime authority",
+        "status": "pass"
+      },
+      {
+        "name": "unattended mission definition",
+        "status": "pass"
+      },
+      {
+        "name": "unattended aggregate validation argv",
+        "status": "pass"
+      },
+      {
+        "name": "unattended checkpoint support",
+        "status": "pass"
+      },
+      {
+        "name": "unattended canonical workflow",
+        "status": "pass"
+      },
+      {
+        "name": "unattended installed binaries",
+        "status": "pass"
+      },
+      {
+        "name": "unattended long-run guard limits",
+        "status": "pass"
+      }
+    ],
+    "unattendedMissionStatus": "pass"
+  },
+  "freshManifest": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "5ba222021107174a8f295a25b222a017dcd4b733063b6455d7f028ac79372f5c"
+    },
+    {
+      "path": "docs/feedbacks/README.md",
+      "sha256": "5686292fefb4c644fbdea9920e9ba01d7e5b2427934f27940c703f3c0662ad04"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "sha256": "eaa59182af019c266737753dc1998be780e7ce5f23de809eed2fdb432bc9391d"
+    },
+    {
+      "path": "mission.json",
+      "sha256": "46b1f90e8bcac2d95e0a12ab353893336a2646597ab86e748886239e886c1233"
+    },
+    {
+      "path": "opencode-dev-kit/adapter.json",
+      "sha256": "76c8a5826b7a16c6fbdc7147e328c27a09319ca1b66763a152e21d26e147df99"
+    },
+    {
+      "path": "opencode-dev-kit/validation.md",
+      "sha256": "c85b377d173639de8b39caccad8f7a41fd01513e34316f177912aade168d9c73"
+    },
+    {
+      "path": "opencode.json",
+      "sha256": "ac5aa793f9d0ed182ae51f793470557822ecece68426a333b29905d6d46f884a"
+    },
+    {
+      "path": "openspec/changes/helper-proof/history.md",
+      "sha256": "76db11d8123c69932cd5ce679930ba2f8f6fad6c6ed1ce1c7e52083c7996c778"
+    },
+    {
+      "path": "openspec/changes/helper-proof/proposal.md",
+      "sha256": "f8f5a8932c59b1933951880c6296e0797b3791dbedfe03301dde5d3091c528e8"
+    },
+    {
+      "path": "openspec/changes/helper-proof/specs/helper-proof/spec.md",
+      "sha256": "706d38b37adfed90dc221fcedc37b3288d2b1937d72a51db6529bbba2d75e530"
+    },
+    {
+      "path": "openspec/changes/helper-proof/tasks.md",
+      "sha256": "319370c0a28f6af558d76fa7e5b5669a95ab740e9e36c4c14e5b3975c9450307"
+    }
+  ],
+  "legacyDoctor": {
+    "qualificationStatus": "blocked",
+    "status": "warn",
+    "unattendedChecks": [
+      {
+        "name": "unattended runtime authority",
+        "status": "pass"
+      },
+      {
+        "name": "unattended mission definition",
+        "status": "pass"
+      },
+      {
+        "name": "unattended aggregate validation argv",
+        "status": "pass"
+      },
+      {
+        "name": "unattended checkpoint support",
+        "status": "pass"
+      },
+      {
+        "name": "unattended canonical workflow",
+        "status": "blocked"
+      },
+      {
+        "name": "unattended installed binaries",
+        "status": "pass"
+      },
+      {
+        "name": "unattended long-run guard limits",
+        "status": "pass"
+      }
+    ],
+    "unattendedMissionStatus": "blocked"
+  },
+  "legacyOverlay": {
+    "path": ".opencode/skills/openspec-apply-change/SKILL.md",
+    "preservedSha256": "56efb92ac96ef6d51a597fe64bfb998cab1d3bcae1deb93439421058e18f6d22"
+  },
+  "legacyOverwriteBackup": {
+    "path": ".backups/opencode-dev-kit/<stamp>/AGENTS.md",
+    "sha256": "09b18cca34188c7dd3e28db31cace9a79dbdadd75f346933d178ee125c13b928"
+  },
+  "operationGate": {
+    "changeId": "helper-proof",
+    "checks": [
+      {
+        "blocking": false,
+        "id": "artifact:proposal",
+        "label": "OpenSpec proposal",
+        "source": "openspec/changes/helper-proof/proposal.md",
+        "status": "passed",
+        "summary": "proposal.md exists."
+      },
+      {
+        "blocking": false,
+        "id": "artifact:proposal-capsule",
+        "label": "OpenSpec proposal outcome capsule",
+        "source": "openspec/changes/helper-proof/proposal.md",
+        "status": "passed",
+        "summary": "proposal.md contains every required current-increment Outcome Capsule field."
+      },
+      {
+        "blocking": false,
+        "id": "artifact:spec-delta",
+        "label": "OpenSpec spec delta",
+        "source": "openspec/changes/helper-proof/specs",
+        "status": "passed",
+        "summary": "Spec delta artifact exists."
+      },
+      {
+        "blocking": false,
+        "id": "artifact:strategy-history",
+        "label": "OpenSpec strategy history",
+        "source": "openspec/changes/helper-proof/history.md",
+        "status": "passed",
+        "summary": "history.md exists for strategy continuity."
+      },
+      {
+        "blocking": false,
+        "id": "artifact:tasks",
+        "label": "OpenSpec tasks",
+        "source": "openspec/changes/helper-proof/tasks.md",
+        "status": "passed",
+        "summary": "tasks.md exists with 1/1 unchecked task(s)."
+      },
+      {
+        "blocking": false,
+        "id": "scope:change:exists",
+        "label": "OpenSpec change directory",
+        "source": "openspec/changes/helper-proof",
+        "status": "passed",
+        "summary": "Scoped change directory exists."
+      }
+    ],
+    "exitCode": 0,
+    "generatedAt": "2026-08-17T13:11:51.978Z",
+    "nextActions": [
+      {
+        "label": "Continue operation",
+        "reason": "Operation gate passed for available cheap read-only checks."
+      }
+    ],
+    "operation": "apply",
+    "schemaVersion": 1,
+    "status": "passed"
+  },
+  "productionSources": [
+    {
+      "path": "tools/init-project.ts",
+      "sha256": "9be93b278f0c126e0a1e618843eaf084896bba4015e9ed56b099b4952c580770"
+    },
+    {
+      "path": "tools/doctor.ts",
+      "sha256": "425ebc6c8669f7730cae62076b7ba9386022d787c369a6d5790433e5ec173998"
+    },
+    {
+      "path": "tools/opencode-runtime-sources.ts",
+      "sha256": "ec7cd0c518efd0f9973fffe2101e2daaa9473d403b4048ea27fa75a21c4e2169"
+    },
+    {
+      "path": "templates/project/AGENTS.md",
+      "sha256": "5ba222021107174a8f295a25b222a017dcd4b733063b6455d7f028ac79372f5c"
+    },
+    {
+      "path": "templates/project/adapter.json",
+      "sha256": "066758cb2d431243dbb196b91cb897882bc163360cbbd77a55db9ee9087368e4"
+    },
+    {
+      "path": "templates/project/validation.md",
+      "sha256": "c85b377d173639de8b39caccad8f7a41fd01513e34316f177912aade168d9c73"
+    }
+  ],
+  "runtimeSources": {
+    "collision": {
+      "canonicalWorkflow": [
+        {
+          "kind": "command",
+          "location": "<global-source>/commands/opsx-apply.md",
+          "name": "opsx-apply",
+          "source": "custom"
+        },
+        {
+          "kind": "command",
+          "location": "<global-source>/commands/opsx-archive.md",
+          "name": "opsx-archive",
+          "source": "custom"
+        },
+        {
+          "kind": "command",
+          "location": "<global-source>/commands/opsx-propose.md",
+          "name": "opsx-propose",
+          "source": "custom"
+        },
+        {
+          "kind": "skill",
+          "location": "<fixture>/.opencode/skills/openspec-apply-change/SKILL.md",
+          "name": "openspec-apply-change",
+          "source": "project"
+        },
+        {
+          "kind": "skill",
+          "location": "<global-source>/skills/openspec-apply-change/SKILL.md",
+          "name": "openspec-apply-change",
+          "source": "custom"
+        },
+        {
+          "kind": "skill",
+          "location": "<global-source>/skills/openspec-archive-change/SKILL.md",
+          "name": "openspec-archive-change",
+          "source": "custom"
+        },
+        {
+          "kind": "skill",
+          "location": "<global-source>/skills/openspec-propose/SKILL.md",
+          "name": "openspec-propose",
+          "source": "custom"
+        }
+      ],
+      "collisionStatus": "blocked",
+      "guard": {
+        "capabilityStatus": "unknown",
+        "limits": {
+          "arbiterPromptTimeoutMs": 120000,
+          "maxCycles": 100,
+          "maxRequestBytes": 200000,
+          "maxRetryAttempts": 3,
+          "maxWaitRechecks": 30,
+          "retainAuditSessions": 2,
+          "waitRecheckMs": 2000
+        },
+        "origin": "<global-source>/extensions/session-completion-guard.ts"
+      },
+      "helperResolution": [
+        {
+          "attempts": [
+            {
+              "exists": true,
+              "helper": "<global-source>/bin/openspec-operation-gate.ts",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "blocked",
+          "relativePath": "bin/openspec-operation-gate.ts",
+          "selected": null,
+          "status": "blocked"
+        },
+        {
+          "attempts": [
+            {
+              "exists": true,
+              "helper": "<global-source>/bin/openspec-archive.ts",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "blocked",
+          "relativePath": "bin/openspec-archive.ts",
+          "selected": null,
+          "status": "blocked"
+        },
+        {
+          "attempts": [
+            {
+              "exists": true,
+              "helper": "<global-source>/bin/roadmap-mission.ts",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "blocked",
+          "relativePath": "bin/roadmap-mission.ts",
+          "selected": null,
+          "status": "blocked"
+        }
+      ],
+      "helpers": [
+        {
+          "path": "bin/openspec-operation-gate.ts",
+          "sha256": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b"
+        },
+        {
+          "path": "bin/openspec-archive.ts",
+          "sha256": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99"
+        },
+        {
+          "path": "bin/roadmap-mission.ts",
+          "sha256": "16abfa5c6cf9566cfc997e2692ab3ac63911b04b4582b6f9efee24ba20ee0e8c"
+        }
+      ]
+    },
+    "configured": {
+      "canonicalWorkflow": [
+        {
+          "kind": "command",
+          "location": "<global-source>/commands/opsx-apply.md",
+          "name": "opsx-apply",
+          "source": "custom"
+        },
+        {
+          "kind": "command",
+          "location": "<global-source>/commands/opsx-archive.md",
+          "name": "opsx-archive",
+          "source": "custom"
+        },
+        {
+          "kind": "command",
+          "location": "<global-source>/commands/opsx-propose.md",
+          "name": "opsx-propose",
+          "source": "custom"
+        },
+        {
+          "kind": "skill",
+          "location": "<global-source>/skills/openspec-apply-change/SKILL.md",
+          "name": "openspec-apply-change",
+          "source": "custom"
+        },
+        {
+          "kind": "skill",
+          "location": "<global-source>/skills/openspec-archive-change/SKILL.md",
+          "name": "openspec-archive-change",
+          "source": "custom"
+        },
+        {
+          "kind": "skill",
+          "location": "<global-source>/skills/openspec-propose/SKILL.md",
+          "name": "openspec-propose",
+          "source": "custom"
+        }
+      ],
+      "collisionStatus": "clear",
+      "guard": {
+        "capabilityStatus": "unknown",
+        "limits": {
+          "arbiterPromptTimeoutMs": 120000,
+          "maxCycles": 100,
+          "maxRequestBytes": 200000,
+          "maxRetryAttempts": 3,
+          "maxWaitRechecks": 30,
+          "retainAuditSessions": 2,
+          "waitRecheckMs": 2000
+        },
+        "origin": "<global-source>/extensions/session-completion-guard.ts"
+      },
+      "helperResolution": [
+        {
+          "attempts": [
+            {
+              "exists": true,
+              "helper": "<global-source>/bin/openspec-operation-gate.ts",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "clear",
+          "relativePath": "bin/openspec-operation-gate.ts",
+          "selected": {
+            "helper": "<global-source>/bin/openspec-operation-gate.ts",
+            "source": "custom"
+          },
+          "status": "resolved"
+        },
+        {
+          "attempts": [
+            {
+              "exists": true,
+              "helper": "<global-source>/bin/openspec-archive.ts",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "clear",
+          "relativePath": "bin/openspec-archive.ts",
+          "selected": {
+            "helper": "<global-source>/bin/openspec-archive.ts",
+            "source": "custom"
+          },
+          "status": "resolved"
+        },
+        {
+          "attempts": [
+            {
+              "exists": true,
+              "helper": "<global-source>/bin/roadmap-mission.ts",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "clear",
+          "relativePath": "bin/roadmap-mission.ts",
+          "selected": {
+            "helper": "<global-source>/bin/roadmap-mission.ts",
+            "source": "custom"
+          },
+          "status": "resolved"
+        }
+      ],
+      "helpers": [
+        {
+          "path": "bin/openspec-operation-gate.ts",
+          "sha256": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b"
+        },
+        {
+          "path": "bin/openspec-archive.ts",
+          "sha256": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99"
+        },
+        {
+          "path": "bin/roadmap-mission.ts",
+          "sha256": "16abfa5c6cf9566cfc997e2692ab3ac63911b04b4582b6f9efee24ba20ee0e8c"
+        }
+      ]
+    },
+    "missing": {
+      "canonicalWorkflow": [],
+      "collisionStatus": "clear",
+      "guard": {
+        "capabilityStatus": "unknown",
+        "limits": {
+          "arbiterPromptTimeoutMs": null,
+          "maxCycles": null,
+          "maxRequestBytes": null,
+          "maxRetryAttempts": null,
+          "maxWaitRechecks": null,
+          "retainAuditSessions": null,
+          "waitRecheckMs": null
+        },
+        "origin": null
+      },
+      "helperResolution": [
+        {
+          "attempts": [
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "clear",
+          "relativePath": "bin/openspec-operation-gate.ts",
+          "selected": null,
+          "status": "missing"
+        },
+        {
+          "attempts": [
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "clear",
+          "relativePath": "bin/openspec-archive.ts",
+          "selected": null,
+          "status": "missing"
+        },
+        {
+          "attempts": [
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "custom"
+            },
+            {
+              "exists": false,
+              "helper": "<external-source>",
+              "source": "host-default"
+            }
+          ],
+          "collisionStatus": "clear",
+          "relativePath": "bin/roadmap-mission.ts",
+          "selected": null,
+          "status": "missing"
+        }
+      ],
+      "helpers": []
+    }
+  },
+  "schemaVersion": 1
+}

@@ -1,0 +1,10 @@
+{
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "rootDeleted": true
+  },
+  "failure": "Root did not become idle within 120000ms",
+  "result": null,
+  "schemaVersion": 1
+}

@@ -1,0 +1,80 @@
+{
+  "candidateId": "outcome-continuation-candidate-r1",
+  "cleanup": {
+    "error": null,
+    "projectRemoved": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fefe995a4ffeF9jgFP6l0Y7h8v",
+        "status": 0
+      }
+    ]
+  },
+  "commands": {
+    "archive": null,
+    "propose": {
+      "argv": [
+        "opencode",
+        "run",
+        "--pure",
+        "--agent",
+        "build",
+        "--format",
+        "json",
+        "--dir",
+        "<proof-project>",
+        "--title",
+        "outcome-continuation-opsx-propose",
+        "--command",
+        "opsx-propose",
+        "Use exact change name proof-outcome-continuation. Create a minimal local-only change whose accepted outcome is marker.txt with exact text ready and one trailing newline. Planning only: do not implement marker.txt. Use capability proof-marker, node tools/validate.mjs as the known validation command, no external effects, and concise artifacts/tasks."
+      ],
+      "assistantText": "",
+      "eventCount": 2,
+      "sessionIds": [
+        "ses_fefe995a4ffeF9jgFP6l0Y7h8v"
+      ],
+      "toolCalls": [],
+      "status": 1,
+      "stderr": "",
+      "stdout": "{\"type\":\"error\",\"timestamp\":1786976320913,\"sessionID\":\"ses_fefe995a4ffeF9jgFP6l0Y7h8v\",\"error\":{\"name\":\"UnknownError\",\"data\":{\"message\":\"Unexpected server error. Check server logs for details.\",\"ref\":\"err_a65a13fb\"}}}\r\n{\"type\":\"error\",\"timestamp\":1786976320925,\"sessionID\":\"ses_fefe995a4ffeF9jgFP6l0Y7h8v\",\"error\":{\"name\":\"UnknownError\",\"data\":{\"message\":\"Model not found: openai/gpt-5.6-sol. Did you mean: gpt-5.6-sol, gpt-5.6-sol-pro, gpt-5.6-sol-fast?\"}}}\r\n"
+    }
+  },
+  "environment": {
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "project-contained read/edit/glob/grep/list/todowrite and global skill loading allowed",
+      "bash denied by default; only OpenSpec, exact kit OpenSpec helpers, local validation, and read-only Git inspection allowed",
+      "question, task, web, LSP, doom-loop, and external-directory access denied",
+      "no install, credential, remote, commit, release, deployment, or target-project action"
+    ],
+    "variant": "xhigh"
+  },
+  "failure": "Propose command returned non-zero status 1",
+  "facts": {
+    "activeAfterArchive": false,
+    "archiveAttempted": false,
+    "archivedAfterArchive": false,
+    "forbiddenCeremonyMarkers": [],
+    "historyPresent": false,
+    "outcomeAbsent": true,
+    "proposalArtifacts": {},
+    "proposalApplyReady": false,
+    "proposalStrictValidationStatus": null,
+    "reopenedOrdinaryTask": false
+  },
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "7f4bed644510ed83f519a2d8a587e2a831ed778e9945cdec7eed84e9d127c603",
+    "global/commands/opsx-archive.md": "a6bc43ec5f8f451f7517d4909983fcee729f65f34eea22540e2ff8d8bd1d7ab7",
+    "global/commands/opsx-propose.md": "8719cd8054b39f96880782643463a0d3e24591b65c0d719709262636a2a711c7",
+    "global/skills/openspec-archive-change/SKILL.md": "d40fac3e2d338858a8685b44fd72ba450b512f5d517b9f2b0c61414487c932b3",
+    "global/skills/openspec-propose/SKILL.md": "4f3e4bfa72f865aa7bca412c2b0f31e5e0b76cca8b20aba887081bc3e48d702b",
+    "global/bin/openspec-archive.ts": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99",
+    "global/bin/openspec-operation-gate.ts": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b",
+    "global/bin/portable-process.ts": "6c6590ee4f054d658d4a1c3819a2f85d10dc2e1aeedd5c84ebd23eec451f3ef9",
+    "tools/proofs/openspec-outcome-continuation.ts": "1d65f2373c27e28ffee8156a85a6212073b9941807504d66deddce9bdc84900b"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "candidateId": "outcome-continuation-candidate-r1",
+  "candidateOraclePass": true,
+  "captureKind": "candidate",
+  "cleanupComplete": true,
+  "evaluatorRecovered": true,
+  "failure": "Installed checked-unmet completion proof failed: {\"candidateId\":\"outcome-continuation-candidate-r1\",\"captureKind\":\"candidate\",\"assistantMarker\":false,\"auditStatuses\":[\"continued\"],\"autonomousRefs\":0,\"cleanup\":\"pending\",\"guardState\":\"continuation-pending\",\"humanQuestionReplies\":0,\"model\":\"openai/gpt-5.6-sol/xhigh\",\"openCodeVersion\":\"1.18.18\",\"offeredLabels\":[],\"pendingRefs\":0,\"projectedAnswer\":null,\"projectedStatus\":null,\"questionCalls\":0,\"questionStatus\":null,\"safeLabel\":null,\"scenario\":\"completion-checked-unmet\",\"selectedAnswer\":null,\"toolOnlyQuestion\":[],\"syntheticGuardMessages\":1}",
+  "inputRaw": "raw.json",
+  "inputRawBytes": 1499,
+  "livenessClosed": true,
+  "mode": "replay",
+  "modelCalls": 0,
+  "replayComplete": true,
+  "resultPresent": true,
+  "schemaVersion": 1,
+  "terminalResult": "captured-result-clean-after-evaluator-replay"
+}

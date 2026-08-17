@@ -1,0 +1,30 @@
+{
+  "files": [
+    {
+      "path": "capture.json",
+      "sha256": "1fdb4e7145087a0bfd9158d909e230e504cd3af913470054a213b5a22de68325"
+    },
+    {
+      "path": "checked-unmet.bundle.json",
+      "sha256": "d72b9eec28ab6552861dcd44b0bc7f734ee9f6c5915b9f88dff0249d083ea3c5"
+    },
+    {
+      "path": "explicit-pause.bundle.json",
+      "sha256": "8b62b1c1fc8a3dd050d7633e8817809896e33f955cef763d27d4da25e0764350"
+    },
+    {
+      "path": "outcome-achieved.bundle.json",
+      "sha256": "92e6a11655428fca940491bc7736b2cc001820c11b5657d456a5bd70b56450dd"
+    },
+    {
+      "path": "owner-only.bundle.json",
+      "sha256": "70b34083ed29472d73e007afe3fa71b8e45b535e30d33c59d9e092794175aad1"
+    },
+    {
+      "path": "unchanged-live-repetition.bundle.json",
+      "sha256": "aa3a3f2177e16aa6ba455571db2702fbf024cc226486eef3be57b3517ca8ea29"
+    }
+  ],
+  "label": "capture-candidate",
+  "schemaVersion": 1
+}

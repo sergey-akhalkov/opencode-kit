@@ -1,0 +1,15 @@
+{
+  "candidateId": "outcome-continuation-baseline-r1",
+  "captureKind": "baseline",
+  "cleanupComplete": true,
+  "failure": "Question probe returned an assistant error",
+  "inputRaw": "raw.json",
+  "inputRawBytes": 187,
+  "livenessClosed": false,
+  "mode": "replay",
+  "modelCalls": 0,
+  "replayComplete": true,
+  "resultPresent": false,
+  "schemaVersion": 1,
+  "terminalResult": "captured-failure-clean"
+}

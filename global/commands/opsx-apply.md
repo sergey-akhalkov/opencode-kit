@@ -21,7 +21,7 @@ Implement tasks from an OpenSpec change.
 
 2. **Run the apply operation gate before mutation**
 
-   Resolve the current project root and the active kit global source explicitly. Run the portable gate from that source; do not require a target-project package script.
+   Resolve the current project root and active kit global source explicitly. Use `OPENCODE_CONFIG_DIR` first when it is non-empty and contains the exact `bin/openspec-operation-gate.ts` helper. Otherwise inspect the supported host-default source and privacy-safe runtime-source/collision evidence. Never strip a final `global` segment or guess a repository-parent `bin`. Run the portable gate from the verified source; do not require a target-project package script.
    Run `node "<global-source>/bin/openspec-operation-gate.ts" --root "<project-root>" --operation apply --change "<name>"`.
 
    Stop on a non-zero exit. Preserve the exact gate output instead of entering the
@@ -46,7 +46,7 @@ Implement tasks from an OpenSpec change.
 
    **Handle states:**
    - If `state: "blocked"` (missing artifacts): show message, suggest using `/opsx-continue`
-   - If `state: "all_done"`: treat it as provisional until session-derived improvements are reconciled; suggest archive only when none must be added
+   - If `state: "all_done"`: treat it as provisional until the accepted outcome and its required observable proof are reconciled; route missing outcome work back to ordinary apply tasks
    - Otherwise: proceed to implementation
 
 5. **Read context files**
@@ -58,11 +58,7 @@ Implement tasks from an OpenSpec change.
 
    Read `<changeRoot>/history.md` before substantial work. If it is missing, create it with `# Strategy History` and no invented attempts. Reconcile any `Pending Strategy History` entries from compaction before continuing.
 
-   Reconcile every record from the current session, `Pending Improvement Tasks`, and `Deferred Improvement Candidates` before substantial work. An admitted item needs an exact remaining current-change consumer; append every such owned item as an unchecked task under `## Session-Derived Improvements`. Persist evidence-backed no-current-consumer items as non-checkbox `Deferred Improvement Candidate` records in `history.md`; they are not accepted scope and do not block completion. Never retain only the highest-ROI item or silently drop another valid record.
-
-   Every admitted or deferred record must state `Impact Horizon`, `Concrete Consumers`, `Execution Class`, `Earliest Safe Point`, `Invalidated Evidence`, `Observable Payback`, `Trigger/Evidence`, `Why`, `Prerequisites`, `Scope/Non-Goals`, `Implementation`, `Observable Proof`, and `Validation`, plus `Owner Blocker` only when applicable. `Impact Horizon: Working Repository` is admissible only when this change consumes and proves an existing shared owner and at least one other exact repository consumer is evidenced; name but do not mutate that other consumer. If a required current dependency belongs to another repository, expands accepted outcome, or crosses a protected boundary, record the exact blocker and stop only that dependency chain.
-
-   If `tasks.md` contains the creation-authored final-history-retrospective task, keep it ineligible until every other currently known task is complete. Its absence in an older change does not authorize apply or archive to retrofit it.
+   Before accepting `all_done`, map the proposal outcome and current human requirement to their required observable proof. If proof is absent, `Development-Stage` remains `development`, or another explicit outcome fact is unmet, reopen or add the smallest ordinary task and continue. A change is complete only when its accepted outcome is achieved or the owner explicitly selects a supported incomplete/abandoned disposition. Optional retrospective or workflow feedback stays outside the product task graph.
 
 6. **Show current progress**
 
@@ -74,9 +70,7 @@ Implement tasks from an OpenSpec change.
 
 7. **Implement tasks (loop until done or owner-blocked)**
 
-   After live-attempt and non-deferrable safety blockers, order admitted improvements by `Execution Class`: `gate-closer`, `do-now`, `before-task-<id>` before its first named consumer, and `before-freeze` before qualification. Dependency, authority, and `Invalidated Evidence` facts may delay execution; physical placement under `## Session-Derived Improvements` may not. `separate-change` records stay deferred.
-
-   For each pending task in that effective order:
+   For each pending task in dependency-valid order:
    - Show which task is being worked on
    - Make the code changes required
    - Keep changes minimal and focused
@@ -84,14 +78,6 @@ Implement tasks from an OpenSpec change.
    - Run its applicable focused validation, or record the exact reasoned manual/external gate
    - Mark the task complete only after required proof and validation pass: `- [ ]` → `- [x]`
    - Continue to next task
-
-   When an improvement candidate becomes admissible during implementation, append it immediately using the same section and fields. It is accepted completion scope; implement and prove it at its earliest safe consumer boundary. Preserve a no-current-consumer candidate in `history.md` instead of adding a checkbox.
-
-   When the creation-authored final-history-retrospective task becomes the only remaining task:
-   - Analyze the complete change `history.md` exactly through the canonical compaction improvement contract: rows `Quality`, `Cycle Speed`, and `Token Economy`; columns `Working Repository` and `opencode-kit`; each cell contains evidence, smallest cheap improvement, expected benefit, and cost/risk, or `none`.
-   - Use the accepted change outcome as `Original User Goal` and use the complete journal, not the current session, as evidence. Apply the existing observed-evidence, causal-link, local/reversible, low-cost, no-scope-expansion, target ownership, protected-boundary, and instruction-workflow-comparison rules without adding another algorithm.
-   - Classify each evidence-backed candidate with the canonical impact, consumer, execution, safe-point, invalidation, and payback fields. Append every admitted current-consumer candidate under `## Session-Derived Improvements`; preserve every no-current-consumer candidate as a non-checkbox deferred history record. Record generated task IDs and deferred record IDs in the retrospective evidence, mark the analysis complete once its result is persisted, and immediately continue the normal apply loop until every generated admitted task is implemented and proven.
-   - If no admitted or deferred candidate passes, record `none`, mark the task complete, and create no improvement. Never create another final-history-retrospective task or rerun this analysis after generated work.
 
    **If proof or validation fails:**
    - Leave the task unchecked
@@ -115,7 +101,7 @@ Implement tasks from an OpenSpec change.
    Display:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
-   - If all done after a final session-derived improvement reconciliation: report that implementation tasks are complete and archive checks are next
+   - If all done after accepted-outcome reconciliation: report that implementation tasks are complete and archive checks are next
    - If owner-blocked: explain the exact owner boundary and wait for the required decision or action
 
 **Output During Implementation**
@@ -175,8 +161,8 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 - If implementation reveals an artifact or design mismatch with already resolved semantics, update the affected artifact and continue
 - Keep code changes minimal and scoped to each task
 - Update a task checkbox only after its required observable proof and focused validation pass
-- Persist every admitted session-derived improvement immediately and complete all such tasks before archive; never leave a non-selected candidate only in summary prose
-- Execute a creation-authored final-history retrospective exactly once from complete `history.md`; accept `none`, immediately process admitted tasks, and never synthesize the task for a pre-policy change
+- Treat `all_done` as structural evidence only; reconcile accepted outcome proof before completion or archive routing
+- Keep optional retrospective and workflow-improvement ideas outside the product task graph; add only ordinary corrections required for the accepted outcome
 - Do not infer RC/stable from completed task checkboxes; this command does not complete the separate archive and stable-handoff boundary
 - Diagnose and correct ordinary errors and locally resolvable blockers without asking whether to continue; do not guess across an exact owner boundary
 - Use contextFiles from CLI output, don't assume specific file names

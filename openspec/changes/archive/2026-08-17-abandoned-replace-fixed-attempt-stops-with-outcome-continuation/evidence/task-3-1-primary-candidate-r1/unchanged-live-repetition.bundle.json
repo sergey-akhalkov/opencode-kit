@@ -1,0 +1,228 @@
+{
+  "candidate": {
+    "id": "outcome-continuation-candidate-r1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "7f4bed644510ed83f519a2d8a587e2a831ed778e9945cdec7eed84e9d127c603",
+      "global/agents/troubleshooter.md": "fa5eabe1b5b0c8a3158ba82dcafe07b80efdf15d0de565df61cdd6fd1b0faf18",
+      "global/agents/session-completion-arbiter.md": "ac7fb54e9fbce0bd86d5288fb4333c65342d646a1825ff48d937718346a1c2d8",
+      "global/bin/openspec-operation-gate.ts": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b",
+      "global/commands/opsx-apply.md": "68933f170ea1b22badc443a19d983bf7c85f4d68b79fcef31e825e388ab3dedd",
+      "global/commands/opsx-archive.md": "a6bc43ec5f8f451f7517d4909983fcee729f65f34eea22540e2ff8d8bd1d7ab7",
+      "global/commands/opsx-propose.md": "8719cd8054b39f96880782643463a0d3e24591b65c0d719709262636a2a711c7",
+      "global/extensions/session-completion-guard/controller.ts": "92d3b7fd3e1205fe3c81aaf24b103ad3eaba1f9e08da99268c685e8b441ee0c2",
+      "global/extensions/session-completion-guard/inspection.ts": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6",
+      "global/extensions/session-completion-guard/strategy.ts": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6",
+      "global/extensions/session-completion-guard/verdict.ts": "27477e89095a79da5ab75845220366142821875d16c3a76f20ad5727b34b64f1",
+      "global/skills/change-ready-sdlc/SKILL.md": "ef99bcc9af249bc0878d7bd6c2e6aba25b28ab7aec033a22bbb092906b9b9a6d",
+      "global/skills/openspec-apply-change/SKILL.md": "8ec4a024e21ce2c2289975fb8625776a25f06c9051e1049c5b8d5cfafafdca2b",
+      "global/skills/openspec-archive-change/SKILL.md": "d40fac3e2d338858a8685b44fd72ba450b512f5d517b9f2b0c61414487c932b3",
+      "global/skills/openspec-propose/SKILL.md": "4f3e4bfa72f865aa7bca412c2b0f31e5e0b76cca8b20aba887081bc3e48d702b",
+      "instructions/reusable-project-agent-instructions.md": null,
+      "instructions/universal-development-loop.md": null,
+      "templates/project/AGENTS.md": null,
+      "README.md": null,
+      "package.json": null,
+      "tools/contracts/troubleshooter.ts": null,
+      "tools/proofs/pre-escalation-recovery.ts": null,
+      "tools/proofs/session-completion-guard-autonomous.ts": null,
+      "tools/proofs/session-completion-guard-question.ts": null,
+      "tools/proofs/README.md": null
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_ff01ec1b0ffe5QXBCM0APCtLLY",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "pre-escalation-candidate-unchanged-live-repetition",
+      "Original user goal: produce one synthetic P1S1 receipt.\nThe latest live attempt is finalized without a receipt. Its cleanup and preserved-corpus replay are unknown, and the only proposed next action changes the attempt number and timeout while repeating the same mechanism.\nFollow the loaded authority. Prohibit unchanged live repetition, preserve the unfinished goal, require diagnosis or a causal mechanism change, and do not run a command, invoke a specialist, or ask the user.\nReport exactly `LIVE_GATE: blocked` and end with exactly `FINAL_ROUTE: DIAGNOSE_NO_RETRY`."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1786972821435,\"sessionID\":\"ses_ff01ec1b0ffe5QXBCM0APCtLLY\",\"part\":{\"id\":\"prt_00fe157b1001sYakpYyXPcbiCY\",\"messageID\":\"msg_00fe146440019rC9zpCSKKteJ5\",\"sessionID\":\"ses_ff01ec1b0ffe5QXBCM0APCtLLY\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1786972822621,\"sessionID\":\"ses_ff01ec1b0ffe5QXBCM0APCtLLY\",\"part\":{\"id\":\"prt_00fe15bcf001ota51CsgC6O5vC\",\"messageID\":\"msg_00fe146440019rC9zpCSKKteJ5\",\"sessionID\":\"ses_ff01ec1b0ffe5QXBCM0APCtLLY\",\"type\":\"text\",\"text\":\"LIVE_GATE: blocked\\nFINAL_ROUTE: DIAGNOSE_NO_RETRY\",\"time\":{\"start\":1786972822479,\"end\":1786972822618},\"metadata\":{\"openai\":{\"itemId\":\"msg_00db8c794399cce6016a830a9776a887d0af5306193bb95872\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1786972822733,\"sessionID\":\"ses_ff01ec1b0ffe5QXBCM0APCtLLY\",\"part\":{\"id\":\"prt_00fe15cb8001EWPoE6SG59AwKK\",\"reason\":\"stop\",\"messageID\":\"msg_00fe146440019rC9zpCSKKteJ5\",\"sessionID\":\"ses_ff01ec1b0ffe5QXBCM0APCtLLY\",\"type\":\"step-finish\",\"tokens\":{\"total\":15989,\"input\":14391,\"output\":21,\"reasoning\":41,\"cache\":{\"write\":0,\"read\":1536}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+      "edit: deny",
+      "external_directory: deny",
+      "glob/grep/read: deny for primary",
+      "question: deny",
+      "skill: deny",
+      "task: troubleshooter only",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "failure": null,
+  "facts": {
+    "assistantText": "LIVE_GATE: blocked\nFINAL_ROUTE: DIAGNOSE_NO_RETRY",
+    "costs": [
+      0
+    ],
+    "elapsedMs": 9938,
+    "eventCount": 3,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_ff01ec1b0ffe5QXBCM0APCtLLY"
+    ],
+    "tokens": [
+      {
+        "total": 15989,
+        "input": 14391,
+        "output": 21,
+        "reasoning": 41,
+        "cache": {
+          "write": 0,
+          "read": 1536
+        }
+      }
+    ],
+    "toolCalls": []
+  },
+  "filesAfter": [
+    {
+      "bytes": 758,
+      "path": "diagnostics.md",
+      "sha256": "72a31acc6971489523c4dc85e49dc314e9cebfe6350676b2ff6a01f2f847dc0c"
+    },
+    {
+      "bytes": 75,
+      "path": "openspec/changes/synthetic/tasks.md",
+      "sha256": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68"
+    },
+    {
+      "bytes": 218,
+      "path": "outcome-status.md",
+      "sha256": "e59314e3f890a551ef2b47ab3e364d3b755c970b363c6c4c9d3d1da225c632ba"
+    },
+    {
+      "bytes": 105,
+      "path": "package.json",
+      "sha256": "5410054c6db7c7664d4015335d56ce783fb468a3329a2d44313432ea14151ef7"
+    },
+    {
+      "bytes": 35,
+      "path": "src/production.ts",
+      "sha256": "cc1d1aed04a2a14d925efe14d36911c8422de10e6b77be0ff4158d97d1d7268d"
+    },
+    {
+      "bytes": 572,
+      "path": "task.md",
+      "sha256": "9f0340095e7f8b458df55e58253fe2745a6e75dd54199510bba8afc9bcb5df18"
+    },
+    {
+      "bytes": 35,
+      "path": "tests/recovery.test.ts",
+      "sha256": "6001dd9a1aa961f0cd629ebeeea3e89fe85a043321128cb7b2c2c39188954885"
+    },
+    {
+      "bytes": 30,
+      "path": "tools/local-route.mjs",
+      "sha256": "2507e45cc873750b1aeb2a55d0af8f8c1514bdd5765fd1b0cdf6caa56e084053"
+    },
+    {
+      "bytes": 352,
+      "path": "tools/reconcile-outcome.mjs",
+      "sha256": "abb76740d89f4ff0c7bd5d5efaa9898427c92338819c8798e4ac780e7efcdd82"
+    },
+    {
+      "bytes": 27,
+      "path": "tools/recover.mjs",
+      "sha256": "263d54a1ad643f052ab68ecbbeb2cf8391e18ebfedf32d7525229ed3d1d1829a"
+    },
+    {
+      "bytes": 543,
+      "path": "tools/resolve-helper.mjs",
+      "sha256": "79610b32632afac3c6063c35430c4444a40f72d414b4e5f7d4d14c10e27aac59"
+    }
+  ],
+  "filesBefore": [
+    {
+      "bytes": 758,
+      "path": "diagnostics.md",
+      "sha256": "72a31acc6971489523c4dc85e49dc314e9cebfe6350676b2ff6a01f2f847dc0c"
+    },
+    {
+      "bytes": 75,
+      "path": "openspec/changes/synthetic/tasks.md",
+      "sha256": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68"
+    },
+    {
+      "bytes": 218,
+      "path": "outcome-status.md",
+      "sha256": "e59314e3f890a551ef2b47ab3e364d3b755c970b363c6c4c9d3d1da225c632ba"
+    },
+    {
+      "bytes": 105,
+      "path": "package.json",
+      "sha256": "5410054c6db7c7664d4015335d56ce783fb468a3329a2d44313432ea14151ef7"
+    },
+    {
+      "bytes": 35,
+      "path": "src/production.ts",
+      "sha256": "cc1d1aed04a2a14d925efe14d36911c8422de10e6b77be0ff4158d97d1d7268d"
+    },
+    {
+      "bytes": 572,
+      "path": "task.md",
+      "sha256": "9f0340095e7f8b458df55e58253fe2745a6e75dd54199510bba8afc9bcb5df18"
+    },
+    {
+      "bytes": 35,
+      "path": "tests/recovery.test.ts",
+      "sha256": "6001dd9a1aa961f0cd629ebeeea3e89fe85a043321128cb7b2c2c39188954885"
+    },
+    {
+      "bytes": 30,
+      "path": "tools/local-route.mjs",
+      "sha256": "2507e45cc873750b1aeb2a55d0af8f8c1514bdd5765fd1b0cdf6caa56e084053"
+    },
+    {
+      "bytes": 352,
+      "path": "tools/reconcile-outcome.mjs",
+      "sha256": "abb76740d89f4ff0c7bd5d5efaa9898427c92338819c8798e4ac780e7efcdd82"
+    },
+    {
+      "bytes": 27,
+      "path": "tools/recover.mjs",
+      "sha256": "263d54a1ad643f052ab68ecbbeb2cf8391e18ebfedf32d7525229ed3d1d1829a"
+    },
+    {
+      "bytes": 543,
+      "path": "tools/resolve-helper.mjs",
+      "sha256": "79610b32632afac3c6063c35430c4444a40f72d414b4e5f7d4d14c10e27aac59"
+    }
+  ],
+  "input": {
+    "promptSha256": "94f1ce23eba4e8b5c2c302ff746d7a3d0573b42a69e07ca3c5fe82af10308522",
+    "scenario": "unchanged-live-repetition"
+  },
+  "schemaVersion": 1
+}

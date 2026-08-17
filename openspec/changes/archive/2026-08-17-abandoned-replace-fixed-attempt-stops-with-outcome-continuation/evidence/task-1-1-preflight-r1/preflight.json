@@ -1,0 +1,300 @@
+{
+  "candidateId": "outcome-continuation-baseline-preflight-r1",
+  "captureKind": "baseline",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "scenarios": [
+    "owner-only",
+    "outcome-achieved",
+    "explicit-pause",
+    "unchanged-live-repetition",
+    "checked-unmet",
+    "safe-local-route",
+    "exhausted-technical",
+    "authorized-recovery",
+    "uncertain-owner",
+    "repeated-consult",
+    "specialist-unavailable",
+    "child-role-boundary",
+    "stale-proof-path"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "626ccedea9324b8bded9f92695868c077f70f321e1d14b7a95f1ae188fc445dd",
+    "global/agents/troubleshooter.md": "fa5eabe1b5b0c8a3158ba82dcafe07b80efdf15d0de565df61cdd6fd1b0faf18",
+    "global/agents/session-completion-arbiter.md": "ac7fb54e9fbce0bd86d5288fb4333c65342d646a1825ff48d937718346a1c2d8",
+    "global/bin/openspec-operation-gate.ts": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b",
+    "global/commands/opsx-apply.md": "682e2861bf9e7a0a086b83d2c33b91fa6af681d5ec5081f2e2da29c072fde4da",
+    "global/commands/opsx-archive.md": "69d5cdb456a95f31babb93a525f05566e4d142ef1b48482d784e7c89e980d83a",
+    "global/commands/opsx-propose.md": "23a860c9150552b9b1b802abb811da88d1ece4af1bb3e32f7867f2f7a2deaa4f",
+    "global/extensions/session-completion-guard/controller.ts": "92d3b7fd3e1205fe3c81aaf24b103ad3eaba1f9e08da99268c685e8b441ee0c2",
+    "global/extensions/session-completion-guard/inspection.ts": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6",
+    "global/extensions/session-completion-guard/strategy.ts": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6",
+    "global/extensions/session-completion-guard/verdict.ts": "27477e89095a79da5ab75845220366142821875d16c3a76f20ad5727b34b64f1",
+    "global/skills/change-ready-sdlc/SKILL.md": "a3225db287badb54722c79c5ba214130a2f933eeb413d18749c1919fd5a8df6b",
+    "global/skills/openspec-apply-change/SKILL.md": "77234e0409a6e7fec111f272392f8f19f323757a34f32ed97c60e41e680a296b",
+    "global/skills/openspec-archive-change/SKILL.md": "df0d0fbbcb5417c4f0c4ba6820288fdeeca5a43e87d13bdc50c8dd66edb8157a",
+    "global/skills/openspec-propose/SKILL.md": "60ca8b3809bba90fbea2d8a49e7e0aefdd31f44b25c1101f394e3c590d4088fe",
+    "instructions/reusable-project-agent-instructions.md": "b505132bf71d0ee55ae5e77b3198752f3f4225125fe3f561c7f0f76154323f0f",
+    "instructions/universal-development-loop.md": "8db2fb83416a1b2f753f8c5f250330bf98e4bc8067cd5d8ea60639df9f762c5e",
+    "templates/project/AGENTS.md": "5ba222021107174a8f295a25b222a017dcd4b733063b6455d7f028ac79372f5c",
+    "README.md": "d0a29b0faf75f9f7878f1da415dd7691d0a64c7957780a80dbd015a196320d9e",
+    "package.json": "732930d41e8732c8159abd90f81b1b4a70d165e47d74edb00bf1e3d7ac54cb98",
+    "tools/contracts/troubleshooter.ts": "ad4a10bb3c4ae3eac68879087e4c8bbe4a7c17fce79c0fbb81a0f64150e844c5",
+    "tools/proofs/pre-escalation-recovery.ts": "33266b8d1c0d605b8bad33897e2cea4624b3250ac23f3e335b0e55b28e5328ba",
+    "tools/proofs/session-completion-guard-autonomous.ts": "661e0d722d7ce07645910c6323da1053e0930315f5afe81de0133da2db6bba9f",
+    "tools/proofs/session-completion-guard-question.ts": "7e1adf3c292909558cd55e81384a454e60a583b3f6769d719cb740a18e8690a6",
+    "tools/proofs/README.md": "e9c8822448d71e6b887ae6450abecab6e5c54c477374622b639be50b7aedf024"
+  },
+  "fixtures": {
+    "owner-only": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "49161cab71c9fac38a14db1cb725636a8fb0d1c84ebf7041bc4e086cb78af5d4",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "outcome-achieved": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "a68a57331986b69a14b923fbb5c52ff6fe16359dac3ce1ddc2b211493fa8fe17",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "explicit-pause": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "397ff257018712597acd09eb3e4aeaeab3111e57c06ff3dd4d5fa8af0ff09c0a",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "unchanged-live-repetition": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "94f1ce23eba4e8b5c2c302ff746d7a3d0573b42a69e07ca3c5fe82af10308522",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "checked-unmet": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "08d5145c39d21f9222c9480993a269719e50c5998f7d7360564cd0aebe3638ad",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "safe-local-route": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "a3d6c8f9df67c8095b84be4a56f3ffbd85911cce17b73ffb088eb516fbe6d27f",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "exhausted-technical": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "6f633ea3f5253a9688c7ae63791403f9dab4bc2c805fd5eebf4619f0daebe7c0",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "authorized-recovery": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "22fd37965106d4f43232f9d01e28856febadbd314477a7c44c1585be5f5fbafb",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "uncertain-owner": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "3306659836ea6afa517bda746cd48d103ba88f22f398950fd9beaedbe5412c21",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "repeated-consult": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "fb87311e2d9537b0b72bc4bb498ca2e6c186f4b619fb4605a24ef02865d59a54",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "specialist-unavailable": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "055647951288c243bc15c63bcca9d2f23be62c647cb72c855a1708074db40b59",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: deny",
+        "webfetch: deny"
+      ]
+    },
+    "child-role-boundary": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "9bc7085ecaa11c33c64852d6b97935c579e81eff0932b526f5639c8ad8d756df",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    },
+    "stale-proof-path": {
+      "helperResolutionCommandAllowed": true,
+      "outcomeReconciliationCommandAllowed": true,
+      "promptSha256": "7c3037eebbe1641eb33c4cf7af874fe97fcbea0c820bcaa693c8ed7b8d40b9ed",
+      "taskFixture": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68",
+      "toolPolicy": [
+        "bash: only exact proof-owned local-route, recover, reconcile-outcome, or resolve-helper Node commands; shell metacharacters denied last",
+        "edit: deny",
+        "external_directory: deny",
+        "glob/grep/read: deny for primary",
+        "question: deny",
+        "skill: deny",
+        "task: troubleshooter only",
+        "webfetch: deny"
+      ]
+    }
+  },
+  "loader": {
+    "buildStatus": 0,
+    "configStatus": 0,
+    "troubleshooterMode": "subagent",
+    "troubleshooterPermission": {
+      "read": "allow",
+      "bash": "deny",
+      "doom_loop": "deny",
+      "edit": "deny",
+      "external_directory": "deny",
+      "glob": "deny",
+      "grep": "deny",
+      "lsp": "deny",
+      "question": "deny",
+      "skill": "deny",
+      "task": "deny",
+      "todowrite": "deny",
+      "webfetch": "deny",
+      "websearch": "deny"
+    },
+    "troubleshooterStatus": 0
+  },
+  "mcpDisabled": true,
+  "permission": {
+    "exact": true
+  },
+  "stalePathPermission": {
+    "arbitraryBashMutationRejected": true,
+    "editMutationRejected": true,
+    "exact": true,
+    "status": 0
+  },
+  "credentials": {
+    "count": 2,
+    "status": 0
+  },
+  "opencodeVersion": "1.18.18",
+  "steps": 24,
+  "cleanupError": null
+}

@@ -282,8 +282,8 @@ export const changeReadyContractTests: TestCase[] = [
         "repeat affected Runtime Proof lanes to restore `MVP`",
         "RC numbering starts at RC1 and never resets within the root",
         "next complete qualification freezes `RC<n+1>`",
-        "Another fresh attempt is earned only when",
-        "permanently stops SDET for the root",
+        "An unchanged candidate and unchanged critical-risk hypothesis receive no equivalent verdict-seeking rerun",
+        "No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate",
         "parked non-critical work never blocks RC or stable",
       ], "Compact skill missing current qualification invariant");
     },
@@ -415,7 +415,7 @@ export const changeReadyContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: pure lifecycle fixture enforces MVP, RC, stable, mutation, and critical SDET stop",
+    name: "contracts: pure lifecycle fixture enforces MVP, RC, stable, mutation, and evidence-gated SDET continuation",
     run: () => {
       type Stage = "development" | "MVP" | `RC${number}` | "stable";
       type SdetAction = "critical-risks-reported" | "no-critical-risk" | "blocked";
@@ -426,7 +426,7 @@ export const changeReadyContractTests: TestCase[] = [
         scopeComplete: boolean;
         validationGreen: boolean;
         sdetTerminal: boolean;
-        sdetStopped: boolean;
+        equivalentRerunBlocked: boolean;
         confirmedCritical: boolean;
         correctedAfterCritical: boolean;
         knownNonDeferrable: boolean;
@@ -439,7 +439,7 @@ export const changeReadyContractTests: TestCase[] = [
         scopeComplete: false,
         validationGreen: false,
         sdetTerminal: false,
-        sdetStopped: false,
+        equivalentRerunBlocked: false,
         confirmedCritical: false,
         correctedAfterCritical: false,
         knownNonDeferrable: false,
@@ -456,16 +456,17 @@ export const changeReadyContractTests: TestCase[] = [
         state.scopeComplete = false;
         state.validationGreen = false;
         state.sdetTerminal = false;
+        state.equivalentRerunBlocked = false;
         if (state.confirmedCritical) state.correctedAfterCritical = true;
       };
       const runSdet = (state: State, action: SdetAction, mainConfirmedCritical: boolean): string => {
         if (state.stage !== "MVP" || !state.scopeComplete) return "blocked: missing MVP or accepted scope";
-        if (state.sdetStopped) return "blocked: terminal SDET stop";
+        if (state.equivalentRerunBlocked) return "blocked: equivalent SDET rerun";
         if (state.confirmedCritical && !state.correctedAfterCritical) return "blocked: correction and new proof required";
         state.sdetTerminal = true;
         state.confirmedCritical = action === "critical-risks-reported" && mainConfirmedCritical;
         state.correctedAfterCritical = false;
-        if (!state.confirmedCritical) state.sdetStopped = true;
+        if (!state.confirmedCritical) state.equivalentRerunBlocked = true;
         return action;
       };
       const freezeRc = (state: State): string => {
@@ -493,8 +494,8 @@ export const changeReadyContractTests: TestCase[] = [
       assertEqual(prove(state, true), "MVP", "Corrected candidate proof must restore MVP.");
       state.scopeComplete = true;
       state.validationGreen = true;
-      assertEqual(runSdet(state, "no-critical-risk", false), "no-critical-risk", "First valid no-confirmed-critical attempt must terminate SDET.");
-      assertEqual(runSdet(state, "critical-risks-reported", true), "blocked: terminal SDET stop", "Post-stop SDET dispatch must fail.");
+      assertEqual(runSdet(state, "no-critical-risk", false), "no-critical-risk", "First valid no-confirmed-critical attempt must park equivalent SDET reruns.");
+      assertEqual(runSdet(state, "critical-risks-reported", true), "blocked: equivalent SDET rerun", "Unchanged candidate must not receive an equivalent verdict-seeking SDET rerun.");
       assertEqual(freezeRc(state), "RC1", "Qualified candidate must receive RC1 only after scope, validation, and terminal SDET.");
       assertEqual(handoff(state), "RC1", "Stable handoff must retain the same RC.");
       assertEqual(state.stableCandidate, "RC1", "Stable Candidate must link to the qualified RC.");
@@ -503,8 +504,7 @@ export const changeReadyContractTests: TestCase[] = [
       assertEqual(prove(state, true), "MVP", "Post-stable mutation proof must restore only MVP.");
       state.scopeComplete = true;
       state.validationGreen = true;
-      state.sdetTerminal = true;
-      state.confirmedCritical = false;
+      assertEqual(runSdet(state, "no-critical-risk", false), "no-critical-risk", "A materially changed candidate may receive fresh SDET after current proof and accepted-scope completion.");
       assertEqual(freezeRc(state), "RC2", "Changed requalified candidate must receive the next monotonic RC.");
 
       const unsafe = create();

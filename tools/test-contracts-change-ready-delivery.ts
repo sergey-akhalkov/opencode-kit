@@ -118,41 +118,70 @@ const OPENSPEC_APPLY_AUTONOMY_SURFACES = [
   "global/commands/opsx-apply.md",
 ] as const;
 
-/**
- * Model-facing surfaces for admitted session-derived improvement persistence.
- * Compaction uses `global/opencode.json.template` agent prompt as its real entry
- * point (not AGENTS.md alone); missing markers there drop the write-unavailable
- * fallback required by the non-deferrable preserve-at-compaction invariant.
- */
-  const SESSION_IMPROVEMENT_PERSISTENCE_SURFACES = [
+/** Workflow surfaces that must omit removed completion ceremony. */
+const REMOVED_COMPLETION_CEREMONY_SURFACES = [
   "global/AGENTS.md",
+  "global/skills/openspec-propose/SKILL.md",
+  "global/commands/opsx-propose.md",
   "global/skills/openspec-apply-change/SKILL.md",
   "global/commands/opsx-apply.md",
   "global/skills/openspec-archive-change/SKILL.md",
-  // Apply completion points operators at `/opsx-archive`; that command is a real
-  // archive entry point and must not skip pre-helper pending reconciliation.
   "global/commands/opsx-archive.md",
-  "global/opencode.json.template",
+  "openspec/config.yaml",
+  "openspec/project.md",
 ] as const;
 
-/** Archive skill + slash command must both refuse complete archive over unpersisted admits. */
-const SESSION_IMPROVEMENT_ARCHIVE_SURFACES = [
+const REMOVED_COMPLETION_CEREMONY_MARKERS = [
+  "final-history-retrospective",
+  "Pending Improvement Tasks",
+  "Deferred Improvement Candidates",
+  "Session-Derived Improvements",
+] as const;
+
+const APPLY_OUTCOME_RECONCILIATION_SURFACES = [
+  "global/skills/openspec-apply-change/SKILL.md",
+  "global/commands/opsx-apply.md",
+] as const;
+
+const APPLY_OUTCOME_RECONCILIATION_MARKERS = [
+  "state: \"all_done\"",
+  "accepted outcome",
+  "required observable proof",
+  "smallest ordinary task",
+  "incomplete/abandoned disposition",
+] as const;
+
+const ARCHIVE_OUTCOME_RECONCILIATION_SURFACES = [
   "global/skills/openspec-archive-change/SKILL.md",
   "global/commands/opsx-archive.md",
 ] as const;
 
-const SESSION_IMPROVEMENT_REQUIRED_MARKERS = [
-  "Pending Improvement Tasks",
-  "Session-Derived Improvements",
-  "Owner Blocker",
+const ARCHIVE_OUTCOME_RECONCILIATION_MARKERS = [
+  "Reconcile Accepted Outcome",
+  "all-checked tasks",
+  "smallest ordinary task",
+  "incomplete/abandoned preservation flow",
 ] as const;
 
-const SESSION_IMPROVEMENT_AGENTS_SAFETY_MARKERS = [
-  "no improvement task may preempt",
-  "do not mutate silently",
-  "Every admitted task remains mandatory before normal complete archive",
-  "direct causal link to `Original User Goal`",
-  "no scope expansion",
+const HELPER_RESOLUTION_SURFACES = [
+  { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-propose/SKILL.md" },
+  { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-propose.md" },
+  { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-apply-change/SKILL.md" },
+  { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-apply.md" },
+  { helper: "bin/openspec-archive.ts", relative: "global/skills/openspec-archive-change/SKILL.md" },
+  { helper: "bin/openspec-archive.ts", relative: "global/commands/opsx-archive.md" },
+] as const;
+
+const HELPER_RESOLUTION_MARKERS = [
+  "OPENCODE_CONFIG_DIR",
+  "privacy-safe runtime-source/collision evidence",
+  "Never strip a final `global` segment",
+] as const;
+
+const COMPACTION_REFLECTION_MARKERS = [
+  "optional evidence outside product completion scope",
+  "must not create or schedule product work",
+  "separately owned change",
 ] as const;
 
 /** Focused markers that keep apply autonomous after checkpoints while preserving owner stops. */
@@ -189,52 +218,8 @@ const GLOBAL_CHECKPOINT_CONTINUE_MARKERS = [
   "Do not ask whether to continue while safe local/offline required work remains",
 ] as const;
 
-/**
- * Critical lifecycle oracles for the final-history-retrospective policy.
- * Dropping these tokens lets a new change archive without the one-time
- * complete-history analysis, recur, invent scope, or lose admitted work.
- */
-const FINAL_HISTORY_PROPOSE_SURFACES = [
-  "global/AGENTS.md",
-  "global/skills/openspec-propose/SKILL.md",
-  "global/commands/opsx-propose.md",
-] as const;
-
-const FINAL_HISTORY_APPLY_SURFACES = [
-  "global/AGENTS.md",
-  "global/skills/openspec-apply-change/SKILL.md",
-  "global/commands/opsx-apply.md",
-] as const;
-
-const FINAL_HISTORY_ARCHIVE_SURFACES = [
-  "global/skills/openspec-archive-change/SKILL.md",
-  "global/commands/opsx-archive.md",
-] as const;
-
-const FINAL_HISTORY_PROPOSE_MARKERS = [
-  "final-history-retrospective",
-  "exactly one",
-  "initially last",
-  "do not retrofit",
-] as const;
-
-const FINAL_HISTORY_APPLY_MARKERS = [
-  "history.md",
-  "`none`",
-  "every admitted",
-  "rerun",
-  "retrofit",
-] as const;
-
-const FINAL_HISTORY_ARCHIVE_MARKERS = [
-  "final-history-retrospective",
-  "every improvement it generated",
-  "Return incomplete work to apply",
-  "retrofit",
-] as const;
-
-const BASELINE_FINAL_HISTORY_AGENTS_FRAGMENT =
-  "After compaction or when a new session receives that matrix, verify every candidate against `Original User Goal` and reconcile all still-admissible entries before substantial work.";
+const BASELINE_FALSE_COMPLETE_ARCHIVE_FRAGMENT =
+  "All current tasks are checked, so archive the change as complete even if Development-Stage remains development and the required receipt is absent.";
 
 function missingTokens(text: string, tokens: readonly string[]): string[] {
   return tokens.filter((token) => !text.includes(token));
@@ -468,49 +453,15 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: admitted session improvements stay durable across apply/archive and compaction entry point",
+    name: "contracts: removed completion ceremony cannot return on loaded workflow surfaces",
     run: () => {
-      for (const relative of SESSION_IMPROVEMENT_PERSISTENCE_SURFACES) {
+      for (const relative of REMOVED_COMPLETION_CEREMONY_SURFACES) {
         const text = fs.readFileSync(path.join(root, relative), "utf8");
-        assertTokens(
-          text,
-          SESSION_IMPROVEMENT_REQUIRED_MARKERS,
-          `${relative} missing session-improvement persistence marker`,
-        );
-        assert(
-          !/remain only in (the )?summary|summary-only disposition|may remain only in/i.test(text),
-          `${relative} must not authorize leaving an admitted non-selected candidate summary-only`,
-        );
+        for (const forbidden of REMOVED_COMPLETION_CEREMONY_MARKERS) {
+          assert(!text.includes(forbidden), `${relative} retains removed completion ceremony: ${forbidden}`);
+        }
       }
 
-      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
-      assertTokens(
-        agents,
-        SESSION_IMPROVEMENT_AGENTS_SAFETY_MARKERS,
-        "global/AGENTS.md missing session-improvement safety/admission marker",
-      );
-
-      for (const relative of SESSION_IMPROVEMENT_ARCHIVE_SURFACES) {
-        const archive = fs.readFileSync(path.join(root, relative), "utf8");
-        assert(
-          archive.includes("Before invoking the archive helper") ||
-            archive.includes("Before invoking the deterministic archive helper") ||
-            /before invoking .*archive helper/i.test(archive),
-          `${relative} must reconcile session-derived improvements before the deterministic helper`,
-        );
-        assert(
-          archive.includes("every persisted admitted improvement task is checked") ||
-            /every persisted admitted improvement task is checked/i.test(archive),
-          `${relative} must refuse complete archive while improvement tasks remain unchecked`,
-        );
-        assert(
-          archive.includes("Pending Improvement Tasks"),
-          `${relative} must inspect Pending Improvement Tasks before complete archive`,
-        );
-      }
-
-      // Compaction agent loads the template prompt, not AGENTS.md; one Next-Session
-      // Action remains for Live-Attempt Gate order and must not drop other admits.
       const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
       assert(
         template.includes("Next-Session Action"),
@@ -520,100 +471,80 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         template.includes("Live-Attempt Gate: clear | blocked | unknown"),
         "Compaction prompt must retain Live-Attempt Gate classification",
       );
+      assertTokens(
+        template,
+        COMPACTION_REFLECTION_MARKERS,
+        "global/opencode.json.template missing compaction reflection-separation marker",
+      );
+      for (const forbidden of REMOVED_COMPLETION_CEREMONY_MARKERS) {
+        assert(!template.includes(forbidden), `Compaction prompt retains removed product-task expansion: ${forbidden}`);
+      }
+
+      const ceremonyRestored = `${template}\nCreate a final-history-retrospective task and Pending Improvement Tasks.\n`;
       assert(
-        /all admitted|every admitted|every still-admissible|Pending Improvement Tasks/i.test(template) &&
-          template.includes("Pending Improvement Tasks"),
-        "Compaction prompt must require Pending Improvement Tasks for every not-yet-persisted admitted candidate",
+        ceremonyRestored.includes("final-history-retrospective") && ceremonyRestored.includes("Pending Improvement Tasks"),
+        "Negative ceremony mutation must be distinguishable from the current candidate.",
       );
     },
   },
   {
-    name: "contracts: final-history retrospective stays one-shot, none-honest, and archive-blocking",
+    name: "contracts: apply/archive refuse checked-but-unmet completion and keep helper resolution fail-closed",
     run: () => {
-      for (const relative of FINAL_HISTORY_PROPOSE_SURFACES) {
+      for (const relative of APPLY_OUTCOME_RECONCILIATION_SURFACES) {
         const text = fs.readFileSync(path.join(root, relative), "utf8");
         assertEqual(
-          missingTokens(text, FINAL_HISTORY_PROPOSE_MARKERS).join("|"),
+          missingTokens(text, APPLY_OUTCOME_RECONCILIATION_MARKERS).join("|"),
           "",
-          `${relative} missing final-history propose markers: ${missingTokens(text, FINAL_HISTORY_PROPOSE_MARKERS).join(", ")}`,
+          `${relative} missing apply outcome-reconciliation markers: ${missingTokens(text, APPLY_OUTCOME_RECONCILIATION_MARKERS).join(", ")}`,
         );
       }
 
-      for (const relative of FINAL_HISTORY_APPLY_SURFACES) {
+      for (const relative of ARCHIVE_OUTCOME_RECONCILIATION_SURFACES) {
         const text = fs.readFileSync(path.join(root, relative), "utf8");
         assertEqual(
-          missingTokens(text, FINAL_HISTORY_APPLY_MARKERS).join("|"),
+          missingTokens(text, ARCHIVE_OUTCOME_RECONCILIATION_MARKERS).join("|"),
           "",
-          `${relative} missing final-history apply markers: ${missingTokens(text, FINAL_HISTORY_APPLY_MARKERS).join(", ")}`,
+          `${relative} missing archive outcome-reconciliation markers: ${missingTokens(text, ARCHIVE_OUTCOME_RECONCILIATION_MARKERS).join(", ")}`,
         );
       }
 
-      for (const relative of FINAL_HISTORY_ARCHIVE_SURFACES) {
-        const text = fs.readFileSync(path.join(root, relative), "utf8");
-        assertEqual(
-          missingTokens(text, FINAL_HISTORY_ARCHIVE_MARKERS).join("|"),
-          "",
-          `${relative} missing final-history archive markers: ${missingTokens(text, FINAL_HISTORY_ARCHIVE_MARKERS).join(", ")}`,
+      for (const surface of HELPER_RESOLUTION_SURFACES) {
+        const text = fs.readFileSync(path.join(root, surface.relative), "utf8");
+        assertTokens(
+          text,
+          [...HELPER_RESOLUTION_MARKERS, surface.helper],
+          `${surface.relative} missing portable helper-resolution marker`,
         );
       }
 
-      const config = fs.readFileSync(path.join(root, "openspec", "config.yaml"), "utf8");
-      assertTokens(
-        config,
-        ["initially-last", "history.md", "`none`"],
-        "openspec/config.yaml missing creation-time history-retrospective task rule",
-      );
-
-      const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
       assert(
-        !/final-history-retrospective|final history retrospective/i.test(template),
-        "Hidden compaction prompt must not create or schedule the final-history retrospective",
-      );
-
-      assert(
-        missingTokens(BASELINE_FINAL_HISTORY_AGENTS_FRAGMENT, FINAL_HISTORY_PROPOSE_MARKERS).length > 0,
-        "Baseline pre-candidate AGENTS fragment must fail the final-history propose oracle",
-      );
-      assert(
-        missingTokens(BASELINE_FINAL_HISTORY_AGENTS_FRAGMENT, FINAL_HISTORY_APPLY_MARKERS).length > 0,
-        "Baseline pre-candidate AGENTS fragment must fail the final-history apply oracle",
-      );
-
-      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
-      const proposeWithoutCreation = agents.replaceAll("final-history-retrospective", "ordinary wrap-up");
-      assert(
-        missingTokens(proposeWithoutCreation, FINAL_HISTORY_PROPOSE_MARKERS).includes("final-history-retrospective"),
-        "Dropping propose creation of the retrospective must fail closed",
-      );
-
-      const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
-      const applyWithoutNone = apply.replaceAll("`none`", "`todo`");
-      assert(
-        missingTokens(applyWithoutNone, FINAL_HISTORY_APPLY_MARKERS).includes("`none`"),
-        "Dropping honest none on apply must fail closed",
-      );
-      const applyWithRerun = apply.replaceAll("rerun", "repeat later");
-      assert(
-        missingTokens(applyWithRerun, FINAL_HISTORY_APPLY_MARKERS).includes("rerun"),
-        "Dropping no-rerun on apply must fail closed",
+        missingTokens(BASELINE_FALSE_COMPLETE_ARCHIVE_FRAGMENT, ARCHIVE_OUTCOME_RECONCILIATION_MARKERS).length > 0,
+        "Baseline checked-but-unmet archive fragment must fail the outcome-reconciliation oracle.",
       );
 
       const archive = fs.readFileSync(path.join(root, "global", "skills", "openspec-archive-change", "SKILL.md"), "utf8");
-      const archiveWithoutGeneratedGate = archive.replaceAll(
-        "every improvement it generated",
-        "the retrospective heading",
-      );
+      const withoutOutcomeGate = archive.replaceAll("all-checked tasks", "checked tasks as completion");
       assert(
-        missingTokens(archiveWithoutGeneratedGate, FINAL_HISTORY_ARCHIVE_MARKERS).includes(
-          "every improvement it generated",
-        ),
-        "Dropping archive refusal of generated retrospective work must fail closed",
+        missingTokens(withoutOutcomeGate, ARCHIVE_OUTCOME_RECONCILIATION_MARKERS).includes("all-checked tasks"),
+        "Dropping all-checked-as-structural-only wording must fail closed.",
+      );
+      const withoutUnmetRoute = archive.replaceAll("smallest ordinary task", "complete archive anyway");
+      assert(
+        missingTokens(withoutUnmetRoute, ARCHIVE_OUTCOME_RECONCILIATION_MARKERS).includes("smallest ordinary task"),
+        "Dropping unmet-outcome reopen/add routing must fail closed.",
       );
 
-      const compactionSchedulesRetrospective = `${template}\nCreate a final-history-retrospective task.\n`;
+      const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      const allDoneAsComplete = apply.replaceAll("state: \"all_done\"", "state: complete");
       assert(
-        /final-history-retrospective|final history retrospective/i.test(compactionSchedulesRetrospective),
-        "Negative compaction mutation must be detectable",
+        missingTokens(allDoneAsComplete, APPLY_OUTCOME_RECONCILIATION_MARKERS).includes("state: \"all_done\""),
+        "Treating all_done as completion instead of provisional structure must fail closed.",
+      );
+
+      const strippedGlobal = archive.replaceAll("Never strip a final `global` segment", "May strip a final global segment");
+      assert(
+        !strippedGlobal.includes("Never strip a final `global` segment"),
+        "Dropping no-strip-global helper resolution must fail closed.",
       );
     },
   },

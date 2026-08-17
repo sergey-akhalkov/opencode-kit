@@ -1,0 +1,10 @@
+{
+  "candidateId": "outcome-continuation-candidate-wip",
+  "cleanup": "complete",
+  "legacyOverlay": "reported-and-preserved",
+  "newProjectWorkflowCopies": 0,
+  "ordinaryQualification": "pass",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unattendedReadiness": "pass"
+}

@@ -35,7 +35,6 @@ rules:
     - Put the smallest complete happy path and observable runtime proof before broad testing or optional review.
     - Put the earliest safely reachable real check before dependent behavior; if deferred, name the exact blocker, earliest unblocking task, and dependency-chain stop condition.
     - State the exact observable proof and applicable focused validation for each behavior task; keep it unchecked until both pass.
-    - Put admitted session-derived improvements under `## Session-Derived Improvements` and state Trigger/Evidence, Why, Prerequisites, Scope/Non-Goals, Implementation, Observable Proof, Validation, and any exact Owner Blocker.
-    - For each newly authored change, append exactly one unchecked initially-last task that waits for every other known task, analyzes complete `history.md` through the existing compaction improvement matrix/admission/task contract, immediately executes admitted improvements or records `none`, and never schedules another final-history analysis.
+    - Represent corrections required for the accepted outcome as ordinary tasks; keep optional retrospective, process, token, or tooling observations outside the product task graph.
     - Material test artifacts belong to a fresh test-only SDET after current proof and accepted-scope completion.
     - When evidence invalidates an agent-authored plan or attempt limit without changing accepted semantics, update the affected artifacts/tasks/history and continue without an owner process-approval question.

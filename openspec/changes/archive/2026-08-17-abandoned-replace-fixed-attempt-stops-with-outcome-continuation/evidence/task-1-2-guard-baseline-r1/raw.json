@@ -1,0 +1,10 @@
+{
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "rootDeleted": true
+  },
+  "failure": "Question probe returned an assistant error",
+  "result": null,
+  "schemaVersion": 1
+}

@@ -1,0 +1,10 @@
+{
+  "files": [
+    {
+      "path": "preflight.json",
+      "sha256": "828697bb9e8515bb7ee1fe22091b97b76e3b21c6eb4137b306cff03b2849de1d"
+    }
+  ],
+  "label": "preflight",
+  "schemaVersion": 1
+}

@@ -75,6 +75,8 @@ function installPortableFixtureSurface(fixture: string): void {
     "- ## Attempt control and stagnation",
     "- Treat the session as stagnant when retries stall; a later failure in the same chain is diagnosis, not outcome progress.",
     "- One evidence-only costly attempt immediately blocks another live attempt; the `unknown` gate state remains blocked.",
+    "- The failed invocation remains finalized and non-reusable, but it does not impose a fixed mission-wide attempt ceiling.",
+    "- Unchanged high-cost live work blocks unchanged live repetition.",
     "- Record strategy history in `openspec/changes/<change>/history.md`.",
     "- Emit `Pending Strategy History` when compaction cannot write files.",
     "- Choose a materially different local mechanism instead of repeating the same approach.",
@@ -91,7 +93,7 @@ function installPortableFixtureSurface(fixture: string): void {
     '    ["__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts", { "arbiterAgent": "session-completion-arbiter", "auditWindow": { "closePassedAfterMs": 15000, "enabled": false, "mode": "read-only-monitor", "scope": "per-root", "terminal": "powershell-shell" }, "enabled": true }]',
     "  ],",
     '  "compaction": {',
-    '    "prompt": "Emit Pending Strategy History and write history.md with Live-Attempt Gate: clear | blocked | unknown, Failure Chain, and Terminal Replay Result. Name the first gate-closing offline step and classify a live-only missing observation as bounded evidence capture rather than proof."',
+    '    "prompt": "Emit Pending Strategy History and write history.md with Live-Attempt Gate: clear | blocked | unknown, Failure Chain, and Terminal Replay Result. Name the first gate-closing offline step and classify a live-only missing observation as bounded evidence capture rather than proof. Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change."',
     "  }",
     "}",
     "",
@@ -410,7 +412,7 @@ export const portableWorkflowToolTests: TestCase[] = [
       assertFailure(missingStagnation, "Removed stagnation marker must fail validation.");
       assertOutputContains(missingStagnation, "global AGENTS stagnation strategy contract", "Stagnation contract failure must be named.");
 
-      writeText(agentsPath, completeAgents.replace("immediately blocks another live attempt", "permits another live attempt"));
+      writeText(agentsPath, completeAgents.replace("blocks unchanged live repetition", "permits unchanged live repetition"));
       const missingLiveAttemptGate = invokeValidator(fixture);
       assertFailure(missingLiveAttemptGate, "Removed live-attempt block marker must fail validation.");
       assertOutputContains(

@@ -1,0 +1,11 @@
+{
+  "candidateId": "outcome-continuation-candidate-r1",
+  "candidatePass": false,
+  "cleanupComplete": true,
+  "inputRaw": "raw.json",
+  "inputRawBytes": 3816,
+  "modelCalls": 0,
+  "proposalNoCeremony": false,
+  "archiveRefusedUnmetOutcome": false,
+  "schemaVersion": 1
+}

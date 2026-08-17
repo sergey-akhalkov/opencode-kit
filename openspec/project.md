@@ -6,7 +6,7 @@ This repository uses OpenSpec changes for durable behavior and contract work tha
 
 - Define the next useful working increment through the Spec Capsule in `openspec/config.yaml`.
 - Keep proposal, design, delta specs, tasks, implementation, proof, and documentation synchronized.
-- When authoring a new change, create exactly one initially-last final-history-retrospective task; after all other known work, it reuses the compaction improvement contract over complete `history.md`, immediately executes admitted current-consumer tasks, preserves no-current-consumer evidence as non-blocking deferred records, or records `none`, and is never added or run again.
+- Keep `history.md` for materially distinct attempted strategies. Do not add a mandatory final retrospective or process-improvement stage to a product task graph; represent a correction required for the accepted outcome as an ordinary task and route optional workflow feedback separately.
 - Treat plans, OpenSpec artifacts, task inventories, attempt limits, and process stop lines as main-owned controls while accepted semantics remain unchanged. Update them and continue after causal retry evidence; ask only for changed outcome/protected semantics or authority for the underlying protected action.
 - Mark a task complete only after its stated observable proof and applicable focused validation pass.
 - Order behavior tasks by time-to-first-real-signal: an earliest safely reachable real check or its smallest harness/safety/restoration prerequisite precedes dependent behavior; external execution remains separately authorized.

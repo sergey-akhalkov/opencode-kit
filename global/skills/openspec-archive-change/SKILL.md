@@ -19,18 +19,16 @@ Use this skill when implementation and evidence are complete and the user asks t
 
 - If the change name is missing and multiple active changes exist, run `openspec list --json` and ask the user to select. Never guess.
 - Preserve an explicit registered `--store <id>` selector when applicable.
-- Resolve the target project root and the active kit global source. The helper is `<global-source>/bin/openspec-archive.ts`.
+- Resolve the target project root and active kit global source. Use `OPENCODE_CONFIG_DIR` first when it is non-empty and contains the exact `bin/openspec-archive.ts` helper. Otherwise inspect the supported host-default source and privacy-safe runtime-source/collision evidence. Never strip a final `global` segment or guess a repository-parent `bin`.
 - Resolve one trusted aggregate project-validation argv from the project adapter or repository-native validation entrypoint. Never guess npm, a shell, or a command. A genuinely non-applicable validation boundary requires a concrete reason.
 
-## Reconcile Session-Derived Improvements
+## Reconcile Accepted Outcome
 
-- Before invoking the archive helper, inspect the current session and continuation for `Pending Improvement Tasks` and `Deferred Improvement Candidates`.
-- Persist every still-admissible current-consumer item owned by the active change as an unchecked task under `## Session-Derived Improvements`, with the canonical classification and evidence fields; then stop archive and return to apply until all such tasks are implemented and proven at their earliest safe points.
-- Persist every evidence-backed no-current-consumer item as a non-checkbox `Deferred Improvement Candidate` in `history.md`, with why it was not admitted and its re-evaluation condition. A persisted deferred record is not accepted scope and does not block complete archive.
-- If a required current dependency targets another repository, expands accepted outcome, or crosses a protected boundary, record the exact `Owner Blocker` and stop only that dependency chain for an authorized path. Never drop another valid record or leave it only in summary prose.
-- Invoke complete archive only after this reconciliation finds no unpersisted record and every persisted admitted improvement task is checked with current evidence; deferred records need disposition, not implementation.
-- If `tasks.md` contains the creation-authored final-history-retrospective task, invoke complete archive only after that task and every improvement it generated are checked with current evidence. Return incomplete work to apply; archive never runs the history analysis, creates another copy, or retrofits a pre-policy change that lacks the task.
-- If checked tasks, an exhausted attempt count, or a process stop line no longer represents the unfinished accepted outcome, update/reopen the smallest coherent artifacts and return to apply without asking for owner scope expansion. Stop only when accepted semantics change or the underlying protected action needs owner authority.
+- Treat all-checked tasks as structural evidence, not outcome proof. Map the accepted outcome and current human requirement to their required observable proof immediately before archive.
+- If required proof is absent, `Development-Stage` remains `development`, or another explicit outcome fact is unmet, do not invoke complete archive. Reopen or add the smallest ordinary task and return to apply without asking for owner scope expansion.
+- A finalized failed invocation, exhausted agent-authored attempt count, or process stop line does not complete the change when a safe causally distinct route remains. Preserve the attempt and revise only the necessary process controls.
+- Complete archive may proceed only when the accepted outcome is achieved. An unmet outcome requires the distinct owner-selected incomplete/abandoned preservation flow, which never claims completion or synchronizes undelivered requirements.
+- Optional retrospective or workflow feedback stays outside the product task graph and never blocks complete archive.
 
 ## Execute One Owner
 

@@ -32,11 +32,24 @@ export type RuntimeSourceReport = {
       origin: string | null;
     };
     helpers: Array<{ path: string; sha256: string }>;
+    helperResolution: RuntimeGlobalHelperResolution[];
   };
   root: string;
   schemaVersion: 1;
   sources: RuntimeSource[];
   warnings: string[];
+};
+
+export type RuntimeGlobalHelperResolution = {
+  attempts: Array<{
+    exists: boolean;
+    helper: string;
+    source: "custom" | "host-default";
+  }>;
+  collisionStatus: RuntimeSourceReport["unattended"]["collisionStatus"];
+  relativePath: string;
+  selected: { helper: string; source: "custom" | "host-default" } | null;
+  status: "blocked" | "missing" | "resolved";
 };
 
 export type RuntimeSourceInventory = Pick<RuntimeSourceReport, "collisions" | "sources"> & {
@@ -488,6 +501,42 @@ function activeGlobalRoot(): string {
   return custom ? path.resolve(custom) : path.join(os.homedir(), ".config", "opencode");
 }
 
+function resolveRuntimeGlobalHelperFromInventory(
+  inventory: RuntimeSourceInventory,
+  relativePath: string,
+): RuntimeGlobalHelperResolution {
+  const normalizedRelative = normalize(relativePath).replace(/^\/+/, "");
+  if (!normalizedRelative.startsWith("bin/") || normalizedRelative.includes("../")) {
+    throw new Error(`Runtime global helper must be a safe bin-relative path: ${relativePath}`);
+  }
+  const custom = process.env.OPENCODE_CONFIG_DIR?.trim();
+  const hostDefault = path.join(os.homedir(), ".config", "opencode");
+  const candidates: Array<{ root: string; source: "custom" | "host-default" }> = custom
+    ? [{ root: path.resolve(custom), source: "custom" }, { root: hostDefault, source: "host-default" }]
+    : [{ root: hostDefault, source: "host-default" }];
+  const seen = new Set<string>();
+  const attempts = candidates.flatMap((candidate) => {
+    const key = process.platform === "win32" ? candidate.root.toLowerCase() : candidate.root;
+    if (seen.has(key)) return [];
+    seen.add(key);
+    const helper = path.join(candidate.root, normalizedRelative);
+    return [{ exists: isFile(helper), helper: redactLocation(helper), source: candidate.source }];
+  });
+  const found = attempts.find((attempt) => attempt.exists) ?? null;
+  const status = inventory.collisionStatus === "blocked" ? "blocked" : found == null ? "missing" : "resolved";
+  return {
+    attempts,
+    collisionStatus: inventory.collisionStatus,
+    relativePath: normalizedRelative,
+    selected: status === "resolved" && found != null ? { helper: found.helper, source: found.source } : null,
+    status,
+  };
+}
+
+export function resolveRuntimeGlobalHelper(root: string, relativePath: string): RuntimeGlobalHelperResolution {
+  return resolveRuntimeGlobalHelperFromInventory(inspectRuntimeSourceInventory(root), relativePath);
+}
+
 function guardDiagnostics(globalRoot: string): RuntimeSourceReport["unattended"]["guard"] {
   const config = path.join(globalRoot, "opencode.json");
   const empty = Object.fromEntries(GUARD_LIMITS.map((name) => [name, null]));
@@ -552,20 +601,22 @@ export function inspectRuntimeSourceInventory(root: string): RuntimeSourceInvent
 export function inspectRuntimeSources(root: string): RuntimeSourceReport {
   const inventory = inspectRuntimeSourceInventory(root);
   const globalRoot = activeGlobalRoot();
+  const helperPaths = [
+    "bin/openspec-operation-gate.ts",
+    "bin/openspec-archive.ts",
+    "bin/roadmap-mission.ts",
+  ];
   return {
     collisions: inventory.collisions,
     unattended: {
       canonicalWorkflow: inventory.canonicalWorkflow,
       collisionStatus: inventory.collisionStatus,
       guard: guardDiagnostics(globalRoot),
-      helpers: [
-        "bin/openspec-operation-gate.ts",
-        "bin/openspec-archive.ts",
-        "bin/roadmap-mission.ts",
-      ].filter((relative) => isFile(path.join(globalRoot, relative))).map((relative) => ({
+      helpers: helperPaths.filter((relative) => isFile(path.join(globalRoot, relative))).map((relative) => ({
         path: relative,
         sha256: crypto.createHash("sha256").update(fs.readFileSync(path.join(globalRoot, relative))).digest("hex"),
       })),
+      helperResolution: helperPaths.map((relative) => resolveRuntimeGlobalHelperFromInventory(inventory, relative)),
     },
     root: redactLocation(root),
     schemaVersion: 1,

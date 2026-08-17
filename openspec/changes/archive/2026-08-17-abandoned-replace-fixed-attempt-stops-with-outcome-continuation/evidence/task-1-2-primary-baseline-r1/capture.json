@@ -1,0 +1,40 @@
+{
+  "candidateId": "outcome-continuation-baseline-r1",
+  "captureKind": "baseline",
+  "completed": [
+    "checked-unmet",
+    "outcome-achieved",
+    "explicit-pause",
+    "unchanged-live-repetition",
+    "owner-only"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "626ccedea9324b8bded9f92695868c077f70f321e1d14b7a95f1ae188fc445dd",
+    "global/agents/troubleshooter.md": "fa5eabe1b5b0c8a3158ba82dcafe07b80efdf15d0de565df61cdd6fd1b0faf18",
+    "global/agents/session-completion-arbiter.md": "ac7fb54e9fbce0bd86d5288fb4333c65342d646a1825ff48d937718346a1c2d8",
+    "global/bin/openspec-operation-gate.ts": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b",
+    "global/commands/opsx-apply.md": "682e2861bf9e7a0a086b83d2c33b91fa6af681d5ec5081f2e2da29c072fde4da",
+    "global/commands/opsx-archive.md": "69d5cdb456a95f31babb93a525f05566e4d142ef1b48482d784e7c89e980d83a",
+    "global/commands/opsx-propose.md": "23a860c9150552b9b1b802abb811da88d1ece4af1bb3e32f7867f2f7a2deaa4f",
+    "global/extensions/session-completion-guard/controller.ts": "92d3b7fd3e1205fe3c81aaf24b103ad3eaba1f9e08da99268c685e8b441ee0c2",
+    "global/extensions/session-completion-guard/inspection.ts": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6",
+    "global/extensions/session-completion-guard/strategy.ts": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6",
+    "global/extensions/session-completion-guard/verdict.ts": "27477e89095a79da5ab75845220366142821875d16c3a76f20ad5727b34b64f1",
+    "global/skills/change-ready-sdlc/SKILL.md": "a3225db287badb54722c79c5ba214130a2f933eeb413d18749c1919fd5a8df6b",
+    "global/skills/openspec-apply-change/SKILL.md": "77234e0409a6e7fec111f272392f8f19f323757a34f32ed97c60e41e680a296b",
+    "global/skills/openspec-archive-change/SKILL.md": "df0d0fbbcb5417c4f0c4ba6820288fdeeca5a43e87d13bdc50c8dd66edb8157a",
+    "global/skills/openspec-propose/SKILL.md": "60ca8b3809bba90fbea2d8a49e7e0aefdd31f44b25c1101f394e3c590d4088fe",
+    "instructions/reusable-project-agent-instructions.md": "b505132bf71d0ee55ae5e77b3198752f3f4225125fe3f561c7f0f76154323f0f",
+    "instructions/universal-development-loop.md": "8db2fb83416a1b2f753f8c5f250330bf98e4bc8067cd5d8ea60639df9f762c5e",
+    "templates/project/AGENTS.md": "5ba222021107174a8f295a25b222a017dcd4b733063b6455d7f028ac79372f5c",
+    "README.md": "d0a29b0faf75f9f7878f1da415dd7691d0a64c7957780a80dbd015a196320d9e",
+    "package.json": "732930d41e8732c8159abd90f81b1b4a70d165e47d74edb00bf1e3d7ac54cb98",
+    "tools/contracts/troubleshooter.ts": "ad4a10bb3c4ae3eac68879087e4c8bbe4a7c17fce79c0fbb81a0f64150e844c5",
+    "tools/proofs/pre-escalation-recovery.ts": "33266b8d1c0d605b8bad33897e2cea4624b3250ac23f3e335b0e55b28e5328ba",
+    "tools/proofs/session-completion-guard-autonomous.ts": "661e0d722d7ce07645910c6323da1053e0930315f5afe81de0133da2db6bba9f",
+    "tools/proofs/session-completion-guard-question.ts": "7e1adf3c292909558cd55e81384a454e60a583b3f6769d719cb740a18e8690a6",
+    "tools/proofs/README.md": "e9c8822448d71e6b887ae6450abecab6e5c54c477374622b639be50b7aedf024"
+  }
+}

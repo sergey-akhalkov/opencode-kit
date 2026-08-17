@@ -1,0 +1,14 @@
+{
+  "candidateId": "candidate-working-tree",
+  "captureKind": "candidate",
+  "cleanupComplete": true,
+  "failure": "Root did not become idle within 120000ms",
+  "inputRaw": "raw.json",
+  "inputRawBytes": 185,
+  "mode": "replay",
+  "modelCalls": 0,
+  "replayComplete": true,
+  "resultPresent": false,
+  "schemaVersion": 1,
+  "terminalResult": "captured-failure-clean"
+}

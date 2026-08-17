@@ -1,0 +1,30 @@
+{
+  "files": [
+    {
+      "path": "capture.json",
+      "sha256": "de7cdf20cac324151407ee2cc795eee8bcfd668c710c74ff1b76abb3be528532"
+    },
+    {
+      "path": "checked-unmet.bundle.json",
+      "sha256": "026930e2ab218977a986690b9a97931b54ba103670bbef53d38369be2450537e"
+    },
+    {
+      "path": "explicit-pause.bundle.json",
+      "sha256": "fd8938b332506c5c2813b51a26dfaa098dc11590d7ec67428c10296bf4bedf63"
+    },
+    {
+      "path": "outcome-achieved.bundle.json",
+      "sha256": "dbb55abe10a0dcb08e1e3cfffb8250d55222cb7325100a1ef2846b768389e513"
+    },
+    {
+      "path": "owner-only.bundle.json",
+      "sha256": "80d269eb8102596b4cef6011d3d8726698fdb0fdb9d5cf0df9d7627be4f2f5ae"
+    },
+    {
+      "path": "unchanged-live-repetition.bundle.json",
+      "sha256": "b995e4bff555ba522197802619230f60ab01e1874bf5c4304327a643ef764883"
+    }
+  ],
+  "label": "capture-baseline",
+  "schemaVersion": 1
+}

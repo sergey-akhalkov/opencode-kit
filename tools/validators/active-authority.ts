@@ -370,6 +370,12 @@ const AGENTS_ROUTING_NO_DOWNGRADE_MARKER =
   "must not be downgraded merely because the diff is small";
 const AGENTS_ROUTING_DEVELOPMENT_STAGE_MARKER =
   "Development-Stage: development | MVP | RC<n> | stable";
+const AGENTS_ROUTING_INVOCATION_SAFETY_MARKER =
+  "invocation remains finalized and non-reusable";
+const AGENTS_ROUTING_MISSION_CONTINUATION_MARKER =
+  "does not impose a fixed mission-wide attempt ceiling";
+const AGENTS_ROUTING_SDET_CONTINUATION_MARKER =
+  "No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate";
 /**
  * Shared named Material risk classes for AGENTS routing and canonical skill authority.
  * Exact full phrases only — weak substrings do not prove the intended safety class.
@@ -470,8 +476,14 @@ export function agentsAuthorityProblem(text: string): string | null {
   if (!routing.includes("critical-risks-reported | no-critical-risk | blocked")) {
     return "AGENTS.md Change-Ready SDLC Routing section missing critical-only SDET action marker";
   }
-  if (!routing.includes("permanently stops SDET for the root")) {
-    return "AGENTS.md Change-Ready SDLC Routing section missing semantic SDET stop marker";
+  if (!routing.includes(AGENTS_ROUTING_INVOCATION_SAFETY_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing finalized invocation safety marker";
+  }
+  if (!routing.includes(AGENTS_ROUTING_MISSION_CONTINUATION_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing evidence-gated mission continuation marker";
+  }
+  if (!routing.includes(AGENTS_ROUTING_SDET_CONTINUATION_MARKER)) {
+    return "AGENTS.md Change-Ready SDLC Routing section missing changed-candidate SDET continuation marker";
   }
   // Outcome-first / Development-Stage may live outside the routing H2; check operative text only
   // (closed and unclosed fenced examples cannot satisfy authority markers).
@@ -664,7 +676,10 @@ const SKILL_NON_AUTHORIZING_MARKER = "never authorize mutation";
 const SKILL_OPTIONAL_REVIEWER_MARKER = "Reviewer absence, timeout, malformed output, or disagreement is not itself a stage blocker";
 const SKILL_CRITICAL_SDET_ACTION_MARKER =
   "Action: critical-risks-reported | no-critical-risk | blocked";
-const SKILL_CRITICAL_SDET_STOP_MARKER = "permanently stops SDET for the root";
+const SKILL_INVOCATION_SAFETY_MARKER = "invocation remains finalized and non-reusable";
+const SKILL_MISSION_CONTINUATION_MARKER = "does not impose a fixed mission-wide attempt ceiling";
+const SKILL_CRITICAL_SDET_CONTINUATION_MARKER =
+  "No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate";
 const SKILL_STAGE_MARKER = "Development-Stage: development | MVP | RC<n> | stable";
 
 /**
@@ -753,8 +768,14 @@ export function skillAuthorityProblem(text: string): string | null {
   if (!operativeBody.includes(SKILL_CRITICAL_SDET_ACTION_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing critical-only SDET action marker";
   }
-  if (!operativeBody.includes(SKILL_CRITICAL_SDET_STOP_MARKER)) {
-    return "skills/change-ready-sdlc/SKILL.md missing semantic SDET permanent-stop marker";
+  if (!operativeBody.includes(SKILL_INVOCATION_SAFETY_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing finalized invocation safety marker";
+  }
+  if (!operativeBody.includes(SKILL_MISSION_CONTINUATION_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing evidence-gated mission continuation marker";
+  }
+  if (!operativeBody.includes(SKILL_CRITICAL_SDET_CONTINUATION_MARKER)) {
+    return "skills/change-ready-sdlc/SKILL.md missing changed-candidate SDET continuation marker";
   }
   if (!operativeBody.includes(SKILL_STAGE_MARKER)) {
     return "skills/change-ready-sdlc/SKILL.md missing exact Development-Stage token";
