@@ -1,20 +1,4 @@
-# local-opencode-workstation Specification
-
-## Purpose
-Provide one safe, predictable Windows operator workflow for stable PowerShell terminals and elevated OpenCode clients that reuse one logon-started, tray-visible local server across the selected repositories.
-## Requirements
-### Requirement: Alacritty uses the current stable PowerShell
-The workstation SHALL configure ordinary Alacritty sessions to launch `pwsh.exe`, SHALL resolve the stable PowerShell command rather than Windows PowerShell 5.1 or PowerShell Preview, and SHALL preserve unrelated Alacritty configuration.
-
-#### Scenario: Ordinary Alacritty starts stable PowerShell
-- **WHEN** the operator launches Alacritty without a project launcher
-- **THEN** the initial shell reports PowerShell Core from the current stable `pwsh.exe` alias
-- **AND** the shell does not report Windows PowerShell 5.1 or a Preview edition
-
-#### Scenario: Existing unrelated terminal settings survive setup
-- **WHEN** workstation setup adds the managed shell selection to an existing compatible Alacritty configuration
-- **THEN** settings unrelated to terminal shell selection remain unchanged
-- **AND** rollback can restore the exact pre-change configuration
+## MODIFIED Requirements
 
 ### Requirement: One authenticated elevated server is manually managed
 The workstation SHALL expose Start, Restart, and Stop entry points for exactly one elevated OpenCode server bound to `127.0.0.1:4096`. The server SHALL require authentication, SHALL start automatically at the owner interactive Windows logon, SHALL run without a visible console window, and SHALL use the configured kit global source.
@@ -146,6 +130,8 @@ The complete non-secret workstation source, strict repository-path configuration
 - **THEN** existing runtime entry points continue using the protected manifest
 - **AND** the changed configuration takes effect only through an explicit stopped repair or rollback and reinstall
 
+## ADDED Requirements
+
 ### Requirement: Persistent tray lamp reports server liveness
 The workstation SHALL show one notification-area icon labeled `opencode-server` after interactive logon until the operator chooses Exit. The icon SHALL be green when the managed authenticated server is healthy, SHALL blink a red restarting state while tray Restart is replacing the server, and SHALL be red when that server is stopped and the tray host is still running. The tray host SHALL NOT receive the server password.
 
@@ -178,4 +164,3 @@ The tray icon SHALL expose a right-click menu with exactly Restart and Exit. Res
 - **WHEN** the operator invokes the protected controller Stop mode
 - **THEN** only a positively identified managed server tree is stopped
 - **AND** no Desktop Stop shortcut is created
-

@@ -10,7 +10,7 @@ This directory is the source of truth for the local Windows OpenCode workstation
 - A valid `OPENCODE_CONFIG_DIR` user environment variable
 - The four configured repositories checked out as exact Git worktree roots
 
-The setup installs no package and creates no logon trigger, service, firewall rule, or remote listener.
+The setup installs no package, Windows service, firewall rule, or remote listener. The tray host has an owner AtLogon trigger; the shared server task stays demand-start and is started by the tray at logon.
 
 ## Machine Configuration
 
@@ -33,7 +33,7 @@ When preflight reports `status: "ready"`, install from the same reviewed source 
 node tools/windows/opencode-workstation.ts install --config tools/windows/opencode-workstation.config.json
 ```
 
-Install self-elevates when required. It creates a highest-privilege Scheduled Task with no triggers, protects the runtime root, generates a local password, configures ordinary Alacritty to use stable `pwsh.exe`, and creates these Desktop shortcuts:
+Install self-elevates when required. It creates a highest-privilege demand-start server task, a highest-privilege AtLogon tray host, protects the runtime root, generates a local password, configures ordinary Alacritty to use stable `pwsh.exe`, maximizes project Alacritty, hides Desktop controller consoles, and creates these Desktop shortcuts:
 
 - `OpenCode Server - Start`
 - `OpenCode Server - Restart`
@@ -44,7 +44,9 @@ Install self-elevates when required. It creates a highest-privilege Scheduled Ta
 
 ## Operate
 
-Use Start before opening a project. Repeated Start reuses the healthy managed server. Each project shortcut opens elevated Alacritty, starts stable PowerShell, and runs `opencode attach http://127.0.0.1:4096 --dir <configured-path>`. It never falls back to a second server.
+At interactive logon the tray host starts the shared server with no console and shows an `opencode-server` lamp: green when healthy, blinking red/amber while Restart is replacing the server. Right-click **Restart** replaces the managed server and returns to green. Right-click **Exit** stops the server and closes the tray until the next logon. Exit does not disable autostart.
+
+Start still raises a stopped server. Repeated Start reuses the healthy managed server. Each project shortcut opens exactly one maximized elevated Alacritty, starts stable PowerShell, and runs `opencode attach http://127.0.0.1:4096 --dir <configured-path>`. It never falls back to a second server and does not leave a controller console.
 
 After leaving the TUI, the elevated PowerShell window remains open. To attach a different folder manually from that elevated shell without putting the password in process arguments:
 
@@ -74,7 +76,7 @@ node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts rollback --dry-r
 node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts rollback
 ```
 
-Rollback safely stops the managed server, removes the matching task and six shortcuts, restores the exact previous Alacritty configuration, and removes the protected runtime root. It preserves drifted and unrelated artifacts. Reinstall by repeating the repository preflight and install commands.
+Rollback safely stops the managed server, removes the matching server and tray tasks and six shortcuts, restores the exact previous Alacritty configuration, and removes the protected runtime root. It preserves drifted and unrelated artifacts. Reinstall by repeating the repository preflight and install commands.
 
 ## Repository Validation
 

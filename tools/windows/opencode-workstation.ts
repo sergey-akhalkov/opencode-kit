@@ -19,8 +19,9 @@ import { fileURLToPath } from "node:url"
 
 const protectedRoot = String.raw`C:\ProgramData\OpenCodeWorkstation`
 const taskName = "OpenCode Workstation Shared Server"
+const trayTaskName = "OpenCode Workstation Tray"
 const endpoint = "http://127.0.0.1:4096"
-const publicModes = new Set(["install", "preflight", "status", "start", "restart", "launch", "rollback"])
+const publicModes = new Set(["install", "preflight", "status", "start", "stop", "restart", "launch", "rollback"])
 const controllerSourcePath = fileURLToPath(import.meta.url)
 const installedControllerPath = path.join(protectedRoot, "opencode-workstation.ts")
 const manifestPath = path.join(protectedRoot, "manifest.json")
@@ -28,6 +29,12 @@ const credentialPath = path.join(protectedRoot, "server-password")
 const statePath = path.join(protectedRoot, "server-state.json")
 const logsPath = path.join(protectedRoot, "logs")
 const protectedAlacrittyConfigPath = path.join(protectedRoot, "alacritty.toml")
+const invokePath = path.join(protectedRoot, "invoke.vbs")
+const trayScriptPath = path.join(protectedRoot, "tray.ps1")
+const trayHostPath = path.join(protectedRoot, "tray-host.vbs")
+const trayStatePath = path.join(protectedRoot, "tray-state.json")
+const trayCommandPath = path.join(protectedRoot, "tray-command.json")
+const wscriptPath = path.join(process.env.SystemRoot ?? "C:\\Windows", "System32", "wscript.exe")
 const backupPath = path.join(protectedRoot, "backup")
 const alacrittyBackupPath = path.join(backupPath, "alacritty.toml")
 const defaultConfigurationPath = path.join(path.dirname(controllerSourcePath), "opencode-workstation.config.json")
@@ -50,6 +57,7 @@ Usage:
   opencode-workstation.ts status
   opencode-workstation.ts install [--config <path>]
   opencode-workstation.ts start
+  opencode-workstation.ts stop
   opencode-workstation.ts restart
   opencode-workstation.ts launch --repository <id>
   opencode-workstation.ts rollback
@@ -208,10 +216,227 @@ function applyCredentialAcl() {
   ])
 }
 
-function registerServerTask(manifest) {
+function expectedInvokerArguments(modeArgs) {
+  return `//nologo ${quoteWindowsArgument(invokePath)} ${modeArgs}`
+}
+
+function expectedServerTaskArguments() {
+  return expectedInvokerArguments("serve")
+}
+
+function vbsQuote(value) {
+  return `"${String(value).replaceAll("\"", "\"\"")}"`
+}
+
+function managedInvokerContents(manifest) {
+  return [
+    "Option Explicit",
+    "Dim shell, command, index, code",
+    "Set shell = CreateObject(\"WScript.Shell\")",
+    `command = ${vbsQuote(manifest.tools.node.executable.path)} & " " & ${vbsQuote(installedControllerPath)}`,
+    "For index = 0 To WScript.Arguments.Count - 1",
+    "  command = command & \" \" & QuoteArg(WScript.Arguments(index))",
+    "Next",
+    "code = shell.Run(command, 0, True)",
+    "If code <> 0 Then",
+    `  shell.Popup "OpenCode workstation command failed. See ${logsPath}\\controller-errors.log", 0, "OpenCode Workstation", 16`,
+    "  WScript.Quit code",
+    "End If",
+    "",
+    "Function QuoteArg(value)",
+    "  If InStr(value, \" \") > 0 Or InStr(value, Chr(34)) > 0 Then",
+    "    QuoteArg = Chr(34) & Replace(value, Chr(34), Chr(34) & Chr(34)) & Chr(34)",
+    "  Else",
+    "    QuoteArg = value",
+    "  End If",
+    "End Function",
+    "",
+  ].join("\r\n")
+}
+
+function writeManagedInvoker(manifest) {
+  if (!existsSync(wscriptPath)) throw new Error(`wscript.exe is missing at '${wscriptPath}'.`)
+  writeFileSync(invokePath, managedInvokerContents(manifest), "utf8")
+  return { path: invokePath, sha256: sha256File(invokePath), wscriptPath }
+}
+
+function expectedTrayTaskArguments() {
+  return `//nologo ${quoteWindowsArgument(trayHostPath)}`
+}
+
+function managedTrayHostContents(manifest) {
+  const powershell = manifest.tools.powershell.executable.path
+  return [
+    "Option Explicit",
+    "Dim shell, command, code",
+    "Set shell = CreateObject(\"WScript.Shell\")",
+    `command = Chr(34) & ${vbsQuote(powershell)} & Chr(34) & " -NoLogo -NoProfile -STA -WindowStyle Hidden -File " & Chr(34) & ${vbsQuote(trayScriptPath)} & Chr(34)`,
+    "code = shell.Run(command, 0, True)",
+    "WScript.Quit code",
+    "",
+  ].join("\r\n")
+}
+
+function managedTrayScriptContents(manifest) {
+  const node = manifest.tools.node.executable.path
+  return `# OpenCode workstation tray host
+$ErrorActionPreference = 'Continue'
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+$mutex = New-Object System.Threading.Mutex($false, 'Local\\OpenCodeWorkstationTray')
+if (-not $mutex.WaitOne(0, $false)) { exit 0 }
+
+$node = ${JSON.stringify(node)}
+$controller = ${JSON.stringify(installedControllerPath)}
+$stateFile = ${JSON.stringify(trayStatePath)}
+$commandFile = ${JSON.stringify(trayCommandPath)}
+$label = 'opencode-server'
+$script:phase = 'starting'
+$script:worker = $null
+$script:blinkOn = $true
+
+function New-LampIcon([System.Drawing.Color]$color) {
+  $bitmap = New-Object System.Drawing.Bitmap 16, 16
+  $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+  $graphics.SmoothingMode = 'AntiAlias'
+  $graphics.Clear([System.Drawing.Color]::Transparent)
+  $graphics.FillEllipse((New-Object System.Drawing.SolidBrush $color), 1, 1, 14, 14)
+  $graphics.Dispose()
+  return [System.Drawing.Icon]::FromHandle($bitmap.GetHicon())
+}
+
+function Write-LampState([string]$color) {
+  $payload = @{ schemaVersion = 1; color = $color; label = $label; updatedAt = [DateTime]::UtcNow.ToString('o') } | ConvertTo-Json -Compress
+  [IO.File]::WriteAllText($stateFile, $payload)
+}
+
+function Test-ServerListening {
+  $null -ne (Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort 4096 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1)
+}
+
+function Start-ControllerAsync([string]$mode) {
+  if ($script:worker -and -not $script:worker.HasExited) { return }
+  $script:worker = Start-Process -FilePath $node -ArgumentList @($controller, $mode) -WindowStyle Hidden -PassThru
+}
+
+$green = New-LampIcon ([System.Drawing.Color]::FromArgb(0, 180, 0))
+$red = New-LampIcon ([System.Drawing.Color]::FromArgb(200, 0, 0))
+$amber = New-LampIcon ([System.Drawing.Color]::FromArgb(220, 140, 0))
+$notify = New-Object System.Windows.Forms.NotifyIcon
+$notify.Text = "$label (starting)"
+$notify.Icon = $red
+$notify.Visible = $true
+Write-LampState 'starting'
+
+function Set-SteadyLamp([string]$color) {
+  if ($color -eq 'green') {
+    $notify.Icon = $green
+    $notify.Text = $label
+  } else {
+    $notify.Icon = $red
+    $notify.Text = $label
+  }
+  Write-LampState $color
+}
+
+function Update-Lamp {
+  if (Test-ServerListening) { Set-SteadyLamp 'green' } else { Set-SteadyLamp 'red' }
+}
+
+function Close-Tray {
+  $timer.Stop()
+  $notify.Visible = $false
+  $notify.Dispose()
+  try { $mutex.ReleaseMutex() } catch {}
+  $context.ExitThread()
+}
+
+function Invoke-Restart {
+  if ($script:phase -eq 'restarting' -or $script:phase -eq 'exiting') { return }
+  $script:phase = 'restarting'
+  $script:blinkOn = $true
+  $notify.Icon = $red
+  $notify.Text = "$label (restarting)"
+  Write-LampState 'restarting'
+  Start-ControllerAsync 'restart'
+}
+
+function Invoke-Exit {
+  if ($script:phase -eq 'exiting') { return }
+  $script:phase = 'exiting'
+  Set-SteadyLamp 'red'
+  Start-ControllerAsync 'stop'
+}
+
+$menu = New-Object System.Windows.Forms.ContextMenuStrip
+$restartItem = New-Object System.Windows.Forms.ToolStripMenuItem 'Restart'
+$exitItem = New-Object System.Windows.Forms.ToolStripMenuItem 'Exit'
+$restartItem.add_Click({ try { Invoke-Restart } catch {} })
+$exitItem.add_Click({ try { Invoke-Exit } catch {} })
+[void]$menu.Items.Add($restartItem)
+[void]$menu.Items.Add($exitItem)
+$notify.ContextMenuStrip = $menu
+
+Start-ControllerAsync 'start'
+
+$timer = New-Object System.Windows.Forms.Timer
+$timer.Interval = 400
+$timer.add_Tick({
+  try {
+    if (Test-Path -LiteralPath $commandFile) {
+      $requested = $null
+      try { $requested = (Get-Content -LiteralPath $commandFile -Raw | ConvertFrom-Json).command } catch {}
+      Remove-Item -LiteralPath $commandFile -Force -ErrorAction SilentlyContinue
+      if ($requested -eq 'restart') { Invoke-Restart }
+      elseif ($requested -eq 'exit') { Invoke-Exit }
+    }
+    if ($script:worker -and $script:worker.HasExited) {
+      $code = [int]$script:worker.ExitCode
+      $script:worker = $null
+      if ($script:phase -eq 'exiting') { Close-Tray; return }
+      if ($script:phase -eq 'restarting' -and $code -ne 0 -and -not (Test-ServerListening)) {
+        $script:phase = 'starting'
+        Start-ControllerAsync 'start'
+        return
+      }
+      $script:phase = 'idle'
+      Update-Lamp
+      return
+    }
+    if ($script:phase -eq 'restarting' -or $script:phase -eq 'starting') {
+      $script:blinkOn = -not $script:blinkOn
+      $notify.Icon = $(if ($script:blinkOn) { $red } else { $amber })
+      $notify.Text = $(if ($script:phase -eq 'restarting') { "$label (restarting)" } else { "$label (starting)" })
+      Write-LampState $script:phase
+    } elseif ($script:phase -eq 'idle') {
+      Update-Lamp
+    }
+  } catch {}
+})
+$timer.Start()
+
+$context = New-Object System.Windows.Forms.ApplicationContext
+$notify.add_Disposed({ try { $timer.Stop() } catch {}; try { $mutex.ReleaseMutex() } catch {}; try { $context.ExitThread() } catch {} })
+[System.Windows.Forms.Application]::Run($context)
+`
+}
+
+function writeManagedTray(manifest) {
+  writeFileSync(trayHostPath, managedTrayHostContents(manifest), "utf8")
+  writeFileSync(trayScriptPath, managedTrayScriptContents(manifest), "utf8")
+  return {
+    hostPath: trayHostPath,
+    hostSha256: sha256File(trayHostPath),
+    scriptPath: trayScriptPath,
+    scriptSha256: sha256File(trayScriptPath),
+  }
+}
+
+function registerServerTask(manifest, actionOverride) {
   const payload = encodedPayload({
-    node: manifest.tools.node.executable.path,
-    controller: installedControllerPath,
+    execute: actionOverride?.execute ?? wscriptPath,
+    arguments: actionOverride?.arguments ?? expectedServerTaskArguments(),
     root: protectedRoot,
     taskName,
     user: manifest.owner.user,
@@ -219,8 +444,7 @@ function registerServerTask(manifest) {
   return runPowerShellJson(String.raw`
 $ErrorActionPreference = 'Stop'
 $payload = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${payload}')) | ConvertFrom-Json
-$arguments = '"' + [string]$payload.controller + '" serve'
-$action = New-ScheduledTaskAction -Execute ([string]$payload.node) -Argument $arguments -WorkingDirectory ([string]$payload.root)
+$action = New-ScheduledTaskAction -Execute ([string]$payload.execute) -Argument ([string]$payload.arguments) -WorkingDirectory ([string]$payload.root)
 $principal = New-ScheduledTaskPrincipal -UserId ([string]$payload.user) -LogonType Interactive -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -ExecutionTimeLimit ([TimeSpan]::Zero) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 $task = Register-ScheduledTask -TaskName ([string]$payload.taskName) -Action $action -Principal $principal -Settings $settings -ErrorAction Stop
@@ -241,6 +465,47 @@ $ErrorActionPreference = 'Stop'
 $task = Get-ScheduledTask -TaskName 'OpenCode Workstation Shared Server' -ErrorAction SilentlyContinue
 if ($null -ne $task) {
   Unregister-ScheduledTask -TaskName 'OpenCode Workstation Shared Server' -Confirm:$false -ErrorAction Stop
+}
+[ordered]@{ removed = $null -ne $task } | ConvertTo-Json -Compress
+`)
+}
+
+function registerTrayTask(manifest) {
+  const payload = encodedPayload({
+    execute: wscriptPath,
+    arguments: expectedTrayTaskArguments(),
+    root: protectedRoot,
+    taskName: trayTaskName,
+    user: manifest.owner.user,
+  })
+  return runPowerShellJson(String.raw`
+$ErrorActionPreference = 'Stop'
+$payload = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${payload}')) | ConvertFrom-Json
+$action = New-ScheduledTaskAction -Execute ([string]$payload.execute) -Argument ([string]$payload.arguments) -WorkingDirectory ([string]$payload.root)
+$principal = New-ScheduledTaskPrincipal -UserId ([string]$payload.user) -LogonType Interactive -RunLevel Highest
+$trigger = New-ScheduledTaskTrigger -AtLogon -User ([string]$payload.user)
+$settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -ExecutionTimeLimit ([TimeSpan]::Zero) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+$task = Register-ScheduledTask -TaskName ([string]$payload.taskName) -Action $action -Principal $principal -Trigger $trigger -Settings $settings -ErrorAction Stop
+$triggers = @($task.Triggers | Where-Object { $null -ne $_.CimClass -and -not [string]::IsNullOrWhiteSpace([string]$_.CimClass.CimClassName) })
+[ordered]@{
+  taskName = [string]$task.TaskName
+  state = [string]$task.State
+  runLevel = [string]$task.Principal.RunLevel
+  triggerCount = $triggers.Count
+  actionCount = @($task.Actions).Count
+} | ConvertTo-Json -Compress
+`)
+}
+
+function unregisterTrayTask() {
+  runPowerShellJson(String.raw`
+$ErrorActionPreference = 'Stop'
+$task = Get-ScheduledTask -TaskName 'OpenCode Workstation Tray' -ErrorAction SilentlyContinue
+if ($null -ne $task) {
+  if ([string]$task.State -eq 'Running') {
+    Stop-ScheduledTask -TaskName 'OpenCode Workstation Tray' -ErrorAction SilentlyContinue
+  }
+  Unregister-ScheduledTask -TaskName 'OpenCode Workstation Tray' -Confirm:$false -ErrorAction Stop
 }
 [ordered]@{ removed = $null -ne $task } | ConvertTo-Json -Compress
 `)
@@ -334,7 +599,7 @@ function elevateInvocation(args) {
   const result = runPowerShellJson(String.raw`
 $ErrorActionPreference = 'Stop'
 $payload = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${payload}')) | ConvertFrom-Json
-$process = Start-Process -FilePath ([string]$payload.executable) -ArgumentList ([string]$payload.argumentLine) -Verb RunAs -Wait -PassThru
+$process = Start-Process -FilePath ([string]$payload.executable) -ArgumentList ([string]$payload.argumentLine) -Verb RunAs -WindowStyle Hidden -Wait -PassThru
 [ordered]@{ exitCode = [int]$process.ExitCode } | ConvertTo-Json -Compress
 `)
   if (result.exitCode !== 0) throw new Error(`Elevated controller exited ${result.exitCode}.`)
@@ -348,6 +613,7 @@ $principal = New-Object Security.Principal.WindowsPrincipal($identity)
 $desktop = [Environment]::GetFolderPath('Desktop')
 $package = Get-AppxPackage -Name Microsoft.PowerShell -ErrorAction Stop | Select-Object -First 1
 $task = Get-ScheduledTask -TaskName 'OpenCode Workstation Shared Server' -ErrorAction SilentlyContinue
+$trayTask = Get-ScheduledTask -TaskName 'OpenCode Workstation Tray' -ErrorAction SilentlyContinue
 $listeners = @(Get-NetTCPConnection -LocalPort 4096 -State Listen -ErrorAction SilentlyContinue | ForEach-Object {
   $process = Get-CimInstance Win32_Process -Filter ('ProcessId = ' + $_.OwningProcess) -ErrorAction SilentlyContinue
   [ordered]@{
@@ -396,6 +662,25 @@ $listeners = @(Get-NetTCPConnection -LocalPort 4096 -State Listen -ErrorAction S
       })
     }
   }
+  trayTask = if ($null -eq $trayTask) {
+    [ordered]@{ exists = $false; state = 'absent' }
+  } else {
+    $trayTriggers = @($trayTask.Triggers | Where-Object { $null -ne $_.CimClass -and -not [string]::IsNullOrWhiteSpace([string]$_.CimClass.CimClassName) })
+    [ordered]@{
+      exists = $true
+      state = [string]$trayTask.State
+      runLevel = [string]$trayTask.Principal.RunLevel
+      triggerCount = $trayTriggers.Count
+      actionCount = @($trayTask.Actions).Count
+      actions = @($trayTask.Actions | ForEach-Object {
+        [ordered]@{
+          execute = [string]$_.Execute
+          arguments = [string]$_.Arguments
+          workingDirectory = [string]$_.WorkingDirectory
+        }
+      })
+    }
+  }
   listeners = $listeners
 } | ConvertTo-Json -Compress -Depth 8
 `)
@@ -424,6 +709,7 @@ function powershellIdentity(aliasPath, snapshot) {
 }
 
 function toolIdentities(snapshot) {
+  if (!existsSync(wscriptPath)) throw new Error(`wscript.exe is missing at '${wscriptPath}'.`)
   const alacrittyPath = resolveExecutable("alacritty.exe")
   const powershellAlias = resolveExecutable("pwsh.exe")
   const opencodePath = resolveExecutable("opencode.exe")
@@ -502,6 +788,7 @@ function environmentPlan(snapshot, configuration) {
     collisions: {
       protectedRootExists: existsSync(protectedRoot),
       taskExists: snapshot.task.exists,
+      trayTaskExists: snapshot.trayTask?.exists === true,
       alacrittyConfigExists: existsSync(path.join(process.env.APPDATA ?? "", "alacritty", "alacritty.toml")),
       shortcutCount: Object.values(shortcuts).filter((shortcut) => shortcut.exists).length,
       portListenerCount: listeners.length,
@@ -532,17 +819,26 @@ function installationPlan(tools, environment) {
     logsPath,
     task: {
       name: taskName,
-      execute: tools.node.executable.path,
-      arguments: `"${installedControllerPath}" serve`,
+      execute: wscriptPath,
+      arguments: expectedServerTaskArguments(),
       workingDirectory: protectedRoot,
       runLevel: "Highest",
       triggerCount: 0,
       multipleInstances: "IgnoreNew",
     },
+    trayTask: {
+      name: trayTaskName,
+      execute: wscriptPath,
+      arguments: expectedTrayTaskArguments(),
+      workingDirectory: protectedRoot,
+      runLevel: "Highest",
+      triggerCount: 1,
+      multipleInstances: "IgnoreNew",
+    },
     startShortcut: {
       path: environment.shortcuts.start.path,
-      target: tools.node.executable.path,
-      arguments: `${quoteWindowsArgument(installedControllerPath)} start`,
+      target: wscriptPath,
+      arguments: expectedInvokerArguments("start"),
       workingDirectory: protectedRoot,
     },
   }
@@ -723,8 +1019,9 @@ function installedObservation(snapshot) {
     controllerHash,
     credentialPresent: existsSync(credentialPath),
     statePresent: existsSync(statePath),
-    task: snapshot.task,
-    manifest: {
+        task: snapshot.task,
+        trayTask: snapshot.trayTask,
+        manifest: {
       schemaVersion: manifest.schemaVersion,
       candidate: manifest.candidate,
       owner: manifest.owner,
@@ -752,12 +1049,13 @@ function managedAlacrittyContents(existing) {
   const nextMatch = nextSection.exec(existing)
   const sectionEnd = nextMatch ? nextMatch.index : existing.length
   const section = existing.slice(contentStart, sectionEnd)
-  const shellMatch = /^\s*shell\s*=.*$/mu.exec(section)
+  const shellMatch = /^[ \t]*shell\s*=.*$/mu.exec(section)
   if (shellMatch) {
     const absoluteStart = contentStart + shellMatch.index
     return existing.slice(0, absoluteStart) + shellLine + existing.slice(absoluteStart + shellMatch[0].length)
   }
-  return existing.slice(0, contentStart) + `\n${shellLine}` + existing.slice(contentStart)
+  const prefix = existing.slice(0, contentStart).endsWith("\n") ? "" : "\n"
+  return existing.slice(0, contentStart) + `${prefix}${shellLine}\n` + existing.slice(contentStart)
 }
 
 function installAlacrittyConfiguration(manifest) {
@@ -774,7 +1072,7 @@ function installAlacrittyConfiguration(manifest) {
   if (previousBytes && !existsSync(alacrittyBackupPath)) writeFileSync(alacrittyBackupPath, previousBytes, { flag: "wx" })
 
   const ordinaryContents = managedAlacrittyContents(previousText)
-  const protectedContents = '[terminal]\nshell = { program = "pwsh.exe", args = ["-NoLogo"] }\n'
+  const protectedContents = "[window]\nstartup_mode = \"Maximized\"\n\n[terminal]\nshell = { program = \"pwsh.exe\", args = [\"-NoLogo\"] }\n"
   writeFileSync(ordinaryPath, ordinaryContents, "utf8")
   writeFileSync(protectedAlacrittyConfigPath, protectedContents, "utf8")
 
@@ -887,8 +1185,10 @@ function install(configurationPath) {
     const ordinaryExisted = existsSync(ordinaryPath)
     const ordinaryBytes = ordinaryExisted ? readFileSync(ordinaryPath) : null
     const shortcutExistence = Object.fromEntries(Object.entries(manifest.shortcuts).map(([id, shortcutPath]) => [id, existsSync(shortcutPath)]))
+    const previousShortcuts = Object.fromEntries(previousManifest.createdShortcutIds.map((id) => [id, readShortcut(previousManifest.shortcuts[id])]))
+    const previousTaskAction = snapshot.task.actions?.[0] ?? null
     for (const id of previousManifest.createdShortcutIds) {
-      if (!shortcutMatches(readShortcut(previousManifest.shortcuts[id]), expectedShortcut(previousManifest, id))) {
+      if (!shortcutAcceptableForRepair(previousShortcuts[id], previousManifest, id)) {
         throw new Error(`Managed shortcut '${id}' drifted; refusing repair.`)
       }
     }
@@ -904,12 +1204,36 @@ function install(configurationPath) {
       manifest.candidate = sourceIdentity.sha256
       manifest.controller.sourcePath = controllerSourcePath
       manifest.controller.sha256 = sourceIdentity.sha256
-      manifest.task.arguments = `"${installedControllerPath}" serve`
+      manifest.task = {
+        ...manifest.task,
+        execute: wscriptPath,
+        arguments: expectedServerTaskArguments(),
+        workingDirectory: protectedRoot,
+        triggerCount: 0,
+      }
       manifest.updatedAt = new Date().toISOString()
       manifest.configuration = configuration.source
       manifest.repositories = environment.repositories
       manifest.tools = toolIdentities(snapshot)
-      if (!manifest.alacritty) manifest.alacritty = installAlacrittyConfiguration(manifest)
+      manifest.invoker = writeManagedInvoker(manifest)
+      if (!manifest.alacritty) {
+        manifest.alacritty = installAlacrittyConfiguration(manifest)
+      } else {
+        writeFileSync(
+          protectedAlacrittyConfigPath,
+          "[window]\nstartup_mode = \"Maximized\"\n\n[terminal]\nshell = { program = \"pwsh.exe\", args = [\"-NoLogo\"] }\n",
+          "utf8",
+        )
+        manifest.alacritty.protectedSha256 = sha256File(protectedAlacrittyConfigPath)
+        if (existsSync(manifest.alacritty.ordinaryPath)) {
+          manifest.alacritty.ordinarySha256 = sha256File(manifest.alacritty.ordinaryPath)
+        }
+      }
+      unregisterServerTask()
+      registerServerTask(manifest)
+      manifest.tray = writeManagedTray(manifest)
+      unregisterTrayTask()
+      registerTrayTask(manifest)
       const shortcuts = Object.fromEntries(Object.keys(shortcutNames).map((id) => [id, createManagedShortcut(manifest, id)]))
       manifest.createdShortcutIds = Object.keys(shortcutNames)
       writeJsonAtomic(manifestPath, manifest)
@@ -934,9 +1258,28 @@ function install(configurationPath) {
       else if (!ordinaryExisted && existsSync(ordinaryPath)) rmSync(ordinaryPath, { force: true })
       if (existsSync(protectedAlacrittyConfigPath)) rmSync(protectedAlacrittyConfigPath, { force: true })
       for (const [id, shortcutPath] of Object.entries(manifest.shortcuts)) {
-        if (shortcutExistence[id]) createManagedShortcut(previousManifest, id)
-        else if (existsSync(shortcutPath)) rmSync(shortcutPath, { force: true })
+        const previous = previousShortcuts[id]
+        if (shortcutExistence[id] && previous?.exists) {
+          createShortcut(
+            shortcutPath,
+            previous.targetPath,
+            previous.arguments,
+            previous.workingDirectory,
+            id === "start" || id === "restart"
+              ? previousManifest.tools.opencode.executable.path
+              : previousManifest.tools.alacritty.executable.path,
+          )
+        } else if (existsSync(shortcutPath)) rmSync(shortcutPath, { force: true })
       }
+      try {
+        unregisterServerTask()
+        if (previousTaskAction?.execute && previousTaskAction?.arguments) {
+          registerServerTask(previousManifest, {
+            execute: previousTaskAction.execute,
+            arguments: previousTaskAction.arguments,
+          })
+        }
+      } catch {}
       throw new Error("Managed controller repair failed and prior state was restored.", { cause: error })
     }
   }
@@ -994,9 +1337,12 @@ function install(configurationPath) {
     }
     manifest.alacritty = installAlacrittyConfiguration(manifest)
     created.alacritty = true
+    manifest.invoker = writeManagedInvoker(manifest)
+    manifest.tray = writeManagedTray(manifest)
     writeJsonAtomic(manifestPath, manifest)
 
     const task = registerServerTask(manifest)
+    registerTrayTask(manifest)
     created.task = true
     const shortcuts = {}
     for (const id of Object.keys(shortcutNames)) {
@@ -1016,6 +1362,9 @@ function install(configurationPath) {
     }
   } catch (error) {
     if (created.task) {
+      try {
+        unregisterTrayTask()
+      } catch {}
       try {
         unregisterServerTask()
       } catch {}
@@ -1087,7 +1436,7 @@ function samePath(left, right) {
   return path.resolve(left).toLowerCase() === path.resolve(right).toLowerCase()
 }
 
-function expectedShortcut(manifest, id) {
+function previousNodeShortcut(manifest, id) {
   if (id === "start" || id === "restart") {
     return {
       path: manifest.shortcuts[id],
@@ -1102,6 +1451,28 @@ function expectedShortcut(manifest, id) {
     arguments: `${quoteWindowsArgument(installedControllerPath)} launch --repository ${id}`,
     workingDirectory: manifest.repositories[id],
   }
+}
+
+function expectedShortcut(manifest, id) {
+  if (id === "start" || id === "restart") {
+    return {
+      path: manifest.shortcuts[id],
+      targetPath: wscriptPath,
+      arguments: expectedInvokerArguments(id),
+      workingDirectory: protectedRoot,
+    }
+  }
+  return {
+    path: manifest.shortcuts[id],
+    targetPath: wscriptPath,
+    arguments: expectedInvokerArguments(`launch --repository ${id}`),
+    workingDirectory: manifest.repositories[id],
+  }
+}
+
+function shortcutAcceptableForRepair(observed, manifest, id) {
+  return shortcutMatches(observed, expectedShortcut(manifest, id)) ||
+    shortcutMatches(observed, previousNodeShortcut(manifest, id))
 }
 
 function shortcutMatches(observed, expected) {
@@ -1135,8 +1506,8 @@ function taskMatches(snapshot, manifest) {
     snapshot.task.runLevel === "Highest" &&
     snapshot.task.triggerCount === 0 &&
     snapshot.task.actionCount === 1 &&
-    samePath(action?.execute ?? "", manifest.tools.node.executable.path) &&
-    action?.arguments === `"${installedControllerPath}" serve` &&
+    samePath(action?.execute ?? "", wscriptPath) &&
+    action?.arguments === expectedServerTaskArguments() &&
     samePath(action?.workingDirectory ?? "", protectedRoot)
 }
 
@@ -1214,6 +1585,20 @@ async function stopManagedServer() {
     remainingProcessIds: remaining,
     listenerCount: snapshotListeners(finalSnapshot).length,
     taskState: finalSnapshot.task.state,
+  }
+}
+
+async function stop() {
+  const snapshot = windowsSnapshot()
+  if (!snapshot.elevated) {
+    elevateInvocation(["stop"])
+    return { schemaVersion: 1, operation: "stop", status: "delegated-to-elevated-controller" }
+  }
+  const result = await stopManagedServer()
+  return {
+    schemaVersion: 1,
+    operation: "stop",
+    ...result,
   }
 }
 
@@ -1364,7 +1749,7 @@ function rollbackDryRun() {
     return { schemaVersion: 1, operation: "rollback", dryRun: true, eligible: true, actions: [] }
   }
   const manifest = loadManifest()
-  const expectedTaskArguments = `"${installedControllerPath}" serve`
+  const expectedTaskArguments = expectedServerTaskArguments()
   const taskAction = snapshot.task.actions?.[0]
   const shortcutChecks = Object.fromEntries(
     manifest.createdShortcutIds.map((id) => [id, shortcutMatches(readShortcut(manifest.shortcuts[id]), expectedShortcut(manifest, id))]),
@@ -1383,13 +1768,15 @@ function rollbackDryRun() {
     taskRunLevel: snapshot.task.runLevel === "Highest",
     taskTriggerCount: snapshot.task.triggerCount === 0,
     taskActionCount: snapshot.task.actionCount === 1,
-    taskExecute: path.resolve(taskAction?.execute ?? "").toLowerCase() === path.resolve(manifest.tools.node.executable.path).toLowerCase(),
+    taskExecute: path.resolve(taskAction?.execute ?? "").toLowerCase() === path.resolve(wscriptPath).toLowerCase(),
     taskArguments: taskAction?.arguments === expectedTaskArguments,
     shortcuts: Object.values(shortcutChecks).every(Boolean),
     ordinaryAlacrittyConfig: !manifest.alacritty || ordinaryHash === manifest.alacritty.ordinarySha256,
     protectedAlacrittyConfig: !manifest.alacritty || protectedConfigHash === manifest.alacritty.protectedSha256,
     alacrittyBackup: !manifest.alacritty?.previousExists || backupHash === manifest.alacritty.previousSha256,
     credentialPresent: existsSync(credentialPath),
+    invokerPresent: !manifest.invoker || existsSync(invokePath),
+    invokerHash: !manifest.invoker || (existsSync(invokePath) && sha256File(invokePath) === manifest.invoker.sha256),
   }
   return {
     schemaVersion: 1,
@@ -1422,6 +1809,7 @@ async function rollback() {
       removedShortcuts.push(id)
     }
   }
+  unregisterTrayTask()
   unregisterServerTask()
 
   if (manifest.alacritty) {
@@ -1543,6 +1931,8 @@ async function main() {
       writeJson(await start())
     } else if (operation === "launch") {
       writeJson(await launch(invocation.repository))
+    } else if (operation === "stop") {
+      writeJson(await stop())
     } else if (operation === "restart") {
       writeJson(await restart())
     } else if (operation === "serve") {
