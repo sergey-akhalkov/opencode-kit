@@ -1,0 +1,62 @@
+{
+  "candidateId": "task-4-1-integrated-diagnose-r9",
+  "cleanup": "complete",
+  "deletedRootSessions": 1,
+  "failure": {
+    "childExitCode": null,
+    "elapsedMs": null,
+    "error": "PTY Sessions Web Interface URL was not delivered",
+    "observedStatus": "",
+    "stderrTail": "",
+    "stdoutTail": ""
+  },
+  "mode": "diagnose",
+  "projectFacts": {
+    "marker": null,
+    "result": null,
+    "state": null,
+    "worktree": ""
+  },
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "schemaVersion": 1,
+  "server": {
+    "commandNames": [
+      "change-ready-sdlc",
+      "customize-opencode",
+      "disable-grind",
+      "enable-grind",
+      "init",
+      "mission-resume",
+      "mission-run",
+      "mission-status",
+      "mission-stop",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "opsx-apply",
+      "opsx-archive",
+      "opsx-propose",
+      "pty-open-background-spy",
+      "pty-show-server-url",
+      "review"
+    ],
+    "listenObserved": true,
+    "probes": [
+      {
+        "route": "/path",
+        "status": 200
+      },
+      {
+        "route": "/session/status",
+        "status": 200
+      }
+    ],
+    "readyMs": 18234,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    }
+  },
+  "serverDiagnostics": "timestamp=2026-08-22T11:28:05.148Z level=INFO run=1ad986a1 message=created id=ses_fd6c5a5e4ffesU3u3fsYvcyWGH slug=misty-rocket version=1.18.18 projectID=851f17e8da447b05a6765d3f2cbb6f831ed8f463 directory=\"<fixture>\\\\project\" path=\"\" workspaceID=undefined parentID=undefined title=\"integrated mission operator root\" agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787398085148 time.updated=1787398085148\ntimestamp=2026-08-22T11:28:05.184Z level=INFO run=1ad986a1 message=command session.id=ses_fd6c5a5e4ffesU3u3fsYvcyWGH command=pty-show-server-url agent=undefined\ntimestamp=2026-08-22T11:28:06.434Z level=ERROR run=1ad986a1 message=failed ref=err_3abe5076 error=\"Error: Command handled by PTY plugin\" cause=\"Error: Command handled by PTY plugin\\n    at <anonymous> (<source-root>\\\\global\\\\node_modules\\\\opencode-pty\\\\dist\\\\src\\\\plugin.js:42:23)\\n    at processTicksAndRejections (native:7:39)\\n    at Plugin.trigger (B:/~BUN/root/chunk-ds79dp30.js:1098:1361)\\n    at Plugin.trigger (definition) (B:/~BUN/root/chunk-382hv1mx.js:439:28058)\\n    at SessionPrompt.command (B:/~BUN/root/chunk-a07caw66.js:4:13932)\\n    at SessionPrompt.command (definition) (B:/~BUN/root/chunk-ds79dp30.js:1096:15462)\\n    at SessionHttpApi.command (B:/~BUN/root/chunk-a07caw66.js:2:84408)\\n    at SessionHttpApi.command (definition) (B:/~BUN/root/chunk-a07caw66.js:4:13842)\\n    at Server.listen (B:/~BUN/root/chunk-a07caw66.js:6:15456)\\n    at Server.listen (definition) (B:/~BUN/root/chunk-a07caw66.js:6:15579)\""
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "changeId": "restart-a",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "local-opencode-workstation",
+      "requirements": ["Restart terminates only validated managed identities"]
+    }
+  ],
+  "writeRoots": ["tools/windows/opencode-workstation.ts"],
+  "dependencies": [],
+  "transfers": []
+}

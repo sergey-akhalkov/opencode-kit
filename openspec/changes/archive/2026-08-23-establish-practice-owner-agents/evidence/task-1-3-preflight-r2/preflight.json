@@ -1,0 +1,49 @@
+{
+  "candidateId": "establish-practice-owner-agents-planning-r1",
+  "cleanup": "removed",
+  "failure": null,
+  "missingOwners": [
+    "execution-safety-reviewer"
+  ],
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "scenarioIds": [
+    "trivial-no-trigger",
+    "single-core-trigger",
+    "independent-multi-trigger",
+    "protocol-wire-boundary",
+    "protected-action",
+    "unavailable-owner",
+    "practice-maintenance",
+    "owner-self-change"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "b60e36f2f7a56d54fb74b34da98cc7527355a83bf5bba8022ddf25931fdacca8",
+    "global/principles-of-work.md": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8",
+    "profiles/core.json": "9ec6c81f806773d9f2d55cfeafb9042a7c8462f7b02e26ee69aa99817890f403",
+    "profiles/all.json": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b",
+    "tools/proofs/practice-owner-routing.ts": "a16b7907001ca5349fb39ae4f2625f5c2c66c6aa347618339a6b8ae4d13eca2a",
+    "openspec/changes/establish-practice-owner-agents/evidence/task-1-2-baseline-inventory-r1.json": "b5a3d7835a9557bf4e8d17c8fcf1fcdb762e30331dca38ef4fc393b9917e6f43"
+  },
+  "toolPolicy": [
+    "bash: deny",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: allow",
+    "webfetch: deny"
+  ],
+  "version": 1,
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "credentials": {
+    "count": 2,
+    "valuesCaptured": false
+  },
+  "opencodeVersion": "1.18.18",
+  "agentCount": 19,
+  "cleanupError": null
+}

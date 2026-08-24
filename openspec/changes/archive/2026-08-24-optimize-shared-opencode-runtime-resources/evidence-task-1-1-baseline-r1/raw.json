@@ -1,0 +1,1359 @@
+{
+  "candidateId": "baseline-local-graphify-r1",
+  "captureKind": "baseline",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "fixtureRemoved": true
+  },
+  "environment": {
+    "graphPathSha256": "03c316045db331d55eef45305f42390c3c179967ad27e7e93a76bb097df46f09",
+    "graphifyExecutableSha256": "57b7fa7e1b121abe4f8ef9aa63e2b97d281f95759766a7d6c83b174c78edf80a",
+    "graphifyVersion": 0,
+    "node": "v24.18.1",
+    "platform": "win32-x64"
+  },
+  "hostAfter": [
+    {
+      "commandClass": "wscript.exe",
+      "commandLineSha256": "bfef5362b4a5b577c545cd59511fa107e058f9cfcd1679ada0f05bb38a230b47",
+      "executablePath": "C:\\Windows\\System32\\wscript.exe",
+      "name": "wscript.exe",
+      "parentProcessId": 3276,
+      "privateMiB": 4.355,
+      "processId": 940,
+      "workingSetMiB": 4.398
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.738,
+      "processId": 1832,
+      "workingSetMiB": 1.145
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.742,
+      "processId": 6024,
+      "workingSetMiB": 1.141
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "cb37090c4e995d8e188e64b74acd39abb9fd0b66f5b3b4c2aff7b23a742020bd",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 17256,
+      "privateMiB": 65.43,
+      "processId": 7172,
+      "workingSetMiB": 8.258
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "f3c54469a6c33f74078f69798e4889a4bf568d71d1608dea49f6679fd9d30958",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 13744,
+      "privateMiB": 19.129,
+      "processId": 7872,
+      "workingSetMiB": 1.715
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "2491fddd798310cdb6aada673667de2ee133ab3dd46d83f2aeb7a839231073c8",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 3.758,
+      "processId": 8576,
+      "workingSetMiB": 1.098
+    },
+    {
+      "commandClass": "node.exe",
+      "commandLineSha256": "ff0ce41861d58b40bc0072f4391cf072c61eadd1f84fd5bfc04b56fb62233b91",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 12112,
+      "privateMiB": 33.18,
+      "processId": 8908,
+      "workingSetMiB": 69.582
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "4346ab9913a0cc7c7f8b3a1a3909c1f92ca16b78bfc85c108983d8ffd925c597",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rust-analyzer.exe",
+      "name": "rust-analyzer.exe",
+      "parentProcessId": 13120,
+      "privateMiB": 1020.91,
+      "processId": 9616,
+      "workingSetMiB": 777.57
+    },
+    {
+      "commandClass": "workstation-launcher",
+      "commandLineSha256": "caa63dfbe717a05c7fd40c2762bf57b9ebb6eb1b0080cfcf0812006a30c263d3",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 14796,
+      "privateMiB": 37.742,
+      "processId": 9844,
+      "workingSetMiB": 52.398
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "f3c54469a6c33f74078f69798e4889a4bf568d71d1608dea49f6679fd9d30958",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 10720,
+      "privateMiB": 19.609,
+      "processId": 10068,
+      "workingSetMiB": 18.414
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "cb37090c4e995d8e188e64b74acd39abb9fd0b66f5b3b4c2aff7b23a742020bd",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 8576,
+      "privateMiB": 66.805,
+      "processId": 10196,
+      "workingSetMiB": 9.238
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 1832,
+      "privateMiB": 464.453,
+      "processId": 10520,
+      "workingSetMiB": 4.801
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "d9acb40c8a7b61709d6380a33ecc76f6abecf71b92e37de5462f4d0c6ff82422",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 3.75,
+      "processId": 10720,
+      "workingSetMiB": 1.121
+    },
+    {
+      "commandClass": "powershell.exe",
+      "commandLineSha256": "b67437f81fd59580d65e1b19d4a162bc494dfb890caa962ddade588ba8654b9c",
+      "executablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+      "name": "powershell.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 49.871,
+      "processId": 12112,
+      "workingSetMiB": 60.727
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "cffe16c9180ed8e7fc49f62b0ffddffb1205f33a293214c21e5acb2bae20e82d",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 23884,
+      "privateMiB": 3.605,
+      "processId": 12168,
+      "workingSetMiB": 1.109
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "12ba5a509680d524975b478d08e779b9fd7d6e1c5915696a5e7e1b2c1eeab984",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 23172,
+      "privateMiB": 4.129,
+      "processId": 12332,
+      "workingSetMiB": 1.086
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "545e45fd3c85d6a4a709a6cb339413e0bdf7488a151a9be2a00aa2e308efb9b2",
+      "executablePath": "C:\\Users\\noilw\\.cargo\\bin\\rust-analyzer.EXE",
+      "name": "rustup.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 2.984,
+      "processId": 13120,
+      "workingSetMiB": 13.496
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\serena-agent\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.746,
+      "processId": 13364,
+      "workingSetMiB": 1.137
+    },
+    {
+      "commandClass": "wscript.exe",
+      "commandLineSha256": "3406ba96291cf7c385b46f42e460edf58b33aba3d424a48fc15b229118f0f670",
+      "executablePath": "C:\\Windows\\System32\\wscript.exe",
+      "name": "wscript.exe",
+      "parentProcessId": 9824,
+      "privateMiB": 4.496,
+      "processId": 13444,
+      "workingSetMiB": 23.465
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "d9acb40c8a7b61709d6380a33ecc76f6abecf71b92e37de5462f4d0c6ff82422",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 3.758,
+      "processId": 13744,
+      "workingSetMiB": 1.074
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 6024,
+      "privateMiB": 465.539,
+      "processId": 14220,
+      "workingSetMiB": 5.145
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "49c0484d6b5b98730d1c6a0388e3885ed5a915db417ff039a2e25979a22afd97",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node_modules\\codebase-memory-mcp\\bin\\codebase-memory-mcp.exe",
+      "name": "codebase-memory-mcp.exe",
+      "parentProcessId": 10068,
+      "privateMiB": 21.273,
+      "processId": 14480,
+      "workingSetMiB": 2.766
+    },
+    {
+      "commandClass": "workstation-launcher",
+      "commandLineSha256": "8b94e9f33e2ed836fb665b595975148faa61a05a5d25761a867e2cae9ca9f48c",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 13444,
+      "privateMiB": 37.211,
+      "processId": 14528,
+      "workingSetMiB": 51.844
+    },
+    {
+      "commandClass": "wscript.exe",
+      "commandLineSha256": "aca95c0ec270ed94b268411c4329245c474b4b2ba970da8f942a8683b913c275",
+      "executablePath": "C:\\Windows\\System32\\wscript.exe",
+      "name": "wscript.exe",
+      "parentProcessId": 9824,
+      "privateMiB": 4.613,
+      "processId": 14796,
+      "workingSetMiB": 23.785
+    },
+    {
+      "commandClass": "codebase-memory-daemon",
+      "commandLineSha256": "93d53a7630a66afd4193e3149071c5a432a1a9542fc396777ccac9ee8cbeb9ed",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node_modules\\codebase-memory-mcp\\bin\\codebase-memory-mcp.exe",
+      "name": "codebase-memory-mcp.exe",
+      "parentProcessId": 14480,
+      "privateMiB": 35.715,
+      "processId": 16472,
+      "workingSetMiB": 5.602
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "dbd229cc2c6018aaef1d37fbfc91bb5a468858aaa4769bb89aefa472bdb0d745",
+      "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 5148,
+      "privateMiB": 0.676,
+      "processId": 16592,
+      "workingSetMiB": 3.914
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "3cbae4fa257ff6daac92907fa2769b14d2350537c3beaec93d119e1e0de79761",
+      "executablePath": "C:\\Program Files\\Alacritty\\alacritty.exe",
+      "name": "alacritty.exe",
+      "parentProcessId": 1988,
+      "privateMiB": 65.258,
+      "processId": 16636,
+      "workingSetMiB": 125.5
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "2491fddd798310cdb6aada673667de2ee133ab3dd46d83f2aeb7a839231073c8",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 4.125,
+      "processId": 17256,
+      "workingSetMiB": 1.07
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "1031760689cde3cc155cf09dcc97ef88b0974e0cd612ea4661c2940f632638a2",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 21920,
+      "privateMiB": 155.473,
+      "processId": 18376,
+      "workingSetMiB": 97.48
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "37397efca19ad5746e19803da187da43be73c0867a3cd2382ebec857330efe6b",
+      "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 3336,
+      "privateMiB": 0.668,
+      "processId": 18712,
+      "workingSetMiB": 3.918
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "63d75d3a27b4177c9f4b55cec6d88a0b1e1cbac4206fee1decba6cf9e237072b",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\libexec\\rust-analyzer-proc-macro-srv.exe",
+      "name": "rust-analyzer-proc-macro-srv.exe",
+      "parentProcessId": 19356,
+      "privateMiB": 7.453,
+      "processId": 18816,
+      "workingSetMiB": 7.934
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\serena-agent\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.746,
+      "processId": 19128,
+      "workingSetMiB": 1.133
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "2e099c089c3f2542cadbf8b8d7eeea942963a03d4b1793d2a9a7d416d5e647b2",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rust-analyzer.exe",
+      "name": "rust-analyzer.exe",
+      "parentProcessId": 12168,
+      "privateMiB": 693.629,
+      "processId": 19356,
+      "workingSetMiB": 544.086
+    },
+    {
+      "commandClass": "node.exe",
+      "commandLineSha256": "cac0c26867a55d6b1699e4990bed958a8040d41aa3f0353f0687fc41b8f6de1a",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 18376,
+      "privateMiB": 40.965,
+      "processId": 19856,
+      "workingSetMiB": 1.91
+    },
+    {
+      "commandClass": "node.exe",
+      "commandLineSha256": "6994353956d097e2f5b7160639658e8e0efade98eb711fdf9fd41605c7004b7a",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 940,
+      "privateMiB": 38.852,
+      "processId": 20368,
+      "workingSetMiB": 18.184
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "690299819d0602095953a103428d657cbd4c3b0e62e7b4ca02e38d8d8b699cb1",
+      "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 18712,
+      "privateMiB": 1755.102,
+      "processId": 21808,
+      "workingSetMiB": 973.582
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "923779a112aee390204a108d9a0fe821544e4e5b4bb95445b382513367f0ed26",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 12332,
+      "privateMiB": 61.773,
+      "processId": 21920,
+      "workingSetMiB": 18.793
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "63d75d3a27b4177c9f4b55cec6d88a0b1e1cbac4206fee1decba6cf9e237072b",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\libexec\\rust-analyzer-proc-macro-srv.exe",
+      "name": "rust-analyzer-proc-macro-srv.exe",
+      "parentProcessId": 9616,
+      "privateMiB": 6.859,
+      "processId": 22764,
+      "workingSetMiB": 7.086
+    },
+    {
+      "commandClass": "opencode-serve",
+      "commandLineSha256": "aafbc518920c5d42de3bc5797cb5edce4aa481efd8b2c66189608a6fad08bb8a",
+      "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 20368,
+      "privateMiB": 0.605,
+      "processId": 22876,
+      "workingSetMiB": 1.141
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 13364,
+      "privateMiB": 163.543,
+      "processId": 23172,
+      "workingSetMiB": 77.145
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "43dfae16e642ec815d028c2fcc0c18efe8ab4a07dc80e31cd49534a097de928f",
+      "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 16592,
+      "privateMiB": 2271.438,
+      "processId": 23676,
+      "workingSetMiB": 1368.793
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 19128,
+      "privateMiB": 291.199,
+      "processId": 23884,
+      "workingSetMiB": 232.633
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "49c0484d6b5b98730d1c6a0388e3885ed5a915db417ff039a2e25979a22afd97",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node_modules\\codebase-memory-mcp\\bin\\codebase-memory-mcp.exe",
+      "name": "codebase-memory-mcp.exe",
+      "parentProcessId": 7872,
+      "privateMiB": 21.832,
+      "processId": 23912,
+      "workingSetMiB": 2.664
+    },
+    {
+      "commandClass": "opencode-serve",
+      "commandLineSha256": "34b1d1a12d4dbed69237256e874e21cc94ab8f5b2aefb388743cf620af9213fe",
+      "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 22876,
+      "privateMiB": 2220.812,
+      "processId": 24448,
+      "workingSetMiB": 1143.777
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "fd21dd64b001300de2cef45712a0d7dbf42d622c6b4ed626e393da83d9c93312",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 21920,
+      "privateMiB": 105.637,
+      "processId": 24536,
+      "workingSetMiB": 39.246
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "23c69938464a7f9e809f94b5f75440e3970081bfc2260e26976b0bae1cb903bb",
+      "executablePath": "C:\\Program Files\\Alacritty\\alacritty.exe",
+      "name": "alacritty.exe",
+      "parentProcessId": 20080,
+      "privateMiB": 64.762,
+      "processId": 25468,
+      "workingSetMiB": 124.84
+    }
+  ],
+  "hostBefore": [
+    {
+      "commandClass": "wscript.exe",
+      "commandLineSha256": "bfef5362b4a5b577c545cd59511fa107e058f9cfcd1679ada0f05bb38a230b47",
+      "executablePath": "C:\\Windows\\System32\\wscript.exe",
+      "name": "wscript.exe",
+      "parentProcessId": 3276,
+      "privateMiB": 4.355,
+      "processId": 940,
+      "workingSetMiB": 4.398
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.738,
+      "processId": 1832,
+      "workingSetMiB": 1.145
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.742,
+      "processId": 6024,
+      "workingSetMiB": 1.141
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "cb37090c4e995d8e188e64b74acd39abb9fd0b66f5b3b4c2aff7b23a742020bd",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 17256,
+      "privateMiB": 65.43,
+      "processId": 7172,
+      "workingSetMiB": 8.309
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "f3c54469a6c33f74078f69798e4889a4bf568d71d1608dea49f6679fd9d30958",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 13744,
+      "privateMiB": 19.129,
+      "processId": 7872,
+      "workingSetMiB": 1.793
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "2491fddd798310cdb6aada673667de2ee133ab3dd46d83f2aeb7a839231073c8",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 3.758,
+      "processId": 8576,
+      "workingSetMiB": 1.098
+    },
+    {
+      "commandClass": "node.exe",
+      "commandLineSha256": "ff0ce41861d58b40bc0072f4391cf072c61eadd1f84fd5bfc04b56fb62233b91",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 12112,
+      "privateMiB": 37.234,
+      "processId": 8908,
+      "workingSetMiB": 70.59
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "4346ab9913a0cc7c7f8b3a1a3909c1f92ca16b78bfc85c108983d8ffd925c597",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rust-analyzer.exe",
+      "name": "rust-analyzer.exe",
+      "parentProcessId": 13120,
+      "privateMiB": 1020.91,
+      "processId": 9616,
+      "workingSetMiB": 792.617
+    },
+    {
+      "commandClass": "workstation-launcher",
+      "commandLineSha256": "caa63dfbe717a05c7fd40c2762bf57b9ebb6eb1b0080cfcf0812006a30c263d3",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 14796,
+      "privateMiB": 37.742,
+      "processId": 9844,
+      "workingSetMiB": 52.398
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "f3c54469a6c33f74078f69798e4889a4bf568d71d1608dea49f6679fd9d30958",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 10720,
+      "privateMiB": 19.609,
+      "processId": 10068,
+      "workingSetMiB": 18.414
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "cb37090c4e995d8e188e64b74acd39abb9fd0b66f5b3b4c2aff7b23a742020bd",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 8576,
+      "privateMiB": 66.805,
+      "processId": 10196,
+      "workingSetMiB": 10.43
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 1832,
+      "privateMiB": 464.453,
+      "processId": 10520,
+      "workingSetMiB": 4.801
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "d9acb40c8a7b61709d6380a33ecc76f6abecf71b92e37de5462f4d0c6ff82422",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 3.75,
+      "processId": 10720,
+      "workingSetMiB": 1.191
+    },
+    {
+      "commandClass": "powershell.exe",
+      "commandLineSha256": "b67437f81fd59580d65e1b19d4a162bc494dfb890caa962ddade588ba8654b9c",
+      "executablePath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+      "name": "powershell.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 50.543,
+      "processId": 12112,
+      "workingSetMiB": 60.809
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "cffe16c9180ed8e7fc49f62b0ffddffb1205f33a293214c21e5acb2bae20e82d",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 23884,
+      "privateMiB": 3.605,
+      "processId": 12168,
+      "workingSetMiB": 1.109
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "12ba5a509680d524975b478d08e779b9fd7d6e1c5915696a5e7e1b2c1eeab984",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 23172,
+      "privateMiB": 4.129,
+      "processId": 12332,
+      "workingSetMiB": 1.086
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "545e45fd3c85d6a4a709a6cb339413e0bdf7488a151a9be2a00aa2e308efb9b2",
+      "executablePath": "C:\\Users\\noilw\\.cargo\\bin\\rust-analyzer.EXE",
+      "name": "rustup.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 2.984,
+      "processId": 13120,
+      "workingSetMiB": 13.496
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\serena-agent\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.746,
+      "processId": 13364,
+      "workingSetMiB": 1.137
+    },
+    {
+      "commandClass": "wscript.exe",
+      "commandLineSha256": "3406ba96291cf7c385b46f42e460edf58b33aba3d424a48fc15b229118f0f670",
+      "executablePath": "C:\\Windows\\System32\\wscript.exe",
+      "name": "wscript.exe",
+      "parentProcessId": 9824,
+      "privateMiB": 4.496,
+      "processId": 13444,
+      "workingSetMiB": 23.465
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "d9acb40c8a7b61709d6380a33ecc76f6abecf71b92e37de5462f4d0c6ff82422",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 3.758,
+      "processId": 13744,
+      "workingSetMiB": 1.074
+    },
+    {
+      "commandClass": "graphify",
+      "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 6024,
+      "privateMiB": 465.539,
+      "processId": 14220,
+      "workingSetMiB": 5.145
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "49c0484d6b5b98730d1c6a0388e3885ed5a915db417ff039a2e25979a22afd97",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node_modules\\codebase-memory-mcp\\bin\\codebase-memory-mcp.exe",
+      "name": "codebase-memory-mcp.exe",
+      "parentProcessId": 10068,
+      "privateMiB": 21.273,
+      "processId": 14480,
+      "workingSetMiB": 2.766
+    },
+    {
+      "commandClass": "workstation-launcher",
+      "commandLineSha256": "8b94e9f33e2ed836fb665b595975148faa61a05a5d25761a867e2cae9ca9f48c",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 13444,
+      "privateMiB": 37.211,
+      "processId": 14528,
+      "workingSetMiB": 51.844
+    },
+    {
+      "commandClass": "wscript.exe",
+      "commandLineSha256": "aca95c0ec270ed94b268411c4329245c474b4b2ba970da8f942a8683b913c275",
+      "executablePath": "C:\\Windows\\System32\\wscript.exe",
+      "name": "wscript.exe",
+      "parentProcessId": 9824,
+      "privateMiB": 4.613,
+      "processId": 14796,
+      "workingSetMiB": 23.785
+    },
+    {
+      "commandClass": "codebase-memory-daemon",
+      "commandLineSha256": "93d53a7630a66afd4193e3149071c5a432a1a9542fc396777ccac9ee8cbeb9ed",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node_modules\\codebase-memory-mcp\\bin\\codebase-memory-mcp.exe",
+      "name": "codebase-memory-mcp.exe",
+      "parentProcessId": 14480,
+      "privateMiB": 35.562,
+      "processId": 16472,
+      "workingSetMiB": 5.598
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "dbd229cc2c6018aaef1d37fbfc91bb5a468858aaa4769bb89aefa472bdb0d745",
+      "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 5148,
+      "privateMiB": 0.676,
+      "processId": 16592,
+      "workingSetMiB": 3.914
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "3cbae4fa257ff6daac92907fa2769b14d2350537c3beaec93d119e1e0de79761",
+      "executablePath": "C:\\Program Files\\Alacritty\\alacritty.exe",
+      "name": "alacritty.exe",
+      "parentProcessId": 1988,
+      "privateMiB": 64.82,
+      "processId": 16636,
+      "workingSetMiB": 125.094
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "2491fddd798310cdb6aada673667de2ee133ab3dd46d83f2aeb7a839231073c8",
+      "executablePath": "C:\\Windows\\system32\\cmd.exe",
+      "name": "cmd.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 4.125,
+      "processId": 17256,
+      "workingSetMiB": 1.07
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "1031760689cde3cc155cf09dcc97ef88b0974e0cd612ea4661c2940f632638a2",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 21920,
+      "privateMiB": 155.473,
+      "processId": 18376,
+      "workingSetMiB": 97.48
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "37397efca19ad5746e19803da187da43be73c0867a3cd2382ebec857330efe6b",
+      "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 3336,
+      "privateMiB": 0.668,
+      "processId": 18712,
+      "workingSetMiB": 3.918
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "63d75d3a27b4177c9f4b55cec6d88a0b1e1cbac4206fee1decba6cf9e237072b",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\libexec\\rust-analyzer-proc-macro-srv.exe",
+      "name": "rust-analyzer-proc-macro-srv.exe",
+      "parentProcessId": 19356,
+      "privateMiB": 6.492,
+      "processId": 18816,
+      "workingSetMiB": 7.043
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\serena-agent\\Scripts\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 24448,
+      "privateMiB": 0.746,
+      "processId": 19128,
+      "workingSetMiB": 1.133
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "2e099c089c3f2542cadbf8b8d7eeea942963a03d4b1793d2a9a7d416d5e647b2",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\bin\\rust-analyzer.exe",
+      "name": "rust-analyzer.exe",
+      "parentProcessId": 12168,
+      "privateMiB": 718.723,
+      "processId": 19356,
+      "workingSetMiB": 83.859
+    },
+    {
+      "commandClass": "node.exe",
+      "commandLineSha256": "cac0c26867a55d6b1699e4990bed958a8040d41aa3f0353f0687fc41b8f6de1a",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 18376,
+      "privateMiB": 40.965,
+      "processId": 19856,
+      "workingSetMiB": 2.008
+    },
+    {
+      "commandClass": "node.exe",
+      "commandLineSha256": "6994353956d097e2f5b7160639658e8e0efade98eb711fdf9fd41605c7004b7a",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 940,
+      "privateMiB": 38.852,
+      "processId": 20368,
+      "workingSetMiB": 18.184
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "690299819d0602095953a103428d657cbd4c3b0e62e7b4ca02e38d8d8b699cb1",
+      "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 18712,
+      "privateMiB": 1567.316,
+      "processId": 21808,
+      "workingSetMiB": 798.746
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "923779a112aee390204a108d9a0fe821544e4e5b4bb95445b382513367f0ed26",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 12332,
+      "privateMiB": 61.773,
+      "processId": 21920,
+      "workingSetMiB": 18.812
+    },
+    {
+      "commandClass": "rust-lsp",
+      "commandLineSha256": "63d75d3a27b4177c9f4b55cec6d88a0b1e1cbac4206fee1decba6cf9e237072b",
+      "executablePath": "C:\\Users\\noilw\\.rustup\\toolchains\\stable-x86_64-pc-windows-msvc\\libexec\\rust-analyzer-proc-macro-srv.exe",
+      "name": "rust-analyzer-proc-macro-srv.exe",
+      "parentProcessId": 9616,
+      "privateMiB": 6.859,
+      "processId": 22764,
+      "workingSetMiB": 7.172
+    },
+    {
+      "commandClass": "opencode-serve",
+      "commandLineSha256": "aafbc518920c5d42de3bc5797cb5edce4aa481efd8b2c66189608a6fad08bb8a",
+      "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 20368,
+      "privateMiB": 0.605,
+      "processId": 22876,
+      "workingSetMiB": 1.141
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 13364,
+      "privateMiB": 163.543,
+      "processId": 23172,
+      "workingSetMiB": 77.145
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "43dfae16e642ec815d028c2fcc0c18efe8ab4a07dc80e31cd49534a097de928f",
+      "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 16592,
+      "privateMiB": 2259.797,
+      "processId": 23676,
+      "workingSetMiB": 1356
+    },
+    {
+      "commandClass": "serena",
+      "commandLineSha256": "da81c4401c726bcf7e9826648accd10d9efdd59eafbb0e2aaaf4f37f4989e1fa",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+      "name": "python.exe",
+      "parentProcessId": 19128,
+      "privateMiB": 291.145,
+      "processId": 23884,
+      "workingSetMiB": 22.508
+    },
+    {
+      "commandClass": "codebase-memory-frontend",
+      "commandLineSha256": "49c0484d6b5b98730d1c6a0388e3885ed5a915db417ff039a2e25979a22afd97",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node_modules\\codebase-memory-mcp\\bin\\codebase-memory-mcp.exe",
+      "name": "codebase-memory-mcp.exe",
+      "parentProcessId": 7872,
+      "privateMiB": 21.895,
+      "processId": 23912,
+      "workingSetMiB": 2.727
+    },
+    {
+      "commandClass": "opencode-serve",
+      "commandLineSha256": "34b1d1a12d4dbed69237256e874e21cc94ab8f5b2aefb388743cf620af9213fe",
+      "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+      "name": "opencode.exe",
+      "parentProcessId": 22876,
+      "privateMiB": 2311.992,
+      "processId": 24448,
+      "workingSetMiB": 1227.398
+    },
+    {
+      "commandClass": "node-lsp",
+      "commandLineSha256": "fd21dd64b001300de2cef45712a0d7dbf42d622c6b4ed626e393da83d9c93312",
+      "executablePath": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+      "name": "node.exe",
+      "parentProcessId": 21920,
+      "privateMiB": 105.637,
+      "processId": 24536,
+      "workingSetMiB": 39.285
+    },
+    {
+      "commandClass": "opencode-attach",
+      "commandLineSha256": "23c69938464a7f9e809f94b5f75440e3970081bfc2260e26976b0bae1cb903bb",
+      "executablePath": "C:\\Program Files\\Alacritty\\alacritty.exe",
+      "name": "alacritty.exe",
+      "parentProcessId": 20080,
+      "privateMiB": 65.016,
+      "processId": 25468,
+      "workingSetMiB": 125.113
+    }
+  ],
+  "idle": {
+    "samples": [
+      {
+        "rows": [],
+        "totals": {
+          "privateMiB": 0,
+          "processCount": 0,
+          "workingSetMiB": 0
+        }
+      },
+      {
+        "rows": [],
+        "totals": {
+          "privateMiB": 0,
+          "processCount": 0,
+          "workingSetMiB": 0
+        }
+      },
+      {
+        "rows": [],
+        "totals": {
+          "privateMiB": 0,
+          "processCount": 0,
+          "workingSetMiB": 0
+        }
+      }
+    ],
+    "serviceTreeCount": 0
+  },
+  "oneClient": {
+    "readyMs": 13144,
+    "resultDigest": "51ce8dbc19b6aecc949956360756d4d7554c049374f1f1936dd614f39ba3af4d",
+    "samples": [
+      {
+        "rows": [
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 466.602,
+            "processId": 2000,
+            "workingSetMiB": 479.684
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.77,
+            "processId": 19828,
+            "workingSetMiB": 3.973
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 1.176,
+            "processId": 25432,
+            "workingSetMiB": 7.602
+          }
+        ],
+        "totals": {
+          "privateMiB": 468.548,
+          "processCount": 3,
+          "workingSetMiB": 491.259
+        }
+      },
+      {
+        "rows": [
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 466.602,
+            "processId": 2000,
+            "workingSetMiB": 479.684
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.77,
+            "processId": 19828,
+            "workingSetMiB": 3.973
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 1.176,
+            "processId": 25432,
+            "workingSetMiB": 7.602
+          }
+        ],
+        "totals": {
+          "privateMiB": 468.548,
+          "processCount": 3,
+          "workingSetMiB": 491.259
+        }
+      },
+      {
+        "rows": [
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 466.602,
+            "processId": 2000,
+            "workingSetMiB": 479.684
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.77,
+            "processId": 19828,
+            "workingSetMiB": 3.973
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 1.176,
+            "processId": 25432,
+            "workingSetMiB": 7.602
+          }
+        ],
+        "totals": {
+          "privateMiB": 468.548,
+          "processCount": 3,
+          "workingSetMiB": 491.259
+        }
+      }
+    ],
+    "serviceTreeCount": 1,
+    "stderrChars": 0,
+    "toolNames": [
+      "get_community",
+      "get_neighbors",
+      "get_node",
+      "get_pr_impact",
+      "god_nodes",
+      "graph_stats",
+      "list_prs",
+      "query_graph",
+      "shortest_path",
+      "triage_prs"
+    ]
+  },
+  "schemaVersion": 1,
+  "source": {
+    "globalConfigSha256": "bd0f6b07ab43125bb379c5b6f940aa12b2bc00641497e78b54e744e7e9371c7b",
+    "runnerSha256": "a8bfed12cc1b47b5f0a707c9282d73931980dfb10a8a294291fe422ab444a4bf",
+    "workstationSourceSha256": "3241db4ddb2c24d3727052c1cdd6551e3a4777e950e4b3a2c090f17b6b3e5743"
+  },
+  "twoClient": {
+    "readyMs": 18100,
+    "resultDigests": [
+      "51ce8dbc19b6aecc949956360756d4d7554c049374f1f1936dd614f39ba3af4d",
+      "51ce8dbc19b6aecc949956360756d4d7554c049374f1f1936dd614f39ba3af4d"
+    ],
+    "samples": [
+      {
+        "rows": [
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 466.602,
+            "processId": 2000,
+            "workingSetMiB": 479.684
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 25488,
+            "privateMiB": 466.324,
+            "processId": 9512,
+            "workingSetMiB": 479.426
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.742,
+            "processId": 19828,
+            "workingSetMiB": 3.961
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 25488,
+            "privateMiB": 1.168,
+            "processId": 23672,
+            "workingSetMiB": 7.594
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 1.141,
+            "processId": 25432,
+            "workingSetMiB": 7.582
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.766,
+            "processId": 25488,
+            "workingSetMiB": 3.969
+          }
+        ],
+        "totals": {
+          "privateMiB": 936.743,
+          "processCount": 6,
+          "workingSetMiB": 982.216
+        }
+      },
+      {
+        "rows": [
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 466.602,
+            "processId": 2000,
+            "workingSetMiB": 479.684
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 25488,
+            "privateMiB": 466.324,
+            "processId": 9512,
+            "workingSetMiB": 479.426
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.742,
+            "processId": 19828,
+            "workingSetMiB": 3.961
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 25488,
+            "privateMiB": 1.168,
+            "processId": 23672,
+            "workingSetMiB": 7.594
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 1.141,
+            "processId": 25432,
+            "workingSetMiB": 7.582
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.766,
+            "processId": 25488,
+            "workingSetMiB": 3.969
+          }
+        ],
+        "totals": {
+          "privateMiB": 936.743,
+          "processCount": 6,
+          "workingSetMiB": 982.216
+        }
+      },
+      {
+        "rows": [
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 466.602,
+            "processId": 2000,
+            "workingSetMiB": 479.684
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 25488,
+            "privateMiB": 466.324,
+            "processId": 9512,
+            "workingSetMiB": 479.426
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.742,
+            "processId": 19828,
+            "workingSetMiB": 3.961
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 25488,
+            "privateMiB": 1.168,
+            "processId": 23672,
+            "workingSetMiB": 7.594
+          },
+          {
+            "commandClass": "conhost.exe",
+            "commandLineSha256": "b4359116b59ef8fd3343f3c7d5a2f144b7f60a36d8c928e85ef8003dcd9f8fc1",
+            "executablePath": "C:\\Windows\\system32\\conhost.exe",
+            "name": "conhost.exe",
+            "parentProcessId": 19828,
+            "privateMiB": 1.141,
+            "processId": 25432,
+            "workingSetMiB": 7.582
+          },
+          {
+            "commandClass": "graphify",
+            "commandLineSha256": "b9a6070d030240c59d1ffce966270c32f21e8774c53970db6682a44a22dafc5d",
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "name": "python.exe",
+            "parentProcessId": 8908,
+            "privateMiB": 0.766,
+            "processId": 25488,
+            "workingSetMiB": 3.969
+          }
+        ],
+        "totals": {
+          "privateMiB": 936.743,
+          "processCount": 6,
+          "workingSetMiB": 982.216
+        }
+      }
+    ],
+    "serviceTreeCount": 2,
+    "stderrChars": [
+      0,
+      0
+    ],
+    "toolNames": [
+      [
+        "get_community",
+        "get_neighbors",
+        "get_node",
+        "get_pr_impact",
+        "god_nodes",
+        "graph_stats",
+        "list_prs",
+        "query_graph",
+        "shortest_path",
+        "triage_prs"
+      ],
+      [
+        "get_community",
+        "get_neighbors",
+        "get_node",
+        "get_pr_impact",
+        "god_nodes",
+        "graph_stats",
+        "list_prs",
+        "query_graph",
+        "shortest_path",
+        "triage_prs"
+      ]
+    ]
+  }
+}

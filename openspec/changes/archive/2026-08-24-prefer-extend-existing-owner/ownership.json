@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "changeId": "prefer-extend-existing-owner",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-reuse-discovery",
+      "requirements": [
+        "New mechanisms trigger proportional reuse discovery",
+        "Extend means reshape the current owner"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Reuse discovery has one compact loaded owner and one lazy detail owner",
+        "Loaded reuse behavior is proved with matched triggered and trivial scenarios",
+        "Production roles treat current-owner reshape as in-scope"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Same-responsibility new cases reshape the current owner"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/AGENTS.md",
+    "global/agents/code-quality-reviewer.md",
+    "global/agents/implementation-worker.md",
+    "global/skills/reuse-discovery/SKILL.md",
+    "instructions/practice-owner-agent-contract.md",
+    "tools/contracts/engineering-quality.ts",
+    "tools/proofs/README.md",
+    "tools/proofs/reuse-discovery.ts",
+    "tools/test-contracts.ts",
+    "tools/test-library/engineering-quality.ts"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

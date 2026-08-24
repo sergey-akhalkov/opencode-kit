@@ -1,0 +1,496 @@
+{
+  "schemaVersion": 2,
+  "changeId": "establish-consumer-outcome-regression-gate",
+  "candidateId": "establish-consumer-outcome-regression-gate-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "cd3a393ef12d1c9866d73d67abf66833e0f5d18919177fd4da09b4975e925b84",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "b532cb8f0c2a8b2967c831594d19ee8c8a7e34ef09a3ddf95d808b138a66fc25",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "taskTextDigest": "2c6c07550fdbea42292d77b2fb4d8c1f8a5cb4528b944692b1139e37de6ac4c6",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "69236ec72934272f7c9925467846801890a6fb78a4e65c65b119b0c4a6dbd9ca",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "4f270527c1f3bc847fc4e08d0bb1ca2e1489b1b303e86e8c547196252cbf0424",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "cc2199181198731388212c9934f7ed862321a169ca6f194a0946a3bd6d5d5375",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "5ac809ffbc5f3e5c436a90ca4b5f8c2cc5d0c09b91267ba1da7f3aa6bf805176",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "633112b851bf508d6dd12973d7b6cff22d07643ce23acde98fd5fcc298e8e41f",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "8a3c7fdb12350b43640712a8fc210550f02c4ceab691220db9ca8c0c648d8eef",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "1f4cc8c06e8bb62737d9a54161207d90cde7aedf5ea2ed12626d69f05b5e6c82",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "23efd2a7d79502cad7c606c9b11e084823d35689e732607ecb5e7c6136288966",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.2",
+      "taskTextDigest": "0fe97ecd74634318ee75fce71bd33d7f10a9f8f3ae5a34867a729eb038ede778",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.1",
+      "taskTextDigest": "9979cbead685e9f08577151785d5ec556a08e8ad0c495e9829c994ee2c8e5017",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.2",
+      "taskTextDigest": "dde52ba773a40bd0d83ce4879f1649a85bbf42219755710a4e8dc9bf660c9f3a",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.3",
+      "taskTextDigest": "f24d64040275aae7d08983408fdb6a169ddb531f94596e7cddd8b06a52d4af4d",
+      "result": "complete",
+      "candidateId": "establish-consumer-outcome-regression-gate-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/mechanical-bind-r1.json",
+          "bytes": 177,
+          "digest": "3523c1e446079373eb676c6a630fbdcf36a611b0a46fe58add18d2027446f85f"
+        },
+        {
+          "path": "source-write-manifest.json",
+          "bytes": 1635,
+          "digest": "2c132244ce0b8e264817066d5e7d6f00cb4b50e453f2aab3be1b8fb902a18170"
+        }
+      ]
+    }
+  ]
+}

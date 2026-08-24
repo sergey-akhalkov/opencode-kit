@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-24T13:18:15.646Z",
+  "delayMs": 20000,
+  "mechanism": "per-pid-taskkill-then-install-start-tray-remote-graphify",
+  "repoControllerSha256": "8B2AB8FDB65BCF06D026B65C6F060052DA766E2A6F6C8ACE233C02442FB68045",
+  "before": {
+    "status": "running",
+    "supervisorProcessId": 5776,
+    "serverRootProcessId": 13632,
+    "listenerProcessId": 14868,
+    "candidate": "db50301a63b53a70507d739cc6974a3fa8ffd7eb0294102c9b0742e3959e7bfa",
+    "trayColor": "green",
+    "controllerSha256": "03358B5077C186A5006DE3AAC87C3346C96A8952D7A65A19FED330FA1F56AD50",
+    "trayScriptSha256": "78A1400290D76B9DB71B10CE16EBFDDB7160742A1D336EA5BE4B2370F32E85DD",
+    "errorLogBytes": 161200
+  },
+  "pidStops": [
+    {
+      "processId": 13632,
+      "status": "stopped",
+      "taskkillStatus": 0,
+      "taskkillError": null,
+      "stderr": ""
+    },
+    {
+      "processId": 14868,
+      "status": "stopped",
+      "taskkillStatus": 1,
+      "taskkillError": null,
+      "stderr": "�訡��: �� 㤠���� �������� ����� � �����䨪��஬ 14868.\r\n��稭�: �� ���� �� ��������஢ �⮣� ������� �� ����饭."
+    },
+    {
+      "processId": 5776,
+      "status": "already-gone"
+    }
+  ],
+  "serveInvoker": {
+    "listed": [
+      772
+    ],
+    "kills": [
+      {
+        "processId": 772,
+        "status": "already-gone"
+      }
+    ]
+  },
+  "portGone": {
+    "label": "port-gone",
+    "ok": false,
+    "waitedMs": 20000
+  },
+  "ok": false,
+  "error": "port 4096 still listening after per-pid stop",
+  "finishedAt": "2026-08-24T13:18:59.978Z"
+}

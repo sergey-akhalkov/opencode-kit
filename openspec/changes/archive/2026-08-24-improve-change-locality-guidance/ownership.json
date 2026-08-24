@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "changeId": "improve-change-locality-guidance",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Main owns evidence-triggered next-change locality"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Change-local architecture guidance separates decision and practice ownership",
+        "Structural checks and behavior evaluation do not score architecture"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/AGENTS.md",
+    "global/agents/implementation-worker.md",
+    "global/agents/openspec-architecture-reviewer.md",
+    "global/principles-of-work.md",
+    "tools/contracts/engineering-quality.ts",
+    "tools/proofs/README.md",
+    "tools/proofs/agent-tooling-ergonomics.ts",
+    "tools/proofs/fixtures/change-locality-guidance",
+    "tools/test-agent-tooling-ergonomics.ts",
+    "tools/test-contracts.ts",
+    "tools/test-library/engineering-quality.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "enforce-claim-evidence-closure",
+      "kind": "archive-before-acquire",
+      "owners": [
+        {
+          "type": "write-root",
+          "path": "global/AGENTS.md"
+        },
+        {
+          "type": "write-root",
+          "path": "global/principles-of-work.md"
+        },
+        {
+          "type": "write-root",
+          "path": "tools/contracts/engineering-quality.ts"
+        },
+        {
+          "type": "write-root",
+          "path": "tools/proofs/README.md"
+        },
+        {
+          "type": "write-root",
+          "path": "tools/test-contracts.ts"
+        }
+      ],
+      "transferCondition": "archive-before-change-locality-mutation"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "enforce-claim-evidence-closure",
+      "toChangeId": "improve-change-locality-guidance",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/principles-of-work.md" },
+        { "type": "write-root", "path": "tools/contracts/engineering-quality.ts" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/test-contracts.ts" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "establish-practice-owner-agents",
+      "toChangeId": "improve-change-locality-guidance",
+      "owners": [
+        {
+          "type": "write-root",
+          "path": "global/AGENTS.md"
+        },
+        {
+          "type": "write-root",
+          "path": "global/agents/implementation-worker.md"
+        },
+        {
+          "type": "write-root",
+          "path": "global/agents/openspec-architecture-reviewer.md"
+        },
+        {
+          "type": "write-root",
+          "path": "global/principles-of-work.md"
+        },
+        {
+          "type": "write-root",
+          "path": "tools/contracts/engineering-quality.ts"
+        },
+        {
+          "type": "write-root",
+          "path": "tools/test-contracts.ts"
+        }
+      ],
+      "condition": "explicit"
+    }
+  ]
+}

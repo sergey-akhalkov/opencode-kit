@@ -1,0 +1,15 @@
+{
+  "candidateId": "task-2-2-owner-readiness-diagnostic-r3",
+  "cleanup": "complete",
+  "error": "OpenCode server readiness timed out: {\"errorChain\":[{\"depth\":0,\"name\":\"Error\",\"message\":\"server session readiness timed out after 15000ms\"}],\"exitCode\":null,\"probes\":[{\"error\":\"The operation was aborted.\",\"route\":\"/path\"},{\"error\":\"The operation was aborted.\",\"route\":\"/session/status\"}],\"stderrChars\":2874,\"stdoutChars\":119}",
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 0,
+    "requestKinds": []
+  },
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "serverLogTail": "",
+  "stage": "setup",
+  "status": "failed"
+}

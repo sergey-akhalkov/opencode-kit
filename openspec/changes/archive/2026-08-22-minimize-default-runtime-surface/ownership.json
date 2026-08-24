@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "changeId": "minimize-default-runtime-surface",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Default runtime surface is a portable core profile"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "global/opencode.json.template",
+    "global/skills/openspec-abandon-change",
+    "profiles",
+    ".gitignore",
+    "package.json",
+    "tools/install-opencode-global.ts",
+    "tools/proofs/README.md",
+    "tools/proofs/runtime-surface-loader.ts",
+    "tools/runtime-surface-profile.ts",
+    "tools/test-install-opencode-global.ts",
+    "tools/test-helpers/library.ts",
+    "tools/test-library.ts",
+    "tools/test-library/runtime-surface-profiles.ts",
+    "tools/validators/devkit-contract.ts",
+    "tools/validators/profiles.ts"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

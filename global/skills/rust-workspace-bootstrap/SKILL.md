@@ -12,7 +12,7 @@ Use this skill when creating a Rust workspace, adding crates, defining module bo
 
 - Keep product crates in `crates/` and tooling/helper crates in `tools/` unless the repository uses another convention.
 - Start with a minimal compilable happy-path skeleton and prove it through observable execution at the relevant boundary.
-- After happy-path proof, Material/explicit qualification uses a separate fresh-context testing subagent to derive realistic Rust/runtime risks and author test-only negative or end-to-end evidence. Ordinary Small uses focused validation and optional smallest post-proof regression.
+- After happy-path proof, main may add the smallest focused regression. A separate fresh test-only SDET derives critical Rust/runtime risks and authors independent negative or end-to-end evidence only when a reachable named critical consequence or explicit project/owner requirement triggers it.
 - Prefer small cohesive crates over premature generic frameworks.
 - Make validation commands easy to run locally and in CI.
 - Avoid adding dependencies until there is a concrete need.

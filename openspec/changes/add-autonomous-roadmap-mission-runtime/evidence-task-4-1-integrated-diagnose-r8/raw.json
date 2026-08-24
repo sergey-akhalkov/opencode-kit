@@ -1,0 +1,16 @@
+{
+  "candidateId": "task-4-1-integrated-diagnose-r8",
+  "cleanup": "failed",
+  "deletedRootSessions": 0,
+  "failure": {
+    "childExitCode": 1,
+    "elapsedMs": 82156,
+    "error": "Integrated OpenCode server was not ready: {\"commandNames\":[],\"errorChain\":[{\"depth\":0,\"name\":\"Error\",\"message\":\"integrated command inventory failed\"},{\"depth\":1,\"name\":\"Error\",\"message\":\"Integrated command inventory timed out\"}],\"probes\":[{\"error\":\"The operation was aborted.\",\"route\":\"/path\"},{\"error\":\"The operation was aborted.\",\"route\":\"/session/status\"}],\"startup\":{\"hostConfigLoaded\":false,\"isolatedConfigLoaded\":true,\"ripgrepDownloadRequested\":false}}",
+    "observedStatus": "",
+    "stderrTail": "timestamp=2026-08-18T20:23:47.499Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-18T20:23:47.579Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-18T20:23:47.581Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-18T20:23:53.005Z level=INFO run=361888b1 message=\"creating instance\" directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-18T20:23:53.010Z level=INFO run=361888b1 message=fromDirectory directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-18T20:23:54.540Z level=INFO run=361888b1 message=bootstrapping directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-18T20:23:54.587Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-18T20:23:54.605Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-18T20:23:54.621Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-18T20:23:55.693Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\config\\\\opencode.json\"\ntimestamp=2026-08-18T20:23:55.783Z level=INFO run=361888b1 message=loading path=\"<fixture>\\\\config\\\\opencode.jsonc\"\n",
+    "stdoutTail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:49872\n"
+  },
+  "mode": "diagnose",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "schemaVersion": 1
+}

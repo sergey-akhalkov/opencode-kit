@@ -9,6 +9,7 @@ import { inventoryTests } from "./test-library/inventory.ts";
 import { modelProfileTests } from "./test-library/model-profiles.ts";
 import { engineeringQualityTests } from "./test-library/engineering-quality.ts";
 import { portableWorkflowToolTests } from "./test-library/portable-workflow-tools.ts";
+import { runtimeSurfaceProfileTests } from "./test-library/runtime-surface-profiles.ts";
 
 runTests(
   [
@@ -21,6 +22,7 @@ runTests(
     ...modelProfileTests,
     ...engineeringQualityTests,
     ...portableWorkflowToolTests,
+    ...runtimeSurfaceProfileTests,
   ],
   "library",
 );

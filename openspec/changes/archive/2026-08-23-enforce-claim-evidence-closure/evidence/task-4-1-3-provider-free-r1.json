@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "recordedAt": "2026-08-23T12:31:00.0113305Z",
+  "boundary": "provider-free-session-completion-guard-contract",
+  "decisions": {
+    "representativeOverclaim": "continue",
+    "supportedExact": "allow_stop",
+    "truncatedClosure": "rejected-before-stop",
+    "staleClosure": "explicit-stale",
+    "malformedClosure": "explicit-omission",
+    "oversizedClosure": "request-overflow-before-arbiter",
+    "certificateMissingClaim": "rejected",
+    "certificateMismatchedEvidence": "rejected",
+    "exactCertificateWithoutBroadClaim": "accepted"
+  },
+  "projection": {
+    "fields": [
+      "claimId",
+      "claimClass",
+      "outcomeRef",
+      "population",
+      "coverageBasis",
+      "paths",
+      "candidateId",
+      "environmentId",
+      "observationBoundary",
+      "realOracle",
+      "unresolvedObservations",
+      "evidenceRefs",
+      "independentChallenge",
+      "disposition",
+      "closureState",
+      "maximumSupportedClaim",
+      "omissions"
+    ],
+    "claimLimit": 32,
+    "changeLimit": 32,
+    "semanticInference": false
+  },
+  "architecture": {
+    "decision": "split-or-justify",
+    "projection": "The mixed session projection owns only bounded transport types and counts.",
+    "claimReader": "A cohesive completion-guard module owns fixed OpenSpec evidence-index parsing and evaluation.",
+    "arbiter": "The existing request and verdict owners carry and validate exact supplied closure.",
+    "controller": "The existing controller integration seam routes claim-bound certificate fallback without a new lifecycle owner.",
+    "certificate": "The existing terminal certificate binds accepted claim ids and evidence refs; issuer and async preflight ownership are unchanged."
+  },
+  "validation": [
+    {
+      "command": "node tools/test-session-completion-guard.ts",
+      "status": 0,
+      "result": "OK: session completion guard tests=39"
+    },
+    {
+      "command": "node tools/test-session-env-plugin.ts",
+      "status": 0,
+      "result": "OK: session env plugin tests=17"
+    },
+    {
+      "command": "node tools/test-contracts.ts",
+      "status": 0,
+      "result": "OK: contracts tests=71"
+    },
+    {
+      "command": "node tools/validate-library.ts --fail-on-warnings",
+      "status": 0,
+      "result": "OK: skills=31 agents=19 markdown=607 warnings=0 infos=2"
+    },
+    {
+      "command": "openspec.cmd validate enforce-claim-evidence-closure --strict --no-interactive",
+      "status": 0,
+      "result": "valid"
+    },
+    {
+      "command": "node tools/test-library.ts",
+      "status": 0,
+      "result": "OK: library tests=177"
+    },
+    {
+      "command": "node tools/evidence-index.ts --index <change>/evidence-index.json --lane completion-provider-free",
+      "status": 0,
+      "result": "schemaVersion=2 kind=terminal references=1"
+    },
+    {
+      "command": "node tools/evidence-index.ts --index <change>/evidence-index.json --lane completion-installed-blocked",
+      "status": 0,
+      "result": "schemaVersion=2 kind=runner references=10"
+    }
+  ],
+  "installedBoundary": {
+    "status": "blocked-with-one-reached-guard-capture",
+    "evidence": [
+      "task-4-4-guard-claims-r1/failure.json",
+      "task-4-4-guard-claims-r1/evaluation.json",
+      "task-4-4-guard-claims-r2/failure.json",
+      "task-4-4-guard-claims-r2/evaluation.json",
+      "task-4-4-guard-claims-r3/failure.json",
+      "task-4-4-guard-claims-r3/evaluation.json",
+      "task-4-4-guard-claims-r4/failure.json",
+      "task-4-4-guard-claims-r4/evaluation.json",
+      "task-4-4-module-import-r1.json",
+      "task-4-4-factory-preflight-r1.json"
+    ],
+    "claimBehaviorObserved": false,
+    "reachedGuardEvidence": "r3 reached four arbiter calls but failed before preserving the four case records; r4 returned to pre-factory readiness failure"
+  },
+  "externalEffects": []
+}

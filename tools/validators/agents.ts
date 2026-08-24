@@ -36,11 +36,8 @@ import {
   SDET_QUALITY_ENGINEER_REQUIRED_TEXT,
 } from "../contracts/sdet-quality-engineer.ts";
 import {
-  ALLOWED_TROUBLESHOOTER_BASH_RULES,
-  ALLOWED_TROUBLESHOOTER_EDIT_RULES,
-  TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS,
-  TROUBLESHOOTER_DENIED_PERMISSION_KEYS,
   TROUBLESHOOTER_FILE,
+  TROUBLESHOOTER_PERMISSION,
   TROUBLESHOOTER_REQUIRED_TEXT,
 } from "../contracts/troubleshooter.ts";
 import {
@@ -365,6 +362,10 @@ function validateSessionCompletionArbiter(
     "Do not wrap it in Markdown",
     "never run as an optional reviewer",
     "never approves `Development-Stage`",
+    "technical/evidence blocker",
+    "supported claim ceiling",
+    "smallest remaining safe causally distinct probe",
+    "return `continue`",
   ]) {
     requireTextContains(
       ctx,
@@ -688,108 +689,20 @@ function validateFinalCandidateReviewerExtras(
   );
 }
 
-function validateTroubleshooterRuleMap(
-  ctx: ValidationContext,
-  frontmatter: FrontmatterMap,
-  file: string,
-  permission: "bash" | "edit",
-  rules: ReadonlyMap<string, string>,
-): void {
-  for (const [key, expected] of rules) {
-    if (frontmatter.get(key) !== expected) {
-      ctx.addError(
-        `Troubleshooter must set ${key.replace("permission.", "")}: ${expected}: ${file}`,
-      );
-    }
-  }
-  for (const [key, value] of frontmatter) {
-    if (key.startsWith(`permission.${permission}.`) && !rules.has(key)) {
-      ctx.addError(
-        `Troubleshooter has unsupported ${permission} permission '${key.replace(`permission.${permission}.`, "")}: ${String(value)}': ${file}`,
-      );
-    }
-  }
-  const permissionKey = `permission.${permission}`;
-  if (frontmatter.has(permissionKey) && typeof frontmatter.get(permissionKey) !== "object") {
-    ctx.addError(
-      `Troubleshooter must use scoped ${permission} permissions, not ${permission}: ${String(frontmatter.get(permissionKey))}: ${file}`,
-    );
-  }
-  const actualRuleKeys = [...frontmatter.keys()].filter((key) =>
-    key.startsWith(`permission.${permission}.`),
-  );
-  const expectedRuleKeys = [...rules.keys()];
-  if (
-    actualRuleKeys.length !== expectedRuleKeys.length ||
-    actualRuleKeys.some((key, index) => key !== expectedRuleKeys[index])
-  ) {
-    ctx.addError(
-      `Troubleshooter ${permission} permission rule order drifted; reorder rules to match the contract because OpenCode resolves rules last-match-wins: ${file}`,
-    );
-  }
-}
-
-function validateTroubleshooterSkillRuleOrder(
-  ctx: ValidationContext,
-  frontmatter: FrontmatterMap,
-  file: string,
-): void {
-  const actualRuleKeys = [...frontmatter.keys()].filter((key) =>
-    key.startsWith("permission.skill."),
-  );
-  const expectedRuleKeys = ["permission.skill.*", "permission.skill.complain"];
-  if (
-    actualRuleKeys.length !== expectedRuleKeys.length ||
-    actualRuleKeys.some((key, index) => key !== expectedRuleKeys[index])
-  ) {
-    ctx.addError(
-      `Troubleshooter skill permission rule order drifted; place permission.skill.* before permission.skill.complain because OpenCode resolves rules last-match-wins: ${file}`,
-    );
-  }
-}
-
 function validateTroubleshooter(
   ctx: ValidationContext,
   frontmatter: FrontmatterMap,
   surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
-  validateTroubleshooterRuleMap(ctx, frontmatter, file, "bash", ALLOWED_TROUBLESHOOTER_BASH_RULES);
-  validateTroubleshooterRuleMap(ctx, frontmatter, file, "edit", ALLOWED_TROUBLESHOOTER_EDIT_RULES);
-  validateComplainSkillPermission(ctx, frontmatter, file, "Troubleshooter");
-  validateTroubleshooterSkillRuleOrder(ctx, frontmatter, file);
-  const allowedTopLevelPermissions = new Set([
-    "permission.read",
-    "permission.glob",
-    "permission.grep",
-    "permission.bash",
-    "permission.edit",
-    "permission.skill",
-    ...TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS.keys(),
-    ...TROUBLESHOOTER_DENIED_PERMISSION_KEYS.map((permission) => `permission.${permission}`),
-  ]);
+  if (frontmatter.get("permission") !== TROUBLESHOOTER_PERMISSION) {
+    ctx.addError(`Troubleshooter must set permission: ${TROUBLESHOOTER_PERMISSION}: ${file}`);
+  }
   for (const [key, value] of frontmatter) {
-    if (
-      key.startsWith("permission.") &&
-      !key.startsWith("permission.bash.") &&
-      !key.startsWith("permission.edit.") &&
-      !key.startsWith("permission.skill.") &&
-      !allowedTopLevelPermissions.has(key)
-    ) {
+    if (key.startsWith("permission.")) {
       ctx.addError(
-        `Troubleshooter has unsupported permission '${key.replace("permission.", "")}: ${String(value)}': ${file}`,
+        `Troubleshooter must use scalar permission: ${TROUBLESHOOTER_PERMISSION}, not '${key.replace("permission.", "")}: ${String(value)}': ${file}`,
       );
-    }
-  }
-  for (const [key, expected] of TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS) {
-    if (frontmatter.get(key) !== expected) {
-      ctx.addError(`Troubleshooter must set ${key.replace("permission.", "")}: ${expected}: ${file}`);
-    }
-  }
-  for (const permission of TROUBLESHOOTER_DENIED_PERMISSION_KEYS) {
-    const key = `permission.${permission}`;
-    if (frontmatter.get(key) !== "deny") {
-      ctx.addError(`Troubleshooter must set ${permission}: deny: ${file}`);
     }
   }
   const reportSchemaBody = requireExactReportSchemaBody(
@@ -864,7 +777,8 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
         );
       }
     }
-    if (agentFileName !== SESSION_COMPLETION_ARBITER_FILE) {
+    const allowsAllPermissions = frontmatter.get("permission") === "allow";
+    if (agentFileName !== SESSION_COMPLETION_ARBITER_FILE && !allowsAllPermissions) {
       for (const permission of ["read", "glob", "grep"]) {
         const key = `permission.${permission}`;
         if (frontmatter.get(key) !== "allow") {

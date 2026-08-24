@@ -70,6 +70,22 @@ export const modelProfileTests: TestCase[] = [
     },
   },
   {
+    name: "model profile validator rejects an inherit-from-primary troubleshooter route",
+    run: () => {
+      const fixture = newLibraryFixture("model-profile-inherit-troubleshooter");
+      const profile = readProfile(fixture, "quality-independent");
+      profile.agent.troubleshooter = { model: "openai/gpt-5.6-sol", variant: "xhigh" };
+      writeProfile(fixture, "quality-independent", profile);
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A committed profile must not pin inherit-from-primary troubleshooter.");
+      assertOutputContains(
+        result,
+        "must omit inherit-from-primary agent(s): troubleshooter",
+        "Inherit-from-primary diagnostic must name troubleshooter.",
+      );
+    },
+  },
+  {
     name: "model profile validator rejects a missing governed agent route",
     run: () => {
       const fixture = newLibraryFixture("model-profile-missing-agent");

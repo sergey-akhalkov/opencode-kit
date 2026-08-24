@@ -1,5 +1,4 @@
 import crypto from "node:crypto";
-import type { Config } from "@opencode-ai/plugin";
 import type { Session } from "@opencode-ai/sdk/v2";
 import { hashRef, sanitizeText } from "../../plugin/session-delivery-context/redaction.ts";
 import type { AuditWindowOptions, GuardOptions, RootPromptContext, RootState } from "./types.ts";
@@ -17,7 +16,9 @@ export type SafeErrorDetails = {
 };
 
 const DEFAULT_OPTIONS: GuardOptions = {
+  arbiterActiveLimit: 2,
   arbiterPromptTimeoutMs: 120_000,
+  arbiterQueueLimit: 32,
   auditWindow: {
     closePassedAfterMs: 15_000,
     enabled: false,
@@ -27,6 +28,8 @@ const DEFAULT_OPTIONS: GuardOptions = {
     validationError: null,
   },
   arbiterAgent: "session-completion-arbiter",
+  certificateIssuers: [],
+  certificateWaitMs: 5_000,
   enabled: true,
   initialDelayMs: 2_000,
   maxCycles: 100,
@@ -41,27 +44,6 @@ const DEFAULT_OPTIONS: GuardOptions = {
   strategyFallback: "docs/session-strategy-history",
   waitRecheckMs: 2_000,
 };
-
-const PERMISSION_ALLOW = {
-  "*": "allow",
-  read: "allow",
-  edit: "allow",
-  glob: "allow",
-  grep: "allow",
-  list: "allow",
-  bash: "allow",
-  task: "allow",
-  external_directory: "allow",
-  todowrite: "allow",
-  question: "allow",
-  webfetch: "allow",
-  websearch: "allow",
-  lsp: "allow",
-  doom_loop: "allow",
-  skill: "allow",
-  plan_enter: "allow",
-  plan_exit: "allow",
-} as const;
 
 function parseAuditWindowOptions(value: unknown): AuditWindowOptions {
   const input = record(value);
@@ -90,16 +72,6 @@ function parseAuditWindowOptions(value: unknown): AuditWindowOptions {
   };
 }
 
-export function applyPermissionAllow(config: Config): void {
-  config.permission = PERMISSION_ALLOW;
-  config.agent = Object.fromEntries(
-    Object.entries(config.agent ?? {}).map(([name, agent]) => [
-      name,
-      agent == null ? agent : { ...agent },
-    ]),
-  );
-}
-
 export function record(value: unknown): Record<string, unknown> | null {
   return value != null && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -108,6 +80,22 @@ export function record(value: unknown): Record<string, unknown> | null {
 
 export function stringValue(value: unknown): string | null {
   return typeof value === "string" && value !== "" ? value : null;
+}
+
+export function configuredPermissionClass(value: unknown): "allow" | "ask" | "deny" | "mixed" | "unspecified" {
+  if (value === "allow" || value === "ask" || value === "deny") return value;
+  const rules = record(value);
+  if (rules == null) return "unspecified";
+  const actions = new Set<"allow" | "ask" | "deny">();
+  const add = (candidate: unknown): void => {
+    if (candidate === "allow" || candidate === "ask" || candidate === "deny") actions.add(candidate);
+  };
+  for (const rule of Object.values(rules)) {
+    add(rule);
+    const patterns = record(rule);
+    if (patterns != null) Object.values(patterns).forEach(add);
+  }
+  return actions.size === 0 ? "unspecified" : actions.size === 1 ? [...actions][0] : "mixed";
 }
 
 export function stableDigest(value: unknown): string {
@@ -127,9 +115,15 @@ export function parseGuardOptions(value: Record<string, unknown>): GuardOptions 
     ? value.retryMultiplier
     : DEFAULT_OPTIONS.retryMultiplier;
   return {
+    arbiterActiveLimit: boundedInteger(value.arbiterActiveLimit, DEFAULT_OPTIONS.arbiterActiveLimit, 1),
     arbiterPromptTimeoutMs: boundedInteger(value.arbiterPromptTimeoutMs, DEFAULT_OPTIONS.arbiterPromptTimeoutMs, 1),
+    arbiterQueueLimit: boundedInteger(value.arbiterQueueLimit, DEFAULT_OPTIONS.arbiterQueueLimit, 1),
     auditWindow: parseAuditWindowOptions(value.auditWindow),
     arbiterAgent: stringValue(value.arbiterAgent) ?? DEFAULT_OPTIONS.arbiterAgent,
+    certificateIssuers: Array.isArray(value.certificateIssuers)
+      ? [...new Set(value.certificateIssuers.filter((item): item is string => typeof item === "string" && item !== ""))].sort().slice(0, 16)
+      : DEFAULT_OPTIONS.certificateIssuers,
+    certificateWaitMs: boundedInteger(value.certificateWaitMs, DEFAULT_OPTIONS.certificateWaitMs, 0),
     enabled: value.enabled !== false,
     initialDelayMs: boundedInteger(value.initialDelayMs, DEFAULT_OPTIONS.initialDelayMs, 1),
     maxCycles,
@@ -307,6 +301,14 @@ export function initialRootState(root: Session): RootState {
     settleTimer: null,
     state: grindEnabled ? (paused ? "paused" : "running") : "disabled",
     statusMessage: null,
+    terminalCertificate: {
+      challenge: null,
+      deadlineAt: null,
+      evidenceRefs: [],
+      issuer: null,
+      reason: null,
+      status: "not-configured",
+    },
     waitReason: stringValue(metadata?.waitReason),
     waitRecheckCount: boundedInteger(metadata?.waitRecheckCount, 0, 0),
     waitRecheckTimer: null,

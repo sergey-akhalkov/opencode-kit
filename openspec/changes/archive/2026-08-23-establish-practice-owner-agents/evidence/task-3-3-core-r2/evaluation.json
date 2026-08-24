@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "taskId": "3.3",
+  "complete": true,
+  "rows": [
+    { "scenario": "trivial-no-trigger", "source": "task-3-3-core-r1", "launchedOwners": [], "status": 0 },
+    { "scenario": "single-core-trigger", "source": "task-3-3-core-r2", "launchedOwners": ["openspec-architecture-reviewer"], "status": 0 },
+    { "scenario": "protected-action", "source": "task-3-3-core-r2", "launchedOwners": ["execution-safety-reviewer"], "status": 0 },
+    { "scenario": "unavailable-owner", "source": "task-3-3-core-r2", "launchedOwners": [], "status": 0 }
+  ]
+}

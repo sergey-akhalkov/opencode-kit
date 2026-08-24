@@ -20,7 +20,7 @@ Use this skill when shaping service architecture, design docs, specs, or impleme
 - Observability: meaningful failure boundaries, existing logging/error mechanisms, original exception cause/stack, structured safe operation/correlation context, log-once ownership, noise/redaction limits, metrics, tracing, health, readiness, and auditability.
 - Diagnostic evidence: exact invocation/input, identity, exit status, stdout/stderr, relevant logs/exceptions, side effects, artifact paths, retention, and the smallest instrumentation needed when realistic causes remain indistinguishable.
 - Testability: fake dependencies, integration tests, load tests, manual gates.
-- Implementation slices define the contract and observable happy path, implement and prove that path, then apply focused validation. Material/explicit qualification then uses a separate fresh-context SDET/testing subagent for acceptance, negative, recovery, and characterization evidence from the architecture risk matrix. Ordinary Small may add only the smallest optional post-proof regression test.
+- Implementation slices define the contract and observable happy path, implement and prove that path, then apply focused validation. Main may add the smallest post-proof regression. A separate fresh test-only SDET authors independent critical acceptance, recovery, or characterization evidence only when a reachable named critical consequence or explicit project/owner requirement triggers it.
 
 ## Output
 

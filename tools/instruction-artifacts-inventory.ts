@@ -51,6 +51,12 @@ export type InstructionInventory = {
   version: 1;
 };
 
+export type MaintainedInstructionBudgetMetrics = {
+  discoveryMetadataTokenProxy: number;
+  globalStartupTokenProxy: number;
+  onDemandBodiesTokenProxy: number;
+};
+
 type LoaderVisibleMetric = {
   chars: number;
   lines: number;
@@ -196,7 +202,7 @@ function classify(relative: string): ArtifactKind | null {
   if (/^global\/agents\/[^/]+\.md$/.test(relative)) {
     return "agent";
   }
-  if (relative === "global/AGENTS.md") {
+  if (relative === "global/AGENTS.md" || relative === "global/principles-of-work.md") {
     return "instruction";
   }
   if (/^instructions\/.+\.md$/.test(relative)) {
@@ -211,7 +217,7 @@ function classify(relative: string): ArtifactKind | null {
   return null;
 }
 
-function extractDescriptionChars(text: string): number | null {
+export function extractDescriptionChars(text: string): number | null {
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) {
     return null;
@@ -294,6 +300,36 @@ function buildCatalogInventoryFromOptions(options: Pick<Options, "root" | "showR
 
 export function buildCatalogInventory(root = defaultRoot(), showRoot = false): InstructionInventory {
   return buildCatalogInventoryFromOptions({ root: path.resolve(root), showRoot });
+}
+
+export function buildMaintainedInstructionBudgetMetrics(root = defaultRoot()): MaintainedInstructionBudgetMetrics {
+  const resolvedRoot = path.resolve(root);
+  const startupAuthorityFiles = ["global/AGENTS.md", "global/principles-of-work.md"];
+  let globalStartupTokenProxy = 0;
+  for (const relative of startupAuthorityFiles) {
+    try {
+      const text = fs.readFileSync(path.join(resolvedRoot, ...relative.split("/")), "utf8");
+      globalStartupTokenProxy += Math.ceil(text.length / 4);
+    } catch {
+      throw new Error(`Committed global startup authority is unreadable: ${relative}`);
+    }
+  }
+
+  const onDemandPattern = /^global\/(?:agents|commands)\/[^/]+\.md$|^global\/skills\/[^/]+\/SKILL\.md$/;
+  let discoveryMetadataTokenProxy = 0;
+  let onDemandBodiesTokenProxy = 0;
+  for (const file of walkMarkdownFiles(resolvedRoot)) {
+    if (!onDemandPattern.test(toRelative(resolvedRoot, file))) continue;
+    const text = fs.readFileSync(file, "utf8");
+    const descriptionChars = extractDescriptionChars(text);
+    discoveryMetadataTokenProxy += descriptionChars == null ? 0 : Math.ceil(descriptionChars / 4);
+    onDemandBodiesTokenProxy += Math.ceil(text.length / 4);
+  }
+  return {
+    discoveryMetadataTokenProxy,
+    globalStartupTokenProxy,
+    onDemandBodiesTokenProxy,
+  };
 }
 
 function metricForText(text: string): LoaderVisibleMetric {

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "workstation-handoff-r2",
+  "source": {
+    "path": "tools\\windows\\opencode-workstation.ts",
+    "sha256": "03358b5077c186a5006de3aac87c3346c96a8952d7a65a19fed330fa1f56ad50",
+    "directWaitForExit": true,
+    "launchUsesDirectOnly": true,
+    "nonLaunchStartProcessWait": true,
+    "popupPreserved": true
+  },
+  "success": {
+    "exitCode": 0,
+    "elapsedMs": 343,
+    "grandchildDelayMs": 2000,
+    "markerObserved": true,
+    "grandchildAliveAfterWrapper": true
+  },
+  "failure": {
+    "exitCode": 23,
+    "elapsedMs": 151
+  },
+  "cleanup": {
+    "complete": true
+  }
+}

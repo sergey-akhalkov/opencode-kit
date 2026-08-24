@@ -1,0 +1,18 @@
+{
+  "activeConfigSha256": "62555f02f4d929ce40d49464c261659ebfefd59665b6658adc8f729a449dd872",
+  "backup": "global/opencode.local.json",
+  "candidateId": "reduce-workflow-ceremony-task-8-r2",
+  "checks": {
+    "certificateIssuerSynchronized": true,
+    "certificateWaitSynchronized": true,
+    "freshLoadedCandidateCompleted": true,
+    "machineSpecificFieldsPreserved": true,
+    "managedPromptStatusSame": true,
+    "preimagePreserved": true,
+    "runningOwnerSessionRestarted": false
+  },
+  "fieldsSynchronized": 3,
+  "preimageSha256": "bd0f6b07ab43125bb379c5b6f940aa12b2bc00641497e78b54e744e7e9371c7b",
+  "schemaVersion": 1,
+  "status": "complete"
+}

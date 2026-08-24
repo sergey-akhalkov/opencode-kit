@@ -1,0 +1,8 @@
+{
+  "name": "report-cli",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test/report.test.ts"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "baseline": {
+    "readinessAllowanceMs": 21720,
+    "resultDigest": "51ce8dbc19b6aecc949956360756d4d7554c049374f1f1936dd614f39ba3af4d",
+    "sourceSha256": "234ab4ec21e7b394008ee877b6800d0f347e708f5d11ede81f486f245b165943",
+    "toolNames": [
+      "get_community",
+      "get_neighbors",
+      "get_node",
+      "get_pr_impact",
+      "god_nodes",
+      "graph_stats",
+      "list_prs",
+      "query_graph",
+      "shortest_path",
+      "triage_prs"
+    ]
+  },
+  "candidateId": "shared-graphify-integration-r4",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "fixtureAbsent": true,
+    "graphifyPortAbsent": true,
+    "openCodePortAbsent": true
+  },
+  "failure": {
+    "cause": null,
+    "message": "OpenCode project remote Graphify did not become ready; last status 'connected'",
+    "name": "Error",
+    "stack": "Error: OpenCode project remote Graphify did not become ready; last status 'connected'\n    at waitForProject (file:///D:/home/sergey-akhalkov/opencode-kit/tools/proofs/opencode-shared-graphify-integration.ts:356:9)\n    at async capture (file:///D:/home/sergey-akhalkov/opencode-kit/tools/proofs/opencode-shared-graphify-integration.ts:656:21)\n    at async main (file:///D:/home/sergey-akhalkov/opencode-kit/tools/proofs/opencode-shared-graphify-integration.ts:770:35)"
+  },
+  "graphify": {
+    "commandArgumentDigest": "54a765dd84f1674ed28eba195cf042b6090a13fa9620d4b44ee28d5f407a5dcc",
+    "listenerProcessId": 14004,
+    "probe": {
+      "authenticatedStatus": 200,
+      "endpoint": "http://127.0.0.1:4097/mcp",
+      "protocolVersion": "2025-03-26",
+      "serverName": "graphify",
+      "tools": [
+        "get_community",
+        "get_neighbors",
+        "get_node",
+        "get_pr_impact",
+        "god_nodes",
+        "graph_stats",
+        "list_prs",
+        "query_graph",
+        "shortest_path",
+        "triage_prs"
+      ],
+      "unauthenticatedStatus": 401
+    },
+    "rootProcessId": 23224
+  },
+  "logs": {
+    "graphifyStderrTail": "graphify MCP server (streamable-http) on http://127.0.0.1:4097/mcp - api-key required\r\nINFO:     Started server process [14004]\r\nINFO:     Waiting for application startup.\r\nINFO:     Application startup complete.\r\nINFO:     Uvicorn running on http://127.0.0.1:4097 (Press CTRL+C to quit)\r\n",
+    "graphifyStdoutTail": "INFO:     127.0.0.1:53840 - \"POST /mcp HTTP/1.1\" 401 Unauthorized\r\nINFO:     127.0.0.1:53841 - \"POST /mcp HTTP/1.1\" 200 OK\r\nINFO:     127.0.0.1:53840 - \"POST /mcp HTTP/1.1\" 202 Accepted\r\nINFO:     127.0.0.1:53841 - \"POST /mcp HTTP/1.1\" 200 OK\r\nINFO:     127.0.0.1:53894 - \"POST /mcp HTTP/1.1\" 200 OK\r\nINFO:     127.0.0.1:53894 - \"POST /mcp HTTP/1.1\" 202 Accepted\r\nINFO:     127.0.0.1:53894 - \"GET /mcp HTTP/1.1\" 200 OK\r\nINFO:     127.0.0.1:53895 - \"POST /mcp HTTP/1.1\" 200 OK\r\n",
+    "openCodeStderrTail": "timestamp=2026-08-20T19:31:28.812Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-20T19:31:28.827Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-20T19:31:28.828Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-20T19:31:29.572Z level=INFO run=a79cd28f message=\"creating instance\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\project-a\"\ntimestamp=2026-08-20T19:31:29.575Z level=INFO run=a79cd28f message=fromDirectory directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\project-a\"\ntimestamp=2026-08-20T19:31:30.565Z level=INFO run=a79cd28f message=bootstrapping directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\project-a\"\ntimestamp=2026-08-20T19:31:30.601Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-20T19:31:30.603Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-20T19:31:30.604Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-20T19:31:30.796Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-config\\\\opencode.json\"\ntimestamp=2026-08-20T19:31:30.827Z level=INFO run=a79cd28f message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-3007944f-2503-4362-8832-1b9edb50d9e1\\\\opencode-config\\\\opencode.jsonc\"\ntimestamp=2026-08-20T19:31:58.548Z level=INFO run=a79cd28f message=\"all LSPs are disabled\"\ntimestamp=2026-08-20T19:31:58.550Z level=INFO run=a79cd28f message=\"all formatters are disabled\"\ntimestamp=2026-08-20T19:31:58.550Z level=INFO run=a79cd28f message=init\ntimestamp=2026-08-20T19:31:58.889Z level=INFO run=a79cd28f message=\"shell tool using shell\" shell=\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.EXE\"\n",
+    "openCodeStdoutTail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:53842\n"
+  },
+  "mode": "capture",
+  "projects": [],
+  "providerCalls": 0,
+  "repositoryGuard": {
+    "beforeGraphCalls": true,
+    "explicitPreserved": true,
+    "missingRejected": true,
+    "remotePrCalls": 0
+  },
+  "schemaVersion": 1,
+  "source": {
+    "machineConfig": {
+      "path": "tools\\windows\\opencode-workstation.config.json",
+      "sha256": "4f844a36c9a9fdca9db2431dccd24f78da6b5827a1bd96aeb7a485f09442b07a"
+    },
+    "module": {
+      "path": "tools\\windows\\opencode-shared-tools.ts",
+      "sha256": "68cae0249c7e936000db9a6334adfe693d15fb626ca315f5fb8d364ddb02833f"
+    },
+    "plugin": {
+      "path": "global\\plugin\\graphify-project-context.ts",
+      "sha256": "1be1fe78a046e2dfe09667abeb4d7d793b16e43aa4440e8aa3657a9ed2ab99e7"
+    },
+    "runner": {
+      "path": "tools\\proofs\\opencode-shared-graphify-integration.ts",
+      "sha256": "e23531f1886dcb82f05fc35986dd92ec6903add02b97e6d09953d7b2ed09dd7d"
+    },
+    "sessionEnv": {
+      "path": "global\\plugin\\session-env.ts",
+      "sha256": "b810849e7cfad2226ff9dd368786b4246175f9f554ea1bcae4274d52e34b49b4"
+    }
+  }
+}

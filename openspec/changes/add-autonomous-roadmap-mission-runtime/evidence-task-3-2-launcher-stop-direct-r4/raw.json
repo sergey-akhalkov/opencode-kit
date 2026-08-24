@@ -1,0 +1,101 @@
+{
+  "candidateId": "task-3-2-launcher-stop-direct-r4",
+  "cleanup": "complete",
+  "fixture": {
+    "adapterSha256": "e0775b9585cc08586321ddd099de64576fa2c1363ecc9f0f384b53ad9340042e",
+    "missionSha256": "b7296ad2da3f32f966664eec72f093a6fbccf33ac21a8ed4318a0a1fbe33e6d9"
+  },
+  "graceful": {
+    "activeOperation": null,
+    "cursor": 0,
+    "disposition": "paused",
+    "durableDisposition": "paused",
+    "missionId": "launcher-proof",
+    "operation": "status",
+    "pendingLaunch": false,
+    "pty": {
+      "exitCode": 1,
+      "notifyOnExit": false,
+      "ref": "pty:ba679dff3def4095",
+      "status": "exited"
+    },
+    "reconciliation": "not-required",
+    "rootSessionRef": "session:31c96aba4704323e",
+    "runtimeExecutable": "bun.exe",
+    "runtimeRef": "e7860a742c36121b3897597377bb3b7b55ba4f357bb79e8536338784e6464b96",
+    "schemaVersion": 1,
+    "stopRequested": true,
+    "streamPrefixCounts": {
+      "stderr": 1,
+      "stdout": 1
+    },
+    "terminalNotified": true,
+    "terminalToast": "sent",
+    "visibility": "opened"
+  },
+  "hardKill": {
+    "activeOperation": "session",
+    "cursor": 0,
+    "disposition": "paused-unknown",
+    "durableDisposition": "paused-unknown",
+    "missionId": "launcher-proof",
+    "operation": "status",
+    "pendingLaunch": false,
+    "pty": {
+      "exitCode": 0,
+      "notifyOnExit": false,
+      "ref": "pty:e97c04faa129d02a",
+      "status": "killed"
+    },
+    "reconciliation": "paused-unknown",
+    "rootSessionRef": "session:31c96aba4704323e",
+    "runtimeExecutable": "bun.exe",
+    "runtimeRef": "e7860a742c36121b3897597377bb3b7b55ba4f357bb79e8536338784e6464b96",
+    "schemaVersion": 1,
+    "stopRequested": false,
+    "streamPrefixCounts": {
+      "stderr": 1,
+      "stdout": 1
+    },
+    "terminalNotified": true,
+    "terminalToast": "pending",
+    "visibility": "opened"
+  },
+  "mode": "capture",
+  "providerCalls": 0,
+  "requests": {
+    "cockpit": 2,
+    "firstCockpitRequest": 0,
+    "prompts": 6,
+    "toasts": 11
+  },
+  "running": {
+    "activeOperation": "session",
+    "cursor": 0,
+    "disposition": "running",
+    "durableDisposition": "running",
+    "missionId": "launcher-proof",
+    "operation": "status",
+    "pendingLaunch": false,
+    "pty": {
+      "exitCode": null,
+      "notifyOnExit": false,
+      "ref": "pty:ba679dff3def4095",
+      "status": "running"
+    },
+    "reconciliation": "not-required",
+    "rootSessionRef": "session:31c96aba4704323e",
+    "runtimeExecutable": "bun.exe",
+    "runtimeRef": "e7860a742c36121b3897597377bb3b7b55ba4f357bb79e8536338784e6464b96",
+    "schemaVersion": 1,
+    "stopRequested": false,
+    "streamPrefixCounts": {
+      "stderr": 1,
+      "stdout": 1
+    },
+    "terminalNotified": false,
+    "terminalToast": "not-sent",
+    "visibility": "opened"
+  },
+  "schemaVersion": 1
+}

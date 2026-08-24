@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "repositories": {
+    "opencode-kit": "../..",
+    "pmac-emulator": "../pmac-emulator",
+    "controller-gateway-service": "../controller-gateway-service",
+    "windows-ui-automation": "../windows-ui-automation"
+  },
+  "graphify": {
+    "python": "./python.exe",
+    "graph": "./graph.json",
+    "port": 4097
+  }
+}

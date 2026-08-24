@@ -153,9 +153,11 @@ const KIT_PLUGIN_SOURCES = [
   "__OPENCODE_CONFIG_DIR__/plugins/notify.ts",
   "__OPENCODE_CONFIG_DIR__/plugin/session-env.ts",
   "__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts",
+  "__OPENCODE_CONFIG_DIR__/extensions/roadmap-mission-launcher.ts",
   "__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts",
 ] as const;
 const GUARD_SOURCE_SUFFIX = "/extensions/session-completion-guard.ts";
+const LAUNCHER_SOURCE_SUFFIX = "/extensions/roadmap-mission-launcher.ts";
 const AUDIT_WINDOW_KEYS = new Set([
   "closePassedAfterMs",
   "enabled",
@@ -214,6 +216,33 @@ function validateAuditWindowOptions(
   ) {
     ctx.addError(`Completion guard auditWindow.closePassedAfterMs must be a non-negative integer: ${file}`);
   }
+  const issuers = guardEntry[1].certificateIssuers;
+  if (
+    portableTemplate &&
+    (!Array.isArray(issuers) || issuers.length !== 1 || issuers[0] !== "roadmap-mission-session-executor")
+  ) {
+    ctx.addError(`Portable completion guard certificateIssuers must select only roadmap-mission-session-executor: ${file}`);
+  }
+  if (
+    guardEntry[1].certificateWaitMs != null &&
+    (typeof guardEntry[1].certificateWaitMs !== "number" ||
+      !Number.isInteger(guardEntry[1].certificateWaitMs) ||
+      guardEntry[1].certificateWaitMs < 0)
+  ) {
+    ctx.addError(`Completion guard certificateWaitMs must be a non-negative integer: ${file}`);
+  }
+}
+
+function validateLauncherOptions(ctx: ValidationContext, config: Record<string, unknown>, file: string): void {
+  if (!Array.isArray(config.plugin)) return;
+  const launcherEntry = config.plugin.find((entry) => pluginSource(entry)?.replaceAll("\\", "/").endsWith(LAUNCHER_SOURCE_SUFFIX));
+  if (!Array.isArray(launcherEntry) || !isPlainRecord(launcherEntry[1])) {
+    ctx.addError(`Roadmap mission launcher plugin must use a tuple with options: ${file}`);
+    return;
+  }
+  if (launcherEntry[1].scriptRuntime !== "__OPENCODE_SCRIPT_RUNTIME__") {
+    ctx.addError(`Portable roadmap mission launcher must use the script runtime placeholder: ${file}`);
+  }
 }
 
 function validateKitGlobalModelSource(
@@ -264,6 +293,7 @@ function validateKitPluginSources(
     ctx.addError(`Kit global OpenCode config template must not enable package/cache opencode-pty: ${file}`);
   }
   validateAuditWindowOptions(ctx, config, file, true);
+  validateLauncherOptions(ctx, config, file);
 }
 
 export function validateOpenCodeConfigFiles(ctx: ValidationContext, root: string): void {

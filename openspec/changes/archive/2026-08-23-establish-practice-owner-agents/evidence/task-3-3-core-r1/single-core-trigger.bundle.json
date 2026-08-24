@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "establish-practice-owner-agents-planning-r1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "4fcc32a5dde87cd2b086fb41c15f0755590051458d9bbc8887b97ce15217c446",
+      "global/principles-of-work.md": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8",
+      "profiles/core.json": "c1bf6785a71fd1b3ed5c9e19cabbc820e91f987a5af57fdd133dd6b361e20389",
+      "profiles/all.json": "6b80cfbca998655b22a243739bd16b5b6c4073b8a1eee9949f8973ae42b00293",
+      "tools/proofs/practice-owner-routing.ts": "e7d84f42618c9e0a2c050dd36fc7ab9308a3912f84c8db7ff9fd56d6d53cabe9",
+      "openspec/changes/establish-practice-owner-agents/evidence/task-1-2-baseline-inventory-r1.json": "b5a3d7835a9557bf4e8d17c8fcf1fcdb762e30331dca38ef4fc393b9917e6f43"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fd0315b77ffeV5mzkMu5pNtHjc",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "poa-candidate-single-core-trigger",
+      "Decide whether mixed.ts should be split before adding a second responsibility. Do not modify files. Report the owner set you would launch, if any, then the decision. Do not install, commit, or push."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787508512292,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcf55f4001AfNIEuAsqkRP4e\",\"messageID\":\"msg_02fceb559001feYvk1BvauET2F\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"snapshot\":\"c05deaa5550fdb65b2309ee07ae5d81a61bac4c8\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787508516812,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcf5d46001UQPZd4EPpnzW5v\",\"messageID\":\"msg_02fceb559001feYvk1BvauET2F\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"text\",\"text\":\"I’ll inspect `mixed.ts`, its callers, and nearby tests to identify its current responsibility and the proposed second one. This is a bounded maintainability decision, so no registered practice owner is triggered unless repository evidence turns it into a broader claim.\",\"time\":{\"start\":1787508514118,\"end\":1787508516576},\"metadata\":{\"openai\":{\"itemId\":\"msg_096e2e71c3af0683016a8b3722e3ac87d2ae33d0dda6e0df3a\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508517001,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_CTKm9vyVCYvOE8uq1j9daA2F\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/mixed.ts\"},\"output\":\"<proof-root>\\\\workspace\\\\src\\\\mixed.ts\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787508516643,\"end\":1787508516985}},\"metadata\":{\"openai\":{\"itemId\":\"fc_096e2e71c3af0683016a8b372554b087d291a0c82a36dc8629\"}},\"id\":\"prt_02fcf66f1001wrPQ68AAZ0BRA8\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fceb559001feYvk1BvauET2F\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508517101,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_U3oFC6q3n9sQmx02Kl69TEE9\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/{AGENTS.md,README.md,package.json,tsconfig.json}\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787508516673,\"end\":1787508517062}},\"metadata\":{\"openai\":{\"itemId\":\"fc_096e2e71c3af0683016a8b372554c087d2b7837342bdc6737e\"}},\"id\":\"prt_02fcf672c0019diRtlYWMqqzzG\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fceb559001feYvk1BvauET2F\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508517207,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_iZWvpGaFuEhW4KlxG2ZOt2KF\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"mixed\",\"include\":\"*.{ts,tsx,js,jsx,md,json}\"},\"output\":\"Found 2 matches\\n<proof-root>\\\\workspace\\\\task.md:\\n  Line 1: Decide whether mixed.ts should be split before adding a second responsibility. Do not modify files. Report the owner set you would launch, if any, then the decision. Do not install, commit, or push.\\n\\n\\n<proof-root>\\\\workspace\\\\src\\\\mixed.ts:\\n  Line 1: export function mixed(): string {\\n\",\"metadata\":{\"matches\":2,\"truncated\":false},\"title\":\"mixed\",\"time\":{\"start\":1787508516739,\"end\":1787508517115}},\"metadata\":{\"openai\":{\"itemId\":\"fc_096e2e71c3af0683016a8b372554cc87d2a639dc8b880321c6\"}},\"id\":\"prt_02fcf674c001L8TYvhkuoF8kHq\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fceb559001feYvk1BvauET2F\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508519332,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcf714c001af5XuyIXuKUM1x\",\"reason\":\"tool-calls\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"messageID\":\"msg_02fceb559001feYvk1BvauET2F\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"step-finish\",\"tokens\":{\"total\":17866,\"input\":16093,\"output\":152,\"reasoning\":85,\"cache\":{\"write\":0,\"read\":1536}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787508523677,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcf8289001SZz84bWieJmxc3\",\"messageID\":\"msg_02fcf788a0010HWxoWHi7MO7Te\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508526788,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_L9IbsT913IyLlYV9M2GPzWaz\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\"},\"output\":\"<path><proof-root>\\\\workspace</path>\\n<type>directory</type>\\n<entries>\\n.git/\\n.serena/\\nopencode.json\\nsrc/\\ntask.md\\n\\n(5 entries)\\n</entries>\",\"metadata\":{\"preview\":\".git/\\n.serena/\\nopencode.json\\nsrc/\\ntask.md\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\workspace\",\"entries\":[\".git/\",\".serena/\",\"opencode.json\",\"src/\",\"task.md\"],\"offset\":1,\"totalEntries\":5,\"truncated\":false}},\"title\":\"\",\"time\":{\"start\":1787508526712,\"end\":1787508526761}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02953fcdb519b443016a8b372f4fc887d2a83f121c60a63ee2\"}},\"id\":\"prt_02fcf8e57001Y2JoHyX8sNoyEP\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcf788a0010HWxoWHi7MO7Te\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508526924,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_cTixkb5i8S652F0cbtuVrzFC\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\task.md\"},\"output\":\"<path><proof-root>\\\\workspace\\\\task.md</path>\\n<type>file</type>\\n<content>\\n1: Decide whether mixed.ts should be split before adding a second responsibility. Do not modify files. Report the owner set you would launch, if any, then the decision. Do not install, commit, or push.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"Decide whether mixed.ts should be split before adding a second responsibility. Do not modify files. Report the owner set you would launch, if any, then the decision. Do not install, commit, or push.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\task.md\",\"text\":\"Decide whether mixed.ts should be split before adding a second responsibility. Do not modify files. Report the owner set you would launch, if any, then the decision. Do not install, commit, or push.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"task.md\",\"time\":{\"start\":1787508526743,\"end\":1787508526913}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02953fcdb519b443016a8b372f4fd487d2a93f15f0ef5295e1\"}},\"id\":\"prt_02fcf8e80001Cf9HJ8ZXjd2htL\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcf788a0010HWxoWHi7MO7Te\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508527010,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_2X7N0iohI1iCUbtKzvnS8sHA\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\mixed.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\mixed.ts</path>\\n<type>file</type>\\n<content>\\n1: export function mixed(): string {\\n2:   return \\\"one owner\\\";\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function mixed(): string {\\n  return \\\"one owner\\\";\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\mixed.ts\",\"text\":\"export function mixed(): string {\\n  return \\\"one owner\\\";\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"src\\\\mixed.ts\",\"time\":{\"start\":1787508526674,\"end\":1787508526996}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02953fcdb519b443016a8b372f4fb887d2a6cd9a75af1ccaef\"}},\"id\":\"prt_02fcf8e40001HZD1nnLgVUdoSU\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcf788a0010HWxoWHi7MO7Te\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508528072,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcf937f0014vUcIVIFcfe9iZ\",\"reason\":\"tool-calls\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"messageID\":\"msg_02fcf788a0010HWxoWHi7MO7Te\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"step-finish\",\"tokens\":{\"total\":18206,\"input\":1153,\"output\":147,\"reasoning\":10,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787508531445,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcfa0e8001UjkcnVisEqLGti\",\"messageID\":\"msg_02fcf968a001LnjEBXwOHWVCCE\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508534769,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_U62UTrHrGVnU7EBICC8yo0Dg\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src</path>\\n<type>directory</type>\\n<entries>\\ngreeting.ts\\nmixed.ts\\n\\n(2 entries)\\n</entries>\",\"metadata\":{\"preview\":\"greeting.ts\\nmixed.ts\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\workspace\\\\src\",\"entries\":[\"greeting.ts\",\"mixed.ts\"],\"offset\":1,\"totalEntries\":2,\"truncated\":false}},\"title\":\"src\",\"time\":{\"start\":1787508534702,\"end\":1787508534746}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07add624ca4bb7a7016a8b37375e6487d2938cf4fa8c0de2f0\"}},\"id\":\"prt_02fcfad9b0010h6OLiiP6ytfp0\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcf968a001LnjEBXwOHWVCCE\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508534930,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_SDcnnbTLYFVyOsaWPkzJSsB1\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"responsib|owner|split|mixed\\\\(\",\"path\":\"<proof-root>\\\\workspace\"},\"output\":\"Found 4 matches\\n<proof-root>\\\\workspace\\\\task.md:\\n  Line 1: Decide whether mixed.ts should be split before adding a second responsibility. Do not modify files. Report the owner set you would launch, if any, then the decision. Do not install, commit, or push.\\n\\n\\n<proof-root>\\\\workspace\\\\opencode.json:\\n  Line 4:     \\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\instructions\\\\\\\\practice-owner-agent-contract.md\\\"\\n\\n\\n<proof-root>\\\\workspace\\\\src\\\\mixed.ts:\\n  Line 1: export function mixed(): string {\\n\\n  Line 2:   return \\\"one owner\\\";\\n\",\"metadata\":{\"matches\":4,\"truncated\":false},\"title\":\"responsib|owner|split|mixed\\\\(\",\"time\":{\"start\":1787508534730,\"end\":1787508534885}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07add624ca4bb7a7016a8b37375e7087d29b1daaa6520beda1\"}},\"id\":\"prt_02fcfadb8001nfHCXWj4plaEiZ\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcf968a001LnjEBXwOHWVCCE\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508534973,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_N40IwqE1m57rIChiCm9fHtro\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\opencode.json\"},\"output\":\"<path><proof-root>\\\\workspace\\\\opencode.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n3:   \\\"instructions\\\": [\\n4:     \\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\instructions\\\\\\\\practice-owner-agent-contract.md\\\"\\n5:   ],\\n6:   \\\"permission\\\": {\\n7:     \\\"*\\\": \\\"deny\\\",\\n8:     \\\"bash\\\": \\\"deny\\\",\\n9:     \\\"edit\\\": \\\"deny\\\",\\n10:     \\\"external_directory\\\": \\\"deny\\\",\\n11:     \\\"glob\\\": \\\"allow\\\",\\n12:     \\\"grep\\\": \\\"allow\\\",\\n13:     \\\"question\\\": \\\"deny\\\",\\n14:     \\\"read\\\": \\\"allow\\\",\\n15:     \\\"skill\\\": \\\"allow\\\",\\n16:     \\\"task\\\": \\\"allow\\\",\\n17:     \\\"webfetch\\\": \\\"deny\\\"\\n18:   }\\n19: }\\n\\n(End of file - total 19 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n  \\\"instructions\\\": [\\n    \\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\instructions\\\\\\\\practice-owner-agent-contract.md\\\"\\n  ],\\n  \\\"permission\\\": {\\n    \\\"*\\\": \\\"deny\\\",\\n    \\\"bash\\\": \\\"deny\\\",\\n    \\\"edit\\\": \\\"deny\\\",\\n    \\\"external_directory\\\": \\\"deny\\\",\\n    \\\"glob\\\": \\\"allow\\\",\\n    \\\"grep\\\": \\\"allow\\\",\\n    \\\"question\\\": \\\"deny\\\",\\n    \\\"read\\\": \\\"allow\\\",\\n    \\\"skill\\\": \\\"allow\\\",\\n    \\\"task\\\": \\\"allow\\\",\\n    \\\"webfetch\\\": \\\"deny\\\"\\n  }\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\opencode.json\",\"text\":\"{\\n  \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n  \\\"instructions\\\": [\\n    \\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\instructions\\\\\\\\practice-owner-agent-contract.md\\\"\\n  ],\\n  \\\"permission\\\": {\\n    \\\"*\\\": \\\"deny\\\",\\n    \\\"bash\\\": \\\"deny\\\",\\n    \\\"edit\\\": \\\"deny\\\",\\n    \\\"external_directory\\\": \\\"deny\\\",\\n    \\\"glob\\\": \\\"allow\\\",\\n    \\\"grep\\\": \\\"allow\\\",\\n    \\\"question\\\": \\\"deny\\\",\\n    \\\"read\\\": \\\"allow\\\",\\n    \\\"skill\\\": \\\"allow\\\",\\n    \\\"task\\\": \\\"allow\\\",\\n    \\\"webfetch\\\": \\\"deny\\\"\\n  }\\n}\",\"lineStart\":1,\"lineEnd\":19,\"totalLines\":19,\"truncated\":false}},\"title\":\"opencode.json\",\"time\":{\"start\":1787508534673,\"end\":1787508534965}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07add624ca4bb7a7016a8b37375e5087d2a14235128ee09d97\"}},\"id\":\"prt_02fcfad81001uVN769JYikwgFY\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcf968a001LnjEBXwOHWVCCE\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508535533,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcfb0c70010m0RB3zP2mb3j6\",\"reason\":\"tool-calls\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"messageID\":\"msg_02fcf968a001LnjEBXwOHWVCCE\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"step-finish\",\"tokens\":{\"total\":18643,\"input\":550,\"output\":157,\"reasoning\":16,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787508538307,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcfbbbc0017LX06XCuD26BBB\",\"messageID\":\"msg_02fcfb2d1001VyY0fhZA6jfbvT\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508539840,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_fmWYDUEtEwyqxP85FnJd47qd\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\greeting.ts</path>\\n<type>file</type>\\n<content>\\n1: export function greeting(name: string): string {\\n2:   return `Hello, ${name}.`;\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\",\"text\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"src\\\\greeting.ts\",\"time\":{\"start\":1787508539618,\"end\":1787508539827}},\"metadata\":{\"openai\":{\"itemId\":\"fc_06d2c363992f9e3d016a8b373ba47487d29c408847ceb5f245\"}},\"id\":\"prt_02fcfbde8001sSRx7LGsPY585X\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcfb2d1001VyY0fhZA6jfbvT\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508540485,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcfc42d001frhG9kyi0UbWvp\",\"reason\":\"tool-calls\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"messageID\":\"msg_02fcfb2d1001VyY0fhZA6jfbvT\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"step-finish\",\"tokens\":{\"total\":19208,\"input\":1227,\"output\":51,\"reasoning\":10,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787508543739,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fcfd0f00012PygdJSPH6hwUf\",\"messageID\":\"msg_02fcfc6bc001HolWkKs2ZSp1Ys\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508559885,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"type\":\"tool\",\"tool\":\"skill\",\"callID\":\"call_cVKlZb8DCC9vlWmebx6YvIga\",\"state\":{\"status\":\"completed\",\"input\":{\"name\":\"code-quality-audit\"},\"output\":\"<skill_content name=\\\"code-quality-audit\\\">\\n# Skill: code-quality-audit\\n\\n# Code Quality Audit\\r\\n\\r\\nUse this skill after non-trivial code changes, before acceptance/merge, or when the user asks about maintainability, readability, DRY, SOLID, YAGNI, Design Patterns, large files, code smells, or refactoring.\\r\\n\\r\\nDo not use this skill for pure documentation edits, generated/vendor code, tiny mechanical edits, broad exhaustive audits, or block-by-block explanation of one file. Use `codebase-audit-loop` for whole-codebase audits.\\r\\n\\r\\n## Core Standard\\r\\n\\r\\n- Code quality means future changes are easier and safer for both the agent and the human reader.\\r\\n- Prefer the smallest design that keeps the code understandable, testable, and locally changeable.\\r\\n- Treat agent context as an engineering resource: a routine change should be understandable through targeted reads of one cohesive owner and narrow neighbors, not by loading an unrelated subsystem or one god file.\\r\\n- Treat smells as signals, not automatic guilt. A finding needs evidence, impact, likely root cause, and a minimal remedy.\\r\\n- Do not require perfection. Main treats correction as accepted-scope work only when the current change worsens code health or creates a likely future defect/change-cost trap; unrelated debt remains a finding, not a reviewer-owned gate.\\r\\n- Do not apply Design Patterns by default. Use a pattern only when it removes concrete duplication, branching, coupling, lifecycle complexity, or boundary confusion.\\r\\n- For behavior-changing fixes, require observable proof of the smallest complete happy path first. Main may add the smallest focused regression after proof; independent fresh test-only risk testing is required only for a reachable named critical consequence or explicit project/owner requirement.\\n\\r\\n## Evidence Basis\\r\\n\\r\\n- Google engineering review practice: review design, functionality, complexity, tests, naming, comments, context, and every relevant line; do not accept changes that degrade code health.\\r\\n- Fowler code smell principle: smells are quick indicators of possible deeper problems, not proof by themselves.\\r\\n- Refactoring catalog practice: long methods, large classes, duplication, shotgun surgery, speculative generality, and coupling smells should map to small refactorings such as Extract Method, Extract Class, Move Method, Introduce Parameter Object, Strategy, State, Facade, or Adapter.\\r\\n\\r\\n## When To Require Main Disposition\\r\\n\\r\\nRequire main to correct the current change or record an explicit `split-or-justify` disposition before completing accepted scope when one or more of these is true:\\r\\n\\r\\n- The reviewer cannot explain the changed behavior, ownership, and data flow after one careful pass through the touched code.\\r\\n- Understanding the changed behavior requires loading unrelated responsibilities because the touched file has no cohesive ownership boundary.\\r\\n- The change adds a new responsibility to a file/class/module that already mixes unrelated responsibilities.\\r\\n- The change makes a future likely edit require touching multiple unrelated places for one concept.\\r\\n- The same behavior, branching shape, validation rule, mapping, fixture, or protocol detail appears for the third time without a shared owner.\\r\\n- A method/function grows multiple phases, nested branches, local mutable state, or comments that compensate for unclear structure.\\r\\n- A public API, abstraction, interface, factory, generic type, or plugin point is added for hypothetical future needs rather than current requirements.\\r\\n- New code hides side effects, temporal coupling, global mutation, IO, caching, retries, or concurrency behind names that do not reveal those costs.\\r\\n- Tests or validation cannot prove the behavior after the refactor, or the code structure makes a focused test impractical.\\r\\n- A catch/wrap/translation path discards the original exception cause/stack, or an owning runtime boundary lacks enough safe context to distinguish realistic failures without adding noisy duplicate logs.\\r\\n- The file reaches a `split-candidate` navigation band and the touched change does not either split a coherent responsibility or justify why the file is still cohesive.\\r\\n\\r\\nDo not classify current-scope correction when the issue is generated code, vendor code, local style preference, a cohesive data table, a one-off emergency workaround with explicit follow-up, or pre-existing debt whose refactor would be larger/riskier than the scoped change.\\r\\n\\r\\n## File Size And Navigation Signals\\r\\n\\r\\nLine count is a radar, not a rule. Use explicit bands to decide how much review pressure to apply:\\r\\n\\r\\n- `normal`: file is small enough that local review usually works without extra inventory.\\r\\n- `attention`: inspect top-level responsibilities, public exports, long functions, duplicated blocks, and whether the change makes navigation harder.\\r\\n- `split-candidate`: require a `split-or-justify` decision for human-written touched files.\\r\\n\\r\\nDefault helper bands are intentionally adjustable: `attention-lines=400`, `split-lines=800`. Lower them for dense languages, complex UI/state files, protocol implementations, or agent-hostile code; raise them for generated files, fixtures, cohesive lookup tables, or intentionally flat data declarations.\\r\\n\\r\\nIf this library tooling is available, gather deterministic evidence with:\\r\\n\\r\\n```sh\\r\\nnpm run code-quality:inventory -- --format markdown\\r\\n```\\r\\n\\r\\nOnly when a repository explicitly adopts a hard line threshold as local policy, use:\\r\\n\\r\\n```sh\\r\\nnpm run code-quality:inventory -- --attention-lines 400 --split-lines 800 --fail-on-split-candidates\\r\\n```\\r\\n\\r\\nIf the command is not available in the target repository, use repository-native metrics or manually inventory touched files and top-level responsibilities. Never present line count as the finding by itself.\\r\\n\\r\\n## Smell-To-Remedy Map\\r\\n\\r\\n| Smell / Anti-pattern | Force When | Preferred Remedy |\\r\\n| --- | --- | --- |\\r\\n| Long method/function | Multiple phases, nested branches, unclear locals, or explanatory comments hide intent. | Extract Method, guard clauses, Decompose Conditional, Replace Method with Method Object only when extraction fails. |\\r\\n| Large file/class/module | Touched code mixes unrelated ownership such as IO, parsing, validation, UI, state, and persistence. | Extract Class/Module, Move Method, isolate domain model, keep a thin Facade if callers need one entrypoint. |\\r\\n| Duplicate code | Third occurrence or duplicated rules can drift and cause divergent fixes. | Extract Function, shared table, Template Method, Strategy only when variants truly differ. |\\r\\n| Shotgun surgery | One concept requires scattered edits across unrelated files. | Create a single owner, central registry/table, Facade, Adapter, or domain service boundary. |\\r\\n| Divergent change | One file changes for unrelated reasons across features. | Split by responsibility, move cohesive behavior, reduce public surface. |\\r\\n| Speculative generality | Abstraction exists for imagined future variants. | Inline Class/Method, delete unused extension points, keep concrete implementation. |\\r\\n| Primitive obsession / data clumps | Repeated groups of fields or raw strings/numbers carry domain meaning. | Value Object, Introduce Parameter Object, named constants, validated config/schema. |\\r\\n| Long parameter list | Callers must remember ordering or pass repeated groups. | Parameter Object, Preserve Whole Object, Builder only when construction has many optional named fields. |\\r\\n| Switch/if ladder by type/state | New variants require editing branches in several places or branches hide behavior. | Lookup table, Strategy, State, polymorphism, or explicit state machine. Keep a simple switch when variants are fixed and local. |\\r\\n| Feature envy / inappropriate intimacy | Code reads/mutates another module's internals more than its own. | Move Method, Encapsulate Field, narrow API, domain method on the owner. |\\r\\n| Message chain / hidden dependency walk | Callers know too much about object graph shape. | Hide Delegate, Facade, explicit query method, but avoid pointless middlemen. |\\r\\n| Middle man / wrapper soup | Abstractions only forward calls and add navigation cost. | Inline wrapper, remove lazy class, collapse hierarchy. |\\r\\n| Magic values | Reused constants or domain thresholds lack names/validation. | Named constant, enum, config schema with limits/defaults. |\\r\\n| Dead code / unused exports | Code is not reachable or maintained and increases review surface. | Delete, or mark explicit compatibility requirement if external consumers need it. |\\r\\n| Comment-dependent code | Comments explain what unclear code does rather than why it exists. | Rename, extract, simplify; keep comments for rationale, invariants, algorithms, and external contracts. |\\r\\n| Hidden side effects | Name looks pure but performs IO, mutation, caching, retries, or scheduling. | Rename, separate query from command, Command pattern for queued work, explicit effect boundary. |\\r\\n| Context-heavy module | A local change requires unrelated code to understand ownership or control flow. | Extract one cohesive owner behind a narrow interface; avoid wrapper-only micro-files. |\\r\\n| Opaque failure path | Errors lose cause/stack or reach an owning boundary without safe operation/correlation context. | Preserve the exception chain; log once at the owning boundary with structured context; capture proof artifacts. |\\r\\n\\r\\n## Pattern Discipline\\r\\n\\r\\n- `Adapter`: use to isolate incompatible external/legacy APIs or SDKs.\\r\\n- `Facade`: use to hide a complex subsystem behind a small stable boundary, not to create pass-through layers.\\r\\n- `Strategy`: use when interchangeable algorithms or policies vary independently and are selected at runtime/config/test time.\\r\\n- `State`: use when state transitions are explicit and conditional logic is spreading.\\r\\n- `Factory Method` / small factory function: use when creation details are repeated, conditional, or dependency-heavy.\\r\\n- `Builder`: use for complex construction with many optional named fields or staged validation, not for simple data objects.\\r\\n- `Command`: use for queued, retryable, cancellable, auditable, or delayed operations.\\r\\n- `Observer` / event emitter: use for decoupled notifications, but require lifecycle/unsubscribe ownership.\\r\\n- Avoid `Singleton` unless process-wide identity is intrinsic and tests can isolate/reset it.\\r\\n\\r\\n## Review Workflow\\r\\n\\r\\n- Inspect the diff first, then enough surrounding code to understand ownership and data flow.\\r\\n- Before accepting added behavior, map touched responsibilities and record `split-or-justify` for navigation-heavy or mixed-owner files. Line count remains evidence, never the finding by itself.\\r\\n- Run or request deterministic inventory when file size/navigation is a material risk.\\r\\n- Identify smells only when they affect change cost, readability, testability, or defect risk.\\r\\n- Prefer local refactors that reduce the current change's complexity before adding new abstractions.\\r\\n- If a refactor changes behavior, prove the resulting happy path through observable execution. Main may add the smallest focused regression after proof; route independent critical negative/end-to-end authoring to fresh test-only SDET only when its named-risk or explicit trigger applies.\\n- Use `code-quality-reviewer` as the read-only post-change reviewer after non-trivial code edits when feasible.\\r\\n- Escalate to `test-coverage-reviewer`, `performance-reliability-reviewer`, `rust-concurrency-reviewer`, or protocol/deployment reviewers when the finding is primarily in those domains.\\r\\n- If the review yields several concrete out-of-scope follow-ups from the current session, recommend grouping them into OpenSpec follow-up changes; do not do this for isolated nits, local style preferences, or one obvious next step.\\r\\n\\r\\n## Output\\r\\n\\r\\nReturn:\\r\\n\\r\\n- `Verdict`: clean | minor findings | material findings | blocked | fixed | not applicable.\\r\\n- `Code Health Delta`: improves | neutral | worsens, with evidence.\\r\\n- `Findings`: severity, file/line, evidence, impact on agent work and human readability, likely root cause, minimal remedy, pattern/refactoring if useful, confidence.\\r\\n- `Navigation Signals`: attention/split-candidate files, responsibility map, and split-or-justify decisions.\\r\\n- `Smell Matrix`: smell -> evidence -> remedy -> force/optional/nit.\\r\\n- `Validation`: tests, inventory commands, reviewer gates, or skipped checks with reason.\\r\\n- `Residual Risks`: remaining maintainability risks or low-confidence areas.\\r\\n- `Actionable Continuation Items`: concrete fixes/gates, including OpenSpec follow-up candidates when several session-scoped items remain, or `none`.\\n\\nBase directory for this skill: <kit-root>\\\\global\\\\skills\\\\code-quality-audit\\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\\nNote: file list is sampled.\\n\\n<skill_files>\\n\\n</skill_files>\\n</skill_content>\",\"metadata\":{\"name\":\"code-quality-audit\",\"dir\":\"<kit-root>\\\\global\\\\skills\\\\code-quality-audit\",\"truncated\":false},\"title\":\"Loaded skill: code-quality-audit\",\"time\":{\"start\":1787508559778,\"end\":1787508559877}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c8804d012fd1e1b016a8b37506a5087d2a77e342ba24f7d94\"}},\"id\":\"prt_02fd00f78001T1lLZcTqe7mFm4\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"messageID\":\"msg_02fcfc6bc001HolWkKs2ZSp1Ys\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508560558,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fd01260001dQLoGu4aeXQRrN\",\"reason\":\"tool-calls\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"messageID\":\"msg_02fcfc6bc001HolWkKs2ZSp1Ys\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"step-finish\",\"tokens\":{\"total\":20182,\"input\":358,\"output\":22,\"reasoning\":858,\"cache\":{\"write\":0,\"read\":18944}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787508564198,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fd020c0001qJQ8u6ETEhcmrX\",\"messageID\":\"msg_02fd01600001GRd6t4DimppN8s\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787508574634,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fd041a2001cqis2DbfHsK71i\",\"messageID\":\"msg_02fd01600001GRd6t4DimppN8s\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"text\",\"text\":\"**Owner Set:** None. This exact, small maintainability decision triggers no registered practice owner.\\n\\n**Decision:** Do not split `src/mixed.ts` now. It contains one three-line function and one responsibility (`src/mixed.ts:1-3`). If the new responsibility is unrelated, place it in a separate cohesive module rather than adding it to `mixed.ts`; splitting the existing single-function file would add no value. No files were modified.\",\"time\":{\"start\":1787508572578,\"end\":1787508574626},\"metadata\":{\"openai\":{\"itemId\":\"msg_0c53b500b4fe8e1e016a8b375d521887d29892abc29bffdb58\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508575369,\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"part\":{\"id\":\"prt_02fd04c56001H6ldPJvSINctu8\",\"reason\":\"stop\",\"snapshot\":\"c88c2088f9f055b7584cb7df42df6367b4370589\",\"messageID\":\"msg_02fd01600001GRd6t4DimppN8s\",\"sessionID\":\"ses_fd0315b77ffeV5mzkMu5pNtHjc\",\"type\":\"step-finish\",\"tokens\":{\"total\":23248,\"input\":3752,\"output\":97,\"reasoning\":455,\"cache\":{\"write\":0,\"read\":18944}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: allow",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect `mixed.ts`, its callers, and nearby tests to identify its current responsibility and the proposed second one. This is a bounded maintainability decision, so no registered practice owner is triggered unless repository evidence turns it into a broader claim.**Owner Set:** None. This exact, small maintainability decision triggers no registered practice owner.\n\n**Decision:** Do not split `src/mixed.ts` now. It contains one three-line function and one responsibility (`src/mixed.ts:1-3`). If the new responsibility is unrelated, place it in a separate cohesive module rather than adding it to `mixed.ts`; splitting the existing single-function file would add no value. No files were modified.",
+    "elapsedMs": 115796,
+    "eventCount": 25,
+    "launchedOwners": [],
+    "providerCalls": 1,
+    "sessionIds": [
+      "ses_fd0315b77ffeV5mzkMu5pNtHjc"
+    ],
+    "tokens": [
+      {
+        "total": 17866,
+        "input": 16093,
+        "output": 152,
+        "reasoning": 85,
+        "cache": {
+          "write": 0,
+          "read": 1536
+        }
+      },
+      {
+        "total": 18206,
+        "input": 1153,
+        "output": 147,
+        "reasoning": 10,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      },
+      {
+        "total": 18643,
+        "input": 550,
+        "output": 157,
+        "reasoning": 16,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 19208,
+        "input": 1227,
+        "output": 51,
+        "reasoning": 10,
+        "cache": {
+          "write": 0,
+          "read": 17920
+        }
+      },
+      {
+        "total": 20182,
+        "input": 358,
+        "output": 22,
+        "reasoning": 858,
+        "cache": {
+          "write": 0,
+          "read": 18944
+        }
+      },
+      {
+        "total": 23248,
+        "input": 3752,
+        "output": 97,
+        "reasoning": 455,
+        "cache": {
+          "write": 0,
+          "read": 18944
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/mixed.ts"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/{AGENTS.md,README.md,package.json,tsconfig.json}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "mixed",
+          "include": "*.{ts,tsx,js,jsx,md,json}"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\task.md"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\mixed.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "responsib|owner|split|mixed\\(",
+          "path": "<proof-root>\\workspace"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\opencode.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\greeting.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "name": "code-quality-audit"
+        },
+        "name": "skill",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "Decide whether mixed.ts should be split before adding a second responsibility. Do not modify files. Report the owner set you would launch, if any, then the decision. Do not install, commit, or push.",
+    "scenario": "single-core-trigger"
+  },
+  "oracles": {
+    "cleanupComplete": true,
+    "fixtureStable": true,
+    "launchedOwners": []
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "8794da67bfd287d1afb3a99a970371f41e33d485a85a86419b440d3eac7e3ab4",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    },
+    "before": {
+      "task.md": "8794da67bfd287d1afb3a99a970371f41e33d485a85a86419b440d3eac7e3ab4",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "candidateId": "reduce-workflow-ceremony-task-7-r1",
+  "checks": {
+    "actualIndexNamedLaneReadback": true,
+    "focusedEvidenceIndexFixture": true,
+    "focusedManagedPromptDriftFixtures": true,
+    "focusedRepositoryContractFixture": true,
+    "referencedBundleContentNotEmitted": true,
+    "unrelatedLaneReferenceNotInspected": true
+  },
+  "invocations": [
+    "node tools/evidence-index.ts --index openspec/changes/reduce-workflow-ceremony/evidence-index.json --lane certified-completion",
+    "node --input-type=module -e <three named doctorTests>"
+  ],
+  "schemaVersion": 1,
+  "status": "complete"
+}

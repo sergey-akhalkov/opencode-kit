@@ -2,10 +2,12 @@ import {
   readSessionDeliveryContext,
   type SessionDeliveryContextResult,
 } from "../../plugin/session-delivery-context/index.ts";
+import { SESSION_GRAPH_SURFACE } from "../../plugin/session-delivery-context/session-graph.ts";
 import { hashRef } from "../../plugin/session-delivery-context/redaction.ts";
 import type { RootInspection } from "./inspection.ts";
 import { questionRequestForArbiter } from "./question.ts";
 import type { AuditEpoch } from "./types.ts";
+import { readClaimEvidence, selectedClaimChangeIds } from "./claim-evidence.ts";
 
 export class AuditRequestOverflowError extends Error {
   readonly allowedBytes: number;
@@ -22,14 +24,26 @@ export class AuditRequestOverflowError extends Error {
 export function captureArbiterEvidence(
   rootSessionID: string,
   rootSessionRef: string,
+  projectRoot?: string,
+  sessionMetadata?: unknown,
+  dbPaths?: string[],
 ): SessionDeliveryContextResult {
-  const evidence = readSessionDeliveryContext({ resolveRoot: true, sessionId: rootSessionID });
+  const evidence = readSessionDeliveryContext({
+    claimEvidence: readClaimEvidence(projectRoot, selectedClaimChangeIds(sessionMetadata)),
+    ...(dbPaths == null ? {} : { dbPaths, useDefaultPaths: false }),
+    projectRoot,
+    resolveRoot: true,
+    sessionId: rootSessionID,
+  });
   if (
     evidence.schemaVersion !== 2 ||
     evidence.missingSessions.length > 0 ||
     evidence.session?.sessionRef !== rootSessionRef
   ) {
     throw new Error("Completion evidence does not match the inspected root session");
+  }
+  if (evidence.truncationWarnings.some((entry) => entry.surface === SESSION_GRAPH_SURFACE)) {
+    throw new Error("Completion evidence omitted descendants that can affect liveness");
   }
   return evidence;
 }

@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import crypto from "node:crypto";
+import { INHERIT_FROM_PRIMARY_AGENTS } from "../model-profile.ts";
 
 export type ProcessResult = {
   exitCode: number;
@@ -34,7 +35,6 @@ const FIXTURE_QUALITY_CREATORS = new Set([
   "general",
   "implementation-worker",
   "plan",
-  "troubleshooter",
 ]);
 export const FIXTURE_MODEL_PROFILE_AGENTS = [
   "build",
@@ -84,6 +84,7 @@ export function writeFixtureModelProfileBaseline(fixture: string): void {
 }
 
 export function addFixtureAgentToModelProfiles(fixture: string, agentName: string): void {
+  if (INHERIT_FROM_PRIMARY_AGENTS.has(agentName)) return;
   const profilesDir = path.join(fixture, "global", "model-profiles");
   for (const profileName of ["grok-only", "quality-independent", "sol-only"] as const) {
     const profilePath = path.join(profilesDir, `${profileName}.json`);
@@ -152,12 +153,20 @@ export function appendReadmeAgentCatalogEntry(fixture: string, entry: string): v
   writeText(readmePath, readmeText.replace(marker, `${marker}\n${entry}`));
 }
 
+function addFixtureProfileAgent(fixture: string, agentName: string): void {
+  const profilePath = path.join(fixture, "profiles", "all.json");
+  const profile = JSON.parse(fs.readFileSync(profilePath, "utf8")) as { agents: string[] };
+  if (!profile.agents.includes(agentName)) {
+    profile.agents.push(agentName);
+    profile.agents.sort((left, right) => left.localeCompare(right));
+    writeText(profilePath, `${JSON.stringify(profile, null, 2)}\n`);
+  }
+}
+
 export function addRegisteredReviewerFixture(fixture: string, reviewer: "code-quality-reviewer"): string {
   const reviewerPath = path.join(fixture, "global", "agents", `${reviewer}.md`);
   writeText(reviewerPath, fs.readFileSync(path.join(helperRoot, "global", "agents", `${reviewer}.md`), "utf8"));
-  const profilePath = path.join(fixture, "profiles", "all.json");
-  const profile = fs.readFileSync(profilePath, "utf8");
-  writeText(profilePath, profile.replace('"demo-reviewer"]', `"demo-reviewer", "${reviewer}"]`));
+  addFixtureProfileAgent(fixture, reviewer);
   appendReadmeAgentCatalogEntry(fixture, `- \`${reviewer}\`: Registered reviewer fixture.`);
   return reviewerPath;
 }
@@ -167,10 +176,7 @@ export function addQwenLocalWorkerFixture(fixture: string): string {
   const workerPath = path.join(fixture, "global", "agents", `${workerName}.md`);
   writeText(workerPath, fs.readFileSync(path.join(helperRoot, "global", "agents", `${workerName}.md`), "utf8"));
 
-  const profilePath = path.join(fixture, "profiles", "all.json");
-  const profile = JSON.parse(fs.readFileSync(profilePath, "utf8")) as { agents: string[] };
-  profile.agents.push(workerName);
-  writeText(profilePath, `${JSON.stringify(profile, null, 2)}\n`);
+  addFixtureProfileAgent(fixture, workerName);
   appendReadmeAgentCatalogEntry(fixture, `- \`${workerName}\`: Non-registered local worker fixture.`);
   return workerPath;
 }
@@ -256,9 +262,9 @@ export function newLibraryFixture(name: string): string {
     "## Universal Development Loop",
     "",
     "- Shared runtime lifecycle authority comes from active global `AGENTS.md` and `change-ready-sdlc`; the Universal Development Loop is conceptual guidance, not a target-relative runtime dependency.",
-    "- Implement and observably prove the smallest complete happy path. Ordinary Small may add the smallest focused post-proof regression test; Material automated-test authorship belongs to fresh test-only SDET.",
-    "- User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. Optional reviewers may run after MVP for concrete risk, project policy, or owner request, return a risk matrix, and never gate a stage. Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`. An unchanged candidate and unchanged critical-risk hypothesis receive no equivalent verdict-seeking rerun. A fresh attempt may follow a main-confirmed critical defect and production fix, another production mutation that materially changes reachable critical behavior, or new decision-changing evidence identifying a distinct reachable critical hypothesis, after current proof and accepted-scope completion. No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate. Non-critical findings are parked. A partial slice handoff must not end an unfinished root goal.",
-    "- Report `Development-Stage: development | MVP | RC<n> | stable` and `Stable Candidate: RC<n>` only for stable; no stage authorizes external operations.",
+    "- Implement and observably prove the smallest complete happy path. Main may add the smallest focused post-proof regression test; triggered independent critical test authorship belongs to fresh test-only SDET.",
+    "- User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. Optional reviewers may run after current proof for concrete risk, project policy, or owner request, return a risk matrix, and never gate completion or qualification. Triggered fresh SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`. An unchanged candidate and unchanged critical-risk hypothesis receive no equivalent verdict-seeking rerun. A fresh attempt may follow a main-confirmed critical defect and production fix, another production mutation that materially changes reachable critical behavior, or new decision-changing evidence identifying a distinct reachable critical hypothesis, after current proof and accepted-scope completion. No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate. Non-critical findings are parked. A partial slice handoff must not end an unfinished root goal.",
+    "- Report `Outcome: working | blocked | unknown` ordinarily; use `Development-Stage: development | MVP | RC<n> | stable` and `Stable Candidate: RC<n>` only for qualification; no stage authorizes external operations.",
     "- Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.",
     "",
   ]));
@@ -287,10 +293,29 @@ export function newLibraryFixture(name: string): string {
   writeText(path.join(dir, "templates", "ci", "github-actions.yml"), lines(["name: validate", "", "jobs:", "  validate:", "    steps:", "      - run: <validation-command>", ""]));
   writeText(path.join(dir, "profiles", "all.json"), lines([
     "{",
+    "  \"schemaVersion\": 1,",
     "  \"name\": \"all\",",
     "  \"description\": \"Fixture all profile.\",",
-    "  \"skills\": [\"complain\", \"demo-skill\"],",
-    "  \"agents\": [\"demo-reviewer\"]",
+    "  \"configMode\": \"all-compatibility\",",
+    "  \"agents\": [\"demo-reviewer\"],",
+    "  \"commands\": [],",
+    "  \"directories\": [],",
+    "  \"files\": [],",
+    "  \"skills\": [\"complain\", \"demo-skill\"]",
+    "}",
+    "",
+  ]));
+  writeText(path.join(dir, "profiles", "core.json"), lines([
+    "{",
+    "  \"schemaVersion\": 1,",
+    "  \"name\": \"core\",",
+    "  \"description\": \"Fixture core profile.\",",
+    "  \"configMode\": \"ask\",",
+    "  \"agents\": [],",
+    "  \"commands\": [],",
+    "  \"directories\": [],",
+    "  \"files\": [],",
+    "  \"skills\": [\"complain\"]",
     "}",
     "",
   ]));
@@ -363,7 +388,7 @@ export function newLibraryFixture(name: string): string {
     "## Autonomous Work Contract",
     "",
     "- The main session owns skill selection, decomposition, validation, reviewer gates, and ready-to-land handoff.",
-    "- User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. Optional reviewers may run after MVP for concrete risk, project policy, or owner request, return a risk matrix, and never gate a stage. Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`. An unchanged candidate and unchanged critical-risk hypothesis receive no equivalent verdict-seeking rerun. A fresh attempt may follow a main-confirmed critical defect and production fix, another production mutation that materially changes reachable critical behavior, or new decision-changing evidence identifying a distinct reachable critical hypothesis, after current proof and accepted-scope completion. No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate. Non-critical findings are parked. Never ask solely to approve an internal revision. Decision-ready handoff names the exact blocker. A partial slice handoff must not end an unfinished root goal.",
+    "- User-owned scope is the accepted outcome and protected-boundary decisions; necessary local reversible dependency closure is autonomous. Reviewer/SDET evidence must never authorize mutation. Optional reviewers may run after current proof for concrete risk, project policy, or owner request, return a risk matrix, and never gate completion or qualification. Triggered fresh SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`. An unchanged candidate and unchanged critical-risk hypothesis receive no equivalent verdict-seeking rerun. A fresh attempt may follow a main-confirmed critical defect and production fix, another production mutation that materially changes reachable critical behavior, or new decision-changing evidence identifying a distinct reachable critical hypothesis, after current proof and accepted-scope completion. No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate. Non-critical findings are parked. Never ask solely to approve an internal revision. Decision-ready handoff names the exact blocker. A partial slice handoff must not end an unfinished root goal.",
     "",
   ]));
   writeText(path.join(dir, "README.md"), lines([
@@ -634,9 +659,7 @@ export function addImplementationWorkerFixture(fixture: string): string {
   const sourcePath = path.join(helperRoot, "global", "agents", "implementation-worker.md");
   writeText(workerPath, fs.readFileSync(sourcePath, "utf8"));
 
-  const profilePath = path.join(fixture, "profiles", "all.json");
-  const profile = fs.readFileSync(profilePath, "utf8");
-  writeText(profilePath, profile.replace("\"demo-reviewer\"]", "\"demo-reviewer\", \"implementation-worker\"]"));
+  addFixtureProfileAgent(fixture, "implementation-worker");
 
   const workerRoutingLines = [
     "- Main is the default production author for Ordinary Small and Material.",
@@ -663,12 +686,12 @@ export function addImplementationWorkerFixture(fixture: string): string {
 
 export const optionalReviewRoutingTokens = [
   "Development-Stage",
-  "after MVP",
+  "after current proof",
   "optional",
 ] as const;
 
 export const optionalReviewRoutingText =
-  "Optional final-candidate, code-quality, and domain reviewers may run after MVP for concrete risk, project policy, or owner request. Missing or unusable optional output is not itself a stage blocker. Reviewer evidence must never authorize mutation. Development-Stage remains main-owned, and a partial slice handoff must not end an unfinished root goal.";
+  "Optional final-candidate, code-quality, and domain reviewers may run after current proof for concrete risk, project policy, or owner request. Missing or unusable optional output is not itself a stage blocker. Reviewer evidence must never authorize mutation. Qualification-only Development-Stage remains main-owned, and a partial slice handoff must not end an unfinished root goal.";
 
 /** @deprecated Use addSessionCompletionArbiterFixture; kept name alias only for migration clarity in focused suites. */
 export const sessionDeliveryBindingTokens = optionalReviewRoutingTokens;
@@ -677,9 +700,7 @@ export function addSessionCompletionArbiterFixture(fixture: string): string {
   const arbiterPath = path.join(fixture, "global", "agents", "session-completion-arbiter.md");
   writeText(arbiterPath, fs.readFileSync(path.join(helperRoot, "global", "agents", "session-completion-arbiter.md"), "utf8"));
   appendReadmeAgentCatalogEntry(fixture, "- `session-completion-arbiter`: Hidden completion adjudicator.");
-  const profilePath = path.join(fixture, "profiles", "all.json");
-  const profile = fs.readFileSync(profilePath, "utf8");
-  writeText(profilePath, profile.replace('"demo-reviewer"]', '"demo-reviewer", "session-completion-arbiter"]'));
+  addFixtureProfileAgent(fixture, "session-completion-arbiter");
   return arbiterPath;
 }
 

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "taskId": "2.1",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "invocation": {
+    "command": "node tools/test-openspec-change-inventory.ts",
+    "status": 0,
+    "recordedAt": "2026-08-23T10:54:08.3280993Z"
+  },
+  "boundary": {
+    "kind": "named-entrypoint",
+    "name": "openspec-change-inventory-contract-tests",
+    "effects": ["provider-free", "read-only"]
+  },
+  "fixture": "tools/fixtures/openspec-claim-evidence/cases.json",
+  "cases": [
+    { "id": "exact-case", "parse": "valid", "state": "supported" },
+    { "id": "complete-finite-population", "parse": "valid", "state": "supported" },
+    { "id": "missing-member", "parse": "valid", "state": "blocked" },
+    { "id": "partition-without-rule", "parse": "valid", "state": "unknown" },
+    { "id": "mismatched-path", "parse": "valid", "state": "blocked" },
+    { "id": "unavailable-real-oracle", "parse": "valid", "state": "blocked" },
+    { "id": "narrowed", "parse": "valid", "state": "narrowed" },
+    { "id": "stale", "parse": "valid", "state": "stale" },
+    { "id": "duplicate-member", "parse": "invalid", "state": null },
+    { "id": "unknown-observation", "parse": "valid", "state": "unknown" }
+  ],
+  "assertions": {
+    "legacySchema2WithoutClaimsReadable": true,
+    "stableIdsAndBoundsValidated": true,
+    "narrowedOutcomeRequiresExplicitAcceptance": true,
+    "semanticExpectationInferred": false,
+    "scoreEmitted": false,
+    "providerCalls": 0,
+    "filesWrittenByInvocation": 0
+  },
+  "result": "complete"
+}

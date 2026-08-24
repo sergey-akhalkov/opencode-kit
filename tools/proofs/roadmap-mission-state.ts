@@ -6,7 +6,12 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadMissionDefinition, stableJson } from "../../global/bin/roadmap-mission/contracts.ts";
-import { acquireWriterLease } from "../../global/bin/roadmap-mission/state.ts";
+import {
+  acquireWriterLease,
+  clearMissionStopIntent,
+  readMissionStopIntent,
+  recordMissionStopIntent,
+} from "../../global/bin/roadmap-mission/state.ts";
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
 
 type Options = {
@@ -336,10 +341,41 @@ async function run(options: Options): Promise<void> {
       throw new Error(`Unknown writer did not fail closed: ${unknownReplay.stdout || unknownReplay.stderr}`);
     }
 
+    const stop = path.join(fixture, "stop-intent");
+    createProject(stop);
+    assertSucceeded(invoke(stop, "stop-preflight", "state-record", event(stop, "preflight", {
+      createdAt: "2026-08-13T13:33:00.000Z",
+      cursor: 0,
+      disposition: "ready",
+      kind: "preflight",
+      sliceId: "slice-a",
+    })));
+    const stopDefinition = loadMissionDefinition(stop, "mission.json");
+    const stopIntent = recordMissionStopIntent(stop, stopDefinition, {
+      controllerPtyRef: "pty-proof-controller",
+      requestedAt: "2026-08-13T13:33:01.000Z",
+      rootSessionRef: "session-proof-root",
+      source: "slash",
+    });
+    const readStopIntent = readMissionStopIntent(stop, stopDefinition);
+    if (stableJson(stopIntent) !== stableJson(readStopIntent)) throw new Error("Stop intent readback differed");
+    const terminalStop = invoke(stop, "terminal-stop", "state-record", event(stop, "terminal-stop", {
+      createdAt: "2026-08-13T13:33:02.000Z",
+      cursor: 0,
+      disposition: "paused-unknown",
+      kind: "terminal-stop",
+      sliceId: "slice-a",
+    }));
+    assertSucceeded(terminalStop);
+    clearMissionStopIntent(stop, stopDefinition);
+    if (readMissionStopIntent(stop, stopDefinition) != null) throw new Error("Stop intent cleanup failed");
+    const stopReplay = invoke(stop, "stop-replay", "state-replay");
+    assertSucceeded(stopReplay);
+
     fs.mkdirSync(options.evidenceRoot, { recursive: false });
     writeNew(path.join(options.evidenceRoot, "raw.json"), json({
       candidateId: options.candidateId,
-      commands: [preflight, archive, duplicateArchive, reconcile, checkpoint, successor, replay, missingReplay, unknownReplay].map((command) => ({
+      commands: [preflight, archive, duplicateArchive, reconcile, checkpoint, successor, replay, missingReplay, unknownReplay, terminalStop, stopReplay].map((command) => ({
         argv: command.argv,
         exitCode: command.exitCode,
         name: command.name,
@@ -352,6 +388,11 @@ async function run(options: Options): Promise<void> {
         leaseSha256: lease.lockSha256,
         replay: replayReport,
         staleLeaseArchiveCount: staleLeases.length,
+      },
+      stopIntent: {
+        disposition: parsed(stopReplay).status,
+        source: stopIntent.source,
+        state: "cleared-after-terminal-stop",
       },
       schemaVersion: 1,
       sources: [
@@ -370,6 +411,8 @@ async function run(options: Options): Promise<void> {
       restartReconciliation: "complete",
       schemaVersion: 1,
       status: "complete",
+      stopIntent: "recorded-read-cleared",
+      terminalPausedUnknown: "accepted",
       unknownWriter: "blocked",
     }));
   } finally {

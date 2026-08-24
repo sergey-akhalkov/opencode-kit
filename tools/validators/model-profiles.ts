@@ -20,7 +20,6 @@ const QUALITY_CREATOR_AGENTS = new Set([
   "general",
   "implementation-worker",
   "plan",
-  "troubleshooter",
 ]);
 
 export function validateModelProfiles(ctx: ValidationContext, root: string): void {

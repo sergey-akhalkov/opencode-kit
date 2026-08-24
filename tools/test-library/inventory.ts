@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import {
   asArray,
@@ -14,12 +15,45 @@ import {
   invokeProjectInventory,
   invokeValidator,
   isolatedOpenCodeEnv,
+  libraryRoot,
   newTempDir,
   parseJsonOutput,
   type TestCase,
   writeText,
   lines,
 } from "../test-helpers/library.ts";
+
+const countKeys = ["scanned", "ignored", "generated", "evidence", "vendor", "unreadable", "unsupported", "unknown"];
+
+function inventoryReport(args: string[]): Record<string, unknown> {
+  const result = invokeProjectInventory(args);
+  assertSuccess(result, "Project inventory should succeed.");
+  return asRecord(parseJsonOutput(result), "Project inventory JSON root should be an object.");
+}
+
+function assertCountShape(report: Record<string, unknown>): Record<string, unknown> {
+  const counts = asRecord(report.counts, "Project inventory counts should be an object.");
+  assertDeepEqual(Object.keys(counts), countKeys, "Project inventory count keys must stay in stable order.");
+  for (const key of countKeys) {
+    if (typeof counts[key] !== "number") {
+      throw new Error(`Count ${key} must be a number.\nCounts:\n${JSON.stringify(counts, null, 2)}`);
+    }
+  }
+  return counts;
+}
+
+function rootPaths(report: Record<string, unknown>, key: string): string[] {
+  return asArray(report[key], `Project inventory ${key} should be an array.`).map((row) => String(row.path));
+}
+
+function assertNoSharedRoots(report: Record<string, unknown>): void {
+  const sources = new Set(rootPaths(report, "sourceRoots"));
+  for (const testPath of rootPaths(report, "testRoots")) {
+    if (sources.has(testPath)) {
+      throw new Error(`Root ${testPath} was classified as both source and test.`);
+    }
+  }
+}
 
 export const inventoryTests: TestCase[] = [
   {
@@ -47,6 +81,164 @@ export const inventoryTests: TestCase[] = [
       findBucket(buildFiles, "path", "package.json");
       const sourceRoots = asArray(report.sourceRoots, "Project inventory source roots should be an array.");
       findBucket(sourceRoots, "path", "src");
+      findBucket(asArray(report.testRoots, "Project inventory test roots should be an array."), "path", "tests");
+      assertNoSharedRoots(report);
+      assertCountShape(report);
+    },
+  },
+  {
+    name: "project inventory classifies kit-like tools tests and production owners",
+    run: () => {
+      const project = newTempDir("project-inventory-self");
+      writeText(path.join(project, "package.json"), lines([
+        "{",
+        "  \"scripts\": {",
+        "    \"test\": \"node tools/test-app.ts\",",
+        "    \"app\": \"node tools/app.ts\"",
+        "  }",
+        "}",
+      ]));
+      writeText(path.join(project, "tools", "app.ts"), "export const app = 1;\n");
+      writeText(path.join(project, "tools", "test-app.ts"), "export const testApp = 1;\n");
+      writeText(path.join(project, "tools", "proofs", "lib", "helper.ts"), "export const helper = 1;\n");
+      const report = inventoryReport(["--root", project, "--format", "json"]);
+      const sourceRoots = asArray(report.sourceRoots, "Self-layout source roots should be an array.");
+      findBucket(sourceRoots, "path", "tools");
+      assertEqual(findBucket(sourceRoots, "path", "tools").reason, "maintained-tool-root", "tools should be a maintained production owner.");
+      const sourcePaths = rootPaths(report, "sourceRoots");
+      if (sourcePaths.includes(".")) {
+        throw new Error("Self-layout inventory must not treat nested tools files as root-level source.");
+      }
+      if (sourcePaths.length === 1 && sourcePaths[0] === "tools/proofs/lib") {
+        throw new Error("Self-layout inventory must not classify only tools/proofs/lib as source.");
+      }
+      const testRoot = findBucket(asArray(report.testRoots, "Self-layout test roots should be an array."), "path", "tools/test*.ts");
+      assertEqual(testRoot.reason, "maintained-test-pattern", "tools/test*.ts should be maintained test ownership.");
+      assertEqual(report.testRootEvidence, "classified", "Self-layout tests must have classified evidence.");
+      assertNoSharedRoots(report);
+      assertCountShape(report);
+    },
+  },
+  {
+    name: "project inventory keeps mixed conventional and tools roots distinct",
+    run: () => {
+      const project = newTempDir("project-inventory-mixed");
+      writeText(path.join(project, "package.json"), "{}\n");
+      writeText(path.join(project, "src", "index.ts"), "export const value = 1;\n");
+      writeText(path.join(project, "lib", "util.ts"), "export const util = 1;\n");
+      writeText(path.join(project, "tests", "index.test.ts"), "test('value', () => {});\n");
+      writeText(path.join(project, "tools", "app.ts"), "export const app = 1;\n");
+      writeText(path.join(project, "tools", "test-app.ts"), "export const testApp = 1;\n");
+      writeText(path.join(project, "index.ts"), "export const root = 1;\n");
+      writeText(path.join(project, "test-root.ts"), "export const rootTest = 1;\n");
+      const report = inventoryReport(["--root", project, "--format", "json"]);
+      const sourceRoots = asArray(report.sourceRoots, "Mixed source roots should be an array.");
+      findBucket(sourceRoots, "path", "src");
+      findBucket(sourceRoots, "path", "lib");
+      findBucket(sourceRoots, "path", "tools");
+      findBucket(sourceRoots, "path", ".");
+      const testRoots = asArray(report.testRoots, "Mixed test roots should be an array.");
+      findBucket(testRoots, "path", "tests");
+      findBucket(testRoots, "path", "tools/test*.ts");
+      findBucket(testRoots, "path", "test*.ts");
+      assertNoSharedRoots(report);
+    },
+  },
+  {
+    name: "project inventory excludes evidence vendor and generated test-like files",
+    run: () => {
+      const project = newTempDir("project-inventory-evidence");
+      writeText(path.join(project, "src", "index.ts"), "export const value = 1;\n");
+      writeText(path.join(project, "tests", "index.test.ts"), "test('value', () => {});\n");
+      writeText(path.join(project, "evidence", "archived.test.ts"), "test('archived', () => {});\n");
+      writeText(path.join(project, "implementation-evidence", "nested.test.ts"), "test('nested', () => {});\n");
+      writeText(path.join(project, ".review-evidence", "hidden.test.ts"), "test('hidden', () => {});\n");
+      writeText(path.join(project, "vendor", "pkg", "ignored.test.ts"), "test('vendor', () => {});\n");
+      writeText(path.join(project, "node_modules", "pkg", "dep.test.ts"), "test('dep', () => {});\n");
+      writeText(path.join(project, "dist", "generated.test.ts"), "test('generated', () => {});\n");
+      const report = inventoryReport(["--root", project, "--format", "json"]);
+      const testPaths = rootPaths(report, "testRoots");
+      assertDeepEqual(testPaths, ["tests"], "Evidence vendor and generated trees must not become test roots.");
+      const counts = assertCountShape(report);
+      if (Number(counts.evidence) < 3) {
+        throw new Error(`Expected at least three evidence exclusions.\nCounts:\n${JSON.stringify(counts, null, 2)}`);
+      }
+      if (Number(counts.vendor) < 2) {
+        throw new Error(`Expected vendor and node_modules exclusions.\nCounts:\n${JSON.stringify(counts, null, 2)}`);
+      }
+      if (Number(counts.generated) < 1) {
+        throw new Error(`Expected a generated exclusion.\nCounts:\n${JSON.stringify(counts, null, 2)}`);
+      }
+      const notes = report.notes;
+      if (!Array.isArray(notes) || !notes.includes("Exclusions are not proof of absence.")) {
+        throw new Error(`Exclusion note must remain explicit.\nNotes:\n${JSON.stringify(notes, null, 2)}`);
+      }
+    },
+  },
+  {
+    name: "project inventory reports no tests from documentation-only trees",
+    run: () => {
+      const project = newTempDir("project-inventory-empty");
+      writeText(path.join(project, "README.md"), "Run the tests in tests/ after cloning.\n");
+      const report = inventoryReport(["--root", project, "--format", "json"]);
+      assertDeepEqual(rootPaths(report, "testRoots"), [], "Documentation must not invent a test root.");
+      assertDeepEqual(rootPaths(report, "sourceRoots"), [], "Documentation must not invent a source root.");
+      assertEqual(report.testRootEvidence, "no-matching-test-files", "Empty projects must keep the no-test evidence basis.");
+      const markdown = invokeProjectInventory(["--root", project]);
+      assertSuccess(markdown, "Empty-project markdown inventory should succeed.");
+      assertOutputContains(markdown, "none (no-matching-test-files)", "Markdown must keep the no-test evidence basis.");
+    },
+  },
+  {
+    name: "project inventory fails closed on unreadable roots",
+    run: () => {
+      const missing = path.join(newTempDir("project-inventory-missing-parent"), "missing-root");
+      const missingResult = invokeProjectInventory(["--root", missing, "--format", "json"]);
+      assertFailure(missingResult, "Missing root must fail closed.");
+      assertOutputContains(missingResult, "Root is unreadable: <redacted>", "Missing root must keep a redacted identity.");
+      assertOutputContains(missingResult, "ENOENT", "Missing root must preserve the original cause.");
+      assertOutputExcludes(missingResult, missing, "Missing root must not leak the absolute path.");
+      assertOutputExcludes(missingResult, "opencode-dev-kit-project-inventory", "Unreadable roots must not emit a complete success map.");
+
+      const fileRoot = path.join(newTempDir("project-inventory-file-root"), "not-a-dir.txt");
+      writeText(fileRoot, "not a directory\n");
+      const fileResult = invokeProjectInventory(["--root", fileRoot, "--format", "json"]);
+      assertFailure(fileResult, "File root must fail closed.");
+      assertOutputContains(fileResult, "Root is not a directory: <redacted>", "File root must keep a redacted identity.");
+      assertOutputExcludes(fileResult, fileRoot, "File root must not leak the absolute path.");
+    },
+  },
+  {
+    name: "project inventory reports this repository production and tools tests",
+    run: () => {
+      const json = inventoryReport(["--root", libraryRoot, "--format", "json"]);
+      findBucket(asArray(json.sourceRoots, "Kit source roots should be an array."), "path", "tools");
+      findBucket(asArray(json.testRoots, "Kit test roots should be an array."), "path", "tools/test*.ts");
+      const sourcePaths = rootPaths(json, "sourceRoots");
+      if (sourcePaths.includes(".")) {
+        throw new Error("Kit inventory must not treat nested production files as root-level source.");
+      }
+      if (sourcePaths.length === 1 && sourcePaths[0] === "tools/proofs/lib") {
+        throw new Error("Kit inventory must not classify only tools/proofs/lib as source.");
+      }
+      assertEqual(json.root, "<redacted>", "Kit inventory must redact the root.");
+      assertEqual(json.testRootEvidence, "classified", "Kit tests must be classified.");
+      assertNoSharedRoots(json);
+      assertCountShape(json);
+      assertOutputExcludes(
+        { exitCode: 0, output: JSON.stringify(json) },
+        libraryRoot,
+        "Kit JSON must not include the absolute root.",
+      );
+
+      const markdown = invokeProjectInventory(["--root", libraryRoot]);
+      assertSuccess(markdown, "Kit markdown inventory should succeed.");
+      assertOutputContains(markdown, "tools/test*.ts", "Kit markdown must report tools/test*.ts ownership.");
+      assertOutputExcludes(markdown, "Test Roots: none", "Kit markdown must not claim there are no tests.");
+      if (/## Test Roots\r?\n\r?\nnone(?:\r?\n|$)/.test(markdown.output)) {
+        throw new Error(`Kit markdown must not report Test Roots none.\nOutput:\n${markdown.output}`);
+      }
+      assertOutputExcludes(markdown, libraryRoot, "Kit markdown must redact the absolute root.");
     },
   },
   {
@@ -178,12 +370,26 @@ export const inventoryTests: TestCase[] = [
     },
   },
   {
-    name: "instruction budget fails closed and does not assign kit maxima to consumers",
+    name: "instruction budget separates maintained boundaries and never materializes growth",
     run: () => {
       const kit = newTempDir("budget-kit");
       writeText(path.join(kit, "README.md"), "aaaaa");
       writeText(path.join(kit, "global", "AGENTS.md"), "bbbb");
+      writeText(path.join(kit, "global", "principles-of-work.md"), "cccc");
+      writeText(path.join(kit, "global", "commands", "demo.md"), "---\ndescription: Demo command.\n---\n\nCommand body.\n");
+      writeText(path.join(kit, "global", "skills", "demo", "SKILL.md"), "---\ndescription: Demo skill.\n---\n\nSkill body.\n");
       const seed = path.join(kit, "config", "instruction-budget.json");
+      writeText(seed, lines([
+        "{",
+        "  \"limits\": {",
+        "    \"discoveryMetadataTokenProxy\": 100,",
+        "    \"globalStartupTokenProxy\": 100,",
+        "    \"onDemandBodiesTokenProxy\": 100",
+        "  },",
+        "  \"schemaVersion\": 2",
+        "}",
+        "",
+      ]));
       const materialized = invokeInstructionBudget([
         "--root",
         kit,
@@ -193,33 +399,51 @@ export const inventoryTests: TestCase[] = [
         "json",
         "--materialize-seed",
       ]);
-      assertSuccess(materialized, "Reviewed budget seed materialization should pass on a disposable kit.");
+      assertSuccess(materialized, "Budget seed materialization should lower reviewed maxima on a disposable kit.");
+      const loweredSeed = fs.readFileSync(seed, "utf8");
+      const loweredReport = asRecord(parseJsonOutput(materialized), "Materialized budget JSON root should be an object.");
+      assertEqual(loweredReport.schemaVersion, 2, "Budget report must use schema version 2.");
+      const loweredBoundaries = asArray(loweredReport.boundaries, "Materialized boundaries should be an array.");
+      const startup = findBucket(loweredBoundaries, "name", "globalStartupTokenProxy");
+      const discovery = findBucket(loweredBoundaries, "name", "discoveryMetadataTokenProxy");
+      const onDemand = findBucket(loweredBoundaries, "name", "onDemandBodiesTokenProxy");
+      assertEqual(startup.actual, 2, "Both committed startup files, but no on-demand bodies, must count as global startup authority.");
+      if (Number(discovery.actual) < 1 || Number(onDemand.actual) < 1) {
+        throw new Error("Discovery metadata and on-demand body boundaries must measure maintained artifacts.");
+      }
 
-      writeText(path.join(kit, "README.md"), "aaaaaaaaa");
+      writeText(path.join(kit, "global", "AGENTS.md"), "bbbbgrow");
       const growth = invokeInstructionBudget(["--root", kit, "--seed", seed, "--format", "json"]);
       assertFailure(growth, "Token-proxy growth beyond the reviewed maximum must fail closed.");
       const growthReport = asRecord(parseJsonOutput(growth), "Failed budget JSON root should be an object.");
       assertEqual(growthReport.status, "failed", "Over-budget status must be failed.");
-      const catalog = findBucket(
+      const grownStartup = findBucket(
         asArray(growthReport.boundaries, "Budget boundaries should be an array."),
         "name",
-        "catalogTokenProxy",
+        "globalStartupTokenProxy",
       );
-      assertEqual(catalog.status, "failed", "Catalog boundary must fail when actual exceeds maximum.");
-      if (Number(catalog.actual) <= Number(catalog.maximum)) {
-        throw new Error(`Growth failure must report actual above maximum.\nBoundary:\n${JSON.stringify(catalog, null, 2)}`);
+      assertEqual(grownStartup.status, "failed", "Startup boundary must fail when actual exceeds maximum.");
+      if (Number(grownStartup.actual) <= Number(grownStartup.maximum)) {
+        throw new Error(`Growth failure must report actual above maximum.\nBoundary:\n${JSON.stringify(grownStartup, null, 2)}`);
       }
       assertEqual(
-        growthReport.regenerationCommand,
+        growthReport.materializationCommand,
         "npm run instruction:budget -- --materialize-seed",
-        "Budget failure must name the regeneration command.",
+        "Budget failure must name the lowering-only materialization command.",
       );
+
+      const rejectedMaterialization = invokeInstructionBudget([
+        "--root", kit, "--seed", seed, "--format", "json", "--materialize-seed",
+      ]);
+      assertFailure(rejectedMaterialization, "Materialization must reject growth above a reviewed maximum.");
+      assertOutputContains(rejectedMaterialization, "refuses to increase reviewed maxima", "Growth rejection must explain the protected boundary.");
+      assertEqual(fs.readFileSync(seed, "utf8"), loweredSeed, "Rejected growth must not mutate the reviewed seed.");
 
       writeText(seed, "{ malformed\n");
       const malformed = invokeInstructionBudget(["--root", kit, "--seed", seed, "--format", "json"]);
       assertFailure(malformed, "Malformed budget seed must fail closed.");
       assertOutputContains(malformed, "unreadable or malformed", "Malformed seed must keep a cause-preserving error.");
-      assertOutputContains(malformed, "--materialize-seed", "Malformed seed must name the regeneration command.");
+      assertOutputContains(malformed, "review it directly", "Malformed seed must require a reviewed direct correction.");
 
       const consumer = newTempDir("budget-consumer");
       writeText(path.join(consumer, "package.json"), lines([

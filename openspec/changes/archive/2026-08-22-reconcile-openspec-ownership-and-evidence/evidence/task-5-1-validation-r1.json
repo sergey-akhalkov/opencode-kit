@@ -1,0 +1,33 @@
+{
+  "candidateId": "reconcile-ownership-r1",
+  "environmentId": "windows-node24",
+  "commands": [
+    { "argv": ["npm.cmd", "run", "test:focused:openspec-change-inventory"], "status": 0 },
+    { "argv": ["npm.cmd", "run", "test:focused:openspec-gate"], "status": 0 },
+    { "argv": ["npm.cmd", "run", "test:focused:library"], "status": 0 },
+    { "argv": ["npm.cmd", "run", "validate:strict"], "status": 0, "observation": "OK: skills=29 agents=18 markdown=567 warnings=0 infos=2" },
+    { "argv": ["openspec.cmd", "validate", "reconcile-openspec-ownership-and-evidence", "--strict"], "status": 0, "observation": "Change is valid" },
+    { "argv": ["openspec.cmd", "validate", "--all"], "status": 1, "observation": "reduce-workflow-ceremony failed; unrelated-owner blocker" }
+  ],
+  "focusedSuitesGreen": [
+    "openspec-change-inventory",
+    "openspec-gate",
+    "library",
+    "model-routing",
+    "validation",
+    "contracts",
+    "code-quality",
+    "session-plugin",
+    "session-completion-guard",
+    "init",
+    "install",
+    "mcps",
+    "portable-process",
+    "windows-ci",
+    "workstation-config",
+    "prepush",
+    "consumer-outcome"
+  ],
+  "enforcement": "advisory",
+  "unrelatedOwnerBlocker": "reduce-workflow-ceremony"
+}

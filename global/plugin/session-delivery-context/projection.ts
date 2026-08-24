@@ -106,6 +106,61 @@ export type DeliveryContextTruncation = {
   surface: string;
 };
 
+export type DeliveryContextClaimEvidence = {
+  candidateId: string;
+  changeRef: string;
+  claimClass: "exact-case" | "finite-population" | "partitioned-domain" | "real-system-equivalence" | "compatibility-interchangeability" | "safety" | "phase-milestone";
+  claimId: string;
+  closureState: "supported" | "narrowed" | "blocked" | "unknown" | "stale";
+  coverageBasis: "exact-case" | "finite-population" | "partitioned-domain";
+  disposition: "supported" | "narrowed" | "blocked" | "unknown";
+  environmentId: string;
+  evidenceRefs: string[];
+  independentChallenge: {
+    evidenceRefs: string[];
+    required: boolean;
+    status: "complete" | "missing" | "unusable" | "not-required";
+  };
+  materialExclusions: string[];
+  maximumSupportedClaim: string;
+  observationBoundary: string;
+  outcomeRef: string;
+  paths: { baseline: string | null; candidate: string | null; production: string };
+  population: {
+    id: string;
+    members: string[];
+    requiredMembers: number;
+    supportedMembers: number;
+  };
+  realOracle: {
+    evidenceRefs: string[];
+    required: boolean;
+    status: "observed" | "unavailable" | "unknown" | "not-required";
+  };
+  statement: string;
+  unresolvedObservations: Array<{ code: string; detail: string; path: string }>;
+};
+
+export type DeliveryContextClaimOmission = {
+  changeRef: string | null;
+  code:
+    | "change-limit"
+    | "claim-limit"
+    | "evidence-index-invalid"
+    | "evidence-index-malformed"
+    | "evidence-index-missing"
+    | "evidence-index-oversized";
+  detail: string;
+  omitted: number;
+};
+
+export type DeliveryContextClaimEvidenceProjection = {
+  claims: DeliveryContextClaimEvidence[];
+  complete: boolean;
+  omissions: DeliveryContextClaimOmission[];
+  selection: "all-active" | "explicit" | "none";
+};
+
 export type DeliveryContextQuestionReply = {
   answers: string[][];
   eventRef: string;
@@ -136,6 +191,7 @@ export type SessionDeliveryContextResult = {
   assistantEvidence: DeliveryContextAssistantEvidence[];
   auditRefs: DeliveryContextAuditRef[];
   background: DeliveryContextBackgroundEvidence[];
+  claimEvidence: DeliveryContextClaimEvidenceProjection;
   descendants: DeliveryContextDescendantEvidence[];
   diffEvidence: DeliveryContextDiffEvidence[];
   generatedAt: string;
@@ -157,6 +213,8 @@ export type SessionDeliveryContextResult = {
       assistantEvidence: number;
       auditRefs: number;
       background: number;
+      claimEvidence: number;
+      claimOmissions: number;
       currentTodos: number;
       descendants: number;
       diffEvidence: number;
@@ -201,9 +259,11 @@ export type SessionDeliveryContextResult = {
 };
 
 export type ReadSessionDeliveryContextOptions = {
+  claimEvidence?: DeliveryContextClaimEvidenceProjection;
   dataDirs?: string[];
   dbPaths?: string[];
   generatedAt?: string;
+  projectRoot?: string;
   resolveRoot?: boolean;
   sessionId: string;
   useDefaultPaths?: boolean;
@@ -236,6 +296,7 @@ export function emptyResult(
     assistantEvidence: [],
     auditRefs: [],
     background: [],
+    claimEvidence: options.claimEvidence ?? { claims: [], complete: true, omissions: [], selection: "none" },
     descendants: [],
     diffEvidence: [],
     generatedAt: options.generatedAt ?? new Date().toISOString(),

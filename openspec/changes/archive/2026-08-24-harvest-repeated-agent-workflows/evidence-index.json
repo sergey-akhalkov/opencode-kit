@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 2,
+  "changeId": "harvest-repeated-agent-workflows",
+  "candidateId": "harvest-repeated-agent-workflows-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "9ca83a544f635fa2aae45faf1f2a39d762ec0b2e55c860dc0d3d703f3e76b559",
+      "result": "complete",
+      "candidateId": "harvest-repeated-agent-workflows-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "repo-candidate-snapshot",
+        "effects": [
+          "provider-free"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "repo-candidate-snapshot",
+        "effects": [
+          "provider-free"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/repo-candidate-snapshot.ts --help",
+        "status": 0,
+        "recordedAt": "2026-08-23T23:12:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-2-1-snapshot-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "snapshot-cli",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-2-1-snapshot-r1.md",
+          "bytes": 578,
+          "digest": "a958d17846f67e4f224c0cb62613fdd079dbac02b449dc47d4a6aae6ee1e6d15"
+        }
+      ]
+    },
+    {
+      "name": "matched-improvement",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/task-4-2-candidate-r3/evaluation.md",
+          "bytes": 508,
+          "digest": "ba5ded00cdec99a689f01b97573aba33f7b6c5bd1a021e9992c6220cc1ef11e6"
+        }
+      ]
+    },
+    {
+      "name": "local-handoff",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-5-2-handoff.md",
+          "bytes": 779,
+          "digest": "980f4133a1a440464aae3f2a1738e063ae9433d3ce7bc50bce2001b90320e511"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "HRAW-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The candidate reduces tool calls without weakening outcome or safety for the fixed maintained consumer and Git-inspection scenarios.",
+      "claimClass": "finite-population",
+      "candidateId": "harvest-repeated-agent-workflows-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "coverageBasis": "finite-population",
+      "population": {
+        "id": "hraw-maintained-scenarios-v1",
+        "members": [
+          "ordinary-small-greeting",
+          "openspec-add-json-output",
+          "git-candidate-inspection"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "Other operating systems, large repositories, submodules, alternate Git implementations, and workflows outside the maintained scenarios remain unmeasured."
+      },
+      "paths": {
+        "production": "loaded-main-session-and-snapshot-cli",
+        "baseline": "manual-git-status-diff-log",
+        "candidate": "portable-repo-candidate-snapshot"
+      },
+      "observationBoundary": "installed-opencode-consumer-and-git-fixtures",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "matched-improvement"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "ordinary-small-greeting",
+          "candidateId": "harvest-repeated-agent-workflows-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "loaded-main-session-and-snapshot-cli",
+            "baseline": "manual-git-status-diff-log",
+            "candidate": "portable-repo-candidate-snapshot"
+          },
+          "observationBoundary": "installed-opencode-consumer-and-git-fixtures",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "matched-improvement"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "openspec-add-json-output",
+          "candidateId": "harvest-repeated-agent-workflows-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "loaded-main-session-and-snapshot-cli",
+            "baseline": "manual-git-status-diff-log",
+            "candidate": "portable-repo-candidate-snapshot"
+          },
+          "observationBoundary": "installed-opencode-consumer-and-git-fixtures",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "matched-improvement"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "git-candidate-inspection",
+          "candidateId": "harvest-repeated-agent-workflows-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "loaded-main-session-and-snapshot-cli",
+            "baseline": "manual-git-status-diff-log",
+            "candidate": "portable-repo-candidate-snapshot"
+          },
+          "observationBoundary": "installed-opencode-consumer-and-git-fixtures",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "snapshot-cli"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "snapshot-cli",
+        "matched-improvement",
+        "local-handoff"
+      ],
+      "materialExclusions": [
+        "Universal model behavior",
+        "Universal token reduction",
+        "Improvement for every repository workflow"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "matched-improvement"
+        ]
+      },
+      "maximumSupportedClaim": "The two maintained consumer scenarios on this Windows configured-provider capture plus the snapshot CLI Git fixture only.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    }
+  ]
+}

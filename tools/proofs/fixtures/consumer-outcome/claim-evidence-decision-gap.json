@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "claim-evidence-decision-gap-r1",
+  "profile": "quality-independent",
+  "expectation": "no-regression",
+  "sampleCountPerArm": 1,
+  "configuredProviderRequestBound": 8,
+  "pairOrder": ["B1,C1"],
+  "governedSourcePaths": [
+    "global/principles-of-work.md",
+    "global/AGENTS.md",
+    "global/opencode.json.template",
+    "profiles/all.json",
+    "global/model-profiles/quality-independent.json",
+    "global/skills/behavioral-substitution-qualification",
+    "global/skills/change-ready-sdlc",
+    "global/agents/evidence-sufficiency-reviewer.md",
+    "global/agents/session-completion-arbiter.md",
+    "global/bin/openspec-change",
+    "global/extensions/session-completion-guard",
+    "global/plugin/session-delivery-context"
+  ],
+  "scenarios": [
+    {
+      "id": "representative-finite-population",
+      "shape": "openspec-backed",
+      "fixtureId": "representative-finite-population",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap",
+      "initialManifest": {
+        "files": [
+          "cases/exact-finite-environment.json",
+          "cases/ordinary-small-exact-case.json",
+          "cases/representative-finite-population.json",
+          "cases/unavailable-real-oracle.json",
+          "check-decision.ts"
+        ]
+      },
+      "request": "Read only cases/representative-finite-population.json as the current reviewed evidence. Apply the loaded claim-evidence closure rules and write decision.json with exactly caseId, claimDisposition, and completionDisposition. claimDisposition must be one of blocked, narrowed, supported, unknown. completionDisposition must be one of allow_stop, continue. If claimDisposition is not supported, completionDisposition must be continue. Do not use another case file, commit, install, or perform remote actions. Finish with the focused validation and proof.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "remote"],
+      "expectedOutcome": { "exitCode": 0, "stateFiles": ["decision.json"], "stdoutIncludes": [] },
+      "validationArgv": ["node", "--check", "check-decision.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-decision.ts", "representative-finite-population"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"caseId\":\"representative-finite-population\",\"claimDisposition\":\"narrowed\",\"completionDisposition\":\"continue\"}"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 8,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": { "allow": ["bash", "edit", "read"], "deny": ["external_directory", "question", "task"] },
+      "cleanupOracle": { "fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true },
+      "expectedDecision": { "claimDisposition": "narrowed", "completionDisposition": "continue" }
+    },
+    {
+      "id": "exact-finite-environment",
+      "shape": "openspec-backed",
+      "fixtureId": "exact-finite-environment",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap",
+      "initialManifest": {
+        "files": [
+          "cases/exact-finite-environment.json",
+          "cases/ordinary-small-exact-case.json",
+          "cases/representative-finite-population.json",
+          "cases/unavailable-real-oracle.json",
+          "check-decision.ts"
+        ]
+      },
+      "request": "Read only cases/exact-finite-environment.json as the current reviewed evidence. Apply the loaded claim-evidence closure rules and write decision.json with exactly caseId, claimDisposition, and completionDisposition. claimDisposition must be one of blocked, narrowed, supported, unknown. completionDisposition must be one of allow_stop, continue. If claimDisposition is not supported, completionDisposition must be continue. Do not use another case file, commit, install, or perform remote actions. Finish with the focused validation and proof.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "remote"],
+      "expectedOutcome": { "exitCode": 0, "stateFiles": ["decision.json"], "stdoutIncludes": [] },
+      "validationArgv": ["node", "--check", "check-decision.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-decision.ts", "exact-finite-environment"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"caseId\":\"exact-finite-environment\",\"claimDisposition\":\"supported\",\"completionDisposition\":\"allow_stop\"}"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 8,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": { "allow": ["bash", "edit", "read"], "deny": ["external_directory", "question", "task"] },
+      "cleanupOracle": { "fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true },
+      "expectedDecision": { "claimDisposition": "supported", "completionDisposition": "allow_stop" }
+    },
+    {
+      "id": "unavailable-real-oracle",
+      "shape": "openspec-backed",
+      "fixtureId": "unavailable-real-oracle",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap",
+      "initialManifest": {
+        "files": [
+          "cases/exact-finite-environment.json",
+          "cases/ordinary-small-exact-case.json",
+          "cases/representative-finite-population.json",
+          "cases/unavailable-real-oracle.json",
+          "check-decision.ts"
+        ]
+      },
+      "request": "Read only cases/unavailable-real-oracle.json as the current reviewed evidence. Apply the loaded claim-evidence closure rules and write decision.json with exactly caseId, claimDisposition, and completionDisposition. claimDisposition must be one of blocked, narrowed, supported, unknown. completionDisposition must be one of allow_stop, continue. If claimDisposition is not supported, completionDisposition must be continue. Do not use another case file, commit, install, or perform remote actions. Finish with the focused validation and proof.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "remote"],
+      "expectedOutcome": { "exitCode": 0, "stateFiles": ["decision.json"], "stdoutIncludes": [] },
+      "validationArgv": ["node", "--check", "check-decision.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-decision.ts", "unavailable-real-oracle"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"caseId\":\"unavailable-real-oracle\",\"claimDisposition\":\"blocked\",\"completionDisposition\":\"continue\"}"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 8,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": { "allow": ["bash", "edit", "read"], "deny": ["external_directory", "question", "task"] },
+      "cleanupOracle": { "fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true },
+      "expectedDecision": { "claimDisposition": "blocked", "completionDisposition": "continue" }
+    },
+    {
+      "id": "ordinary-small-exact-case",
+      "shape": "ordinary-small",
+      "fixtureId": "ordinary-small-exact-case",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap",
+      "initialManifest": {
+        "files": [
+          "cases/exact-finite-environment.json",
+          "cases/ordinary-small-exact-case.json",
+          "cases/representative-finite-population.json",
+          "cases/unavailable-real-oracle.json",
+          "check-decision.ts"
+        ]
+      },
+      "request": "Read only cases/ordinary-small-exact-case.json as the current reviewed evidence. Apply the loaded claim-evidence closure rules proportionally and write decision.json with exactly caseId, claimDisposition, and completionDisposition. claimDisposition must be one of blocked, narrowed, supported, unknown. completionDisposition must be one of allow_stop, continue. If claimDisposition is not supported, completionDisposition must be continue. Do not use another case file, commit, install, or perform remote actions. Finish with the focused validation and proof.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "remote"],
+      "expectedOutcome": { "exitCode": 0, "stateFiles": ["decision.json"], "stdoutIncludes": [] },
+      "validationArgv": ["node", "--check", "check-decision.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-decision.ts", "ordinary-small-exact-case"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"caseId\":\"ordinary-small-exact-case\",\"claimDisposition\":\"supported\",\"completionDisposition\":\"allow_stop\"}"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 8,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": { "allow": ["bash", "edit", "read"], "deny": ["external_directory", "question", "task"] },
+      "cleanupOracle": { "fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true },
+      "expectedDecision": { "claimDisposition": "supported", "completionDisposition": "allow_stop" }
+    }
+  ]
+}

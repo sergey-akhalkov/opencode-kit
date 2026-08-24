@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "mode": "replay",
+  "pack": "claim-evidence-decision-gap-r1",
+  "input": "bundle.json",
+  "expectation": "no-regression",
+  "liveCalls": 0,
+  "status": "passed-no-regression",
+  "decisionOracleCount": 8,
+  "decisionOraclesPassed": 8,
+  "decisionDigest": "6821e5348faf3803d7de5a7385f6cf4237c3869b397a536d8337c7d6bf1fdb01",
+  "evaluationDigest": "26f82a5cc26b0b2c45d888795528ceaa250b488755c156c8b6f0b74ea07ecc06",
+  "scenarioDigest": "bb5205f9e0e883b2d76be7b19b9f2f5dc231909c1f8f44ef2564b99cf72833dc",
+  "sourceDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+  "pointerMutated": false,
+  "cleanup": "complete"
+}

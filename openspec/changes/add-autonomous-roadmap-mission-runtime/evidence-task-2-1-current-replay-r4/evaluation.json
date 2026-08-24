@@ -1,0 +1,22 @@
+{
+  "candidateId": "task-2-1-current-r4",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "disposition": "completed",
+  "guardState": "passed",
+  "inputRawSha256": "ffdd8044cd5f575fee21747e550f2c1bf022de602aa547819b39dc1f14936825",
+  "liveCalls": 0,
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "complete",
+  "providerCalls": {
+    "arbiter": 1,
+    "primary": 1
+  },
+  "replaySource": "evidence-task-2-1-current-r4",
+  "rootSession": "created-and-deleted",
+  "scenario": "continue",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unlockCondition": null
+}

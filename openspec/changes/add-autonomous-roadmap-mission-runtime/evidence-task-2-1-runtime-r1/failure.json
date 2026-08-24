@@ -1,0 +1,40 @@
+{
+  "candidateId": "task-2-1-r1",
+  "cleanup": "failed",
+  "error": "EBUSY: resource busy or locked, rm 'C:\\Users\\noilw\\AppData\\Local\\Temp\\roadmap-runtime-proof-RHst1s'",
+  "executor": {
+    "argv": [
+      "bun.exe",
+      "<source-root>\\global\\bin\\roadmap-mission-session-executor.ts",
+      "execute",
+      "--root",
+      "<project-root>",
+      "--server-url",
+      "http://127.0.0.1:55190",
+      "--mission",
+      "mission.json",
+      "--slice",
+      "slice-a",
+      "--attempt",
+      "1",
+      "--result",
+      "evidence/mission/attempt-1/result.json",
+      "--timeout-ms",
+      "30000"
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "stderr": "",
+    "stdout": "{\n  \"attempt\": 1,\n  \"changeId\": \"change-a\",\n  \"cleanup\": \"complete\",\n  \"definitionDigest\": \"8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827\",\n  \"disposition\": \"completed\",\n  \"errorClass\": \"none\",\n  \"errorMessage\": null,\n  \"evidenceRefs\": [\n    \"evidence/mission/attempt-1/result.opsx-apply.json\",\n    \"evidence/mission/attempt-1/result.runtime-inspection.json\"\n  ],\n  \"guardState\": \"passed\",\n  \"missionId\": \"same-runtime-proof\",\n  \"phases\": [\n    {\n      \"command\": \"opsx-apply\",\n      \"evidenceRef\": \"evidence/mission/attempt-1/result.opsx-apply.json\",\n      \"status\": \"completed\"\n    }\n  ],\n  \"questionDisposition\": \"none\",\n  \"rootSessionRef\": \"ses_ff3c3ba00ffeI5NaAs0X0qcGpF\",\n  \"runtimeRef\": \"7e42de936d0b34885f48cc35660ad2f88bad4c248e08d61963b7d824ebd50c42\",\n  \"schemaVersion\": 1,\n  \"sliceId\": \"slice-a\",\n  \"tool\": \"roadmap-mission-session-executor\",\n  \"writerClosure\": \"terminal\"\n}\n"
+  },
+  "provider": {
+    "arbiterCalls": 1,
+    "primaryCalls": 1,
+    "requestKinds": [
+      "primary",
+      "arbiter-1"
+    ]
+  },
+  "schemaVersion": 1,
+  "status": "failed"
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "establish-practice-owner-agents-planning-r1",
+  "mode": "preflight",
+  "providerCalls": 0,
+  "scenarioIds": [
+    "trivial-no-trigger",
+    "single-core-trigger",
+    "independent-multi-trigger",
+    "protocol-wire-boundary",
+    "protected-action",
+    "unavailable-owner",
+    "practice-maintenance",
+    "owner-self-change"
+  ],
+  "agentCount": 19,
+  "missingOwners": [
+    "execution-safety-reviewer"
+  ],
+  "cleanup": "complete"
+}

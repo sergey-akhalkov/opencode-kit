@@ -1,0 +1,15 @@
+{
+  "archiveCount": 0,
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+  "cleanup": "complete",
+  "configuredProviderCalls": 1,
+  "controllerProcesses": 1,
+  "localRecoverableFailures": 1,
+  "processRestart": "not-proven",
+  "protectedSlice": "not-proven",
+  "retrospectiveTasks": null,
+  "schemaVersion": 1,
+  "sessionCleanup": "blocked",
+  "simulationCalls": 0,
+  "status": "blocked"
+}

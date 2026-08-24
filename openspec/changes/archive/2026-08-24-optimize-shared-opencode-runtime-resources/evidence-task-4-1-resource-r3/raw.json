@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "providerCalls": 0,
+  "projects": [
+    {
+      "projectId": "global",
+      "exact": false
+    },
+    {
+      "projectId": "global",
+      "exact": false
+    }
+  ],
+  "resourceSamplesMiB": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "candidateMedianPrivateMiB": null,
+  "improvement": null,
+  "secretSafe": true,
+  "cleanup": {
+    "complete": true
+  }
+}

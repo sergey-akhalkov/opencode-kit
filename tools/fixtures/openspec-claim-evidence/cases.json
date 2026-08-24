@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "lanes": [
+    { "name": "product", "kind": "product", "files": [] },
+    { "name": "real-oracle", "kind": "environment", "files": [] },
+    { "name": "review", "kind": "evaluator", "files": [] }
+  ],
+  "baseClaim": {
+    "claimId": "claim-exact",
+    "outcomeRef": "outcome-exact",
+    "statement": "The declared exact case produces the observed result.",
+    "claimClass": "exact-case",
+    "candidateId": "demo-r1",
+    "environmentId": "demo-env",
+    "coverageBasis": "exact-case",
+    "population": {
+      "id": "population-exact-r1",
+      "members": ["item-a"],
+      "partitionRule": null,
+      "materialClasses": [],
+      "residualSpace": null
+    },
+    "paths": {
+      "production": "production-path",
+      "baseline": null,
+      "candidate": null
+    },
+    "observationBoundary": "result-state",
+    "realOracle": {
+      "required": false,
+      "status": "not-required",
+      "evidenceRefs": []
+    },
+    "observations": [
+      {
+        "memberId": "item-a",
+        "candidateId": "demo-r1",
+        "environmentId": "demo-env",
+        "paths": { "production": "production-path", "baseline": null, "candidate": null },
+        "observationBoundary": "result-state",
+        "status": "supported",
+        "terminal": true,
+        "evidenceRefs": ["product"],
+        "unresolvedObservations": []
+      }
+    ],
+    "evidenceRefs": ["product"],
+    "materialExclusions": [],
+    "unknowns": [],
+    "independentChallenge": {
+      "required": false,
+      "status": "not-required",
+      "evidenceRefs": []
+    },
+    "maximumSupportedClaim": "The exact item-a result in demo-env.",
+    "narrowingAccepted": false,
+    "disposition": "supported"
+  },
+  "cases": [
+    {
+      "id": "exact-case",
+      "replace": {},
+      "expected": { "parse": "valid", "state": "supported", "reasonCodes": [] }
+    },
+    {
+      "id": "complete-finite-population",
+      "replace": {
+        "claimId": "claim-finite-complete",
+        "outcomeRef": "outcome-finite",
+        "statement": "Every declared finite member produces the observed result.",
+        "claimClass": "finite-population",
+        "coverageBasis": "finite-population",
+        "population": {
+          "id": "population-finite-r1",
+          "members": ["item-a", "item-b"],
+          "partitionRule": null,
+          "materialClasses": [],
+          "residualSpace": null
+        },
+        "observations": [
+          {
+            "memberId": "item-a",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "production-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          },
+          {
+            "memberId": "item-b",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "production-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          }
+        ],
+        "evidenceRefs": ["product", "review"],
+        "independentChallenge": { "required": true, "status": "complete", "evidenceRefs": ["review"] },
+        "maximumSupportedClaim": "The two-member population in demo-env.",
+        "disposition": "supported"
+      },
+      "expected": { "parse": "valid", "state": "supported", "reasonCodes": [] }
+    },
+    {
+      "id": "missing-member",
+      "replace": {
+        "claimId": "claim-missing-member",
+        "outcomeRef": "outcome-finite",
+        "statement": "Every declared finite member produces the observed result.",
+        "claimClass": "finite-population",
+        "coverageBasis": "finite-population",
+        "population": {
+          "id": "population-finite-r1",
+          "members": ["item-a", "item-b"],
+          "partitionRule": null,
+          "materialClasses": [],
+          "residualSpace": null
+        },
+        "observations": [
+          {
+            "memberId": "item-a",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "production-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          }
+        ],
+        "evidenceRefs": ["product", "review"],
+        "independentChallenge": { "required": true, "status": "complete", "evidenceRefs": ["review"] },
+        "maximumSupportedClaim": "Only item-a in demo-env.",
+        "disposition": "blocked"
+      },
+      "expected": { "parse": "valid", "state": "blocked", "reasonCodes": ["missing-member"] }
+    },
+    {
+      "id": "partition-without-rule",
+      "replace": {
+        "claimId": "claim-partition-unknown",
+        "outcomeRef": "outcome-partition",
+        "statement": "The reviewed material classes cover the declared domain.",
+        "claimClass": "partitioned-domain",
+        "coverageBasis": "partitioned-domain",
+        "population": {
+          "id": "population-partition-r1",
+          "members": ["class-a"],
+          "partitionRule": null,
+          "materialClasses": ["class-a"],
+          "residualSpace": "Unrepresented inputs are outside the claim."
+        },
+        "observations": [
+          {
+            "memberId": "class-a",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "production-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          }
+        ],
+        "evidenceRefs": ["product", "review"],
+        "independentChallenge": { "required": true, "status": "complete", "evidenceRefs": ["review"] },
+        "maximumSupportedClaim": "Only the observed class-a case.",
+        "disposition": "unknown"
+      },
+      "expected": { "parse": "valid", "state": "unknown", "reasonCodes": ["partition-rule-missing"] }
+    },
+    {
+      "id": "mismatched-path",
+      "replace": {
+        "claimId": "claim-path-mismatch",
+        "outcomeRef": "outcome-finite",
+        "statement": "The declared member is proven through the required production path.",
+        "claimClass": "finite-population",
+        "coverageBasis": "finite-population",
+        "population": {
+          "id": "population-path-r1",
+          "members": ["item-a"],
+          "partitionRule": null,
+          "materialClasses": [],
+          "residualSpace": null
+        },
+        "observations": [
+          {
+            "memberId": "item-a",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "different-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          }
+        ],
+        "evidenceRefs": ["product", "review"],
+        "independentChallenge": { "required": true, "status": "complete", "evidenceRefs": ["review"] },
+        "maximumSupportedClaim": "No matching-path claim.",
+        "disposition": "blocked"
+      },
+      "expected": { "parse": "valid", "state": "blocked", "reasonCodes": ["path-mismatch"] }
+    },
+    {
+      "id": "unavailable-real-oracle",
+      "replace": {
+        "claimId": "claim-real-oracle-unavailable",
+        "outcomeRef": "outcome-equivalence",
+        "statement": "Baseline and candidate are equivalent at the owning real boundary.",
+        "claimClass": "real-system-equivalence",
+        "paths": { "production": "owning-boundary", "baseline": "baseline-path", "candidate": "candidate-path" },
+        "population": {
+          "id": "population-equivalence-r1",
+          "members": ["item-a"],
+          "partitionRule": null,
+          "materialClasses": [],
+          "residualSpace": null
+        },
+        "realOracle": { "required": true, "status": "unavailable", "evidenceRefs": [] },
+        "observations": [
+          {
+            "memberId": "item-a",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "owning-boundary", "baseline": "baseline-path", "candidate": "candidate-path" },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          }
+        ],
+        "evidenceRefs": ["product", "review"],
+        "independentChallenge": { "required": true, "status": "complete", "evidenceRefs": ["review"] },
+        "maximumSupportedClaim": "Offline item-a agreement only.",
+        "disposition": "blocked"
+      },
+      "expected": { "parse": "valid", "state": "blocked", "reasonCodes": ["real-oracle-unavailable"] }
+    },
+    {
+      "id": "narrowed",
+      "replace": {
+        "claimId": "claim-narrowed",
+        "outcomeRef": "outcome-finite",
+        "statement": "Every declared finite member produces the observed result.",
+        "claimClass": "finite-population",
+        "coverageBasis": "finite-population",
+        "population": {
+          "id": "population-narrowed-r1",
+          "members": ["item-a", "item-b"],
+          "partitionRule": null,
+          "materialClasses": [],
+          "residualSpace": null
+        },
+        "observations": [
+          {
+            "memberId": "item-a",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "production-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          }
+        ],
+        "evidenceRefs": ["product", "review"],
+        "independentChallenge": { "required": true, "status": "complete", "evidenceRefs": ["review"] },
+        "maximumSupportedClaim": "Only item-a in demo-env.",
+        "narrowingAccepted": true,
+        "disposition": "narrowed"
+      },
+      "expected": { "parse": "valid", "state": "narrowed", "reasonCodes": ["missing-member"] }
+    },
+    {
+      "id": "stale",
+      "replace": {
+        "claimId": "claim-stale",
+        "candidateId": "prior-r1",
+        "observations": [
+          {
+            "memberId": "item-a",
+            "candidateId": "prior-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "production-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "supported",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": []
+          }
+        ]
+      },
+      "expected": { "parse": "valid", "state": "stale", "reasonCodes": ["stale-candidate", "stale-row-candidate"] }
+    },
+    {
+      "id": "duplicate-member",
+      "replace": {
+        "claimId": "claim-duplicate",
+        "population": {
+          "id": "population-duplicate-r1",
+          "members": ["item-a", "item-a"],
+          "partitionRule": null,
+          "materialClasses": [],
+          "residualSpace": null
+        }
+      },
+      "expected": { "parse": "invalid", "issueText": "Duplicate value: item-a." }
+    },
+    {
+      "id": "unknown-observation",
+      "replace": {
+        "claimId": "claim-unknown",
+        "observations": [
+          {
+            "memberId": "item-a",
+            "candidateId": "demo-r1",
+            "environmentId": "demo-env",
+            "paths": { "production": "production-path", "baseline": null, "candidate": null },
+            "observationBoundary": "result-state",
+            "status": "unknown",
+            "terminal": true,
+            "evidenceRefs": ["product"],
+            "unresolvedObservations": ["Required observation is unavailable."]
+          }
+        ],
+        "maximumSupportedClaim": "No terminal result beyond the declared evidence.",
+        "disposition": "unknown"
+      },
+      "expected": { "parse": "valid", "state": "unknown", "reasonCodes": ["member-unknown", "unresolved-observation"] }
+    }
+  ]
+}

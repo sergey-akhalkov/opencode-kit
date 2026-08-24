@@ -1,0 +1,8 @@
+{"at":"2026-08-20T19:30:39.088Z","name":"capture-start","scenario":"owner-required"}
+{"at":"2026-08-20T19:31:13.334Z","name":"server-ready","pid":16864}
+{"at":"2026-08-20T19:31:13.335Z","name":"executor-start"}
+{"at":"2026-08-20T19:31:28.476Z","name":"executor-exit","exitCode":3,"signal":null}
+{"at":"2026-08-20T19:31:28.493Z","name":"raw-ready"}
+{"at":"2026-08-20T19:31:28.674Z","name":"sessions-clean"}
+{"at":"2026-08-20T19:31:29.312Z","name":"server-stopped"}
+{"at":"2026-08-20T19:31:30.911Z","name":"fixture-removed"}

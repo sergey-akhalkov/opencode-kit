@@ -1,0 +1,34 @@
+{
+  "candidateId": "task-4-1-integrated-diagnose-attach-r2",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": false,
+    "controllerBufferCaptured": false,
+    "executorResultCaptured": false,
+    "sessionCleanup": false,
+    "stateCaptured": false
+  },
+  "liveCalls": 0,
+  "productOutcome": {
+    "candidateId": "task-4-1-integrated-diagnose-attach-r2",
+    "checks": {
+      "archiveReadback": false,
+      "candidateMatched": true,
+      "cleanupComplete": false,
+      "controllerTerminal": false,
+      "executorTerminalClear": false,
+      "localCheckpoint": false,
+      "markerValidated": false,
+      "noRemote": false,
+      "serverIsolated": false,
+      "sessionCleanup": false,
+      "visibleController": true
+    },
+    "liveCalls": 0,
+    "schemaVersion": 1,
+    "status": "blocked"
+  },
+  "proof": false,
+  "schemaVersion": 1,
+  "status": "blocked"
+}

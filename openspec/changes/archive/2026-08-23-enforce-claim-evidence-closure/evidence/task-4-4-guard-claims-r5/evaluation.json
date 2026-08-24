@@ -1,0 +1,18 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "cleanup": "complete",
+  "decisions": {
+    "ordinarySmall": "allow_stop",
+    "representativeOverclaim": "continue",
+    "supportedExact": "allow_stop",
+    "truncatedClosure": "continue"
+  },
+  "providerCalls": {
+    "arbiter": 4,
+    "external": 0,
+    "primary": 8
+  },
+  "scenario": "claims",
+  "schemaVersion": 1,
+  "status": "complete"
+}

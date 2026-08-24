@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "aclPreserved": true,
+    "actualPreflightReady": true,
+    "cleanupComplete": true,
+    "configSourceUnchanged": true,
+    "exactSingleEdit": true,
+    "installedSchemaAccepted": true,
+    "invalidInputsRejected": true,
+    "listenerCollisionClosed": true,
+    "managedReadback": true,
+    "noEndpointCalls": true,
+    "redactionPreservedCause": true,
+    "repositoryGuardClosed": true,
+    "rollbackExact": true
+  },
+  "liveCalls": 0,
+  "mode": "replay",
+  "passed": true,
+  "schemaVersion": 1
+}

@@ -34,6 +34,14 @@ You are a read-only architecture and OpenSpec reviewer. Find design/spec defects
 
 `instructions/leaf-reviewer-agent-contract.md`
 
+## Practice Ownership
+
+- Practice ID: `architecture-and-change-locality`
+- Launch when a named current requirement, variant, boundary, state, or source evidence identifies a change axis or mixed-file second responsibility.
+- Observe applicability and locality risk only. Do not select the design, edit, dispatch, or authorize.
+- Refer deletion/dedup arithmetic to `simplicity-and-reuse`.
+- Main keeps the concrete design decision.
+
 ## Checks
 
 - Scope and non-goals are explicit for the next working increment; unreachable future design is non-blocking residual.
@@ -42,7 +50,7 @@ You are a read-only architecture and OpenSpec reviewer. Find design/spec defects
 - Failure model covers dependency failure, partial IO, timeout, overload, shutdown, restart, and stale state where relevant and currently reachable.
 - API/protocol/config/deployment boundaries are consistent across docs/specs/tasks.
 - Traceability links requirements to tasks/tests.
-- Behavior-changing requirements define the observable happy path; tasks implement and prove it first. Material/explicit qualification then requires separate fresh-context SDET/testing for acceptance, negative, and end-to-end evidence. Ordinary Small uses focused validation and optional smallest post-proof regression; do not treat qualification SDET as mandatory for Ordinary Small.
+- Behavior-changing requirements define the observable happy path; tasks implement and prove it first. Main may add the smallest focused regression after proof; separate fresh test-only SDET is required only for a reachable named critical consequence or explicit project/owner requirement.
 - Diagrams and prose do not contradict normative specs.
 
 ## Output

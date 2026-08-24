@@ -1,0 +1,22 @@
+{
+  "candidateId": "task-2-2-transient-r1",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "disposition": "transient",
+  "guardState": "unknown",
+  "inputRawSha256": "aea2ec43ccc39f8639ec289985c668509859dbf38543725c4eaf75dd9da66884",
+  "liveCalls": 0,
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "complete",
+  "providerCalls": {
+    "arbiter": 0,
+    "primary": 4
+  },
+  "replaySource": "evidence-task-2-2-transient-r1",
+  "rootSession": "created-and-deleted",
+  "scenario": "transient",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unlockCondition": null
+}

@@ -1,0 +1,40 @@
+{
+  "candidateId": "task-2-2-owner-r4",
+  "cleanup": "complete",
+  "error": "Session executor result differed: {\"attempt\":1,\"changeId\":\"change-a\",\"cleanup\":\"complete\",\"definitionDigest\":\"8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827\",\"disposition\":\"terminal\",\"errorClass\":\"terminal\",\"errorMessage\":\"completion guard did not reach a terminal state; last=auditing\",\"evidenceRefs\":[\"evidence/mission/attempt-1/result.opsx-apply.json\",\"evidence/mission/attempt-1/result.runtime-inspection.json\"],\"guardState\":\"unknown\",\"missionId\":\"same-runtime-proof\",\"phases\":[{\"command\":\"opsx-apply\",\"evidenceRef\":\"evidence/mission/attempt-1/result.opsx-apply.json\",\"status\":\"completed\"}],\"questionDisposition\":\"none\",\"rootSessionRef\":\"ses_ff3809e35ffePcZQPL2MAq3Hjx\",\"runtimeRef\":\"1cbabcf1c67ad07081d9f0025a33c8295761de74e23255c9fc9397cd3a15eba0\",\"schemaVersion\":1,\"sliceId\":\"slice-a\",\"tool\":\"roadmap-mission-session-executor\",\"writerClosure\":\"terminal\"}",
+  "executor": {
+    "argv": [
+      "bun.exe",
+      "<source-root>\\global\\bin\\roadmap-mission-session-executor.ts",
+      "execute",
+      "--root",
+      "<project-root>",
+      "--server-url",
+      "http://127.0.0.1:49221",
+      "--mission",
+      "mission.json",
+      "--slice",
+      "slice-a",
+      "--attempt",
+      "1",
+      "--result",
+      "evidence/mission/attempt-1/result.json",
+      "--timeout-ms",
+      "30000"
+    ],
+    "exitCode": 1,
+    "signal": null,
+    "stderr": "[roadmap-mission-executor slice-a/opsx-apply] starting\n",
+    "stdout": "{\n  \"attempt\": 1,\n  \"changeId\": \"change-a\",\n  \"cleanup\": \"complete\",\n  \"definitionDigest\": \"8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827\",\n  \"disposition\": \"terminal\",\n  \"errorClass\": \"terminal\",\n  \"errorMessage\": \"completion guard did not reach a terminal state; last=auditing\",\n  \"evidenceRefs\": [\n    \"evidence/mission/attempt-1/result.opsx-apply.json\",\n    \"evidence/mission/attempt-1/result.runtime-inspection.json\"\n  ],\n  \"guardState\": \"unknown\",\n  \"missionId\": \"same-runtime-proof\",\n  \"phases\": [\n    {\n      \"command\": \"opsx-apply\",\n      \"evidenceRef\": \"evidence/mission/attempt-1/result.opsx-apply.json\",\n      \"status\": \"completed\"\n    }\n  ],\n  \"questionDisposition\": \"none\",\n  \"rootSessionRef\": \"ses_ff3809e35ffePcZQPL2MAq3Hjx\",\n  \"runtimeRef\": \"1cbabcf1c67ad07081d9f0025a33c8295761de74e23255c9fc9397cd3a15eba0\",\n  \"schemaVersion\": 1,\n  \"sliceId\": \"slice-a\",\n  \"tool\": \"roadmap-mission-session-executor\",\n  \"writerClosure\": \"terminal\"\n}\n"
+  },
+  "provider": {
+    "arbiterCalls": 1,
+    "primaryCalls": 1,
+    "requestKinds": [
+      "primary",
+      "arbiter-1"
+    ]
+  },
+  "schemaVersion": 1,
+  "status": "failed"
+}

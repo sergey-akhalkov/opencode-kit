@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "cleanup": {
+    "hungChildGone": true,
+    "largeDbRemoved": true
+  },
+  "hungChild": {
+    "elapsedMs": 278,
+    "errorCode": "ETIMEDOUT",
+    "signal": "SIGTERM",
+    "status": null,
+    "timedOut": true,
+    "timeoutMs": 250
+  },
+  "largeDb": {
+    "cleanup": "pending",
+    "elapsedMs": 1539,
+    "heapDeltaBytes": 27610984,
+    "queryPlan": [
+      {
+        "id": 3,
+        "parent": 0,
+        "notused": 216,
+        "detail": "SCAN session"
+      },
+      {
+        "id": 11,
+        "parent": 0,
+        "notused": 0,
+        "detail": "USE TEMP B-TREE FOR ORDER BY"
+      }
+    ],
+    "queryPlanHasFullScan": true,
+    "selectedAllRows": 100004,
+    "selectedRootRows": 4,
+    "unrelatedInserted": 100000
+  },
+  "providerCalls": 0,
+  "queueBaseline": {
+    "currentScheduler": "absent",
+    "defaults": {
+      "active": null,
+      "queued": null
+    },
+    "probeEnqueued": 33,
+    "note": "Current source has no process-wide FIFO scheduler; 33-root overflow is unenforced."
+  },
+  "source": {
+    "statusHasUnboundedLoop": true,
+    "sessionQuery": "select * from session order by time_created, id",
+    "sessionQueryPresent": true,
+    "portableTimeoutOptional": true
+  }
+}

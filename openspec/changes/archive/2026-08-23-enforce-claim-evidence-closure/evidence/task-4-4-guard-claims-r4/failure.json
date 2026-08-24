@@ -1,0 +1,18 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "cases": [],
+  "cleanup": "complete",
+  "diagnostics": null,
+  "error": "OpenCode HTTP-first readiness failed: {\"errorChain\":[{\"depth\":0,\"name\":\"Error\",\"message\":\"HTTP readiness /path timed out\"}],\"exitCode\":null,\"pluginStartupTrace\":[],\"probes\":[{\"error\":\"The operation was aborted.\",\"route\":\"/path\"},{\"error\":\"The operation was aborted.\",\"route\":\"/session/status\"}],\"readinessStage\":\"http-first\",\"stderrChars\":2487,\"stdoutChars\":119}",
+  "openCode": "unknown",
+  "pluginStartupTrace": [],
+  "processCleanup": "complete",
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 0,
+    "requestKinds": []
+  },
+  "scenario": "claims",
+  "schemaVersion": 1,
+  "status": "failed"
+}

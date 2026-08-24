@@ -46,6 +46,8 @@ type RawBundle = {
     onDemandTokenProxy: number;
     startupChars: number;
     startupTokenProxy: number;
+    loweredSeedHash: string;
+    rejectedSeedHash: string;
     syntheticPrivateMarker: string;
     syntheticVendorMarker: string;
   };
@@ -224,6 +226,7 @@ function buildFixture(fixture: string): RawBundle["expected"] & {
 
   const hostAgents = instruction("Host global authority.");
   const customAgents = instruction("Custom global authority.");
+  const customPrinciples = instruction("Custom working principles.");
   const customLocal = instruction(`Private synthetic global detail: ${PRIVATE_MARKER}.`);
   const parentAgents = instruction("Parent authority.");
   const parentExtra = instruction("Parent config instruction.");
@@ -239,8 +242,9 @@ function buildFixture(fixture: string): RawBundle["expected"] & {
   writeText(path.join(workspace, ".git", "HEAD"), "ref: refs/heads/main\n");
   writeText(path.join(hostGlobal, "AGENTS.md"), hostAgents);
   writeText(path.join(customGlobal, "AGENTS.md"), customAgents);
+  writeText(path.join(customGlobal, "principles-of-work.md"), customPrinciples);
   writeText(path.join(customGlobal, "opencode.local.instructions.md"), customLocal);
-  writeText(path.join(customGlobal, "opencode.json"), `${JSON.stringify({ instructions: ["opencode.local.instructions.md"] }, null, 2)}\n`);
+  writeText(path.join(customGlobal, "opencode.json"), `${JSON.stringify({ instructions: ["principles-of-work.md", "opencode.local.instructions.md"] }, null, 2)}\n`);
   writeText(path.join(customGlobal, "skills", "global-skill", "SKILL.md"), globalSkill);
   writeText(path.join(workspace, "AGENTS.md"), parentAgents);
   writeText(path.join(workspace, "parent-extra.md"), parentExtra);
@@ -259,10 +263,20 @@ function buildFixture(fixture: string): RawBundle["expected"] & {
 
   writeText(path.join(budgetRoot, "README.md"), "kit\n");
   writeText(path.join(budgetRoot, "global", "AGENTS.md"), "authority\n");
+  writeText(path.join(budgetRoot, "global", "principles-of-work.md"), "principles\n");
+  writeText(path.join(budgetRoot, "config", "instruction-budget.json"), `${JSON.stringify({
+    limits: {
+      discoveryMetadataTokenProxy: 100,
+      globalStartupTokenProxy: 100,
+      onDemandBodiesTokenProxy: 100,
+    },
+    schemaVersion: 2,
+  }, null, 2)}\n`);
 
   const startupTexts = [
     hostAgents,
     customAgents,
+    customPrinciples,
     customLocal,
     parentAgents,
     parentExtra,
@@ -277,9 +291,11 @@ function buildFixture(fixture: string): RawBundle["expected"] & {
     discoveryChars: globalSkillDescription.length + projectSkillDescription.length,
     explicitConfig,
     hostHome,
+    loweredSeedHash: "",
     onDemandChars: globalSkill.length + projectSkill.length,
     onDemandTokenProxy: tokenProxy([globalSkill, projectSkill]),
     project,
+    rejectedSeedHash: "",
     startupChars: startupTexts.reduce((total, text) => total + text.length, 0),
     startupTokenProxy: tokenProxy(startupTexts),
     syntheticPrivateMarker: PRIVATE_MARKER,
@@ -327,7 +343,7 @@ function evaluate(raw: RawBundle): Evaluation {
   const sources = Array.isArray(loaderFirst.sources) ? loaderFirst.sources : [];
   const currentBudget = jsonOutput(commands.currentBudget);
   const fixtureBudget = jsonOutput(commands.fixtureBudget);
-  const growthBudget = jsonOutput(commands.growthBudget);
+    const growthBudget = jsonOutput(commands.growthBudget);
   const growthBoundaries = Array.isArray(growthBudget.boundaries) ? growthBudget.boundaries.map(object) : [];
   const failedGrowth = growthBoundaries.find((boundary) => boundary.status === "failed");
   const facts = {
@@ -338,11 +354,15 @@ function evaluate(raw: RawBundle): Evaluation {
       growthBudget.status === "failed" &&
       failedGrowth != null &&
       failedGrowth.actual === Number(failedGrowth.maximum) + 1 &&
-      growthBudget.regenerationCommand === "npm run instruction:budget -- --materialize-seed",
+      growthBudget.materializationCommand === "npm run instruction:budget -- --materialize-seed",
+    budgetMaterializerGrowthRejected:
+      commands.growthMaterialize.status !== 0 &&
+      commands.growthMaterialize.stderr.includes("refuses to increase reviewed maxima") &&
+      raw.expected.loweredSeedHash === raw.expected.rejectedSeedHash,
     budgetMalformedFailedClosed:
       commands.malformedBudget.status !== 0 &&
       commands.malformedBudget.stderr.includes("unreadable or malformed") &&
-      commands.malformedBudget.stderr.includes("--materialize-seed"),
+      commands.malformedBudget.stderr.includes("review it directly"),
     catalogCompatibility:
       commands.catalogDefault.status === 0 &&
       commands.catalogExplicit.status === 0 &&
@@ -427,8 +447,11 @@ function capture(options: Options): Evaluation {
     const fixtureSeed = path.join(expected.budgetRoot, "config", "instruction-budget.json");
     const budgetArgs = ["--root", expected.budgetRoot, "--seed", fixtureSeed, "--format", "json"];
     commands.fixtureBudget = packageCommand(options.sourceRoot, "instruction:budget", [...budgetArgs, "--materialize-seed"], env, replacements);
-    fs.appendFileSync(path.join(expected.budgetRoot, "README.md"), "grow", "utf8");
+    expected.loweredSeedHash = sha256(fs.readFileSync(fixtureSeed));
+    fs.appendFileSync(path.join(expected.budgetRoot, "global", "AGENTS.md"), "grow", "utf8");
     commands.growthBudget = packageCommand(options.sourceRoot, "instruction:budget", budgetArgs, env, replacements);
+    commands.growthMaterialize = packageCommand(options.sourceRoot, "instruction:budget", [...budgetArgs, "--materialize-seed"], env, replacements);
+    expected.rejectedSeedHash = sha256(fs.readFileSync(fixtureSeed));
     writeText(fixtureSeed, "{ malformed\n");
     commands.malformedBudget = packageCommand(options.sourceRoot, "instruction:budget", budgetArgs, env, replacements);
     after = manifest(fixture);

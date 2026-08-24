@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-24T13:17:59.073Z",
+  "fixture": {
+    "kind": "remote",
+    "timeout": 30
+  },
+  "driftedRejected": true,
+  "extraKeyRejected": true,
+  "live": {
+    "kind": "remote",
+    "timeoutPositive": true
+  },
+  "ok": true,
+  "cleanup": {
+    "fixtureAbsent": true
+  },
+  "finishedAt": "2026-08-24T13:17:59.774Z"
+}

@@ -1,0 +1,21 @@
+{
+  "files": [
+    {
+      "bytes": 1143,
+      "path": "capture.json",
+      "sha256": "009a3889968d5b2601aa44b99f3617b3be7d1c97273dca7141a83a0076ee879f"
+    },
+    {
+      "bytes": 23355,
+      "path": "delegated-production-ownership.bundle.json",
+      "sha256": "5390e851130c509997838aa30e2bf56166d772f665b37b64562443c1e3ea375e"
+    },
+    {
+      "bytes": 21793,
+      "path": "hypothetical-extension-negative-control.bundle.json",
+      "sha256": "ad257df7e25ac9aff3fa3c3787a9cb5101a922db50064d4dabc1a954c038d338"
+    }
+  ],
+  "role": "capture-candidate",
+  "schemaVersion": 1
+}

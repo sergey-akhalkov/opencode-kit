@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 2,
+  "changeId": "improve-change-locality-guidance",
+  "candidateId": "improve-change-locality-guidance-planning-r1",
+  "environmentId": "windows-opencode-planning-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "4c8f53880aad75c37fd6c31e4ddda21921fae39e5436cd1d1ce0c9eabf0bd651",
+      "result": "complete",
+      "candidateId": "improve-change-locality-guidance-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-practice-owner-and-apply-gate",
+        "effects": [
+          "configured-provider",
+          "local-planning",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "manual",
+        "name": "planning-record-materialization",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node <global-source>/bin/openspec-operation-gate.ts --root <repo> --operation apply --change improve-change-locality-guidance",
+        "status": 0,
+        "recordedAt": "2026-08-23T13:58:37.157Z"
+      },
+      "artifacts": [
+        "ownership.json",
+        "evidence/task-1-1-ownership-r2.md"
+      ],
+      "cleanup": "none",
+      "manualGate": {
+        "reason": "Practice Owner contract and architecture-and-change-locality route are runtime-proven by archived POA 3.3. Baseline/candidate authoring lanes remain incomplete.",
+        "disposition": "complete-ownership"
+      }
+    }
+  ],
+  "lanes": [
+    {
+      "name": "baseline-authoring",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-1-3-baseline-r1/capture.json",
+          "bytes": 1295,
+          "digest": "b8926424f1d8aba983dea6744e93ee23a4fb39b117933c0115ca43899c5532f4"
+        }
+      ]
+    },
+    {
+      "name": "candidate-authoring",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-3-1-candidate-r1/evaluation.md",
+          "bytes": 624,
+          "digest": "99994970b67231ee9085f7833fd5bb5ad50bbbb9cb004281a3431e96e3ea883a"
+        }
+      ]
+    },
+    {
+      "name": "semantic-disposition",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/task-3-2-evaluate-r3/disposition.md",
+          "bytes": 1123,
+          "digest": "272e7d897b9d40aa2f7dddddaa1c6361f3f0c2d795ef86b2448107719725585d"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "CLC-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The candidate improves or preserves change-local architecture decisions and proportional Practice Owner routing for the maintained synthetic scenario population.",
+      "claimClass": "finite-population",
+      "candidateId": "improve-change-locality-guidance-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "coverageBasis": "finite-population",
+      "population": {
+        "id": "clc-maintained-scenarios-v1",
+        "members": [
+          "one-off-local-fix",
+          "accepted-second-variant",
+          "external-integration-boundary",
+          "non-trivial-state-transition",
+          "mixed-owner-file",
+          "delegated-production-ownership",
+          "hypothetical-extension-negative-control"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "Other models languages repositories scales architecture pressures installed overrides and future requirements remain outside this claim."
+      },
+      "paths": {
+        "production": "resolved-selected-runtime",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "installed-opencode-change-locality-authoring",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "candidate-authoring"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "one-off-local-fix",
+          "candidateId": "improve-change-locality-guidance-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-change-locality-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "accepted-second-variant",
+          "candidateId": "improve-change-locality-guidance-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-change-locality-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "external-integration-boundary",
+          "candidateId": "improve-change-locality-guidance-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-change-locality-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "non-trivial-state-transition",
+          "candidateId": "improve-change-locality-guidance-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-change-locality-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "mixed-owner-file",
+          "candidateId": "improve-change-locality-guidance-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-change-locality-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "delegated-production-ownership",
+          "candidateId": "improve-change-locality-guidance-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-change-locality-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "hypothetical-extension-negative-control",
+          "candidateId": "improve-change-locality-guidance-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-change-locality-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "baseline-authoring",
+        "candidate-authoring",
+        "semantic-disposition"
+      ],
+      "materialExclusions": [
+        "Universal SOLID or Gang of Four compliance",
+        "Optimal architecture across untested projects",
+        "Zero-trigger Practice Owner routing",
+        "Unrepresented model and repository behavior",
+        "state-transition and delegated-ownership owner-launch gaps",
+        "Unseen models and repositories"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "semantic-disposition"
+        ]
+      },
+      "maximumSupportedClaim": "The seven captured CLC-001 scenarios on openai/gpt-5.6-sol for this working-tree candidate only. Two material scenarios did not launch the architecture owner.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    }
+  ]
+}

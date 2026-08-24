@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "taskId": "2.2",
+  "complete": true,
+  "rows": [
+    { "scenario": "trivial-no-trigger", "launchedOwners": [], "status": 0, "cleanupComplete": true, "fixtureStable": true },
+    { "scenario": "claim-evidence-trigger", "launchedOwners": ["evidence-sufficiency-reviewer"], "status": 0, "cleanupComplete": true, "fixtureStable": true }
+  ]
+}

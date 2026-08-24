@@ -1,69 +1,40 @@
-import { ALLOWED_TROUBLESHOOTER_EDIT_RULES } from "../contracts/troubleshooter.ts";
+import fs from "node:fs";
+import path from "node:path";
+import { TROUBLESHOOTER_PERMISSION } from "../contracts/troubleshooter.ts";
 import {
+  assert,
   assertEqual,
+  libraryRoot,
   type TestCase,
 } from "../test-helpers/library.ts";
 
-function matchesSimpleWildcard(pattern: string, value: string): boolean {
-  let expression = "^";
-  for (const character of pattern) {
-    if (character === "*") {
-      expression += ".*";
-    } else if (character === "?") {
-      expression += ".";
-    } else {
-      expression += /[\\^$.*+?()[\]{}|]/.test(character) ? `\\${character}` : character;
-    }
-  }
-  return new RegExp(`${expression}$`).test(value);
-}
-
-function resolveTroubleshooterEditPermission(filePath: string): string | undefined {
-  let action: string | undefined;
-  for (const [key, value] of ALLOWED_TROUBLESHOOTER_EDIT_RULES) {
-    const pattern = key.replace("permission.edit.", "");
-    if (matchesSimpleWildcard(pattern, filePath)) {
-      action = value;
-    }
-  }
-  return action;
-}
-
 export const agentPermissionTests: TestCase[] = [
   {
-    name: "troubleshooter edit permissions hard-deny root and nested test evidence last-match-wins",
+    name: "troubleshooter permission is exact scalar allow-all",
     run: () => {
-      // OpenCode exposes no reusable matcher in this repository; this test models only documented simple * and ? matching.
-      assertEqual(matchesSimpleWildcard("file?.ts", "file1.ts"), true, "Test-only matcher must support ? wildcard semantics.");
-      assertEqual(matchesSimpleWildcard("file?.ts", "file10.ts"), false, "Test-only matcher must not overmatch ? wildcard semantics.");
-      const cases: Array<[string, string]> = [
-        ["widget.test.ts", "deny"],
-        ["contract.spec.ts", "deny"],
-        ["test-contracts.ts", "deny"],
-        ["vector.snap", "deny"],
-        ["golden/vector.bin", "deny"],
-        ["testdata/input.json", "deny"],
-        ["__tests__/case.ts", "deny"],
-        ["service.ts", "ask"],
-        ["tools/test-contracts.ts", "deny"],
-        ["tools/test-library/validator-1.ts", "deny"],
-        ["tools/test-helpers/library.ts", "deny"],
-        ["packages/api/tests/case.json", "deny"],
-        ["crates/core/tests/integration.rs", "deny"],
-        ["src/fixtures/sample.json", "deny"],
-        ["docs/feedbacks/implementation-worker.md", "allow"],
-      ];
-      for (const [filePath, expectedAction] of cases) {
-        assertEqual(
-          resolveTroubleshooterEditPermission(filePath),
-          expectedAction,
-          `Troubleshooter edit permission must resolve ${filePath} to ${expectedAction}.`,
-        );
-      }
       assertEqual(
-        [...ALLOWED_TROUBLESHOOTER_EDIT_RULES.keys()].at(-1),
-        "permission.edit.docs/feedbacks/**",
-        "Troubleshooter feedback allow must remain the final edit rule.",
+        TROUBLESHOOTER_PERMISSION,
+        "allow",
+        "TROUBLESHOOTER_PERMISSION must remain exact scalar allow.",
+      );
+      const agent = fs.readFileSync(path.join(libraryRoot, "global", "agents", "troubleshooter.md"), "utf8");
+      const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/.exec(agent)?.[1];
+      assert(frontmatter !== undefined, "Troubleshooter must retain readable YAML frontmatter.");
+      assert(
+        /^permission:\s*allow\s*$/m.test(frontmatter ?? ""),
+        "Troubleshooter frontmatter must set exact permission: allow.",
+      );
+      assert(
+        !/^permission:\s*(ask|deny)\s*$/m.test(frontmatter ?? ""),
+        "Troubleshooter must not set permission: ask or deny.",
+      );
+      assert(
+        !/^permission:\s*$/m.test(frontmatter ?? ""),
+        "Troubleshooter must not use a nested permission map.",
+      );
+      assert(
+        !/^permission\./m.test(frontmatter ?? ""),
+        "Troubleshooter must not use nested permission.* keys.",
       );
     },
   },

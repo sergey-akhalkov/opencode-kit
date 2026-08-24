@@ -2,6 +2,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { automationDividendTasks, parseAutomationDividend } from "./openspec-change/automation-dividend.ts";
+import { inspectEvidenceDocument, taskTextDigest } from "./openspec-change/evidence.ts";
+import { ownershipEvidenceGateChecks } from "./openspec-change/gate.ts";
 
 export type OpenSpecOperationGateStatus = "passed" | "warning" | "failed" | "blocked" | "unknown" | "not-applicable";
 
@@ -31,6 +34,7 @@ export type OpenSpecOperationGateOptions = {
   changeId?: string;
   generatedAt?: string;
   persist?: boolean;
+  enforcement?: "advisory" | "blocking";
 };
 
 type CliOptions = OpenSpecOperationGateOptions & { root: string };
@@ -55,6 +59,19 @@ const specCapsuleFields = [
   "Observable Proof",
   "Material Residual Risks",
   "Stop Line",
+] as const;
+
+const broadClaimScopeFields = [
+  "Claim ID",
+  "Claim Class",
+  "Population",
+  "Coverage Basis",
+  "Production Path",
+  "Comparison Paths",
+  "Environment",
+  "Real Oracle",
+  "Unresolved Observations",
+  "Maximum Claim",
 ] as const;
 
 function normalizePath(value: string): string {
@@ -135,6 +152,21 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
       checks.push(missingFields.length === 0
         ? check("artifact:proposal-capsule", "OpenSpec proposal outcome capsule", "passed", false, `openspec/changes/${changeId}/proposal.md`, "proposal.md contains every required current-increment Outcome Capsule field.")
         : check("artifact:proposal-capsule", "OpenSpec proposal outcome capsule", "failed", true, `openspec/changes/${changeId}/proposal.md`, `proposal.md is missing required Outcome Capsule field(s): ${missingFields.join(", ")}.`));
+      const hasClaimScope = proposalText.includes("Claim And Evidence Scope");
+      const broadDeclared = proposalText.includes("**Claim Class**");
+      const missingClaimFields = broadDeclared
+        ? broadClaimScopeFields.filter((field) => !proposalText.includes(`**${field}**`))
+        : [];
+      const requireClaimScope = operation === "propose" || hasClaimScope;
+      if (requireClaimScope) {
+        checks.push(!hasClaimScope
+          ? check("artifact:proposal-claim-scope", "OpenSpec proposal claim scope", "failed", true, `openspec/changes/${changeId}/proposal.md`, "proposal.md is missing Claim And Evidence Scope.")
+          : missingClaimFields.length > 0
+            ? check("artifact:proposal-claim-scope", "OpenSpec proposal claim scope", "failed", true, `openspec/changes/${changeId}/proposal.md`, `Declared broad Claim And Evidence Scope is missing field(s): ${missingClaimFields.join(", ")}.`)
+            : check("artifact:proposal-claim-scope", "OpenSpec proposal claim scope", "passed", false, `openspec/changes/${changeId}/proposal.md`, broadDeclared
+              ? "Declared broad Claim And Evidence Scope contains every explicit field; values remain reviewed author input."
+              : "Concise exact-case Claim And Evidence Scope is present; no semantic breadth was inferred from prose."));
+      }
     }
   }
   if (["apply", "task-update", "review", "acceptance", "archive"].includes(operation)) {
@@ -171,11 +203,92 @@ function artifactChecks(root: string, operation: string, changeId: string | unde
   return checks;
 }
 
-function operationChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+function dividendChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+  if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) return [];
+  if (!["propose", "apply", "archive"].includes(operation)) return [];
+  const proposalPath = changePath(root, changeId, "proposal.md");
+  if (!fs.existsSync(proposalPath)) return [];
+  const parsed = parseAutomationDividend(fs.readFileSync(proposalPath, "utf8"));
+  const source = `openspec/changes/${changeId}/proposal.md`;
+  if (parsed.status === "missing") {
+    return operation === "propose"
+      ? [check("artifact:automation-dividend", "OpenSpec automation dividend", "failed", true, source, "proposal.md is missing Automation Dividend: required - <candidate> or exempt - <reason>.")]
+      : [];
+  }
+  if (parsed.status === "duplicate") {
+    return [check("artifact:automation-dividend", "OpenSpec automation dividend", "failed", true, source, `proposal.md has ${parsed.count} Automation Dividend declarations.`)];
+  }
+  if (parsed.status === "malformed") {
+    return [check("artifact:automation-dividend", "OpenSpec automation dividend", "failed", true, source, parsed.reason)];
+  }
+  const checks = [check("artifact:automation-dividend", "OpenSpec automation dividend", "passed", false, source, `Automation Dividend is ${parsed.mode}.`)];
+  if (operation === "propose") return checks;
+  const tasksPath = changePath(root, changeId, "tasks.md");
+  if (!fs.existsSync(tasksPath)) return checks;
+  const tagged = automationDividendTasks(fs.readFileSync(tasksPath, "utf8"));
+  const tasksSource = `openspec/changes/${changeId}/tasks.md`;
+  if (parsed.mode === "exempt") {
+    checks.push(tagged.length === 0
+      ? check("artifact:automation-dividend-task", "OpenSpec automation dividend task", "passed", false, tasksSource, "Exempt declaration has no [automation-dividend] task.")
+      : check("artifact:automation-dividend-task", "OpenSpec automation dividend task", "failed", true, tasksSource, `Exempt declaration must not include an [automation-dividend] task; found ${tagged.length}.`));
+    return checks;
+  }
+  if (tagged.length !== 1) {
+    checks.push(check("artifact:automation-dividend-task", "OpenSpec automation dividend task", "failed", true, tasksSource, `Required declaration needs exactly one [automation-dividend] task; found ${tagged.length}.`));
+    return checks;
+  }
+  const dividend = tagged[0];
+  if (dividend == null) return checks;
+  checks.push(check("artifact:automation-dividend-task", "OpenSpec automation dividend task", "passed", false, tasksSource, "Required declaration has exactly one [automation-dividend] task."));
+  if (operation !== "archive") return checks;
+  if (!dividend.checked) {
+    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, tasksSource, "Required automation dividend task is unchecked."));
+    return checks;
+  }
+  const evidencePath = changePath(root, changeId, "evidence-index.json");
+  if (!fs.existsSync(evidencePath)) {
+    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence-index row is missing."));
+    return checks;
+  }
+  let parsedIndex: unknown;
+  try {
+    parsedIndex = JSON.parse(fs.readFileSync(evidencePath, "utf8"));
+  } catch {
+    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence-index is not readable JSON."));
+    return checks;
+  }
+  const index = inspectEvidenceDocument(parsedIndex);
+  if (!index.ok) {
+    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence-index is invalid."));
+    return checks;
+  }
+  const digest = taskTextDigest(dividend.text);
+  const row = index.value.tasks.find((item) => item.taskTextDigest === digest);
+  if (row == null) {
+    checks.push(check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend task digest is not in the evidence index."));
+    return checks;
+  }
+  const stale = row.result !== "complete"
+    || row.candidateId !== index.value.candidateId
+    || row.environmentId !== index.value.environmentId
+    || row.invocation == null
+    || row.invocation.command.trim() === "";
+  checks.push(stale
+    ? check("archive:automation-dividend", "OpenSpec automation dividend archive", "failed", true, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence row is incomplete or stale.")
+    : check("archive:automation-dividend", "OpenSpec automation dividend archive", "passed", false, `openspec/changes/${changeId}/evidence-index.json`, "Required dividend evidence row is current and complete."));
+  return checks;
+}
+
+function operationChecks(root: string, operation: string, changeId: string | undefined, enforcement?: "advisory" | "blocking"): OpenSpecOperationGateCheck[] {
   if (!knownOperations.has(operation)) {
     return [check("operation:known", "OpenSpec operation registry", "unknown", true, operation, `Unknown OpenSpec operation ${operation}.`)];
   }
-  return [...requiredChangeChecks(root, operation, changeId), ...artifactChecks(root, operation, changeId)];
+  return [
+    ...requiredChangeChecks(root, operation, changeId),
+    ...artifactChecks(root, operation, changeId),
+    ...dividendChecks(root, operation, changeId),
+    ...ownershipEvidenceGateChecks({ root, operation, changeId, enforcement }),
+  ];
 }
 
 function statusFor(checks: OpenSpecOperationGateCheck[]): Exclude<OpenSpecOperationGateStatus, "not-applicable"> {
@@ -235,7 +348,7 @@ export function runOpenSpecOperationGate(root: string, options: OpenSpecOperatio
   const resolvedRoot = path.resolve(root);
   const operation = options.operation?.trim() || "unknown";
   const changeId = options.changeId?.trim() || undefined;
-  const checks = operationChecks(resolvedRoot, operation, changeId).sort((left, right) => left.id.localeCompare(right.id));
+  const checks = operationChecks(resolvedRoot, operation, changeId, options.enforcement).sort((left, right) => left.id.localeCompare(right.id));
   const status = statusFor(checks);
   const output: OpenSpecOperationGateOutput = {
     schemaVersion: 1,
@@ -268,6 +381,12 @@ function parseArgs(args: string[]): CliOptions {
       parsed.changeId = args[++index] ?? "";
     } else if (arg === "--persist") {
       parsed.persist = true;
+    } else if (arg === "--enforcement") {
+      const value = args[++index] ?? "";
+      if (value !== "advisory" && value !== "blocking") {
+        throw new Error("--enforcement must be advisory or blocking.");
+      }
+      parsed.enforcement = value;
     } else {
       throw new Error(`Unknown option: ${arg}`);
     }

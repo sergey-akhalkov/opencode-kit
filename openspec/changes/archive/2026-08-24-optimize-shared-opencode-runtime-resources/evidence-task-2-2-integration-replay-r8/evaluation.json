@@ -1,0 +1,23 @@
+{
+  "checks": {
+    "authBoundary": true,
+    "cleanupComplete": true,
+    "directInventoryMatchesBaseline": true,
+    "distinctExactProjects": false,
+    "graphResultsMatchBaseline": false,
+    "noCaptureFailure": false,
+    "noLocalGraphifyChildren": false,
+    "noProviderCalls": true,
+    "oneGraphifyServiceTree": false,
+    "oneOpenCodeListener": false,
+    "openCodeRemoteReady": false,
+    "readinessWithinAllowance": false,
+    "repoGuardPrecedesCalls": true,
+    "secretSafe": false
+  },
+  "kind": "shared-graphify-disposable-integration",
+  "liveCalls": 0,
+  "mode": "replay",
+  "passed": false,
+  "schemaVersion": 1
+}

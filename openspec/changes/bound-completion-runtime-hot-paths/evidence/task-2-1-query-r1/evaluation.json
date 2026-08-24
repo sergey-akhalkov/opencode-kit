@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "cleanup": {
+    "largeDbRemoved": true
+  },
+  "mode": "query",
+  "providerCalls": 0,
+  "query": {
+    "cleanup": "pending",
+    "elapsedMs": 564,
+    "heapDeltaBytes": 22264,
+    "large": {
+      "complete": true,
+      "ids": [
+        "child-a",
+        "child-b",
+        "child-c"
+      ],
+      "omitted": 0,
+      "queryPlan": [
+        {
+          "id": 2,
+          "parent": 0,
+          "notused": 39,
+          "detail": "SEARCH session USING COVERING INDEX sqlite_autoindex_session_1 (id=?)"
+        },
+        {
+          "id": 3,
+          "parent": 0,
+          "notused": 62,
+          "detail": "SEARCH session USING INDEX session_parent_idx (parent_id=?)"
+        }
+      ],
+      "queryPlanHasFullScan": false,
+      "reason": "ok",
+      "selectedRootRows": 3
+    },
+    "missingIndex": {
+      "complete": false,
+      "reason": "capability-blocked",
+      "selectedRootRows": 0
+    },
+    "small": {
+      "complete": true,
+      "ids": [
+        "child-a",
+        "child-b",
+        "child-c"
+      ],
+      "omitted": 0,
+      "reason": "ok",
+      "selectedRootRows": 3
+    },
+    "wide": {
+      "complete": false,
+      "omitted": 91,
+      "reason": "row-limit",
+      "selectedRootRows": 512
+    }
+  }
+}

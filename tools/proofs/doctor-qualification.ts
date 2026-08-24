@@ -205,6 +205,7 @@ function assertEvidence(commands: Record<string, CommandEvidence>, work: string,
     canonicalUnattended: 2,
     defaultBlocked: 0,
     doctorHelp: 0,
+    kitQualification: 0,
     qualificationBlocked: 2,
     qualificationReady: 0,
     runtimeHelp: 0,
@@ -230,9 +231,30 @@ function assertEvidence(commands: Record<string, CommandEvidence>, work: string,
     throw new Error("Runtime-source invalid option did not fail before report output");
   }
 
-  const inventory = JSON.parse(commands.runtimeInventory.stdout) as { root: string; unattended: { collisionStatus: string } };
-  if (inventory.root !== "<home>/work/ready" || inventory.unattended.collisionStatus !== "clear") {
+  const inventory = JSON.parse(commands.runtimeInventory.stdout) as {
+    managedPrompts?: Array<{ status?: string }>;
+    root: string;
+    schemaVersion?: number;
+    unattended: { collisionStatus: string };
+  };
+  if (
+    inventory.root !== "<home>/work/ready" ||
+    inventory.unattended.collisionStatus !== "clear" ||
+    inventory.schemaVersion !== 2 ||
+    !["same", "different", "missing", "unknown"].includes(inventory.managedPrompts?.[0]?.status ?? "")
+  ) {
     throw new Error("Representative runtime-source inventory did not preserve --root or additive-only status");
+  }
+
+  const kitQualification = doctorReport(commands.kitQualification);
+  if (
+    kitQualification.qualificationStatus !== "pass" ||
+    namedCheck(kitQualification, "checks", "project repository contract").status !== "pass" ||
+    !String(namedCheck(kitQualification, "checks", "project repository contract").detail).includes("Self-hosted kit checkout selected") ||
+    namedCheck(kitQualification, "checks", "project AGENTS.md").status !== "pass" ||
+    namedCheck(kitQualification, "checks", "project adapter validation").status !== "pass"
+  ) {
+    throw new Error("Kit checkout did not use the structurally identified self-hosted qualification contract");
   }
 
   const structuralReady = doctorReport(commands.structuralReady);
@@ -314,7 +336,7 @@ function run(options: Options): void {
     const work = path.join(home, "work");
     const ready = path.join(work, "ready");
     const collision = path.join(work, "collision");
-    const blocked = path.join(work, "blocked");
+    const blocked = path.join(work, "opencode-dev-kit");
     const missing = path.join(work, "missing");
     createReadyProject(ready, false);
     createReadyProject(collision, true);
@@ -339,6 +361,7 @@ function run(options: Options): void {
       invoke("runtimeInvalid", "opencode:sources", ["--unsupported"], environment, fixture),
       invoke("runtimeInventory", "opencode:sources", ["--root", ready], environment, fixture),
       invoke("doctorHelp", "doctor", ["--help"], environment, fixture),
+      invoke("kitQualification", "doctor", ["--project", sourceRoot, "--format", "json", "--require", "qualification"], environment, fixture),
       invoke("structuralReady", "doctor", ["--project", ready, "--format", "json", "--require", "structural"], environment, fixture),
       invoke("qualificationReady", "doctor", ["--project", ready, "--format", "json", "--require", "qualification"], environment, fixture),
       invoke("structuralBlocked", "doctor", ["--project", missing, "--format", "json", "--require", "structural"], environment, fixture),

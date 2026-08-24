@@ -1,0 +1,207 @@
+{
+  "candidateId": "reduce-workflow-ceremony-owner-required-r2",
+  "cleanup": "complete",
+  "environment": {
+    "directoryMatched": true,
+    "node": "v24.3.0",
+    "platform": "win32"
+  },
+  "executor": {
+    "argv": [
+      "bun.exe",
+      "<source-root>\\global\\bin\\roadmap-mission-session-executor.ts",
+      "execute",
+      "--root",
+      "<project-root>",
+      "--server-url",
+      "http://127.0.0.1:65238",
+      "--mission",
+      "mission.json",
+      "--slice",
+      "slice-a",
+      "--attempt",
+      "1",
+      "--result",
+      "evidence/mission/attempt-1/result.json",
+      "--timeout-ms",
+      "30000"
+    ],
+    "exitCode": 3,
+    "signal": null,
+    "stderr": "[roadmap-mission-executor slice-a/opsx-apply] starting\n[roadmap-mission-executor slice-a/opsx-apply] guard=owner-required\n",
+    "stdout": "{\n  \"attempt\": 1,\n  \"changeId\": \"change-a\",\n  \"cleanup\": \"complete\",\n  \"definitionDigest\": \"8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827\",\n  \"disposition\": \"owner-required\",\n  \"errorClass\": \"owner-required\",\n  \"errorMessage\": \"Owner response is required before this mission can continue\",\n  \"evidenceRefs\": [\n    \"evidence/mission/attempt-1/result.opsx-apply.json\",\n    \"evidence/mission/attempt-1/result.opsx-apply.verification.json\",\n    \"evidence/mission/attempt-1/result.runtime-inspection.json\"\n  ],\n  \"guardState\": \"owner-required\",\n  \"missionId\": \"same-runtime-proof\",\n  \"phases\": [\n    {\n      \"command\": \"opsx-apply\",\n      \"evidenceRef\": \"evidence/mission/attempt-1/result.opsx-apply.json\",\n      \"status\": \"completed\"\n    }\n  ],\n  \"questionDisposition\": \"owner-required\",\n  \"rootSessionRef\": \"ses_fdf40c40affewHq4cuqWmM1c73\",\n  \"runtimeRef\": \"688951b9c959704c7846dd9042db20a43ebd4ca1a22f78ae87e0299001678bfb\",\n  \"schemaVersion\": 1,\n  \"sliceId\": \"slice-a\",\n  \"terminalCertificate\": null,\n  \"tool\": \"roadmap-mission-session-executor\",\n  \"writerClosure\": \"terminal\"\n}\n"
+  },
+  "provider": {
+    "arbiterCalls": 1,
+    "primaryCalls": 2,
+    "requestKinds": [
+      "primary",
+      "arbiter-1",
+      "primary"
+    ]
+  },
+  "result": {
+    "attempt": 1,
+    "changeId": "change-a",
+    "cleanup": "complete",
+    "definitionDigest": "8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827",
+    "disposition": "owner-required",
+    "errorClass": "owner-required",
+    "errorMessage": "Owner response is required before this mission can continue",
+    "evidenceRefs": [
+      "evidence/mission/attempt-1/result.opsx-apply.json",
+      "evidence/mission/attempt-1/result.opsx-apply.verification.json",
+      "evidence/mission/attempt-1/result.runtime-inspection.json"
+    ],
+    "guardState": "owner-required",
+    "missionId": "same-runtime-proof",
+    "phases": [
+      {
+        "command": "opsx-apply",
+        "evidenceRef": "evidence/mission/attempt-1/result.opsx-apply.json",
+        "status": "completed"
+      }
+    ],
+    "questionDisposition": "owner-required",
+    "rootSessionRef": "ses_fdf40c40affewHq4cuqWmM1c73",
+    "runtimeRef": "688951b9c959704c7846dd9042db20a43ebd4ca1a22f78ae87e0299001678bfb",
+    "schemaVersion": 1,
+    "sliceId": "slice-a",
+    "terminalCertificate": null,
+    "tool": "roadmap-mission-session-executor",
+    "writerClosure": "terminal"
+  },
+  "runtimeEvidence": [
+    {
+      "name": "result.json",
+      "sha256": "3e9a2741aa3550ac25ef67f43315208196a8db8a52096dc7bf070d1a098459dd",
+      "value": {
+        "attempt": 1,
+        "changeId": "change-a",
+        "cleanup": "complete",
+        "definitionDigest": "8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827",
+        "disposition": "owner-required",
+        "errorClass": "owner-required",
+        "errorMessage": "Owner response is required before this mission can continue",
+        "evidenceRefs": [
+          "evidence/mission/attempt-1/result.opsx-apply.json",
+          "evidence/mission/attempt-1/result.opsx-apply.verification.json",
+          "evidence/mission/attempt-1/result.runtime-inspection.json"
+        ],
+        "guardState": "owner-required",
+        "missionId": "same-runtime-proof",
+        "phases": [
+          {
+            "command": "opsx-apply",
+            "evidenceRef": "evidence/mission/attempt-1/result.opsx-apply.json",
+            "status": "completed"
+          }
+        ],
+        "questionDisposition": "owner-required",
+        "rootSessionRef": "ses_fdf40c40affewHq4cuqWmM1c73",
+        "runtimeRef": "688951b9c959704c7846dd9042db20a43ebd4ca1a22f78ae87e0299001678bfb",
+        "schemaVersion": 1,
+        "sliceId": "slice-a",
+        "terminalCertificate": null,
+        "tool": "roadmap-mission-session-executor",
+        "writerClosure": "terminal"
+      }
+    },
+    {
+      "name": "result.opsx-apply.json",
+      "sha256": "e4bac64626768c1988908f7a3e738e15e8e4ca4cda531dc223ff0dc28dca05a2",
+      "value": {
+        "command": "opsx-apply",
+        "messageRef": "msg_020bf457e001N5cun6zSW7q3TP",
+        "partTypes": [
+          "step-start",
+          "text",
+          "step-finish"
+        ],
+        "schemaVersion": 1,
+        "status": "completed"
+      }
+    },
+    {
+      "name": "result.opsx-apply.verification.json",
+      "sha256": "a566c5b9716261c7e9e5bcecc9af53311b80c5b56e39696d9f00b99fd7e5704c",
+      "value": {
+        "command": "opsx-apply",
+        "eligible": false,
+        "facts": {
+          "remaining": 1,
+          "requirementCount": 1,
+          "requirementsMatch": true,
+          "state": "ready",
+          "validationStatus": 0
+        },
+        "reason": "requirements-incomplete",
+        "requirementIds": [
+          "1"
+        ],
+        "schemaVersion": 1
+      }
+    },
+    {
+      "name": "result.runtime-inspection.json",
+      "sha256": "a821ce53a0f848d2b483bf12427ee7b70c04b78b47e897c2991d8791415be86d",
+      "value": {
+        "activeSessionRefs": [],
+        "commandNames": [
+          "customize-opencode",
+          "disable-grind",
+          "enable-grind",
+          "init",
+          "opsx-apply",
+          "opsx-propose",
+          "pty-open-background-spy",
+          "pty-show-server-url",
+          "review"
+        ],
+        "expectedActiveChanges": [
+          "change-a"
+        ],
+        "observedSessions": [],
+        "pendingQuestionRefs": [],
+        "runtimeRef": "688951b9c959704c7846dd9042db20a43ebd4ca1a22f78ae87e0299001678bfb",
+        "schemaVersion": 1,
+        "status": "clear"
+      }
+    }
+  ],
+  "scenario": "owner-required",
+  "schemaVersion": 1,
+  "server": {
+    "pid": 19392,
+    "readyMs": 93437,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderrChars": 8872,
+    "stdoutChars": 119
+  },
+  "sources": [
+    {
+      "path": "global/bin/roadmap-mission-session-executor.ts",
+      "sha256": "b657f8d79fd5c7dde25717d82f78bbdad3f9032b6e94d8403a12bfcb695960f8"
+    },
+    {
+      "path": "global/bin/roadmap-mission/session-executor.ts",
+      "sha256": "dd15ababfb63604497a19e39f3dc60c8895b2893716aea9a48a23050bbcfea2d"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "f8cd8c783e83343cfc94f58b0247ea417018681f21cf4e59eaaf1b46bfc3e960"
+    },
+    {
+      "path": "global/extensions/session-completion-guard.ts",
+      "sha256": "edca19f2328e2a4c821c2c5758eca0d1ba9536b586975bff54ec0bd28bd37579"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+      "sha256": "32eb607b99e50e8262d1ae9065a3f99230a49936e56d74a0b96acc97f7e420a9"
+    }
+  ]
+}

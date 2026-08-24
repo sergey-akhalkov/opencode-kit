@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 type OutputFormat = "json" | "markdown";
+type SkipClass = "ignored" | "generated" | "evidence" | "vendor";
 
 type Options = {
   format: OutputFormat;
@@ -13,6 +14,7 @@ type Options = {
 type FileEntry = {
   path: string;
   lines?: number;
+  reason?: string;
 };
 
 type PackageScript = {
@@ -20,22 +22,46 @@ type PackageScript = {
   name: string;
 };
 
+type InventoryCounts = {
+  scanned: number;
+  ignored: number;
+  generated: number;
+  evidence: number;
+  vendor: number;
+  unreadable: number;
+  unsupported: number;
+  unknown: number;
+};
+
 type ProjectInventory = {
   buildFiles: FileEntry[];
   configFiles: FileEntry[];
+  counts: InventoryCounts;
   largeFiles: FileEntry[];
+  notes: string[];
   packageScripts: PackageScript[];
   root: string;
   sourceRoots: FileEntry[];
+  testRootEvidence: string;
   testRoots: FileEntry[];
   tool: "opencode-dev-kit-project-inventory";
   version: 1;
 };
 
-const ignoredDirectories = new Set([".git", "node_modules", "dist", "build", "coverage", "target", ".next", ".nuxt", "vendor"]);
+const conventionalSourceNames = new Set(["src", "app", "lib", "packages", "crates"]);
+const conventionalTestNames = new Set(["test", "tests", "__tests__", "spec"]);
 const codeExtensions = new Set([".ts", ".tsx", ".js", ".jsx", ".mts", ".cts", ".go", ".rs", ".py", ".java", ".cs", ".cpp", ".c", ".h", ".rb", ".php", ".swift", ".kt", ".kts", ".vue", ".svelte"]);
 const buildFileNames = new Set(["package.json", "Cargo.toml", "pyproject.toml", "go.mod", "pom.xml", "build.gradle", "build.gradle.kts", "Makefile", "CMakeLists.txt", "deno.json", "bun.lockb", "pnpm-lock.yaml", "package-lock.json", "yarn.lock"]);
 const configFileNames = new Set(["opencode.json", "opencode.jsonc", "tsconfig.json", "eslint.config.js", "eslint.config.mjs", "biome.json", "prettier.config.js", "prettier.config.mjs", "vitest.config.ts", "jest.config.ts", "Dockerfile"]);
+const skipDirectoryNames: Record<SkipClass, Set<string>> = {
+  ignored: new Set([".git"]),
+  generated: new Set([".next", ".nuxt", "build", "coverage", "dist", "graphify-out", "out", "target"]),
+  evidence: new Set([".review-evidence", "evidence", "implementation-evidence"]),
+  vendor: new Set(["node_modules", "vendor"]),
+};
+const testPrefixPattern = /^test.*\.(cjs|cts|js|jsx|mjs|mts|ts|tsx)$/i;
+const testSuffixPattern = /\.(spec|test)\.(cjs|cts|js|jsx|mjs|mts|ts|tsx)$/i;
+const exclusionNote = "Exclusions are not proof of absence.";
 
 function printUsage(): void {
   console.log(`Usage:
@@ -96,6 +122,53 @@ function toRelative(root: string, value: string): string {
   return relative === "" ? "." : relative;
 }
 
+function rootIdentity(options: Options): string {
+  return options.showRoot ? options.root : "<redacted>";
+}
+
+function errorCode(error: unknown): string {
+  if (typeof error === "object" && error != null && "code" in error && typeof (error as { code: unknown }).code === "string") {
+    return (error as { code: string }).code;
+  }
+  return "unknown";
+}
+
+function redactPathText(text: string, root: string): string {
+  const variants = [root, root.replaceAll("\\", "/"), root.replaceAll("/", "\\")];
+  let result = text;
+  for (const variant of variants) {
+    if (variant.length > 0) {
+      result = result.split(variant).join("<redacted>");
+    }
+  }
+  return result;
+}
+
+function unreadableRootError(error: unknown, options: Options): Error {
+  const identity = rootIdentity(options);
+  const raw = error instanceof Error ? error.message : String(error);
+  return new Error(`Root is unreadable: ${identity} (${errorCode(error)}: ${redactPathText(raw, options.root)})`);
+}
+
+function assertReadableRoot(options: Options): void {
+  try {
+    const stat = fs.statSync(options.root);
+    if (!stat.isDirectory()) {
+      throw new Error(`Root is not a directory: ${rootIdentity(options)}`);
+    }
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith("Root is not a directory:")) {
+      throw error;
+    }
+    throw unreadableRootError(error, options);
+  }
+  try {
+    fs.readdirSync(options.root);
+  } catch (error) {
+    throw unreadableRootError(error, options);
+  }
+}
+
 function countLines(file: string): number {
   const text = fs.readFileSync(file, "utf8");
   if (text.length === 0) {
@@ -106,18 +179,51 @@ function countLines(file: string): number {
   return normalized.endsWith("\n") ? newlineCount : newlineCount + 1;
 }
 
-function walk(root: string, current: string, files: string[], dirs: string[]): void {
-  const entries = fs.readdirSync(current, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name));
+function skipClassFor(name: string): SkipClass | null {
+  for (const key of ["ignored", "generated", "evidence", "vendor"] as const) {
+    if (skipDirectoryNames[key].has(name)) {
+      return key;
+    }
+  }
+  return null;
+}
+
+function emptyCounts(): InventoryCounts {
+  return {
+    scanned: 0,
+    ignored: 0,
+    generated: 0,
+    evidence: 0,
+    vendor: 0,
+    unreadable: 0,
+    unsupported: 0,
+    unknown: 0,
+  };
+}
+
+function walk(root: string, current: string, files: string[], dirs: string[], counts: InventoryCounts): void {
+  let entries: fs.Dirent[];
+  try {
+    entries = fs.readdirSync(current, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name));
+  } catch {
+    counts.unreadable += 1;
+    return;
+  }
   for (const entry of entries) {
     const fullPath = path.join(current, entry.name);
     if (entry.isDirectory()) {
-      if (ignoredDirectories.has(entry.name)) {
+      const skipped = skipClassFor(entry.name);
+      if (skipped != null) {
+        counts[skipped] += 1;
         continue;
       }
       dirs.push(fullPath);
-      walk(root, fullPath, files, dirs);
+      walk(root, fullPath, files, dirs, counts);
     } else if (entry.isFile()) {
       files.push(fullPath);
+      counts.scanned += 1;
+    } else {
+      counts.unsupported += 1;
     }
   }
 }
@@ -138,33 +244,197 @@ function readPackageScripts(root: string): PackageScript[] {
   }
 }
 
-function buildInventory(options: Options): ProjectInventory {
-  if (!fs.existsSync(options.root) || !fs.statSync(options.root).isDirectory()) {
-    throw new Error(`Root is not a directory: ${options.showRoot ? options.root : "<redacted>"}`);
+function isCodeFile(file: string): boolean {
+  return codeExtensions.has(path.extname(file).toLowerCase());
+}
+
+function pathSegments(relativePath: string): string[] {
+  return relativePath === "." ? [] : relativePath.split("/");
+}
+
+function isTestFile(relativePath: string): boolean {
+  const base = path.posix.basename(relativePath);
+  const dir = path.posix.dirname(relativePath);
+  if (pathSegments(dir).some((segment) => conventionalTestNames.has(segment))) {
+    return true;
   }
+  if (dir === "tools" && testPrefixPattern.test(base)) {
+    return true;
+  }
+  if (dir === "." && (testPrefixPattern.test(base) || testSuffixPattern.test(base))) {
+    return true;
+  }
+  return false;
+}
+
+function isUnder(relativePath: string, rootPath: string): boolean {
+  if (rootPath === ".") {
+    return !relativePath.includes("/");
+  }
+  return relativePath === rootPath || relativePath.startsWith(`${rootPath}/`);
+}
+
+function hasProductionCode(root: string, files: string[], relativeDir: string): boolean {
+  return files.some((file) => {
+    if (!isCodeFile(file)) {
+      return false;
+    }
+    const relativePath = toRelative(root, file);
+    return !isTestFile(relativePath) && isUnder(relativePath, relativeDir);
+  });
+}
+
+function addRoot(roots: Map<string, string>, relativePath: string, reason: string): void {
+  if (!roots.has(relativePath)) {
+    roots.set(relativePath, reason);
+  }
+}
+
+function scriptDirectoryRoots(scripts: PackageScript[], root: string, dirs: string[]): string[] {
+  const existing = new Set(dirs.map((dir) => toRelative(root, dir)));
+  const found = new Set<string>();
+  for (const script of scripts) {
+    for (const token of script.command.split(/\s+/)) {
+      const normalized = token.replace(/\\/g, "/").replace(/^\.\//, "");
+      if (!normalized.includes("/") || normalized.startsWith("-") || normalized.includes("://")) {
+        continue;
+      }
+      const first = normalized.split("/")[0];
+      if (first == null || first === "" || first === ".") {
+        continue;
+      }
+      if (existing.has(first)) {
+        found.add(first);
+      }
+    }
+  }
+  return [...found].sort((left, right) => left.localeCompare(right));
+}
+
+function toRootEntries(roots: Map<string, string>): FileEntry[] {
+  return [...roots.entries()]
+    .map(([relativePath, reason]) => ({ path: relativePath, reason }))
+    .sort((left, right) => left.path.localeCompare(right.path));
+}
+
+function classifyRoots(root: string, files: string[], dirs: string[], scripts: PackageScript[]): {
+  sourceRoots: FileEntry[];
+  testRoots: FileEntry[];
+  testRootEvidence: string;
+  unknown: number;
+} {
+  const sourceRoots = new Map<string, string>();
+  const testRoots = new Map<string, string>();
+
+  for (const dir of dirs) {
+    const relativePath = toRelative(root, dir);
+    const base = path.basename(dir);
+    if (conventionalSourceNames.has(base)) {
+      addRoot(sourceRoots, relativePath, "conventional-directory");
+    }
+    if (conventionalTestNames.has(base)) {
+      addRoot(testRoots, relativePath, "conventional-directory");
+    }
+  }
+
+  if (dirs.some((dir) => toRelative(root, dir) === "tools") && hasProductionCode(root, files, "tools")) {
+    addRoot(sourceRoots, "tools", "maintained-tool-root");
+  }
+
+  for (const relativeDir of scriptDirectoryRoots(scripts, root, dirs)) {
+    if (hasProductionCode(root, files, relativeDir)) {
+      addRoot(sourceRoots, relativeDir, relativeDir === "tools" ? "maintained-tool-root" : "package-manifest-path");
+    }
+  }
+
+  if (hasProductionCode(root, files, ".")) {
+    addRoot(sourceRoots, ".", "root-level-source");
+  }
+
+  if (files.some((file) => {
+    const relativePath = toRelative(root, file);
+    return path.posix.dirname(relativePath) === "tools" && testPrefixPattern.test(path.posix.basename(relativePath));
+  })) {
+    addRoot(testRoots, "tools/test*.ts", "maintained-test-pattern");
+  }
+
+  const rootLevelNames = files
+    .map((file) => toRelative(root, file))
+    .filter((relativePath) => path.posix.dirname(relativePath) === ".");
+  if (rootLevelNames.some((relativePath) => testPrefixPattern.test(path.posix.basename(relativePath)))) {
+    addRoot(testRoots, "test*.ts", "root-level-test-pattern");
+  } else if (rootLevelNames.some((relativePath) => testSuffixPattern.test(path.posix.basename(relativePath)))) {
+    addRoot(testRoots, "*.test.ts", "root-level-test-pattern");
+  }
+
+  for (const testPath of testRoots.keys()) {
+    sourceRoots.delete(testPath);
+  }
+
+  const classifiedSources = [...sourceRoots.keys()];
+  let unknown = 0;
+  for (const file of files) {
+    if (!isCodeFile(file)) {
+      continue;
+    }
+    const relativePath = toRelative(root, file);
+    if (isTestFile(relativePath) || classifiedSources.some((sourcePath) => isUnder(relativePath, sourcePath))) {
+      continue;
+    }
+    unknown += 1;
+  }
+
+  const testEntries = toRootEntries(testRoots);
+  return {
+    sourceRoots: toRootEntries(sourceRoots),
+    testRoots: testEntries,
+    testRootEvidence: testEntries.length > 0 ? "classified" : "no-matching-test-files",
+    unknown,
+  };
+}
+
+function buildInventory(options: Options): ProjectInventory {
+  assertReadableRoot(options);
   const files: string[] = [];
   const dirs: string[] = [];
-  walk(options.root, options.root, files, dirs);
+  const counts = emptyCounts();
+  walk(options.root, options.root, files, dirs, counts);
+
+  const packageScripts = readPackageScripts(options.root);
+  const classified = classifyRoots(options.root, files, dirs, packageScripts);
+  counts.unknown = classified.unknown;
 
   const buildFiles = files.filter((file) => buildFileNames.has(path.basename(file))).map((file) => ({ path: toRelative(options.root, file) }));
   const configFiles = files.filter((file) => configFileNames.has(path.basename(file)) || toRelative(options.root, file).startsWith(".github/workflows/")).map((file) => ({ path: toRelative(options.root, file) }));
-  const sourceRoots = dirs.filter((dir) => ["src", "app", "lib", "packages", "crates"].includes(path.basename(dir))).map((dir) => ({ path: toRelative(options.root, dir) }));
-  const testRoots = dirs.filter((dir) => /^(test|tests|__tests__|spec)$/.test(path.basename(dir))).map((dir) => ({ path: toRelative(options.root, dir) }));
-  const largeFiles = files
-    .filter((file) => codeExtensions.has(path.extname(file).toLowerCase()))
-    .map((file) => ({ path: toRelative(options.root, file), lines: countLines(file) }))
-    .filter((file) => (file.lines ?? 0) >= 400)
-    .sort((left, right) => (right.lines ?? 0) - (left.lines ?? 0) || left.path.localeCompare(right.path))
-    .slice(0, 20);
+  const largeFiles: FileEntry[] = [];
+  for (const file of files) {
+    if (!isCodeFile(file)) {
+      continue;
+    }
+    try {
+      const lines = countLines(file);
+      if (lines >= 400) {
+        largeFiles.push({ path: toRelative(options.root, file), lines });
+      }
+    } catch {
+      counts.unreadable += 1;
+    }
+  }
+  largeFiles.sort((left, right) => (right.lines ?? 0) - (left.lines ?? 0) || left.path.localeCompare(right.path));
+
+  const notes = counts.ignored + counts.generated + counts.evidence + counts.vendor > 0 ? [exclusionNote] : [];
 
   return {
     buildFiles: buildFiles.sort((left, right) => left.path.localeCompare(right.path)),
     configFiles: configFiles.sort((left, right) => left.path.localeCompare(right.path)),
-    largeFiles,
-    packageScripts: readPackageScripts(options.root),
-    root: options.showRoot ? options.root : "<redacted>",
-    sourceRoots: sourceRoots.sort((left, right) => left.path.localeCompare(right.path)),
-    testRoots: testRoots.sort((left, right) => left.path.localeCompare(right.path)),
+    counts,
+    largeFiles: largeFiles.slice(0, 20),
+    notes,
+    packageScripts,
+    root: rootIdentity(options),
+    sourceRoots: classified.sourceRoots,
+    testRootEvidence: classified.testRootEvidence,
+    testRoots: classified.testRoots,
     tool: "opencode-dev-kit-project-inventory",
     version: 1,
   };
@@ -174,11 +444,20 @@ function renderList<T>(items: T[], render: (item: T) => string): string {
   return items.length === 0 ? "none" : items.map(render).join("\n");
 }
 
+function renderRoot(file: FileEntry): string {
+  return file.reason == null ? `- ${file.path}` : `- ${file.path} (${file.reason})`;
+}
+
 function renderMarkdown(inventory: ProjectInventory): string {
+  const countLinesOut = Object.entries(inventory.counts).map(([name, value]) => `- ${name}: ${value}`);
   return [
     "# Project Inventory",
     "",
     `Root: ${inventory.root}`,
+    "",
+    "## Counts",
+    "",
+    countLinesOut.join("\n"),
     "",
     "## Build Files",
     "",
@@ -190,11 +469,11 @@ function renderMarkdown(inventory: ProjectInventory): string {
     "",
     "## Source Roots",
     "",
-    renderList(inventory.sourceRoots, (file) => `- ${file.path}`),
+    renderList(inventory.sourceRoots, renderRoot),
     "",
     "## Test Roots",
     "",
-    renderList(inventory.testRoots, (file) => `- ${file.path}`),
+    inventory.testRoots.length === 0 ? `none (${inventory.testRootEvidence})` : inventory.testRoots.map(renderRoot).join("\n"),
     "",
     "## Config Files",
     "",
@@ -203,6 +482,10 @@ function renderMarkdown(inventory: ProjectInventory): string {
     "## Large Files",
     "",
     inventory.largeFiles.length === 0 ? "none" : ["| File | Lines |", "| --- | ---: |", ...inventory.largeFiles.map((file) => `| ${file.path} | ${file.lines ?? 0} |`)].join("\n"),
+    "",
+    "## Notes",
+    "",
+    renderList(inventory.notes, (note) => `- ${note}`),
     "",
   ].join("\n");
 }

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-19T09:44:19.046Z",
+  "delayMs": 30000,
+  "before": {
+    "status": "running",
+    "supervisorProcessId": 14900,
+    "serverRootProcessId": 14032,
+    "listenerProcessId": 11348,
+    "candidate": "2035F30776BB6E4D566B852CDAC902B94E7F598F796E57AB50BE3AE05C4BD3E6",
+    "trayColor": "green",
+    "controllerSha256": "2035F30776BB6E4D566B852CDAC902B94E7F598F796E57AB50BE3AE05C4BD3E6",
+    "errorLogBytes": 24629
+  },
+  "stop": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"stop\",\n  \"status\": \"stopped\",\n  \"recordedProcessIds\": [\n    14032,\n    11348,\n    14900\n  ],\n  \"remainingProcessIds\": [],\n  \"listenerCount\": 0,\n  \"taskState\": \"Ready\"\n}\n",
+    "stderr": ""
+  },
+  "portGone": {
+    "label": "port-gone",
+    "ok": true,
+    "waitedMs": 768
+  },
+  "install": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"install\",\n  \"status\": \"repaired-stopped\",\n  \"candidate\": \"CEBAABE32FF920566E86A2A56F23EAD91A6A36A5BFCE65B17460A5D550CFE1D1\",\n  \"task\": {\n    \"exists\": true,\n    \"state\": \"Ready\",\n    \"runLevel\": \"Highest\",\n    \"triggerCount\": 0,\n    \"actionCount\": 1,\n    \"actions\": [\n      {\n        \"execute\": \"C:\\\\Windows\\\\System32\\\\wscript.exe\",\n        \"arguments\": \"//nologo C:\\\\ProgramData\\\\OpenCodeWorkstation\\\\invoke.vbs serve\",\n        \"workingDirectory\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\"\n      }\n    ]\n  },\n  \"protectedRoot\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\",\n  \"alacritty\": {\n    \"ordinaryPath\": \"C:\\\\Users\\\\noilw\\\\AppData\\\\Roaming\\\\alacritty\\\\alacritty.toml\",\n    \"ordinarySha256\": \"3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0\",\n    \"protectedPath\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\\\\alacritty.toml\",\n    \"protectedSha256\": \"3483C7B0A0F7EB39C198DBBA2D77D96DE0203AD5D103B39A8FE1798628AA0616\",\n    \"previousExists\": true,\n    \"previousSha256\": \"3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0\",\n    \"backupPath\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\\\\backup\\\\alacritty.toml\"\n  },\n  \"shortcuts\": {\n    \"start\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode Server - Start.lnk\",\n      \"created\": true\n    },\n    \"restart\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode Server - Restart.lnk\",\n      \"created\": true\n    },\n    \"opencode-kit\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - opencode-kit.lnk\",\n      \"created\": true\n    },\n    \"pmac-emulator\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - pmac-emulator.lnk\",\n      \"created\": true\n    },\n    \"controller-gateway-service\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - controller-gateway-service.lnk\",\n      \"created\": true\n    },\n    \"windows-ui-automation\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - windows-ui-automation.lnk\",\n      \"created\": true\n    }\n  },\n  \"credential\": {\n    \"present\": true,\n    \"exposed\": false\n  }\n}\n",
+    "stderr": ""
+  },
+  "start": {
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"start\",\n  \"status\": \"started\",\n  \"health\": {\n    \"reachable\": true,\n    \"status\": 200,\n    \"healthy\": true,\n    \"version\": \"1.18.18\"\n  },\n  \"state\": {\n    \"schemaVersion\": 1,\n    \"status\": \"running\",\n    \"candidate\": \"CEBAABE32FF920566E86A2A56F23EAD91A6A36A5BFCE65B17460A5D550CFE1D1\",\n    \"taskName\": \"OpenCode Workstation Shared Server\",\n    \"endpoint\": \"http://127.0.0.1:4096\",\n    \"startedAt\": \"2026-08-19T09:45:46.990Z\",\n    \"supervisor\": {\n      \"processId\": 25296,\n      \"parentProcessId\": 24728,\n      \"creationDate\": \"08/19/2026 12:45:44\",\n      \"executablePath\": \"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\node-v24.18.1-win-x64\\\\node.exe\",\n      \"commandLineSha256\": \"6994353956d097e2f5b7160639658e8e0efade98eb711fdf9fd41605c7004b7a\"\n    },\n    \"serverRoot\": {\n      \"processId\": 10004,\n      \"parentProcessId\": 25296,\n      \"creationDate\": \"08/19/2026 12:45:46\",\n      \"executablePath\": \"C:\\\\Users\\\\noilw\\\\.bun\\\\bin\\\\opencode.exe\",\n      \"commandLineSha256\": \"aafbc518920c5d42de3bc5797cb5edce4aa481efd8b2c66189608a6fad08bb8a\"\n    },\n    \"listeners\": [\n      {\n        \"localAddress\": \"127.0.0.1\",\n        \"localPort\": 4096,\n        \"processId\": 20256,\n        \"processName\": \"opencode.exe\",\n        \"executablePath\": \"C:\\\\Users\\\\noilw\\\\.bun\\\\install\\\\global\\\\node_modules\\\\opencode-ai\\\\bin\\\\opencode.exe\",\n        \"commandKind\": \"opencode-serve\"\n      }\n    ],\n    \"health\": {\n      \"reachable\": true,\n      \"status\": 200,\n      \"healthy\": true,\n      \"version\": \"1.18.18\"\n    }\n  }\n}\n",
+    "stderr": ""
+  },
+  "trayStart": {
+    "status": 0,
+    "stdout": "Running",
+    "stderr": ""
+  },
+  "healthyAfterStart": {
+    "label": "healthy",
+    "ok": true,
+    "waitedMs": 6646
+  },
+  "trayGreenAfterStart": {
+    "label": "tray-green",
+    "ok": true,
+    "waitedMs": 56
+  },
+  "afterStart": {
+    "status": "running",
+    "supervisorProcessId": 25296,
+    "serverRootProcessId": 10004,
+    "listenerProcessId": 20256,
+    "candidate": "CEBAABE32FF920566E86A2A56F23EAD91A6A36A5BFCE65B17460A5D550CFE1D1",
+    "trayColor": "green",
+    "controllerSha256": "CEBAABE32FF920566E86A2A56F23EAD91A6A36A5BFCE65B17460A5D550CFE1D1",
+    "errorLogBytes": 25150
+  },
+  "trayCommandWrittenAt": "2026-08-19T09:46:13.253Z",
+  "ok": false,
+  "error": "Unexpected end of JSON input",
+  "restoreStart": {
+    "args": [
+      "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.ts",
+      "start"
+    ],
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"start\",\n  \"status\": \"error\",\n  \"error\": {\n    \"type\": \"Error\",\n    \"message\": \"Managed server state is 'starting', not running.\",\n    \"stack\": \"Error: Managed server state is 'starting', not running.\\n    at validateManagedRunningState (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1577:41)\\n    at validatedManagedHealth (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:948:21)\\n    at waitForValidatedManagedHealth (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:955:24)\\n    at start (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1419:28)\\n    at main (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2042:23)\\n    at file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2080:7\\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\\n    at async node:internal/modules/esm/loader:643:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"\n  }\n}\n",
+    "stderr": ""
+  },
+  "restoreTray": {
+    "status": 0
+  },
+  "finishedAt": "2026-08-19T09:46:42.409Z"
+}

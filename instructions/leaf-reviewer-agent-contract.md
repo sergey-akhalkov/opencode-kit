@@ -15,7 +15,7 @@ Each reusable reviewer under `global/agents/*.md` MUST:
 3. **NOT** inline the shared `## Leaf Contract`, `## Feedback Ledger`, or `## Prevention Feedback`
    headings or bodies from this file.
 
-Shared runtime safety and feedback-ledger policy come from always-loaded `global/AGENTS.md` plus the
+Shared runtime philosophy, safety, and feedback-ledger policy come from `global/principles-of-work.md`, operational `global/AGENTS.md`, and the
 role-specific agent body. This provenance file may retain the canonical shared text below for authors
 and validators; copy-paste of those three blocks into reusable reviewer bodies is forbidden.
 

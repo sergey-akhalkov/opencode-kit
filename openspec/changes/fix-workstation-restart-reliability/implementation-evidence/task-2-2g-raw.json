@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-24T13:35:55.707Z",
+  "delayMs": 25000,
+  "mechanism": "stop-tray-per-pid-collect-install-start-tray-restart-finally-restore",
+  "repoControllerSha256": "8B2AB8FDB65BCF06D026B65C6F060052DA766E2A6F6C8ACE233C02442FB68045",
+  "before": {
+    "status": "running",
+    "supervisorProcessId": 2400,
+    "serverRootProcessId": 3352,
+    "listenerProcessId": 14400,
+    "candidate": "db50301a63b53a70507d739cc6974a3fa8ffd7eb0294102c9b0742e3959e7bfa",
+    "trayColor": "green",
+    "controllerSha256": "03358B5077C186A5006DE3AAC87C3346C96A8952D7A65A19FED330FA1F56AD50",
+    "trayScriptSha256": "78A1400290D76B9DB71B10CE16EBFDDB7160742A1D336EA5BE4B2370F32E85DD",
+    "errorLogBytes": 162397
+  },
+  "trayStop": {
+    "listed": [
+      13216,
+      24104,
+      16412
+    ],
+    "kills": [
+      {
+        "processId": 13216,
+        "status": "stopped",
+        "taskkillStatus": 0,
+        "taskkillError": null,
+        "stderr": ""
+      },
+      {
+        "processId": 24104,
+        "status": "already-gone"
+      },
+      {
+        "processId": 16412,
+        "status": "already-gone"
+      }
+    ]
+  },
+  "pidStops": [
+    {
+      "processId": 3352,
+      "status": "stopped",
+      "taskkillStatus": 0,
+      "taskkillError": null,
+      "stderr": ""
+    },
+    {
+      "processId": 14400,
+      "status": "stopped",
+      "taskkillStatus": 1,
+      "taskkillError": null,
+      "stderr": "�訡��: �� 㤠���� �������� ����� � �����䨪��஬ 14400.\r\n��稭�: �� ���� �� ��������஢ �⮣� ������� �� ����饭."
+    },
+    {
+      "processId": 2400,
+      "status": "already-gone"
+    }
+  ],
+  "serveInvoker": {
+    "listed": [
+      2576
+    ],
+    "kills": [
+      {
+        "processId": 2576,
+        "status": "already-gone"
+      }
+    ]
+  },
+  "leftover4096": [
+    {
+      "processId": 14400,
+      "parentProcessId": 0,
+      "name": ""
+    }
+  ],
+  "sameTreeLeftoverKills": [
+    {
+      "processId": 14400,
+      "status": "already-gone"
+    }
+  ],
+  "portGone": {
+    "label": "ports-gone",
+    "ok": false,
+    "waitedMs": 20000
+  },
+  "portGoneOwners": {
+    "4096": [
+      {
+        "processId": 14400,
+        "parentProcessId": 0,
+        "name": ""
+      }
+    ],
+    "4097": []
+  },
+  "ok": false,
+  "error": "managed ports still listening after per-pid stop",
+  "restore": {
+    "tray": {
+      "startStatus": 0,
+      "startStdout": "Running",
+      "startStderr": ""
+    },
+    "start": {
+      "args": [
+        "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.ts",
+        "start"
+      ],
+      "status": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"start\",\n  \"status\": \"error\",\n  \"error\": {\n    \"type\": \"Error\",\n    \"message\": \"Managed task is 'Ready', not Running.\",\n    \"stack\": \"Error: Managed task is 'Ready', not Running.\\n    at readManagedTaskState (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1791:48)\\n    at rejectDegradedState (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1799:17)\\n    at start (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1614:5)\\n    at main (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2470:23)\\n    at file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2508:7\\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\\n    at async node:internal/modules/esm/loader:643:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"\n  }\n}\n",
+      "stderr": ""
+    },
+    "healthy": {
+      "label": "restore-healthy",
+      "ok": false,
+      "waitedMs": 90000
+    },
+    "after": {
+      "status": "exited",
+      "supervisorProcessId": 2400,
+      "serverRootProcessId": 3352,
+      "listenerProcessId": 14400,
+      "candidate": "db50301a63b53a70507d739cc6974a3fa8ffd7eb0294102c9b0742e3959e7bfa",
+      "trayColor": "red",
+      "controllerSha256": "03358B5077C186A5006DE3AAC87C3346C96A8952D7A65A19FED330FA1F56AD50",
+      "trayScriptSha256": "78A1400290D76B9DB71B10CE16EBFDDB7160742A1D336EA5BE4B2370F32E85DD",
+      "errorLogBytes": 164732
+    }
+  },
+  "finishedAt": "2026-08-24T13:39:01.333Z"
+}

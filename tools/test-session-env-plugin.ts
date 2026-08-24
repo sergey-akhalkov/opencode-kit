@@ -106,6 +106,7 @@ function createDeliveryContextDbWithParent(dbPath: string, rootSessionId: string
   try {
     db.exec([
       "create table session (id text primary key, parent_id text, time_created integer, time_updated integer);",
+      "create index session_parent_idx on session (parent_id);",
       "create table session_input (id text primary key, session_id text not null, prompt text, time_created integer);",
       "create table message (id text primary key, session_id text not null, time_created integer, data text);",
       "create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, data text);",
@@ -273,10 +274,31 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "does not own tool execution context",
+    name: "guards only shared Graphify repository-context tools",
     run: async () => {
       const hooks = await plugin.server({} as never);
-      assert(hooks["tool.execute.before"] == null, "session-env must not register tool.execute.before.");
+      const before = hooks["tool.execute.before"];
+      assert(before != null, "session-env must compose the shared Graphify repository guard.");
+      for (const tool of ["graphify-global_list_prs", "graphify-global_get_pr_impact", "graphify-global_triage_prs"]) {
+        let rejected = false;
+        try {
+          await before?.({ callID: "call_fixture", sessionID: "session_fixture", tool }, { args: {} });
+        } catch (error) {
+          rejected = error instanceof Error && error.message.includes("explicit non-empty 'repo'");
+        }
+        assert(rejected, `${tool} must reject an omitted repo argument.`);
+      }
+      const explicit = { repo: "owner/repository", base: "main" };
+      const explicitBefore = JSON.stringify(explicit);
+      await before?.(
+        { callID: "call_fixture", sessionID: "session_fixture", tool: "graphify-global_list_prs" },
+        { args: explicit },
+      );
+      assert(JSON.stringify(explicit) === explicitBefore, "Graphify guard must preserve explicit arguments unchanged.");
+      await before?.(
+        { callID: "call_fixture", sessionID: "session_fixture", tool: "graphify-global_query_graph" },
+        { args: {} },
+      );
     },
   },
   {
@@ -655,7 +677,7 @@ const tests: TestCase[] = [
     }),
   },
   {
-    name: "critical session: direct raw-id lookup short-circuits before full scan and hashed public refs still resolve",
+    name: "critical session: direct raw-id lookup is parameterized and hashed public refs do not scan",
     run: async () => withTempDataDir("direct-lookup", async (dataDir) => {
       const { DatabaseSync } = await import("node:sqlite");
       const { selectedRows, requestedSession, tableColumns, tableNames } = await import("../global/plugin/session-delivery-context/db.ts");
@@ -679,11 +701,8 @@ const tests: TestCase[] = [
 
         const publicRef = hashRef("session", targetId);
         assert(/^session_[a-f0-9]{12}$/.test(publicRef), `Public session ref shape drifted: ${publicRef}`);
-        // Store only the raw id; hashed-ref fallback scans and matches by hashRef equality.
         const hashed = selectedRows(db, schema, requestedSession(publicRef));
-        // requestedSession(publicRef) treats a session_* 12-hex token as both raw and ref candidates.
-        // Ensure the fallback path can still resolve when the caller supplies the public ref form.
-        assert(hashed.some((row) => String(row.id) === targetId || hashRef("session", String(row.id)) === publicRef), `Hashed public ref must resolve to the target session, got ${JSON.stringify(hashed)}`);
+        assert(hashed.length === 0, `Hashed public ref must not materialize the session table, got ${JSON.stringify(hashed)}`);
       } finally {
         db.close();
       }
@@ -721,6 +740,47 @@ const tests: TestCase[] = [
           process.env.OPENCODE_DATA_DIR = previousDataDir;
         }
       }
+    }),
+  },
+  {
+    name: "critical session: omitted descendants fail closed before arbitration",
+    run: async () => withTempDataDir("graph-omit", async (dataDir) => {
+      const { readSessionDeliveryContext } = await import("../global/plugin/session-delivery-context/index.ts");
+      const { captureArbiterEvidence } = await import("../global/extensions/session-completion-guard/arbiter-evidence.ts");
+      const { hashRef } = await import("../global/plugin/session-delivery-context/redaction.ts");
+      const { SESSION_GRAPH_SURFACE } = await import("../global/plugin/session-delivery-context/session-graph.ts");
+      const rootId = "session_graph_omit_root";
+      const dbPath = path.join(dataDir, "opencode.db");
+      const db = new DatabaseSync(dbPath);
+      try {
+        db.exec("create table session (id text primary key, parent_id text, time_created integer, time_updated integer);");
+        db.exec("begin");
+        const insert = db.prepare("insert into session (id, parent_id, time_created, time_updated) values (?, ?, ?, ?)");
+        insert.run(rootId, null, 1, 1);
+        for (let index = 0; index < 600; index += 1) {
+          insert.run(`child-${index}`, rootId, index + 2, index + 2);
+        }
+        db.exec("commit");
+        db.exec("create index session_parent_idx on session (parent_id)");
+      } finally {
+        db.close();
+      }
+      const evidence = readSessionDeliveryContext({
+        dbPaths: [dbPath],
+        sessionId: rootId,
+        useDefaultPaths: false,
+      });
+      assert(
+        evidence.truncationWarnings.some((entry) => entry.surface === SESSION_GRAPH_SURFACE),
+        `completion-relevant omission must be explicit, got ${JSON.stringify(evidence.truncationWarnings)}`,
+      );
+      let failedClosed = false;
+      try {
+        captureArbiterEvidence(rootId, hashRef("session", rootId), undefined, undefined, [dbPath]);
+      } catch (error) {
+        failedClosed = error instanceof Error && error.message.includes("omitted descendants");
+      }
+      assert(failedClosed, "arbitration must fail closed when omitted descendants can affect liveness");
     }),
   },
 ];

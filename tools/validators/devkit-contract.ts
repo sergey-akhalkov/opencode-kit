@@ -15,6 +15,11 @@ import {
   requireTextContains,
 } from "./context.ts";
 import { scanOperativeTextOutsideFences } from "./active-authority.ts";
+import { GLOBAL_AGENTS_CONCISE_LIVE_ATTEMPT_MARKERS } from "../contracts/skills.ts";
+import {
+  inspectWorkflowContracts,
+  workflowContractDiagnostics,
+} from "./workflow-contracts.ts";
 
 /**
  * Read a model-facing Markdown instruction surface with structured operative scan.
@@ -70,6 +75,7 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
   requireFile(ctx, root, "templates/ci/github-actions.yml", "CI template");
   requireDirectory(ctx, root, "profiles", "install profiles directory");
   requireFile(ctx, root, "profiles/all.json", "all install profile");
+  requireFile(ctx, root, "profiles/core.json", "core runtime-surface profile");
   requireFile(ctx, root, "tools/init-project.ts", "project bootstrap tool");
   requireFile(ctx, root, "tools/doctor.ts", "doctor tool");
   requireFile(ctx, root, "tools/project-inventory.ts", "project inventory tool");
@@ -81,6 +87,10 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
   );
   requireFile(ctx, root, "tools/pre-push-validate.ts", "pre-push validation tool");
   requireFile(ctx, root, ".githooks/pre-push", "tracked pre-push hook");
+
+  for (const diagnostic of workflowContractDiagnostics(inspectWorkflowContracts(root))) {
+    ctx.addError(diagnostic);
+  }
 
   const universalLoop = path.join(root, "instructions", "universal-development-loop.md");
   if (fileExists(universalLoop)) {
@@ -98,7 +108,6 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
         "Critical SDET",
         "Validation And RC",
         "Stable Handoff",
-        "Process Improvement",
         "Development-Stage",
         "Ordinary Small | Material",
         "technically enforced operating envelope",
@@ -427,19 +436,8 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
   if (fileExists(globalAgentsPath)) {
     const globalAgentsText = readOperativeModelFacingText(ctx, globalAgentsPath);
     if (globalAgentsText != null) {
-      for (const marker of [
-        "Treat the session as stagnant",
-        "Attempt control and stagnation",
-        "diagnosis, not outcome progress",
-        "blocks unchanged live repetition",
-        "invocation remains finalized and non-reusable",
-        "does not impose a fixed mission-wide attempt ceiling",
-        "`unknown` gate state remains blocked",
-        "openspec/changes/<change>/history.md",
-        "Pending Strategy History",
-        "materially different local mechanism",
-      ]) {
-        requireTextContains(ctx, globalAgentsText, marker, "global AGENTS stagnation strategy contract", globalAgentsPath);
+      for (const marker of GLOBAL_AGENTS_CONCISE_LIVE_ATTEMPT_MARKERS) {
+        requireTextContains(ctx, globalAgentsText, marker, "global AGENTS concise live-attempt contract", globalAgentsPath);
       }
     }
   }

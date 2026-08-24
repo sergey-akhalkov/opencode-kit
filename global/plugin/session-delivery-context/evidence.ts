@@ -1,4 +1,10 @@
 import { hasColumns, normalizeMillis, quoteIdent, selectColumnOrNull } from "./db.ts";
+import {
+  SESSION_GRAPH_DEPTH_LIMIT,
+  SESSION_GRAPH_ROW_LIMIT,
+  SESSION_GRAPH_SURFACE,
+  collectSessionGraph,
+} from "./session-graph.ts";
 import { hashRef, sanitizeText } from "./redaction.ts";
 import type { DbSchema } from "./db-types.ts";
 import type { SqliteDatabase } from "./sqlite.ts";
@@ -494,26 +500,15 @@ function descendantEvidence(
   truncations: DeliveryContextTruncation[],
 ): Pick<CompletionEvidence, "auditRefs" | "descendants"> {
   if (!hasColumns(schema, "session", ["id", "parent_id"])) return { auditRefs: [], descendants: [] };
-  const rows = db.prepare("select * from session order by time_created, id").all() as Array<Record<string, unknown>>;
-  const childrenByParent = new Map<string, Array<Record<string, unknown>>>();
-  for (const row of rows) {
-    const parent = stringValue(row.parent_id);
-    if (parent == null) continue;
-    const existing = childrenByParent.get(parent) ?? [];
-    existing.push(row);
-    childrenByParent.set(parent, existing);
+  const walk = collectSessionGraph(db, schema, rawSessionId);
+  if (!walk.complete) {
+    const limit = walk.reason === "depth-limit" ? SESSION_GRAPH_DEPTH_LIMIT : SESSION_GRAPH_ROW_LIMIT;
+    addTruncation(truncations, SESSION_GRAPH_SURFACE, limit, Math.max(1, walk.omitted));
   }
-  const descendantsRaw: Array<Record<string, unknown>> = [];
-  const queue = [...(childrenByParent.get(rawSessionId) ?? [])];
-  const seen = new Set<string>();
-  while (queue.length > 0 && descendantsRaw.length <= DESCENDANT_LIMIT * 4) {
-    const row = queue.shift()!;
-    const id = String(row.id);
-    if (seen.has(id)) continue;
-    seen.add(id);
-    descendantsRaw.push(row);
-    queue.push(...(childrenByParent.get(id) ?? []));
+  if (walk.reason === "capability-blocked" || walk.reason === "unsupported") {
+    return { auditRefs: [], descendants: [] };
   }
+  const descendantsRaw = walk.rows as Array<Record<string, unknown>>;
   const ids = descendantsRaw.map((row) => String(row.id));
   const parts = readParts(db, schema, ids);
   const activeBySession = new Set<string>();

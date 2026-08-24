@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "boundary": "opencode-debug-plugin-resolver",
+  "invocation": "opencode debug config|startup with isolated claims-like config; no serve",
+  "opencodeVersion": "1.18.18",
+  "seededPluginVersion": "1.18.15",
+  "declaredPluginDependency": "1.18.15",
+  "afterSeededPluginVersion": "1.18.15",
+  "beforeGlobalPlugin": "1.18.15",
+  "afterGlobalPlugin": "1.18.15",
+  "globalPluginMutated": false,
+  "nodeModulesIsJunction": true,
+  "isolatedCacheExists": true,
+  "isolatedCacheEntries": [
+    "bun",
+    "opencode"
+  ],
+  "commands": {
+    "configDump": {
+      "args": [
+        "debug",
+        "config"
+      ],
+      "elapsedMs": 20651,
+      "signal": null,
+      "status": 0,
+      "stderrChars": 0,
+      "stdoutChars": 1659,
+      "timedOut": false,
+      "errorName": null,
+      "stderrTail": "",
+      "stdoutTail": "  \"file:///<source>/global/extensions/opencode-pty-bridge.ts\",\n    \"file:///<source>/global/extensions/session-completion-guard.ts\"\n  ],\n  \"command\": {\n    \"pty-open-background-spy\": {\n      \"template\": \"This command will start the PTY Sessions Web Interface in your default browser.\",\n      \"description\": \"Open PTY Sessions Web Interface\"\n    },\n    \"pty-show-server-url\": {\n      \"template\": \"This command will show the PTY Sessions Web Interface URL.\",\n      \"description\": \"Show PTY Sessions Web Interface URL\"\n    },\n    \"enable-grind\": {\n      \"description\": \"Enable completion grind for this session\",\n      \"template\": \"Grind mode is enabled for this session. Reply with a concise confirmation only.\"\n    },\n    \"disable-grind\": {\n      \"description\": \"Disable completion grind for this session\",\n      \"template\": \"Grind mode is disabled for this session. Reply with a concise confirmation only.\"\n    }\n  },\n  \"$schema\": \"https://opencode.ai/config.json\",\n  \"model\": \"proof/proof-model\",\n  \"plugin_origins\": [\n    {\n      \"spec\": \"file:///<source>/global/extensions/opencode-pty-bridge.ts\",\n      \"source\": \"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-plugin-resolver-B8lkt8\\\\config\\\\opencode.json\",\n      \"scope\": \"global\"\n    },\n    {\n      \"spec\": \"file:///<source>/global/extensions/session-completion-guard.ts\",\n      \"source\": \"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\guard-plugin-resolver-B8lkt8\\\\config\\\\opencode.json\",\n      \"scope\": \"global\"\n    }\n  ],\n  \"username\": \"noilw\"\n}\r\n"
+    },
+    "startup": {
+      "args": [
+        "debug",
+        "startup"
+      ],
+      "elapsedMs": 986,
+      "signal": null,
+      "status": 0,
+      "stderrChars": 0,
+      "stdoutChars": 10,
+      "timedOut": false,
+      "errorName": null,
+      "stderrTail": "",
+      "stdoutTail": "903.6113\r\n"
+    }
+  },
+  "claimCeiling": "This probe observes OpenCode debug config/startup plugin-dependency resolution only. It does not exercise serve, guard decisions, or claim behavior.",
+  "liveAttemptGate": "blocked",
+  "providerCalls": 0,
+  "externalEffects": [
+    "local-disposable-debug"
+  ],
+  "cleanup": "complete"
+}

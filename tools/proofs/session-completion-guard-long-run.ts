@@ -96,6 +96,7 @@ function createLongRootDatabase(dbPath: string, rootID: string): void {
   const db = new Database(dbPath, { create: true });
   try {
     db.run("create table session (id text primary key, parent_id text, agent text, metadata text, time_created integer, time_updated integer)");
+    db.run("create index session_parent_idx on session (parent_id)");
     db.run("create table message (id text primary key, session_id text not null, time_created integer, data text)");
     db.run("create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, time_updated integer, data text)");
     db.run("create table todo (session_id text not null, content text, status text, priority text, position integer, time_created integer, time_updated integer)");

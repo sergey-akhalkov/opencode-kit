@@ -16,6 +16,22 @@ import {
 } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import {
+  GRAPHIFY_ENDPOINT,
+  GRAPHIFY_PORT,
+  applyGraphifyConfigPlan,
+  authorizeGraphifyProbe,
+  graphifyArguments,
+  graphifyProcessIdentity,
+  inspectGraphifyListeners,
+  inspectProcessObservation,
+  assertReusableGraphifyConfig,
+  planGraphifyConfigEdit,
+  probeGraphifyMcp,
+  restoreGraphifyConfig,
+  validateSharedToolsConfigurationObject,
+} from "./opencode-shared-tools.ts"
+import { resolveWorkstationConfigurationPath } from "./opencode-workstation-config.ts"
 
 const protectedRoot = String.raw`C:\ProgramData\OpenCodeWorkstation`
 const taskName = "OpenCode Workstation Shared Server"
@@ -24,9 +40,13 @@ const endpoint = "http://127.0.0.1:4096"
 const publicModes = new Set(["install", "preflight", "status", "start", "stop", "restart", "launch", "rollback"])
 const controllerSourcePath = fileURLToPath(import.meta.url)
 const installedControllerPath = path.join(protectedRoot, "opencode-workstation.ts")
+const sharedToolsSourcePath = path.join(path.dirname(controllerSourcePath), "opencode-shared-tools.ts")
+const installedSharedToolsPath = path.join(protectedRoot, "opencode-shared-tools.ts")
 const manifestPath = path.join(protectedRoot, "manifest.json")
 const credentialPath = path.join(protectedRoot, "server-password")
+const graphifyCredentialPath = path.join(protectedRoot, "graphify-api-key")
 const statePath = path.join(protectedRoot, "server-state.json")
+const graphifyConfigBackupPath = path.join(protectedRoot, "backup", "opencode-config.before-graphify")
 const logsPath = path.join(protectedRoot, "logs")
 const protectedAlacrittyConfigPath = path.join(protectedRoot, "alacritty.toml")
 const invokePath = path.join(protectedRoot, "invoke.vbs")
@@ -70,6 +90,10 @@ Repository ids:
   windows-ui-automation
 
 The help, preflight, and status modes are read-only. All output except help is JSON.
+
+Machine-local mappings live in gitignored opencode-workstation.config.json.
+Copy opencode-workstation.config.example.json to that name and replace placeholders.
+Do not pass the tracked example as --config.
 `)
 }
 
@@ -149,13 +173,13 @@ function exactObjectKeys(value, expectedKeys, label) {
 }
 
 function loadWorkstationConfiguration(configurationPath = defaultConfigurationPath) {
-  const resolvedPath = path.resolve(configurationPath)
+  const resolvedPath = resolveWorkstationConfigurationPath({
+    explicitPath: configurationPath === defaultConfigurationPath ? undefined : configurationPath,
+    sourceDirectory: path.dirname(controllerSourcePath),
+  }).path
   if (!existsSync(resolvedPath)) throw new Error(`Workstation configuration is missing at '${resolvedPath}'.`)
   const configuration = readJson(resolvedPath)
-  exactObjectKeys(configuration, ["schemaVersion", "repositories"], "Workstation configuration")
-  if (configuration.schemaVersion !== 1) {
-    throw new Error(`Unsupported workstation configuration schema '${configuration.schemaVersion}'.`)
-  }
+  const sharedTools = validateSharedToolsConfigurationObject(configuration, resolvedPath)
   exactObjectKeys(configuration.repositories, repositoryIds, "Workstation configuration repositories")
   const repositories = Object.fromEntries(repositoryIds.map((id) => {
     const configuredPath = configuration.repositories[id]
@@ -165,9 +189,10 @@ function loadWorkstationConfiguration(configurationPath = defaultConfigurationPa
     return [id, path.resolve(path.dirname(resolvedPath), configuredPath)]
   }))
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     source: fileIdentity(resolvedPath),
     repositories,
+    graphify: sharedTools.graphify,
   }
 }
 
@@ -206,9 +231,9 @@ function applyProtectedRootAcl() {
   ])
 }
 
-function applyCredentialAcl() {
+function applyCredentialAcl(targetPath = credentialPath) {
   run("icacls.exe", [
-    credentialPath,
+    targetPath,
     "/inheritance:r",
     "/grant:r",
     "*S-1-5-18:F",
@@ -239,7 +264,9 @@ function managedInvokerContents(manifest) {
     "Next",
     "code = shell.Run(command, 0, True)",
     "If code <> 0 Then",
-    `  shell.Popup "OpenCode workstation command failed. See ${logsPath}\\controller-errors.log", 0, "OpenCode Workstation", 16`,
+    "  If WScript.Arguments.Count = 0 Or LCase(WScript.Arguments(0)) <> \"serve\" Then",
+    `    shell.Popup "OpenCode workstation command failed. See ${logsPath}\\controller-errors.log", 0, "OpenCode Workstation", 16`,
+    "  End If",
     "  WScript.Quit code",
     "End If",
     "",
@@ -290,8 +317,10 @@ if (-not $mutex.WaitOne(0, $false)) { exit 0 }
 $node = ${JSON.stringify(node)}
 $controller = ${JSON.stringify(installedControllerPath)}
 $stateFile = ${JSON.stringify(trayStatePath)}
-$commandFile = ${JSON.stringify(trayCommandPath)}
-$label = 'opencode-server'
+    $serverState = ${JSON.stringify(statePath)}
+    $commandFile = ${JSON.stringify(trayCommandPath)}
+    $errorLog = ${JSON.stringify(path.join(logsPath, "controller-errors.log"))}
+    $label = 'opencode-server'
 $script:phase = 'starting'
 $script:worker = $null
 $script:blinkOn = $true
@@ -312,7 +341,12 @@ function Write-LampState([string]$color) {
 }
 
 function Test-ServerListening {
-  $null -ne (Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort 4096 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1)
+  if (-not (Test-Path -LiteralPath $serverState)) { return $false }
+  try { $state = Get-Content -LiteralPath $serverState -Raw | ConvertFrom-Json } catch { return $false }
+  if ([string]$state.status -ne 'running') { return $false }
+  $openCode = Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort 4096 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+  $graphify = Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort 4097 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+  $null -ne $openCode -and $null -ne $graphify -and [int]$openCode.OwningProcess -eq [int]$state.listeners[0].processId -and [int]$graphify.OwningProcess -eq [int]$state.graphify.listener.processId
 }
 
 function Start-ControllerAsync([string]$mode) {
@@ -395,9 +429,17 @@ $timer.add_Tick({
       $code = [int]$script:worker.ExitCode
       $script:worker = $null
       if ($script:phase -eq 'exiting') { Close-Tray; return }
-      if ($script:phase -eq 'restarting' -and $code -ne 0 -and -not (Test-ServerListening)) {
-        $script:phase = 'starting'
-        Start-ControllerAsync 'start'
+      if ($script:phase -eq 'restarting') {
+        if ($code -eq 0 -and (Test-ServerListening)) {
+          $script:phase = 'idle'
+          Update-Lamp
+          return
+        }
+        $script:phase = 'failed'
+        $notify.Icon = $red
+        $notify.Text = "$label (restart failed)"
+        Write-LampState 'red'
+        $notify.ShowBalloonTip(8000, 'OpenCode Workstation', "Restart failed. See $errorLog", [System.Windows.Forms.ToolTipIcon]::Error)
         return
       }
       $script:phase = 'idle'
@@ -409,6 +451,9 @@ $timer.add_Tick({
       $notify.Icon = $(if ($script:blinkOn) { $red } else { $amber })
       $notify.Text = $(if ($script:phase -eq 'restarting') { "$label (restarting)" } else { "$label (starting)" })
       Write-LampState $script:phase
+    } elseif ($script:phase -eq 'failed') {
+      $notify.Icon = $red
+      $notify.Text = "$label (restart failed)"
     } elseif ($script:phase -eq 'idle') {
       Update-Lamp
     }
@@ -593,13 +638,18 @@ $process = Get-CimInstance Win32_Process -Filter ('ProcessId = ' + [int]$payload
   }
 }
 
-function elevateInvocation(args) {
+function elevateInvocation(args, directProcessOnly = false) {
   const argumentLine = [controllerSourcePath, ...args].map(quoteWindowsArgument).join(" ")
-  const payload = encodedPayload({ executable: process.execPath, argumentLine })
+  const payload = encodedPayload({ executable: process.execPath, argumentLine, directProcessOnly })
   const result = runPowerShellJson(String.raw`
 $ErrorActionPreference = 'Stop'
 $payload = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${payload}')) | ConvertFrom-Json
-$process = Start-Process -FilePath ([string]$payload.executable) -ArgumentList ([string]$payload.argumentLine) -Verb RunAs -WindowStyle Hidden -Wait -PassThru
+$process = if ([bool]$payload.directProcessOnly) {
+  Start-Process -FilePath ([string]$payload.executable) -ArgumentList ([string]$payload.argumentLine) -Verb RunAs -WindowStyle Hidden -PassThru
+} else {
+  Start-Process -FilePath ([string]$payload.executable) -ArgumentList ([string]$payload.argumentLine) -Verb RunAs -WindowStyle Hidden -Wait -PassThru
+}
+if ([bool]$payload.directProcessOnly) { $process.WaitForExit() }
 [ordered]@{ exitCode = [int]$process.ExitCode } | ConvertTo-Json -Compress
 `)
   if (result.exitCode !== 0) throw new Error(`Elevated controller exited ${result.exitCode}.`)
@@ -772,6 +822,7 @@ function environmentPlan(snapshot, configuration) {
     }),
   )
   const listeners = snapshotListeners(snapshot)
+  const graphifyListeners = inspectGraphifyListeners()
   return {
     user: snapshot.user,
     userSidIdentity: `sha256:${sha256Text(snapshot.userSid)}`,
@@ -783,6 +834,7 @@ function environmentPlan(snapshot, configuration) {
     protectedRoot,
     alacrittyConfig: path.join(process.env.APPDATA ?? "", "alacritty", "alacritty.toml"),
     configuration: configuration.source,
+    graphify: configuration.graphify,
     repositories: repositoryIdentities(configuration.repositories),
     shortcuts,
     collisions: {
@@ -792,11 +844,16 @@ function environmentPlan(snapshot, configuration) {
       alacrittyConfigExists: existsSync(path.join(process.env.APPDATA ?? "", "alacritty", "alacritty.toml")),
       shortcutCount: Object.values(shortcuts).filter((shortcut) => shortcut.exists).length,
       portListenerCount: listeners.length,
+      graphifyPortListenerCount: graphifyListeners.length,
     },
     task: snapshot.task,
     port: {
       listenerCount: listeners.length,
       listeners,
+    },
+    graphifyPort: {
+      listenerCount: graphifyListeners.length,
+      listeners: graphifyListeners,
     },
   }
 }
@@ -808,6 +865,10 @@ function installationPlan(tools, environment) {
       source: fileIdentity(controllerSourcePath),
       installedPath: installedControllerPath,
     },
+    sharedTools: {
+      source: fileIdentity(sharedToolsSourcePath),
+      installedPath: installedSharedToolsPath,
+    },
     protectedRoot,
     acl: {
       root: ["SYSTEM:F", "BUILTIN\\Administrators:F", "BUILTIN\\Users:RX"],
@@ -815,6 +876,8 @@ function installationPlan(tools, environment) {
     },
     manifestPath,
     credentialPath,
+    graphifyCredentialPath,
+    graphifyConfigBackupPath,
     statePath,
     logsPath,
     task: {
@@ -847,11 +910,21 @@ function installationPlan(tools, environment) {
 function loadManifest() {
   if (!existsSync(manifestPath)) throw new Error(`Managed manifest is missing at '${manifestPath}'.`)
   const manifest = readJson(manifestPath)
-  if (manifest.schemaVersion !== 1) throw new Error(`Unsupported managed manifest schema '${manifest.schemaVersion}'.`)
+  if (manifest.schemaVersion !== 1 && manifest.schemaVersion !== 2) throw new Error(`Unsupported managed manifest schema '${manifest.schemaVersion}'.`)
   if (path.resolve(manifest.controller.installedPath).toLowerCase() !== path.resolve(installedControllerPath).toLowerCase()) {
     throw new Error("Managed manifest controller path does not match this installation.")
   }
   return manifest
+}
+
+function verifyInstalledSharedTools(manifest) {
+  if (manifest.schemaVersion !== 2 || !manifest.sharedTools) throw new Error("Managed shared-tool module is not installed.")
+  if (!existsSync(installedSharedToolsPath)) throw new Error("Installed shared-tool module is missing.")
+  const actual = sha256File(installedSharedToolsPath)
+  if (actual !== manifest.sharedTools.sha256) {
+    throw new Error(`Installed shared-tool module hash mismatch: expected ${manifest.sharedTools.sha256}, observed ${actual}.`)
+  }
+  return actual
 }
 
 function verifyInstalledController(manifest) {
@@ -867,6 +940,13 @@ function readCredential() {
   if (!existsSync(credentialPath)) throw new Error("Managed server credential is missing.")
   const value = readFileSync(credentialPath, "utf8").trim()
   if (value.length < 32) throw new Error("Managed server credential is invalid.")
+  return value
+}
+
+function readGraphifyCredential() {
+  if (!existsSync(graphifyCredentialPath)) throw new Error("Managed Graphify credential is missing.")
+  const value = readFileSync(graphifyCredentialPath, "utf8").trim()
+  if (value.length < 32) throw new Error("Managed Graphify credential is invalid.")
   return value
 }
 
@@ -934,7 +1014,32 @@ async function waitForValidatedRunningState(manifest, timeoutMilliseconds = 60_0
 
 async function validatedManagedHealth(manifest, snapshot = windowsSnapshot()) {
   const ownership = validateManagedRunningState(manifest, snapshot)
-  const health = await healthProbe(readCredential())
+  const openCode = await healthProbe(readCredential())
+  let graphify
+  try {
+    const processIdentity = graphifyProcessIdentity(manifest.graphify.configuration, {
+      processId: ownership.graphifyRoot.processId,
+      parentProcessId: ownership.graphifyRoot.parentProcessId,
+      executablePath: ownership.graphifyRoot.executablePath,
+      creationDate: ownership.graphifyRoot.creationDate,
+      arguments: graphifyArguments(manifest.graphify.configuration),
+    })
+    const token = authorizeGraphifyProbe(manifest.graphify.configuration, processIdentity, {
+      processId: ownership.graphifyListener.processId,
+      localAddress: "127.0.0.1",
+      localPort: GRAPHIFY_PORT,
+      ancestorProcessIds: [ownership.graphifyRoot.processId],
+    })
+    graphify = await probeGraphifyMcp(token, readGraphifyCredential())
+  } catch (error) {
+    graphify = { healthy: false, error: error instanceof Error ? error.message : String(error) }
+  }
+  const health = {
+    ...openCode,
+    healthy: openCode.healthy && graphify.authenticatedStatus === 200 && graphify.unauthenticatedStatus === 401,
+    openCode,
+    graphify,
+  }
   return { ownership, health }
 }
 
@@ -1013,11 +1118,14 @@ function installedObservation(snapshot) {
   }
   const manifest = loadManifest()
   const controllerHash = verifyInstalledController(manifest)
+  const sharedToolsHash = manifest.schemaVersion === 2 ? verifyInstalledSharedTools(manifest) : null
   return {
     installed: true,
     integrity: "complete",
     controllerHash,
+    sharedToolsHash,
     credentialPresent: existsSync(credentialPath),
+    graphifyCredentialPresent: existsSync(graphifyCredentialPath),
     statePresent: existsSync(statePath),
         task: snapshot.task,
         trayTask: snapshot.trayTask,
@@ -1026,6 +1134,7 @@ function installedObservation(snapshot) {
       candidate: manifest.candidate,
       owner: manifest.owner,
       endpoint: manifest.endpoint,
+      graphifyEndpoint: manifest.graphify?.endpoint ?? null,
       installedAt: manifest.installedAt,
       configuration: manifest.configuration,
       createdShortcutIds: manifest.createdShortcutIds,
@@ -1094,11 +1203,12 @@ function powershellSingleQuoted(value) {
 async function launch(repository) {
   const snapshot = windowsSnapshot()
   if (!snapshot.elevated) {
-    elevateInvocation(["launch", "--repository", repository])
+    elevateInvocation(["launch", "--repository", repository], true)
     return { schemaVersion: 1, operation: "launch", status: "delegated-to-elevated-controller", repository }
   }
   const manifest = loadManifest()
   verifyInstalledController(manifest)
+  verifyInstalledSharedTools(manifest)
   if (!Object.hasOwn(manifest.repositories, repository)) throw new Error(`Repository '${repository}' is not in the protected manifest.`)
   const currentRepositories = repositoryIdentities(manifest.repositories)
   const repositoryPath = manifest.repositories[repository]
@@ -1108,6 +1218,7 @@ async function launch(repository) {
   if (!manifest.alacritty || !existsSync(manifest.alacritty.protectedPath)) {
     throw new Error("Protected Alacritty config is missing.")
   }
+  rejectDegradedState(manifest, windowsSnapshot())
   const observed = await waitForValidatedManagedHealth(manifest)
   if (!observed.health.healthy) {
     throw new Error(`Shared OpenCode server is unavailable; run the Start shortcut first (${healthDiagnostic(observed.health)}).`)
@@ -1158,7 +1269,7 @@ async function launch(repository) {
   }
 }
 
-function install(configurationPath) {
+async function install(configurationPath) {
   const configuration = loadWorkstationConfiguration(configurationPath)
   const snapshot = windowsSnapshot()
   if (!snapshot.elevated) {
@@ -1173,12 +1284,15 @@ function install(configurationPath) {
     const manifest = loadManifest()
     verifyInstalledController(manifest)
     const environment = environmentPlan(snapshot, configuration)
-    if (environment.port.listenerCount > 0 || snapshot.task.state === "Running") {
-      throw new Error("Managed controller repair requires the server task and port to be stopped.")
+    if (environment.port.listenerCount > 0 || environment.graphifyPort.listenerCount > 0 || snapshot.task.state === "Running") {
+      throw new Error("Managed controller repair requires the server task and both managed ports to be stopped.")
     }
     const sourceIdentity = fileIdentity(controllerSourcePath)
+    const sharedToolsIdentity = fileIdentity(sharedToolsSourcePath)
     const temporaryController = `${installedControllerPath}.${process.pid}.new`
     const previousController = `${installedControllerPath}.${process.pid}.previous`
+    const temporarySharedTools = `${installedSharedToolsPath}.${process.pid}.new`
+    const previousSharedTools = `${installedSharedToolsPath}.${process.pid}.previous`
     const originalManifest = readFileSync(manifestPath)
     const previousManifest = JSON.parse(originalManifest.toString("utf8"))
     const ordinaryPath = path.join(process.env.APPDATA ?? "", "alacritty", "alacritty.toml")
@@ -1187,23 +1301,64 @@ function install(configurationPath) {
     const shortcutExistence = Object.fromEntries(Object.entries(manifest.shortcuts).map(([id, shortcutPath]) => [id, existsSync(shortcutPath)]))
     const previousShortcuts = Object.fromEntries(previousManifest.createdShortcutIds.map((id) => [id, readShortcut(previousManifest.shortcuts[id])]))
     const previousTaskAction = snapshot.task.actions?.[0] ?? null
+    const previousManagedFiles = Object.fromEntries(
+      [invokePath, trayScriptPath, trayHostPath, protectedAlacrittyConfigPath].map((filePath) => [
+        filePath,
+        existsSync(filePath) ? readFileSync(filePath) : null,
+      ]),
+    )
+    const previousSharedToolsExisted = existsSync(installedSharedToolsPath)
+    const previousGraphifyCredentialExisted = existsSync(graphifyCredentialPath)
+    let appliedGraphifyConfig = null
+    const graphifyConfigPlan = manifest.schemaVersion === 1
+      ? await planGraphifyConfigEdit(path.join(environment.opencodeConfigDir, "opencode.json"), configuration.graphify)
+      : null
+    if (manifest.schemaVersion === 2) {
+      verifyInstalledSharedTools(manifest)
+      manifest.graphify.configEdit = await refreshManagedGraphifyConfigEdit(manifest, configuration.graphify)
+    }
     for (const id of previousManifest.createdShortcutIds) {
       if (!shortcutAcceptableForRepair(previousShortcuts[id], previousManifest, id)) {
         throw new Error(`Managed shortcut '${id}' drifted; refusing repair.`)
       }
     }
     copyFileSync(controllerSourcePath, temporaryController)
+    copyFileSync(sharedToolsSourcePath, temporarySharedTools)
     const copiedIdentity = fileIdentity(temporaryController)
     if (copiedIdentity.sha256 !== sourceIdentity.sha256) {
       rmSync(temporaryController, { force: true })
       throw new Error("Repaired controller copy hash mismatch.")
     }
+    if (fileIdentity(temporarySharedTools).sha256 !== sharedToolsIdentity.sha256) {
+      rmSync(temporarySharedTools, { force: true })
+      throw new Error("Repaired shared-tool module copy hash mismatch.")
+    }
     try {
       renameSync(installedControllerPath, previousController)
       renameSync(temporaryController, installedControllerPath)
-      manifest.candidate = sourceIdentity.sha256
+      if (previousSharedToolsExisted) renameSync(installedSharedToolsPath, previousSharedTools)
+      renameSync(temporarySharedTools, installedSharedToolsPath)
+      if (!previousGraphifyCredentialExisted) {
+        writeFileSync(graphifyCredentialPath, `${randomBytes(32).toString("base64url")}\n`, { encoding: "utf8", flag: "wx" })
+        applyCredentialAcl(graphifyCredentialPath)
+      }
+      if (graphifyConfigPlan) appliedGraphifyConfig = applyGraphifyConfigPlan(graphifyConfigPlan, graphifyConfigBackupPath)
+      manifest.schemaVersion = 2
+      manifest.candidate = sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}`)
       manifest.controller.sourcePath = controllerSourcePath
       manifest.controller.sha256 = sourceIdentity.sha256
+      manifest.sharedTools = {
+        sourcePath: sharedToolsSourcePath,
+        installedPath: installedSharedToolsPath,
+        sha256: sharedToolsIdentity.sha256,
+      }
+      manifest.graphify = {
+        configuration: environment.graphify,
+        endpoint: GRAPHIFY_ENDPOINT,
+        port: GRAPHIFY_PORT,
+        credentialPath: graphifyCredentialPath,
+        configEdit: appliedGraphifyConfig ?? manifest.graphify.configEdit,
+      }
       manifest.task = {
         ...manifest.task,
         execute: wscriptPath,
@@ -1238,6 +1393,7 @@ function install(configurationPath) {
       manifest.createdShortcutIds = Object.keys(shortcutNames)
       writeJsonAtomic(manifestPath, manifest)
       rmSync(previousController, { force: true })
+      rmSync(previousSharedTools, { force: true })
       return {
         schemaVersion: 1,
         operation: "install",
@@ -1248,15 +1404,24 @@ function install(configurationPath) {
         alacritty: manifest.alacritty,
         shortcuts,
         credential: { present: existsSync(credentialPath), exposed: false },
+        graphifyCredential: { present: existsSync(graphifyCredentialPath), exposed: false },
       }
     } catch (error) {
+      let restorationError = null
       if (existsSync(installedControllerPath)) rmSync(installedControllerPath, { force: true })
       if (existsSync(previousController)) renameSync(previousController, installedControllerPath)
       if (existsSync(temporaryController)) rmSync(temporaryController, { force: true })
+      if (existsSync(installedSharedToolsPath)) rmSync(installedSharedToolsPath, { force: true })
+      if (existsSync(previousSharedTools)) renameSync(previousSharedTools, installedSharedToolsPath)
+      if (existsSync(temporarySharedTools)) rmSync(temporarySharedTools, { force: true })
+      if (!previousGraphifyCredentialExisted) rmSync(graphifyCredentialPath, { force: true })
       writeFileSync(manifestPath, originalManifest)
       if (ordinaryBytes) writeFileSync(ordinaryPath, ordinaryBytes)
       else if (!ordinaryExisted && existsSync(ordinaryPath)) rmSync(ordinaryPath, { force: true })
-      if (existsSync(protectedAlacrittyConfigPath)) rmSync(protectedAlacrittyConfigPath, { force: true })
+      for (const [filePath, bytes] of Object.entries(previousManagedFiles)) {
+        if (bytes) writeFileSync(filePath, bytes)
+        else rmSync(filePath, { force: true })
+      }
       for (const [id, shortcutPath] of Object.entries(manifest.shortcuts)) {
         const previous = previousShortcuts[id]
         if (shortcutExistence[id] && previous?.exists) {
@@ -1279,18 +1444,32 @@ function install(configurationPath) {
             arguments: previousTaskAction.arguments,
           })
         }
-      } catch {}
-      throw new Error("Managed controller repair failed and prior state was restored.", { cause: error })
+      } catch (restoreError) { restorationError = restoreError }
+      try {
+        unregisterTrayTask()
+        registerTrayTask(previousManifest)
+      } catch (restoreError) { restorationError ??= restoreError }
+      if (appliedGraphifyConfig) {
+        try {
+          restoreGraphifyConfig(appliedGraphifyConfig)
+          rmSync(appliedGraphifyConfig.backupPath, { force: true })
+        } catch (restoreError) { restorationError ??= restoreError }
+      }
+      throw new Error(
+        restorationError ? "Managed controller repair failed and prior state restoration was incomplete." : "Managed controller repair failed and prior state was restored.",
+        { cause: restorationError ?? error },
+      )
     }
   }
 
-  const candidate = preflight(configuration.source.path)
+  const candidate = await preflight(configuration.source.path)
   if (candidate.status !== "ready") {
     throw new Error(`Install preflight is '${candidate.status}'; refusing host mutation.`)
   }
 
-  const created = { root: false, task: false, shortcuts: [], alacritty: false }
+  const created = { root: false, task: false, shortcuts: [], alacritty: false, graphifyConfig: null }
   const sourceIdentity = fileIdentity(controllerSourcePath)
+  const sharedToolsIdentity = fileIdentity(sharedToolsSourcePath)
   const environment = candidate.environment
   const plan = candidate.installationPlan
   try {
@@ -1298,17 +1477,25 @@ function install(configurationPath) {
     created.root = true
     applyProtectedRootAcl()
     mkdirSync(logsPath)
+    mkdirSync(backupPath)
     copyFileSync(controllerSourcePath, installedControllerPath)
     const installedIdentity = fileIdentity(installedControllerPath)
     if (installedIdentity.sha256 !== sourceIdentity.sha256) throw new Error("Installed controller copy hash mismatch.")
+    copyFileSync(sharedToolsSourcePath, installedSharedToolsPath)
+    const installedSharedToolsIdentity = fileIdentity(installedSharedToolsPath)
+    if (installedSharedToolsIdentity.sha256 !== sharedToolsIdentity.sha256) throw new Error("Installed shared-tool module copy hash mismatch.")
 
     const password = randomBytes(32).toString("base64url")
     writeFileSync(credentialPath, `${password}\n`, { encoding: "utf8", flag: "wx" })
     applyCredentialAcl()
+    const graphifyPassword = randomBytes(32).toString("base64url")
+    writeFileSync(graphifyCredentialPath, `${graphifyPassword}\n`, { encoding: "utf8", flag: "wx" })
+    applyCredentialAcl(graphifyCredentialPath)
+    created.graphifyConfig = applyGraphifyConfigPlan(candidate.graphifyConfigEdit, graphifyConfigBackupPath)
 
     const manifest = {
-      schemaVersion: 1,
-      candidate: sourceIdentity.sha256,
+      schemaVersion: 2,
+      candidate: sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}`),
       installedAt: new Date().toISOString(),
       owner: {
         user: snapshot.user,
@@ -1324,6 +1511,18 @@ function install(configurationPath) {
         sourcePath: controllerSourcePath,
         installedPath: installedControllerPath,
         sha256: installedIdentity.sha256,
+      },
+      sharedTools: {
+        sourcePath: sharedToolsSourcePath,
+        installedPath: installedSharedToolsPath,
+        sha256: installedSharedToolsIdentity.sha256,
+      },
+      graphify: {
+        configuration: environment.graphify,
+        endpoint: GRAPHIFY_ENDPOINT,
+        port: GRAPHIFY_PORT,
+        credentialPath: graphifyCredentialPath,
+        configEdit: created.graphifyConfig,
       },
       task: plan.task,
       shortcuts: Object.fromEntries(Object.entries(environment.shortcuts).map(([id, value]) => [id, value.path])),
@@ -1359,6 +1558,7 @@ function install(configurationPath) {
       alacritty: manifest.alacritty,
       protectedRoot,
       credential: { present: true, exposed: false },
+      graphifyCredential: { present: true, exposed: false },
     }
   } catch (error) {
     if (created.task) {
@@ -1384,6 +1584,11 @@ function install(configurationPath) {
         }
       } catch {}
     }
+    if (created.graphifyConfig) {
+      try {
+        restoreGraphifyConfig(created.graphifyConfig)
+      } catch {}
+    }
     if (created.root && existsSync(protectedRoot)) {
       try {
         rmSync(protectedRoot, { recursive: true, force: true })
@@ -1401,9 +1606,13 @@ async function start() {
   }
   const manifest = loadManifest()
   verifyInstalledController(manifest)
+  verifyInstalledSharedTools(manifest)
   const currentSnapshot = windowsSnapshot()
   const listeners = snapshotListeners(currentSnapshot)
-  if (listeners.length > 0) {
+  const graphifyListeners = inspectGraphifyListeners()
+  if (listeners.length > 0 || graphifyListeners.length > 0) {
+    rejectDegradedState(manifest, currentSnapshot)
+    await waitForValidatedRunningState(manifest)
     const existing = await waitForValidatedManagedHealth(manifest)
     if (!existing.health.healthy) {
       throw new Error(`Validated managed server is not healthy; use Restart (${healthDiagnostic(existing.health)}).`)
@@ -1434,6 +1643,32 @@ async function start() {
 
 function samePath(left, right) {
   return path.resolve(left).toLowerCase() === path.resolve(right).toLowerCase()
+}
+
+function sameHash(left, right) {
+  return typeof left === "string" && typeof right === "string" && left.toLowerCase() === right.toLowerCase()
+}
+
+async function refreshManagedGraphifyConfigEdit(manifest, graphify) {
+  const record = manifest.graphify?.configEdit
+  if (!record?.path || !record.managed?.sha256) {
+    throw new Error("Managed Graphify configuration record is missing.")
+  }
+  if (sameHash(sha256File(record.path), record.managed.sha256)) return record
+  try {
+    await assertReusableGraphifyConfig(record.path, graphify)
+  } catch (error) {
+    throw new Error("Managed Graphify configuration drifted; refusing repair.", { cause: error })
+  }
+  const identity = fileIdentity(record.path)
+  return {
+    ...record,
+    managed: {
+      path: identity.path,
+      length: identity.length,
+      sha256: identity.sha256,
+    },
+  }
 }
 
 function previousNodeShortcut(manifest, id) {
@@ -1511,38 +1746,140 @@ function taskMatches(snapshot, manifest) {
     samePath(action?.workingDirectory ?? "", protectedRoot)
 }
 
-function validateManagedRunningState(manifest, snapshot) {
+function processIdentityMatches(observed, expected) {
+  return samePath(observed.executablePath, expected.executablePath) &&
+    observed.creationDate === expected.creationDate &&
+    observed.commandLineSha256 === expected.commandLineSha256
+}
+
+function requireMatchingProcess(label, expected) {
+  const observed = processObservation(expected.processId)
+  if (!processIdentityMatches(observed, expected)) {
+    throw new Error(`Managed ${label} process identity drifted; refusing termination.`)
+  }
+  return observed
+}
+
+function requireMatchingListener(serverRoot, expectedListener) {
+  const listener = processObservation(expectedListener.processId)
+  if (listener.parentProcessId !== serverRoot.processId || !samePath(listener.executablePath, expectedListener.executablePath)) {
+    throw new Error("Managed listener process identity drifted; refusing termination.")
+  }
+  return listener
+}
+
+function listenerOwnedByServerRoot(listenerProcessId, serverRootProcessId) {
+  return listenerProcessId === serverRootProcessId || processDescendsFrom(listenerProcessId, serverRootProcessId)
+}
+
+function leftoverManagedListener(listener, serverRoot, supervisor, expectedListener) {
+  if (!Number.isInteger(listener?.processId)) return false
+  if (listener.processId === expectedListener?.processId) return true
+  if (listener.processId === serverRoot.processId) return true
+  try {
+    const observed = processObservation(listener.processId)
+    if (observed.parentProcessId === serverRoot.processId) return true
+    if (observed.parentProcessId === supervisor.processId) return true
+  } catch {
+    return false
+  }
+  return listenerOwnedByServerRoot(listener.processId, serverRoot.processId)
+}
+
+function readManagedTaskState(manifest, snapshot) {
   if (!taskMatches(snapshot, manifest)) throw new Error("Managed task identity does not match the protected manifest.")
   if (snapshot.task.state !== "Running") throw new Error(`Managed task is '${snapshot.task.state}', not Running.`)
   if (!existsSync(statePath)) throw new Error("Managed server state is missing while the task is Running.")
   const state = readJson(statePath)
-  if (state.status !== "running") throw new Error(`Managed server state is '${state.status}', not running.`)
   if (state.candidate !== manifest.candidate) throw new Error("Managed server state candidate does not match the installed manifest.")
-  const supervisor = processObservation(state.supervisor.processId)
-  const serverRoot = processObservation(state.serverRoot.processId)
+  return state
+}
+
+function rejectDegradedState(manifest, snapshot) {
+  const state = readManagedTaskState(manifest, snapshot)
+  if (state.status === "degraded") {
+    throw new Error("Managed Graphify is degraded while OpenCode remains available; use Restart before launching a new client.")
+  }
+  return state
+}
+
+function validateManagedRunningState(manifest, snapshot) {
+  const state = readManagedTaskState(manifest, snapshot)
+  if (state.status !== "running") throw new Error(`Managed server state is '${state.status}', not running.`)
+  const supervisor = requireMatchingProcess("supervisor", state.supervisor)
+  const serverRoot = requireMatchingProcess("serverRoot", state.serverRoot)
   const expectedListener = state.listeners?.[0]
   if (!expectedListener) throw new Error("Managed server state has no listener identity.")
-  const listener = processObservation(expectedListener.processId)
-
-  for (const [label, observed, expected] of [
-    ["supervisor", supervisor, state.supervisor],
-    ["serverRoot", serverRoot, state.serverRoot],
-  ]) {
-    if (!samePath(observed.executablePath, expected.executablePath) ||
-        observed.creationDate !== expected.creationDate ||
-        observed.commandLineSha256 !== expected.commandLineSha256) {
-      throw new Error(`Managed ${label} process identity drifted; refusing termination.`)
-    }
-  }
+  const listener = requireMatchingListener(serverRoot, expectedListener)
   if (serverRoot.parentProcessId !== supervisor.processId) throw new Error("Managed server root is no longer a child of the supervisor.")
-  if (listener.parentProcessId !== serverRoot.processId || !samePath(listener.executablePath, expectedListener.executablePath)) {
-    throw new Error("Managed listener process identity drifted; refusing termination.")
+  const graphifyRoot = requireMatchingProcess("Graphify root", state.graphify.root)
+  if (graphifyRoot.parentProcessId !== supervisor.processId) throw new Error("Managed Graphify root is no longer a child of the supervisor.")
+  const graphifyListener = requireMatchingListener(graphifyRoot, state.graphify.listener)
+  const currentGraphifyListeners = inspectGraphifyListeners()
+  if (currentGraphifyListeners.length !== 1 || currentGraphifyListeners[0].processId !== graphifyListener.processId) {
+    throw new Error("Current Graphify port owner does not match the managed listener identity.")
   }
   const currentListeners = snapshotListeners(snapshot)
   if (currentListeners.length !== 1 || currentListeners[0].processId !== listener.processId) {
     throw new Error("Current port owner does not match the managed listener identity.")
   }
-  return { state, supervisor, serverRoot, listener }
+  return { state, supervisor, serverRoot, listener, graphifyRoot, graphifyListener }
+}
+
+function validateManagedStopState(manifest, snapshot) {
+  const state = readManagedTaskState(manifest, snapshot)
+  if (state.status !== "running" && state.status !== "starting" && state.status !== "degraded") {
+    throw new Error(`Managed server state is '${state.status}', not running.`)
+  }
+  const supervisor = requireMatchingProcess("supervisor", state.supervisor)
+  const serverRoot = requireMatchingProcess("serverRoot", state.serverRoot)
+  if (serverRoot.parentProcessId !== supervisor.processId) throw new Error("Managed server root is no longer a child of the supervisor.")
+  const currentListeners = snapshotListeners(snapshot)
+  let graphifyRoot
+  let graphifyListener
+  if (state.graphify?.root && processAlive(state.graphify.root.processId)) {
+    graphifyRoot = requireMatchingProcess("Graphify root", state.graphify.root)
+    if (graphifyRoot.parentProcessId !== supervisor.processId) throw new Error("Managed Graphify root is no longer a child of the supervisor.")
+  }
+  const currentGraphifyListeners = inspectGraphifyListeners()
+  if (currentGraphifyListeners.length > 1) throw new Error("Multiple current Graphify port owners exist.")
+  if (state.graphify?.listener && processAlive(state.graphify.listener.processId) && graphifyRoot) {
+    graphifyListener = requireMatchingListener(graphifyRoot, state.graphify.listener)
+  }
+  if (currentGraphifyListeners.length === 1) {
+    if (!graphifyRoot || !listenerOwnedByServerRoot(currentGraphifyListeners[0].processId, graphifyRoot.processId)) {
+      throw new Error("Current Graphify port owner does not match the managed listener identity.")
+    }
+    if (!graphifyListener) graphifyListener = processObservation(currentGraphifyListeners[0].processId)
+  }
+  if (state.status === "running") {
+    const expectedListener = state.listeners?.[0]
+    if (!expectedListener) throw new Error("Managed server state has no listener identity.")
+    const listener = requireMatchingListener(serverRoot, expectedListener)
+    if (currentListeners.length !== 1 || currentListeners[0].processId !== listener.processId) {
+      throw new Error("Current port owner does not match the managed listener identity.")
+    }
+    return { state, supervisor, serverRoot, listener, graphifyRoot, graphifyListener }
+  }
+  let listener
+  const expectedListener = state.listeners?.[0]
+  if (expectedListener && processAlive(expectedListener.processId)) {
+    listener = requireMatchingListener(serverRoot, expectedListener)
+  }
+  if (currentListeners.length > 1) {
+    throw new Error("Current port owner does not match the managed listener identity.")
+  }
+  if (currentListeners.length === 1) {
+    const current = currentListeners[0]
+    if (!listenerOwnedByServerRoot(current.processId, serverRoot.processId)) {
+      throw new Error("Current port owner does not match the managed listener identity.")
+    }
+    if (listener && listener.processId !== current.processId) {
+      throw new Error("Current port owner does not match the managed listener identity.")
+    }
+    if (!listener) listener = processObservation(current.processId)
+  }
+  return { state, supervisor, serverRoot, listener, graphifyRoot, graphifyListener }
 }
 
 function processAlive(processId) {
@@ -1554,36 +1891,111 @@ function processAlive(processId) {
   }
 }
 
+function terminateManagedServeInvoker() {
+  const payload = encodedPayload({ wscriptPath, invokePath })
+  const value = runPowerShellJson(String.raw`
+$ErrorActionPreference = 'Stop'
+$payload = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${payload}')) | ConvertFrom-Json
+$invoke = [string]$payload.invokePath
+$wscript = [string]$payload.wscriptPath
+$ids = @(Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
+  $_.ExecutablePath -and ([string]$_.ExecutablePath -ieq $wscript) -and
+  $_.CommandLine -and ([string]$_.CommandLine -like ('*' + $invoke + '*serve*'))
+} | ForEach-Object { [int]$_.ProcessId })
+[ordered]@{ processIds = $ids } | ConvertTo-Json -Compress
+`)
+  const processIds = Array.isArray(value.processIds) ? value.processIds : value.processIds != null ? [value.processIds] : []
+  for (const processId of processIds) {
+    terminateValidatedProcess(processId)
+  }
+  return processIds
+}
+
+function terminateValidatedProcess(processId) {
+  if (!Number.isInteger(processId) || !processAlive(processId)) {
+    return { processId, status: "already-gone" }
+  }
+  const result = spawnSync("taskkill.exe", ["/PID", String(processId), "/F"], {
+    encoding: "utf8",
+    windowsHide: true,
+  })
+  if (!processAlive(processId)) {
+    return { processId, status: "stopped", taskkillStatus: result.status }
+  }
+  if (result.error) throw new Error(`Failed to start taskkill.exe for process ${processId}`, { cause: result.error })
+  const stderr = (result.stderr ?? "").trim().slice(-2_000)
+  const stdout = (result.stdout ?? "").trim().slice(-2_000)
+  throw new Error(`taskkill.exe exited ${result.status}: ${stderr || stdout || "no diagnostic output"}; process ${processId} is still alive`)
+}
+
+function terminateRecordedProcess(expected) {
+  if (!expected || !Number.isInteger(expected.processId) || !processAlive(expected.processId)) return false
+  const observed = processObservation(expected.processId)
+  if (!processIdentityMatches(observed, expected)) {
+    throw new Error(`Recorded process ${expected.processId} identity drifted; refusing termination.`)
+  }
+  terminateValidatedProcess(expected.processId)
+  return true
+}
+
 async function stopManagedServer() {
   const manifest = loadManifest()
   verifyInstalledController(manifest)
   const snapshot = windowsSnapshot()
-  if (snapshot.task.state !== "Running" && snapshotListeners(snapshot).length === 0) {
+  if (snapshot.task.state !== "Running" && snapshotListeners(snapshot).length === 0 && inspectGraphifyListeners().length === 0) {
     return { status: "already-stopped", recordedProcessIds: [] }
   }
-  const validated = validateManagedRunningState(manifest, snapshot)
+  const validated = validateManagedStopState(manifest, snapshot)
   const recordedProcessIds = [
-    validated.supervisor.processId,
     validated.serverRoot.processId,
-    validated.listener.processId,
-  ]
-  run("taskkill.exe", ["/PID", String(validated.supervisor.processId), "/T", "/F"])
+    validated.listener?.processId,
+    validated.graphifyRoot?.processId,
+    validated.graphifyListener?.processId,
+    validated.supervisor.processId,
+  ].filter((processId) => Number.isInteger(processId))
+  for (const processId of recordedProcessIds) {
+    terminateValidatedProcess(processId)
+  }
   const deadline = Date.now() + 20_000
-  while (recordedProcessIds.some(processAlive) && Date.now() < deadline) {
+  while (Date.now() < deadline) {
+    const leftovers = snapshotListeners(windowsSnapshot()).filter((listener) => (
+      leftoverManagedListener(listener, validated.serverRoot, validated.supervisor, validated.listener)
+    ))
+    const graphifyLeftovers = inspectGraphifyListeners().filter((listener) => (
+      validated.graphifyRoot && leftoverManagedListener(listener, validated.graphifyRoot, validated.supervisor, validated.graphifyListener)
+    ))
+    for (const leftover of leftovers) {
+      if (!recordedProcessIds.includes(leftover.processId)) recordedProcessIds.push(leftover.processId)
+      terminateValidatedProcess(leftover.processId)
+    }
+    for (const leftover of graphifyLeftovers) {
+      if (!recordedProcessIds.includes(leftover.processId)) recordedProcessIds.push(leftover.processId)
+      terminateValidatedProcess(leftover.processId)
+    }
+    if (!recordedProcessIds.some(processAlive) && leftovers.length === 0 && graphifyLeftovers.length === 0) break
     await new Promise((resolve) => setTimeout(resolve, 100))
   }
+  terminateManagedServeInvoker()
   stopServerTask()
+  const taskDeadline = Date.now() + 10_000
+  while (windowsSnapshot().task.state === "Running" && Date.now() < taskDeadline) {
+    terminateManagedServeInvoker()
+    stopServerTask()
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
   const finalSnapshot = windowsSnapshot()
   const remaining = recordedProcessIds.filter(processAlive)
   const finalListeners = snapshotListeners(finalSnapshot)
-  if (remaining.length > 0 || finalListeners.length > 0 || finalSnapshot.task.state === "Running") {
-    throw new Error(`Managed server cleanup incomplete; remaining processes '${remaining.join(",")}', listeners '${finalListeners.length}', task '${finalSnapshot.task.state}'.`)
+  const finalGraphifyListeners = inspectGraphifyListeners()
+  if (remaining.length > 0 || finalListeners.length > 0 || finalGraphifyListeners.length > 0 || finalSnapshot.task.state === "Running") {
+    throw new Error(`Managed server cleanup incomplete; remaining processes '${remaining.join(",")}', listeners '${finalListeners.length}', Graphify listeners '${finalGraphifyListeners.length}', task '${finalSnapshot.task.state}'.`)
   }
   return {
     status: "stopped",
     recordedProcessIds,
     remainingProcessIds: remaining,
-    listenerCount: snapshotListeners(finalSnapshot).length,
+    listenerCount: finalListeners.length,
+    graphifyListenerCount: finalGraphifyListeners.length,
     taskState: finalSnapshot.task.state,
   }
 }
@@ -1614,6 +2026,7 @@ async function restart() {
   const stop = await stopManagedServer()
   const afterStopSnapshot = windowsSnapshot()
   if (snapshotListeners(afterStopSnapshot).length > 0) throw new Error("Listener remained after managed stop; refusing replacement.")
+  if (inspectGraphifyListeners().length > 0) throw new Error("Graphify listener remained after managed stop; refusing replacement.")
   startServerTask()
   const afterState = await waitForValidatedRunningState(manifest)
   const health = (await validatedManagedHealth(manifest)).health
@@ -1630,11 +2043,15 @@ async function restart() {
       supervisorProcessId: beforeState.supervisor.processId,
       serverRootProcessId: beforeState.serverRoot.processId,
       listenerProcessId: beforeState.listeners?.[0]?.processId ?? null,
+      graphifyRootProcessId: beforeState.graphify?.root?.processId ?? null,
+      graphifyListenerProcessId: beforeState.graphify?.listener?.processId ?? null,
     } : null,
     after: {
       supervisorProcessId: afterState.supervisor.processId,
       serverRootProcessId: afterState.serverRoot.processId,
       listenerProcessId: afterState.listeners?.[0]?.processId ?? null,
+      graphifyRootProcessId: afterState.graphify?.root?.processId ?? null,
+      graphifyListenerProcessId: afterState.graphify?.listener?.processId ?? null,
     },
     health,
   }
@@ -1648,46 +2065,119 @@ async function serve() {
   if (!snapshot.elevated) throw new Error("Serve mode requires an elevated task token.")
   const manifest = loadManifest()
   verifyInstalledController(manifest)
+  verifyInstalledSharedTools(manifest)
   const password = readCredential()
+  const graphifyPassword = readGraphifyCredential()
   if (snapshotListeners(snapshot).length > 0) throw new Error("Port 4096 is already owned; serve mode refused startup.")
+  if (inspectGraphifyListeners().length > 0) throw new Error(`Port ${GRAPHIFY_PORT} is already owned; serve mode refused startup.`)
 
-  const stdoutHandle = openSync(path.join(logsPath, "server.stdout.log"), "w")
-  const stderrHandle = openSync(path.join(logsPath, "server.stderr.log"), "w")
-  const child = spawn(
-    manifest.tools.opencode.executable.path,
-    ["serve", "--hostname", "127.0.0.1", "--port", "4096"],
-    {
-      cwd: protectedRoot,
-      windowsHide: true,
-      stdio: ["ignore", stdoutHandle, stderrHandle],
-      env: {
-        ...process.env,
-        OPENCODE_CONFIG_DIR: manifest.opencodeConfigDir,
-        OPENCODE_SERVER_PASSWORD: password,
-      },
+  const handles = {
+    serverStdout: openSync(path.join(logsPath, "server.stdout.log"), "w"),
+    serverStderr: openSync(path.join(logsPath, "server.stderr.log"), "w"),
+    graphifyStdout: openSync(path.join(logsPath, "graphify.stdout.log"), "w"),
+    graphifyStderr: openSync(path.join(logsPath, "graphify.stderr.log"), "w"),
+  }
+  const graphifyArgs = graphifyArguments(manifest.graphify.configuration)
+  const graphifyChild = spawn(manifest.graphify.configuration.python.path, graphifyArgs, {
+    cwd: protectedRoot,
+    windowsHide: true,
+    stdio: ["ignore", handles.graphifyStdout, handles.graphifyStderr],
+    env: {
+      ...process.env,
+      GRAPHIFY_API_KEY: graphifyPassword,
+      PYTHONUNBUFFERED: "1",
+      PYTHONIOENCODING: "utf-8",
+      PYTHONUTF8: "1",
     },
-  )
-  const terminateChild = () => {
-    if (child.exitCode === null && child.pid) {
-      spawnSync("taskkill.exe", ["/PID", String(child.pid), "/T", "/F"], { windowsHide: true })
+  })
+  let openCodeChild
+  let managedGraphifyRoot
+  let managedOpenCodeRoot
+  let managedGraphifyListener
+  let managedOpenCodeListener
+  const terminateChildren = () => {
+    for (const expected of [managedOpenCodeRoot, managedGraphifyRoot, managedOpenCodeListener, managedGraphifyListener]) {
+      try { terminateRecordedProcess(expected) } catch {}
     }
   }
-  process.once("SIGINT", terminateChild)
-  process.once("SIGTERM", terminateChild)
+  process.once("SIGINT", terminateChildren)
+  process.once("SIGTERM", terminateChildren)
 
   let failure
   try {
     const state = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       status: "starting",
       candidate: manifest.candidate,
       taskName,
       endpoint,
+      graphifyEndpoint: GRAPHIFY_ENDPOINT,
       startedAt: new Date().toISOString(),
       supervisor: processObservation(process.pid),
-      serverRoot: processObservation(child.pid),
+      graphify: {
+        root: processObservation(graphifyChild.pid),
+        listener: null,
+        health: null,
+      },
+      serverRoot: null,
       listeners: [],
     }
+    managedGraphifyRoot = state.graphify.root
+    writeJsonAtomic(statePath, state)
+
+    const graphifyDeadline = Date.now() + 120_000
+    let graphifyListener
+    while (Date.now() < graphifyDeadline) {
+      if (graphifyChild.exitCode != null) throw new Error(`Managed Graphify exited ${graphifyChild.exitCode} before readiness.`)
+      const listeners = inspectGraphifyListeners()
+      if (listeners.length > 1) throw new Error("Multiple listeners appeared on the managed Graphify port.")
+      if (listeners.length === 1) {
+        if (!listenerOwnedByServerRoot(listeners[0].processId, state.graphify.root.processId)) {
+          throw new Error("Graphify listener is not owned by the managed Graphify root.")
+        }
+        managedGraphifyListener = processObservation(listeners[0].processId)
+        graphifyListener = processObservation(listeners[0].processId)
+        break
+      }
+      await new Promise((resolve) => setTimeout(resolve, 2_000))
+    }
+    if (!graphifyListener) throw new Error("Managed Graphify did not establish its listener within 120000ms.")
+    state.graphify.listener = graphifyListener
+    managedGraphifyRoot = state.graphify.root
+    managedGraphifyListener = graphifyListener
+    const graphifyIdentity = graphifyProcessIdentity(manifest.graphify.configuration, {
+      processId: state.graphify.root.processId,
+      parentProcessId: state.graphify.root.parentProcessId,
+      executablePath: state.graphify.root.executablePath,
+      creationDate: state.graphify.root.creationDate,
+      arguments: graphifyArgs,
+    })
+    const graphifyToken = authorizeGraphifyProbe(manifest.graphify.configuration, graphifyIdentity, {
+      processId: graphifyListener.processId,
+      localAddress: "127.0.0.1",
+      localPort: GRAPHIFY_PORT,
+      ancestorProcessIds: [state.graphify.root.processId],
+    })
+    state.graphify.health = await probeGraphifyMcp(graphifyToken, graphifyPassword)
+    writeJsonAtomic(statePath, state)
+
+    openCodeChild = spawn(
+      manifest.tools.opencode.executable.path,
+      ["serve", "--hostname", "127.0.0.1", "--port", "4096"],
+      {
+        cwd: protectedRoot,
+        windowsHide: true,
+        stdio: ["ignore", handles.serverStdout, handles.serverStderr],
+        env: {
+          ...process.env,
+          OPENCODE_CONFIG_DIR: manifest.opencodeConfigDir,
+          OPENCODE_SERVER_PASSWORD: password,
+          OPENCODE_GRAPHIFY_API_KEY: graphifyPassword,
+        },
+      },
+    )
+    state.serverRoot = processObservation(openCodeChild.pid)
+    managedOpenCodeRoot = state.serverRoot
     writeJsonAtomic(statePath, state)
 
     let ownedListener
@@ -1696,46 +2186,62 @@ async function serve() {
     } catch (error) {
       throw new Error("Managed OpenCode process did not establish the expected listener.", { cause: error })
     }
-    let health
+    let openCodeHealth
     try {
-      health = await waitForHealth(
+      openCodeHealth = await waitForHealth(
         password,
         () => validateOwnedServeListener(state.serverRoot, windowsSnapshot(), ownedListener.listener.processId),
       )
     } catch (error) {
       throw new Error("Managed listener ownership changed during readiness.", { cause: error })
     }
-    if (!health.healthy) throw new Error(`OpenCode server failed readiness; inspect '${logsPath}'.`)
-    const readySnapshot = windowsSnapshot()
-    const readyListeners = snapshotListeners(readySnapshot)
+    if (!openCodeHealth.healthy) throw new Error(`OpenCode server failed readiness; inspect '${logsPath}'.`)
+    managedOpenCodeListener = processObservation(ownedListener.listener.processId)
+    const readyListeners = snapshotListeners(windowsSnapshot())
     if (readyListeners.length !== 1 || readyListeners[0].processId !== ownedListener.listener.processId) {
       throw new Error("Managed listener identity changed during readiness validation.")
     }
     state.status = "running"
-    state.health = health
+    state.health = { healthy: true, openCode: openCodeHealth, graphify: state.graphify.health }
     state.listeners = readyListeners
     writeJsonAtomic(statePath, state)
 
-    const exit = await new Promise((resolve, reject) => {
-      child.once("error", reject)
-      child.once("exit", (code, signal) => resolve({ code, signal }))
+    const graphifyExitPromise = graphifyChild.exitCode != null
+      ? Promise.resolve({ service: "graphify", code: graphifyChild.exitCode, signal: graphifyChild.signalCode })
+      : new Promise((resolve, reject) => {
+          graphifyChild.once("error", reject)
+          graphifyChild.once("exit", (code, signal) => resolve({ service: "graphify", code, signal }))
+        })
+    const openCodeExitPromise = new Promise((resolve, reject) => {
+      openCodeChild.once("error", reject)
+      openCodeChild.once("exit", (code, signal) => resolve({ service: "opencode", code, signal }))
     })
+    let exit = await Promise.race([graphifyExitPromise, openCodeExitPromise])
+    if (exit.service === "graphify") {
+      state.status = "degraded"
+      state.health = { healthy: false, openCode: openCodeHealth, graphify: { healthy: false, exit } }
+      state.graphify.exit = exit
+      state.graphify.exitedAt = new Date().toISOString()
+      writeJsonAtomic(statePath, state)
+      exit = await openCodeExitPromise
+    }
+    terminateChildren()
     state.status = "exited"
     state.exit = exit
     state.exitedAt = new Date().toISOString()
     writeJsonAtomic(statePath, state)
     if (exit.code !== 0) throw new Error(`OpenCode server exited ${exit.code ?? `by signal ${exit.signal}`}.`)
   } catch (error) {
-    terminateChild()
+    terminateChildren()
     failure = error
   } finally {
-    process.removeListener("SIGINT", terminateChild)
-    process.removeListener("SIGTERM", terminateChild)
-    for (const [label, handle] of [["stdout", stdoutHandle], ["stderr", stderrHandle]]) {
+    process.removeListener("SIGINT", terminateChildren)
+    process.removeListener("SIGTERM", terminateChildren)
+    for (const [label, handle] of Object.entries(handles)) {
       try {
         closeSync(handle)
       } catch (error) {
-        if (!failure) failure = new Error(`Failed to close managed server ${label} log handle.`, { cause: error })
+        if (!failure) failure = new Error(`Failed to close managed ${label} log handle.`, { cause: error })
       }
     }
   }
@@ -1765,6 +2271,7 @@ function rollbackDryRun() {
     : null
   const checks = {
     controllerHash: verifyInstalledController(manifest) === manifest.controller.sha256,
+    sharedToolsHash: verifyInstalledSharedTools(manifest) === manifest.sharedTools.sha256,
     taskRunLevel: snapshot.task.runLevel === "Highest",
     taskTriggerCount: snapshot.task.triggerCount === 0,
     taskActionCount: snapshot.task.actionCount === 1,
@@ -1775,6 +2282,9 @@ function rollbackDryRun() {
     protectedAlacrittyConfig: !manifest.alacritty || protectedConfigHash === manifest.alacritty.protectedSha256,
     alacrittyBackup: !manifest.alacritty?.previousExists || backupHash === manifest.alacritty.previousSha256,
     credentialPresent: existsSync(credentialPath),
+    graphifyCredentialPresent: existsSync(graphifyCredentialPath),
+    graphifyConfigManaged: existsSync(manifest.graphify.configEdit.path) && sameHash(sha256File(manifest.graphify.configEdit.path), manifest.graphify.configEdit.managed.sha256),
+    graphifyConfigBackup: existsSync(manifest.graphify.configEdit.backupPath) && sameHash(sha256File(manifest.graphify.configEdit.backupPath), manifest.graphify.configEdit.original.sha256),
     invokerPresent: !manifest.invoker || existsSync(invokePath),
     invokerHash: !manifest.invoker || (existsSync(invokePath) && sha256File(invokePath) === manifest.invoker.sha256),
   }
@@ -1785,7 +2295,7 @@ function rollbackDryRun() {
     eligible: Object.values(checks).every(Boolean),
     checks,
     shortcutChecks,
-    actions: ["stop-managed-server", "remove-managed-task", "restore-alacritty-config", "remove-managed-shortcuts", "remove-protected-root"],
+    actions: ["stop-managed-server", "remove-managed-task", "restore-opencode-config", "restore-alacritty-config", "remove-managed-shortcuts", "remove-protected-root"],
   }
 }
 
@@ -1801,6 +2311,7 @@ async function rollback() {
   }
   const manifest = loadManifest()
   const stop = await stopManagedServer()
+  const restoredOpenCodeConfig = restoreGraphifyConfig(manifest.graphify.configEdit)
   const removedShortcuts = []
   for (const id of manifest.createdShortcutIds) {
     const shortcutPath = manifest.shortcuts[id]
@@ -1833,23 +2344,40 @@ async function rollback() {
     removedTask: true,
     removedShortcuts,
     restoredAlacrittyPreviousState: manifest.alacritty?.previousExists ?? true,
+    restoredOpenCodeConfig,
     removedProtectedRoot: !existsSync(protectedRoot),
   }
 }
 
-function preflight(configurationPath) {
+async function preflight(configurationPath) {
   const configuration = loadWorkstationConfiguration(configurationPath)
   const snapshot = windowsSnapshot()
   const environment = environmentPlan(snapshot, configuration)
   const tools = toolIdentities(snapshot)
   const collisions = environment.collisions
-  const collisionCount = Number(collisions.protectedRootExists) + Number(collisions.taskExists) + Number(collisions.shortcutCount > 0) + Number(collisions.portListenerCount > 0)
+  const opencodeConfigPath = path.join(environment.opencodeConfigDir, "opencode.json")
+  let configEdit
+  try {
+    configEdit = await planGraphifyConfigEdit(opencodeConfigPath, configuration.graphify)
+  } catch (error) {
+    if (!existsSync(manifestPath)) throw error
+    const manifest = loadManifest()
+    if (manifest.schemaVersion !== 2 || !sameHash(sha256File(opencodeConfigPath), manifest.graphify.configEdit.managed.sha256)) throw error
+    configEdit = {
+      status: "already-managed",
+      source: fileIdentity(opencodeConfigPath),
+      rollback: manifest.graphify.configEdit.original,
+      projection: { type: "remote", url: GRAPHIFY_ENDPOINT, authorization: "Bearer {env:OPENCODE_GRAPHIFY_API_KEY}" },
+    }
+  }
+  const collisionCount = Number(collisions.protectedRootExists) + Number(collisions.taskExists) + Number(collisions.shortcutCount > 0) + Number(collisions.portListenerCount > 0) + Number(collisions.graphifyPortListenerCount > 0)
   return {
     schemaVersion: 1,
     operation: "preflight",
     status: collisionCount === 0 ? "ready" : "collision",
     tools,
     environment,
+    graphifyConfigEdit: configEdit,
     installationPlan: installationPlan(tools, environment),
   }
 }
@@ -1858,13 +2386,24 @@ async function status() {
   const snapshot = windowsSnapshot()
   const managed = installedObservation(snapshot)
   const manifest = managed.installed ? loadManifest() : null
-  const configuration = manifest
-    ? { source: manifest.configuration, repositories: manifest.repositories }
+  const configuration = manifest?.schemaVersion === 2
+    ? { source: manifest.configuration, repositories: manifest.repositories, graphify: manifest.graphify.configuration }
     : loadWorkstationConfiguration()
   const environment = environmentPlan(snapshot, configuration)
   let health = null
   if (manifest && managed.credentialPresent && snapshotListeners(snapshot).length > 0) {
-    health = (await validatedManagedHealth(manifest)).health
+    try {
+      health = manifest.schemaVersion === 2
+        ? (await validatedManagedHealth(manifest)).health
+        : await healthProbe(readCredential())
+    } catch (error) {
+      const state = existsSync(statePath) ? readJson(statePath) : null
+      health = {
+        healthy: false,
+        status: state?.status ?? "unknown",
+        error: error instanceof Error ? error.message : String(error),
+      }
+    }
   }
   return {
     schemaVersion: 1,
@@ -1922,11 +2461,11 @@ async function main() {
     if (operation === "help") {
       showHelp()
     } else if (operation === "preflight") {
-      writeJson(preflight(invocation.configurationPath))
+      writeJson(await preflight(invocation.configurationPath))
     } else if (operation === "status") {
       writeJson(await status())
     } else if (operation === "install") {
-      writeJson(install(invocation.configurationPath))
+      writeJson(await install(invocation.configurationPath))
     } else if (operation === "start") {
       writeJson(await start())
     } else if (operation === "launch") {

@@ -11,7 +11,7 @@ Use this skill when tests need a fake TCP/HTTP/WebSocket/device/upstream service
 ## Principles
 
 - Simulators should be deterministic, scriptable, and easy to assert against.
-- Implement and observably prove the smallest simulator happy path first. Material/explicit qualification then uses a separate fresh-context testing subagent to author deterministic slow, broken, malformed, concurrent, and overload scenarios against the public boundary. Ordinary Small uses focused validation and optional smallest post-proof regression.
+- Implement and observably prove the smallest simulator happy path first. Main may add the smallest focused regression after proof. A separate fresh test-only SDET authors critical slow, broken, malformed, concurrent, or overload scenarios only when a reachable named critical consequence or explicit project/owner requirement triggers it.
 - Test the boundary behavior, not implementation internals.
 - Include slow, partial, malformed, disconnect, late-response, and overload scenarios when relevant.
 - Record all received requests and emitted responses for assertions.

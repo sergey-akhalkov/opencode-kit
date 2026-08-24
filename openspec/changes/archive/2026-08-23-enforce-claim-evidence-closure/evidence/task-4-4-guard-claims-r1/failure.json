@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "scenario": "claims",
+  "status": "failed",
+  "recordedAt": "2026-08-23T12:10:39.8449996Z",
+  "invocation": "bun tools/proofs/session-completion-guard-restart.ts --scenario claims --candidate-id enforce-claim-evidence-closure-planning-r1 --evidence-root <change>/evidence/task-4-4-guard-claims-r1",
+  "failureClass": "proof-runner-environment-readiness",
+  "error": "OpenCode server readiness timed out during configured-plugin initialization; /path and /session/status probes were aborted before the guard boundary.",
+  "diagnostics": {
+    "exitCode": null,
+    "readinessStage": "configured-plugin-initialization",
+    "serverListening": true,
+    "stderrChars": 2487,
+    "stdoutChars": 119
+  },
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 0,
+    "requestKinds": []
+  },
+  "cleanup": "complete",
+  "processCleanup": "complete",
+  "fixturePresentAfter": false,
+  "correlatedProcessesAfter": 0,
+  "claimCeiling": "No claim behavior was observed; this bundle proves only a terminal installed-server readiness failure and complete proof-owned cleanup."
+}

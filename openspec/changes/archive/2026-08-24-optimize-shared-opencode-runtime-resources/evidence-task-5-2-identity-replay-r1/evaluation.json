@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "mode": "replay",
+  "passed": true,
+  "checks": {
+    "directWrapperExited": true,
+    "detachedChildSurvived": true,
+    "failureCodePreserved": true,
+    "controllerDirectWait": true,
+    "nonLaunchStillSynchronous": true,
+    "invokerPopupPreserved": true,
+    "recordedIdentityTermination": true,
+    "cleanupComplete": true
+  },
+  "liveCalls": 0
+}

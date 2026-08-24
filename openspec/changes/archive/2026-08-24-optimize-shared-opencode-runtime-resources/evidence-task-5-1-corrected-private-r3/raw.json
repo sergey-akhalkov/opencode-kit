@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "providerCalls": 0,
+  "candidate": {
+    "controllerSourceSha256": "329949be23b38418016b89e3a027f845bb9d79f8d14154b90fca730fbcc7ceaa"
+  },
+  "managedPortsBefore": {
+    "port4096": true,
+    "port4097": true
+  },
+  "auth": {
+    "missing": 401,
+    "wrong": 401,
+    "correct": 200
+  },
+  "before": "connected",
+  "openCodeSurvived": true,
+  "graphifyUnavailable": true,
+  "cachedStatusAfterExit": "connected",
+  "afterRecovery": "connected",
+  "secretSafe": true,
+  "cleanup": {
+    "complete": true
+  },
+  "managedPortsAfter": {
+    "port4096": true,
+    "port4097": true
+  }
+}

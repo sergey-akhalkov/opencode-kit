@@ -1,6 +1,6 @@
 # Owner Handoff Workflow
 
-Use this disposable workflow before reducing owner-decision instructions. Do not build a code harness.
+Use this disposable workflow before reducing owner-decision instructions. It preserves high autonomy by involving the owner only at a proved owner boundary and keeps the handoff as short as correctness permits. Do not build a code harness.
 
 ## Synthetic Decision
 

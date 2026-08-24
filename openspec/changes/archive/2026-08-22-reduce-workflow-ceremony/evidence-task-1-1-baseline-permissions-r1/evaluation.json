@@ -1,0 +1,8 @@
+{
+  "candidateId": "reduce-workflow-ceremony-baseline-r1",
+  "hiddenArbiterTools": "all-false",
+  "mainDefault": "permissive",
+  "schemaVersion": 1,
+  "specialistRestrictions": "preserved",
+  "status": "complete"
+}

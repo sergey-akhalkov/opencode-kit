@@ -30,6 +30,9 @@ export type {
   CheckpointMode,
   EffectClass,
   MissionCheck,
+  MissionExecutorDisposition,
+  MissionExecutorExpectation,
+  MissionExecutorResult,
   MissionOperation,
   RoadmapMissionDefinition,
   RoadmapMissionPreflight,
@@ -167,7 +170,7 @@ if (directExecution()) {
             };
           })()
         : options.operation === "run" || options.operation === "resume"
-          ? (options.operation === "run" ? runMissionController : resumeMissionController)({
+          ? await (options.operation === "run" ? runMissionController : resumeMissionController)({
               adapterPath: options.adapter,
               ...(options.checkpointIdentity === "" ? {} : { checkpointIdentity: options.checkpointIdentity }),
               globalSource: options.globalSource,

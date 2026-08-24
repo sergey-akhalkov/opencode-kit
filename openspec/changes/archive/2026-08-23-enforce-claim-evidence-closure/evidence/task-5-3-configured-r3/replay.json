@@ -1,0 +1,10 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "liveCalls": 0,
+  "mode": "replay",
+  "decisionOracles": "8/8 passed",
+  "evaluationStatus": "failed",
+  "evaluationReason": "friction-regression:unavailable-real-oracle:failedToolCallCount:1:2",
+  "safetyOutcomeCleanup": "not-weaker",
+  "status": "oracles-passed-friction-kncl"
+}

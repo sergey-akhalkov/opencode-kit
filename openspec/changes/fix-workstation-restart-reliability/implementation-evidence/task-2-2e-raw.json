@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-24T11:16:14.307Z",
+  "delayMs": 20000,
+  "mechanism": "per-pid-taskkill-then-install-start-tray",
+  "repoControllerSha256": "10C7CD38802A2ABE8B26B7537EDDC237A925423EFCFE64492CFEC98CF081DDB8",
+  "before": {
+    "status": "running",
+    "supervisorProcessId": 14208,
+    "serverRootProcessId": 23980,
+    "listenerProcessId": 20788,
+    "candidate": "db50301a63b53a70507d739cc6974a3fa8ffd7eb0294102c9b0742e3959e7bfa",
+    "trayColor": "green",
+    "controllerSha256": "03358B5077C186A5006DE3AAC87C3346C96A8952D7A65A19FED330FA1F56AD50",
+    "trayScriptSha256": "78A1400290D76B9DB71B10CE16EBFDDB7160742A1D336EA5BE4B2370F32E85DD",
+    "errorLogBytes": 155813
+  },
+  "pidStops": [
+    {
+      "processId": 23980,
+      "status": "stopped",
+      "taskkillStatus": 0,
+      "taskkillError": null,
+      "stderr": ""
+    },
+    {
+      "processId": 20788,
+      "status": "stopped",
+      "taskkillStatus": 1,
+      "taskkillError": null,
+      "stderr": "�訡��: �� 㤠���� �������� ����� � �����䨪��஬ 20788.\r\n��稭�: �� ���� �� ��������஢ �⮣� ������� �� ����饭."
+    },
+    {
+      "processId": 14208,
+      "status": "already-gone"
+    }
+  ],
+  "serveInvoker": {
+    "listed": [
+      18640
+    ],
+    "kills": [
+      {
+        "processId": 18640,
+        "status": "already-gone"
+      }
+    ]
+  },
+  "portGone": {
+    "label": "port-gone",
+    "ok": true,
+    "waitedMs": 1517
+  },
+  "install": {
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"install\",\n  \"status\": \"error\",\n  \"error\": {\n    \"type\": \"Error\",\n    \"message\": \"Managed Graphify configuration drifted; refusing repair.\",\n    \"cause\": \"Local graphify-global entry must contain exactly: command, cwd, enabled, environment, timeout, type.\",\n    \"stack\": \"Error: Managed Graphify configuration drifted; refusing repair.\\n    at refreshManagedGraphifyConfigEdit (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1660:11)\\n    at async install (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1317:38)\\n    at async main (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2467:17)\\n    at async file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2507:1\"\n  }\n}\n",
+    "stderr": ""
+  },
+  "ok": false,
+  "error": "install exited 1",
+  "finishedAt": "2026-08-24T11:16:54.881Z"
+}

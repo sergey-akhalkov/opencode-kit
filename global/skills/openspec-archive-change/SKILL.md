@@ -1,6 +1,6 @@
 ---
 name: openspec-archive-change
-description: Deterministically validate, synchronize, and archive a completed OpenSpec change. Use when implementation and evidence are complete and the owner requests archive.
+description: Deterministically validate, synchronize, and archive a completed OpenSpec change. Use ONLY when the owner requests OpenSpec archive. Do not use for ordinary completion or git archive.
 license: MIT
 compatibility: Requires OpenSpec 1.6-compatible CLI, Node.js 24+, and the portable kit archive tool.
 metadata:
@@ -29,6 +29,8 @@ Use this skill when implementation and evidence are complete and the user asks t
 - A finalized failed invocation, exhausted agent-authored attempt count, or process stop line does not complete the change when a safe causally distinct route remains. Preserve the attempt and revise only the necessary process controls.
 - Complete archive may proceed only when the accepted outcome is achieved. An unmet outcome requires the distinct owner-selected incomplete/abandoned preservation flow, which never claims completion or synchronizes undelivered requirements.
 - Optional retrospective or workflow feedback stays outside the product task graph and never blocks complete archive.
+- A required Automation Dividend needs its one tagged task checked and a current evidence-index row; an exempt declaration must have no tagged task.
+- Reconcile the change-level Claim And Evidence Scope. Complete archive requires each declared structured claim to be current and `supported`, or `narrowed` with the narrower outcome explicitly accepted in its record; missing, stale, weaker-path, incomplete-population, unqualified-real-oracle, blocked, unknown, or missing-challenge closure returns to apply.
 
 ## Execute One Owner
 
@@ -42,7 +44,7 @@ Or, only when project validation is genuinely not applicable:
 node "<global-source>/bin/openspec-archive.ts" --root "<project-root>" --change "<name>" [--store "<id>"] --validation-not-applicable "<reason>"
 ```
 
-The helper checks machine-readable artifact status, requires a non-empty all-checked task file, runs strict and project validation, delegates spec merge and movement to `openspec archive <name> --yes --json`, and validates the archived result. `--yes` cannot waive the independent completion gate.
+The helper checks machine-readable artifact and claim-closure status, requires a non-empty all-checked task file, runs strict and project validation, delegates spec merge and movement to `openspec archive <name> --yes --json`, and validates the archived result. `--yes` cannot waive the independent completion gate.
 
 ## Failure Contract
 

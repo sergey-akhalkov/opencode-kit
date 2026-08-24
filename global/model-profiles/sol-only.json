@@ -19,6 +19,14 @@
       "model": "openai/gpt-5.6-sol",
       "variant": "xhigh"
     },
+    "evidence-sufficiency-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
+    "execution-safety-reviewer": {
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh"
+    },
     "explore": {
       "model": "openai/gpt-5.6-sol",
       "variant": "xhigh"
@@ -92,10 +100,6 @@
       "variant": "xhigh"
     },
     "title": {
-      "model": "openai/gpt-5.6-sol",
-      "variant": "xhigh"
-    },
-    "troubleshooter": {
       "model": "openai/gpt-5.6-sol",
       "variant": "xhigh"
     },

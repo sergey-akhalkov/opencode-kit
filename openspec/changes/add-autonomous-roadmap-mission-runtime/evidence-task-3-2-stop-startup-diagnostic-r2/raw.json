@@ -1,0 +1,29 @@
+{
+  "candidateId": "task-3-2-stop-startup-diagnostic-r2",
+  "cleanup": "complete",
+  "commandNames": [
+    "customize-opencode",
+    "init",
+    "mission-resume",
+    "mission-run",
+    "mission-status",
+    "mission-stop",
+    "pty-open-background-spy",
+    "pty-show-server-url",
+    "review"
+  ],
+  "launcherReady": true,
+  "mode": "diagnose",
+  "providerCalls": 0,
+  "schemaVersion": 1,
+  "server": {
+    "readyMs": 70911,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderrTail": "timestamp=2026-08-17T09:36:46.162Z level=INFO run=951d7d45 message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-17T09:36:46.173Z level=INFO run=951d7d45 message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-17T09:36:46.176Z level=INFO run=951d7d45 message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-17T09:36:47.584Z level=INFO run=951d7d45 message=\"creating instance\" directory=\"<project>\"\ntimestamp=2026-08-17T09:36:47.589Z level=INFO run=951d7d45 message=fromDirectory directory=\"<project>\"\ntimestamp=2026-08-17T09:36:49.296Z level=INFO run=951d7d45 message=bootstrapping directory=\"<project>\"\ntimestamp=2026-08-17T09:36:49.370Z level=INFO run=951d7d45 message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-17T09:36:49.419Z level=INFO run=951d7d45 message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-17T09:36:49.461Z level=INFO run=951d7d45 message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-17T09:36:50.694Z level=INFO run=951d7d45 message=loading path=\"<config-dir>\\\\opencode.json\"\ntimestamp=2026-08-17T09:36:50.826Z level=INFO run=951d7d45 message=loading path=\"<config-dir>\\\\opencode.jsonc\"\ntimestamp=2026-08-17T09:37:51.525Z level=INFO run=951d7d45 message=\"all LSPs are disabled\"\ntimestamp=2026-08-17T09:37:51.529Z level=INFO run=951d7d45 message=\"all formatters are disabled\"\ntimestamp=2026-08-17T09:37:51.529Z level=INFO run=951d7d45 message=init\ntimestamp=2026-08-17T09:37:51.653Z level=INFO run=951d7d45 message=init count=1\n",
+    "stdoutTail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:57130\n"
+  }
+}

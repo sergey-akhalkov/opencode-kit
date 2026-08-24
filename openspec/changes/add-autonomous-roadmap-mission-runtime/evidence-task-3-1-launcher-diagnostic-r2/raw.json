@@ -1,0 +1,25 @@
+{
+  "candidateId": "task-3-1-launcher-diagnostic-r2",
+  "cleanup": "complete",
+  "commandNames": [
+    "customize-opencode",
+    "init",
+    "pty-open-background-spy",
+    "pty-show-server-url",
+    "review"
+  ],
+  "launcherReady": false,
+  "mode": "diagnose",
+  "providerCalls": 0,
+  "schemaVersion": 1,
+  "server": {
+    "readyMs": 72699,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderrTail": "timestamp=2026-08-17T08:54:22.545Z level=INFO run=bc4b26fd message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-17T08:54:22.549Z level=INFO run=bc4b26fd message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-17T08:54:22.550Z level=INFO run=bc4b26fd message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-17T08:54:22.783Z level=INFO run=bc4b26fd message=\"creating instance\" directory=\"<project>\"\ntimestamp=2026-08-17T08:54:22.784Z level=INFO run=bc4b26fd message=fromDirectory directory=\"<project>\"\ntimestamp=2026-08-17T08:54:23.079Z level=INFO run=bc4b26fd message=bootstrapping directory=\"<project>\"\ntimestamp=2026-08-17T08:54:23.084Z level=INFO run=bc4b26fd message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-17T08:54:23.085Z level=INFO run=bc4b26fd message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-17T08:54:23.085Z level=INFO run=bc4b26fd message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-17T08:54:23.116Z level=INFO run=bc4b26fd message=loading path=\"<config-dir>\\\\opencode.json\"\ntimestamp=2026-08-17T08:54:23.312Z level=INFO run=bc4b26fd message=loading path=\"<config-dir>\\\\opencode.jsonc\"\ntimestamp=2026-08-17T08:54:33.920Z level=ERROR run=bc4b26fd message=\"failed to load plugin\" path=file:///D:/home/sergey-akhalkov/opencode-kit/global/extensions/roadmap-mission-launcher.ts error=\"OpenCode has no fixed colocated Node/Bun script runtime\"\ntimestamp=2026-08-17T08:54:33.922Z level=INFO run=bc4b26fd message=\"all LSPs are disabled\"\ntimestamp=2026-08-17T08:54:33.923Z level=INFO run=bc4b26fd message=\"all formatters are disabled\"\ntimestamp=2026-08-17T08:54:33.923Z level=INFO run=bc4b26fd message=init\ntimestamp=2026-08-17T08:54:33.989Z level=INFO run=bc4b26fd message=init count=1\n",
+    "stdoutTail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:64505\n"
+  }
+}

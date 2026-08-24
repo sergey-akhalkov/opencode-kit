@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "establish-practice-owner-agents-planning-r1",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "b60e36f2f7a56d54fb74b34da98cc7527355a83bf5bba8022ddf25931fdacca8",
+      "global/principles-of-work.md": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8",
+      "profiles/core.json": "9ec6c81f806773d9f2d55cfeafb9042a7c8462f7b02e26ee69aa99817890f403",
+      "profiles/all.json": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b",
+      "tools/proofs/practice-owner-routing.ts": "abbfad0546b96ea119c2d4042457a7ddf4a52aa32966e876cce95cf0acab3141",
+      "openspec/changes/establish-practice-owner-agents/evidence/task-1-2-baseline-inventory-r1.json": "b5a3d7835a9557bf4e8d17c8fcf1fcdb762e30331dca38ef4fc393b9917e6f43"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fd0507f5dffe7K8J725UmKi80L",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "poa-baseline-trivial-no-trigger",
+      "Fix planning only. greeting.ts has one local punctuation defect. Do not modify files. State the smallest correction. Do not launch subagents."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787506453604,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"id\":\"prt_02fafec27001jhQsWli6l2xGnm\",\"messageID\":\"msg_02faf8963001K9uRxwGJXcQvd5\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"snapshot\":\"4d70a63d83d0f1450807b00d2db62b8fb6c4fddb\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506455298,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_fV010n9RGsXzGku2qZz4xSRR\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/greeting.ts\"},\"output\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787506454867,\"end\":1787506455182}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05e29196fd9dd5b3016a8b2f1754fc87d2908c2ca9c1fddfa5\"}},\"id\":\"prt_02faff076001ND81yIy1oBcp3d\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"messageID\":\"msg_02faf8963001K9uRxwGJXcQvd5\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787506458464,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"id\":\"prt_02faffec6001w1FJsTks5fH3t5\",\"reason\":\"tool-calls\",\"snapshot\":\"19340ec28d9c02be4d5bc1a13ab2b2b172ffc0d1\",\"messageID\":\"msg_02faf8963001K9uRxwGJXcQvd5\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"type\":\"step-finish\",\"tokens\":{\"total\":17434,\"input\":17364,\"output\":23,\"reasoning\":47,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787506463497,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"id\":\"prt_02fb012c5001LvdtBdF9ugxR4Y\",\"messageID\":\"msg_02fb00554001FJY0qfiLMz6owh\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"snapshot\":\"19340ec28d9c02be4d5bc1a13ab2b2b172ffc0d1\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506464889,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_s2QZr1MTxsW6CWCNSZBmbORi\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\greeting.ts</path>\\n<type>file</type>\\n<content>\\n1: export function greeting(name: string): string {\\n2:   return `Hello, ${name}.`;\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\",\"text\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"src\\\\greeting.ts\",\"time\":{\"start\":1787506464687,\"end\":1787506464861}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03eb38ca8cc6b06a016a8b2f20155087d2b1981ee62e06f9ec\"}},\"id\":\"prt_02fb012cf001p3VBTsZb4kic3Z\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"messageID\":\"msg_02fb00554001FJY0qfiLMz6owh\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787506465665,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"id\":\"prt_02fb01b48001BIptklg08xmjRX\",\"reason\":\"tool-calls\",\"snapshot\":\"19340ec28d9c02be4d5bc1a13ab2b2b172ffc0d1\",\"messageID\":\"msg_02fb00554001FJY0qfiLMz6owh\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"type\":\"step-finish\",\"tokens\":{\"total\":17524,\"input\":579,\"output\":49,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787506470250,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"id\":\"prt_02fb02d5f001gYBlAqkckCw06I\",\"messageID\":\"msg_02fb01e19001N28RHDgCFghopM\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"snapshot\":\"19340ec28d9c02be4d5bc1a13ab2b2b172ffc0d1\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787506472541,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"id\":\"prt_02fb03251001y4OT8ppkfP5wwv\",\"messageID\":\"msg_02fb01e19001N28RHDgCFghopM\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"type\":\"text\",\"text\":\"In `src/greeting.ts:2`, replace the final period with an exclamation mark:\\n\\n```ts\\nreturn `Hello, ${name}!`;\\n```\\n\\nNo files modified.\",\"time\":{\"start\":1787506471505,\"end\":1787506472535},\"metadata\":{\"openai\":{\"itemId\":\"msg_07ad540942e65f17016a8b2f283d1487d29f7dc1d0123c101d\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787506473144,\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"part\":{\"id\":\"prt_02fb038880017NlOBEXVL9poA7\",\"reason\":\"stop\",\"snapshot\":\"19340ec28d9c02be4d5bc1a13ab2b2b172ffc0d1\",\"messageID\":\"msg_02fb01e19001N28RHDgCFghopM\",\"sessionID\":\"ses_fd0507f5dffe7K8J725UmKi80L\",\"type\":\"step-finish\",\"tokens\":{\"total\":17715,\"input\":722,\"output\":42,\"reasoning\":55,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: allow",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "In `src/greeting.ts:2`, replace the final period with an exclamation mark:\n\n```ts\nreturn `Hello, ${name}!`;\n```\n\nNo files modified.",
+    "elapsedMs": 59301,
+    "eventCount": 9,
+    "launchedOwners": [],
+    "providerCalls": 1,
+    "sessionIds": [
+      "ses_fd0507f5dffe7K8J725UmKi80L"
+    ],
+    "tokens": [
+      {
+        "total": 17434,
+        "input": 17364,
+        "output": 23,
+        "reasoning": 47,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 17524,
+        "input": 579,
+        "output": 49,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      },
+      {
+        "total": 17715,
+        "input": 722,
+        "output": 42,
+        "reasoning": 55,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/greeting.ts"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\greeting.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "Fix planning only. greeting.ts has one local punctuation defect. Do not modify files. State the smallest correction. Do not launch subagents.",
+    "scenario": "trivial-no-trigger"
+  },
+  "oracles": {
+    "cleanupComplete": true,
+    "fixtureStable": true,
+    "launchedOwners": []
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "85ddce1d5f128f44f8bc50b8afb3a5f1fe07f19699c5306e8d3627c766462aee",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    },
+    "before": {
+      "task.md": "85ddce1d5f128f44f8bc50b8afb3a5f1fe07f19699c5306e8d3627c766462aee",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    }
+  }
+}

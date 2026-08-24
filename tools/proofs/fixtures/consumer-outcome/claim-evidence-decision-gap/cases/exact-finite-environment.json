@@ -1,0 +1,29 @@
+{
+  "caseId": "exact-finite-environment",
+  "claimClass": "finite-population",
+  "candidateId": "candidate-r1",
+  "environmentId": "environment-r1",
+  "population": ["member-a", "member-b"],
+  "observations": [
+    {
+      "memberId": "member-a",
+      "candidateId": "candidate-r1",
+      "environmentId": "environment-r1",
+      "path": "path-a",
+      "boundary": "real-boundary",
+      "terminal": true,
+      "status": "supported"
+    },
+    {
+      "memberId": "member-b",
+      "candidateId": "candidate-r1",
+      "environmentId": "environment-r1",
+      "path": "path-a",
+      "boundary": "real-boundary",
+      "terminal": true,
+      "status": "supported"
+    }
+  ],
+  "realOracle": "passed",
+  "independentChallenge": "complete"
+}

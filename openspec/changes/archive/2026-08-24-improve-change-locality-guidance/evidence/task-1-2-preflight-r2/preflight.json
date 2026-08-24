@@ -1,0 +1,96 @@
+{
+  "cleanup": "removed",
+  "modelCalls": 0,
+  "nativeArgumentBoundary": {
+    "exact": true,
+    "status": 0,
+    "stderr": ""
+  },
+  "rows": [
+    {
+      "accepted": {
+        "noSpeculativeSurface": true,
+        "greetsAda": true
+      },
+      "rejected": {
+        "noSpeculativeSurface": true,
+        "greetsAda": false
+      },
+      "scenario": "one-off-local-fix"
+    },
+    {
+      "accepted": {
+        "noSpeculativeSurface": true,
+        "textOk": true,
+        "jsonOk": true
+      },
+      "rejected": {
+        "noSpeculativeSurface": true,
+        "textOk": true,
+        "jsonOk": false
+      },
+      "scenario": "accepted-second-variant"
+    },
+    {
+      "accepted": {
+        "noSpeculativeSurface": true,
+        "tempIsolated": true
+      },
+      "rejected": {
+        "noSpeculativeSurface": true,
+        "tempIsolated": false
+      },
+      "scenario": "external-integration-boundary"
+    },
+    {
+      "accepted": {
+        "noSpeculativeSurface": true,
+        "closes": true
+      },
+      "rejected": {
+        "noSpeculativeSurface": true,
+        "closes": false
+      },
+      "scenario": "non-trivial-state-transition"
+    },
+    {
+      "accepted": {
+        "noSpeculativeSurface": true,
+        "splitOwners": true
+      },
+      "rejected": {
+        "noSpeculativeSurface": true,
+        "splitOwners": false
+      },
+      "scenario": "mixed-owner-file"
+    },
+    {
+      "accepted": {
+        "noSpeculativeSurface": true,
+        "alpha": true,
+        "briefPresent": true
+      },
+      "rejected": {
+        "noSpeculativeSurface": true,
+        "alpha": false,
+        "briefPresent": false
+      },
+      "scenario": "delegated-production-ownership"
+    },
+    {
+      "accepted": {
+        "noSpeculativeSurface": true,
+        "hello": true
+      },
+      "rejected": {
+        "noSpeculativeSurface": true,
+        "hello": false
+      },
+      "scenario": "hypothetical-extension-negative-control"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "complete",
+  "cleanupError": null,
+  "failure": null
+}

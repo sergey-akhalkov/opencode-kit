@@ -1,0 +1,22 @@
+{
+  "candidateId": "task-2-2-interrupted-r5",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "disposition": "terminal",
+  "guardState": "unknown",
+  "inputRawSha256": "b15fee3269c970227abcd9f28d9f31db73c014ed8d73fef8f69d3c287c047000",
+  "liveCalls": 0,
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "complete",
+  "providerCalls": {
+    "arbiter": 0,
+    "primary": 0
+  },
+  "replaySource": "evidence-task-2-2-interrupted-r5",
+  "rootSession": "not-created-prior-root-deleted",
+  "scenario": "interrupted",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unlockCondition": null
+}

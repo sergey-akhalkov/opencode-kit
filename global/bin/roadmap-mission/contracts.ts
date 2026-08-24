@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { parseTerminalCertificate } from "../../extensions/session-completion-guard/terminal-certificate.ts";
+import type { TerminalCertificate } from "../../extensions/session-completion-guard/terminal-certificate.ts";
 
 const EFFECT_CLASSES = [
   "activation",
@@ -93,6 +95,68 @@ export type RoadmapMissionPreflight = {
   tool: "roadmap-mission";
 };
 
+const EXECUTOR_DISPOSITIONS = [
+  "completed",
+  "owner-required",
+  "paused",
+  "terminal",
+  "transient",
+] as const;
+
+const EXECUTOR_GUARD_STATES = [
+  "audit-retrying",
+  "auditing",
+  "continuation-pending",
+  "disabled",
+  "error",
+  "owner-required",
+  "passed",
+  "paused",
+  "question-answering",
+  "question-auditing",
+  "question-pending",
+  "running",
+  "settling-idle",
+  "stale",
+  "unknown",
+  "waiting-async",
+] as const;
+
+export type MissionExecutorDisposition = typeof EXECUTOR_DISPOSITIONS[number];
+
+export type MissionExecutorResult = {
+  attempt: number;
+  changeId: string;
+  cleanup: "complete" | "not-required" | "unknown";
+  definitionDigest: string;
+  disposition: MissionExecutorDisposition;
+  errorClass: "none" | "owner-required" | "paused" | "terminal" | "transient" | "unknown";
+  errorMessage: string | null;
+  evidenceRefs: string[];
+  guardState: typeof EXECUTOR_GUARD_STATES[number];
+  missionId: string;
+  phases: Array<{
+    command: "opsx-apply" | "opsx-propose";
+    evidenceRef: string;
+    status: "completed" | "failed" | "interrupted";
+  }>;
+  questionDisposition: "autonomous" | "none" | "owner-required" | "unknown";
+  rootSessionRef: string | null;
+  runtimeRef: string;
+  schemaVersion: 1;
+  sliceId: string;
+  terminalCertificate: TerminalCertificate | null;
+  tool: "roadmap-mission-session-executor";
+  writerClosure: "isolated" | "terminal" | "unknown";
+};
+
+export type MissionExecutorExpectation = {
+  attempt: number;
+  definitionDigest: string;
+  missionId: string;
+  slice: Pick<RoadmapMissionSlice, "changeId" | "id" | "operation">;
+};
+
 export class RoadmapMissionError extends Error {
   readonly exitCode: number;
 
@@ -133,7 +197,27 @@ function requiredString(value: unknown, field: string, max = 500): string {
   return value.trim();
 }
 
-function safeId(value: unknown, field: string): string {
+function singleLineString(value: unknown, field: string, max = 500): string {
+  const parsed = requiredString(value, field, max);
+  if (/[\r\n\0]/.test(parsed)) {
+    throw new RoadmapMissionError(`${field} must be a single-line string`, 2);
+  }
+  return parsed;
+}
+
+function nullableSingleLineString(value: unknown, field: string, max = 500): string | null {
+  return value == null ? null : singleLineString(value, field, max);
+}
+
+function digestString(value: unknown, field: string): string {
+  const parsed = singleLineString(value, field, 64);
+  if (!/^[a-f0-9]{64}$/.test(parsed)) {
+    throw new RoadmapMissionError(`${field} must be a lowercase SHA-256 digest`, 2);
+  }
+  return parsed;
+}
+
+export function safeId(value: unknown, field: string): string {
   const parsed = requiredString(value, field, 100);
   if (!/^[a-z0-9][a-z0-9._-]*$/.test(parsed) || parsed === "." || parsed === "..") {
     throw new RoadmapMissionError(`${field} must be a safe lowercase identifier`, 2);
@@ -354,6 +438,181 @@ export function parseMissionDefinition(value: unknown): RoadmapMissionDefinition
     validationArgv,
     workflowOwner: parseWorkflowOwner(input.workflowOwner),
   };
+}
+
+export function parseMissionExecutorResult(
+  value: unknown,
+  expected: MissionExecutorExpectation,
+): MissionExecutorResult {
+  const input = record(value);
+  if (input == null) throw new RoadmapMissionError("executor result must be a JSON object", 2);
+  if (!("terminalCertificate" in input)) input.terminalCertificate = null;
+  exactKeys(input, [
+    "schemaVersion",
+    "tool",
+    "missionId",
+    "definitionDigest",
+    "sliceId",
+    "changeId",
+    "attempt",
+    "runtimeRef",
+    "rootSessionRef",
+    "disposition",
+    "phases",
+    "guardState",
+    "questionDisposition",
+    "writerClosure",
+    "cleanup",
+    "evidenceRefs",
+    "errorClass",
+    "errorMessage",
+    "terminalCertificate",
+  ], "executor result");
+  if (input.schemaVersion !== 1 || input.tool !== "roadmap-mission-session-executor") {
+    throw new RoadmapMissionError("executor result schema or tool is unsupported", 2);
+  }
+  if (!Number.isSafeInteger(input.attempt) || (input.attempt as number) < 1 || (input.attempt as number) > 20) {
+    throw new RoadmapMissionError("executor result attempt must be an integer between 1 and 20", 2);
+  }
+  const missionId = safeId(input.missionId, "executor result missionId");
+  const sliceId = safeId(input.sliceId, "executor result sliceId");
+  const changeId = safeId(input.changeId, "executor result changeId");
+  const definitionDigest = digestString(input.definitionDigest, "executor result definitionDigest");
+  if (
+    missionId !== expected.missionId ||
+    sliceId !== expected.slice.id ||
+    changeId !== expected.slice.changeId ||
+    definitionDigest !== expected.definitionDigest ||
+    input.attempt !== expected.attempt
+  ) {
+    throw new RoadmapMissionError("executor result correlation does not match the requested mission slice attempt", 2);
+  }
+  const disposition = singleLineString(input.disposition, "executor result disposition") as MissionExecutorDisposition;
+  if (!(EXECUTOR_DISPOSITIONS as readonly string[]).includes(disposition)) {
+    throw new RoadmapMissionError("executor result disposition is unsupported", 2);
+  }
+  const guardState = singleLineString(input.guardState, "executor result guardState") as MissionExecutorResult["guardState"];
+  if (!(EXECUTOR_GUARD_STATES as readonly string[]).includes(guardState)) {
+    throw new RoadmapMissionError("executor result guardState is unsupported", 2);
+  }
+  const questionDisposition = singleLineString(
+    input.questionDisposition,
+    "executor result questionDisposition",
+  ) as MissionExecutorResult["questionDisposition"];
+  if (!( ["autonomous", "none", "owner-required", "unknown"] as readonly string[]).includes(questionDisposition)) {
+    throw new RoadmapMissionError("executor result questionDisposition is unsupported", 2);
+  }
+  const writerClosure = singleLineString(input.writerClosure, "executor result writerClosure") as MissionExecutorResult["writerClosure"];
+  if (!( ["isolated", "terminal", "unknown"] as readonly string[]).includes(writerClosure)) {
+    throw new RoadmapMissionError("executor result writerClosure is unsupported", 2);
+  }
+  const cleanup = singleLineString(input.cleanup, "executor result cleanup") as MissionExecutorResult["cleanup"];
+  if (!( ["complete", "not-required", "unknown"] as readonly string[]).includes(cleanup)) {
+    throw new RoadmapMissionError("executor result cleanup is unsupported", 2);
+  }
+  const errorClass = singleLineString(input.errorClass, "executor result errorClass") as MissionExecutorResult["errorClass"];
+  if (!( ["none", "owner-required", "paused", "terminal", "transient", "unknown"] as readonly string[]).includes(errorClass)) {
+    throw new RoadmapMissionError("executor result errorClass is unsupported", 2);
+  }
+  const errorMessage = nullableSingleLineString(input.errorMessage, "executor result errorMessage", 1_000);
+  if ((errorClass === "none") !== (errorMessage == null)) {
+    throw new RoadmapMissionError("executor result errorMessage must be null exactly when errorClass is none", 2);
+  }
+  if (!Array.isArray(input.evidenceRefs) || input.evidenceRefs.length > 100) {
+    throw new RoadmapMissionError("executor result evidenceRefs must contain at most 100 paths", 2);
+  }
+  const evidenceRefs = input.evidenceRefs.map((entry, index) =>
+    safeRelative(entry, `executor result evidenceRefs[${index}]`)
+  ).sort();
+  if (new Set(evidenceRefs).size !== evidenceRefs.length) {
+    throw new RoadmapMissionError("executor result evidenceRefs must not contain duplicates", 2);
+  }
+  if (!Array.isArray(input.phases) || input.phases.length > 2) {
+    throw new RoadmapMissionError("executor result phases must contain at most two entries", 2);
+  }
+  const phases = input.phases.map((value, index): MissionExecutorResult["phases"][number] => {
+    const phase = record(value);
+    if (phase == null) throw new RoadmapMissionError(`executor result phases[${index}] must be an object`, 2);
+    exactKeys(phase, ["command", "status", "evidenceRef"], `executor result phases[${index}]`);
+    const command = singleLineString(phase.command, `executor result phases[${index}].command`) as "opsx-apply" | "opsx-propose";
+    if (command !== "opsx-apply" && command !== "opsx-propose") {
+      throw new RoadmapMissionError(`executor result phases[${index}].command is unsupported`, 2);
+    }
+    const status = singleLineString(phase.status, `executor result phases[${index}].status`) as MissionExecutorResult["phases"][number]["status"];
+    if (!( ["completed", "failed", "interrupted"] as readonly string[]).includes(status)) {
+      throw new RoadmapMissionError(`executor result phases[${index}].status is unsupported`, 2);
+    }
+    const evidenceRef = safeRelative(phase.evidenceRef, `executor result phases[${index}].evidenceRef`);
+    if (!evidenceRefs.includes(evidenceRef)) {
+      throw new RoadmapMissionError(`executor result phases[${index}].evidenceRef is absent from evidenceRefs`, 2);
+    }
+    return { command, evidenceRef, status };
+  });
+  const expectedCommands = expected.slice.operation === "propose"
+    ? ["opsx-propose", "opsx-apply"]
+    : ["opsx-apply"];
+  if (phases.some((phase, index) => phase.command !== expectedCommands[index])) {
+    throw new RoadmapMissionError("executor result phase order does not match the requested operation", 2);
+  }
+  const rootSessionRef = nullableSingleLineString(input.rootSessionRef, "executor result rootSessionRef", 200);
+  let terminalCertificate: TerminalCertificate | null = null;
+  if (input.terminalCertificate != null) {
+    try {
+      terminalCertificate = parseTerminalCertificate(input.terminalCertificate);
+    } catch (error) {
+      throw new RoadmapMissionError("executor result terminalCertificate is invalid", 2, { cause: error });
+    }
+  }
+  const result: MissionExecutorResult = {
+    attempt: input.attempt as number,
+    changeId,
+    cleanup,
+    definitionDigest,
+    disposition,
+    errorClass,
+    errorMessage,
+    evidenceRefs,
+    guardState,
+    missionId,
+    phases,
+    questionDisposition,
+    rootSessionRef,
+    runtimeRef: digestString(input.runtimeRef, "executor result runtimeRef"),
+    schemaVersion: 1,
+    sliceId,
+    terminalCertificate,
+    tool: "roadmap-mission-session-executor",
+    writerClosure,
+  };
+  if (disposition === "completed") {
+    if (
+      phases.length !== expectedCommands.length ||
+      phases.some((phase) => phase.status !== "completed") ||
+      guardState !== "passed" ||
+      rootSessionRef == null ||
+      questionDisposition === "owner-required" ||
+      writerClosure === "unknown" ||
+      cleanup !== "complete" ||
+      errorClass !== "none"
+    ) {
+      throw new RoadmapMissionError("completed executor result is not terminal-clear", 2);
+    }
+  }
+  if (disposition === "owner-required" && (
+    questionDisposition !== "owner-required" || writerClosure === "unknown" || cleanup !== "complete" || errorClass !== "owner-required"
+  )) {
+    throw new RoadmapMissionError("owner-required executor result did not close active ownership", 2);
+  }
+  if (disposition === "transient" && errorClass !== "transient") {
+    throw new RoadmapMissionError("transient executor result requires transient errorClass", 2);
+  }
+  if (disposition === "terminal" && errorClass !== "terminal" && errorClass !== "unknown") {
+    throw new RoadmapMissionError("terminal executor result requires terminal or unknown errorClass", 2);
+  }
+  if (disposition === "paused" && errorClass !== "paused" && errorClass !== "unknown") {
+    throw new RoadmapMissionError("paused executor result requires paused or unknown errorClass", 2);
+  }
+  return result;
 }
 
 function containedFile(root: string, input: string, label: string): string {

@@ -1,0 +1,196 @@
+{
+  "decisionOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "representative-finite-population",
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "representative-finite-population",
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "exact-finite-environment",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "exact-finite-environment",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "unavailable-real-oracle",
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "unavailable-real-oracle",
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "ordinary-small-exact-case",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "ordinary-small-exact-case",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case"
+    }
+  ],
+  "digest": "6821e5348faf3803d7de5a7385f6cf4237c3869b397a536d8337c7d6bf1fdb01",
+  "evaluation": {
+    "baselineMedians": {
+      "representative-finite-population": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "exact-finite-environment": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "unavailable-real-oracle": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "ordinary-small-exact-case": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      }
+    },
+    "candidateMedians": {
+      "representative-finite-population": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "exact-finite-environment": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "unavailable-real-oracle": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "ordinary-small-exact-case": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      }
+    },
+    "environmentDigest": "119a26d3ae388a92e1736785c953ac0cd58193990c1f42f774d2cc873bc14b01",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [],
+    "scenarioDigest": "bb5205f9e0e883b2d76be7b19b9f2f5dc231909c1f8f44ef2564b99cf72833dc",
+    "sourceDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+    "status": "passed-no-regression",
+    "digest": "26f82a5cc26b0b2c45d888795528ceaa250b488755c156c8b6f0b74ea07ecc06",
+    "schemaVersion": 1
+  }
+}

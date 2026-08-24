@@ -1,0 +1,36 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "controllerBufferCaptured": true,
+    "executorResultCaptured": true,
+    "sessionCleanup": true,
+    "stateCaptured": true
+  },
+  "liveCalls": 0,
+  "productOutcome": {
+    "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+    "checks": {
+      "archiveReadback": false,
+      "candidateMatched": true,
+      "cleanupComplete": true,
+      "controllerTerminal": false,
+      "executorTerminalClear": false,
+      "localCheckpoint": false,
+      "markerValidated": false,
+      "noRemote": false,
+      "providerExecution": true,
+      "serverIsolated": true,
+      "sessionCleanup": true,
+      "visibleController": true
+    },
+    "liveCallBasis": "completed-assistant-responses",
+    "liveCalls": 39,
+    "schemaVersion": 1,
+    "status": "blocked"
+  },
+  "proof": false,
+  "schemaVersion": 1,
+  "status": "complete"
+}

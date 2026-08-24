@@ -1,12 +1,12 @@
 ---
 name: change-ready-sdlc
-description: Use this skill before mutation only for explicit stable/full-qualification, project policy, or concrete Material risk involving public API/protocol/compatibility, data migration, security/privacy/authorization, destructive or remote action, concurrency correctness, deployment/release, or a loaded lifecycle/safety policy change.
+description: Use this skill before mutation only for explicit stable/full-qualification, project policy, or Material risk involving public API/protocol/compatibility, persisted data or migration, security/privacy/authorization, destructive or remote action, concurrency correctness, deployment/release, or a loaded instruction/configuration lifecycle/safety policy change.
 license: MIT
 ---
 
 # Change-Ready SDLC
 
-Qualification adapter for Material work. The active primary user-session agent remains the sole orchestrator and default production author. Specialists are optional evidence sources except for fresh critical-only SDET when Material behavior changes.
+Material-safety and qualification adapter. The active primary user-session agent remains the sole orchestrator and default production author. Specialists are optional evidence sources except for fresh critical-only SDET when a reachable named critical risk or explicit requirement triggers it.
 
 ## When To Load
 
@@ -22,16 +22,18 @@ Do not load for Ordinary Small work, pure research, ordinary review-only work, i
 
 Profiles remain exactly `Ordinary Small | Material`; they select proportional gates and are not lifecycle stages.
 
-Use one user-facing field:
+Use the stage field only for explicit stable/full qualification, project-required qualification, or a reachable named critical-risk qualification path:
 
 `Development-Stage: development | MVP | RC<n> | stable`
 
 - `development`: the current candidate is incomplete, mutable, or lacks current representative happy-path proof.
 - `MVP`: the smallest complete accepted end-to-end happy path works at a real boundary. It is usable; additional accepted scope may remain.
-- `RC<n>`: accepted scope is complete, applicable project-native validation is green, and no known confirmed reachable critical or non-deferrable defect remains. Material behavior has usable terminal critical-SDET evidence. Known documented non-critical bugs, limitations, coverage gaps, and suboptimal code may remain.
+- `RC<n>`: accepted scope is complete, applicable project-native validation is green, and no known confirmed reachable critical or non-deferrable defect remains. Triggered critical SDET has usable terminal evidence when applicable. Known documented non-critical bugs, limitations, coverage gaps, and suboptimal code may remain.
 - `stable`: the same RC has a complete local handoff and every applicable critical/safety/validation gate is green. No soak-time threshold is required. Record `Stable Candidate: RC<n>`.
 
 Neither MVP, RC, nor stable authorizes deployment, release, installation, activation, publication, credentials, destructive action, or remote-state mutation.
+
+Material work outside that qualification track reports `Outcome: working | blocked | unknown`, representative proof, applicable validation, and Known Non-Critical Limitations without RC numbering or stable promotion.
 
 ## Authoritative Brief
 
@@ -59,8 +61,8 @@ The phrase "all critical bugs are fixed" means no **known confirmed reachable** 
 
 - For each behavior dependency chain, minimize `time-to-first-real-signal`: execute the first safely reachable real boundary sufficient to observe the accepted effect, from offline/preserved replay through local integration/simulator, shadow or independently effect-blocked read-only real use, bounded live effects, and end-to-end operation. Unit/mock/component checks are support, not real-boundary proof. Authority is a ceiling, not a fidelity target; climb only for a current requirement, invariant, or unresolved equivalence risk.
 - Roadmaps SHALL state the ladder once. Each behavior-slice item SHALL include `Current Rung`, `Next Real Boundary`, `Blocker/Unblocker`, `Observable Proof`, owner authorization, safeguards, restoration/cleanup, and expected immutable evidence; omission is incomplete. Run the sufficient boundary before dependent expansion. A path-only action/gate stays blocked; reconcile controls and use an alternate sufficient route without claiming that path. Stop the accepted outcome only when every sufficient route requires owner action.
-- Before emulation, replacement, replay, caching, skipping, or another substitution depends on a model of the real system, safely characterize the smallest relevant real baseline when separately authorized. Compare baseline and candidate from the same actor request, environment and initial state through outputs, state/effects/order/timing, faults/recovery, cleanup, and terminal observation.
-- This cadence does not authorize external operations or weaken protected boundaries, physical-effect suppression, `Live-Attempt Gate`, identity, restoration, cleanup, cost, or remote/destructive/deploy/install/release controls. Early characterization is production-owned run-observe-correct; fresh Material SDET remains after current MVP proof and accepted-scope completion.
+- For emulation, replacement, replay, caching, skipping, or another substitution claim, load `behavioral-substitution-qualification`; it owns baseline/candidate path identity, same-actor/environment comparison, observation closure, real-oracle dependency, and the maximum supported claim. Keep this skill focused on lifecycle/evidence topology rather than copying that workflow.
+- This cadence does not authorize external operations or weaken protected boundaries, physical-effect suppression, `Live-Attempt Gate`, identity, restoration, cleanup, cost, or remote/destructive/deploy/install/release controls. Early characterization is production-owned run-observe-correct; fresh critical SDET remains after current proof and accepted-scope completion only when the named-risk or explicit requirement applies.
 
 ## Evidence Topology And Scoped Invalidation
 
@@ -71,6 +73,14 @@ For evidence-heavy work, identify these roles before building or changing a proo
 - **Evaluator**: derives acceptance results from observations;
 - **Environment Identity**: relevant executable, configuration, dependency, hardware, dataset, or service identity;
 - **Raw Evidence Bundle**: immutable observations and hashes used for replay.
+
+### Blocker self-diagnosis and absence-source qualification
+
+Before main declares a technical/evidence blocker, treats negative observation as Product Candidate failure, repeats a governed attempt, or escalates uncertain ownership, it SHALL perform one bounded pass when cause or ownership is not proven and the claim depends on contradictory evidence, a failed canary/preflight, a zero/empty/timeout/absence result, or a machine-local identity or observation path. Preserve the accepted goal and envelope; state the falsifiable blocker claim and affected requirement; classify the affected layer as Product Candidate, Proof Runner, Evaluator, Environment, Authority, or `unknown`; separate current observed facts from assumptions; inspect material contradictions; verify environment-dependent identities; select the smallest safe causally distinct probe that can falsify a live hypothesis; and state the narrowest supported claim ceiling. An obvious evidenced local defect proceeds through normal run-observe-correct without generic diagnostic ceremony.
+
+A mandatory source used to prove that an event, state, packet, process, response, or side effect is absent SHALL establish the expected observable phenomenon, current source identity, freshness, observation point, intersection with the expected execution path, and one safe positive control showing that the source can observe that phenomenon. If the positive control is unavailable, unauthorized, unsafe, or fails, the source is `unqualified`; its negative result cannot establish Product Candidate failure, completion failure, or owner-only status. Preserve contradictory direct observations.
+
+Missing qualification keeps only the dependent Proof Runner/Evaluator/Environment lane unknown. It never clears or waives safety, identity/liveness, authorization, data-integrity, restoration/cleanup, irreversible-action, envelope, or live-attempt gates and never authorizes another costly/live attempt through the blocked path. Keep a defective proof path blocked while another sufficient safe route advances the accepted outcome; evidence on the alternate route does not clear the defective path. If the bounded pass remains inconclusive, follow the global one-consultation `troubleshooter` route; if an exact owner-only boundary is already proven, bypass redundant diagnosis.
 
 For runtime lanes, the Raw Evidence Bundle includes the exact invocation and representative input, Candidate/Environment identity, exit status, stdout/stderr, relevant logs and exceptions, observed side effects, and artifact paths. Inspect that preserved evidence before mutation or another live attempt. If it cannot distinguish realistic in-scope causes, add only the smallest safe instrumentation at the owning boundary and recapture the affected lane.
 
@@ -98,13 +108,15 @@ Asynchronous or concurrent mutation-capable work remains open after timeout, can
 
 ## Qualification Flow
 
+Run this stage flow only for explicit/project-required qualification or a reachable named critical-risk qualification path. Otherwise complete the verified-outcome path above.
+
 ### 1. Prepare
 
 Freeze the accepted outcome capsule, trusted validation, operating envelope, protected boundaries, non-goals, non-deferrable invariants, root RC history, stop line, and per-dependency proof ladder. Start or return to `development` when the current candidate is unproved.
 
 ### 2. Implement And Prove MVP
 
-Main implements the smallest complete happy path and owns run-observe-correct at the earliest safely reachable real boundary. Production authors may build its Proof Runner, capture/evaluator, and restoration tooling, but do not create or modify automated test artifacts such as tests, fixtures, snapshots, fakes, simulators, automated test harnesses, or goldens.
+Main implements the smallest complete happy path and owns run-observe-correct at the earliest safely reachable real boundary. Production authors may build its Proof Runner, capture/evaluator, and restoration tooling before proof. After current representative proof, main may create or update the smallest focused regression oracle for a reproduced accepted-outcome defect or realistic requirement-linked regression; this is not independent SDET evidence.
 
 After current Runtime Proof, capture a readable Product Candidate Reference plus Proof Runner, Evaluator, Environment Identity, and Raw Evidence Bundle identities when applicable, then set `Development-Stage: MVP`. Failed proof remains `development` and consumes no RC number.
 
@@ -120,7 +132,7 @@ Main must reproduce, disprove, or show unreachable every plausible non-deferrabl
 
 ### 5. Critical SDET
 
-For Material behavior changes, dispatch one fresh test-only SDET after current MVP proof and accepted-scope completion. Supply original requirements, Candidate Reference, raw proof, safe local/ephemeral runner, current tests, criticality rubric, exact test-only write scope, and require Effective Model provenance.
+Dispatch one fresh test-only SDET after current proof and accepted-scope completion only for a reachable authorization/privacy compromise, important data corruption/loss, irreversible external action, materially wrong financial/legal/business outcome, system-wide/mission-critical outage, another explicitly accepted critical consequence, or an explicit project/owner requirement. Supply original requirements, Candidate Reference, raw proof, safe local/ephemeral runner, current tests, criticality rubric, exact test-only write scope, and require Effective Model provenance.
 
 SDET challenges only reachable incidents that can cause authorization/privacy compromise, important data corruption/loss, irreversible external action, materially wrong financial/legal/business outcome, system-wide or mission-critical outage, or another explicitly accepted critical outcome. It returns exactly `Action: critical-risks-reported | no-critical-risk | blocked` and may author only the smallest critical reproducer/regression oracle.
 
@@ -128,7 +140,7 @@ Main independently reproduces each row. An unchanged candidate and unchanged cri
 
 ### 6. Validate And Freeze RC
 
-Run every applicable trusted project-native validation procedure. With accepted scope complete, validation green, terminal Material SDET usable when applicable, and no known confirmed reachable critical/non-deferrable defect, freeze the next monotonic `RC<n>`.
+Run every applicable trusted project-native validation procedure. With accepted scope complete, validation green, triggered critical SDET terminal and usable when applicable, and no known confirmed reachable critical/non-deferrable defect, freeze the next monotonic `RC<n>`.
 
 RC numbering starts at RC1 and never resets within the root. Product Candidate mutation invalidates RC/stable and returns to `development`; scoped runner/environment mutation invalidates affected evidence lanes; evaluator/report mutation requires replay but does not erase trustworthy raw product observations. Current affected proof restores MVP, and the next complete qualification freezes `RC<n+1>`.
 
@@ -145,7 +157,7 @@ After restart or compaction, reconstruct the accepted outcome, current Candidate
 ## Output
 
 - `Profile`: Ordinary Small | Material
-- `Outcome`: working | not working | unknown
+- `Outcome`: working | blocked | unknown
 - `Candidate Reference`: readable Product Candidate plus runner/evaluator/environment identities when applicable, or none
 - `Raw Evidence Bundle`: immutable observations and lane status, or N/A with reason
 - `Live-Attempt Gate`: clear | blocked | unknown plus governed path/lane; include failure chain, replay coverage/result, and unlock condition when not clear
@@ -155,7 +167,7 @@ After restart or compaction, reconstruct the accepted outcome, current Candidate
 - `Critical SDET`: terminal state and confirmed-critical correction history, or N/A with reason
 - `Validation`: trusted commands and outcomes
 - `Known Non-Critical Limitations`: list or none
-- `Development-Stage: development | MVP | RC<n> | stable`
+- `Development-Stage: development | MVP | RC<n> | stable`: qualification track only
 - `Stable Candidate: RC<n>`: only when stable, else none
 - `External Operations`: not performed unless separately authorized and recorded
 

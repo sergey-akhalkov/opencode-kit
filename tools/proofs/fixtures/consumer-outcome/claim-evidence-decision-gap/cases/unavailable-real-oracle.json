@@ -1,0 +1,20 @@
+{
+  "caseId": "unavailable-real-oracle",
+  "claimClass": "substitution",
+  "candidateId": "candidate-r1",
+  "environmentId": "environment-r1",
+  "population": ["substitution-a"],
+  "observations": [
+    {
+      "memberId": "substitution-a",
+      "candidateId": "candidate-r1",
+      "environmentId": "environment-r1",
+      "path": "substitute-path",
+      "boundary": "substitute-boundary",
+      "terminal": true,
+      "status": "supported"
+    }
+  ],
+  "realOracle": "unavailable",
+  "independentChallenge": "complete"
+}

@@ -1,0 +1,26 @@
+{
+  "candidateId": "task-1-2-r3",
+  "cleanup": "complete",
+  "projectMutationCount": 0,
+  "scenarios": {
+    "ambiguousActiveChange": "blocked",
+    "busySession": "unknown-blocked",
+    "dirtyOwnedPath": "blocked",
+    "invalidCheckpoint": "blocked",
+    "invalidForwardDependency": "blocked",
+    "liveWriterLease": "unknown-blocked",
+    "missingAdapter": "blocked",
+    "missingDeclaredActiveChange": "blocked",
+    "pendingQuestion": "unknown-blocked",
+    "protectedEffect": "blocked",
+    "queuedActiveChanges": "eligible",
+    "queuedDirtyChange": "blocked",
+    "staleProjectOverlay": "blocked",
+    "tooManySlices": "blocked",
+    "unreadableSession": "unknown-blocked",
+    "unreadableWriterLease": "unknown-blocked",
+    "valid": "eligible"
+  },
+  "schemaVersion": 1,
+  "status": "complete"
+}

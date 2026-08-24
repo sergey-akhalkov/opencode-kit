@@ -1,0 +1,19 @@
+{
+  "candidateId": "task-4-1-integrated-startup-replay-r3",
+  "checks": {
+    "candidateMatched": false,
+    "cleanupComplete": true,
+    "hostConfigAbsent": true,
+    "httpPathAnswered": true,
+    "httpStatusAnswered": true,
+    "isolatedConfigLoaded": true,
+    "listenObserved": true,
+    "noCommandInventory": true,
+    "noRipgrepDownload": true,
+    "noSessionsCreated": true
+  },
+  "liveCalls": 0,
+  "proof": false,
+  "schemaVersion": 1,
+  "status": "blocked"
+}

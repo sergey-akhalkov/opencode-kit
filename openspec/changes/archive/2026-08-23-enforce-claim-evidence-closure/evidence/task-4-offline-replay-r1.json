@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "recordedAt": "2026-08-23T12:02:08.0575421Z",
+  "liveAttemptGate": {
+    "lane": "installed-session-completion-guard-claim-capture",
+    "status": "clear",
+    "unlockCondition": "Provider-free terminal guard and copied-plugin replay are green; task 4.4 is one bounded local effect-free evidence capture."
+  },
+  "offlineReplay": [
+    {
+      "command": "node tools/test-session-completion-guard.ts",
+      "status": 0,
+      "terminalResult": "OK: session completion guard tests=38"
+    },
+    {
+      "command": "node tools/test-session-env-plugin.ts",
+      "status": 0,
+      "terminalResult": "OK: session env plugin tests=17"
+    },
+    {
+      "command": "node tools/test-openspec-change-inventory.ts",
+      "status": 0,
+      "terminalResult": "OK: openspec-change-inventory tests=10"
+    }
+  ],
+  "exactMissingObservation": "Installed disposable guard request/result/root-state/provider-call/side-effect/cleanup evidence for representative-overclaim continuation, supported exact completion, truncated closure, and unchanged Ordinary Small idle behavior.",
+  "externalEffects": []
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "recordedAt": "2026-08-23T13:11:01.4871886Z",
+  "boundary": "standalone-plugin-factory-preflight",
+  "invocation": "node tools/test-session-completion-guard.ts",
+  "status": 0,
+  "providerCalls": 0,
+  "externalEffects": [],
+  "results": [
+    {
+      "plugin": "opencode-pty-bridge",
+      "factoryReturnedHooks": true
+    },
+    {
+      "plugin": "session-completion-guard",
+      "factoryReturnedHooks": true,
+      "disposedBeforeDeferredReconciliation": true
+    }
+  ],
+  "testResult": "OK: session completion guard tests=39",
+  "classification": {
+    "moduleImportDefect": "falsified",
+    "standaloneFactorySetupDefect": "falsified",
+    "installedPluginOrchestration": "unknown",
+    "projectBootstrap": "unknown",
+    "isolatedEnvironment": "unknown"
+  },
+  "claimCeiling": "The exact bridge and guard factories synchronously return hooks under a provider-free standalone plugin input. This does not exercise OpenCode hook application, project bootstrap, installed routing, or claim behavior.",
+  "liveAttemptGate": "blocked",
+  "unlockCondition": "Instrument or otherwise identify the installed OpenCode hook-application/project-bootstrap/environment boundary before another installed capture."
+}

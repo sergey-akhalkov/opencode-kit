@@ -1,0 +1,15 @@
+{
+  "checks": {
+    "cleanupComplete": true,
+    "noCaptureFailure": true,
+    "noGraphifyConfiguredOrStarted": true,
+    "noProviderCalls": true,
+    "pathRouteResponsive": true,
+    "projectRouteResponsive": true
+  },
+  "kind": "shared-graphify-startup-diagnostic",
+  "liveCalls": 0,
+  "mode": "replay",
+  "passed": true,
+  "schemaVersion": 1
+}

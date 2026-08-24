@@ -21,8 +21,18 @@ export type RuntimeSourceCollision = {
   name: string;
 };
 
+export type ManagedPromptDrift = {
+  active: { markers: string[]; sha256: string } | null;
+  field: "agent.compaction.prompt";
+  reason: "active-missing" | "active-unreadable" | "content-differs" | "content-matches" | "template-unreadable";
+  restartBoundary: "none" | "resolve-source-before-sync" | "synchronize-active-copy-and-restart";
+  status: "different" | "missing" | "same" | "unknown";
+  template: { markers: string[]; sha256: string } | null;
+};
+
 export type RuntimeSourceReport = {
   collisions: RuntimeSourceCollision[];
+  managedPrompts: ManagedPromptDrift[];
   unattended: {
     canonicalWorkflow: Array<Pick<RuntimeSource, "kind" | "location" | "name" | "source">>;
     collisionStatus: "blocked" | "clear";
@@ -35,7 +45,7 @@ export type RuntimeSourceReport = {
     helperResolution: RuntimeGlobalHelperResolution[];
   };
   root: string;
-  schemaVersion: 1;
+  schemaVersion: 2;
   sources: RuntimeSource[];
   warnings: string[];
 };
@@ -80,10 +90,18 @@ const GUARD_LIMITS = [
   "maxCycles",
   "maxRetryAttempts",
   "arbiterPromptTimeoutMs",
+  "certificateWaitMs",
   "waitRecheckMs",
   "maxRequestBytes",
   "maxWaitRechecks",
   "retainAuditSessions",
+] as const;
+const COMPACTION_PROMPT_MARKERS = [
+  ["live-attempt-gate", "Live-Attempt Gate"],
+  ["next-session-action", "Next-Session Action"],
+  ["original-user-goal", "Original User Goal"],
+  ["pending-strategy-history", "Pending Strategy History"],
+  ["session-reflection", "Session Reflection"],
 ] as const;
 
 type SourceRoot = Pick<RuntimeSource, "source"> & { root: string };
@@ -166,7 +184,7 @@ function addRootSources(result: RuntimeSource[], sourceRoot: SourceRoot): void {
       result.push({ kind: "config", location: redactLocation(config), name: configName, source: sourceRoot.source });
     }
   }
-  for (const instructionName of ["AGENTS.md", "opencode.local.instructions.md"]) {
+  for (const instructionName of ["AGENTS.md", "principles-of-work.md", "opencode.local.instructions.md"]) {
     const instruction = path.join(sourceRoot.root, instructionName);
     if (isFile(instruction)) {
       result.push({ kind: "instruction", location: redactLocation(instruction), name: instructionName, source: sourceRoot.source });
@@ -417,7 +435,7 @@ export function inspectLoaderVisibleInstructionManifest(root: string): LoaderVis
 
   for (const sourceRoot of sourceRoots(project)) {
     const scope = `global:${sourceRoot.source}`;
-    for (const instructionName of ["AGENTS.md", "opencode.local.instructions.md"]) {
+    for (const instructionName of ["AGENTS.md", "principles-of-work.md", "opencode.local.instructions.md"]) {
       addManifestFile(
         result,
         path.join(sourceRoot.root, instructionName),
@@ -499,6 +517,84 @@ export function inspectLoaderVisibleInstructionManifest(root: string): LoaderVis
 function activeGlobalRoot(): string {
   const custom = process.env.OPENCODE_CONFIG_DIR?.trim();
   return custom ? path.resolve(custom) : path.join(os.homedir(), ".config", "opencode");
+}
+
+type ManagedPromptValue = { kind: "missing" | "unknown" } | { kind: "value"; value: string };
+
+function managedCompactionPrompt(file: string): ManagedPromptValue {
+  if (!isFile(file)) return { kind: "missing" };
+  try {
+    const errors: jsoncParse.ParseError[] = [];
+    const parsed = jsoncParse(fs.readFileSync(file, "utf8"), errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    });
+    if (errors.length > 0 || parsed == null || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { kind: "unknown" };
+    }
+    const agent = (parsed as Record<string, unknown>).agent;
+    if (agent == null || typeof agent !== "object" || Array.isArray(agent)) return { kind: "missing" };
+    const compaction = (agent as Record<string, unknown>).compaction;
+    if (compaction == null || typeof compaction !== "object" || Array.isArray(compaction)) return { kind: "missing" };
+    const prompt = (compaction as Record<string, unknown>).prompt;
+    if (prompt === undefined) return { kind: "missing" };
+    return typeof prompt === "string" ? { kind: "value", value: prompt } : { kind: "unknown" };
+  } catch {
+    return { kind: "unknown" };
+  }
+}
+
+function managedPromptDigest(value: string): NonNullable<ManagedPromptDrift["template"]> {
+  return {
+    markers: COMPACTION_PROMPT_MARKERS.filter(([, marker]) => value.includes(marker)).map(([id]) => id),
+    sha256: crypto.createHash("sha256").update(value, "utf8").digest("hex"),
+  };
+}
+
+export function inspectManagedPromptDrift(templateFile: string, activeFile: string): ManagedPromptDrift[] {
+  const templateValue = managedCompactionPrompt(templateFile);
+  const activeValue = managedCompactionPrompt(activeFile);
+  if (templateValue.kind !== "value") {
+    return [{
+      active: activeValue.kind === "value" ? managedPromptDigest(activeValue.value) : null,
+      field: "agent.compaction.prompt",
+      reason: "template-unreadable",
+      restartBoundary: "resolve-source-before-sync",
+      status: "unknown",
+      template: null,
+    }];
+  }
+  const template = managedPromptDigest(templateValue.value);
+  if (activeValue.kind === "missing") {
+    return [{
+      active: null,
+      field: "agent.compaction.prompt",
+      reason: "active-missing",
+      restartBoundary: "synchronize-active-copy-and-restart",
+      status: "missing",
+      template,
+    }];
+  }
+  if (activeValue.kind === "unknown") {
+    return [{
+      active: null,
+      field: "agent.compaction.prompt",
+      reason: "active-unreadable",
+      restartBoundary: "resolve-source-before-sync",
+      status: "unknown",
+      template,
+    }];
+  }
+  const active = managedPromptDigest(activeValue.value);
+  const same = template.sha256 === active.sha256 && template.markers.join("\0") === active.markers.join("\0");
+  return [{
+    active,
+    field: "agent.compaction.prompt",
+    reason: same ? "content-matches" : "content-differs",
+    restartBoundary: same ? "none" : "synchronize-active-copy-and-restart",
+    status: same ? "same" : "different",
+    template,
+  }];
 }
 
 function resolveRuntimeGlobalHelperFromInventory(
@@ -608,6 +704,10 @@ export function inspectRuntimeSources(root: string): RuntimeSourceReport {
   ];
   return {
     collisions: inventory.collisions,
+    managedPrompts: inspectManagedPromptDrift(
+      path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "global"), "opencode.json.template"),
+      path.join(globalRoot, "opencode.json"),
+    ),
     unattended: {
       canonicalWorkflow: inventory.canonicalWorkflow,
       collisionStatus: inventory.collisionStatus,
@@ -619,7 +719,7 @@ export function inspectRuntimeSources(root: string): RuntimeSourceReport {
       helperResolution: helperPaths.map((relative) => resolveRuntimeGlobalHelperFromInventory(inventory, relative)),
     },
     root: redactLocation(root),
-    schemaVersion: 1,
+    schemaVersion: 2,
     sources: inventory.sources,
     warnings: [
       "Source presence does not prove precedence or that every source was loaded by a running process.",

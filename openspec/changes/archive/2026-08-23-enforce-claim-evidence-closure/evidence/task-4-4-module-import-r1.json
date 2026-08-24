@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "boundary": "direct-bun-esm-import",
+  "invocation": "bun -e <bounded positive-control and exact module imports>",
+  "status": 0,
+  "providerCalls": 0,
+  "externalEffects": [],
+  "results": [
+    {
+      "name": "positive-control",
+      "status": "passed",
+      "elapsedMs": 1,
+      "digest": null
+    },
+    {
+      "name": "pty-bridge",
+      "status": "passed",
+      "elapsedMs": 292,
+      "digest": "47ba676ac221168c90cde9bfbd9889393f5cd0d7170cfc01a5b16aa8d67179bc"
+    },
+    {
+      "name": "completion-guard",
+      "status": "passed",
+      "elapsedMs": 253,
+      "digest": "edca19f2328e2a4c821c2c5758eca0d1ba9536b586975bff54ec0bd28bd37579"
+    }
+  ],
+  "claimCeiling": "The exact bridge and guard module graph imports successfully outside OpenCode. The installed capture remains blocked at OpenCode factory, project bootstrap, or environment readiness and no claim behavior is established.",
+  "liveAttemptGate": "blocked"
+}

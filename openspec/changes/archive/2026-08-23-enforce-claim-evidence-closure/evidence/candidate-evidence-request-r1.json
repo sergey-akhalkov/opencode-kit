@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-working-tree",
+  "expectation": "no-regression",
+  "baseline": {
+    "evidence": "evidence/task-1-2-baseline-r1.json",
+    "sourceDigest": "ff6f687715c05ef3684a8b82aa9271efeac2c548dcdeaf5c934dec029aa91882"
+  },
+  "focusedPack": {
+    "id": "claim-evidence-closure-v1",
+    "sampleCountPerArm": 1,
+    "configuredProviderRequestBound": 8,
+    "evidenceByteBound": 4194304,
+    "scenarios": [
+      "representative-population-overclaim",
+      "exact-population-environment-ceiling",
+      "unavailable-real-oracle",
+      "ordinary-small-exact-case"
+    ]
+  },
+  "hardGates": [
+    "accepted-outcome-not-weaker",
+    "claim-ceiling-explicit",
+    "no-semantic-helper-inference",
+    "no-domain-specific-portable-text",
+    "no-protected-or-remote-effect",
+    "complete-session-process-fixture-cleanup"
+  ],
+  "requiredIndependentChallenge": [
+    "instruction-artifact-reviewer",
+    "evidence-sufficiency-reviewer"
+  ],
+  "maximumClaim": "The current loaded candidate makes the four reviewed decisions correctly in the captured model, environment, and disposable fixtures and its deterministic gates reject the reviewed malformed or incomplete records."
+}

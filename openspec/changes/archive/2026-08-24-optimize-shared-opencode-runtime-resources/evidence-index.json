@@ -1,0 +1,730 @@
+{
+  "schemaVersion": 2,
+  "changeId": "optimize-shared-opencode-runtime-resources",
+  "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": {
+      "maxFiles": 99,
+      "maxBytes": 26214400,
+      "reason": "Existing immutable proof tree retained without deletion",
+      "cleanupRule": "Owner archives or reduces after product completion",
+      "validation": "inventory readback"
+    }
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "651681d50b0d6af4fb179ae34e8155b7a664b427ca5e7efc4ada19e1aa68217c",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "1af76a56dbbe5f5736e9cce6127d5d0b286b7a61b190a0d5bc4e09277de09864",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-2-1-contract-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "fde8496806a128fbca564f760965014b1e5546c7f46ca2b0ee93240db151317d",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-2-2-integration-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "a5adbd88d92a8112d958fbb24067cdb8f5cbd68eecfb1291baa7a38520138737",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-3-1-contract-r4/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "d122074587a2808901cbedee8f6c08c074e1940c3ecbd56177aa2fa8bb99f129",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-3-2-install-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "8cd33734f6154ed28c6bd5439d633cfcaa876002c58bf432404c668a9418fc22",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-4-1-resource-eval-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "33cb1b66cb51b57fc31de348f414f55bd9e3f2aac7e98a25b49809f08b96bd42",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "e0b24bdfe40617acd0bab1c4522c42f79fb9b3cd8c86dcf40f87abf38f93b0d7",
+      "result": "complete",
+      "candidateId": "optimize-shared-opencode-runtime-resources-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-5-1-corrected-private-r3/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence-task-1-1-baseline-r1/evaluation.json",
+          "bytes": 533,
+          "digest": "e55b86a59e093defeba6d928a31e6a4f298a5cdd6d45009e4122f4f702b5ed10"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-r1/raw.json",
+          "bytes": 53644,
+          "digest": "234ab4ec21e7b394008ee877b6800d0f347e708f5d11ede81f486f245b165943"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-replay-r1/evaluation.json",
+          "bytes": 639,
+          "digest": "251a2c9ea2ec14c18b0e46348e1d890f70f50368dd562b615539281ba6170be0"
+        },
+        {
+          "path": "evidence-task-2-1-contract-r1/evaluation.json",
+          "bytes": 464,
+          "digest": "abbc63927ad3b75221a375f80d3e532123992a8dc7f210b8c97a1d987a9118e4"
+        },
+        {
+          "path": "evidence-task-2-1-contract-r1/raw.json",
+          "bytes": 7866,
+          "digest": "a2b81b98f03cbea9b9e9ed34911e1b0cdf9c928de604d3d922f02f5bbbc10653"
+        },
+        {
+          "path": "evidence-task-2-1-contract-r2/evaluation.json",
+          "bytes": 501,
+          "digest": "8a92d04f9d367d382571fe951a071fc411cd76af9faff85896acc318ba8b42a1"
+        },
+        {
+          "path": "evidence-task-2-1-contract-r2/raw.json",
+          "bytes": 8179,
+          "digest": "01bed5b5c0dff59ed32f0b56469781bdf563af76384cac86900ae284e188b555"
+        },
+        {
+          "path": "evidence-task-2-1-contract-r3/evaluation.json",
+          "bytes": 501,
+          "digest": "8a92d04f9d367d382571fe951a071fc411cd76af9faff85896acc318ba8b42a1"
+        },
+        {
+          "path": "evidence-task-2-1-contract-r3/raw.json",
+          "bytes": 8179,
+          "digest": "2f82fe175928e8b23cc415107e979c1417e5844b47b748e9ab4ac8ea3f67b9d9"
+        },
+        {
+          "path": "evidence-task-2-1-contract-replay-r1/evaluation.json",
+          "bytes": 481,
+          "digest": "ffc10cc69d25877714b0d0b3799f77dee94dc9c489a275601dd612e80b903119"
+        },
+        {
+          "path": "evidence-task-2-1-contract-replay-r2/evaluation.json",
+          "bytes": 518,
+          "digest": "cff6796279649006bdd14a699ab13fc3c8fd763a4817cc77b448bfd5eec50843"
+        },
+        {
+          "path": "evidence-task-2-1-contract-replay-r3/evaluation.json",
+          "bytes": 518,
+          "digest": "cff6796279649006bdd14a699ab13fc3c8fd763a4817cc77b448bfd5eec50843"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r1/evaluation.json",
+          "bytes": 616,
+          "digest": "7e03c3ea973822ca9cfe0dfb7bcd90686d2467c7de0f852e8a04c8b97d5ac41d"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r1/raw.json",
+          "bytes": 2169,
+          "digest": "3ce77620c872d80e5c091ba0f57bdeea5288dc53969c03a15e83dc0db3230025"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r10/evaluation.json",
+          "bytes": 603,
+          "digest": "3aeb13cb970eea07989b286d95548374cadabb1298c916d39847c7a2213849e6"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r10/raw.json",
+          "bytes": 11714,
+          "digest": "9f059f88201b016b94ff1baa28474360576f42e424da289077cbb351d3146ee5"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r11/evaluation.json",
+          "bytes": 603,
+          "digest": "3aeb13cb970eea07989b286d95548374cadabb1298c916d39847c7a2213849e6"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r11/raw.json",
+          "bytes": 11710,
+          "digest": "94e47fbf2440c0c44ffd57e0b6a20d48de76f2c9ea344f6082b9fed0a1e94d18"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r2/evaluation.json",
+          "bytes": 613,
+          "digest": "dd1c4a0f0d9fff005cf6d65bdf09c98118140d29ec9db0fbc769d2eaa96380da"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r2/raw.json",
+          "bytes": 6452,
+          "digest": "33f6105c0c05fc3229dc160d0aad00668abd116b4c179333831acc8c9be586bd"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r3/evaluation.json",
+          "bytes": 613,
+          "digest": "dd1c4a0f0d9fff005cf6d65bdf09c98118140d29ec9db0fbc769d2eaa96380da"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r3/raw.json",
+          "bytes": 7413,
+          "digest": "a0b017f61b2e0207f33e232953c57d307486e9a2f697f146a17cd134981ef755"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r4/evaluation.json",
+          "bytes": 613,
+          "digest": "dd1c4a0f0d9fff005cf6d65bdf09c98118140d29ec9db0fbc769d2eaa96380da"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r4/raw.json",
+          "bytes": 7273,
+          "digest": "5953753bbd46b1fbb84efed78bbf6581d5d2150b59bc32e69f6aeba627678393"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r5/evaluation.json",
+          "bytes": 606,
+          "digest": "a3fde8885f45fc2ca993f30bb6d364a70eba50a63473f4c0879d64ba38b8b9e3"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r5/raw.json",
+          "bytes": 11832,
+          "digest": "cc17e2c4d0cb3dcf585900a6f3760cda311a2b8aaf5e2088d39075e953b76fb2"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r6/evaluation.json",
+          "bytes": 613,
+          "digest": "dd1c4a0f0d9fff005cf6d65bdf09c98118140d29ec9db0fbc769d2eaa96380da"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r6/raw.json",
+          "bytes": 7413,
+          "digest": "fd96eb37bec88fd32b22839faf884eb949a8dc795e52015e749f895197367b11"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r7/evaluation.json",
+          "bytes": 613,
+          "digest": "dd1c4a0f0d9fff005cf6d65bdf09c98118140d29ec9db0fbc769d2eaa96380da"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r7/raw.json",
+          "bytes": 7413,
+          "digest": "5bb1efa5ff47f5f4d6afbb4a298c8c93d3e595560a3cb6dd7775ecb865791277"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r8/evaluation.json",
+          "bytes": 613,
+          "digest": "dd1c4a0f0d9fff005cf6d65bdf09c98118140d29ec9db0fbc769d2eaa96380da"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r8/raw.json",
+          "bytes": 7413,
+          "digest": "d7d43c0bad3b70895d24245f69b7c684ef4418f93cc863855d48e7b2d9103375"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r9/evaluation.json",
+          "bytes": 613,
+          "digest": "dd1c4a0f0d9fff005cf6d65bdf09c98118140d29ec9db0fbc769d2eaa96380da"
+        },
+        {
+          "path": "evidence-task-2-2-integration-r9/raw.json",
+          "bytes": 7412,
+          "digest": "df271b9a07c1def77571b9ccff57565c1ddf7a396c381b374afde5fee23a7deb"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r1/evaluation.json",
+          "bytes": 633,
+          "digest": "aed31611f12d3bce22d0e08372dc0b6f1c6d14c19629a99610d0045ca9246840"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r10/evaluation.json",
+          "bytes": 620,
+          "digest": "575d95e3fcf5fa5727e6117531a5b6e49ed81335d285554d8d8ff661ac03aaea"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r11/evaluation.json",
+          "bytes": 620,
+          "digest": "575d95e3fcf5fa5727e6117531a5b6e49ed81335d285554d8d8ff661ac03aaea"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r2/evaluation.json",
+          "bytes": 630,
+          "digest": "4e0bc2535862ed6de7388e8ec1b5d5ffd6256513ac7bb5d3242b5ed5a4bdd79c"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r3/evaluation.json",
+          "bytes": 630,
+          "digest": "4e0bc2535862ed6de7388e8ec1b5d5ffd6256513ac7bb5d3242b5ed5a4bdd79c"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r4/evaluation.json",
+          "bytes": 630,
+          "digest": "4e0bc2535862ed6de7388e8ec1b5d5ffd6256513ac7bb5d3242b5ed5a4bdd79c"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r5/evaluation.json",
+          "bytes": 623,
+          "digest": "dc1e567c4344da5586c3ff9df228d165b1ec2ca3bbaa9583f908c0036ac985c0"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r6/evaluation.json",
+          "bytes": 630,
+          "digest": "4e0bc2535862ed6de7388e8ec1b5d5ffd6256513ac7bb5d3242b5ed5a4bdd79c"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r7/evaluation.json",
+          "bytes": 630,
+          "digest": "4e0bc2535862ed6de7388e8ec1b5d5ffd6256513ac7bb5d3242b5ed5a4bdd79c"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r8/evaluation.json",
+          "bytes": 630,
+          "digest": "4e0bc2535862ed6de7388e8ec1b5d5ffd6256513ac7bb5d3242b5ed5a4bdd79c"
+        },
+        {
+          "path": "evidence-task-2-2-integration-replay-r9/evaluation.json",
+          "bytes": 630,
+          "digest": "4e0bc2535862ed6de7388e8ec1b5d5ffd6256513ac7bb5d3242b5ed5a4bdd79c"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r1/evaluation.json",
+          "bytes": 343,
+          "digest": "8f374d47c7a65d4c1c0c13e75e7e51fd4046d5b8329987c31205efd6b73480e7"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r1/raw.json",
+          "bytes": 4103,
+          "digest": "f0d1e51d244e6c04f6378d6d6bf2109f39823eabe49a7cc55d567fc3a15b4de0"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r2/evaluation.json",
+          "bytes": 339,
+          "digest": "bd5061ea83548ab9a40ea3b9f165a25d975526ffb14967fdfd6844bccdb64eb8"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r2/raw.json",
+          "bytes": 4376,
+          "digest": "9486a54344c26085a51510300fb78b33b260c8617e5d136a017616311c60580d"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r3/evaluation.json",
+          "bytes": 343,
+          "digest": "8f374d47c7a65d4c1c0c13e75e7e51fd4046d5b8329987c31205efd6b73480e7"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r3/raw.json",
+          "bytes": 2091,
+          "digest": "370e315207ad7966bfb9b9f92f7c2e5795558aff220650972eb716352d995405"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r4/evaluation.json",
+          "bytes": 339,
+          "digest": "bd5061ea83548ab9a40ea3b9f165a25d975526ffb14967fdfd6844bccdb64eb8"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-r4/raw.json",
+          "bytes": 4401,
+          "digest": "9dc968d89f7d4af910d2e110f5a20eb468957054c1624ff7afd18bfbca40732f"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-replay-r1/evaluation.json",
+          "bytes": 351,
+          "digest": "b14dd5867b091345c8ac6e38dcceb19eb1dd58f42bd3c6a8a5635560299293e4"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-replay-r2/evaluation.json",
+          "bytes": 347,
+          "digest": "f3a638cb72ac93634bc28019072237ed8e759091f05ad0550633901e5ef666ba"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-replay-r3/evaluation.json",
+          "bytes": 351,
+          "digest": "b14dd5867b091345c8ac6e38dcceb19eb1dd58f42bd3c6a8a5635560299293e4"
+        },
+        {
+          "path": "evidence-task-2-2-startup-diagnostic-replay-r4/evaluation.json",
+          "bytes": 347,
+          "digest": "f3a638cb72ac93634bc28019072237ed8e759091f05ad0550633901e5ef666ba"
+        },
+        {
+          "path": "evidence-task-3-1-contract-r4/evaluation.json",
+          "bytes": 501,
+          "digest": "8a92d04f9d367d382571fe951a071fc411cd76af9faff85896acc318ba8b42a1"
+        },
+        {
+          "path": "evidence-task-3-1-contract-r4/raw.json",
+          "bytes": 8181,
+          "digest": "e3be0b7763cf5886d88606c94b49f1d83e29a3e325133e1410b59ab0bb73c864"
+        },
+        {
+          "path": "evidence-task-3-1-contract-r5/evaluation.json",
+          "bytes": 501,
+          "digest": "8a92d04f9d367d382571fe951a071fc411cd76af9faff85896acc318ba8b42a1"
+        },
+        {
+          "path": "evidence-task-3-1-contract-r5/raw.json",
+          "bytes": 8179,
+          "digest": "3d38b43fecb00b48ab6eba87346e585d0f9f4795ce08cdbcc87ea8393d53cedf"
+        },
+        {
+          "path": "evidence-task-3-1-contract-replay-r4/evaluation.json",
+          "bytes": 518,
+          "digest": "cff6796279649006bdd14a699ab13fc3c8fd763a4817cc77b448bfd5eec50843"
+        },
+        {
+          "path": "evidence-task-3-1-contract-replay-r5/evaluation.json",
+          "bytes": 518,
+          "digest": "cff6796279649006bdd14a699ab13fc3c8fd763a4817cc77b448bfd5eec50843"
+        },
+        {
+          "path": "evidence-task-3-1-handoff-r1/evaluation.json",
+          "bytes": 321,
+          "digest": "e269386cd3d9ea7fb7cb1e3f1ad285226c059742a7039de54c77ce7a4cfd4b3a"
+        },
+        {
+          "path": "evidence-task-3-1-handoff-r1/raw.json",
+          "bytes": 617,
+          "digest": "0e6a2ad6ba9ae7e48c85445e0f1314faa7cd7005013fd66893ed418c75b7fa7a"
+        },
+        {
+          "path": "evidence-task-3-1-handoff-r2/evaluation.json",
+          "bytes": 321,
+          "digest": "e269386cd3d9ea7fb7cb1e3f1ad285226c059742a7039de54c77ce7a4cfd4b3a"
+        },
+        {
+          "path": "evidence-task-3-1-handoff-r2/raw.json",
+          "bytes": 617,
+          "digest": "3d02b4ca90d43c543cba7a1305f51c847f19acc795f60b4cfadb4018bbc66a3b"
+        },
+        {
+          "path": "evidence-task-3-1-handoff-replay-r1/evaluation.json",
+          "bytes": 338,
+          "digest": "ae8bff705e19499a0ce0e1cdc74ec47409e19f0ac4f61875e99f4003c4db3d3f"
+        },
+        {
+          "path": "evidence-task-3-1-handoff-replay-r2/evaluation.json",
+          "bytes": 338,
+          "digest": "ae8bff705e19499a0ce0e1cdc74ec47409e19f0ac4f61875e99f4003c4db3d3f"
+        },
+        {
+          "path": "evidence-task-3-2-install-r1/evaluation.json",
+          "bytes": 375,
+          "digest": "402a04a9484231dea614fa41625c79708579bfa92faf1e3f78d03c299cc2203f"
+        },
+        {
+          "path": "evidence-task-3-2-install-r1/raw.json",
+          "bytes": 39506,
+          "digest": "0ea1ad47c04f9c8f84dbaaf747648a53c6c24e99b88cc53d60888c03c2ca9b55"
+        },
+        {
+          "path": "evidence-task-4-1-resource-eval-r1/evaluation.json",
+          "bytes": 238,
+          "digest": "dca8927a5824bc7e59fb52c76389acc89d91da70aee06789d1e11a44aa454cbe"
+        },
+        {
+          "path": "evidence-task-4-1-resource-eval-r1/raw.json",
+          "bytes": 483,
+          "digest": "3008c859e01bf12cb0fb9b6ffd638f61e2885d532dd7f0650b5332cc28116b43"
+        },
+        {
+          "path": "evidence-task-4-1-resource-r3/evaluation.json",
+          "bytes": 194,
+          "digest": "4917e70c1fc8a40db9aa6d5d3a000c04ae90c830aea9a7c3738980e5ee6796dd"
+        },
+        {
+          "path": "evidence-task-4-1-resource-r3/raw.json",
+          "bytes": 396,
+          "digest": "1a76df0c23344fd9e7f5ed48d5479fe3b212a622144e9994f400cb9881a12bec"
+        },
+        {
+          "path": "evidence-task-4-1-resource-r4/evaluation.json",
+          "bytes": 193,
+          "digest": "9d4cf68e50274c8ad7adc3726508aef43fb7e84bb764f7be7ddac02074416300"
+        },
+        {
+          "path": "evidence-task-4-1-resource-r4/raw.json",
+          "bytes": 436,
+          "digest": "f64f2c2f991ceca1a86d25eb8c2611a52f187f4f3f0e6df04a3df9764ac2d275"
+        },
+        {
+          "path": "evidence-task-4-2-degradation-r1/evaluation.json",
+          "bytes": 276,
+          "digest": "5c4f38efa017e66a4ad4b3447bb66df85467f51ccd60d851a345656f63d1552b"
+        },
+        {
+          "path": "evidence-task-4-2-degradation-r1/raw.json",
+          "bytes": 295,
+          "digest": "7dae50e52bca1f76f3b7d0a88437899855d1e35b7e7f996c8ab53e8230fd81db"
+        },
+        {
+          "path": "evidence-task-4-2-degradation-r2/evaluation.json",
+          "bytes": 274,
+          "digest": "56912e03e6bb017acfac20633de54ececec6bbb9aa58565c5be625aeab8efe18"
+        },
+        {
+          "path": "evidence-task-4-2-degradation-r2/raw.json",
+          "bytes": 340,
+          "digest": "cc68d14d6a2703ac331624665e3fb76e572e2bcea9dc296b0534dd3fe6e85171"
+        },
+        {
+          "path": "evidence-task-5-1-corrected-private-r3/evaluation.json",
+          "bytes": 304,
+          "digest": "59b8f38906f9c2b1dbba8fc1f089e57373948570fe521039d68f753e010d88f0"
+        },
+        {
+          "path": "evidence-task-5-1-corrected-private-r3/raw.json",
+          "bytes": 606,
+          "digest": "6c7c5d9b828fd285848e36a1affd6d5813040ed985a0079da358e3bcd9d531f3"
+        },
+        {
+          "path": "evidence-task-5-1-identity-r3/evaluation.json",
+          "bytes": 362,
+          "digest": "4cb623bd348f553cd45db7edd381561a0b7f7bc52b206c5897ff20216a75a9e8"
+        },
+        {
+          "path": "evidence-task-5-1-identity-r3/raw.json",
+          "bytes": 667,
+          "digest": "65867c63bba7de0ce5bdb5dbf1aca401f5e461ffcb569c4455d70bd1bd4bb1cf"
+        },
+        {
+          "path": "evidence-task-5-1-identity-replay-r3/evaluation.json",
+          "bytes": 379,
+          "digest": "ad15a79f0637ac452961ef282a80c9d8c234dd31a7669e34b8ba45caf4db671f"
+        },
+        {
+          "path": "evidence-task-5-2-contract-replay-r1/evaluation.json",
+          "bytes": 518,
+          "digest": "cff6796279649006bdd14a699ab13fc3c8fd763a4817cc77b448bfd5eec50843"
+        },
+        {
+          "path": "evidence-task-5-2-identity-replay-r1/evaluation.json",
+          "bytes": 379,
+          "digest": "ad15a79f0637ac452961ef282a80c9d8c234dd31a7669e34b8ba45caf4db671f"
+        },
+        {
+          "path": "evidence-task-5-2-integration-replay-r1/evaluation.json",
+          "bytes": 620,
+          "digest": "575d95e3fcf5fa5727e6117531a5b6e49ed81335d285554d8d8ff661ac03aaea"
+        },
+        {
+          "path": "evidence-task-5-2-resource-replay-r1/evaluation.json",
+          "bytes": 238,
+          "digest": "dca8927a5824bc7e59fb52c76389acc89d91da70aee06789d1e11a44aa454cbe"
+        },
+        {
+          "path": "evidence-task-5-2-resource-replay-r1/raw.json",
+          "bytes": 483,
+          "digest": "3008c859e01bf12cb0fb9b6ffd638f61e2885d532dd7f0650b5332cc28116b43"
+        }
+      ]
+    }
+  ]
+}

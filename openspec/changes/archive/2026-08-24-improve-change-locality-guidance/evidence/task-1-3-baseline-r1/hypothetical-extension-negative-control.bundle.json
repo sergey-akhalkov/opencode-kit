@@ -1,0 +1,254 @@
+{
+  "candidate": {
+    "id": "improve-change-locality-guidance-planning-r1",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "a42d03a44d63bb2140af341382c7c9a4a6d3de676c36df6948d6f32eeef08359",
+      "global/agents/implementation-worker.md": "9361286750fba498cdeb049e4b3581d63ba3dda04afe417bc30041e23ae649fe",
+      "global/agents/instruction-artifact-reviewer.md": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468",
+      "global/agents/sdet-quality-engineer.md": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc",
+      "global/skills/instruction-artifact-tuning/SKILL.md": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35",
+      "README.md": "0ee2549bd7dfe96d20fe7cb5e0738da6b93c846b06699df9e371bec33323cedf",
+      "package.json": "84faa3509732a059580b75d2c5150943e7184b57d8060136d84b29eb780c3236",
+      "tools/proofs/agent-tooling-ergonomics.ts": "40628341a5853f5a72df91d58f704eeec8a5fe9ff3fdd662912ea36932179568"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fcfb9d60bffe6jsyJd3U8s4cTt",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "tooling-ergonomics-baseline-hypothetical-extension-negative-control",
+      "src/greet.js should print `Hello`. Someone might want plugins someday. Do not add a plugin system, factory, or owner launch. `node src/greet.js` prints `Hello`."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787516318498,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_0304670bc0011Eoj2OQpDnXPO5\",\"messageID\":\"msg_030462eec001lyZMMYLuKALX3G\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787516320234,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046719c001IshXChdFVAU7jz\",\"messageID\":\"msg_030462eec001lyZMMYLuKALX3G\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"text\",\"text\":\"I’ll inspect the small project and make only the direct change needed for `node src/greet.js` to print `Hello`, then run that exact command.\",\"time\":{\"start\":1787516318108,\"end\":1787516319282},\"metadata\":{\"openai\":{\"itemId\":\"msg_071d2a9540cdde44016a8b559e15ec87d296e971e18cff9b8f\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787516320643,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_9bR4pTneBcZg4t83LSiM22pD\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"*\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\greet.js\\n<proof-root>\\\\project\\\\package.json\\n<proof-root>\\\\project\\\\.gitignore\",\"metadata\":{\"count\":3,\"truncated\":false},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11\\\\project\",\"time\":{\"start\":1787516319509,\"end\":1787516320529}},\"metadata\":{\"openai\":{\"itemId\":\"fc_071d2a9540cdde44016a8b559fe51887d29e870d20bf3bf376\"}},\"id\":\"prt_030467688001IkPfuUIhK02KW0\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"messageID\":\"msg_030462eec001lyZMMYLuKALX3G\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787516321331,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_1brdDfJKk5TBxLsEhHlCYiB2\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"src/**\"},\"output\":\"<proof-root>\\\\project\\\\src\\\\greet.js\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11\\\\project\",\"time\":{\"start\":1787516319692,\"end\":1787516320676}},\"metadata\":{\"openai\":{\"itemId\":\"fc_071d2a9540cdde44016a8b559fe52887d29afe2575790c6f25\"}},\"id\":\"prt_030467745001tEoh4PIUEr38Rq\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"messageID\":\"msg_030462eec001lyZMMYLuKALX3G\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787516321332,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_CL6Bcmz0R2xLb23N3SgLB1MI\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"package.json\"},\"output\":\"<proof-root>\\\\project\\\\package.json\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11\\\\project\",\"time\":{\"start\":1787516319923,\"end\":1787516320767}},\"metadata\":{\"openai\":{\"itemId\":\"fc_071d2a9540cdde44016a8b559fe53487d29b54749aa251effb\"}},\"id\":\"prt_03046780c001HYYEy2iwQrCAQz\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"messageID\":\"msg_030462eec001lyZMMYLuKALX3G\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787516321332,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_030467c2e001NDKYjofvztUgwo\",\"reason\":\"tool-calls\",\"messageID\":\"msg_030462eec001lyZMMYLuKALX3G\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-finish\",\"tokens\":{\"total\":14500,\"input\":12835,\"output\":102,\"reasoning\":27,\"cache\":{\"write\":0,\"read\":1536}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787516326879,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_0304693410018X520iF7D6e3aW\",\"messageID\":\"msg_030467c6f001TeNXQ35klWq1WZ\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787516327930,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_Cn0GO5UyGgDYQKM2WivmQZsS\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\package.json\"},\"output\":\"<path><proof-root>\\\\project\\\\package.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"name\\\": \\\"clc-hypothetical-extension-negative-control\\\",\\n3:   \\\"private\\\": true,\\n4:   \\\"type\\\": \\\"module\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"name\\\": \\\"clc-hypothetical-extension-negative-control\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\package.json\",\"text\":\"{\\n  \\\"name\\\": \\\"clc-hypothetical-extension-negative-control\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11\\\\project\\\\package.json\",\"time\":{\"start\":1787516326858,\"end\":1787516327772}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b62cac8cfe1dfe016a8b55a7a11487d2b9b73a5714526928\"}},\"id\":\"prt_0304693aa0017RaAfqiw3qP2IA\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"messageID\":\"msg_030467c6f001TeNXQ35klWq1WZ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787516327930,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_fGtxjp3FI3eMuQEqvZZTagDl\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\greet.js\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\greet.js</path>\\n<type>file</type>\\n<content>\\n1: console.log('Hi');\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"console.log('Hi');\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\greet.js\",\"text\":\"console.log('Hi');\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11\\\\project\\\\src\\\\greet.js\",\"time\":{\"start\":1787516326816,\"end\":1787516327786}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b62cac8cfe1dfe016a8b55a7a10487d2a052884224616fb7\"}},\"id\":\"prt_030469364001Y8CExIYhdz1eOU\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"messageID\":\"msg_030467c6f001TeNXQ35klWq1WZ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787516327931,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_0304697710010ekaAVfvnG28sy\",\"reason\":\"tool-calls\",\"messageID\":\"msg_030467c6f001TeNXQ35klWq1WZ\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-finish\",\"tokens\":{\"total\":14844,\"input\":895,\"output\":125,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787516330706,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046a2b00010YunmW0bfudMBi\",\"messageID\":\"msg_0304697dd001xk4R2MUZHSg9zG\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787516331657,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046a3db001P3SiSU2mOljPIu\",\"messageID\":\"msg_0304697dd001xk4R2MUZHSg9zG\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"text\",\"text\":\"`src/greet.js` currently prints `Hi`; I’m replacing that literal only, without introducing extension points or extra structure.\",\"time\":{\"start\":1787516330971,\"end\":1787516331626},\"metadata\":{\"openai\":{\"itemId\":\"msg_0edb1c8d17de154a016a8b55abf91087d2aee50377453326ad\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787516333284,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_Dy24rqDo4PgtmZW1cvOwPdUN\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\project\\\\src\\\\greet.js\\n@@\\n-console.log('Hi');\\n+console.log('Hello');\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM Users/noilw/AppData/Local/Temp/agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11/project/src/greet.js\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\project\\\\src\\\\greet.js\\n===================================================================\\n--- <proof-root>\\\\project\\\\src\\\\greet.js\\n+++ <proof-root>\\\\project\\\\src\\\\greet.js\\n@@ -1,1 +1,1 @@\\n-console.log('Hi');\\n+console.log('Hello');\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\greet.js\",\"relativePath\":\"Users/noilw/AppData/Local/Temp/agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11/project/src/greet.js\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\project\\\\src\\\\greet.js\\n===================================================================\\n--- <proof-root>\\\\project\\\\src\\\\greet.js\\n+++ <proof-root>\\\\project\\\\src\\\\greet.js\\n@@ -1,1 +1,1 @@\\n-console.log('Hi');\\n+console.log('Hello');\\n\",\"additions\":1,\"deletions\":1}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM Users/noilw/AppData/Local/Temp/agent-tooling-ergonomics-hypothetical-extension-negative-control-KARe11/project/src/greet.js\",\"time\":{\"start\":1787516333131,\"end\":1787516333209}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0edb1c8d17de154a016a8b55aca1dc87d2823a36c164e28e0a\"}},\"id\":\"prt_03046a676001TMmkXLyyaiXpZx\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"messageID\":\"msg_0304697dd001xk4R2MUZHSg9zG\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787516333284,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046aca5001x0SDmcU3zIlcu1\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0304697dd001xk4R2MUZHSg9zG\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-finish\",\"tokens\":{\"total\":15174,\"input\":1218,\"output\":124,\"reasoning\":8,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787516335220,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046b463001d32d7MzZHkSX4r\",\"messageID\":\"msg_03046accd00153OzDabFaV56Dk\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787516338890,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_LO3XiESx90CEg6DXwKhdnjpq\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node src/greet.js\",\"workdir\":\"<proof-root>\\\\project\",\"timeout\":120000},\"output\":\"Hello\\n\",\"metadata\":{\"output\":\"Hello\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node src/greet.js\",\"time\":{\"start\":1787516338422,\"end\":1787516338584}},\"metadata\":{\"openai\":{\"itemId\":\"fc_06267c298dc5c5b2016a8b55b10a7087d2970c81e3b96cf51c\"}},\"id\":\"prt_03046b7f1001Cw4869HdHRjCto\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"messageID\":\"msg_03046accd00153OzDabFaV56Dk\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787516338891,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046c1e7001Znz1UKtvcfcNkV\",\"reason\":\"tool-calls\",\"messageID\":\"msg_03046accd00153OzDabFaV56Dk\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-finish\",\"tokens\":{\"total\":15313,\"input\":379,\"output\":68,\"reasoning\":18,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787516340756,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046ca02001jsEjvuOli4zB9r\",\"messageID\":\"msg_03046c229001tPEPG0S5AWd73C\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787516342213,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046cc19001xvsZRX29OGyKb9\",\"messageID\":\"msg_03046c229001tPEPG0S5AWd73C\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"text\",\"text\":\"Updated `src/greet.js` to print `Hello`.\\n\\nVerified:\\n\\n```text\\n$ node src/greet.js\\nHello\\n```\\n\\nOutcome: working. No plugin system, factory, or owner launch added.\",\"time\":{\"start\":1787516341273,\"end\":1787516342205},\"metadata\":{\"openai\":{\"itemId\":\"msg_086b9ba762fd9701016a8b55b634dc87d2bd68b28e3a15b073\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787516342297,\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"part\":{\"id\":\"prt_03046cff300195UKKwnO2VEiaX\",\"reason\":\"stop\",\"messageID\":\"msg_03046c229001tPEPG0S5AWd73C\",\"sessionID\":\"ses_fcfb9d60bffe6jsyJd3U8s4cTt\",\"type\":\"step-finish\",\"tokens\":{\"total\":15398,\"input\":478,\"output\":49,\"reasoning\":23,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: node only; shell metacharacters denied last",
+      "edit: allow inside disposable project",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: deny",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect the small project and make only the direct change needed for `node src/greet.js` to print `Hello`, then run that exact command.`src/greet.js` currently prints `Hi`; I’m replacing that literal only, without introducing extension points or extra structure.Updated `src/greet.js` to print `Hello`.\n\nVerified:\n\n```text\n$ node src/greet.js\nHello\n```\n\nOutcome: working. No plugin system, factory, or owner launch added.",
+    "costs": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 46110,
+    "eventCount": 20,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_fcfb9d60bffe6jsyJd3U8s4cTt"
+    ],
+    "tokens": [
+      {
+        "total": 14500,
+        "input": 12835,
+        "output": 102,
+        "reasoning": 27,
+        "cache": {
+          "write": 0,
+          "read": 1536
+        }
+      },
+      {
+        "total": 14844,
+        "input": 895,
+        "output": 125,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 13824
+        }
+      },
+      {
+        "total": 15174,
+        "input": 1218,
+        "output": 124,
+        "reasoning": 8,
+        "cache": {
+          "write": 0,
+          "read": 13824
+        }
+      },
+      {
+        "total": 15313,
+        "input": 379,
+        "output": 68,
+        "reasoning": 18,
+        "cache": {
+          "write": 0,
+          "read": 14848
+        }
+      },
+      {
+        "total": 15398,
+        "input": 478,
+        "output": 49,
+        "reasoning": 23,
+        "cache": {
+          "write": 0,
+          "read": 14848
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "src/**"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "package.json"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\package.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\greet.js"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "patchText": "*** Begin Patch\n*** Update File: <proof-root>\\project\\src\\greet.js\n@@\n-console.log('Hi');\n+console.log('Hello');\n*** End Patch"
+        },
+        "name": "apply_patch",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node src/greet.js",
+          "workdir": "<proof-root>\\project",
+          "timeout": 120000
+        },
+        "name": "bash",
+        "status": "completed"
+      }
+    ]
+  },
+  "filesAfterOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 99,
+      "content": "{\n  \"name\": \"clc-hypothetical-extension-negative-control\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "db5dfad15aecfd2dba7f92b0d0c3e959e832d2d6853c2f4f436f8eee522bde3b"
+    },
+    {
+      "bytes": 22,
+      "content": "console.log('Hello');\n",
+      "path": "src/greet.js",
+      "sha256": "ca28d4e130339be96924c338e727c848a2e52d901837a76abb1e921da860e679"
+    }
+  ],
+  "filesBeforeOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 99,
+      "content": "{\n  \"name\": \"clc-hypothetical-extension-negative-control\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "db5dfad15aecfd2dba7f92b0d0c3e959e832d2d6853c2f4f436f8eee522bde3b"
+    },
+    {
+      "bytes": 22,
+      "content": "console.log('Hello');\n",
+      "path": "src/greet.js",
+      "sha256": "ca28d4e130339be96924c338e727c848a2e52d901837a76abb1e921da860e679"
+    }
+  ],
+  "input": {
+    "message": "src/greet.js should print `Hello`. Someone might want plugins someday. Do not add a plugin system, factory, or owner launch. `node src/greet.js` prints `Hello`.",
+    "promptSha256": "4ad1cca7f2a67f88a45b00a30eb58844269673ec4ce28ae5954e75ea68b2c711",
+    "scenario": "hypothetical-extension-negative-control"
+  },
+  "oracle": {
+    "facts": {
+      "noSpeculativeSurface": true,
+      "hello": true
+    },
+    "pass": true,
+    "postCommands": [
+      {
+        "argv": [
+          "node",
+          "src/greet.js"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "Hello\n"
+      }
+    ]
+  },
+  "schemaVersion": 1
+}

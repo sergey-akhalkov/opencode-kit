@@ -8,10 +8,12 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { SessionCompletionController } from "../../global/extensions/session-completion-guard/controller.ts";
 import { hashRef } from "../../global/plugin/session-delivery-context/redaction.ts";
-import { proofClient, requestData } from "./lib/opencode-proof-client.ts";
+import { isolatedProofServerEnvironment, probeProofServer, proofClient, proofErrorFacts, PROOF_SERVER_CONFIG_LOAD_MS, PROOF_SERVER_PLUGIN_READY_MS, PROOF_SERVER_READINESS_MS, proofServerStartupFacts, requestData, seedProofConfigDependencies } from "./lib/opencode-proof-client.ts";
+import { removeProofFixture, stopProofProcessTree } from "./lib/proof-process-cleanup.ts";
 
-type Scenario = "retention" | "retention-preflight" | "retention-recovery" | "retry";
-type Options = { candidateId: string; evidenceRoot: string; help: boolean; scenario: Scenario };
+type Scenario = "claims" | "retention" | "retention-preflight" | "retention-recovery" | "retry";
+type Mode = "capture" | "evaluate";
+type Options = { candidateId: string; evidenceRoot: string; help: boolean; mode: Mode; scenario: Scenario };
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const runnerPath = fileURLToPath(import.meta.url);
 
@@ -25,9 +27,10 @@ function usage(): string {
   return [
     "Usage:",
     "  bun tools/proofs/session-completion-guard-restart.ts --help",
-    "  bun tools/proofs/session-completion-guard-restart.ts --candidate-id <id> --evidence-root <absolute-new-path> [--scenario retry|retention-preflight|retention-recovery|retention]",
+    "  bun tools/proofs/session-completion-guard-restart.ts --mode capture|evaluate --candidate-id <id> --evidence-root <absolute-path> [--scenario claims|retry|retention-preflight|retention-recovery|retention]",
     "",
     "Scenarios:",
+    "  claims      Prove installed claim continuation, exact stop, truncation, and ordinary idle behavior.",
     "  retry       Prove persisted bounded retry resumes in the same child (default).",
     "  retention-preflight   Capture canonical idle status for realistic interrupted child seeds only.",
     "  retention-recovery    Capture one loaded stale rotation and stop before repeat restart.",
@@ -36,9 +39,10 @@ function usage(): string {
 }
 
 function options(args: string[]): Options {
-  if (args[0] === "--help" || args[0] === "-h") return { candidateId: "help", evidenceRoot: "", help: true, scenario: "retry" };
+  if (args[0] === "--help" || args[0] === "-h") return { candidateId: "help", evidenceRoot: "", help: true, mode: "capture", scenario: "retry" };
   let candidateId = "";
   let evidenceRoot = "";
+  let mode: Mode = "capture";
   let scenario: Scenario = "retry";
   for (let index = 0; index < args.length; index++) {
     if (args[index] === "--candidate-id") {
@@ -49,14 +53,19 @@ function options(args: string[]): Options {
       index++;
     } else if (args[index] === "--scenario") {
       const value = required(args, index, args[index]);
-      if (value !== "retention" && value !== "retention-preflight" && value !== "retention-recovery" && value !== "retry") throw new Error("Scenario must be retry, retention-preflight, retention-recovery, or retention");
+      if (value !== "claims" && value !== "retention" && value !== "retention-preflight" && value !== "retention-recovery" && value !== "retry") throw new Error("Scenario must be claims, retry, retention-preflight, retention-recovery, or retention");
       scenario = value;
+      index++;
+    } else if (args[index] === "--mode") {
+      const value = required(args, index, args[index]);
+      if (value !== "capture" && value !== "evaluate") throw new Error("Mode must be capture or evaluate");
+      mode = value;
       index++;
     } else throw new Error(`Unknown option: ${args[index]}`);
   }
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(candidateId)) throw new Error("Invalid candidate id");
   if (!path.isAbsolute(evidenceRoot)) throw new Error("Evidence root must be absolute");
-  return { candidateId, evidenceRoot: path.resolve(evidenceRoot), help: false, scenario };
+  return { candidateId, evidenceRoot: path.resolve(evidenceRoot), help: false, mode, scenario };
 }
 
 function record(value: unknown): Record<string, unknown> | null {
@@ -130,9 +139,9 @@ function streamingCompletion(text: string): Response {
   });
 }
 
-function simulator() {
+function simulator(scenario: Scenario = "retry") {
   let arbiterCalls = 0;
-  let arbiterOutage = true;
+  let arbiterOutage = scenario === "retry";
   let primaryCalls = 0;
   const requestKinds: string[] = [];
   const server = Bun.serve({
@@ -158,19 +167,42 @@ function simulator() {
       requestKinds.push(`arbiter-${arbiterCalls}`);
       if (arbiterOutage) return Response.json({ error: { message: "temporary proof outage", type: "server_error" } }, { status: 503 });
       const audit = JSON.parse((auditMatch ?? retryMatch)![1]) as Record<string, unknown>;
+      const claimEvidence = record(record(audit.completionEvidence)?.claimEvidence);
+      const claims = Array.isArray(claimEvidence?.claims) ? claimEvidence.claims.map(record).filter(Boolean) : [];
+      const claimMatrix = claims.map((claim) => ({
+        claimId: claim?.claimId,
+        closureState: claim?.closureState,
+        evidenceRefs: claim?.evidenceRefs,
+        maximumSupportedClaim: claim?.maximumSupportedClaim,
+        outcomeRef: claim?.outcomeRef,
+      }));
+      const claimContinuation = scenario === "claims" && (
+        claimEvidence?.complete !== true || claims.some((claim) => claim?.closureState !== "supported")
+      );
       const verdict = JSON.stringify({
         schemaVersion: 1,
         auditID: audit.auditID,
+        claimMatrix,
         rootSessionRef: audit.rootSessionRef,
         inspectedRevision: audit.inspectedRevision,
-        verdict: "allow_stop",
+        verdict: claimContinuation ? "continue" : "allow_stop",
         confidence: "high",
         goalSummary: "Disposable restart proof complete",
-        requirementMatrix: [],
-        unresolved: [],
+        requirementMatrix: claimContinuation
+          ? [{ evidenceRefs: [], requirementRef: "claim-scope", status: "unresolved" }]
+          : [],
+        unresolved: claimContinuation
+          ? [{
+              evidenceGap: "Supplied claim closure is incomplete.",
+              nextAction: "Complete or honestly narrow the structured claim closure.",
+              nextEvidence: "Current supported claim closure.",
+              requirementRef: "claim-scope",
+              stopCondition: "Claim closure supports the accepted scope.",
+            }]
+          : [],
         ownerBoundary: null,
         questionAnswers: null,
-        evidenceGaps: [],
+        evidenceGaps: claimContinuation ? ["claim-closure-incomplete"] : [],
         evidenceRefs: [],
         strategyAssessment: { fingerprint: "restart-proof", prohibitedStrategies: [], repeated: false, requiredRetryEvidence: [] },
       });
@@ -222,14 +254,150 @@ async function offlineUnlockPreflight(): Promise<void> {
   }
 }
 
+function readPluginStartupTrace(dataDir: string): Array<{ hook?: string; phase: string; plugin: string }> {
+  const traceFile = path.join(dataDir, "plugin-startup.jsonl");
+  if (!fs.existsSync(traceFile)) return [];
+  return fs.readFileSync(traceFile, "utf8").split(/\r?\n/).filter(Boolean).slice(0, 128).flatMap((line) => {
+    try {
+      const row = JSON.parse(line) as Record<string, unknown>;
+      if (typeof row.plugin !== "string" || typeof row.phase !== "string") return [];
+      return [{
+        ...(typeof row.hook === "string" ? { hook: row.hook } : {}),
+        phase: row.phase,
+        plugin: row.plugin,
+      }];
+    } catch {
+      return [];
+    }
+  });
+}
+
+function writeTracedPlugin(configDir: string, dataDir: string, name: string, target: string): string {
+  const pluginsDir = path.join(configDir, "proof-plugins");
+  fs.mkdirSync(pluginsDir, { recursive: true });
+  const destination = path.join(pluginsDir, `${name}.ts`);
+  const traceFile = path.join(dataDir, "plugin-startup.jsonl");
+  const source = [
+    'import fs from "node:fs";',
+    `import plugin from ${JSON.stringify(target)};`,
+    `const pluginName = ${JSON.stringify(name)};`,
+    `const traceFile = ${JSON.stringify(traceFile)};`,
+    "const mark = (phase, hook) => fs.appendFileSync(traceFile, `${JSON.stringify({ plugin: pluginName, phase, ...(hook == null ? {} : { hook }) })}\\n`, 'utf8');",
+    "export default {",
+    "  id: plugin.id,",
+    "  server: async (input, options) => {",
+    "    mark('factory-enter');",
+    "    try {",
+    "      const hooks = await plugin.server(input, options);",
+    "      mark('factory-exit');",
+    "      const tracedHooks = new Set(['config', 'dispose']);",
+    "      return Object.fromEntries(Object.entries(hooks).map(([hook, value]) => [hook, typeof value !== 'function' || !tracedHooks.has(hook) ? value : async (...args) => {",
+    "        mark('hook-enter', hook);",
+    "        try {",
+    "          const result = await value.apply(hooks, args);",
+    "          mark('hook-exit', hook);",
+    "          return result;",
+    "        } catch (error) {",
+    "          mark('hook-error', hook);",
+    "          throw error;",
+    "        }",
+    "      }]));",
+    "    } catch (error) {",
+    "      mark('factory-error');",
+    "      throw error;",
+    "    }",
+    "  },",
+    "};",
+    "",
+  ].join("\n");
+  fs.writeFileSync(destination, source, "utf8");
+  return pathToFileURL(destination).href;
+}
+
+function warmupIsolatedPluginResolver(configDir: string, dataDir: string, project: string): { elapsedMs: number; isolatedCacheEntries: string[] } {
+  const env = isolatedProofServerEnvironment(process.env, configDir, dataDir);
+  const started = Date.now();
+  const result = spawnSync("opencode", ["debug", "config"], {
+    cwd: project,
+    encoding: "utf8",
+    env,
+    shell: false,
+    timeout: 45_000,
+    windowsHide: true,
+  });
+  if (result.status !== 0) {
+    throw new Error(`Isolated plugin-resolver warmup failed: status=${result.status} signal=${result.signal} stderr=${String(result.stderr ?? "").slice(-500)}`);
+  }
+  const cacheRoot = path.join(dataDir, "cache");
+  return {
+    elapsedMs: Date.now() - started,
+    isolatedCacheEntries: fs.existsSync(cacheRoot) ? fs.readdirSync(cacheRoot).slice(0, 16) : [],
+  };
+}
+
+async function offlinePluginTracePreflight(): Promise<void> {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "guard-plugin-trace-preflight-"));
+  const configDir = path.join(root, "config");
+  const dataDir = path.join(root, "data");
+  fs.mkdirSync(dataDir, { recursive: true });
+  try {
+    const bridgeUrl = writeTracedPlugin(
+      configDir,
+      dataDir,
+      "pty-bridge",
+      pathToFileURL(path.join(sourceRoot, "global", "extensions", "opencode-pty-bridge.ts")).href,
+    );
+    const guardUrl = writeTracedPlugin(
+      configDir,
+      dataDir,
+      "completion-guard",
+      pathToFileURL(path.join(sourceRoot, "global", "extensions", "session-completion-guard.ts")).href,
+    );
+    const input = {
+      client: { _client: {} },
+      directory: sourceRoot,
+      project: { id: "project_trace_preflight" },
+      serverUrl: new URL("http://127.0.0.1:1"),
+      worktree: sourceRoot,
+    };
+    const bridge = (await import(bridgeUrl)).default as { server: (input: unknown, options?: unknown) => Promise<Record<string, unknown>> };
+    const guard = (await import(guardUrl)).default as { server: (input: unknown, options?: unknown) => Promise<Record<string, unknown>> };
+    await bridge.server(input);
+    const guardHooks = await guard.server(input, {
+      auditWindow: { enabled: false, mode: "read-only-monitor", scope: "per-root", terminal: "powershell-shell" },
+      enabled: true,
+      statusToasts: false,
+    });
+    if (typeof guardHooks.dispose === "function") await guardHooks.dispose();
+    const trace = readPluginStartupTrace(dataDir);
+    for (const expected of [
+      "pty-bridge:factory-enter",
+      "pty-bridge:factory-exit",
+      "completion-guard:factory-enter",
+      "completion-guard:factory-exit",
+      "completion-guard:dispose:hook-enter",
+      "completion-guard:dispose:hook-exit",
+    ]) {
+      const [plugin, hookOrPhase, maybePhase] = expected.split(":");
+      const phase = maybePhase ?? hookOrPhase;
+      const hook = maybePhase == null ? undefined : hookOrPhase;
+      assert(trace.some((row) => row.plugin === plugin && row.phase === phase && row.hook === hook), `Plugin trace preflight omitted ${expected}`);
+    }
+  } finally {
+    removeProofFixture(root);
+  }
+}
+
 function writeConfig(configDir: string, dataDir: string, providerUrl: string, scenario: Scenario = "retry"): void {
   fs.mkdirSync(path.join(configDir, "agents"), { recursive: true });
   fs.copyFileSync(
     path.join(sourceRoot, "global", "agents", "session-completion-arbiter.md"),
     path.join(configDir, "agents", "session-completion-arbiter.md"),
   );
-  const bridge = pathToFileURL(path.join(sourceRoot, "global", "extensions", "opencode-pty-bridge.ts")).href;
-  const guard = pathToFileURL(path.join(sourceRoot, "global", "extensions", "session-completion-guard.ts")).href;
+  const bridgeSource = pathToFileURL(path.join(sourceRoot, "global", "extensions", "opencode-pty-bridge.ts")).href;
+  const guardSource = pathToFileURL(path.join(sourceRoot, "global", "extensions", "session-completion-guard.ts")).href;
+  const bridge = scenario === "claims" ? writeTracedPlugin(configDir, dataDir, "pty-bridge", bridgeSource) : bridgeSource;
+  const guard = scenario === "claims" ? writeTracedPlugin(configDir, dataDir, "completion-guard", guardSource) : guardSource;
   fs.writeFileSync(path.join(configDir, "opencode.json"), json({
     $schema: "https://opencode.ai/config.json",
     model: "proof/proof-model",
@@ -268,23 +436,23 @@ function writeConfig(configDir: string, dataDir: string, providerUrl: string, sc
       waitRecheckMs: 100,
     }]],
   }), "utf8");
-  fs.writeFileSync(path.join(configDir, "package.json"), json({ private: true, type: "module" }), "utf8");
+  seedProofConfigDependencies(configDir, path.join(sourceRoot, "global"));
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-type ServerProcess = { child: ChildProcessWithoutNullStreams; stderr: string[]; stdout: string[]; url: string };
+type ServerProcess = { child: ChildProcessWithoutNullStreams; readyMs: number; stderr: string[]; stdout: string[]; url: string };
 
-async function startOpenCode(configDir: string, dataDir: string, project: string): Promise<ServerProcess> {
+async function startOpenCode(
+  configDir: string,
+  dataDir: string,
+  project: string,
+  httpFirst = false,
+): Promise<ServerProcess> {
+  const startedAt = Date.now();
   const port = await freePort();
   const child = spawn("opencode", ["serve", "--hostname", "127.0.0.1", "--port", String(port), "--print-logs", "--log-level", "INFO"], {
     cwd: project,
-    env: {
-      ...process.env,
-      OPENCODE_CONFIG_DIR: configDir,
-      XDG_CACHE_HOME: path.join(dataDir, "cache"),
-      XDG_DATA_HOME: path.join(dataDir, "data"),
-      XDG_STATE_HOME: path.join(dataDir, "state"),
-    },
+    env: isolatedProofServerEnvironment(process.env, configDir, dataDir),
     shell: false,
     stdio: "pipe",
   });
@@ -293,33 +461,98 @@ async function startOpenCode(configDir: string, dataDir: string, project: string
   child.stdout.on("data", (chunk) => stdout.push(String(chunk)));
   child.stderr.on("data", (chunk) => stderr.push(String(chunk)));
   const url = `http://127.0.0.1:${port}`;
+  if (httpFirst) {
+    const listenDeadline = startedAt + PROOF_SERVER_CONFIG_LOAD_MS;
+    const readyDeadline = startedAt + PROOF_SERVER_READINESS_MS;
+    let lastError: unknown = null;
+    try {
+      while (!`${stdout.join("")}\n${stderr.join("")}`.includes("opencode server listening")) {
+        if (child.exitCode != null) throw new Error(`OpenCode server exited ${child.exitCode}`);
+        if (Date.now() >= listenDeadline) throw new Error("OpenCode listener did not start inside the config-load bound");
+        await Bun.sleep(100);
+      }
+      for (const route of ["/path", "/session/status"]) {
+        const controller = new AbortController();
+        const remaining = Math.max(1, readyDeadline - Date.now());
+        const timer = setTimeout(() => controller.abort(new Error(`HTTP readiness ${route} timed out`)), remaining);
+        try {
+          const response = await fetch(new URL(route, url), { signal: controller.signal });
+          await response.body?.cancel();
+          if (!response.ok) throw new Error(`HTTP readiness ${route} returned ${response.status}`);
+        } catch (error) {
+          lastError = error;
+          throw error;
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+      return { child, readyMs: Date.now() - startedAt, stderr, stdout, url };
+    } catch (error) {
+      const diagnostics = {
+        errorChain: proofErrorFacts(lastError ?? error),
+        exitCode: child.exitCode,
+        pluginStartupTrace: readPluginStartupTrace(dataDir),
+        probes: await probeProofServer(url),
+        readinessStage: "http-first",
+        stderrChars: stderr.join("").length,
+        stdoutChars: stdout.join("").length,
+      };
+      await stopOpenCode({ child, readyMs: Date.now() - startedAt, stderr, stdout, url });
+      throw new Error(`OpenCode HTTP-first readiness failed: ${JSON.stringify(diagnostics)}`);
+    }
+  }
   const client = proofClient(url, project);
-  const deadline = Date.now() + 30_000;
+  const configDeadline = startedAt + PROOF_SERVER_CONFIG_LOAD_MS;
+  let pluginDeadline: number | null = null;
   let lastError: unknown = null;
-  while (Date.now() < deadline) {
+  while (true) {
+    const now = Date.now();
+    const startup = proofServerStartupFacts(stdout.join(""), stderr.join(""), configDir);
+    if (startup.isolatedConfigLoaded && pluginDeadline == null) pluginDeadline = now + PROOF_SERVER_PLUGIN_READY_MS;
+    if ((!startup.isolatedConfigLoaded && now >= configDeadline) || (pluginDeadline != null && now >= pluginDeadline)) break;
     if (child.exitCode != null) throw new Error(`OpenCode server exited ${child.exitCode}: ${stderr.join("").slice(-1_000)}`);
     try {
-      await boundedRequestData(client.v2.agent.list({ location: { directory: project } }), "server agent readiness", 5_000);
-      await boundedRequestData(client.session.status({ directory: project }), "server session readiness", 15_000);
-      return { child, stderr, stdout, url };
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(new Error("OpenCode readiness request timed out")), 5_000);
+      try {
+        await requestData(client.session.status({ directory: project }, { signal: controller.signal }), "server session readiness");
+      } finally {
+        clearTimeout(timer);
+      }
+      return { child, readyMs: Date.now() - startedAt, stderr, stdout, url };
     } catch (error) {
       lastError = error;
       await Bun.sleep(100);
     }
   }
-  await stopOpenCode({ child, stderr, stdout, url });
-  throw new Error(`OpenCode server readiness timed out: ${lastError instanceof Error ? lastError.message : String(lastError)}`);
+  const sanitizeLog = (text: string) => [
+    [configDir, "<config-dir>"],
+    [dataDir, "<data-dir>"],
+    [project, "<project>"],
+    [sourceRoot, "<source-root>"],
+    [os.homedir(), "<home>"],
+  ].reduce((output, [value, placeholder]) => output
+    .replaceAll(value, placeholder)
+    .replaceAll(value.replaceAll("\\", "\\\\"), placeholder), text);
+  const diagnostics = {
+    errorChain: proofErrorFacts(lastError),
+    exitCode: child.exitCode,
+    pluginStartupTrace: readPluginStartupTrace(dataDir),
+    probes: await probeProofServer(url),
+    readinessStage: proofServerStartupFacts(stdout.join(""), stderr.join(""), configDir).isolatedConfigLoaded
+      ? "configured-plugin-initialization"
+      : "config-load",
+    stderrChars: stderr.join("").length,
+    stderrTail: sanitizeLog(stderr.join("")).slice(-4_000),
+    stdoutChars: stdout.join("").length,
+    stdoutTail: sanitizeLog(stdout.join("")).slice(-2_000),
+  };
+  await stopOpenCode({ child, readyMs: Date.now() - startedAt, stderr, stdout, url });
+  throw new Error(`OpenCode server readiness timed out: ${JSON.stringify(diagnostics)}`);
 }
 
 async function stopOpenCode(server: ServerProcess): Promise<void> {
-  if (server.child.exitCode != null) return;
-  const exited = new Promise<void>((resolve) => server.child.once("exit", () => resolve()));
-  server.child.kill();
-  const graceful = await Promise.race([exited.then(() => true), Bun.sleep(10_000).then(() => false)]);
-  if (graceful) return;
-  spawnSync("taskkill", ["/PID", String(server.child.pid), "/T", "/F"], { shell: false, stdio: "ignore" });
-  const forced = await Promise.race([exited.then(() => true), Bun.sleep(10_000).then(() => false)]);
-  if (!forced) throw new Error("OpenCode server did not stop after forced termination");
+  await stopProofProcessTree(server.child);
 }
 
 async function waitGuard(client: ReturnType<typeof proofClient>, rootID: string, project: string, states: string[], timeoutMs: number) {
@@ -356,6 +589,350 @@ async function waitRetryChild(client: ReturnType<typeof proofClient>, rootID: st
 
 function proofFixture(opts: Options): string {
   return path.join(os.tmpdir(), `guard-restart-proof-${opts.scenario}-${opts.candidateId}`);
+}
+
+function claimRecord(claimId: string, members: string[], disposition: "blocked" | "supported"): Record<string, unknown> {
+  const broad = members.length > 1;
+  const observed = disposition === "supported" ? members : members.slice(0, 1);
+  return {
+    candidateId: "claims-candidate",
+    claimClass: broad ? "finite-population" : "exact-case",
+    claimId,
+    coverageBasis: broad ? "finite-population" : "exact-case",
+    disposition,
+    environmentId: "claims-environment",
+    evidenceRefs: ["product"],
+    independentChallenge: broad
+      ? { evidenceRefs: [], required: true, status: "missing" }
+      : { evidenceRefs: [], required: false, status: "not-required" },
+    materialExclusions: [],
+    maximumSupportedClaim: broad ? `Only ${members[0]} is supported.` : `Exact ${members[0]} only.`,
+    narrowingAccepted: false,
+    observationBoundary: "installed-guard-result",
+    observations: observed.map((memberId) => ({
+      candidateId: "claims-candidate",
+      environmentId: "claims-environment",
+      evidenceRefs: ["product"],
+      memberId,
+      observationBoundary: "installed-guard-result",
+      paths: { baseline: null, candidate: null, production: "installed-guard" },
+      status: "supported",
+      terminal: true,
+      unresolvedObservations: [],
+    })),
+    outcomeRef: `outcome:${claimId}`,
+    paths: { baseline: null, candidate: null, production: "installed-guard" },
+    population: {
+      id: `population-${claimId.toLowerCase()}`,
+      materialClasses: [],
+      members,
+      partitionRule: null,
+      residualSpace: null,
+    },
+    realOracle: { evidenceRefs: [], required: false, status: "not-required" },
+    statement: `Installed guard claim ${claimId}`,
+    unknowns: [],
+  };
+}
+
+function writeClaimIndex(project: string, changeId: string, claims: Record<string, unknown>[]): void {
+  const changeRoot = path.join(project, "openspec", "changes", changeId);
+  fs.mkdirSync(changeRoot, { recursive: true });
+  fs.writeFileSync(path.join(changeRoot, "evidence-index.json"), json({
+    candidateId: "claims-candidate",
+    changeId,
+    claims,
+    environmentId: "claims-environment",
+    lanes: [{ files: [], kind: "terminal", name: "product" }],
+    retention: { exception: null, maxBytes: 25 * 1024 * 1024, maxFiles: 64 },
+    schemaVersion: 2,
+    tasks: [],
+  }), "utf8");
+}
+
+function resetClaimChanges(project: string): void {
+  fs.rmSync(path.join(project, "openspec"), { force: true, recursive: true });
+}
+
+async function waitAuditChild(
+  client: ReturnType<typeof proofClient>,
+  rootID: string,
+  project: string,
+  expectedStatus: "continued" | "passed",
+): Promise<{ child: Record<string, unknown>; request: Record<string, unknown>; requestBytes: number; result: Record<string, unknown> }> {
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    const children = await boundedRequestData<Array<Record<string, unknown>>>(
+      client.session.children({ sessionID: rootID, directory: project }),
+      "claim audit children",
+    );
+    const child = children.find((candidate) =>
+      record(record(candidate.metadata)?.completionGuard)?.status === expectedStatus
+    );
+    if (child == null) {
+      await Bun.sleep(100);
+      continue;
+    }
+    const messages = await boundedRequestData<Array<{ info: Record<string, unknown>; parts: unknown[] }>>(
+      client.session.messages({ sessionID: String(child.id), directory: project }),
+      "claim audit messages",
+    );
+    const texts = messages.flatMap((message) => message.parts.flatMap((part) => {
+      const value = record(part);
+      return typeof value?.text === "string" ? [value.text] : [];
+    }));
+    const requestText = texts.find((text) => text.includes("<completion_audit_request>"));
+    const resultText = [...texts].reverse().find((text) => text.trim().startsWith("{") && text.trim().endsWith("}"));
+    const requestMatch = requestText?.match(/<completion_audit_request>\s*([\s\S]*?)\s*<\/completion_audit_request>/);
+    if (requestMatch == null || resultText == null) throw new Error("Claim audit child omitted request or result evidence");
+    return {
+      child,
+      request: JSON.parse(requestMatch[1]) as Record<string, unknown>,
+      requestBytes: Buffer.byteLength(requestText!, "utf8"),
+      result: JSON.parse(resultText) as Record<string, unknown>,
+    };
+  }
+  throw new Error(`Claim audit child did not reach ${expectedStatus}`);
+}
+
+function sourceHashes(): Array<{ digest: string; path: string }> {
+  return [
+    "global/agents/session-completion-arbiter.md",
+    "global/extensions/session-completion-guard/arbiter-evidence.ts",
+    "global/extensions/session-completion-guard/claim-evidence.ts",
+    "global/extensions/session-completion-guard/terminal-certificate.ts",
+    "global/extensions/session-completion-guard/verdict.ts",
+    "global/plugin/session-delivery-context/projection.ts",
+    "tools/proofs/session-completion-guard-restart.ts",
+  ].map((relative) => ({
+    digest: new Bun.CryptoHasher("sha256").update(fs.readFileSync(path.join(sourceRoot, relative))).digest("hex"),
+    path: relative,
+  }));
+}
+
+async function runClaims(opts: Options): Promise<void> {
+  if (fs.existsSync(opts.evidenceRoot)) throw new Error("Evidence root already exists");
+  await offlineUnlockPreflight();
+  await offlinePluginTracePreflight();
+  const fixture = proofFixture(opts);
+  fs.mkdirSync(fixture, { recursive: false });
+  const configDir = path.join(fixture, "config");
+  const dataDir = path.join(fixture, "data");
+  const project = path.join(fixture, "project");
+  fs.mkdirSync(project, { recursive: true });
+  fs.writeFileSync(path.join(project, "AGENTS.md"), "# Disposable claim-evidence guard proof\n", "utf8");
+  const provider = simulator("claims");
+  writeConfig(configDir, dataDir, `http://${provider.server.hostname}:${provider.server.port}`, "claims");
+  const pluginResolverWarmup = warmupIsolatedPluginResolver(configDir, dataDir, project);
+  let server: ServerProcess | null = null;
+  const rootIDs = new Set<string>();
+  const cases: Array<Record<string, unknown>> = [];
+  let openCodeVersion = "unknown";
+  let proofError: unknown = null;
+  try {
+    server = await startOpenCode(configDir, dataDir, project, true);
+    fs.writeFileSync(path.join(fixture, "server-pid.json"), json({ pid: server.child.pid }), "utf8");
+    stage("claims-server-ready");
+    const client = proofClient(server.url, project);
+    const definitions = [
+      {
+        expected: "continue",
+        name: "representative-overclaim",
+        prepare: () => {
+          resetClaimChanges(project);
+          writeClaimIndex(project, "representative", [claimRecord("CLAIM-REPRESENTATIVE", ["member-1", "member-2"], "blocked")]);
+          return "representative";
+        },
+      },
+      {
+        expected: "allow_stop",
+        name: "supported-exact",
+        prepare: () => {
+          resetClaimChanges(project);
+          writeClaimIndex(project, "exact", [claimRecord("CLAIM-EXACT", ["member-1"], "supported")]);
+          return "exact";
+        },
+      },
+      {
+        expected: "continue",
+        name: "truncated-closure",
+        prepare: () => {
+          resetClaimChanges(project);
+          writeClaimIndex(project, "many-a", Array.from({ length: 17 }, (_, index) =>
+            claimRecord(`CLAIM-A-${String(index).padStart(2, "0")}`, [`member-a-${index}`], "supported")
+          ));
+          writeClaimIndex(project, "many-b", Array.from({ length: 17 }, (_, index) =>
+            claimRecord(`CLAIM-B-${String(index).padStart(2, "0")}`, [`member-b-${index}`], "supported")
+          ));
+          return null;
+        },
+      },
+      {
+        expected: "allow_stop",
+        name: "ordinary-small-idle",
+        prepare: () => {
+          resetClaimChanges(project);
+          return null;
+        },
+      },
+    ] as const;
+
+    for (const definition of definitions) {
+      const changeId = definition.prepare();
+      const before = provider.facts();
+      const root = await boundedRequestData<Record<string, unknown>>(client.session.create({
+        directory: project,
+        title: `claim guard ${definition.name}`,
+        metadata: {
+          completionGuard: { grindEnabled: true, state: "running" },
+          ...(changeId == null ? {} : { roadmapMission: { changeId } }),
+        },
+      }), `claim root ${definition.name}`);
+      const rootID = String(root.id);
+      rootIDs.add(rootID);
+      openCodeVersion = String(root.version ?? openCodeVersion);
+      const prompt = await boundedRequestData<{ info: Record<string, unknown> }>(client.session.prompt({
+        sessionID: rootID,
+        directory: project,
+        model: { providerID: "proof", modelID: "proof-model" },
+        system: "Return one short completion sentence and stop. Do not call tools.",
+        tools: {},
+        parts: [{ type: "text", text: `Complete the reviewed ${definition.name} claim proof.` }],
+      }), `claim prompt ${definition.name}`);
+      if (prompt.info.error != null) throw new Error(`Primary claim prompt failed: ${definition.name}`);
+      const expectedStatus = definition.expected === "continue" ? "continued" : "passed";
+      const audit = await waitAuditChild(client, rootID, project, expectedStatus);
+      if (definition.expected === "continue") {
+        await boundedRequestData(client.session.command({
+          arguments: "",
+          command: "disable-grind",
+          directory: project,
+          sessionID: rootID,
+        }), `disable continued claim ${definition.name}`);
+        await waitGuard(client, rootID, project, ["disabled"], 10_000);
+      } else {
+        await waitGuard(client, rootID, project, ["passed"], 10_000);
+      }
+      const completionEvidence = record(audit.request.completionEvidence) ?? {};
+      const claimEvidence = record(completionEvidence.claimEvidence) ?? {};
+      const verdict = String(audit.result.verdict ?? "unknown");
+      assert(verdict === definition.expected, `${definition.name} verdict was ${verdict}`);
+      const after = provider.facts();
+      cases.push({
+        arbiterRequest: {
+          auditKind: audit.request.auditKind,
+          claimEvidence,
+          requestBytes: audit.requestBytes,
+          rootSessionRef: audit.request.rootSessionRef,
+        },
+        arbiterResult: {
+          claimMatrix: audit.result.claimMatrix,
+          evidenceGaps: audit.result.evidenceGaps,
+          unresolved: audit.result.unresolved,
+          verdict,
+        },
+        expected: definition.expected,
+        name: definition.name,
+        providerCalls: {
+          arbiter: after.arbiterCalls - before.arbiterCalls,
+          primary: after.primaryCalls - before.primaryCalls,
+        },
+        rootSessionRef: hashRef("session", rootID),
+        rootState: definition.expected === "continue" ? "disabled-after-continued" : "passed",
+      });
+      const children = await boundedRequestData<Array<Record<string, unknown>>>(
+        client.session.children({ sessionID: rootID, directory: project }),
+        `claim cleanup children ${definition.name}`,
+      );
+      for (const child of children) {
+        await boundedRequestData(client.session.delete({ sessionID: String(child.id), directory: project }), "claim child delete");
+      }
+      await boundedRequestData(client.session.delete({ sessionID: rootID, directory: project }), "claim root delete");
+      rootIDs.delete(rootID);
+    }
+    const calls = provider.facts();
+    assert(calls.arbiterCalls === 4, `Claim proof expected four arbiter calls, got ${calls.arbiterCalls}`);
+    assert(calls.primaryCalls <= 8, `Claim proof primary call bound exceeded: ${calls.primaryCalls}`);
+    fs.mkdirSync(opts.evidenceRoot, { recursive: false });
+    fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json({
+      candidateId: opts.candidateId,
+      cases,
+      cleanup: "pending",
+      environment: {
+        configDigest: new Bun.CryptoHasher("sha256").update(fs.readFileSync(path.join(configDir, "opencode.json"))).digest("hex"),
+        model: "proof/proof-model",
+        openCode: openCodeVersion,
+        platform: process.platform,
+        pluginResolverWarmup,
+        pluginStartupTrace: readPluginStartupTrace(dataDir),
+        sourceHashes: sourceHashes(),
+      },
+      provider: { ...calls, externalCalls: 0, totalBound: 12 },
+      scenario: "claims",
+      schemaVersion: 1,
+    }), "utf8");
+  } catch (error) {
+    proofError = error;
+    if (!fs.existsSync(opts.evidenceRoot)) fs.mkdirSync(opts.evidenceRoot, { recursive: false });
+    fs.writeFileSync(path.join(opts.evidenceRoot, "failure.json"), json({
+      candidateId: opts.candidateId,
+      cases,
+      cleanup: "pending",
+      error: error instanceof Error ? error.message : String(error),
+      openCode: openCodeVersion,
+      pluginResolverWarmup,
+      pluginStartupTrace: readPluginStartupTrace(dataDir),
+      provider: provider.facts(),
+      scenario: "claims",
+      schemaVersion: 1,
+      status: "failed",
+    }), { encoding: "utf8", flag: "wx" });
+    throw error;
+  } finally {
+    if (server != null) {
+      try {
+        const client = proofClient(server.url, project);
+        for (const rootID of rootIDs) {
+          try {
+            const children = await boundedRequestData<Array<Record<string, unknown>>>(
+              client.session.children({ sessionID: rootID, directory: project }),
+              "claim final cleanup children",
+            );
+            for (const child of children) await client.session.delete({ sessionID: String(child.id), directory: project });
+            await client.session.delete({ sessionID: rootID, directory: project });
+          } catch { /* process cleanup still owns the disposable server tree */ }
+        }
+      } finally {
+        await stopOpenCode(server);
+        fs.rmSync(path.join(fixture, "server-pid.json"), { force: true });
+      }
+    }
+    provider.server.stop(true);
+    const diagnostics = server == null ? null : {
+      pluginStartupTrace: readPluginStartupTrace(dataDir),
+      stderrChars: server.stderr.join("").length,
+      stderrError: /\b(?:error|fatal|panic)\b/i.test(server.stderr.join("")),
+      stdoutChars: server.stdout.join("").length,
+    };
+    removeProofFixture(fixture);
+    if (fs.existsSync(path.join(opts.evidenceRoot, "raw.json"))) {
+      const raw = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "raw.json"), "utf8")) as Record<string, unknown>;
+      raw.cleanup = "complete";
+      raw.diagnostics = diagnostics;
+      raw.processCleanup = "complete";
+      fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json(raw), "utf8");
+    } else if (fs.existsSync(path.join(opts.evidenceRoot, "failure.json"))) {
+      const failure = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "failure.json"), "utf8")) as Record<string, unknown>;
+      failure.cleanup = "complete";
+      failure.diagnostics = diagnostics;
+      failure.processCleanup = "complete";
+      fs.writeFileSync(path.join(opts.evidenceRoot, "failure.json"), json(failure), "utf8");
+    } else if (proofError == null) {
+      throw new Error("Claim guard proof did not publish evidence");
+    }
+    stage("cleanup-complete");
+  }
+  stage("capture-complete");
 }
 
 async function runRetry(opts: Options): Promise<void> {
@@ -517,7 +1094,7 @@ async function runRetry(opts: Options): Promise<void> {
       }
     }
     provider.server.stop(true);
-    fs.rmSync(fixture, { recursive: true, force: true });
+    removeProofFixture(fixture);
     stage("cleanup-complete");
     if (fs.existsSync(path.join(opts.evidenceRoot, "raw.json"))) {
       const raw = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "raw.json"), "utf8")) as Record<string, unknown>;
@@ -545,6 +1122,7 @@ async function runRetention(opts: Options): Promise<void> {
   let server: ServerProcess | null = null;
   let rootID: string | null = null;
   let proofError: unknown = null;
+  let guardCommands: string[] = [];
   let seedStatusTypes: string[] = [];
   let currentStage = "setup";
   try {
@@ -553,6 +1131,20 @@ async function runRetention(opts: Options): Promise<void> {
     currentStage = "retention-server-1-ready";
     stage("retention-server-1-ready");
     let client = proofClient(server.url, project);
+    const commands = await boundedRequestData<unknown>(client.command.list({ directory: project }), "retention command list");
+    const commandRecord = record(commands);
+    const commandRows = Array.isArray(commands)
+      ? commands
+      : Array.isArray(commandRecord?.data)
+        ? commandRecord.data
+        : Array.isArray(record(commandRecord?.data)?.data)
+          ? record(commandRecord?.data)!.data as unknown[]
+          : [];
+    guardCommands = commandRows.map(record).flatMap((row) => {
+      const name = typeof row?.name === "string" ? row.name : typeof row?.id === "string" ? row.id : null;
+      return name == null ? [] : [name];
+    }).filter((name) => name === "disable-grind" || name === "enable-grind").sort();
+    assert(guardCommands.join(",") === "disable-grind,enable-grind", `Completion guard control commands are unavailable: ${guardCommands.join(",")}`);
     const root = await boundedRequestData<Record<string, unknown>>(client.session.create({
       directory: project,
       title: "guard retention restart proof",
@@ -599,10 +1191,15 @@ async function runRetention(opts: Options): Promise<void> {
         candidateId: opts.candidateId,
         cleanup: "pending",
         environment: { openCode: String(root.version ?? "unknown"), platform: process.platform },
+        guardCommands,
         provider: provider.facts(),
         scenario: opts.scenario,
         schemaVersion: 1,
         seedStatusTypes,
+        startup: {
+          ...proofServerStartupFacts(server.stdout.join(""), server.stderr.join(""), configDir),
+          readyMs: server.readyMs,
+        },
       }), "utf8");
       return;
     }
@@ -769,7 +1366,7 @@ async function runRetention(opts: Options): Promise<void> {
       }
     }
     provider.server.stop(true);
-    fs.rmSync(fixture, { recursive: true, force: true });
+    removeProofFixture(fixture);
     stage("cleanup-complete");
     if (fs.existsSync(path.join(opts.evidenceRoot, "raw.json"))) {
       const raw = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "raw.json"), "utf8")) as Record<string, unknown>;
@@ -786,11 +1383,108 @@ async function runRetention(opts: Options): Promise<void> {
 
 function evaluate(opts: Options): void {
   const rawPath = path.join(opts.evidenceRoot, "raw.json");
+  const failurePath = path.join(opts.evidenceRoot, "failure.json");
+  if (!fs.existsSync(rawPath) && fs.existsSync(failurePath)) {
+    const failure = JSON.parse(fs.readFileSync(failurePath, "utf8")) as Record<string, unknown>;
+    assert(failure.candidateId === opts.candidateId && failure.scenario === opts.scenario, "Failure capture correlation mismatch");
+    assert(failure.cleanup === "complete" && failure.processCleanup === "complete", "Failure capture cleanup is incomplete");
+    const provider = record(failure.provider) ?? {};
+    if (opts.scenario === "claims" && (Number(provider.arbiterCalls ?? 0) > 0 || Number(provider.primaryCalls ?? 0) > 0)) {
+      fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
+        candidateId: opts.candidateId,
+        cleanup: "complete",
+        failureClass: "proof-runner-provider-bound",
+        liveAttemptGate: "blocked",
+        providerCalls: {
+          arbiter: Number(provider.arbiterCalls ?? 0),
+          primary: Number(provider.primaryCalls ?? 0),
+        },
+        scenario: opts.scenario,
+        schemaVersion: 1,
+        status: "blocked",
+        terminalReplayResult: "blocked-after-guard",
+        unlockCondition: "Correct the stale provider-call bound, preserve all case evidence on failure, then use one create-new capture.",
+      }), { encoding: "utf8", flag: "wx" });
+      return;
+    }
+    assert(Number(provider.arbiterCalls ?? 0) === 0 && Number(provider.primaryCalls ?? 0) === 0, "Startup failure unexpectedly reached provider effects");
+    fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "complete",
+      failureClass: "proof-runner-environment-readiness",
+      liveAttemptGate: "blocked",
+      scenario: opts.scenario,
+      schemaVersion: 1,
+      status: "blocked",
+      terminalReplayResult: "blocked-before-guard",
+      unlockCondition: "Use a causally distinct isolated plugin-startup mechanism before another installed claim capture.",
+    }), { encoding: "utf8", flag: "wx" });
+    return;
+  }
   const raw = JSON.parse(fs.readFileSync(rawPath, "utf8")) as Record<string, unknown>;
+  if (opts.scenario === "claims") {
+    assert(raw.candidateId === opts.candidateId && raw.scenario === "claims", "Claim capture candidate correlation mismatch");
+    assert(raw.cleanup === "complete" && raw.processCleanup === "complete", "Claim capture cleanup is incomplete");
+    const cases = Array.isArray(raw.cases) ? raw.cases.map(record).filter(Boolean) : [];
+    assert(cases.length === 4, `Claim capture must contain four cases, got ${cases.length}`);
+    const byName = new Map(cases.map((entry) => [String(entry?.name), entry]));
+    const representative = byName.get("representative-overclaim") ?? {};
+    const exact = byName.get("supported-exact") ?? {};
+    const truncated = byName.get("truncated-closure") ?? {};
+    const ordinary = byName.get("ordinary-small-idle") ?? {};
+    const claimProjection = (entry: Record<string, unknown>): Record<string, unknown> =>
+      record(record(entry.arbiterRequest)?.claimEvidence) ?? {};
+    const verdict = (entry: Record<string, unknown>): string => String(record(entry.arbiterResult)?.verdict ?? "unknown");
+    const representativeClaims = Array.isArray(claimProjection(representative).claims)
+      ? claimProjection(representative).claims as Array<Record<string, unknown>>
+      : [];
+    assert(verdict(representative) === "continue" && representativeClaims[0]?.closureState === "blocked", "Representative overclaim did not continue with blocked closure");
+    const exactClaims = Array.isArray(claimProjection(exact).claims)
+      ? claimProjection(exact).claims as Array<Record<string, unknown>>
+      : [];
+    assert(verdict(exact) === "allow_stop" && exactClaims[0]?.closureState === "supported", "Supported exact claim did not stop");
+    const truncatedProjection = claimProjection(truncated);
+    const omissions = Array.isArray(truncatedProjection.omissions) ? truncatedProjection.omissions.map(record) : [];
+    assert(
+      verdict(truncated) === "continue" && truncatedProjection.complete === false && omissions.some((entry) => entry?.code === "claim-limit" && entry.omitted === 2),
+      "Truncated closure did not continue with an exact omission",
+    );
+    const ordinaryProjection = claimProjection(ordinary);
+    assert(
+      verdict(ordinary) === "allow_stop" && ordinaryProjection.complete === true && Array.isArray(ordinaryProjection.claims) && ordinaryProjection.claims.length === 0,
+      "Ordinary Small idle behavior changed",
+    );
+    const provider = record(raw.provider) ?? {};
+    assert(provider.arbiterCalls === 4 && Number(provider.primaryCalls) <= 8 && Number(provider.arbiterCalls) + Number(provider.primaryCalls) <= 12 && provider.externalCalls === 0, "Claim provider-call bound or isolation failed");
+    const environment = record(raw.environment) ?? {};
+    assert(environment.model === "proof/proof-model" && typeof environment.configDigest === "string", "Claim environment identity is incomplete");
+    assert(Array.isArray(environment.sourceHashes) && environment.sourceHashes.length === 7, "Claim source identities are incomplete");
+    fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "complete",
+      decisions: {
+        ordinarySmall: "allow_stop",
+        representativeOverclaim: "continue",
+        supportedExact: "allow_stop",
+        truncatedClosure: "continue",
+      },
+      providerCalls: { arbiter: provider.arbiterCalls, external: 0, primary: provider.primaryCalls },
+      scenario: "claims",
+      schemaVersion: 1,
+      status: "complete",
+    }), { encoding: "utf8", flag: "wx" });
+    return;
+  }
   if (opts.scenario === "retention-preflight") {
     assert(raw.candidateId === opts.candidateId && raw.scenario === "retention-preflight", "Retention preflight candidate correlation mismatch");
     assert(raw.cleanup === "complete", "Retention preflight cleanup is incomplete");
     assert(Array.isArray(raw.seedStatusTypes) && raw.seedStatusTypes.length === 2 && raw.seedStatusTypes.every((status) => status === "absent-idle" || status === "idle"), "Retention preflight seeds were not canonically idle");
+    assert(Array.isArray(raw.guardCommands) && raw.guardCommands.join(",") === "disable-grind,enable-grind", "Retention preflight did not load completion guard controls");
+    const startup = record(raw.startup) ?? {};
+    assert(startup.hostConfigLoaded === false, "Retention preflight loaded host config");
+    assert(startup.isolatedConfigLoaded === true, "Retention preflight did not load the isolated config");
+    assert(startup.ripgrepDownloadRequested === false, "Retention preflight attempted a ripgrep download");
+    assert(typeof startup.readyMs === "number" && startup.readyMs <= PROOF_SERVER_READINESS_MS, "Retention preflight exceeded the runtime readiness bound");
     fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
       candidateId: opts.candidateId,
       cleanup: "complete",
@@ -881,7 +1575,7 @@ async function supervise(opts: Options): Promise<void> {
       const pid = Number(record(JSON.parse(fs.readFileSync(pidFile, "utf8")))?.pid);
       if (Number.isSafeInteger(pid) && pid > 0) spawnSync("taskkill", ["/PID", String(pid), "/T", "/F"], { shell: false, stdio: "ignore" });
     }
-    fs.rmSync(fixture, { recursive: true, force: true });
+    removeProofFixture(fixture);
     throw new Error("Guard restart worker exceeded its 120000ms terminal limit");
   }
   if (child.exitCode !== 0) throw new Error(`Guard restart worker exited ${String(child.exitCode)}`);
@@ -892,10 +1586,12 @@ async function supervise(opts: Options): Promise<void> {
 const internalWorker = process.argv[2] === "--internal-worker";
 const cliArgs = internalWorker ? process.argv.slice(3) : process.argv.slice(2);
 const parsed = options(cliArgs);
-  const execution = parsed.help
+const execution = parsed.help
   ? Promise.resolve().then(() => console.log(usage()))
+  : parsed.mode === "evaluate"
+    ? Promise.resolve().then(() => evaluate(parsed))
   : internalWorker
-    ? parsed.scenario === "retry" ? runRetry(parsed) : runRetention(parsed)
+    ? parsed.scenario === "claims" ? runClaims(parsed) : parsed.scenario === "retry" ? runRetry(parsed) : runRetention(parsed)
     : supervise(parsed);
 execution.catch((error) => {
   console.error(json({ error: error instanceof Error ? error.message : String(error), status: "blocked" }).trimEnd());

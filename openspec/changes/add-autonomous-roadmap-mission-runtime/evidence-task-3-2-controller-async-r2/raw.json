@@ -1,0 +1,128 @@
+{
+  "archiveCalls": [
+    "change-a",
+    "change-b"
+  ],
+  "candidateId": "task-3-2-controller-async-r2",
+  "checkpoints": {
+    "external": {
+      "archiveCallsUnchanged": true,
+      "cursor": 2,
+      "identity": "868d8370bafa4d3650c46cef65a5cfdedf80769e",
+      "staleIdentityBlocked": true,
+      "status": "blocked"
+    },
+    "localCommit": {
+      "committedPaths": [
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/state.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000001-eb54f15336f9f28a.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000002-afd44d4bfb809734.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000003-1b0d7649ebfe7ca7.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000004-af02dc85dc1a404b.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000005-8d12504bdd7feaa5.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000006-517a1b781e8677b9.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000007-fe3cc5a540a8d1a1.json",
+        "evidence/mission/archive-calls.txt",
+        "evidence/mission/executor-counts.json",
+        "openspec/changes/archive/change-a/history.md",
+        "openspec/changes/archive/change-a/proposal.md",
+        "openspec/changes/archive/change-a/specs/demo/spec.md",
+        "openspec/changes/archive/change-a/tasks.md",
+        "openspec/changes/change-a/history.md",
+        "openspec/changes/change-a/proposal.md",
+        "openspec/changes/change-a/specs/demo/spec.md",
+        "openspec/changes/change-a/tasks.md"
+      ],
+      "headAfter": "c3187b23819a9c8b176b869f3543f25d871fc094",
+      "headBefore": "517cbbb1c31bc08d8d3b9b092add06ccd532f7a7",
+      "hook": "ran",
+      "remoteRefsChanged": false
+    }
+  },
+  "controller": {
+    "cursor": 2,
+    "exitCode": 1,
+    "status": "blocked"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "executorCounts": {
+    "slice-a": 2,
+    "slice-b": 1
+  },
+  "persistedRetry": {
+    "attemptsAfterResume": 2,
+    "executorCalls": 2,
+    "transitionsAfterResume": 6,
+    "transitionsBeforeResume": 6
+  },
+  "replay": {
+    "definitionDigest": "d532d40a14c89e4b53fa8216dbdd311bfd9c0b0500e33f9eebf7c60c742c66a2",
+    "exitCode": 0,
+    "lastTransitionDigest": "8e998b7fa8e52fba11000cb73e74271c95c2199f4aa64afd3dc4f48749619c2a",
+    "missionId": "controller-proof",
+    "operation": "state-replay",
+    "projectionStatus": "current",
+    "schemaVersion": 1,
+    "sequence": 15,
+    "stateDigest": "261a83f4408ed5c9fc2fbe4d7e5b03d5a4c90206b363dab494328901567e61f3",
+    "status": "valid",
+    "tool": "roadmap-mission",
+    "transitionCount": 15,
+    "writerStatus": "clear"
+  },
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/bin/openspec-operation-gate.ts",
+      "sha256": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b"
+    },
+    {
+      "path": "global/bin/openspec-archive.ts",
+      "sha256": "e0aff509135e1af35fa236c3a06ff59178808f2daf59624fdca05507f1bacc99"
+    },
+    {
+      "path": "global/bin/portable-process.ts",
+      "sha256": "6c6590ee4f054d658d4a1c3819a2f85d10dc2e1aeedd5c84ebd23eec451f3ef9"
+    },
+    {
+      "path": "global/bin/roadmap-mission.ts",
+      "sha256": "16abfa5c6cf9566cfc997e2692ab3ac63911b04b4582b6f9efee24ba20ee0e8c"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "b978b4f719cc0a7b6065e52a67483f41398528b93269ee47353d162e3b160ea5"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller.ts",
+      "sha256": "854addd05082f11e135d007c70b97f5033142580c5f3fe44e677dbf741671348"
+    },
+    {
+      "path": "global/bin/roadmap-mission/preflight.ts",
+      "sha256": "dc83724c6b771e5da17b24ab1d20590aaef33f1b1a33c3eed8d934a38a2d49d3"
+    },
+    {
+      "path": "global/bin/roadmap-mission/state.ts",
+      "sha256": "58a99828bd83117a0d9a5f859e2df7f11f5fcf38b5c5bf4057390475ac4094f3"
+    }
+  ],
+  "transitionKinds": [
+    "preflight",
+    "session-launch",
+    "session-completion",
+    "session-launch",
+    "session-completion",
+    "archive-launch",
+    "archive",
+    "checkpoint",
+    "successor-activation",
+    "session-launch",
+    "session-completion",
+    "archive-launch",
+    "archive",
+    "checkpoint",
+    "terminal-stop"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "files": [
+    {
+      "path": "capture.json",
+      "sha256": "3f5994864cca2ea0136c750be4f36c5353b04915ed39442d6c535304cc205bf5"
+    },
+    {
+      "path": "checked-unmet.bundle.json",
+      "sha256": "fc68aadb9bbe98c3f5dd9eea6749289f6afcc12cd8c8689d032eba89c89815d8"
+    },
+    {
+      "path": "outcome-achieved.bundle.json",
+      "sha256": "14c24807c7b427f82e25bfef0eb033890e63486a980b2b36d428752d848602f7"
+    },
+    {
+      "path": "owner-only.bundle.json",
+      "sha256": "39b0da07b229d909473604ea955c70e991f5176f3b662ca9e9688bf9586f5f0e"
+    },
+    {
+      "path": "safe-local-route.bundle.json",
+      "sha256": "dcad7e101d6d7c2e1d5bd22c2efd5a4996e6cfc4fa8e689c21a311a6699edaed"
+    },
+    {
+      "path": "unchanged-live-repetition.bundle.json",
+      "sha256": "112959ec50fa74c1a57d5f8ac96e9be881525adbb15e4ccd5d0c91e5b679210d"
+    }
+  ],
+  "label": "capture-baseline",
+  "schemaVersion": 1
+}

@@ -2,7 +2,9 @@
 
 ## Purpose
 TBD - created by archiving change add-session-completion-guard. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: Root idle is guarded by deterministic preflight
 The completion guard SHALL evaluate an explicitly grind-enabled parentless OpenCode root session when it becomes idle. It SHALL NOT invoke the completion arbiter until root identity, user-suspension state, compaction/guard ownership, PTY leases, built-in background leases, descendant status, and a post-settle root status recheck all prove `async-clear` for one unchanged revision. A disabled root SHALL remain ordinary OpenCode chat with no guard completion or question audit.
 
@@ -276,17 +278,6 @@ On a supported interactive Windows desktop, an enabled audit-window option SHALL
 - **THEN** the monitor MAY show privacy-safe request state and owner/autonomous disposition from guard metadata
 - **AND** it SHALL not clone, answer, reject, or expose an interactive copy of the root question.
 
-### Requirement: Main permission requests default to allow
-The completion-guard runtime SHALL set the merged top-level OpenCode permission policy to `allow` without invoking a permission model or writing persistent permission replies. Explicit per-agent restrictions for the hidden arbiter and other specialist roles SHALL remain effective.
-
-#### Scenario: Main requests a tool permission
-- **WHEN** a main-session tool would otherwise produce an ask-level permission request under project configuration
-- **THEN** the merged guard runtime SHALL permit the request without stopping for user input.
-
-#### Scenario: Arbiter attempts a denied capability
-- **WHEN** the hidden arbiter attempts edit, task dispatch, question, or another capability denied by its agent definition
-- **THEN** the per-agent restriction SHALL remain denied despite the top-level allow default.
-
 ### Requirement: Automatic arbiter replaces active delivery reviewer routing
 The completion guard SHALL absorb the root-goal, question-decision, todo-history, changed-scope, proof, validation, exact-blocker, and requirement-matrix checks that remain relevant from the retired delivery reviewer. The active old agent and its routing SHALL be removed only after the guard has current runtime proof. Historical evidence MAY retain the old name when marked as historical or superseded.
 
@@ -347,14 +338,6 @@ The configured retained-audit policy SHALL be implemented. A finite policy SHALL
 - **THEN** the guard preserves every child and returns the existing terminal retention conflict
 - **AND** it does not create an additional arbiter child.
 
-### Requirement: Main permission normalization preserves specialist restrictions
-When the enabled guard normalizes permissive main-session permissions, it SHALL NOT replace explicit per-agent permission maps for the hidden arbiter, reviewers, production workers, SDET, or other specialist roles. Runtime inspection SHALL prove their declared denied capabilities remain denied.
-
-#### Scenario: Hidden arbiter is loaded under permissive main
-- **WHEN** top-level main permissions resolve to allow
-- **THEN** the hidden arbiter still has edit, bash, task, question, skill, and external capabilities denied according to its agent definition
-- **AND** the guard supplies an all-false tool map for the arbiter prompt.
-
 ### Requirement: Long-running guard liveness is observable
 Persisted status and bounded logs SHALL include privacy-safe audit start/end time, elapsed duration, retry class and attempt/limit, request byte count, wait reason enum and recheck count, restart recovery action, retained child count, and terminal error class. Repeated identical states SHALL remain deduplicated.
 
@@ -363,3 +346,88 @@ Persisted status and bounded logs SHALL include privacy-safe audit start/end tim
 - **THEN** metadata and one owning-boundary log identify the error class, attempts, elapsed time, and manual/resume condition
 - **AND** no per-minute duplicate error loop continues.
 
+### Requirement: Completion adjudication rejects premature technical-blocker stop
+
+For a current unresolved technical or evidence blocker, the completion arbiter SHALL inspect supplied evidence for the bounded self-diagnostic disposition required by the loaded authority. When the blocker claim relies on contradictory, zero, empty, timeout, or absence-based evidence and the supplied record does not establish the affected layer, material assumptions, observer qualification, claim ceiling, and the smallest remaining safe causally distinct probe, the arbiter SHALL return `continue` with that exact diagnostic evidence gap, next action, next evidence, and stop condition. It SHALL NOT convert incomplete diagnosis, a blocked agent-chosen proof path, or generic uncertainty into `allow_stop` or `owner_required`.
+
+The existing structured `unresolved` and `strategyAssessment` fields SHALL carry this continuation without granting lifecycle authority. A structured owner boundary SHALL remain valid only when evidence proves the exact protected action or unavailable external capability and no unused safe goal-preserving route remains.
+
+#### Scenario: Root trusts an observer that failed its canary
+- **WHEN** an enabled root reports a product or owner blocker from zero observer output, the same observer failed its positive control, and direct runtime evidence says the operation occurred
+- **THEN** the arbiter returns `continue` for a bounded observer identity, configuration, or observation-path check
+- **AND** the guard issues one stale-safe synthetic continuation without treating the user as required.
+
+#### Scenario: Self-diagnostic evidence is complete and owner action is exact
+- **WHEN** the current evidence includes the bounded self-diagnostic disposition and proves that every sufficient safe route requires one exact protected owner action
+- **THEN** the arbiter may return `owner_required` with the existing structured owner boundary
+- **AND** it does not require a redundant `troubleshooter` consultation.
+
+#### Scenario: Blocked path has a safe alternate route
+- **WHEN** one proof path remains blocked but supplied evidence identifies an unused safe route that can observe the accepted effect within the current envelope
+- **THEN** the arbiter returns `continue` for that route and preserves the blocked-path claim ceiling
+- **AND** evidence from the alternate route cannot be represented as clearing the blocked path.
+
+### Requirement: Stagnant diagnosis uses one independent consultation
+
+When the same technical or uncertain failure chain remains after the bounded main self-diagnostic pass, no unused safe route is known, and owner-only status is unproven, the guard SHALL require one diagnosis-only `troubleshooter` consultation with the complete recorded case file. The case file SHALL include the layer classification, observed facts, assumptions, contradictions, observer-qualification state when applicable, prior probes, protected boundaries, and exact validation gate. The guard SHALL NOT require or accept another equivalent consultation without new decision-changing evidence or a causally distinct mechanism.
+
+#### Scenario: Main pass remains inconclusive
+- **WHEN** the root records a complete bounded self-diagnostic pass but cannot distinguish the remaining technical hypotheses and no unused safe route is known
+- **THEN** the guard requires one correlated `troubleshooter` consultation before owner escalation
+- **AND** main verifies and executes any returned authorized route rather than forwarding the consultant report as authority.
+
+#### Scenario: Equivalent consultation already completed
+- **WHEN** one correlated `troubleshooter` consultation completed for the same unchanged failure chain and no new decision-changing evidence or distinct mechanism exists
+- **THEN** the guard does not request another equivalent consultation
+- **AND** the unresolved disposition retains the exact missing evidence or proven owner boundary without entering a consultant loop.
+
+### Requirement: Certified terminal roots bypass model arbitration
+The completion guard SHALL support a versioned deterministic terminal certificate issued by an explicitly configured owning workflow. The certificate SHALL bind the issuer, root, current revision, async lease generation, accepted requirement identifiers, terminal disposition, and evidence references. The guard SHALL accept it only after its existing deterministic preflight proves the same root and revision are idle, unpaused, question-free, and async-clear. A valid certificate SHALL produce terminal `allow_stop` behavior without creating an arbiter child or invoking an arbiter model.
+
+#### Scenario: Owning workflow certifies terminal completion
+- **WHEN** a trusted configured owner supplies a current certificate whose root, revision, lease generation, requirements, and terminal evidence match deterministic preflight
+- **THEN** the guard records a deterministic passed state with zero arbiter prompt
+- **AND** the certificate and evidence references remain observable in privacy-safe status.
+
+#### Scenario: Certificate is stale or mismatched
+- **WHEN** a certificate has an unknown issuer, wrong root, stale revision, stale lease generation, missing requirement, malformed disposition, or invalid evidence reference
+- **THEN** the guard does not stop from that certificate
+- **AND** proceeds through normal bounded arbitration or fail-closed status according to the current root state.
+
+#### Scenario: Root remains ambiguous
+- **WHEN** no valid terminal certificate exists for an otherwise async-clear grind root
+- **THEN** the guard invokes the existing hidden arbiter
+- **AND** preserves structured requirement mapping, owner boundaries, retries, and continuation behavior.
+
+### Requirement: Completion guard preserves resolved permissions
+The completion guard config hook SHALL NOT replace or widen the merged top-level OpenCode permission policy. Ordinary OpenCode source precedence SHALL control main permissions, and explicit per-agent restrictions SHALL remain effective. The guard SHALL expose a privacy-safe capability diagnostic when its required operation is denied and SHALL not convert that denial into permission mutation.
+
+#### Scenario: Project main permissions require ask
+- **WHEN** project and global configuration resolve an ask-level main permission while the guard plugin is loaded
+- **THEN** runtime config retains the ask-level permission
+- **AND** the guard neither writes a persistent approval nor changes it to allow.
+
+#### Scenario: Hidden arbiter remains denied
+- **WHEN** the hidden arbiter is invoked under any main permission policy
+- **THEN** its explicit edit, bash, task, question, skill, and external restrictions remain denied
+- **AND** its model prompt receives no enabled tools.
+
+### Requirement: Completion adjudication preserves claim-evidence closure
+When a current human requirement or active OpenSpec outcome contains a triggered broad claim, the bounded completion evidence supplied to the arbiter SHALL include the current claim identifier, class, accepted outcome reference, population and coverage basis, production and comparison paths, environment and real-oracle status, unresolved material observations, evidence-lane references, independent-challenge status, disposition, and maximum supported claim. Missing or truncated closure evidence SHALL remain an explicit gap.
+
+The arbiter SHALL return `continue` when the current root attempts to stop with a broader claim than the supplied closure supports and a bounded autonomous closure or honest artifact correction remains. It SHALL preserve a narrower supported result without representing the original broad requirement complete. It SHALL NOT infer semantic partitions, equivalence, non-applicability, compatibility, safety, or population closure from assistant prose, task checkboxes, aggregate test counts, or green validation.
+
+#### Scenario: Representative completion is over-broad
+- **WHEN** completion evidence contains a passing representative real case but the current finite-population or phase claim has incomplete matching rows
+- **THEN** the arbiter returns `continue` with the exact claim-evidence gap and next bounded closure action
+- **AND** it retains the representative case only at its supplied claim ceiling.
+
+#### Scenario: Complete exact claim may stop
+- **WHEN** every current human requirement has matching supported closure, current evidence, completed accepted scope, and no autonomous unresolved action
+- **THEN** the arbiter may return `allow_stop`
+- **AND** the verdict cannot widen the supplied maximum claim or approve lifecycle, release, deployment, or protected effects.
+
+#### Scenario: Closure evidence is truncated
+- **WHEN** bounded projection omits an acceptance-critical population, path, oracle, unresolved-observation, or disposition field
+- **THEN** the arbiter cannot infer completion and returns a conservative evidence gap
+- **AND** the guard does not retry by removing another required closure field.

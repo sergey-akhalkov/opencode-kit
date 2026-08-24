@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "mode": "capture",
+  "passed": true,
+  "checks": {
+    "directWrapperExited": true,
+    "detachedChildSurvived": true,
+    "failureCodePreserved": true,
+    "controllerDirectWait": true,
+    "nonLaunchStillSynchronous": true,
+    "invokerPopupPreserved": true,
+    "recordedIdentityTermination": true,
+    "cleanupComplete": true
+  }
+}

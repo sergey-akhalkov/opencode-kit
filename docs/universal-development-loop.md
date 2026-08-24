@@ -2,7 +2,7 @@
 
 The kit uses one process for every project. Technology adapters change commands; they do not create new workflows.
 
-The canonical definition of the Universal Development Loop, including its current 12-step list, Quality Defaults, and Output Shape, lives at `instructions/universal-development-loop.md`. Token and time policy lives in the always-loaded operating priorities and `docs/token-economy.md`.
+The canonical definition of the Universal Development Loop, including its current 11-step list, Quality Defaults, and Output Shape, lives at `instructions/universal-development-loop.md`. The always-loaded working philosophy lives in `global/principles-of-work.md`; operational routing and safeguards live in `global/AGENTS.md`, with context-cost details in `docs/token-economy.md`.
 
 If this kit doc and the canonical file drift, `tools/validate-library.ts` will fail the build until the divergence is reconciled. Update the canonical file and let this pointer point back to it.
 

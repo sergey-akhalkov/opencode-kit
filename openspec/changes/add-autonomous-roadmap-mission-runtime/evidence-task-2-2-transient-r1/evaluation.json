@@ -1,0 +1,19 @@
+{
+  "candidateId": "task-2-2-transient-r1",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "disposition": "transient",
+  "guardState": "unknown",
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "blocked",
+  "providerCalls": {
+    "arbiter": 0,
+    "primary": 4
+  },
+  "rootSession": "created-and-deleted",
+  "scenario": "transient",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "unlockCondition": null
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "taskId": "3.4",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "recordedAt": "2026-08-23T11:25:52.7544797Z",
+  "validation": [
+    { "command": "node tools/validate-library.ts --fail-on-warnings", "status": 0, "skills": 31, "agents": 19, "warnings": 0 },
+    { "command": "node tools/test-library.ts", "status": 0, "tests": 176 },
+    { "command": "node tools/test-model-profile.ts", "status": 0, "tests": 16 },
+    { "command": "npm run doctor -- --project <repo> --format json", "status": 0, "qualificationStatus": "pass" }
+  ],
+  "surfaces": {
+    "coreProfile": true,
+    "allProfile": true,
+    "modelProfiles": 3,
+    "globalConfigMirrors": 2,
+    "doctorRouting": true,
+    "readmeCatalog": true,
+    "templatesChanged": false,
+    "templateReason": "No project-local copy owns the new on-demand artifacts."
+  },
+  "portableDomainSpecificText": false,
+  "result": "complete"
+}

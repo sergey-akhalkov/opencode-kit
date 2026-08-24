@@ -19,6 +19,14 @@
       "model": "xai/grok-4.6",
       "variant": "high"
     },
+    "evidence-sufficiency-reviewer": {
+      "model": "xai/grok-4.6",
+      "variant": "high"
+    },
+    "execution-safety-reviewer": {
+      "model": "xai/grok-4.6",
+      "variant": "high"
+    },
     "explore": {
       "model": "xai/grok-4.6",
       "variant": "high"
@@ -94,10 +102,6 @@
     "title": {
       "model": "xai/grok-4.6",
       "variant": "high"
-    },
-    "troubleshooter": {
-      "model": "openai/gpt-5.6-sol",
-      "variant": "xhigh"
     },
     "wire-protocol-reviewer": {
       "model": "xai/grok-4.6",

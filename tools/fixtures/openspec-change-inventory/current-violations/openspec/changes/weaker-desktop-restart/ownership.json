@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "changeId": "weaker-desktop-restart",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "local-opencode-workstation",
+      "requirements": ["Checked tasks have candidate-correlated evidence"]
+    }
+  ],
+  "writeRoots": ["tools/proofs/opencode-workstation-handoff.ts"],
+  "dependencies": [],
+  "transfers": []
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "taskId": "2.3",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "recordedAt": "2026-08-23T10:54:08.3280993Z",
+  "focusedTest": {
+    "command": "node tools/test-openspec-operation-gate.ts",
+    "status": 0,
+    "tests": 13
+  },
+  "currentOperations": [
+    { "operation": "propose", "status": "warning", "exitCode": 0, "claimBlocking": false },
+    { "operation": "apply", "status": "warning", "exitCode": 0, "claimBlocking": false },
+    { "operation": "archive", "status": "failed", "exitCode": 1, "claimBlocking": true }
+  ],
+  "archiveFixtures": {
+    "rejected": [
+      "missing-record",
+      "stale-candidate",
+      "path-mismatch",
+      "missing-member",
+      "real-oracle-unavailable",
+      "blocked",
+      "unknown-observation",
+      "challenge-incomplete"
+    ],
+    "accepted": ["supported-exact-case", "explicitly-accepted-narrowed"],
+    "narrowerEvidencePreserved": true
+  },
+  "providerCalls": 0,
+  "result": "complete"
+}

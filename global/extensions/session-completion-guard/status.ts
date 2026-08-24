@@ -1,7 +1,10 @@
 import type { OpencodeClient, Session } from "@opencode-ai/sdk/v2";
 import { hashRef } from "../../plugin/session-delivery-context/redaction.ts";
-import { dataOf, ensureNoError, safeError } from "./runtime-support.ts";
+import { dataOf, ensureNoError, safeError, stableDigest } from "./runtime-support.ts";
 import type { RootState } from "./types.ts";
+
+export const STATUS_CONVERGENCE_PASSES = 8;
+export const STATUS_CONVERGENCE_MS = 2_000;
 
 type StatusDependencies = {
   client: OpencodeClient;
@@ -51,7 +54,19 @@ export class GuardStatusReporter {
   }
 
   private async persistConverged(state: RootState): Promise<boolean> {
-    while (true) {
+    const startedAt = Date.now();
+    let passes = 0;
+    let lastDigest = "";
+    while (passes < STATUS_CONVERGENCE_PASSES && Date.now() - startedAt < STATUS_CONVERGENCE_MS) {
+      passes += 1;
+      const terminalCertificate = state.terminalCertificate ?? {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer: null,
+        reason: null,
+        status: "not-configured" as const,
+      };
       const guard = {
         schemaVersion: 1,
         state: state.state,
@@ -67,6 +82,7 @@ export class GuardStatusReporter {
         ...provenanceSnapshot(state),
         rootRef: hashRef("session", state.root.id),
         ...(state.statusMessage == null ? {} : { message: state.statusMessage.slice(0, 500) }),
+        terminalCertificate: { ...terminalCertificate },
         updatedAt: Date.now(),
       };
       const metadata = {
@@ -98,13 +114,29 @@ export class GuardStatusReporter {
         guard.restartRecoveryAction === state.restartRecoveryAction &&
         guard.waitReason === state.waitReason &&
         guard.waitRecheckCount === state.waitRecheckCount &&
+        JSON.stringify(guard.terminalCertificate) === JSON.stringify(state.terminalCertificate ?? terminalCertificate) &&
         JSON.stringify(guard.autonomousQuestionCalls) === JSON.stringify(currentProvenance.autonomousQuestionCalls) &&
         JSON.stringify(guard.autonomousQuestionRefs) === JSON.stringify(currentProvenance.autonomousQuestionRefs) &&
         JSON.stringify(guard.pendingAutonomousQuestionCalls) === JSON.stringify(currentProvenance.pendingAutonomousQuestionCalls) &&
         JSON.stringify(guard.pendingAutonomousQuestionRefs) === JSON.stringify(currentProvenance.pendingAutonomousQuestionRefs) &&
         (guard.message ?? null) === (state.statusMessage?.slice(0, 500) ?? null)
       ) return true;
+      lastDigest = stableDigest({
+        state: state.state,
+        grindEnabled: state.grindEnabled,
+        paused: state.paused,
+        lastAuditedRevision: state.lastAuditedRevision,
+        waitReason: state.waitReason,
+        waitRecheckCount: state.waitRecheckCount,
+      });
     }
+    await this.dependencies.log("warn", "guard status persistence exhausted", {
+      elapsedMs: Date.now() - startedAt,
+      lastStateDigest: lastDigest,
+      passes,
+      rootRef: hashRef("session", state.root.id),
+    });
+    return false;
   }
 
   async set(

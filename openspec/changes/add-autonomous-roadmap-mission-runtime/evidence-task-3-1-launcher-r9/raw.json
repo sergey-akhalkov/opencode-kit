@@ -1,0 +1,66 @@
+{
+  "candidateId": "task-3-1-launcher-r9",
+  "cleanup": "complete",
+  "commands": {
+    "run": {
+      "data": null,
+      "error": [
+        {
+          "depth": 0,
+          "name": "UnknownError"
+        }
+      ]
+    },
+    "runningStatus": {
+      "data": null,
+      "error": [
+        {
+          "depth": 0,
+          "name": "UnknownError"
+        }
+      ]
+    },
+    "terminalStatus": {
+      "data": null,
+      "error": [
+        {
+          "depth": 0,
+          "name": "UnknownError"
+        }
+      ]
+    }
+  },
+  "environment": {
+    "bun": "1.3.14",
+    "node": "v24.3.0",
+    "platform": "win32"
+  },
+  "providerCalls": 0,
+  "runningStatus": "{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": true,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:d726de071f9b1a8b\",\n    \"status\": \"running\"\n  },\n  \"rootSessionRef\": \"session:b1e82844f93f8764\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"6116444707c3f7dcbde080b16b357e8d76d57dc4bf938bc0e7b916029582c093\",\n  \"schemaVersion\": 1,\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:d726de071f9b1a8b\",\n    \"status\": \"running\"\n  },\n  \"rootSessionRef\": \"session:b1e82844f93f8764\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"6116444707c3f7dcbde080b16b357e8d76d57dc4bf938bc0e7b916029582c093\",\n  \"schemaVersion\": 1,\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}",
+  "schemaVersion": 1,
+  "server": {
+    "readyMs": 11328,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderrChars": 7520,
+    "stdoutChars": 119
+  },
+  "sources": [
+    {
+      "path": "global/bin/roadmap-mission.ts",
+      "sha256": "255fa5d8d763573be5f8027aa406b1e64593c62eb3b17b59293655ef2d60fabd"
+    },
+    {
+      "path": "global/extensions/opencode-pty-bridge.ts",
+      "sha256": "47ba676ac221168c90cde9bfbd9889393f5cd0d7170cfc01a5b16aa8d67179bc"
+    },
+    {
+      "path": "global/extensions/roadmap-mission-launcher.ts",
+      "sha256": "b8449f556ca9ee1f920f383ef1f546565bde1a8a159f0174ebe4463ed904638d"
+    }
+  ],
+  "terminalStatus": "{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": true,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:d726de071f9b1a8b\",\n    \"status\": \"running\"\n  },\n  \"rootSessionRef\": \"session:b1e82844f93f8764\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"6116444707c3f7dcbde080b16b357e8d76d57dc4bf938bc0e7b916029582c093\",\n  \"schemaVersion\": 1,\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:d726de071f9b1a8b\",\n    \"status\": \"running\"\n  },\n  \"rootSessionRef\": \"session:b1e82844f93f8764\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"6116444707c3f7dcbde080b16b357e8d76d57dc4bf938bc0e7b916029582c093\",\n  \"schemaVersion\": 1,\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:d726de071f9b1a8b\",\n    \"status\": \"running\"\n  },\n  \"rootSessionRef\": \"session:b1e82844f93f8764\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"6116444707c3f7dcbde080b16b357e8d76d57dc4bf938bc0e7b916029582c093\",\n  \"schemaVersion\": 1,\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": 1,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:d726de071f9b1a8b\",\n    \"status\": \"exited\"\n  },\n  \"rootSessionRef\": \"session:b1e82844f93f8764\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"6116444707c3f7dcbde080b16b357e8d76d57dc4bf938bc0e7b916029582c093\",\n  \"schemaVersion\": 1,\n  \"terminalNotified\": true,\n  \"terminalToast\": \"sent\",\n  \"visibility\": \"opened\"\n}"
+}

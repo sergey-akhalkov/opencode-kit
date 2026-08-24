@@ -2,7 +2,9 @@ node_modules/
 .dream-team/
 .opencode/state/
 /.review-evidence/
+/global/.runtime-profiles/
 /global/opencode.json
 /global/opencode.local.json
 /global/opencode.local.instructions.md
 /global/model-profiles/local/*.json
+/tools/windows/opencode-workstation.config.json

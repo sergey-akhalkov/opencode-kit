@@ -1,0 +1,5 @@
+{"at":"2026-08-17T09:36:39.456Z","name":"capture-start"}
+{"at":"2026-08-17T09:37:51.728Z","name":"server-ready","pid":15052}
+{"at":"2026-08-17T09:37:51.729Z","name":"diagnostic-raw-ready"}
+{"at":"2026-08-17T09:37:52.332Z","name":"server-stopped"}
+{"at":"2026-08-17T09:37:54.129Z","name":"fixture-removed"}

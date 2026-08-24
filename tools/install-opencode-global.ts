@@ -4,22 +4,32 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
+import {
+  GENERATED_RUNTIME_PROFILES_RELATIVE,
+  inspectRuntimeSurfaceInstall,
+  materializeRuntimeSurfaceProfile,
+} from "./runtime-surface-profile.ts";
 
-type Mode = "set" | "check" | "print" | "unset" | "persist-script" | "unset-script";
+type Mode = "set" | "check" | "print" | "unset" | "persist-script" | "unset-script" | "preview-profile" | "plan-migration";
 
 type Options = {
   mode: Mode;
   dryRun: boolean;
   scriptFile: string | null;
+  profileName: string;
+  explicitProfile: boolean;
 };
 
 const ENV_VAR = "OPENCODE_CONFIG_DIR";
 const GLOBAL_DIR_NAME = "global";
+const PRINCIPLES_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/principles-of-work.md";
 const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md";
+const SCRIPT_RUNTIME_PLACEHOLDER = "__OPENCODE_SCRIPT_RUNTIME__";
 const PLUGIN_PATH_PLACEHOLDERS = [
   "plugins/notify.ts",
   "plugin/session-env.ts",
   "extensions/opencode-pty-bridge.ts",
+  "extensions/roadmap-mission-launcher.ts",
   "extensions/session-completion-guard.ts",
 ] as const;
 export const SETX_SAFE_LIMIT = 900;
@@ -31,18 +41,24 @@ function printUsage(): void {
   console.log(`Usage:
   npm run install:global -- [options]
 
-Point OpenCode at this repository as a custom global configuration source. Instead
-of copying skills/agents/AGENTS.md into ~/.config/opencode, the installer sets the
-OPENCODE_CONFIG_DIR environment variable to the repository "global/" directory.
-OpenCode loads artifacts directly from there, while host-default, project, managed,
-explicit, or inline sources may remain loader-visible according to current precedence.
+Point OpenCode at this repository as a custom global configuration source. A fresh
+install materializes the generated core profile and sets OPENCODE_CONFIG_DIR to
+that generated root. Existing kit installs are left unchanged unless --profile is
+explicit. Host-default, project, managed, explicit, or inline sources may remain
+loader-visible according to current precedence.
 
-Target: ${globalDir}
+Source: ${globalDir}
+Fresh default: ${path.join(globalDir, ".runtime-profiles", "core")}
 
 Options:
-  (default)              Windows: persist OPENCODE_CONFIG_DIR via setx.
-                         macOS/Linux: print a safe export line only (does not persist).
-  --check, --audit       Exit 0 if OPENCODE_CONFIG_DIR already points at global/; 1 otherwise.
+  (default)              Fresh install: materialize core and persist/print that generated path.
+                         Existing kit install: leave the current path unchanged.
+                         Windows persists via setx. macOS/Linux prints a safe export line only.
+  --check, --audit       Exit 0 if OPENCODE_CONFIG_DIR already points at this kit global/ or a generated profile; 1 otherwise.
+                         Also reports the current runtime-surface profile without changing files or env.
+  --preview-profile      Preview the proposed runtime-surface profile (default core). No mutation.
+  --plan-migration       Show current vs proposed profile additions/removals. No mutation.
+  --profile <name>       Proposed profile for preview/plan/check (core or all). Default: core.
   --print                Preview the target path and platform command only (no mutation; not a recovery path).
   --unset                Remove the persisted OPENCODE_CONFIG_DIR value.
   --persist-script <file>  Ensure <file> contains exactly one desired "export OPENCODE_CONFIG_DIR=..." line.
@@ -50,8 +66,9 @@ Options:
   --dry-run, --what-if   Show what the default mode would do without setting anything.
   --help, -h             Show this help.
 
-  Mode flags (--check/--audit, --print, --unset, --persist-script, --unset-script) are mutually exclusive
-  (including aliases and repeats). --dry-run applies only to the default set mode.
+  Mode flags (--check/--audit, --print, --unset, --persist-script, --unset-script, --preview-profile,
+  --plan-migration) are mutually exclusive (including aliases and repeats). --dry-run applies only to
+  the default set mode. Preview, plan, and check never change config, environment, or files.
 
 Platform behavior:
   Windows: default mode runs "setx OPENCODE_CONFIG_DIR <path>" (writes HKCU\\Environment)
@@ -76,13 +93,13 @@ function readValue(args: string[], index: number, option: string): string {
 }
 
 function parseArgs(args: string[]): Options {
-  const options: Options = { mode: "set", dryRun: false, scriptFile: null };
+  const options: Options = { mode: "set", dryRun: false, scriptFile: null, profileName: "core", explicitProfile: false };
   let explicitModeCount = 0;
   const assignMode = (mode: Mode): void => {
     explicitModeCount += 1;
     if (explicitModeCount > 1) {
       throw new Error(
-        "Conflicting installer modes: only one of --check/--audit, --print, --unset, --persist-script, --unset-script is allowed (including aliases and repeats).",
+        "Conflicting installer modes: only one of --check/--audit, --print, --unset, --persist-script, --unset-script, --preview-profile, --plan-migration is allowed (including aliases and repeats).",
       );
     }
     options.mode = mode;
@@ -96,6 +113,17 @@ function parseArgs(args: string[]): Options {
       options.dryRun = true;
     } else if (arg === "--check" || arg === "--audit") {
       assignMode("check");
+    } else if (arg === "--preview-profile") {
+      assignMode("preview-profile");
+    } else if (arg === "--plan-migration") {
+      assignMode("plan-migration");
+    } else if (arg === "--profile") {
+      options.explicitProfile = true;
+      options.profileName = readValue(args, index, arg);
+      index++;
+    } else if (arg.startsWith("--profile=")) {
+      options.explicitProfile = true;
+      options.profileName = arg.slice("--profile=".length);
     } else if (arg === "--print") {
       assignMode("print");
     } else if (arg === "--unset") {
@@ -126,6 +154,9 @@ function parseArgs(args: string[]): Options {
     (options.scriptFile == null || options.scriptFile.trim() === "")
   ) {
     throw new Error(`${options.mode} requires a <file> argument.`);
+  }
+  if (options.profileName !== "core" && options.profileName !== "all") {
+    throw new Error("--profile must be core or all.");
   }
   return options;
 }
@@ -531,7 +562,7 @@ function validateGlobalDir(target: string): string[] {
     errors.push(`Missing global config directory: ${target}`);
     return errors;
   }
-  for (const required of ["skills", "agents", "bin", "AGENTS.md", "package.json", "opencode.json.template", "opencode.local.instructions.example.md"]) {
+  for (const required of ["skills", "agents", "bin", "AGENTS.md", "principles-of-work.md", "package.json", "opencode.json.template", "opencode.local.instructions.example.md"]) {
     const candidate = path.join(target, required);
     if (!fs.existsSync(candidate)) {
       errors.push(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
@@ -591,6 +622,9 @@ function assertSupportedTemplate(templatePath: string): Buffer {
 
 function materializeTemplate(templateBytes: Buffer, target: string): Buffer {
   let templateText = decodeUtf8Strict(templateBytes, "opencode.json.template");
+  const principlesPlaceholder = JSON.stringify(PRINCIPLES_PLACEHOLDER);
+  const principles = path.join(target, "principles-of-work.md").replaceAll("\\", "/");
+  templateText = templateText.replaceAll(principlesPlaceholder, JSON.stringify(principles));
   const placeholder = JSON.stringify(LOCAL_INSTRUCTIONS_PLACEHOLDER);
   const localInstructions = path.join(target, "opencode.local.instructions.md").replaceAll("\\", "/");
   templateText = templateText.replaceAll(placeholder, JSON.stringify(localInstructions));
@@ -601,7 +635,38 @@ function materializeTemplate(templateBytes: Buffer, target: string): Buffer {
       JSON.stringify(pathToFileURL(path.join(target, ...pluginPath.split("/"))).href),
     );
   }
+  templateText = templateText.replaceAll(
+    JSON.stringify(SCRIPT_RUNTIME_PLACEHOLDER),
+    JSON.stringify(path.resolve(process.execPath).replaceAll("\\", "/")),
+  );
   return Buffer.from(templateText, "utf8");
+}
+
+function inspectExistingSourceConfig(): void {
+  const local = path.join(globalDir, "opencode.json");
+  if (!fs.existsSync(local)) {
+    return;
+  }
+  const config = assertSupportedLocalConfig(local);
+  const expectedPrinciples = path.join(globalDir, "principles-of-work.md");
+  const expected = path.join(globalDir, "opencode.local.instructions.md");
+  const instructions = Array.isArray(config.instructions) ? config.instructions : [];
+  const principlesConfigured = instructions.some(
+    (instruction) => typeof instruction === "string" && path.isAbsolute(instruction) && sameConfigPath(instruction, expectedPrinciples),
+  );
+  if (!principlesConfigured) {
+    console.log(
+      `note: preserved existing global/opencode.json; its instructions do not reference ${expectedPrinciples}. Add that absolute path to load the canonical working principles.`,
+    );
+  }
+  const configured = instructions.some(
+    (instruction) => typeof instruction === "string" && path.isAbsolute(instruction) && sameConfigPath(instruction, expected),
+  );
+  if (!configured) {
+    console.log(
+      `note: preserved existing global/opencode.json; its instructions do not reference ${expected}. Add that absolute path to load machine-local preferences.`,
+    );
+  }
 }
 
 function ensureLocalConfig(target: string): void {
@@ -609,8 +674,17 @@ function ensureLocalConfig(target: string): void {
   const template = path.join(target, "opencode.json.template");
   if (fs.existsSync(local)) {
     const config = assertSupportedLocalConfig(local);
+    const expectedPrinciples = path.join(target, "principles-of-work.md");
     const expected = path.join(target, "opencode.local.instructions.md");
     const instructions = Array.isArray(config.instructions) ? config.instructions : [];
+    const principlesConfigured = instructions.some(
+      (instruction) => typeof instruction === "string" && path.isAbsolute(instruction) && sameConfigPath(instruction, expectedPrinciples),
+    );
+    if (!principlesConfigured) {
+      console.log(
+        `note: preserved existing global/opencode.json; its instructions do not reference ${expectedPrinciples}. Add that absolute path to load the canonical working principles.`,
+      );
+    }
     const configured = instructions.some(
       (instruction) => typeof instruction === "string" && path.isAbsolute(instruction) && sameConfigPath(instruction, expected),
     );
@@ -656,14 +730,50 @@ function currentValue(): string | undefined {
   return process.env[ENV_VAR];
 }
 
-function runCheck(): void {
+function renderRuntimeSurfacePlan(profileName: string): ReturnType<typeof inspectRuntimeSurfaceInstall> {
+  return inspectRuntimeSurfaceInstall({
+    configDir: currentValue(),
+    proposedName: profileName,
+    root: repoRoot,
+  });
+}
+
+function printRuntimeSurfacePlan(plan: ReturnType<typeof inspectRuntimeSurfaceInstall>, detail: "owners" | "diff"): void {
+  console.log(`current profile: ${plan.currentKind}`);
+  if (plan.currentRoot != null) {
+    console.log(`current root: ${plan.currentRoot}`);
+  }
+  console.log(`proposed profile: ${plan.proposedName}`);
+  if (detail === "owners") {
+    console.log(`proposed owners (${plan.proposedOwners.length}): ${plan.proposedOwners.join(", ") || "none"}`);
+  } else {
+    console.log(`additions (${plan.additions.length}): ${plan.additions.join(", ") || "none"}`);
+    console.log(`removals (${plan.removals.length}): ${plan.removals.join(", ") || "none"}`);
+  }
+  console.log("No file or environment value was changed.");
+}
+
+function runPreviewProfile(profileName: string): void {
+  printRuntimeSurfacePlan(renderRuntimeSurfacePlan(profileName), "owners");
+}
+
+function runPlanMigration(profileName: string): void {
+  printRuntimeSurfacePlan(renderRuntimeSurfacePlan(profileName), "diff");
+}
+
+function runCheck(profileName: string): void {
   const current = currentValue();
   if (current === undefined || current.trim() === "") {
     console.log(`${ENV_VAR} is not set.`);
     console.log(`Run "npm run install:global" to point it at ${globalDir}`);
+    printRuntimeSurfacePlan(renderRuntimeSurfacePlan(profileName), "diff");
     process.exit(1);
   }
-  if (sameConfigPath(current, globalDir)) {
+  if (
+    sameConfigPath(current, globalDir) ||
+    sameConfigPath(current, generatedProfileRoot("core")) ||
+    sameConfigPath(current, generatedProfileRoot("all"))
+  ) {
     const local = path.join(globalDir, "opencode.json");
     if (fs.existsSync(local)) {
       try {
@@ -674,11 +784,13 @@ function runCheck(): void {
       }
     }
     console.log(`configured: ${ENV_VAR}=${current}`);
+    printRuntimeSurfacePlan(renderRuntimeSurfacePlan(profileName), "diff");
     process.exit(0);
   }
   console.log(`mismatch: ${ENV_VAR}=${current}`);
   console.log(`expected: ${ENV_VAR}=${globalDir}`);
   console.log(`Run "npm run install:global" to repoint it at this repository.`);
+  printRuntimeSurfacePlan(renderRuntimeSurfacePlan(profileName), "diff");
   process.exit(1);
 }
 
@@ -688,7 +800,52 @@ function runPrint(): void {
   console.log(`command (posix):   ${buildExportLine(globalDir)}`);
 }
 
-function runSet(dryRun: boolean): void {
+function generatedProfileRoot(profileName: string): string {
+  return path.join(repoRoot, ...GENERATED_RUNTIME_PROFILES_RELATIVE.split("/"), profileName);
+}
+
+function isExistingKitInstall(value: string | undefined): boolean {
+  if (value == null || value.trim() === "") {
+    return false;
+  }
+  if (sameConfigPath(value, globalDir)) {
+    return true;
+  }
+  return sameConfigPath(value, generatedProfileRoot("core")) || sameConfigPath(value, generatedProfileRoot("all"));
+}
+
+function resolveSetTarget(profileName: string, explicitProfile: boolean): {
+  keepExisting: boolean;
+  materialize: boolean;
+  profileName: string;
+  targetDir: string;
+} {
+  const previous = currentValue();
+  if (explicitProfile) {
+    return {
+      keepExisting: false,
+      materialize: true,
+      profileName,
+      targetDir: generatedProfileRoot(profileName),
+    };
+  }
+  if (isExistingKitInstall(previous)) {
+    return {
+      keepExisting: true,
+      materialize: false,
+      profileName: "core",
+      targetDir: path.resolve(previous!),
+    };
+  }
+  return {
+    keepExisting: false,
+    materialize: true,
+    profileName: "core",
+    targetDir: generatedProfileRoot("core"),
+  };
+}
+
+function runSet(dryRun: boolean, profileName: string, explicitProfile: boolean): void {
   const errors = validateGlobalDir(globalDir);
   if (errors.length > 0) {
     for (const error of errors) {
@@ -696,29 +853,49 @@ function runSet(dryRun: boolean): void {
     }
     process.exit(1);
   }
+  const resolved = resolveSetTarget(profileName, explicitProfile);
+  const targetDir = resolved.targetDir;
   if (!dryRun) {
-    ensureLocalConfig(globalDir);
+    assertSupportedTemplate(path.join(globalDir, "opencode.json.template"));
+    inspectExistingSourceConfig();
     ensureLocalInstructions(globalDir);
+  }
+  if (resolved.materialize && !dryRun) {
+    materializeRuntimeSurfaceProfile({
+      profileName: resolved.profileName,
+      root: repoRoot,
+      targetRoot: targetDir,
+    });
+    ensureLocalInstructions(targetDir);
   }
 
   const previous = currentValue();
-  if (previous !== undefined && previous.trim() !== "" && !sameConfigPath(previous, globalDir)) {
+  if (!resolved.keepExisting && previous !== undefined && previous.trim() !== "" && !sameConfigPath(previous, targetDir)) {
     console.log(`note: ${ENV_VAR} was previously ${previous}; repointing at this repository.`);
   }
 
+  if (resolved.keepExisting) {
+    console.log(`keeping existing: ${ENV_VAR}=${targetDir}`);
+    console.log("No file or environment value was changed.");
+    return;
+  }
+
   if (dryRun) {
-    console.log(`would set: ${ENV_VAR}=${globalDir}`);
+    if (resolved.materialize) {
+      console.log(`would materialize profile ${resolved.profileName} at ${targetDir}`);
+    }
+    console.log(`would set: ${ENV_VAR}=${targetDir}`);
     if (isWindows()) {
-      console.log(`would run:  setx ${ENV_VAR} "${globalDir}"`);
+      console.log(`would run:  setx ${ENV_VAR} "${targetDir}"`);
     } else {
-      console.log(`would print: ${buildExportLine(globalDir)}`);
+      console.log(`would print: ${buildExportLine(targetDir)}`);
     }
     console.log("Dry run complete. No environment variable was changed.");
     return;
   }
 
   if (isWindows()) {
-    const measured = measuredValueLength(globalDir);
+    const measured = measuredValueLength(targetDir);
     if (measured > SETX_SAFE_LIMIT) {
       console.error(
         `error: ${ENV_VAR} value is ${measured} chars; setx truncates user env vars at 1024 chars (safety limit ${SETX_SAFE_LIMIT}).`,
@@ -729,7 +906,7 @@ function runSet(dryRun: boolean): void {
       console.error("--print is preview-only and is not a safe recovery path for over-limit values.");
       process.exit(2);
     }
-    const result = spawnSync("setx", [ENV_VAR, globalDir], { encoding: "utf8" });
+    const result = spawnSync("setx", [ENV_VAR, targetDir], { encoding: "utf8" });
     if (result.status !== 0) {
       console.error(`setx failed (exit ${result.status}).`);
       if (result.stderr) {
@@ -737,10 +914,10 @@ function runSet(dryRun: boolean): void {
       }
       process.exit(1);
     }
-    console.log(`set: ${ENV_VAR}=${globalDir}`);
+    console.log(`set: ${ENV_VAR}=${targetDir}`);
   } else {
     console.log(`Default mode on macOS/Linux does not persist. Safe export line (preview only):`);
-    console.log(`  ${buildExportLine(globalDir)}`);
+    console.log(`  ${buildExportLine(targetDir)}`);
     console.log(`To persist, run with --persist-script <file> (for example ~/.bashrc or ~/.zshrc), restart the shell, then verify with --check.`);
   }
 
@@ -782,7 +959,13 @@ function main(): void {
     const options = parseArgs(process.argv.slice(2));
     switch (options.mode) {
       case "check":
-        runCheck();
+        runCheck(options.profileName);
+        break;
+      case "preview-profile":
+        runPreviewProfile(options.profileName);
+        break;
+      case "plan-migration":
+        runPlanMigration(options.profileName);
         break;
       case "print":
         runPrint();
@@ -797,7 +980,7 @@ function main(): void {
         runUnsetScript(options.scriptFile ?? "");
         break;
       case "set":
-        runSet(options.dryRun);
+        runSet(options.dryRun, options.profileName, options.explicitProfile);
         break;
     }
   } catch (error) {

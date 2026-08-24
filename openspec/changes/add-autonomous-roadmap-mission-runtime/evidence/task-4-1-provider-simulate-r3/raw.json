@@ -1,0 +1,298 @@
+{
+  "archives": [
+    "2026-08-24-change-a",
+    "2026-08-24-change-b"
+  ],
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+  "captureEnvelope": {
+    "firstControllerTimeoutMs": 240000,
+    "isolatedConfigDir": true,
+    "strippedParentSession": true,
+    "wallMs": 500000
+  },
+  "checkpoints": [
+    "80cc3042f5ad1bb247781b99ddedd59c80329830",
+    "920b135738e242de1d5469a8e82ef497b7ca0f10"
+  ],
+  "cleanup": "complete",
+  "controllerRuns": [
+    {
+      "attempts": 2,
+      "cursor": 0,
+      "operation": "run",
+      "status": "paused"
+    },
+    {
+      "attempts": 1,
+      "cursor": 1,
+      "operation": "resume",
+      "status": "paused"
+    },
+    {
+      "attempts": 0,
+      "cursor": 2,
+      "operation": "resume",
+      "status": "blocked"
+    }
+  ],
+  "environment": {
+    "executionMode": "simulation",
+    "model": "openai/gpt-5.6-sol",
+    "node": "v24.18.1",
+    "platform": "win32",
+    "profile": "quality-independent",
+    "variant": "xhigh"
+  },
+  "failure": null,
+  "markers": {
+    "alpha": "alpha\n",
+    "beta": "beta\n",
+    "changeCExists": false,
+    "retrospectiveTasks": []
+  },
+  "providerCalls": [
+    {
+      "command": "local-preflight",
+      "index": 1,
+      "kind": "local-failure",
+      "operation": "continue",
+      "sessionIds": [],
+      "sliceId": "slice-a",
+      "status": 75,
+      "stderrFile": null,
+      "stdoutFile": null
+    },
+    {
+      "command": "deterministic-executor",
+      "index": 2,
+      "kind": "simulation",
+      "operation": "continue",
+      "sessionIds": [],
+      "sliceId": "slice-a",
+      "status": 0,
+      "stderrFile": null,
+      "stdoutFile": null
+    },
+    {
+      "command": "deterministic-executor",
+      "index": 3,
+      "kind": "simulation",
+      "operation": "propose",
+      "sessionIds": [],
+      "sliceId": "slice-b",
+      "status": 0,
+      "stderrFile": null,
+      "stdoutFile": null
+    }
+  ],
+  "replay": {
+    "definitionDigest": "dd7d26b792d164d8941fb50de1a63e7cc7e8357d50c6b4cf478b37f859b22dee",
+    "exitCode": 0,
+    "lastTransitionDigest": "5e9dfdb206baa3e819d7c95978c7063ba856861ec6d13ea8edeb1837c4454fc8",
+    "missionId": "configured-provider-proof",
+    "operation": "state-replay",
+    "projectionStatus": "current",
+    "schemaVersion": 1,
+    "sequence": 17,
+    "stateDigest": "1cfc0b5051047dd75bb93080f58fe7bad46b23e31db42d9f9484004be64a1424",
+    "status": "valid",
+    "tool": "roadmap-mission",
+    "transitionCount": 17,
+    "writerStatus": "clear"
+  },
+  "schemaVersion": 1,
+  "sessionCleanup": [],
+  "sourceHashes": {
+    "global/bin/openspec-archive.ts": "b7fcb48d8082afb176733e73cbad5221d6e428d9398c340a601b11081ad5cfe0",
+    "global/bin/openspec-operation-gate.ts": "5d8393594ca91b636e2f697d12ba2d4fa0d45eb8b5565c12bc36414c3699fdcd",
+    "global/bin/portable-process.ts": "4e080eae20893f151c1b391fc1d61e04a0adf27cdb02cc476d223c575732c13a",
+    "global/bin/roadmap-mission-session-executor.ts": "b657f8d79fd5c7dde25717d82f78bbdad3f9032b6e94d8403a12bfcb695960f8",
+    "global/bin/roadmap-mission.ts": "16abfa5c6cf9566cfc997e2692ab3ac63911b04b4582b6f9efee24ba20ee0e8c",
+    "global/bin/roadmap-mission/contracts.ts": "f8cd8c783e83343cfc94f58b0247ea417018681f21cf4e59eaaf1b46bfc3e960",
+    "global/bin/roadmap-mission/controller-adapter.ts": "4da4df1865f4d04f3e894733fb1cbc0c65cc97afba8028b10dc0836571face84",
+    "global/bin/roadmap-mission/controller-process.ts": "2663c330c46c568b5e539f0af5a290ed3d1a1aa289f18caa711ea976731808e3",
+    "global/bin/roadmap-mission/controller-result.ts": "494c092587a125630e1cb5ee814578c30b9094145109bc287ab911f60ab95781",
+    "global/bin/roadmap-mission/controller.ts": "7c617fd9dbe540396cb2ac48b139b5631a6d01431bc4c5ef9aa8763f8127cbd2",
+    "global/bin/roadmap-mission/preflight.ts": "144d236c7bce3fbc272b94b80ef67be530910067c49f5b177f404a975f534d07",
+    "global/bin/roadmap-mission/session-executor.ts": "20894544c36bb366e265a227fd82a03ef60b8b1d2e4343d07a570daa6243c95e",
+    "global/bin/roadmap-mission/state.ts": "58a99828bd83117a0d9a5f859e2df7f11f5fcf38b5c5bf4057390475ac4094f3",
+    "global/commands/opsx-apply.md": "73dff8e4c5c09048becabb6aff6911808898fcf557b2eba55a0abbf4fa71d822",
+    "global/commands/opsx-propose.md": "d5543187655aeabd09fcedaee67887d5428baf5172edc27835064c7d118bbaa0",
+    "global/extensions/session-completion-guard/terminal-certificate.ts": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968",
+    "global/skills/openspec-apply-change/SKILL.md": "13f0d30a368a3b2deb99efdc8fcfc1204d7747c5cdf79939c8a7650602b751d9",
+    "global/skills/openspec-propose/SKILL.md": "45f23297d2ac8e4d3fbe159555d4447fe4f292d878270d985ff0ec13d9050186",
+    "tools/proofs/roadmap-mission-provider.ts": "e008be0ce971d0442cee9567411f1fbee50bfff72d8dca904246b80c59b9a548"
+  },
+  "transitions": [
+    {
+      "cursor": 0,
+      "kind": "preflight",
+      "recovery": {
+        "attempts": 0,
+        "sliceStartedAt": null
+      },
+      "sequence": 1,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-launch",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 2,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-completion",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 3,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-launch",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 4,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "session-completion",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 5,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "archive-launch",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 6,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "archive",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 7,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "pause",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 8,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 0,
+      "kind": "checkpoint",
+      "recovery": {
+        "attempts": 2,
+        "sliceStartedAt": "2026-08-24T15:39:13.478Z"
+      },
+      "sequence": 9,
+      "sliceId": "slice-a"
+    },
+    {
+      "cursor": 1,
+      "kind": "successor-activation",
+      "recovery": {
+        "attempts": 0,
+        "sliceStartedAt": null
+      },
+      "sequence": 10,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "session-launch",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:39.210Z"
+      },
+      "sequence": 11,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "session-completion",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:39.210Z"
+      },
+      "sequence": 12,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "archive-launch",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:39.210Z"
+      },
+      "sequence": 13,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "archive",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:39.210Z"
+      },
+      "sequence": 14,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "pause",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:39.210Z"
+      },
+      "sequence": 15,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "checkpoint",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:39.210Z"
+      },
+      "sequence": 16,
+      "sliceId": "slice-b"
+    },
+    {
+      "cursor": 1,
+      "kind": "terminal-stop",
+      "recovery": {
+        "attempts": 1,
+        "sliceStartedAt": "2026-08-24T15:39:39.210Z"
+      },
+      "sequence": 17,
+      "sliceId": "slice-b"
+    }
+  ]
+}

@@ -21,7 +21,7 @@ Cover every lane that applies; mark non-applicable lanes explicitly.
 - `Installed State`: global/project installed copies under OpenCode config directories, personal skill folders, backups, and copy drift.
 - `Runtime Policy`: official docs, local docs mirror, schema/source, `opencode debug config`, and live loader output when available.
 - `Context Cost`: line counts or token proxy for global `AGENTS.md`, heavy skills, available skill catalog size, and repeated boilerplate.
-- `Operating Priorities`: ordered quality/safety -> autonomy -> speed; blocker-only questions; verified-result speed without weaker proof.
+- `Working Philosophy`: quality without proxy substitution; shortest verified path; autonomy until a real owner boundary; maximum token economy; evidence-backed continuous improvement; and smallest-authorized-layer correction, narrowing, or removal of concrete impediments without weaker safety.
 - `Permission Semantics`: prose-only, wildcard config, explicit config, semantic hook/plugin, or managed policy enforcement.
 - `Reviewer Gates`: which read-only reviewers ran, what evidence they checked, and which gates were skipped with reasons.
 - `Non-Repo Changes`: global config, global rules, installed copies, personal skills, backups, or external docs changed outside the current git worktree.

@@ -1,0 +1,27 @@
+{
+  "candidateId": "reconcile-ownership-r1",
+  "environmentId": "windows-node24",
+  "commands": [
+    {
+      "argv": ["npm.cmd", "run", "test:focused:openspec-change-inventory"],
+      "status": 0,
+      "observation": "OK: openspec-change-inventory tests=9"
+    },
+    {
+      "argv": ["npm.cmd", "run", "test:focused:openspec-gate"],
+      "status": 0,
+      "observation": "OK: OpenSpec operation gate tests=11"
+    },
+    {
+      "argv": ["node", "tools/openspec-change-inventory.ts", "--help"],
+      "status": 0,
+      "observation": "effect-free help; no winner; no rewrite"
+    },
+    {
+      "argv": ["node", "tools/openspec-change-inventory.ts", "--root", "tools/fixtures/openspec-change-inventory/current-violations"],
+      "status": 0,
+      "observation": "AUD-001/006/007/008 reproduced; winner=null"
+    }
+  ],
+  "deleted": false
+}

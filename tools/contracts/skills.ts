@@ -6,6 +6,24 @@ export const SKILL_TRIGGER_PATTERN = /\bUse this (skill|helper)\b/i;
 
 export const SKILL_OUTPUT_CONTRACT_PATTERN = /(^## Output\b|^## Output Shapes\b|^## Minimal Ledger\b|^Workers return:|\bReturn:|\bReturn\s+)/m;
 
+export const BEHAVIORAL_SUBSTITUTION_SKILL_NAME = "behavioral-substitution-qualification";
+
+export const BEHAVIORAL_SUBSTITUTION_SKILL_RELATIVE_PATH =
+  "global/skills/behavioral-substitution-qualification/SKILL.md";
+
+export const BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT: readonly string[] = [
+  "Use this skill only",
+  "Stay unloaded for an Ordinary Small exact case",
+  "Actual user/caller integration point",
+  "same actor/request",
+  "owning real boundary",
+  "supported | narrowed | blocked | unknown",
+  "explicit accepted-scope evidence",
+  "evidence-sufficiency-reviewer",
+  "deterministic helpers never invent equivalence",
+  "Never emit an approval, lifecycle stage",
+];
+
 /** Canonical relative path of the portable Change-Ready skill. */
 export const CHANGE_READY_SDLC_SKILL_NAME = "change-ready-sdlc";
 
@@ -267,6 +285,11 @@ export const CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
   "critical-risks-reported | no-critical-risk | blocked",
   "main owns reproduction, classification, correction, parking, and stage transitions",
   "Known documented non-critical limitations do not require an owner quiz",
+  "Blocker self-diagnosis and absence-source qualification",
+  "expected observable phenomenon",
+  "safe positive control",
+  "source is `unqualified`",
+  "narrowest supported claim ceiling",
 ];
 
 /** Outcome-authority markers required in always-loaded global AGENTS routing. */
@@ -288,6 +311,11 @@ export const GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS: readonly string[] = [
   "new decision-changing evidence or a distinct mechanism",
   "absence alone is not a stage blocker",
   "Known non-critical limitations",
+  "Before main declares a technical/evidence blocker",
+  "Product Candidate, Proof Runner, Evaluator, Environment, Authority, or `unknown`",
+  "qualify absence sources",
+  "smallest safe causally distinct falsifying probe",
+  "narrowest supported claim ceiling",
 ];
 
 /**
@@ -350,27 +378,42 @@ export const GLOBAL_AGENTS_TRIGGER_TOKENS: readonly string[] = [
   "run-observe-correct",
 ];
 
-/** Ordered quality/autonomy/speed authority required in always-loaded global AGENTS. */
-export const GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS: readonly string[] = [
-  "## Operating Priorities",
-  "Priority 1 - Quality and safety",
-  "Priority 2 - Autonomy",
-  "Priority 3 - Speed",
-  "time to a verified working result",
-  "owner interruptions",
-  "tokens and tool calls",
-  "repeated manual work",
-  "safe parallelism",
-  "deterministic automation",
-  "Speed never waives proof",
-  "New instructions are a last resort",
+/** First operative section required in always-loaded global AGENTS. */
+export const GLOBAL_AGENTS_CANONICAL_PRINCIPLES_HEADING = "## Canonical Principles";
+
+/** Pointer from operational global AGENTS to the separately loaded philosophy owner. */
+export const GLOBAL_AGENTS_CANONICAL_PRINCIPLES_POINTER_MARKERS: readonly string[] = [
+  GLOBAL_AGENTS_CANONICAL_PRINCIPLES_HEADING,
+  "`principles-of-work.md`",
+  "single complete owner of the working philosophy and priority order",
+  "none may redefine or weaken the canonical principles",
+];
+
+/** Philosophy and priority markers required in the canonical principles file. */
+export const PRINCIPLES_OF_WORK_MARKERS: readonly string[] = [
+  "stable constitution",
+  "Never update it automatically",
+  "## Order Of Precedence",
+  "First, Do No Harm",
+  "Two-Way Door Decisions",
+  "Fast Feedback",
+  "Occam's Razor and KISS",
+  "Kaizen",
+  "Outcome over Output",
+  "Dogfooding / Test What You Ship",
+  "actual installed or loaded entry point",
+  "Goodhart's Law",
+  "Definition of Done",
+  "smallest authorized layer",
+  "User acceptance cannot waive uncontrolled authorization",
+  "Preserve the Worktree",
 ];
 
 /** Exact labels that identify a copied complete operating-priority block. */
 export const OPERATING_PRIORITY_COMPLETE_LABELS: readonly string[] = [
-  "Priority 1 - Quality and safety",
-  "Priority 2 - Autonomy",
-  "Priority 3 - Speed",
+  "First, Do No Harm",
+  "Two-Way Door Decisions",
+  "Fast Feedback",
 ];
 
 /** Runtime/maintenance roots scanned for copied complete priority blocks. */
@@ -436,6 +479,11 @@ export const GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS: readonly string[] = [
   "`Stop Line`",
   "remove, narrow, reuse, local guard, then deferral",
   "Stable Candidate: RC",
+  "Evidence bounds claims",
+  "Claim And Evidence Scope",
+  "behavioral-substitution-qualification",
+  "evidence-sufficiency-reviewer",
+  "blocks only that broad claim",
 ];
 
 /** Exact shift-left cadence markers required on maintained runtime/project mirrors. */
@@ -453,6 +501,20 @@ export const SHIFT_LEFT_REAL_BOUNDARY_SURFACES: readonly string[] = [
   "instructions/reusable-project-agent-instructions.md",
   "instructions/universal-development-loop.md",
   "templates/project/AGENTS.md",
+];
+
+/** Concise live-attempt controls retained in always-loaded global routing. */
+export const GLOBAL_AGENTS_CONCISE_LIVE_ATTEMPT_MARKERS: readonly string[] = [
+  "Two materially similar local attempts without downstream progress",
+  "causally different mechanism",
+  "blocks unchanged repetition",
+  "invocation remains finalized and non-reusable",
+  "does not impose a fixed mission-wide attempt ceiling",
+  "replay the complete reachable evaluator/finalization chain offline",
+  "unknown gate state remains blocked",
+  "materially distinct strategies",
+  "history.md",
+  "Pending Strategy History",
 ];
 
 /**
@@ -480,6 +542,7 @@ export const OUTCOME_FIRST_ROLE_DELTA_SURFACES: readonly string[] = [
   "global/agents/implementation-readiness-reviewer.md",
   "global/agents/openspec-architecture-reviewer.md",
   "global/agents/final-candidate-reviewer.md",
+  "global/agents/evidence-sufficiency-reviewer.md",
   "global/skills/deep-task-planning/SKILL.md",
   "global/skills/next-step/SKILL.md",
   "global/skills/service-architecture-design/SKILL.md",

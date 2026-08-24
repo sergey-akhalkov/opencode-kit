@@ -2,69 +2,70 @@
 
 ## Purpose
 Defines portable OpenCode configuration sources, machine-local separation, schema validation, permissions disclosure, and runtime-loading diagnostics.
+
 ## Requirements
+
 ### Requirement: Three-layer config layering
 
 The repository SHALL maintain these three kit-owned OpenCode configuration files with distinct audiences inside a broader additive runtime source model:
 
 - `opencode.json` (repo root) - the workspace configuration used when a developer runs OpenCode inside this repository, retaining its separate `permission: "ask"` policy.
-- `global/opencode.json.template` - the portable autonomy-first provisioning source shipped with the kit, using `permission: "allow"`.
+- `global/opencode.json.template` - the portable full-catalog compatibility source shipped with the kit; it SHALL NOT be materialized as the new-install default without explicit `all` selection.
 - `global/opencode.json` (gitignored) - the machine-local config provisioned inside the custom directory and editable per machine.
+
+A new core installation SHALL render a schema-valid owner-neutral config with ask-level mutation permissions and no personal facts. An operator MAY explicitly select machine-local autonomy, which writes permissive policy only to the gitignored machine-local config and records that choice in privacy-safe diagnostics. Explicit `all` selection SHALL retain the template's disclosed permissive compatibility policy. Existing machine-local configs SHALL be preserved byte-for-byte unless explicit migration is selected.
 
 The repository SHALL describe OpenCode configuration and artifact loading according to the current official schema, source, and observed runtime. It SHALL distinguish at least remote or managed configuration, the host default global config, explicit `OPENCODE_CONFIG`, project config and `.opencode`, custom `OPENCODE_CONFIG_DIR`, and inline `OPENCODE_CONFIG_CONTENT` where supported. The three kit-owned files SHALL NOT be described as the complete set of sources in the resolved runtime.
 
 `OPENCODE_CONFIG_DIR` SHALL be described as selecting a custom loader-visible directory with precedence, not as proof that the host default global directory is bypassed or unloaded. Claims about `AGENTS.md`, skill, agent, command, plugin, or config precedence SHALL require current docs, source, or isolated live evidence for that artifact class.
 
-The global `allow` default SHALL be documented as permissive tool configuration rather than an OS sandbox or managed safety boundary. Instruction-level protected-boundary rules remain required but SHALL NOT be described as hard permission enforcement.
+Any global `allow` selection SHALL be documented as an explicit machine-local permissive tool configuration rather than an OS sandbox or managed safety boundary. Instruction-level protected-boundary rules remain required but SHALL NOT be described as hard permission enforcement.
 
 The repository MAY additionally ship restricted schema-valid model profile fragments under `global/model-profiles/`. These fragments SHALL NOT be treated as automatically loaded base layers, SHALL contain only model-routing fields, and SHALL take effect only when explicitly supplied as ephemeral `OPENCODE_CONFIG_CONTENT` by the model-profile launcher.
 
 #### Scenario: Contributor identifies the right file
-
 - **WHEN** a contributor needs to change kit default OpenCode behavior other than launch-time model routing
-- **THEN** the README SHALL name which of the three kit-owned files to edit
+- **THEN** the README SHALL name which of the three kit-owned files or runtime-surface manifests to edit
 - **AND** doctor SHALL identify the inspected kit source without claiming that every other runtime source is absent.
 
 #### Scenario: Contributor changes model routing
-
 - **WHEN** a contributor needs a reusable launch-time model matrix
 - **THEN** the README SHALL direct them to a committed or `local:` model profile rather than agent frontmatter or a fourth implicit config layer
 - **AND** it SHALL explain that profile selection starts a new OpenCode process and does not rewrite the three kit-owned files.
 
 #### Scenario: Template seeds the machine-local config
+- **WHEN** default installation runs and `global/opencode.json` does not exist
+- **THEN** the installer SHALL materialize only the reviewed core config and documented local-instructions path through a temporary file plus atomic rename
+- **AND** the new config SHALL use ask-level mutation permissions and contain only official schema fields.
 
-- **WHEN** `tools/install-opencode-global.ts` runs in default mode and `global/opencode.json` does not exist
-- **THEN** the installer SHALL materialize only the documented local-instructions placeholder as an absolute forward-slash path and write the result through a temporary file plus atomic rename
-- **AND** the new file SHALL retain `permission: "allow"`, contain only fields supported by the official OpenCode schema, and provision the gitignored local instruction file from its portable example.
+#### Scenario: Operator explicitly selects machine autonomy
+- **WHEN** the operator selects the documented autonomy mode during provisioning
+- **THEN** permissive main-tool policy is written only to the gitignored machine-local config
+- **AND** portable committed authority remains owner-neutral.
 
 #### Scenario: Existing kit config is preserved
-
-- **WHEN** `global/opencode.json` already exists without the expected absolute local-instructions path
-- **THEN** the installer SHALL preserve its bytes and report the missing path actionably
+- **WHEN** `global/opencode.json` already exists without the expected core/profile metadata or local-instructions path
+- **THEN** the installer SHALL preserve its bytes and report the missing or differing facts actionably
 - **AND** it SHALL NOT migrate or overwrite machine-local configuration.
 
 #### Scenario: Existing legacy config
-
-- **WHEN** installer or doctor encounters an existing `global/opencode.json` containing the previously generated unsupported marker field
+- **WHEN** installer or doctor encounters an existing `global/opencode.json` containing an unsupported marker field
 - **THEN** it SHALL report a blocking diagnostic that instructs the user to remove the field
 - **AND** it SHALL NOT print, rewrite, or discard the user's remaining machine-local configuration.
 
 #### Scenario: Explicit model profile overlay
-
 - **WHEN** the owner selects a valid model profile through the launcher
 - **THEN** only the child OpenCode process SHALL receive the profile as inline configuration
 - **AND** no repository, project, global, machine-local, shell-profile, or managed configuration file SHALL be modified.
 
 #### Scenario: Runtime loads default and custom plugins
-
 - **WHEN** current runtime evidence reports a plugin from the host default config and plugins from `OPENCODE_CONFIG_DIR`
 - **THEN** doctor and documentation report additive sources
 - **AND** they do not claim the host default directory stopped loading.
 
 #### Scenario: Contributor identifies a machine-local instruction source
-
-- **WHEN** a contributor needs personal language or model-routing notes outside portable authority
-- **THEN** documentation uses a gitignored file referenced by the official `instructions` config option
+- **WHEN** a contributor needs personal language, authorization, availability, or model-routing notes outside portable authority
+- **THEN** documentation uses a gitignored file referenced by an official config option
 - **AND** no personal content is committed to portable `global/AGENTS.md`.
 
 ### Requirement: Runtime source diagnostics are privacy-safe and collision-aware
@@ -214,19 +215,6 @@ The maintained proof inventory SHALL include one installed-runtime autonomous-qu
 - **AND** the runner SHALL preserve stdout, stderr, status/log evidence, and environment identity
 - **AND** it SHALL delete its root and child sessions in `finally`.
 
-### Requirement: Guard runtime defaults main permissions to allow
-When enabled, the completion guard config hook SHALL set the merged top-level permission policy to `allow` for the running OpenCode instance. Documentation SHALL state that this is permissive tool configuration, not an OS sandbox or external-operation authorization. Explicit specialist-agent permission rules SHALL remain separately inspectable and effective.
-
-#### Scenario: Project ask is merged under active guard
-- **WHEN** a project config would otherwise resolve an ask-level main permission and the global guard is enabled
-- **THEN** runtime config inspection SHALL show the main permission default as allow
-- **AND** the project file itself SHALL not be rewritten.
-
-#### Scenario: Guard is disabled
-- **WHEN** the configured completion guard is disabled
-- **THEN** it SHALL not mutate the merged permission policy
-- **AND** ordinary OpenCode source precedence SHALL determine permissions.
-
 ### Requirement: Runtime diagnostics identify the pinned PTY source
 Privacy-safe source diagnostics SHALL report the kit-relative PTY bridge, completion guard, pinned `opencode-pty` version, and whether the shared-manager capability check passed. They SHALL not print plugin source, prompts, provider options, or credentials.
 
@@ -309,3 +297,54 @@ whether it was runtime-observed, config-declared, conventional, or unknown.
 - **WHEN** more than one instruction source is discovered without current loader evidence establishing a winner
 - **THEN** every source remains reported and the inventory does not claim precedence or final prompt inclusion
 
+### Requirement: Guard loading preserves config permission precedence
+Portable and machine-local config MAY select permissive main permissions explicitly, but loading the completion guard SHALL NOT modify the merged permission policy. Runtime diagnostics SHALL distinguish configured permission state from guard capability and SHALL not describe plugin mutation as autonomy.
+
+#### Scenario: Portable template remains permissive
+- **WHEN** the portable global template explicitly sets `permission: "allow"`
+- **THEN** runtime may resolve permissive main permissions through normal config precedence
+- **AND** disabling or removing the guard does not change that configured result.
+
+#### Scenario: Consumer narrows permissions
+- **WHEN** a higher-precedence consumer or managed config narrows main permissions
+- **THEN** the guard preserves the resolved restriction
+- **AND** reports a cause-preserving capability gap if a required action cannot run.
+
+### Requirement: Managed config prompt drift is visible without disclosure
+Privacy-safe runtime-source diagnostics SHALL compare managed template-owned prompt fields with the active machine-local managed copy by stable digest and semantic marker inventory without printing prompt text, provider options, or credentials. Drift SHALL be reported as `same`, `different`, `missing`, or `unknown`; diagnostics SHALL not overwrite the active copy.
+
+#### Scenario: Active compaction prompt differs from template
+- **WHEN** the machine-local compaction prompt contains a removed workflow matrix that the committed template no longer contains
+- **THEN** diagnostics report the managed field as different and identify the restart/synchronization boundary
+- **AND** do not expose either prompt body.
+
+### Requirement: MCP installer behavior is completely fixture-tested
+The code-intelligence MCP installer SHALL expose effect-free help, `--check`, and `--dry-run`; probe Serena and Codebase Memory independently; install only missing tools in default mode; preserve working versions; stop on package-manager failure; and report stable privacy-safe executable/result facts. Maintained tests SHALL cover both present, both missing, each partial state, failed probe, failed install, invalid option, check, dry-run, and path-with-spaces behavior.
+
+#### Scenario: One MCP is missing
+- **WHEN** one executable probe succeeds and the other reports missing
+- **THEN** default mode invokes only the documented installer for the missing executable
+- **AND** re-probes it before success
+
+#### Scenario: Check mode finds a missing MCP
+- **WHEN** `--check` observes either executable missing
+- **THEN** it exits non-zero without running a package manager
+- **AND** reports each executable state independently
+
+#### Scenario: Dry-run observes missing MCPs
+- **WHEN** `--dry-run` observes missing executables
+- **THEN** it prints normalized planned argv without installing or initializing anything
+- **AND** exits according to the documented dry-run contract
+
+### Requirement: Workstation path configuration has portable and machine-local owners
+The repository SHALL track a schema-valid workstation configuration example containing placeholders or repository IDs but no absolute maintainer paths. The concrete host mapping SHALL live in a gitignored machine-local file. Tools SHALL require an explicit config path or documented local default and SHALL never infer the maintainer's repositories from the tracked example.
+
+#### Scenario: Clean checkout on another machine
+- **WHEN** the tracked workstation example is inspected after clone
+- **THEN** it contains no absolute user or repository path
+- **AND** preflight explains how to create the ignored local config
+
+#### Scenario: Local config is absent
+- **WHEN** a workstation command requiring repository mappings runs without the machine-local config
+- **THEN** it fails before elevation or host mutation
+- **AND** names the expected safe local path and example

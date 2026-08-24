@@ -1,0 +1,19 @@
+{
+  "archiveCount": 2,
+  "candidateId": "reduce-workflow-ceremony-task-2-r1",
+  "checkpointModes": {
+    "external": "paused-then-verified-without-repeat",
+    "localCommit": "scoped-hooked-no-push"
+  },
+  "cleanup": "complete",
+  "executorCalls": {
+    "sliceA": 2,
+    "sliceB": 1,
+    "sliceC": 0
+  },
+  "persistedRetry": "exhausted-resume-launched-no-executor",
+  "schemaVersion": 1,
+  "status": "complete",
+  "terminalProtectedSlice": "blocked-before-executor",
+  "uncheckedCompletion": "rejected-and-retried"
+}

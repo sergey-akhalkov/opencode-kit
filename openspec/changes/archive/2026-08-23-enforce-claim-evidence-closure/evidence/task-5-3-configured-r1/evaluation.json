@@ -1,0 +1,176 @@
+{
+  "decisionOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case"
+    }
+  ],
+  "digest": "0ed35c697a024f58ba883359f615358cb1fad9e43574b54cc675c83bcda983b2",
+  "evaluation": {
+    "baselineMedians": {
+      "representative-finite-population": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 1,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 4
+      },
+      "exact-finite-environment": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "unavailable-real-oracle": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 4,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 7
+      },
+      "ordinary-small-exact-case": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "ef3108c3d794e7e20da538a45840741e682c583802fc45b27ce977b4be0eec8a",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "baseline.representative-finite-population.1.proof.exitCode",
+      "baseline.representative-finite-population.1.proof.stdout",
+      "baseline.representative-finite-population.1.proof.exitCode",
+      "baseline.representative-finite-population.1.proof.stdout",
+      "baseline.exact-finite-environment.1.proof.exitCode",
+      "baseline.exact-finite-environment.1.proof.stdout",
+      "baseline.exact-finite-environment.1.proof.exitCode",
+      "baseline.exact-finite-environment.1.proof.stdout",
+      "baseline.unavailable-real-oracle.1.proof.exitCode",
+      "baseline.unavailable-real-oracle.1.proof.stdout",
+      "baseline.unavailable-real-oracle.1.proof.exitCode",
+      "baseline.unavailable-real-oracle.1.proof.stdout",
+      "baseline.ordinary-small-exact-case.1.proof.exitCode",
+      "baseline.ordinary-small-exact-case.1.proof.stdout",
+      "baseline.ordinary-small-exact-case.1.proof.exitCode",
+      "baseline.ordinary-small-exact-case.1.proof.stdout",
+      "candidate.representative-finite-population.1.proof.exitCode",
+      "candidate.representative-finite-population.1.proof.stdout",
+      "candidate.representative-finite-population.1.proof.exitCode",
+      "candidate.representative-finite-population.1.proof.stdout",
+      "candidate.exact-finite-environment.1.proof.exitCode",
+      "candidate.exact-finite-environment.1.proof.stdout",
+      "candidate.exact-finite-environment.1.proof.exitCode",
+      "candidate.exact-finite-environment.1.proof.stdout",
+      "candidate.unavailable-real-oracle.1.proof.exitCode",
+      "candidate.unavailable-real-oracle.1.proof.stdout",
+      "candidate.unavailable-real-oracle.1.proof.exitCode",
+      "candidate.unavailable-real-oracle.1.proof.stdout",
+      "candidate.ordinary-small-exact-case.1.proof.exitCode",
+      "candidate.ordinary-small-exact-case.1.proof.stdout",
+      "candidate.ordinary-small-exact-case.1.proof.exitCode",
+      "candidate.ordinary-small-exact-case.1.proof.stdout",
+      "decision-oracle:baseline:representative-finite-population:1",
+      "decision-oracle:candidate:representative-finite-population:1",
+      "decision-oracle:baseline:exact-finite-environment:1",
+      "decision-oracle:candidate:exact-finite-environment:1",
+      "decision-oracle:baseline:unavailable-real-oracle:1",
+      "decision-oracle:candidate:unavailable-real-oracle:1",
+      "decision-oracle:baseline:ordinary-small-exact-case:1",
+      "decision-oracle:candidate:ordinary-small-exact-case:1"
+    ],
+    "scenarioDigest": "bb5205f9e0e883b2d76be7b19b9f2f5dc231909c1f8f44ef2564b99cf72833dc",
+    "sourceDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+    "status": "failed",
+    "digest": "ac492f5dae24a2cb1f1cee615b299669d0153267cad06ce1191bfe447a67972c",
+    "schemaVersion": 1
+  }
+}

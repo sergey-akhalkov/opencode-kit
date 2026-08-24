@@ -1,0 +1,198 @@
+{
+  "decisionOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "narrowed",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "representative-finite-population",
+        "claimDisposition": "narrowed",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "narrowed",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "representative-finite-population",
+        "claimDisposition": "narrowed",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "exact-finite-environment",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "exact-finite-environment",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "unavailable-real-oracle",
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "observed": {
+        "caseId": "unavailable-real-oracle",
+        "claimDisposition": "blocked",
+        "completionDisposition": "continue"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "ordinary-small-exact-case",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "observed": {
+        "caseId": "ordinary-small-exact-case",
+        "claimDisposition": "supported",
+        "completionDisposition": "allow_stop"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case"
+    }
+  ],
+  "digest": "41c55be105aaa48e074ee443f31f3cff9229737ab4626c6861008c20535d4e6f",
+  "evaluation": {
+    "baselineMedians": {
+      "representative-finite-population": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      },
+      "exact-finite-environment": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 1,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "unavailable-real-oracle": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 1,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 8
+      },
+      "ordinary-small-exact-case": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      }
+    },
+    "candidateMedians": {
+      "representative-finite-population": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "exact-finite-environment": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 1,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "unavailable-real-oracle": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "ordinary-small-exact-case": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      }
+    },
+    "environmentDigest": "edf38f888a44885d70da750e960b5cf061a59e27c7af03f20ae217d36cb7b1f6",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "friction-regression:unavailable-real-oracle:failedToolCallCount:1:2"
+    ],
+    "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+    "sourceDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+    "status": "failed",
+    "digest": "e41b33b319500668cbac328eeca36b73e57bd6829884c991c4ad2cce73c23152",
+    "schemaVersion": 1
+  }
+}

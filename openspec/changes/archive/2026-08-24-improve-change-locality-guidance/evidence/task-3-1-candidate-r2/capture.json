@@ -1,0 +1,20 @@
+{
+  "candidateId": "improve-change-locality-guidance-planning-r1",
+  "captureKind": "candidate",
+  "completed": [
+    "delegated-production-ownership",
+    "hypothetical-extension-negative-control"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "4dde4eaa829d739dcc0e918b3e5f17144d014f78d52dddf2aa75c1024bb92a14",
+    "global/agents/implementation-worker.md": "9ae77892fa0032fdb684b8f622ae24868801ef8d815aae9fd6defc9f3d748d75",
+    "global/agents/instruction-artifact-reviewer.md": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468",
+    "global/agents/sdet-quality-engineer.md": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc",
+    "global/skills/instruction-artifact-tuning/SKILL.md": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35",
+    "README.md": "0ee2549bd7dfe96d20fe7cb5e0738da6b93c846b06699df9e371bec33323cedf",
+    "package.json": "131b1b0d43a56cd48e9cf99eb7da4748717be6918a9bef5d57bf8b364aa00493",
+    "tools/proofs/agent-tooling-ergonomics.ts": "6490b8f08adaec0533c919c314377c3f7304aef09daa8847c754724f78945542"
+  }
+}

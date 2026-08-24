@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "detached": false,
+  "branch": "main",
+  "head": "ca43ba441c92dd56f2c751f4583aef41e5c765de",
+  "staged": 290,
+  "unstaged": 142,
+  "untracked": 112,
+  "conflict": 0,
+  "history": 8,
+  "upstreamPresent": true,
+  "truncation": {
+    "omittedBytes": 0,
+    "section": null
+  },
+  "patchBytes": 0
+}

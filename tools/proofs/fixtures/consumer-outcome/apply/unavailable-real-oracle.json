@@ -1,0 +1,5 @@
+{
+  "files": {
+    "decision.json": "{\n  \"caseId\": \"unavailable-real-oracle\",\n  \"claimDisposition\": \"blocked\",\n  \"completionDisposition\": \"continue\"\n}\n"
+  }
+}

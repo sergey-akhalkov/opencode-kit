@@ -1,0 +1,11 @@
+{
+  "candidateId": "reconcile-ownership-r1",
+  "commands": [
+    { "argv": ["openspec.cmd", "validate", "reduce-workflow-ceremony", "--strict"], "status": 0 },
+    { "argv": ["openspec.cmd", "validate", "--all"], "status": 0, "observation": "23 passed, 0 failed" },
+    { "argv": ["node", "tools/openspec-change-inventory.ts", "--root", "."], "status": 0, "observation": "findings=[], Restart overlap resolved, no AUD-001/006/007/008" }
+  ],
+  "restartMutator": "fix-workstation-restart-reliability",
+  "planningOnly": ["optimize-shared-opencode-runtime-resources", "repair-project-inventory-and-maintenance-debt"],
+  "deleted": false
+}

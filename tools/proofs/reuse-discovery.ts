@@ -9,7 +9,7 @@ import { runPortableCommand } from "../../global/bin/portable-process.ts";
 import { loadModelProfile } from "../model-profile.ts";
 
 type Mode = "capture" | "evaluate" | "preflight";
-type Scenario = "local-owner" | "trivial-fix";
+type Scenario = "local-owner" | "trivial-fix" | "extend-existing-owner";
 type CaptureKind = "baseline" | "candidate";
 
 type Arguments = {
@@ -73,11 +73,12 @@ type Bundle = {
   };
 };
 
-const SCENARIOS: readonly Scenario[] = ["local-owner", "trivial-fix"];
+const SCENARIOS: readonly Scenario[] = ["local-owner", "trivial-fix", "extend-existing-owner"];
 
 const PROMPTS: Record<Scenario, string> = {
   "local-owner": "Prepare the implementation decision for adding JSONC parsing to the consumer configuration loader. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition and proof plan. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
   "trivial-fix": "Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
+  "extend-existing-owner": "Prepare the implementation decision for adding an error-status case to the existing formatStatus owner in src/status.ts. The accepted feature is a new case of that current same-responsibility owner. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition that names the current owner. Do not add a sibling module or new file. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
 };
 
 const PROOF_PERMISSION = {
@@ -110,7 +111,7 @@ const TOOL_POLICY = [
 function usage(): string {
   return [
     "Usage:",
-    "  node tools/proofs/reuse-discovery.ts --mode preflight|capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--profile quality-independent] [--scenarios local-owner,trivial-fix]",
+    "  node tools/proofs/reuse-discovery.ts --mode preflight|capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--profile quality-independent] [--scenarios local-owner,trivial-fix,extend-existing-owner]",
     "  node tools/proofs/reuse-discovery.ts --mode evaluate --evidence-root <new-path> --baseline-root <path> --candidate-root <path>",
     "",
     "preflight and evaluate make zero model calls. Each capture scenario makes one configured-provider call in a disposable no-product-mutation workspace.",
@@ -181,6 +182,10 @@ function createEvidenceRoot(root: string): void {
   const parent = path.dirname(root);
   if (!fs.existsSync(parent) || !fs.statSync(parent).isDirectory()) throw new Error(`Evidence parent is unavailable: ${parent}`);
   fs.mkdirSync(root);
+}
+
+function createDisposableRoot(parent: string, prefix: string): string {
+  return fs.mkdtempSync(path.join(parent, prefix));
 }
 
 function writeJson(file: string, value: unknown): void {
@@ -255,8 +260,9 @@ function setupScenario(root: string, scenario: Scenario): string {
   });
   writeText(path.join(workspace, "task.md"), `${PROMPTS[scenario]}\n`);
   if (scenario === "local-owner") {
-    writeText(path.join(workspace, "src", "jsonc.ts"), "export function parseJsonc(value: string): unknown {\n  return JSON.parse(value);\n}\n");
-    writeText(path.join(workspace, "src", "loader.ts"), "import { parseJsonc } from \"./jsonc.ts\";\nexport const loadConfig = parseJsonc;\n");
+    writeText(path.join(workspace, "src", "loader.ts"), "export function loadConfig(value: string): unknown {\n  return JSON.parse(value);\n}\n");
+  } else if (scenario === "extend-existing-owner") {
+    writeText(path.join(workspace, "src", "status.ts"), "export function formatStatus(code: \"ok\" | \"warn\"): string {\n  if (code === \"ok\") return \"OK\";\n  return \"WARN\";\n}\n");
   } else {
     writeText(path.join(workspace, "src", "greeting.ts"), "export function greeting(name: string): string {\n  return `Hello, ${name}.`;\n}\n");
   }
@@ -282,6 +288,7 @@ function fixtureHashes(workspace: string): Record<string, string | null> {
     "src/jsonc.ts",
     "src/loader.ts",
     "src/greeting.ts",
+    "src/status.ts",
     "projects/alpha/package.json",
     "projects/alpha/src/jsonc.ts",
     "projects/alpha/proofs/jsonc.md",
@@ -375,7 +382,7 @@ function eventFacts(stdout: string): Bundle["facts"] {
 
 function captureScenario(args: Arguments, scenario: Scenario): Bundle {
   const root = repositoryRoot();
-  const proofRoot = fs.mkdtempSync(path.join(os.tmpdir(), `reuse-discovery-${scenario}-`));
+  const proofRoot = createDisposableRoot(args.evidenceRoot, `workspace-${scenario}-`);
   const evidenceFile = path.join(args.evidenceRoot, `${scenario}.bundle.json`);
   const sessionDeleteStatuses: Array<{ sessionID: string; status: number | null }> = [];
   let bundle: Bundle | null = null;
@@ -455,7 +462,7 @@ function collectNames(value: unknown): string[] {
 function preflight(args: Arguments): void {
   createEvidenceRoot(args.evidenceRoot);
   const root = repositoryRoot();
-  const proofRoot = fs.mkdtempSync(path.join(os.tmpdir(), "reuse-discovery-preflight-"));
+  const proofRoot = createDisposableRoot(args.evidenceRoot, "workspace-preflight-");
   const outputFile = path.join(args.evidenceRoot, "preflight.json");
   const record: Record<string, unknown> = {
     candidateId: args.candidateId,
@@ -536,6 +543,16 @@ function disposition(text: string): boolean {
   return /\b(reuse|extend|build-minimal)\b/i.test(text);
 }
 
+function namesCurrentOwner(text: string): boolean {
+  return /\bformatStatus\b/.test(text) || /src\/status\.ts/.test(text);
+}
+
+function proposesSiblingModule(text: string): boolean {
+  return /\b(add|create|new)\s+(a\s+)?(sibling\s+)?(file|module)\b/i.test(text)
+    || /\bformatErrorStatus\b/.test(text)
+    || /\berror-status\.ts\b/.test(text);
+}
+
 function crossProjectState(text: string): boolean {
   return /cross-project[^\n]*(verified|degraded|not-applicable)/i.test(text)
     || /кросс-проект[^\n]*(verified|degraded|not-applicable)/i.test(text)
@@ -543,7 +560,14 @@ function crossProjectState(text: string): boolean {
 }
 
 function readBundle(root: string, scenario: Scenario): Bundle {
-  return JSON.parse(fs.readFileSync(path.join(root, `${scenario}.bundle.json`), "utf8")) as Bundle;
+  const file = path.join(root, `${scenario}.bundle.json`);
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8")) as Bundle;
+  } catch (error) {
+    const wrapped = new Error(`Unable to read ${scenario} bundle: ${file}`) as Error & { cause?: unknown };
+    wrapped.cause = error;
+    throw wrapped;
+  }
 }
 
 function evaluate(args: Arguments): void {
@@ -552,11 +576,23 @@ function evaluate(args: Arguments): void {
   const candidateRoot = path.resolve(args.candidateRoot);
   const baselineLocal = readBundle(baselineRoot, "local-owner");
   const baselineTrivial = readBundle(baselineRoot, "trivial-fix");
+  const baselineExtend = readBundle(baselineRoot, "extend-existing-owner");
   const candidateLocal = readBundle(candidateRoot, "local-owner");
   const candidateTrivial = readBundle(candidateRoot, "trivial-fix");
+  const candidateExtend = readBundle(candidateRoot, "extend-existing-owner");
+  if (
+    candidateLocal.environment.model !== baselineLocal.environment.model
+    || candidateLocal.environment.profile !== baselineLocal.environment.profile
+    || candidateLocal.environment.route !== baselineLocal.environment.route
+  ) {
+    throw new Error(
+      `Source/environment mismatch: baseline ${baselineLocal.environment.route} candidate ${candidateLocal.environment.route}`,
+    );
+  }
   createEvidenceRoot(args.evidenceRoot);
   const facts = {
     baseline: {
+      extendElapsedMs: baselineExtend.facts.elapsedMs,
       localElapsedMs: baselineLocal.facts.elapsedMs,
       localLoadedSkill: toolCalled(baselineLocal, "skill"),
       localRegistryCall: registryCall(baselineLocal),
@@ -565,6 +601,13 @@ function evaluate(args: Arguments): void {
       trivialRegistryCall: registryCall(baselineTrivial),
     },
     candidate: {
+      extendCleanup: candidateExtend.cleanup.removed && candidateExtend.cleanup.error == null,
+      extendDisposition: /\bextend\b/i.test(candidateExtend.facts.assistantText),
+      extendNamesOwner: namesCurrentOwner(candidateExtend.facts.assistantText),
+      extendNoBashCall: !toolCalled(candidateExtend, "bash"),
+      extendNoSibling: !proposesSiblingModule(candidateExtend.facts.assistantText),
+      extendSourceStable: JSON.stringify(candidateExtend.sideEffects.before) === JSON.stringify(candidateExtend.sideEffects.after),
+      extendStatus: candidateExtend.command.status,
       localCleanup: candidateLocal.cleanup.removed && candidateLocal.cleanup.error == null,
       localDisposition: disposition(candidateLocal.facts.assistantText),
       localLoadedReuseSkill: candidateLocal.facts.toolCalls.some((call) => call.name === "skill" && JSON.stringify(call.input).includes("reuse-discovery")),

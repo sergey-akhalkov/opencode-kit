@@ -17,6 +17,7 @@ import {
   captureArbiterEvidence,
   requireBoundedRequest,
 } from "./arbiter-evidence.ts";
+import { sharedArbiterScheduler } from "./arbiter-scheduler.ts";
 import { ensureArbiterChild } from "./arbiter-child.ts";
 import { GuardAuditMonitorLauncher } from "./audit-monitor.ts";
 import { isExplicitHumanStop, isGuardSyntheticPart, syntheticAsyncMarker } from "./control.ts";
@@ -30,7 +31,7 @@ import { AsyncLeaseRegistry } from "./leases.ts";
 import { PtyFallbackScheduler } from "./pty-fallback.ts";
 import { normalizeQuestionRequest } from "./question.ts";
 import {
-  applyPermissionAllow,
+  configuredPermissionClass,
   createAuditID,
   dataOf,
   ensureNoError,
@@ -50,6 +51,11 @@ import {
   hasVerifiedTroubleshooter,
   strategyFingerprint,
 } from "./strategy.ts";
+import {
+  createTerminalCertificateChallenge,
+  evaluateTerminalCertificate,
+} from "./terminal-certificate.ts";
+import { terminalClaimBindings } from "./claim-evidence.ts";
 import type {
   AuditEpoch,
   CompletionVerdict,
@@ -99,10 +105,18 @@ function auditErrorClass(error: unknown): "capability" | "cancelled" | "input-st
   const details = safeError(error, "unknown");
   const material = `${details.name} ${details.message ?? ""} ${details.cause?.name ?? ""} ${details.cause?.message ?? ""}`;
   if (/abort|cancel|stale/i.test(material)) return "cancelled";
-  if (/configured hidden completion arbiter route|capability|unsupported/i.test(material)) return "capability";
+  if (/configured hidden completion arbiter route|capability|unsupported|permission|forbidden|unauthori[sz]ed|access denied|not allowed/i.test(material)) return "capability";
   if (/not found|ownership|multiple retained|limit reached|schema|correlation|evidence|invalid completion|exact json/i.test(material)) return "input-state";
   if (/provider|network|temporar|rate|timeout|unavailable|connection|fetch/i.test(material)) return "transient";
   return "transient";
+}
+
+function certificateRequirementIds(value: unknown): string[] | null {
+  if (!Array.isArray(value) || value.length === 0 || value.length > 100) return null;
+  const ids = value.filter((item): item is string =>
+    typeof item === "string" && item !== "" && item.length <= 200 && !/[\r\n\0]/.test(item)
+  ).sort();
+  return ids.length === value.length && new Set(ids).size === ids.length ? ids : null;
 }
 
 function sessionRows(payload: unknown): Session[] {
@@ -119,7 +133,9 @@ export class SessionCompletionController {
   private readonly roots = new Map<string, RootState>();
   private readonly ptyFallback: PtyFallbackScheduler;
   private readonly status: GuardStatusReporter;
+  private configuredPermission: ReturnType<typeof configuredPermissionClass> = "unspecified";
   private disposed = false;
+  private permissionDiagnosticLogged = false;
   private readonly ptyUpdate = (info: PTYSessionInfo): void => this.leases.onManagerUpdate(info);
 
   constructor(input: PluginInput, rawOptions: Record<string, unknown>, client: OpencodeClient) {
@@ -154,7 +170,7 @@ export class SessionCompletionController {
     }, 0);
     return {
       config: async (config) => {
-        applyPermissionAllow(config);
+        this.configuredPermission = configuredPermissionClass(config.permission);
         configureGrindCommands(config);
       },
       "command.execute.before": async (input, output) => this.onCommand(input, output),
@@ -386,6 +402,13 @@ export class SessionCompletionController {
   }
 
   private async onEvent(event: Record<string, unknown>): Promise<void> {
+    if (!this.permissionDiagnosticLogged) {
+      this.permissionDiagnosticLogged = true;
+      void this.log("info", "completion guard permission capability state", {
+        configuredPermission: this.configuredPermission,
+        guardCapability: "checked-at-operation",
+      });
+    }
     const type = stringValue(event.type);
     const properties = record(event.properties) ?? {};
     const sessionID = stringValue(properties.sessionID) ?? stringValue(record(properties.info)?.id);
@@ -415,6 +438,19 @@ export class SessionCompletionController {
       }
       return;
     }
+    if (type === "session.updated") {
+      const state = this.roots.get(sessionID);
+      if (state != null) {
+        const latest = record(properties.info);
+        if (latest?.id === sessionID) state.root = latest as Session;
+        const mission = record(record(state.root.metadata)?.roadmapMission);
+        if (mission?.certificateStatus === "issued") {
+          this.invalidateAudit(state.root.id, "terminal certificate arrived");
+          this.scheduleIdle(state);
+        }
+      }
+      return;
+    }
     if (type === "message.updated") {
       const info = record(properties.info);
       if (info?.role === "assistant") {
@@ -422,10 +458,11 @@ export class SessionCompletionController {
         if (state != null && state.root.id === sessionID) {
           const messageID = stringValue(info.id);
           if (messageID != null && messageID !== state.lastAssistantID) {
+            const guardTurn = state.guardTurnPending;
             state.lastAssistantID = messageID;
             if (!state.controlTurnPending) state.guardTurnPending = false;
             state.compacting = false;
-            this.invalidateAudit(state.root.id, "assistant revision changed");
+            if (!guardTurn) this.invalidateAudit(state.root.id, "assistant revision changed");
           }
         }
       }
@@ -533,6 +570,7 @@ export class SessionCompletionController {
     const statuses = await this.sessionStatuses();
     if (statuses[state.root.id] != null && statuses[state.root.id]?.type !== "idle") {
       state.state = "running";
+      if (state.terminalCertificate.status === "waiting") this.scheduleIdle(state);
       return;
     }
     const children = await this.childStatuses(state, statuses);
@@ -562,6 +600,8 @@ export class SessionCompletionController {
     const inspection = await this.inspectRoot(state);
     if (inspection.revision.leaseGeneration !== expectedGeneration) return;
     if (state.lastAuditedRevision === inspection.revision.revisionDigest && state.state === "passed") return;
+    const certificate = await this.tryTerminalCertificate(state, inspection);
+    if (certificate !== "fallback") return;
     const recovery = state.recoveryAudit;
     if (recovery != null) {
       if (recovery.inspectedRevision !== inspection.revision.revisionDigest) {
@@ -592,6 +632,154 @@ export class SessionCompletionController {
       }
     }
     await this.beginAudit(state, inspection, "completion", null);
+  }
+
+  private async tryTerminalCertificate(
+    state: RootState,
+    inspection: RootInspection,
+  ): Promise<"accepted" | "fallback" | "waiting"> {
+    state.root = await this.session(state.root.id);
+    const mission = record(state.root.metadata?.roadmapMission);
+    const issuer = stringValue(mission?.certificateIssuer);
+    if (issuer == null) {
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer: null,
+        reason: null,
+        status: "not-configured",
+      };
+      return "fallback";
+    }
+    const requirementIds = certificateRequirementIds(mission?.acceptedRequirementIds);
+    if (!this.options.certificateIssuers.includes(issuer) || requirementIds == null) {
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer,
+        reason: requirementIds == null ? "missing-requirement" : "unknown-issuer",
+        status: "rejected",
+      };
+      return "fallback";
+    }
+    const completionEvidence = captureArbiterEvidence(
+      state.root.id,
+      hashRef("session", state.root.id),
+      this.input.directory,
+      state.root.metadata,
+    );
+    const claimEvidence = completionEvidence.claimEvidence;
+    const claimBindings = terminalClaimBindings(claimEvidence);
+    if (claimBindings.reason != null) {
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer,
+        reason: claimBindings.reason,
+        status: "rejected",
+      };
+      return "fallback";
+    }
+    const { acceptedClaimIds, claimEvidenceRefs } = claimBindings;
+    const challenge = createTerminalCertificateChallenge({
+      acceptedClaimIds,
+      claimEvidenceRefs,
+      issuer,
+      leaseGeneration: inspection.revision.leaseGeneration,
+      requirementIds,
+      revisionDigest: inspection.revision.revisionDigest,
+      rootRef: hashRef("session", state.root.id),
+    });
+    const pendingQuestion = [...state.questions.values()].some((question) =>
+      question.state !== "guard-answered" && question.state !== "human-replied"
+    );
+    const certificateStatus = stringValue(mission?.certificateStatus);
+    if (certificateStatus === "declined") {
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer,
+        reason: stringValue(mission?.certificateReason) ?? "issuer-declined",
+        status: "declined",
+      };
+      return "fallback";
+    }
+    if (mission?.terminalCertificate != null) {
+      const evaluated = evaluateTerminalCertificate({
+        certificate: mission.terminalCertificate,
+        challenge,
+        configuredIssuers: this.options.certificateIssuers,
+        pendingQuestion,
+      });
+      if (evaluated.status === "accepted") {
+        state.lastAuditedRevision = inspection.revision.revisionDigest;
+        state.recoveryAudit = null;
+        state.terminalCertificate = {
+          acceptedClaimIds: evaluated.certificate.acceptedClaimIds,
+          challenge: null,
+          claimEvidenceRefs: evaluated.certificate.claimEvidenceRefs,
+          deadlineAt: null,
+          evidenceRefs: evaluated.certificate.evidenceRefs,
+          issuer: evaluated.certificate.issuer,
+          reason: null,
+          status: "accepted",
+        };
+        await this.status.set(state, "passed", "Completion guard passed (certified)", "success");
+        return "accepted";
+      }
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer,
+        reason: evaluated.reason,
+        status: "rejected",
+      };
+      return "fallback";
+    }
+    if (pendingQuestion) {
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer,
+        reason: "pending-question",
+        status: "rejected",
+      };
+      return "fallback";
+    }
+    const sameChallenge = state.terminalCertificate.challenge?.challengeRef === challenge.challengeRef;
+    const deadlineAt = sameChallenge && state.terminalCertificate.deadlineAt != null
+      ? state.terminalCertificate.deadlineAt
+      : Date.now() + this.options.certificateWaitMs;
+    if (Date.now() >= deadlineAt) {
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: [],
+        issuer,
+        reason: "issuer-timeout",
+        status: "expired",
+      };
+      return "fallback";
+    }
+    state.terminalCertificate = {
+      acceptedClaimIds,
+      challenge,
+      claimEvidenceRefs,
+      deadlineAt,
+      evidenceRefs: [],
+      issuer,
+      reason: null,
+      status: "waiting",
+    };
+    await this.status.persist(state);
+    this.scheduleIdle(state);
+    return "waiting";
   }
 
   private async inspectRoot(state: RootState): Promise<RootInspection> {
@@ -657,11 +845,27 @@ export class SessionCompletionController {
       const auditSignal = state.auditAbort?.signal;
       epoch.attempt += 1;
       state.auditDiagnostics.attempt = epoch.attempt;
-      const completionEvidence = epoch.completionEvidence ?? captureArbiterEvidence(epoch.rootSessionID, epoch.rootRef);
+      const completionEvidence = epoch.completionEvidence ?? captureArbiterEvidence(
+        epoch.rootSessionID,
+        epoch.rootRef,
+        this.input.directory,
+        state.root.metadata,
+      );
       epoch.completionEvidence = completionEvidence;
       const promptText = retryReason == null
         ? buildArbiterAuditRequest(epoch, inspection, completionEvidence)
         : buildArbiterRetryRequest(epoch, retryReason);
+      const slot = await sharedArbiterScheduler(
+        this.options.arbiterActiveLimit,
+        this.options.arbiterQueueLimit,
+      ).acquire(state.root.id, epoch.auditID, auditSignal);
+      if (slot === "overload") throw new Error("Arbiter scheduler queue limit reached");
+      if (slot !== "acquired") return;
+      if (!this.isCurrentAudit(state, epoch)) {
+        sharedArbiterScheduler().release(state.root.id, epoch.auditID);
+        return;
+      }
+      try {
       state.auditDiagnostics.requestBytes = requireBoundedRequest(promptText, this.options.maxRequestBytes);
       const { child, retainedChildCount, route } = await ensureArbiterChild(
         this.client,
@@ -706,6 +910,9 @@ export class SessionCompletionController {
       const verdict = parseCompletionVerdictText(result.parts, epoch);
       state.auditDiagnostics.endedAt = Date.now();
       await this.applyVerdict(state, epoch, verdict);
+      } finally {
+        sharedArbiterScheduler().release(state.root.id, epoch.auditID);
+      }
     } catch (error) {
       if (state.auditAbort?.signal.aborted || state.activeAudit?.auditID !== epoch.auditID || state.paused) return;
       await this.retryAudit(state, inspection, epoch, error);
@@ -1077,6 +1284,7 @@ export class SessionCompletionController {
     };
     const current = await this.currentInspection(state, epoch);
     if (current == null) return;
+    state.guardTurnPending = true;
     await ensureNoError(this.client.session.promptAsync({
       sessionID: state.root.id,
       directory: state.root.directory,
@@ -1092,6 +1300,7 @@ export class SessionCompletionController {
       }],
     }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "session.promptAsync owner handoff");
     if (!this.isCurrentAudit(state, epoch)) return;
+    state.paused = true;
     state.guardTurnPending = true;
     this.cancelAudit(state, "owner-required");
     await this.status.set(state, "owner-required", "Owner response required", "warning");
@@ -1099,6 +1308,7 @@ export class SessionCompletionController {
 
   private async injectCycleBudgetHandoff(state: RootState, epoch: AuditEpoch): Promise<void> {
     const context = restoredPromptContext(state.root, state.promptContext);
+    state.guardTurnPending = true;
     await ensureNoError(this.client.session.promptAsync({
       sessionID: state.root.id,
       directory: state.root.directory,
@@ -1114,8 +1324,10 @@ export class SessionCompletionController {
       }],
     }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "session.promptAsync cycle budget handoff");
     if (!this.isCurrentAudit(state, epoch)) return;
+    state.paused = true;
     state.guardTurnPending = true;
     this.cancelAudit(state, "owner-required");
+    await this.status.set(state, "owner-required", "Owner response required", "warning");
   }
 
   private async owningFailure(state: RootState, boundary: string, error: unknown): Promise<void> {
@@ -1125,11 +1337,21 @@ export class SessionCompletionController {
     }
     if (!state.grindEnabled) return;
     this.cancelAudit(state, "error");
+    const errorClass = auditErrorClass(error);
     await this.log("error", `${boundary} failed`, {
       error: safeError(error, state.root.id),
+      errorClass,
+      guardCapability: boundary,
       rootRef: hashRef("session", state.root.id),
     });
-    await this.status.set(state, "error", `${boundary} failed; guard is fail-closed`, "error");
+    await this.status.set(
+      state,
+      "error",
+      errorClass === "capability"
+        ? `${boundary} unavailable under configured permissions; guard is fail-closed`
+        : `${boundary} failed; guard is fail-closed`,
+      "error",
+    );
   }
 
   private clearRoot(sessionID: string): void {

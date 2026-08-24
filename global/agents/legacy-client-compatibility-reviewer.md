@@ -34,6 +34,12 @@ You are a read-only legacy client compatibility reviewer. Find mismatches betwee
 
 `instructions/leaf-reviewer-agent-contract.md`
 
+## Practice Ownership
+
+- Practice ID: `legacy-client-compatibility`
+- Refer historical source support to `legacy-contract-evidence`.
+- Do not decide the product result.
+
 ## Checks
 
 - API names, IDs, parameters, return values, errors, events, and side effects match required compatibility.

@@ -1,6 +1,6 @@
 # Quality Gates
 
-Quality gates make the Universal Development Loop executable and reviewable. They protect quality first while proportional scope, focused checks, autonomous defaults, and risk-driven breadth minimize time to a verified result.
+Quality gates make the Universal Development Loop executable and reviewable. They preserve honest quality while the shortest verified path, autonomous defaults, token-efficient evidence, and continuous improvement minimize time to the accepted result. A concrete obstructive gate is fixed, narrowed, or removed at the smallest authorized layer, never bypassed by weakening safety or proof.
 
 The canonical loop definition lives at `instructions/universal-development-loop.md`; this document only describes the gate matrix and adapter commands that operate on top of it.
 
@@ -12,9 +12,9 @@ The canonical loop definition lives at `instructions/universal-development-loop.
 | First sufficient real signal | Each behavior dependency chain, before dependent expansion | Current rung, first safely reachable real boundary sufficient for the accepted effect, or a path-scoped blocker/unblocker or goal-preserving replan plus authorization, safeguards, restoration, and evidence plan |
 | Happy-path proof | Behavior-changing code | Observable execution at the relevant user-facing or system boundary |
 | Project doctor | After bootstrap and before lifecycle automation | `npm run doctor -- --project <path> --require structural|qualification|unattended`; exit `0` and an empty selected blocker array |
-| Independent critical SDET | Material behavior, after MVP and accepted-scope completion | Fresh test-only SDET, reachable critical-risk matrix, smallest critical reproducer when needed, and mock confidence gaps |
-| Code-quality reduction reviewer | Optional after MVP for concrete maintainability risk | Read-only safe net-reduction matrix or evidence-backed empty matrix |
-| Test-coverage reviewer | Optional after MVP for concrete oracle risk | Requirement-to-test risk matrix and meaningful oracle gaps |
+| Independent critical SDET | Reachable named critical consequence or explicit requirement, after proof and accepted-scope completion | Fresh test-only SDET, reachable critical-risk matrix, smallest critical reproducer when needed, and mock confidence gaps |
+| Code-quality reduction reviewer | Optional after current proof for concrete maintainability risk | Read-only safe net-reduction matrix or evidence-backed empty matrix |
+| Test-coverage reviewer | Optional after current proof for concrete oracle risk | Requirement-to-test risk matrix and meaningful oracle gaps |
 | Implementation-readiness reviewer | Risky plans/specs or blocked requirements | Scope, decisions, blockers, validation path |
 | Final validation | Boundary/API/data/deployment/compatibility change | Broader project command result |
 

@@ -1,6 +1,6 @@
 # Token Economy
 
-Speed means time to a verified working result, fewer owner interruptions, fewer tokens/tool calls, less repeated manual work, more safe parallelism, and deterministic automation. Token economy is one mechanism: lower context cost leaves more budget for reasoning, validation, and review, but never justifies weaker proof.
+Token economy is a first-class part of the working philosophy alongside quality, shortest verified path, autonomy, and continuous improvement. Lower context cost leaves more budget for reasoning, validation, and review, but never justifies weaker proof, hidden risk, proxy substitution, or loss of a material fact.
 
 ## Rules
 
@@ -12,6 +12,7 @@ Speed means time to a verified working result, fewer owner interruptions, fewer 
 - Run one relevant reviewer gate by risk, not all reviewers.
 - Keep handoffs compact: outcome, changed files, evidence, validation, residual risks.
 - Convert repeated counting, drift checks, and report assembly into deterministic helpers.
+- At relevant checkpoints, use observed cost and failure evidence to improve context use. Fix, narrow, or remove concrete token-wasting rules, tools, and process steps at the smallest authorized layer; avoid unrelated cleanup or speculative automation.
 
 ## Commands
 
@@ -40,19 +41,22 @@ on-demand bodies, and unknown sources. Its token proxy is `ceil(chars / 4)`, not
 provider tokenization or proof that a candidate reaches the final prompt. Remote
 URLs, globs, inline config, malformed config, and unreadable files remain unknown.
 
-The checked-in `config/instruction-budget.json` is the only budget seed. It stores
-reviewed maxima only; measurements and drift are derived from source:
+The checked-in schema-v2 `config/instruction-budget.json` is the only budget seed.
+It measures committed global startup authority as the combined
+`global/principles-of-work.md` and `global/AGENTS.md` token proxy, with separate maxima for maintained
+discovery metadata, and maintained on-demand bodies; measurements and drift are
+derived from source:
 
 ```sh
 npm run instruction:budget -- --format markdown
 ```
 
-The current reviewed maxima grandfather existing debt and prevent further growth.
-Historical reduction targets remain `13,279` for committed `global/AGENTS.md` and
-`84,513` for the catalog; meeting those lower targets requires a separate content
-reduction change. Review any intentional new baseline produced by
-`npm run instruction:budget -- --materialize-seed`; never regenerate merely to
-silence a failure.
+The reviewed maxima are `13,279` startup tokens, `2,239` discovery-metadata tokens,
+and `66,244` on-demand-body tokens. They are growth brakes, not claims that every
+source enters one prompt. `npm run instruction:budget -- --materialize-seed` may
+only retain or lower every maximum; growth fails without seed mutation and requires
+a direct reviewed seed edit with rationale. A malformed seed also requires direct
+review and is never repaired by materialization.
 
 Code navigation risk:
 

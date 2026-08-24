@@ -1,0 +1,15 @@
+{
+  "candidateId": "task-2-2-owner-correction-preflight-r2",
+  "cleanup": "complete",
+  "error": "OpenCode server readiness timed out: server session readiness timed out after 15000ms",
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 0,
+    "requestKinds": []
+  },
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "serverLogTail": "",
+  "stage": "setup",
+  "status": "failed"
+}

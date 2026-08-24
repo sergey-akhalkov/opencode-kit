@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "taskId": "5.2",
+  "complete": true,
+  "rows": [
+    { "scenario": "practice-maintenance", "launchedOwners": [], "status": 0, "note": "Main stayed read-only; no maintenance owner launch." },
+    { "scenario": "owner-self-change", "launchedOwners": [], "status": 0, "note": "Correctly did not use instruction-artifact-reviewer as sole self-evidence." }
+  ]
+}

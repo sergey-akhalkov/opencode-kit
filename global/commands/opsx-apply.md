@@ -155,6 +155,7 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 ```
 
 **Guardrails**
+- If required, keep exactly one `N.N [automation-dividend]` task and use `node global/bin/repo-candidate-snapshot.ts` for Git inspection.
 - Choose smallest dependency-valid pending slice to the earliest real boundary; continue until done unless the user bounded this request, interrupts, or an exact owner boundary stops it
 - Always read context files before starting (from the apply instructions output)
 - If a task's accepted behavior or protected semantics are materially ambiguous and lack a safe reversible interpretation, pause and ask one exact question

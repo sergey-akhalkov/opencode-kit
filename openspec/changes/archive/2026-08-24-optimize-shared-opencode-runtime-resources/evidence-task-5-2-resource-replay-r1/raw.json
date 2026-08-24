@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "baseline": {
+    "source": "evidence-task-1-1-baseline-r1",
+    "samplesMiB": [
+      936.743,
+      936.743,
+      936.743
+    ],
+    "medianMiB": 936.743
+  },
+  "candidate": {
+    "sources": [
+      "evidence-task-2-2-integration-r10",
+      "evidence-task-2-2-integration-r11"
+    ],
+    "samplesMiB": [
+      469.695,
+      469.59700000000004
+    ],
+    "medianMiB": 469.695
+  },
+  "readiness": {
+    "baselineMs": 18100,
+    "candidateMs": 1434
+  }
+}

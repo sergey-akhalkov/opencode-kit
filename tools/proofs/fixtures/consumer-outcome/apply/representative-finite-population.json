@@ -1,0 +1,5 @@
+{
+  "files": {
+    "decision.json": "{\n  \"caseId\": \"representative-finite-population\",\n  \"claimDisposition\": \"narrowed\",\n  \"completionDisposition\": \"continue\"\n}\n"
+  }
+}

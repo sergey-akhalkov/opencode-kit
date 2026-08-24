@@ -1,0 +1,122 @@
+{
+  "candidateId": "task-2-2-propose-r3",
+  "cleanup": "complete",
+  "environment": {
+    "directoryMatched": true,
+    "node": "v24.3.0",
+    "platform": "win32"
+  },
+  "executor": {
+    "argv": [
+      "bun.exe",
+      "<source-root>\\global\\bin\\roadmap-mission-session-executor.ts",
+      "execute",
+      "--root",
+      "<project-root>",
+      "--server-url",
+      "http://127.0.0.1:55948",
+      "--mission",
+      "mission.json",
+      "--slice",
+      "slice-a",
+      "--attempt",
+      "1",
+      "--result",
+      "evidence/mission/attempt-1/result.json",
+      "--timeout-ms",
+      "30000"
+    ],
+    "exitCode": 0,
+    "signal": null,
+    "stderr": "[roadmap-mission-executor slice-a/opsx-propose] starting\n[roadmap-mission-executor slice-a/opsx-propose] guard=passed\n[roadmap-mission-executor slice-a/opsx-apply] starting\n[roadmap-mission-executor slice-a/opsx-apply] guard=passed\n",
+    "stdout": "{\n  \"attempt\": 1,\n  \"changeId\": \"change-a\",\n  \"cleanup\": \"complete\",\n  \"definitionDigest\": \"a5340d3eabae723bb9ed1c6bfbb3710de44cb3705aa588ae9936c91956b2f33e\",\n  \"disposition\": \"completed\",\n  \"errorClass\": \"none\",\n  \"errorMessage\": null,\n  \"evidenceRefs\": [\n    \"evidence/mission/attempt-1/result.opsx-apply.json\",\n    \"evidence/mission/attempt-1/result.opsx-propose.json\",\n    \"evidence/mission/attempt-1/result.runtime-inspection.json\"\n  ],\n  \"guardState\": \"passed\",\n  \"missionId\": \"same-runtime-proof\",\n  \"phases\": [\n    {\n      \"command\": \"opsx-propose\",\n      \"evidenceRef\": \"evidence/mission/attempt-1/result.opsx-propose.json\",\n      \"status\": \"completed\"\n    },\n    {\n      \"command\": \"opsx-apply\",\n      \"evidenceRef\": \"evidence/mission/attempt-1/result.opsx-apply.json\",\n      \"status\": \"completed\"\n    }\n  ],\n  \"questionDisposition\": \"none\",\n  \"rootSessionRef\": \"ses_ff3a94779ffeMXzhJK0B7cglEB\",\n  \"runtimeRef\": \"84bc7177403c08f7bf37e20383dd7402eee17ec70eaef2840aa24d9a56e1fa73\",\n  \"schemaVersion\": 1,\n  \"sliceId\": \"slice-a\",\n  \"tool\": \"roadmap-mission-session-executor\",\n  \"writerClosure\": \"terminal\"\n}\n"
+  },
+  "provider": {
+    "arbiterCalls": 2,
+    "primaryCalls": 2,
+    "requestKinds": [
+      "primary",
+      "arbiter-1",
+      "primary",
+      "arbiter-2"
+    ]
+  },
+  "result": {
+    "attempt": 1,
+    "changeId": "change-a",
+    "cleanup": "complete",
+    "definitionDigest": "a5340d3eabae723bb9ed1c6bfbb3710de44cb3705aa588ae9936c91956b2f33e",
+    "disposition": "completed",
+    "errorClass": "none",
+    "errorMessage": null,
+    "evidenceRefs": [
+      "evidence/mission/attempt-1/result.opsx-apply.json",
+      "evidence/mission/attempt-1/result.opsx-propose.json",
+      "evidence/mission/attempt-1/result.runtime-inspection.json"
+    ],
+    "guardState": "passed",
+    "missionId": "same-runtime-proof",
+    "phases": [
+      {
+        "command": "opsx-propose",
+        "evidenceRef": "evidence/mission/attempt-1/result.opsx-propose.json",
+        "status": "completed"
+      },
+      {
+        "command": "opsx-apply",
+        "evidenceRef": "evidence/mission/attempt-1/result.opsx-apply.json",
+        "status": "completed"
+      }
+    ],
+    "questionDisposition": "none",
+    "rootSessionRef": "ses_ff3a94779ffeMXzhJK0B7cglEB",
+    "runtimeRef": "84bc7177403c08f7bf37e20383dd7402eee17ec70eaef2840aa24d9a56e1fa73",
+    "schemaVersion": 1,
+    "sliceId": "slice-a",
+    "tool": "roadmap-mission-session-executor",
+    "writerClosure": "terminal"
+  },
+  "runtimeEvidence": [
+    {
+      "name": "result.json",
+      "sha256": "c945a6e783abc7e14d416d19bcba6fa1669b89aedb03de0787adf53fb2c61b5d"
+    },
+    {
+      "name": "result.opsx-apply.json",
+      "sha256": "fe01252bc51a0626d64b94692ba95c5299bbbfcf7cc0ef5dedec9cac6d3cc88e"
+    },
+    {
+      "name": "result.opsx-propose.json",
+      "sha256": "bc395d2b7bba2049db88a398281ed10f1a4d9f3d3822af2debe539395e246e65"
+    },
+    {
+      "name": "result.runtime-inspection.json",
+      "sha256": "1c6b70118036fe1c09a1b65da0095ced6792fd7d10aa8f14e21908b7bf72642e"
+    }
+  ],
+  "scenario": "propose",
+  "schemaVersion": 1,
+  "server": {
+    "pid": 9500,
+    "stderrChars": 10662,
+    "stdoutChars": 119
+  },
+  "sources": [
+    {
+      "path": "global/bin/roadmap-mission-session-executor.ts",
+      "sha256": "c4c18e240348d40a741f1ede228367b68c01cafdf6a5bdc98d0053705800127f"
+    },
+    {
+      "path": "global/bin/roadmap-mission/session-executor.ts",
+      "sha256": "7e4d43dc024e9bf78ded256043c76921985f4683ec0e907862ab819fd8d51f47"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "2e65f748b185d8997395e69b7b548dc67a8f73b16da565fc4c0db62de88e399a"
+    },
+    {
+      "path": "global/extensions/session-completion-guard.ts",
+      "sha256": "edca19f2328e2a4c821c2c5758eca0d1ba9536b586975bff54ec0bd28bd37579"
+    }
+  ]
+}

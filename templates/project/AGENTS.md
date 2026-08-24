@@ -1,12 +1,12 @@
 # Project Agent Instructions
 
-This project follows the portable Development/MVP/RC/stable process for AI-assisted development.
+This project follows verified-outcome delivery with conditional Development/MVP/RC/stable qualification.
 
 ## Runtime Authority
 
-- Shared runtime lifecycle authority lives in the active global OpenCode config: always-loaded `AGENTS.md` and the conditional `change-ready-sdlc` skill. This project file supplies adapters, routing, and project constraints only; it cannot substitute missing global contracts.
+- Shared runtime authority lives in the active global OpenCode config: `principles-of-work.md`, operational `AGENTS.md`, and the conditional `change-ready-sdlc` skill. This project file supplies adapters, routing, and project constraints only; it cannot substitute missing global contracts.
 - Resolve the kit custom config directory to `OPENCODE_CONFIG_DIR` when set; otherwise inspect the host default global directory. A custom directory does not prove every host-default or project source is unloaded; detect authority collisions before qualification.
-- Missing active global `AGENTS.md` blocks Material/qualification work that requires it. Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill. Do not invent a partial process or foreign stack default.
+- Missing active global `principles-of-work.md` or `AGENTS.md` blocks Material/qualification work that requires the shared authority. Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill. Do not invent a partial process or foreign stack default.
 - Apply the conceptual Universal Development Loop only as guidance consistent with the active global contracts; do not depend on a target-relative kit path for runtime authority.
 
 ## Project Adapter
@@ -19,11 +19,11 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 - Technology choices change commands and constraints, not the development loop.
 - If validation commands are unknown, discover them from project files and report `unknown` rather than guessing.
 - Unattended missions additionally require `unattended.validationArgv` as an argument array, `workflowOwner: global-canonical`, explicit supported checkpoint modes, and per-mission local-commit authorization. Shell command strings in `validation` remain human/ordinary-workflow adapters and do not substitute for aggregate argv.
-- `unknown`, blank, bare `N/A`, `TBD`/`TODO`, replace-me placeholders, or otherwise unresolved validation procedures must be discovered before qualification. An explicit reasoned `N/A` (`N/A - <reason>`, or validation.md Command `N/A` plus nonempty non-placeholder Notes) is a recorded decision, not unknown. Applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC.
+- `unknown`, blank, bare `N/A`, `TBD`/`TODO`, replace-me placeholders, or otherwise unresolved validation procedures must be discovered before qualification. An explicit reasoned `N/A` (`N/A - <reason>`, or validation.md Command `N/A` plus nonempty non-placeholder Notes) is a recorded decision, not unknown. Inside qualification, applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC.
 
 ## Autonomy
 
-- Follow active global quality/safety -> autonomy -> speed and pre-escalation recovery contracts without copying them. Continue when evidence or a safe reversible default is enough.
+- Apply the active global working philosophy and pre-escalation recovery contracts without copying them: quality without proxy substitution, shortest verified path, autonomy until a real owner boundary, maximum token economy, and evidence-backed continuous improvement. Fix, narrow, or remove concrete impediments at the smallest authorized layer without weakening safety, scope, or protected boundaries.
 - Ask the user only for exact user-owned blockers: credentials/elevation, missing external systems, destructive/remote actions, owner/product/security/legal decisions, protected-boundary semantic expansion, material residual-risk acceptance, or MR/PR outcomes. Plans, OpenSpec artifacts, tasks, revisions, attempt limits, and stop lines adapt autonomously when accepted semantics remain unchanged; never ask solely to approve those controls, a successor attempt, or another process counter. The underlying protected action remains separately gated.
 - A progress checkpoint, long work cycle, green validation, still-open task, locally resolvable failure, or blocked live/external gate does not justify asking whether to continue. Continue safe local/offline required work and stop only the affected action at its exact owner boundary.
 - Do not commit, push, merge, delete source artifacts, or alter remote state unless explicitly requested and allowed by repository policy.
@@ -37,17 +37,18 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 
 ## Process Control
 
-- Ordinary Small default: main is the default production author and run-observe-corrects the smallest complete happy path to MVP, completes accepted scope, runs focused validation, freezes RC when no known critical/non-deferrable defect remains, then finishes stable handoff. `Development-Stage: development | MVP | RC<n> | stable`; no stage authorizes external operations. Report `Stable Candidate: RC<n>` when stable.
+- Ordinary Small default: main is the default production author and run-observe-corrects the smallest complete happy path, completes accepted scope, runs focused validation, and reports `Outcome: working | blocked | unknown` with proof and limitations. `Development-Stage: development | MVP | RC<n> | stable` applies only to explicit/project-required or named-critical-risk qualification; no stage authorizes external operations.
+- OpenSpec proposals declare one `Automation Dividend`. Use `repo-candidate-snapshot` for Git inspection.
 - Do not load `change-ready-sdlc` merely because code or config behavior changes. Load it before mutation only for explicit stable/full qualification, project-required qualification, or concrete Material risk.
 - Optional `implementation-worker` only for evidenced isolated production-only bounded slices with exact non-overlapping write scope, representative proof boundary, clear Acceptance Criteria, evidenced benefit, and a focused validation gate.
 - When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
-- After MVP on Material behavior work, complete accepted scope and use fresh critical-only `sdet-quality-engineer`; optional reviewers never become mandatory gates. Never assign Material test authorship to a production author.
+- After current proof, main may author the smallest focused regression. Use fresh critical-only `sdet-quality-engineer` only for a reachable named critical consequence or explicit project/owner requirement; optional reviewers never become mandatory gates.
 - If the preferred production adapter is unavailable, main retains production authorship or uses another conforming author; block only when no conforming path exists. Keep writers serial when scope is unclear, write targets overlap, or integration outweighs fan-out.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
 - User-owned scope is accepted outcome and protected-boundary decisions. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery evidence must never authorize mutation.
-- Optional final-candidate, delivery, code-quality, and domain reviewers may run after MVP when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected-RC for main disposition; missing or unusable optional output is not itself a stage blocker.
-- Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; continue only after an immediately-prior main-confirmed critical defect, production fix, and new proof, and permanently stop otherwise. Non-critical findings are parked and never prolong the loop.
+- Optional final-candidate, delivery, code-quality, and domain reviewers may run after current proof when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected candidate/RC when one exists; missing or unusable optional output is not itself a stage blocker.
+- Triggered fresh SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; main dispositions its rows and never treats it as mutation or lifecycle authority. Non-critical findings are parked.
 
 ## Quality
 
@@ -57,8 +58,8 @@ This project follows the portable Development/MVP/RC/stable process for AI-assis
 - Keep touched human-written code locally understandable. Treat line count as a navigation signal, not a quota; do not add a new responsibility to an already mixed file without extracting one cohesive owner or recording `split-or-justify`. Do not replace a god file with wrapper-only micro-files.
 - Use the project's existing error/logging mechanism at meaningful failure boundaries. Preserve the original exception cause/stack, add structured safe operation/correlation context when useful, and avoid duplicate or routine-noise logging.
 - Runtime proof must retain exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Inspect that evidence before mutation or rerun; add only the smallest missing instrumentation needed to distinguish realistic causes.
-- Ordinary Small: after happy-path proof, main may create or update the smallest focused regression test when useful. Prefer existing tests when sufficient.
-- Material behavior: only a fresh conforming SDET that did not author production may create or modify the smallest critical reproducer/regression artifact after MVP and accepted-scope completion. It prioritizes reachable critical incidents at real boundaries over coverage percentages.
+- After happy-path proof in either profile, main may create or update the smallest focused requirement-linked regression test. Prefer existing tests when sufficient.
+- When the critical-risk trigger applies, only a fresh conforming SDET that did not author production may create or modify the independent critical reproducer/regression artifact after proof and accepted-scope completion.
 - Prefer deterministic helpers/validators over repeated manual inspection.
 - Reviewers are read-only leaves except `docs/feedbacks/**` through `complain`.
 

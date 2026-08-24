@@ -1,0 +1,8 @@
+{
+  "candidateId": "task-3-1-launcher-r3",
+  "cleanup": "complete",
+  "error": "Launcher status observation timed out; message chars=409",
+  "providerCalls": 0,
+  "schemaVersion": 1,
+  "status": "failed"
+}

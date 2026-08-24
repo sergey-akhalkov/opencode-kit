@@ -1,0 +1,46 @@
+{
+  "authPlacement": {
+    "modelsBytes": 4294094,
+    "testHomeBytes": 3167,
+    "xdgBytes": 3167
+  },
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+  "cleanup": "complete",
+  "deletedRootSessions": 0,
+  "failure": {
+    "childExitCode": null,
+    "elapsedMs": 77635,
+    "error": "Integrated OpenCode HTTP readiness failed: {\"commandNames\":[],\"errorChain\":[{\"depth\":0,\"name\":\"Error\",\"message\":\"Integrated HTTP /path timed out\"}],\"listenObserved\":true,\"probes\":[{\"error\":\"The operation was aborted.\",\"route\":\"/path\"},{\"error\":\"The operation was aborted.\",\"route\":\"/session/status\"}],\"startup\":{\"hostConfigLoaded\":false,\"isolatedConfigLoaded\":true,\"ripgrepDownloadRequested\":false}}",
+    "observedStatus": "",
+    "stderrTail": "timestamp=2026-08-24T16:43:53.749Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-24T16:43:53.793Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-24T16:43:53.797Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-24T16:43:55.216Z level=INFO run=40dc1595 message=\"creating instance\" directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-24T16:43:55.220Z level=INFO run=40dc1595 message=fromDirectory directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-24T16:43:58.411Z level=INFO run=40dc1595 message=bootstrapping directory=\"<fixture>\\\\project\"\ntimestamp=2026-08-24T16:43:58.523Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-24T16:43:58.570Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-24T16:43:58.630Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-24T16:43:58.757Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\project\\\\opencode.json\"\ntimestamp=2026-08-24T16:43:59.827Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\config\\\\opencode.json\"\ntimestamp=2026-08-24T16:43:59.849Z level=INFO run=40dc1595 message=loading path=\"<fixture>\\\\config\\\\opencode.jsonc\"\n",
+    "stdoutTail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:56904\n"
+  },
+  "mode": "preflight",
+  "providerMechanism": {
+    "builtInProvider": true,
+    "defaultPlugins": "enabled",
+    "modelDiscovery": "enabled"
+  },
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "schemaVersion": 1,
+  "server": {
+    "commandNames": [],
+    "listenObserved": true,
+    "probes": [
+      {
+        "error": "The operation was aborted.",
+        "route": "/path"
+      },
+      {
+        "error": "The operation was aborted.",
+        "route": "/session/status"
+      }
+    ],
+    "readyMs": 77635,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    }
+  }
+}

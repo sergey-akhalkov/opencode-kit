@@ -21,6 +21,7 @@ Archive a completed OpenSpec change through the portable deterministic archive t
 - A finalized failed invocation, exhausted agent-authored attempt count, or process stop line does not complete the change when a safe causally distinct route remains. Preserve the attempt and revise only the necessary process controls.
 - Complete archive may proceed only when the accepted outcome is achieved. An unmet outcome requires the distinct owner-selected incomplete/abandoned preservation flow, which never claims completion or synchronizes undelivered requirements.
 - Optional retrospective or workflow feedback stays outside the product task graph and never blocks complete archive.
+- A required Automation Dividend needs its tagged task checked and a current evidence row; exempt has no tagged task.
 
 ## Execute
 

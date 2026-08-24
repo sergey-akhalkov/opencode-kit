@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "taskId": "2.4",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "invocation": {
+    "command": "node global/bin/openspec-change/inventory.ts --root <repo> --mode evidence --show-root",
+    "status": 0,
+    "recordedAt": "2026-08-23T10:54:08.3280993Z"
+  },
+  "currentChange": {
+    "taskRows": 4,
+    "claimRows": 4,
+    "staleTasks": [],
+    "unknownTasks": [],
+    "unindexedFiles": [],
+    "overLimit": false,
+    "claims": [
+      { "claimId": "CEC-STRUCTURE", "state": "blocked", "observed": 0, "required": 10, "reasonCodes": ["challenge-incomplete", "missing-member"] },
+      { "claimId": "CEC-SUBSTITUTION", "state": "blocked", "observed": 0, "required": 1, "reasonCodes": ["challenge-incomplete", "missing-member", "real-oracle-unavailable"] },
+      { "claimId": "CEC-UNIVERSAL", "state": "blocked", "observed": 0, "required": 2, "reasonCodes": ["challenge-incomplete", "missing-member"] },
+      { "claimId": "CEC-EXACT", "state": "blocked", "observed": 0, "required": 1, "reasonCodes": ["missing-member"] }
+    ]
+  },
+  "finding": "AUD-009",
+  "candidateDefectsCorrected": [],
+  "unrelatedFindingPreserved": "AUD-006 add-autonomous-roadmap-mission-runtime",
+  "writes": 0,
+  "result": "complete"
+}

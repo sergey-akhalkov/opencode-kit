@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "establish-practice-owner-agents-planning-r1",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "b60e36f2f7a56d54fb74b34da98cc7527355a83bf5bba8022ddf25931fdacca8",
+      "global/principles-of-work.md": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8",
+      "profiles/core.json": "9ec6c81f806773d9f2d55cfeafb9042a7c8462f7b02e26ee69aa99817890f403",
+      "profiles/all.json": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b",
+      "tools/proofs/practice-owner-routing.ts": "abbfad0546b96ea119c2d4042457a7ddf4a52aa32966e876cce95cf0acab3141",
+      "openspec/changes/establish-practice-owner-agents/evidence/task-1-2-baseline-inventory-r1.json": "b5a3d7835a9557bf4e8d17c8fcf1fcdb762e30331dca38ef4fc393b9917e6f43"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fd04c7061ffeFqgkkx0PsCaRdx",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "poa-baseline-protocol-wire-boundary",
+      "A request schema field and a frame length byte both need a decision. Do not modify files. Report which practice owners apply. Do not install, commit, or push."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787506728280,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb41d36001UEzXBmjS6RBzMo\",\"messageID\":\"msg_02fb3b1cb001TWF5fuFm7SpMzh\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"snapshot\":\"419da3e52371fd74cc7b52b76e0c69677260708b\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787506732426,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb421bd001jzvA3Fl4iyHOmX\",\"messageID\":\"msg_02fb3b1cb001TWF5fuFm7SpMzh\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"type\":\"text\",\"text\":\"I’ll inspect the repository’s ownership and protocol guidance, then map each decision to its designated practice owner without changing the workspace.\",\"time\":{\"start\":1787506729406,\"end\":1787506732228},\"metadata\":{\"openai\":{\"itemId\":\"msg_077cc3707fe769f5016a8b302a283087d2b03a36853efff6c1\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506732600,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_u3UVY2uRC2eOonAkbbzVqHdI\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/*{owner,protocol,schema,wire,frame}*\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787506732325,\"end\":1787506732537}},\"metadata\":{\"openai\":{\"itemId\":\"fc_077cc3707fe769f5016a8b302cf29887d2ba11001686b47537\"}},\"id\":\"prt_02fb42d15001o4L0Rb66URdESC\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"messageID\":\"msg_02fb3b1cb001TWF5fuFm7SpMzh\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506732701,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_KkI5eH9mnJNcIDwcWpkrwRWe\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/{AGENTS.md,README.md,OWNERS,CODEOWNERS,*.md}\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787506732277,\"end\":1787506732613}},\"metadata\":{\"openai\":{\"itemId\":\"fc_077cc3707fe769f5016a8b302cf28087d28048d0577d16f3cb\"}},\"id\":\"prt_02fb42cce001X43Y3150G0HT77\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"messageID\":\"msg_02fb3b1cb001TWF5fuFm7SpMzh\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506732701,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_aQa4uVS2AH3czit7jKTe0rp5\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"(?i)practice owner|owner|schema|frame length|length byte|wire|protocol\",\"include\":\"*.{md,txt,yaml,yml,json,toml,rs,ts,js,cs,py}\"},\"output\":\"Found 3 matches\\n<proof-root>\\\\workspace\\\\opencode.json:\\n  Line 2:   \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n\\n\\n<proof-root>\\\\workspace\\\\task.md:\\n  Line 1: A request schema field and a frame length byte both need a decision. Do not modify files. Report which practice owners apply. Do not install, commit, or push.\\n\\n\\n<proof-root>\\\\workspace\\\\src\\\\mixed.ts:\\n  Line 2:   return \\\"one owner\\\";\\n\",\"metadata\":{\"matches\":3,\"truncated\":false},\"title\":\"(?i)practice owner|owner|schema|frame length|length byte|wire|protocol\",\"time\":{\"start\":1787506732300,\"end\":1787506732656}},\"metadata\":{\"openai\":{\"itemId\":\"fc_077cc3707fe769f5016a8b302cf29087d2be17ae07458ec90e\"}},\"id\":\"prt_02fb42cfd001dC0fnMVouaxkX0\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"messageID\":\"msg_02fb3b1cb001TWF5fuFm7SpMzh\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787506734000,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb4331a001ClU6Vu1ibIyaJb\",\"reason\":\"tool-calls\",\"snapshot\":\"6e73ec8ac857372ec0b64e6f91c9e507585dce29\",\"messageID\":\"msg_02fb3b1cb001TWF5fuFm7SpMzh\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"type\":\"step-finish\",\"tokens\":{\"total\":17594,\"input\":17373,\"output\":170,\"reasoning\":51,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787506738122,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb443c10016v1q83tnhuJeXm\",\"messageID\":\"msg_02fb4375e001Y4H0YTSXXcxDLS\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"snapshot\":\"6e73ec8ac857372ec0b64e6f91c9e507585dce29\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506742203,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_6MmLFB9MLuZH9qmqDlW0G4B5\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/*\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\\n<proof-root>\\\\workspace\\\\opencode.json\\n<proof-root>\\\\workspace\\\\src\\\\mixed.ts\\n<proof-root>\\\\workspace\\\\src\\\\greeting.ts\\n<proof-root>\\\\workspace\\\\.serena\\\\project.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\project.local.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\.gitignore\",\"metadata\":{\"count\":7,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787506741993,\"end\":1787506742168}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0f54be8074415dd5016a8b3036434887d2837e0fd5f3fa7b01\"}},\"id\":\"prt_02fb452ae001SImHeO5eFG8vCM\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"messageID\":\"msg_02fb4375e001Y4H0YTSXXcxDLS\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506742254,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_0rbsOwtD2CoA6QDcVtnnwk3A\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\task.md\"},\"output\":\"<path><proof-root>\\\\workspace\\\\task.md</path>\\n<type>file</type>\\n<content>\\n1: A request schema field and a frame length byte both need a decision. Do not modify files. Report which practice owners apply. Do not install, commit, or push.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"A request schema field and a frame length byte both need a decision. Do not modify files. Report which practice owners apply. Do not install, commit, or push.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\task.md\",\"text\":\"A request schema field and a frame length byte both need a decision. Do not modify files. Report which practice owners apply. Do not install, commit, or push.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"task.md\",\"time\":{\"start\":1787506742190,\"end\":1787506742248}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0f54be8074415dd5016a8b3036436087d2a028253543849a97\"}},\"id\":\"prt_02fb4535d001N921ewKpvffc5B\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"messageID\":\"msg_02fb4375e001Y4H0YTSXXcxDLS\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506742649,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_XkdkbdrTj8LztpgWCE5nqVbD\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\opencode.json\"},\"output\":\"<path><proof-root>\\\\workspace\\\\opencode.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n3:   \\\"permission\\\": {\\n4:     \\\"*\\\": \\\"deny\\\",\\n5:     \\\"bash\\\": \\\"deny\\\",\\n6:     \\\"edit\\\": \\\"deny\\\",\\n7:     \\\"external_directory\\\": \\\"deny\\\",\\n8:     \\\"glob\\\": \\\"allow\\\",\\n9:     \\\"grep\\\": \\\"allow\\\",\\n10:     \\\"question\\\": \\\"deny\\\",\\n11:     \\\"read\\\": \\\"allow\\\",\\n12:     \\\"skill\\\": \\\"allow\\\",\\n13:     \\\"task\\\": \\\"allow\\\",\\n14:     \\\"webfetch\\\": \\\"deny\\\"\\n15:   }\\n16: }\\n\\n(End of file - total 16 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n  \\\"permission\\\": {\\n    \\\"*\\\": \\\"deny\\\",\\n    \\\"bash\\\": \\\"deny\\\",\\n    \\\"edit\\\": \\\"deny\\\",\\n    \\\"external_directory\\\": \\\"deny\\\",\\n    \\\"glob\\\": \\\"allow\\\",\\n    \\\"grep\\\": \\\"allow\\\",\\n    \\\"question\\\": \\\"deny\\\",\\n    \\\"read\\\": \\\"allow\\\",\\n    \\\"skill\\\": \\\"allow\\\",\\n    \\\"task\\\": \\\"allow\\\",\\n    \\\"webfetch\\\": \\\"deny\\\"\\n  }\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\opencode.json\",\"text\":\"{\\n  \\\"$schema\\\": \\\"https://opencode.ai/config.json\\\",\\n  \\\"permission\\\": {\\n    \\\"*\\\": \\\"deny\\\",\\n    \\\"bash\\\": \\\"deny\\\",\\n    \\\"edit\\\": \\\"deny\\\",\\n    \\\"external_directory\\\": \\\"deny\\\",\\n    \\\"glob\\\": \\\"allow\\\",\\n    \\\"grep\\\": \\\"allow\\\",\\n    \\\"question\\\": \\\"deny\\\",\\n    \\\"read\\\": \\\"allow\\\",\\n    \\\"skill\\\": \\\"allow\\\",\\n    \\\"task\\\": \\\"allow\\\",\\n    \\\"webfetch\\\": \\\"deny\\\"\\n  }\\n}\",\"lineStart\":1,\"lineEnd\":16,\"totalLines\":16,\"truncated\":false}},\"title\":\"opencode.json\",\"time\":{\"start\":1787506742561,\"end\":1787506742644}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0f54be8074415dd5016a8b3036437087d2ba348b29281d5e2b\"}},\"id\":\"prt_02fb453b5001jVEhDP4qDsyhXD\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"messageID\":\"msg_02fb4375e001Y4H0YTSXXcxDLS\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787506742676,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_1EajfHBzhmpPgqIrj3m2Kag5\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\mixed.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\mixed.ts</path>\\n<type>file</type>\\n<content>\\n1: export function mixed(): string {\\n2:   return \\\"one owner\\\";\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function mixed(): string {\\n  return \\\"one owner\\\";\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\mixed.ts\",\"text\":\"export function mixed(): string {\\n  return \\\"one owner\\\";\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"src\\\\mixed.ts\",\"time\":{\"start\":1787506742596,\"end\":1787506742665}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0f54be8074415dd5016a8b3036437c87d287f8e0022f22c80e\"}},\"id\":\"prt_02fb455270012127dz0HsLJ1Nm\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"messageID\":\"msg_02fb4375e001Y4H0YTSXXcxDLS\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787506743383,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb458360011wx6n6Z0ae0gK8\",\"reason\":\"tool-calls\",\"snapshot\":\"6e73ec8ac857372ec0b64e6f91c9e507585dce29\",\"messageID\":\"msg_02fb4375e001Y4H0YTSXXcxDLS\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"type\":\"step-finish\",\"tokens\":{\"total\":18010,\"input\":928,\"output\":171,\"reasoning\":15,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787506745632,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb46116001UtOjFR3tZ0W603\",\"messageID\":\"msg_02fb45990001rC0VzK0VyJU7Wb\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"snapshot\":\"6e73ec8ac857372ec0b64e6f91c9e507585dce29\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787506753511,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb47ca5001glDxmjxapG1BGF\",\"messageID\":\"msg_02fb45990001rC0VzK0VyJU7Wb\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"type\":\"text\",\"text\":\"- Request schema field: `protocol-api-reviewer` practice owner.\\n- Frame length byte: `wire-protocol-reviewer` practice owner.\\n- If one decision couples both, both owners apply.\\n\\nNo files were modified; nothing was installed, committed, or pushed.\",\"time\":{\"start\":1787506752677,\"end\":1787506753507},\"metadata\":{\"openai\":{\"itemId\":\"msg_095c331f271ad671016a8b304167c487d28e2928600d9d6a9e\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787506754018,\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"part\":{\"id\":\"prt_02fb481cc001qR3uC4cuRneqXD\",\"reason\":\"stop\",\"snapshot\":\"6e73ec8ac857372ec0b64e6f91c9e507585dce29\",\"messageID\":\"msg_02fb45990001rC0VzK0VyJU7Wb\",\"sessionID\":\"ses_fd04c7061ffeFqgkkx0PsCaRdx\",\"type\":\"step-finish\",\"tokens\":{\"total\":19071,\"input\":1744,\"output\":60,\"reasoning\":371,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: allow",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect the repository’s ownership and protocol guidance, then map each decision to its designated practice owner without changing the workspace.- Request schema field: `protocol-api-reviewer` practice owner.\n- Frame length byte: `wire-protocol-reviewer` practice owner.\n- If one decision couples both, both owners apply.\n\nNo files were modified; nothing was installed, committed, or pushed.",
+    "elapsedMs": 69032,
+    "eventCount": 15,
+    "launchedOwners": [],
+    "providerCalls": 1,
+    "sessionIds": [
+      "ses_fd04c7061ffeFqgkkx0PsCaRdx"
+    ],
+    "tokens": [
+      {
+        "total": 17594,
+        "input": 17373,
+        "output": 170,
+        "reasoning": 51,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 18010,
+        "input": 928,
+        "output": 171,
+        "reasoning": 15,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      },
+      {
+        "total": 19071,
+        "input": 1744,
+        "output": 60,
+        "reasoning": 371,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/*{owner,protocol,schema,wire,frame}*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/{AGENTS.md,README.md,OWNERS,CODEOWNERS,*.md}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "(?i)practice owner|owner|schema|frame length|length byte|wire|protocol",
+          "include": "*.{md,txt,yaml,yml,json,toml,rs,ts,js,cs,py}"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\task.md"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\opencode.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\mixed.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "A request schema field and a frame length byte both need a decision. Do not modify files. Report which practice owners apply. Do not install, commit, or push.",
+    "scenario": "protocol-wire-boundary"
+  },
+  "oracles": {
+    "cleanupComplete": true,
+    "fixtureStable": true,
+    "launchedOwners": []
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "3c4c3199c7d74ca5a77aafa8acb7013a7109ee8f767f1fd856d13c24b109b22e",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    },
+    "before": {
+      "task.md": "3c4c3199c7d74ca5a77aafa8acb7013a7109ee8f767f1fd856d13c24b109b22e",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    }
+  }
+}

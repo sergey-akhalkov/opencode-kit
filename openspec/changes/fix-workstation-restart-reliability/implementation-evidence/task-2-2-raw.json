@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-19T09:33:17.510Z",
+  "delayMs": 25000,
+  "before": {
+    "status": "running",
+    "supervisorProcessId": 11956,
+    "serverRootProcessId": 11844,
+    "listenerProcessId": 25172,
+    "candidate": "2035F30776BB6E4D566B852CDAC902B94E7F598F796E57AB50BE3AE05C4BD3E6",
+    "trayColor": "green",
+    "controllerSha256": "2035F30776BB6E4D566B852CDAC902B94E7F598F796E57AB50BE3AE05C4BD3E6",
+    "errorLogBytes": 21977
+  },
+  "stop": {
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"stop\",\n  \"status\": \"error\",\n  \"error\": {\n    \"type\": \"Error\",\n    \"message\": \"Managed server cleanup incomplete; remaining processes '', listeners '1', task 'Ready'.\",\n    \"stack\": \"Error: Managed server cleanup incomplete; remaining processes '', listeners '1', task 'Ready'.\\n    at stopManagedServer (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1667:11)\\n    at stop (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1684:24)\\n    at main (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2024:23)\\n    at file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2058:7\\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\\n    at async node:internal/modules/esm/loader:643:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"\n  }\n}\n",
+    "stderr": ""
+  },
+  "ok": false,
+  "error": "stop exited 1",
+  "finishedAt": "2026-08-19T09:34:31.958Z"
+}

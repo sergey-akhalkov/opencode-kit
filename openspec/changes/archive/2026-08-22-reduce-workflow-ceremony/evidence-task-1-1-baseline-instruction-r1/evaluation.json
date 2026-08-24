@@ -1,0 +1,25 @@
+{
+  "candidateId": "reduce-workflow-ceremony-baseline-r1",
+  "facts": {
+    "budgetCurrentPassed": true,
+    "budgetFixturePassed": true,
+    "budgetGrowthFailedClosed": true,
+    "budgetMalformedFailedClosed": true,
+    "catalogCompatibility": true,
+    "cleanupPassed": true,
+    "configDeclaredEvidence": true,
+    "conventionalEvidence": true,
+    "deterministicLoaderRerun": true,
+    "discoveryMetadataSeparated": true,
+    "loaderSchemaSeparated": true,
+    "noContentDisclosure": true,
+    "noVendorWalk": true,
+    "onDemandSeparated": true,
+    "runtimeObservedEvidence": true,
+    "startupSeparated": true,
+    "unknownsPreserved": true
+  },
+  "inputRawSha256": "b3f88df769cc4bb6ee572e2904c6b1af1a0f724a099d78356a28faa8621afdf3",
+  "pass": true,
+  "schemaVersion": 1
+}

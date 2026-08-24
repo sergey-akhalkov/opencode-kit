@@ -1,16 +1,16 @@
 #!/usr/bin/env node
-import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { runPortableCommand } from "../global/bin/portable-process.ts";
 
-type Mode = "install" | "check";
+export type Mode = "install" | "check";
 
-type Options = {
+export type Options = {
   mode: Mode;
   dryRun: boolean;
 };
 
-type McpPackage = {
+export type McpPackage = {
   name: string;
   command: string;
   versionArgs: string[];
@@ -24,13 +24,27 @@ type McpPackage = {
   };
 };
 
-type ProbeResult =
+export type ProbeResult =
   | { available: true; version: string }
   | { available: false; reason: string };
 
+export type McpProcessResult = {
+  status: number | null;
+  error?: Error;
+  stdout: string;
+  stderr: string;
+};
+
+export type McpEffects = {
+  probe(command: string, args: readonly string[]): ProbeResult;
+  run(command: string, args: readonly string[]): McpProcessResult;
+  log(line: string): void;
+  error(line: string): void;
+};
+
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 
-const packages: McpPackage[] = [
+export const mcpPackages: McpPackage[] = [
   {
     name: "Serena",
     command: "serena",
@@ -53,7 +67,9 @@ const packages: McpPackage[] = [
   },
 ];
 
-function printUsage(): void {
+const blockedEffectPattern = /\b(setx|Start-Process|msiexec|schtasks|sc\.exe|net\.exe)\b/i;
+
+export function printUsage(): void {
   console.log(`Usage:
   npm run install:mcps -- [options]
 
@@ -69,7 +85,7 @@ Options:
 `);
 }
 
-function parseArgs(args: string[]): Options {
+export function parseArgs(args: string[]): Options {
   const options: Options = { mode: "install", dryRun: false };
   let explicitMode = false;
 
@@ -102,12 +118,11 @@ function parseArgs(args: string[]): Options {
   return options;
 }
 
-function renderCommand(command: string, args: string[]): string {
+export function renderCommand(command: string, args: readonly string[]): string {
   return [command, ...args].map((part) => (/\s/.test(part) ? JSON.stringify(part) : part)).join(" ");
 }
 
-function probe(command: string, args: string[]): ProbeResult {
-  const result = spawnSync(command, args, { encoding: "utf8" });
+function mapProbeResult(command: string, args: readonly string[], result: McpProcessResult): ProbeResult {
   if (result.error) {
     const code = (result.error as NodeJS.ErrnoException).code;
     if (code === "ENOENT") {
@@ -116,19 +131,40 @@ function probe(command: string, args: string[]): ProbeResult {
     return { available: false, reason: `${command} could not start: ${result.error.message}` };
   }
   if (result.status !== 0) {
-    const detail = `${result.stdout ?? ""}${result.stderr ?? ""}`.trim();
+    const detail = `${result.stdout}${result.stderr}`.trim();
     return {
       available: false,
       reason: `${renderCommand(command, args)} exited ${result.status}${detail ? `: ${detail}` : ""}`,
     };
   }
-  const version = `${result.stdout ?? ""}${result.stderr ?? ""}`.trim().split(/\r?\n/, 1)[0];
+  const version = `${result.stdout}${result.stderr}`.trim().split(/\r?\n/, 1)[0];
   return { available: true, version: version || `${command} available` };
 }
 
-function runRequired(command: string, args: string[], purpose: string): void {
-  console.log(`running: ${renderCommand(command, args)}`);
-  const result = spawnSync(command, args, { stdio: "inherit" });
+export function createDefaultMcpEffects(): McpEffects {
+  return {
+    probe(command, args) {
+      const result = runPortableCommand(process.cwd(), [command, ...args], { capture: true });
+      return mapProbeResult(command, args, result);
+    },
+    run(command, args) {
+      if (blockedEffectPattern.test(command) || args.some((value) => blockedEffectPattern.test(value))) {
+        throw new Error(`Blocked effect class: refusing to invoke ${renderCommand(command, args)}`);
+      }
+      return runPortableCommand(process.cwd(), [command, ...args]);
+    },
+    log(line) {
+      console.log(line);
+    },
+    error(line) {
+      console.error(line);
+    },
+  };
+}
+
+function runRequired(effects: McpEffects, command: string, args: readonly string[], purpose: string): void {
+  effects.log(`running: ${renderCommand(command, args)}`);
+  const result = effects.run(command, args);
   if (result.error) {
     throw new Error(`${purpose} could not start: ${result.error.message}`);
   }
@@ -137,16 +173,16 @@ function runRequired(command: string, args: string[], purpose: string): void {
   }
 }
 
-function installPackage(spec: McpPackage): ProbeResult {
+function installPackage(spec: McpPackage, effects: McpEffects): ProbeResult {
   if (spec.prerequisite) {
-    const prerequisite = probe(spec.prerequisite.command, spec.prerequisite.args);
+    const prerequisite = effects.probe(spec.prerequisite.command, spec.prerequisite.args);
     if (!prerequisite.available) {
       throw new Error(`${spec.name} prerequisite missing: ${prerequisite.reason}. ${spec.prerequisite.guidance}`);
     }
   }
 
-  runRequired(spec.installCommand, spec.installArgs, `${spec.name} installation`);
-  let installed = probe(spec.command, spec.versionArgs);
+  runRequired(effects, spec.installCommand, spec.installArgs, `${spec.name} installation`);
+  let installed = effects.probe(spec.command, spec.versionArgs);
   if (!installed.available) {
     throw new Error(
       `${spec.name} was installed but is not usable: ${installed.reason}. Ensure the package-manager bin directory is on PATH, restart the shell, and run npm run install:mcps -- --check.`,
@@ -154,60 +190,60 @@ function installPackage(spec: McpPackage): ProbeResult {
   }
 
   if (spec.initializeArgs) {
-    runRequired(spec.command, spec.initializeArgs, `${spec.name} initialization`);
-    installed = probe(spec.command, spec.versionArgs);
+    runRequired(effects, spec.command, spec.initializeArgs, `${spec.name} initialization`);
+    installed = effects.probe(spec.command, spec.versionArgs);
   }
   return installed;
 }
 
-function run(options: Options): void {
+export function run(options: Options, effects: McpEffects = createDefaultMcpEffects()): number {
   let failed = false;
 
-  for (const spec of packages) {
-    const current = probe(spec.command, spec.versionArgs);
+  for (const spec of mcpPackages) {
+    const current = effects.probe(spec.command, spec.versionArgs);
     if (current.available) {
-      console.log(`configured: ${spec.name}: ${current.version}`);
+      effects.log(`configured: ${spec.name}: ${current.version}`);
       continue;
     }
 
     if (options.mode === "check") {
-      console.error(`missing: ${spec.name}: ${current.reason}`);
+      effects.error(`missing: ${spec.name}: ${current.reason}`);
       failed = true;
       continue;
     }
 
     if (options.dryRun) {
-      console.log(`missing: ${spec.name}: ${current.reason}`);
-      console.log(`would run: ${renderCommand(spec.installCommand, spec.installArgs)}`);
+      effects.log(`missing: ${spec.name}: ${current.reason}`);
+      effects.log(`would run: ${renderCommand(spec.installCommand, spec.installArgs)}`);
       if (spec.initializeArgs) {
-        console.log(`would run: ${renderCommand(spec.command, spec.initializeArgs)}`);
+        effects.log(`would run: ${renderCommand(spec.command, spec.initializeArgs)}`);
       }
       continue;
     }
 
-    const installed = installPackage(spec);
+    const installed = installPackage(spec, effects);
     if (!installed.available) {
-      console.error(`missing: ${spec.name}: ${installed.reason}`);
+      effects.error(`missing: ${spec.name}: ${installed.reason}`);
       failed = true;
       continue;
     }
-    console.log(`installed: ${spec.name}: ${installed.version}`);
+    effects.log(`installed: ${spec.name}: ${installed.version}`);
   }
 
   if (failed) {
-    process.exitCode = 1;
-    return;
+    return 1;
   }
   if (options.dryRun) {
-    console.log("Dry run complete. No package was installed or initialized.");
-    return;
+    effects.log("Dry run complete. No package was installed or initialized.");
+    return 0;
   }
-  console.log("Serena and Codebase Memory are available. Restart OpenCode after global config activation.");
+  effects.log("Serena and Codebase Memory are available. Restart OpenCode after global config activation.");
+  return 0;
 }
 
 function main(): void {
   try {
-    run(parseArgs(process.argv.slice(2)));
+    process.exitCode = run(parseArgs(process.argv.slice(2)));
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

@@ -1,0 +1,382 @@
+{
+  "agentCount": 26,
+  "agents": [
+    "build",
+    "code-quality-reviewer",
+    "compaction",
+    "deployment-config-reviewer",
+    "explore",
+    "final-candidate-reviewer",
+    "general",
+    "implementation-readiness-reviewer",
+    "implementation-worker",
+    "instruction-artifact-reviewer",
+    "legacy-client-compatibility-reviewer",
+    "legacy-evidence-reviewer",
+    "openspec-architecture-reviewer",
+    "performance-reliability-reviewer",
+    "plan",
+    "protocol-api-reviewer",
+    "qwen-local-worker",
+    "rust-concurrency-reviewer",
+    "scout",
+    "sdet-quality-engineer",
+    "session-completion-arbiter",
+    "summary",
+    "test-coverage-reviewer",
+    "title",
+    "troubleshooter",
+    "wire-protocol-reviewer"
+  ],
+  "arbiter": {
+    "disabledToolCount": 13,
+    "toolsAllFalse": true
+  },
+  "boundary": "installed-opencode-resolved-agent-permissions",
+  "candidateId": "reduce-workflow-ceremony-task-5-1-r1",
+  "configuredMainPrecedence": {
+    "allow": "allow",
+    "ask": "ask",
+    "deny": "deny"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "explicitDeniedPermissions": 189,
+  "invocation": [
+    "npm",
+    "run",
+    "proof:permissions",
+    "--",
+    "--evidence-root",
+    "<evidence-root>",
+    "--candidate-id",
+    "reduce-workflow-ceremony-task-5-1-r1"
+  ],
+  "opencodeVersion": "1.18.18",
+  "outcome": "pass",
+  "permissionKinds": [
+    "bash",
+    "doom_loop",
+    "edit",
+    "external_directory",
+    "glob",
+    "grep",
+    "list",
+    "lsp",
+    "question",
+    "read",
+    "skill",
+    "task",
+    "todowrite",
+    "webfetch",
+    "websearch"
+  ],
+  "productionSources": [
+    {
+      "path": "global/extensions/session-completion-guard/controller.ts",
+      "sha256": "b577959e480571a601bd7f67a8ced10b28c58d917e7a5e59e2cb9e535c1ed89d"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/runtime-support.ts",
+      "sha256": "00ed5a9092be5b654c6d5be8d0b616a12193cf2b15269ed712fa2baeba0cbe29"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+      "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+    },
+    {
+      "path": "global/agents/session-completion-arbiter.md",
+      "sha256": "38c81616593aadc8a65b48375f2f2d22ee1cc5ad05252706e85a4b59d199748c"
+    },
+    {
+      "path": "global/agents/sdet-quality-engineer.md",
+      "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+    }
+  ],
+  "runnerSource": {
+    "path": "tools/proofs/opencode-permissions.ts",
+    "sha256": "c4d31da6c8319bed42a50a09f461314f81eae784c8f0b6330f2de81ddb40e437"
+  },
+  "schemaVersion": 1,
+  "sdet": {
+    "editPermission": "allow"
+  },
+  "specialistDeniedPermissions": [
+    {
+      "agent": "code-quality-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "deployment-config-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "final-candidate-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "implementation-readiness-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "implementation-worker",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "instruction-artifact-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "legacy-client-compatibility-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "legacy-evidence-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "openspec-architecture-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "performance-reliability-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "protocol-api-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "qwen-local-worker",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "rust-concurrency-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "sdet-quality-engineer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "session-completion-arbiter",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "glob",
+        "grep",
+        "list",
+        "lsp",
+        "question",
+        "read",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "test-coverage-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    },
+    {
+      "agent": "wire-protocol-reviewer",
+      "permissions": [
+        "bash",
+        "doom_loop",
+        "edit",
+        "external_directory",
+        "lsp",
+        "question",
+        "skill",
+        "task",
+        "todowrite",
+        "webfetch",
+        "websearch"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "workstation-identity-handoff-r3",
+  "source": {
+    "path": "tools\\windows\\opencode-workstation.ts",
+    "sha256": "329949be23b38418016b89e3a027f845bb9d79f8d14154b90fca730fbcc7ceaa",
+    "directWaitForExit": true,
+    "launchUsesDirectOnly": true,
+    "nonLaunchStartProcessWait": true,
+    "popupPreserved": true,
+    "recordedIdentityTermination": true
+  },
+  "success": {
+    "exitCode": 0,
+    "elapsedMs": 299,
+    "grandchildDelayMs": 2000,
+    "markerObserved": true,
+    "grandchildAliveAfterWrapper": true
+  },
+  "failure": {
+    "exitCode": 23,
+    "elapsedMs": 458
+  },
+  "cleanup": {
+    "complete": true
+  }
+}

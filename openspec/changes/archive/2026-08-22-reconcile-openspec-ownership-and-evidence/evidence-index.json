@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 2,
+  "changeId": "reconcile-openspec-ownership-and-evidence",
+  "candidateId": "reconcile-ownership-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "139b90c1b0414cfec76174550c72b46ddd7442b7e682a97d0bdfba335cc9eca6",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:openspec-change-inventory", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/task-1-4-proof-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "e9df677a5287882d7d160edac10826706a28565dffa28824bbb486049f0452ca",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "invocation": { "command": "node tools/openspec-change-inventory.ts --root tools/fixtures/openspec-change-inventory/current-violations", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/task-1-4-proof-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "2fd1345673603d00cdc9c3f59a12e7d93eae55c0e6b9964401c81e8781966eeb",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:openspec-change-inventory", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/task-1-4-proof-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "7c8fdd7518b4b0251633a01b2f7cc432823480a5eae2506e621be2a97446b077",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:openspec-change-inventory", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/task-1-4-proof-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "121ee303778c87693fb2b14c51f2d06169feecdc796815872f48af24b4cddbe5",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "invocation": { "command": "node tools/openspec-change-inventory.ts --root .", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/migration-report-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "0e447b60d7c06b9d89b62239c86e84cc3e0f7709de341e1956187be1591bc474",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "openspec-validate-all", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "openspec-validate-all", "effects": ["read-only"] },
+      "invocation": { "command": "openspec.cmd validate --all", "status": 0, "recordedAt": "2026-08-22T08:25:00.000Z" },
+      "artifacts": ["evidence/task-3-2-restoration-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "526c08fdf7b1448e99d88e56999c05bec68d30d8538523f7a6607043e6237447",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "invocation": { "command": "node tools/openspec-change-inventory.ts --root .", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/migration-report-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "a003691fef25a3acc5508055113fd6820340f7f9c8331c86c0e0f2a214bf460b",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-operation-gate", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-operation-gate", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:openspec-gate", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/task-1-4-proof-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "61d7b8539d1ceee723ca507be48de138c863a99fd6c3864ceb44ea0e90a3abfe",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "node-openspec-change-inventory", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:openspec-change-inventory", "status": 0, "recordedAt": "2026-08-21T22:40:00.000Z" },
+      "artifacts": ["evidence/task-1-4-proof-r1.json", "evidence/migration-report-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "4f83e71220477a102ab8b831da4b0b2683d7a9fa251600f12798a42963ce9d50",
+      "result": "complete",
+      "candidateId": "reconcile-ownership-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "npm-test-and-openspec-validate", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "npm-test-and-openspec-validate", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run validate:strict", "status": 0, "recordedAt": "2026-08-21T23:10:00.000Z" },
+      "artifacts": ["evidence/task-5-1-validation-r1.json"],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "evaluator",
+      "kind": "evaluator",
+      "files": [
+        { "path": "evidence/task-1-4-proof-r1.json", "bytes": 849, "digest": "2859d7ea490147b74efd2cb4e1ef24d6a0bf5df13822e3b4fed62f6ca47017d7" },
+        { "path": "evidence/task-5-1-validation-r1.json", "bytes": 1240, "digest": "502806a03ee2daedcbe8f3220f2afadda46c15f505c10e7e64ebc1cc5432ad16" },
+        { "path": "evidence/task-3-2-restoration-r1.json", "bytes": 637, "digest": "cb11a0fa2304d31557274f85f9c82c33f5144082270208c7d81a5b33038dba8a" }
+      ]
+    },
+    {
+      "name": "raw-bundle",
+      "kind": "raw-bundle",
+      "files": [
+        { "path": "evidence/migration-report-r1.json", "bytes": 48134, "digest": "3940d12ba5b313b70383a1081b4a7c9ce46e67c6e91b3f0fcb1151b64b412b3c" }
+      ]
+    }
+  ]
+}

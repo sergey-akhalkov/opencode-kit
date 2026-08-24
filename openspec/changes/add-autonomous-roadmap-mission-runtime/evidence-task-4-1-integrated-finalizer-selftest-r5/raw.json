@@ -1,0 +1,34 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+  "cleanup": "complete",
+  "gateStatus": 0,
+  "projectFacts": {
+    "marker": "alpha\n",
+    "phases": [],
+    "result": {
+      "cleanup": "complete",
+      "disposition": "terminal",
+      "errorClass": "terminal",
+      "errorMessage": "synthetic finalizer probe",
+      "rootSessionRef": "session:c8462315c9a7e5a4",
+      "writerClosure": "terminal"
+    },
+    "state": {
+      "activeOperation": null,
+      "cursor": 0,
+      "disposition": "blocked"
+    },
+    "tasks": "## 1. Alpha Marker\n\n- [ ] 1.1 Create and validate `src/alpha.txt`.\n",
+    "worktree": "?? .opencode-dev-kit/\n?? evidence/\n?? src/\n"
+  },
+  "ptyFacts": {
+    "mission": {
+      "buffer": "synthetic controller terminal\n",
+      "exitCode": 1,
+      "notifyOnExit": false,
+      "status": "exited"
+    },
+    "totalSessions": 1
+  },
+  "schemaVersion": 1
+}

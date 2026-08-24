@@ -68,7 +68,6 @@ export function validateUniversalDevelopmentLoopSingleSource(
     "Critical SDET",
     "Validation And RC",
     "Stable Handoff",
-    "Process Improvement",
   ];
 
   const numberedStepPattern = /^\s*\d+\.\s+`([A-Z][A-Za-z ]+)`:/;

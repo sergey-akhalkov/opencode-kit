@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "changeId": "mission-unindexed",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "unattended-roadmap-orchestration",
+      "requirements": ["Active evidence is indexed and bounded"]
+    }
+  ],
+  "writeRoots": ["global/bin/roadmap-mission.ts"],
+  "dependencies": [],
+  "transfers": []
+}

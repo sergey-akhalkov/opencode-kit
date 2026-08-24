@@ -4,6 +4,8 @@ import { CODE_QUALITY_REVIEWER_FILE } from "./agents.ts";
 export const PREVENTION_FEEDBACK_REVIEWER_FILES: readonly string[] = [
   "code-quality-reviewer.md",
   "deployment-config-reviewer.md",
+  "evidence-sufficiency-reviewer.md",
+  "execution-safety-reviewer.md",
   "implementation-readiness-reviewer.md",
   "instruction-artifact-reviewer.md",
   "legacy-client-compatibility-reviewer.md",

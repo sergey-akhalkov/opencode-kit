@@ -1,0 +1,107 @@
+{
+  "candidateId": "task-3-2-stop-preflight-r4",
+  "cleanup": "complete",
+  "durationMs": 991,
+  "exitCode": 1,
+  "mode": "preflight-capture",
+  "projectGitStatus": "",
+  "report": {
+    "checks": [
+      {
+        "blocking": false,
+        "id": "definition:checkpoint",
+        "status": "passed",
+        "summary": "Checkpoint policy evidence-only is valid for this mission envelope."
+      },
+      {
+        "blocking": false,
+        "id": "definition:contained",
+        "status": "passed",
+        "summary": "Mission, roadmap, and evidence paths are project-contained."
+      },
+      {
+        "blocking": false,
+        "id": "definition:effects",
+        "status": "passed",
+        "summary": "Every slice effect is explicitly allowed and protected effects carry an authority reference."
+      },
+      {
+        "blocking": false,
+        "id": "definition:schema",
+        "status": "passed",
+        "summary": "Mission schema and explicit fields are valid."
+      },
+      {
+        "blocking": false,
+        "id": "definition:serial-order",
+        "status": "passed",
+        "summary": "Mission has 1 explicitly ordered slice(s)."
+      },
+      {
+        "blocking": false,
+        "id": "mission:next-effects",
+        "status": "passed",
+        "summary": "Next slice requires no unsupported owner-controlled effect."
+      },
+      {
+        "blocking": false,
+        "id": "mission:writer-lease",
+        "status": "passed",
+        "summary": "No prior mission writer lease exists."
+      },
+      {
+        "blocking": false,
+        "id": "project:git-state",
+        "status": "passed",
+        "summary": "Git worktree and index are clean."
+      },
+      {
+        "blocking": true,
+        "id": "project:openspec-state",
+        "status": "blocked",
+        "summary": "OpenSpec version is unsupported: OpenSpec 1.2.0."
+      },
+      {
+        "blocking": false,
+        "id": "project:runtime-authority",
+        "status": "passed",
+        "summary": "Project runtime authority marker is present."
+      },
+      {
+        "blocking": false,
+        "id": "project:validation-adapter",
+        "status": "passed",
+        "summary": "Project validation adapter and aggregate validation executable are resolved."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:canonical-source",
+        "status": "passed",
+        "summary": "Canonical global workflow files and running mission entrypoint match."
+      },
+      {
+        "blocking": true,
+        "id": "workflow:loaded-identity",
+        "status": "unknown",
+        "summary": "Loaded workflow inspection was not run because deterministic prerequisites failed."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:project-overlays",
+        "status": "passed",
+        "summary": "Project has no same-name standard OpenSpec workflow overlays."
+      }
+    ],
+    "definitionDigest": "cc894258acf44552d5d87cbec9388fa8e120c38078beda6babfc49f1ac3ce6e7",
+    "eligibleSlice": null,
+    "exitCode": 1,
+    "missionId": "launcher-proof",
+    "operation": "preflight",
+    "schemaVersion": 1,
+    "status": "blocked",
+    "tool": "roadmap-mission"
+  },
+  "schemaVersion": 1,
+  "signal": null,
+  "stderr": ""
+}

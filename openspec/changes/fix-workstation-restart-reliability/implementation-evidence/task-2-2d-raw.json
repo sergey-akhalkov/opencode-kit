@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-24T10:54:52.426Z",
+  "delayMs": 20000,
+  "mechanism": "per-pid-taskkill-then-install-start-tray",
+  "repoControllerSha256": "A8B14B28FD96509776ABC65D0B02BE41991A6CA287A17CE7594C8C0B6AA21AFF",
+  "before": {
+    "status": "running",
+    "supervisorProcessId": 11212,
+    "serverRootProcessId": 776,
+    "listenerProcessId": 14456,
+    "candidate": "db50301a63b53a70507d739cc6974a3fa8ffd7eb0294102c9b0742e3959e7bfa",
+    "trayColor": "green",
+    "controllerSha256": "03358B5077C186A5006DE3AAC87C3346C96A8952D7A65A19FED330FA1F56AD50",
+    "trayScriptSha256": "78A1400290D76B9DB71B10CE16EBFDDB7160742A1D336EA5BE4B2370F32E85DD",
+    "errorLogBytes": 154545
+  },
+  "pidStops": [
+    {
+      "processId": 776,
+      "status": "stopped",
+      "taskkillStatus": 0,
+      "taskkillError": null,
+      "stderr": ""
+    },
+    {
+      "processId": 14456,
+      "status": "stopped",
+      "taskkillStatus": 1,
+      "taskkillError": null,
+      "stderr": "�訡��: �� 㤠���� �������� ����� � �����䨪��஬ 14456.\r\n��稭�: �� ���� �� ��������஢ �⮣� ������� �� ����饭."
+    },
+    {
+      "processId": 11212,
+      "status": "stopped",
+      "taskkillStatus": 0,
+      "taskkillError": null,
+      "stderr": ""
+    }
+  ],
+  "serveInvoker": {
+    "listed": [
+      20548
+    ],
+    "kills": [
+      {
+        "processId": 20548,
+        "status": "already-gone"
+      }
+    ]
+  },
+  "portGone": {
+    "label": "port-gone",
+    "ok": true,
+    "waitedMs": 2848
+  },
+  "install": {
+    "status": 1,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"install\",\n  \"status\": \"error\",\n  \"error\": {\n    \"type\": \"Error\",\n    \"message\": \"Managed Graphify configuration drifted; refusing repair.\",\n    \"stack\": \"Error: Managed Graphify configuration drifted; refusing repair.\\n    at install (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:1318:15)\\n    at main (file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2447:23)\\n    at file:///D:/home/sergey-akhalkov/opencode-kit/tools/windows/opencode-workstation.ts:2487:7\\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\\n    at async node:internal/modules/esm/loader:643:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"\n  }\n}\n",
+    "stderr": ""
+  },
+  "ok": false,
+  "error": "install exited 1",
+  "finishedAt": "2026-08-24T10:55:34.393Z"
+}

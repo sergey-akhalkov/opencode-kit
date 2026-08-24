@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 2,
+  "changeId": "fix-workstation-restart-reliability",
+  "candidateId": "fix-workstation-restart-reliability-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "0b6d180af0d011693a55abd9888d825e214e6c84b0c3b5f0f4607fe504226603",
+      "result": "complete",
+      "candidateId": "fix-workstation-restart-reliability-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-1-baseline.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "9adfda18618b464674c884aafa456c71f4600f45e18a1f3ffa77748d422c82d0",
+      "result": "complete",
+      "candidateId": "fix-workstation-restart-reliability-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-1-source.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-1-baseline.md",
+          "bytes": 645,
+          "digest": "62621a344601ee2d8211602c577dcf5f3ad4403f3e1d89a6e2e54b047bc6a0d0"
+        },
+        {
+          "path": "implementation-evidence/task-2-1-source.md",
+          "bytes": 494,
+          "digest": "b5844d4f54391ce256148a2bc362268cc819ca40cf19a3d469e2733b7c6ff318"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-raw.json",
+          "bytes": 1658,
+          "digest": "ebaad2ec038f575214a94ac0ac9f51d89016630d6fb3824bbcb8dbf824cc128e"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-repair-restart.ts",
+          "bytes": 7850,
+          "digest": "b15cda463838326986b603b8148a459276b3e6c84d9606e46f93eb7aa7f3a44c"
+        },
+        {
+          "path": "implementation-evidence/task-2-2b-raw.json",
+          "bytes": 7603,
+          "digest": "5b14db944e4d5b9190737b836abcab82026d4d38907c46b5eccad057e81c4176"
+        }
+      ]
+    }
+  ]
+}

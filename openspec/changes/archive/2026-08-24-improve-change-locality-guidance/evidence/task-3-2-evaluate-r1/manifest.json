@@ -1,0 +1,11 @@
+{
+  "files": [
+    {
+      "bytes": 206,
+      "path": "failure.json",
+      "sha256": "3b291df4d0bbbc1a99ecbe2a04447c1a81b49a2594da68b100c9422376c1a952"
+    }
+  ],
+  "role": "evaluate",
+  "schemaVersion": 1
+}

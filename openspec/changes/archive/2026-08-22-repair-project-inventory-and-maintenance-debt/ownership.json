@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "changeId": "repair-project-inventory-and-maintenance-debt",
+  "mutationEnabled": false,
+  "capabilities": [
+    {
+      "capability": "library-tools-architecture",
+      "requirements": [
+        "Project inventory classifies production and test owners"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "tools/project-inventory.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "reconcile-openspec-ownership-and-evidence",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "library-tools-architecture",
+          "requirement": "Ownership and evidence inventories are explicit deterministic data"
+        }
+      ],
+      "transferCondition": "archive-before-acquire"
+    }
+  ],
+  "transfers": []
+}

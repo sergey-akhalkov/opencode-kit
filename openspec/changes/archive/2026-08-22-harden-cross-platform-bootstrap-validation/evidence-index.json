@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 2,
+  "changeId": "harden-cross-platform-bootstrap-validation",
+  "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "7ac970bf4601c76c1884df2d8f6529c06ed0b47f5e2b30851b009c761873b33e",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "c9293d66eabfdb3cf7489b4b597a59a32a9ef2c87d80f1426dd8086327d42ab3",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "taskTextDigest": "898da19d63b9be33454046d97b242b30b0d62005e04fee856bf029d91da4e0ab",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "43b42fe7a2c8fa359654578d5dada34ce96c9fbbefb4bc8560cde772ac7ca58a",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "5f7fdf629411184fe26cf7f71bb5d5c24641dfe16d574b60a747d0cb3c2a5fa5",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "d08fc3b5113bd3fd9c9315fb6dbdbc76d2b34dda2bcd2bf684ec5f7157eb1e77",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "b3959474b930c49f5d404abcf52f45feccc9b9d9e2ad62bf0a14035edbbf8416",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "42f7f1bb4c3e91465a32a3ee23a4154583e4fdb7d2f5bc79ad0cc296ea9e0fb3",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "7d1200ee58221f124d271b954a98ac601600a3c1794c07258c7a9e9b04fab99a",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "62ced8acd3dfa1af7e14505d266bbd49e77a97d4463ebd206f578774e404fff8",
+      "result": "complete",
+      "candidateId": "harden-cross-platform-bootstrap-validation-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence/mechanical-bind-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/mechanical-bind-r1.json",
+          "bytes": 177,
+          "digest": "f54a4e7022a946e3e0c87e1d4eb6751c7b7ca0d3369a805e44b675cd6622c82f"
+        }
+      ]
+    }
+  ]
+}

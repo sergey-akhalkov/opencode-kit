@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "passed": false,
+  "checks": {
+    "twoProjects": false,
+    "resourceThreshold": false,
+    "secretSafe": true,
+    "noProviderCalls": true,
+    "cleanup": true
+  }
+}

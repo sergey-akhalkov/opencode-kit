@@ -1,0 +1,58 @@
+{
+  "baseline": {
+    "readinessAllowanceMs": 21720,
+    "resultDigest": "51ce8dbc19b6aecc949956360756d4d7554c049374f1f1936dd614f39ba3af4d",
+    "sourceSha256": "234ab4ec21e7b394008ee877b6800d0f347e708f5d11ede81f486f245b165943",
+    "toolNames": [
+      "get_community",
+      "get_neighbors",
+      "get_node",
+      "get_pr_impact",
+      "god_nodes",
+      "graph_stats",
+      "list_prs",
+      "query_graph",
+      "shortest_path",
+      "triage_prs"
+    ]
+  },
+  "candidateId": "shared-graphify-integration-r1",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "fixtureAbsent": true,
+    "graphifyPortAbsent": true,
+    "openCodePortAbsent": true
+  },
+  "failure": {
+    "cause": null,
+    "message": "Graphify did not listen within 60000ms",
+    "name": "Error",
+    "stack": "Error: Graphify did not listen within 60000ms\n    at waitForGraphifyListener (file:///D:/home/sergey-akhalkov/opencode-kit/tools/proofs/opencode-shared-graphify-integration.ts:269:9)\n    at async capture (file:///D:/home/sergey-akhalkov/opencode-kit/tools/proofs/opencode-shared-graphify-integration.ts:428:22)\n    at async main (file:///D:/home/sergey-akhalkov/opencode-kit/tools/proofs/opencode-shared-graphify-integration.ts:612:35)"
+  },
+  "mode": "capture",
+  "providerCalls": 0,
+  "schemaVersion": 1,
+  "source": {
+    "machineConfig": {
+      "path": "tools\\windows\\opencode-workstation.config.json",
+      "sha256": "4f844a36c9a9fdca9db2431dccd24f78da6b5827a1bd96aeb7a485f09442b07a"
+    },
+    "module": {
+      "path": "tools\\windows\\opencode-shared-tools.ts",
+      "sha256": "68cae0249c7e936000db9a6334adfe693d15fb626ca315f5fb8d364ddb02833f"
+    },
+    "plugin": {
+      "path": "global\\plugin\\graphify-project-context.ts",
+      "sha256": "888e340a91e2ae5d7364da171f383b7ad2b0712a996bca79b9ea56feee053b6e"
+    },
+    "runner": {
+      "path": "tools\\proofs\\opencode-shared-graphify-integration.ts",
+      "sha256": "b5778a49c2fb2837f1e3777e5303a921d63783cf5d30d75652acb899ecb819b0"
+    },
+    "sessionEnv": {
+      "path": "global\\plugin\\session-env.ts",
+      "sha256": "b810849e7cfad2226ff9dd368786b4246175f9f554ea1bcae4274d52e34b49b4"
+    }
+  }
+}

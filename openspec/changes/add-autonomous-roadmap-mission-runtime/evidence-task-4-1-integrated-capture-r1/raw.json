@@ -1,0 +1,53 @@
+{
+  "candidateId": "task-4-1-integrated-capture-r1",
+  "cleanup": "complete",
+  "deletedRootSessions": 1,
+  "failure": {
+    "error": "Integrated mission status timed out after observing 0 characters",
+    "observedStatus": ""
+  },
+  "mode": "capture",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "runCommand": {
+    "error": {
+      "data": {
+        "message": "Unexpected server error. Check server logs for details.",
+        "ref": "err_e35b02d2"
+      },
+      "name": "UnknownError"
+    },
+    "request": {
+      "timeout": false
+    },
+    "response": {}
+  },
+  "schemaVersion": 1,
+  "server": {
+    "commandNames": [
+      "change-ready-sdlc",
+      "customize-opencode",
+      "disable-grind",
+      "enable-grind",
+      "init",
+      "mission-resume",
+      "mission-run",
+      "mission-status",
+      "mission-stop",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "opsx-apply",
+      "opsx-archive",
+      "opsx-propose",
+      "pty-open-background-spy",
+      "pty-show-server-url",
+      "review"
+    ],
+    "readyMs": 23235,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    }
+  }
+}

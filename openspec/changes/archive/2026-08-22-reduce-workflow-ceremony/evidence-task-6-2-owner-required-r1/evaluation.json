@@ -1,0 +1,20 @@
+{
+  "candidateId": "reduce-workflow-ceremony-owner-required-r1",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "completionMode": "arbiter-or-nonterminal",
+  "disposition": "owner-required",
+  "guardState": "owner-required",
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "blocked",
+  "providerCalls": {
+    "arbiter": 1,
+    "primary": 1
+  },
+  "rootSession": "created-and-deleted",
+  "scenario": "owner-required",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "unlockCondition": null
+}

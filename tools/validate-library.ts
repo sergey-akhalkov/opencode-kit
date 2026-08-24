@@ -31,6 +31,7 @@ import {
 } from "./validators/devkit-contract.ts";
 import { validateImplementationWorkerRouting } from "./validators/routing.ts";
 import { validateEngineeringQualityContracts } from "./validators/engineering-quality.ts";
+import { validatePracticeOwners } from "./validators/practice-owners.ts";
 import { validateInstructionBudget } from "./instruction-budget.ts";
 
 type Options = {
@@ -155,6 +156,7 @@ function main(): void {
   validatePackageScriptsTypeScriptOnly(ctx, root);
   validateDevKitContract(ctx, root);
   validateProfiles(ctx, root, skillNames, agentNames);
+  validatePracticeOwners(ctx, root);
   validateImplementationWorkerRouting(ctx, root, agentNames);
   validateEngineeringQualityContracts(ctx, root);
   validateModelProfiles(ctx, root);
@@ -165,9 +167,12 @@ function main(): void {
   if (ownsInstructionBudget(root)) {
     try {
       const budget = validateInstructionBudget(root);
-      for (const boundary of budget.boundaries.filter((item) => item.status === "failed")) {
+      for (const boundary of [
+        ...budget.boundaries,
+        ...(budget.core?.boundaries ?? []),
+      ].filter((item) => item.status === "failed")) {
         ctx.addError(
-          `Instruction budget exceeded for ${boundary.name}: actual=${boundary.actual} maximum=${boundary.maximum}. Regenerate reviewed maxima with: ${budget.regenerationCommand}`,
+          `Instruction budget exceeded for ${boundary.name}: actual=${boundary.actual} maximum=${boundary.maximum}. Intentional growth requires a reviewed direct seed edit; lowering-only command: ${budget.materializationCommand}`,
         );
       }
     } catch (error) {

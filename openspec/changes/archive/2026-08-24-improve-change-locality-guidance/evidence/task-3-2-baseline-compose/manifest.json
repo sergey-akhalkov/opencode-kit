@@ -1,0 +1,11 @@
+{
+  "files": [
+    {
+      "bytes": 1295,
+      "path": "capture.json",
+      "sha256": "b8926424f1d8aba983dea6744e93ee23a4fb39b117933c0115ca43899c5532f4"
+    }
+  ],
+  "role": "capture-baseline",
+  "schemaVersion": 1
+}

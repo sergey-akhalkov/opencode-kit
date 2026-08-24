@@ -1,0 +1,58 @@
+{
+  "candidateId": "task-4-1-integrated-diagnose-attach-r3",
+  "cleanup": "failed",
+  "deletedRootSessions": 1,
+  "durableFiles": {
+    "result": false,
+    "state": false
+  },
+  "failure": null,
+  "mode": "diagnose",
+  "projectFacts": {
+    "marker": null,
+    "phases": [],
+    "result": null,
+    "state": null,
+    "worktree": "?? .serena/\n"
+  },
+  "ptyUrlError": "PTY Sessions Web Interface URL was not delivered",
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "runCommand": {
+    "error": {
+      "data": {
+        "message": "Unexpected server error. Check server logs for details.",
+        "ref": "err_eb1b4599"
+      },
+      "name": "UnknownError"
+    },
+    "request": {
+      "timeout": false
+    },
+    "response": {}
+  },
+  "runningStatus": "{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"durableDisposition\": \"not-started\",\n  \"missionId\": \"integrated-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": true,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:23c1e3ed8e6eddb1\",\n    \"status\": \"running\"\n  },\n  \"reconciliation\": \"not-required\",\n  \"rootSessionRef\": \"session:2562a30f62150d63\",\n  \"runtimeExecutable\": \"node.exe\",\n  \"runtimeRef\": \"53ae4fd60d54eb6ddfe45cbe892aefded90500ebf8a07cee0285bc96e20dac8b\",\n  \"schemaVersion\": 1,\n  \"stopRequested\": false,\n  \"streamPrefixCounts\": {\n    \"stderr\": 0,\n    \"stdout\": 0\n  },\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"durableDisposition\": \"not-started\",\n  \"missionId\": \"integrated-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:23c1e3ed8e6eddb1\",\n    \"status\": \"running\"\n  },\n  \"reconciliation\": \"not-required\",\n  \"rootSessionRef\": \"session:2562a30f62150d63\",\n  \"runtimeExecutable\": \"node.exe\",\n  \"runtimeRef\": \"53ae4fd60d54eb6ddfe45cbe892aefded90500ebf8a07cee0285bc96e20dac8b\",\n  \"schemaVersion\": 1,\n  \"stopRequested\": false,\n  \"streamPrefixCounts\": {\n    \"stderr\": 0,\n    \"stdout\": 0\n  },\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}",
+  "schemaVersion": 1,
+  "server": {
+    "attached": true,
+    "commandNames": [],
+    "listenObserved": true,
+    "probes": [
+      {
+        "route": "/path",
+        "status": 401
+      },
+      {
+        "route": "/session/status",
+        "status": 401
+      }
+    ],
+    "readyMs": 0,
+    "startup": {
+      "hostConfigLoaded": null,
+      "isolatedConfigLoaded": false,
+      "ripgrepDownloadRequested": false
+    }
+  },
+  "serverDiagnostics": "",
+  "terminalStatus": "{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"durableDisposition\": \"not-started\",\n  \"missionId\": \"integrated-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": true,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:23c1e3ed8e6eddb1\",\n    \"status\": \"running\"\n  },\n  \"reconciliation\": \"not-required\",\n  \"rootSessionRef\": \"session:2562a30f62150d63\",\n  \"runtimeExecutable\": \"node.exe\",\n  \"runtimeRef\": \"53ae4fd60d54eb6ddfe45cbe892aefded90500ebf8a07cee0285bc96e20dac8b\",\n  \"schemaVersion\": 1,\n  \"stopRequested\": false,\n  \"streamPrefixCounts\": {\n    \"stderr\": 0,\n    \"stdout\": 0\n  },\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"durableDisposition\": \"not-started\",\n  \"missionId\": \"integrated-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:23c1e3ed8e6eddb1\",\n    \"status\": \"running\"\n  },\n  \"reconciliation\": \"not-required\",\n  \"rootSessionRef\": \"session:2562a30f62150d63\",\n  \"runtimeExecutable\": \"node.exe\",\n  \"runtimeRef\": \"53ae4fd60d54eb6ddfe45cbe892aefded90500ebf8a07cee0285bc96e20dac8b\",\n  \"schemaVersion\": 1,\n  \"stopRequested\": false,\n  \"streamPrefixCounts\": {\n    \"stderr\": 0,\n    \"stdout\": 0\n  },\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"durableDisposition\": \"not-started\",\n  \"missionId\": \"integrated-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": 1,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:23c1e3ed8e6eddb1\",\n    \"status\": \"exited\"\n  },\n  \"reconciliation\": \"not-required\",\n  \"rootSessionRef\": \"session:2562a30f62150d63\",\n  \"runtimeExecutable\": \"node.exe\",\n  \"runtimeRef\": \"53ae4fd60d54eb6ddfe45cbe892aefded90500ebf8a07cee0285bc96e20dac8b\",\n  \"schemaVersion\": 1,\n  \"stopRequested\": false,\n  \"streamPrefixCounts\": {\n    \"stderr\": 0,\n    \"stdout\": 0\n  },\n  \"terminalNotified\": true,\n  \"terminalToast\": \"sent\",\n  \"visibility\": \"opened\"\n}"
+}

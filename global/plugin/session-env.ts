@@ -1,5 +1,6 @@
 import type { Plugin } from "@opencode-ai/plugin";
 import { readSessionDeliveryContext, type SessionDeliveryContextResult } from "./session-delivery-context/index.ts";
+import { requireExplicitGraphifyRepository } from "./graphify-project-context.ts";
 
 export const SESSION_DELIVERY_CONTEXT_TOOL = "session_delivery_context";
 export const SESSION_COMPLETION_ARBITER_AGENT = "session-completion-arbiter";
@@ -35,6 +36,9 @@ export default {
       if (typeof input.sessionID === "string" && input.sessionID !== "") {
         output.env.OPENCODE_SESSION_ID = input.sessionID;
       }
+    },
+    "tool.execute.before": async (input, output) => {
+      requireExplicitGraphifyRepository(input.tool, output.args);
     },
     tool: {
       [SESSION_DELIVERY_CONTEXT_TOOL]: {

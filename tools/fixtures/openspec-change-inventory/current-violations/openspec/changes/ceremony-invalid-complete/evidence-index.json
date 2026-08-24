@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "changeId": "ceremony-invalid-complete",
+  "candidateId": "ceremony-r1",
+  "environmentId": "fixture-env",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [],
+  "lanes": []
+}

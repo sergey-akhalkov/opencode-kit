@@ -1,0 +1,55 @@
+{
+  "candidateId": "prefer-extend-existing-owner-planning-r1",
+  "cleanup": "removed",
+  "failure": null,
+  "modelCalls": 0,
+  "profile": "quality-independent",
+  "scenarios": [
+    "local-owner",
+    "trivial-fix",
+    "extend-existing-owner"
+  ],
+  "sourceHashes": {
+    "global/AGENTS.md": "f429752b2f50341fe24208fe2a55b07263b0231f0751b735530900867cce4389",
+    "global/commands/reuse-inventory.md": null,
+    "global/skills/reuse-discovery/SKILL.md": "91237f788a51dbde2061113a64545a69bc27c838f2bb6caf486d8b85e66e75ed",
+    "global/bin/reuse-registry.ts": null,
+    "README.md": "5a5c21bfcf5ab80bb2db49dafd41b8f8412835b21524c45eb03f0ed845a80808",
+    "package.json": "458caad12fb51a123309883de8e473db3e3305143673a1d2a4b6c955f6163163",
+    "tools/proofs/reuse-discovery.ts": "9d9fa12995b17e244443863deaf138e6e7ff1c6b801abb3d56bd1990294e94c7"
+  },
+  "toolPolicy": [
+    "bash: deny",
+    "edit: deny",
+    "external_directory: deny",
+    "glob: allow",
+    "grep: allow",
+    "question: deny",
+    "read: allow",
+    "skill: allow",
+    "task: deny",
+    "webfetch: deny"
+  ],
+  "version": 2,
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "credentials": {
+    "count": 2,
+    "valuesCaptured": false
+  },
+  "loader": {
+    "agentStatus": 0,
+    "commandNames": [
+      "dedup",
+      "opsx-apply",
+      "opsx-archive",
+      "opsx-propose"
+    ],
+    "configStatus": 0,
+    "hasReuseDiscovery": true,
+    "hasReuseInventory": false,
+    "permissionExact": true,
+    "skillStatus": 0
+  },
+  "opencodeVersion": "1.18.21",
+  "cleanupError": null
+}

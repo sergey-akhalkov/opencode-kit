@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "instructionArtifactReviewer": {
+    "sessionId": "ses_fd0d1a0a1ffe7SyxU9kDw2TY1V",
+    "effectiveModel": "xai/grok-4.6",
+    "status": "complete",
+    "rows": [
+      "CEC-IA-001",
+      "CEC-IA-002",
+      "CEC-IA-003",
+      "CEC-IA-004",
+      "CEC-IA-005",
+      "CEC-IA-006",
+      "CEC-IA-007",
+      "CEC-IA-008",
+      "CEC-IA-009",
+      "CEC-IA-010"
+    ]
+  },
+  "evidenceSufficiencyReviewer": {
+    "status": "blocked",
+    "reason": "The discovered specialist dispatch adapter does not expose evidence-sufficiency-reviewer. Main did not impersonate the role.",
+    "attemptedSubagentType": "evidence-sufficiency-reviewer"
+  },
+  "mainDisposition": [
+    { "id": "CEC-IA-001", "class": "parked", "action": "always-loaded-budget-blocked-duplicate-of-line-203" },
+    { "id": "CEC-IA-002", "class": "parked", "action": "always-loaded-budget-blocked-duplicate-of-line-203" },
+    { "id": "CEC-IA-003", "class": "parked", "action": "qualification-track-only" },
+    { "id": "CEC-IA-004", "class": "parked", "action": "adjective-vs-declared-class" },
+    { "id": "CEC-IA-005", "class": "contained", "action": "corrected-reviewer-description-stay-quiet" },
+    { "id": "CEC-IA-006", "class": "parked", "action": "apply-may-retain-incomplete-closure" },
+    { "id": "CEC-IA-007", "class": "parked", "action": "compatibility-field" },
+    { "id": "CEC-IA-008", "class": "disproved", "action": "owner_required-exists-after-reading-line-80" },
+    { "id": "CEC-IA-009", "class": "evidence-gap", "action": "other-sources-unknown" },
+    { "id": "CEC-IA-010", "class": "parked", "action": "friction-kncl" }
+  ],
+  "claimCeiling": "Independent challenge remains missing. Broad claims stay blocked. Narrower installed-guard and loaded-session exact/decision proof is preserved."
+}

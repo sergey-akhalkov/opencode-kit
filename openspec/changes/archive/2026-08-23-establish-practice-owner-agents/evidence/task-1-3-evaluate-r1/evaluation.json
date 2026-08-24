@@ -1,0 +1,75 @@
+{
+  "baselineRoot": "<baseline-root>",
+  "candidateRoot": null,
+  "complete": true,
+  "modelCalls": 0,
+  "primaryCallBound": 8,
+  "primaryCalls": 8,
+  "rows": [
+    {
+      "scenario": "trivial-no-trigger",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    },
+    {
+      "scenario": "single-core-trigger",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    },
+    {
+      "scenario": "independent-multi-trigger",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    },
+    {
+      "scenario": "protocol-wire-boundary",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    },
+    {
+      "scenario": "protected-action",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    },
+    {
+      "scenario": "unavailable-owner",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    },
+    {
+      "scenario": "practice-maintenance",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    },
+    {
+      "scenario": "owner-self-change",
+      "cleanupComplete": true,
+      "fixtureStable": true,
+      "launchedOwners": [],
+      "providerCalls": 1,
+      "status": 0
+    }
+  ],
+  "schemaVersion": 1
+}

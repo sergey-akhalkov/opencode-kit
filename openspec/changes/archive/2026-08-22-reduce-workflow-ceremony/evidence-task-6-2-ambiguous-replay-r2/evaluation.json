@@ -1,0 +1,23 @@
+{
+  "candidateId": "reduce-workflow-ceremony-ambiguous-r2",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "completionMode": "arbiter-or-nonterminal",
+  "disposition": "completed",
+  "guardState": "passed",
+  "inputRawSha256": "1f5b20133bf120d8ef9d888e3c89a7c836c6e40e213d23f64e00abaf31b5efc7",
+  "liveCalls": 0,
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "complete",
+  "providerCalls": {
+    "arbiter": 1,
+    "primary": 1
+  },
+  "replaySource": "evidence-task-6-2-ambiguous-r2",
+  "rootSession": "created-and-deleted",
+  "scenario": "ambiguous",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unlockCondition": null
+}

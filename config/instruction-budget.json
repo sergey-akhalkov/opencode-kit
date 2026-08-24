@@ -1,7 +1,8 @@
 {
   "limits": {
-    "catalogTokenProxy": 100840,
-    "globalAuthorityTokenProxy": 16659
+    "discoveryMetadataTokenProxy": 2239,
+    "globalStartupTokenProxy": 13279,
+    "onDemandBodiesTokenProxy": 66244
   },
-  "schemaVersion": 1
+  "schemaVersion": 2
 }

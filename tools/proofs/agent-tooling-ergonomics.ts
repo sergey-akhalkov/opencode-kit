@@ -7,10 +7,22 @@ import { fileURLToPath } from "node:url";
 
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
 import { loadModelProfile } from "../model-profile.ts";
+import {
+  changeLocalityFollowUps,
+  changeLocalityPrompts,
+  changeLocalityScenarioIds,
+  createCompliantChangeLocalityFixture,
+  evaluateChangeLocalityScenario,
+  isChangeLocalityScenario,
+  setupChangeLocalityScenario,
+  type ChangeLocalityScenarioId,
+} from "./lib/change-locality-scenarios.ts";
 
 type CaptureKind = "baseline" | "candidate";
 type RunnerMode = "capture" | "evaluate" | "preflight" | "replay";
-type ScenarioId = "mechanical-artifact" | "repeated-cli" | "source-placement";
+type ProofPack = "tooling" | "change-locality";
+type ToolingScenarioId = "mechanical-artifact" | "repeated-cli" | "source-placement";
+type ScenarioId = ToolingScenarioId | ChangeLocalityScenarioId;
 
 type Arguments = {
   baselineRoot: string | null;
@@ -20,6 +32,7 @@ type Arguments = {
   evidenceRoot: string;
   help: boolean;
   mode: RunnerMode | null;
+  pack: ProofPack;
   profile: string;
   scenarios: ScenarioId[];
   sourceRoot: string;
@@ -92,13 +105,21 @@ type ScenarioBundle = {
   schemaVersion: 1;
 };
 
-const SCENARIOS: readonly ScenarioId[] = [
+const TOOLING_SCENARIOS: readonly ToolingScenarioId[] = [
   "repeated-cli",
   "mechanical-artifact",
   "source-placement",
 ];
 
-const PROMPTS: Record<ScenarioId, string> = {
+function scenariosForPack(pack: ProofPack): ScenarioId[] {
+  return pack === "change-locality" ? changeLocalityScenarioIds() : [...TOOLING_SCENARIOS];
+}
+
+function promptsFor(pack: ProofPack): Record<string, string> {
+  return pack === "change-locality" ? changeLocalityPrompts() : TOOLING_PROMPTS;
+}
+
+const TOOLING_PROMPTS: Record<ToolingScenarioId, string> = {
   "repeated-cli": [
     "Implement the smallest complete local change. Create a dependency-free repository-owned CLI at tools/report.mjs.",
     "It will be used repeatedly by operators and later agents. Its required product command is:",
@@ -160,11 +181,11 @@ function usage(): string {
   return [
     "Usage:",
     "  node tools/proofs/agent-tooling-ergonomics.ts --help",
-    "  node tools/proofs/agent-tooling-ergonomics.ts --mode preflight --evidence-root <new-path> [--source-root <path>] [--profile quality-independent] [--capture-kind baseline|candidate] [--candidate-id <id>]",
-    "  node tools/proofs/agent-tooling-ergonomics.ts --mode capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--source-root <path>] [--profile quality-independent] [--scenarios all|id,...]",
-    "  node tools/proofs/agent-tooling-ergonomics.ts --mode evaluate|replay --evidence-root <new-path> --baseline-root <path> [--candidate-root <path>]",
+    "  node tools/proofs/agent-tooling-ergonomics.ts --mode preflight --evidence-root <new-path> [--pack tooling|change-locality] [--source-root <path>] [--profile quality-independent] [--capture-kind baseline|candidate] [--candidate-id <id>]",
+    "  node tools/proofs/agent-tooling-ergonomics.ts --mode capture --evidence-root <new-path> --capture-kind baseline|candidate --candidate-id <id> [--pack tooling|change-locality] [--source-root <path>] [--profile quality-independent] [--scenarios all|id,...]",
+    "  node tools/proofs/agent-tooling-ergonomics.ts --mode evaluate|replay --evidence-root <new-path> --baseline-root <path> [--candidate-root <path>] [--pack tooling|change-locality]",
     "",
-    `Scenario ids: ${SCENARIOS.join(", ")}`,
+    "Pack tooling keeps the original three authoring scenarios. Pack change-locality uses the seven CLC-001 scenarios.",
     "All evidence roots are create-new. Help performs no writes or model calls.",
   ].join("\n");
 }
@@ -178,18 +199,21 @@ function argumentValue(name: string): string | null {
   return index < 0 ? null : process.argv[index + 1] ?? null;
 }
 
-function parseScenarioList(value: string | null): ScenarioId[] {
-  if (value == null || value === "all") return [...SCENARIOS];
+function parseScenarioList(value: string | null, pack: ProofPack): ScenarioId[] {
+  const available = scenariosForPack(pack);
+  if (value == null || value === "all") return [...available];
   const raw = value.split(",");
-  const selected = raw.filter((item): item is ScenarioId => SCENARIOS.includes(item as ScenarioId));
+  const selected = raw.filter((item): item is ScenarioId => available.includes(item as ScenarioId));
   if (selected.length === 0 || selected.length !== raw.length) {
-    throw new Error(`Invalid --scenarios value; expected all or comma-separated ${SCENARIOS.join(",")}`);
+    throw new Error(`Invalid --scenarios value; expected all or comma-separated ${available.join(",")}`);
   }
   return [...new Set(selected)];
 }
 
 function argumentsFromCli(): Arguments {
   const help = process.argv.includes("--help") || process.argv.includes("-h");
+  const packValue = argumentValue("--pack") ?? "tooling";
+  if (packValue !== "tooling" && packValue !== "change-locality") throw new Error("--pack must be tooling or change-locality");
   if (help) {
     return {
       baselineRoot: null,
@@ -199,8 +223,9 @@ function argumentsFromCli(): Arguments {
       evidenceRoot: "",
       help,
       mode: null,
+      pack: packValue,
       profile: "quality-independent",
-      scenarios: [...SCENARIOS],
+      scenarios: scenariosForPack(packValue),
       sourceRoot: repositoryRoot(),
     };
   }
@@ -222,8 +247,9 @@ function argumentsFromCli(): Arguments {
     evidenceRoot: path.resolve(evidenceRoot),
     help: false,
     mode,
+    pack: packValue,
     profile: argumentValue("--profile") ?? "quality-independent",
-    scenarios: parseScenarioList(argumentValue("--scenarios")),
+    scenarios: parseScenarioList(argumentValue("--scenarios"), packValue),
     sourceRoot: path.resolve(argumentValue("--source-root") ?? repositoryRoot()),
   };
 }
@@ -423,7 +449,15 @@ function instructionInventory(sourceRoot: string): Record<string, unknown> {
   return JSON.parse(result.stdout) as Record<string, unknown>;
 }
 
-function proofEnvironment(kitRoot: string, sourceRoot: string, proofRoot: string, profile: string): NodeJS.ProcessEnv {
+function proofPermission(pack: ProofPack): typeof PROOF_PERMISSION {
+  return pack === "change-locality" ? { ...PROOF_PERMISSION, task: "allow" } : PROOF_PERMISSION;
+}
+
+function toolPolicy(pack: ProofPack): string[] {
+  return TOOL_POLICY.map((row) => pack === "change-locality" && row === "task: deny" ? "task: allow to observe Practice Owner launches" : row);
+}
+
+function proofEnvironment(kitRoot: string, sourceRoot: string, proofRoot: string, profile: string, pack: ProofPack): NodeJS.ProcessEnv {
   const loaded = loadModelProfile(kitRoot, profile);
   return {
     ...process.env,
@@ -433,7 +467,7 @@ function proofEnvironment(kitRoot: string, sourceRoot: string, proofRoot: string
         ...loaded.profile.agent,
         build: { ...loaded.profile.agent.build, steps: 24 },
       },
-      permission: PROOF_PERMISSION,
+      permission: proofPermission(pack),
     }),
     OPENCODE_CONFIG_DIR: path.join(sourceRoot, "global"),
     OPENCODE_PURE: "1",
@@ -450,6 +484,10 @@ function setupScenario(proofRoot: string, scenario: ScenarioId): string {
     type: "module",
   });
   writeText(path.join(project, ".gitignore"), "target/\nnode_modules/\n");
+  if (isChangeLocalityScenario(scenario)) {
+    setupChangeLocalityScenario(project, scenario);
+    return project;
+  }
   if (scenario === "repeated-cli") {
     writeText(path.join(project, "sample.txt"), "sample");
   } else if (scenario === "mechanical-artifact") {
@@ -632,12 +670,17 @@ function evaluateSourcePlacement(project: string): ScenarioOracle {
 }
 
 function evaluateProject(project: string, scenario: ScenarioId): ScenarioOracle {
+  if (isChangeLocalityScenario(scenario)) return evaluateChangeLocalityScenario(project, scenario);
   if (scenario === "repeated-cli") return evaluateRepeatedCli(project);
   if (scenario === "mechanical-artifact") return evaluateMechanicalArtifact(project);
   return evaluateSourcePlacement(project);
 }
 
 function createCompliantFixture(project: string, scenario: ScenarioId): void {
+  if (isChangeLocalityScenario(scenario)) {
+    createCompliantChangeLocalityFixture(project, scenario);
+    return;
+  }
   if (scenario === "repeated-cli") {
     writeText(path.join(project, "tools", "report.mjs"), [
       "const args = process.argv.slice(2);",
@@ -678,7 +721,7 @@ function diffIdentity(root: string): Record<string, unknown> {
   if (!fs.existsSync(path.join(root, ".git"))) return { sha256: null, statusEntries: null };
   const diff = runPortableCommand(root, ["git", "diff", "--binary"], { capture: true });
   const status = runPortableCommand(root, ["git", "status", "--short"], { capture: true });
-  if (diff.status !== 0 || status.status !== 0) throw new Error("Git identity capture failed");
+  if (diff.status !== 0 || status.status !== 0) return { sha256: null, statusEntries: null };
   return {
     sha256: sha256(diff.stdout),
     statusEntries: status.stdout.split(/\r?\n/).filter(Boolean).length,
@@ -696,12 +739,12 @@ function preflight(args: Arguments): void {
   const rows: Array<Record<string, unknown>> = [];
   try {
     if (route.model !== loaded.profile.model) throw new Error("Build route differs from selected profile primary model");
-    const environment = proofEnvironment(kitRoot, args.sourceRoot, proofRoot, args.profile);
+    const environment = proofEnvironment(kitRoot, args.sourceRoot, proofRoot, args.profile, args.pack);
     const opencode = runPortableCommand(kitRoot, ["opencode", "--version"], { capture: true });
     const config = runPortableCommand(kitRoot, ["opencode", "debug", "config", "--pure"], { capture: true, env: environment });
     if (opencode.status !== 0 || config.status !== 0) throw new Error("Installed OpenCode loader preflight failed");
     const resolved = JSON.parse(config.stdout) as { permission?: unknown };
-    if (JSON.stringify(resolved.permission) !== JSON.stringify(PROOF_PERMISSION)) {
+    if (JSON.stringify(resolved.permission) !== JSON.stringify(proofPermission(args.pack))) {
       throw new Error("Resolved proof permission differs from bounded policy");
     }
     const nativeArgument = `line-one\n${JSON.stringify({ probe: "<native>" })}`;
@@ -714,7 +757,7 @@ function preflight(args: Arguments): void {
     if (nativeArgumentProbe.status !== 0 || nativeArgumentProbe.stdout !== nativeArgument) {
       throw new Error("Native executable argument boundary preflight failed");
     }
-    for (const scenario of SCENARIOS) {
+    for (const scenario of args.scenarios) {
       const scenarioRoot = path.join(proofRoot, scenario);
       const project = setupScenario(scenarioRoot, scenario);
       const rejected = evaluateProject(project, scenario);
@@ -731,12 +774,13 @@ function preflight(args: Arguments): void {
       model: route.model,
       opencodeVersion: opencode.stdout.trim(),
       profile: args.profile,
-      promptHashes: Object.fromEntries(SCENARIOS.map((scenario) => [scenario, sha256(PROMPTS[scenario])])),
-      prompts: PROMPTS,
+      pack: args.pack,
+      promptHashes: Object.fromEntries(args.scenarios.map((scenario) => [scenario, sha256(promptsFor(args.pack)[scenario] ?? "")])),
+      prompts: promptsFor(args.pack),
       runner: "agent-tooling-ergonomics/1",
       sourceHashes: candidateSourceHashes(args.sourceRoot),
       sourceRoot: "<kit-root>",
-      toolPolicy: TOOL_POLICY,
+      toolPolicy: toolPolicy(args.pack),
       variant: route.variant,
     });
     writeJson(path.join(args.evidenceRoot, "preflight.json"), {
@@ -792,7 +836,7 @@ function captureScenario(args: Arguments, scenario: ScenarioId): ScenarioBundle 
   const proofRoot = fs.mkdtempSync(path.join(os.tmpdir(), `agent-tooling-ergonomics-${scenario}-`));
   const loaded = loadModelProfile(kitRoot, args.profile);
   const route = loaded.profile.agent.build;
-  const environment = proofEnvironment(kitRoot, args.sourceRoot, proofRoot, args.profile);
+  const environment = proofEnvironment(kitRoot, args.sourceRoot, proofRoot, args.profile, args.pack);
   let bundle: ScenarioBundle | null = null;
   let cleanupError: string | null = null;
   let sessionIds: string[] = [];
@@ -804,6 +848,7 @@ function captureScenario(args: Arguments, scenario: ScenarioId): ScenarioBundle 
       "opencode",
       "run",
       "--pure",
+      "--auto",
       "--agent",
       "build",
       "--model",
@@ -816,13 +861,25 @@ function captureScenario(args: Arguments, scenario: ScenarioId): ScenarioBundle 
       project,
       "--title",
       `tooling-ergonomics-${args.captureKind}-${scenario}`,
-      PROMPTS[scenario],
+      promptsFor(args.pack)[scenario] ?? "",
     ];
     const started = Date.now();
     const result = runPortableCommand(kitRoot, argv, { capture: true, env: environment });
     const stdout = redactEvidence(result.stdout, kitRoot, proofRoot);
     const stderr = redactEvidence(result.stderr, kitRoot, proofRoot);
     const facts = parseEventFacts(stdout);
+    const followUp = args.pack === "change-locality" && isChangeLocalityScenario(scenario)
+      ? changeLocalityFollowUps()[scenario]
+      : undefined;
+    if (followUp != null && followUp.trim() !== "") {
+      const followArgv = [...argv.slice(0, -1), followUp];
+      const follow = runPortableCommand(kitRoot, followArgv, { capture: true, env: environment });
+      const followFacts = parseEventFacts(redactEvidence(follow.stdout, kitRoot, proofRoot));
+      facts.assistantText = `${facts.assistantText}\n${followFacts.assistantText}`;
+      facts.eventCount += followFacts.eventCount;
+      facts.sessionIds = [...new Set([...facts.sessionIds, ...followFacts.sessionIds])];
+      facts.toolCalls.push(...followFacts.toolCalls);
+    }
     facts.elapsedMs = Date.now() - started;
     sessionIds = facts.sessionIds;
     const filesBeforeOracle = fileManifest(project);
@@ -841,13 +898,13 @@ function captureScenario(args: Arguments, scenario: ScenarioId): ScenarioBundle 
         model: route.model,
         profile: args.profile,
         route: `${route.model}/${route.variant}`,
-        toolPolicy: TOOL_POLICY,
+      toolPolicy: toolPolicy(args.pack),
         variant: route.variant,
       },
       facts,
       filesAfterOracle: fileManifest(project),
       filesBeforeOracle,
-      input: { message: PROMPTS[scenario], promptSha256: sha256(PROMPTS[scenario]), scenario },
+      input: { message: promptsFor(args.pack)[scenario] ?? "", promptSha256: sha256(promptsFor(args.pack)[scenario] ?? ""), scenario },
       oracle,
       schemaVersion: 1,
     };
@@ -893,10 +950,10 @@ function capture(args: Arguments): void {
   console.log(JSON.stringify({ candidateId: args.candidateId, cleanup: "removed", mode: "capture", scenarios: completed.length, status: "complete" }));
 }
 
-function readBundles(root: string): Map<ScenarioId, ScenarioBundle> {
+function readBundles(root: string, scenarios: ScenarioId[]): Map<ScenarioId, ScenarioBundle> {
   verifyManifest(root);
   const bundles = new Map<ScenarioId, ScenarioBundle>();
-  for (const scenario of SCENARIOS) {
+  for (const scenario of scenarios) {
     const file = path.join(root, `${scenario}.bundle.json`);
     if (fs.existsSync(file)) bundles.set(scenario, readJson(file) as ScenarioBundle);
   }
@@ -960,9 +1017,9 @@ function recordedOracle(bundle: ScenarioBundle, scenario: ScenarioId): ScenarioO
 function evaluate(args: Arguments, mode: "evaluate" | "replay"): void {
   if (args.baselineRoot == null) throw new Error(`${mode} requires --baseline-root`);
   createEvidenceRoot(args.evidenceRoot);
-  const baseline = readBundles(path.resolve(args.baselineRoot));
-  const candidate = args.candidateRoot == null ? null : readBundles(path.resolve(args.candidateRoot));
-  const rows = SCENARIOS.map((scenario) => {
+  const baseline = readBundles(path.resolve(args.baselineRoot), args.scenarios);
+  const candidate = args.candidateRoot == null ? null : readBundles(path.resolve(args.candidateRoot), args.scenarios);
+  const rows = args.scenarios.map((scenario) => {
     const before = baseline.get(scenario) ?? null;
     const after = candidate?.get(scenario) ?? null;
     const beforeOracle = before == null ? null : recordedOracle(before, scenario);
@@ -994,10 +1051,10 @@ function evaluate(args: Arguments, mode: "evaluate" | "replay"): void {
       scenario,
     };
   });
-  const baselineComplete = baseline.size === SCENARIOS.length && rows.every((row) =>
+  const baselineComplete = baseline.size === args.scenarios.length && rows.every((row) =>
     row.baseline?.cleanup === true && row.baseline.status === 0 && row.baseline.expectationMet === true
   );
-  const candidateComplete = candidate == null ? null : candidate.size === SCENARIOS.length && rows.every((row) =>
+  const candidateComplete = candidate == null ? null : candidate.size === args.scenarios.length && rows.every((row) =>
     row.candidate?.cleanup === true && row.candidate.status === 0 && row.candidate.oracle?.pass === true && row.pairMatches === true
   );
   const result = {

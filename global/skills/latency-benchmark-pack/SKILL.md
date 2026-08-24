@@ -20,7 +20,7 @@ Use this skill when performance claims, SLOs, load isolation, queue wait, watchd
 
 - No commits, pushes, merges, remote-state changes, source deletion, or destructive cleanup without explicit user request and repository policy.
 - Do not run load tests against shared, production, billable, or rate-limited services unless the user approves the target environment, command, limits, duration, and rollback/stop criteria.
-- If benchmark tooling changes behavior, implement and observably prove its smallest happy path first. Material/explicit qualification then uses a separate fresh-context testing subagent to author fixture, smoke, overload, and failure scenarios. Ordinary Small uses focused validation and optional smallest post-proof regression.
+- If benchmark tooling changes behavior, implement and observably prove its smallest happy path first. Main may add the smallest focused regression after proof. A separate fresh test-only SDET authors critical overload or failure scenarios only when a reachable named critical consequence or explicit project/owner requirement triggers it.
 
 ## Benchmark Matrix
 

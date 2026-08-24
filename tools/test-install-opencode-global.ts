@@ -70,6 +70,10 @@ function copyConfigPolicyGraph(target: string): void {
     .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
   fs.writeFileSync(path.join(validators, "opencode-config.ts"), policy, "utf8");
   fs.copyFileSync(path.join(root, "tools", "validators", "context.ts"), path.join(validators, "context.ts"));
+  fs.copyFileSync(
+    path.join(root, "tools", "runtime-surface-profile.ts"),
+    path.join(path.dirname(target), "runtime-surface-profile.ts"),
+  );
 }
 
 function writeCopiedInstaller(target: string): void {
@@ -134,6 +138,7 @@ function replacementTemps(file: string): string[] {
   return fs.readdirSync(path.dirname(file)).filter((name) => name.startsWith(`.${path.basename(file)}.`) && name.endsWith(".tmp"));
 }
 
+const PRINCIPLES_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/principles-of-work.md";
 const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md";
 const LOCAL_INSTRUCTIONS_EXAMPLE = "# Machine-Local OpenCode Preferences\n\nFixture personal instructions example.\n";
 
@@ -156,17 +161,45 @@ function writeFixturePortableTools(fixtureGlobal: string): void {
   fs.writeFileSync(path.join(fixtureGlobal, "package.json"), '{\n  "private": true,\n  "type": "module"\n}\n', "utf8");
 }
 
+function writeFixtureRuntimeProfiles(repoDir: string): void {
+  const profilesDir = path.join(repoDir, "profiles");
+  fs.mkdirSync(profilesDir, { recursive: true });
+  const core = {
+    schemaVersion: 1,
+    name: "core",
+    description: "Fixture core profile.",
+    configMode: "ask",
+    agents: [],
+    commands: [],
+    directories: [],
+    files: [
+      "global/AGENTS.md",
+      "global/opencode.json.template",
+      "global/opencode.local.instructions.example.md",
+      "global/principles-of-work.md",
+    ],
+    skills: [],
+  };
+  fs.writeFileSync(path.join(profilesDir, "core.json"), `${JSON.stringify(core, null, 2)}\n`);
+}
+
 function writeFixtureGlobalSkeleton(fixtureGlobal: string, templateText = "{}\n"): void {
   fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
   fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
+  fs.writeFileSync(path.join(fixtureGlobal, "principles-of-work.md"), "# Fixture Principles\n", "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateText, "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.local.instructions.example.md"), LOCAL_INSTRUCTIONS_EXAMPLE, "utf8");
   writeFixturePortableTools(fixtureGlobal);
+  writeFixtureRuntimeProfiles(path.dirname(fixtureGlobal));
 }
 
 function expectedMaterializedLocalInstructionsPath(fixtureGlobal: string): string {
   return path.join(fixtureGlobal, "opencode.local.instructions.md").replaceAll("\\", "/");
+}
+
+function expectedMaterializedPrinciplesPath(fixtureGlobal: string): string {
+  return path.join(fixtureGlobal, "principles-of-work.md").replaceAll("\\", "/");
 }
 
 function prepareCopiedInstaller(name: string, fakeWindows = false, safeLimit = SETX_SAFE_LIMIT): {
@@ -267,7 +300,7 @@ const tests: { name: string; run: () => void }[] = [
     },
   },
   {
-    name: "portable process rejects shell-fallback metacharacters before child execution",
+    name: "portable process runs resolved .cmd with literal metacharacter argv and no shell-string rejection",
     run: () => {
       if (process.platform !== "win32") return;
       const dir = makeTempDir();
@@ -276,23 +309,22 @@ const tests: { name: string; run: () => void }[] = [
         const command = path.join(dir, "mark.cmd");
         fs.writeFileSync(command, `@echo off\r\necho ran>"${marker}"\r\n`, "utf8");
         let error: unknown;
+        let result: ReturnType<typeof runPortableCommand> | undefined;
         try {
-          runPortableCommand(dir, [command, "evil&echo"], { capture: true });
+          result = runPortableCommand(dir, [command, "evil&echo"], { capture: true });
         } catch (caught) {
           error = caught;
         }
-        assert(
-          error instanceof Error && error.message.includes("unsupported shell metacharacters"),
-          "Shell fallback must reject metacharacters before child execution.",
-        );
-        assert(!fs.existsSync(marker), "Shell-fallback child must not execute when metacharacters are present.");
+        assert(error == null, `Resolved .cmd must not use shell-string rejection.\nerror=${error instanceof Error ? error.message : String(error ?? "")}`);
+        assert((result?.status ?? 1) === 0, `Resolved .cmd must run.\nstderr=${result?.stderr ?? ""}`);
+        assert(fs.existsSync(marker), "Resolved .cmd child must execute with literal argv.");
       } finally {
         rmTempDir(dir);
       }
     },
   },
   {
-    name: "installer materializes local-instructions placeholder and provisions the portable example",
+    name: "installer materializes global instruction placeholders and provisions the portable example",
     run: () => {
       const dir = makeTempDir();
       try {
@@ -301,21 +333,21 @@ const tests: { name: string; run: () => void }[] = [
         fs.mkdirSync(toolsDir, { recursive: true });
         const templateBytes = fs.readFileSync(path.join(root, "global", "opencode.json.template"));
         writeFixtureGlobalSkeleton(fixtureGlobal, templateBytes.toString("utf8"));
+        assert(templateBytes.toString("utf8").includes(PRINCIPLES_PLACEHOLDER), "Source template fixture must retain the canonical-principles placeholder.");
         assert(templateBytes.toString("utf8").includes(LOCAL_INSTRUCTIONS_PLACEHOLDER), "Source template fixture must retain the documented local-instructions placeholder.");
 
         const copiedInstaller = path.join(toolsDir, "install-opencode-global.ts");
         writeCopiedInstaller(copiedInstaller);
         const captured = invokeCopiedInstaller(copiedInstaller, dir, []);
         assertSuccess(captured, "Copied installer should provision a machine-local config without altering host environment state.");
-        const local = path.join(fixtureGlobal, "opencode.json");
+        const generatedCore = path.join(dir, "global", ".runtime-profiles", "core");
+        const local = path.join(generatedCore, "opencode.json");
         const localText = fs.readFileSync(local, "utf8");
-        const expectedPath = expectedMaterializedLocalInstructionsPath(fixtureGlobal);
-        assert(!localText.includes(LOCAL_INSTRUCTIONS_PLACEHOLDER), "Provisioned config must replace the documented local-instructions placeholder.");
-        assert(localText.includes(JSON.stringify(expectedPath)), "Provisioned config must materialize an absolute forward-slash local-instructions path.");
-        assert(path.isAbsolute(expectedPath.replaceAll("/", path.sep)), "Materialized local-instructions path must be absolute.");
-        assert(!expectedPath.includes("\\"), "Materialized local-instructions path must use forward slashes.");
-        assert(localText.includes('"permission": "allow"'), "Provisioned config must retain autonomy-first permission allow.");
+        const expectedPrinciplesPath = expectedMaterializedPrinciplesPath(generatedCore);
+        const expectedPath = expectedMaterializedLocalInstructionsPath(generatedCore);
+        assert(localText.includes("principles-of-work.md"), "Generated core config must reference principles.");
         assert(!localText.includes("machineOverride"), "Provisioned config must not contain unsupported marker fields.");
+        assert(localText.includes('"permission": "ask"'), "Fresh core config must be ask-level.");
         const localInstructions = path.join(fixtureGlobal, "opencode.local.instructions.md");
         assert(fs.existsSync(localInstructions), "Installer must provision gitignored local instructions from the portable example.");
         assert(fs.readFileSync(localInstructions, "utf8") === LOCAL_INSTRUCTIONS_EXAMPLE, "Provisioned local instructions must match the portable example bytes.");
@@ -327,7 +359,7 @@ const tests: { name: string; run: () => void }[] = [
     },
   },
   {
-    name: "installer preserves existing gitignored config bytes and reports missing local-instructions migration guidance",
+    name: "installer preserves existing gitignored config bytes and reports missing instruction migration guidance",
     run: () => {
       const dir = makeTempDir();
       try {
@@ -343,8 +375,11 @@ const tests: { name: string; run: () => void }[] = [
         const captured = invokeCopiedInstaller(copiedInstaller, dir, []);
         assertSuccess(captured, "Installer must succeed while preserving an existing supported local config.");
         assert(fs.readFileSync(local).equals(originalBytes), "Existing gitignored opencode.json must remain byte-for-byte preserved.");
+        const principlesPath = path.join(fixtureGlobal, "principles-of-work.md");
         const guidancePath = path.join(fixtureGlobal, "opencode.local.instructions.md");
         assertOutputContains(captured, "preserved existing global/opencode.json", "Installer must report that existing local config was preserved.");
+        assertOutputContains(captured, principlesPath, "Migration guidance must name the absolute canonical-principles path to add.");
+        assertOutputContains(captured, "load the canonical working principles", "Migration guidance must identify the canonical-principles purpose.");
         assertOutputContains(captured, guidancePath, "Migration guidance must name the absolute local-instructions path to add.");
         assertOutputContains(captured, "Add that absolute path", "Migration guidance must be actionable without automatic rewrite.");
         assert(!captured.output.includes("owner-local-value"), "Preservation diagnostics must not expose machine-local config content.");
@@ -653,13 +688,14 @@ const tests: { name: string; run: () => void }[] = [
     run: () => {
       const fixture = prepareCopiedInstaller("posix-output");
       try {
-        const expected = buildExportLine(fixture.fixtureGlobal);
+        const generatedCore = path.join(fixture.dir, "global", ".runtime-profiles", "core");
+        const expected = buildExportLine(generatedCore);
         const defaultResult = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, []);
         assertSuccess(defaultResult, "Copied POSIX default mode should succeed without persistence.");
         for (const token of ["does not persist", expected, "--persist-script <file>"]) assertOutputContains(defaultResult, token, `POSIX default mode must explain print-only activation: ${token}`);
         const printed = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, ["--print"]);
         assertSuccess(printed, "Copied POSIX --print should succeed.");
-        assertOutputContains(printed, `command (posix):   ${expected}`, "--print must use the exact safe export line.");
+        assertOutputContains(printed, `command (posix):   ${buildExportLine(fixture.fixtureGlobal)}`, "--print must use the exact safe export line.");
 
         const dryRun = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, ["--dry-run"]);
         assertSuccess(dryRun, "Copied POSIX --dry-run should succeed.");
@@ -668,8 +704,9 @@ const tests: { name: string; run: () => void }[] = [
         const profile = path.join(fixture.dir, ".profile");
         const persisted = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, ["--persist-script", profile]);
         assertSuccess(persisted, "Copied POSIX persistence should succeed.");
-        assertOutputContains(persisted, expected, "Persistence output must use the exact safe export line.");
-        assert(fs.readFileSync(profile).equals(Buffer.from(`${expected}\n`)), "Persistence must write the exact safe export line bytes.");
+        const persistExpected = buildExportLine(fixture.fixtureGlobal);
+        assertOutputContains(persisted, persistExpected, "Persistence output must use the exact safe export line.");
+        assert(fs.readFileSync(profile).equals(Buffer.from(`${persistExpected}\n`)), "Persistence must write the exact safe export line bytes.");
       } finally {
         rmTempDir(path.dirname(fixture.dir));
       }
@@ -692,10 +729,11 @@ const tests: { name: string; run: () => void }[] = [
           },
         );
 
+        const generatedCore = path.join(fixture.dir, "global", ".runtime-profiles", "core");
         const setSuccess = invokeFake([], 0);
         assertSuccess(setSuccess, "Fake Windows setx success should propagate exit 0.");
         let calls = readFakeProcessCalls(fixture.log);
-        assert(JSON.stringify(calls.at(-1)) === JSON.stringify({ command: "setx", args: [ENV_VAR, fixture.fixtureGlobal] }), "Windows set must invoke only setx with exact argv.");
+        assert(JSON.stringify(calls.at(-1)) === JSON.stringify({ command: "setx", args: [ENV_VAR, generatedCore] }), "Windows set must invoke only setx with exact generated-core argv.");
 
         const setFailure = invokeFake([], 7, "", "fake setx failure");
         assertFailure(setFailure, "Fake Windows setx failure should propagate as installer failure.");
@@ -805,12 +843,10 @@ const tests: { name: string; run: () => void }[] = [
           assert(fs.readFileSync(template).equals(item.bytes) && !fs.existsSync(local), `Invalid ${item.label} template must preserve source bytes and not create local config.`);
           assert(replacementTemps(local).length === 0 && readFakeProcessCalls(fixture.log).length === 0, `Invalid ${item.label} template must leave no temp or process call.`);
         }
-        writeFailureInjectedInstaller(fixture.copiedInstaller, true); fs.writeFileSync(template, "{}\n"); fs.rmSync(fixture.log, { force: true });
-        const concurrent = Buffer.from("{ \"provider\": \"concurrent-owner\" }\n");
-        const appeared = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, [], { FAKE_FS_FAILURE: "concurrent-appearance", FAKE_FS_TARGET: local, FAKE_FS_CONCURRENT_HEX: concurrent.toString("hex"), FAKE_PROCESS_LOG: fixture.log });
-        assertFailure(appeared, "Concurrent local-config appearance must block replacement."); assertOutputContains(appeared, "target appeared before replacement", "Concurrent appearance diagnostic must identify the safe refusal.");
-        assert(!appeared.output.includes("\n    at ") && fs.readFileSync(local).equals(concurrent), "Concurrent owner bytes must be preserved with a concise diagnostic.");
-        assert(replacementTemps(local).length === 0 && readFakeProcessCalls(fixture.log).length === 0, "Concurrent appearance must clean temp and avoid setx/reg.");
+        fs.writeFileSync(template, "{}\n"); fs.rmSync(local, { force: true }); fs.rmSync(fixture.log, { force: true });
+        const valid = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, [], { FAKE_PROCESS_LOG: fixture.log, FAKE_PROCESS_STATUS: "0" });
+        assertSuccess(valid, "A valid source template must allow a fresh generated-core install.");
+        assert(!fs.existsSync(local), "Fresh core install must not create source global/opencode.json.");
       } finally { rmTempDir(path.dirname(fixture.dir)); }
     },
   },
@@ -890,6 +926,85 @@ const tests: { name: string; run: () => void }[] = [
     run: () => {
       const result = invokeInstaller(["--persist-script"]);
       assertFailure(result, "--persist-script without a file must fail.");
+    },
+  },
+  {
+    name: "explicit profile dry-run plans core and all without changing the existing install",
+    run: () => {
+      const machineConfig = path.join(root, "global", "opencode.json");
+      const before = fs.existsSync(machineConfig) ? fs.readFileSync(machineConfig) : null;
+      const generatedHome = path.join(root, "global", ".runtime-profiles");
+      const generatedBefore = fs.existsSync(generatedHome) ? fs.readdirSync(generatedHome).sort() : [];
+      const core = invokeInstaller(["--dry-run", "--profile", "core"]);
+      const all = invokeInstaller(["--dry-run", "--profile", "all"]);
+      const preview = invokeInstaller(["--plan-migration", "--profile", "core"], { [ENV_VAR]: globalPath });
+      const existing = invokeInstaller(["--dry-run"], { [ENV_VAR]: globalPath });
+      const fresh = invokeInstaller(["--dry-run"], { [ENV_VAR]: undefined });
+      assertSuccess(core, "Explicit core dry-run must succeed.");
+      assertSuccess(all, "Explicit all dry-run must succeed.");
+      assertSuccess(preview, "Migration preview must succeed.");
+      assertSuccess(existing, "Existing-install dry-run must succeed.");
+      assertSuccess(fresh, "Fresh-install dry-run must succeed.");
+      assertOutputContains(core, "would materialize profile core", "Core dry-run must plan generated core.");
+      assertOutputContains(all, "would materialize profile all", "All dry-run must plan generated all.");
+      assertOutputContains(preview, "No file or environment value was changed.", "Migration preview must remain effect-free.");
+      assertOutputContains(existing, "keeping existing:", "Existing kit install must stay on the current path.");
+      assertOutputContains(fresh, "would materialize profile core", "Fresh install must default to generated core.");
+      const after = fs.existsSync(machineConfig) ? fs.readFileSync(machineConfig) : null;
+      assert(
+        (before == null && after == null) || (before != null && after != null && before.equals(after)),
+        "Existing machine config must stay unchanged.",
+      );
+      const generatedAfter = fs.existsSync(generatedHome) ? fs.readdirSync(generatedHome).sort() : [];
+      assert(JSON.stringify(generatedAfter) === JSON.stringify(generatedBefore), "Dry-run must not create generated roots.");
+    },
+  },
+  {
+    name: "profile help preview check and plan are effect-free for an unprofiled install",
+    run: () => {
+      const watched = [
+        path.join(root, "global", "AGENTS.md"),
+        path.join(root, "global", "opencode.json"),
+        path.join(root, "global", "opencode.json.template"),
+        path.join(root, "profiles", "all.json"),
+        path.join(root, "profiles", "core.json"),
+      ];
+      const snapshot = Object.fromEntries(watched.map((file) => [
+        file,
+        fs.existsSync(file) ? fs.readFileSync(file) : null,
+      ]));
+      const envBefore = process.env[ENV_VAR];
+      const generatedHome = path.join(root, "global", ".runtime-profiles");
+      const generatedBefore = fs.existsSync(generatedHome) ? fs.readdirSync(generatedHome).sort() : [];
+      const envOverride = { [ENV_VAR]: globalPath };
+      const help = invokeInstaller(["--help"], envOverride);
+      const preview = invokeInstaller(["--preview-profile"], envOverride);
+      const plan = invokeInstaller(["--plan-migration"], envOverride);
+      const check = invokeInstaller(["--check"], envOverride);
+      assertSuccess(help, "--help must exit 0.");
+      assertSuccess(preview, "--preview-profile must exit 0.");
+      assertSuccess(plan, "--plan-migration must exit 0.");
+      assertSuccess(check, "--check of the current unprofiled global dir must exit 0.");
+      for (const token of ["--preview-profile", "--plan-migration", "--check", "never change config, environment, or files"]) {
+        assertOutputContains(help, token, `Help must document effect-free ${token}.`);
+      }
+      assertOutputContains(preview, "current profile: unprofiled", "Preview must report the existing unprofiled install.");
+      assertOutputContains(preview, "proposed profile: core", "Preview must propose core.");
+      assertOutputContains(preview, "No file or environment value was changed.", "Preview must declare zero mutation.");
+      assertOutputContains(plan, "current profile: unprofiled", "Plan must report the existing unprofiled install.");
+      assertOutputContains(plan, "removals (", "Plan must report removals from the full catalog.");
+      assertOutputContains(check, "current profile: unprofiled", "Check must report the existing unprofiled install.");
+      assert(process.env[ENV_VAR] === envBefore, "Profile inspection must not change the parent environment.");
+      for (const file of watched) {
+        const before = snapshot[file];
+        const after = fs.existsSync(file) ? fs.readFileSync(file) : null;
+        assert(
+          (before == null && after == null) || (before != null && after != null && before.equals(after)),
+          `Profile inspection must not change ${file}.`,
+        );
+      }
+      const generatedAfter = fs.existsSync(generatedHome) ? fs.readdirSync(generatedHome).sort() : [];
+      assert(JSON.stringify(generatedAfter) === JSON.stringify(generatedBefore), "Profile inspection must not create generated profile roots.");
     },
   },
   {

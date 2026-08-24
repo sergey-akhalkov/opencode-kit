@@ -30,11 +30,8 @@ import {
   IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT,
 } from "./contracts/implementation-worker.ts";
 import {
-  ALLOWED_TROUBLESHOOTER_BASH_RULES,
-  ALLOWED_TROUBLESHOOTER_EDIT_RULES,
-  TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS,
-  TROUBLESHOOTER_DENIED_PERMISSION_KEYS,
   TROUBLESHOOTER_FILE,
+  TROUBLESHOOTER_PERMISSION,
   TROUBLESHOOTER_REQUIRED_TEXT,
 } from "./contracts/troubleshooter.ts";
 import {
@@ -115,6 +112,8 @@ function assert(condition: boolean, message: string): void {
 const EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES = [
   "code-quality-reviewer.md",
   "deployment-config-reviewer.md",
+  "evidence-sufficiency-reviewer.md",
+  "execution-safety-reviewer.md",
   "implementation-readiness-reviewer.md",
   "instruction-artifact-reviewer.md",
   "legacy-client-compatibility-reviewer.md",
@@ -223,89 +222,7 @@ const EXPECTED_IMPLEMENTATION_WORKER_ROUTING_REQUIRED_TEXT = [
   "evidenced benefit",
 ];
 
-const EXPECTED_TROUBLESHOOTER_BASH_RULES = [
-  ["permission.bash.*", "ask"],
-  ["permission.bash.git add*", "deny"],
-  ["permission.bash.git commit*", "deny"],
-  ["permission.bash.git merge*", "deny"],
-  ["permission.bash.git rebase*", "deny"],
-  ["permission.bash.git push*", "deny"],
-  ["permission.bash.git pull*", "deny"],
-  ["permission.bash.git fetch*", "deny"],
-  ["permission.bash.git reset*", "deny"],
-  ["permission.bash.git restore*", "deny"],
-  ["permission.bash.git checkout*", "deny"],
-  ["permission.bash.git switch*", "deny"],
-  ["permission.bash.git clean*", "deny"],
-  ["permission.bash.npm install*", "deny"],
-  ["permission.bash.npm add*", "deny"],
-  ["permission.bash.npm publish*", "deny"],
-  ["permission.bash.pnpm install*", "deny"],
-  ["permission.bash.pnpm add*", "deny"],
-  ["permission.bash.pnpm publish*", "deny"],
-  ["permission.bash.yarn install*", "deny"],
-  ["permission.bash.yarn add*", "deny"],
-  ["permission.bash.yarn publish*", "deny"],
-  ["permission.bash.rm *", "deny"],
-  ["permission.bash.Remove-Item *", "deny"],
-  ["permission.bash.del *", "deny"],
-  ["permission.bash.rmdir *", "deny"],
-];
-
-const EXPECTED_TROUBLESHOOTER_EDIT_RULES = [
-  ["permission.edit.*", "ask"],
-  ["permission.edit.*.test.*", "deny"],
-  ["permission.edit.*.spec.*", "deny"],
-  ["permission.edit.__tests__/**", "deny"],
-  ["permission.edit.__snapshots__/**", "deny"],
-  ["permission.edit.testdata/**", "deny"],
-  ["permission.edit.__fixtures__/**", "deny"],
-  ["permission.edit.golden/**", "deny"],
-  ["permission.edit.*.golden", "deny"],
-  ["permission.edit.*.snap", "deny"],
-  ["permission.edit.*_test.*", "deny"],
-  ["permission.edit.test_*.*", "deny"],
-  ["permission.edit.test-*.*", "deny"],
-  ["permission.edit.**/*.test.*", "deny"],
-  ["permission.edit.**/*.spec.*", "deny"],
-  ["permission.edit.**/__tests__/**", "deny"],
-  ["permission.edit.**/__snapshots__/**", "deny"],
-  ["permission.edit.**/testdata/**", "deny"],
-  ["permission.edit.**/__fixtures__/**", "deny"],
-  ["permission.edit.**/golden/**", "deny"],
-  ["permission.edit.**/*.golden", "deny"],
-  ["permission.edit.**/*.snap", "deny"],
-  ["permission.edit.**/*_test.*", "deny"],
-  ["permission.edit.**/test_*.*", "deny"],
-  ["permission.edit.**/test/**", "deny"],
-  ["permission.edit.**/tests/**", "deny"],
-  ["permission.edit.**/e2e/**", "deny"],
-  ["permission.edit.**/fixtures/**", "deny"],
-  ["permission.edit.**/snapshots/**", "deny"],
-  ["permission.edit.**/test-library/**", "deny"],
-  ["permission.edit.**/test-helpers/**", "deny"],
-  ["permission.edit.**/test-*.*", "deny"],
-  ["permission.edit.test/**", "deny"],
-  ["permission.edit.tests/**", "deny"],
-  ["permission.edit.e2e/**", "deny"],
-  ["permission.edit.fixtures/**", "deny"],
-  ["permission.edit.snapshots/**", "deny"],
-  ["permission.edit.docs/feedbacks/**", "allow"],
-];
-
-const EXPECTED_TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS = [
-  ["permission.webfetch", "allow"],
-  ["permission.websearch", "allow"],
-  ["permission.lsp", "allow"],
-];
-
-const EXPECTED_TROUBLESHOOTER_DENIED_PERMISSION_KEYS = [
-  "task",
-  "question",
-  "todowrite",
-  "external_directory",
-  "doom_loop",
-];
+const EXPECTED_TROUBLESHOOTER_PERMISSION = "allow";
 
 const EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT = [
   "## Runtime Preconditions",
@@ -315,6 +232,12 @@ const EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT = [
   "Allowed write scope",
   "Forbidden paths",
   "Validation gate",
+  "Blocker Layer",
+  "Observed Facts / Assumptions",
+  "Contradictions",
+  "Observer Qualification",
+  "Smallest Falsifying Probe",
+  "Supported Claim Ceiling",
   "read-only triage",
   "not a general developer",
   "Do not write or modify tests",
@@ -347,6 +270,10 @@ const CRITICAL_PRE_ESCALATION_AGENTS_MARKERS = [
   "Reconsult only with new decision-changing evidence or a distinct mechanism",
   "If unavailable, main performs the same pass",
   "absence alone is not a stage blocker",
+  "Before main declares a technical/evidence blocker",
+  "qualify absence sources",
+  "smallest safe causally distinct falsifying probe",
+  "narrowest supported claim ceiling",
 ] as const;
 
 const CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS = [
@@ -358,6 +285,12 @@ const CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS = [
   "Best Goal-Preserving Route",
   "Exact Owner Action",
   "Main verifies every route",
+  "Blocker Layer",
+  "Observed Facts / Assumptions",
+  "Contradictions",
+  "Observer Qualification",
+  "Smallest Falsifying Probe",
+  "Supported Claim Ceiling",
 ] as const;
 
 const CRITICAL_TROUBLESHOOTER_CONTRACT_MARKERS = [
@@ -369,6 +302,12 @@ const CRITICAL_TROUBLESHOOTER_CONTRACT_MARKERS = [
   "Rejected Routes",
   "Exact Owner Action",
   "owner-action-proven",
+  "Blocker Layer",
+  "Observed Facts / Assumptions",
+  "Contradictions",
+  "Observer Qualification",
+  "Smallest Falsifying Probe",
+  "Supported Claim Ceiling",
 ] as const;
 
 const PRE_ESCALATION_POINTER_MIRRORS = [
@@ -398,14 +337,13 @@ const EXPECTED_CANONICAL_WORKFLOW_STEPS = [
   "Critical SDET",
   "Validation And RC",
   "Stable Handoff",
-  "Process Improvement",
 ];
 
 type TestCase = { name: string; run: () => void };
 
 const tests: TestCase[] = [
   {
-    name: "contracts: canonical workflow orders observable proof before independent risk-driven testing",
+    name: "contracts: canonical workflow orders proof before triggered independent critical testing",
     run: () => {
       const workflow = fs.readFileSync(path.join(root, "instructions", "universal-development-loop.md"), "utf8");
       const actualSteps = [...workflow.matchAll(/^\d+\. `([^`\r\n]+)`(?:[ \t]+\([^)\r\n]+\))?:/gm)].map((match) => match[1]);
@@ -413,12 +351,12 @@ const tests: TestCase[] = [
       for (const evidence of [
         "smallest useful increment",
         "run-observe-correct",
-        "Development-Stage: MVP",
-        "Optional final-candidate, delivery, code-quality, or domain review may run after MVP",
+        "Outcome: working | blocked | unknown",
+        "Optional final-candidate, delivery, code-quality, or domain review may run after current proof",
         "critical-risks-reported | no-critical-risk | blocked",
         "Reviewer/SDET evidence must never authorize mutation",
-        "Product Candidate mutation returns to development and invalidates dependent proof",
-        "freezes the next `RC<n>`",
+        "Product Candidate mutation invalidates dependent proof",
+        "may freeze the next `RC<n>`",
         "promote the same RC to stable",
         "external operations remain separately authorized",
       ]) {
@@ -432,12 +370,12 @@ const tests: TestCase[] = [
       const projectTemplate = fs.readFileSync(path.join(root, "templates", "project", "AGENTS.md"), "utf8");
       for (const token of [
         "active global OpenCode config",
-        "Missing active global `AGENTS.md` blocks Material/qualification work that requires it",
+        "Missing active global `principles-of-work.md` or `AGENTS.md` blocks Material/qualification work that requires the shared authority",
         "Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill",
         "fresh conforming SDET",
         "sdet-quality-engineer",
         "unresolved validation procedures must be discovered before qualification",
-        "Applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC",
+        "Inside qualification, applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC",
       ]) {
         assert(projectTemplate.includes(token), `Project template missing self-contained bootstrap oracle: ${token}`);
       }
@@ -694,106 +632,18 @@ const tests: TestCase[] = [
   ...changeReadyDeliveryContractTests,
   ...deduplicationContractTests,
   {
-    name: "contracts: troubleshooter file, denied keys, and required text are byte-equal",
+    name: "contracts: troubleshooter file, scalar allow-all permission, and required text are byte-equal",
     run: () => {
       assertEqual(TROUBLESHOOTER_FILE, "troubleshooter.md", "TROUBLESHOOTER_FILE drifted.");
-      assertDeepEqual(
-        [...TROUBLESHOOTER_DENIED_PERMISSION_KEYS],
-        EXPECTED_TROUBLESHOOTER_DENIED_PERMISSION_KEYS,
-        "TROUBLESHOOTER_DENIED_PERMISSION_KEYS drifted.",
+      assertEqual(
+        TROUBLESHOOTER_PERMISSION,
+        EXPECTED_TROUBLESHOOTER_PERMISSION,
+        "TROUBLESHOOTER_PERMISSION drifted from exact scalar allow.",
       );
       assertDeepEqual(
         [...TROUBLESHOOTER_REQUIRED_TEXT],
         EXPECTED_TROUBLESHOOTER_REQUIRED_TEXT,
         "TROUBLESHOOTER_REQUIRED_TEXT drifted.",
-      );
-    },
-  },
-  {
-    name: "contracts: troubleshooter bash rules preserve escalation safety gates",
-    run: () => {
-      assertDeepEqual(
-        [...ALLOWED_TROUBLESHOOTER_BASH_RULES],
-        EXPECTED_TROUBLESHOOTER_BASH_RULES,
-        "ALLOWED_TROUBLESHOOTER_BASH_RULES drifted.",
-      );
-      assertEqual(ALLOWED_TROUBLESHOOTER_BASH_RULES.get("permission.bash.*"), "ask", "Troubleshooter unknown bash commands must ask.");
-      assert(
-        [...ALLOWED_TROUBLESHOOTER_BASH_RULES.values()].every((action) => action !== "allow"),
-        "Troubleshooter must not auto-allow any Bash command.",
-      );
-      for (const key of [
-        "permission.bash.npm install*",
-        "permission.bash.npm add*",
-        "permission.bash.pnpm install*",
-        "permission.bash.pnpm add*",
-        "permission.bash.yarn install*",
-        "permission.bash.yarn add*",
-        "permission.bash.rm *",
-        "permission.bash.Remove-Item *",
-        "permission.bash.del *",
-        "permission.bash.rmdir *",
-      ]) {
-        assertEqual(ALLOWED_TROUBLESHOOTER_BASH_RULES.get(key), "deny", `Troubleshooter package/destructive command must deny: ${key}`);
-      }
-    },
-  },
-  {
-    name: "contracts: troubleshooter edit and research rules preserve bounded troubleshooting",
-    run: () => {
-      assertDeepEqual(
-        [...ALLOWED_TROUBLESHOOTER_EDIT_RULES],
-        EXPECTED_TROUBLESHOOTER_EDIT_RULES,
-        "ALLOWED_TROUBLESHOOTER_EDIT_RULES drifted.",
-      );
-      assertEqual(ALLOWED_TROUBLESHOOTER_EDIT_RULES.get("permission.edit.*"), "ask", "Troubleshooter unknown edits must ask.");
-      for (const key of [
-        "permission.edit.*.test.*",
-        "permission.edit.*.spec.*",
-        "permission.edit.__tests__/**",
-        "permission.edit.__snapshots__/**",
-        "permission.edit.testdata/**",
-        "permission.edit.__fixtures__/**",
-        "permission.edit.golden/**",
-        "permission.edit.*.golden",
-        "permission.edit.*.snap",
-        "permission.edit.*_test.*",
-        "permission.edit.test_*.*",
-        "permission.edit.test-*.*",
-        "permission.edit.**/*.test.*",
-        "permission.edit.**/*.spec.*",
-        "permission.edit.**/__tests__/**",
-        "permission.edit.**/__snapshots__/**",
-        "permission.edit.**/testdata/**",
-        "permission.edit.**/__fixtures__/**",
-        "permission.edit.**/golden/**",
-        "permission.edit.**/*.golden",
-        "permission.edit.**/*.snap",
-        "permission.edit.**/*_test.*",
-        "permission.edit.**/test_*.*",
-        "permission.edit.**/test/**",
-        "permission.edit.**/tests/**",
-        "permission.edit.**/e2e/**",
-        "permission.edit.fixtures/**",
-        "permission.edit.snapshots/**",
-        "permission.edit.**/fixtures/**",
-        "permission.edit.**/snapshots/**",
-        "permission.edit.**/test-library/**",
-        "permission.edit.**/test-helpers/**",
-        "permission.edit.**/test-*.*",
-      ]) {
-        assertEqual(ALLOWED_TROUBLESHOOTER_EDIT_RULES.get(key), "deny", `Troubleshooter test/fixture edit gate must deny: ${key}`);
-      }
-      assertEqual(ALLOWED_TROUBLESHOOTER_EDIT_RULES.get("permission.edit.docs/feedbacks/**"), "allow", "Troubleshooter feedback-ledger edit exception drifted.");
-      assertEqual(
-        [...ALLOWED_TROUBLESHOOTER_EDIT_RULES.keys()].at(-1),
-        "permission.edit.docs/feedbacks/**",
-        "Troubleshooter feedback-ledger exception must remain the final edit rule.",
-      );
-      assertDeepEqual(
-        [...TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS],
-        EXPECTED_TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS,
-        "TROUBLESHOOTER_ALLOWED_PERMISSION_KEYS drifted.",
       );
     },
   },
@@ -952,6 +802,20 @@ const tests: TestCase[] = [
         missingOwnerAction !== troubleshooter &&
           missingTokens(missingOwnerAction, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).includes("Exact Owner Action"),
         "Report schema must keep Exact Owner Action as a proven-or-none field.",
+      );
+
+      const missingLayer = troubleshooter.replaceAll("Blocker Layer", "Problem Area");
+      assert(
+        missingLayer !== troubleshooter &&
+          missingTokens(missingLayer, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).includes("Blocker Layer"),
+        "Technical blocker reports must retain the explicit layer classification.",
+      );
+
+      const missingObserverQualification = troubleshooter.replaceAll("Observer Qualification", "Observer Notes");
+      assert(
+        missingObserverQualification !== troubleshooter &&
+          missingTokens(missingObserverQualification, CRITICAL_PRE_ESCALATION_TROUBLESHOOTER_MARKERS).includes("Observer Qualification"),
+        "Absence-based diagnosis must retain observer qualification.",
       );
     },
   },

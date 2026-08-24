@@ -1,0 +1,1098 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-21T22:40:00.000Z",
+  "writes": false,
+  "enforcement": "advisory",
+  "planningBlockers": [
+    {
+      "changeId": "reduce-workflow-ceremony",
+      "owner": "reduce-workflow-ceremony",
+      "fact": "AUD-001 selected strict invalid complete/RC claim",
+      "transfer": "Owner restores selected strict validity and honest stage."
+    },
+    {
+      "changeId": "fix-workstation-restart-reliability",
+      "owner": "fix-workstation-restart-reliability",
+      "fact": "AUD-007 Restart ownership overlap",
+      "transfer": "Owners publish manifests and keep one mutation-enabled writer."
+    },
+    {
+      "changeId": "optimize-shared-opencode-runtime-resources",
+      "owner": "optimize-shared-opencode-runtime-resources",
+      "fact": "AUD-007/AUD-008 Restart overlap and weaker proof envelope",
+      "transfer": "Owner indexes named Desktop/tray evidence or reopens the task."
+    },
+    {
+      "changeId": "add-autonomous-roadmap-mission-runtime",
+      "owner": "add-autonomous-roadmap-mission-runtime",
+      "fact": "AUD-006 unindexed/over-limit evidence",
+      "transfer": "Owner indexes and reduces retained evidence."
+    }
+  ],
+  "inventory": {
+    "schemaVersion": 1,
+    "mode": "all",
+    "writes": false,
+    "filesRewritten": [],
+    "changes": [
+      {
+        "changeId": "add-autonomous-roadmap-mission-runtime",
+        "relativePath": "openspec/changes/add-autonomous-roadmap-mission-runtime",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 8,
+        "uncheckedTasks": 8,
+        "taskRows": 0,
+        "incompleteTasks": [
+          "1.1",
+          "1.2",
+          "2.1",
+          "2.2",
+          "3.1",
+          "3.2",
+          "task-14",
+          "task-15"
+        ],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 243,
+        "retainedBytes": 578566,
+        "unindexedFiles": [
+          "evidence-task-1-1-preflight-r1/evaluation.json",
+          "evidence-task-1-1-preflight-r1/raw.json",
+          "evidence-task-1-1-preflight-r2/evaluation.json",
+          "evidence-task-1-1-preflight-r2/raw.json",
+          "evidence-task-1-1-state-r1/evaluation.json",
+          "evidence-task-1-1-state-r1/raw.json",
+          "evidence-task-1-1-state-r2/evaluation.json",
+          "evidence-task-1-1-state-r2/raw.json",
+          "evidence-task-1-2-preflight-r1/evaluation.json",
+          "evidence-task-1-2-preflight-r1/raw.json",
+          "evidence-task-1-2-r2/evaluation.json",
+          "evidence-task-1-2-r2/raw.json",
+          "evidence-task-1-2-r3/evaluation.json",
+          "evidence-task-1-2-r3/raw.json",
+          "evidence-task-2-1-current-r3/failure.json",
+          "evidence-task-2-1-current-r3/progress.jsonl",
+          "evidence-task-2-1-current-r4/evaluation.json",
+          "evidence-task-2-1-current-r4/progress.jsonl",
+          "evidence-task-2-1-current-r4/raw.json",
+          "evidence-task-2-1-current-replay-r4/evaluation.json",
+          "evidence-task-2-1-final-r5/evaluation.json",
+          "evidence-task-2-1-final-r5/progress.jsonl",
+          "evidence-task-2-1-final-r5/raw.json",
+          "evidence-task-2-1-final-replay-r5/evaluation.json",
+          "evidence-task-2-1-replay-r1/evaluation.json",
+          "evidence-task-2-1-replay-r2/evaluation.json",
+          "evidence-task-2-1-runtime-r1/failure.json",
+          "evidence-task-2-1-runtime-r1/raw.json",
+          "evidence-task-2-1-runtime-r2/evaluation.json",
+          "evidence-task-2-1-runtime-r2/raw.json",
+          "evidence-task-2-2-fast-preflight-r11/raw.json",
+          "evidence-task-2-2-fast-preflight-r12/evaluation.json",
+          "evidence-task-2-2-fast-preflight-r12/raw.json",
+          "evidence-task-2-2-interrupted-r1/failure.json",
+          "evidence-task-2-2-interrupted-r1/progress.jsonl",
+          "evidence-task-2-2-interrupted-r2/failure.json",
+          "evidence-task-2-2-interrupted-r2/progress.jsonl",
+          "evidence-task-2-2-interrupted-r3-diagnostic/evaluation.json",
+          "evidence-task-2-2-interrupted-r3-diagnostic/progress.jsonl",
+          "evidence-task-2-2-interrupted-r3-diagnostic/raw.json",
+          "evidence-task-2-2-interrupted-r4/evaluation.json",
+          "evidence-task-2-2-interrupted-r4/progress.jsonl",
+          "evidence-task-2-2-interrupted-r4/raw.json",
+          "evidence-task-2-2-interrupted-r5/evaluation.json",
+          "evidence-task-2-2-interrupted-r5/progress.jsonl",
+          "evidence-task-2-2-interrupted-r5/raw.json",
+          "evidence-task-2-2-interrupted-replay-r5/evaluation.json",
+          "evidence-task-2-2-isolated-preflight-r5/evaluation.json",
+          "evidence-task-2-2-isolated-preflight-r5/raw.json",
+          "evidence-task-2-2-isolated-preflight-r6/evaluation.json",
+          "evidence-task-2-2-isolated-preflight-r6/raw.json",
+          "evidence-task-2-2-loaded-guard-preflight-r7/failure.json",
+          "evidence-task-2-2-loaded-guard-preflight-r8/failure.json",
+          "evidence-task-2-2-loaded-guard-preflight-r9/evaluation.json",
+          "evidence-task-2-2-loaded-guard-preflight-r9/raw.json",
+          "evidence-task-2-2-owner-correction-preflight/failure.json",
+          "evidence-task-2-2-owner-correction-preflight-r2/failure.json",
+          "evidence-task-2-2-owner-final-r8/evaluation.json",
+          "evidence-task-2-2-owner-final-r8/progress.jsonl",
+          "evidence-task-2-2-owner-final-r8/raw.json",
+          "evidence-task-2-2-owner-final-replay-r8/evaluation.json",
+          "evidence-task-2-2-owner-r1/failure.json",
+          "evidence-task-2-2-owner-r1/progress.jsonl",
+          "evidence-task-2-2-owner-r2/failure.json",
+          "evidence-task-2-2-owner-r2/progress.jsonl",
+          "evidence-task-2-2-owner-r3/failure.json",
+          "evidence-task-2-2-owner-r3/progress.jsonl",
+          "evidence-task-2-2-owner-r4/failure.json",
+          "evidence-task-2-2-owner-r4/progress.jsonl",
+          "evidence-task-2-2-owner-r5/failure.json",
+          "evidence-task-2-2-owner-r5/progress.jsonl",
+          "evidence-task-2-2-owner-r6/failure.json",
+          "evidence-task-2-2-owner-r6/progress.jsonl",
+          "evidence-task-2-2-owner-r7/evaluation.json",
+          "evidence-task-2-2-owner-r7/progress.jsonl",
+          "evidence-task-2-2-owner-r7/raw.json",
+          "evidence-task-2-2-owner-readiness-diagnostic-r3/failure.json",
+          "evidence-task-2-2-owner-readiness-diagnostic-r4/failure.json",
+          "evidence-task-2-2-owner-replay-r7/evaluation.json",
+          "evidence-task-2-2-owner-replay-r7-v2/evaluation.json",
+          "evidence-task-2-2-propose-current-r4/evaluation.json",
+          "evidence-task-2-2-propose-current-r4/progress.jsonl",
+          "evidence-task-2-2-propose-current-r4/raw.json",
+          "evidence-task-2-2-propose-current-replay-r4/evaluation.json",
+          "evidence-task-2-2-propose-final-r5/evaluation.json",
+          "evidence-task-2-2-propose-final-r5/progress.jsonl",
+          "evidence-task-2-2-propose-final-r5/raw.json",
+          "evidence-task-2-2-propose-final-replay-r5/evaluation.json",
+          "evidence-task-2-2-propose-r2/progress.jsonl",
+          "evidence-task-2-2-propose-r3/evaluation.json",
+          "evidence-task-2-2-propose-r3/progress.jsonl",
+          "evidence-task-2-2-propose-r3/raw.json",
+          "evidence-task-2-2-propose-replay-r3/evaluation.json",
+          "evidence-task-2-2-seeded-preflight-r10/evaluation.json",
+          "evidence-task-2-2-seeded-preflight-r10/raw.json",
+          "evidence-task-2-2-server-preflight-r1/raw.json",
+          "evidence-task-2-2-server-preflight-r2/evaluation.json",
+          "evidence-task-2-2-server-preflight-r2/raw.json",
+          "evidence-task-2-2-shared-readiness-r13/failure.json",
+          "evidence-task-2-2-staged-readiness-r14/evaluation.json",
+          "evidence-task-2-2-staged-readiness-r14/raw.json",
+          "evidence-task-2-2-transient-final-r2/evaluation.json",
+          "evidence-task-2-2-transient-final-r2/progress.jsonl",
+          "evidence-task-2-2-transient-final-r2/raw.json",
+          "evidence-task-2-2-transient-final-replay-r2/evaluation.json",
+          "evidence-task-2-2-transient-r1/evaluation.json",
+          "evidence-task-2-2-transient-r1/progress.jsonl",
+          "evidence-task-2-2-transient-r1/raw.json",
+          "evidence-task-2-2-transient-replay-r1-v2/evaluation.json",
+          "evidence-task-3-1-launcher-diagnostic-r2/progress.jsonl",
+          "evidence-task-3-1-launcher-diagnostic-r2/raw.json",
+          "evidence-task-3-1-launcher-diagnostic-r4/evaluation.json",
+          "evidence-task-3-1-launcher-diagnostic-r4/progress.jsonl",
+          "evidence-task-3-1-launcher-diagnostic-r4/raw.json",
+          "evidence-task-3-1-launcher-diagnostic-r7/evaluation.json",
+          "evidence-task-3-1-launcher-diagnostic-r7/progress.jsonl",
+          "evidence-task-3-1-launcher-diagnostic-r7/raw.json",
+          "evidence-task-3-1-launcher-diagnostic-replay-r2/evaluation.json",
+          "evidence-task-3-1-launcher-diagnostic-replay-r4/evaluation.json",
+          "evidence-task-3-1-launcher-diagnostic-replay-r7/evaluation.json",
+          "evidence-task-3-1-launcher-r1/failure.json",
+          "evidence-task-3-1-launcher-r1/progress.jsonl",
+          "evidence-task-3-1-launcher-r3/failure.json",
+          "evidence-task-3-1-launcher-r3/progress.jsonl",
+          "evidence-task-3-1-launcher-r5/progress.jsonl",
+          "evidence-task-3-1-launcher-r6/failure.json",
+          "evidence-task-3-1-launcher-r6/progress.jsonl",
+          "evidence-task-3-1-launcher-r8/failure.json",
+          "evidence-task-3-1-launcher-r8/progress.jsonl",
+          "evidence-task-3-1-launcher-r8/raw.json",
+          "evidence-task-3-1-launcher-r9/evaluation.json",
+          "evidence-task-3-1-launcher-r9/progress.jsonl",
+          "evidence-task-3-1-launcher-r9/raw.json",
+          "evidence-task-3-1-launcher-recovered-r5/evaluation.json",
+          "evidence-task-3-1-launcher-recovered-r5/raw.json",
+          "evidence-task-3-1-launcher-recovered-replay-r5/evaluation.json",
+          "evidence-task-3-1-launcher-reject-r1/evaluation.json",
+          "evidence-task-3-1-launcher-reject-r1/progress.jsonl",
+          "evidence-task-3-1-launcher-reject-r1/raw.json",
+          "evidence-task-3-1-launcher-reject-replay-r1/evaluation.json",
+          "evidence-task-3-1-launcher-replay-r8/evaluation.json",
+          "evidence-task-3-1-launcher-replay-r9/evaluation.json",
+          "evidence-task-3-2-controller-async-r2/evaluation.json",
+          "evidence-task-3-2-controller-async-r2/raw.json",
+          "evidence-task-3-2-controller-hard-kill-r13/evaluation.json",
+          "evidence-task-3-2-controller-hard-kill-r13/raw.json",
+          "evidence-task-3-2-controller-hard-kill-r14/evaluation.json",
+          "evidence-task-3-2-controller-hard-kill-r14/raw.json",
+          "evidence-task-3-2-controller-hard-kill-replay-r13/evaluation.json",
+          "evidence-task-3-2-controller-hard-kill-replay-r14/evaluation.json",
+          "evidence-task-3-2-controller-launch-diagnostic-r10/evaluation.json",
+          "evidence-task-3-2-controller-launch-diagnostic-r10/raw.json",
+          "evidence-task-3-2-controller-launch-diagnostic-replay-r10/evaluation.json",
+          "evidence-task-3-2-controller-stop-r11/evaluation.json",
+          "evidence-task-3-2-controller-stop-r11/raw.json",
+          "evidence-task-3-2-controller-stop-r12/evaluation.json",
+          "evidence-task-3-2-controller-stop-r12/raw.json",
+          "evidence-task-3-2-controller-stop-r14/evaluation.json",
+          "evidence-task-3-2-controller-stop-r14/raw.json",
+          "evidence-task-3-2-controller-stop-r9/evaluation.json",
+          "evidence-task-3-2-controller-stop-r9/raw.json",
+          "evidence-task-3-2-controller-stop-replay-r12/evaluation.json",
+          "evidence-task-3-2-controller-stop-replay-r14/evaluation.json",
+          "evidence-task-3-2-launcher-stop-direct-r3/failure.json",
+          "evidence-task-3-2-launcher-stop-direct-r4/evaluation.json",
+          "evidence-task-3-2-launcher-stop-direct-r4/raw.json",
+          "evidence-task-3-2-launcher-stop-direct-r5/failure.json",
+          "evidence-task-3-2-launcher-stop-direct-r6/evaluation.json",
+          "evidence-task-3-2-launcher-stop-direct-r6/raw.json",
+          "evidence-task-3-2-launcher-stop-direct-replay-r4/evaluation.json",
+          "evidence-task-3-2-launcher-stop-direct-replay-r6/evaluation.json",
+          "evidence-task-3-2-stop-preflight-r4/evaluation.json",
+          "evidence-task-3-2-stop-preflight-r4/raw.json",
+          "evidence-task-3-2-stop-preflight-r5/evaluation.json",
+          "evidence-task-3-2-stop-preflight-r5/raw.json",
+          "evidence-task-3-2-stop-preflight-replay-r5/evaluation.json",
+          "evidence-task-3-2-stop-provider-free-startup-r7/evaluation.json",
+          "evidence-task-3-2-stop-provider-free-startup-r7/progress.jsonl",
+          "evidence-task-3-2-stop-provider-free-startup-r7/raw.json",
+          "evidence-task-3-2-stop-r1/failure.json",
+          "evidence-task-3-2-stop-r1/progress.jsonl",
+          "evidence-task-3-2-stop-r3/failure.json",
+          "evidence-task-3-2-stop-r3/progress.jsonl",
+          "evidence-task-3-2-stop-r3/raw.json",
+          "evidence-task-3-2-stop-r6/failure.json",
+          "evidence-task-3-2-stop-r6/progress.jsonl",
+          "evidence-task-3-2-stop-startup-diagnostic-r2/evaluation.json",
+          "evidence-task-3-2-stop-startup-diagnostic-r2/progress.jsonl",
+          "evidence-task-3-2-stop-startup-diagnostic-r2/raw.json",
+          "evidence-task-3-2-stop-startup-diagnostic-replay-r2/evaluation.json",
+          "evidence-task-4-1-controller-structured-r2/evaluation.json",
+          "evidence-task-4-1-controller-structured-r2/raw.json",
+          "evidence-task-4-1-controller-structured-r3/evaluation.json",
+          "evidence-task-4-1-controller-structured-r3/raw.json",
+          "evidence-task-4-1-controller-structured-replay-r2/evaluation.json",
+          "evidence-task-4-1-controller-structured-replay-r3/evaluation.json",
+          "evidence-task-4-1-integrated-capture-r1/evaluation.json",
+          "evidence-task-4-1-integrated-capture-r1/raw.json",
+          "evidence-task-4-1-integrated-capture-r2/evaluation.json",
+          "evidence-task-4-1-integrated-capture-r2/raw.json",
+          "evidence-task-4-1-integrated-capture-r3/evaluation.json",
+          "evidence-task-4-1-integrated-capture-r3/raw.json",
+          "evidence-task-4-1-integrated-capture-replay-r1/evaluation.json",
+          "evidence-task-4-1-integrated-capture-replay-r1b/evaluation.json",
+          "evidence-task-4-1-integrated-capture-replay-r2/evaluation.json",
+          "evidence-task-4-1-integrated-capture-replay-r2b/evaluation.json",
+          "evidence-task-4-1-integrated-capture-replay-r3/evaluation.json",
+          "evidence-task-4-1-integrated-capture-replay-r3b/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-r4/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-r4/raw.json",
+          "evidence-task-4-1-integrated-diagnose-r5/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-r5/raw.json",
+          "evidence-task-4-1-integrated-diagnose-r6/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-r6/raw.json",
+          "evidence-task-4-1-integrated-diagnose-r7/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-r7/raw.json",
+          "evidence-task-4-1-integrated-diagnose-r8/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-r8/raw.json",
+          "evidence-task-4-1-integrated-diagnose-replay-r4/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-replay-r4b/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-replay-r5/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-replay-r6/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-replay-r7/evaluation.json",
+          "evidence-task-4-1-integrated-diagnose-replay-r8/evaluation.json",
+          "evidence-task-4-1-integrated-finalizer-selftest-r1/evaluation.json",
+          "evidence-task-4-1-integrated-finalizer-selftest-r1/raw.json",
+          "evidence-task-4-1-integrated-finalizer-selftest-r2/evaluation.json",
+          "evidence-task-4-1-integrated-finalizer-selftest-r2/raw.json",
+          "evidence-task-4-1-integrated-preflight-r3/evaluation.json",
+          "evidence-task-4-1-integrated-preflight-r3/raw.json",
+          "evidence-task-4-1-integrated-preflight-r4/evaluation.json",
+          "evidence-task-4-1-integrated-preflight-r4/raw.json",
+          "evidence-task-4-1-integrated-preflight-r5/evaluation.json",
+          "evidence-task-4-1-integrated-preflight-r5/raw.json",
+          "evidence-task-4-1-integrated-preflight-r6/evaluation.json",
+          "evidence-task-4-1-integrated-preflight-r6/raw.json",
+          "evidence-task-4-1-integrated-preflight-r7/evaluation.json",
+          "evidence-task-4-1-integrated-preflight-r7/raw.json",
+          "evidence-task-4-1-integrated-preflight-r8/evaluation.json",
+          "evidence-task-4-1-integrated-preflight-r8/raw.json",
+          "evidence-task-4-1-provider-preflight-r1/preflight.json",
+          "evidence-task-4-1-provider-preflight-r2/preflight.json",
+          "evidence-task-4-1-provider-preflight-r3/preflight.json"
+        ],
+        "overLimit": true
+      },
+      {
+        "changeId": "bound-completion-runtime-hot-paths",
+        "relativePath": "openspec/changes/bound-completion-runtime-hot-paths",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 0,
+        "uncheckedTasks": 11,
+        "taskRows": 0,
+        "incompleteTasks": [],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 0,
+        "retainedBytes": 0,
+        "unindexedFiles": [],
+        "overLimit": false
+      },
+      {
+        "changeId": "establish-consumer-outcome-regression-gate",
+        "relativePath": "openspec/changes/establish-consumer-outcome-regression-gate",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 15,
+        "uncheckedTasks": 0,
+        "taskRows": 0,
+        "incompleteTasks": [
+          "1.1",
+          "1.2",
+          "1.3",
+          "2.1",
+          "2.2",
+          "3.1",
+          "3.2",
+          "4.1",
+          "4.2",
+          "4.3",
+          "5.1",
+          "5.2",
+          "6.1",
+          "6.2",
+          "6.3"
+        ],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 1,
+        "retainedBytes": 1635,
+        "unindexedFiles": [
+          "source-write-manifest.json"
+        ],
+        "overLimit": true
+      },
+      {
+        "changeId": "fix-workstation-restart-reliability",
+        "relativePath": "openspec/changes/fix-workstation-restart-reliability",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 2,
+        "uncheckedTasks": 5,
+        "taskRows": 0,
+        "incompleteTasks": [
+          "1.1",
+          "2.1"
+        ],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 5,
+        "retainedBytes": 18250,
+        "unindexedFiles": [
+          "implementation-evidence/task-1-1-baseline.md",
+          "implementation-evidence/task-2-1-source.md",
+          "implementation-evidence/task-2-2-raw.json",
+          "implementation-evidence/task-2-2-repair-restart.ts",
+          "implementation-evidence/task-2-2b-raw.json"
+        ],
+        "overLimit": true
+      },
+      {
+        "changeId": "harden-cross-platform-bootstrap-validation",
+        "relativePath": "openspec/changes/harden-cross-platform-bootstrap-validation",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 10,
+        "uncheckedTasks": 0,
+        "taskRows": 0,
+        "incompleteTasks": [
+          "1.1",
+          "1.2",
+          "1.3",
+          "2.1",
+          "2.2",
+          "3.1",
+          "3.2",
+          "4.1",
+          "4.2",
+          "5.1"
+        ],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 0,
+        "retainedBytes": 0,
+        "unindexedFiles": [],
+        "overLimit": false
+      },
+      {
+        "changeId": "minimize-default-runtime-surface",
+        "relativePath": "openspec/changes/minimize-default-runtime-surface",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 0,
+        "uncheckedTasks": 12,
+        "taskRows": 0,
+        "incompleteTasks": [],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 0,
+        "retainedBytes": 0,
+        "unindexedFiles": [],
+        "overLimit": false
+      },
+      {
+        "changeId": "optimize-shared-opencode-runtime-resources",
+        "relativePath": "openspec/changes/optimize-shared-opencode-runtime-resources",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 10,
+        "uncheckedTasks": 0,
+        "taskRows": 0,
+        "incompleteTasks": [
+          "1.1",
+          "2.1",
+          "2.2",
+          "3.1",
+          "3.2",
+          "4.1",
+          "4.2",
+          "4.3",
+          "5.1",
+          "5.2"
+        ],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 91,
+        "retainedBytes": 270105,
+        "unindexedFiles": [
+          "evidence-task-1-1-baseline-r1/evaluation.json",
+          "evidence-task-1-1-baseline-r1/raw.json",
+          "evidence-task-1-1-baseline-replay-r1/evaluation.json",
+          "evidence-task-2-1-contract-r1/evaluation.json",
+          "evidence-task-2-1-contract-r1/raw.json",
+          "evidence-task-2-1-contract-r2/evaluation.json",
+          "evidence-task-2-1-contract-r2/raw.json",
+          "evidence-task-2-1-contract-r3/evaluation.json",
+          "evidence-task-2-1-contract-r3/raw.json",
+          "evidence-task-2-1-contract-replay-r1/evaluation.json",
+          "evidence-task-2-1-contract-replay-r2/evaluation.json",
+          "evidence-task-2-1-contract-replay-r3/evaluation.json",
+          "evidence-task-2-2-integration-r1/evaluation.json",
+          "evidence-task-2-2-integration-r1/raw.json",
+          "evidence-task-2-2-integration-r10/evaluation.json",
+          "evidence-task-2-2-integration-r10/raw.json",
+          "evidence-task-2-2-integration-r11/evaluation.json",
+          "evidence-task-2-2-integration-r11/raw.json",
+          "evidence-task-2-2-integration-r2/evaluation.json",
+          "evidence-task-2-2-integration-r2/raw.json",
+          "evidence-task-2-2-integration-r3/evaluation.json",
+          "evidence-task-2-2-integration-r3/raw.json",
+          "evidence-task-2-2-integration-r4/evaluation.json",
+          "evidence-task-2-2-integration-r4/raw.json",
+          "evidence-task-2-2-integration-r5/evaluation.json",
+          "evidence-task-2-2-integration-r5/raw.json",
+          "evidence-task-2-2-integration-r6/evaluation.json",
+          "evidence-task-2-2-integration-r6/raw.json",
+          "evidence-task-2-2-integration-r7/evaluation.json",
+          "evidence-task-2-2-integration-r7/raw.json",
+          "evidence-task-2-2-integration-r8/evaluation.json",
+          "evidence-task-2-2-integration-r8/raw.json",
+          "evidence-task-2-2-integration-r9/evaluation.json",
+          "evidence-task-2-2-integration-r9/raw.json",
+          "evidence-task-2-2-integration-replay-r1/evaluation.json",
+          "evidence-task-2-2-integration-replay-r10/evaluation.json",
+          "evidence-task-2-2-integration-replay-r11/evaluation.json",
+          "evidence-task-2-2-integration-replay-r2/evaluation.json",
+          "evidence-task-2-2-integration-replay-r3/evaluation.json",
+          "evidence-task-2-2-integration-replay-r4/evaluation.json",
+          "evidence-task-2-2-integration-replay-r5/evaluation.json",
+          "evidence-task-2-2-integration-replay-r6/evaluation.json",
+          "evidence-task-2-2-integration-replay-r7/evaluation.json",
+          "evidence-task-2-2-integration-replay-r8/evaluation.json",
+          "evidence-task-2-2-integration-replay-r9/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-r1/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-r1/raw.json",
+          "evidence-task-2-2-startup-diagnostic-r2/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-r2/raw.json",
+          "evidence-task-2-2-startup-diagnostic-r3/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-r3/raw.json",
+          "evidence-task-2-2-startup-diagnostic-r4/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-r4/raw.json",
+          "evidence-task-2-2-startup-diagnostic-replay-r1/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-replay-r2/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-replay-r3/evaluation.json",
+          "evidence-task-2-2-startup-diagnostic-replay-r4/evaluation.json",
+          "evidence-task-3-1-contract-r4/evaluation.json",
+          "evidence-task-3-1-contract-r4/raw.json",
+          "evidence-task-3-1-contract-r5/evaluation.json",
+          "evidence-task-3-1-contract-r5/raw.json",
+          "evidence-task-3-1-contract-replay-r4/evaluation.json",
+          "evidence-task-3-1-contract-replay-r5/evaluation.json",
+          "evidence-task-3-1-handoff-r1/evaluation.json",
+          "evidence-task-3-1-handoff-r1/raw.json",
+          "evidence-task-3-1-handoff-r2/evaluation.json",
+          "evidence-task-3-1-handoff-r2/raw.json",
+          "evidence-task-3-1-handoff-replay-r1/evaluation.json",
+          "evidence-task-3-1-handoff-replay-r2/evaluation.json",
+          "evidence-task-3-2-install-r1/evaluation.json",
+          "evidence-task-3-2-install-r1/raw.json",
+          "evidence-task-4-1-resource-eval-r1/evaluation.json",
+          "evidence-task-4-1-resource-eval-r1/raw.json",
+          "evidence-task-4-1-resource-r3/evaluation.json",
+          "evidence-task-4-1-resource-r3/raw.json",
+          "evidence-task-4-1-resource-r4/evaluation.json",
+          "evidence-task-4-1-resource-r4/raw.json",
+          "evidence-task-4-2-degradation-r1/evaluation.json",
+          "evidence-task-4-2-degradation-r1/raw.json",
+          "evidence-task-4-2-degradation-r2/evaluation.json",
+          "evidence-task-4-2-degradation-r2/raw.json",
+          "evidence-task-5-1-corrected-private-r3/evaluation.json",
+          "evidence-task-5-1-corrected-private-r3/raw.json",
+          "evidence-task-5-1-identity-r3/evaluation.json",
+          "evidence-task-5-1-identity-r3/raw.json",
+          "evidence-task-5-1-identity-replay-r3/evaluation.json",
+          "evidence-task-5-2-contract-replay-r1/evaluation.json",
+          "evidence-task-5-2-identity-replay-r1/evaluation.json",
+          "evidence-task-5-2-integration-replay-r1/evaluation.json",
+          "evidence-task-5-2-resource-replay-r1/evaluation.json",
+          "evidence-task-5-2-resource-replay-r1/raw.json"
+        ],
+        "overLimit": true
+      },
+      {
+        "changeId": "reconcile-openspec-ownership-and-evidence",
+        "relativePath": "openspec/changes/reconcile-openspec-ownership-and-evidence",
+        "mutationEnabled": true,
+        "ownership": {
+          "status": "present",
+          "issues": []
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 0,
+        "uncheckedTasks": 10,
+        "taskRows": 0,
+        "incompleteTasks": [],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 0,
+        "retainedBytes": 0,
+        "unindexedFiles": [],
+        "overLimit": false
+      },
+      {
+        "changeId": "reduce-workflow-ceremony",
+        "relativePath": "openspec/changes/reduce-workflow-ceremony",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "unknown",
+          "issues": [
+            {
+              "code": "unknown",
+              "path": "schemaVersion",
+              "message": "Evidence index schemaVersion 1 cannot prove task evidence."
+            }
+          ]
+        },
+        "checkedTasks": 18,
+        "uncheckedTasks": 0,
+        "taskRows": 0,
+        "incompleteTasks": [
+          "1.1",
+          "1.2",
+          "2.1",
+          "2.2",
+          "2.3",
+          "3.1",
+          "3.2",
+          "3.3",
+          "3.4",
+          "4.1",
+          "5.1",
+          "6.1",
+          "6.2",
+          "7.1",
+          "7.2",
+          "8.1",
+          "8.2",
+          "9.1"
+        ],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 157,
+        "retainedBytes": 1173070,
+        "unindexedFiles": [
+          "evidence-task-1-1-baseline-doctor-r1/evaluation.json",
+          "evidence-task-1-1-baseline-doctor-r1/raw.json",
+          "evidence-task-1-1-baseline-index.md",
+          "evidence-task-1-1-baseline-instruction-r1/evaluation.json",
+          "evidence-task-1-1-baseline-instruction-r1/raw.json",
+          "evidence-task-1-1-baseline-model-preflight-r1/manifest.sha256.json",
+          "evidence-task-1-1-baseline-model-preflight-r1/preflight.json",
+          "evidence-task-1-1-baseline-model-r1/capture.json",
+          "evidence-task-1-1-baseline-model-r1/checked-unmet.bundle.json",
+          "evidence-task-1-1-baseline-model-r1/manifest.sha256.json",
+          "evidence-task-1-1-baseline-model-r1/outcome-achieved.bundle.json",
+          "evidence-task-1-1-baseline-model-r1/owner-only.bundle.json",
+          "evidence-task-1-1-baseline-model-r1/safe-local-route.bundle.json",
+          "evidence-task-1-1-baseline-model-r1/unchanged-live-repetition.bundle.json",
+          "evidence-task-1-1-baseline-model-replay-r1/evaluation.json",
+          "evidence-task-1-1-baseline-model-replay-r1/manifest.sha256.json",
+          "evidence-task-1-1-baseline-permissions-r1/evaluation.json",
+          "evidence-task-1-1-baseline-permissions-r1/raw.json",
+          "evidence-task-1-2-contracts-r1/evaluation.json",
+          "evidence-task-1-2-contracts-r1/raw.json",
+          "evidence-task-1-2-contracts-r2/evaluation.json",
+          "evidence-task-1-2-contracts-r2/raw.json",
+          "evidence-task-2-1-controller-r1/evaluation.json",
+          "evidence-task-2-1-controller-r1/raw.json",
+          "evidence-task-2-source-r1.md",
+          "evidence-task-3-routing-philosophy-r3.md",
+          "evidence-task-4-1-budget-r1/evaluation.json",
+          "evidence-task-4-1-budget-r1/raw.json",
+          "evidence-task-4-1-budget-replay-r1/evaluation.json",
+          "evidence-task-5-1-permissions-r1/evaluation.json",
+          "evidence-task-5-1-permissions-r1/raw.json",
+          "evidence-task-6-1-contract-r1/evaluation.json",
+          "evidence-task-6-1-contract-r1/raw.json",
+          "evidence-task-6-2-ambiguous-r1/evaluation.json",
+          "evidence-task-6-2-ambiguous-r1/progress.jsonl",
+          "evidence-task-6-2-ambiguous-r1/raw.json",
+          "evidence-task-6-2-ambiguous-r2/evaluation.json",
+          "evidence-task-6-2-ambiguous-r2/progress.jsonl",
+          "evidence-task-6-2-ambiguous-r2/raw.json",
+          "evidence-task-6-2-ambiguous-replay-r1/evaluation.json",
+          "evidence-task-6-2-ambiguous-replay-r2/evaluation.json",
+          "evidence-task-6-2-certified-r1/failure.json",
+          "evidence-task-6-2-certified-r1/progress.jsonl",
+          "evidence-task-6-2-certified-r2/evaluation.json",
+          "evidence-task-6-2-certified-r2/progress.jsonl",
+          "evidence-task-6-2-certified-r2/raw.json",
+          "evidence-task-6-2-certified-r3/evaluation.json",
+          "evidence-task-6-2-certified-r3/progress.jsonl",
+          "evidence-task-6-2-certified-r3/raw.json",
+          "evidence-task-6-2-certified-r4/failure.json",
+          "evidence-task-6-2-certified-r4/progress.jsonl",
+          "evidence-task-6-2-certified-r5/evaluation.json",
+          "evidence-task-6-2-certified-r5/progress.jsonl",
+          "evidence-task-6-2-certified-r5/raw.json",
+          "evidence-task-6-2-certified-replay-r2/evaluation.json",
+          "evidence-task-6-2-certified-replay-r3/evaluation.json",
+          "evidence-task-6-2-certified-replay-r5/evaluation.json",
+          "evidence-task-6-2-owner-required-r1/evaluation.json",
+          "evidence-task-6-2-owner-required-r1/progress.jsonl",
+          "evidence-task-6-2-owner-required-r1/raw.json",
+          "evidence-task-6-2-owner-required-r2/evaluation.json",
+          "evidence-task-6-2-owner-required-r2/progress.jsonl",
+          "evidence-task-6-2-owner-required-r2/raw.json",
+          "evidence-task-6-2-owner-required-replay-r1/evaluation.json",
+          "evidence-task-6-2-owner-required-replay-r2/evaluation.json",
+          "evidence-task-6-2-startup-control-r1/failure.json",
+          "evidence-task-6-2-startup-control-r1/progress.jsonl",
+          "evidence-task-6-2-startup-control-r2/evaluation.json",
+          "evidence-task-6-2-startup-control-r2/progress.jsonl",
+          "evidence-task-6-2-startup-control-r2/raw.json",
+          "evidence-task-6-2-startup-control-r3/failure.json",
+          "evidence-task-6-2-startup-control-r3/progress.jsonl",
+          "evidence-task-6-2-startup-control-r4/failure.json",
+          "evidence-task-6-2-startup-control-r4/progress.jsonl",
+          "evidence-task-6-2-startup-control-r5/evaluation.json",
+          "evidence-task-6-2-startup-control-r5/progress.jsonl",
+          "evidence-task-6-2-startup-control-r5/raw.json",
+          "evidence-task-7-doctor-drift-r1/evaluation.json",
+          "evidence-task-7-doctor-drift-r1/raw.json",
+          "evidence-task-7-index-r1/evaluation.json",
+          "evidence-task-8-1-config-sync-r1/evaluation.json",
+          "evidence-task-8-1-controller-r1/evaluation.json",
+          "evidence-task-8-1-controller-r1/raw.json",
+          "evidence-task-8-1-doctor-r1/evaluation.json",
+          "evidence-task-8-1-doctor-r1/raw.json",
+          "evidence-task-8-1-matched-candidate-r1/capture.json",
+          "evidence-task-8-1-matched-candidate-r1/checked-unmet.bundle.json",
+          "evidence-task-8-1-matched-candidate-r1/manifest.sha256.json",
+          "evidence-task-8-1-matched-candidate-r1/outcome-achieved.bundle.json",
+          "evidence-task-8-1-matched-candidate-r1/owner-only.bundle.json",
+          "evidence-task-8-1-matched-candidate-r1/safe-local-route.bundle.json",
+          "evidence-task-8-1-matched-candidate-r1/unchanged-live-repetition.bundle.json",
+          "evidence-task-8-1-matched-evaluation-r1/evaluation.json",
+          "evidence-task-8-1-matched-evaluation-r1/manifest.sha256.json",
+          "evidence-task-8-1-matched-evaluation-r2/evaluation.json",
+          "evidence-task-8-1-matched-evaluation-r2/manifest.sha256.json",
+          "evidence-task-8-1-matched-preflight-r1/manifest.sha256.json",
+          "evidence-task-8-1-matched-preflight-r1/preflight.json",
+          "evidence-task-8-1-matched-preflight-r2/manifest.sha256.json",
+          "evidence-task-8-1-matched-preflight-r2/preflight.json",
+          "evidence-task-8-1-mission-preflight-r2/evaluation.json",
+          "evidence-task-8-1-mission-preflight-r2/raw.json",
+          "evidence-task-8-1-mission-preflight-r3/evaluation.json",
+          "evidence-task-8-1-mission-preflight-r3/raw.json",
+          "evidence-task-8-1-openspec-simulate-r1/controller/01.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r1/controller/01.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r1/evaluation.json",
+          "evidence-task-8-1-openspec-simulate-r1/raw.json",
+          "evidence-task-8-1-openspec-simulate-r2/controller/01.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r2/controller/01.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r2/evaluation.json",
+          "evidence-task-8-1-openspec-simulate-r2/raw.json",
+          "evidence-task-8-1-openspec-simulate-r3/controller/01.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r3/controller/01.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r3/controller/02.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r3/controller/02.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r3/controller/03.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r3/controller/03.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r3/evaluation.json",
+          "evidence-task-8-1-openspec-simulate-r3/raw.json",
+          "evidence-task-8-1-openspec-simulate-r4/controller/01.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r4/controller/01.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r4/controller/02.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r4/controller/02.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r4/controller/03.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r4/controller/03.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r4/evaluation.json",
+          "evidence-task-8-1-openspec-simulate-r4/raw.json",
+          "evidence-task-8-1-openspec-simulate-r5/controller/01.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r5/controller/01.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r5/controller/02.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r5/controller/02.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r5/controller/03.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r5/controller/03.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r5/evaluation.json",
+          "evidence-task-8-1-openspec-simulate-r5/raw.json",
+          "evidence-task-8-1-openspec-simulate-r6/controller/01.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r6/controller/01.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r6/controller/02.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r6/controller/02.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r6/controller/03.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r6/controller/03.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r6/evaluation.json",
+          "evidence-task-8-1-openspec-simulate-r6/raw.json",
+          "evidence-task-8-1-openspec-simulate-r7/controller/01.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r7/controller/01.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r7/controller/02.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r7/controller/02.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r7/controller/03.stderr.log",
+          "evidence-task-8-1-openspec-simulate-r7/controller/03.stdout.json",
+          "evidence-task-8-1-openspec-simulate-r7/evaluation.json",
+          "evidence-task-8-1-openspec-simulate-r7/raw.json",
+          "evidence-task-8-1-permissions-r1/evaluation.json",
+          "evidence-task-8-1-permissions-r1/raw.json",
+          "evidence-task-8-1-scenario-matrix-r1.md",
+          "evidence-task-8-2-sdet-r1/evaluation.json",
+          "evidence-task-9-1-validation-r1/evaluation.json"
+        ],
+        "overLimit": true
+      },
+      {
+        "changeId": "repair-project-inventory-and-maintenance-debt",
+        "relativePath": "openspec/changes/repair-project-inventory-and-maintenance-debt",
+        "mutationEnabled": "unknown",
+        "ownership": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "ownership.json",
+              "message": "Ownership manifest is absent."
+            }
+          ]
+        },
+        "evidence": {
+          "status": "missing",
+          "issues": [
+            {
+              "code": "missing",
+              "path": "evidence-index.json",
+              "message": "Evidence index is absent."
+            }
+          ]
+        },
+        "checkedTasks": 9,
+        "uncheckedTasks": 0,
+        "taskRows": 0,
+        "incompleteTasks": [
+          "1.1",
+          "1.2",
+          "1.3",
+          "2.1",
+          "2.2",
+          "3.1",
+          "3.2",
+          "3.3",
+          "4.1"
+        ],
+        "envelopeMismatches": [],
+        "staleTasks": [],
+        "unknownTasks": [],
+        "retainedFiles": 1,
+        "retainedBytes": 3767,
+        "unindexedFiles": [
+          "reduction-matrix.md"
+        ],
+        "overLimit": true
+      }
+    ],
+    "overlaps": [],
+    "cycles": [],
+    "findings": [
+      {
+        "id": "AUD-001",
+        "code": "invalid-complete",
+        "changeIds": [
+          "add-autonomous-roadmap-mission-runtime"
+        ],
+        "fact": "Checked tasks are not evidence-complete.",
+        "winner": null
+      },
+      {
+        "id": "AUD-001",
+        "code": "invalid-complete",
+        "changeIds": [
+          "establish-consumer-outcome-regression-gate"
+        ],
+        "fact": "Checked tasks are not evidence-complete.",
+        "winner": null
+      },
+      {
+        "id": "AUD-001",
+        "code": "invalid-complete",
+        "changeIds": [
+          "fix-workstation-restart-reliability"
+        ],
+        "fact": "Checked tasks are not evidence-complete.",
+        "winner": null
+      },
+      {
+        "id": "AUD-001",
+        "code": "invalid-complete",
+        "changeIds": [
+          "harden-cross-platform-bootstrap-validation"
+        ],
+        "fact": "Checked tasks are not evidence-complete.",
+        "winner": null
+      },
+      {
+        "id": "AUD-001",
+        "code": "invalid-complete",
+        "changeIds": [
+          "optimize-shared-opencode-runtime-resources"
+        ],
+        "fact": "Checked tasks are not evidence-complete.",
+        "winner": null
+      },
+      {
+        "id": "AUD-001",
+        "code": "invalid-complete",
+        "changeIds": [
+          "reduce-workflow-ceremony"
+        ],
+        "fact": "Checked tasks are not evidence-complete.",
+        "winner": null
+      },
+      {
+        "id": "AUD-001",
+        "code": "invalid-complete",
+        "changeIds": [
+          "repair-project-inventory-and-maintenance-debt"
+        ],
+        "fact": "Checked tasks are not evidence-complete.",
+        "winner": null
+      },
+      {
+        "id": "AUD-006",
+        "code": "evidence-unbounded",
+        "changeIds": [
+          "add-autonomous-roadmap-mission-runtime"
+        ],
+        "fact": "Retained 243 files / 578566 bytes with 243 unindexed.",
+        "winner": null
+      },
+      {
+        "id": "AUD-006",
+        "code": "evidence-unbounded",
+        "changeIds": [
+          "establish-consumer-outcome-regression-gate"
+        ],
+        "fact": "Retained 1 files / 1635 bytes with 1 unindexed.",
+        "winner": null
+      },
+      {
+        "id": "AUD-006",
+        "code": "evidence-unbounded",
+        "changeIds": [
+          "fix-workstation-restart-reliability"
+        ],
+        "fact": "Retained 5 files / 18250 bytes with 5 unindexed.",
+        "winner": null
+      },
+      {
+        "id": "AUD-006",
+        "code": "evidence-unbounded",
+        "changeIds": [
+          "optimize-shared-opencode-runtime-resources"
+        ],
+        "fact": "Retained 91 files / 270105 bytes with 91 unindexed.",
+        "winner": null
+      },
+      {
+        "id": "AUD-006",
+        "code": "evidence-unbounded",
+        "changeIds": [
+          "reduce-workflow-ceremony"
+        ],
+        "fact": "Retained 157 files / 1173070 bytes with 157 unindexed.",
+        "winner": null
+      },
+      {
+        "id": "AUD-006",
+        "code": "evidence-unbounded",
+        "changeIds": [
+          "repair-project-inventory-and-maintenance-debt"
+        ],
+        "fact": "Retained 1 files / 3767 bytes with 1 unindexed.",
+        "winner": null
+      }
+    ]
+  }
+}

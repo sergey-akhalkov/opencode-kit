@@ -1,0 +1,20 @@
+{
+  "candidateId": "reduce-workflow-ceremony-cert-startup-control-r2",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "completionMode": "arbiter-or-nonterminal",
+  "disposition": "terminal",
+  "guardState": "unknown",
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "complete",
+  "providerCalls": {
+    "arbiter": 0,
+    "primary": 0
+  },
+  "rootSession": "not-created-prior-root-deleted",
+  "scenario": "interrupted",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unlockCondition": null
+}

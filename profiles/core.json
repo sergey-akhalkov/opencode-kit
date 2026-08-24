@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "name": "core",
+  "description": "Default portable runtime surface: principles, operational authority, OpenSpec lifecycle, claim closure, reuse, feedback, and required implementation/proof agents.",
+  "configMode": "ask",
+  "agents": [
+    "code-quality-reviewer",
+    "evidence-sufficiency-reviewer",
+    "execution-safety-reviewer",
+    "implementation-readiness-reviewer",
+    "implementation-worker",
+    "instruction-artifact-reviewer",
+    "openspec-architecture-reviewer",
+    "sdet-quality-engineer",
+    "test-coverage-reviewer",
+    "troubleshooter"
+  ],
+  "commands": [
+    "opsx-apply",
+    "opsx-archive",
+    "opsx-propose"
+  ],
+  "directories": [],
+  "files": [
+    "global/AGENTS.md",
+    "global/opencode.json.template",
+    "global/opencode.local.instructions.example.md",
+    "global/principles-of-work.md"
+  ],
+  "skills": [
+    "behavioral-substitution-qualification",
+    "change-ready-sdlc",
+    "complain",
+    "next-step",
+    "openspec-abandon-change",
+    "openspec-apply-change",
+    "openspec-archive-change",
+    "openspec-propose",
+    "reuse-discovery"
+  ]
+}

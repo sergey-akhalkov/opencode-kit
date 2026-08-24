@@ -1,0 +1,6 @@
+{
+  "files": {
+    "src/report.ts": "if (process.argv.includes(\"--format\") && process.argv.includes(\"json\")) {\n  console.log(JSON.stringify({ status: \"ok\", count: 1 }));\n  process.exit(0);\n}\nconsole.log(\"status: ok\");\nconsole.log(\"count: 1\");\n",
+    "test/report.test.ts": "import assert from \"node:assert/strict\";\nimport { spawnSync } from \"node:child_process\";\n\nconst text = spawnSync(process.execPath, [\"src/report.ts\"], { encoding: \"utf8\" });\nassert.equal(text.status, 0);\nassert.match(text.stdout ?? \"\", /status: ok/);\nconst json = spawnSync(process.execPath, [\"src/report.ts\", \"--format\", \"json\"], { encoding: \"utf8\" });\nassert.equal(json.status, 0);\nassert.match(json.stdout ?? \"\", /\\{\"status\":\"ok\",\"count\":1\\}/);\nconsole.log(\"OK: report\");\n"
+  }
+}

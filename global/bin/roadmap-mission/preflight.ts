@@ -32,10 +32,13 @@ const VALIDATION_PURPOSES = ["focusedTest", "test", "typecheck", "lint", "build"
 
 export const MISSION_SOURCE_PATHS = [
   "bin/roadmap-mission.ts",
+  "bin/roadmap-mission-session-executor.ts",
   "bin/roadmap-mission/contracts.ts",
   "bin/roadmap-mission/controller.ts",
   "bin/roadmap-mission/preflight.ts",
+  "bin/roadmap-mission/session-executor.ts",
   "bin/roadmap-mission/state.ts",
+  "extensions/session-completion-guard/terminal-certificate.ts",
 ] as const;
 
 function passed(id: string, summary: string): MissionCheck {
@@ -189,9 +192,9 @@ function canonicalWorkflowCheck(globalSource: string): MissionCheck {
       `Canonical global workflow is incomplete: ${missing.map((file) => relativeOutput(globalSource, file)).join(", ")}.`,
     );
   }
-  const runningBin = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+  const runningGlobal = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
   for (const [index, source] of MISSION_SOURCE_PATHS.entries()) {
-    const runningSource = path.join(runningBin, source.slice("bin/".length));
+    const runningSource = path.join(runningGlobal, source);
     const canonicalSource = path.join(globalSource, source);
     if (fileDigest(runningSource) !== fileDigest(canonicalSource)) {
       const summary = index === 0
@@ -334,7 +337,12 @@ function gitCheck(root: string, blockingPaths: string[], attributedPaths: string
   return blocked("project:git-state", `Uncheckpointed dirty paths block mission start: ${detail}.`);
 }
 
-function openSpecCheck(root: string, slice: RoadmapMissionSlice): MissionCheck {
+function openSpecCheck(
+  root: string,
+  definition: RoadmapMissionDefinition,
+  cursor: number,
+): MissionCheck {
+  const slice = definition.slices[cursor];
   const version = runCaptured(root, ["openspec", "--version"]);
   if (version.error != null) return blocked("project:openspec-state", `OpenSpec version inspection failed: ${version.error}.`, "unknown");
   const match = version.stdout.trim().match(/^(\d+)\.(\d+)\.(\d+)/);
@@ -347,19 +355,29 @@ function openSpecCheck(root: string, slice: RoadmapMissionSlice): MissionCheck {
     const output = record(parseJsonOutput(listed.stdout, "OpenSpec list"));
     const changes = Array.isArray(output?.changes) ? output.changes.map(record).filter((value): value is Record<string, unknown> => value != null) : [];
     const names = changes.map((change) => change.name).filter((name): name is string => typeof name === "string").sort();
-    if (slice.operation === "propose") {
-      return names.length === 0
-        ? passed("project:openspec-state", `OpenSpec ${match[0]} is ready for proposed change ${slice.changeId}.`)
-        : blocked("project:openspec-state", `Propose slice requires no active changes; found ${names.join(", ")}.`);
+    const expected = definition.slices.slice(cursor)
+      .filter((remaining) => remaining.operation === "continue")
+      .map((remaining) => remaining.changeId)
+      .sort();
+    if (names.length !== expected.length || names.some((name, index) => name !== expected[index])) {
+      return blocked(
+        "project:openspec-state",
+        `Active changes must exactly match remaining continue slices: expected ${expected.join(", ") || "none"}; found ${names.join(", ") || "none"}.`,
+      );
     }
-    if (names.length !== 1 || names[0] !== slice.changeId) {
-      return blocked("project:openspec-state", `Continue slice requires only active change ${slice.changeId}; found ${names.join(", ") || "none"}.`);
+    for (const changeId of expected) {
+      const status = runCaptured(root, ["openspec", "status", "--change", changeId, "--json"]);
+      if (status.error != null) return blocked("project:openspec-state", `OpenSpec status failed for ${changeId}: ${status.error}.`, "unknown");
+      const statusOutput = record(parseJsonOutput(status.stdout, `OpenSpec status for ${changeId}`));
+      if (statusOutput?.isComplete !== true) return blocked("project:openspec-state", `Active change ${changeId} is not apply-ready.`);
     }
-    const status = runCaptured(root, ["openspec", "status", "--change", slice.changeId, "--json"]);
-    if (status.error != null) return blocked("project:openspec-state", `OpenSpec status failed: ${status.error}.`, "unknown");
-    const statusOutput = record(parseJsonOutput(status.stdout, "OpenSpec status"));
-    if (statusOutput?.isComplete !== true) return blocked("project:openspec-state", `Active change ${slice.changeId} is not apply-ready.`);
-    return passed("project:openspec-state", `OpenSpec ${match[0]} has exactly the apply-ready active change ${slice.changeId}.`);
+    const nextSummary = slice.operation === "propose"
+      ? `proposed change ${slice.changeId}`
+      : `continued change ${slice.changeId}`;
+    return passed(
+      "project:openspec-state",
+      `OpenSpec ${match[0]} is ready for ${nextSummary}; exact queued active set is ${expected.join(", ") || "empty"}.`,
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return blocked("project:openspec-state", `OpenSpec state is unreadable: ${message}.`, "unknown");
@@ -434,7 +452,7 @@ export function preflightMission(
       `.opencode-dev-kit/runtime/roadmap-missions/${definition.missionId}`,
       ...(options.attributedPaths ?? []),
     ]),
-    openSpecCheck(root, slice),
+    openSpecCheck(root, definition, cursor),
     writerLeaseCheck(root, definition.missionId, options.writerLeaseOwned === true),
     nextEffectCheck(definition, cursor),
   ];

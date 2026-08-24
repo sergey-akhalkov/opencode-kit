@@ -1,6 +1,6 @@
 # OpenCode Windows Workstation
 
-This directory is the source of truth for the local Windows OpenCode workstation setup. The installer derives the protected controller, Scheduled Task, Alacritty configuration, generated credential, manifest, state, logs, and six Desktop shortcuts from the reviewed repository files. Do not treat files under `C:\ProgramData\OpenCodeWorkstation` as source.
+This directory is the source of truth for the local Windows OpenCode workstation setup. The installer derives the protected controller/shared-tool module, Scheduled Task, Alacritty configuration, OpenCode and Graphify credentials, exact OpenCode-config backup/edit, manifest, state, logs, and six Desktop shortcuts from the reviewed repository files. Do not treat files under `C:\ProgramData\OpenCodeWorkstation` as source.
 
 ## Prerequisites
 
@@ -9,12 +9,15 @@ This directory is the source of truth for the local Windows OpenCode workstation
 - `git.exe`, `alacritty.exe`, stable `pwsh.exe`, and `opencode.exe` on `PATH`
 - A valid `OPENCODE_CONFIG_DIR` user environment variable
 - The four configured repositories checked out as exact Git worktree roots
+- The configured Graphify Python/module and fixed read-only graph
 
 The setup installs no package, Windows service, firewall rule, or remote listener. The tray host has an owner AtLogon trigger; the shared server task stays demand-start and is started by the tray at logon.
 
 ## Machine Configuration
 
-`opencode-workstation.config.json` has schema version `1` and exactly four repository mappings. Paths may be absolute or relative to the configuration file. Change only these paths for a different workstation; do not add credentials or extra fields.
+Tracked `opencode-workstation.config.example.json` is a schema-valid placeholder: repository ids and relative stubs, no absolute host paths. Copy it to gitignored `opencode-workstation.config.json` and replace placeholders with this machine's mappings. Tools require that local file or an explicit `--config <path>` and never load the example as the live default.
+
+`opencode-workstation.config.json` has schema version `2`, exactly four repository mappings, and a `graphify` object containing Python, graph, and fixed port `4097`. Paths may be absolute or relative to the configuration file. Do not add credentials or extra fields.
 
 An alternate configuration can remain outside the checkout and be supplied with `--config <path>`. The installed manifest stores the configuration identity and resolved paths. Later source-configuration edits do not hot reload into the protected runtime.
 
@@ -33,7 +36,7 @@ When preflight reports `status: "ready"`, install from the same reviewed source 
 node tools/windows/opencode-workstation.ts install --config tools/windows/opencode-workstation.config.json
 ```
 
-Install self-elevates when required. It creates a highest-privilege demand-start server task, a highest-privilege AtLogon tray host, protects the runtime root, generates a local password, configures ordinary Alacritty to use stable `pwsh.exe`, maximizes project Alacritty, hides Desktop controller consoles, and creates these Desktop shortcuts:
+Install self-elevates when required. It creates one highest-privilege demand-start supervisor task, a highest-privilege AtLogon tray host, protects the runtime root, generates separate OpenCode and Graphify credentials, atomically replaces only `mcp.graphify-global` with an env-referenced remote entry, configures ordinary Alacritty to use stable `pwsh.exe`, maximizes project Alacritty, hides Desktop controller consoles, and creates these Desktop shortcuts:
 
 - `OpenCode Server - Start`
 - `OpenCode Server - Restart`
@@ -44,7 +47,16 @@ Install self-elevates when required. It creates a highest-privilege demand-start
 
 ## Operate
 
-At interactive logon the tray host starts the shared server with no console and shows an `opencode-server` lamp: green when healthy, blinking red/amber while Restart is replacing the server. Right-click **Restart** replaces the managed server and returns to green. Right-click **Exit** stops the server and closes the tray until the next logon. Exit does not disable autostart.
+At interactive logon the tray host starts Graphify on `http://127.0.0.1:4097/mcp` before OpenCode on `http://127.0.0.1:4096`. The `opencode-server` lamp is green only when recorded identities for both listeners are running, and blinks red/amber during Restart. Right-click **Restart** replaces both managed sibling identities. Right-click **Exit** stops both and closes the tray until the next logon. Exit does not disable autostart.
+
+| Component | Ownership |
+|---|---|
+| OpenCode server | One workstation process serves multiple exact `--dir` clients |
+| Graphify | One authenticated stateless service shared by all projects |
+| Codebase Memory | Existing shared daemon, with project-scoped frontends |
+| Serena and OpenCode LSP | Project-scoped; intentionally not pooled |
+
+Graphify PR/repository tools require an explicit non-empty `repo`; graph-only tools keep the fixed graph and optional explicit `project_path`. If Graphify exits after readiness, OpenCode remains available for existing clients, Status/tray become degraded/red, and new launches fail with a Restart diagnostic.
 
 Start still raises a stopped server. Repeated Start reuses the healthy managed server. Each project shortcut opens exactly one maximized elevated Alacritty, starts stable PowerShell, and runs `opencode attach http://127.0.0.1:4096 --dir <configured-path>`. It never falls back to a second server and does not leave a controller console.
 
@@ -76,14 +88,15 @@ node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts rollback --dry-r
 node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts rollback
 ```
 
-Rollback safely stops the managed server, removes the matching server and tray tasks and six shortcuts, restores the exact previous Alacritty configuration, and removes the protected runtime root. It preserves drifted and unrelated artifacts. Reinstall by repeating the repository preflight and install commands.
+Rollback safely stops both managed siblings, restores the exact previous OpenCode config bytes/ACL and Alacritty configuration, removes matching tasks/shortcuts/protected runtime, and refuses any drift. Reinstall by repeating repository preflight and install.
 
 ## Repository Validation
 
 ```powershell
 node --check tools/windows/opencode-workstation.ts
+node --check tools/windows/opencode-shared-tools.ts
 npm.cmd run validate:strict
-openspec.cmd validate configure-local-opencode-workstation --strict
+openspec.cmd validate optimize-shared-opencode-runtime-resources --strict
 ```
 
-The server password is generated during installation and must remain only in protected local runtime state or process memory. Never add it to the configuration, repository, shortcut arguments, logs, or evidence.
+Both passwords are generated during installation and remain only in protected runtime state or process memory. Global config contains only `{env:OPENCODE_GRAPHIFY_API_KEY}`. Never place either value in config bytes, argv, shortcuts, logs, or evidence. Node-to-Bun/runtime consolidation is intentionally outside this resource optimization.

@@ -1,0 +1,15 @@
+{
+  "archiveCount": 2,
+  "candidateId": "reduce-workflow-ceremony-task-8-r2",
+  "cleanup": "complete",
+  "configuredProviderCalls": 0,
+  "controllerProcesses": 3,
+  "localRecoverableFailures": 1,
+  "processRestart": "run-then-two-resume-processes",
+  "protectedSlice": "blocked-before-executor",
+  "retrospectiveTasks": 0,
+  "schemaVersion": 1,
+  "sessionCleanup": "complete",
+  "simulationCalls": 2,
+  "status": "complete"
+}

@@ -1,0 +1,23 @@
+{
+  "candidateId": "baseline-local-graphify-r1",
+  "checks": {
+    "candidateMatches": true,
+    "cleanupComplete": true,
+    "graphResultsMatch": true,
+    "noCaptureFailure": true,
+    "oneServiceTree": true,
+    "toolInventoriesMatch": true,
+    "twoServiceTrees": true
+  },
+  "inputRawSha256": "234ab4ec21e7b394008ee877b6800d0f347e708f5d11ede81f486f245b165943",
+  "kind": "local-graphify-baseline",
+  "replay": true,
+  "resourceSummary": {
+    "oneClientPrivateMedianMiB": 468.548,
+    "oneClientReadyMs": 13144,
+    "twoClientPrivateMedianMiB": 936.743,
+    "twoClientReadyMs": 18100
+  },
+  "schemaVersion": 1,
+  "status": "passed"
+}

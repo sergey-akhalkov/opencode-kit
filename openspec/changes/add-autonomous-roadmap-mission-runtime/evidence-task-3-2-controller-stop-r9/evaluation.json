@@ -1,0 +1,13 @@
+{
+  "candidateId": "task-3-2-controller-stop-r9",
+  "checks": {
+    "activeOperationCleared": true,
+    "cleanupComplete": false,
+    "controllerPaused": false,
+    "prefixedStderr": false,
+    "prefixedStdout": false,
+    "slashIntent": false
+  },
+  "schemaVersion": 1,
+  "status": "blocked"
+}

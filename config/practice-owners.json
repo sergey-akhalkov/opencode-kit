@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "practices": [
+    {
+      "id": "architecture-and-change-locality",
+      "owner": "openspec-architecture-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "Single Responsibility / High Cohesion, Low Coupling" },
+        { "path": "global/AGENTS.md", "marker": "split-or-justify" }
+      ],
+      "maintenanceSurfaces": ["global/agents/openspec-architecture-reviewer.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["simplicity-and-reuse"]
+    },
+    {
+      "id": "blocker-recovery",
+      "owner": "troubleshooter",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "Causally Different Retries" },
+        { "path": "global/AGENTS.md", "marker": "troubleshooter" }
+      ],
+      "maintenanceSurfaces": ["global/agents/troubleshooter.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["execution-safety"]
+    },
+    {
+      "id": "claim-evidence",
+      "owner": "evidence-sufficiency-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "Evidence Bounds Claims" },
+        { "path": "global/AGENTS.md", "marker": "evidence-sufficiency-reviewer" }
+      ],
+      "maintenanceSurfaces": ["global/agents/evidence-sufficiency-reviewer.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["verification-and-tests"]
+    },
+    {
+      "id": "configuration-and-deployment",
+      "owner": "deployment-config-reviewer",
+      "class": "domain",
+      "anchors": [
+        { "path": "global/agents/deployment-config-reviewer.md", "marker": "config/deployment readiness" }
+      ],
+      "maintenanceSurfaces": ["global/agents/deployment-config-reviewer.md"],
+      "profiles": ["all"],
+      "exclusions": ["performance-and-reliability"]
+    },
+    {
+      "id": "execution-safety",
+      "owner": "execution-safety-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "First, Do No Harm" },
+        { "path": "global/AGENTS.md", "marker": "NEVER discard, revert, reset, delete" }
+      ],
+      "maintenanceSurfaces": ["global/agents/execution-safety-reviewer.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["instruction-governance"]
+    },
+    {
+      "id": "instruction-governance",
+      "owner": "instruction-artifact-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "Determinism over Guesswork" },
+        { "path": "global/AGENTS.md", "marker": "Always-loaded reviewer safety" }
+      ],
+      "maintenanceSurfaces": ["global/agents/instruction-artifact-reviewer.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["execution-safety"]
+    },
+    {
+      "id": "legacy-client-compatibility",
+      "owner": "legacy-client-compatibility-reviewer",
+      "class": "domain",
+      "anchors": [
+        { "path": "global/agents/legacy-client-compatibility-reviewer.md", "marker": "legacy clients" }
+      ],
+      "maintenanceSurfaces": ["global/agents/legacy-client-compatibility-reviewer.md"],
+      "profiles": ["all"],
+      "exclusions": ["legacy-contract-evidence"]
+    },
+    {
+      "id": "legacy-contract-evidence",
+      "owner": "legacy-evidence-reviewer",
+      "class": "domain",
+      "anchors": [
+        { "path": "global/agents/legacy-evidence-reviewer.md", "marker": "legacy" }
+      ],
+      "maintenanceSurfaces": ["global/agents/legacy-evidence-reviewer.md"],
+      "profiles": ["all"],
+      "exclusions": ["legacy-client-compatibility"]
+    },
+    {
+      "id": "outcome-readiness",
+      "owner": "implementation-readiness-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "Outcome over Output" },
+        { "path": "global/AGENTS.md", "marker": "Ordinary Small" }
+      ],
+      "maintenanceSurfaces": ["global/agents/implementation-readiness-reviewer.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["verification-and-tests"]
+    },
+    {
+      "id": "performance-and-reliability",
+      "owner": "performance-reliability-reviewer",
+      "class": "domain",
+      "anchors": [
+        { "path": "global/agents/performance-reliability-reviewer.md", "marker": "latency" }
+      ],
+      "maintenanceSurfaces": ["global/agents/performance-reliability-reviewer.md"],
+      "profiles": ["all"],
+      "exclusions": ["rust-concurrency"]
+    },
+    {
+      "id": "protocol-api-semantics",
+      "owner": "protocol-api-reviewer",
+      "class": "domain",
+      "anchors": [
+        { "path": "global/agents/protocol-api-reviewer.md", "marker": "schema evolution" }
+      ],
+      "maintenanceSurfaces": ["global/agents/protocol-api-reviewer.md"],
+      "profiles": ["all"],
+      "exclusions": ["wire-format-and-transport"]
+    },
+    {
+      "id": "rust-concurrency",
+      "owner": "rust-concurrency-reviewer",
+      "class": "domain",
+      "anchors": [
+        { "path": "global/agents/rust-concurrency-reviewer.md", "marker": "Rust" }
+      ],
+      "maintenanceSurfaces": ["global/agents/rust-concurrency-reviewer.md"],
+      "profiles": ["all"],
+      "exclusions": ["performance-and-reliability"]
+    },
+    {
+      "id": "simplicity-and-reuse",
+      "owner": "code-quality-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "Occam's Razor" },
+        { "path": "global/AGENTS.md", "marker": "reuse-discovery" }
+      ],
+      "maintenanceSurfaces": ["global/agents/code-quality-reviewer.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["architecture-and-change-locality"]
+    },
+    {
+      "id": "verification-and-tests",
+      "owner": "test-coverage-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/principles-of-work.md", "marker": "Working Software Is the Primary Measure of Progress" },
+        { "path": "global/AGENTS.md", "marker": "Risk-Driven Test Workflow" }
+      ],
+      "maintenanceSurfaces": ["global/agents/test-coverage-reviewer.md"],
+      "profiles": ["core", "all"],
+      "exclusions": ["claim-evidence"]
+    },
+    {
+      "id": "wire-format-and-transport",
+      "owner": "wire-protocol-reviewer",
+      "class": "domain",
+      "anchors": [
+        { "path": "global/agents/wire-protocol-reviewer.md", "marker": "byte" }
+      ],
+      "maintenanceSurfaces": ["global/agents/wire-protocol-reviewer.md"],
+      "profiles": ["all"],
+      "exclusions": ["protocol-api-semantics"]
+    }
+  ]
+}

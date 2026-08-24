@@ -1,0 +1,268 @@
+{
+  "candidate": {
+    "id": "reduce-workflow-ceremony-task-8-r1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "a70b661f85d6a417ef15345d52a292fed31b6ac08dff0a21b79f2c1aa58a7497",
+      "global/agents/troubleshooter.md": "e0a5397721dd723ea86491fabd46dda0e07c4adc6a9b4b0bd3305360bca7ae64",
+      "global/agents/session-completion-arbiter.md": "38c81616593aadc8a65b48375f2f2d22ee1cc5ad05252706e85a4b59d199748c",
+      "global/bin/openspec-operation-gate.ts": "75983a6151d21174e182e5d4811da23c422164d1baf75d45569d83a3a2e8bf4b",
+      "global/commands/opsx-apply.md": "68933f170ea1b22badc443a19d983bf7c85f4d68b79fcef31e825e388ab3dedd",
+      "global/commands/opsx-archive.md": "a6bc43ec5f8f451f7517d4909983fcee729f65f34eea22540e2ff8d8bd1d7ab7",
+      "global/commands/opsx-propose.md": "8719cd8054b39f96880782643463a0d3e24591b65c0d719709262636a2a711c7",
+      "global/extensions/session-completion-guard/controller.ts": "cffd85b3fb259add07dda1c0a9810944ae7b5604f06b75c5e79dff8abc73dc60",
+      "global/extensions/session-completion-guard/inspection.ts": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6",
+      "global/extensions/session-completion-guard/strategy.ts": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6",
+      "global/extensions/session-completion-guard/verdict.ts": "27477e89095a79da5ab75845220366142821875d16c3a76f20ad5727b34b64f1",
+      "global/skills/change-ready-sdlc/SKILL.md": "3215f90fc627be49bae463c0929bdaec1a0712884e0c08fef3cf677cb9b5a6a4",
+      "global/skills/openspec-apply-change/SKILL.md": "147a26d58bbc31c5306afe3a27613dfc51df5df864918eadf704a2f29d94614e",
+      "global/skills/openspec-archive-change/SKILL.md": "d40fac3e2d338858a8685b44fd72ba450b512f5d517b9f2b0c61414487c932b3",
+      "global/skills/openspec-propose/SKILL.md": "4f3e4bfa72f865aa7bca412c2b0f31e5e0b76cca8b20aba887081bc3e48d702b",
+      "instructions/reusable-project-agent-instructions.md": "2021adbfe453b3d081634e21b48265b2c6422ef0fd81240f88e305a75d171887",
+      "instructions/universal-development-loop.md": "e9625089ba51c4b4c2551e90b205857418b2f88f90bcda86e74719312a0724f4",
+      "templates/project/AGENTS.md": "ae6b05d32a7b5a9626d40cafd9bcd382abda4673f3ec4d7ed9ae720c5984f9d4",
+      "README.md": "7fb688051151db86e2c1b90ecf341b0965c91046eeeb3462e688ac55cf2499e2",
+      "package.json": "732930d41e8732c8159abd90f81b1b4a70d165e47d74edb00bf1e3d7ac54cb98",
+      "tools/contracts/troubleshooter.ts": "b4830ae82f14a307e97e8782d1fad387d5481c017c55018b259302da5ff357ae",
+      "tools/proofs/pre-escalation-recovery.ts": "2cc40169bb82899c1be34c62dd167fbb7a302227b13ae2d66aeed11fd49f7dea",
+      "tools/proofs/session-completion-guard-autonomous.ts": "c650f93d5a1ecea695a77b33a6626234358d21c0f87343c1d1c9910b4bc93400",
+      "tools/proofs/session-completion-guard-question.ts": "899fe8fa2724c27c1adae567c68208fefc6209b51d7432d303cf40d7a7c3df77",
+      "tools/proofs/README.md": "1f8297ab3e1860740b4d254540e32e6bdd8b530f20ab9ebea68f86d0c350b3ac"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fdf162e6affe8qfaRj10OpRyid",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "pre-escalation-candidate-outcome-achieved",
+      "Original user goal: produce one synthetic P1S1 receipt.\nCurrent evidence proves the required receipt exists, all accepted observations and cleanup are complete, Development-Stage is MVP, and no unresolved invariant or user question remains.\nFollow the loaded authority. Do not invent retrospective work, run a command, invoke a specialist, or ask the user.\nEnd with exactly `FINAL_ROUTE: OUTCOME_COMPLETE`."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787258596593,\"sessionID\":\"ses_fdf162e6affe8qfaRj10OpRyid\",\"part\":{\"id\":\"prt_020e9ecd5001LXJgsw7eHvdqzc\",\"messageID\":\"msg_020e9d70c001F2PqiTnpcbtDif\",\"sessionID\":\"ses_fdf162e6affe8qfaRj10OpRyid\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787258599461,\"sessionID\":\"ses_fdf162e6affe8qfaRj10OpRyid\",\"part\":{\"id\":\"prt_020e9f657001d9gWTcfpU1C0VE\",\"messageID\":\"msg_020e9d70c001F2PqiTnpcbtDif\",\"sessionID\":\"ses_fdf162e6affe8qfaRj10OpRyid\",\"type\":\"text\",\"text\":\"Development-Stage: MVP  \\nOutcome complete. All accepted observations and cleanup are complete.\\n\\nFINAL_ROUTE: OUTCOME_COMPLETE\",\"time\":{\"start\":1787258598999,\"end\":1787258599384},\"metadata\":{\"openai\":{\"itemId\":\"msg_0cd98b1377059859016a8766e7e55487d08ef87badd1afdde1\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787258599461,\"sessionID\":\"ses_fdf162e6affe8qfaRj10OpRyid\",\"part\":{\"id\":\"prt_020e9f7f2001tFNwCCpGgv2SzL\",\"reason\":\"stop\",\"messageID\":\"msg_020e9d70c001F2PqiTnpcbtDif\",\"sessionID\":\"ses_fdf162e6affe8qfaRj10OpRyid\",\"type\":\"step-finish\",\"tokens\":{\"total\":14156,\"input\":12473,\"output\":29,\"reasoning\":118,\"cache\":{\"write\":0,\"read\":1536}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob/grep/read: deny for primary",
+      "question: deny",
+      "skill: deny",
+      "task: troubleshooter only",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "failure": null,
+  "facts": {
+    "assistantText": "Development-Stage: MVP  \nOutcome complete. All accepted observations and cleanup are complete.\n\nFINAL_ROUTE: OUTCOME_COMPLETE",
+    "costs": [
+      0
+    ],
+    "elapsedMs": 11888,
+    "eventCount": 3,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_fdf162e6affe8qfaRj10OpRyid"
+    ],
+    "tokens": [
+      {
+        "total": 14156,
+        "input": 12473,
+        "output": 29,
+        "reasoning": 118,
+        "cache": {
+          "write": 0,
+          "read": 1536
+        }
+      }
+    ],
+    "toolCalls": []
+  },
+  "filesAfter": [
+    {
+      "bytes": 758,
+      "path": "diagnostics.md",
+      "sha256": "72a31acc6971489523c4dc85e49dc314e9cebfe6350676b2ff6a01f2f847dc0c"
+    },
+    {
+      "bytes": 163,
+      "path": "observer-state.md",
+      "sha256": "ac4962a4d92d7766eb3ad55141b607922b17d23e7d23d5ae331084a08b04e592"
+    },
+    {
+      "bytes": 75,
+      "path": "openspec/changes/synthetic/tasks.md",
+      "sha256": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68"
+    },
+    {
+      "bytes": 218,
+      "path": "outcome-status.md",
+      "sha256": "e59314e3f890a551ef2b47ab3e364d3b755c970b363c6c4c9d3d1da225c632ba"
+    },
+    {
+      "bytes": 96,
+      "path": "package.json",
+      "sha256": "fe062302cf0204b113f0ad081b8f044f9bad4282380f80550836019d7f373b16"
+    },
+    {
+      "bytes": 35,
+      "path": "src/production.ts",
+      "sha256": "cc1d1aed04a2a14d925efe14d36911c8422de10e6b77be0ff4158d97d1d7268d"
+    },
+    {
+      "bytes": 407,
+      "path": "task.md",
+      "sha256": "071db5d36bd22067ed4f26f15601df15d6551d8c476420e8d814056f8adaf80a"
+    },
+    {
+      "bytes": 35,
+      "path": "tests/recovery.test.ts",
+      "sha256": "6001dd9a1aa961f0cd629ebeeea3e89fe85a043321128cb7b2c2c39188954885"
+    },
+    {
+      "bytes": 34,
+      "path": "tools/fix-local.mjs",
+      "sha256": "f3304bee750191ecdce4cbc56b1b8c001d8c20193a16dbe91efe3adde6e70aa2"
+    },
+    {
+      "bytes": 199,
+      "path": "tools/inspect-observer.mjs",
+      "sha256": "8f903fe35ba355e8deaadd67906bb4d7b0d98bb153492560d8209a697c8a5e8d"
+    },
+    {
+      "bytes": 30,
+      "path": "tools/local-route.mjs",
+      "sha256": "2507e45cc873750b1aeb2a55d0af8f8c1514bdd5765fd1b0cdf6caa56e084053"
+    },
+    {
+      "bytes": 352,
+      "path": "tools/reconcile-outcome.mjs",
+      "sha256": "abb76740d89f4ff0c7bd5d5efaa9898427c92338819c8798e4ac780e7efcdd82"
+    },
+    {
+      "bytes": 27,
+      "path": "tools/recover.mjs",
+      "sha256": "263d54a1ad643f052ab68ecbbeb2cf8391e18ebfedf32d7525229ed3d1d1829a"
+    },
+    {
+      "bytes": 543,
+      "path": "tools/resolve-helper.mjs",
+      "sha256": "79610b32632afac3c6063c35430c4444a40f72d414b4e5f7d4d14c10e27aac59"
+    },
+    {
+      "bytes": 168,
+      "path": "tools/verify-observer.mjs",
+      "sha256": "5615a1a04067e371cca2b864961a435e990668ac55e679a6708ff483945cedc1"
+    }
+  ],
+  "filesBefore": [
+    {
+      "bytes": 758,
+      "path": "diagnostics.md",
+      "sha256": "72a31acc6971489523c4dc85e49dc314e9cebfe6350676b2ff6a01f2f847dc0c"
+    },
+    {
+      "bytes": 163,
+      "path": "observer-state.md",
+      "sha256": "ac4962a4d92d7766eb3ad55141b607922b17d23e7d23d5ae331084a08b04e592"
+    },
+    {
+      "bytes": 75,
+      "path": "openspec/changes/synthetic/tasks.md",
+      "sha256": "4c93036519c3ab6f4a15ac85b807a9ed47105572df69c1e3cf5d1f15e85d5c68"
+    },
+    {
+      "bytes": 218,
+      "path": "outcome-status.md",
+      "sha256": "e59314e3f890a551ef2b47ab3e364d3b755c970b363c6c4c9d3d1da225c632ba"
+    },
+    {
+      "bytes": 96,
+      "path": "package.json",
+      "sha256": "fe062302cf0204b113f0ad081b8f044f9bad4282380f80550836019d7f373b16"
+    },
+    {
+      "bytes": 35,
+      "path": "src/production.ts",
+      "sha256": "cc1d1aed04a2a14d925efe14d36911c8422de10e6b77be0ff4158d97d1d7268d"
+    },
+    {
+      "bytes": 407,
+      "path": "task.md",
+      "sha256": "071db5d36bd22067ed4f26f15601df15d6551d8c476420e8d814056f8adaf80a"
+    },
+    {
+      "bytes": 35,
+      "path": "tests/recovery.test.ts",
+      "sha256": "6001dd9a1aa961f0cd629ebeeea3e89fe85a043321128cb7b2c2c39188954885"
+    },
+    {
+      "bytes": 34,
+      "path": "tools/fix-local.mjs",
+      "sha256": "f3304bee750191ecdce4cbc56b1b8c001d8c20193a16dbe91efe3adde6e70aa2"
+    },
+    {
+      "bytes": 199,
+      "path": "tools/inspect-observer.mjs",
+      "sha256": "8f903fe35ba355e8deaadd67906bb4d7b0d98bb153492560d8209a697c8a5e8d"
+    },
+    {
+      "bytes": 30,
+      "path": "tools/local-route.mjs",
+      "sha256": "2507e45cc873750b1aeb2a55d0af8f8c1514bdd5765fd1b0cdf6caa56e084053"
+    },
+    {
+      "bytes": 352,
+      "path": "tools/reconcile-outcome.mjs",
+      "sha256": "abb76740d89f4ff0c7bd5d5efaa9898427c92338819c8798e4ac780e7efcdd82"
+    },
+    {
+      "bytes": 27,
+      "path": "tools/recover.mjs",
+      "sha256": "263d54a1ad643f052ab68ecbbeb2cf8391e18ebfedf32d7525229ed3d1d1829a"
+    },
+    {
+      "bytes": 543,
+      "path": "tools/resolve-helper.mjs",
+      "sha256": "79610b32632afac3c6063c35430c4444a40f72d414b4e5f7d4d14c10e27aac59"
+    },
+    {
+      "bytes": 168,
+      "path": "tools/verify-observer.mjs",
+      "sha256": "5615a1a04067e371cca2b864961a435e990668ac55e679a6708ff483945cedc1"
+    }
+  ],
+  "input": {
+    "promptSha256": "a68a57331986b69a14b923fbb5c52ff6fe16359dac3ce1ddc2b211493fa8fe17",
+    "scenario": "outcome-achieved"
+  },
+  "schemaVersion": 1
+}

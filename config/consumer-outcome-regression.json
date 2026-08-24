@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "profile": "quality-independent",
+  "baselinePointerPath": "config/consumer-outcome-baseline.json",
+  "sampleByteLimit": 524288,
+  "captureByteLimit": 8388608,
+  "sampleCount": 3,
+  "pairOrder": ["B1,C1", "C2,B2", "B3,C3"],
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/opencode.json.template",
+    "profiles/all.json",
+    "global/model-profiles/quality-independent.json",
+    "global/skills",
+    "global/agents",
+    "global/commands",
+    "global/plugin",
+    "global/plugins",
+    "global/extensions"
+  ],
+  "frictionFields": [
+    "ownerQuestionCount",
+    "configuredProviderRequestCount",
+    "failedToolCallCount",
+    "duplicateFailedToolInvocationCount",
+    "totalToolCallCount"
+  ],
+  "defaultExpectation": "no-regression",
+  "scenarios": [
+    {
+      "id": "ordinary-small-greeting",
+      "shape": "ordinary-small",
+      "fixtureId": "ordinary-small-greeting",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/ordinary-small-greeting",
+      "initialManifest": {
+        "files": [
+          "package.json",
+          "src/greet.ts",
+          "test/greet.test.ts"
+        ]
+      },
+      "request": "Add an explicit --name option so `node src/greet.ts --name Ada` prints `Hello, Ada`. Read only `src/greet.ts` and `test/greet.test.ts`. Edit only those files. Then run only `node src/greet.ts --name Ada` and `node test/greet.test.ts`. Do not glob the repository. Do not commit or use remote actions.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "remote"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": ["src/greet.ts", "test/greet.test.ts"],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "test/greet.test.ts"],
+      "proofExpectations": {
+        "argv": ["node", "src/greet.ts", "--name", "Ada"],
+        "exitCode": 0,
+        "stdoutIncludes": ["Hello, Ada"]
+      },
+      "sampleCount": 3,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": [
+        "ownerQuestionCount",
+        "configuredProviderRequestCount",
+        "failedToolCallCount",
+        "duplicateFailedToolInvocationCount",
+        "totalToolCallCount"
+      ],
+      "permissions": {
+        "allow": ["bash", "edit", "read"],
+        "deny": ["external_directory", "question", "task"]
+      },
+      "cleanupOracle": {
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      }
+    },
+    {
+      "id": "openspec-add-json-output",
+      "shape": "openspec-backed",
+      "fixtureId": "openspec-add-json-output",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/openspec-add-json-output",
+      "initialManifest": {
+        "files": [
+          "openspec/changes/add-json-output/design.md",
+          "openspec/changes/add-json-output/proposal.md",
+          "openspec/changes/add-json-output/specs/report-json-output/spec.md",
+          "openspec/changes/add-json-output/tasks.md",
+          "openspec/config.yaml",
+          "package.json",
+          "src/report.ts",
+          "test/report.test.ts"
+        ]
+      },
+      "request": "Continue the single active change add-json-output through accepted local proof. Add JSON output to the report CLI. Inspect Git once with `git status --porcelain=v1` only. Do not search outside this repository. Do not commit or perform remote actions.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "remote"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": ["src/report.ts", "test/report.test.ts"],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "test/report.test.ts"],
+      "proofExpectations": {
+        "argv": ["node", "src/report.ts", "--format", "json"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"status\":\"ok\",\"count\":1}"]
+      },
+      "sampleCount": 3,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": [
+        "ownerQuestionCount",
+        "configuredProviderRequestCount",
+        "failedToolCallCount",
+        "duplicateFailedToolInvocationCount",
+        "totalToolCallCount"
+      ],
+      "permissions": {
+        "allow": ["bash", "edit", "read"],
+        "deny": ["external_directory", "question", "task"]
+      },
+      "cleanupOracle": {
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      }
+    }
+  ]
+}

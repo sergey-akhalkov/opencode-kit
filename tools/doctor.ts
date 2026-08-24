@@ -6,13 +6,22 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as jsoncParse } from "jsonc-parser";
 import {
+  BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT,
+} from "./contracts/skills.ts";
+import {
   agentsAuthorityProblem,
   skillAuthorityProblem,
 } from "./validators/active-authority.ts";
 import { engineeringQualityAuthorityProblem } from "./validators/engineering-quality.ts";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
 import {
+  inspectWorkflowContracts,
+  workflowContractDiagnostics,
+} from "./validators/workflow-contracts.ts";
+import {
+  inspectManagedPromptDrift,
   inspectRuntimeSourceInventory,
+  type ManagedPromptDrift,
   type RuntimeSourceInventory,
 } from "./opencode-runtime-sources.ts";
 
@@ -42,9 +51,15 @@ type RuntimeSourceDiagnosis = {
   sourceCount: number;
 };
 
+type RepositoryContract = {
+  kind: "consumer" | "kit";
+  reason: string;
+};
+
 type DoctorReport = {
   blockers: Record<AutomationGate, string[]>;
   checks: Check[];
+  managedPrompts: ManagedPromptDrift[];
   project: string;
   qualificationStatus: QualificationStatus;
   requiredGate: AutomationGate | null;
@@ -99,6 +114,18 @@ function inspectRequiredAuthorityFile(
     if (relative === "AGENTS.md") {
       const problem = agentsAuthorityProblem(text) ?? engineeringQualityAuthorityProblem(text);
       return problem == null ? { ok: true } : { ok: false, problem };
+    }
+    if (relative === "principles-of-work.md") {
+      if (!text.includes("# Principles of Work") || !text.includes("## Order Of Precedence")) {
+        return { ok: false, problem: "principles-of-work.md is missing its title or priority-order section" };
+      }
+      return { ok: true };
+    }
+    if (relative === path.join("skills", "behavioral-substitution-qualification", "SKILL.md")) {
+      const missing = BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT.filter((marker) => !text.includes(marker));
+      return missing.length === 0
+        ? { ok: true }
+        : { ok: false, problem: `${relative} is missing required marker: ${missing[0]}` };
     }
     const problem = skillAuthorityProblem(text);
     return problem == null ? { ok: true } : { ok: false, problem };
@@ -214,6 +241,63 @@ function addCheck(
   blocksQualification: boolean,
 ): void {
   checks.push({ name, status, detail, blocksQualification });
+}
+
+function optionalOwnershipEvidenceChecks(project: string): Array<{
+  name: string;
+  status: CheckStatus;
+  detail: string;
+  blocksQualification: boolean;
+}> {
+  const inventoryCli = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "global", "bin", "openspec-change", "inventory.ts");
+  if (!pathIsFile(inventoryCli) || !fs.existsSync(path.join(project, "openspec", "changes"))) {
+    return [];
+  }
+  const result = spawnSync(process.execPath, [inventoryCli, "--root", project], { encoding: "utf8", timeout: 30_000 });
+  if (result.status !== 0 || result.stdout.trim() === "") {
+    return [{
+      name: "openspec ownership and evidence",
+      status: "warn",
+      detail: "Ownership inventory could not be read; unsupported facts remain unknown.",
+      blocksQualification: false,
+    }];
+  }
+  let parsed: { findings?: Array<{ id?: unknown; code?: unknown; changeIds?: unknown; fact?: unknown }> };
+  try {
+    parsed = JSON.parse(result.stdout) as { findings?: Array<{ id?: unknown; code?: unknown; changeIds?: unknown; fact?: unknown }> };
+  } catch {
+    return [{
+      name: "openspec ownership and evidence",
+      status: "warn",
+      detail: "Ownership inventory output is not JSON; unsupported facts remain unknown.",
+      blocksQualification: false,
+    }];
+  }
+  const findings = Array.isArray(parsed.findings) ? parsed.findings : [];
+  const enforcementPath = path.join(project, "openspec", "ownership-enforcement.json");
+  let blocking = false;
+  if (pathIsFile(enforcementPath)) {
+    try {
+      const mode = (JSON.parse(fs.readFileSync(enforcementPath, "utf8")) as { mode?: unknown }).mode;
+      blocking = mode === "blocking";
+    } catch {
+      blocking = false;
+    }
+  }
+  if (findings.length === 0) {
+    return [{
+      name: "openspec ownership and evidence",
+      status: "pass",
+      detail: "Active OpenSpec ownership and evidence inventory has no advisory findings.",
+      blocksQualification: false,
+    }];
+  }
+  return [{
+    name: "openspec ownership and evidence",
+    status: blocking ? "blocked" : "warn",
+    detail: findings.map((finding) => `${String(finding.id)} ${String(finding.code)} [${Array.isArray(finding.changeIds) ? finding.changeIds.join(",") : ""}]: ${String(finding.fact)}`).join(" | "),
+    blocksQualification: blocking,
+  }];
 }
 
 const ADAPTER_VALIDATION_PURPOSES = ["focusedTest", "test", "typecheck", "lint", "build"] as const;
@@ -368,6 +452,7 @@ const LONG_RUN_GUARD_LIMITS = [
   "maxCycles",
   "maxRetryAttempts",
   "arbiterPromptTimeoutMs",
+  "certificateWaitMs",
   "waitRecheckMs",
   "maxRequestBytes",
   "maxWaitRechecks",
@@ -527,13 +612,16 @@ function describeValidationSource(label: string, state: ValidationSourceState): 
 
 /** Required active runtime authority only. Optional kit default role files are checked separately. */
 const ACTIVE_REQUIRED_AUTHORITY_FILES = [
+  "principles-of-work.md",
   "AGENTS.md",
+  path.join("skills", "behavioral-substitution-qualification", "SKILL.md"),
   path.join("skills", "change-ready-sdlc", "SKILL.md"),
 ] as const;
 
 const ACTIVE_OPTIONAL_DEFAULT_ROLE_FILES = [
   path.join("agents", "implementation-worker.md"),
   path.join("agents", "sdet-quality-engineer.md"),
+  path.join("agents", "evidence-sufficiency-reviewer.md"),
   path.join("agents", "final-candidate-reviewer.md"),
 ] as const;
 
@@ -550,6 +638,43 @@ const ACTIVE_REQUIRED_PORTABLE_TOOL_FILES = [
 function nodeMajor(): number {
   const match = process.versions.node.match(/^(\d+)\./);
   return match ? Number(match[1]) : 0;
+}
+
+function repositoryContract(project: string): RepositoryContract {
+  const packageFile = path.join(project, "package.json");
+  const repoAgents = path.join(project, "REPO_AGENTS.md");
+  const globalPrinciples = path.join(project, "global", "principles-of-work.md");
+  const globalAgents = path.join(project, "global", "AGENTS.md");
+  const qualificationSkill = path.join(project, "global", "skills", "change-ready-sdlc", "SKILL.md");
+  try {
+    if (![packageFile, repoAgents, globalPrinciples, globalAgents, qualificationSkill].every(pathIsFile)) {
+      return { kind: "consumer", reason: "kit package, REPO_AGENTS.md, or global runtime authority is absent" };
+    }
+    const packageJson = JSON.parse(fs.readFileSync(packageFile, "utf8")) as Record<string, unknown>;
+    const scripts = typeof packageJson.scripts === "object" && packageJson.scripts != null && !Array.isArray(packageJson.scripts)
+      ? packageJson.scripts as Record<string, unknown>
+      : {};
+    if (
+      packageJson.name !== "opencode-dev-kit" ||
+      typeof scripts.test !== "string" ||
+      !isResolvedValidationCommand(scripts.test) ||
+      typeof scripts["validate:strict"] !== "string" ||
+      !isResolvedValidationCommand(scripts["validate:strict"])
+    ) {
+      return { kind: "consumer", reason: "package identity or concrete validation scripts do not match the kit contract" };
+    }
+    const agentsProblem = agentsAuthorityProblem(fs.readFileSync(globalAgents, "utf8"));
+    const skillProblem = skillAuthorityProblem(fs.readFileSync(qualificationSkill, "utf8"));
+    if (agentsProblem != null || skillProblem != null) {
+      return { kind: "consumer", reason: "global runtime authority does not satisfy the kit contract" };
+    }
+    return {
+      kind: "kit",
+      reason: "exact opencode-dev-kit package, REPO_AGENTS.md, global authority, and concrete test/validate:strict scripts are present",
+    };
+  } catch {
+    return { kind: "consumer", reason: "repository contract is unreadable" };
+  }
 }
 
 function runtimeSourceDiagnosis(
@@ -627,8 +752,32 @@ function buildReport(
     !hasProfile,
   );
 
+  const workflowContracts = inspectWorkflowContracts(root);
+  const workflowDiagnostics = workflowContractDiagnostics(workflowContracts);
+  addCheck(
+    checks,
+    "workflow contract consistency",
+    workflowContracts.status === "passed" ? "pass" : "blocked",
+    workflowContracts.status === "passed"
+      ? "Active normative requirements and maintained workflow forbid rules have no explicit conflict."
+      : workflowDiagnostics.join("; "),
+    workflowContracts.status !== "passed",
+  );
+
+  const repository = repositoryContract(project);
+  addCheck(
+    checks,
+    "project repository contract",
+    "pass",
+    repository.kind === "kit"
+      ? `Self-hosted kit checkout selected: ${repository.reason}.`
+      : `Consumer project rules selected: ${repository.reason}.`,
+    false,
+  );
+
   const agentsPath = path.join(project, "AGENTS.md");
   const agentsOk =
+    repository.kind === "kit" ||
     fileContains(agentsPath, "Runtime Authority") ||
     fileContains(agentsPath, "Universal Development Loop") ||
     fileContains(agentsPath, "change-ready-sdlc");
@@ -637,7 +786,9 @@ function buildReport(
     "project AGENTS.md",
     agentsOk ? "pass" : "warn",
     agentsOk
-      ? "Project AGENTS.md documents runtime authority or the Universal Development Loop."
+      ? repository.kind === "kit"
+        ? "Self-hosted kit runtime authority is owned by REPO_AGENTS.md plus global/principles-of-work.md and global/AGENTS.md."
+        : "Project AGENTS.md documents runtime authority or the Universal Development Loop."
       : "Project AGENTS.md must document runtime authority or the Universal Development Loop before qualification.",
     !agentsOk,
   );
@@ -649,7 +800,8 @@ function buildReport(
   const docState = validationDocState(validationPath);
   const adapterComplete = adapterState.kind === "complete";
   const docComplete = docState.kind === "complete";
-  const validationSourceComplete = adapterComplete || docComplete;
+  const kitValidationComplete = repository.kind === "kit";
+  const validationSourceComplete = kitValidationComplete || adapterComplete || docComplete;
 
   if (adapterState.kind === "missing") {
     addCheck(
@@ -683,6 +835,7 @@ function buildReport(
 
   if (validationSourceComplete) {
     const sources = [
+      kitValidationComplete ? "package.json test/validate:strict scripts" : null,
       adapterComplete ? "opencode-dev-kit/adapter.json" : null,
       docComplete ? "opencode-dev-kit/validation.md" : null,
     ]
@@ -737,6 +890,18 @@ function buildReport(
   const isRepoGlobal = sameConfigPath(resolvedGlobalDir, path.resolve(root, "global"));
   const localPath = path.join(resolvedGlobalDir, "opencode.json");
   const templatePath = path.join(resolvedGlobalDir, "opencode.json.template");
+  const managedPrompts = inspectManagedPromptDrift(
+    path.join(root, "global", "opencode.json.template"),
+    localPath,
+  );
+  const managedCompactionPrompt = managedPrompts[0];
+  addCheck(
+    checks,
+    "managed compaction prompt drift",
+    managedCompactionPrompt.status === "same" ? "pass" : "warn",
+    `Managed agent.compaction.prompt status is ${managedCompactionPrompt.status}; boundary: ${managedCompactionPrompt.restartBoundary}. Prompt bodies and config values are not emitted.`,
+    false,
+  );
   const dirExists = fs.existsSync(resolvedGlobalDir) && fs.statSync(resolvedGlobalDir).isDirectory();
   const authorityProblems = dirExists
     ? ACTIVE_REQUIRED_AUTHORITY_FILES.flatMap((relative) => {
@@ -923,8 +1088,8 @@ function buildReport(
       "active kit required runtime authority",
       "warn",
       dirExists
-        ? `Inspected kit source (${sourceLabel}) has incomplete required runtime authority: ${authorityProblems.join("; ")}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`
-        : `Inspected kit source (${sourceLabel}) is missing; cannot verify AGENTS.md or change-ready-sdlc. Missing required authority blocks RC/stable qualification work.`,
+        ? `Inspected kit source (${sourceLabel}) has incomplete required runtime authority: ${authorityProblems.join("; ")}. Missing principles-of-work.md or structurally incomplete AGENTS.md/claim/lifecycle skill blocks RC/stable qualification work.`
+        : `Inspected kit source (${sourceLabel}) is missing; cannot verify principles-of-work.md, AGENTS.md, or change-ready-sdlc. Missing required authority blocks RC/stable qualification work.`,
       true,
     );
   } else {
@@ -933,8 +1098,8 @@ function buildReport(
       "active kit required runtime authority",
       "pass",
       fromOverride
-        ? "Inspected kit custom source contains structurally conforming required runtime authority: AGENTS.md and change-ready-sdlc."
-        : "Host default ~/.config/opencode contains structurally conforming required runtime authority: AGENTS.md and change-ready-sdlc.",
+        ? "Inspected kit custom source contains required runtime authority: principles-of-work.md, structurally conforming AGENTS.md, and change-ready-sdlc."
+        : "Host default ~/.config/opencode contains required runtime authority: principles-of-work.md, structurally conforming AGENTS.md, and change-ready-sdlc.",
       false,
     );
   }
@@ -1017,6 +1182,10 @@ function buildReport(
     );
   }
 
+  for (const ownershipCheck of optionalOwnershipEvidenceChecks(project)) {
+    addCheck(checks, ownershipCheck.name, ownershipCheck.status, ownershipCheck.detail, ownershipCheck.blocksQualification);
+  }
+
   const blockers: Record<AutomationGate, string[]> = {
     structural: checks.filter((check) => check.status === "blocked").map((check) => check.name),
     qualification: checks.filter((check) => check.blocksQualification).map((check) => check.name),
@@ -1035,6 +1204,7 @@ function buildReport(
   return {
     blockers,
     checks,
+    managedPrompts,
     project: formatProjectForOutput(project, showProject),
     qualificationStatus,
     requiredGate,

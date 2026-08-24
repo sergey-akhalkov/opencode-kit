@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "checks": {
+    "resourceImprovement35Percent": true,
+    "readinessWithinAllowance": true,
+    "twoEquivalentCaptures": true
+  },
+  "improvement": 0.49858712581786047,
+  "allowanceMs": 21720
+}

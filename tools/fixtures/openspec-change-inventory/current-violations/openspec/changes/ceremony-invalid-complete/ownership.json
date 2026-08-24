@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "changeId": "ceremony-invalid-complete",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": ["Completed and qualification states compose current OpenSpec facts"]
+    }
+  ],
+  "writeRoots": ["global/AGENTS.md"],
+  "dependencies": [],
+  "transfers": []
+}

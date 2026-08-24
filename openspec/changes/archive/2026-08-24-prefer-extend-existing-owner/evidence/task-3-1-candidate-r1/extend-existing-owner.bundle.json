@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "prefer-extend-existing-owner-planning-r1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "5737fa1732a9904dd48df8fb2ccb690c976183b1fb72e43c9648d1bdf3a9d668",
+      "global/commands/reuse-inventory.md": null,
+      "global/skills/reuse-discovery/SKILL.md": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4",
+      "global/bin/reuse-registry.ts": null,
+      "README.md": "5a5c21bfcf5ab80bb2db49dafd41b8f8412835b21524c45eb03f0ed845a80808",
+      "package.json": "0b295097c2b074cebe843f2772c710122e7a65db8d84cc540bf45f6b7cd1bf86",
+      "tools/proofs/reuse-discovery.ts": "5b291f110b09fd691a72763f8c95c66813fd766cebec5f5c01ba66af1b0cc043"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fcc4a1b09ffe1K6CcvnIapR703",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "reuse-candidate-extend-existing-owner",
+      "Prepare the implementation decision for adding an error-status case to the existing formatStatus owner in src/status.ts. The accepted feature is a new case of that current same-responsibility owner. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition that names the current owner. Do not add a sibling module or new file. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787574037889,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b72d76001bNHH1bDsT5xvmm\",\"messageID\":\"msg_033b5f6fe001BWQLm1hNjeIPSk\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"snapshot\":\"57ab00327b2288da3b5d1b459e434bb45df0b03f\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787574044403,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b73243001Lj4Jv3JsyofWOF\",\"messageID\":\"msg_033b5f6fe001BWQLm1hNjeIPSk\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"type\":\"text\",\"text\":\"I’ll inspect `src/status.ts` and its focused tests/usages to identify the existing owner and the smallest same-responsibility extension. No files or external state will be changed.\",\"time\":{\"start\":1787574039107,\"end\":1787574043940},\"metadata\":{\"openai\":{\"itemId\":\"msg_02b7530d21e3ba03016a8c371756b087d2894bc8a2244411e6\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787574044958,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_5vJM0iH6vBtALx70Pu29VN1G\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/*status*.{test,spec}.{ts,tsx,js,jsx}\",\"path\":\"<proof-root>\\\\workspace\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787574044189,\"end\":1787574044640}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b7530d21e3ba03016a8c371c32f087d28486f3d8d84e61c7\"}},\"id\":\"prt_033b745e0001yYbqoInx42cYGp\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"messageID\":\"msg_033b5f6fe001BWQLm1hNjeIPSk\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787574044958,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_nk19DrsIBfbr6b560AGIoCLr\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"formatStatus\",\"path\":\"<proof-root>\\\\workspace\",\"include\":\"*.{ts,tsx,js,jsx}\"},\"output\":\"Found 1 matches\\n<proof-root>\\\\workspace\\\\src\\\\status.ts:\\n  Line 1: export function formatStatus(code: \\\"ok\\\" | \\\"warn\\\"): string {\\n\",\"metadata\":{\"matches\":1,\"truncated\":false},\"title\":\"formatStatus\",\"time\":{\"start\":1787574044107,\"end\":1787574044870}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b7530d21e3ba03016a8c371c32e487d2bec8f1cbc7623a92\"}},\"id\":\"prt_033b74595001IXVfankOuWk6Hx\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"messageID\":\"msg_033b5f6fe001BWQLm1hNjeIPSk\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787574045437,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_CfKU4kA3ZzE8IU8mDaLzvYoR\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\status.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\status.ts</path>\\n<type>file</type>\\n<content>\\n1: export function formatStatus(code: \\\"ok\\\" | \\\"warn\\\"): string {\\n2:   if (code === \\\"ok\\\") return \\\"OK\\\";\\n3:   return \\\"WARN\\\";\\n4: }\\n\\n(End of file - total 4 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function formatStatus(code: \\\"ok\\\" | \\\"warn\\\"): string {\\n  if (code === \\\"ok\\\") return \\\"OK\\\";\\n  return \\\"WARN\\\";\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\status.ts\",\"text\":\"export function formatStatus(code: \\\"ok\\\" | \\\"warn\\\"): string {\\n  if (code === \\\"ok\\\") return \\\"OK\\\";\\n  return \\\"WARN\\\";\\n}\",\"lineStart\":1,\"lineEnd\":4,\"totalLines\":4,\"truncated\":false}},\"title\":\"src\\\\status.ts\",\"time\":{\"start\":1787574044037,\"end\":1787574045406}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b7530d21e3ba03016a8c371c32d487d2a5906cfa75b1e552\"}},\"id\":\"prt_033b7454e001oVXpqxWvBrW11a\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"messageID\":\"msg_033b5f6fe001BWQLm1hNjeIPSk\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787574050124,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b75cce001Isg5K22mC1HYb4\",\"reason\":\"tool-calls\",\"snapshot\":\"96eb573749175f5d56bc8ea6eadd39480ee3c3fb\",\"messageID\":\"msg_033b5f6fe001BWQLm1hNjeIPSk\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"type\":\"step-finish\",\"tokens\":{\"total\":16368,\"input\":16036,\"output\":300,\"reasoning\":32,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787574071141,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b7aea1001ksr1WyW9hSdBah\",\"messageID\":\"msg_033b78843001S929bDveXu3NYh\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"snapshot\":\"96eb573749175f5d56bc8ea6eadd39480ee3c3fb\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787574079938,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_wnhQgFgP6rRb6OsqWsushPky\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\"},\"output\":\"<path><proof-root>\\\\workspace</path>\\n<type>directory</type>\\n<entries>\\n.git/\\n.serena/\\nopencode.json\\nprojects/\\nsrc/\\ntask.md\\n\\n(6 entries)\\n</entries>\",\"metadata\":{\"preview\":\".git/\\n.serena/\\nopencode.json\\nprojects/\\nsrc/\\ntask.md\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\workspace\",\"entries\":[\".git/\",\".serena/\",\"opencode.json\",\"projects/\",\"src/\",\"task.md\"],\"offset\":1,\"totalEntries\":6,\"truncated\":false}},\"title\":\"\",\"time\":{\"start\":1787574079296,\"end\":1787574079832}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09678f2b6c1b5e6b016a8c373d47e887d28684b9c21cb5ad70\"}},\"id\":\"prt_033b7c7a3001QaPBGjtxzN9iBz\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"messageID\":\"msg_033b78843001S929bDveXu3NYh\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787574080134,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_TE2yN74qYCMCVm89195FQznC\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"\\\"ok\\\"|\\\"warn\\\"|\\\"error\\\"|OK|WARN|ERROR\",\"path\":\"<proof-root>\\\\workspace\",\"include\":\"*.{md,json,ts,tsx,js,jsx}\"},\"output\":\"Found 3 matches\\n<proof-root>\\\\workspace\\\\src\\\\status.ts:\\n  Line 1: export function formatStatus(code: \\\"ok\\\" | \\\"warn\\\"): string {\\n\\n  Line 2:   if (code === \\\"ok\\\") return \\\"OK\\\";\\n\\n  Line 3:   return \\\"WARN\\\";\\n\",\"metadata\":{\"matches\":3,\"truncated\":false},\"title\":\"\\\"ok\\\"|\\\"warn\\\"|\\\"error\\\"|OK|WARN|ERROR\",\"time\":{\"start\":1787574077319,\"end\":1787574079991}},\"metadata\":{\"openai\":{\"itemId\":\"fc_09678f2b6c1b5e6b016a8c373d47d887d28f8299f8c3e8d623\"}},\"id\":\"prt_033b7c7520014hutNxVx8ZDbSS\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"messageID\":\"msg_033b78843001S929bDveXu3NYh\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787574088060,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b7f0c3001vH5O3bDizRmh6Y\",\"reason\":\"tool-calls\",\"snapshot\":\"96eb573749175f5d56bc8ea6eadd39480ee3c3fb\",\"messageID\":\"msg_033b78843001S929bDveXu3NYh\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"type\":\"step-finish\",\"tokens\":{\"total\":16936,\"input\":731,\"output\":186,\"reasoning\":147,\"cache\":{\"write\":0,\"read\":15872}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787574103513,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b82d7f001uhAQ0U7zmA09zk\",\"messageID\":\"msg_033b80bbe001Uoy0zRpFEI2qhN\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"snapshot\":\"96eb573749175f5d56bc8ea6eadd39480ee3c3fb\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787574106640,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_mZoeLks8Br3SVcaG3UBRhoLn\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src</path>\\n<type>directory</type>\\n<entries>\\nstatus.ts\\n\\n(1 entries)\\n</entries>\",\"metadata\":{\"preview\":\"status.ts\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\workspace\\\\src\",\"entries\":[\"status.ts\"],\"offset\":1,\"totalEntries\":1,\"truncated\":false}},\"title\":\"src\",\"time\":{\"start\":1787574106571,\"end\":1787574106622}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cde6bae14c97a65016a8c375a82e887d28647ed7aa3ee6205\"}},\"id\":\"prt_033b8398f001NH903VT2274jKk\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"messageID\":\"msg_033b80bbe001Uoy0zRpFEI2qhN\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787574106970,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_N8KSxr1XkXQe9PmgonX6eh0h\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\task.md\"},\"output\":\"<path><proof-root>\\\\workspace\\\\task.md</path>\\n<type>file</type>\\n<content>\\n1: Prepare the implementation decision for adding an error-status case to the existing formatStatus owner in src/status.ts. The accepted feature is a new case of that current same-responsibility owner. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition that names the current owner. Do not add a sibling module or new file. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"Prepare the implementation decision for adding an error-status case to the existing formatStatus owner in src/status.ts. The accepted feature is a new case of that current same-responsibility owner. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition that names the current owner. Do not add a sibling module or new file. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\task.md\",\"text\":\"Prepare the implementation decision for adding an error-status case to the existing formatStatus owner in src/status.ts. The accepted feature is a new case of that current same-responsibility owner. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition that names the current owner. Do not add a sibling module or new file. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"task.md\",\"time\":{\"start\":1787574106489,\"end\":1787574106958}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cde6bae14c97a65016a8c375a82d887d2b00ce1116b8bec1f\"}},\"id\":\"prt_033b83934001bafndCmK5v1zG5\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"messageID\":\"msg_033b80bbe001Uoy0zRpFEI2qhN\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787574111896,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b849860016NPE1QJCRmEjpo\",\"reason\":\"tool-calls\",\"snapshot\":\"96eb573749175f5d56bc8ea6eadd39480ee3c3fb\",\"messageID\":\"msg_033b80bbe001Uoy0zRpFEI2qhN\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"type\":\"step-finish\",\"tokens\":{\"total\":17321,\"input\":1279,\"output\":155,\"reasoning\":15,\"cache\":{\"write\":0,\"read\":15872}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787574128074,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b88b09001laHCdGuVDKvBmo\",\"messageID\":\"msg_033b86440001zRlNS5UGYwS57v\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"snapshot\":\"96eb573749175f5d56bc8ea6eadd39480ee3c3fb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787574136188,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b8a4560016BCOpoKu6GuhKZ\",\"messageID\":\"msg_033b86440001zRlNS5UGYwS57v\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"type\":\"text\",\"text\":\"- **Current owner:** `formatStatus` in `src/status.ts:1`.\\n- **Disposition:** `extend`.\\n- **Implementation:** Add `\\\"error\\\"` to the parameter union and return `\\\"ERROR\\\"` from an explicit branch in the same function. Preserve existing `\\\"ok\\\"` and `\\\"warn\\\"` behavior.\\n- **Reason:** This is a new case of the existing formatting responsibility; a sibling module or new abstraction would duplicate ownership.\\n- **Validation:** Check all mappings: `ok → OK`, `warn → WARN`, `error → ERROR`.\\n- **Cross-project reuse:** Not applicable.\\n- No files were modified.\",\"time\":{\"start\":1787574133846,\"end\":1787574135728},\"metadata\":{\"openai\":{\"itemId\":\"msg_0e31078555098f74016a8c3775d6e887d29afaaafc10404f07\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787574141189,\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"part\":{\"id\":\"prt_033b8c033001F0sKrKwlP5szEn\",\"reason\":\"stop\",\"snapshot\":\"96eb573749175f5d56bc8ea6eadd39480ee3c3fb\",\"messageID\":\"msg_033b86440001zRlNS5UGYwS57v\",\"sessionID\":\"ses_fcc4a1b09ffe1K6CcvnIapR703\",\"type\":\"step-finish\",\"tokens\":{\"total\":18046,\"input\":695,\"output\":130,\"reasoning\":325,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect `src/status.ts` and its focused tests/usages to identify the existing owner and the smallest same-responsibility extension. No files or external state will be changed.- **Current owner:** `formatStatus` in `src/status.ts:1`.\n- **Disposition:** `extend`.\n- **Implementation:** Add `\"error\"` to the parameter union and return `\"ERROR\"` from an explicit branch in the same function. Preserve existing `\"ok\"` and `\"warn\"` behavior.\n- **Reason:** This is a new case of the existing formatting responsibility; a sibling module or new abstraction would duplicate ownership.\n- **Validation:** Check all mappings: `ok → OK`, `warn → WARN`, `error → ERROR`.\n- **Cross-project reuse:** Not applicable.\n- No files were modified.",
+    "elapsedMs": 207713,
+    "eventCount": 17,
+    "sessionIds": [
+      "ses_fcc4a1b09ffe1K6CcvnIapR703"
+    ],
+    "tokens": [
+      {
+        "total": 16368,
+        "input": 16036,
+        "output": 300,
+        "reasoning": 32,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 16936,
+        "input": 731,
+        "output": 186,
+        "reasoning": 147,
+        "cache": {
+          "write": 0,
+          "read": 15872
+        }
+      },
+      {
+        "total": 17321,
+        "input": 1279,
+        "output": 155,
+        "reasoning": 15,
+        "cache": {
+          "write": 0,
+          "read": 15872
+        }
+      },
+      {
+        "total": 18046,
+        "input": 695,
+        "output": 130,
+        "reasoning": 325,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/*status*.{test,spec}.{ts,tsx,js,jsx}",
+          "path": "<proof-root>\\workspace"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "formatStatus",
+          "path": "<proof-root>\\workspace",
+          "include": "*.{ts,tsx,js,jsx}"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\status.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "\"ok\"|\"warn\"|\"error\"|OK|WARN|ERROR",
+          "path": "<proof-root>\\workspace",
+          "include": "*.{md,json,ts,tsx,js,jsx}"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\task.md"
+        },
+        "name": "read",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "Prepare the implementation decision for adding an error-status case to the existing formatStatus owner in src/status.ts. The accepted feature is a new case of that current same-responsibility owner. Do not modify files. Inspect only selected local workspace sources when useful. Return a compact implementation disposition that names the current owner. Do not add a sibling module or new file. Do not install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
+    "scenario": "extend-existing-owner"
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "75215eff9cee83e336cbdfba669ab5ab0588411b8bc9ae780cfd459dc50bd6fe",
+      "src/jsonc.ts": null,
+      "src/loader.ts": null,
+      "src/greeting.ts": null,
+      "src/status.ts": "269a048d39c0c870e3f1b995042d5ea3e0cc1c9ea10f437370f521e72d6eb0ff",
+      "projects/alpha/package.json": "a660f0a2995647f6d717801d12c618dc2d6b9c86c1e7ad6c498f589343e0b687",
+      "projects/alpha/src/jsonc.ts": "d181e463edeac55e399137d6ff128b93d6f27e98ac7b4e81516db9b965c2e1c0",
+      "projects/alpha/proofs/jsonc.md": "4bc10860da79365746916a544a7b190afe36ef3873461dd5311e11a59aab6fe7",
+      "projects/beta/package.json": "60dbdec28a2abda764748655f887c47dfea39cbf6d7f526cdd62468b1d784e6f",
+      "projects/beta/src/text.ts": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408"
+    },
+    "before": {
+      "task.md": "75215eff9cee83e336cbdfba669ab5ab0588411b8bc9ae780cfd459dc50bd6fe",
+      "src/jsonc.ts": null,
+      "src/loader.ts": null,
+      "src/greeting.ts": null,
+      "src/status.ts": "269a048d39c0c870e3f1b995042d5ea3e0cc1c9ea10f437370f521e72d6eb0ff",
+      "projects/alpha/package.json": "a660f0a2995647f6d717801d12c618dc2d6b9c86c1e7ad6c498f589343e0b687",
+      "projects/alpha/src/jsonc.ts": "d181e463edeac55e399137d6ff128b93d6f27e98ac7b4e81516db9b965c2e1c0",
+      "projects/alpha/proofs/jsonc.md": "4bc10860da79365746916a544a7b190afe36ef3873461dd5311e11a59aab6fe7",
+      "projects/beta/package.json": "60dbdec28a2abda764748655f887c47dfea39cbf6d7f526cdd62468b1d784e6f",
+      "projects/beta/src/text.ts": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408"
+    }
+  }
+}

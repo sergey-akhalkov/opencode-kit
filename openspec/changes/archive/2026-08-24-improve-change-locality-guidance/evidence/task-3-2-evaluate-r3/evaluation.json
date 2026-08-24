@@ -1,0 +1,51 @@
+{
+  "baselineComplete": false,
+  "candidateComplete": false,
+  "mode": "evaluate",
+  "note": "Exact command, file, hash, placement, and cleanup facts only; no prose scoring or inferred intent.",
+  "rows": [
+    {
+      "baseline": null,
+      "candidate": null,
+      "pairMatches": null,
+      "scenario": "one-off-local-fix"
+    },
+    {
+      "baseline": null,
+      "candidate": null,
+      "pairMatches": null,
+      "scenario": "accepted-second-variant"
+    },
+    {
+      "baseline": null,
+      "candidate": null,
+      "pairMatches": null,
+      "scenario": "external-integration-boundary"
+    },
+    {
+      "baseline": null,
+      "candidate": null,
+      "pairMatches": null,
+      "scenario": "non-trivial-state-transition"
+    },
+    {
+      "baseline": null,
+      "candidate": null,
+      "pairMatches": null,
+      "scenario": "mixed-owner-file"
+    },
+    {
+      "baseline": null,
+      "candidate": null,
+      "pairMatches": null,
+      "scenario": "delegated-production-ownership"
+    },
+    {
+      "baseline": null,
+      "candidate": null,
+      "pairMatches": null,
+      "scenario": "hypothetical-extension-negative-control"
+    }
+  ],
+  "schemaVersion": 1
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "taskId": "2.1",
+  "candidateId": "establish-practice-owner-agents-planning-r1",
+  "seedDigest": "e0d57edf213d13e949aebfb8ab79c6f7028e303377dac759647e5825555a247d",
+  "practices": 15,
+  "coreOwners": 8,
+  "coreAgents": 10,
+  "allOwnersPresent": true,
+  "finalReviewInAllOnly": true,
+  "domainOwnersInCore": [],
+  "validation": {
+    "test-practice-owners": 0,
+    "test-contracts": 0,
+    "test-model-profile": 0,
+    "validate:strict": 0
+  },
+  "budget": {
+    "coreStartupTokenProxy": { "actual": 11994, "maximum": 12000, "status": "passed" },
+    "coreDiscoveryMetadataTokenProxy": { "actual": 862, "maximum": 1200, "status": "passed" },
+    "globalStartupTokenProxy": { "actual": 11994, "maximum": 13279, "status": "passed" },
+    "discoveryMetadataTokenProxy": { "actual": 2238, "maximum": 2239, "status": "passed" }
+  },
+  "routingActivated": false
+}

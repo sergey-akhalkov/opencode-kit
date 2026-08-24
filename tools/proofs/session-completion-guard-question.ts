@@ -1,7 +1,9 @@
 #!/usr/bin/env bun
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { Database } from "bun:sqlite";
 import type { Session } from "../../global/node_modules/@opencode-ai/sdk/dist/v2/index.js";
 import { SessionCompletionController } from "../../global/extensions/session-completion-guard/controller.ts";
@@ -20,7 +22,21 @@ import type {
   RootState,
 } from "../../global/extensions/session-completion-guard/types.ts";
 import { buildContinuation, parseCompletionVerdict } from "../../global/extensions/session-completion-guard/verdict.ts";
-import { hashRef, readSessionDeliveryContext } from "../../global/plugin/session-delivery-context/index.ts";
+import { hashRef } from "../../global/plugin/session-delivery-context/index.ts";
+import type { SessionDeliveryContextResult } from "../../global/plugin/session-delivery-context/projection.ts";
+import { removeProofFixture } from "./lib/proof-process-cleanup.ts";
+
+const projectionRunnerPath = fileURLToPath(new URL("./session-completion-guard-long-run.ts", import.meta.url));
+
+function readProjectionInChild(dbPath: string, sessionID: string): SessionDeliveryContextResult {
+  const result = spawnSync(process.execPath, [projectionRunnerPath, "--internal-project", dbPath, sessionID], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+    shell: false,
+  });
+  if (result.status !== 0) throw new Error(`Projection child failed with exit ${String(result.status)}: ${result.stderr}`);
+  return JSON.parse(result.stdout) as SessionDeliveryContextResult;
+}
 
 const rootID = "session_autonomous_question_proof_root";
 const childID = "session_autonomous_question_proof_child";
@@ -890,33 +906,33 @@ try {
       data text
     );
   `);
-  db.prepare("insert into session values (?, null, ?, ?, ?)").run(
+  db.run("insert into session values (?, null, ?, ?, ?)", [
     rootID,
     1_700_000_000_000,
     1_700_000_000_100,
     JSON.stringify(root.metadata),
-  );
-  db.prepare("insert into event values (?, ?, ?, ?, ?)").run(
+  ]);
+  db.run("insert into event values (?, ?, ?, ?, ?)", [
     "question-asked",
     rootID,
     1_700_000_000_010,
     "question.asked",
     JSON.stringify({ id: requestID, questions: request.questions }),
-  );
-  db.prepare("insert into event values (?, ?, ?, ?, ?)").run(
+  ]);
+  db.run("insert into event values (?, ?, ?, ?, ?)", [
     "question-replied",
     rootID,
     1_700_000_000_020,
     "question.replied",
     JSON.stringify({ requestID, answers: [["Recommended"]] }),
-  );
-  db.prepare("insert into message values (?, ?, ?, ?)").run(
+  ]);
+  db.run("insert into message values (?, ?, ?, ?)", [
     "message_autonomous_question_proof",
     rootID,
     1_700_000_000_015,
     JSON.stringify({ role: "assistant" }),
-  );
-  db.prepare("insert into part values (?, ?, ?, ?, ?)").run(
+  ]);
+  db.run("insert into part values (?, ?, ?, ?, ?)", [
     "part_autonomous_question_proof",
     "message_autonomous_question_proof",
     rootID,
@@ -932,14 +948,9 @@ try {
         title: "Asked 1 question",
       },
     }),
-  );
+  ]);
   db.close();
-  const projected = readSessionDeliveryContext({
-    dbPaths: [dbPath],
-    resolveRoot: true,
-    sessionId: rootID,
-    useDefaultPaths: false,
-  });
+  const projected = readProjectionInChild(dbPath, rootID);
   const result = {
     autonomousAnswer: replies[0]?.[0]?.[0] ?? null,
     autonomousFinalState: autonomousState.state,
@@ -987,16 +998,5 @@ try {
   ) throw new Error(`Autonomous-question proof failed: ${JSON.stringify(result)}`);
 } finally {
   await controller.dispose();
-  let cleanupError: unknown = null;
-  for (let attempt = 0; attempt < 10; attempt += 1) {
-    try {
-      fs.rmSync(dbDirectory, { recursive: true, force: true });
-      cleanupError = null;
-      break;
-    } catch (error) {
-      cleanupError = error;
-      await Bun.sleep(50 * (attempt + 1));
-    }
-  }
-  if (cleanupError != null) throw cleanupError;
+  removeProofFixture(dbDirectory);
 }

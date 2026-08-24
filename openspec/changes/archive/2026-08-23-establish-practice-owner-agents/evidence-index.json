@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 2,
+  "changeId": "establish-practice-owner-agents",
+  "candidateId": "establish-practice-owner-agents-planning-r1",
+  "environmentId": "windows-opencode-planning-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [],
+  "lanes": [
+    {
+      "name": "baseline-routing",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-1-3-baseline-r1/trivial-no-trigger.bundle.json",
+          "bytes": 9314,
+          "digest": "ddaae7db085958709e01b0cac9089c671d3931255f6180da98005ef0679203f1"
+        },
+        {
+          "path": "evidence/task-1-3-evaluate-r1/evaluation.json",
+          "bytes": 1678,
+          "digest": "780c26357d5c1b2e46bcd19c11cbad391b4fc5eef4f25ed40463015a41dfdeac"
+        }
+      ]
+    },
+    {
+      "name": "pilot-routing",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-2-2-pilot-r1/evaluation.json",
+          "bytes": 365,
+          "digest": "3824f520963ff69b0f2b6f70f21f46652f53419f452ac0c736e4fdc048e574fc"
+        }
+      ]
+    },
+    {
+      "name": "core-routing",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-3-3-core-r2/evaluation.json",
+          "bytes": 565,
+          "digest": "d900db790b1b88540f9de90fbe072108c03f8eb013d48ec0862203cc9aabc493"
+        }
+      ]
+    },
+    {
+      "name": "domain-routing",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-4-2-domain-r1/evaluation.json",
+          "bytes": 469,
+          "digest": "e7b0d0cc57991b4ea5847ffdef4928bfc8dd30fab6cec94f67feda7740398875"
+        }
+      ]
+    },
+    {
+      "name": "maintenance-routing",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-5-2-maintenance-r1/evaluation.json",
+          "bytes": 384,
+          "digest": "ddc4083ccd78acda4a73dbd99b4d9715180e50959b3b7e5fe013aac603bad263"
+        }
+      ]
+    },
+    {
+      "name": "independent-challenge",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/task-6-2-disposition-r1.md",
+          "bytes": 992,
+          "digest": "cd04d3b4e2a972a02a51f30a7343148275d054492364ffa5494397ac0e6eadb3"
+        },
+        {
+          "path": "evidence/task-6-2-disposition-r2.md",
+          "bytes": 769,
+          "digest": "7698a01f18c6476d95e66034d348d499a5e441386254d7c0f020b81dbe5058af"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "POA-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The candidate gives every practice in the reviewed initial roster one structurally valid loader-visible owner and improves or preserves routing authority safety outcome and friction oracles for the maintained scenario population.",
+      "claimClass": "finite-population",
+      "candidateId": "establish-practice-owner-agents-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "coverageBasis": "finite-population",
+      "population": {
+        "id": "poa-maintained-scenarios-v1",
+        "members": [
+          "trivial-no-trigger",
+          "single-core-trigger",
+          "independent-multi-trigger",
+          "protocol-wire-boundary",
+          "protected-action",
+          "unavailable-owner",
+          "practice-maintenance",
+          "owner-self-change"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "Unrepresented repositories languages models domain combinations installed overrides and future practices remain outside this claim."
+      },
+      "paths": {
+        "production": "resolved-selected-runtime",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "installed-opencode-practice-owner-routing",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "pilot-routing",
+          "core-routing"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "trivial-no-trigger",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "pilot-routing"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "single-core-trigger",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "core-routing"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "independent-multi-trigger",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "domain-routing"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "protocol-wire-boundary",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "domain-routing"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "protected-action",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "core-routing"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unavailable-owner",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "core-routing"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "practice-maintenance",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "maintenance-routing"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "owner-self-change",
+          "candidateId": "establish-practice-owner-agents-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "installed-opencode-practice-owner-routing",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "maintenance-routing"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "baseline-routing",
+        "pilot-routing",
+        "core-routing",
+        "domain-routing",
+        "maintenance-routing",
+        "independent-challenge"
+      ],
+      "materialExclusions": [
+        "Universal practice coverage",
+        "Optimal practice granularity",
+        "Untested model and repository behavior",
+        "Installed consumer profiles without the injected owner contract",
+        "Description-only Practice ID discovery"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "independent-challenge"
+        ]
+      },
+      "maximumSupportedClaim": "The eight captured synthetic scenarios on quality-independent openai/gpt-5.6-sol for this working-tree candidate only.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    }
+  ]
+}

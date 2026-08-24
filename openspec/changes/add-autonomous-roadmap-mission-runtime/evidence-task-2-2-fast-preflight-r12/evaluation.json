@@ -1,0 +1,8 @@
+{
+  "candidateId": "task-2-2-fast-preflight-r12",
+  "cleanup": "complete",
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "seedStatus": "canonical-idle",
+  "status": "complete"
+}

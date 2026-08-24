@@ -1,0 +1,36 @@
+{
+  "candidateId": "reduce-workflow-ceremony-task-8-r2",
+  "checks": {
+    "activeManagedPromptSame": true,
+    "allOpenSpecStrictPassed": true,
+    "criticalSdetNoCriticalRisk": true,
+    "diffCheckPassed": true,
+    "doctorQualificationPassed": true,
+    "doctorStructuralPassed": true,
+    "evidenceIndexPassed": true,
+    "focusedAndFullTestsPassed": true,
+    "instructionBudgetPassed": true,
+    "instructionInventoryPassed": true,
+    "selectedOpenSpecStrictPassed": true,
+    "strictLibraryValidationPassed": true
+  },
+  "developmentStage": "RC1",
+  "externalOperations": {
+    "archive": false,
+    "commit": false,
+    "consumerMigration": false,
+    "deployment": false,
+    "push": false,
+    "release": false
+  },
+  "knownNonCriticalLimitations": [
+    "The current owner OpenCode process was not restarted; fresh disposable processes loaded the synchronized source.",
+    "The self-hosted kit is not claimed unattended-ready without a project mission/adapter; structural and qualification gates pass.",
+    "Loader-visible additive config collision remains diagnostic because precedence is not inferred.",
+    "Several touched files remain pre-existing navigation split candidates; current additions stay within their existing owners."
+  ],
+  "managedConfigBackup": "global/opencode.local.json",
+  "openSpecItemsPassed": 17,
+  "schemaVersion": 1,
+  "status": "complete"
+}

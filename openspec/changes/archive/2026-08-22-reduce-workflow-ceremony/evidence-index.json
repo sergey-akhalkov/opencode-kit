@@ -1,0 +1,1370 @@
+{
+  "schemaVersion": 2,
+  "changeId": "reduce-workflow-ceremony",
+  "candidateId": "reduce-workflow-ceremony-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": {
+      "maxFiles": 165,
+      "maxBytes": 26214400,
+      "reason": "Existing immutable proof tree retained without deletion",
+      "cleanupRule": "Owner archives or reduces after product completion",
+      "validation": "inventory readback"
+    }
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "a10f372957eed671da4f38a684517cf4d946cee6bfc3c4fb4c989955c7a85ee1",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "fbe708933d26de1762b1930b0aeda6d934b8b8bb8f52dffdfb25ca13b7dd3b74",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-2-contracts-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "6df323991ea03184f67d2f3ad2e1f8f2908271ffa8cfe7396d35a3f7cd644e8f",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-2-1-controller-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "ae4878e63de6678ffa2d241b077f127e826c2a2401a132480be117b06550acfd",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "00020d70f2fe2861490965043428a2ba0344b3508cbccebb164a8bcbad020f96",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "465010780d9b75b5583e7aaf534554ed8c3e1751b1e4ce1c8f5ffcc7ef02c60b",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "f4c21c3f4a1f01ae573a3fab3c2266b3e22c557b4f33db8eb782cf063154981f",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "ef175ca23d7412dc57f3590b7162860b94855151eeb78679d7d866610460e158",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.4",
+      "taskTextDigest": "7028f11fca99a03ff797f202e774b0bf50b0bac4eeaa400e806ab6f9cc4084f4",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "02463801deeedcfbb9585b753008b68c837a073b4c052c154642150e934fc8ee",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-4-1-budget-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "50aa2c0e75b1d7914a477ddaa420e42acf30641e0c5d999a7add6524c0fc18c6",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-5-1-permissions-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.1",
+      "taskTextDigest": "1b408d462908a6a33abda34b113f54f39ad784c1b38db8fdd11b16e53fac52b9",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-6-1-contract-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.2",
+      "taskTextDigest": "eeeb4b30d49bdc706a7841cd0d682b5c873e5c6826321ab5c0e9baad593e7cbc",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-6-2-ambiguous-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "7.1",
+      "taskTextDigest": "c13e13ce586e1e8ee87f1dbb4a815be4d9dfc22257212ddb36750cc0548c6ef3",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "7.2",
+      "taskTextDigest": "19c8ea8969b099b682835749f46720988776a61953f43a77562001dc50f06c98",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-baseline-doctor-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "8.1",
+      "taskTextDigest": "af846588c3edbe85e7bdc2f6cd98be7e467446be8ee8103e37ac9d3607ff1d84",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-8-1-config-sync-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "8.2",
+      "taskTextDigest": "21bec8e8cfe770f95e48d51bfa3bdf5e955424ed09b1d7d2e060eca9e3b55298",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-8-2-sdet-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "9.1",
+      "taskTextDigest": "f4bca85d64fc3fd1e01d7f3f8ae086371df4ba6d7fa71da6e36ffe768c384761",
+      "result": "complete",
+      "candidateId": "reduce-workflow-ceremony-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-9-1-validation-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence-task-1-1-baseline-doctor-r1/evaluation.json",
+          "bytes": 131,
+          "digest": "8065fd47bdb12ed65318f10ba5d435681a2ce47f9c0a520f38448c030d505e28"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-doctor-r1/raw.json",
+          "bytes": 75078,
+          "digest": "5a285b75aeacb1077ee28862f59e07c03f14f9c334e2c3eba8b73916bcc57c57"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-index.md",
+          "bytes": 5480,
+          "digest": "e1928baa73c1da124f4637d0fb344fc54ad52db176fdf8c62f022451d3527c5d"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-instruction-r1/evaluation.json",
+          "bytes": 780,
+          "digest": "bfe5e16dda18d53972e9322e5da4e840ebbb161b23bb93f75c92b8a31220eef5"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-instruction-r1/raw.json",
+          "bytes": 58165,
+          "digest": "b3f88df769cc4bb6ee572e2904c6b1af1a0f724a099d78356a28faa8621afdf3"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-preflight-r1/manifest.sha256.json",
+          "bytes": 194,
+          "digest": "f8b19a48470271d7ad3bb36f2a1faf7344eb5bb0270898962eef57688837509e"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-preflight-r1/preflight.json",
+          "bytes": 66717,
+          "digest": "6985c0fcda866d32ef50d12b4bd068b06b89593d0477133a9c28883a77dc74f6"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-r1/capture.json",
+          "bytes": 3153,
+          "digest": "3f5994864cca2ea0136c750be4f36c5353b04915ed39442d6c535304cc205bf5"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-r1/checked-unmet.bundle.json",
+          "bytes": 16550,
+          "digest": "fc68aadb9bbe98c3f5dd9eea6749289f6afcc12cd8c8689d032eba89c89815d8"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-r1/manifest.sha256.json",
+          "bytes": 909,
+          "digest": "1225768aeb43aa0970b2f49ffc4371332ccfc4d0f7c14212c87226d1a9d4e034"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-r1/outcome-achieved.bundle.json",
+          "bytes": 11061,
+          "digest": "14c24807c7b427f82e25bfef0eb033890e63486a980b2b36d428752d848602f7"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-r1/owner-only.bundle.json",
+          "bytes": 12515,
+          "digest": "39b0da07b229d909473604ea955c70e991f5176f3b662ca9e9688bf9586f5f0e"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-r1/safe-local-route.bundle.json",
+          "bytes": 13022,
+          "digest": "dcad7e101d6d7c2e1d5bd22c2efd5a4996e6cfc4fa8e689c21a311a6699edaed"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-r1/unchanged-live-repetition.bundle.json",
+          "bytes": 11173,
+          "digest": "112959ec50fa74c1a57d5f8ac96e9be881525adbb15e4ccd5d0c91e5b679210d"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-replay-r1/evaluation.json",
+          "bytes": 7034,
+          "digest": "7b80bf3bc2d020c65841ac27c2e486caf94ddf159a2465672811be2230c956dc"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-model-replay-r1/manifest.sha256.json",
+          "bytes": 192,
+          "digest": "7abeaed34529eb5492f1252bac70c2234214f28223074f9cd49af37e4f6382b3"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-permissions-r1/evaluation.json",
+          "bytes": 215,
+          "digest": "5ab42e60e67c72927953651ad83bf5ee4b9799ea933f205fbe713512004eb4d6"
+        },
+        {
+          "path": "evidence-task-1-1-baseline-permissions-r1/raw.json",
+          "bytes": 7623,
+          "digest": "69ca104ca31bde0ff98a3c86de79cd2a054c0cca56f17c0783a891acc2bdd967"
+        },
+        {
+          "path": "evidence-task-1-2-contracts-r1/evaluation.json",
+          "bytes": 211,
+          "digest": "54803c60bdcdd5ba4782bb4740e99551af4e27458942755279dddfd39c6e1f77"
+        },
+        {
+          "path": "evidence-task-1-2-contracts-r1/raw.json",
+          "bytes": 2504,
+          "digest": "26c87b2d854609817b0878b430b5159762bf354d5479467e5f103938a828bbf0"
+        },
+        {
+          "path": "evidence-task-1-2-contracts-r2/evaluation.json",
+          "bytes": 211,
+          "digest": "a3dbcc3376798192a51a17feb4b5122a1460319acc6a0986b89fda753297c603"
+        },
+        {
+          "path": "evidence-task-1-2-contracts-r2/raw.json",
+          "bytes": 2504,
+          "digest": "e2e91000e0454008f609a61349488ad25ff4342f2c5a2597e1974ceee1b79f4e"
+        },
+        {
+          "path": "evidence-task-2-1-controller-r1/evaluation.json",
+          "bytes": 517,
+          "digest": "c336ee7203f3630c7b0990e0741f388ce0bf851f1385c3ec34a2a45f3de6a1d9"
+        },
+        {
+          "path": "evidence-task-2-1-controller-r1/raw.json",
+          "bytes": 5267,
+          "digest": "eada3a80ba68f1329dc4dec3b16b96ef9e653c3bc9bac7ffd74f5e60ffe3afeb"
+        },
+        {
+          "path": "evidence-task-2-source-r1.md",
+          "bytes": 2094,
+          "digest": "b4757f54de929540641cb70daea9b7ac9eedb564607a0e369f0a1a1aebf980c2"
+        },
+        {
+          "path": "evidence-task-3-routing-philosophy-r3.md",
+          "bytes": 5880,
+          "digest": "2a7b28fd7c420e825ee3f8f017f9fd0a5ed1277974eacc98d65957ae0a57cf0e"
+        },
+        {
+          "path": "evidence-task-4-1-budget-r1/evaluation.json",
+          "bytes": 826,
+          "digest": "00c31679015bc8f60cfa6f1074209897b9a25a9c08103543d21152b6f913d08b"
+        },
+        {
+          "path": "evidence-task-4-1-budget-r1/raw.json",
+          "bytes": 59147,
+          "digest": "1a0fc4b191b0c57f7f2a8d47b70cf7d163c6cedd00c8d90a1ac737cd03ff64d7"
+        },
+        {
+          "path": "evidence-task-4-1-budget-replay-r1/evaluation.json",
+          "bytes": 826,
+          "digest": "00c31679015bc8f60cfa6f1074209897b9a25a9c08103543d21152b6f913d08b"
+        },
+        {
+          "path": "evidence-task-5-1-permissions-r1/evaluation.json",
+          "bytes": 327,
+          "digest": "0e7e4996235f09c405d73e43e08ea78ab1642b7448d4fc27e90f8d3ea8a19fea"
+        },
+        {
+          "path": "evidence-task-5-1-permissions-r1/raw.json",
+          "bytes": 7889,
+          "digest": "4603dc8ffa16d1476568da3dc77110fc847fd110853cfd21080dce3408b58c3f"
+        },
+        {
+          "path": "evidence-task-6-1-contract-r1/evaluation.json",
+          "bytes": 835,
+          "digest": "f1cbd2c44079c8dd90d9cd41e55254d2738f607a54ca97bde09edb2a364502da"
+        },
+        {
+          "path": "evidence-task-6-1-contract-r1/raw.json",
+          "bytes": 25669,
+          "digest": "140d6fd7860b38834dceb7cf6c10a7e2c3d2a454ba8b3f1b8b11c2997ea4b87d"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-r1/evaluation.json",
+          "bytes": 507,
+          "digest": "df8f506da57c577e3b7d49d33a8263f57b23248fdc7ed01cd2c9ae3b31be9942"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-r1/progress.jsonl",
+          "bytes": 518,
+          "digest": "f8e51e9c542fe71656632dd9376f8c2003d34b034aa9fd4edf495bb2ef88d5f7"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-r1/raw.json",
+          "bytes": 7344,
+          "digest": "fe84b49a226fc00fa3a19216a595d3c26c7d8e648fb8661a81347028efc9c15d"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-r2/evaluation.json",
+          "bytes": 507,
+          "digest": "f990ad2edcdc87f9b517f68c5f9810860c7a2c8bac8c3e2a2e743f593dd6e1a2"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-r2/progress.jsonl",
+          "bytes": 518,
+          "digest": "fdd8d111bdc7dd03cad5f981c3e188ec0e0104d921376ba9aac96371f6d21a89"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-r2/raw.json",
+          "bytes": 7344,
+          "digest": "1f5b20133bf120d8ef9d888e3c89a7c836c6e40e213d23f64e00abaf31b5efc7"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-replay-r1/evaluation.json",
+          "bytes": 665,
+          "digest": "3e1761dd023f922b69ca3e7f173c5e29cbafddd4e94f42011ec1615ae35a7463"
+        },
+        {
+          "path": "evidence-task-6-2-ambiguous-replay-r2/evaluation.json",
+          "bytes": 665,
+          "digest": "7585b8c023bb4fb807a1aea3732bfee6375ce1302cd1634ed72028ff735ba2df"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r1/failure.json",
+          "bytes": 2439,
+          "digest": "72c89cd81d4e047a2174030fd6078682914a77d44efe0bd12de01121357163a0"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r1/progress.jsonl",
+          "bytes": 138,
+          "digest": "1895a79ed22e0be199ae782c9986c23a21a07dcdae407c798ba2c6e05d4f005d"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r2/evaluation.json",
+          "bytes": 486,
+          "digest": "77c561f27d7a9e9c95d0ff43e7ad2d4241f659e1ab1b80368fc1c5dcb685d9fa"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r2/progress.jsonl",
+          "bytes": 517,
+          "digest": "2696354b8d8da8fbcbc5a3d27bbb857cb7562fcf24febac7d4dff4017785e5b5"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r2/raw.json",
+          "bytes": 9274,
+          "digest": "d641cc64482047f9c96992648c5e47a79d85eab7bb4b2917a4dae10f5710e2e2"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r3/evaluation.json",
+          "bytes": 488,
+          "digest": "f947c0f6b2a12c3d3af43b52045fcf1739325af7f6b08918ee4431da9fe99cd4"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r3/progress.jsonl",
+          "bytes": 517,
+          "digest": "c566b50bcf5ff0197f1f99f3d91d6d6f7f59d182309239d3ec37ba29c99910ba"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r3/raw.json",
+          "bytes": 9125,
+          "digest": "553f8d85e687148e3c1d7871b3b0de99da4cad07f74cfcfc27e7f7197bf58d34"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r4/failure.json",
+          "bytes": 2439,
+          "digest": "600677553f8c2f6e2f847187ca47e5e517a8ada63d09bce4ce85b7a6cef255d2"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r4/progress.jsonl",
+          "bytes": 138,
+          "digest": "faa709f273ec0ac74e5661c56d5de998e4cfddd4f7cd2905fd82185c7f51fd08"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r5/evaluation.json",
+          "bytes": 488,
+          "digest": "093ef170fab4f24d253518f4638bfe64eb74361dac0e0563ac26875a3890ef99"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r5/progress.jsonl",
+          "bytes": 517,
+          "digest": "28e0e2f940da13c8b5536a3e6bd70111656eeae3c0e14c13555fb1e787036a3c"
+        },
+        {
+          "path": "evidence-task-6-2-certified-r5/raw.json",
+          "bytes": 9125,
+          "digest": "bc70c0c1839264cab40de7711546ecb8577206b853c4362ae4fb0a20c61a02a4"
+        },
+        {
+          "path": "evidence-task-6-2-certified-replay-r2/evaluation.json",
+          "bytes": 644,
+          "digest": "de57965e66d9c8b6f33ac04e2cbbf20d0522dad0f613b25259296718bb1d76b7"
+        },
+        {
+          "path": "evidence-task-6-2-certified-replay-r3/evaluation.json",
+          "bytes": 646,
+          "digest": "8931e2283ab861384bc18b8be81f4a2a16327b3e50d26beefc43990f3cd822e8"
+        },
+        {
+          "path": "evidence-task-6-2-certified-replay-r5/evaluation.json",
+          "bytes": 646,
+          "digest": "31eb72d4cf2b449e0c98f0adff931f9a0814cc95eeeda351b7391d92908c6e86"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-r1/evaluation.json",
+          "bytes": 528,
+          "digest": "169ed1fa2af6f387b0026e18445e9ddd3d66dcf51ce59ff92e54aded5a925faf"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-r1/progress.jsonl",
+          "bytes": 523,
+          "digest": "5d13e27425495b2f3641ecc1a935efb614320fe96fe50f937e083732c8551646"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-r1/raw.json",
+          "bytes": 7634,
+          "digest": "5a07fab35b12af7ee0967c2d61f0ef75952a1b8935a39371b115409be3b5c66d"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-r2/evaluation.json",
+          "bytes": 528,
+          "digest": "3a0e31ae09dd9d369dacc5800596a70a51f3a6cd73cd5f13c8f2171342120f3c"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-r2/progress.jsonl",
+          "bytes": 523,
+          "digest": "578aa4502b27b5adde06e7e9de11ffa0d094b3c2406d9eb9feccc5b4fb5cd29b"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-r2/raw.json",
+          "bytes": 7651,
+          "digest": "7a14389e61359ae136290cc7601f1baf6ee80bc99afccbaff2c42ea6227bf792"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-replay-r1/evaluation.json",
+          "bytes": 693,
+          "digest": "120db1641316da0decc687251af50795307603545f298a0209025220be010bfa"
+        },
+        {
+          "path": "evidence-task-6-2-owner-required-replay-r2/evaluation.json",
+          "bytes": 693,
+          "digest": "ab56b4f6d0d4e87220573f0cab1db2a1b6ed632e0656b78f983de0aa2d145fc0"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r1/failure.json",
+          "bytes": 2455,
+          "digest": "85b68609c6ba17ee1219625cdeb652bfc24ff218e4fa238e71242a69b57febaf"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r1/progress.jsonl",
+          "bytes": 141,
+          "digest": "3b317f6420ca40dd0a0b405475ed60b851de81408ec2269f532c43f6b818c202"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r2/evaluation.json",
+          "bytes": 531,
+          "digest": "4b58fa837f305ef44dbddf51b7a240af71c701f64186edeb9abf5d95e8503491"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r2/progress.jsonl",
+          "bytes": 587,
+          "digest": "46c220fae1e1b7409dc2644d693dc99500c3bf4952e18f0909c64cdaab9f0a95"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r2/raw.json",
+          "bytes": 4510,
+          "digest": "5c37e21c7bcae93355ced50c0b22b7897c316b3b1a400da8d77d4a5eb7f6e556"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r3/failure.json",
+          "bytes": 2450,
+          "digest": "b4d87044804db14f49e0b83abdf2d12246a3a7e7b8602dd1db0bbfce0d00229a"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r3/progress.jsonl",
+          "bytes": 141,
+          "digest": "f1e0bc5102160ae5f560a6a267cee403b0f2610ca7267f2dc8ece2ce204aba4f"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r4/failure.json",
+          "bytes": 2450,
+          "digest": "61dda268d023f223c2be62fc65e55bcc1145560b2329badea93112b03bc44f21"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r4/progress.jsonl",
+          "bytes": 141,
+          "digest": "fab5c4b07f4cce74e10bbeb80409e7c5c7616414d2097ff8d58345a9910604ab"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r5/evaluation.json",
+          "bytes": 526,
+          "digest": "b540aebae305ef284d331c7eb22e99fb0797192613f8344aa0194e38fdb6066e"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r5/progress.jsonl",
+          "bytes": 588,
+          "digest": "17cab3b7eaa811ecacb5db86a96211547e5f42284b66838b2b34449cbd2b6028"
+        },
+        {
+          "path": "evidence-task-6-2-startup-control-r5/raw.json",
+          "bytes": 4507,
+          "digest": "42f9c2cecb71ef2d47b51227740c1b64d0bb26c2944a765884faea666b75145e"
+        },
+        {
+          "path": "evidence-task-7-doctor-drift-r1/evaluation.json",
+          "bytes": 129,
+          "digest": "3d82950f69952f232409001e528d69314065324ba13cdc9fa6f46054949ed46a"
+        },
+        {
+          "path": "evidence-task-7-doctor-drift-r1/raw.json",
+          "bytes": 97531,
+          "digest": "fedab26ccde50b5842dc0eb8bb290d86a46b3ce5a17fd88be814154f902aa48a"
+        },
+        {
+          "path": "evidence-task-7-index-r1/evaluation.json",
+          "bytes": 611,
+          "digest": "1e2a3fbe6813017b861b464d74bac5f67a66b81a7f445c3a04f6d67f56c575f0"
+        },
+        {
+          "path": "evidence-task-8-1-config-sync-r1/evaluation.json",
+          "bytes": 653,
+          "digest": "66b1d8f641e6a85f439fd96152d166b9708010c214a484a1684adce96d83be72"
+        },
+        {
+          "path": "evidence-task-8-1-controller-r1/evaluation.json",
+          "bytes": 517,
+          "digest": "79ab66cba8c4fd0db510e2105218a20cc258bc48cace3649af68e4fd290dd5c6"
+        },
+        {
+          "path": "evidence-task-8-1-controller-r1/raw.json",
+          "bytes": 5447,
+          "digest": "17f78b5e55d7843d56515da7fb7a0208d44226b61ff2a799c6997f0cf55005e6"
+        },
+        {
+          "path": "evidence-task-8-1-doctor-r1/evaluation.json",
+          "bytes": 129,
+          "digest": "bcd0ec76ef97b8e870d37ff970bb8022f386bd38f2f63442caee48334529435e"
+        },
+        {
+          "path": "evidence-task-8-1-doctor-r1/raw.json",
+          "bytes": 96719,
+          "digest": "2ca6a7936f104e331fe71d00be46148fab08d9d8894005df7ee7d5be2ddbdf8b"
+        },
+        {
+          "path": "evidence-task-8-1-matched-candidate-r1/capture.json",
+          "bytes": 3152,
+          "digest": "cf44aeea890963905de92927913606e284393d3a05e385cb4893239c27981e5f"
+        },
+        {
+          "path": "evidence-task-8-1-matched-candidate-r1/checked-unmet.bundle.json",
+          "bytes": 16476,
+          "digest": "a7072b49a70c5cea59668854a83be0d59bec2cb9cbed84f02416280791b082a5"
+        },
+        {
+          "path": "evidence-task-8-1-matched-candidate-r1/manifest.sha256.json",
+          "bytes": 910,
+          "digest": "6d5a2a59ea773b39f395400a5ce932acdde7897b45401d3a06bf2e9b3d20d2c6"
+        },
+        {
+          "path": "evidence-task-8-1-matched-candidate-r1/outcome-achieved.bundle.json",
+          "bytes": 11148,
+          "digest": "f5133adfb91a7ffe8f2d354732b3974d5c3cf2d7628396bbd6a06d357e5d8958"
+        },
+        {
+          "path": "evidence-task-8-1-matched-candidate-r1/owner-only.bundle.json",
+          "bytes": 12445,
+          "digest": "c63da9a53f4c7db8a927bfc45668928badb46abaf1570f533e918902de18b3da"
+        },
+        {
+          "path": "evidence-task-8-1-matched-candidate-r1/safe-local-route.bundle.json",
+          "bytes": 13653,
+          "digest": "7b21b546525dc8b1c2f3b47d8e531a203d31e857efac8e00ebb88e59411218c1"
+        },
+        {
+          "path": "evidence-task-8-1-matched-candidate-r1/unchanged-live-repetition.bundle.json",
+          "bytes": 11166,
+          "digest": "e643c9efab0c44dab68f0260224492c8e7dd82a74620136b665cd148c3a2ac20"
+        },
+        {
+          "path": "evidence-task-8-1-matched-evaluation-r1/evaluation.json",
+          "bytes": 13122,
+          "digest": "f917636a81ef752789eb95bdf3f0cd9e88fcb56f776dc1347c1d66f026227da7"
+        },
+        {
+          "path": "evidence-task-8-1-matched-evaluation-r1/manifest.sha256.json",
+          "bytes": 194,
+          "digest": "74f2d347ef64626370a57acf24fec23fb07a03cb75a4b1a05572f51b52ac3611"
+        },
+        {
+          "path": "evidence-task-8-1-matched-evaluation-r2/evaluation.json",
+          "bytes": 13122,
+          "digest": "f917636a81ef752789eb95bdf3f0cd9e88fcb56f776dc1347c1d66f026227da7"
+        },
+        {
+          "path": "evidence-task-8-1-matched-evaluation-r2/manifest.sha256.json",
+          "bytes": 194,
+          "digest": "74f2d347ef64626370a57acf24fec23fb07a03cb75a4b1a05572f51b52ac3611"
+        },
+        {
+          "path": "evidence-task-8-1-matched-preflight-r1/manifest.sha256.json",
+          "bytes": 194,
+          "digest": "105a2bf0ee7b8068feed438edba1269433d878c754f82766483618773509da5f"
+        },
+        {
+          "path": "evidence-task-8-1-matched-preflight-r1/preflight.json",
+          "bytes": 66716,
+          "digest": "cb90374aec3d1529d9905fc6bd0dc76a9151725cb0d6077b24231a70b7a5b634"
+        },
+        {
+          "path": "evidence-task-8-1-matched-preflight-r2/manifest.sha256.json",
+          "bytes": 194,
+          "digest": "2ec69934ecae4036aa4427bd2786a191a9a6779eb33ca83e086e376df79a4439"
+        },
+        {
+          "path": "evidence-task-8-1-matched-preflight-r2/preflight.json",
+          "bytes": 66716,
+          "digest": "614e9cc67345d957a33d854a945985e4a1c7a089bcd2c5a3f6ea4fc4cd477870"
+        },
+        {
+          "path": "evidence-task-8-1-mission-preflight-r2/evaluation.json",
+          "bytes": 828,
+          "digest": "0641fb6d175e282aec2047cd6ff47c4d9b3a35e3ab2e79648a9e25181ef0e7dc"
+        },
+        {
+          "path": "evidence-task-8-1-mission-preflight-r2/raw.json",
+          "bytes": 25842,
+          "digest": "2a47ebdd21addc69f962bfb3a66a731a6f0a38fb8a5de5407b883d431f927cd8"
+        },
+        {
+          "path": "evidence-task-8-1-mission-preflight-r3/evaluation.json",
+          "bytes": 828,
+          "digest": "3189cdf24bd547eeae0e0dfe9503dd9219baf7f0c3aef344a3a45f5c3bf6bfef"
+        },
+        {
+          "path": "evidence-task-8-1-mission-preflight-r3/raw.json",
+          "bytes": 25842,
+          "digest": "9690a681893723403cb6d29bc3ade46cee885a204ede8058777be3cafd2376b2"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r1/controller/01.stderr.log",
+          "bytes": 1177,
+          "digest": "118c5b785894dfd05bf0b774d54566bf9b3ddb64c269b7b0bad6f0c7dc75648a"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r1/controller/01.stdout.json",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r1/evaluation.json",
+          "bytes": 366,
+          "digest": "44a30a11d1e8c03bf2a31b2be1f0fd36cb330671b01a12c48b41d59e1b1c0277"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r1/raw.json",
+          "bytes": 3835,
+          "digest": "54316ecb198bb21e11670d54a94971fc0c23fed6fbc3b48c757f854afb8aade8"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r2/controller/01.stderr.log",
+          "bytes": 104,
+          "digest": "8c1256239221b36832c61d171c37cc0e84b1645d26e1fbe5326fad0c9d5d7c8d"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r2/controller/01.stdout.json",
+          "bytes": 3314,
+          "digest": "cb22e074a38eb3446099acbc313d3e5eb70028b9c821939e71cd7684fa414e46"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r2/evaluation.json",
+          "bytes": 366,
+          "digest": "6066b4303e56fa19c9c3196fb97c7d7706a294c30a7b7ac0629a13af5b86adae"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r2/raw.json",
+          "bytes": 3125,
+          "digest": "144fefb5145cd8bc7969f297416aade3fb2236363180ff564d3bb93ce2f1b82b"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/controller/01.stderr.log",
+          "bytes": 104,
+          "digest": "8c1256239221b36832c61d171c37cc0e84b1645d26e1fbe5326fad0c9d5d7c8d"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/controller/01.stdout.json",
+          "bytes": 10645,
+          "digest": "f124c3951a49fa5a4efd95903265695047347f3b6102d9e04adde0a415227460"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/controller/02.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/controller/02.stdout.json",
+          "bytes": 9411,
+          "digest": "819a42b16c53b2344a95fd4591b57bcdc665f57d87036f3d3449d8b53f019aa1"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/controller/03.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/controller/03.stdout.json",
+          "bytes": 3111,
+          "digest": "b46ff2df6040cc590cefee876e89672b255e203e3f7db92267f1a6582fd5e5d7"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/evaluation.json",
+          "bytes": 399,
+          "digest": "94721e2451ccd33b8461b0e135b1d4e84c1ed9768d21246ab0d9b60757fc98d2"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r3/raw.json",
+          "bytes": 8228,
+          "digest": "aca443fa25c051b604baecf34227d75a22845616f34c80983f5acada3d95c834"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/controller/01.stderr.log",
+          "bytes": 104,
+          "digest": "8c1256239221b36832c61d171c37cc0e84b1645d26e1fbe5326fad0c9d5d7c8d"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/controller/01.stdout.json",
+          "bytes": 10645,
+          "digest": "8622be4f6c2497f6d6f61e2f3d2a603270b06f9cc4d571cfec767b879cf9eca1"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/controller/02.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/controller/02.stdout.json",
+          "bytes": 9411,
+          "digest": "6bc42cb7a8fdea13ea3227f708af16d41efdbbe1a98f02dead4171a8168e4dda"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/controller/03.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/controller/03.stdout.json",
+          "bytes": 3111,
+          "digest": "7f2cd708dab08b24e91aee3c15a639ee87386f463082d3f1f4a02c8692069017"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/evaluation.json",
+          "bytes": 426,
+          "digest": "7e4bc5793b3152eda8f54caf6cf315657e1fe33efc281cac324e7099afa77f6e"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r4/raw.json",
+          "bytes": 8258,
+          "digest": "e534d750cd0e15acfb44db0917b8d3b01d3fdd680cf25eb177e3cd9fcda8f24e"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/controller/01.stderr.log",
+          "bytes": 104,
+          "digest": "8c1256239221b36832c61d171c37cc0e84b1645d26e1fbe5326fad0c9d5d7c8d"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/controller/01.stdout.json",
+          "bytes": 10645,
+          "digest": "9e03a9276afb32382202ce09388a62e569a4e3c3cb81416cf454eecc2b078949"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/controller/02.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/controller/02.stdout.json",
+          "bytes": 9411,
+          "digest": "9a33e0c6db74462e276dae80781710c1d7aacf338f9240a8195006e63a15fb8f"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/controller/03.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/controller/03.stdout.json",
+          "bytes": 3111,
+          "digest": "4b1b8533d1b829df17bbfbd860a395f6e48351e0f808e7ce4dd17d26328d0507"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/evaluation.json",
+          "bytes": 426,
+          "digest": "c07f2970d25b117dc19dbf313de75eabc0173759b939c407b304f51b23bc1cc5"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r5/raw.json",
+          "bytes": 8258,
+          "digest": "257ab544f1d97965a2e4b337879438903afdcec120b62c50c6867be7ed8b7673"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/controller/01.stderr.log",
+          "bytes": 104,
+          "digest": "8c1256239221b36832c61d171c37cc0e84b1645d26e1fbe5326fad0c9d5d7c8d"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/controller/01.stdout.json",
+          "bytes": 10645,
+          "digest": "d42fab36966802c16b535d6e68b34f0be5d3066eb5c28c056f0ef0b5dec86bf3"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/controller/02.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/controller/02.stdout.json",
+          "bytes": 9411,
+          "digest": "fc963d4faf6bec6d8fe200f82c7067d9c869d94cd0a5e3baba2860e1e4c379a1"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/controller/03.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/controller/03.stdout.json",
+          "bytes": 3111,
+          "digest": "da030ffdd5acf67afc95dd98f9b2e0481c296beaef3a19d09fd01656c3704921"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/evaluation.json",
+          "bytes": 426,
+          "digest": "c07f2970d25b117dc19dbf313de75eabc0173759b939c407b304f51b23bc1cc5"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r6/raw.json",
+          "bytes": 8258,
+          "digest": "3b38bbfea3ce4d837e3f581b483449fd1b03fc3604e1aac71066a98efb121bf7"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/controller/01.stderr.log",
+          "bytes": 104,
+          "digest": "8c1256239221b36832c61d171c37cc0e84b1645d26e1fbe5326fad0c9d5d7c8d"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/controller/01.stdout.json",
+          "bytes": 10645,
+          "digest": "da85f9d604a51959db92900832855a11810d2eba40c5b9380f8042af5b41c824"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/controller/02.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/controller/02.stdout.json",
+          "bytes": 9411,
+          "digest": "d45b235e4f21ea89bfd72e0b5ef75714d19bdfd4041e1e3dbc5248cde79a6289"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/controller/03.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/controller/03.stdout.json",
+          "bytes": 3111,
+          "digest": "94c5e726a9dd099f318639278952de09539872301ced1a391ee8aeb5ab2886f1"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/evaluation.json",
+          "bytes": 426,
+          "digest": "c07f2970d25b117dc19dbf313de75eabc0173759b939c407b304f51b23bc1cc5"
+        },
+        {
+          "path": "evidence-task-8-1-openspec-simulate-r7/raw.json",
+          "bytes": 8258,
+          "digest": "d36054e64171aaf69267fbe87a6eed033a26118778efdf0fc5b397fefb7efe58"
+        },
+        {
+          "path": "evidence-task-8-1-permissions-r1/evaluation.json",
+          "bytes": 325,
+          "digest": "240c54d57a7fc3ad2f4dadbdc2489863638b382d3305d79ab333d586a3876b3b"
+        },
+        {
+          "path": "evidence-task-8-1-permissions-r1/raw.json",
+          "bytes": 7885,
+          "digest": "4dd436c0464238ea21632f3e00c4c5ea0c29b459982f72c2217ed5969a48fe4d"
+        },
+        {
+          "path": "evidence-task-8-1-scenario-matrix-r1.md",
+          "bytes": 8105,
+          "digest": "b3b63d60ed577e0f8daa5a6e7e3802390c37e8edbbda69244d44a58cec675ab7"
+        },
+        {
+          "path": "evidence-task-8-2-sdet-r1/evaluation.json",
+          "bytes": 692,
+          "digest": "a8f17bf4c258bb2cad979ba4a0620ca06aace9b361b654d769413239ed7a9549"
+        },
+        {
+          "path": "evidence-task-9-1-validation-r1/evaluation.json",
+          "bytes": 1386,
+          "digest": "8ce3ee3119dfce9666e3d1a87045f0b4615d63f6ac0418951358049b73fd0786"
+        }
+      ]
+    }
+  ]
+}

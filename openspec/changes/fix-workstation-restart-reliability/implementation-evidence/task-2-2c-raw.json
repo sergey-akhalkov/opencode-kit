@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-24T08:03:54.116Z",
+  "delayMs": 20000,
+  "repoControllerSha256": "A8B14B28FD96509776ABC65D0B02BE41991A6CA287A17CE7594C8C0B6AA21AFF",
+  "before": {
+    "status": "running",
+    "supervisorProcessId": 20484,
+    "serverRootProcessId": 17184,
+    "listenerProcessId": 11384,
+    "candidate": "db50301a63b53a70507d739cc6974a3fa8ffd7eb0294102c9b0742e3959e7bfa",
+    "trayColor": "green",
+    "controllerSha256": "03358B5077C186A5006DE3AAC87C3346C96A8952D7A65A19FED330FA1F56AD50",
+    "trayScriptSha256": "78A1400290D76B9DB71B10CE16EBFDDB7160742A1D336EA5BE4B2370F32E85DD",
+    "errorLogBytes": 154024
+  },
+  "stop": {
+    "status": null,
+    "signal": "SIGTERM",
+    "error": "Error: spawnSync C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe ETIMEDOUT",
+    "stdout": "",
+    "stderr": ""
+  },
+  "ok": false,
+  "error": "stop exited null",
+  "finishedAt": "2026-08-24T08:04:59.961Z"
+}

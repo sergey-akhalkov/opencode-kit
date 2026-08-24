@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import {
+  BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT,
   CHANGE_READY_SDLC_CONTINUATION_TOKENS,
   CHANGE_READY_SDLC_DEVELOPMENT_STAGE_MARKERS,
   CHANGE_READY_SDLC_LIFECYCLE_MARKERS,
@@ -16,6 +17,7 @@ import {
   SHIFT_LEFT_REAL_BOUNDARY_SURFACES,
 } from "./contracts/skills.ts";
 import {
+  EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT,
   FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
   REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS,
 } from "./contracts/agents.ts";
@@ -63,11 +65,9 @@ function assertOrderedTokens(text: string, tokens: readonly string[], message: s
 const CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS = [
   "attempt limit, or process stop line",
   "does not authorize the underlying protected action",
-  "one-attempt rule",
-  "`no successor`",
-  "not owner scope by itself",
-  "never ask whether to expand the change",
   "plan/spec/task update, successor attempt, attempt-limit change, or process stop-line change",
+  "process controls, not owner scope",
+  "Do not ask whether to continue",
 ] as const;
 
 const CRITICAL_PROCESS_CONTROL_SKILL_MARKERS = [
@@ -143,6 +143,32 @@ const CRITICAL_PATH_VS_OUTCOME_SKILL_MARKERS = [
   "every sufficient route requires owner action",
 ] as const;
 
+const CRITICAL_SELF_DIAGNOSTIC_GLOBAL_MARKERS = [
+  "Before main declares a technical/evidence blocker",
+  "Product Candidate, Proof Runner, Evaluator, Environment, Authority, or `unknown`",
+  "qualify absence sources",
+  "smallest safe causally distinct falsifying probe",
+  "narrowest supported claim ceiling",
+] as const;
+
+const CRITICAL_SELF_DIAGNOSTIC_SKILL_MARKERS = [
+  "Blocker self-diagnosis and absence-source qualification",
+  "expected observable phenomenon",
+  "safe positive control",
+  "source is `unqualified`",
+  "narrowest supported claim ceiling",
+] as const;
+
+const CRITICAL_SELF_DIAGNOSTIC_ARBITER_MARKERS = [
+  "technical/evidence blocker",
+  "observer qualification",
+  "supported claim ceiling",
+  "smallest remaining safe causally distinct probe",
+  "return `continue`",
+  "Never turn incomplete diagnosis",
+  "into `allow_stop` or `owner_required`",
+] as const;
+
 const SUPERSEDED_PATH_VS_OUTCOME_OPERATORS = [
   "The autonomous target is the highest rung allowed by current authority",
   "Active-change pending tasks remain accepted unless user-bounded",
@@ -174,7 +200,7 @@ const EXPECTED_FINAL_REVIEWER_MARKERS = [
   "## Contract Reference",
   "`instructions/leaf-reviewer-agent-contract.md`",
   "fresh read-only",
-  "After current MVP proof",
+  "After current proof",
   "complete readable current candidate",
   "Candidate Reference",
   "optional review remains attributed to the exact candidate",
@@ -387,18 +413,17 @@ export const changeReadyContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: README exposes MVP proof, critical SDET, RC freeze, and optional review",
+    name: "contracts: README exposes verified outcome and conditional qualification",
     run: () => {
       const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
       assertTokens(readme, [
-        "run-observe-correct to MVP",
+        "run-observe-correct",
         "accepted-scope completion",
-        "critical-only SDET for Material behavior",
-        "RC freeze",
-        "local stable handoff",
+        "RC/stable qualification and independent critical SDET are conditional",
+        "Outcome: working | blocked | unknown",
         "Optional reviewers never become stage gates",
         "Development-Stage: development | MVP | RC<n> | stable",
-      ], "README lifecycle route drifted");
+      ], "README verified-outcome route drifted");
     },
   },
   {
@@ -576,12 +601,6 @@ export const changeReadyContractTests: TestCase[] = [
         "Removing protected-action separation while keeping attempt-limit autonomy must fail closed.",
       );
 
-      const withoutOneAttemptRule = agents.replaceAll("one-attempt rule", "retry ceiling");
-      assert(
-        missingTokens(withoutOneAttemptRule, CRITICAL_PROCESS_CONTROL_GLOBAL_MARKERS).includes("one-attempt rule"),
-        "Dropping agent-authored one-attempt classification must fail closed.",
-      );
-
       const skillWithoutSeparation = skill.replaceAll(
         "underlying protected action retains separate authority",
         "underlying protected action may inherit plan authority",
@@ -609,6 +628,103 @@ export const changeReadyContractTests: TestCase[] = [
         missingTokens(arbiterWithoutContinue, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes("as `continue`"),
         "Arbiter process-only questions must remain classified as continue, not owner_required.",
       );
+    },
+  },
+  {
+    name: "contracts: blocker self-diagnosis preserves layer, observer, probe, claim, and continuation controls",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const skill = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+      const verdictTypes = fs.readFileSync(path.join(root, "global", "extensions", "session-completion-guard", "types.ts"), "utf8");
+
+      assertTokens(
+        GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS.join("\n"),
+        CRITICAL_SELF_DIAGNOSTIC_GLOBAL_MARKERS,
+        "GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS dropped blocker self-diagnostic control",
+      );
+      assertTokens(
+        CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS.join("\n"),
+        CRITICAL_SELF_DIAGNOSTIC_SKILL_MARKERS,
+        "CHANGE_READY_SDLC_OUTCOME_AUTHORITY_MARKERS dropped absence qualification control",
+      );
+      assertEqual(
+        missingTokens(agents, CRITICAL_SELF_DIAGNOSTIC_GLOBAL_MARKERS).join("|"),
+        "",
+        `global/AGENTS.md missing self-diagnostic markers: ${missingTokens(agents, CRITICAL_SELF_DIAGNOSTIC_GLOBAL_MARKERS).join(", ")}`,
+      );
+      assertEqual(
+        missingTokens(skill, CRITICAL_SELF_DIAGNOSTIC_SKILL_MARKERS).join("|"),
+        "",
+        `change-ready-sdlc missing absence qualification markers: ${missingTokens(skill, CRITICAL_SELF_DIAGNOSTIC_SKILL_MARKERS).join(", ")}`,
+      );
+      assertEqual(
+        missingTokens(arbiter, CRITICAL_SELF_DIAGNOSTIC_ARBITER_MARKERS).join("|"),
+        "",
+        `session-completion-arbiter missing technical continuation markers: ${missingTokens(arbiter, CRITICAL_SELF_DIAGNOSTIC_ARBITER_MARKERS).join(", ")}`,
+      );
+      assert(verdictTypes.includes("schemaVersion: 1;"), "CompletionVerdict must retain schema version 1.");
+      assert(!verdictTypes.includes("diagnosticAssessment"), "Self-diagnosis must not add a new verdict schema object.");
+
+      const unqualifiedAbsence = agents.replaceAll("qualify absence sources", "accept absence sources");
+      assert(
+        unqualifiedAbsence !== agents && missingTokens(unqualifiedAbsence, CRITICAL_SELF_DIAGNOSTIC_GLOBAL_MARKERS).includes("qualify absence sources"),
+        "Removing absence qualification from always-loaded authority must fail closed.",
+      );
+      const missingPositiveControl = skill.replaceAll("safe positive control", "negative observation");
+      assert(
+        missingPositiveControl !== skill && missingTokens(missingPositiveControl, CRITICAL_SELF_DIAGNOSTIC_SKILL_MARKERS).includes("safe positive control"),
+        "Removing the positive control requirement must fail closed.",
+      );
+      const prematureStop = arbiter.replaceAll("return `continue`", "return `allow_stop`");
+      assert(
+        prematureStop !== arbiter && missingTokens(prematureStop, CRITICAL_SELF_DIAGNOSTIC_ARBITER_MARKERS).includes("return `continue`"),
+        "Replacing technical continuation with allow_stop must fail closed.",
+      );
+    },
+  },
+  {
+    name: "contracts: evidence bounds keep one principle, one substitution owner, and one read-only challenge role",
+    run: () => {
+      const principles = fs.readFileSync(path.join(root, "global", "principles-of-work.md"), "utf8");
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const skill = fs.readFileSync(path.join(root, "global", "skills", "behavioral-substitution-qualification", "SKILL.md"), "utf8");
+      const reviewer = fs.readFileSync(path.join(root, "global", "agents", "evidence-sufficiency-reviewer.md"), "utf8");
+      const qualification = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      assert((principles.match(/\*\*Evidence Bounds Claims:\*\*/g) ?? []).length === 1, "Principles must contain one canonical Evidence Bounds Claims entry.");
+      assertTokens(agents, [
+        "Evidence bounds claims",
+        "Claim And Evidence Scope",
+        "behavioral-substitution-qualification",
+        "evidence-sufficiency-reviewer",
+        "blocks only that broad claim",
+      ], "Always-loaded claim-evidence trigger drifted");
+      assertTokens(skill, BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT, "Substitution skill closure contract drifted");
+      assertTokens(reviewer, EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT, "Evidence-sufficiency reviewer contract drifted");
+      assert(qualification.includes("load `behavioral-substitution-qualification`"), "Change-Ready must reference the focused substitution owner.");
+      assert(apply.includes("load `behavioral-substitution-qualification`"), "OpenSpec apply must reference the focused substitution owner.");
+      assert(!qualification.includes("Compare baseline and candidate from the same actor request"), "Change-Ready must not duplicate the focused comparison procedure.");
+      for (const forbidden of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
+        assert(!reviewer.includes(forbidden), `Evidence-sufficiency reviewer exposes forbidden authority: ${forbidden}`);
+      }
+    },
+  },
+  {
+    name: "contracts: priority duplication tripwire names the canonical principles owner",
+    run: () => {
+      const contracts = fs.readFileSync(path.join(root, "tools", "contracts", "skills.ts"), "utf8");
+      const routing = fs.readFileSync(path.join(root, "tools", "validators", "routing.ts"), "utf8");
+      assertTokens(contracts, [
+        '"First, Do No Harm"',
+        '"Two-Way Door Decisions"',
+        '"Fast Feedback"',
+      ], "Priority duplicate labels must match the canonical principles file");
+      assertTokens(routing, [
+        "relative === PRINCIPLES_OF_WORK_RELATIVE",
+        "relative === GLOBAL_AGENTS_RELATIVE",
+        "keep the full contract only in ${PRINCIPLES_OF_WORK_RELATIVE}",
+      ], "Priority duplication routing must skip only the canonical owner and scan AGENTS");
     },
   },
   {

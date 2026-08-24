@@ -1,0 +1,20 @@
+{
+  "candidateId": "reduce-workflow-ceremony-cert-r2",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "completionMode": "certified",
+  "disposition": "terminal",
+  "guardState": "unknown",
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "blocked",
+  "providerCalls": {
+    "arbiter": 0,
+    "primary": 1
+  },
+  "rootSession": "created-and-deleted",
+  "scenario": "continue",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "unlockCondition": null
+}

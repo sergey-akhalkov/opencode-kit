@@ -1,6 +1,6 @@
 ---
 name: openspec-apply-change
-description: Implement tasks from an OpenSpec change. Use when the user wants to start implementing, continue implementation, or work through tasks.
+description: Implement tasks from an OpenSpec change. Use ONLY when the user names OpenSpec or an active OpenSpec change. Do not use for ordinary application implementation.
 allowed-tools: Bash(openspec:*)
 license: MIT
 compatibility: Requires openspec CLI.
@@ -68,7 +68,11 @@ Use this skill when the user asks to start or continue implementation of one Ope
 
    Read `<changeRoot>/history.md` before substantial work. If it is missing, create it with `# Strategy History` and no invented attempts. Reconcile any `Pending Strategy History` entries from compaction before continuing.
 
-   Before accepting `all_done`, map the proposal outcome and current human requirement to their required observable proof. If proof is absent, `Development-Stage` remains `development`, or another explicit outcome fact is unmet, reopen or add the smallest ordinary task and continue. A change is complete only when its accepted outcome is achieved or the owner explicitly selects a supported incomplete/abandoned disposition. Optional retrospective or workflow feedback stays outside the product task graph.
+    Before accepting `all_done`, map the proposal outcome and current human requirement to their required observable proof. If proof is absent, `Development-Stage` remains `development`, or another explicit outcome fact is unmet, reopen or add the smallest ordinary task and continue. A change is complete only when its accepted outcome is achieved or the owner explicitly selects a supported incomplete/abandoned disposition. Optional retrospective or workflow feedback stays outside the product task graph.
+
+    Read the change-level Claim And Evidence Scope once. Before mutating a declared broad class, require its structured evidence-index record; incomplete `blocked` or `unknown` closure may remain during development, but it cannot be promoted to accepted completion. Exact-case work keeps its concise proposal line and existing proof path.
+
+    If that record claims skipped, omitted, suppressed, cached, replayed, emulated, replaced, or optimized-bypass behavior preserves an existing result, load `behavioral-substitution-qualification` for the detailed closure workflow rather than duplicating it here.
 
 6. **Show current progress**
 
@@ -132,7 +136,7 @@ Working on task 4/7: <task description>
 
 ## Output Contract
 
-Return the change/schema identity, completed and remaining task counts, current Runtime Proof and validation evidence, exact owner blocker or `none`, and the current `Development-Stage` without inferring RC/stable from checkboxes.
+Return the change/schema identity, completed and remaining task counts, current Runtime Proof and validation evidence, exact owner blocker or `none`, and ordinary `Outcome` or qualification-only `Development-Stage` without inferring RC/stable from checkboxes.
 
 ```
 ## Implementation Complete
@@ -169,17 +173,19 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 ```
 
 **Guardrails**
+- If the proposal declares a required Automation Dividend, keep exactly one `N.N [automation-dividend]` task and inspect Git state with `node global/bin/repo-candidate-snapshot.ts`.
 - Choose smallest dependency-valid pending slice to the earliest real boundary; continue until done unless the user bounded this request, interrupts, or an exact owner boundary stops it
 - Always read context files before starting (from the apply instructions output)
 - If a task's accepted behavior or protected semantics are materially ambiguous and lack a safe reversible interpretation, pause and ask one exact question
 - If implementation reveals an artifact or design mismatch with already resolved semantics, update the affected artifact and continue
-- Keep code changes minimal and scoped to each task
+- Keep code changes minimal and scoped to each task. In a disposable fixture, skip glob.
 - Update a task checkbox only after its required observable proof and focused validation pass
 - Treat `all_done` as structural evidence only; reconcile accepted outcome proof before completion or archive routing
 - Keep optional retrospective and workflow-improvement ideas outside the product task graph; add only ordinary corrections required for the accepted outcome
 - Do not infer RC/stable from completed task checkboxes; this command does not complete the separate archive and stable-handoff boundary
 - Diagnose and correct ordinary errors and locally resolvable blockers without asking whether to continue; do not guess across an exact owner boundary
 - Use contextFiles from CLI output, don't assume specific file names
+- Reference claim ids in implementation tasks and evidence; do not duplicate unchanged population/path/oracle fields or infer claim class from prose.
 
 **Fluid Workflow Integration**
 

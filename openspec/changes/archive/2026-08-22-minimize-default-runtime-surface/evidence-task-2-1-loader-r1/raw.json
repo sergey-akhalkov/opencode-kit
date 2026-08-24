@@ -1,0 +1,22 @@
+{
+  "candidateId": "minimize-default-runtime-surface-r1",
+  "evaluation": {
+    "extraCoreSkills": [],
+    "hiddenParentHits": [],
+    "missingCoreSkills": [],
+    "skillNames": [
+      "change-ready-sdlc",
+      "complain",
+      "customize-opencode",
+      "next-step",
+      "openspec-abandon-change",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "reuse-discovery"
+    ],
+    "status": "passed"
+  },
+  "skillStatus": 0,
+  "tool": "opencode-dev-kit-runtime-surface-loader"
+}

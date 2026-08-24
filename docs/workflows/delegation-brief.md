@@ -1,6 +1,6 @@
 # Delegation Brief Workflow
 
-Use this disposable workflow before reducing always-loaded delegation instructions. Do not build a code harness.
+Use this disposable workflow before reducing always-loaded delegation instructions. Delegate only when it improves the shortest verified path without reducing quality, autonomy, or token economy; remove needless handoff ceremony rather than copying context. Do not build a code harness.
 
 ## Synthetic Task
 

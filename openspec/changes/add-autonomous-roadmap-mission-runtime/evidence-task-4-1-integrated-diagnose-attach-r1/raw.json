@@ -1,0 +1,45 @@
+{
+  "candidateId": "task-4-1-integrated-diagnose-attach-r1",
+  "cleanup": "failed",
+  "deletedRootSessions": 0,
+  "failure": {
+    "childExitCode": null,
+    "elapsedMs": null,
+    "error": "integrated operator root create failed",
+    "observedStatus": "",
+    "stderrTail": "",
+    "stdoutTail": ""
+  },
+  "mode": "diagnose",
+  "projectFacts": {
+    "marker": null,
+    "phases": [],
+    "result": null,
+    "state": null,
+    "worktree": ""
+  },
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "schemaVersion": 1,
+  "server": {
+    "attached": true,
+    "commandNames": [],
+    "listenObserved": true,
+    "probes": [
+      {
+        "route": "/path",
+        "status": 401
+      },
+      {
+        "route": "/session/status",
+        "status": 401
+      }
+    ],
+    "readyMs": 0,
+    "startup": {
+      "hostConfigLoaded": null,
+      "isolatedConfigLoaded": false,
+      "ripgrepDownloadRequested": false
+    }
+  },
+  "serverDiagnostics": ""
+}

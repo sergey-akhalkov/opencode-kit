@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "taskId": "3.3",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "recordedAt": "2026-08-23T11:25:52.7544797Z",
+  "contract": {
+    "mode": "subagent",
+    "freshReadOnly": true,
+    "originalOutcomeComparison": true,
+    "claimEvidenceMatrix": true,
+    "maximumSupportedClaim": true,
+    "effectiveModel": true,
+    "acceptanceVerdict": false,
+    "lifecycleAuthority": false
+  },
+  "permissions": {
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "bash": "deny",
+    "editDefault": "deny",
+    "feedbackEdit": "allow",
+    "task": "deny",
+    "question": "deny",
+    "web": "deny",
+    "externalDirectory": "deny",
+    "lsp": "deny"
+  },
+  "validation": [
+    { "command": "node tools/test-contracts.ts", "status": 0 },
+    { "command": "node tools/test-model-profile.ts", "status": 0, "tests": 16 },
+    { "command": "opencode debug agent evidence-sufficiency-reviewer", "status": 0 }
+  ],
+  "result": "complete"
+}

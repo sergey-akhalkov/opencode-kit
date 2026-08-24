@@ -1,0 +1,670 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "cleanup": "complete",
+  "diagnostics": {
+    "pluginStartupTrace": [
+      {
+        "phase": "factory-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "chat.message",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "chat.message",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "event",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      }
+    ],
+    "stderrChars": 23672,
+    "stderrError": false,
+    "stdoutChars": 119
+  },
+  "error": "Claim proof primary call bound exceeded: 8",
+  "processCleanup": "complete",
+  "provider": {
+    "arbiterCalls": 4,
+    "primaryCalls": 8,
+    "requestKinds": [
+      "primary",
+      "arbiter-1",
+      "primary",
+      "primary",
+      "primary",
+      "arbiter-2",
+      "primary",
+      "arbiter-3",
+      "primary",
+      "primary",
+      "primary",
+      "arbiter-4"
+    ]
+  },
+  "scenario": "claims",
+  "schemaVersion": 1,
+  "status": "failed"
+}

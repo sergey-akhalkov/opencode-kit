@@ -1,0 +1,8 @@
+{"at":"2026-08-16T22:06:59.543Z","name":"capture-start","scenario":"transient"}
+{"at":"2026-08-16T22:07:26.363Z","name":"server-ready","pid":22372}
+{"at":"2026-08-16T22:07:26.363Z","name":"executor-start"}
+{"at":"2026-08-16T22:07:56.671Z","name":"executor-exit","exitCode":1,"signal":null}
+{"at":"2026-08-16T22:07:56.699Z","name":"raw-ready"}
+{"at":"2026-08-16T22:07:56.772Z","name":"sessions-clean"}
+{"at":"2026-08-16T22:07:57.220Z","name":"server-stopped"}
+{"at":"2026-08-16T22:07:58.322Z","name":"fixture-removed"}

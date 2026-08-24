@@ -388,11 +388,11 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
     },
   },
   {
-    name: "contracts: optional post-MVP review remains non-authorizing without delivery-reviewer binding",
+    name: "contracts: optional post-proof review remains non-authorizing without delivery-reviewer binding",
     run: () => {
       for (const relative of OPTIONAL_REVIEW_SURFACES) {
         const text = fs.readFileSync(path.join(root, relative), "utf8");
-        assert(text.includes("after MVP"), `${relative} missing optional post-MVP review timing`);
+        assert(text.includes("after current proof"), `${relative} missing optional post-proof review timing`);
         assert(
           /optional/i.test(text),
           `${relative} missing optional review wording`,

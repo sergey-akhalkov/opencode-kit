@@ -1,0 +1,13 @@
+{
+  "candidateId": "task-2-2-owner-r6",
+  "cleanup": "complete",
+  "error": "OpenCode server readiness timed out: {\"errorChain\":[{\"depth\":0,\"name\":\"Error\",\"message\":\"runtime proof server readiness failed\"},{\"depth\":1,\"name\":\"Error\",\"message\":\"OpenCode readiness request timed out\"}],\"exitCode\":null,\"probes\":[{\"error\":\"The operation was aborted.\",\"route\":\"/path\"},{\"error\":\"The operation was aborted.\",\"route\":\"/session/status\"}],\"stderrChars\":2036,\"stderrTail\":\"timestamp=2026-08-16T21:43:13.594Z level=INFO run=7243e807 message=loading path=\\\"<data-dir>\\\\\\\\config-home\\\\\\\\opencode\\\\\\\\config.json\\\"\\ntimestamp=2026-08-16T21:43:13.601Z level=INFO run=7243e807 message=loading path=\\\"<data-dir>\\\\\\\\config-home\\\\\\\\opencode\\\\\\\\opencode.json\\\"\\ntimestamp=2026-08-16T21:43:13.611Z level=INFO run=7243e807 message=loading path=\\\"<data-dir>\\\\\\\\config-home\\\\\\\\opencode\\\\\\\\opencode.jsonc\\\"\\ntimestamp=2026-08-16T21:43:18.804Z level=INFO run=7243e807 message=\\\"creating instance\\\" directory=\\\"<project>\\\"\\ntimestamp=2026-08-16T21:43:18.806Z level=INFO run=7243e807 message=fromDirectory directory=\\\"<project>\\\"\\ntimestamp=2026-08-16T21:43:18.820Z level=INFO run=7243e807 message=bootstrapping directory=\\\"<project>\\\"\\ntimestamp=2026-08-16T21:43:18.838Z level=INFO run=7243e807 message=loading path=\\\"<data-dir>\\\\\\\\config-home\\\\\\\\opencode\\\\\\\\config.json\\\"\\ntimestamp=2026-08-16T21:43:18.839Z level=INFO run=7243e807 message=loading path=\\\"<data-dir>\\\\\\\\config-home\\\\\\\\opencode\\\\\\\\opencode.json\\\"\\ntimestamp=2026-08-16T21:43:18.839Z level=INFO run=7243e807 message=loading path=\\\"<data-dir>\\\\\\\\config-home\\\\\\\\opencode\\\\\\\\opencode.jsonc\\\"\\ntimestamp=2026-08-16T21:43:19.204Z level=INFO run=7243e807 message=loading path=\\\"<config-dir>\\\\\\\\opencode.json\\\"\\ntimestamp=2026-08-16T21:43:19.239Z level=INFO run=7243e807 message=loading path=\\\"<config-dir>\\\\\\\\opencode.jsonc\\\"\\n\",\"stdoutChars\":119,\"stdoutTail\":\"Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\\nopencode server listening on http://127.0.0.1:63253\\n\"}",
+  "executor": null,
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 0,
+    "requestKinds": []
+  },
+  "schemaVersion": 1,
+  "status": "failed"
+}

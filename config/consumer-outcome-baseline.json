@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "status": "accepted",
+  "baselineVersion": "v1",
+  "sourceDigest": "669af62ac54df36f78d84e99b7bbef388e10d5227d25fd45eae56ce86320a3e5",
+  "environmentDigest": "d8d8d07cbdb0c75c358a5811b393b7fd091674ecb9f10ff402e2f092309dc771",
+  "scenarioDigest": "f8ea029257ce14a3cbbba22ee9e21acf0469f70998685ed488fea4a76af61c1c",
+  "evaluatorDigest": "86340f819cf2fb22b5a56caecf9e244ae915c6cb1682181fee34d069426bda40",
+  "bundlePath": "tools/proofs/fixtures/consumer-outcome/evidence/baseline-accepted/bundle.json",
+  "priorBaselineReference": null,
+  "reason": "First accepted staged-source baseline from HEAD ca43ba441c92dd56f2c751f4583aef41e5c765de after six configured-primary samples and provider-free privacy sanitization."
+}

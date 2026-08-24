@@ -1,0 +1,22 @@
+{
+  "candidateId": "task-2-2-isolated-preflight-r5",
+  "cleanup": "complete",
+  "environment": {
+    "openCode": "1.18.18",
+    "platform": "win32"
+  },
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 2,
+    "requestKinds": [
+      "primary",
+      "primary"
+    ]
+  },
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "seedStatusTypes": [
+    "absent-idle",
+    "absent-idle"
+  ]
+}

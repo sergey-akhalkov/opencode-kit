@@ -1,0 +1,15 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "cleanup": "complete",
+  "failureClass": "proof-runner-provider-bound",
+  "liveAttemptGate": "blocked",
+  "providerCalls": {
+    "arbiter": 4,
+    "primary": 8
+  },
+  "scenario": "claims",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "terminalReplayResult": "blocked-after-guard",
+  "unlockCondition": "Correct the stale provider-call bound, preserve all case evidence on failure, then use one create-new capture."
+}

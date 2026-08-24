@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "recordedAt": "2026-08-23T13:17:55.4293572Z",
+  "role": "code-quality-reviewer",
+  "effectiveModel": "xai/grok-4.6",
+  "mode": "read-only-reduction-review",
+  "result": "no-qualifying-reduction",
+  "scope": [
+    "tools/evidence-index.ts",
+    "tools/test-library/doctor.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/capture.ts",
+    "tools/proofs/consumer-outcome/evaluate.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap.json",
+    "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap/**"
+  ],
+  "findings": [],
+  "reason": "Apparent copies either reuse an existing owner, encode a distinct compatibility or decision oracle, or would require a broader generic layer that changes failure behavior.",
+  "navigation": {
+    "contracts": "attention; cohesive parsing, fixture verification, source identity, and privacy contract owner",
+    "evaluate": "attention; cohesive general and focused evaluator owner",
+    "capture": "attention; cohesive capture and cleanup owner",
+    "tests": "attention or pre-existing split-candidate; additions stay at existing contract and guard seams"
+  },
+  "externalEffects": []
+}

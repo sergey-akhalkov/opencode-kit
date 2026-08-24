@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "changeId": "harvest-repeated-agent-workflows",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "agent-workflow-automation",
+      "requirements": [
+        "Portable repository candidate snapshot",
+        "Automation-dividend declaration and archive enforcement"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Loaded workflow routes one proposal-time automation dividend"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "Complete archive requires a current required dividend or an explicit exemption"
+      ]
+    },
+    {
+      "capability": "library-tools-architecture",
+      "requirements": [
+        "Operation gate correlates the dividend task and evidence row"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/AGENTS.md",
+    "global/bin/repo-candidate-snapshot.ts",
+    "global/commands",
+    "global/skills/openspec-apply-change",
+    "global/skills/openspec-archive-change",
+    "global/skills/openspec-propose",
+    "config/consumer-outcome-regression.json",
+    "package.json",
+    "README.md",
+    "tools/contracts",
+    "tools/proofs/README.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/test-contracts.ts",
+    "tools/validators"
+  ],
+  "dependencies": [
+    {
+      "changeId": "improve-change-locality-guidance",
+      "kind": "planning-only",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" }
+      ],
+      "transferCondition": "serialize-after-change-locality-instruction-mutation"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "improve-change-locality-guidance",
+      "toChangeId": "harvest-repeated-agent-workflows",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

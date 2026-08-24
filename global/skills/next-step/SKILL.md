@@ -1,6 +1,6 @@
 ---
 name: next-step
-description: Use when the user asks "what next?", "what should I do next?", or "что дальше?" in an OpenSpec/spec-first workflow; inventory available work and recommend the next bounded Universal Development Loop slice.
+description: Use ONLY when the user asks "what next?", "what should I do next?", or "что дальше?" in an OpenSpec/spec-first workflow. Do not use for ordinary standup or backlog questions.
 license: MIT
 ---
 

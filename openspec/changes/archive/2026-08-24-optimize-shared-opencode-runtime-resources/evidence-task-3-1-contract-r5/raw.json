@@ -1,0 +1,228 @@
+{
+  "candidateId": "shared-tools-lifecycle-r5",
+  "cleanup": {
+    "fixtureAbsent": true
+  },
+  "configSource": {
+    "afterSha256": "62555f02f4d929ce40d49464c261659ebfefd59665b6658adc8f729a449dd872",
+    "beforeSha256": "62555f02f4d929ce40d49464c261659ebfefd59665b6658adc8f729a449dd872"
+  },
+  "endpointCalls": 0,
+  "invocation": [
+    "C:/Users/noilw/AppData/Local/Microsoft/WinGet/Packages/OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe/node-v24.18.1-win-x64/node.exe",
+    "D:/home/sergey-akhalkov/opencode-kit/tools/proofs/opencode-shared-tools-contract.ts",
+    "--mode",
+    "capture",
+    "--candidate-id",
+    "shared-tools-lifecycle-r5",
+    "--evidence-root",
+    "D:/home/sergey-akhalkov/opencode-kit/openspec/changes/optimize-shared-opencode-runtime-resources/evidence-task-3-1-contract-r5"
+  ],
+  "listenerCollision": {
+    "credentialProbeAllowed": false,
+    "listenerCount": 1,
+    "status": "collision"
+  },
+  "mode": "capture",
+  "negative": {
+    "duplicateEntry": {
+      "message": "OpenCode configuration contains duplicate properties: mcp.graphify-global.",
+      "rejected": true
+    },
+    "missingEntry": {
+      "message": "OpenCode configuration has no 'graphify-global' MCP entry.",
+      "rejected": true
+    },
+    "missingMachineField": {
+      "message": "Workstation Graphify configuration must contain exactly: graph, port, python.",
+      "rejected": true
+    },
+    "wrongEntry": {
+      "message": "graphify-global command does not match the configured Graphify executable/module/graph.",
+      "rejected": true
+    },
+    "wrongPort": {
+      "message": "Graphify port must be the fixed loopback port 4097.",
+      "rejected": true
+    }
+  },
+  "preflight": {
+    "configEdit": {
+      "acl": {
+        "managed": {
+          "kind": "windows-sddl",
+          "sha256": "f81b5713783171002228498ad66bdf6bfb12b805ae51b1fdae1ac063e23a79cd"
+        },
+        "original": {
+          "kind": "windows-sddl",
+          "sha256": "f81b5713783171002228498ad66bdf6bfb12b805ae51b1fdae1ac063e23a79cd"
+        },
+        "preserveExact": true
+      },
+      "edit": {
+        "count": 1,
+        "managedLength": 245,
+        "offset": 8518,
+        "originalLength": 497,
+        "prefixPreserved": true,
+        "suffixPreserved": true,
+        "targetPath": "mcp.graphify-global"
+      },
+      "managed": {
+        "length": 9256,
+        "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+        "sha256": "f39dcd36c9331075e470525ec86594034439dd93b6beb597ff449d83d233e506"
+      },
+      "projection": {
+        "authorization": "Bearer {env:OPENCODE_GRAPHIFY_API_KEY}",
+        "enabled": true,
+        "oauth": false,
+        "timeout": 180000,
+        "type": "remote",
+        "url": "http://127.0.0.1:4097/mcp"
+      },
+      "rollback": {
+        "exactAcl": true,
+        "exactBytes": true,
+        "requiresManagedSha256": "f39dcd36c9331075e470525ec86594034439dd93b6beb597ff449d83d233e506",
+        "restoresOriginalSha256": "62555f02f4d929ce40d49464c261659ebfefd59665b6658adc8f729a449dd872"
+      },
+      "schemaVersion": 1,
+      "source": {
+        "length": 9508,
+        "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+        "sha256": "62555f02f4d929ce40d49464c261659ebfefd59665b6658adc8f729a449dd872"
+      }
+    },
+    "configuration": {
+      "length": 516,
+      "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.config.json",
+      "sha256": "4f844a36c9a9fdca9db2431dccd24f78da6b5827a1bd96aeb7a485f09442b07a"
+    },
+    "credentialValuesExposed": false,
+    "graphify": {
+      "command": {
+        "argumentCount": 14,
+        "argumentDigest": "54a765dd84f1674ed28eba195cf042b6090a13fa9620d4b44ee28d5f407a5dcc",
+        "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+        "module": "graphify.serve"
+      },
+      "endpoint": {
+        "host": "127.0.0.1",
+        "path": "/mcp",
+        "port": 4097,
+        "stateless": true,
+        "transport": "streamable-http",
+        "url": "http://127.0.0.1:4097/mcp"
+      },
+      "graph": {
+        "length": 129896218,
+        "path": "D:\\mekha\\mtronics\\graphify-knowledgebase\\graphify-out\\graph.json",
+        "sha256": "03c316045db331d55eef45305f42390c3c179967ad27e7e93a76bb097df46f09"
+      },
+      "module": {
+        "name": "graphify.serve",
+        "packageVersion": "0.9.44",
+        "source": {
+          "length": 108427,
+          "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\serve.py",
+          "sha256": "2744fdf09bd496e8f7901f25d51e3bc545b360693d02902c24c71e65a1713ca5"
+        }
+      },
+      "python": {
+        "length": 241152,
+        "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+        "sha256": "57b7fa7e1b121abe4f8ef9aa63e2b97d281f95759766a7d6c83b174c78edf80a"
+      }
+    },
+    "listener": {
+      "count": 0,
+      "credentialProbeAllowed": true,
+      "port": 4097,
+      "processes": []
+    },
+    "operation": "preflight",
+    "protected": {
+      "credential": {
+        "aclClass": "credential",
+        "commandLineValue": false,
+        "configReference": "{env:OPENCODE_GRAPHIFY_API_KEY}",
+        "path": "C:\\ProgramData\\OpenCodeWorkstation\\graphify-api-key",
+        "persistedValue": false
+      },
+      "module": {
+        "hashValidated": true,
+        "path": "C:\\ProgramData\\OpenCodeWorkstation\\opencode-shared-tools.ts"
+      },
+      "state": {
+        "aclClass": "protected-state",
+        "credentialValue": false,
+        "path": "C:\\ProgramData\\OpenCodeWorkstation\\server-state.json"
+      }
+    },
+    "schemaVersion": 1,
+    "status": "ready"
+  },
+  "redaction": {
+    "causePresent": true,
+    "secretAbsent": true
+  },
+  "repositoryGuard": {
+    "explicitPreserved": true,
+    "graphToolUnaffected": true,
+    "missingMessage": "graphify-global_list_prs requires an explicit non-empty 'repo' argument because graphify-global is shared across projects.",
+    "missingRejected": true
+  },
+  "schemaVersion": 1,
+  "source": {
+    "controller": {
+      "path": "tools\\windows\\opencode-workstation.ts",
+      "sha256": "03358b5077c186a5006de3aac87c3346c96a8952d7a65a19fed330fa1f56ad50"
+    },
+    "module": {
+      "path": "tools\\windows\\opencode-shared-tools.ts",
+      "sha256": "a5e87efc4acad0a4791579d80a5db9468958376b2b09a4218a2a8a4df133da51"
+    },
+    "plugin": {
+      "path": "global\\plugin\\graphify-project-context.ts",
+      "sha256": "1be1fe78a046e2dfe09667abeb4d7d793b16e43aa4440e8aa3657a9ed2ab99e7"
+    },
+    "runner": {
+      "path": "tools\\proofs\\opencode-shared-tools-contract.ts",
+      "sha256": "123a5563304e72e7917c8117d4b130a78e4b314af128f5a1c8fb968ef16a174e"
+    },
+    "sessionEnv": {
+      "path": "global\\plugin\\session-env.ts",
+      "sha256": "b810849e7cfad2226ff9dd368786b4246175f9f554ea1bcae4274d52e34b49b4"
+    }
+  },
+  "transformation": {
+    "aclManagedSha256": "7fb61f647b3ebfd559669c105360c24b6cb38502a28614cb52f1c30287fba087",
+    "aclOriginalSha256": "7fb61f647b3ebfd559669c105360c24b6cb38502a28614cb52f1c30287fba087",
+    "edit": {
+      "count": 1,
+      "managedLength": 236,
+      "offset": 8547,
+      "originalLength": 497,
+      "prefixPreserved": true,
+      "suffixPreserved": true,
+      "targetPath": "mcp.graphify-global"
+    },
+    "installedSchema": {
+      "credentialValuePersisted": false,
+      "resolvedCredentialObserved": true,
+      "status": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSha256": "6959cbf9f8270cd7e378257dcae8fd4a7c88d682f979e1bdeb0129101d893cb3"
+    },
+    "managedReadback": {
+      "authorization": "Bearer {env:OPENCODE_GRAPHIFY_API_KEY}",
+      "oauth": false,
+      "type": "remote",
+      "url": "http://127.0.0.1:4097/mcp"
+    },
+    "managedSha256": "56b5d184604952194e23924e3c59559d92a96db7f052fcdc2d2d907592183138",
+    "originalSha256": "ab8418a5a9d95402d17ee1a0bb498ca254160fc2942a97f6fbbbe169fa51d4c7",
+    "rollbackSha256": "ab8418a5a9d95402d17ee1a0bb498ca254160fc2942a97f6fbbbe169fa51d4c7"
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "changeId": "enforce-claim-evidence-closure",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-claim-evidence-closure",
+      "requirements": [
+        "Claim scope never exceeds evidence scope",
+        "Finite and partitioned populations have explicit closure",
+        "Substitutions prove equivalence at the owning boundary",
+        "Broad claims receive independent evidence challenge",
+        "Unsupported closure narrows or blocks the claim"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Representative proof and broad completion evidence remain separate",
+        "Non-SDET review is optional evidence"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Claim-evidence routing is universal and behaviorally proven",
+        "Reviewer roles remain optional and non-authorizing"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "Spec Capsule carries proportional claim-evidence scope",
+        "Complete archive requires current claim-evidence closure"
+      ]
+    },
+    {
+      "capability": "library-consumer-outcome-regression",
+      "requirements": [
+        "Focused decision-gap packs do not alter the maintained baseline",
+        "Consumer scenarios are explicit reviewed inputs"
+      ]
+    },
+    {
+      "capability": "session-completion-guard",
+      "requirements": [
+        "Completion adjudication preserves claim-evidence closure"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/principles-of-work.md",
+    "global/AGENTS.md",
+    "global/skills/behavioral-substitution-qualification",
+    "global/skills/change-ready-sdlc/SKILL.md",
+    "global/skills/openspec-propose/SKILL.md",
+    "global/skills/openspec-apply-change/SKILL.md",
+    "global/skills/openspec-archive-change/SKILL.md",
+    "global/agents/evidence-sufficiency-reviewer.md",
+    "global/agents/session-completion-arbiter.md",
+    "global/bin/openspec-change",
+    "global/bin/openspec-operation-gate.ts",
+    "global/extensions/session-completion-guard",
+    "global/plugin/session-delivery-context",
+    "global/plugins",
+    "global/model-profiles",
+    "global/opencode.json",
+    "global/opencode.local.json",
+    "openspec/config.yaml",
+    "README.md",
+    "profiles/all.json",
+    "profiles/core.json",
+    "config/consumer-outcome-regression.json",
+    "tools/contracts",
+    "tools/doctor.ts",
+    "tools/evidence-index.ts",
+    "tools/fixtures/openspec-claim-evidence",
+    "tools/openspec-change-gate.ts",
+    "tools/openspec-change-inventory.ts",
+    "tools/openspec-change-state.ts",
+    "tools/proofs/runtime-surface-loader.ts",
+    "tools/proofs/README.md",
+    "tools/proofs/session-completion-guard-restart.ts",
+    "tools/runtime-surface-profile.ts",
+    "tools/validators",
+    "tools/test-contracts-change-ready.ts",
+    "tools/test-contracts.ts",
+    "tools/test-openspec-change-inventory.ts",
+    "tools/test-model-profile.ts",
+    "tools/test-library/doctor.ts",
+    "tools/test-session-completion-guard.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/fixtures/consumer-outcome"
+  ],
+  "dependencies": [
+    {
+      "changeId": "add-autonomous-roadmap-mission-runtime",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "unattended-roadmap-orchestration",
+          "requirement": "Active evidence is indexed and bounded"
+        },
+        {
+          "type": "write-root",
+          "path": "global/bin/roadmap-mission.ts"
+        }
+      ],
+      "transferCondition": "owner-priority-pause-before-completion-mutation"
+    },
+    {
+      "changeId": "bound-completion-runtime-hot-paths",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "session-completion-guard",
+          "requirement": "Completion audit queries are bounded"
+        },
+        {
+          "type": "write-root",
+          "path": "global/plugins"
+        }
+      ],
+      "transferCondition": "explicit-transfer-before-mutation"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "bound-completion-runtime-hot-paths",
+      "toChangeId": "enforce-claim-evidence-closure",
+      "owners": [
+        {
+          "type": "write-root",
+          "path": "global/plugins"
+        }
+      ],
+      "condition": "explicit"
+    }
+  ]
+}

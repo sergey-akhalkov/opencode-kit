@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "establish-practice-owner-agents-planning-r1",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "b60e36f2f7a56d54fb74b34da98cc7527355a83bf5bba8022ddf25931fdacca8",
+      "global/principles-of-work.md": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8",
+      "profiles/core.json": "9ec6c81f806773d9f2d55cfeafb9042a7c8462f7b02e26ee69aa99817890f403",
+      "profiles/all.json": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b",
+      "tools/proofs/practice-owner-routing.ts": "abbfad0546b96ea119c2d4042457a7ddf4a52aa32966e876cce95cf0acab3141",
+      "openspec/changes/establish-practice-owner-agents/evidence/task-1-2-baseline-inventory-r1.json": "b5a3d7835a9557bf4e8d17c8fcf1fcdb762e30331dca38ef4fc393b9917e6f43"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fd0485840ffeBq2Yoem0jQXcsX",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "poa-baseline-owner-self-change",
+      "instruction-artifact-reviewer.md itself would change. Do not modify files. Report that prior-source evidence is required and you will not self-certify."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787506999854,\"sessionID\":\"ses_fd0485840ffeBq2Yoem0jQXcsX\",\"part\":{\"id\":\"prt_02fb84217001DmDgjVgnmtf7gv\",\"messageID\":\"msg_02fb7aef4001WP8THpiVEvHbhz\",\"sessionID\":\"ses_fd0485840ffeBq2Yoem0jQXcsX\",\"snapshot\":\"7b116425166e0018439140279ad62e1e4f1500c9\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787507002241,\"sessionID\":\"ses_fd0485840ffeBq2Yoem0jQXcsX\",\"part\":{\"id\":\"prt_02fb84a47001R1Y3C4OZvWi1RR\",\"messageID\":\"msg_02fb7aef4001WP8THpiVEvHbhz\",\"sessionID\":\"ses_fd0485840ffeBq2Yoem0jQXcsX\",\"type\":\"text\",\"text\":\"Prior-source evidence is required. Because `instruction-artifact-reviewer.md` itself would change, I will not modify files or self-certify the change.\",\"time\":{\"start\":1787507001927,\"end\":1787507002219},\"metadata\":{\"openai\":{\"itemId\":\"msg_0d675ef2d6929251016a8b313a942087d2835fd74ee4b57ded\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787507002997,\"sessionID\":\"ses_fd0485840ffeBq2Yoem0jQXcsX\",\"part\":{\"id\":\"prt_02fb84e39001ZM6MHkvAWB4ZNC\",\"reason\":\"stop\",\"snapshot\":\"6df5e1b59d68fcf43bcd2ca37b94f0b41e393bed\",\"messageID\":\"msg_02fb7aef4001WP8THpiVEvHbhz\",\"sessionID\":\"ses_fd0485840ffeBq2Yoem0jQXcsX\",\"type\":\"step-finish\",\"tokens\":{\"total\":17483,\"input\":15830,\"output\":37,\"reasoning\":80,\"cache\":{\"write\":0,\"read\":1536}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: allow",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "Prior-source evidence is required. Because `instruction-artifact-reviewer.md` itself would change, I will not modify files or self-certify the change.",
+    "elapsedMs": 48012,
+    "eventCount": 3,
+    "launchedOwners": [],
+    "providerCalls": 1,
+    "sessionIds": [
+      "ses_fd0485840ffeBq2Yoem0jQXcsX"
+    ],
+    "tokens": [
+      {
+        "total": 17483,
+        "input": 15830,
+        "output": 37,
+        "reasoning": 80,
+        "cache": {
+          "write": 0,
+          "read": 1536
+        }
+      }
+    ],
+    "toolCalls": []
+  },
+  "input": {
+    "prompt": "instruction-artifact-reviewer.md itself would change. Do not modify files. Report that prior-source evidence is required and you will not self-certify.",
+    "scenario": "owner-self-change"
+  },
+  "oracles": {
+    "cleanupComplete": true,
+    "fixtureStable": true,
+    "launchedOwners": []
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "abcd5c34816b4a02f5fcac32c2e91512895fea1106201859cfc9831dbf98d84c",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    },
+    "before": {
+      "task.md": "abcd5c34816b4a02f5fcac32c2e91512895fea1106201859cfc9831dbf98d84c",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    }
+  }
+}

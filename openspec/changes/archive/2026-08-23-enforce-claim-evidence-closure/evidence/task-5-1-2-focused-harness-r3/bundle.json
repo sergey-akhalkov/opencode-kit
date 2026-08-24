@@ -1,0 +1,2872 @@
+{
+  "byteLength": 94022,
+  "comparisonIdentity": "983815be771ff0fa1f1d386a3ccfbe2081896e5b64968b17f50f84cccddfd231",
+  "evaluatorDigest": "a842af80cd890a46f2a2103bfd4875917bd360924c6ac85755ef759d00f562d3",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "matched",
+  "samples": [
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "3c6eda47c86e1d0d1cec1b95f9b974d8d4a7e30a38c3887d8f73e44b8b76075f"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "4148d7fdd4c9ad1e6f0dcaadb9d966de61c9200749a32a6d3be470f9831c8e7c"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "representative-finite-population"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"representative-finite-population\",\"claimDisposition\":\"narrowed\",\"completionDisposition\":\"continue\"}\n"
+      },
+      "requestSha256": "1fe6354d9dac9c0ac9e11519e73ffa571549196ac78e74e69b8d78f39f7acb5c",
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "3c6eda47c86e1d0d1cec1b95f9b974d8d4a7e30a38c3887d8f73e44b8b76075f"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "853e7f47acb0e60b7a140d13d87ded6593ffb819c522fbf4e52c5ccc83562c6a"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "representative-finite-population"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"representative-finite-population\",\"claimDisposition\":\"narrowed\",\"completionDisposition\":\"continue\"}\n"
+      },
+      "requestSha256": "1fe6354d9dac9c0ac9e11519e73ffa571549196ac78e74e69b8d78f39f7acb5c",
+      "sampleIndex": 1,
+      "scenarioId": "representative-finite-population",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "29d0b3e412e63194af7bedc50724434471ca14f2116537460cc0a1c3ce927b73"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "2dd0b62194b6e7d061ad0ece4c84339e92bab693ea91f2cba512b500f8283753"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "exact-finite-environment"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"exact-finite-environment\",\"claimDisposition\":\"supported\",\"completionDisposition\":\"allow_stop\"}\n"
+      },
+      "requestSha256": "ea91981b7ff637117693a15eb3b6866230608f1d66d1b124f85ae87c358838b6",
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "29d0b3e412e63194af7bedc50724434471ca14f2116537460cc0a1c3ce927b73"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "c854cbf85bbf7d11296a0fa410faf6676e1bb4ca4cde283dcc482a426dcad979"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "exact-finite-environment"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"exact-finite-environment\",\"claimDisposition\":\"supported\",\"completionDisposition\":\"allow_stop\"}\n"
+      },
+      "requestSha256": "ea91981b7ff637117693a15eb3b6866230608f1d66d1b124f85ae87c358838b6",
+      "sampleIndex": 1,
+      "scenarioId": "exact-finite-environment",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "56d8fc29d4e4fc1540eb3df2ff0d13bd1651488efbb3c9df5f7f4d8de6488e11"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "d6803a55e0c5f8e3ae3b09d3482f3b6718d5520c6ad5db3d95a278d25b8c0e51"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "unavailable-real-oracle"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"unavailable-real-oracle\",\"claimDisposition\":\"blocked\",\"completionDisposition\":\"continue\"}\n"
+      },
+      "requestSha256": "769b4e98347a9b3fff9e4e605a4bd7b1582eea26012ceb60bc76e7080a67f965",
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "56d8fc29d4e4fc1540eb3df2ff0d13bd1651488efbb3c9df5f7f4d8de6488e11"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "6d80e5e93f2cd603726140552b19ef4ab7ce98d4fa674f7842842bf32b1d93dc"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "unavailable-real-oracle"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"unavailable-real-oracle\",\"claimDisposition\":\"blocked\",\"completionDisposition\":\"continue\"}\n"
+      },
+      "requestSha256": "769b4e98347a9b3fff9e4e605a4bd7b1582eea26012ceb60bc76e7080a67f965",
+      "sampleIndex": 1,
+      "scenarioId": "unavailable-real-oracle",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "add26a225c010348beb85e87c21327470b963073876825ba77208b8875f13156"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "6381aaf6c4a9cba6470a69f7756dc5666cbeded8cf17be71ca4ac03dd991c05c"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "ordinary-small-exact-case"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"ordinary-small-exact-case\",\"claimDisposition\":\"supported\",\"completionDisposition\":\"allow_stop\"}\n"
+      },
+      "requestSha256": "6d25e70fd026fca9846305e152494d39a10f86983781d76206698f34e4d0be8d",
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    },
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ee360423c757a7aa83c27e97d520d746b898592a91ef3c687ad1d3528f05f87b",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "5cea97e8987bcd852fd0cdf9a505c4c1ddd9344ae8f92708e60475e93e48c7f2",
+        "profile": "quality-independent",
+        "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "cases/exact-finite-environment.json",
+          "sha256": "9460dc658719e37adc41d9c7b0ef20c123a10fa89385f2fecc51eb1e9f556514"
+        },
+        {
+          "path": "cases/ordinary-small-exact-case.json",
+          "sha256": "edba1bf9b093bc1efa980f301427dd92b208902206e25cf879b492fdb4b8bef0"
+        },
+        {
+          "path": "cases/representative-finite-population.json",
+          "sha256": "3de72dd5688dd618b0ea9c3f154818c3990c16a1e4d826395fef5978864bf4e3"
+        },
+        {
+          "path": "cases/unavailable-real-oracle.json",
+          "sha256": "5b374fb2085305189c31b1af1ae60b097463d9e53cf5ad0f2825d4410ef0fa3b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "15b7d3f9835002e9c6aae6412b3d21038349f2f3e180d3e91fc5607eef2b6ef3"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "add26a225c010348beb85e87c21327470b963073876825ba77208b8875f13156"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "004947693f5fc5d70bd5be25a9e437e182252a168518d94beec57dfaacc35a03"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "deny": [
+          "external_directory",
+          "question",
+          "task"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "ordinary-small-exact-case"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"ordinary-small-exact-case\",\"claimDisposition\":\"supported\",\"completionDisposition\":\"allow_stop\"}\n"
+      },
+      "requestSha256": "6d25e70fd026fca9846305e152494d39a10f86983781d76206698f34e4d0be8d",
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exact-case",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/bin/openspec-change/claims.ts",
+            "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+          },
+          {
+            "path": "global/bin/openspec-change/evidence.ts",
+            "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+          },
+          {
+            "path": "global/bin/openspec-change/gate.ts",
+            "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+          },
+          {
+            "path": "global/bin/openspec-change/inventory.ts",
+            "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+          },
+          {
+            "path": "global/bin/openspec-change/manifest.ts",
+            "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+          },
+          {
+            "path": "global/bin/openspec-change/ownership.ts",
+            "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+          },
+          {
+            "path": "global/bin/openspec-change/state.ts",
+            "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+            "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+            "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+            "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+            "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+            "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+            "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+            "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+            "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/control.ts",
+            "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/controller.ts",
+            "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/grind-control.ts",
+            "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/inspection.ts",
+            "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/leases.ts",
+            "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/plugin-client.ts",
+            "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+            "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/question.ts",
+            "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/runtime-support.ts",
+            "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/status.ts",
+            "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/strategy.ts",
+            "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/task-fallback.ts",
+            "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+            "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/types.ts",
+            "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+          },
+          {
+            "path": "global/extensions/session-completion-guard/verdict.ts",
+            "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db-types.ts",
+            "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/db.ts",
+            "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/evidence.ts",
+            "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/index.ts",
+            "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/projection.ts",
+            "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/redaction.ts",
+            "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/requirements.ts",
+            "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+          },
+          {
+            "path": "global/plugin/session-delivery-context/sqlite.ts",
+            "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "ad4d6f06c945dbaa6fd240ad66952b7497282de0fade8ebde515e9092990fd5b",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "7e9df4b3220e2617c228dcb2b798857b84a2b6860f173fead9245d114885b214",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "1b11d151ac8b269c39e0454513d7d902ff254fc0751358634cb8019d26325cee"
+      },
+      {
+        "path": "global/agents/evidence-sufficiency-reviewer.md",
+        "sha256": "f199c9b6d2a283ad6c9e7845b9adf01d2d3e07a0ef5a3880bcb88e11c58a68fa"
+      },
+      {
+        "path": "global/agents/session-completion-arbiter.md",
+        "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+      },
+      {
+        "path": "global/bin/openspec-change/claims.ts",
+        "sha256": "312aececa64feed59a4437397411e6df8c06aba3ec5b544a435100cbf4f5be25"
+      },
+      {
+        "path": "global/bin/openspec-change/evidence.ts",
+        "sha256": "14887f34bdbc059e5c696957c0a7b4accea271de1989c369ffa29e53062a95d7"
+      },
+      {
+        "path": "global/bin/openspec-change/gate.ts",
+        "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+      },
+      {
+        "path": "global/bin/openspec-change/inventory.ts",
+        "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+      },
+      {
+        "path": "global/bin/openspec-change/manifest.ts",
+        "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+      },
+      {
+        "path": "global/bin/openspec-change/ownership.ts",
+        "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+      },
+      {
+        "path": "global/bin/openspec-change/state.ts",
+        "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+        "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+        "sha256": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/arbiter-route.ts",
+        "sha256": "8aebb3a3989e6ec0cfc93d98478625344bbd8693fb258ae95d89cb4727dc2590"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/audit-monitor-console.ts",
+        "sha256": "de2e179c5668a88dc2bc9f9f484fedc5c1dba4b91767ff6384936c0eb81148f0"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/audit-monitor-handoff.ts",
+        "sha256": "d669af736f6b06e4b8248b66189e41f76724201e92e0fd95f48f379a514e8848"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/audit-monitor-storage.ts",
+        "sha256": "ad5e2889bbc16ebddaf68c906991940a1fa38a084bfad3681b624a1aa9c071f5"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/audit-monitor.ts",
+        "sha256": "b634d32919babc0cb71cbd379c65d31cb751139093dbaf5d3f5d5bd93b0aea3c"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/claim-evidence.ts",
+        "sha256": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/control.ts",
+        "sha256": "2cb956cb164ecb8d1a2d178d073d0e6466454a3fead3fe1ea41f395c8f730c8c"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/controller.ts",
+        "sha256": "304ec469129a36f19946f6307b77c893ad193509be2745e4c9332a6b8c9220be"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/grind-control.ts",
+        "sha256": "120a27da59108c0b08b5164d0bccbf5010f019ef472c510ea64be1d5dd7e8f1d"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/inspection.ts",
+        "sha256": "01042f24606b050c86bcbb0e4f75af48343944ad5631f4a7a3de16cdf8b67df6"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/leases.ts",
+        "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/plugin-client.ts",
+        "sha256": "c8f99e92c79a5ec7c1d7491867ba92015abb7c42ef6a195ddea825700aecbe95"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/pty-fallback.ts",
+        "sha256": "9d4d7b7ebc733c3a5006f1f70cea9e9c12cca4c95fbf6396f9673a05ad300c54"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/question.ts",
+        "sha256": "f99ef53d7ff6ce6dd384d5ef1bc0c61d8e20580a33b390eb98d657e8da9968a6"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/runtime-support.ts",
+        "sha256": "ab5f7423c56e192a17a4889b8a518a45484c60b9c47e65c1a524c723abf4cb6c"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/status.ts",
+        "sha256": "a5f5c784e6f141ab5baf157eee4a4bcad76ef848c0ccde5025c99f2d75a35386"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/strategy.ts",
+        "sha256": "fd7c90a0513244f7300ce4cce0246a26fac3cf558aefb348c135ac0119e8a6c6"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/task-fallback.ts",
+        "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+        "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/types.ts",
+        "sha256": "13c8b100d7e32ba70c7d0dcb5e3b3bcf3d79679b1c3900c9e81a31d84497c902"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/verdict.ts",
+        "sha256": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "ad3a4e2f6e5784cf61cb07fd3faca2571134a0d778c8a866357e0445ecddecc5"
+      },
+      {
+        "path": "global/opencode.json.template",
+        "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/db-types.ts",
+        "sha256": "cb7cb1cb47bf6ed7c4a3f560f367f8f7eb72a0d4d26c0fb4f6b28407e2eda395"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/db.ts",
+        "sha256": "e41dd9cc03605eaeab38e56d534df26d71985375975dc5451f3936425d816ec2"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/evidence.ts",
+        "sha256": "1ecb7220511216bba21777b47afeaabb11f91a8f4e4965b5cc8edae3d0443195"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/index.ts",
+        "sha256": "e11c7486391addad24c421d4565c73b6dbb08003d1a9a4987aeb7a13b0461ca3"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/projection.ts",
+        "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/redaction.ts",
+        "sha256": "5d86dead2a5683f7c1efdffbdd23d2262f83b099fd735fc95aa0ceae2c0f2787"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/requirements.ts",
+        "sha256": "47b42dd93e1675b638f3175e4349ab6bd97cc150af1069a5a2b1a038b45fd0ef"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/sqlite.ts",
+        "sha256": "4956bb4aee317487c1365d88e634f293073cdd95715c2fe8c7a3bb1d09c565d2"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8"
+      },
+      {
+        "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+        "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "e8228f40506ba06d0781b94a7fe770573ae252c8b2c8214b914215bb00dce4a4"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "50df8800d8aa52d49919df65e7662dea40bb72e25f4ff9fe88185d125dfd357b"
+      }
+    ]
+  }
+}

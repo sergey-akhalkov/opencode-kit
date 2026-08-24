@@ -72,14 +72,12 @@ function installPortableFixtureSurface(fixture: string): void {
   writeText(path.join(fixture, "global", "AGENTS.md"), lines([
     "# Fixture Global Agents",
     "",
-    "- ## Attempt control and stagnation",
-    "- Treat the session as stagnant when retries stall; a later failure in the same chain is diagnosis, not outcome progress.",
-    "- One evidence-only costly attempt immediately blocks another live attempt; the `unknown` gate state remains blocked.",
+    "- Two materially similar local attempts without downstream progress require a causally different mechanism.",
+    "- One evidence-only costly attempt blocks unchanged repetition; unknown gate state remains blocked.",
     "- The failed invocation remains finalized and non-reusable, but it does not impose a fixed mission-wide attempt ceiling.",
-    "- Unchanged high-cost live work blocks unchanged live repetition.",
-    "- Record strategy history in `openspec/changes/<change>/history.md`.",
+    "- Preserve the bundle and replay the complete reachable evaluator/finalization chain offline.",
+    "- Record only materially distinct strategies in `history.md`.",
     "- Emit `Pending Strategy History` when compaction cannot write files.",
-    "- Choose a materially different local mechanism instead of repeating the same approach.",
     "",
   ]));
   writeText(path.join(fixture, "global", "opencode.json.template"), lines([
@@ -90,7 +88,8 @@ function installPortableFixtureSurface(fixture: string): void {
     '    "__OPENCODE_CONFIG_DIR__/plugins/notify.ts",',
     '    "__OPENCODE_CONFIG_DIR__/plugin/session-env.ts",',
     '    "__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts",',
-    '    ["__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts", { "arbiterAgent": "session-completion-arbiter", "auditWindow": { "closePassedAfterMs": 15000, "enabled": false, "mode": "read-only-monitor", "scope": "per-root", "terminal": "powershell-shell" }, "enabled": true }]',
+    '    ["__OPENCODE_CONFIG_DIR__/extensions/roadmap-mission-launcher.ts", { "scriptRuntime": "__OPENCODE_SCRIPT_RUNTIME__" }],',
+    '    ["__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts", { "arbiterAgent": "session-completion-arbiter", "auditWindow": { "closePassedAfterMs": 15000, "enabled": false, "mode": "read-only-monitor", "scope": "per-root", "terminal": "powershell-shell" }, "certificateIssuers": ["roadmap-mission-session-executor"], "enabled": true }]',
     "  ],",
     '  "compaction": {',
     '    "prompt": "Emit Pending Strategy History and write history.md with Live-Attempt Gate: clear | blocked | unknown, Failure Chain, and Terminal Replay Result. Name the first gate-closing offline step and classify a live-only missing observation as bounded evidence capture rather than proof. Workflow reflection is optional evidence outside product completion scope; it must not create or schedule product work and belongs in a separately owned change."',
@@ -340,7 +339,7 @@ export const portableWorkflowToolTests: TestCase[] = [
     },
   },
   {
-    name: "portable process rejects shell-fallback metacharacters before staged execution",
+    name: "portable process delivers literal .cmd argv through staged validation without a shell string",
     run: () => {
       if (process.platform !== "win32") {
         return;
@@ -365,10 +364,13 @@ export const portableWorkflowToolTests: TestCase[] = [
           command,
           "evil&echo",
         ], dir);
-        assertFailure(result, "Shell-fallback arguments with Windows metacharacters must fail closed.");
-        assertOutputContains(result, "unsupported shell metacharacters", "Metacharacter rejection must be explicit before shell execution.");
-        assert(!fs.existsSync(marker), "Shell-fallback child must not execute when metacharacters are present.");
-        assertEqual(fs.readdirSync(tempParent).length, 0, "Metacharacter rejection must still clean disposable worktree.");
+        assertSuccess(result, "Resolved .cmd argv must not fail through a shell-string rejection.");
+        assert(
+          !result.output.includes("unsupported shell metacharacters"),
+          "Resolved .cmd must not apply shell-fallback rejection.",
+        );
+        assert(fs.existsSync(marker), "Resolved .cmd child must execute through staged validation.");
+        assertEqual(fs.readdirSync(tempParent).length, 0, "Successful .cmd argv must still clean disposable worktree.");
       });
     },
   },
@@ -393,7 +395,7 @@ export const portableWorkflowToolTests: TestCase[] = [
     },
   },
   {
-    name: "validator rejects missing portable bin tools and stagnation markers when installer is present",
+    name: "validator rejects missing portable bin tools and concise live-attempt markers when installer is present",
     run: () => {
       const fixture = newLibraryFixture("missing-portable-bin-and-stagnation");
       installPortableFixtureSurface(fixture);
@@ -407,17 +409,17 @@ export const portableWorkflowToolTests: TestCase[] = [
 
       const agentsPath = path.join(fixture, "global", "AGENTS.md");
       const completeAgents = fs.readFileSync(agentsPath, "utf8");
-      writeText(agentsPath, completeAgents.replace("Treat the session as stagnant", "Treat retries carefully"));
-      const missingStagnation = invokeValidator(fixture);
-      assertFailure(missingStagnation, "Removed stagnation marker must fail validation.");
-      assertOutputContains(missingStagnation, "global AGENTS stagnation strategy contract", "Stagnation contract failure must be named.");
+      writeText(agentsPath, completeAgents.replace("Two materially similar local attempts without downstream progress", "Repeated attempts need review"));
+      const missingAttemptControl = invokeValidator(fixture);
+      assertFailure(missingAttemptControl, "Removed repeated-attempt marker must fail validation.");
+      assertOutputContains(missingAttemptControl, "global AGENTS concise live-attempt contract", "Repeated-attempt contract failure must be named.");
 
-      writeText(agentsPath, completeAgents.replace("blocks unchanged live repetition", "permits unchanged live repetition"));
+      writeText(agentsPath, completeAgents.replace("blocks unchanged repetition", "permits unchanged repetition"));
       const missingLiveAttemptGate = invokeValidator(fixture);
       assertFailure(missingLiveAttemptGate, "Removed live-attempt block marker must fail validation.");
       assertOutputContains(
         missingLiveAttemptGate,
-        "global AGENTS stagnation strategy contract",
+        "global AGENTS concise live-attempt contract",
         "Live-attempt block contract failure must be named.",
       );
       writeText(agentsPath, completeAgents);

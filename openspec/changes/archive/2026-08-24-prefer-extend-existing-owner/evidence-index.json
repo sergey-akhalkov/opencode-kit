@@ -1,0 +1,672 @@
+{
+  "schemaVersion": 2,
+  "changeId": "prefer-extend-existing-owner",
+  "candidateId": "prefer-extend-existing-owner-planning-r1",
+  "environmentId": "windows-opencode-planning-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "120a7711dbc422751517fc45b4ff0303658a90d46da3585fd1665566bf66f751",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-apply-gate",
+        "effects": [
+          "local-planning",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-apply-gate",
+        "effects": [
+          "local-planning",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/openspec-operation-gate.ts --root D:/home/sergey-akhalkov/opencode-kit --operation apply --change prefer-extend-existing-owner",
+        "status": 0,
+        "recordedAt": "2026-08-24T11:43:30.940Z"
+      },
+      "artifacts": [
+        "ownership.json",
+        "evidence-index.json",
+        "evidence/task-1-1-ownership-r1.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "d251cd392cfcbdc9e4cb7bd84f1725cd36a1d91e006028055cc50f2dddc28d1d",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-preflight",
+        "effects": [
+          "local-planning",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-preflight",
+        "effects": [
+          "local-planning",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/reuse-discovery.ts --mode preflight --evidence-root C:/Users/noilw/AppData/Local/Temp/opencode/prefer-extend-preflight-r2 --capture-kind baseline --candidate-id prefer-extend-existing-owner-planning-r1 --scenarios local-owner,trivial-fix,extend-existing-owner",
+        "status": 0,
+        "recordedAt": "2026-08-24T11:48:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-1-2-preflight-r2.json",
+        "evidence/task-1-2-preflight-r2.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "taskTextDigest": "7a08b9d0b3c69321847e7d9b5ee89b3c18938f692ec71ab1ad45c64376207b6c",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-capture",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-capture",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/reuse-discovery.ts --mode capture --evidence-root evidence/task-1-3-baseline-r2",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.4",
+      "taskTextDigest": "2d39e835e5f991ef3921c64c27ff017fa5cb3cc9691eba23dbb154d700eac217",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-focused-test",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-focused-test",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/run-focused-test.ts tools/test-reuse-discovery.ts",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "6f4532e75e67428a83c4966ea7615f24c749de489d73400bf1d79e533bd9da8a",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-budget",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-budget",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/instruction-budget.ts --format json",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "eff2042b86a1806ffd38ef6c74cb6264c632c32ab7a949ca936b81ad05380274",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-inventory",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-inventory",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "manual role-delta readback",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "2f79e64215a4b5b04fb364ae0b32112b60127b9c64caa92e42355c31900b5013",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "focused-contracts",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "focused-contracts",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/run-focused-test.ts tools/test-contracts.ts",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.4",
+      "taskTextDigest": "bea9c813118d04a85491fcc6c9b5585e34ab820b8aaca8bf974801b3b41f93cf",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-preflight",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-preflight",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/reuse-discovery.ts --mode preflight --evidence-root prefer-extend-preflight-candidate-r1",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "41c0db74aa42f2ed33657d038fa37b898196fbf263c451a2ddb8e37cf4f3d084",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-capture",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-capture",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/reuse-discovery.ts --mode capture --evidence-root evidence/task-3-1-candidate-r1",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "216af5de0bdb47c092a2d807cc13e7f458216c0e80aba3482a4536627a949008",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-evaluate",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reuse-discovery-evaluate",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/reuse-discovery.ts --mode evaluate --evidence-root evidence/task-3-2-evaluate-r2",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "f4f60866807f74e2952fb3de1c605e8ccbb8bf6a29025ded8626d26db1aef828",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "loaded-source-canary",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "loaded-source-canary",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "candidate extend-existing-owner and trivial-fix authoring sessions",
+        "status": 0,
+        "recordedAt": "2026-08-24T12:30:00.000Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "0601ebdd63b1319ea4764ca0a13647817c78078af6b8c3c37c9178697bf0e54b",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-library.ts + remaining npm test files + validate-library --fail-on-warnings",
+        "status": 0,
+        "recordedAt": "2026-08-24T13:00:33.367Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "1b68896ecdcc88c02d901ef84c835a79e9f0234439bce829efc57313729adbbf",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-library.ts + remaining npm test files + validate-library --fail-on-warnings",
+        "status": 0,
+        "recordedAt": "2026-08-24T13:00:33.367Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "384fbd0fafb7fe70fe2ae771bc9eaa6f89dbd724cc9915b904329290254c6a95",
+      "result": "complete",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-library.ts + remaining npm test files + validate-library --fail-on-warnings",
+        "status": 0,
+        "recordedAt": "2026-08-24T13:00:33.367Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "planning-ownership",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/task-1-1-ownership-r1.md",
+          "bytes": 535,
+          "digest": "a9191a636521dbe6930742ce148bd82943e6ab2919e54f640f5dd4f6a79dc094"
+        }
+      ]
+    },
+    {
+      "name": "runner-preflight",
+      "kind": "runner",
+      "files": [
+        {
+          "path": "evidence/task-1-2-preflight-r2.json",
+          "bytes": 1542,
+          "digest": "23701bacfb54c98b7e1e7cdc43f02718f5e5d978d498a20fe8368465ae699a95"
+        },
+        {
+          "path": "evidence/task-1-2-preflight-r2.md",
+          "bytes": 389,
+          "digest": "6d2b2eaa9c57f54c32cae80d09e6f3bf26cf2547cf453a73344fe8d3ac8fe32b"
+        }
+      ]
+    },
+    {
+      "name": "baseline-authoring",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-1-3-baseline-r2/local-owner.bundle.json",
+          "bytes": 33725,
+          "digest": "454d5931a6fdaa1bedfc374cc0cacc856101c2cb1c8a05d7c873821ecd7a56c9"
+        },
+        {
+          "path": "evidence/task-1-3-baseline-r2/trivial-fix.bundle.json",
+          "bytes": 18971,
+          "digest": "63ff0f2ee548c609f05e3b554258cbbd27564bb60cb5c3764ae65d8911f08d19"
+        },
+        {
+          "path": "evidence/task-1-3-baseline-r2/extend-existing-owner.bundle.json",
+          "bytes": 16494,
+          "digest": "b2dfdad58cd237494f190d5cffb2b880d5f0dd5df939899cfbdd2d17272dc7e8"
+        }
+      ]
+    },
+    {
+      "name": "candidate-authoring",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-3-1-candidate-r1/local-owner.bundle.json",
+          "bytes": 41068,
+          "digest": "97b993180b4bb08343b5010fd99d470d3a87125d6f6f650c628d4ba2d8af02d1"
+        },
+        {
+          "path": "evidence/task-3-1-candidate-r1/trivial-fix.bundle.json",
+          "bytes": 18991,
+          "digest": "f0ea84d750d9db8d43be194464b482b34b8874f3deb353eba0cfa28a5a1a86e4"
+        },
+        {
+          "path": "evidence/task-3-1-candidate-r1/extend-existing-owner.bundle.json",
+          "bytes": 21182,
+          "digest": "857fbd2f69d75c0ed301c0b837a2a23de75348bd4077716ec2d00396130aecbd"
+        }
+      ]
+    },
+    {
+      "name": "semantic-disposition",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/task-3-2-evaluate-r2/evaluation.json",
+          "bytes": 1160,
+          "digest": "c0028937261ef6e5b6fb0143feeb50f0634cbe133233b047c676a8e44eaa9f01"
+        },
+        {
+          "path": "evidence/task-3-2-disposition.md",
+          "bytes": 858,
+          "digest": "024cf7d3d1ddee29e664f685d8ecc94adc92a75952a5a9d0bb766130c0757423"
+        }
+      ]
+    },
+    {
+      "name": "claim-challenge",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/task-3-2-challenge.md",
+          "bytes": 459,
+          "digest": "63a308b1a2146e798fa093467f22d071f883c1f0a46e35ec68d3c181f4c1c850"
+        }
+      ]
+    },
+    {
+      "name": "superseded-raw",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-1-3-baseline-r1/extend-existing-owner.bundle.json",
+          "bytes": 12391,
+          "digest": "fdf16c757fb7550713fa3c3a4050cd5cb890d24d0f5c15b53128d546346247e1"
+        },
+        {
+          "path": "evidence/task-1-3-baseline-r1/local-owner.bundle.json",
+          "bytes": 33732,
+          "digest": "c7bec311dcd2b2814077249843b1b7b260a207377886b3fd99704452a272fd0a"
+        },
+        {
+          "path": "evidence/task-1-3-baseline-r1/trivial-fix.bundle.json",
+          "bytes": 18915,
+          "digest": "b764f06f464083352b2118e88d81f80eb460d9963fd0e1bc0978b11293e56ab9"
+        },
+        {
+          "path": "evidence/task-3-2-evaluate-r1/evaluation.json",
+          "bytes": 1162,
+          "digest": "d05722d41567715fdb8919bd38fc5134cfd4d1d4baa17be89ee0f7ba7fbceb2d"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "EXT-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The candidate improves or preserves the three maintained reuse decisions for the captured model and source.",
+      "claimClass": "finite-population",
+      "candidateId": "prefer-extend-existing-owner-planning-r1",
+      "environmentId": "windows-opencode-planning-r1",
+      "coverageBasis": "finite-population",
+      "population": {
+        "id": "ext-maintained-scenarios-v1",
+        "members": [
+          "local-owner",
+          "trivial-fix",
+          "extend-existing-owner"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "Other models languages repositories scales sibling-in-progress owner launch and proof-harness clone collapse remain outside this claim."
+      },
+      "paths": {
+        "production": "resolved-selected-runtime",
+        "baseline": "baseline-authoring",
+        "candidate": "candidate-authoring"
+      },
+      "observationBoundary": "installed-opencode-reuse-discovery-authoring",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "candidate-authoring",
+          "semantic-disposition"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "local-owner",
+          "candidateId": "prefer-extend-existing-owner-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": "baseline-authoring",
+            "candidate": "candidate-authoring"
+          },
+          "observationBoundary": "installed-opencode-reuse-discovery-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring",
+            "semantic-disposition"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "trivial-fix",
+          "candidateId": "prefer-extend-existing-owner-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": "baseline-authoring",
+            "candidate": "candidate-authoring"
+          },
+          "observationBoundary": "installed-opencode-reuse-discovery-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring",
+            "semantic-disposition"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "extend-existing-owner",
+          "candidateId": "prefer-extend-existing-owner-planning-r1",
+          "environmentId": "windows-opencode-planning-r1",
+          "paths": {
+            "production": "resolved-selected-runtime",
+            "baseline": "baseline-authoring",
+            "candidate": "candidate-authoring"
+          },
+          "observationBoundary": "installed-opencode-reuse-discovery-authoring",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "candidate-authoring",
+            "semantic-disposition"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "baseline-authoring",
+        "candidate-authoring",
+        "semantic-disposition",
+        "claim-challenge"
+      ],
+      "materialExclusions": [
+        "Universal reuse quality",
+        "All-model compliance",
+        "Every new file in any repository",
+        "Live sibling-in-progress owner launch",
+        "Collapsing existing proof-harness clones",
+        "Unprompted default-extend independent of the scenario prompt",
+        "Production-role reshape and Practice-Owner launch oracles"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "claim-challenge"
+        ]
+      },
+      "maximumSupportedClaim": "On openai/gpt-5.6-sol/xhigh quality-independent only, the three captured planning-only authoring runs show candidate local-owner loaded reuse-discovery, both trivial-fix runs loaded no reuse-discovery skill, and candidate extend-existing-owner named formatStatus and recorded extend with unchanged fixtures.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    }
+  ]
+}

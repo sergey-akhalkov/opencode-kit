@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "taskId": "2.2",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "invocations": [
+    {
+      "command": "openspec instructions proposal --change enforce-claim-evidence-closure --json",
+      "status": 0,
+      "recordedAt": "2026-08-23T10:54:08.3280993Z"
+    },
+    {
+      "command": "node tools/test-openspec-operation-gate.ts",
+      "status": 0,
+      "recordedAt": "2026-08-23T10:54:08.3280993Z"
+    }
+  ],
+  "observed": {
+    "proposalRulesContainClaimScope": true,
+    "broadFields": [
+      "Claim ID",
+      "Claim Class",
+      "Population",
+      "Coverage Basis",
+      "Production Path",
+      "Comparison Paths",
+      "Environment",
+      "Real Oracle",
+      "Unresolved Observations",
+      "Maximum Claim"
+    ],
+    "exactCaseOneLinePassed": true,
+    "missingBroadFieldNamedAlone": "Real Oracle",
+    "proseClassified": false,
+    "taskContractDuplicated": false,
+    "providerCalls": 0
+  },
+  "result": "complete"
+}

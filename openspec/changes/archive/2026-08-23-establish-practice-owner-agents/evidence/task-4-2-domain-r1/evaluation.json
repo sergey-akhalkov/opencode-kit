@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "taskId": "4.2",
+  "complete": true,
+  "rows": [
+    { "scenario": "independent-multi-trigger", "launchedOwners": ["openspec-architecture-reviewer", "test-coverage-reviewer"], "status": 0 },
+    { "scenario": "protocol-wire-boundary", "launchedOwners": ["protocol-api-reviewer", "wire-protocol-reviewer"], "status": 0 }
+  ],
+  "limitation": "The mixed protocol-wire prompt launched both domain owners rather than one primary plus referral."
+}

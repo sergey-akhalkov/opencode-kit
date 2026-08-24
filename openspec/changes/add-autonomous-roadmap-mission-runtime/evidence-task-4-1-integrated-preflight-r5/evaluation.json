@@ -1,0 +1,14 @@
+{
+  "candidateId": "task-4-1-integrated-preflight-r5",
+  "checks": {
+    "cleanupComplete": true,
+    "commandsLoaded": true,
+    "missionEligible": true,
+    "noModelCall": false,
+    "serverIsolated": true,
+    "slashBoundary": false
+  },
+  "liveCalls": 0,
+  "schemaVersion": 1,
+  "status": "blocked"
+}

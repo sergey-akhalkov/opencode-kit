@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "changeId": "optimize-shared-opencode-runtime-resources",
+  "mutationEnabled": false,
+  "capabilities": [
+    {
+      "capability": "local-opencode-workstation",
+      "requirements": [
+        "Restart terminates only validated managed identities"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "tools/windows/opencode-workstation.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "fix-workstation-restart-reliability",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "write-root",
+          "path": "tools/windows/opencode-workstation.ts"
+        }
+      ],
+      "transferCondition": "archive-before-acquire"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "fix-workstation-restart-reliability",
+      "toChangeId": "optimize-shared-opencode-runtime-resources",
+      "owners": [
+        {
+          "type": "write-root",
+          "path": "tools/windows/opencode-workstation.ts"
+        }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

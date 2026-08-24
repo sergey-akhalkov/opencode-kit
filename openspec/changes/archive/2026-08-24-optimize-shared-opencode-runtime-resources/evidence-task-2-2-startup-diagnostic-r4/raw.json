@@ -1,0 +1,59 @@
+{
+  "candidateId": "object-guard-startup-diagnostic-r4",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "fixtureAbsent": true,
+    "openCodePortAbsent": true
+  },
+  "graphifyProcesses": 0,
+  "kind": "shared-graphify-startup-diagnostic",
+  "logs": {
+    "stderr": [
+      "timestamp=2026-08-20T19:30:10.442Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-runtime\\\\config-home\\\\opencode\\\\config.json\"",
+      "timestamp=2026-08-20T19:30:10.450Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.json\"",
+      "timestamp=2026-08-20T19:30:10.455Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"",
+      "timestamp=2026-08-20T19:30:10.947Z level=INFO run=d81a86ce message=\"creating instance\" directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\project\"",
+      "timestamp=2026-08-20T19:30:10.950Z level=INFO run=d81a86ce message=fromDirectory directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\project\"",
+      "timestamp=2026-08-20T19:30:11.781Z level=INFO run=d81a86ce message=bootstrapping directory=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\project\"",
+      "timestamp=2026-08-20T19:30:11.791Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-runtime\\\\config-home\\\\opencode\\\\config.json\"",
+      "timestamp=2026-08-20T19:30:11.792Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.json\"",
+      "timestamp=2026-08-20T19:30:11.793Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"",
+      "timestamp=2026-08-20T19:30:11.864Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-config\\\\opencode.json\"",
+      "timestamp=2026-08-20T19:30:12.195Z level=INFO run=d81a86ce message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-ac945f50-a0cf-488c-b502-ac28c95e67c6\\\\opencode-config\\\\opencode.jsonc\"",
+      "timestamp=2026-08-20T19:30:25.402Z level=INFO run=d81a86ce message=\"all LSPs are disabled\"",
+      "timestamp=2026-08-20T19:30:25.404Z level=INFO run=d81a86ce message=\"all formatters are disabled\"",
+      "timestamp=2026-08-20T19:30:25.405Z level=INFO run=d81a86ce message=init"
+    ],
+    "stdout": [
+      "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.",
+      "opencode server listening on http://127.0.0.1:53578"
+    ]
+  },
+  "mcpConfigured": false,
+  "mode": "diagnose-startup",
+  "pathRoute": {
+    "status": 200
+  },
+  "pluginMode": "object-form-graphify-guard",
+  "projectRoute": {
+    "ready": true,
+    "readyMs": 42
+  },
+  "providerCalls": 0,
+  "schemaVersion": 1,
+  "source": {
+    "plugin": {
+      "path": "global\\plugin\\graphify-project-context.ts",
+      "sha256": "1be1fe78a046e2dfe09667abeb4d7d793b16e43aa4440e8aa3657a9ed2ab99e7"
+    },
+    "runner": {
+      "path": "tools\\proofs\\opencode-shared-graphify-integration.ts",
+      "sha256": "e23531f1886dcb82f05fc35986dd92ec6903add02b97e6d09953d7b2ed09dd7d"
+    },
+    "sessionEnv": {
+      "path": "global\\plugin\\session-env.ts",
+      "sha256": "b810849e7cfad2226ff9dd368786b4246175f9f554ea1bcae4274d52e34b49b4"
+    }
+  }
+}

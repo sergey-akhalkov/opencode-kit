@@ -85,11 +85,11 @@ function record(value: unknown): JsonRecord | null {
     : null;
 }
 
-function runJson(args: string[]): JsonRecord {
+function runJson(args: string[], env: NodeJS.ProcessEnv = proofEnv): JsonRecord {
   const result = spawnSync("opencode", args, {
     cwd: process.cwd(),
     encoding: "utf8",
-    env: proofEnv,
+    env,
     maxBuffer: 16 * 1024 * 1024,
     shell: false,
   });
@@ -164,6 +164,20 @@ if (!allowsEverything(config.permission)) {
   throw new Error("Resolved top-level OpenCode permission is not allow-all");
 }
 
+const configuredMainPrecedence = Object.fromEntries(
+  (["allow", "ask", "deny"] as const).map((expected) => {
+    const resolved = runJson(["debug", "config"], {
+      ...proofEnv,
+      OPENCODE_CONFIG_CONTENT: JSON.stringify({ permission: expected }),
+    });
+    const actual = configuredAction(resolved.permission, "*");
+    if (actual !== expected) {
+      throw new Error(`Completion guard changed configured main permission precedence: expected=${expected} actual=${actual}`);
+    }
+    return [expected, actual];
+  }),
+);
+
 const agents = record(config.agent);
 if (agents == null || Object.keys(agents).length === 0) {
   throw new Error("Resolved OpenCode config contains no agents");
@@ -225,6 +239,7 @@ const summary = {
   sdet: {
     editPermission: sdetEditPermission,
   },
+  configuredMainPrecedence,
   permissionKinds: PERMISSION_KINDS,
   outcome: "pass",
 };
@@ -238,6 +253,7 @@ if (options.evidenceRoot != null && options.candidateId != null) {
     environment: { node: process.version, platform: process.platform },
     invocation: ["npm", "run", "proof:permissions", "--", "--evidence-root", "<evidence-root>", "--candidate-id", options.candidateId],
     productionSources: [
+      "global/extensions/session-completion-guard/controller.ts",
       "global/extensions/session-completion-guard/runtime-support.ts",
       "global/extensions/session-completion-guard/arbiter-route.ts",
       "global/agents/session-completion-arbiter.md",
@@ -251,7 +267,8 @@ if (options.evidenceRoot != null && options.candidateId != null) {
   writeNew(path.join(options.evidenceRoot, "evaluation.json"), {
     candidateId: options.candidateId,
     hiddenArbiterTools: "all-false",
-    mainDefault: "permissive",
+    configuredMainPrecedence,
+    mainDefault: "permissive-when-configured",
     schemaVersion: 1,
     specialistRestrictions: "preserved",
     status: "complete",

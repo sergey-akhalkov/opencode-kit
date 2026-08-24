@@ -1,0 +1,25 @@
+{
+  "candidateId": "improve-change-locality-guidance-planning-r1",
+  "captureKind": "baseline",
+  "completed": [
+    "one-off-local-fix",
+    "accepted-second-variant",
+    "external-integration-boundary",
+    "non-trivial-state-transition",
+    "mixed-owner-file",
+    "delegated-production-ownership",
+    "hypothetical-extension-negative-control"
+  ],
+  "profile": "quality-independent",
+  "schemaVersion": 1,
+  "sourceHashes": {
+    "global/AGENTS.md": "a42d03a44d63bb2140af341382c7c9a4a6d3de676c36df6948d6f32eeef08359",
+    "global/agents/implementation-worker.md": "9361286750fba498cdeb049e4b3581d63ba3dda04afe417bc30041e23ae649fe",
+    "global/agents/instruction-artifact-reviewer.md": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468",
+    "global/agents/sdet-quality-engineer.md": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc",
+    "global/skills/instruction-artifact-tuning/SKILL.md": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35",
+    "README.md": "0ee2549bd7dfe96d20fe7cb5e0738da6b93c846b06699df9e371bec33323cedf",
+    "package.json": "84faa3509732a059580b75d2c5150943e7184b57d8060136d84b29eb780c3236",
+    "tools/proofs/agent-tooling-ergonomics.ts": "40628341a5853f5a72df91d58f704eeec8a5fe9ff3fdd662912ea36932179568"
+  }
+}

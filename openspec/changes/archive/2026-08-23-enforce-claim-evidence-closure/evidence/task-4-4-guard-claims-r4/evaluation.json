@@ -1,0 +1,11 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "cleanup": "complete",
+  "failureClass": "proof-runner-environment-readiness",
+  "liveAttemptGate": "blocked",
+  "scenario": "claims",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "terminalReplayResult": "blocked-before-guard",
+  "unlockCondition": "Use a causally distinct isolated plugin-startup mechanism before another installed claim capture."
+}

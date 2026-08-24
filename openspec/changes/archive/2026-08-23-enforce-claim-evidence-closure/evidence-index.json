@@ -1,0 +1,1682 @@
+{
+  "schemaVersion": 2,
+  "changeId": "enforce-claim-evidence-closure",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "cec430e989850156023544b74429c3375bba59715d6bb3c4de42a10289a35449",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "ownership-source-inventory",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "ownership-source-inventory",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/openspec-change/inventory.ts --root <repo> --mode ownership --show-root",
+        "status": 0,
+        "recordedAt": "2026-08-23T10:17:57.4087141Z"
+      },
+      "artifacts": [
+        "evidence/task-1-1-ownership-source-r1.md",
+        "evidence/task-1-1-priority-transfer-r2.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "06b1d9bd7c43278cdeb7256e5de35040bf03eecfd4e7503453d46cbe8c3ea467",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-decision",
+        "effects": [
+          "read-only",
+          "configured-provider"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-decision",
+        "effects": [
+          "read-only",
+          "configured-provider"
+        ]
+      },
+      "invocation": {
+        "command": "opencode run --format json --agent build --title claim-evidence-baseline-r1 <reviewed-prompt>",
+        "status": 0,
+        "recordedAt": "2026-08-23T10:17:57.4087141Z"
+      },
+      "artifacts": [
+        "evidence/task-1-2-baseline-r1.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "taskTextDigest": "4096e4ebf032bfdf3bd044258c3f860d7380ee3aaf9c36f879b5bd458695ac99",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "manual",
+        "name": "reviewed-claim-scope",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "manual",
+        "name": "reviewed-claim-scope",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": null,
+      "artifacts": [
+        "claim-evidence-scope.md",
+        "evidence/candidate-evidence-request-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": {
+        "reason": "Main reviewed the original outcome, broad claim classes, focused scenarios, bounds, independent challenge, unknowns, and maximum claim against the accepted proposal.",
+        "disposition": "complete-planning-scope"
+      }
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "db4be622eaec7895a9167fa07f6541b40b232b5f7ac02b853b230a55b3ee512f",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory-contract-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory-contract-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-openspec-change-inventory.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T10:43:18.0542246Z"
+      },
+      "artifacts": [
+        "evidence/task-2-1-claim-contract-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "fda4b9f379990faa473e7c19fe222eef34a16fb79618abd1aa5af74f757432e4",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-proposal-instructions-and-gate",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-proposal-instructions-and-gate",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-openspec-operation-gate.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T10:54:08.3280993Z"
+      },
+      "artifacts": [
+        "evidence/task-2-2-openspec-authoring-r1.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "dd55b5df8442dfd4fce1e49941db60354079e7ed693a8784a5db10e9bf791a9b",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-openspec-operation-gate.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T10:54:08.3280993Z"
+      },
+      "artifacts": [
+        "evidence/task-2-3-operation-gates-r1.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.4",
+      "taskTextDigest": "8241b16647a32e466b9b35f33d1727ed5251441e5611aa241828d29b832a9d9f",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/openspec-change/inventory.ts --root <repo> --mode evidence --show-root",
+        "status": 0,
+        "recordedAt": "2026-08-23T10:54:08.3280993Z"
+      },
+      "artifacts": [
+        "evidence/task-2-4-inventory-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "e3dbc8d3ff4db8d4693accad7a317c574e23a85d7b3d8fa67fcf8366bac6b3c6",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-contracts-and-budget",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-contracts-and-budget",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-contracts.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T11:25:52.7544797Z"
+      },
+      "artifacts": [
+        "evidence/task-3-1-principle-budget-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "11b5bfd9dff4f293fc8a41f1c5e2995e6b4f2afd0ffdcdbe5dce386c6ba4e6e3",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "substitution-skill-contract",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "substitution-skill-contract",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-contracts.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T11:25:52.7544797Z"
+      },
+      "artifacts": [
+        "evidence/task-3-2-substitution-skill-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "b9f1f0d6af798df38a94a5cefb266f9f2cd5142c032567c53ef234aec67d162b",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "reviewer-contract-and-debug",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "reviewer-contract-and-debug",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "opencode debug agent evidence-sufficiency-reviewer",
+        "status": 0,
+        "recordedAt": "2026-08-23T11:25:52.7544797Z"
+      },
+      "artifacts": [
+        "evidence/task-3-3-reviewer-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.4",
+      "taskTextDigest": "ef153e540b6a17c7047343e2132bf3a19e947358fd79e7819ec3b3e6c9d4eeb5",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "runtime-catalog-validator",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "runtime-catalog-validator",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/validate-library.ts --fail-on-warnings",
+        "status": 0,
+        "recordedAt": "2026-08-23T11:25:52.7544797Z"
+      },
+      "artifacts": [
+        "evidence/task-3-4-catalogs-r1.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.5",
+      "taskTextDigest": "d976d08a15b35847ac9b30c82c2af92253f3b101a70b7af779c7e8e5d1558b5c",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-disposable-loader",
+        "effects": [
+          "provider-free",
+          "local-disposable"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-disposable-loader",
+        "effects": [
+          "provider-free",
+          "local-disposable"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:runtime-surface-loader -- --candidate-id enforce-claim-evidence-closure-planning-r1 --evidence-root <change>/evidence/task-3-5-loader-r2",
+        "status": 0,
+        "recordedAt": "2026-08-23T11:25:52.7544797Z"
+      },
+      "artifacts": [
+        "evidence/task-3-5-loader-r1/raw.json",
+        "evidence/task-3-5-loader-r1/evaluation.json",
+        "evidence/task-3-5-loader-r2/raw.json",
+        "evidence/task-3-5-loader-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "01b4debf9868dfdec1dc1545f9c2b47f2edfb2ffb3e849abc5f2bb337b8e09ce",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "session-completion-claim-contract-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "session-completion-claim-contract-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-session-completion-guard.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T12:31:00.0113305Z"
+      },
+      "artifacts": [
+        "evidence/task-4-1-3-provider-free-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "eefe1cb943c48cf8bd714cb880a43c11347c4568af4eb46462a0fc79bd486508",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "session-completion-claim-verdict-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "session-completion-claim-verdict-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-session-completion-guard.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T12:31:00.0113305Z"
+      },
+      "artifacts": [
+        "evidence/task-4-1-3-provider-free-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "a7ef30f363d4e889e2c81b56b8c61b047dd0c537abddcdd6a00e0e30a60b9ba2",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "terminal-certificate-claim-binding-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "terminal-certificate-claim-binding-tests",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-session-completion-guard.ts",
+        "status": 0,
+        "recordedAt": "2026-08-23T12:31:00.0113305Z"
+      },
+      "artifacts": [
+        "evidence/task-4-1-3-provider-free-r1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.4",
+      "taskTextDigest": "f6365f66589ffd7b8b1b06b072c1822fe4941cc605d7dcb8c9e8a6912ec6d668",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-session-completion-guard-claims",
+        "effects": [
+          "local-disposable",
+          "provider-free"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-session-completion-guard-claims",
+        "effects": [
+          "local-disposable",
+          "provider-free"
+        ]
+      },
+      "invocation": {
+        "command": "bun tools/proofs/session-completion-guard-restart.ts --mode capture --scenario claims --candidate-id enforce-claim-evidence-closure-planning-r1 --evidence-root <change>/evidence/task-4-4-guard-claims-r5",
+        "status": 0,
+        "recordedAt": "2026-08-23T14:25:00.0000000Z"
+      },
+      "artifacts": [
+        "evidence/task-4-offline-replay-r1.json",
+        "evidence/task-4-4-guard-claims-r1/failure.json",
+        "evidence/task-4-4-guard-claims-r1/evaluation.json",
+        "evidence/task-4-4-guard-claims-r2/failure.json",
+        "evidence/task-4-4-guard-claims-r2/evaluation.json",
+        "evidence/task-4-4-guard-claims-r3/failure.json",
+        "evidence/task-4-4-guard-claims-r3/evaluation.json",
+        "evidence/task-4-4-guard-claims-r4/failure.json",
+        "evidence/task-4-4-guard-claims-r4/evaluation.json",
+        "evidence/task-4-4-guard-claims-r5/raw.json",
+        "evidence/task-4-4-guard-claims-r5/evaluation.json",
+        "evidence/task-4-4-module-import-r1.json",
+        "evidence/task-4-4-factory-preflight-r1.json",
+        "evidence/task-4-4-plugin-resolver-r1.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "a086363dd70cab5f08811ee494ba0119ec9093a5a38d7c2d54ba831b5fa15320",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "focused-consumer-outcome-harness",
+        "effects": [
+          "local-disposable",
+          "local-loopback"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "focused-consumer-outcome-harness",
+        "effects": [
+          "local-disposable",
+          "local-loopback"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/consumer-outcome-regression.ts --mode capture --pack claim-evidence --candidate-id enforce-claim-evidence-closure-planning-r1 --evidence-root <change>/evidence/task-5-1-2-focused-harness-r2 --source-ref working-tree --session-mode harness --expectation no-regression",
+        "status": 0,
+        "recordedAt": "2026-08-23T13:04:43.3663462Z"
+      },
+      "artifacts": [
+        "evidence/task-5-1-2-focused-harness-r2/bundle.json",
+        "evidence/task-5-1-2-focused-harness-r2/evaluation.json",
+        "evidence/task-5-1-2-focused-harness-r2/replay.json",
+        "evidence/task-5-1-2-code-quality-r1.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.2",
+      "taskTextDigest": "92841d45092171f2d0b83a8c0224c8819e491704e54d24205c4c1eca52c1e9ff",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "focused-claim-decision-oracles",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "focused-claim-decision-oracles",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/consumer-outcome-regression.ts --mode replay --pack claim-evidence --baseline <bundle> --candidate <bundle> --expectation no-regression",
+        "status": 0,
+        "recordedAt": "2026-08-23T13:04:43.3663462Z"
+      },
+      "artifacts": [
+        "evidence/task-5-1-2-focused-harness-r2/bundle.json",
+        "evidence/task-5-1-2-focused-harness-r2/evaluation.json",
+        "evidence/task-5-1-2-focused-harness-r2/replay.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.3",
+      "taskTextDigest": "c754df898d0ddf4500e14ff698ecb6eb84a8586e57ddcc647eabe112eae07e25",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-decision",
+        "effects": [
+          "local-disposable",
+          "configured-provider"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-decision",
+        "effects": [
+          "local-disposable",
+          "configured-provider"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/consumer-outcome-regression.ts --mode capture --pack claim-evidence --session-mode configured --candidate-id enforce-claim-evidence-closure-planning-r1 --evidence-root <change>/evidence/task-5-3-configured-r3 --source-ref working-tree --expectation no-regression",
+        "status": 0,
+        "recordedAt": "2026-08-23T16:30:00.0000000Z"
+      },
+      "artifacts": [
+        "evidence/task-5-3-configured-r1/bundle.json",
+        "evidence/task-5-3-configured-r1/evaluation.json",
+        "evidence/task-5-3-configured-r1/replay.json",
+        "evidence/task-5-3-configured-r2/bundle.json",
+        "evidence/task-5-3-configured-r2/evaluation.json",
+        "evidence/task-5-3-configured-r2/replay.json",
+        "evidence/task-5-3-configured-r3/bundle.json",
+        "evidence/task-5-3-configured-r3/evaluation.json",
+        "evidence/task-5-3-configured-r3/replay.json",
+        "evidence/task-5-1-2-focused-harness-r3/bundle.json",
+        "evidence/task-5-1-2-focused-harness-r3/evaluation.json",
+        "evidence/task-5-1-2-focused-harness-r3/replay.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.4",
+      "taskTextDigest": "2c5c2e11ff8d3e21d4b9d22e4599bc4e52e2ddc66b0a863c8e8ef6b0d3583bfa",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "candidate-loaded-evidence-sufficiency-reviewer",
+        "effects": [
+          "configured-provider",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "candidate-loaded-evidence-sufficiency-reviewer",
+        "effects": [
+          "configured-provider",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "opencode run --format json --title cec-esr-5-4-dispatch --model xai/grok-4.6 --auto --dir <repo> <brief>",
+        "status": 0,
+        "recordedAt": "2026-08-23T17:20:14.846Z"
+      },
+      "artifacts": [
+        "evidence/task-5-4-reviewers-r1.json",
+        "evidence/task-5-4-esr-r2.md",
+        "evidence/task-5-4-reviewers-r2.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.1",
+      "taskTextDigest": "71596dd88883f3b15e6112aa74fe25969c14eae19c49ca1d9cd2c6bf85bc44d6",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "provider-free",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/openspec-operation-gate.ts --root <repo> --operation apply --change enforce-claim-evidence-closure",
+        "status": 0,
+        "recordedAt": "2026-08-23T17:09:39.191Z"
+      },
+      "artifacts": [
+        "evidence/task-6-2-handoff-r1.md",
+        "evidence/task-6-2-handoff-r2.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.2",
+      "taskTextDigest": "397b6e58c16b3ae9a994ace01c00261ee0b13dfedab468f2c89f56c236550398",
+      "result": "complete",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "requiredBoundary": {
+        "kind": "manual",
+        "name": "local-handoff",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "boundary": {
+        "kind": "manual",
+        "name": "local-handoff",
+        "effects": [
+          "local-planning"
+        ]
+      },
+      "invocation": null,
+      "artifacts": [
+        "evidence/task-6-2-handoff-r2.md"
+      ],
+      "cleanup": "none",
+      "manualGate": {
+        "reason": "Main froze the readable candidate and local handoff after independent challenge r2.",
+        "disposition": "complete-handoff"
+      }
+    }
+  ],
+  "lanes": [
+    {
+      "name": "ownership-source",
+      "kind": "environment",
+      "files": [
+        {
+          "path": "evidence/task-1-1-ownership-source-r1.md",
+          "bytes": 3312,
+          "digest": "645d3e990c964318cb833febabaa6d8f33b37cccff069d9044f07a2d0f7a8439"
+        },
+        {
+          "path": "evidence/task-1-1-priority-transfer-r2.md",
+          "bytes": 1059,
+          "digest": "a8fe52ae6c9854068e3bec87cc0e6c81c565dc5a8547421cfdbac44e49df9b6c"
+        }
+      ]
+    },
+    {
+      "name": "loaded-baseline",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-1-2-baseline-r1.json",
+          "bytes": 1980,
+          "digest": "93fdf9b22de8ac7a356ebee8c4e30dac79c150e163cad0527d75dcc0be907f54"
+        }
+      ]
+    },
+    {
+      "name": "reviewed-claim-scope",
+      "kind": "product",
+      "files": [
+        {
+          "path": "claim-evidence-scope.md",
+          "bytes": 3309,
+          "digest": "00dd70a33ac57e107d6109cedbc7769d50c6b9b38400b3fcf1925ce93eb75a35"
+        },
+        {
+          "path": "evidence/candidate-evidence-request-r1.json",
+          "bytes": 1230,
+          "digest": "a8c0cbc2a04d3c620d9a8d7d83deae98cb136c7fa40204e041b15b86211f9d62"
+        }
+      ]
+    },
+    {
+      "name": "claim-contract",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-2-1-claim-contract-r1.json",
+          "bytes": 1588,
+          "digest": "6477d1b9d814a22706f221d58acfecaaca64cd9d32bb6ae629e0f6364a2de98c"
+        }
+      ]
+    },
+    {
+      "name": "openspec-authoring",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-2-2-openspec-authoring-r1.json",
+          "bytes": 1036,
+          "digest": "0fc27a051038ef120a5b1b186bd2f450c8c933e733eace18330f9391325851aa"
+        }
+      ]
+    },
+    {
+      "name": "openspec-gates",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-2-3-operation-gates-r1.json",
+          "bytes": 1044,
+          "digest": "7781006b9860120c6b20f44d31ddcb4312f81cd68d10e56fa2ac9d20df832ff0"
+        }
+      ]
+    },
+    {
+      "name": "claim-inventory",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-2-4-inventory-r1.json",
+          "bytes": 1308,
+          "digest": "fcb203838624ed350c6052855cf6ca032b944304f5b702722b1990cc3308f54b"
+        }
+      ]
+    },
+    {
+      "name": "instruction-principle",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-3-1-principle-budget-r1.json",
+          "bytes": 832,
+          "digest": "e18a73a4bdc5fc693260bc481df8278032067a3ebf141afcd8eb3d1b658ac5ac"
+        }
+      ]
+    },
+    {
+      "name": "substitution-skill",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-3-2-substitution-skill-r1.json",
+          "bytes": 788,
+          "digest": "6797e245e9dbd05f6672a95d684a46f7d8a50dd2e4b8d80c12362ee8522931da"
+        }
+      ]
+    },
+    {
+      "name": "evidence-reviewer",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-3-3-reviewer-r1.json",
+          "bytes": 1035,
+          "digest": "fd454e326aff8c08e7f510ebc871e5bc111e182e5116d8f69a25a874eb0d0994"
+        }
+      ]
+    },
+    {
+      "name": "catalog-contract",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-3-4-catalogs-r1.json",
+          "bytes": 984,
+          "digest": "7128ef467ccbe5f4f861806b9ffbc1ac34c2a064d6c5d078c02ef34c7567879e"
+        }
+      ]
+    },
+    {
+      "name": "loader-proof-r1",
+      "kind": "runner",
+      "files": [
+        {
+          "path": "evidence/task-3-5-loader-r1/raw.json",
+          "bytes": 1452,
+          "digest": "d15495d4c4b7e11983641210d979d0e8b3f7d0c4cc2334e8ec71605d1569265e"
+        },
+        {
+          "path": "evidence/task-3-5-loader-r1/evaluation.json",
+          "bytes": 105,
+          "digest": "c23a60cc5cdc66655fb07a771397b0fbdb7f9a22b61752df3e40008b00a3d9d7"
+        }
+      ]
+    },
+    {
+      "name": "loader-proof-r2",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-3-5-loader-r2/raw.json",
+          "bytes": 1477,
+          "digest": "71970f51998403116491a922ad18b19cccf45390adf13b1d93871ec8701c3dc4"
+        },
+        {
+          "path": "evidence/task-3-5-loader-r2/evaluation.json",
+          "bytes": 105,
+          "digest": "aea2517deb4703391a04a93ecd8ef3eec13d3ee68014b7db5639f8989e9e614a"
+        }
+      ]
+    },
+    {
+      "name": "completion-offline-replay",
+      "kind": "replay",
+      "files": [
+        {
+          "path": "evidence/task-4-offline-replay-r1.json",
+          "bytes": 1238,
+          "digest": "3fd96ac0694b7c32c8772307821b10a1176246d635225074878b6e219e343f88"
+        }
+      ]
+    },
+    {
+      "name": "completion-provider-free",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-4-1-3-provider-free-r1.json",
+          "bytes": 3966,
+          "digest": "fd3bf47a52883b7cf96e5c0c7b873b07ec6423d185604d7aa736f44d8458b635"
+        }
+      ]
+    },
+    {
+      "name": "completion-installed-blocked",
+      "kind": "runner",
+      "files": [
+        {
+          "path": "evidence/task-4-4-guard-claims-r1/failure.json",
+          "bytes": 1159,
+          "digest": "b5148160e3981a89f46bf0f0d344ea48d42c4e063620fe59a1661e002b7be106"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r1/evaluation.json",
+          "bytes": 420,
+          "digest": "0bc8ec2e14bbb86fc09ca7280aa1f562b64915c6d9ccbdacc578a1a6215546b5"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r2/failure.json",
+          "bytes": 697,
+          "digest": "a6639ce955db907da2eff2ea79a896fb51d5c31fab4487cea1555d2d6026dd16"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r2/evaluation.json",
+          "bytes": 420,
+          "digest": "0bc8ec2e14bbb86fc09ca7280aa1f562b64915c6d9ccbdacc578a1a6215546b5"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r3/failure.json",
+          "bytes": 14260,
+          "digest": "48a55a287922f3aba5324d91eec29f61ac5831bda72ca6d63678edfc78894de0"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r3/evaluation.json",
+          "bytes": 486,
+          "digest": "4e9b0f1313102212d553b7adde62a77ac7310ca61605b1e0fb6f51143d3224b7"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r4/failure.json",
+          "bytes": 791,
+          "digest": "7ebeb7862d6217b53b7fcc863ffa7a2a058f184bf43f0a81660a25b772aca341"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r4/evaluation.json",
+          "bytes": 420,
+          "digest": "0bc8ec2e14bbb86fc09ca7280aa1f562b64915c6d9ccbdacc578a1a6215546b5"
+        },
+        {
+          "path": "evidence/task-4-4-module-import-r1.json",
+          "bytes": 1029,
+          "digest": "a4a3f666d821810fb64c10349804753a51a8b28dc46a617f493f9b2232a449c1"
+        },
+        {
+          "path": "evidence/task-4-4-factory-preflight-r1.json",
+          "bytes": 1296,
+          "digest": "fbcfde5fb0b2ba5138ce2baa7323beb8ecabc60157ac7a001ae6998bae51463f"
+        },
+        {
+          "path": "evidence/task-4-4-plugin-resolver-r1.json",
+          "bytes": 3190,
+          "digest": "4e599a0f19a0261414423394efc71ca428b252901c22d022a8bf888a5def10e0"
+        }
+      ]
+    },
+    {
+      "name": "completion-installed-r5",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-4-4-guard-claims-r5/raw.json",
+          "bytes": 71758,
+          "digest": "a20710efd71830bce27b6c6fd9ceef2c1a3835e90019e4bf5c22d3bf9ad24b3b"
+        },
+        {
+          "path": "evidence/task-4-4-guard-claims-r5/evaluation.json",
+          "bytes": 412,
+          "digest": "8ce52bc64d8c6c5a55f066466ad6566c98c202620be5e4daa5ada3dafaa78071"
+        }
+      ]
+    },
+    {
+      "name": "focused-decision-harness-superseded-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r1/bundle.json",
+          "bytes": 113363,
+          "digest": "9b7ba46c94ea89a1fdc65e6e12c80760af30db7197e45309c474e924573c89d0"
+        },
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r1/evaluation.json",
+          "bytes": 5888,
+          "digest": "228f5eed06d4d2fdd1998ec0e28b185f9c58719e9cdac633f9ce441b387eb7c6"
+        }
+      ]
+    },
+    {
+      "name": "focused-decision-harness-r2",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r2/bundle.json",
+          "bytes": 113339,
+          "digest": "b2743a87bc9012bc01d934848e5b3fbc977f72ed6f523540c6defd9177385960"
+        },
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r2/evaluation.json",
+          "bytes": 5888,
+          "digest": "49a9e14757f3011ee24c8c316d5bd45e3c20da5294b94c0247fcdaab87976984"
+        },
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r2/replay.json",
+          "bytes": 728,
+          "digest": "03fc658663c7fcd3215a6cecd89056e7c75a2415d27ee34b638736f16b621432"
+        }
+      ]
+    },
+    {
+      "name": "focused-decision-code-quality-r1",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-5-1-2-code-quality-r1.json",
+          "bytes": 1379,
+          "digest": "78b7194669e7aa5049db4ed608f37ab937497e01171be3bab52d7d29a313425d"
+        }
+      ]
+    },
+    {
+      "name": "focused-decision-harness-r3",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r3/bundle.json",
+          "bytes": 113341,
+          "digest": "a4b8cbed373e7f6b4ef3c73d385065061e950fedfa8fa341a4ab274d6efc3b47"
+        },
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r3/evaluation.json",
+          "bytes": 5892,
+          "digest": "980f5c0fa69bd67bfea96a10d3f18cafdaa69f9404c87108089a013be391d09e"
+        },
+        {
+          "path": "evidence/task-5-1-2-focused-harness-r3/replay.json",
+          "bytes": 175,
+          "digest": "573ca39b61806f8a643095d551d51f872441a8df907c99b102209bfcd35ae163"
+        }
+      ]
+    },
+    {
+      "name": "configured-decision-r1-failed",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-5-3-configured-r1/bundle.json",
+          "bytes": 162566,
+          "digest": "d2700a210f66611b571bfb7dd3b139f56629eb7e247f52dd1f7352797abf1aeb"
+        },
+        {
+          "path": "evidence/task-5-3-configured-r1/evaluation.json",
+          "bytes": 6296,
+          "digest": "b4179d31019a9d1abec4ee621d0f527ee16b7abbfb0998370c6faf25c43ab406"
+        },
+        {
+          "path": "evidence/task-5-3-configured-r1/replay.json",
+          "bytes": 474,
+          "digest": "5a8a69d2b34ebc497887d5b799370f774cf5ca9b3f9c3fc4a5b58f3e9514660c"
+        }
+      ]
+    },
+    {
+      "name": "configured-decision-r2-failed",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/task-5-3-configured-r2/bundle.json",
+          "bytes": 277877,
+          "digest": "220edb4d63552f5677f2603a94fa126751e9ec1e0e1a4cad28c5ed3cbb3d3595"
+        },
+        {
+          "path": "evidence/task-5-3-configured-r2/evaluation.json",
+          "bytes": 5682,
+          "digest": "8767ae266712cc3a605e46c81f83dab114d5b3fe130bf9ed9c09de10d8177b9b"
+        },
+        {
+          "path": "evidence/task-5-3-configured-r2/replay.json",
+          "bytes": 657,
+          "digest": "30b66303b4dffcd8f8ae7034edbf942aa606cb84cedc55aa2ad188366f02b79f"
+        }
+      ]
+    },
+    {
+      "name": "configured-decision-r3",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-5-3-configured-r3/bundle.json",
+          "bytes": 306497,
+          "digest": "d07f45edff065f649a8f0deef0cc96fdc03fea559b1c93003ecdd1da91d41cac"
+        },
+        {
+          "path": "evidence/task-5-3-configured-r3/evaluation.json",
+          "bytes": 5959,
+          "digest": "b9ac5abb234a541fd782e45c514b3b3278f86a55bbf1433d30888e04054eb9d3"
+        },
+        {
+          "path": "evidence/task-5-3-configured-r3/replay.json",
+          "bytes": 348,
+          "digest": "0befacc64ccfb15b120aad63a3337d72665c2d2c55f90a241c766d4165f9a0d6"
+        }
+      ]
+    },
+    {
+      "name": "reviewer-disposition-r1",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-5-4-reviewers-r1.json",
+          "bytes": 1907,
+          "digest": "aed3c1c0257988d23dab205daf96f3b9e945979560953f70e649acd6017f3125"
+        },
+        {
+          "path": "evidence/task-6-2-handoff-r1.md",
+          "bytes": 2164,
+          "digest": "27da47bbb2559f5b607711e6f8c2e1ff151576ae597774e013dc76143b42834f"
+        }
+      ]
+    },
+    {
+      "name": "independent-challenge-r2",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/task-5-4-esr-r2.md",
+          "bytes": 3116,
+          "digest": "ec20cf0c1e118b42b29108f8679fcffa3af98a2775e3754468cfab4f72237af8"
+        },
+        {
+          "path": "evidence/task-5-4-reviewers-r2.json",
+          "bytes": 1794,
+          "digest": "91dd316d578f30dd3e8f7715e09deb5c41bc95fcee709df59e567cf5c57e3128"
+        }
+      ]
+    },
+    {
+      "name": "local-handoff-r2",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-6-2-handoff-r2.md",
+          "bytes": 2040,
+          "digest": "e73e8826d37220aad093b8b0c6f615333e6cae09098156d65d991295167da03a"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "CEC-STRUCTURE",
+      "outcomeRef": "claim-scope:CEC-STRUCTURE",
+      "statement": "Declared broad claims cannot archive or stop from closure that does not match the declared population, path, environment, oracle, and challenge.",
+      "claimClass": "phase-milestone",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "structural-provider-free-cases-r1",
+        "members": [
+          "exact-case",
+          "complete-finite-population",
+          "missing-member",
+          "partition-without-rule",
+          "mismatched-path",
+          "unavailable-real-oracle",
+          "narrowed",
+          "stale",
+          "duplicate-member",
+          "unknown-observation"
+        ],
+        "partitionRule": "reviewed-structural-case-list-r1",
+        "materialClasses": [
+          "exact-case",
+          "complete-finite-population",
+          "missing-member",
+          "partition-without-rule",
+          "mismatched-path",
+          "unavailable-real-oracle",
+          "narrowed",
+          "stale",
+          "duplicate-member",
+          "unknown-observation"
+        ],
+        "residualSpace": "Loaded operation and completion behavior remains outside the provider-free schema claim."
+      },
+      "paths": {
+        "production": "openspec-claim-gates",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "provider-free-gate-result",
+      "realOracle": {
+        "required": false,
+        "status": "not-required",
+        "evidenceRefs": []
+      },
+      "observations": [
+        {
+          "memberId": "exact-case",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "complete-finite-population",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "missing-member",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "partition-without-rule",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "mismatched-path",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unavailable-real-oracle",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "narrowed",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "stale",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "duplicate-member",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unknown-observation",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "openspec-claim-gates",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-gate-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "claim-contract"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "reviewed-claim-scope",
+        "claim-contract",
+        "openspec-authoring",
+        "openspec-gates",
+        "claim-inventory",
+        "independent-challenge-r2"
+      ],
+      "materialExclusions": [
+        "Loaded operation, installed completion-runtime, and original universal workflow outcome remain outside this narrowed schema/gate fixture claim."
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "independent-challenge-r2"
+        ]
+      },
+      "maximumSupportedClaim": "The reviewed provider-free schema cases only.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    },
+    {
+      "claimId": "CEC-SUBSTITUTION",
+      "outcomeRef": "claim-scope:CEC-SUBSTITUTION",
+      "statement": "Substitution claims bind baseline and candidate paths plus required real observations before equivalence.",
+      "claimClass": "real-system-equivalence",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "coverageBasis": "exact-case",
+      "population": {
+        "id": "synthetic-substitution-case-r1",
+        "members": [
+          "synthetic-substitution-case"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": null
+      },
+      "paths": {
+        "production": "owning-real-boundary",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "provider-free-record-shape",
+      "realOracle": {
+        "required": false,
+        "status": "not-required",
+        "evidenceRefs": []
+      },
+      "observations": [
+        {
+          "memberId": "synthetic-substitution-case",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "owning-real-boundary",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "provider-free-record-shape",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "substitution-skill"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "reviewed-claim-scope",
+        "claim-contract",
+        "substitution-skill",
+        "independent-challenge-r2"
+      ],
+      "materialExclusions": [
+        "No external real system, equivalence, or safety authority is in scope."
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "independent-challenge-r2"
+        ]
+      },
+      "maximumSupportedClaim": "The provider-free substitution record shape only.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    },
+    {
+      "claimId": "CEC-UNIVERSAL",
+      "outcomeRef": "claim-scope:CEC-UNIVERSAL",
+      "statement": "Portable claim-evidence routing remains domain-neutral and proportional across maintained loaded kit surfaces.",
+      "claimClass": "compatibility-interchangeability",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "portable-loaded-surfaces-r1",
+        "members": [
+          "portable-contract",
+          "loader-surface"
+        ],
+        "partitionRule": "reviewed-portable-surface-owners-r1",
+        "materialClasses": [
+          "portable-contract",
+          "loader-surface"
+        ],
+        "residualSpace": "Unloaded projects and unseen inputs remain outside the captured environment."
+      },
+      "paths": {
+        "production": "loaded-kit-routing",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "loader-and-inventory-readback",
+      "realOracle": {
+        "required": false,
+        "status": "not-required",
+        "evidenceRefs": []
+      },
+      "observations": [
+        {
+          "memberId": "portable-contract",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "loaded-kit-routing",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "loader-and-inventory-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "instruction-principle",
+            "substitution-skill",
+            "evidence-reviewer",
+            "catalog-contract"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "loader-surface",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "loaded-kit-routing",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "loader-and-inventory-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "loader-proof-r2"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "reviewed-claim-scope",
+        "claim-contract",
+        "openspec-authoring",
+        "openspec-gates",
+        "claim-inventory",
+        "instruction-principle",
+        "substitution-skill",
+        "evidence-reviewer",
+        "catalog-contract",
+        "loader-proof-r2",
+        "independent-challenge-r2"
+      ],
+      "materialExclusions": [
+        "Matched loaded behavioral proof remains unbound narrower evidence. Unseen inputs and unloaded projects remain residual."
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "independent-challenge-r2"
+        ]
+      },
+      "maximumSupportedClaim": "The current provider-free contract and reviewed fixture vocabulary only.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    },
+    {
+      "claimId": "CEC-EXACT",
+      "outcomeRef": "claim-scope:CEC-EXACT",
+      "statement": "An Ordinary Small exact-case claim can complete without broad-claim review when its evidence matches the same case and boundary.",
+      "claimClass": "exact-case",
+      "candidateId": "enforce-claim-evidence-closure-planning-r1",
+      "environmentId": "windows-opencode-working-tree-r1",
+      "coverageBasis": "exact-case",
+      "population": {
+        "id": "ordinary-small-exact-case-r1",
+        "members": [
+          "ordinary-small-exact-case"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": null
+      },
+      "paths": {
+        "production": "loaded-kit-routing",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "exact-case-result",
+      "realOracle": {
+        "required": false,
+        "status": "not-required",
+        "evidenceRefs": []
+      },
+      "observations": [
+        {
+          "memberId": "ordinary-small-exact-case",
+          "candidateId": "enforce-claim-evidence-closure-planning-r1",
+          "environmentId": "windows-opencode-working-tree-r1",
+          "paths": {
+            "production": "loaded-kit-routing",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "exact-case-result",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-decision-r3"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "reviewed-claim-scope",
+        "claim-contract",
+        "configured-decision-r3"
+      ],
+      "materialExclusions": [],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": false,
+        "status": "not-required",
+        "evidenceRefs": []
+      },
+      "maximumSupportedClaim": "The Ordinary Small exact-case loaded scenario and provider-free contract only.",
+      "narrowingAccepted": false,
+      "disposition": "supported"
+    }
+  ]
+}

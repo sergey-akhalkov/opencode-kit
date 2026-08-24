@@ -1,0 +1,87 @@
+{
+  "candidateId": "reduce-workflow-ceremony-task-1-2-r1",
+  "facts": {
+    "additionEffective": true,
+    "conflictNamesBothSources": true,
+    "modificationEffective": true,
+    "operationKindsObserved": true,
+    "removalEffective": true,
+    "resolvedPassed": true,
+    "unresolvedFailedClosed": true
+  },
+  "productionSources": [
+    {
+      "path": "tools/validators/workflow-contracts.ts",
+      "sha256": "a38ed84a73302b5e7635c792a2d11c2a74d701ef2f2c5251ad7eb8a2312ba1ea"
+    },
+    {
+      "path": "tools/validators/devkit-contract.ts",
+      "sha256": "2068acc95d4766d1b3eef3bbdabf4a56b11a6efdd460f250812f30d3537f3783"
+    },
+    {
+      "path": "tools/doctor.ts",
+      "sha256": "14841e2c3b8bc45540c35e8cdd9c82dbeef623ea4f86778db9e858e2ff7a290f"
+    }
+  ],
+  "resolved": {
+    "conflicts": [],
+    "effectiveRequirements": [
+      {
+        "capability": "library-instruction-artifacts",
+        "name": "Existing requirement is revised",
+        "operation": "modified",
+        "source": "openspec/changes/remove-ceremony/specs/library-instruction-artifacts/spec.md"
+      },
+      {
+        "capability": "library-instruction-artifacts",
+        "name": "Shared proof envelope is compact",
+        "operation": "added",
+        "source": "openspec/changes/remove-ceremony/specs/library-instruction-artifacts/spec.md"
+      }
+    ],
+    "operationCounts": {
+      "added": 1,
+      "base": 2,
+      "modified": 1,
+      "removed": 1
+    },
+    "problems": [],
+    "status": "passed"
+  },
+  "schemaVersion": 1,
+  "unresolved": {
+    "conflicts": [
+      {
+        "contractId": "final-history-retrospective",
+        "forbidSources": [
+          "global/skills/openspec-propose/SKILL.md"
+        ],
+        "requireSources": [
+          "openspec/specs/library-instruction-artifacts/spec.md"
+        ]
+      }
+    ],
+    "effectiveRequirements": [
+      {
+        "capability": "library-instruction-artifacts",
+        "name": "Existing requirement is revised",
+        "operation": "base",
+        "source": "openspec/specs/library-instruction-artifacts/spec.md"
+      },
+      {
+        "capability": "library-instruction-artifacts",
+        "name": "New OpenSpec changes schedule one final history retrospective",
+        "operation": "base",
+        "source": "openspec/specs/library-instruction-artifacts/spec.md"
+      }
+    ],
+    "operationCounts": {
+      "added": 0,
+      "base": 2,
+      "modified": 0,
+      "removed": 0
+    },
+    "problems": [],
+    "status": "blocked"
+  }
+}

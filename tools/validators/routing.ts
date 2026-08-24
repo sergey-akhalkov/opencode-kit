@@ -17,7 +17,8 @@ import {
   FORBIDDEN_PRODUCTION_ROUTING_PATTERNS,
   FORBIDDEN_PRODUCTION_ROUTING_SCAN_FILES,
   GLOBAL_AGENTS_FANOUT_CONTINUATION_TOKENS,
-  GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS,
+  GLOBAL_AGENTS_CANONICAL_PRINCIPLES_HEADING,
+  GLOBAL_AGENTS_CANONICAL_PRINCIPLES_POINTER_MARKERS,
   GLOBAL_AGENTS_OUTCOME_AUTHORITY_MARKERS,
   GLOBAL_AGENTS_OUTCOME_FIRST_MARKERS,
   GLOBAL_AGENTS_TRIGGER_TOKENS,
@@ -29,6 +30,7 @@ import {
   OUTCOME_FIRST_COMPLETE_POLICY_DUPLICATE_THRESHOLD,
   OUTCOME_FIRST_COMPLETE_POLICY_MARKERS,
   OUTCOME_FIRST_ROLE_DELTA_SURFACES,
+  PRINCIPLES_OF_WORK_MARKERS,
   SHIFT_LEFT_REAL_BOUNDARY_MARKERS,
   SHIFT_LEFT_REAL_BOUNDARY_SURFACES,
 } from "../contracts/skills.ts";
@@ -53,6 +55,7 @@ import {
 } from "./active-authority.ts";
 
 const GLOBAL_AGENTS_RELATIVE = "global/AGENTS.md";
+const PRINCIPLES_OF_WORK_RELATIVE = "global/principles-of-work.md";
 /** POSIX-relative prefix for role agent Markdown surfaces. */
 const GLOBAL_AGENTS_DIR_PREFIX = "global/agents/";
 
@@ -146,11 +149,22 @@ function validateGlobalAgentsTriggerTopology(
   if (operative == null) {
     return;
   }
+  const firstSection = operative.match(/^## .+$/m)?.[0];
+  if (firstSection !== GLOBAL_AGENTS_CANONICAL_PRINCIPLES_HEADING) {
+    ctx.addError(`global AGENTS canonical-principles pointer must be the first operative section: ${file}`);
+  }
+  for (const token of GLOBAL_AGENTS_CANONICAL_PRINCIPLES_POINTER_MARKERS) {
+    requireTextContains(ctx, operative, token, "global AGENTS canonical-principles pointer", file);
+  }
   for (const token of GLOBAL_AGENTS_TRIGGER_TOKENS) {
     requireTextContains(ctx, operative, token, "global AGENTS Change-Ready trigger", file);
   }
-  for (const token of GLOBAL_AGENTS_OPERATING_PRIORITY_MARKERS) {
-    requireTextContains(ctx, operative, token, "global AGENTS operating priorities", file);
+  const principlesFile = path.join(root, PRINCIPLES_OF_WORK_RELATIVE);
+  const principles = readOperativeAuthorityText(ctx, principlesFile);
+  if (principles != null) {
+    for (const token of PRINCIPLES_OF_WORK_MARKERS) {
+      requireTextContains(ctx, principles, token, "canonical principles", principlesFile);
+    }
   }
   for (const role of LIFECYCLE_ROLE_ROUTES) {
     requireTextContains(ctx, operative, role, "global AGENTS lifecycle role route", file);
@@ -187,10 +201,11 @@ function validateGlobalAgentsTriggerTopology(
 function validateOperatingPriorityDuplication(ctx: ValidationContext, root: string): void {
   for (const file of walkMarkdownFiles(root)) {
     const relative = toPosixPath(path.relative(root, file));
-    if (relative === GLOBAL_AGENTS_RELATIVE) {
+    if (relative === PRINCIPLES_OF_WORK_RELATIVE) {
       continue;
     }
     const inScope =
+      relative === GLOBAL_AGENTS_RELATIVE ||
       OPERATING_PRIORITY_DUPLICATE_SCAN_FILES.includes(relative) ||
       OPERATING_PRIORITY_DUPLICATE_SCAN_PREFIXES.some((prefix) => relative.startsWith(prefix));
     if (!inScope) {
@@ -205,7 +220,7 @@ function validateOperatingPriorityDuplication(ctx: ValidationContext, root: stri
     );
     if (copiedLabels.length === OPERATING_PRIORITY_COMPLETE_LABELS.length) {
       ctx.addError(
-        `Operating priority contract duplication: ${relative} copies the complete label set; keep the full contract only in ${GLOBAL_AGENTS_RELATIVE}`,
+        `Operating priority contract duplication: ${relative} copies the complete label set; keep the full contract only in ${PRINCIPLES_OF_WORK_RELATIVE}`,
       );
     }
   }

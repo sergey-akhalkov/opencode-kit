@@ -165,34 +165,33 @@ export const validatorTests1: TestCase[] = [
   },
   ...[
     {
-      name: "bash",
-      original: "  bash:\n    \"*\": ask\n    \"git add*\": deny",
-      replacement: "  bash:\n    \"git add*\": deny\n    \"*\": ask",
-      diagnostic: "Troubleshooter bash permission rule order drifted",
+      name: "ask",
+      original: "permission: allow",
+      replacement: "permission: ask",
+      diagnostic: "Troubleshooter must set permission: allow",
     },
     {
-      name: "edit",
-      original: "  edit:\n    \"*\": ask\n    \"*.test.*\": deny",
-      replacement: "  edit:\n    \"*.test.*\": deny\n    \"*\": ask",
-      diagnostic: "Troubleshooter edit permission rule order drifted",
+      name: "deny",
+      original: "permission: allow",
+      replacement: "permission: deny",
+      diagnostic: "Troubleshooter must set permission: allow",
     },
     {
-      name: "skill",
-      original: "  skill:\n    \"*\": deny\n    complain: allow",
-      replacement: "  skill:\n    complain: allow\n    \"*\": deny",
-      diagnostic: "Troubleshooter skill permission rule order drifted",
+      name: "nested map",
+      original: "permission: allow",
+      replacement: "permission:\n  read: allow\n  glob: allow\n  grep: allow\n  bash: allow",
+      diagnostic: "Troubleshooter must use scalar permission: allow",
     },
   ].map((testCase): TestCase => ({
-    name: `validator rejects reordered troubleshooter ${testCase.name} rules with a last-match-wins diagnostic`,
+    name: `validator rejects troubleshooter permission ${testCase.name}`,
     run: () => {
-      const fixture = newLibraryFixture(`troubleshooter-${testCase.name}-order`);
+      const fixture = newLibraryFixture(`troubleshooter-permission-${testCase.name.replace(/\s+/g, "-")}`);
       const troubleshooterPath = addTroubleshooterFixture(fixture);
       const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
       writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, testCase.original, testCase.replacement));
       const result = invokeValidator(fixture);
-      assertFailure(result, `Reordered troubleshooter ${testCase.name} rules should fail validation.`);
-      assertOutputContains(result, testCase.diagnostic, `Troubleshooter ${testCase.name} order failure should be explicit.`);
-      assertOutputContains(result, "OpenCode resolves rules last-match-wins", "Troubleshooter order failure should explain OpenCode rule semantics.");
+      assertFailure(result, `Troubleshooter permission ${testCase.name} should fail validation.`);
+      assertOutputContains(result, testCase.diagnostic, `Troubleshooter permission ${testCase.name} failure should name the scalar allow contract.`);
     },
   })),
   ...[
@@ -219,31 +218,6 @@ export const validatorTests1: TestCase[] = [
       assertFailure(result, `Troubleshooter ${testCase.name} pin should fail validation.`);
       assertOutputContains(result, testCase.diagnostic, `Troubleshooter ${testCase.name} failure should name the forbidden inherited field.`);
       assertOutputContains(result, path.join("global", "agents", "troubleshooter.md"), `Troubleshooter ${testCase.name} diagnostic should name the exact role path.`);
-    },
-  })),
-  ...[
-    {
-      name: "bash",
-      original: "    \"git clean*\": deny",
-      replacement: "    \"git clean*\": deny\n    \"git cherry-pick*\": deny",
-      diagnostic: "Troubleshooter has unsupported bash permission 'git cherry-pick*: deny'",
-    },
-    {
-      name: "edit",
-      original: "    \"**/test_*.*\": deny",
-      replacement: "    \"**/test_*.*\": deny\n    \"scratch/**\": deny",
-      diagnostic: "Troubleshooter has unsupported edit permission 'scratch/**: deny'",
-    },
-  ].map((testCase): TestCase => ({
-    name: `validator rejects unsupported troubleshooter ${testCase.name} rule`,
-    run: () => {
-      const fixture = newLibraryFixture(`troubleshooter-unsupported-${testCase.name}`);
-      const troubleshooterPath = addTroubleshooterFixture(fixture);
-      const troubleshooter = fs.readFileSync(troubleshooterPath, "utf8");
-      writeText(troubleshooterPath, replaceTroubleshooterText(troubleshooter, testCase.original, testCase.replacement));
-      const result = invokeValidator(fixture);
-      assertFailure(result, `Unsupported troubleshooter ${testCase.name} rule should fail validation.`);
-      assertOutputContains(result, testCase.diagnostic, `Unsupported troubleshooter ${testCase.name} rule failure should be explicit.`);
     },
   })),
   {
@@ -649,7 +623,7 @@ export const validatorTests1: TestCase[] = [
       assert(!fs.existsSync(path.join(fixture, "global", "agents", "session-delivery-reviewer.md")), "Fixture must not restore retired session-delivery-reviewer.");
       const agentsPath = path.join(fixture, "REPO_AGENTS.md");
       const text = fs.readFileSync(agentsPath, "utf8");
-      for (const token of ["Development-Stage", "after MVP", "optional"]) {
+      for (const token of ["Development-Stage", "after current proof", "optional"]) {
         assert(text.includes(token), `Optional review routing fixture must retain token ${token}`);
       }
       assertSuccess(invokeValidator(fixture), "Optional review routing fixture with completion arbiter should validate.");
@@ -660,8 +634,10 @@ export const validatorTests1: TestCase[] = [
     run: () => {
       const fixture = newLibraryFixture("reviewer-prevention-feedback-contract");
       const profilePath = path.join(fixture, "profiles", "all.json");
-      const profile = fs.readFileSync(profilePath, "utf8");
-      writeText(profilePath, profile.replace("\"demo-reviewer\"]", "\"demo-reviewer\", \"code-quality-reviewer\"]"));
+      const profile = JSON.parse(fs.readFileSync(profilePath, "utf8")) as { agents: string[] };
+      profile.agents.push("code-quality-reviewer");
+      profile.agents.sort((left, right) => left.localeCompare(right));
+      writeText(profilePath, `${JSON.stringify(profile, null, 2)}\n`);
       writeText(path.join(fixture, "global", "agents", "code-quality-reviewer.md"), lines([
         "---",
         "description: Reviews changed code quality.",

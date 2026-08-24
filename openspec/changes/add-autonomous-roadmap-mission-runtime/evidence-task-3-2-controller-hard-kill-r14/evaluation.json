@@ -1,0 +1,13 @@
+{
+  "candidateId": "task-3-2-controller-hard-kill-r14",
+  "checks": {
+    "activeOperationPreserved": true,
+    "cleanupComplete": true,
+    "closureObserved": true,
+    "pausedUnknown": true,
+    "processStageCaptured": true
+  },
+  "proof": false,
+  "schemaVersion": 1,
+  "status": "complete"
+}

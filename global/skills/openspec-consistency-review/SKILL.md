@@ -1,6 +1,6 @@
 ---
 name: openspec-consistency-review
-description: Review OpenSpec proposal/design/specs/tasks/docs/tests for synchronization and evidence gaps across implementation, archive, release, or merge work.
+description: Review OpenSpec proposal/design/specs/tasks/docs/tests for synchronization and evidence gaps. Use ONLY for OpenSpec artifacts. Do not use for ordinary code review.
 license: MIT
 ---
 
@@ -15,7 +15,7 @@ This skill returns evidence only. It does not authorize mutation, set or block a
 - Proposal, design, spec deltas, tasks, and traceability describe the same next-increment scope.
 - For broad read-only consistency reviews across independent artifacts, consider bounded workers with exact ranges or tracks; keep focused reviews serial.
 - Every behavior-changing current-increment requirement has an acceptance scenario and planned or existing verification; unreachable future requirements stay non-blocking residual.
-- Behavior-changing tasks order minimal happy-path implementation and observable proof first. Material/explicit qualification then requires separate fresh-context SDET/risk discovery and test-only acceptance, negative, and end-to-end authoring. Ordinary Small reuses focused validation and optional smallest post-proof regression. Group mechanical mirror edits that share owner/validation.
+- Behavior-changing tasks order minimal happy-path implementation and observable proof first. Main may add the smallest focused regression after proof; separate fresh test-only SDET/risk discovery is required only for a reachable named critical consequence or explicit project/owner requirement. Group mechanical mirror edits that share owner/validation.
 - Task completion claims have evidence.
 - Docs do not claim behavior that the spec excludes or leaves future-scope.
 - Source/tests do not implement behavior outside accepted scope unless explicitly documented.

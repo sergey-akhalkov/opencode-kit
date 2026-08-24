@@ -1,0 +1,19 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "hostConfigAbsent": true,
+    "httpPathAnswered": false,
+    "httpStatusAnswered": false,
+    "isolatedConfigLoaded": true,
+    "listenObserved": true,
+    "noCommandInventory": true,
+    "noRipgrepDownload": true,
+    "noSessionsCreated": true
+  },
+  "liveCalls": 0,
+  "proof": false,
+  "schemaVersion": 1,
+  "status": "blocked"
+}

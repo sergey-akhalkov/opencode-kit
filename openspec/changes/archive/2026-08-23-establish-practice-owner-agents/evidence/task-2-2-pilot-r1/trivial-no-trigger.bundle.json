@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "establish-practice-owner-agents-planning-r1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "b60e36f2f7a56d54fb74b34da98cc7527355a83bf5bba8022ddf25931fdacca8",
+      "global/principles-of-work.md": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8",
+      "profiles/core.json": "c1bf6785a71fd1b3ed5c9e19cabbc820e91f987a5af57fdd133dd6b361e20389",
+      "profiles/all.json": "6b80cfbca998655b22a243739bd16b5b6c4073b8a1eee9949f8973ae42b00293",
+      "tools/proofs/practice-owner-routing.ts": "e7d84f42618c9e0a2c050dd36fc7ab9308a3912f84c8db7ff9fd56d6d53cabe9",
+      "openspec/changes/establish-practice-owner-agents/evidence/task-1-2-baseline-inventory-r1.json": "b5a3d7835a9557bf4e8d17c8fcf1fcdb762e30331dca38ef4fc393b9917e6f43"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fd0391e10ffeASGFkWoB0f5WaS",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "poa-candidate-trivial-no-trigger",
+      "Fix planning only. greeting.ts has one local punctuation defect. Do not modify files. State the smallest correction. Do not launch subagents."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787508003612,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc79312001Q528OrLbRdZBND\",\"messageID\":\"msg_02fc6f3db001eqAKdT2629GQiG\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"snapshot\":\"fe2ed077b377f7121c3901dbde7af501f4a639c9\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787508004935,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc7968c001M7Zbugpl8THRyN\",\"messageID\":\"msg_02fc6f3db001eqAKdT2629GQiG\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"type\":\"text\",\"text\":\"I’ll inspect `greeting.ts` and identify only the punctuation change, without editing.\",\"time\":{\"start\":1787508004492,\"end\":1787508004915},\"metadata\":{\"openai\":{\"itemId\":\"msg_029e8a067e701f64016a8b3525474887d2b82dfb023b90f70b\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508005339,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_VMVZKBEOTOYbvqM0Zd0cMaVJ\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/greeting.ts\"},\"output\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787508005207,\"end\":1787508005308}},\"metadata\":{\"openai\":{\"itemId\":\"fc_029e8a067e701f64016a8b3525be3887d29d3ccc9eac051653\"}},\"id\":\"prt_02fc7983c001fGngrCZ34BMO7W\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"messageID\":\"msg_02fc6f3db001eqAKdT2629GQiG\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508006248,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc79d33001GsAf4lihL7j3rc\",\"reason\":\"tool-calls\",\"snapshot\":\"83eceb4db7b46f666173084ed88729eebb1bbafe\",\"messageID\":\"msg_02fc6f3db001eqAKdT2629GQiG\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"type\":\"step-finish\",\"tokens\":{\"total\":17727,\"input\":17641,\"output\":48,\"reasoning\":38,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787508009436,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc7a9c5001177kErN0Of0AVg\",\"messageID\":\"msg_02fc7a04d00116XuPchT8Ir7Tu\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"snapshot\":\"83eceb4db7b46f666173084ed88729eebb1bbafe\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787508010372,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_2dqqMQ5ON9SYnh10ZyiM6i2G\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\greeting.ts</path>\\n<type>file</type>\\n<content>\\n1: export function greeting(name: string): string {\\n2:   return `Hello, ${name}.`;\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\",\"text\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"src\\\\greeting.ts\",\"time\":{\"start\":1787508010255,\"end\":1787508010362}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c59c30cfe88e064016a8b352a405887d29f00fa7fa8ad0853\"}},\"id\":\"prt_02fc7a9cd001hN71vfVymqKwMC\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"messageID\":\"msg_02fc7a04d00116XuPchT8Ir7Tu\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508011028,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc7afe5001sok3becE73HcxT\",\"reason\":\"tool-calls\",\"snapshot\":\"83eceb4db7b46f666173084ed88729eebb1bbafe\",\"messageID\":\"msg_02fc7a04d00116XuPchT8Ir7Tu\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"type\":\"step-finish\",\"tokens\":{\"total\":17819,\"input\":873,\"output\":50,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787508013914,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc7bb52001ReB6HK300iUMq4\",\"messageID\":\"msg_02fc7b20e001fjU860cWzimZGI\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"snapshot\":\"83eceb4db7b46f666173084ed88729eebb1bbafe\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787508015964,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc7c0ff001IJtb2BG8GS6p7P\",\"messageID\":\"msg_02fc7b20e001fjU860cWzimZGI\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"type\":\"text\",\"text\":\"In `src/greeting.ts:2`, replace the final period with an exclamation mark:\\n\\n```ts\\nreturn `Hello, ${name}!`;\\n```\\n\\nNo files modified.\",\"time\":{\"start\":1787508015359,\"end\":1787508015956},\"metadata\":{\"openai\":{\"itemId\":\"msg_025c9ce1c6a811c2016a8b3530252487d2a3a0cd14fb66629d\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508016422,\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"part\":{\"id\":\"prt_02fc7c500001TtSvg3tugEu86D\",\"reason\":\"stop\",\"snapshot\":\"83eceb4db7b46f666173084ed88729eebb1bbafe\",\"messageID\":\"msg_02fc7b20e001fjU860cWzimZGI\",\"sessionID\":\"ses_fd0391e10ffeASGFkWoB0f5WaS\",\"type\":\"step-finish\",\"tokens\":{\"total\":18022,\"input\":1018,\"output\":42,\"reasoning\":66,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: allow",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect `greeting.ts` and identify only the punctuation change, without editing.In `src/greeting.ts:2`, replace the final period with an exclamation mark:\n\n```ts\nreturn `Hello, ${name}!`;\n```\n\nNo files modified.",
+    "elapsedMs": 65500,
+    "eventCount": 10,
+    "launchedOwners": [],
+    "providerCalls": 1,
+    "sessionIds": [
+      "ses_fd0391e10ffeASGFkWoB0f5WaS"
+    ],
+    "tokens": [
+      {
+        "total": 17727,
+        "input": 17641,
+        "output": 48,
+        "reasoning": 38,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 17819,
+        "input": 873,
+        "output": 50,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      },
+      {
+        "total": 18022,
+        "input": 1018,
+        "output": 42,
+        "reasoning": 66,
+        "cache": {
+          "write": 0,
+          "read": 16896
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/greeting.ts"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\greeting.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "Fix planning only. greeting.ts has one local punctuation defect. Do not modify files. State the smallest correction. Do not launch subagents.",
+    "scenario": "trivial-no-trigger"
+  },
+  "oracles": {
+    "cleanupComplete": true,
+    "fixtureStable": true,
+    "launchedOwners": []
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "85ddce1d5f128f44f8bc50b8afb3a5f1fe07f19699c5306e8d3627c766462aee",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    },
+    "before": {
+      "task.md": "85ddce1d5f128f44f8bc50b8afb3a5f1fe07f19699c5306e8d3627c766462aee",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "checks": {
+    "authClosed": true,
+    "initiallyConnected": true,
+    "openCodeSurvived": true,
+    "degradedObserved": true,
+    "recovered": true,
+    "managedUntouched": true,
+    "noProviderCalls": true,
+    "secretSafe": true,
+    "cleanup": true
+  }
+}

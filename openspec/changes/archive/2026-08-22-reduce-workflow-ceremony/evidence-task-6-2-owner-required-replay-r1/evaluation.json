@@ -1,0 +1,23 @@
+{
+  "candidateId": "reduce-workflow-ceremony-owner-required-r1",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "completionMode": "arbiter-or-nonterminal",
+  "disposition": "owner-required",
+  "guardState": "owner-required",
+  "inputRawSha256": "5a07fab35b12af7ee0967c2d61f0ef75952a1b8935a39371b115409be3b5c66d",
+  "liveCalls": 0,
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "complete",
+  "providerCalls": {
+    "arbiter": 1,
+    "primary": 1
+  },
+  "replaySource": "evidence-task-6-2-owner-required-r1",
+  "rootSession": "created-and-deleted",
+  "scenario": "owner-required",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unlockCondition": null
+}

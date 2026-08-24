@@ -1,0 +1,26 @@
+{
+  "candidateId": "reduce-workflow-ceremony-task-4-1-r1",
+  "facts": {
+    "budgetCurrentPassed": true,
+    "budgetFixturePassed": true,
+    "budgetGrowthFailedClosed": true,
+    "budgetMaterializerGrowthRejected": true,
+    "budgetMalformedFailedClosed": true,
+    "catalogCompatibility": true,
+    "cleanupPassed": true,
+    "configDeclaredEvidence": true,
+    "conventionalEvidence": true,
+    "deterministicLoaderRerun": true,
+    "discoveryMetadataSeparated": true,
+    "loaderSchemaSeparated": true,
+    "noContentDisclosure": true,
+    "noVendorWalk": true,
+    "onDemandSeparated": true,
+    "runtimeObservedEvidence": true,
+    "startupSeparated": true,
+    "unknownsPreserved": true
+  },
+  "inputRawSha256": "1a0fc4b191b0c57f7f2a8d47b70cf7d163c6cedd00c8d90a1ac737cd03ff64d7",
+  "pass": true,
+  "schemaVersion": 1
+}

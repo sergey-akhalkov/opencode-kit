@@ -1,0 +1,47 @@
+{
+  "candidateId": "standard-guard-startup-diagnostic-r3",
+  "cleanup": {
+    "complete": true,
+    "errors": [],
+    "fixtureAbsent": true,
+    "openCodePortAbsent": true
+  },
+  "failure": {
+    "cause": null,
+    "message": "Path route timed out",
+    "name": "Error",
+    "stack": "Error: Path route timed out"
+  },
+  "graphifyProcesses": 0,
+  "kind": "shared-graphify-startup-diagnostic",
+  "logs": {
+    "stderr": [
+      "timestamp=2026-08-20T19:28:24.164Z level=INFO run=b18812a5 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-36988ca0-f52e-423b-a693-4b8a8aa244c8\\\\opencode-runtime\\\\config-home\\\\opencode\\\\config.json\"",
+      "timestamp=2026-08-20T19:28:24.194Z level=INFO run=b18812a5 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-36988ca0-f52e-423b-a693-4b8a8aa244c8\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.json\"",
+      "timestamp=2026-08-20T19:28:24.204Z level=INFO run=b18812a5 message=loading path=\"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\opencode-shared-graphify-startup-36988ca0-f52e-423b-a693-4b8a8aa244c8\\\\opencode-runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\""
+    ],
+    "stdout": [
+      "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.",
+      "opencode server listening on http://127.0.0.1:53486"
+    ]
+  },
+  "mcpConfigured": false,
+  "mode": "diagnose-startup",
+  "pluginMode": "standard-graphify-guard",
+  "providerCalls": 0,
+  "schemaVersion": 1,
+  "source": {
+    "plugin": {
+      "path": "global\\plugin\\graphify-project-context.ts",
+      "sha256": "75b15c900bf0e1c9ad3944878b54cc3672c79c944aee5aa9d4d2bf041a487b72"
+    },
+    "runner": {
+      "path": "tools\\proofs\\opencode-shared-graphify-integration.ts",
+      "sha256": "d59f9375fb62862e2eca4677e7a8b9593bcbe9d7b31113bca9a8a05653354803"
+    },
+    "sessionEnv": {
+      "path": "global\\plugin\\session-env.ts",
+      "sha256": "b810849e7cfad2226ff9dd368786b4246175f9f554ea1bcae4274d52e34b49b4"
+    }
+  }
+}

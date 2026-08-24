@@ -1,0 +1,20 @@
+{
+  "caseId": "ordinary-small-exact-case",
+  "claimClass": "exact-case",
+  "candidateId": "candidate-r1",
+  "environmentId": "environment-r1",
+  "population": ["member-a"],
+  "observations": [
+    {
+      "memberId": "member-a",
+      "candidateId": "candidate-r1",
+      "environmentId": "environment-r1",
+      "path": "path-a",
+      "boundary": "real-boundary",
+      "terminal": true,
+      "status": "supported"
+    }
+  ],
+  "realOracle": "passed",
+  "independentChallenge": "not-required"
+}

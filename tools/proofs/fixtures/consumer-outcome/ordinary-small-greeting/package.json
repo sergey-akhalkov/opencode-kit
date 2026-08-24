@@ -1,0 +1,8 @@
+{
+  "name": "greeting-cli",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test/greet.test.ts"
+  }
+}

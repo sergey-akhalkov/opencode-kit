@@ -3,7 +3,7 @@
  * Critical regression oracles for session-completion-guard pure modules.
  * Exercises lease preflight, verdict correlation, stop detection, synthetic
  * continuation provenance, grind opt-in defaults, disable late-effect gates,
- * and main permission defaults without model/server I/O.
+ * and permission precedence without model/server I/O.
  */
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -27,12 +27,17 @@ import type { RootInspection } from "../global/extensions/session-completion-gua
 import { PtyFallbackScheduler } from "../global/extensions/session-completion-guard/pty-fallback.ts";
 import { ensureArbiterChild } from "../global/extensions/session-completion-guard/arbiter-child.ts";
 import {
-  applyPermissionAllow,
+  buildArbiterAuditRequest,
+  requireBoundedRequest,
+} from "../global/extensions/session-completion-guard/arbiter-evidence.ts";
+import {
+  configuredPermissionClass,
   initialRootState,
   parseGuardOptions,
 } from "../global/extensions/session-completion-guard/runtime-support.ts";
 import { GuardAuditMonitorLauncher } from "../global/extensions/session-completion-guard/audit-monitor.ts";
-import { GuardStatusReporter } from "../global/extensions/session-completion-guard/status.ts";
+import { GuardStatusReporter, STATUS_CONVERGENCE_PASSES } from "../global/extensions/session-completion-guard/status.ts";
+import { ArbiterScheduler } from "../global/extensions/session-completion-guard/arbiter-scheduler.ts";
 import { normalizeQuestionRequest } from "../global/extensions/session-completion-guard/question.ts";
 import {
   buildContinuation,
@@ -41,6 +46,15 @@ import {
 } from "../global/extensions/session-completion-guard/verdict.ts";
 import type { AuditEpoch, CompletionVerdict, RootState } from "../global/extensions/session-completion-guard/types.ts";
 import { hashRef } from "../global/plugin/session-delivery-context/redaction.ts";
+import {
+  createTerminalCertificateChallenge,
+  evaluateTerminalCertificate,
+  ROADMAP_MISSION_CERTIFICATE_ISSUER,
+} from "../global/extensions/session-completion-guard/terminal-certificate.ts";
+import {
+  readClaimEvidence,
+  terminalClaimBindings,
+} from "../global/extensions/session-completion-guard/claim-evidence.ts";
 
 const RUNAUDIT_DISABLE_ORACLE_FLAG = "--oracle-runaudit-disable-race";
 const QUESTION_REPLY_DISABLE_ORACLE_FLAG = "--oracle-question-reply-disable-race";
@@ -398,6 +412,7 @@ async function runRouteSettle(options: {
 function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVerdict {
   return {
     auditID: "audit_fixture_1",
+    claimMatrix: [],
     confidence: "high",
     evidenceGaps: [],
     evidenceRefs: ["evidence_1"],
@@ -430,7 +445,106 @@ function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVer
   };
 }
 
+function claimRecord(input: {
+  candidateId?: string;
+  claimId: string;
+  disposition?: "blocked" | "supported";
+  members?: string[];
+}): Record<string, unknown> {
+  const candidateId = input.candidateId ?? "candidate-current";
+  const members = input.members ?? ["member-1"];
+  const broad = members.length > 1;
+  const disposition = input.disposition ?? "supported";
+  const observedMembers = disposition === "supported" ? members : members.slice(0, 1);
+  return {
+    candidateId,
+    claimClass: broad ? "finite-population" : "exact-case",
+    claimId: input.claimId,
+    coverageBasis: broad ? "finite-population" : "exact-case",
+    disposition,
+    environmentId: "environment-current",
+    evidenceRefs: ["product"],
+    independentChallenge: broad
+      ? { evidenceRefs: [], required: true, status: "missing" }
+      : { evidenceRefs: [], required: false, status: "not-required" },
+    materialExclusions: [],
+    maximumSupportedClaim: broad ? `Only ${members[0]} is supported.` : `Exact ${members[0]} only.`,
+    narrowingAccepted: false,
+    observationBoundary: "result-boundary",
+    observations: observedMembers.map((memberId) => ({
+      candidateId,
+      environmentId: "environment-current",
+      evidenceRefs: ["product"],
+      memberId,
+      observationBoundary: "result-boundary",
+      paths: { baseline: null, candidate: null, production: "production-path" },
+      status: "supported",
+      terminal: true,
+      unresolvedObservations: [],
+    })),
+    outcomeRef: `outcome:${input.claimId}`,
+    paths: { baseline: null, candidate: null, production: "production-path" },
+    population: {
+      id: `population-${input.claimId.toLowerCase()}`,
+      materialClasses: [],
+      members,
+      partitionRule: null,
+      residualSpace: null,
+    },
+    realOracle: { evidenceRefs: [], required: false, status: "not-required" },
+    statement: `Claim ${input.claimId}`,
+    unknowns: [],
+  };
+}
+
+function writeClaimIndex(root: string, changeId: string, claims: Record<string, unknown>[]): void {
+  const changeRoot = path.join(root, "openspec", "changes", changeId);
+  fs.mkdirSync(changeRoot, { recursive: true });
+  fs.writeFileSync(path.join(changeRoot, "evidence-index.json"), JSON.stringify({
+    candidateId: "candidate-current",
+    changeId,
+    claims,
+    environmentId: "environment-current",
+    lanes: [{ files: [], kind: "terminal", name: "product" }],
+    retention: { exception: null, maxBytes: 25 * 1024 * 1024, maxFiles: 64 },
+    schemaVersion: 2,
+    tasks: [],
+  }));
+}
+
+function claimMatrixRow(
+  claim: ReturnType<typeof readClaimEvidence>["claims"][number],
+): NonNullable<CompletionVerdict["claimMatrix"]>[number] {
+  return {
+    claimId: claim.claimId,
+    closureState: claim.closureState,
+    evidenceRefs: claim.evidenceRefs,
+    maximumSupportedClaim: claim.maximumSupportedClaim,
+    outcomeRef: claim.outcomeRef,
+  };
+}
+
 const tests: TestCase[] = [
+  {
+    name: "critical: standalone plugin factories resolve before installed project bootstrap",
+    run: () => {
+      const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+      const script = [
+        "import completionGuardPlugin from './global/extensions/session-completion-guard.ts';",
+        "import ptyBridgePlugin from './global/extensions/opencode-pty-bridge.ts';",
+        "const directory = process.cwd();",
+        "const input = { client: { _client: {} }, directory, project: { id: 'project_factory_preflight' }, serverUrl: new URL('http://127.0.0.1:1'), worktree: directory };",
+        "const bridge = await ptyBridgePlugin.server(input);",
+        "const guard = await completionGuardPlugin.server(input, { auditWindow: { enabled: false, mode: 'read-only-monitor', scope: 'per-root', terminal: 'powershell-shell' }, enabled: true, statusToasts: false });",
+        "await guard.dispose?.();",
+        "console.log(JSON.stringify({ bridge: typeof bridge === 'object', guard: typeof guard.event === 'function' && typeof guard.config === 'function' }));",
+      ].join("\n");
+      const child = spawnSync("bun", ["-e", script], { cwd: repoRoot, encoding: "utf8", timeout: 15_000 });
+      assert(child.status === 0, child.stderr || child.stdout || "Plugin factory subprocess failed.");
+      const facts = JSON.parse(child.stdout.trim()) as { bridge?: boolean; guard?: boolean };
+      assert(facts.bridge === true && facts.guard === true, "Both standalone plugin factories must return hooks.");
+    },
+  },
   {
     name: "critical: awaited running PTY suppresses audit preflight as waiting",
     run: () => {
@@ -557,6 +671,167 @@ const tests: TestCase[] = [
         "malformed JSON",
         "Broken JSON object text must be rejected.",
       );
+    },
+  },
+  {
+    name: "critical: claim projection preserves closure and reports stale malformed oversized and truncated sources",
+    run: () => {
+      const root = fs.mkdtempSync(path.join(os.tmpdir(), "completion-claim-projection-"));
+      try {
+        writeClaimIndex(root, "supported", [claimRecord({ claimId: "CLAIM-EXACT" })]);
+        writeClaimIndex(root, "stale", [claimRecord({ candidateId: "candidate-stale", claimId: "CLAIM-STALE" })]);
+        const malformedRoot = path.join(root, "openspec", "changes", "malformed");
+        fs.mkdirSync(malformedRoot, { recursive: true });
+        fs.writeFileSync(path.join(malformedRoot, "evidence-index.json"), "{ malformed");
+        const oversizedRoot = path.join(root, "openspec", "changes", "oversized");
+        fs.mkdirSync(oversizedRoot, { recursive: true });
+        fs.writeFileSync(path.join(oversizedRoot, "evidence-index.json"), "X".repeat(65_537));
+
+        const supported = readClaimEvidence(root, ["supported"]);
+        assert(supported.complete, `Supported exact projection must be complete: ${JSON.stringify(supported)}`);
+        assert(supported.claims[0]?.closureState === "supported", "Exact matching claim must project as supported.");
+        const stale = readClaimEvidence(root, ["stale"]);
+        assert(stale.claims[0]?.closureState === "stale", "Stale candidate identity must remain explicit.");
+        const malformed = readClaimEvidence(root, ["malformed"]);
+        assert(
+          !malformed.complete && malformed.omissions[0]?.code === "evidence-index-malformed",
+          "Malformed selected closure must become an explicit omission.",
+        );
+        const oversized = readClaimEvidence(root, ["oversized"]);
+        assert(
+          !oversized.complete && oversized.omissions[0]?.code === "evidence-index-oversized",
+          "Oversized selected closure must become an explicit omission.",
+        );
+
+        writeClaimIndex(root, "many-a", Array.from({ length: 17 }, (_, index) =>
+          claimRecord({ claimId: `CLAIM-A-${String(index).padStart(2, "0")}` })
+        ));
+        writeClaimIndex(root, "many-b", Array.from({ length: 17 }, (_, index) =>
+          claimRecord({ claimId: `CLAIM-B-${String(index).padStart(2, "0")}` })
+        ));
+        const truncated = readClaimEvidence(root, ["many-a", "many-b"]);
+        assert(truncated.claims.length === 32, "Claim projection must retain its bounded record limit.");
+        assert(
+          !truncated.complete && truncated.omissions.some((entry) => entry.code === "claim-limit" && entry.omitted === 2),
+          "Truncated claim projection must report the exact omitted count.",
+        );
+        const currentEpoch = epoch({
+          completionEvidence: { claimEvidence: truncated, schemaVersion: 2 } as never,
+        });
+        const request = buildArbiterAuditRequest(
+          currentEpoch,
+          {
+            context: { assistantEvidence: [], background: [], humanMessages: [] },
+            journal: { digest: "journal", relativePath: "history.md", source: "openspec_history" },
+            revision: currentEpoch.inspected,
+          } as never,
+          currentEpoch.completionEvidence!,
+        );
+        assert(
+          request.includes('"claimEvidence"') && request.includes('"claim-limit"'),
+          "Bounded arbiter request must retain claim records and omission metadata together.",
+        );
+        assertThrows(
+          () => requireBoundedRequest(request, 1_024),
+          "exceeds byte limit",
+          "Oversized claim closure must fail before another required field is dropped.",
+        );
+      } finally {
+        fs.rmSync(root, { force: true, recursive: true });
+      }
+    },
+  },
+  {
+    name: "critical: claim verdicts preserve supplied ceilings and cannot stop on unsupported explicit closure",
+    run: () => {
+      const root = fs.mkdtempSync(path.join(os.tmpdir(), "completion-claim-verdict-"));
+      try {
+        writeClaimIndex(root, "blocked", [claimRecord({
+          claimId: "CLAIM-BROAD",
+          disposition: "blocked",
+          members: ["member-1", "member-2"],
+        })]);
+        writeClaimIndex(root, "supported", [claimRecord({ claimId: "CLAIM-EXACT" })]);
+        const blockedProjection = readClaimEvidence(root, ["blocked"]);
+        const blockedEpoch = epoch({
+          completionEvidence: { claimEvidence: blockedProjection, schemaVersion: 2 } as never,
+        });
+        const blockedRow = claimMatrixRow(blockedProjection.claims[0]);
+        assert(
+          terminalClaimBindings(blockedProjection).reason === "claim-closure-incomplete",
+          "Blocked broad claim must force terminal certificates through model arbitration.",
+        );
+        const continued = parseCompletionVerdict(validVerdict({ claimMatrix: [blockedRow] }), blockedEpoch);
+        assert(continued.verdict === "continue", "Representative-only broad claim must remain continuable.");
+        assertThrows(
+          () => parseCompletionVerdict(validVerdict({
+            claimMatrix: [blockedRow],
+            requirementMatrix: [{ evidenceRefs: [], requirementRef: "req_1", status: "complete" }],
+            unresolved: [],
+            verdict: "allow_stop",
+          }), blockedEpoch),
+          "unsupported claim closure",
+          "Blocked broad claim must not become allow_stop.",
+        );
+        assertThrows(
+          () => parseCompletionVerdict(validVerdict({
+            claimMatrix: [{ ...blockedRow, maximumSupportedClaim: "All members are supported." }],
+          }), blockedEpoch),
+          "does not match supplied claim evidence",
+          "Arbiter claim text must not widen the supplied ceiling.",
+        );
+
+        const supportedProjection = readClaimEvidence(root, ["supported"]);
+        const supportedEpoch = epoch({
+          completionEvidence: { claimEvidence: supportedProjection, schemaVersion: 2 } as never,
+        });
+        const supportedBindings = terminalClaimBindings(supportedProjection);
+        assert(
+          supportedBindings.reason == null && supportedBindings.acceptedClaimIds[0] === "CLAIM-EXACT",
+          "Supported explicit claims must bind deterministic certificate identities.",
+        );
+        const stopped = parseCompletionVerdict(validVerdict({
+          claimMatrix: [claimMatrixRow(supportedProjection.claims[0])],
+          requirementMatrix: [{ evidenceRefs: ["product"], requirementRef: "req_1", status: "complete" }],
+          unresolved: [],
+          verdict: "allow_stop",
+        }), supportedEpoch);
+        assert(stopped.verdict === "allow_stop", "Supported exact claim may stop.");
+
+        const incompleteEpoch = epoch({
+          completionEvidence: {
+            claimEvidence: {
+              ...supportedProjection,
+              complete: false,
+              omissions: [{ changeRef: null, code: "claim-limit", detail: "truncated", omitted: 1 }],
+            },
+            schemaVersion: 2,
+          } as never,
+        });
+        assertThrows(
+          () => parseCompletionVerdict(validVerdict({
+            claimMatrix: [claimMatrixRow(supportedProjection.claims[0])],
+            requirementMatrix: [{ evidenceRefs: ["product"], requirementRef: "req_1", status: "complete" }],
+            unresolved: [],
+            verdict: "allow_stop",
+          }), incompleteEpoch),
+          "complete explicitly selected claim closure",
+          "Truncated explicit closure must fail closed.",
+        );
+        assert(
+          terminalClaimBindings(incompleteEpoch.completionEvidence!.claimEvidence).reason === "claim-closure-omitted",
+          "Truncated closure must not enter deterministic certificate acceptance.",
+        );
+        const missingMatrix = validVerdict();
+        delete (missingMatrix as { claimMatrix?: unknown }).claimMatrix;
+        assertThrows(
+          () => parseCompletionVerdict(missingMatrix, epoch()),
+          "claimMatrix",
+          "Arbiter verdict must always carry the structured claim matrix.",
+        );
+      } finally {
+        fs.rmSync(root, { force: true, recursive: true });
+      }
     },
   },
   {
@@ -738,7 +1013,7 @@ const tests: TestCase[] = [
     },
   },
   {
-    name: "critical: permission allow preserves specialist maps while promoting main",
+    name: "critical: grind command config preserves main and specialist permission precedence",
     run: () => {
       const build = Object.freeze({ permission: "ask" as const });
       const arbiter = Object.freeze({
@@ -751,19 +1026,20 @@ const tests: TestCase[] = [
         "sdet-quality-engineer": sdet,
         unused: null,
       });
+      const configuredPermission = Object.freeze({ bash: "ask" as const, edit: "deny" as const });
       const config: {
         permission?: unknown;
         agent?: Record<string, { permission?: unknown } | null | undefined>;
+        command?: Record<string, unknown>;
       } = {
-        permission: { bash: "ask", edit: "ask" },
+        permission: configuredPermission,
         agent: originalAgents,
+        command: { existing: { description: "fixture", template: "fixture" } },
       };
-      applyPermissionAllow(config as never);
-      assert(
-        (config.permission as Record<string, unknown>)["*"] === "allow",
-        "Top-level wildcard permission must become allow.",
-      );
-      assert(config.agent !== originalAgents, "Loaded agent config collection must be replaced, not mutated.");
+      configureGrindCommands(config as never);
+      assert(config.permission === configuredPermission, "Guard command setup must not replace merged main permissions.");
+      assert(configuredPermissionClass(config.permission) === "mixed", "Mixed configured permissions must be diagnosed without disclosure.");
+      assert(config.agent === originalAgents, "Guard command setup must not replace loaded agent config.");
       assert(config.agent?.unused == null, "Null agent entries must remain null.");
       assert(build.permission === "ask", "Original immutable build config must remain unchanged.");
       assert(arbiter.permission.edit === "deny", "Original immutable arbiter config must remain unchanged.");
@@ -772,7 +1048,7 @@ const tests: TestCase[] = [
       const resolvedArbiter = config.agent?.["session-completion-arbiter"];
       const resolvedSdet = config.agent?.["sdet-quality-engineer"];
       const resolvedBuild = config.agent?.build;
-      assert(resolvedArbiter != null && resolvedArbiter !== arbiter, "Arbiter agent object must be copied.");
+      assert(resolvedArbiter === arbiter, "Arbiter agent object must remain unchanged.");
       assert(
         resolvedArbiter.permission === arbiter.permission,
         "Arbiter permission map must remain the declared object.",
@@ -783,7 +1059,7 @@ const tests: TestCase[] = [
       );
       assert(
         (resolvedArbiter.permission as Record<string, unknown>)["*"] !== "allow",
-        "Arbiter must not receive allow-all from main normalization.",
+        "Arbiter must not receive allow-all from guard command setup.",
       );
       assert(
         (resolvedSdet?.permission as Record<string, unknown>).bash === "deny",
@@ -795,7 +1071,7 @@ const tests: TestCase[] = [
       );
       assert(
         (resolvedSdet?.permission as Record<string, unknown>)["*"] !== "allow",
-        "SDET must not receive allow-all from main normalization.",
+        "SDET must not receive allow-all from guard command setup.",
       );
       assert(
         (resolvedSdet?.permission as Record<string, unknown>).doom_loop !== "allow",
@@ -805,6 +1081,81 @@ const tests: TestCase[] = [
         resolvedBuild?.permission === "ask",
         "Build agent string permission must remain unchanged.",
       );
+      assert(config.command?.existing != null, "Existing commands must remain configured.");
+      assert(config.command?.["enable-grind"] != null, "Enable command must be configured.");
+      assert(config.command?.["disable-grind"] != null, "Disable command must be configured.");
+      for (const action of ["allow", "ask", "deny"] as const) {
+        const scalarConfig = { permission: action };
+        configureGrindCommands(scalarConfig as never);
+        assert(scalarConfig.permission === action, `Guard command setup must preserve scalar ${action}.`);
+        assert(configuredPermissionClass(scalarConfig.permission) === action, `Configured ${action} diagnostic must be exact.`);
+      }
+    },
+  },
+  {
+    name: "critical: terminal certificates reject forged stale incomplete and question-pending claims",
+    run: () => {
+      const challenge = createTerminalCertificateChallenge({
+        acceptedClaimIds: ["CLAIM-EXACT"],
+        claimEvidenceRefs: ["claim-evidence"],
+        issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+        leaseGeneration: 7,
+        requirementIds: ["1.1", "1.2"],
+        revisionDigest: "revision_current",
+        rootRef: "session_current",
+      });
+      const certificate = (overrides: Partial<typeof challenge> = {}, evidenceRefs = ["evidence/terminal.json"]) => {
+        const bound = createTerminalCertificateChallenge({
+          acceptedClaimIds: overrides.acceptedClaimIds ?? challenge.acceptedClaimIds,
+          claimEvidenceRefs: overrides.claimEvidenceRefs ?? challenge.claimEvidenceRefs,
+          issuer: overrides.issuer ?? challenge.issuer,
+          leaseGeneration: overrides.leaseGeneration ?? challenge.leaseGeneration,
+          requirementIds: overrides.requirementIds ?? challenge.requirementIds,
+          revisionDigest: overrides.revisionDigest ?? challenge.revisionDigest,
+          rootRef: overrides.rootRef ?? challenge.rootRef,
+        });
+        return { ...bound, disposition: "allow_stop" as const, evidenceRefs };
+      };
+      const evaluate = (candidate: unknown, configuredIssuers = [ROADMAP_MISSION_CERTIFICATE_ISSUER], pendingQuestion = false) =>
+        evaluateTerminalCertificate({ certificate: candidate, challenge, configuredIssuers, pendingQuestion });
+      const accepted = evaluate(certificate());
+      assert(accepted.status === "accepted" && accepted.certificate != null, "Current configured certificate must be accepted.");
+      const rejected = (
+        result: ReturnType<typeof evaluate>,
+        reason: string,
+        message: string,
+      ) => {
+        assert(result.status === "rejected" && result.certificate == null && result.reason === reason, message);
+      };
+      const malformed = (result: ReturnType<typeof evaluate>, message: string) => {
+        assert(result.status === "rejected" && result.certificate == null && result.reason?.startsWith("malformed:") === true, message);
+      };
+      rejected(evaluate(certificate({ issuer: "forged-issuer" })), "issuer-mismatch", "Forged issuer must be rejected without deterministic pass.");
+      rejected(evaluate(certificate({ rootRef: "session_forged" })), "root-mismatch", "Forged root must be rejected without deterministic pass.");
+      rejected(evaluate(certificate({ revisionDigest: "revision_stale" })), "stale-revision", "Stale revision must be rejected without deterministic pass.");
+      rejected(evaluate(certificate({ leaseGeneration: 6 })), "stale-lease", "Stale lease must be rejected without deterministic pass.");
+      rejected(evaluate(certificate({ requirementIds: ["1.1"] })), "missing-requirement", "Missing requirement must be rejected without deterministic pass.");
+      rejected(evaluate(certificate({ acceptedClaimIds: [] })), "missing-claim", "Missing accepted claim must be rejected without deterministic pass.");
+      rejected(evaluate(certificate({ claimEvidenceRefs: [] })), "claim-evidence-mismatch", "Mismatched claim evidence must be rejected without deterministic pass.");
+      rejected(evaluate(certificate(), [], false), "unknown-issuer", "Unknown issuer must be rejected without deterministic pass.");
+      rejected(evaluate(certificate(), [ROADMAP_MISSION_CERTIFICATE_ISSUER], true), "pending-question", "Pending question must reject terminal completion without deterministic pass.");
+      malformed(evaluate(certificate({}, ["../private.json"])), "Unsafe evidence reference must be rejected without deterministic pass.");
+      malformed(evaluate({ ...certificate(), disposition: "continue" }), "Non-terminal disposition must be rejected without deterministic pass.");
+      const exactChallenge = createTerminalCertificateChallenge({
+        issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+        leaseGeneration: 7,
+        requirementIds: ["exact"],
+        revisionDigest: "revision_exact",
+        rootRef: "session_exact",
+      });
+      const exactCertificate = { ...exactChallenge, disposition: "allow_stop" as const, evidenceRefs: ["evidence/exact.json"] };
+      const exact = evaluateTerminalCertificate({
+        certificate: exactCertificate,
+        challenge: exactChallenge,
+        configuredIssuers: [ROADMAP_MISSION_CERTIFICATE_ISSUER],
+        pendingQuestion: false,
+      });
+      assert(exact.status === "accepted", "Current exact certificate without broad claims must remain accepted.");
     },
   },
   {
@@ -812,8 +1163,11 @@ const tests: TestCase[] = [
     run: () => {
       const options = parseGuardOptions({});
       assert(options.arbiterAgent === "session-completion-arbiter", "Default arbiter agent must be session-completion-arbiter.");
+      assert(options.certificateIssuers.length === 0, "Terminal certificate issuers must require explicit configuration.");
+      assert(options.certificateWaitMs >= 0, "Terminal certificate wait must be bounded.");
       assert(options.enabled === true, "Guard must default enabled.");
       assert(options.settleMs >= 0, "Settle window must be non-negative.");
+      assert(options.arbiterActiveLimit === 2 && options.arbiterQueueLimit === 32, "Arbiter scheduler defaults must be 2/32.");
     },
   },
   {
@@ -1638,6 +1992,7 @@ const tests: TestCase[] = [
                 const invalid = {
                   schemaVersion: 1,
                   auditID: "audit_retry_amplify_1",
+                  claimMatrix: [],
                   rootSessionRef: rootRef,
                   inspectedRevision: "will-be-rewritten",
                   verdict: "owner_required",
@@ -1671,6 +2026,7 @@ const tests: TestCase[] = [
               const allowStop = {
                 schemaVersion: 1,
                 auditID: "audit_retry_amplify_1",
+                claimMatrix: [],
                 rootSessionRef: rootRef,
                 inspectedRevision: "will-be-rewritten",
                 verdict: "allow_stop",
@@ -2174,6 +2530,64 @@ const tests: TestCase[] = [
         causeMessage.includes("timed out"),
         `hung lookup must preserve the per-attempt deadline as cause, cause=${causeMessage}`,
       );
+    },
+  },
+  {
+    name: "critical: status persistence terminates after eight non-converging passes",
+    run: async () => {
+      const root = sessionFixture({ id: "session_root_status_bound" });
+      const state = {
+        ...initialRootState(root),
+        grindEnabled: true,
+        state: "running",
+      } as RootState;
+      let updateCalls = 0;
+      let exhaustLogs = 0;
+      const reporter = new GuardStatusReporter({
+        client: {
+          session: {
+            update: async (args: { metadata?: unknown }) => {
+              updateCalls += 1;
+              state.continuationCycles += 1;
+              return { data: { ...root, metadata: args.metadata } };
+            },
+          },
+          tui: { showToast: async () => undefined },
+        } as never,
+        statusToasts: false,
+        log: async (_level, message) => {
+          if (message === "guard status persistence exhausted") exhaustLogs += 1;
+        },
+      });
+      const persisted = await reporter.persist(state);
+      assert(persisted === false, "Continuous mutation must not report convergence.");
+      assert(updateCalls === STATUS_CONVERGENCE_PASSES, `Expected ${STATUS_CONVERGENCE_PASSES} passes, got ${updateCalls}`);
+      assert(exhaustLogs === 1, "Exhaustion must emit one diagnostic.");
+    },
+  },
+  {
+    name: "critical: arbiter scheduler enforces two active, 32 queued, overflow, and revision cancel",
+    run: async () => {
+      const scheduler = new ArbiterScheduler(2, 32);
+      const first = await scheduler.acquire("root-a", "epoch-a");
+      const second = await scheduler.acquire("root-b", "epoch-b");
+      assert(first === "acquired" && second === "acquired", "First two roots must acquire.");
+      assert(scheduler.activeCount === 2, "Active count must stay at two.");
+      const waiting: Array<Promise<string>> = [];
+      for (let index = 0; index < 32; index += 1) {
+        waiting.push(scheduler.acquire(`root-q-${index}`, `epoch-q-${index}`));
+      }
+      assert(scheduler.queuedCount === 32, "Queue must hold 32 roots.");
+      const overflow = await scheduler.acquire("root-overflow", "epoch-overflow");
+      assert(overflow === "overload", "33rd queued root must be rejected.");
+      void scheduler.acquire("root-q-0", "epoch-q-0-rev");
+      const original = await waiting[0];
+      assert(original === "cancelled", "Revision must cancel the queued epoch.");
+      scheduler.release("root-a", "epoch-a");
+      const promoted = await waiting[1];
+      assert(promoted === "acquired", "FIFO must promote the next queued root.");
+      assert(scheduler.activeCount === 2, "Promotion must not create a third active slot.");
+      assert(scheduler.queuedCount === 31, "Revised epoch must remain queued behind earlier FIFO entries.");
     },
   },
 ];

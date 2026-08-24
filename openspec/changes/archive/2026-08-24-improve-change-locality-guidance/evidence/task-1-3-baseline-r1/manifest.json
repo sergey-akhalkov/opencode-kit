@@ -1,0 +1,46 @@
+{
+  "files": [
+    {
+      "bytes": 137272,
+      "path": "accepted-second-variant.bundle.json",
+      "sha256": "b5a63e084d7f5a96287a669932275d3325eb927608a760c8fa3c25377605f28e"
+    },
+    {
+      "bytes": 1295,
+      "path": "capture.json",
+      "sha256": "b8926424f1d8aba983dea6744e93ee23a4fb39b117933c0115ca43899c5532f4"
+    },
+    {
+      "bytes": 61343,
+      "path": "delegated-production-ownership.bundle.json",
+      "sha256": "14e059696e98e3589de11d366e5321d24be9ef32f213dbad6963d7f4634d50db"
+    },
+    {
+      "bytes": 102221,
+      "path": "external-integration-boundary.bundle.json",
+      "sha256": "376c7cd160bc8cf8b4de0a7d55bb7cf377565a8d3fb21f6052a5fe3b71556150"
+    },
+    {
+      "bytes": 20594,
+      "path": "hypothetical-extension-negative-control.bundle.json",
+      "sha256": "a5dc60d8f4b1216426e386767422e710536f8d9f6a8fb1e57ac053f97ce4a46a"
+    },
+    {
+      "bytes": 82765,
+      "path": "mixed-owner-file.bundle.json",
+      "sha256": "a7c2f3b530a132d992f7ada797a6eaa54c85e68c3ed6b257760a58b3d6eb5e4f"
+    },
+    {
+      "bytes": 133168,
+      "path": "non-trivial-state-transition.bundle.json",
+      "sha256": "c0868530f4ca7f4513be7ed5ab7e6c75e21e8772ea221b93e4e21d5bbd90b66f"
+    },
+    {
+      "bytes": 18494,
+      "path": "one-off-local-fix.bundle.json",
+      "sha256": "9a5239f0bf3ad786d2bd93ffc5d414eb06c4a82d691b333fd823862a869f4ea7"
+    }
+  ],
+  "role": "capture-baseline",
+  "schemaVersion": 1
+}

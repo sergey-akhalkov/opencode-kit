@@ -7,6 +7,10 @@ export const GLOBAL_ENGINEERING_QUALITY_MARKERS: readonly string[] = [
   "artifact paths",
   "Inspect preserved diagnostics before",
   "smallest safe instrumentation",
+  "architecture-and-change-locality",
+  "Zero-trigger work launches no owner",
+  "no-current-owner",
+  "same-versus-new uncertainty",
 ];
 
 export const ENGINEERING_QUALITY_SURFACES: readonly {
@@ -51,7 +55,19 @@ export const ENGINEERING_QUALITY_SURFACES: readonly {
   },
   {
     relative: "global/agents/implementation-worker.md",
-    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths"],
+    markers: ["split-or-justify", "exception cause/stack", "stdout/stderr", "artifact paths", "named responsibility boundary and change axis", "Owner reshape is in-scope"],
+  },
+  {
+    relative: "instructions/practice-owner-agent-contract.md",
+    markers: ["explicit sibling of a live owner"],
+  },
+  {
+    relative: "global/agents/openspec-architecture-reviewer.md",
+    markers: ["architecture-and-change-locality", "Main keeps the concrete design decision"],
+  },
+  {
+    relative: "global/principles-of-work.md",
+    markers: ["Hypothetical extensibility is not a seam"],
   },
   {
     relative: "global/agents/sdet-quality-engineer.md",

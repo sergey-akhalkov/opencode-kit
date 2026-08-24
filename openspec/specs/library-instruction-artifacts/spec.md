@@ -2,129 +2,38 @@
 
 ## Purpose
 Defines canonical instruction ownership, reusable skill and agent contracts, OpenSpec authoring requirements, validation boundaries, and context-efficiency invariants.
-## Requirements
-### Requirement: Canonical Universal Development Loop source
 
+## Requirements
+
+### Requirement: Canonical Universal Development Loop source
 The repository SHALL have exactly one file that defines the Universal Development Loop step list and its supporting sections. The canonical file SHALL be `instructions/universal-development-loop.md`. Every other artifact in the repository that previously restated the step list SHALL contain only a reference or role-specific delta and SHALL NOT claim canonical sections or step counts that the canonical file does not contain.
 
-The current canonical loop SHALL contain 12 steps through `Process Improvement`, followed by `Quality Defaults` and `Output Shape`. Token and time policy SHALL remain owned by the always-loaded operating priorities and `docs/token-economy.md`; documentation SHALL NOT claim a nonexistent canonical `Token/Time Rules` section.
+The current canonical loop SHALL contain 11 steps through `Stable Handoff`, followed by an unnumbered optional-workflow-feedback rule, `Quality Defaults`, and `Output Shape`. Optional workflow feedback SHALL NOT become a numbered completion stage. Token and time policy SHALL remain owned by the always-loaded operating priorities and `docs/token-economy.md`; documentation SHALL NOT claim a nonexistent canonical `Token/Time Rules` section.
+
+#### Scenario: Canonical loop ends product completion before optional feedback
+- **WHEN** a reader or validator inspects `instructions/universal-development-loop.md`
+- **THEN** the numbered loop ends at step 11, `Stable Handoff`
+- **AND** optional workflow feedback remains outside the numbered completion lifecycle.
 
 #### Scenario: kit docs pointer
-
 - **WHEN** a reader opens `docs/universal-development-loop.md`
 - **THEN** the file SHALL contain a `## Universal Development Loop` heading
 - **AND** the body SHALL point to `instructions/universal-development-loop.md` without restating the step list or inventing canonical sections.
 
 #### Scenario: project template avoids a broken target-relative dependency
-
 - **WHEN** `tools/init-project.ts` writes `AGENTS.md` into a target project
 - **THEN** the written file SHALL describe the active global runtime authority
 - **AND** it SHALL NOT require the target project to contain `instructions/universal-development-loop.md`.
 
 #### Scenario: reusable project instructions use runtime authority
-
 - **WHEN** `instructions/reusable-project-agent-instructions.md` is rendered
 - **THEN** the file SHALL NOT inline the 12-step Universal Development Loop list
 - **AND** it SHALL identify the loop as conceptual guidance subordinate to the loaded global authority.
 
 #### Scenario: validator rejects current step duplication
-
 - **WHEN** `npm run validate` scans the repository
 - **THEN** the orchestrator SHALL fail with a clear error if any artifact other than `instructions/universal-development-loop.md` contains the current full 12-step loop body
 - **AND** the detector SHALL derive or maintain the current step names rather than retired lifecycle names.
-
-### Requirement: Compaction analyzes improvement across three directions and two targets
-Every compaction summary SHALL evaluate quality, cycle speed, and token economy for both the active working repository and `opencode-kit`. Each of the six cells SHALL record observed session evidence, the smallest cheap improvement, expected benefit, cost/risk, or `none` when the session supplies no supporting evidence.
-
-An improvement candidate SHALL be considered only when it is local, reversible, low-cost, causally linked to an observed loss or opportunity, and does not expand accepted outcome. Every evidence-backed candidate SHALL identify `Impact Horizon`, `Concrete Consumers`, `Execution Class`, `Earliest Safe Point`, `Invalidated Evidence`, and `Observable Payback`; the summary SHALL NOT invent timing, recurrence, savings, consumers, or root cause.
-
-A candidate SHALL be admitted into the active change only when it has an exact remaining current-change consumer and directly accelerates or protects the accepted outcome. `Impact Horizon: Working Repository` SHALL additionally require at least one other exact repository consumer from source or active artifacts, reuse or extension of an existing shared owner, and current-change proof of that shared behavior. Other consumers SHALL NOT be silently implemented by the current change.
-
-When an identifiable writable active OpenSpec change owns an admitted improvement, the main session SHALL immediately append an unchecked item under `## Session-Derived Improvements` in that change's `tasks.md`. The item SHALL state `Trigger/Evidence`, `Why`, `Prerequisites`, `Scope/Non-Goals`, `Implementation`, `Observable Proof`, and `Validation`, the six classification fields, plus `Owner Blocker` only when applicable. It SHALL remain unchecked until implementation and its stated proof and validation are complete.
-
-An evidence-backed candidate with no exact remaining current-change consumer SHALL be deferred rather than admitted. Automatic compaction SHALL emit it under `Deferred Improvement Candidates`; the next session SHALL persist it as a non-checkbox record in the active change `history.md` with its evidence, target, why it was not admitted, and exact re-evaluation condition. A deferred record SHALL NOT become accepted scope or block RC, stable, or complete archive.
-
-Automatic compaction SHALL emit every not-yet-persisted admitted candidate under `Pending Improvement Tasks` because compaction cannot call tools. The next session SHALL reconcile all admitted and deferred entries against `Original User Goal`, persist every still-valid entry before substantial work, and SHALL NOT silently select one candidate and discard the remainder.
-
-An improvement targeting another repository or crossing a protected boundary SHALL NOT be silently implemented in the active change. If it is required by the current accepted outcome, the entry SHALL identify the exact target or `Owner Blocker` and the affected chain SHALL wait for an authorized scoped implementation path. If it has no current consumer, it SHALL remain a non-blocking deferred record rather than blocking normal completion.
-
-#### Scenario: Current-path improvement executes before its consumer
-- **WHEN** observed evidence supports an improvement consumed by remaining current-change tasks
-- **THEN** the admitted task identifies those exact consumers and the earliest safe execution point
-- **AND** its execution class places it before the first consumer rather than merely at the physical end of `tasks.md`.
-
-#### Scenario: Repository multiplier has concrete reuse
-- **WHEN** an existing shared owner can serve one remaining current-change task and at least one additional exact repository consumer
-- **THEN** the candidate uses `Impact Horizon: Working Repository`, names every evidenced consumer, and is admitted for current-change implementation and proof
-- **AND** the current change does not silently implement the additional consumers.
-
-#### Scenario: Evidence-backed future work has no current consumer
-- **WHEN** a local reversible candidate has observed evidence but no exact remaining current-change consumer
-- **THEN** compaction emits a non-blocking deferred record with `Execution Class: separate-change` and a re-evaluation condition
-- **AND** it does not append an unchecked current-change task or block completion.
-
-#### Scenario: Session provides no evidence for a cell
-- **WHEN** the session contains no observation supporting an improvement in one target and direction
-- **THEN** that cell reports `none`
-- **AND** it does not manufacture a generic best practice, consumer, or task.
-
-#### Scenario: Compaction cannot write active files
-- **WHEN** automatic compaction classifies admitted and deferred improvements but cannot call file tools
-- **THEN** it emits complete admitted records under `Pending Improvement Tasks` and complete deferred records under `Deferred Improvement Candidates`
-- **AND** the next active session persists each record in its correct owning artifact before substantial work.
-
-#### Scenario: Kit improvement does not belong to the working change
-- **WHEN** an `opencode-kit` candidate is observed while an unrelated project change is active
-- **THEN** the agent does not mutate kit files or pretend the project change owns that implementation
-- **AND** it blocks only a current dependency chain that requires the kit correction, otherwise preserving the candidate as non-blocking deferred evidence.
-
-### Requirement: New OpenSpec changes schedule one final history retrospective
-
-The loaded global authority and maintained OpenSpec propose skill and command SHALL require every newly authored change `tasks.md` to contain exactly one unchecked final-history analysis task as its initially last task. The task SHALL be created once during proposal authoring and SHALL NOT be added by apply, archive, compaction, or its own execution.
-
-The task SHALL require the existing compaction improvement analysis: the matrix rows are `Quality`, `Cycle Speed`, and `Token Economy`; the columns are `Working Repository` and `opencode-kit`; each cell contains evidence, the smallest cheap improvement, expected benefit, and cost/risk, or `none`; candidate classification, admission, deferral, and persistence use the existing canonical rules. The evidence input SHALL be the complete change `history.md` rather than the current session.
-
-#### Scenario: Propose authors the final task once
-
-- **WHEN** the maintained propose workflow creates a new change and finishes authoring `tasks.md`
-- **THEN** exactly one unchecked final-history analysis task is present as the last initial task
-- **AND** the task names `history.md` and the existing compaction improvement contract.
-
-#### Scenario: Existing change is not retrofitted
-
-- **WHEN** an active or archived change predates this creation rule and its task inventory lacks the final-history analysis task
-- **THEN** the workflow does not synthesize the task during apply or archive
-- **AND** no historical artifact is rewritten solely to add it.
-
-#### Scenario: Compaction behavior remains unchanged
-
-- **WHEN** automatic compaction analyzes the current session
-- **THEN** it retains its existing summary, matrix, admission, and pending-task behavior
-- **AND** it does not create or schedule the final `history.md` analysis task.
-
-### Requirement: Final history analysis uses the existing improvement contract
-
-When the final-history analysis task becomes eligible, the loaded apply workflow SHALL analyze the complete `history.md` using the same canonical matrix, classification, admission/deferral gate, target ownership, authority rules, and record fields used by compaction. The accepted change outcome SHALL remain the original-goal anchor, while the journal SHALL be the evidence source.
-
-Every admitted current-consumer candidate SHALL be appended as an unchecked `Session-Derived Improvements` task with the canonical fields and apply SHALL immediately continue through those generated tasks. Every evidence-backed no-current-consumer candidate SHALL be preserved as a non-checkbox deferred history record. If no admitted or deferred candidate passes, the analysis SHALL record `none` and SHALL NOT manufacture work.
-
-#### Scenario: Journal evidence admits improvements
-
-- **WHEN** the complete `history.md` supplies one or more candidates that pass the existing compaction admission gate
-- **THEN** apply persists every admitted candidate in the canonical task format and every deferred candidate in the canonical history format
-- **AND** immediately continues normal implementation, proof, validation, and checkoff for those tasks.
-
-#### Scenario: Journal supplies no admissible evidence
-
-- **WHEN** every matrix cell lacks supporting journal evidence or every candidate fails the existing admission gate
-- **THEN** the final analysis records `none`
-- **AND** creates no generic improvement task.
-
-#### Scenario: Final analysis does not recur
-
-- **WHEN** the final analysis appends one or more ordinary improvement tasks
-- **THEN** neither apply nor those tasks append another final-history analysis task
-- **AND** the original analysis is not rerun after generated work.
 
 ### Requirement: Structural validation and behavior evaluation have separate authority
 The kit SHALL permit deterministic TypeScript validators, schemas, fixtures, inventories, and tests for explicit structural facts, official config shape, exact safety invariants, mirror drift, and stable machine-readable output. Such helpers SHALL NOT score, rank, infer, or optimize instruction or process effectiveness.
@@ -206,10 +115,10 @@ The repository-level instruction file that defines how to maintain the kit SHALL
 - **THEN** they SHALL find `REPO_AGENTS.md` (or equivalent) describing maintenance rules
 - **AND** they SHALL NOT find a root-level `AGENTS.md` that ships to downstream OpenCode instances.
 
-#### Scenario: OpenCode loads only the runtime file
+#### Scenario: OpenCode loads only runtime global instruction files
 
 - **WHEN** `OPENCODE_CONFIG_DIR` is set to `global/`
-- **THEN** OpenCode SHALL load only `global/AGENTS.md`
+- **THEN** OpenCode SHALL load `global/AGENTS.md` plus config-declared `global/principles-of-work.md`
 - **AND** the root `REPO_AGENTS.md` SHALL be ignored because it is outside the config directory.
 
 ### Requirement: Plain and concise user communication
@@ -317,25 +226,6 @@ Deterministic contracts SHALL require both the positive autonomy marker and the 
 - **THEN** validators and runtime routing SHALL treat those files as historical evidence rather than active authority
 - **AND** this change SHALL NOT rewrite them merely to remove textual contradictions.
 
-### Requirement: Loaded authority owns the simple stage model
-
-`global/AGENTS.md` SHALL contain the complete portable `Development-Stage: development | MVP | RC<n> | stable` authority. `global/skills/change-ready-sdlc/SKILL.md` SHALL contain Material qualification detail. Roles and project-facing mirrors SHALL contain only proportional routing and role-specific deltas.
-
-#### Scenario: Runtime authority has one stage owner
-- **WHEN** lifecycle authority is inspected
-- **THEN** `global/AGENTS.md` SHALL define the complete stage model
-- **AND** the skill, roles, and mirrors SHALL contain only qualification or role-specific deltas.
-
-### Requirement: Validators enforce explicit stage semantics
-
-Deterministic contracts and validators SHALL require the exact Development-Stage field, representative proof before MVP, accepted-scope and validation gates before RC, stable-to-RC linkage, monotonic RC numbering, candidate-mutation invalidation, non-critical non-blocking wording, critical-only SDET stop, optional reviewer wording, and external-operation separation.
-
-They SHALL reject active Change-Status/Done-Done aliases, RC assignment from happy-path proof alone, stable without an RC, mandatory reviewer evidence as a stage gate, non-critical polish as an unconditional blocker, reusable-agent model/variant pins, and any stage that implies external release authority.
-
-#### Scenario: Validator rejects RC on proof alone
-- **WHEN** an active artifact assigns RC immediately after happy-path proof without accepted-scope completion and validation
-- **THEN** deterministic validation SHALL fail with a stage-semantics diagnostic.
-
 ### Requirement: Reusable agents inherit the primary model
 
 Every reusable `global/agents/*.md` role SHALL omit model and variant pins and SHALL report Effective Model provenance when used as lifecycle evidence. A model differing from the portable default SHALL NOT be non-conforming by itself.
@@ -368,12 +258,35 @@ approve RC or stable. Its other explicit denied permissions SHALL remain denied.
 
 ### Requirement: Reviewer roles remain optional and non-authorizing
 
-Reviewer roles SHALL remain read-only, return evidence-backed risk matrices or the code-quality reduction matrix, and SHALL NOT return acceptance verdicts, lifecycle blockers, or work-authoring actions. No reviewer launch count or output SHALL be a mandatory RC/stable requirement.
+Read-only final, delivery, code-quality, and domain reviewers SHALL remain non-authorizing and SHALL return evidence-backed risk matrices or the code-quality reduction matrix rather than overall acceptance verdicts, lifecycle blockers, or work-authoring actions. Reviewers that are not registered Practice Owners SHALL remain optional and risk-driven. A registered Practice Owner consultation SHALL be required only when its reviewed material trigger or material applicability-uncertainty trigger is reached; zero-trigger Ordinary Small work SHALL require no owner launch solely for compliance.
+
+The fresh evidence-sufficiency Practice Owner SHALL be required as one current evidence source only when a claim explicitly declares a finite-population, partitioned-domain, real-system equivalence, compatibility/interchangeability, safety, or phase/milestone class. Its output SHALL NOT approve or block Development-Stage by itself; main owns reproduction and disposition, and a missing or unusable report keeps only the declared broad claim `blocked` or `unknown`. Ordinary Small exact-case work and optional final, delivery, code-quality, and domain review SHALL retain proportional routing.
+
+No reviewer or Practice Owner launch count or output SHALL approve or block Development-Stage by itself. Main SHALL own reproduction and disposition. Missing or unusable owner evidence SHALL leave that practice explicit as `unknown`; only independently reachable accepted-outcome or non-deferrable safety consequences SHALL affect completion or lifecycle eligibility.
 
 #### Scenario: Reviewer output cannot approve a stage
-- **WHEN** an optional reviewer returns a risk matrix
-- **THEN** main SHALL own reproduction and disposition
-- **AND** the reviewer output SHALL NOT set or block Development-Stage by itself.
+
+- **WHEN** an optional non-owner reviewer returns a risk matrix
+- **THEN** main owns reproduction and disposition
+- **AND** the reviewer output does not set or block Development-Stage by itself.
+
+#### Scenario: Practice trigger requires its owner
+
+- **WHEN** a registered material practice trigger is reached
+- **THEN** main requests one bounded observation from the exact Practice Owner
+- **AND** the owner report remains non-authorizing evidence rather than an acceptance gate.
+
+#### Scenario: Broad claim challenge is evidence not approval
+
+- **WHEN** a declared broad claim lacks its required fresh evidence-sufficiency report
+- **THEN** that claim cannot be represented as supported
+- **AND** no reviewer verdict is substituted for main-owned closure facts.
+
+#### Scenario: No practice trigger is reached
+
+- **WHEN** bounded Ordinary Small work reaches no registered material or uncertainty trigger
+- **THEN** no Practice Owner or optional reviewer report is required solely for lifecycle completion
+- **AND** main still satisfies the always-loaded outcome, safety, proof, and validation floor.
 
 ### Requirement: Active mirrors use the same terminology
 
@@ -429,20 +342,20 @@ Quality and safety SHALL require the accepted outcome, protected boundaries, rep
 - **AND** SHALL ask one decision-ready owner question after exhausting safe local alternatives.
 
 ### Requirement: Priority contract has one complete runtime source
-`global/AGENTS.md` SHALL be the only complete runtime source for the ordered priority definitions. The Universal Development Loop SHALL carry a concise conceptual statement, while maintained project, reviewer, skill, and documentation surfaces SHALL use pointers or role-specific deltas and SHALL NOT copy the complete priority block.
+`global/principles-of-work.md` SHALL be the only complete runtime source for the working philosophy and ordered priority definitions. It SHALL be explicitly loaded by the global OpenCode configuration. `global/AGENTS.md` SHALL open with a concise pointer and retain only operational authority, routing, and detailed safeguards. The Universal Development Loop and maintained project, reviewer, skill, and documentation surfaces SHALL use pointers or role-specific deltas and SHALL NOT copy the complete priority block.
 
 #### Scenario: Role artifact needs the priority policy
 - **WHEN** a skill, agent, template, or project instruction needs to apply the operating priorities
-- **THEN** it SHALL reference the active global authority or state only its role-specific delta
+- **THEN** it SHALL reference `principles-of-work.md` or state only its role-specific delta
 - **AND** SHALL NOT repeat all complete priority labels and definitions.
 
 #### Scenario: Full priority block is copied
-- **WHEN** deterministic validation finds the complete canonical priority labels outside `global/AGENTS.md`
+- **WHEN** deterministic validation finds the complete canonical priority labels outside `global/principles-of-work.md`
 - **THEN** validation SHALL fail with the canonical source and offending path
 - **AND** the duplicate SHALL be replaced by a pointer or role delta.
 
 ### Requirement: Priority drift tripwires inspect operative text
-Required priority markers SHALL live in `tools/contracts/skills.ts` and repository routing validation SHALL require them in operative, non-fenced `global/AGENTS.md` text. These checks SHALL be deterministic drift tripwires and SHALL NOT claim to prove semantic behavior.
+Required philosophy markers and the `global/AGENTS.md` canonical-owner pointer SHALL live in `tools/contracts/skills.ts`. Repository routing validation SHALL require the philosophy markers in operative, non-fenced `global/principles-of-work.md` text and the pointer markers in operative, non-fenced `global/AGENTS.md` text. These checks SHALL be deterministic drift tripwires and SHALL NOT claim to prove semantic behavior.
 
 #### Scenario: Required marker exists only in a fenced example
 - **WHEN** a required priority marker is absent from operative text but appears in a supported fenced example
@@ -455,25 +368,27 @@ Required priority markers SHALL live in `tools/contracts/skills.ts` and reposito
 - **AND** static success alone SHALL NOT establish behavioral compliance.
 
 ### Requirement: Priority contract does not increase instruction context
-This change SHALL not increase the token proxy of `global/AGENTS.md` above 13,279 or the complete current instruction inventory above 84,513. New priority text SHALL be paid for by consolidating superseded automation, token-efficiency, or caution wording rather than deleting unrelated safety authority.
+The combined committed startup token proxy of `global/principles-of-work.md` and `global/AGENTS.md` SHALL not exceed 13,279. `principles-of-work.md` SHALL be the single complete owner of quality without proxy substitution, shortest verified path, autonomy until a real owner boundary, maximum token economy, evidence-backed continuous improvement, and smallest-authorized-layer correction, narrowing, or removal of concrete impediments. `global/AGENTS.md` SHALL open with a concise canonical-owner pointer and retain operational routing and detailed safeguards without a second complete philosophy block. Quality and safety SHALL govern the other principles. Impediment removal SHALL NOT weaken safety, protected boundaries, accepted scope, or unrelated work and SHALL NOT authorize unrelated product or process mutation. Loader-visible reporting SHALL measure committed startup authority, discovery metadata, and on-demand bodies separately and SHALL NOT use a combined catalog total as a claimed startup cost. New always-loaded text SHALL replace or consolidate superseded text while retaining protected boundaries, real-boundary proof, dirty-worktree safety, cause-preserving diagnostics, and live-attempt controls.
+
+#### Scenario: Compact routing replaces Material detail
+- **WHEN** detailed Material qualification text moves from always-loaded authority to the conditionally loaded qualification skill
+- **THEN** the committed global-authority token proxy is at or below 13,279
+- **AND** matched behavior evaluation preserves every required safety decision.
 
 #### Scenario: Canonical priority text is added
-- **WHEN** the complete priority contract is introduced
-- **THEN** before/after instruction inventory SHALL show no growth at either required boundary
-- **AND** semantic review SHALL confirm that removed text is superseded rather than an unrelated safety deletion.
+- **WHEN** the complete philosophy and priority contract is introduced in `global/principles-of-work.md`
+- **THEN** before/after inventory SHALL show no growth above the combined committed-startup or complete-inventory boundary
+- **AND** semantic review SHALL confirm that removed `global/AGENTS.md` text is superseded rather than unrelated safety or operational authority.
 
-### Requirement: Continuous improvement serves the operating priorities
-Continuous learning, workflow feedback, and deterministic automation SHALL remain mechanisms serving quality, autonomy, and speed rather than a mandatory fourth stage or peer priority. A candidate that fails the improvement admission gate SHALL NOT delay the accepted outcome. A candidate that passes that gate during an active OpenSpec change becomes accepted completion scope through its evidence-rich task and SHALL be implemented before normal completion unless an exact protected-boundary or target-ownership blocker requires owner resolution.
+#### Scenario: A workflow impediment conflicts with the working philosophy
+- **WHEN** observed evidence shows that a rule, tool, or process step adds avoidable delay, token cost, user interruption, or quality risk
+- **THEN** main fixes, narrows, or removes it at the smallest authorized layer
+- **AND** the correction does not weaken safety, proof, protected boundaries, accepted scope, or unrelated work.
 
-#### Scenario: Repeated manual step is locally replaceable
-- **WHEN** a small deterministic helper is necessary for the accepted outcome or directly replaces repeated in-scope manual work and passes the admission gate
-- **THEN** the agent SHALL add and implement the corresponding session-derived task within the smallest sufficient dependency closure
-- **AND** SHALL verify its explicit inputs, outputs, stable ordering, and failure behavior before checking the task.
-
-#### Scenario: Broader reusable improvement is outside scope
-- **WHEN** an improvement is useful but fails the no-scope-expansion or target-ownership admission condition
-- **THEN** it SHALL NOT silently expand the product candidate or disappear as advisory prose
-- **AND** its task record SHALL name the exact owner disposition needed before normal completion or an explicit change to accepted scope.
+#### Scenario: On-demand bodies remain large
+- **WHEN** the skill and agent catalog contains substantial on-demand bodies
+- **THEN** inventory reports their cost separately from startup-visible authority
+- **AND** no startup budget claim includes those bodies unless runtime evidence shows they were injected.
 
 ### Requirement: Repository maintainer authority requires portable workflow tooling
 
@@ -537,13 +452,19 @@ If compaction cannot write files, its summary SHALL emit structured pending hist
 - **AND** the next session persists the entry before continuing implementation.
 
 ### Requirement: Maintained planning surfaces preserve shift-left cadence
+The always-loaded global authority SHALL contain the compact real-boundary rule, protected-boundary ceiling, and trigger for conditional Material qualification. `change-ready-sdlc` SHALL own detailed Material evidence topology, qualification, and critical-risk procedure. A behavior-changing OpenSpec change SHALL state one shared fidelity/proof envelope for the change; each implementation task SHALL contain only task-specific dependencies, changed rung or blocker, observable completion, and focused validation rather than repeating unchanged authorization, cleanup, and evidence fields.
 
-The canonical Universal Development Loop, reusable project instructions, project template, repository maintainer instructions, qualification skill, roadmap/planning skills, OpenSpec project context, evidence guidance, and quality-gate documentation SHALL route behavior slices toward the earliest safely reachable real boundary. Planning surfaces SHALL require a current fidelity rung, next real boundary, exact blocker and unblocking task when deferred, and a dependency-chain stop rule.
+#### Scenario: Several tasks share one local proof envelope
+- **WHEN** multiple tasks use the same local disposable authorization, safeguards, cleanup, and evidence policy
+- **THEN** those common facts appear once in the change-level envelope
+- **AND** each task records only its distinct behavior, dependency, proof observation, and validation.
 
-The complete policy SHALL remain in always-loaded `global/AGENTS.md`; other surfaces SHALL contain only concise shared markers or role-specific deltas.
+#### Scenario: A task crosses a different boundary
+- **WHEN** one task requires a different protected action, environment, restoration path, or live-attempt gate
+- **THEN** that task records the exact delta locally
+- **AND** inherited common fields do not hide the stronger gate.
 
 #### Scenario: OpenSpec tasks are generated for a real-backed feature
-
 - **WHEN** a proposal or task graph includes behavior that models, integrates with, or substitutes a real system
 - **THEN** its first dependency-valid tasks minimize time-to-first-real-signal
 - **AND** later dependent behavior does not precede an already reachable safe characterization task.
@@ -790,7 +711,9 @@ for that behavior from plausibility alone.
 
 ### Requirement: Reuse discovery has one compact loaded owner and one lazy detail owner
 
-`global/AGENTS.md` SHALL be the canonical loaded owner for the proportional new-mechanism trigger and compact `reuse | extend | build-minimal` disposition requirement. One `reuse-discovery` skill SHALL own search order, explicit cross-project scope, source verification, degraded behavior, total-cost selection, and output fields. Other maintained instruction artifacts SHALL use pointers or role-specific deltas rather than copying the complete workflow.
+`global/AGENTS.md` SHALL be the canonical loaded owner for the compact same-responsibility default and `reuse | extend | build-minimal` disposition requirement. Before adding a new file, module, or function for accepted behavior, loaded authority SHALL require the author to name the current same-responsibility owner or record `no-current-owner`, and SHALL default to `extend` when a current owner exists. One `reuse-discovery` skill SHALL own search order, explicit cross-project scope, source verification, degraded behavior, total-cost selection, `extend` reshape semantics, and output fields. Other maintained instruction artifacts SHALL use pointers or role-specific deltas rather than copying the complete workflow.
+
+Added always-loaded wording SHALL replace or consolidate the current reuse paragraph and SHALL keep the combined committed startup token proxy of `global/principles-of-work.md` and `global/AGENTS.md` at or below 13,279. The kit SHALL NOT add a second reuse Practice Owner or a competing search protocol.
 
 #### Scenario: Triggered work loads detail once
 
@@ -803,6 +726,12 @@ for that behavior from plausibility alone.
 - **WHEN** a fresh OpenCode session receives a trivial owner-local correction with no reuse trigger
 - **THEN** it uses targeted local evidence without loading reuse-discovery detail
 - **AND** performs no cross-project discovery call.
+
+#### Scenario: Known owner defaults to extend from loaded authority
+
+- **WHEN** a fresh OpenCode session adds accepted behavior that is a new case of a named current owner
+- **THEN** loaded authority requires naming that owner and selecting `extend`
+- **AND** it does not load reuse-discovery solely for compliance and does not add a sibling implementation.
 
 ### Requirement: Portable reuse instructions do not own private registry or inventory behavior
 
@@ -822,13 +751,21 @@ The active global command catalog, skill catalog, package scripts, profiles, doc
 
 ### Requirement: Loaded reuse behavior is proved with matched triggered and trivial scenarios
 
-The instruction change SHALL use fresh OpenCode processes with the same configured model/profile and a bounded no-product-mutation environment for one triggered new-mechanism scenario and one trivial-fix scenario. Retention SHALL require the triggered scenario to load reuse detail, search proportionally, inspect current-repository candidates, explicitly report an unavailable cross-project layer as `degraded`, avoid registry calls, and record the compact disposition, while the trivial scenario loads no reuse detail and makes no cross-project call.
+The instruction change SHALL use fresh OpenCode processes with the same configured model/profile and a bounded no-product-mutation environment for one triggered new-mechanism scenario, one trivial-fix scenario, and one `extend-existing-owner` scenario whose accepted feature is a new case of a named current owner. Retention SHALL require the triggered scenario to load reuse detail, search proportionally, inspect current-repository candidates, explicitly report an unavailable cross-project layer as `degraded`, avoid registry calls, and record the compact disposition; the trivial scenario to load no reuse detail, launch no Practice Owner, and make no cross-project call; and the extend scenario to name the current owner, record `extend`, and not propose a sibling module.
+
+The existing `reuse-discovery` proof owner SHALL gain the third scenario. The change SHALL NOT add a second proof runner or collapse unrelated proof-harness clones.
 
 #### Scenario: Triggered and trivial behavior remain distinct
 
 - **WHEN** candidate evaluation compares the matched fresh scenarios
-- **THEN** only the triggered scenario performs reuse-discovery work
-- **AND** both scenarios preserve safety, cleanup, and honest evidence.
+- **THEN** only the triggered new-mechanism scenario performs reuse-discovery work
+- **AND** both the triggered and trivial scenarios preserve safety, cleanup, and honest evidence.
+
+#### Scenario: Extend-existing-owner prefers reshape
+
+- **WHEN** candidate evaluation inspects the `extend-existing-owner` scenario
+- **THEN** the disposition names the current owner and records `extend`
+- **AND** the plan does not add a sibling module for that accepted case.
 
 ### Requirement: Instruction inventory SHALL expose explicit source scopes
 
@@ -864,13 +801,21 @@ than silently omitted or treated as loaded.
 - **THEN** the report records one cause-preserving unknown row and does not infer its size or loaded state
 
 ### Requirement: Instruction budgets SHALL have one enforceable seed owner
+The repository SHALL maintain one versioned checked-in budget seed with separate reviewed maxima for committed global startup authority, loader-visible discovery metadata, and maintained on-demand bodies. Measurements, hashes, lengths, ordering, and drift SHALL be derived from source. Strict validation SHALL fail when a measured boundary exceeds its reviewed maximum or the seed is malformed. The deterministic seed materializer SHALL be able to retain or lower a maximum, but SHALL refuse to increase a maximum; an intentional increase requires a direct reviewed seed edit that states its rationale in the owning change.
 
-The repository SHALL maintain one versioned checked-in budget seed containing only
-reviewed maximum token proxies for the kit catalog and committed global startup
-authority. Measured counts, hashes, lengths, ordering, and drift SHALL be derived
-from source. Strict validation SHALL fail when a measured boundary exceeds its
-reviewed maximum or when the seed is malformed. Historical lower targets SHALL
-remain documented as reduction debt until separately achieved or superseded.
+#### Scenario: Startup authority exceeds the compact maximum
+- **WHEN** committed global startup authority exceeds 13,279 token proxy or another checked-in boundary exceeds its reviewed maximum
+- **THEN** strict validation fails with the boundary, actual value, and maximum
+- **AND** the diagnostic does not recommend silently adopting the larger measurement.
+
+#### Scenario: Materializer encounters growth
+- **WHEN** `--materialize-seed` measures a boundary above its checked-in maximum
+- **THEN** it exits non-zero without changing the seed
+- **AND** reports that an intentional increase requires an explicit reviewed seed edit.
+
+#### Scenario: Loader-visible consumer has machine-local instructions
+- **WHEN** loader-visible inventory includes a machine-local startup instruction outside committed source
+- **THEN** it reports that source separately with privacy-safe evidence classification
 
 #### Scenario: Instruction growth exceeds the reviewed maximum
 - **WHEN** a catalog or committed global-authority token proxy is greater than its checked-in maximum
@@ -883,6 +828,7 @@ remain documented as reduction debt until separately achieved or superseded.
 #### Scenario: Consumer has no project-owned budget
 - **WHEN** loader-visible inventory runs for a project without a compatible budget seed
 - **THEN** it reports measurements without imposing the kit's catalog maximum on that project
+- **AND** does not mutate the repository's committed startup-authority maximum.
 
 ### Requirement: Main performs bounded recovery before blocker escalation
 The active global instructions SHALL require main, immediately before its first user question for a blocker, to preserve the original accepted outcome and operating envelope and distinguish an outcome-required protected action from a protected prerequisite introduced only by the current task, OpenSpec artifact, proof path, or fidelity rung. Owner-only status SHALL require an exact protected action that is necessary for the still-current original accepted outcome, evidence that no unused safe goal-preserving real route can advance that outcome, and a self-contained explanation of why only the owner can act.
@@ -1014,3 +960,298 @@ The scenario SHALL use the existing disposable project, explicit tool permission
 - **THEN** behavior evaluation fails and the instruction candidate remains in `development`
 - **AND** another loaded capture requires a causal instruction or evaluator correction rather than a wording-only retry.
 
+### Requirement: Loaded authority triggers blocker self-diagnosis
+
+The always-loaded global authority SHALL contain one concise portable trigger requiring bounded self-diagnosis before a technical/evidence blocker, absence-based product-failure claim, governed repeat attempt, or uncertain owner escalation. It SHALL trigger on material contradictions, failed canaries or preflights, zero/empty/timeout/absence observations, and environment-dependent identifiers or observation paths whose current validity is necessary to the blocker claim. Detailed Material evidence qualification SHALL remain owned by the qualification workflow, and independent pre-escalation diagnosis SHALL remain owned by `troubleshooter`; active mirrors SHALL carry only their role-specific delta rather than duplicate the complete policy.
+
+The trigger SHALL NOT require exhaustive rechecking for an obvious evidenced local defect, authorize protected action, or embed project-, network-, hardware-, or tool-specific assumptions in portable authority.
+
+#### Scenario: Primary encounters contradictory zero evidence
+- **WHEN** a loaded primary sees direct success evidence together with zero output and a failed canary from a mandatory indirect observer
+- **THEN** the loaded authority requires a bounded self-diagnostic pass before the primary claims product failure or owner-only status
+- **AND** the primary does not need the user to name or manually load a diagnostic skill.
+
+#### Scenario: Ordinary local error has a proven cause
+- **WHEN** a local command preserves an exact error and current evidence proves one authorized correction
+- **THEN** the primary follows normal run-observe-correct without an exhaustive blocker audit
+- **AND** the self-diagnostic trigger does not add a specialist or user question.
+
+### Requirement: Troubleshooter reports evidence-source validity
+
+The diagnosis-only `troubleshooter` contract SHALL require a technical blocker report to state the blocker layer, material observed-versus-assumed facts, contradictory evidence, observer qualification when absence is used, the smallest falsifying probe, supported claim ceiling, and one recovery disposition. It SHALL preserve the existing read-only diagnosis boundary, one-consultation limit, owner-action proof threshold, and prohibition on production or test correction.
+
+#### Scenario: Consultant receives a broken-observer case
+- **WHEN** a complete case file contains direct operation evidence, zero indirect observation, a failed positive control, and current component inventory that conflicts with a stored identifier
+- **THEN** `troubleshooter` identifies the observer or environment as a live causal layer and returns one bounded verification route
+- **AND** it does not recommend waiving the evidence contract, repeating the costly attempt, or asking the owner to choose a routine diagnostic step.
+
+#### Scenario: Consultant receives insufficient evidence
+- **WHEN** the case file cannot establish current identities, observation-path relevance, or a safe positive control
+- **THEN** `troubleshooter` reports the smallest decision-changing observation and the resulting claim ceiling
+- **AND** it records the cause as unknown rather than inventing Product Candidate failure or owner authority.
+
+### Requirement: Self-diagnostic instruction behavior is evaluated at installed routes
+
+Changes to the blocker self-diagnostic authority SHALL use disposable same-model baseline/candidate workflows with the same fixed inputs, profile, tool permissions, and environment identity. The maintained evaluation SHALL cover at least one combined broken-observer case containing a stale machine-local identifier, wrong observation layer, failed positive control, and contradictory direct evidence; one qualified-absence control; one straightforward local-defect control; and one true owner-only control. It SHALL exercise the loaded primary and `troubleshooter` route and one actual grind-enabled completion-guard continuation lane.
+
+The evaluator SHALL use observable tool, question, route, claim-ceiling, consultation-count, cleanup, and terminal-state facts. Deterministic validators MAY enforce required markers, schemas, permissions, inventory, and source identity but SHALL NOT infer semantic diagnostic quality.
+
+#### Scenario: Candidate corrects the reproduced failure class
+- **WHEN** baseline and candidate use the same model, inputs, permissions, and environment against the combined broken-observer fixture
+- **THEN** the candidate performs the permitted diagnostic probe, classifies the affected proof/environment layer, preserves direct product observations and the blocked-path claim ceiling, avoids a user question and costly repeat, and uses at most one correctly routed consultation
+- **AND** the evaluator preserves both captures and reports the candidate benefit without claiming universal model compliance.
+
+#### Scenario: Candidate preserves controls
+- **WHEN** the same candidate runs the qualified-absence, straightforward local-defect, and true owner-only controls
+- **THEN** it accepts qualified negative evidence only within its claim ceiling, corrects the obvious local defect without unnecessary consultation, and preserves the exact owner boundary without a protected action
+- **AND** every scenario completes with no unauthorized effect, file drift, leaked session, or live proof-owned process.
+
+### Requirement: Skill discovery descriptions are domain precise
+Every maintained skill description SHALL name the literal domain, artifact, or command that activates it and SHALL state a stay-quiet boundary when generic adjacent wording could match. A description for an OpenSpec skill SHALL include `OpenSpec`; generic words such as implement, build, propose, review, test, or configure SHALL NOT by themselves satisfy trigger precision.
+
+#### Scenario: Generic implementation request is inspected
+- **WHEN** a user asks to implement ordinary application code without mentioning OpenSpec or an active OpenSpec change
+- **THEN** OpenSpec apply/propose skills are not selected from their descriptions alone
+- **AND** ordinary implementation routing remains available
+
+#### Scenario: Description is precise only in the body
+- **WHEN** a skill body names its domain but frontmatter description remains generic
+- **THEN** strict validation fails the discovery contract
+- **AND** identifies the frontmatter description as the affected surface
+
+### Requirement: Default-surface reductions require matched behavior evidence
+A change to core always-loaded or discovery-visible content SHALL bind before/after loader inventories to one exact candidate and SHALL use the maintained consumer outcome gate. The core candidate SHALL preserve all hard outcome/safety oracles, satisfy `no-regression`, and meet both core context ceilings. Static marker and token checks SHALL remain supporting evidence only.
+
+#### Scenario: Context reduction is only structurally green
+- **WHEN** a candidate meets token and marker checks but lacks current matched consumer evidence
+- **THEN** it cannot become the default core surface
+- **AND** remains a staged candidate or explicit optional profile
+
+#### Scenario: Candidate reduces context and preserves behavior
+- **WHEN** current inventories meet the ceilings and matched consumer evidence passes no-regression
+- **THEN** the candidate may become core
+- **AND** retained evidence records baseline/candidate/runtime identities
+
+### Requirement: Workflow improvement is explicit and non-blocking
+Workflow reflection SHALL remain outside normal product completion scope. Evidence of recurring workflow friction MAY be recorded through an explicit audit, `complain`, or a separately proposed change. Compaction, ordinary handoff, and automation-exempt changes SHALL NOT create mandatory improvement tasks, deferred-candidate ledgers, six-cell matrices, final-history analysis, or another completion stage.
+
+A proposal-declared required automation dividend is the sole bounded exception: it is accepted current-change scope established before archive, SHALL harvest exactly one evidenced repeated deterministic sequence through `reuse`, `extend`, or `build-minimal`, and SHALL be completed through a current consumer rather than invented as a final retrospective. Loaded propose/apply/archive instructions SHALL keep this exception synchronized with the canonical agent-workflow-automation contract, SHALL require Material changes to select it, and SHALL preserve explicit Ordinary Small exemption.
+
+#### Scenario: Product work completes without process retrospective
+- **WHEN** accepted scope, representative proof, applicable validation, required safety gates, and any proposal-declared automation dividend are complete
+- **THEN** the workflow permits normal handoff or archive without a final history analysis
+- **AND** optional process observations do not become unchecked product tasks.
+
+#### Scenario: Required dividend receives a bounded owner
+- **WHEN** an eligible proposal declares one evidenced repeated workflow sequence
+- **THEN** apply owns exactly one `[automation-dividend]` task before its first remaining consumer
+- **AND** does not turn other optional observations into current completion scope.
+
+#### Scenario: Repeated workflow loss receives an explicit owner
+- **WHEN** current evidence demonstrates recurring workflow cost that merits repository work
+- **THEN** the agent records it through the explicit feedback or proposal path
+- **AND** the unrelated product change remains unblocked unless that correction is required for its accepted outcome.
+
+#### Scenario: Repeated workflow loss outside an eligible change remains separate
+- **WHEN** current evidence demonstrates recurring workflow cost but the active proposal declares the dividend exempt or another repository owns the correction
+- **THEN** the agent records it through the explicit feedback or proposal path
+- **AND** the unrelated product change remains unblocked unless that correction is required for its accepted outcome.
+
+### Requirement: Normative workflow surfaces are contradiction-free
+Repository validation SHALL compare active normative specs, global workflow authority, maintained skills and commands, validators, templates, and generated OpenSpec context for explicit require/forbid contradictions over the same ceremony or lifecycle behavior. A contradiction SHALL fail validation with both owning paths and the conflicting rule; marker presence or independent structural validity SHALL NOT make the result green.
+
+#### Scenario: Spec requires behavior that validator forbids
+- **WHEN** a normative spec requires a final retrospective and an active validator rejects that same retrospective on maintained workflow surfaces
+- **THEN** strict validation fails and names both authorities
+- **AND** neither rule is silently selected as the winner.
+
+### Requirement: Evidence remains indexed and selectively consumed
+Evidence-heavy changes SHALL preserve unique failed bundles needed to explain a causal transition and the current terminal bundle for each governed lane. `history.md` or an equivalent bounded manifest SHALL index those bundles and their retry relevance. Routine planning, compaction, review, or handoff SHALL read the index first and SHALL NOT ingest an entire evidence tree unless a named lane requires the underlying raw facts.
+
+#### Scenario: Historical proof directory contains many captures
+- **WHEN** a change retains multiple failed, replay, and terminal evidence bundles
+- **THEN** a bounded index identifies the current bundle and every failure still needed for a retry or safety decision
+- **AND** ordinary continuation does not load unrelated raw bundles into model context.
+
+### Requirement: Claim-evidence routing is universal and behaviorally proven
+The kit SHALL keep the complete claim-evidence principle in the canonical working-philosophy owner, compact trigger and lifecycle routing in always-loaded authority, detailed substitution procedure in one on-demand skill, and independent challenge behavior in one read-only reviewer role. Portable artifacts SHALL use generic claim, population, path, environment, oracle, and closure terminology and SHALL NOT embed a consumer project, product, protocol, hardware, corpus, customer, or domain-specific rule as universal policy.
+
+The evidence-sufficiency reviewer SHALL be leaf, fresh, read-only, non-authorizing, tool-limited, and distinct from SDET, test-coverage, compatibility, final-candidate, and implementation roles. Deterministic validators SHALL check schema, markers, identities, cardinality, and drift without claiming semantic compliance. Retention SHALL require matched same-model loaded-session evidence for representative-only overclaim rejection, exact finite-population closure, unavailable-real-oracle blocking, and unaffected Ordinary Small completion.
+
+#### Scenario: Consumer example does not leak into portable policy
+- **WHEN** a concrete consumer incident motivates the change
+- **THEN** portable instructions and behavioral fixtures express only the reusable failure shape and claim-evidence contract
+- **AND** project names, paths, domain commands, hardware identities, and product-specific thresholds remain absent.
+
+#### Scenario: Dedicated reviewer stays non-authorizing
+- **WHEN** the evidence-sufficiency reviewer reports an unsupported broad claim
+- **THEN** it returns a claim-evidence risk matrix and maximum supported ceiling without editing, testing, asking the user, dispatching agents, or issuing a lifecycle verdict
+- **AND** main independently reproduces and dispositions the gap.
+
+#### Scenario: Structural validation cannot prove semantics
+- **WHEN** all required markers and structured fields are present
+- **THEN** deterministic validation reports structural consistency only
+- **AND** matched loaded-session behavior and human/model semantic review remain separate evidence.
+
+### Requirement: Practice Owner artifacts use one shared contract
+
+The repository SHALL maintain one canonical Practice Owner authoring and validation contract. Every registered owner body SHALL expose one exact Practice ID, one coherent primary boundary, runtime and maintenance triggers, owned and excluded concerns, authority limits, required inputs, and the common practice-level report fields. Read-only reviewer owners SHALL retain the shared leaf-reviewer permission and evidence contract; bounded specialist owners SHALL retain their stricter existing role contract. Practice ownership SHALL NOT widen tool permissions.
+
+Shared runtime ownership invariants SHALL be supplied by compact always-loaded authority and role-specific owner bodies. Complete ownership boilerplate SHALL NOT be copied into every owner. Agent discovery descriptions SHALL contain a deterministic Practice ID marker and a concise material trigger so main can route without loading every owner body.
+
+#### Scenario: Owner artifact is discoverable
+
+- **WHEN** OpenCode presents the selected agent catalog to main
+- **THEN** each Practice Owner description exposes its exact Practice ID and concise trigger boundary
+- **AND** the complete owner body remains on demand.
+
+#### Scenario: Owner requests wider permissions
+
+- **WHEN** practice ownership metadata is added to an existing read-only reviewer
+- **THEN** its source/config/test mutation, question, nested-agent, and remote permissions remain denied
+- **AND** ownership alone does not justify a permission expansion.
+
+#### Scenario: Owner body duplicates the shared contract
+
+- **WHEN** a registered owner inlines the complete shared ownership boilerplate rather than its role-specific delta
+- **THEN** strict validation fails with the canonical contract and offending owner path
+- **AND** the duplicate is replaced by the reference and local boundary.
+
+### Requirement: Practice ownership uses reviewed seed data and exact validation
+
+The Practice Ownership Registry SHALL be a reviewed versioned semantic seed outside validator/helper source. Deterministic tooling SHALL validate schema version, safe IDs and paths, stable order, uniqueness, existing owner files, exact description/body markers, canonical artifact existence, runtime-profile inclusion, README/catalog synchronization, and readback/regeneration drift. It SHALL NOT score practice quality, infer triggers, choose owners, merge practices, or derive semantic policy from source text.
+
+Human-readable ownership maps and derived counts SHALL come from the reviewed registry or be checked against it. Unsupported, unreadable, missing, or ambiguous records SHALL fail with cause-preserving diagnostics rather than being assigned to main or a generic reviewer automatically.
+
+#### Scenario: Duplicate owner is declared
+
+- **WHEN** two registry records assign one agent two primary Practice IDs or assign two owners to one Practice ID
+- **THEN** validation fails before profile or instruction materialization
+- **AND** names the conflicting reviewed records without selecting a winner.
+
+#### Scenario: README ownership map drifts
+
+- **WHEN** the human-readable Practice Owner map differs from the reviewed registry
+- **THEN** validation reports the exact missing, extra, or mismatched ID and agent
+- **AND** does not accept the prose catalog as a second authority.
+
+#### Scenario: Semantic trigger text changes
+
+- **WHEN** a Practice Owner trigger changes while structural registry checks remain green
+- **THEN** matched behavior evaluation and semantic owner-maintenance evidence remain required
+- **AND** deterministic success alone does not establish correct routing.
+
+### Requirement: Practice ownership reduces main context without hiding authority
+
+The complete detailed practice bodies SHALL remain on demand. Always-loaded authority SHALL contain only the generic main-versus-owner responsibility split, non-delegable safety and result kernel, exact proportional routing rule, and failure behavior. New owner descriptions and routing text SHALL remain inside the selected runtime-profile discovery and committed startup budgets. New always-loaded wording SHALL replace or consolidate overlapping main-only reviewer routing rather than add a second complete policy block.
+
+Behavior retention SHALL use matched disposable workflows with exact child-agent identities, bounded owner report bytes, main disposition, outcomes, forbidden effects, validation, and cleanup. A lower startup or main-context proxy SHALL not compensate for a missed trigger, unsafe action, lost outcome, undispositioned finding, unnecessary owner launch, or incomplete cleanup.
+
+#### Scenario: Owner bodies remain large but on demand
+
+- **WHEN** the selected catalog contains detailed owner instructions
+- **THEN** loader-visible inventory reports those bodies separately from startup authority and discovery metadata
+- **AND** no startup claim counts an uninvoked body as loaded main context.
+
+#### Scenario: Generic routing increases startup text
+
+- **WHEN** the candidate adds Practice Owner routing to global authority
+- **THEN** the combined committed startup token proxy remains at or below the current enforced maximum and no greater than the frozen candidate baseline
+- **AND** removed text is proven overlapping rather than an unrelated safety or authority rule.
+
+#### Scenario: Smaller candidate misses a trigger
+
+- **WHEN** a compact candidate fails to invoke the exact owner in a maintained triggered scenario
+- **THEN** the behavior candidate is rejected regardless of its token or latency reduction
+- **AND** the narrower supported context claim is preserved.
+
+### Requirement: Change-local architecture guidance separates decision and practice ownership
+
+The working-philosophy source SHALL own the complete pay-as-you-go architecture principle, and the always-loaded main-session authority SHALL contain only its concise operational application and trigger route. Main SHALL be the accountable concrete design, integration, proof, and result owner. The existing `openspec-architecture-reviewer` SHALL be the registered `architecture-and-change-locality` Practice Owner responsible for material trigger applicability, bounded runtime observation, and maintenance semantics. Production roles SHALL receive only applicable responsibility and change-axis constraints through their existing brief contract. The Practice Owner SHALL remain read-only and non-authorizing, and the kit SHALL NOT add or require a separate autonomous architect or architecture-decision agent.
+
+Maintained role and workflow surfaces SHALL use pointers or role-specific deltas instead of copying the complete principle. Added always-loaded wording SHALL replace or consolidate overlapping architecture guidance and SHALL remain inside the existing committed startup-context boundary.
+
+#### Scenario: Main performs zero-trigger ordinary architecture tracking
+
+- **WHEN** a behavior-changing task is handled without specialist delegation
+- **AND** no accepted variation, mixed responsibility, system boundary, state transition, important invariant, or source-backed change axis matches the reviewed material trigger
+- **THEN** main remains responsible for the direct cohesive implementation and final locality check
+- **AND** no Practice Owner launch is required solely to satisfy the architecture guidance.
+
+#### Scenario: Material trigger routes to the Practice Owner
+
+- **WHEN** a reviewed material change-locality trigger matches the current design decision
+- **THEN** main obtains one bounded observation from `openspec-architecture-reviewer`
+- **AND** main retains the concrete decision, integration, proof, and finding disposition.
+
+#### Scenario: Production work is delegated
+
+- **WHEN** a bounded implementation worker receives a slice with an applicable responsibility boundary or named change axis
+- **THEN** its role-specific contract requires it to preserve that boundary or report the conflict
+- **AND** it does not independently broaden architecture, requirements, or write scope.
+
+#### Scenario: Practice Owner finds unnecessary structure
+
+- **WHEN** the architecture/change-locality Practice Owner reports speculative layers inside its exact boundary
+- **THEN** main owns reproduction and disposition against the accepted outcome
+- **AND** the owner neither authorizes mutation nor becomes a mandatory completion gate.
+
+#### Scenario: Canonical guidance remains context-neutral
+
+- **WHEN** maintained project, skill, agent, and documentation surfaces need the architecture principle
+- **THEN** they reference the canonical owner or state only their role-specific behavior
+- **AND** the complete principle is not copied across those surfaces.
+
+### Requirement: Structural checks and behavior evaluation do not score architecture
+
+Deterministic validators SHALL check only exact canonical principle ownership, main decision authority, registered Practice Owner routing, required operational markers, and forbidden autonomous-architect language. They SHALL NOT score architecture quality, infer a plausible change axis, count patterns as quality, or select a direct implementation or seam.
+
+Semantic retention SHALL require bounded same-model baseline/candidate authoring workflows with identical prompts, model, variant, permissions, fixtures, and environment. The maintained population SHALL cover a one-off local fix, an accepted second variant, an external integration boundary, non-trivial state transitions, a mixed-owner file, delegated production ownership, and a hypothetical-extension negative control. Evidence SHALL preserve source and environment identity, prompts, tool calls, changed-file manifests and diffs, validation and representative runtime output, cleanup, and the main decision or handoff. Candidate retention SHALL require current-outcome and safety preservation, local treatment of evidenced variation, and no added speculative mechanism or mandatory review in negative-control scenarios.
+
+#### Scenario: Exact runtime marker is removed
+
+- **WHEN** the canonical principle, main decision-accountability marker, Practice Owner route, or production-role delta is absent from a maintained active surface
+- **THEN** deterministic validation fails and names the missing marker and surface
+- **AND** it makes no claim about the semantic quality of the remaining architecture guidance.
+
+#### Scenario: Deterministic helper sees two possible designs
+
+- **WHEN** fixture facts permit both a direct cohesive implementation and a narrow seam
+- **THEN** the helper preserves the facts and reports no architecture ranking or inferred winner
+- **AND** semantic baseline/candidate review evaluates the decision against the scenario's accepted outcome and evidence-backed change axis.
+
+#### Scenario: Candidate adds patterns to the negative control
+
+- **WHEN** the one-off or hypothetical-extension scenario gains interfaces, factories, wrappers, plugin points, or mandatory reviewer routing without a supported change axis
+- **THEN** the behavior evaluation rejects the candidate for that scenario
+- **AND** a pattern name or green isolated test does not override the failure.
+
+#### Scenario: Candidate localizes an evidenced follow-up
+
+- **WHEN** the accepted-variant or external-boundary scenario exercises its declared follow-up after the initial implementation
+- **THEN** preserved evidence shows the follow-up remains inside the named cohesive owner or narrow boundary with current behavior still green
+- **AND** the maximum claim remains limited to the maintained scenario population and captured model/environment.
+
+### Requirement: Production roles treat current-owner reshape as in-scope
+
+The `implementation-worker` contract and other production-role deltas SHALL state that reshaping the current same-responsibility owner to absorb an accepted new case inside the write scope is in-scope work. "Unrelated refactor" SHALL mean work outside the accepted case, write scope, or current owner. Production roles SHALL NOT add a sibling implementation to avoid touching the current owner when that owner can absorb the case.
+
+The registered `simplicity-and-reuse` Practice Owner SHALL launch only for an explicit sibling implementation of a live owner or for named same-versus-new responsibility uncertainty that can change the current decision. It SHALL remain read-only and non-authorizing. Zero-trigger Ordinary Small work SHALL launch no owner.
+
+#### Scenario: Delegated slice reshapes the named owner
+
+- **WHEN** a production brief names a current owner and an accepted new case inside that write scope
+- **THEN** the worker extends that owner or returns a scoped conflict
+- **AND** it does not classify the reshape as an unrelated refactor or add a sibling file to keep edits "minimal".
+
+#### Scenario: Sibling or uncertainty launches only the reuse owner
+
+- **WHEN** the author is about to add a second implementation of a live owner, or same-versus-new responsibility is decision-changing and uncertain
+- **THEN** main obtains one bounded observation from `code-quality-reviewer`
+- **AND** does not launch `openspec-architecture-reviewer` for that same-responsibility question.
+
+#### Scenario: Punctuation fix launches no owner
+
+- **WHEN** a task only corrects an owner-local defect and adds no sibling or mechanism
+- **THEN** no Practice Owner launch is required
+- **AND** no reuse-discovery skill load is required.

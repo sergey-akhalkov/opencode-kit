@@ -107,6 +107,27 @@ export const REUSABLE_REVIEWER_FORBIDDEN_INLINE_BLOCKS: readonly RegExp[] = [
 
 export const FINAL_CANDIDATE_REVIEWER_FILE = "final-candidate-reviewer.md";
 
+export const EVIDENCE_SUFFICIENCY_REVIEWER_FILE = "evidence-sufficiency-reviewer.md";
+
+export const EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT: readonly string[] = [
+  "fresh read-only evidence-sufficiency reviewer",
+  "Original Outcome Comparison",
+  "Claim-Evidence Matrix",
+  "Claim ID",
+  "Population/Environment",
+  "Paths/Observation Boundary",
+  "Real Oracle",
+  "Unresolved Observations",
+  "Evidence References",
+  "Maximum Supported Claim",
+  "Current Disposition: supported | narrowed | blocked | unknown",
+  "Ordinary Small exact-case work does not require this role",
+  "Never infer semantic equivalence",
+  "Do not return an acceptance/rejection verdict",
+  "Effective Model",
+  "Candidate Reference / RC",
+];
+
 /**
  * Deterministic required substrings for final-candidate-reviewer.md.
  * Optional post-MVP risk review of the current runtime-proven candidate.
@@ -115,7 +136,7 @@ export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "## Contract Reference",
   "`instructions/leaf-reviewer-agent-contract.md`",
   "fresh read-only",
-  "After current MVP proof",
+  "After current proof",
   "complete readable current candidate",
   "Candidate Reference",
   "optional review remains attributed to the exact candidate",
@@ -146,6 +167,8 @@ export const FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT: readonly string[] = [
 export const REVIEW_DELIVERY_AGENT_FILES: readonly string[] = [
   "code-quality-reviewer.md",
   "deployment-config-reviewer.md",
+  "evidence-sufficiency-reviewer.md",
+  "execution-safety-reviewer.md",
   "final-candidate-reviewer.md",
   "implementation-readiness-reviewer.md",
   "instruction-artifact-reviewer.md",

@@ -1,0 +1,241 @@
+{
+  "candidate": {
+    "id": "improve-change-locality-guidance-planning-r1",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "a42d03a44d63bb2140af341382c7c9a4a6d3de676c36df6948d6f32eeef08359",
+      "global/agents/implementation-worker.md": "9361286750fba498cdeb049e4b3581d63ba3dda04afe417bc30041e23ae649fe",
+      "global/agents/instruction-artifact-reviewer.md": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468",
+      "global/agents/sdet-quality-engineer.md": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc",
+      "global/skills/instruction-artifact-tuning/SKILL.md": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35",
+      "README.md": "0ee2549bd7dfe96d20fe7cb5e0738da6b93c846b06699df9e371bec33323cedf",
+      "package.json": "84faa3509732a059580b75d2c5150943e7184b57d8060136d84b29eb780c3236",
+      "tools/proofs/agent-tooling-ergonomics.ts": "40628341a5853f5a72df91d58f704eeec8a5fe9ff3fdd662912ea36932179568"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fcfcafc5effe7WALobTh6ykZOB",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\project",
+      "--title",
+      "tooling-ergonomics-baseline-one-off-local-fix",
+      "Fix src/greet.js so `node src/greet.js Ada` prints `Hello, Ada`. Do not add interfaces, factories, plugins, or launch subagents. Keep the change local."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787515205820,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035789c001lvO67xT9yhl9Rx\",\"messageID\":\"msg_030350ba0001lHeqNz6NalehwT\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787515208688,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_0303578a7001v8cW4Nl88hyuTX\",\"messageID\":\"msg_030350ba0001lHeqNz6NalehwT\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"text\",\"text\":\"I’ll inspect the current script and project-native checks, then make the smallest local fix and run the requested command.\",\"time\":{\"start\":1787515205799,\"end\":1787515208683},\"metadata\":{\"openai\":{\"itemId\":\"msg_04eb31110b72d4a7016a8b51467fcc87d29ab74a238e05e515\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787515209111,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_Jh7OJYIsmkRYEYdDlLkAaA9H\",\"state\":{\"status\":\"completed\",\"input\":{\"path\":\"<proof-root>\\\\project\",\"pattern\":\"{package.json,**/*test*,**/*spec*}\"},\"output\":\"<proof-root>\\\\project\\\\package.json\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-one-off-local-fix-KKIH7V\\\\project\",\"time\":{\"start\":1787515209010,\"end\":1787515209089}},\"metadata\":{\"openai\":{\"itemId\":\"fc_04eb31110b72d4a7016a8b51498d6487d294bce87317b42ba2\"}},\"id\":\"prt_0303585200011k3c3fCy8DT2Uu\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"messageID\":\"msg_030350ba0001lHeqNz6NalehwT\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787515209210,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_OkauojF0eLnX2CHDepNC6E9A\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\greet.js\"},\"output\":\"<path><proof-root>\\\\project\\\\src\\\\greet.js</path>\\n<type>file</type>\\n<content>\\n1: console.log('Hello');\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"console.log('Hello');\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\src\\\\greet.js\",\"text\":\"console.log('Hello');\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-one-off-local-fix-KKIH7V\\\\project\\\\src\\\\greet.js\",\"time\":{\"start\":1787515208973,\"end\":1787515209163}},\"metadata\":{\"openai\":{\"itemId\":\"fc_04eb31110b72d4a7016a8b51498d5087d2bdf5a6691c289ba5\"}},\"id\":\"prt_03035841c001TDTt1Egoo1jPRR\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"messageID\":\"msg_030350ba0001lHeqNz6NalehwT\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787515209210,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_0303585d9001JOA833LDjDbTMK\",\"reason\":\"tool-calls\",\"messageID\":\"msg_030350ba0001lHeqNz6NalehwT\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-finish\",\"tokens\":{\"total\":14534,\"input\":14369,\"output\":165,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787515211615,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_030358f4a001hHW73v3YHh4cgb\",\"messageID\":\"msg_0303585ed001BbgbvEwnG8SdxL\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787515212853,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_AdsXTNIburcmEOiNb7aajFjl\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\project\\\\package.json\"},\"output\":\"<path><proof-root>\\\\project\\\\package.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"name\\\": \\\"clc-one-off-local-fix\\\",\\n3:   \\\"private\\\": true,\\n4:   \\\"type\\\": \\\"module\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"name\\\": \\\"clc-one-off-local-fix\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\project\\\\package.json\",\"text\":\"{\\n  \\\"name\\\": \\\"clc-one-off-local-fix\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\agent-tooling-ergonomics-one-off-local-fix-KKIH7V\\\\project\\\\package.json\",\"time\":{\"start\":1787515212738,\"end\":1787515212823}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c94d064dd95d342016a8b514d1c4c87d2a7840f3718607d35\"}},\"id\":\"prt_03035924e001dXPqRpJAk7xYYZ\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"messageID\":\"msg_0303585ed001BbgbvEwnG8SdxL\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787515212854,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035941b001Nox6hUZVVmHoC2\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0303585ed001BbgbvEwnG8SdxL\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-finish\",\"tokens\":{\"total\":14746,\"input\":838,\"output\":56,\"reasoning\":28,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787515214437,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_030359a5e001q0MwhjiGe4qUDr\",\"messageID\":\"msg_03035942c001B7w9IyKA8zhPxU\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787515215992,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_030359edd001zQ0ofBTgsOwV99\",\"messageID\":\"msg_03035942c001B7w9IyKA8zhPxU\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"text\",\"text\":\"The script ignores its first positional argument. I’m changing only `src/greet.js` to include `process.argv[2]` in the existing output.\",\"time\":{\"start\":1787515215582,\"end\":1787515215972},\"metadata\":{\"openai\":{\"itemId\":\"msg_03755f3f3f33399d016a8b5150848c87d2a9f8068a0eb1a29b\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787515217715,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_O6xth3JvjbyikO7iqwlgHnEM\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\project\\\\src\\\\greet.js\\n@@\\n-console.log('Hello');\\n+console.log(`Hello, ${process.argv[2]}`);\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM Users/noilw/AppData/Local/Temp/agent-tooling-ergonomics-one-off-local-fix-KKIH7V/project/src/greet.js\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\project\\\\src\\\\greet.js\\n===================================================================\\n--- <proof-root>\\\\project\\\\src\\\\greet.js\\n+++ <proof-root>\\\\project\\\\src\\\\greet.js\\n@@ -1,1 +1,1 @@\\n-console.log('Hello');\\n+console.log(`Hello, ${process.argv[2]}`);\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\project\\\\src\\\\greet.js\",\"relativePath\":\"Users/noilw/AppData/Local/Temp/agent-tooling-ergonomics-one-off-local-fix-KKIH7V/project/src/greet.js\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\project\\\\src\\\\greet.js\\n===================================================================\\n--- <proof-root>\\\\project\\\\src\\\\greet.js\\n+++ <proof-root>\\\\project\\\\src\\\\greet.js\\n@@ -1,1 +1,1 @@\\n-console.log('Hello');\\n+console.log(`Hello, ${process.argv[2]}`);\\n\",\"additions\":1,\"deletions\":1}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM Users/noilw/AppData/Local/Temp/agent-tooling-ergonomics-one-off-local-fix-KKIH7V/project/src/greet.js\",\"time\":{\"start\":1787515217592,\"end\":1787515217661}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03755f3f3f33399d016a8b5150f87887d2943f8c9ccf64632b\"}},\"id\":\"prt_03035a073001aTEKh2T6i0BDI1\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"messageID\":\"msg_03035942c001B7w9IyKA8zhPxU\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787515217715,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035a708001eDIJRXDbP7nR6O\",\"reason\":\"tool-calls\",\"messageID\":\"msg_03035942c001B7w9IyKA8zhPxU\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-finish\",\"tokens\":{\"total\":15030,\"input\":1034,\"output\":136,\"reasoning\":36,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787515220703,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035b2d7001yN70K44azFeqZa\",\"messageID\":\"msg_03035a71b001BKWOWgkCOmU8Ob\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787515222800,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_TyWfY74be3iEKKfPp8Fb0jq0\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node src/greet.js Ada\",\"workdir\":\"<proof-root>\\\\project\"},\"output\":\"Hello, Ada\\n\",\"metadata\":{\"output\":\"Hello, Ada\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node src/greet.js Ada\",\"time\":{\"start\":1787515222667,\"end\":1787515222727}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0b7ec74245d74812016a8b51562bec87d29ade75ce88313660\"}},\"id\":\"prt_03035b52a001soqTGnbu1AYS29\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"messageID\":\"msg_03035a71b001BKWOWgkCOmU8Ob\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787515222800,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035bacd001orP90sQh1rgoP3\",\"reason\":\"tool-calls\",\"messageID\":\"msg_03035a71b001BKWOWgkCOmU8Ob\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-finish\",\"tokens\":{\"total\":15157,\"input\":1258,\"output\":63,\"reasoning\":12,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787515225585,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035c5d4001LPth5ICHGBe1X1\",\"messageID\":\"msg_03035bae40019kxdxFKuGWm1Kf\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787515227054,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035ca7b001IMC2i04QlgoXV5\",\"messageID\":\"msg_03035bae40019kxdxFKuGWm1Kf\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"text\",\"text\":\"Updated `src/greet.js` to use the first argument.\\n\\nVerified: `node src/greet.js Ada` outputs `Hello, Ada`.\\n\\nOutcome: working.\",\"time\":{\"start\":1787515226747,\"end\":1787515227051},\"metadata\":{\"openai\":{\"itemId\":\"msg_0ea47443cb36e421016a8b515bb5d487d2b8f557126526bc8f\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787515227155,\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"part\":{\"id\":\"prt_03035cbff001DIJrqaNfldYqFE\",\"reason\":\"stop\",\"messageID\":\"msg_03035bae40019kxdxFKuGWm1Kf\",\"sessionID\":\"ses_fcfcafc5effe7WALobTh6ykZOB\",\"type\":\"step-finish\",\"tokens\":{\"total\":15251,\"input\":324,\"output\":39,\"reasoning\":40,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: node only; shell metacharacters denied last",
+      "edit: allow inside disposable project",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: deny",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect the current script and project-native checks, then make the smallest local fix and run the requested command.The script ignores its first positional argument. I’m changing only `src/greet.js` to include `process.argv[2]` in the existing output.Updated `src/greet.js` to use the first argument.\n\nVerified: `node src/greet.js Ada` outputs `Hello, Ada`.\n\nOutcome: working.",
+    "costs": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elapsedMs": 58369,
+    "eventCount": 18,
+    "modelIds": [],
+    "sessionIds": [
+      "ses_fcfcafc5effe7WALobTh6ykZOB"
+    ],
+    "tokens": [
+      {
+        "total": 14534,
+        "input": 14369,
+        "output": 165,
+        "reasoning": 0,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 14746,
+        "input": 838,
+        "output": 56,
+        "reasoning": 28,
+        "cache": {
+          "write": 0,
+          "read": 13824
+        }
+      },
+      {
+        "total": 15030,
+        "input": 1034,
+        "output": 136,
+        "reasoning": 36,
+        "cache": {
+          "write": 0,
+          "read": 13824
+        }
+      },
+      {
+        "total": 15157,
+        "input": 1258,
+        "output": 63,
+        "reasoning": 12,
+        "cache": {
+          "write": 0,
+          "read": 13824
+        }
+      },
+      {
+        "total": 15251,
+        "input": 324,
+        "output": 39,
+        "reasoning": 40,
+        "cache": {
+          "write": 0,
+          "read": 14848
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "path": "<proof-root>\\project",
+          "pattern": "{package.json,**/*test*,**/*spec*}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\src\\greet.js"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\project\\package.json"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "patchText": "*** Begin Patch\n*** Update File: <proof-root>\\project\\src\\greet.js\n@@\n-console.log('Hello');\n+console.log(`Hello, ${process.argv[2]}`);\n*** End Patch"
+        },
+        "name": "apply_patch",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "command": "node src/greet.js Ada",
+          "workdir": "<proof-root>\\project"
+        },
+        "name": "bash",
+        "status": "completed"
+      }
+    ]
+  },
+  "filesAfterOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 77,
+      "content": "{\n  \"name\": \"clc-one-off-local-fix\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "9c5cd31ed24ca471ef1c47dc6ca213facb8e110ad8db02e92f79e5754d45640d"
+    },
+    {
+      "bytes": 42,
+      "content": "console.log(`Hello, ${process.argv[2]}`);\n",
+      "path": "src/greet.js",
+      "sha256": "9366ebf1d0d8131cb27c3b1e0caf6df1f36f5bec15e205f6e856868ca65ae7d6"
+    }
+  ],
+  "filesBeforeOracle": [
+    {
+      "bytes": 22,
+      "content": null,
+      "path": ".gitignore",
+      "sha256": "be7dfa5e83d24c14a6bd61666daad5f1112c42441f6d3158cf0740476c0b611e"
+    },
+    {
+      "bytes": 77,
+      "content": "{\n  \"name\": \"clc-one-off-local-fix\",\n  \"private\": true,\n  \"type\": \"module\"\n}\n",
+      "path": "package.json",
+      "sha256": "9c5cd31ed24ca471ef1c47dc6ca213facb8e110ad8db02e92f79e5754d45640d"
+    },
+    {
+      "bytes": 42,
+      "content": "console.log(`Hello, ${process.argv[2]}`);\n",
+      "path": "src/greet.js",
+      "sha256": "9366ebf1d0d8131cb27c3b1e0caf6df1f36f5bec15e205f6e856868ca65ae7d6"
+    }
+  ],
+  "input": {
+    "message": "Fix src/greet.js so `node src/greet.js Ada` prints `Hello, Ada`. Do not add interfaces, factories, plugins, or launch subagents. Keep the change local.",
+    "promptSha256": "d10d5a48300b71fe1a08467c33e7421da99eb872f5fa76686924130d1ee0cb47",
+    "scenario": "one-off-local-fix"
+  },
+  "oracle": {
+    "facts": {
+      "noSpeculativeSurface": true,
+      "greetsAda": true
+    },
+    "pass": true,
+    "postCommands": [
+      {
+        "argv": [
+          "node",
+          "src/greet.js",
+          "Ada"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "Hello, Ada\n"
+      }
+    ]
+  },
+  "schemaVersion": 1
+}

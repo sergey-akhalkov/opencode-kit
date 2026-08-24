@@ -19,6 +19,13 @@ type CommandEvidence = {
 };
 
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+const HELP = `Usage:
+  node tools/proofs/project-unattended-readiness.ts --candidate-id <id> --evidence-root <new-absolute-path>
+
+Options:
+  --candidate-id <id>      Candidate identity recorded in evidence
+  --evidence-root <path>   Create-new immutable evidence directory
+  --help, -h               Show help without creating files or running commands`;
 
 function stableValue(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(stableValue);
@@ -66,10 +73,10 @@ function writeNew(file: string, content: string): void {
   fs.writeFileSync(file, content, { encoding: "utf8", flag: "wx" });
 }
 
-function invoke(root: string, entrypoint: string, args: string[]): CommandEvidence {
+function invoke(root: string, entrypoint: string, args: string[], env: NodeJS.ProcessEnv = {}): CommandEvidence {
   const result = runPortableCommand(root, [process.execPath, path.join(sourceRoot, entrypoint), ...args], {
     capture: true,
-    env: { ...process.env, OPENCODE_CONFIG_DIR: path.join(sourceRoot, "global") },
+    env: { ...process.env, OPENCODE_CONFIG_DIR: path.join(sourceRoot, "global"), ...env },
   });
   if (result.error != null) throw result.error;
   const redact = (value: string): string => value
@@ -141,6 +148,13 @@ function selectedSources(output: string): Record<string, unknown> {
       canonicalWorkflow: Array<{ kind: string; name: string; source: string }>;
       collisionStatus: string;
       guard: { capabilityStatus: string; limits: Record<string, number | null>; origin: string | null };
+      helperResolution: Array<{
+        attempts: Array<{ exists: boolean; helper: string; source: string }>;
+        collisionStatus: string;
+        relativePath: string;
+        selected: { helper: string; source: string } | null;
+        status: string;
+      }>;
       helpers: Array<{ path: string; sha256: string }>;
     };
   };
@@ -164,7 +178,44 @@ function selectedSources(output: string): Record<string, unknown> {
       ...report.unattended.guard,
       origin: report.unattended.guard.origin == null ? null : safeLocation(report.unattended.guard.origin),
     },
+    helperResolution: report.unattended.helperResolution.map((resolution) => ({
+      ...resolution,
+      attempts: resolution.attempts.map((attempt) => ({ ...attempt, helper: safeLocation(attempt.helper) })),
+      selected: resolution.selected == null
+        ? null
+        : { ...resolution.selected, helper: safeLocation(resolution.selected.helper) },
+    })),
   };
+}
+
+function setupGateChange(project: string): void {
+  writeNew(path.join(project, "openspec", "changes", "helper-proof", "proposal.md"), [
+    "## Outcome Capsule",
+    "",
+    "- **Outcome:** Prove portable helper invocation.",
+    "- **Operating Envelope:** Disposable local project.",
+    "- **Non-Goals:** External effects.",
+    "- **Non-Deferrable Invariants:** No target mutation.",
+    "- **Observable Proof:** Operation gate returns passed.",
+    "- **Material Residual Risks:** None.",
+    "- **Stop Line:** Stop after local gate output.",
+    "",
+  ].join("\n"));
+  writeNew(path.join(project, "openspec", "changes", "helper-proof", "tasks.md"), "- [ ] 1.1 Prove helper invocation.\n");
+  writeNew(path.join(project, "openspec", "changes", "helper-proof", "history.md"), "# Strategy History\n");
+  writeNew(path.join(project, "openspec", "changes", "helper-proof", "specs", "helper-proof", "spec.md"), [
+    "## ADDED Requirements",
+    "",
+    "### Requirement: Disposable helper proof",
+    "",
+    "The local operation gate SHALL report its status.",
+    "",
+    "#### Scenario: Gate runs",
+    "",
+    "- **WHEN** the disposable change invokes the verified helper",
+    "- **THEN** the gate reports `passed`.",
+    "",
+  ].join("\n"));
 }
 
 function missionDefinition(): string {
@@ -198,7 +249,10 @@ function assertEvidence(
   legacyPreview: CommandEvidence,
   legacyWrite: CommandEvidence,
   legacyDoctor: CommandEvidence,
-  sourceInventory: CommandEvidence,
+  freshSourceInventory: CommandEvidence,
+  missingSourceInventory: CommandEvidence,
+  legacySourceInventory: CommandEvidence,
+  operationGate: CommandEvidence,
   freshManifest: Array<{ path: string; sha256: string }>,
   overlayHash: string,
   legacyOverlay: string,
@@ -206,7 +260,18 @@ function assertEvidence(
   legacyBackup: string,
   legacyAgentsHash: string,
 ): void {
-  for (const command of [freshPreview, freshWrite, freshDoctor, legacyPreview, legacyWrite, legacyDoctor, sourceInventory]) {
+  for (const command of [
+    freshPreview,
+    freshWrite,
+    freshDoctor,
+    legacyPreview,
+    legacyWrite,
+    legacyDoctor,
+    freshSourceInventory,
+    missingSourceInventory,
+    legacySourceInventory,
+    operationGate,
+  ]) {
     if (command.exitCode !== 0) throw new Error(`Command failed: ${command.argv.join(" ")}\n${command.stderr || command.stdout}`);
   }
   const forbidden = freshManifest.filter((row) =>
@@ -234,8 +299,31 @@ function assertEvidence(
     check.name === "unattended canonical workflow"
   );
   if (collision?.status !== "blocked") throw new Error("Legacy doctor did not block the canonical workflow collision");
-  const sources = selectedSources(sourceInventory.stdout);
-  if (sources.collisionStatus !== "blocked") throw new Error("Runtime source inventory did not report unattended collision status");
+  const freshSources = selectedSources(freshSourceInventory.stdout);
+  const freshGate = (freshSources.helperResolution as Array<{ relativePath: string; selected: unknown; status: string }>).find((row) =>
+    row.relativePath === "bin/openspec-operation-gate.ts"
+  );
+  if (freshSources.collisionStatus !== "clear" || freshGate?.status !== "resolved" || freshGate.selected == null) {
+    throw new Error("Configured-global helper resolution did not select the exact operation gate");
+  }
+  const missingSources = selectedSources(missingSourceInventory.stdout);
+  const missingGate = (missingSources.helperResolution as Array<{ relativePath: string; selected: unknown; status: string }>).find((row) =>
+    row.relativePath === "bin/openspec-operation-gate.ts"
+  );
+  if (missingGate?.status !== "missing" || missingGate.selected != null) {
+    throw new Error("Missing configured-global helper did not retain an actionable missing result");
+  }
+  const legacySources = selectedSources(legacySourceInventory.stdout);
+  const blockedGate = (legacySources.helperResolution as Array<{ relativePath: string; selected: unknown; status: string }>).find((row) =>
+    row.relativePath === "bin/openspec-operation-gate.ts"
+  );
+  if (legacySources.collisionStatus !== "blocked" || blockedGate?.status !== "blocked" || blockedGate.selected != null) {
+    throw new Error("Runtime source inventory did not block helper selection on canonical workflow collision");
+  }
+  const gateResult = JSON.parse(operationGate.stdout) as { status?: unknown };
+  if (gateResult.status !== "passed") {
+    throw new Error(`Configured-global operation gate did not pass from the unrelated project: ${operationGate.stdout}`);
+  }
 }
 
 function run(options: Options): void {
@@ -245,7 +333,11 @@ function run(options: Options): void {
   try {
     const fresh = path.join(fixture, "fresh-non-js");
     const legacy = path.join(fixture, "legacy-non-js");
+    const missingGlobal = path.join(fixture, "missing-global");
+    const isolatedHome = path.join(fixture, "isolated-home");
     fs.mkdirSync(fresh);
+    fs.mkdirSync(missingGlobal);
+    fs.mkdirSync(isolatedHome);
     fs.mkdirSync(path.join(legacy, ".opencode", "skills", "openspec-apply-change"), { recursive: true });
     const legacyAgents = path.join(legacy, "AGENTS.md");
     writeNew(legacyAgents, "# Existing Project Authority\n");
@@ -269,6 +361,22 @@ function run(options: Options): void {
       "--format",
       "json",
     ]);
+    setupGateChange(fresh);
+    const operationGate = invoke(fixture, "global/bin/openspec-operation-gate.ts", [
+      "--root",
+      fresh,
+      "--operation",
+      "apply",
+      "--change",
+      "helper-proof",
+    ]);
+    const freshSourceInventory = invoke(fixture, "tools/opencode-runtime-sources.ts", ["--root", fresh]);
+    const missingSourceInventory = invoke(
+      fixture,
+      "tools/opencode-runtime-sources.ts",
+      ["--root", fresh],
+      { HOME: isolatedHome, OPENCODE_CONFIG_DIR: missingGlobal, USERPROFILE: isolatedHome },
+    );
 
     const legacyPreview = invoke(fixture, "tools/init-project.ts", ["--target", legacy, "--mode", "preview"]);
     if (sha256(fs.readFileSync(legacyAgents)) !== legacyAgentsHash) throw new Error("Preview changed existing AGENTS.md bytes");
@@ -279,7 +387,7 @@ function run(options: Options): void {
     const legacyBackup = path.join(backupRoot, backupDirectories[0].name, "AGENTS.md");
     fs.writeFileSync(path.join(legacy, "opencode-dev-kit", "adapter.json"), configuredAdapter(), "utf8");
     const legacyDoctor = invoke(fixture, "tools/doctor.ts", ["--project", legacy, "--format", "json"]);
-    const sourceInventory = invoke(fixture, "tools/opencode-runtime-sources.ts", ["--root", legacy]);
+    const legacySourceInventory = invoke(fixture, "tools/opencode-runtime-sources.ts", ["--root", legacy]);
     const freshManifest = files(fresh);
 
     assertEvidence(
@@ -289,7 +397,10 @@ function run(options: Options): void {
       legacyPreview,
       legacyWrite,
       legacyDoctor,
-      sourceInventory,
+      freshSourceInventory,
+      missingSourceInventory,
+      legacySourceInventory,
+      operationGate,
       freshManifest,
       overlayHash,
       legacyOverlay,
@@ -327,7 +438,12 @@ function run(options: Options): void {
         "templates/project/adapter.json",
         "templates/project/validation.md",
       ].map((relative) => ({ path: relative, sha256: sha256(fs.readFileSync(path.join(sourceRoot, relative))) })),
-      runtimeSources: selectedSources(sourceInventory.stdout),
+      runtimeSources: {
+        collision: selectedSources(legacySourceInventory.stdout),
+        configured: selectedSources(freshSourceInventory.stdout),
+        missing: selectedSources(missingSourceInventory.stdout),
+      },
+      operationGate: JSON.parse(operationGate.stdout),
       schemaVersion: 1,
     }));
     writeNew(path.join(options.evidenceRoot, "evaluation.json"), stableJson({
@@ -355,9 +471,13 @@ function run(options: Options): void {
   console.log(stableJson({ candidateId: options.candidateId, evidenceRoot: "<evidence-root>", status: "complete" }).trimEnd());
 }
 
-try {
-  run(parseArgs(process.argv.slice(2)));
-} catch (error) {
-  console.error(stableJson({ error: error instanceof Error ? error.message : String(error), status: "blocked" }).trimEnd());
-  process.exitCode = 1;
+if (process.argv.includes("--help") || process.argv.includes("-h")) {
+  console.log(HELP);
+} else {
+  try {
+    run(parseArgs(process.argv.slice(2)));
+  } catch (error) {
+    console.error(stableJson({ error: error instanceof Error ? error.message : String(error), status: "blocked" }).trimEnd());
+    process.exitCode = 1;
+  }
 }

@@ -1,0 +1,50 @@
+{
+  "candidateId": "task-3-1-launcher-diagnostic-r7",
+  "cleanup": "complete",
+  "commandNames": [
+    "customize-opencode",
+    "init",
+    "mission-resume",
+    "mission-run",
+    "mission-status",
+    "mission-stop",
+    "pty-open-background-spy",
+    "pty-show-server-url",
+    "review"
+  ],
+  "commands": {
+    "run": {
+      "data": null,
+      "error": [
+        {
+          "depth": 0,
+          "name": "UnknownError"
+        }
+      ]
+    },
+    "status": {
+      "data": null,
+      "error": [
+        {
+          "depth": 0,
+          "name": "UnknownError"
+        }
+      ]
+    }
+  },
+  "launcherReady": true,
+  "mode": "launch-diagnose",
+  "observedStatus": "{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": true,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:ef71d34b8f413f0a\",\n    \"status\": \"running\"\n  },\n  \"rootSessionRef\": \"session:fc88537e21b0111a\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"b969534a948cfe848342c2fa6510ea41cf5b14d021e6ff9e7d34de39a86a43fe\",\n  \"schemaVersion\": 1,\n  \"visibility\": \"opened\"\n}\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"missionId\": \"launcher-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:ef71d34b8f413f0a\",\n    \"status\": \"running\"\n  },\n  \"rootSessionRef\": \"session:fc88537e21b0111a\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"b969534a948cfe848342c2fa6510ea41cf5b14d021e6ff9e7d34de39a86a43fe\",\n  \"schemaVersion\": 1,\n  \"visibility\": \"opened\"\n}",
+  "providerCalls": 0,
+  "schemaVersion": 1,
+  "server": {
+    "readyMs": 10079,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderrTail": "OCHnk\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-17T09:14:05.181Z level=INFO run=f354895c message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-17T09:14:05.181Z level=INFO run=f354895c message=loading path=\"<runtime-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-17T09:14:05.217Z level=INFO run=f354895c message=loading path=\"<config-dir>\\\\opencode.json\"\ntimestamp=2026-08-17T09:14:05.435Z level=INFO run=f354895c message=loading path=\"<config-dir>\\\\opencode.jsonc\"\ntimestamp=2026-08-17T09:14:13.308Z level=INFO run=f354895c message=\"all LSPs are disabled\"\ntimestamp=2026-08-17T09:14:13.310Z level=INFO run=f354895c message=\"all formatters are disabled\"\ntimestamp=2026-08-17T09:14:13.310Z level=INFO run=f354895c message=init\ntimestamp=2026-08-17T09:14:13.367Z level=INFO run=f354895c message=init count=1\ntimestamp=2026-08-17T09:14:13.405Z level=INFO run=f354895c message=created id=ses_ff0ffffe2ffeSy87CJq7REzXtX slug=gentle-cabin version=1.18.18 projectID=f227406ef0fb42e53a14998426f4092ac4dbbee2 directory=\"<project>\" path=\"\" workspaceID=undefined parentID=undefined title=\"roadmap launcher diagnostic root\" agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1786958053405 time.updated=1786958053405\ntimestamp=2026-08-17T09:14:13.440Z level=INFO run=f354895c message=command session.id=ses_ff0ffffe2ffeSy87CJq7REzXtX command=mission-run agent=undefined\ntimestamp=2026-08-17T09:14:14.124Z level=ERROR run=f354895c message=failed ref=err_c6d467e8 error=\"Error: Command handled by roadmap mission launcher\" cause=\"Error: Command handled by roadmap mission launcher\\n    at <anonymous> (<source-root>\\\\global\\\\extensions\\\\roadmap-mission-launcher.ts:304:17)\\n    at processTicksAndRejections (native:7:39)\\n    at Plugin.trigger (B:/~BUN/root/chunk-ds79dp30.js:1098:1361)\\n    at Plugin.trigger (definition) (B:/~BUN/root/chunk-382hv1mx.js:439:28058)\\n    at SessionPrompt.command (B:/~BUN/root/chunk-a07caw66.js:4:13932)\\n    at SessionPrompt.command (definition) (B:/~BUN/root/chunk-ds79dp30.js:1096:15462)\\n    at SessionHttpApi.command (B:/~BUN/root/chunk-a07caw66.js:2:84408)\\n    at SessionHttpApi.command (definition) (B:/~BUN/root/chunk-a07caw66.js:4:13842)\\n    at Server.listen (B:/~BUN/root/chunk-a07caw66.js:6:15456)\\n    at Server.listen (definition) (B:/~BUN/root/chunk-a07caw66.js:6:15579)\"\ntimestamp=2026-08-17T09:14:14.141Z level=INFO run=f354895c message=command session.id=ses_ff0ffffe2ffeSy87CJq7REzXtX command=mission-status agent=undefined\ntimestamp=2026-08-17T09:14:14.197Z level=ERROR run=f354895c message=failed ref=err_24afb08e error=\"Error: Command handled by roadmap mission launcher\" cause=\"Error: Command handled by roadmap mission launcher\\n    at <anonymous> (<source-root>\\\\global\\\\extensions\\\\roadmap-mission-launcher.ts:304:17)\\n    at processTicksAndRejections (native:7:39)\\n    at Plugin.trigger (B:/~BUN/root/chunk-ds79dp30.js:1098:1361)\\n    at Plugin.trigger (definition) (B:/~BUN/root/chunk-382hv1mx.js:439:28058)\\n    at SessionPrompt.command (B:/~BUN/root/chunk-a07caw66.js:4:13932)\\n    at SessionPrompt.command (definition) (B:/~BUN/root/chunk-ds79dp30.js:1096:15462)\\n    at SessionHttpApi.command (B:/~BUN/root/chunk-a07caw66.js:2:84408)\\n    at SessionHttpApi.command (definition) (B:/~BUN/root/chunk-a07caw66.js:4:13842)\\n    at Server.listen (B:/~BUN/root/chunk-a07caw66.js:6:15456)\\n    at Server.listen (definition) (B:/~BUN/root/chunk-a07caw66.js:6:15579)\"\n",
+    "stdoutTail": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:50005\n"
+  }
+}

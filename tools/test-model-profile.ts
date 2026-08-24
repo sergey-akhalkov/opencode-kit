@@ -9,8 +9,10 @@ import {
   buildProfileChildEnvironment,
   discoverGovernedAgentNames,
   findExplicitPrimaryModel,
+  INHERIT_FROM_PRIMARY_AGENTS,
   launchOpenCode,
   loadModelProfile,
+  routedAgentNames,
   parseLauncherArguments,
   parseModelProfileText,
   parseProfileSelection,
@@ -40,13 +42,14 @@ const QUALITY_CREATORS = new Set([
   "general",
   "implementation-worker",
   "plan",
-  "troubleshooter",
 ]);
 const EXPECTED_CATALOG = [
   "build",
   "code-quality-reviewer",
   "compaction",
   "deployment-config-reviewer",
+  "evidence-sufficiency-reviewer",
+  "execution-safety-reviewer",
   "explore",
   "final-candidate-reviewer",
   "general",
@@ -152,9 +155,15 @@ const tests: TestCase[] = [
         const loaded = loadModelProfile(libraryRoot, profileName);
         assertDeepEqual(
           Object.keys(loaded.profile.agent),
-          catalog,
-          `${profileName} must route the exact complete catalog in stable order.`,
+          routedAgentNames(catalog),
+          `${profileName} must route the exact complete catalog in stable order, omitting inherit-from-primary agents.`,
         );
+        for (const agentName of INHERIT_FROM_PRIMARY_AGENTS) {
+          assert(
+            loaded.profile.agent[agentName] == null,
+            `${profileName} must omit inherit-from-primary ${agentName}.`,
+          );
+        }
       }
     },
   },
@@ -322,6 +331,12 @@ const tests: TestCase[] = [
         () => validateModelProfile(extra, ["alpha"], "extra"),
         "Missing: none. Extra: unexpected.",
         "Unexpected route must be named.",
+      );
+      const inherited = profileFor(["alpha", "troubleshooter"]);
+      assertErrorContains(
+        () => validateModelProfile(inherited, ["alpha", "troubleshooter"], "inherited"),
+        "must omit inherit-from-primary agent(s): troubleshooter",
+        "Inherit-from-primary troubleshooter must be omitted from the matrix.",
       );
     },
   },

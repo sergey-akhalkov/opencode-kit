@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "acceptedStagedBaselineSource": {
+    "gitRef": "ca43ba441c92dd56f2c751f4583aef41e5c765de",
+    "kind": "commit",
+    "subject": "feat(windows): add tray autostart and quiet launchers",
+    "note": "Dirty checkout is not the baseline identity."
+  },
+  "liveOverlappingWriter": "none",
+  "exclusiveWriteRoots": [
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "config/consumer-outcome-regression.json",
+    "config/consumer-outcome-baseline.json",
+    "tools/proofs/fixtures/consumer-outcome",
+    "tools/test-consumer-outcome.ts"
+  ],
+  "sharedOwnersSerializedLater": [
+    {
+      "path": "package.json",
+      "action": "append-only scripts and test list"
+    },
+    {
+      "path": "tools/proofs/README.md",
+      "action": "append one inventory row"
+    },
+    {
+      "path": ".github/workflows/validate.yml",
+      "action": "add one Ubuntu provider-free gate step; do not edit Windows or templates/ci"
+    }
+  ],
+  "governedPathCount": 102,
+  "governedPathDigest": "669af62ac54df36f78d84e99b7bbef388e10d5227d25fd45eae56ce86320a3e5",
+  "omittedFromCurrentManifest": [
+    "global/principles-of-work.md",
+    "profiles/core.json",
+    "runtime-surface profile generator"
+  ],
+  "omissionReason": "Listed planned paths are absent at the accepted staged source; unreadable listed inputs would block rather than be ignored.",
+  "validation": {
+    "gitReadback": "ca43ba441c92dd56f2c751f4583aef41e5c765de",
+    "projectInventory": {
+      "command": "node tools/project-inventory.ts --format json --root .",
+      "exitCode": 0,
+      "bytes": 11426
+    }
+  }
+}

@@ -4,13 +4,13 @@ Use this template as a starting point for a project-level `AGENTS.md`. Keep only
 
 ## Runtime Authority And Development Loop
 
-Shared runtime lifecycle authority must come from one coherent kit source containing `AGENTS.md` and the conditional `change-ready-sdlc` skill. Resolve the kit custom directory to `OPENCODE_CONFIG_DIR` when set; otherwise inspect the host default global directory. Do not infer that setting a custom directory unloads every host-default or project source; detect same-name collisions before qualification. Missing kit `AGENTS.md` blocks Material/qualification work that requires it. Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill. Do not invent a partial process or foreign stack default.
+Shared runtime authority must come from one coherent kit source containing `principles-of-work.md`, operational `AGENTS.md`, and the conditional `change-ready-sdlc` skill. Resolve the kit custom directory to `OPENCODE_CONFIG_DIR` when set; otherwise inspect the host default global directory. Do not infer that setting a custom directory unloads every host-default or project source; detect same-name collisions before qualification. Missing kit principles or `AGENTS.md` blocks Material/qualification work that requires the shared authority. Missing `change-ready-sdlc` blocks only when Material/explicit qualification requires the skill. Do not invent a partial process or foreign stack default.
 
 The conceptual Universal Development Loop is optional guidance only when it stays consistent with those active global contracts. Do not depend on a target-relative kit path such as `instructions/universal-development-loop.md` for runtime authority, and do not restate a competing step list in this template.
 
 - Technology-specific commands and constraints adapt the loop; they do not create separate workflows.
 - Start broad work with a deterministic project inventory, targeted search, or repository-native command before reading large file sets.
-- Ordinary Small default: implement and prove the smallest complete happy path to reach MVP, complete accepted scope, run focused validation, then freeze RC and finish stable handoff when no known critical/non-deferrable defect remains.
+- Ordinary Small default: implement and prove the smallest complete happy path, complete accepted scope, run focused validation, then report `Outcome: working | blocked | unknown` with proof and limitations without RC/stable ceremony.
 - Do not load `change-ready-sdlc` merely because code or config behavior changes. Load it before mutation only for explicit stable/full qualification, project-required qualification, or concrete Material risk.
 - Run focused validation first, then broaden validation when boundaries, APIs, data, deployment, or compatibility are affected.
 - Use read-only reviewer gates only when the risk justifies them, and report skipped gates with the reason. Reviewer feedback-ledger writes under `docs/feedbacks/**` are the only default write exception.
@@ -31,7 +31,7 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 - At meaningful failure boundaries, use existing project diagnostics, preserve the original exception cause/stack, and add structured safe operation/correlation context without duplicate or routine-noise logging. Real-boundary proof retains exit status, stdout/stderr, relevant logs/exceptions, and artifact paths for inspection before mutation or rerun.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
 - Ordinary Small: after happy-path proof, main may create or modify the smallest focused regression test when useful. Prefer existing tests when sufficient.
-- Material/explicit qualification: only a separate fresh-context testing subagent that did not author production code may create or modify automated test artifacts. Give it test-only write scope, forbid production paths, and require an independent realistic risk matrix.
+- After happy-path proof, main may author the smallest focused requirement-linked regression. A separate fresh-context testing subagent is required only for a reachable named critical consequence or explicit project/owner requirement; give it test-only scope and forbid production paths.
 - Prioritize end-to-end behavior at real system boundaries and high-impact negative scenarios over coverage percentages. Record justified mock exceptions, failures fed back into production hardening, and residual risks.
 - After edits, run the closest relevant validation command or state why validation was skipped.
 
@@ -41,7 +41,7 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 ## Autonomy
 
-- Follow active global quality/safety -> autonomy -> speed without copying it. Continue within the goal while safe, useful work remains.
+- Follow the active global working philosophy without copying it: quality without proxy substitution, shortest verified path, autonomy until a real owner boundary, maximum token economy, and evidence-backed continuous improvement. Fix, narrow, or remove concrete impediments at the smallest authorized layer without weakening safety, scope, protected boundaries, or unrelated work.
 - Ask the user only for exact user-owned blockers: credentials/elevation, hardware/manual gate, destructive/remote authorization, product/legal/security decision, protected-boundary semantic expansion, missing external capability, material residual-risk acceptance, or mode that forbids the action. Never ask solely to approve an internal revision, plan/spec/task update, successor attempt, attempt-limit change, stop-line change, or process counter. Every owner question must satisfy the Owner Decision Handoff contract below.
 - Before a blocker question, follow the active global pre-escalation recovery contract; this template defines no competing fields.
 - A progress checkpoint, long work cycle, green validation, still-open task, locally resolvable failure, or blocked live/external gate does not justify asking whether to continue. Continue safe local/offline required work and stop only the affected action at its exact owner boundary.
@@ -57,14 +57,14 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 
 - Main is the default production author for Ordinary Small and Material. Optional `implementation-worker` only for evidenced isolated production-only slices with non-overlapping write scope, representative proof boundary, clear Acceptance Criteria, Verification, and evidenced benefit.
 - When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
-- After MVP on Material behavior work, complete accepted scope and use fresh critical-only `sdet-quality-engineer`; optional reviewers never become mandatory gates. Never assign Material test authorship to a production author.
+- After current proof, complete accepted scope and use fresh critical-only `sdet-quality-engineer` only when a reachable named critical consequence or explicit project/owner requirement triggers it; optional reviewers never become mandatory gates.
 - If `implementation-worker` is unavailable, main retains production authorship or uses another conforming author; block only when no conforming path exists. Keep writers serial when scope is unclear, write targets overlap, work is coupled, or integration outweighs fan-out.
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
 - User-owned scope is accepted outcome and protected-boundary decisions. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery evidence must never authorize mutation.
-- Optional final-candidate, delivery, code-quality, and domain reviewers may run after MVP when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected-RC for main disposition; missing or unusable optional output is not itself a stage blocker.
-- Fresh Material SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; continue only after an immediately-prior main-confirmed critical defect, production fix, and new proof, and permanently stop otherwise. Non-critical findings are parked and never prolong the loop.
-- Handoff reports `Development-Stage: development | MVP | RC<n> | stable` and `Stable Candidate: RC<n>` when stable.
+- Optional final-candidate, delivery, code-quality, and domain reviewers may run after current proof when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected candidate/RC when one exists; missing or unusable optional output is not itself a stage blocker.
+- Triggered fresh SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; main independently dispositions every row. Non-critical findings are parked.
+- Handoff reports ordinary `Outcome` or qualification-only `Development-Stage: development | MVP | RC<n> | stable`; `Stable Candidate: RC<n>` appears only inside qualification.
 
 ## Review And Evidence
 

@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "establish-practice-owner-agents-planning-r1",
+    "kind": "candidate",
+    "sourceHashes": {
+      "global/AGENTS.md": "4fcc32a5dde87cd2b086fb41c15f0755590051458d9bbc8887b97ce15217c446",
+      "global/principles-of-work.md": "28c85dcf2ef673fdb3a90b8ecf920e93a69bc57ba77b99bdfb94b33ebad592c8",
+      "profiles/core.json": "c1bf6785a71fd1b3ed5c9e19cabbc820e91f987a5af57fdd133dd6b361e20389",
+      "profiles/all.json": "6b80cfbca998655b22a243739bd16b5b6c4073b8a1eee9949f8973ae42b00293",
+      "tools/proofs/practice-owner-routing.ts": "e7d84f42618c9e0a2c050dd36fc7ab9308a3912f84c8db7ff9fd56d6d53cabe9",
+      "openspec/changes/establish-practice-owner-agents/evidence/task-1-2-baseline-inventory-r1.json": "b5a3d7835a9557bf4e8d17c8fcf1fcdb762e30331dca38ef4fc393b9917e6f43"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fd02e775affezYTxyf7vAIfhW7",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--auto",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "poa-candidate-unavailable-owner",
+      "The required practice owner is missing from this runtime. Do not invent a substitute owner. Report unknown and the smallest fallback. Do not modify files."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787508701414,\"sessionID\":\"ses_fd02e775affezYTxyf7vAIfhW7\",\"part\":{\"id\":\"prt_02fd238ca001QKqH7wpeAB6jJG\",\"messageID\":\"msg_02fd1966c0016Z1TrU46VygzpO\",\"sessionID\":\"ses_fd02e775affezYTxyf7vAIfhW7\",\"snapshot\":\"88ef3e03037a648be4ea8d8548e6aa3d98e403ee\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787508705757,\"sessionID\":\"ses_fd02e775affezYTxyf7vAIfhW7\",\"part\":{\"id\":\"prt_02fd247e9001fltGxMBon36Ka1\",\"messageID\":\"msg_02fd1966c0016Z1TrU46VygzpO\",\"sessionID\":\"ses_fd02e775affezYTxyf7vAIfhW7\",\"type\":\"text\",\"text\":\"Practice owner evidence: `unknown` because the required owner is unavailable. No substitute was used.\\n\\nSmallest fallback: narrow any claim to existing evidence and block only the affected action if owner evidence is required for a non-deferrable safety boundary.\\n\\nNo files modified.\",\"time\":{\"start\":1787508705257,\"end\":1787508705752},\"metadata\":{\"openai\":{\"itemId\":\"msg_03cc0778e1e0a186016a8b37e2055c87d2a470804c8652c775\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787508707106,\"sessionID\":\"ses_fd02e775affezYTxyf7vAIfhW7\",\"part\":{\"id\":\"prt_02fd24e7b001OXkx7zogBvke20\",\"reason\":\"stop\",\"snapshot\":\"4234ddc9b3c1fb7ee0c66f728a7bfa223e450977\",\"messageID\":\"msg_02fd1966c0016Z1TrU46VygzpO\",\"sessionID\":\"ses_fd02e775affezYTxyf7vAIfhW7\",\"type\":\"step-finish\",\"tokens\":{\"total\":17851,\"input\":16080,\"output\":59,\"reasoning\":176,\"cache\":{\"write\":0,\"read\":1536}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: allow",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "Practice owner evidence: `unknown` because the required owner is unavailable. No substitute was used.\n\nSmallest fallback: narrow any claim to existing evidence and block only the affected action if owner evidence is required for a non-deferrable safety boundary.\n\nNo files modified.",
+    "elapsedMs": 60232,
+    "eventCount": 3,
+    "launchedOwners": [],
+    "providerCalls": 1,
+    "sessionIds": [
+      "ses_fd02e775affezYTxyf7vAIfhW7"
+    ],
+    "tokens": [
+      {
+        "total": 17851,
+        "input": 16080,
+        "output": 59,
+        "reasoning": 176,
+        "cache": {
+          "write": 0,
+          "read": 1536
+        }
+      }
+    ],
+    "toolCalls": []
+  },
+  "input": {
+    "prompt": "The required practice owner is missing from this runtime. Do not invent a substitute owner. Report unknown and the smallest fallback. Do not modify files.",
+    "scenario": "unavailable-owner"
+  },
+  "oracles": {
+    "cleanupComplete": true,
+    "fixtureStable": true,
+    "launchedOwners": []
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "99b973bf317ab9d559a75fbfe85546e8f873db984806a05e7b507545c0ab189b",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    },
+    "before": {
+      "task.md": "99b973bf317ab9d559a75fbfe85546e8f873db984806a05e7b507545c0ab189b",
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/mixed.ts": "7ebb8094be4e0d3d2c42054f288f72cd0d077546fd860b941a86d098f61f8fed",
+      "unrecognized.tmp": null
+    }
+  }
+}

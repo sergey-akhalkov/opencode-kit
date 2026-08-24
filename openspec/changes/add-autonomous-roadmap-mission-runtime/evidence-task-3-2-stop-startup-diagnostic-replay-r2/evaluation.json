@@ -1,0 +1,14 @@
+{
+  "candidateId": "task-3-2-stop-startup-diagnostic-r2",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "exactOutcomeCaptured": true,
+    "isolatedConfigLoaded": true,
+    "noProviderCalls": true
+  },
+  "liveCalls": 0,
+  "proof": false,
+  "schemaVersion": 1,
+  "status": "complete"
+}

@@ -28,6 +28,7 @@ const DISPOSITIONS = [
   "blocked",
   "complete",
   "paused",
+  "paused-unknown",
   "ready",
   "running",
 ] as const;
@@ -103,6 +104,16 @@ export type WriterLease = {
   pid: number;
   schemaVersion: 1;
   token: string;
+};
+
+export type MissionStopIntent = {
+  controllerPtyRef: string | null;
+  definitionDigest: string;
+  missionId: string;
+  requestedAt: string;
+  rootSessionRef: string | null;
+  schemaVersion: 1;
+  source: "signal" | "slash";
 };
 
 type Chain = {
@@ -288,8 +299,8 @@ export function parseTransitionDescriptor(
   if (kind === "session-launch" && descriptor.activeOperation?.kind !== "session") {
     throw new RoadmapMissionError("session-launch transition requires activeOperation.kind=session", 2);
   }
-  if (kind === "terminal-stop" && !["blocked", "complete", "paused"].includes(disposition)) {
-    throw new RoadmapMissionError("terminal-stop disposition must be blocked, complete, or paused", 2);
+  if (kind === "terminal-stop" && !["blocked", "complete", "paused", "paused-unknown"].includes(disposition)) {
+    throw new RoadmapMissionError("terminal-stop disposition must be blocked, complete, paused, or paused-unknown", 2);
   }
   return descriptor;
 }
@@ -360,6 +371,84 @@ function writeProjectionAtomic(directory: string, projection: MissionStateProjec
   } finally {
     if (fs.existsSync(temporary)) fs.rmSync(temporary, { force: true });
   }
+}
+
+function parseStopIntent(value: unknown, definition: RoadmapMissionDefinition): MissionStopIntent {
+  const input = record(value);
+  if (input == null) throw new RoadmapMissionError("mission stop intent must be an object", 2);
+  exactKeys(input, [
+    "schemaVersion",
+    "missionId",
+    "definitionDigest",
+    "requestedAt",
+    "source",
+    "rootSessionRef",
+    "controllerPtyRef",
+  ], "mission stop intent");
+  if (input.schemaVersion !== 1 || input.missionId !== definition.missionId) {
+    throw new RoadmapMissionError("mission stop intent identity is invalid", 2);
+  }
+  const definitionDigest = requiredString(input.definitionDigest, "mission stop intent definitionDigest", 64);
+  if (definitionDigest !== missionDefinitionDigest(definition)) {
+    throw new RoadmapMissionError("mission stop intent definition digest differs", 2);
+  }
+  if (input.source !== "slash" && input.source !== "signal") {
+    throw new RoadmapMissionError("mission stop intent source is unsupported", 2);
+  }
+  return {
+    controllerPtyRef: nullableString(input.controllerPtyRef, "mission stop intent controllerPtyRef", 200),
+    definitionDigest,
+    missionId: definition.missionId,
+    requestedAt: parseTimestamp(input.requestedAt, "mission stop intent requestedAt"),
+    rootSessionRef: nullableString(input.rootSessionRef, "mission stop intent rootSessionRef", 200),
+    schemaVersion: 1,
+    source: input.source,
+  };
+}
+
+export function readMissionStopIntent(
+  root: string,
+  definition: RoadmapMissionDefinition,
+): MissionStopIntent | null {
+  const file = path.join(stateRoot(root, definition.missionId), "stop-intent.json");
+  if (!fs.existsSync(file)) return null;
+  if (!regularFile(file)) throw new RoadmapMissionError("mission stop intent is not a regular non-symlink file", 2);
+  try {
+    return parseStopIntent(JSON.parse(fs.readFileSync(file, "utf8")), definition);
+  } catch (error) {
+    if (error instanceof RoadmapMissionError) throw error;
+    throw new RoadmapMissionError("mission stop intent is unreadable", 2, { cause: error });
+  }
+}
+
+export function recordMissionStopIntent(
+  root: string,
+  definition: RoadmapMissionDefinition,
+  input: Pick<MissionStopIntent, "controllerPtyRef" | "rootSessionRef" | "source"> & { requestedAt?: string },
+): MissionStopIntent {
+  const directory = stateRoot(root, definition.missionId);
+  ensureDirectory(root, directory);
+  const existing = readMissionStopIntent(root, definition);
+  if (existing != null) return existing;
+  const file = path.join(directory, "stop-intent.json");
+  const intent = parseStopIntent({
+    controllerPtyRef: input.controllerPtyRef,
+    definitionDigest: missionDefinitionDigest(definition),
+    missionId: definition.missionId,
+    requestedAt: input.requestedAt ?? new Date().toISOString(),
+    rootSessionRef: input.rootSessionRef,
+    schemaVersion: 1,
+    source: input.source,
+  }, definition);
+  writeExclusiveDurable(file, stableJson(intent));
+  return intent;
+}
+
+export function clearMissionStopIntent(root: string, definition: RoadmapMissionDefinition): void {
+  const file = path.join(stateRoot(root, definition.missionId), "stop-intent.json");
+  if (!fs.existsSync(file)) return;
+  readMissionStopIntent(root, definition);
+  fs.unlinkSync(file);
 }
 
 function pidStatus(pid: number): "active" | "stale" | "unknown" {
@@ -817,6 +906,27 @@ export function readMissionStateProjection(
   if (chain.records.length === 0 && status === "missing") return null;
   if (status !== "current") throw new RoadmapMissionError("state projection is not current", 1);
   return chain.projection;
+}
+
+export function recordMissionUnknownPause(
+  root: string,
+  definition: RoadmapMissionDefinition,
+): MissionTransitionRecord | null {
+  const current = readMissionStateProjection(root, definition);
+  if (current == null || current.disposition === "paused-unknown") return null;
+  return withMissionWriterLease(root, definition, new Date().toISOString(), (lease) => appendTransition(root, definition, {
+    activeOperation: current.activeOperation,
+    checkpoint: current.checkpoint,
+    createdAt: new Date().toISOString(),
+    cursor: current.cursor,
+    disposition: "paused-unknown",
+    evidenceRefs: current.evidenceRefs,
+    identities: current.identities,
+    kind: "pause",
+    recovery: current.recovery,
+    schemaVersion: 1,
+    sliceId: current.sliceId,
+  }, lease));
 }
 
 export function reconcileMissionState(

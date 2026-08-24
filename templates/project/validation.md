@@ -20,6 +20,6 @@ Record project-specific commands here. Keep the Universal Development Loop and s
 - A complete Purpose/Command table for Focused test, Full test, Typecheck, Lint, and Build is a documented equivalent validation adapter source to concrete `opencode-dev-kit/adapter.json` validation entries. Adapter JSON may record reasoned non-applicability as the string `N/A - <nonempty reason>`.
 - Unattended mission execution separately requires a complete `opencode-dev-kit/adapter.json` `unattended.validationArgv` array or an explicitly selected valid mission definition. Do not translate this table into a shell string or guess a package manager.
 - Entries left as `unknown`, blank, bare `N/A`, or other unresolved placeholders must be resolved or explicitly recorded as non-applicable with residual risk.
-- Applicable unresolved or skipped validation leaves `Development-Stage: MVP` with the exact main-owned validation gap and blocks RC.
+- Inside qualification, applicable unresolved or skipped validation leaves `Development-Stage: MVP` with the exact main-owned validation gap and blocks RC.
 - If a command cannot run locally, report the skipped command, reason, and risk.
 - Mutation-capable validation, generator, or formatter commands remain open under Universal writer attempt closure until terminal report, adapter-proven terminal cessation, or isolated/revoked write authority. Prefer isolated workspaces for mutation-capable validation; mutation invalidates qualification evidence but does not close a still-live mutator.

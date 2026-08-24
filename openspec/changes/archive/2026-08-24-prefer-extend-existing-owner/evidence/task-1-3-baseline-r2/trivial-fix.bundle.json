@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "id": "prefer-extend-existing-owner-planning-r1",
+    "kind": "baseline",
+    "sourceHashes": {
+      "global/AGENTS.md": "f429752b2f50341fe24208fe2a55b07263b0231f0751b735530900867cce4389",
+      "global/commands/reuse-inventory.md": null,
+      "global/skills/reuse-discovery/SKILL.md": "91237f788a51dbde2061113a64545a69bc27c838f2bb6caf486d8b85e66e75ed",
+      "global/bin/reuse-registry.ts": null,
+      "README.md": "5a5c21bfcf5ab80bb2db49dafd41b8f8412835b21524c45eb03f0ed845a80808",
+      "package.json": "458caad12fb51a123309883de8e473db3e3305143673a1d2a4b6c955f6163163",
+      "tools/proofs/reuse-discovery.ts": "af7be296e556b6b242774be5913239e95c2c7662dcfb2092cfdc9795b3649de8"
+    }
+  },
+  "cleanup": {
+    "error": null,
+    "removed": true,
+    "sessionDeleteStatuses": [
+      {
+        "sessionID": "ses_fcc5f4d81ffe4Bf7fON75BOMvo",
+        "status": 0
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "opencode",
+      "run",
+      "--pure",
+      "--agent",
+      "build",
+      "--model",
+      "openai/gpt-5.6-sol",
+      "--variant",
+      "xhigh",
+      "--format",
+      "json",
+      "--dir",
+      "<proof-root>\\workspace",
+      "--title",
+      "reuse-baseline-trivial-fix",
+      "Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push."
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787572579966,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a0ee77001okbZUmenJDIZ72\",\"messageID\":\"msg_033a0b510001OeA6bhkWZ5ipdj\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"snapshot\":\"db53f22148a66c91707c435f5bb953645a9e2998\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787572583304,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a0f206001jTC9l5bwuYFGcd\",\"messageID\":\"msg_033a0b510001OeA6bhkWZ5ipdj\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"type\":\"text\",\"text\":\"I’ll inspect `task.md` and the greeting owner to identify the exact one-line correction and closest existing proof, without modifying the workspace.\",\"time\":{\"start\":1787572580870,\"end\":1787572583103},\"metadata\":{\"openai\":{\"itemId\":\"msg_0b3866cc213c1b65016a8c3165173c87d29c2a0ae0988ff506\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572583678,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_nUeXmAM4vYCLJ3T6a4F5uY4y\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/task.md\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\",\"metadata\":{\"count\":1,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787572583140,\"end\":1787572583554}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0b3866cc213c1b65016a8c31674c6887d282fdcf2a245a36eb\"}},\"id\":\"prt_033a0fad0001X0XGxmiJ1zo4r4\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a0b510001OeA6bhkWZ5ipdj\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572583678,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_fZYuGiTNfhZ3Fb4s7KQqyg26\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/*test*.*\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787572583175,\"end\":1787572583570}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0b3866cc213c1b65016a8c31674c8087d2a8860a1ac2096d84\"}},\"id\":\"prt_033a0faf60010hD4j6L7oV9afZ\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a0b510001OeA6bhkWZ5ipdj\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572583678,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"grep\",\"callID\":\"call_7EaMYZBzup0D17FoBDoqwfbX\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"greet|greeting|hello|Hello\",\"path\":\".\",\"include\":\"*.{md,js,jsx,ts,tsx,py,rs,go,java,cs,cpp,c,h}\"},\"output\":\"Found 3 matches\\n<proof-root>\\\\workspace\\\\task.md:\\n  Line 1: Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\\n\\n\\n<proof-root>\\\\workspace\\\\src\\\\greeting.ts:\\n  Line 1: export function greeting(name: string): string {\\n\\n  Line 2:   return `Hello, ${name}.`;\\n\",\"metadata\":{\"matches\":3,\"truncated\":false},\"title\":\"greet|greeting|hello|Hello\",\"time\":{\"start\":1787572583155,\"end\":1787572583595}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0b3866cc213c1b65016a8c31674c7887d29869cf6a588e4866\"}},\"id\":\"prt_033a0fae7001tFJA1FtkCNjQep\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a0b510001OeA6bhkWZ5ipdj\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787572585002,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a1016e001GcNYHeSCGBnGKu\",\"reason\":\"tool-calls\",\"snapshot\":\"126bed52cf672b60288e33dd1fa796aa8e55e7dc\",\"messageID\":\"msg_033a0b510001OeA6bhkWZ5ipdj\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"type\":\"step-finish\",\"tokens\":{\"total\":16158,\"input\":15986,\"output\":145,\"reasoning\":27,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787572588144,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a10e6b001jxw4mJmU54QbrG\",\"messageID\":\"msg_033a1048b001ZNf4o5lwkAuLJZ\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"snapshot\":\"126bed52cf672b60288e33dd1fa796aa8e55e7dc\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572593020,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_2xQANAmV6VUzlRhWm82bZH3M\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"*\"},\"output\":\"<proof-root>\\\\workspace\\\\task.md\\n<proof-root>\\\\workspace\\\\src\\\\greeting.ts\\n<proof-root>\\\\workspace\\\\.serena\\\\project.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\project.local.yml\\n<proof-root>\\\\workspace\\\\.serena\\\\.gitignore\\n<proof-root>\\\\workspace\\\\opencode.json\\n<proof-root>\\\\workspace\\\\projects\\\\beta\\\\src\\\\text.ts\\n<proof-root>\\\\workspace\\\\projects\\\\beta\\\\package.json\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\src\\\\jsonc.ts\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\package.json\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\proofs\\\\jsonc.md\",\"metadata\":{\"count\":11,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787572592905,\"end\":1787572592997}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d8b651489bbcd50016a8c317115f487d29dd94f7d34bfe097\"}},\"id\":\"prt_033a12101001ELt3TyFM59XIU7\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a1048b001ZNf4o5lwkAuLJZ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572593020,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_8CqfVRGJDVy2wkqY8nkocVmi\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/package.json\"},\"output\":\"<proof-root>\\\\workspace\\\\projects\\\\beta\\\\package.json\\n<proof-root>\\\\workspace\\\\projects\\\\alpha\\\\package.json\",\"metadata\":{\"count\":2,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787572592916,\"end\":1787572593001}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d8b651489bbcd50016a8c317115fc87d280f8f86ff7d8ffb2\"}},\"id\":\"prt_033a1210b001CHVHMUv3sRV5EV\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a1048b001ZNf4o5lwkAuLJZ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572593045,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"glob\",\"callID\":\"call_8gPUBQrmiwk3kbOjaREkceCO\",\"state\":{\"status\":\"completed\",\"input\":{\"pattern\":\"**/{README.md,tsconfig.json,vitest.config.*,jest.config.*,bun.lockb,pnpm-lock.yaml,yarn.lock,package-lock.json}\"},\"output\":\"No files found\",\"metadata\":{\"count\":0,\"truncated\":false},\"title\":\"\",\"time\":{\"start\":1787572592928,\"end\":1787572593029}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d8b651489bbcd50016a8c3171160487d2a17b0d3d29538bf8\"}},\"id\":\"prt_033a12117001By700LYLiwQgkg\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a1048b001ZNf4o5lwkAuLJZ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572593053,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_5DoxCsr4IoGdAVEOELxdfdxH\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\task.md\"},\"output\":\"<path><proof-root>\\\\workspace\\\\task.md</path>\\n<type>file</type>\\n<content>\\n1: Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\task.md\",\"text\":\"Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"task.md\",\"time\":{\"start\":1787572592884,\"end\":1787572593048}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d8b651489bbcd50016a8c317115d887d2ba21b4cd937e0b24\"}},\"id\":\"prt_033a120e9001Kv32fid7jh6Agl\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a1048b001ZNf4o5lwkAuLJZ\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787572593075,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_uhohNWkNfBNT4hzvrUr6HhCM\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\"},\"output\":\"<path><proof-root>\\\\workspace\\\\src\\\\greeting.ts</path>\\n<type>file</type>\\n<content>\\n1: export function greeting(name: string): string {\\n2:   return `Hello, ${name}.`;\\n3: }\\n\\n(End of file - total 3 lines)\\n</content>\",\"metadata\":{\"preview\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\workspace\\\\src\\\\greeting.ts\",\"text\":\"export function greeting(name: string): string {\\n  return `Hello, ${name}.`;\\n}\",\"lineStart\":1,\"lineEnd\":3,\"totalLines\":3,\"truncated\":false}},\"title\":\"src\\\\greeting.ts\",\"time\":{\"start\":1787572592893,\"end\":1787572593070}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d8b651489bbcd50016a8c317115ec87d2914a7c6d3ba8f7a7\"}},\"id\":\"prt_033a120f8001y85sojX2O6wx9H\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"messageID\":\"msg_033a1048b001ZNf4o5lwkAuLJZ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787572593391,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a122d4001nx3a3AWs9MCP0M\",\"reason\":\"tool-calls\",\"snapshot\":\"126bed52cf672b60288e33dd1fa796aa8e55e7dc\",\"messageID\":\"msg_033a1048b001ZNf4o5lwkAuLJZ\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"type\":\"step-finish\",\"tokens\":{\"total\":16703,\"input\":575,\"output\":231,\"reasoning\":25,\"cache\":{\"write\":0,\"read\":15872}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787572596389,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a12e9b001FcalPG6I3vv5fr\",\"messageID\":\"msg_033a1244c001iWNOVgRgF2KrvZ\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"snapshot\":\"126bed52cf672b60288e33dd1fa796aa8e55e7dc\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787572602870,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a1428500189y2RDUxfm6QQL\",\"messageID\":\"msg_033a1244c001iWNOVgRgF2KrvZ\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"type\":\"text\",\"text\":\"- **Smallest correction:** In `src/greeting.ts:2`, change the terminal `.` to `!`: ``return `Hello, ${name}!`;``\\n- **Nearest proof:** Directly invoke `greeting(\\\"Ada\\\")` and verify the exact result is `Hello, Ada!`.\\n- No files modified.\",\"time\":{\"start\":1787572601477,\"end\":1787572602868},\"metadata\":{\"openai\":{\"itemId\":\"msg_0c00d949a68219db016a8c3179b3cc87d282f82e3c2ef9fc2c\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787572604333,\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"part\":{\"id\":\"prt_033a14d960012rbhxk2nyeWEze\",\"reason\":\"stop\",\"snapshot\":\"126bed52cf672b60288e33dd1fa796aa8e55e7dc\",\"messageID\":\"msg_033a1244c001iWNOVgRgF2KrvZ\",\"sessionID\":\"ses_fcc5f4d81ffe4Bf7fON75BOMvo\",\"type\":\"step-finish\",\"tokens\":{\"total\":18106,\"input\":1876,\"output\":73,\"reasoning\":285,\"cache\":{\"write\":0,\"read\":15872}},\"cost\":0}}\r\n"
+  },
+  "environment": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "profile": "quality-independent",
+    "route": "openai/gpt-5.6-sol/xhigh",
+    "toolPolicy": [
+      "bash: deny",
+      "edit: deny",
+      "external_directory: deny",
+      "glob: allow",
+      "grep: allow",
+      "question: deny",
+      "read: allow",
+      "skill: allow",
+      "task: deny",
+      "webfetch: deny"
+    ],
+    "variant": "xhigh"
+  },
+  "facts": {
+    "assistantText": "I’ll inspect `task.md` and the greeting owner to identify the exact one-line correction and closest existing proof, without modifying the workspace.- **Smallest correction:** In `src/greeting.ts:2`, change the terminal `.` to `!`: ``return `Hello, ${name}!`;``\n- **Nearest proof:** Directly invoke `greeting(\"Ada\")` and verify the exact result is `Hello, Ada!`.\n- No files modified.",
+    "elapsedMs": 42507,
+    "eventCount": 16,
+    "sessionIds": [
+      "ses_fcc5f4d81ffe4Bf7fON75BOMvo"
+    ],
+    "tokens": [
+      {
+        "total": 16158,
+        "input": 15986,
+        "output": 145,
+        "reasoning": 27,
+        "cache": {
+          "write": 0,
+          "read": 0
+        }
+      },
+      {
+        "total": 16703,
+        "input": 575,
+        "output": 231,
+        "reasoning": 25,
+        "cache": {
+          "write": 0,
+          "read": 15872
+        }
+      },
+      {
+        "total": 18106,
+        "input": 1876,
+        "output": 73,
+        "reasoning": 285,
+        "cache": {
+          "write": 0,
+          "read": 15872
+        }
+      }
+    ],
+    "toolCalls": [
+      {
+        "input": {
+          "pattern": "**/task.md"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/*test*.*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "greet|greeting|hello|Hello",
+          "path": ".",
+          "include": "*.{md,js,jsx,ts,tsx,py,rs,go,java,cs,cpp,c,h}"
+        },
+        "name": "grep",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "*"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/package.json"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "pattern": "**/{README.md,tsconfig.json,vitest.config.*,jest.config.*,bun.lockb,pnpm-lock.yaml,yarn.lock,package-lock.json}"
+        },
+        "name": "glob",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\task.md"
+        },
+        "name": "read",
+        "status": "completed"
+      },
+      {
+        "input": {
+          "filePath": "<proof-root>\\workspace\\src\\greeting.ts"
+        },
+        "name": "read",
+        "status": "completed"
+      }
+    ]
+  },
+  "input": {
+    "prompt": "Fix planning only. The existing greeting function has one owner local punctuation defect described in task.md. Do not modify files. State the smallest correction and nearest proof. Do not perform cross-project discovery, install dependencies, use remote tools, clone, fetch, pull, commit, or push.",
+    "scenario": "trivial-fix"
+  },
+  "sideEffects": {
+    "after": {
+      "task.md": "f59bc766ad59a1d38662acd93688dff450d6d3fc063ebc3014ed3debf785e974",
+      "src/jsonc.ts": null,
+      "src/loader.ts": null,
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/status.ts": null,
+      "projects/alpha/package.json": "a660f0a2995647f6d717801d12c618dc2d6b9c86c1e7ad6c498f589343e0b687",
+      "projects/alpha/src/jsonc.ts": "d181e463edeac55e399137d6ff128b93d6f27e98ac7b4e81516db9b965c2e1c0",
+      "projects/alpha/proofs/jsonc.md": "4bc10860da79365746916a544a7b190afe36ef3873461dd5311e11a59aab6fe7",
+      "projects/beta/package.json": "60dbdec28a2abda764748655f887c47dfea39cbf6d7f526cdd62468b1d784e6f",
+      "projects/beta/src/text.ts": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408"
+    },
+    "before": {
+      "task.md": "f59bc766ad59a1d38662acd93688dff450d6d3fc063ebc3014ed3debf785e974",
+      "src/jsonc.ts": null,
+      "src/loader.ts": null,
+      "src/greeting.ts": "9e320308caab7489e5feb6fb3cfd350da1378c87cf5ff8dc28d87fa892629756",
+      "src/status.ts": null,
+      "projects/alpha/package.json": "a660f0a2995647f6d717801d12c618dc2d6b9c86c1e7ad6c498f589343e0b687",
+      "projects/alpha/src/jsonc.ts": "d181e463edeac55e399137d6ff128b93d6f27e98ac7b4e81516db9b965c2e1c0",
+      "projects/alpha/proofs/jsonc.md": "4bc10860da79365746916a544a7b190afe36ef3873461dd5311e11a59aab6fe7",
+      "projects/beta/package.json": "60dbdec28a2abda764748655f887c47dfea39cbf6d7f526cdd62468b1d784e6f",
+      "projects/beta/src/text.ts": "c329ebc3abb49d248bc6f1e01ee85726bc2534da0bdf0ac25e9ad6657a6cc408"
+    }
+  }
+}

@@ -5,11 +5,18 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
+import {
+  missionDefinitionDigest,
+  parseMissionDefinition,
+  parseMissionExecutorResult,
+} from "../../global/bin/roadmap-mission/contracts.ts";
 import { MISSION_SOURCE_PATHS } from "../../global/bin/roadmap-mission/preflight.ts";
+import { inspectRuntime } from "../../global/bin/roadmap-mission/session-executor.ts";
 
 type Options = {
   candidateId: string;
   evidenceRoot: string;
+  help: boolean;
   mode: "preflight";
 };
 
@@ -32,6 +39,14 @@ const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".
 const productionEntrypoint = path.join(sourceRoot, "global", "bin", "roadmap-mission.ts");
 const productionSourcePaths = [
   "global/bin/openspec-operation-gate.ts",
+  "global/bin/openspec-change/automation-dividend.ts",
+  "global/bin/openspec-change/claims.ts",
+  "global/bin/openspec-change/evidence.ts",
+  "global/bin/openspec-change/gate.ts",
+  "global/bin/openspec-change/inventory.ts",
+  "global/bin/openspec-change/manifest.ts",
+  "global/bin/openspec-change/ownership.ts",
+  "global/bin/openspec-change/state.ts",
   ...MISSION_SOURCE_PATHS.map((relative) => `global/${relative}`),
 ] as const;
 
@@ -44,6 +59,10 @@ function stableValue(value: unknown): unknown {
 
 function stableJson(value: unknown): string {
   return `${JSON.stringify(stableValue(value), null, 2)}\n`;
+}
+
+function usage(): string {
+  return "Usage: node tools/proofs/roadmap-mission.ts --mode preflight --candidate-id <id> --evidence-root <absolute-new-path>";
 }
 
 function digestBytes(value: string | Buffer): string {
@@ -59,6 +78,9 @@ function requiredValue(args: string[], index: number, option: string): string {
 }
 
 function parseArgs(args: string[]): Options {
+  if (args.length === 1 && (args[0] === "--help" || args[0] === "-h")) {
+    return { candidateId: "help", evidenceRoot: sourceRoot, help: true, mode: "preflight" };
+  }
   let mode = "";
   let evidenceRoot = "";
   let candidateId = "";
@@ -80,7 +102,7 @@ function parseArgs(args: string[]): Options {
   if (mode !== "preflight") throw new Error("--mode must be preflight");
   if (!path.isAbsolute(evidenceRoot)) throw new Error("--evidence-root must be absolute");
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(candidateId)) throw new Error("--candidate-id must be a safe identifier");
-  return { candidateId, evidenceRoot: path.resolve(evidenceRoot), mode };
+  return { candidateId, evidenceRoot: path.resolve(evidenceRoot), help: false, mode };
 }
 
 function writeNew(file: string, content: string): void {
@@ -88,10 +110,41 @@ function writeNew(file: string, content: string): void {
   fs.writeFileSync(file, content, { encoding: "utf8", flag: "wx" });
 }
 
-type FixtureKind = "ambiguous" | "dirty" | "invalid" | "invalid-checkpoint" | "missing-adapter" | "overlay" | "protected" | "valid";
+type FixtureKind = "ambiguous" | "dirty" | "invalid" | "invalid-checkpoint" | "live-lease" | "missing-active" | "missing-adapter" | "overlay" | "protected" | "queued" | "queued-dirty" | "too-many" | "unreadable-lease" | "valid";
 
 function fixtureManifest(kind: FixtureKind): Record<string, unknown> {
   const protectedEffect = kind === "protected";
+  const queued = kind === "queued" || kind === "queued-dirty" || kind === "missing-active";
+  const slices = kind === "too-many"
+    ? Array.from({ length: 101 }, (_, index) => ({
+        id: `slice-${index}`,
+        changeId: `change-${index}`,
+        operation: "continue",
+        dependsOn: index === 0 ? [] : [`slice-${index - 1}`],
+        outcome: `Complete bounded local change ${index}.`,
+        effectClasses: ["local-read", "local-write"],
+        ownedPaths: [`src/${index}.ts`, `openspec/changes/change-${index}`],
+      }))
+    : [
+        {
+          id: "slice-a",
+          changeId: "change-a",
+          operation: "continue",
+          dependsOn: kind === "invalid" ? ["slice-b"] : [],
+          outcome: "Complete the first bounded local change.",
+          effectClasses: protectedEffect ? ["hardware", "local-read"] : ["local-read", "local-write"],
+          ownedPaths: ["src/a.ts", "openspec/changes/change-a"],
+        },
+        {
+          id: "slice-b",
+          changeId: "change-b",
+          operation: queued ? "continue" : "propose",
+          dependsOn: ["slice-a"],
+          outcome: "Create and complete the dependent bounded local change.",
+          effectClasses: ["local-read", "local-write"],
+          ownedPaths: ["src/b.ts", "openspec/changes/change-b"],
+        },
+      ];
   return {
     schemaVersion: 1,
     missionId: kind === "invalid" ? "invalid-forward-dependency" : `generic-${kind}`,
@@ -111,27 +164,101 @@ function fixtureManifest(kind: FixtureKind): Record<string, unknown> {
       onOwnerRequired: true,
       onUnknown: true,
     },
-    slices: [
-      {
-        id: "slice-a",
-        changeId: "change-a",
-        operation: "continue",
-        dependsOn: kind === "invalid" ? ["slice-b"] : [],
-        outcome: "Complete the first bounded local change.",
-        effectClasses: protectedEffect ? ["hardware", "local-read"] : ["local-read", "local-write"],
-        ownedPaths: ["src/a.ts", "openspec/changes/change-a"],
-      },
-      {
-        id: "slice-b",
-        changeId: "change-b",
-        operation: "propose",
-        dependsOn: ["slice-a"],
-        outcome: "Create and complete the dependent bounded local change.",
-        effectClasses: ["local-read", "local-write"],
-        ownedPaths: ["src/b.ts", "openspec/changes/change-b"],
-      },
-    ],
+    slices,
   };
+}
+
+function executorContractEvidence(): Record<string, unknown> {
+  const definition = parseMissionDefinition(fixtureManifest("valid"));
+  const expected = {
+    attempt: 1,
+    definitionDigest: missionDefinitionDigest(definition),
+    missionId: definition.missionId,
+    slice: definition.slices[0],
+  };
+  const valid = {
+    attempt: 1,
+    changeId: "change-a",
+    cleanup: "complete",
+    definitionDigest: expected.definitionDigest,
+    disposition: "completed",
+    errorClass: "none",
+    errorMessage: null,
+    evidenceRefs: ["evidence/executor/apply.json"],
+    guardState: "passed",
+    missionId: definition.missionId,
+    phases: [{ command: "opsx-apply", evidenceRef: "evidence/executor/apply.json", status: "completed" }],
+    questionDisposition: "none",
+    rootSessionRef: "session-proof-a",
+    runtimeRef: digestBytes("runtime-proof"),
+    schemaVersion: 1,
+    sliceId: "slice-a",
+    tool: "roadmap-mission-session-executor",
+    writerClosure: "terminal",
+  };
+  const parsed = parseMissionExecutorResult(valid, expected);
+  const failures: Record<string, string> = {};
+  for (const [name, value] of [
+    ["malformed", { ...valid, schemaVersion: 2 }],
+    ["correlation", { ...valid, missionId: "other-mission" }],
+  ] as const) {
+    try {
+      parseMissionExecutorResult(value, expected);
+      throw new Error(`${name} executor result unexpectedly passed`);
+    } catch (error) {
+      failures[name] = error instanceof Error ? error.message : String(error);
+    }
+  }
+  return {
+    correlationFailure: failures.correlation,
+    malformedFailure: failures.malformed,
+    parsedDisposition: parsed.disposition,
+    parsedRuntimeRef: parsed.runtimeRef,
+  };
+}
+
+async function runtimeOwnershipEvidence(): Promise<Record<string, unknown>> {
+  const root = sourceRoot;
+  const base = {
+    command: { list: async () => ({ data: [{ name: "opsx-apply" }, { name: "opsx-propose" }] }) },
+    path: { get: async () => ({ data: { directory: root } }) },
+  };
+  const execute = async (input: {
+    details?: Record<string, Record<string, unknown>>;
+    detailError?: boolean;
+    questions?: Array<Record<string, unknown>>;
+    sessions?: Array<Record<string, unknown>>;
+    statuses?: Record<string, Record<string, unknown>>;
+  }): Promise<string> => {
+    const client = {
+      ...base,
+      question: { list: async () => ({ data: input.questions ?? [] }) },
+      session: {
+        get: async ({ sessionID }: { sessionID: string }) => input.detailError
+          ? { error: { name: "UnreadableSessionFixture" } }
+          : { data: input.details?.[sessionID] ?? { id: sessionID } },
+        status: async () => ({ data: input.statuses ?? {} }),
+      },
+      v2: { session: { list: async () => ({ data: input.sessions ?? [] }) } },
+    };
+    try {
+      await inspectRuntime(client as Parameters<typeof inspectRuntime>[0], root, ["change-a"], null);
+      return "clear";
+    } catch (error) {
+      return error instanceof Error ? error.message : String(error);
+    }
+  };
+  const busy = await execute({
+    details: { "session-busy": { id: "session-busy", metadata: {} } },
+    sessions: [{ id: "session-busy" }],
+    statuses: { "session-busy": { type: "busy" } },
+  });
+  const pendingQuestion = await execute({ questions: [{ id: "question-pending", sessionID: "session-question" }] });
+  const unreadable = await execute({ detailError: true, sessions: [{ id: "session-unreadable" }] });
+  if (!busy.includes("activeSessions=1") || !pendingQuestion.includes("pendingQuestions=1") || !unreadable.includes("root session detail failed")) {
+    throw new Error(`Runtime ownership preflight did not fail closed: ${stableJson({ busy, pendingQuestion, unreadable })}`);
+  }
+  return { busy, pendingQuestion, unreadable };
 }
 
 function copyFile(source: string, destination: string): void {
@@ -147,6 +274,7 @@ function installGlobalSource(globalSource: string): void {
     copyFile(path.join(sourceRoot, "global", "bin", name), path.join(globalSource, "bin", name));
   }
   copyFile(path.join(sourceRoot, "global", "AGENTS.md"), path.join(globalSource, "AGENTS.md"));
+  copyFile(path.join(sourceRoot, "global", "principles-of-work.md"), path.join(globalSource, "principles-of-work.md"));
   copyFile(
     path.join(sourceRoot, "global", "skills", "change-ready-sdlc", "SKILL.md"),
     path.join(globalSource, "skills", "change-ready-sdlc", "SKILL.md"),
@@ -165,6 +293,7 @@ function installGlobalSource(globalSource: string): void {
   }
   writeNew(path.join(globalSource, "opencode.json"), stableJson({
     $schema: "https://opencode.ai/config.json",
+    instructions: [path.join(globalSource, "principles-of-work.md").replaceAll("\\", "/")],
     permission: "ask",
   }));
   writeNew(path.join(globalSource, "package.json"), stableJson({ private: true, type: "module" }));
@@ -232,7 +361,9 @@ function createProject(root: string, kind: FixtureKind): void {
   writeNew(path.join(root, ".fixture-openspec-state.json"), stableJson({
     changes: kind === "ambiguous"
       ? [{ name: "change-a" }, { name: "other-change" }]
-      : [{ name: "change-a" }],
+      : kind === "queued" || kind === "queued-dirty"
+        ? [{ name: "change-a" }, { name: "change-b" }]
+        : [{ name: "change-a" }],
   }));
   if (kind === "overlay") {
     writeNew(
@@ -243,8 +374,14 @@ function createProject(root: string, kind: FixtureKind): void {
   git(root, ["init"]);
   git(root, ["add", "--", "."]);
   git(root, ["commit", "-m", "fixture"]);
-  if (kind === "dirty") {
-    writeNew(path.join(root, "src", "a.ts"), "export const dirty = true;\n");
+  if (kind === "dirty" || kind === "queued-dirty") {
+    writeNew(path.join(root, "src", kind === "dirty" ? "a.ts" : "b.ts"), "export const dirty = true;\n");
+  }
+  if (kind === "live-lease" || kind === "unreadable-lease") {
+    const lock = path.join(root, ".opencode-dev-kit", "runtime", "roadmap-missions", `generic-${kind}`, "writer.lock");
+    fs.mkdirSync(path.dirname(lock), { recursive: true });
+    if (kind === "live-lease") writeNew(lock, stableJson({ pid: process.pid, proof: "live-owner" }));
+    else fs.mkdirSync(lock);
   }
 }
 
@@ -331,12 +468,15 @@ function scenarioCheck(scenario: ScenarioEvidence, id: string, status: string): 
 }
 
 function assertEvidence(scenarios: Record<FixtureKind, ScenarioEvidence>): void {
-  const { valid, invalid, overlay } = scenarios;
+  const { valid, invalid, overlay, queued } = scenarios;
   if (valid.exitCode !== 0) throw new Error(`Valid preflight failed: ${valid.stderr || valid.stdout}`);
   const parsed = JSON.parse(valid.stdout) as Record<string, unknown>;
   const eligible = parsed.eligibleSlice as Record<string, unknown> | null;
   if (parsed.status !== "eligible" || eligible?.id !== "slice-a") {
     throw new Error(`Valid preflight returned unexpected result: ${valid.stdout}`);
+  }
+  if (queued.exitCode !== 0 || (JSON.parse(queued.stdout) as Record<string, unknown>).status !== "eligible") {
+    throw new Error(`Queued active changes were not accepted: ${queued.stdout || queued.stderr}`);
   }
   if (invalid.exitCode === 0) throw new Error("Invalid forward dependency unexpectedly passed");
   const blocked = JSON.parse(invalid.stderr) as Record<string, unknown>;
@@ -350,9 +490,13 @@ function assertEvidence(scenarios: Record<FixtureKind, ScenarioEvidence>): void 
   const expected: Array<[FixtureKind, string, string]> = [
     ["ambiguous", "project:openspec-state", "blocked"],
     ["dirty", "project:git-state", "blocked"],
+    ["live-lease", "mission:writer-lease", "unknown"],
+    ["missing-active", "project:openspec-state", "blocked"],
     ["missing-adapter", "project:validation-adapter", "blocked"],
     ["overlay", "workflow:project-overlays", "blocked"],
     ["protected", "mission:next-effects", "blocked"],
+    ["queued-dirty", "project:git-state", "blocked"],
+    ["unreadable-lease", "mission:writer-lease", "unknown"],
   ];
   for (const [kind, id, status] of expected) {
     if (scenarios[kind].exitCode === 0 || !scenarioCheck(scenarios[kind], id, status)) {
@@ -361,6 +505,9 @@ function assertEvidence(scenarios: Record<FixtureKind, ScenarioEvidence>): void 
   }
   if (scenarios["invalid-checkpoint"].exitCode === 0 || !scenarios["invalid-checkpoint"].stderr.includes("multi-slice evidence-only")) {
     throw new Error(`Invalid checkpoint unexpectedly passed: ${scenarios["invalid-checkpoint"].stderr}`);
+  }
+  if (scenarios["too-many"].exitCode === 0 || !scenarios["too-many"].stderr.includes("between 1 and 100")) {
+    throw new Error(`Over-bound mission unexpectedly passed: ${scenarios["too-many"].stderr}`);
   }
   for (const scenario of Object.values(scenarios)) {
     if (scenario.beforeDigest !== scenario.afterDigest) {
@@ -396,7 +543,7 @@ function boundedScenarioEvidence(scenario: ScenarioEvidence): Record<string, unk
   };
 }
 
-function run(options: Options): void {
+async function run(options: Options): Promise<void> {
   if (fs.existsSync(options.evidenceRoot)) throw new Error("Evidence root already exists");
   const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "roadmap-mission-proof-"));
   let cleanupError: string | null = null;
@@ -410,9 +557,15 @@ function run(options: Options): void {
       "dirty",
       "invalid",
       "invalid-checkpoint",
+      "live-lease",
+      "missing-active",
       "missing-adapter",
       "overlay",
       "protected",
+      "queued",
+      "queued-dirty",
+      "too-many",
+      "unreadable-lease",
       "valid",
     ];
     const scenarios = Object.fromEntries(kinds.map((kind) => {
@@ -433,6 +586,8 @@ function run(options: Options): void {
         path: relative,
         sha256: digestBytes(fs.readFileSync(path.join(sourceRoot, relative))),
       })),
+      executorContracts: executorContractEvidence(),
+      runtimeOwnership: await runtimeOwnershipEvidence(),
       scenarios: kinds.map((kind) => boundedScenarioEvidence(scenarios[kind])),
       schemaVersion: 1,
     }));
@@ -443,12 +598,21 @@ function run(options: Options): void {
       schemaVersion: 1,
       scenarios: {
         ambiguousActiveChange: "blocked",
+        busySession: "unknown-blocked",
         dirtyOwnedPath: "blocked",
         invalidForwardDependency: "blocked",
         invalidCheckpoint: "blocked",
+        liveWriterLease: "unknown-blocked",
+        missingDeclaredActiveChange: "blocked",
         missingAdapter: "blocked",
         protectedEffect: "blocked",
+        pendingQuestion: "unknown-blocked",
+        queuedActiveChanges: "eligible",
+        queuedDirtyChange: "blocked",
         staleProjectOverlay: "blocked",
+        tooManySlices: "blocked",
+        unreadableWriterLease: "unknown-blocked",
+        unreadableSession: "unknown-blocked",
         valid: "eligible",
       },
       status: "complete",
@@ -474,7 +638,9 @@ function run(options: Options): void {
 }
 
 try {
-  run(parseArgs(process.argv.slice(2)));
+  const options = parseArgs(process.argv.slice(2));
+  if (options.help) console.log(usage());
+  else await run(options);
 } catch (error) {
   console.error(stableJson({
     error: error instanceof Error ? error.message : String(error),

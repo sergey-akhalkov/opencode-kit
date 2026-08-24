@@ -1,0 +1,23 @@
+{
+  "candidateId": "reduce-workflow-ceremony-cert-r2",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "completionMode": "certified",
+  "disposition": "terminal",
+  "guardState": "unknown",
+  "inputRawSha256": "d641cc64482047f9c96992648c5e47a79d85eab7bb4b2917a4dae10f5710e2e2",
+  "liveCalls": 0,
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "blocked",
+  "providerCalls": {
+    "arbiter": 0,
+    "primary": 1
+  },
+  "replaySource": "evidence-task-6-2-certified-r2",
+  "rootSession": "created-and-deleted",
+  "scenario": "continue",
+  "schemaVersion": 1,
+  "status": "blocked",
+  "unlockCondition": null
+}

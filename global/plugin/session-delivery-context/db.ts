@@ -75,19 +75,12 @@ export function selectedRows(
 ): SessionRow[] {
   const orderBy = schema.get("session")?.has("time_created") === true ? "time_created, id" : "id";
   const rawIds = [...requested.rawIds].sort();
-  if (rawIds.length > 0) {
-    const directRows = db
-      .prepare(`select * from session where id in (${rawIds.map(() => "?").join(", ")}) order by ${orderBy}`)
-      .all(...rawIds) as SessionRow[];
-    if (directRows.length > 0) {
-      return directRows;
-    }
+  if (rawIds.length === 0) {
+    return [];
   }
-  const rows = db.prepare(`select * from session order by ${orderBy}`).all() as SessionRow[];
-  return rows.filter((row) => {
-    const rawId = String(row.id);
-    return requested.rawIds.has(rawId) || requested.candidateRefs.has(hashRef("session", rawId));
-  });
+  return db
+    .prepare(`select * from session where id in (${rawIds.map(() => "?").join(", ")}) order by ${orderBy}`)
+    .all(...rawIds) as SessionRow[];
 }
 
 export function resolveRootRow(

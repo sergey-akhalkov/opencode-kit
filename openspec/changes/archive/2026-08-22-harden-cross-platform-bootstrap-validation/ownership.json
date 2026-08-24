@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "changeId": "harden-cross-platform-bootstrap-validation",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-install-init-resilience",
+      "requirements": [
+        "Bootstrap validation is platform-correct"
+      ]
+    }
+  ],
+  "writeRoots": [
+    ".github/workflows"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

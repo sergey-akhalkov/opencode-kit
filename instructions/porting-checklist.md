@@ -34,7 +34,7 @@ Use this checklist when moving project-local skills/agents into a global reusabl
 - Are the trigger and non-goals clear enough to avoid accidental overuse?
 - Can a main session verify whether the artifact succeeded?
 - Is any critical rule buried in the middle of a long prompt?
-- If this artifact can drive implementation changes, does it require main-default production authorship, run-observe-correct Runtime Proof, Candidate Reference freeze with RC assignment, and only then independent fresh-context black-box risk discovery and test-only subagent authoring?
+- If this artifact can drive implementation changes, does it require main-default production authorship and run-observe-correct proof, allow focused main-owned regression only after proof, and reserve fresh test-only SDET for a reachable named critical consequence or explicit requirement?
 - If the artifact documents project validation adapters, does it accept either a concrete adapter file or an equivalent documented Purpose/Command table without prescribing one kit-local identity hash algorithm as universal?
 - Does the artifact ask routine questions instead of continuing with evidence or safe defaults?
-- Does it preserve quality/safety -> autonomy -> speed without copying the global contract?
+- Does it preserve quality, shortest verified path, autonomy, token economy, continuous improvement, and smallest-authorized-layer impediment removal without copying the global contract or weakening safety?

@@ -1,5 +1,8 @@
 import path from "node:path";
 import {
+  BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT,
+  BEHAVIORAL_SUBSTITUTION_SKILL_NAME,
+  BEHAVIORAL_SUBSTITUTION_SKILL_RELATIVE_PATH,
   CHANGE_READY_SDLC_CONTINUATION_TOKENS,
   CHANGE_READY_SDLC_DESCRIPTION_TERMS,
   CHANGE_READY_SDLC_FORBIDDEN_TOKENS,
@@ -149,6 +152,51 @@ function validateChangeReadySdlcSkill(
   }
 }
 
+function validateBehavioralSubstitutionSkill(
+  ctx: ValidationContext,
+  root: string,
+  file: string,
+  text: string,
+): void {
+  const relative = toPosixPath(path.relative(root, file));
+  if (relative !== BEHAVIORAL_SUBSTITUTION_SKILL_RELATIVE_PATH) {
+    ctx.addError(`behavioral-substitution-qualification skill path mismatch: expected ${BEHAVIORAL_SUBSTITUTION_SKILL_RELATIVE_PATH}, got ${relative}`);
+  }
+  const scan = scanOperativeTextOutsideFences(text);
+  if (scan.unsupportedFenceLine != null) {
+    ctx.addError(`behavioral-substitution-qualification contains unsupported non-top-level fenced-code syntax at line ${scan.unsupportedFenceLine}: ${file}`);
+    return;
+  }
+  for (const marker of BEHAVIORAL_SUBSTITUTION_REQUIRED_TEXT) {
+    if (!scan.operativeText.includes(marker)) {
+      ctx.addError(`behavioral-substitution-qualification missing marker '${marker}': ${file}`);
+    }
+  }
+}
+
+const OPENSPEC_STAY_QUIET = /do not use|use only|not for ordinary|without mentioning/i;
+
+export function descriptionSelectsOpenSpecSkill(description: string, request: string): boolean {
+  return /openspec/i.test(request) && description.includes("OpenSpec") && OPENSPEC_STAY_QUIET.test(description);
+}
+
+function validateDiscoveryDescription(
+  ctx: ValidationContext,
+  file: string,
+  skillName: string,
+  description: string,
+): void {
+  if (!skillName.includes("openspec")) {
+    return;
+  }
+  if (!description.includes("OpenSpec")) {
+    ctx.addError(`OpenSpec skill frontmatter description must include 'OpenSpec': ${file}`);
+  }
+  if (!OPENSPEC_STAY_QUIET.test(description)) {
+    ctx.addError(`OpenSpec skill frontmatter description must state a stay-quiet boundary: ${file}`);
+  }
+}
+
 export function validateSkills(ctx: ValidationContext, root: string): string[] {
   const skillsDir = path.join(root, "global", "skills");
   if (!directoryExists(skillsDir)) {
@@ -181,6 +229,8 @@ export function validateSkills(ctx: ValidationContext, root: string): string[] {
       ctx.addError(`Missing skill description: ${file}`);
     } else if (description.length > SKILL_DESCRIPTION_MAX_CHARS) {
       ctx.addError(`Skill description exceeds ${SKILL_DESCRIPTION_MAX_CHARS} chars: ${file}`);
+    } else {
+      validateDiscoveryDescription(ctx, file, folderName, description);
     }
     if (!SKILL_TRIGGER_PATTERN.test(text)) {
       ctx.addError(`Skill must define explicit trigger text with 'Use this skill/helper': ${file}`);
@@ -191,6 +241,9 @@ export function validateSkills(ctx: ValidationContext, root: string): string[] {
 
     if (folderName === CHANGE_READY_SDLC_SKILL_NAME) {
       validateChangeReadySdlcSkill(ctx, root, file, text, description);
+    }
+    if (folderName === BEHAVIORAL_SUBSTITUTION_SKILL_NAME) {
+      validateBehavioralSubstitutionSkill(ctx, root, file, text);
     }
   }
 

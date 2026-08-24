@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "pack": "change-locality",
+  "claimId": "CLC-001",
+  "scenarios": [
+    {
+      "id": "one-off-local-fix",
+      "class": "negative-control",
+      "followUp": false,
+      "ownerExpected": [],
+      "prompt": "Fix src/greet.js so `node src/greet.js Ada` prints `Hello, Ada`. Do not add interfaces, factories, plugins, or launch subagents. Keep the change local."
+    },
+    {
+      "id": "accepted-second-variant",
+      "class": "follow-up",
+      "followUp": true,
+      "ownerExpected": ["openspec-architecture-reviewer"],
+      "prompt": "src/report.js currently prints a text line. A second accepted format, JSON, is required now. Keep both formats working via `node src/report.js --format text` and `node src/report.js --format json`. If a practice owner applies, launch only that owner, then decide. Do not add a plugin framework.",
+      "followUpPrompt": "Add a third accepted format, csv, in the same owner as the format variants. Do not create a new top-level mechanism."
+    },
+    {
+      "id": "external-integration-boundary",
+      "class": "follow-up",
+      "followUp": true,
+      "ownerExpected": ["openspec-architecture-reviewer"],
+      "prompt": "src/app.js must load weather from an external provider behind one local boundary. `node src/app.js` prints `temp=20`. Keep the provider call isolated so a second provider can replace it later. If a practice owner applies, launch only that owner, then decide.",
+      "followUpPrompt": "Swap the isolated provider for a second stub that still prints `temp=20`. Do not rewrite app.js ownership."
+    },
+    {
+      "id": "non-trivial-state-transition",
+      "class": "follow-up",
+      "followUp": true,
+      "ownerExpected": ["openspec-architecture-reviewer"],
+      "prompt": "src/ticket.js models draft -> open -> closed. `node src/ticket.js open` then `node src/ticket.js close` must print those states. Keep invalid transitions failing. If a practice owner applies, launch only that owner, then decide.",
+      "followUpPrompt": "Add reopen: closed -> open in the same state owner. Do not add a workflow engine."
+    },
+    {
+      "id": "mixed-owner-file",
+      "class": "material",
+      "followUp": false,
+      "ownerExpected": ["openspec-architecture-reviewer"],
+      "prompt": "src/mixed.js currently greets and also writes a report. Add a second report column without putting a new greeting responsibility in the same file. If a practice owner applies, launch only that owner, then decide. `node src/greet.js` and `node src/report.js` must both work."
+    },
+    {
+      "id": "delegated-production-ownership",
+      "class": "material",
+      "followUp": false,
+      "ownerExpected": ["openspec-architecture-reviewer"],
+      "prompt": "Prepare a production brief for an isolated implementation-worker to add `node src/alpha.js` printing `alpha`. The brief must name the responsibility boundary and forbid speculative plugins. If a practice owner applies, launch only that owner, then decide. Also create the smallest alpha.js yourself."
+    },
+    {
+      "id": "hypothetical-extension-negative-control",
+      "class": "negative-control",
+      "followUp": false,
+      "ownerExpected": [],
+      "prompt": "src/greet.js should print `Hello`. Someone might want plugins someday. Do not add a plugin system, factory, or owner launch. `node src/greet.js` prints `Hello`."
+    }
+  ]
+}

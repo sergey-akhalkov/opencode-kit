@@ -1,6 +1,6 @@
 ---
 name: reuse-discovery
-description: Use before production code when a change adds a dependency, mechanism, reusable API, infrastructure owner, abstraction, or duplicate behavior.
+description: Use before production when adding a dependency, mechanism, reusable API, owner, abstraction, sibling, or same-versus-new uncertainty.
 license: MIT
 ---
 
@@ -16,7 +16,7 @@ Load this skill before production code when the proposed change adds any of:
 - a top-level module, service, executable tool, or reusable API;
 - a parser, serializer, validator, adapter, client/protocol, cache, queue, retry, scheduler, simulator, or proof harness outside an existing owner;
 - an interface, factory, plugin point, generic framework, or other multi-implementation abstraction;
-- another implementation of behavior already observed in more than one place.
+- another implementation of a live owner, or same-versus-new uncertainty.
 
 Do not load it for an owner-local bug fix, data/config edit, generated output, mechanical change, or glue under an already selected API unless that work independently adds a trigger above.
 

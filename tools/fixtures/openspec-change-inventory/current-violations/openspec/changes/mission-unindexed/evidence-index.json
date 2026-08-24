@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 2,
+  "changeId": "mission-unindexed",
+  "candidateId": "mission-r1",
+  "environmentId": "fixture-env",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [],
+  "lanes": []
+}

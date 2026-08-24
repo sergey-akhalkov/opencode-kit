@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "instructionArtifactReviewer": {
+    "sessionId": "ses_fd0d1a0a1ffe7SyxU9kDw2TY1V",
+    "effectiveModel": "xai/grok-4.6",
+    "status": "complete",
+    "source": "evidence/task-5-4-reviewers-r1.json"
+  },
+  "evidenceSufficiencyReviewer": {
+    "status": "complete",
+    "sessionId": "ses_fd06db598ffefi7CObDzXnP7Aw",
+    "parentSessionId": "ses_fd06e25ecffeLwVo0oOx4JXwrg",
+    "effectiveModel": "xai/grok-4.6",
+    "dispatch": "fresh-opencode-run-current-config",
+    "report": "evidence/task-5-4-esr-r2.md"
+  },
+  "mainDisposition": [
+    { "id": "CEC-ESR-001", "class": "contained", "action": "accepted-narrowing-keep-universal-outcome-blocked" },
+    { "id": "CEC-ESR-002", "class": "contained", "action": "bound-schema-fixture-observations-and-narrow-structure" },
+    { "id": "CEC-ESR-003", "class": "contained", "action": "narrow-substitution-to-record-shape-no-real-oracle" },
+    { "id": "CEC-ESR-004", "class": "contained", "action": "accepted-narrowing-universal-to-loader-contract" },
+    { "id": "CEC-ESR-005", "class": "parked", "action": "preserve-unbound-r5-and-configured-r3-as-narrower-proof" },
+    { "id": "CEC-ESR-006", "class": "contained", "action": "bound-this-challenge-lane" },
+    { "id": "CEC-IA-001", "class": "parked", "action": "carried-from-r1" },
+    { "id": "CEC-IA-002", "class": "parked", "action": "carried-from-r1" },
+    { "id": "CEC-IA-005", "class": "contained", "action": "already-corrected-in-r1" }
+  ],
+  "claimCeiling": "CEC-EXACT supported for the captured Ordinary Small scenario. CEC-STRUCTURE, CEC-SUBSTITUTION, and CEC-UNIVERSAL accepted as narrowed to their recorded maxima after this challenge."
+}

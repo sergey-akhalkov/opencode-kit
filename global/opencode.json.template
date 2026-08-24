@@ -2,6 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   "model": "openai/gpt-5.6-sol",
   "instructions": [
+    "__OPENCODE_CONFIG_DIR__/principles-of-work.md",
     "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md"
   ],
   "agent": {
@@ -16,6 +17,12 @@
     "__OPENCODE_CONFIG_DIR__/plugin/session-env.ts",
     "__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts",
     [
+      "__OPENCODE_CONFIG_DIR__/extensions/roadmap-mission-launcher.ts",
+      {
+        "scriptRuntime": "__OPENCODE_SCRIPT_RUNTIME__"
+      }
+    ],
+    [
       "__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts",
       {
         "arbiterAgent": "session-completion-arbiter",
@@ -27,6 +34,10 @@
           "scope": "per-root",
           "terminal": "powershell-shell"
         },
+        "certificateIssuers": [
+          "roadmap-mission-session-executor"
+        ],
+        "certificateWaitMs": 5000,
         "enabled": true,
         "initialDelayMs": 2000,
         "maxCycles": 100,
@@ -51,7 +62,9 @@
         "start-mcp-server",
         "--context",
         "ide",
-        "--project-from-cwd"
+        "--project-from-cwd",
+        "--enable-web-dashboard",
+        "false"
       ],
       "cwd": ".",
       "enabled": true,

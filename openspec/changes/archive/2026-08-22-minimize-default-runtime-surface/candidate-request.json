@@ -1,0 +1,5 @@
+{
+  "candidateId": "minimize-default-runtime-surface-r1",
+  "expectation": "no-regression",
+  "sourceRoot": "global/.runtime-profiles/core"
+}

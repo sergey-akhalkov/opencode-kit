@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 2,
+  "changeId": "minimize-default-runtime-surface",
+  "candidateId": "minimize-default-runtime-surface-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "id": "2.1",
+      "status": "proven",
+      "evidence": "evidence-task-2-1-loader-r1"
+    },
+    {
+      "id": "4.2",
+      "status": "no-critical-risk",
+      "evidence": "sdet-ses_fd7195b4fffeS3gf6C1bpyWv9z"
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        "evidence-task-2-1-loader-r1/raw.json",
+        "evidence-task-2-1-loader-r1/evaluation.json"
+      ]
+    }
+  ]
+}

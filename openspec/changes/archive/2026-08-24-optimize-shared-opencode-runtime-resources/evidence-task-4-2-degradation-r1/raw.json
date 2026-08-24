@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "providerCalls": 0,
+  "auth": {
+    "missing": 401,
+    "wrong": 401,
+    "correct": 200
+  },
+  "before": "connected",
+  "openCodeSurvived": true,
+  "afterExit": "timeout",
+  "afterRecovery": "connected",
+  "secretSafe": true,
+  "cleanup": {
+    "complete": true
+  }
+}

@@ -1,0 +1,2132 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "cases": [
+    {
+      "arbiterRequest": {
+        "auditKind": "completion",
+        "claimEvidence": {
+          "claims": [
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_482a37dd98d9",
+              "claimClass": "finite-population",
+              "claimId": "CLAIM-REPRESENTATIVE",
+              "closureState": "blocked",
+              "coverageBasis": "finite-population",
+              "disposition": "blocked",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": true,
+                "status": "missing"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Only member-1 is supported.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-REPRESENTATIVE",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-representative",
+                "members": [
+                  "member-1",
+                  "member-2"
+                ],
+                "requiredMembers": 2,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-REPRESENTATIVE",
+              "unresolvedObservations": [
+                {
+                  "code": "challenge-incomplete",
+                  "detail": "Required independent challenge is not complete.",
+                  "path": "independentChallenge.status"
+                },
+                {
+                  "code": "missing-member",
+                  "detail": "No observation row for member-2.",
+                  "path": "population.members.1"
+                }
+              ]
+            }
+          ],
+          "complete": true,
+          "omissions": [],
+          "selection": "explicit"
+        },
+        "requestBytes": 5238,
+        "rootSessionRef": "session_bead685265f2"
+      },
+      "arbiterResult": {
+        "claimMatrix": [
+          {
+            "claimId": "CLAIM-REPRESENTATIVE",
+            "closureState": "blocked",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Only member-1 is supported.",
+            "outcomeRef": "outcome:CLAIM-REPRESENTATIVE"
+          }
+        ],
+        "evidenceGaps": [
+          "claim-closure-incomplete"
+        ],
+        "unresolved": [
+          {
+            "evidenceGap": "Supplied claim closure is incomplete.",
+            "nextAction": "Complete or honestly narrow the structured claim closure.",
+            "nextEvidence": "Current supported claim closure.",
+            "requirementRef": "claim-scope",
+            "stopCondition": "Claim closure supports the accepted scope."
+          }
+        ],
+        "verdict": "continue"
+      },
+      "expected": "continue",
+      "name": "representative-overclaim",
+      "providerCalls": {
+        "arbiter": 1,
+        "primary": 3
+      },
+      "rootSessionRef": "session_bead685265f2",
+      "rootState": "disabled-after-continued"
+    },
+    {
+      "arbiterRequest": {
+        "auditKind": "completion",
+        "claimEvidence": {
+          "claims": [
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_fa79d4746c21",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-EXACT",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-1 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-EXACT",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-exact",
+                "members": [
+                  "member-1"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-EXACT",
+              "unresolvedObservations": []
+            }
+          ],
+          "complete": true,
+          "omissions": [],
+          "selection": "explicit"
+        },
+        "requestBytes": 4752,
+        "rootSessionRef": "session_3dd47b6963ca"
+      },
+      "arbiterResult": {
+        "claimMatrix": [
+          {
+            "claimId": "CLAIM-EXACT",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-1 only.",
+            "outcomeRef": "outcome:CLAIM-EXACT"
+          }
+        ],
+        "evidenceGaps": [],
+        "unresolved": [],
+        "verdict": "allow_stop"
+      },
+      "expected": "allow_stop",
+      "name": "supported-exact",
+      "providerCalls": {
+        "arbiter": 1,
+        "primary": 1
+      },
+      "rootSessionRef": "session_3dd47b6963ca",
+      "rootState": "passed"
+    },
+    {
+      "arbiterRequest": {
+        "auditKind": "completion",
+        "claimEvidence": {
+          "claims": [
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-00",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-0 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-00",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-00",
+                "members": [
+                  "member-a-0"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-00",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-01",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-1 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-01",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-01",
+                "members": [
+                  "member-a-1"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-01",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-02",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-2 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-02",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-02",
+                "members": [
+                  "member-a-2"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-02",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-03",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-3 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-03",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-03",
+                "members": [
+                  "member-a-3"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-03",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-04",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-4 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-04",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-04",
+                "members": [
+                  "member-a-4"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-04",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-05",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-5 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-05",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-05",
+                "members": [
+                  "member-a-5"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-05",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-06",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-6 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-06",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-06",
+                "members": [
+                  "member-a-6"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-06",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-07",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-7 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-07",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-07",
+                "members": [
+                  "member-a-7"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-07",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-08",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-8 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-08",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-08",
+                "members": [
+                  "member-a-8"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-08",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-09",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-9 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-09",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-09",
+                "members": [
+                  "member-a-9"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-09",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-10",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-10 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-10",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-10",
+                "members": [
+                  "member-a-10"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-10",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-11",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-11 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-11",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-11",
+                "members": [
+                  "member-a-11"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-11",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-12",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-12 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-12",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-12",
+                "members": [
+                  "member-a-12"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-12",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-13",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-13 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-13",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-13",
+                "members": [
+                  "member-a-13"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-13",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-14",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-14 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-14",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-14",
+                "members": [
+                  "member-a-14"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-14",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-15",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-15 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-15",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-15",
+                "members": [
+                  "member-a-15"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-15",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_352261c1dcbf",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-A-16",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-a-16 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-A-16",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-a-16",
+                "members": [
+                  "member-a-16"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-A-16",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-00",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-0 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-00",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-00",
+                "members": [
+                  "member-b-0"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-00",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-01",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-1 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-01",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-01",
+                "members": [
+                  "member-b-1"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-01",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-02",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-2 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-02",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-02",
+                "members": [
+                  "member-b-2"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-02",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-03",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-3 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-03",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-03",
+                "members": [
+                  "member-b-3"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-03",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-04",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-4 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-04",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-04",
+                "members": [
+                  "member-b-4"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-04",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-05",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-5 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-05",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-05",
+                "members": [
+                  "member-b-5"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-05",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-06",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-6 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-06",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-06",
+                "members": [
+                  "member-b-6"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-06",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-07",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-7 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-07",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-07",
+                "members": [
+                  "member-b-7"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-07",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-08",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-8 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-08",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-08",
+                "members": [
+                  "member-b-8"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-08",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-09",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-9 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-09",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-09",
+                "members": [
+                  "member-b-9"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-09",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-10",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-10 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-10",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-10",
+                "members": [
+                  "member-b-10"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-10",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-11",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-11 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-11",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-11",
+                "members": [
+                  "member-b-11"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-11",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-12",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-12 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-12",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-12",
+                "members": [
+                  "member-b-12"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-12",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-13",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-13 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-13",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-13",
+                "members": [
+                  "member-b-13"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-13",
+              "unresolvedObservations": []
+            },
+            {
+              "candidateId": "claims-candidate",
+              "changeRef": "change_c05ea1c2941c",
+              "claimClass": "exact-case",
+              "claimId": "CLAIM-B-14",
+              "closureState": "supported",
+              "coverageBasis": "exact-case",
+              "disposition": "supported",
+              "environmentId": "claims-environment",
+              "evidenceRefs": [
+                "product"
+              ],
+              "independentChallenge": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "materialExclusions": [],
+              "maximumSupportedClaim": "Exact member-b-14 only.",
+              "observationBoundary": "installed-guard-result",
+              "outcomeRef": "outcome:CLAIM-B-14",
+              "paths": {
+                "baseline": null,
+                "candidate": null,
+                "production": "installed-guard"
+              },
+              "population": {
+                "id": "population-claim-b-14",
+                "members": [
+                  "member-b-14"
+                ],
+                "requiredMembers": 1,
+                "supportedMembers": 1
+              },
+              "realOracle": {
+                "evidenceRefs": [],
+                "required": false,
+                "status": "not-required"
+              },
+              "statement": "Installed guard claim CLAIM-B-14",
+              "unresolvedObservations": []
+            }
+          ],
+          "complete": false,
+          "omissions": [
+            {
+              "changeRef": null,
+              "code": "claim-limit",
+              "detail": "Claim records exceed the bounded projection limit.",
+              "omitted": 2
+            }
+          ],
+          "selection": "all-active"
+        },
+        "requestBytes": 47116,
+        "rootSessionRef": "session_bf52fbe22ee1"
+      },
+      "arbiterResult": {
+        "claimMatrix": [
+          {
+            "claimId": "CLAIM-A-00",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-0 only.",
+            "outcomeRef": "outcome:CLAIM-A-00"
+          },
+          {
+            "claimId": "CLAIM-A-01",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-1 only.",
+            "outcomeRef": "outcome:CLAIM-A-01"
+          },
+          {
+            "claimId": "CLAIM-A-02",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-2 only.",
+            "outcomeRef": "outcome:CLAIM-A-02"
+          },
+          {
+            "claimId": "CLAIM-A-03",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-3 only.",
+            "outcomeRef": "outcome:CLAIM-A-03"
+          },
+          {
+            "claimId": "CLAIM-A-04",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-4 only.",
+            "outcomeRef": "outcome:CLAIM-A-04"
+          },
+          {
+            "claimId": "CLAIM-A-05",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-5 only.",
+            "outcomeRef": "outcome:CLAIM-A-05"
+          },
+          {
+            "claimId": "CLAIM-A-06",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-6 only.",
+            "outcomeRef": "outcome:CLAIM-A-06"
+          },
+          {
+            "claimId": "CLAIM-A-07",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-7 only.",
+            "outcomeRef": "outcome:CLAIM-A-07"
+          },
+          {
+            "claimId": "CLAIM-A-08",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-8 only.",
+            "outcomeRef": "outcome:CLAIM-A-08"
+          },
+          {
+            "claimId": "CLAIM-A-09",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-9 only.",
+            "outcomeRef": "outcome:CLAIM-A-09"
+          },
+          {
+            "claimId": "CLAIM-A-10",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-10 only.",
+            "outcomeRef": "outcome:CLAIM-A-10"
+          },
+          {
+            "claimId": "CLAIM-A-11",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-11 only.",
+            "outcomeRef": "outcome:CLAIM-A-11"
+          },
+          {
+            "claimId": "CLAIM-A-12",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-12 only.",
+            "outcomeRef": "outcome:CLAIM-A-12"
+          },
+          {
+            "claimId": "CLAIM-A-13",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-13 only.",
+            "outcomeRef": "outcome:CLAIM-A-13"
+          },
+          {
+            "claimId": "CLAIM-A-14",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-14 only.",
+            "outcomeRef": "outcome:CLAIM-A-14"
+          },
+          {
+            "claimId": "CLAIM-A-15",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-15 only.",
+            "outcomeRef": "outcome:CLAIM-A-15"
+          },
+          {
+            "claimId": "CLAIM-A-16",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-a-16 only.",
+            "outcomeRef": "outcome:CLAIM-A-16"
+          },
+          {
+            "claimId": "CLAIM-B-00",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-0 only.",
+            "outcomeRef": "outcome:CLAIM-B-00"
+          },
+          {
+            "claimId": "CLAIM-B-01",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-1 only.",
+            "outcomeRef": "outcome:CLAIM-B-01"
+          },
+          {
+            "claimId": "CLAIM-B-02",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-2 only.",
+            "outcomeRef": "outcome:CLAIM-B-02"
+          },
+          {
+            "claimId": "CLAIM-B-03",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-3 only.",
+            "outcomeRef": "outcome:CLAIM-B-03"
+          },
+          {
+            "claimId": "CLAIM-B-04",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-4 only.",
+            "outcomeRef": "outcome:CLAIM-B-04"
+          },
+          {
+            "claimId": "CLAIM-B-05",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-5 only.",
+            "outcomeRef": "outcome:CLAIM-B-05"
+          },
+          {
+            "claimId": "CLAIM-B-06",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-6 only.",
+            "outcomeRef": "outcome:CLAIM-B-06"
+          },
+          {
+            "claimId": "CLAIM-B-07",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-7 only.",
+            "outcomeRef": "outcome:CLAIM-B-07"
+          },
+          {
+            "claimId": "CLAIM-B-08",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-8 only.",
+            "outcomeRef": "outcome:CLAIM-B-08"
+          },
+          {
+            "claimId": "CLAIM-B-09",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-9 only.",
+            "outcomeRef": "outcome:CLAIM-B-09"
+          },
+          {
+            "claimId": "CLAIM-B-10",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-10 only.",
+            "outcomeRef": "outcome:CLAIM-B-10"
+          },
+          {
+            "claimId": "CLAIM-B-11",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-11 only.",
+            "outcomeRef": "outcome:CLAIM-B-11"
+          },
+          {
+            "claimId": "CLAIM-B-12",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-12 only.",
+            "outcomeRef": "outcome:CLAIM-B-12"
+          },
+          {
+            "claimId": "CLAIM-B-13",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-13 only.",
+            "outcomeRef": "outcome:CLAIM-B-13"
+          },
+          {
+            "claimId": "CLAIM-B-14",
+            "closureState": "supported",
+            "evidenceRefs": [
+              "product"
+            ],
+            "maximumSupportedClaim": "Exact member-b-14 only.",
+            "outcomeRef": "outcome:CLAIM-B-14"
+          }
+        ],
+        "evidenceGaps": [
+          "claim-closure-incomplete"
+        ],
+        "unresolved": [
+          {
+            "evidenceGap": "Supplied claim closure is incomplete.",
+            "nextAction": "Complete or honestly narrow the structured claim closure.",
+            "nextEvidence": "Current supported claim closure.",
+            "requirementRef": "claim-scope",
+            "stopCondition": "Claim closure supports the accepted scope."
+          }
+        ],
+        "verdict": "continue"
+      },
+      "expected": "continue",
+      "name": "truncated-closure",
+      "providerCalls": {
+        "arbiter": 1,
+        "primary": 3
+      },
+      "rootSessionRef": "session_bf52fbe22ee1",
+      "rootState": "disabled-after-continued"
+    },
+    {
+      "arbiterRequest": {
+        "auditKind": "completion",
+        "claimEvidence": {
+          "claims": [],
+          "complete": true,
+          "omissions": [],
+          "selection": "all-active"
+        },
+        "requestBytes": 3414,
+        "rootSessionRef": "session_9ff0bffc8d4c"
+      },
+      "arbiterResult": {
+        "claimMatrix": [],
+        "evidenceGaps": [],
+        "unresolved": [],
+        "verdict": "allow_stop"
+      },
+      "expected": "allow_stop",
+      "name": "ordinary-small-idle",
+      "providerCalls": {
+        "arbiter": 1,
+        "primary": 1
+      },
+      "rootSessionRef": "session_9ff0bffc8d4c",
+      "rootState": "passed"
+    }
+  ],
+  "cleanup": "complete",
+  "diagnostics": {
+    "pluginStartupTrace": [
+      {
+        "phase": "factory-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "dispose",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "dispose",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "phase": "factory-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      }
+    ],
+    "stderrChars": 23431,
+    "stderrError": false,
+    "stdoutChars": 119
+  },
+  "environment": {
+    "configDigest": "4a805c8ed63da9202ccc2fce6c9efb92b302165cc026ae962a4c6b7506db2600",
+    "model": "proof/proof-model",
+    "openCode": "1.18.18",
+    "platform": "win32",
+    "pluginResolverWarmup": {
+      "elapsedMs": 14137,
+      "isolatedCacheEntries": [
+        "bun",
+        "opencode"
+      ]
+    },
+    "pluginStartupTrace": [
+      {
+        "phase": "factory-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "dispose",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "dispose",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "phase": "factory-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "phase": "factory-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "phase": "factory-exit",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "pty-bridge"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-enter",
+        "plugin": "completion-guard"
+      },
+      {
+        "hook": "config",
+        "phase": "hook-exit",
+        "plugin": "completion-guard"
+      }
+    ],
+    "sourceHashes": [
+      {
+        "digest": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453",
+        "path": "global/agents/session-completion-arbiter.md"
+      },
+      {
+        "digest": "d32d1c34e7c44a7dfbb26db4d4671332a34a9b856d93047ecc3ab6e3d3cea47e",
+        "path": "global/extensions/session-completion-guard/arbiter-evidence.ts"
+      },
+      {
+        "digest": "21cecf1552a73a830fccd535666730910316b5282660b6b86d120a4fec71122f",
+        "path": "global/extensions/session-completion-guard/claim-evidence.ts"
+      },
+      {
+        "digest": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968",
+        "path": "global/extensions/session-completion-guard/terminal-certificate.ts"
+      },
+      {
+        "digest": "8569fd148e452423816e4ffbfc079bb868a6932c69139a9fab083c75b531dd9f",
+        "path": "global/extensions/session-completion-guard/verdict.ts"
+      },
+      {
+        "digest": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e",
+        "path": "global/plugin/session-delivery-context/projection.ts"
+      },
+      {
+        "digest": "27e9ee4c6d2b7042f28f8467440d823ea487a88df009533d989d83dc41f6ff94",
+        "path": "tools/proofs/session-completion-guard-restart.ts"
+      }
+    ]
+  },
+  "processCleanup": "complete",
+  "provider": {
+    "arbiterCalls": 4,
+    "externalCalls": 0,
+    "primaryCalls": 8,
+    "requestKinds": [
+      "primary",
+      "arbiter-1",
+      "primary",
+      "primary",
+      "primary",
+      "arbiter-2",
+      "primary",
+      "arbiter-3",
+      "primary",
+      "primary",
+      "primary",
+      "arbiter-4"
+    ],
+    "totalBound": 12
+  },
+  "scenario": "claims",
+  "schemaVersion": 1
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "changeId": "establish-consumer-outcome-regression-gate",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-tools-architecture",
+      "requirements": [
+        "Consumer outcome regression has one deterministic evaluator"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "tools/consumer-outcome.ts"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

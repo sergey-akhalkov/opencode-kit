@@ -16,6 +16,14 @@ export const GOVERNED_BUILTIN_AGENTS = [
   "title",
 ] as const;
 
+export const INHERIT_FROM_PRIMARY_AGENTS = new Set(["troubleshooter"]);
+
+export function routedAgentNames(governedAgents: readonly string[]): string[] {
+  return [...new Set(governedAgents)]
+    .filter((name) => !INHERIT_FROM_PRIMARY_AGENTS.has(name))
+    .sort((left, right) => left.localeCompare(right));
+}
+
 const ROOT_PROFILE_FIELDS = new Set(["$schema", "agent", "model", "small_model"]);
 const AGENT_PROFILE_FIELDS = new Set(["model", "variant"]);
 const PROFILE_ID_PATTERN = /^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$/;
@@ -116,8 +124,14 @@ export function validateModelProfile(
     };
   }
 
-  const expected = [...new Set(governedAgents)].sort((left, right) => left.localeCompare(right));
+  const expected = routedAgentNames(governedAgents);
   const actual = Object.keys(routes).sort((left, right) => left.localeCompare(right));
+  const inherited = actual.filter((name) => INHERIT_FROM_PRIMARY_AGENTS.has(name));
+  if (inherited.length > 0) {
+    throw new Error(
+      `Model profile '${label}' must omit inherit-from-primary agent(s): ${inherited.join(", ")}`,
+    );
+  }
   const missing = expected.filter((name) => !actual.includes(name));
   const extra = actual.filter((name) => !expected.includes(name));
   if (missing.length > 0 || extra.length > 0) {

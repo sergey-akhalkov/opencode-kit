@@ -112,6 +112,7 @@ After completing all artifacts and both readiness checks, summarize:
 - Verify each artifact file exists after writing before proceeding to next
 - Create `history.md` before readiness checks and never manufacture attempted strategies
 - Do not append a mandatory final retrospective or process-improvement task; keep optional workflow reflection outside product completion scope
+- Declare exactly one `Automation Dividend`: Material `required - <candidate>`; Ordinary Small may `exempt - <reason>`.
 - Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable
 - Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.

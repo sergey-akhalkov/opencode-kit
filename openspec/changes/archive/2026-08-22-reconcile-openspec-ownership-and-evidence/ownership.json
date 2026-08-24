@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "changeId": "reconcile-openspec-ownership-and-evidence",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "Active changes have one mutation owner",
+        "Checked tasks have candidate-correlated evidence",
+        "Completed and qualification states compose current OpenSpec facts",
+        "Active evidence is indexed and bounded"
+      ]
+    },
+    {
+      "capability": "library-tools-architecture",
+      "requirements": [
+        "Ownership and evidence inventories are explicit deterministic data",
+        "Operation callers compose official validation and index facts"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/bin/openspec-archive.ts",
+    "global/bin/openspec-change",
+    "global/bin/openspec-operation-gate.ts",
+    "package.json",
+    "tools/contracts/openspec-evidence.ts",
+    "tools/contracts/openspec-manifest.ts",
+    "tools/contracts/openspec-ownership.ts",
+    "tools/doctor.ts",
+    "tools/fixtures/openspec-change-inventory",
+    "tools/openspec-change-gate.ts",
+    "tools/openspec-change-inventory.ts",
+    "tools/openspec-change-state.ts",
+    "tools/test-openspec-change-inventory.ts"
+  ],
+  "dependencies": [
+    {
+      "changeId": "reduce-workflow-ceremony",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "library-spec-workflow-integrity",
+          "requirement": "Completed and qualification states compose current OpenSpec facts"
+        }
+      ],
+      "transferCondition": "Owner restores selected strict validity and honest stage before repository qualification."
+    },
+    {
+      "changeId": "fix-workstation-restart-reliability",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "local-opencode-workstation",
+          "requirement": "Restart terminates only validated managed identities"
+        }
+      ],
+      "transferCondition": "Owners publish manifests and one mutation-enabled Restart writer."
+    },
+    {
+      "changeId": "optimize-shared-opencode-runtime-resources",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "local-opencode-workstation",
+          "requirement": "Restart terminates only validated managed identities"
+        }
+      ],
+      "transferCondition": "Owners publish manifests and one mutation-enabled Restart writer."
+    },
+    {
+      "changeId": "add-autonomous-roadmap-mission-runtime",
+      "kind": "planning-only",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "unattended-roadmap-orchestration",
+          "requirement": "Active evidence is indexed and bounded"
+        }
+      ],
+      "transferCondition": "Owner indexes mission evidence under the bounded contract."
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "reconcile-openspec-ownership-and-evidence",
+      "toChangeId": "repair-project-inventory-and-maintenance-debt",
+      "owners": [
+        {
+          "type": "requirement",
+          "capability": "library-tools-architecture",
+          "requirement": "Ownership and evidence inventories are explicit deterministic data"
+        }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

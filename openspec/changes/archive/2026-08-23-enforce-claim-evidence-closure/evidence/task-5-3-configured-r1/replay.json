@@ -1,0 +1,9 @@
+{
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "liveCalls": 0,
+  "mode": "replay",
+  "scenarioDigest": "bb5205f9e0e883b2d76be7b19b9f2f5dc231909c1f8f44ef2564b99cf72833dc",
+  "status": "failed",
+  "terminalReplayResult": "oracles-failed-invalid-enum",
+  "unlockCondition": "Name the allowed claimDisposition and completionDisposition tokens in the reviewed request, preserve observed values on proof failure, then run one create-new configured capture."
+}

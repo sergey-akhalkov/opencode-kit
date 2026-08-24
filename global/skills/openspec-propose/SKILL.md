@@ -1,6 +1,6 @@
 ---
 name: openspec-propose
-description: Propose a new change with all artifacts generated in one step. Use when the user wants to quickly describe what they want to build and get a complete proposal with design, specs, and tasks ready for implementation.
+description: Propose a new OpenSpec change with proposal, design, specs, and tasks. Use ONLY when the user names OpenSpec. Do not use for ordinary product ideas without OpenSpec.
 allowed-tools: Bash(openspec:*)
 license: MIT
 compatibility: Requires openspec CLI.
@@ -68,6 +68,7 @@ When ready to implement, run /opsx-apply
       - Read any completed dependency files for context
       - Create the artifact file using `template` as the structure and write it to `resolvedOutputPath`
       - Apply `context` and `rules` as constraints - but do NOT copy them into the file
+      - Keep one change-level `Claim And Evidence Scope` owner. An Ordinary Small exact case uses one concise line naming the exact claim and proof boundary. A declared broad class uses the explicit fields supplied by the proposal rule; do not infer the class from prose or repeat the complete record in design/spec/tasks.
       - Show brief progress: "Created <artifact-id>"
 
    b. **Continue until all `applyRequires` artifacts are complete**
@@ -129,3 +130,5 @@ Return the change identity and resolved location, created artifact list, exact r
 - Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable
 - Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.
+- Before the propose gate, verify the proposal contains its proportional Claim And Evidence Scope. A broad declaration may remain development-incomplete at propose, but its explicit fields must be present.
+- Declare exactly one `Automation Dividend`: Material `required - <candidate>`; Ordinary Small may `exempt - <reason>`. Do not infer the mode.

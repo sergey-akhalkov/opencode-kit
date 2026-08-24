@@ -1,0 +1,116 @@
+{
+  "candidateId": "task-2-2-interrupted-r5",
+  "cleanup": "complete",
+  "environment": {
+    "directoryMatched": true,
+    "node": "v24.3.0",
+    "platform": "win32"
+  },
+  "executor": {
+    "argv": [
+      "bun.exe",
+      "<source-root>\\global\\bin\\roadmap-mission-session-executor.ts",
+      "execute",
+      "--root",
+      "<project-root>",
+      "--server-url",
+      "http://127.0.0.1:60955",
+      "--mission",
+      "mission.json",
+      "--slice",
+      "slice-a",
+      "--attempt",
+      "1",
+      "--result",
+      "evidence/mission/attempt-1/result.json",
+      "--timeout-ms",
+      "30000"
+    ],
+    "exitCode": 1,
+    "signal": null,
+    "stderr": "",
+    "stdout": "{\n  \"attempt\": 1,\n  \"changeId\": \"change-a\",\n  \"cleanup\": \"not-required\",\n  \"definitionDigest\": \"8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827\",\n  \"disposition\": \"terminal\",\n  \"errorClass\": \"terminal\",\n  \"errorMessage\": \"OpenCode runtime dormancy is not clear: activeSessions=1 pendingQuestions=0\",\n  \"evidenceRefs\": [],\n  \"guardState\": \"unknown\",\n  \"missionId\": \"same-runtime-proof\",\n  \"phases\": [],\n  \"questionDisposition\": \"none\",\n  \"rootSessionRef\": null,\n  \"runtimeRef\": \"0a595490ebc044dfcb84f44bd396567204ea05eab483c147c0f598cd6579eebc\",\n  \"schemaVersion\": 1,\n  \"sliceId\": \"slice-a\",\n  \"tool\": \"roadmap-mission-session-executor\",\n  \"writerClosure\": \"terminal\"\n}\n"
+  },
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 0,
+    "requestKinds": []
+  },
+  "result": {
+    "attempt": 1,
+    "changeId": "change-a",
+    "cleanup": "not-required",
+    "definitionDigest": "8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827",
+    "disposition": "terminal",
+    "errorClass": "terminal",
+    "errorMessage": "OpenCode runtime dormancy is not clear: activeSessions=1 pendingQuestions=0",
+    "evidenceRefs": [],
+    "guardState": "unknown",
+    "missionId": "same-runtime-proof",
+    "phases": [],
+    "questionDisposition": "none",
+    "rootSessionRef": null,
+    "runtimeRef": "0a595490ebc044dfcb84f44bd396567204ea05eab483c147c0f598cd6579eebc",
+    "schemaVersion": 1,
+    "sliceId": "slice-a",
+    "tool": "roadmap-mission-session-executor",
+    "writerClosure": "terminal"
+  },
+  "runtimeEvidence": [
+    {
+      "name": "result.json",
+      "sha256": "880c287d770649c025b82ad65f8f9c5e6609048626b7e7abcc0d7ba40a09c2a5",
+      "value": {
+        "attempt": 1,
+        "changeId": "change-a",
+        "cleanup": "not-required",
+        "definitionDigest": "8ecb072ec56ce956cd3a447f7520974af3a858e324ab251fecd2a39d9700c827",
+        "disposition": "terminal",
+        "errorClass": "terminal",
+        "errorMessage": "OpenCode runtime dormancy is not clear: activeSessions=1 pendingQuestions=0",
+        "evidenceRefs": [],
+        "guardState": "unknown",
+        "missionId": "same-runtime-proof",
+        "phases": [],
+        "questionDisposition": "none",
+        "rootSessionRef": null,
+        "runtimeRef": "0a595490ebc044dfcb84f44bd396567204ea05eab483c147c0f598cd6579eebc",
+        "schemaVersion": 1,
+        "sliceId": "slice-a",
+        "tool": "roadmap-mission-session-executor",
+        "writerClosure": "terminal"
+      }
+    }
+  ],
+  "scenario": "interrupted",
+  "schemaVersion": 1,
+  "server": {
+    "pid": 14300,
+    "readyMs": 11505,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "stderrChars": 3392,
+    "stdoutChars": 119
+  },
+  "sources": [
+    {
+      "path": "global/bin/roadmap-mission-session-executor.ts",
+      "sha256": "c4c18e240348d40a741f1ede228367b68c01cafdf6a5bdc98d0053705800127f"
+    },
+    {
+      "path": "global/bin/roadmap-mission/session-executor.ts",
+      "sha256": "2aed5efeda9a4207bf7c19c7140b40d5b961356664e5f185127095950865f175"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "2e65f748b185d8997395e69b7b548dc67a8f73b16da565fc4c0db62de88e399a"
+    },
+    {
+      "path": "global/extensions/session-completion-guard.ts",
+      "sha256": "edca19f2328e2a4c821c2c5758eca0d1ba9536b586975bff54ec0bd28bd37579"
+    }
+  ]
+}

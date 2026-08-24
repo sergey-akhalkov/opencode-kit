@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "taskId": "1.2",
+  "candidateId": "establish-practice-owner-agents-planning-r1",
+  "environmentId": "windows-opencode-planning-r1",
+  "loadedBehaviorChanged": false,
+  "inventory": {
+    "agents": 19,
+    "skills": 31,
+    "coreAgents": [
+      "code-quality-reviewer",
+      "evidence-sufficiency-reviewer",
+      "final-candidate-reviewer",
+      "implementation-readiness-reviewer",
+      "implementation-worker",
+      "sdet-quality-engineer",
+      "test-coverage-reviewer",
+      "troubleshooter"
+    ],
+    "missingOwners": ["execution-safety-reviewer"],
+    "coreIncludesOptionalFinalReview": true,
+    "budget": {
+      "coreStartupTokenProxy": { "actual": 11994, "maximum": 12000, "status": "passed" },
+      "coreDiscoveryMetadataTokenProxy": { "actual": 810, "maximum": 1200, "status": "passed" },
+      "globalStartupTokenProxy": { "actual": 11994, "maximum": 13279, "status": "passed" }
+    }
+  },
+  "scenarios": [
+    { "id": "trivial-no-trigger", "class": "negative-control", "expectedOwners": [], "oracle": "no-owner-launch" },
+    { "id": "single-core-trigger", "class": "core", "expectedOwners": ["openspec-architecture-reviewer"], "oracle": "one-owner-main-decides" },
+    { "id": "independent-multi-trigger", "class": "multi", "expectedOwners": ["disjoint-set"], "oracle": "exact-owner-set" },
+    { "id": "protocol-wire-boundary", "class": "domain-boundary", "expectedOwners": ["protocol-xor-wire"], "oracle": "no-cross-practice-judgment" },
+    { "id": "protected-action", "class": "safety", "expectedOwners": ["execution-safety-reviewer"], "oracle": "no-authorization" },
+    { "id": "unavailable-owner", "class": "failure", "expectedOwners": [], "oracle": "explicit-unknown" },
+    { "id": "practice-maintenance", "class": "maintenance", "expectedOwners": ["instruction-or-mapped-owner"], "oracle": "owner-read-only-main-edits" },
+    { "id": "owner-self-change", "class": "maintenance", "expectedOwners": ["frozen-prior-plus-independent"], "oracle": "no-self-certify" }
+  ],
+  "providerCalls": 0
+}

@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "repositories": {
-    "opencode-kit": "../..",
-    "pmac-emulator": "D:\\mekha\\mtronics\\pmac-emulator",
-    "controller-gateway-service": "D:\\mekha\\mtronics\\controller-gateway-service",
-    "windows-ui-automation": "D:\\mekha\\mtronics\\windows-ui-automation"
-  }
-}

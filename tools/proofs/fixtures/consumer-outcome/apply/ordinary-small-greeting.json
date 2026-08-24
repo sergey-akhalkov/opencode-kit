@@ -1,0 +1,6 @@
+{
+  "files": {
+    "src/greet.ts": "const args = process.argv.slice(2);\nif (args[0] === \"--help\" || args[0] === \"-h\") {\n  console.log(\"Usage: node src/greet.ts [--name <name>]\");\n  process.exit(0);\n}\nif (args[0] === \"--name\") {\n  console.log(`Hello, ${args[1] ?? \"world\"}`);\n  process.exit(0);\n}\nconsole.log(\"hello\");\n",
+    "test/greet.test.ts": "import assert from \"node:assert/strict\";\nimport { spawnSync } from \"node:child_process\";\n\nconst hello = spawnSync(process.execPath, [\"src/greet.ts\"], { encoding: \"utf8\" });\nassert.equal(hello.status, 0);\nassert.match(hello.stdout ?? \"\", /hello/);\nconst named = spawnSync(process.execPath, [\"src/greet.ts\", \"--name\", \"Ada\"], { encoding: \"utf8\" });\nassert.equal(named.status, 0);\nassert.match(named.stdout ?? \"\", /Hello, Ada/);\nconsole.log(\"OK: greet\");\n"
+  }
+}

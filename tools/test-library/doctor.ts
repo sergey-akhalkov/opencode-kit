@@ -5,6 +5,8 @@ import {
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
 } from "../contracts/skills.ts";
 import { GLOBAL_ENGINEERING_QUALITY_MARKERS } from "../contracts/engineering-quality.ts";
+import { resolveEvidenceLane } from "../evidence-index.ts";
+import { inspectManagedPromptDrift } from "../opencode-runtime-sources.ts";
 import {
   asArray,
   asRecord,
@@ -85,10 +87,10 @@ const globalAuthorityMinimumFixtureCases = [
 const conformingAgentsAuthority = `# Independent Active Authority
 ## Change-Ready SDLC Routing
 Ordinary Small is the default. Main is the default production author for Ordinary Small and Material.
-Profiles remain Ordinary Small | Material. Development-Stage: development | MVP | RC<n> | stable is the one user-facing lifecycle field inside a technically enforced operating envelope. Neither MVP, RC, nor stable authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
+Profiles remain Ordinary Small | Material. Ordinary work reports Outcome: working | blocked | unknown. Development-Stage: development | MVP | RC<n> | stable applies only inside qualification and a technically enforced operating envelope. Neither MVP, RC, nor stable authorizes deployment, release, installation, activation, credentials, or remote-state mutation.
 Path: run-observe-correct before inspecting realistic requirement-linked edge cases.
 The accepted outcome and protected boundaries define scope; expansion requires explicit user approval. Necessary local reversible work uses the smallest sufficient dependency closure. Reviewer/SDET/validation evidence never authorizes mutation.
-Optional reviewers may run after MVP for concrete risk, project policy, or owner request; their absence is not a stage blocker. Fresh SDET returns critical-risks-reported | no-critical-risk | blocked. The failed invocation remains finalized and non-reusable, but it does not impose a fixed mission-wide attempt ceiling. No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate.
+Optional reviewers may run after current proof for concrete risk, project policy, or owner request; their absence is not a stage blocker. Triggered fresh SDET returns critical-risks-reported | no-critical-risk | blocked. The failed invocation remains finalized and non-reusable, but it does not impose a fixed mission-wide attempt ceiling. No SDET attempt count permanently prohibits future risk assessment of a materially changed candidate.
 Before the first mutation, load change-ready-sdlc for an explicit stable request, project-required qualification, or a concrete Material risk: ${namedMaterialRiskFixtureText}.
 High-risk behavior must not be downgraded merely because the diff is small.
 Before stable, require a bounded accepted outcome and non-goals, real-boundary happy-path proof, complete accepted scope, green applicable project-native validation, protection of critical safety/data/authorization invariants, sufficient failure visibility, and no known reachable critical or non-deferrable defect.
@@ -151,8 +153,13 @@ function writePortableWorkflowTools(globalDir: string): void {
 }
 
 function writeConformingAuthority(globalDir: string): void {
+  writeText(path.join(globalDir, "principles-of-work.md"), "# Principles of Work\n\n## Order Of Precedence\n\nFixture principles.\n");
   writeText(path.join(globalDir, "AGENTS.md"), conformingAgentsAuthority);
   writeText(path.join(globalDir, "skills", "change-ready-sdlc", "SKILL.md"), conformingSkillAuthority);
+  writeText(
+    path.join(globalDir, "skills", "behavioral-substitution-qualification", "SKILL.md"),
+    fs.readFileSync(path.join(root, "global", "skills", "behavioral-substitution-qualification", "SKILL.md"), "utf8"),
+  );
   writePortableWorkflowTools(globalDir);
 }
 
@@ -164,6 +171,7 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
   const doctorSource = fs.readFileSync(path.join(root, "tools", "doctor.ts"), "utf8")
     .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
   assert(doctorSource.includes('from "./validators/active-authority.ts"'), "Isolated doctor must retain its active-authority module edge.");
+  assert(doctorSource.includes('from "./validators/workflow-contracts.ts"'), "Isolated doctor must retain its workflow-contract module edge.");
   assert(doctorSource.includes('from "./opencode-runtime-sources.ts"'), "Isolated doctor must retain its runtime-source inspector module edge.");
   assert(!doctorSource.includes('from "js-yaml"'), "Doctor must not import js-yaml directly after active-authority extraction.");
   writeText(doctorPath, doctorSource);
@@ -177,6 +185,7 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
     .replace('from "js-yaml"', `from "${import.meta.resolve("js-yaml")}"`);
   assert(!isolatedAuthoritySource.includes('from "js-yaml"'), "Isolated active-authority must resolve the real installed js-yaml module.");
   writeText(path.join(fixtureRoot, "tools", "validators", "active-authority.ts"), isolatedAuthoritySource);
+  writeText(path.join(fixtureRoot, "tools", "validators", "workflow-contracts.ts"), fs.readFileSync(path.join(root, "tools", "validators", "workflow-contracts.ts"), "utf8"));
   writeText(path.join(fixtureRoot, "tools", "contracts", "skills.ts"), fs.readFileSync(path.join(root, "tools", "contracts", "skills.ts"), "utf8"));
   writeText(path.join(fixtureRoot, "tools", "contracts", "engineering-quality.ts"), fs.readFileSync(path.join(root, "tools", "contracts", "engineering-quality.ts"), "utf8"));
   writeText(path.join(fixtureRoot, "tools", "validators", "engineering-quality.ts"), fs.readFileSync(path.join(root, "tools", "validators", "engineering-quality.ts"), "utf8"));
@@ -184,6 +193,11 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
     .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
   writeText(path.join(fixtureRoot, "tools", "validators", "opencode-config.ts"), configPolicy);
   writeText(path.join(fixtureRoot, "tools", "validators", "context.ts"), fs.readFileSync(path.join(root, "tools", "validators", "context.ts"), "utf8"));
+  const changeModules = path.join(root, "global", "bin", "openspec-change");
+  for (const name of fs.readdirSync(changeModules).sort()) {
+    if (!name.endsWith(".ts")) continue;
+    writeText(path.join(globalDir, "bin", "openspec-change", name), fs.readFileSync(path.join(changeModules, name), "utf8"));
+  }
   writeText(path.join(fixtureRoot, "instructions", "universal-development-loop.md"), "# Universal Development Loop\n");
   writeText(path.join(fixtureRoot, "profiles", "all.json"), "{}\n");
   writeText(path.join(globalDir, "opencode.json.template"), "{\n  \"$schema\": \"https://opencode.ai/config.json\"\n}\n");
@@ -192,6 +206,7 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
   for (const relative of [
     path.join("agents", "implementation-worker.md"),
     path.join("agents", "sdet-quality-engineer.md"),
+    path.join("agents", "evidence-sufficiency-reviewer.md"),
     path.join("agents", "final-candidate-reviewer.md"),
   ]) {
     writeText(path.join(globalDir, relative), `# Fixture authority: ${relative}\n`);
@@ -297,6 +312,202 @@ function namedBlockers(report: Record<string, unknown>, gate: "qualification" | 
 
 export const doctorTests: TestCase[] = [
   {
+    name: "evidence index resolves one named lane without reading unrelated bundles",
+    run: () => {
+      const fixture = newTempDir("evidence-index");
+      writeText(path.join(fixture, "selected", "failure.json"), "private failure evidence");
+      writeText(path.join(fixture, "selected", "unlock.json"), "private unlock evidence");
+      writeText(path.join(fixture, "selected", "terminal.json"), "private terminal evidence");
+      const index = path.join(fixture, "evidence-index.json");
+      writeText(index, JSON.stringify({
+        schemaVersion: 1,
+        lanes: [
+          {
+            candidateId: "candidate-r1",
+            currentTerminalBundle: "selected/terminal.json",
+            firstCausalFailure: "selected/failure.json",
+            name: "selected-lane",
+            retryCondition: "Retry only after the selected terminal evaluator changes.",
+            successorUnlockEvidence: "selected/unlock.json",
+            terminalStatus: "complete",
+          },
+          {
+            candidateId: "unrelated-r1",
+            currentTerminalBundle: "unrelated-does-not-exist/raw.json",
+            firstCausalFailure: null,
+            name: "unrelated-lane",
+            retryCondition: "Unrelated lane remains unresolved.",
+            successorUnlockEvidence: null,
+            terminalStatus: "unknown",
+          },
+        ],
+      }));
+
+      const selected = resolveEvidenceLane(index, "selected-lane");
+      assertEqual(selected.lane, "selected-lane", "Resolver must select the requested lane.");
+      assertEqual(selected.terminalStatus, "complete", "Resolver must preserve terminal status.");
+      assertDeepEqual(
+        selected.references.map((reference) => reference.role),
+        ["first-causal-failure", "successor-unlock", "current-terminal"],
+        "Resolver must return the bounded causal and terminal references.",
+      );
+      const serialized = JSON.stringify(selected);
+      for (const raw of ["private failure evidence", "private unlock evidence", "private terminal evidence", "Unrelated lane remains unresolved."]) {
+        assert(!serialized.includes(raw), "Resolver must not print retry or referenced evidence content.");
+      }
+
+      let missingFailed = false;
+      try {
+        resolveEvidenceLane(index, "unrelated-lane");
+      } catch {
+        missingFailed = true;
+      }
+      assert(missingFailed, "A missing reference must fail only the affected selected lane.");
+    },
+  },
+  {
+    name: "evidence index resolves schema 2 hashed lanes without inferring terminal status",
+    run: () => {
+      const fixture = newTempDir("evidence-index-v2");
+      writeText(path.join(fixture, "selected", "terminal.json"), "private terminal evidence");
+      const index = path.join(fixture, "evidence-index.json");
+      writeText(index, JSON.stringify({
+        schemaVersion: 2,
+        lanes: [
+          {
+            files: [{
+              bytes: 25,
+              digest: "a".repeat(64),
+              path: "selected/terminal.json",
+            }],
+            kind: "terminal",
+            name: "selected-lane",
+          },
+          {
+            files: [{
+              bytes: 1,
+              digest: "b".repeat(64),
+              path: "unrelated-does-not-exist/raw.json",
+            }],
+            kind: "runner",
+            name: "unrelated-lane",
+          },
+        ],
+      }));
+
+      const selected = resolveEvidenceLane(index, "selected-lane");
+      assertEqual(selected.schemaVersion, 2, "Resolver must preserve schema 2.");
+      assertEqual(selected.lane, "selected-lane", "Resolver must select the requested hashed lane.");
+      assertDeepEqual(selected.references.map((reference) => reference.role), ["indexed-file"], "Resolver must return only selected files.");
+      assert(!("terminalStatus" in selected), "Schema 2 lane kind must not infer a terminal status.");
+      assert(!JSON.stringify(selected).includes("private terminal evidence"), "Resolver must not print referenced evidence content.");
+
+      let missingFailed = false;
+      try {
+        resolveEvidenceLane(index, "unrelated-lane");
+      } catch {
+        missingFailed = true;
+      }
+      assert(missingFailed, "A missing schema 2 reference must fail only the affected selected lane.");
+    },
+  },
+  {
+    name: "runtime-source diagnostics classify managed prompt drift without disclosing prompt text",
+    run: () => {
+      const fixture = newTempDir("managed-prompt-drift");
+      const template = path.join(fixture, "opencode.json.template");
+      const active = path.join(fixture, "opencode.json");
+      const prompt = "Original User Goal Session Reflection Live-Attempt Gate Next-Session Action Pending Strategy History private-template-sentinel";
+      const writePrompt = (file: string, value: string): void => writeText(file, JSON.stringify({ agent: { compaction: { prompt: value } } }));
+
+      writePrompt(template, prompt);
+      writePrompt(active, prompt);
+      const same = inspectManagedPromptDrift(template, active)[0];
+      assertEqual(same.status, "same", "Matching prompt digests and markers must classify as same.");
+      assertEqual(same.restartBoundary, "none", "Matching prompts need no restart boundary.");
+      assertDeepEqual(
+        same.template?.markers,
+        ["live-attempt-gate", "next-session-action", "original-user-goal", "pending-strategy-history", "session-reflection"],
+        "Diagnostics must expose only stable semantic marker IDs.",
+      );
+
+      writePrompt(active, "Original User Goal removed-workflow-matrix private-active-sentinel");
+      const different = inspectManagedPromptDrift(template, active)[0];
+      assertEqual(different.status, "different", "Known compaction prompt drift must classify as different.");
+      assertEqual(different.restartBoundary, "synchronize-active-copy-and-restart", "Drift must name the explicit synchronization and restart boundary.");
+      const serialized = JSON.stringify(different);
+      assert(!serialized.includes("private-template-sentinel"), "Template prompt text must not appear in diagnostics.");
+      assert(!serialized.includes("private-active-sentinel"), "Active prompt text must not appear in diagnostics.");
+
+      writeText(active, "{}\n");
+      assertEqual(inspectManagedPromptDrift(template, active)[0].status, "missing", "Absent active managed prompt must classify as missing.");
+      writeText(active, "{ malformed\n");
+      assertEqual(inspectManagedPromptDrift(template, active)[0].status, "unknown", "Unreadable active config must classify as unknown.");
+    },
+  },
+  {
+    name: "doctor distinguishes the self-hosted kit contract from a similarly named consumer",
+    run: () => {
+      const fixture = newIsolatedDoctorFixture("repository-contract", "{\n  \"permission\": \"ask\"\n}\n");
+      const kit = path.join(fixture.root, "kit-checkout");
+      fs.mkdirSync(kit);
+      writeText(path.join(kit, "package.json"), JSON.stringify({
+        name: "opencode-dev-kit",
+        scripts: { test: "node test.mjs", "validate:strict": "node validate.mjs" },
+      }, null, 2));
+      writeText(path.join(kit, "REPO_AGENTS.md"), "# Maintainer authority\n");
+      writeConformingAuthority(path.join(kit, "global"));
+      const kitResult = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", kit, "--format", "json", "--require", "qualification"],
+      );
+      assertSuccess(kitResult, "Exact self-hosted kit contract must pass qualification without consumer files.");
+      const kitReport = parseDoctorV2(kitResult);
+      assertEqual(kitReport.report.qualificationStatus, "pass", "Self-hosted kit contract must pass qualification.");
+      assertOutputContains(kitResult, "Self-hosted kit checkout selected", "Kit diagnostic must disclose the selected repository contract.");
+      assertEqual(findBucket(kitReport.checks, "name", "project AGENTS.md").status, "pass", "REPO_AGENTS.md plus global authority must replace consumer AGENTS only for the kit.");
+      assertEqual(findBucket(kitReport.checks, "name", "project adapter validation").status, "pass", "Concrete package scripts must replace consumer adapter validation only for the kit.");
+
+      const consumer = path.join(fixture.root, "opencode-dev-kit");
+      fs.mkdirSync(consumer);
+      writeText(path.join(consumer, "package.json"), "{\n  \"name\": \"ordinary-consumer\"\n}\n");
+      const consumerResult = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", consumer, "--format", "json", "--require", "qualification"],
+      );
+      assertFailure(consumerResult, "A similarly named unbootstrapped consumer must remain qualification-blocked.");
+      const consumerReport = parseDoctorV2(consumerResult);
+      assertEqual(consumerReport.report.qualificationStatus, "blocked", "Directory name must not activate the kit exception.");
+      assertOutputContains(consumerResult, "Consumer project rules selected", "Consumer diagnostic must disclose its safe classification.");
+      assertEqual(findBucket(consumerReport.checks, "name", "project AGENTS.md").blocksQualification, true, "Consumer AGENTS absence must still block qualification.");
+      assertEqual(findBucket(consumerReport.checks, "name", "project adapter validation").blocksQualification, true, "Consumer validation absence must still block qualification.");
+
+      writeText(
+        path.join(fixture.root, "openspec", "specs", "library-instruction-artifacts", "spec.md"),
+        "### Requirement: Final history retrospective is an evidence-bound completion task\n",
+      );
+      writeText(
+        path.join(fixture.root, "global", "skills", "openspec-apply-change", "SKILL.md"),
+        "Optional retrospective or workflow feedback stays outside the product task graph\n",
+      );
+      for (const [label, project] of [["kit", kit], ["consumer", consumer]] as const) {
+        const conflictResult = invokeIsolatedDoctorArgs(
+          fixture,
+          ["--project", project, "--format", "json", "--require", "qualification"],
+        );
+        assertFailure(conflictResult, `A real workflow conflict must block the ${label} qualification report.`);
+        const conflictReport = parseDoctorV2(conflictResult);
+        assert(
+          namedBlockers(conflictReport.report, "qualification").includes("workflow contract consistency"),
+          `Workflow conflict must appear in the ${label} qualification blockers.`,
+        );
+        const workflow = findBucket(conflictReport.checks, "name", "workflow contract consistency");
+        assertEqual(workflow.status, "blocked", `Workflow conflict must be visible in the ${label} check.`);
+        assertOutputContains(conflictResult, "final-history-retrospective", `Workflow contract id must be reported for the ${label}.`);
+      }
+    },
+  },
+  {
     name: "doctor delegates active-authority parsing to a side-effect-free module",
     run: () => {
       const doctorSource = fs.readFileSync(path.join(root, "tools", "doctor.ts"), "utf8");
@@ -353,12 +564,13 @@ export const doctorTests: TestCase[] = [
       const result = invokeIsolatedDoctor(fixture);
       assertSuccess(result, "Concrete adapter entries should pass structural doctor checks.");
       const { checks, report } = parseDoctorV2(result);
-      assertEqual(report.status, "pass", "Fully concrete bootstrapped fixture should have structural pass status.");
+      assertEqual(report.status, "warn", "Unknown managed prompt drift should remain advisory for an otherwise complete fixture.");
       assertEqual(report.qualificationStatus, "pass", "Fully concrete complete authority should pass qualification diagnostics.");
       assertEqual(findBucket(checks, "name", "project adapter validation").status, "pass", "Concrete adapter validation entries should pass their check.");
       assertEqual(findBucket(checks, "name", "active kit required runtime authority").status, "pass", "Current required active kit authority should pass.");
       assertEqual(findBucket(checks, "name", "portable project workflow tools").status, "pass", "Present portable archive and staged tools should pass.");
       assertEqual(findBucket(checks, "name", "active kit optional default role files").status, "pass", "Present optional default roles should pass their advisory check.");
+      assertEqual(findBucket(checks, "name", "managed compaction prompt drift").status, "warn", "A fixture without the managed prompt must report unknown drift without blocking qualification.");
     },
   },
   {
@@ -516,7 +728,7 @@ export const doctorTests: TestCase[] = [
       const fixture = newIsolatedDoctorFixture("alternate-adapters", "{\n  \"permission\": \"ask\"\n}\n");
       writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), concreteAdapter);
       writeText(path.join(fixture.project, "AGENTS.md"), "# Project Agent Instructions\n\n## Runtime Authority\n\nAlternate conforming production, SDET, and final-review adapters are discovered by this project.\n");
-      for (const role of ["implementation-worker.md", "sdet-quality-engineer.md", "final-candidate-reviewer.md"]) {
+      for (const role of ["implementation-worker.md", "sdet-quality-engineer.md", "evidence-sufficiency-reviewer.md", "final-candidate-reviewer.md"]) {
         fs.rmSync(path.join(fixture.globalDir, "agents", role));
       }
       const result = invokeIsolatedDoctor(fixture);
@@ -527,7 +739,7 @@ export const doctorTests: TestCase[] = [
       const optionalRoles = findBucket(checks, "name", "active kit optional default role files");
       assertEqual(optionalRoles.status, "warn", "Missing optional default roles should warn.");
       assertEqual(optionalRoles.blocksQualification, false, "Optional default roles must be advisory.");
-      assertEqual(findBucket(checks, "name", "active kit required runtime authority").status, "pass", "Required authority remains AGENTS.md plus change-ready-sdlc.");
+      assertEqual(findBucket(checks, "name", "active kit required runtime authority").status, "pass", "Required authority remains principles, AGENTS.md, and focused claim/lifecycle skills.");
     },
   },
   {
@@ -669,6 +881,8 @@ export const doctorTests: TestCase[] = [
     run: () => {
       const fixture = newIsolatedDoctorFixture("missing-active-authority", "{\n  \"permission\": \"ask\"\n}\n");
       writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), concreteAdapter);
+      fs.rmSync(path.join(fixture.globalDir, "principles-of-work.md"));
+      fs.rmSync(path.join(fixture.globalDir, "skills", "behavioral-substitution-qualification", "SKILL.md"));
       fs.rmSync(path.join(fixture.globalDir, "skills", "change-ready-sdlc", "SKILL.md"));
       const result = invokeIsolatedDoctor(fixture);
       assertSuccess(result, "Missing active authority should be a warning-level structural result with exit 0.");
@@ -679,7 +893,7 @@ export const doctorTests: TestCase[] = [
       assertEqual(authority.status, "warn", "Missing active kit authority should warn.");
       assertEqual(authority.blocksQualification, true, "Missing required active authority must expose blocksQualification=true.");
       const detail = String(authority.detail).replace(/\\/g, "/");
-      if (!detail.includes("skills/change-ready-sdlc/SKILL.md") || !detail.includes("blocks RC/stable qualification work")) {
+      if (!detail.includes("principles-of-work.md") || !detail.includes("skills/behavioral-substitution-qualification/SKILL.md") || !detail.includes("skills/change-ready-sdlc/SKILL.md") || !detail.includes("blocks RC/stable qualification work")) {
         throw new Error(`Missing-authority diagnostic must block lifecycle claims, got: ${String(authority.detail)}`);
       }
 
@@ -715,7 +929,7 @@ export const doctorTests: TestCase[] = [
       assertEqual(report.qualificationStatus, "pass", "Complete copied override authority must pass qualification diagnostics.");
       assertEqual(findBucket(checks, "name", "opencode config layering").status, "pass", "Copied active local config should pass layering checks.");
       const authority = findBucket(checks, "name", "active kit required runtime authority");
-      assertEqual(authority.status, "pass", "Copied AGENTS.md plus change-ready-sdlc must satisfy active authority.");
+      assertEqual(authority.status, "pass", "Copied principles, AGENTS.md, and focused claim/lifecycle skills must satisfy active authority.");
       assertEqual(authority.blocksQualification, false, "Complete copied authority must not block qualification.");
     },
   },
@@ -768,7 +982,7 @@ export const doctorTests: TestCase[] = [
         assertEqual(authority.blocksQualification, true, `${item.name} must expose blocksQualification=true.`);
         assertEqual(
           authority.detail,
-          `Inspected kit source (OPENCODE_CONFIG_DIR) has incomplete required runtime authority: ${item.problem}. Structurally incomplete AGENTS.md or change-ready-sdlc blocks RC/stable qualification work.`,
+          `Inspected kit source (OPENCODE_CONFIG_DIR) has incomplete required runtime authority: ${item.problem}. Missing principles-of-work.md or structurally incomplete AGENTS.md/claim/lifecycle skill blocks RC/stable qualification work.`,
           `${item.name} must return the exact privacy-safe structural detail.`,
         );
         if ("privateSentinel" in item) {
@@ -874,7 +1088,7 @@ export const doctorTests: TestCase[] = [
         assertEqual(layerCheck.status, "pass", "Existing default opencode.json should pass layering checks.");
         assertEqual(layerCheck.blocksQualification, false, "Complete default layering must not block qualification.");
         const authority = findBucket(checks, "name", "active kit required runtime authority");
-        assertEqual(authority.status, "pass", "Default AGENTS.md plus change-ready-sdlc must satisfy active authority.");
+        assertEqual(authority.status, "pass", "Default principles, AGENTS.md, and focused claim/lifecycle skills must satisfy active authority.");
         assert(String(authority.detail).includes("Host default ~/.config/opencode"), "Authority diagnostic must identify default-home resolution.");
       }
     },

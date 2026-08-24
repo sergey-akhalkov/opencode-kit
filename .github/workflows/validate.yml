@@ -40,6 +40,9 @@ jobs:
       - name: Run test suite
         run: npm test
 
+      - name: Run consumer outcome provider-free proofs
+        run: npm run test:focused:consumer-outcome && npm run proof:consumer-outcome -- --mode gate --source-ref HEAD
+
       - name: Run code-quality inventory
         run: npm run code-quality:inventory -- --root . --format markdown --attention-lines 400 --split-lines 800
 
@@ -49,3 +52,38 @@ jobs:
       - name: Validate OpenSpec changes
         if: hashFiles('openspec/changes/**/*.md') != ''
         run: npm run openspec:validate
+
+  validate-windows:
+    name: validate (windows-latest)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run strict validator
+        run: npm run validate:strict
+
+      - name: Run test suite
+        run: npm test
+
+      - name: Validate OpenSpec changes
+        if: hashFiles('openspec/changes/**/*.md') != ''
+        run: npm run openspec:validate
+
+      - name: Run Windows invocation fixtures
+        run: node tools/test-portable-process.ts && node tools/test-install-code-intelligence-mcps.ts && node tools/test-windows-ci-envelope.ts
+
+      - name: Run non-mutating installer and bootstrap checks
+        run: node tools/install-code-intelligence-mcps.ts --help && node tools/install-code-intelligence-mcps.ts --dry-run && node tools/install-opencode-global.ts --help && node tools/install-opencode-global.ts --dry-run

@@ -1,0 +1,6 @@
+{"at":"2026-08-17T09:18:32.843Z","name":"capture-start"}
+{"at":"2026-08-17T09:18:44.764Z","name":"server-ready","pid":15804}
+{"at":"2026-08-17T09:18:45.471Z","name":"run-command-returned"}
+{"at":"2026-08-17T09:18:46.154Z","name":"raw-ready"}
+{"at":"2026-08-17T09:18:46.590Z","name":"server-stopped"}
+{"at":"2026-08-17T09:18:47.286Z","name":"fixture-removed"}

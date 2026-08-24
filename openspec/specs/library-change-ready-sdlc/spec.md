@@ -2,7 +2,9 @@
 
 ## Purpose
 Define proportional Change-Ready routing that prioritizes a minimal observable happy path for Ordinary Small work while preserving explicit scope control and full qualification for concrete Material risks.
+
 ## Requirements
+
 ### Requirement: Process controls adapt autonomously inside accepted outcome authority
 
 The main session SHALL own and update implementation plans, task and path inventories, OpenSpec artifact text, candidate and revision labels, attempt counts, and process stop lines when evidence shows that the update is the smallest necessary route to the accepted outcome and it does not change the accepted outcome, operating envelope, non-deferrable invariants, material risk acceptance, or protected-boundary authority. Such an update SHALL NOT be classified as scope expansion merely because an earlier agent-authored artifact prohibited another attempt or declared a process stop.
@@ -62,58 +64,18 @@ Risk classification SHALL evaluate behavior reachable inside the proposed operat
 - **THEN** the author proceeds with targeted local evidence
 - **AND** does not load reuse discovery or query cross-project sources.
 
-### Requirement: The lifecycle uses one simple development stage
-
-Every repository-changing session SHALL report exactly one `Development-Stage: development | MVP | RC<n> | stable` field. Active authority SHALL NOT retain `Change-Status`, `Done-Done`, Pilot-Ready, Change-Ready, or hidden lifecycle aliases.
-
-#### Scenario: Unproved work remains development
-- **WHEN** the current candidate lacks representative happy-path proof
-- **THEN** Development-Stage SHALL remain `development`.
-
-#### Scenario: Real happy path earns MVP
-- **WHEN** the smallest complete accepted end-to-end happy path is invoked with representative input and observed meaningful output or side effects
-- **THEN** Development-Stage SHALL become `MVP`
-- **AND** compilation, static checks, unit tests, or mocked helpers alone SHALL NOT satisfy this scenario.
-
-### Requirement: RC means release candidate
-
-The next monotonic `RC<n>` SHALL be assigned only when accepted scope is complete, current MVP proof exists, applicable project-native validation is green, applicable Material critical SDET is terminal and usable, and no known confirmed reachable critical or non-deferrable defect remains.
-
-#### Scenario: Non-critical limitations do not block RC
-- **WHEN** all RC requirements pass and only documented non-critical bugs, limitations, optional coverage gaps, maintainability work, or optimization remain
-- **THEN** the candidate MAY become the next RC
-- **AND** those items SHALL remain recorded rather than forced into the current scope.
-
-#### Scenario: Critical defect blocks RC
-- **WHEN** a known confirmed reachable critical or non-deferrable defect remains
-- **THEN** Development-Stage SHALL remain `MVP` until correction and requalification.
-
-### Requirement: Stable means locally complete
-
-An RC SHALL become `stable` when its local handoff is complete and all applicable critical/safety/validation gates remain green. No mandatory soak-time threshold SHALL apply. The handoff SHALL record `Stable Candidate: RC<n>`.
-
-#### Scenario: Stable does not perform release
-- **WHEN** a candidate becomes stable
-- **THEN** deployment, release, publication, installation, activation, credentials, destructive action, and remote mutation SHALL remain separately authorized
-- **AND** `External Operations: not performed` SHALL be reported unless separately authorized and observed.
-
-### Requirement: Candidate mutation invalidates RC and stable
-
-Any candidate-affecting production, test, fixture, configuration, instruction, or generated-output mutation SHALL return Development-Stage to `development`. Current representative proof SHALL restore `MVP`; complete requalification SHALL assign `RC<n+1>` without resetting root RC history.
-
-#### Scenario: RC mutation requires a new candidate number
-- **WHEN** an `RC<n>` candidate receives a candidate-affecting mutation
-- **THEN** Development-Stage SHALL return to `development`
-- **AND** current representative proof SHALL restore only `MVP`
-- **AND** complete requalification SHALL assign `RC<n+1>`.
-
 ### Requirement: Post-MVP work stops at critical boundaries
+After representative happy-path proof, mandatory work SHALL be limited to incomplete accepted scope, a correction directly required by the accepted outcome, and reproduced accepted-outcome, critical, or non-deferrable defects. Current-change architecture and diagnostic non-degradation remain part of accepted implementation. Known non-critical bugs outside accepted outcome, optional coverage, pre-existing maintainability debt, style, wording, evidence formatting, process reflection, optimization, and future-scale work SHALL be documented or routed separately and SHALL NOT block qualified or ordinary completion.
 
-After MVP, mandatory work SHALL be limited to incomplete accepted scope, evidence-backed session improvements admitted into the active OpenSpec `tasks.md` under the owner-approved persistence contract, and reproduced accepted-outcome, critical, or non-deferrable defects. An admitted improvement task becomes accepted scope and SHALL remain required until its stated implementation, observable proof, and validation pass or the owner explicitly changes accepted scope.
+#### Scenario: Optional workflow improvement appears after proof
+- **WHEN** a useful process improvement is observed but is not required by accepted scope or an invariant
+- **THEN** it does not become mandatory current-change work
+- **AND** may be recorded through explicit feedback or a separate proposal.
 
-An improvement SHALL be admitted only when an exact remaining current-change consumer ties it to the accepted outcome. After safety and live-attempt gates, admitted work SHALL execute at its earliest safe consumer boundary: gate-closing work first, then `do-now` or `before-task-<id>` work before its first consumer, and `before-freeze` work before qualification. A same-repository multiplier MAY be admitted when the current change consumes and proves an existing shared owner and at least one additional exact repository consumer is evidenced; the additional consumer SHALL remain outside current mutation scope.
-
-Evidence-backed candidates without a current consumer SHALL remain non-blocking deferred records and SHALL NOT become accepted scope or block RC, stable, or complete archive. Current-change architecture and diagnostic non-degradation obligations SHALL remain accepted-scope implementation. Known non-critical bugs, optional coverage, pre-existing maintainability debt, style, wording, evidence formatting, diagnostic polish, optimization, unsupported generic improvement ideas, and future-scale work that did not pass current admission SHALL be documented or deferred as applicable and SHALL NOT block RC or stable.
+#### Scenario: Accepted behavior remains incomplete
+- **WHEN** a required accepted scenario is still unimplemented after the first happy-path proof
+- **THEN** it remains mandatory work
+- **AND** optional ceremony does not preempt its next real boundary.
 
 #### Scenario: Non-critical post-MVP finding is parked
 - **WHEN** main confirms a reachable non-critical limitation after MVP and it has no exact remaining current-change consumer
@@ -130,34 +92,37 @@ Evidence-backed candidates without a current consumer SHALL remain non-blocking 
 - **THEN** it SHALL be preserved as a non-checkbox deferred record with `Execution Class: separate-change`
 - **AND** it SHALL NOT become mandatory post-MVP work until an owning change later admits it.
 
-### Requirement: Material SDET is critical-only and convergent
-
-For Material behavior changes, fresh test-only SDET SHALL run after current MVP proof and accepted-scope completion. It SHALL return exactly `critical-risks-reported | no-critical-risk | blocked` and author only the smallest critical reproducer/regression oracle.
-
-Another attempt SHALL require an immediately-prior main-confirmed critical defect, production fix, and new current proof. The first precondition-valid attempt without a confirmed critical defect SHALL permanently stop SDET for the root. Non-critical findings SHALL NOT prolong SDET.
-
-#### Scenario: No confirmed critical defect stops SDET
-- **WHEN** the first precondition-valid Material SDET attempt yields no main-confirmed critical defect
-- **THEN** SDET SHALL stop permanently for the root
-- **AND** non-critical findings SHALL be parked.
-
 ### Requirement: Non-SDET review is optional evidence
 
-Read-only final, delivery, code-quality, and domain reviewers MAY run after MVP only for concrete risk, project policy, or owner request. Their absence, timeout, malformed output, or disagreement SHALL NOT by itself block a stage. Reviewer evidence SHALL NOT authorize mutation or lifecycle decisions.
+Read-only final, delivery, code-quality, and domain reviewers that are not registered Practice Owners MAY run after MVP only for concrete risk, project policy, or owner request. Their absence, timeout, malformed output, or disagreement SHALL NOT by itself block a stage. A registered Practice Owner consultation SHALL occur only when its reviewed material trigger or material applicability-uncertainty trigger is reached, before the owning decision or action passes that boundary. Zero-trigger Ordinary Small work SHALL require no owner launch solely for compliance.
 
-Every plausible non-deferrable authorization, privacy, data-integrity, irreversible-action, or envelope-escape claim SHALL still be reproduced, disproved, or shown unreachable by main before RC/stable.
+The fresh evidence-sufficiency Practice Owner defined by `library-claim-evidence-closure` SHALL be required only before a declared finite-population, partitioned-domain, real-system equivalence, compatibility/interchangeability, safety, or phase/milestone claim can become `supported`. Its absence or unusable output SHALL keep only that broad claim `blocked` or `unknown`; it SHALL NOT erase narrower trustworthy evidence, block an unrelated lifecycle stage by itself, or become required for an Ordinary Small exact-case claim.
+
+Reviewer and Practice Owner evidence SHALL NOT authorize mutation or lifecycle decisions. Main SHALL independently disposition every owner finding or unknown and every plausible non-deferrable authorization, privacy, data-integrity, irreversible-action, or envelope-escape claim before RC/stable. Missing owner evidence SHALL keep only that practice observation `unknown`; it SHALL affect completion or stage eligibility only when the unresolved practice fact reaches an accepted outcome or non-deferrable invariant.
 
 #### Scenario: Missing optional reviewer does not block stage
-- **WHEN** no concrete risk, project policy, or owner request requires a non-SDET reviewer
-- **THEN** no reviewer launch or report SHALL be required for RC or stable.
 
-### Requirement: Ordinary Small remains proportional
+- **WHEN** no registered Practice Owner trigger, concrete optional-review risk, project policy, or owner request requires a non-SDET reviewer
+- **THEN** no reviewer launch or report is required for RC or stable
+- **AND** all applicable outcome, proof, safety, validation, and critical-risk gates remain enforced.
 
-Ordinary Small SHALL reach MVP through main-owned representative proof, RC through accepted-scope completion and focused validation with no known critical/non-deferrable defect, and stable through local handoff. It SHALL NOT acquire mandatory reviewers or SDET solely to advance stage when no project, risk, or owner rule requires them.
+#### Scenario: Practice Owner trigger occurs before MVP
 
-#### Scenario: Ordinary Small advances without Material ceremony
-- **WHEN** bounded local work has current MVP proof, complete accepted scope, green focused validation, and no known critical/non-deferrable defect
-- **THEN** it MAY advance to RC and stable without SDET or reviewer evidence.
+- **WHEN** a material practice trigger is reached during planning or implementation before representative proof
+- **THEN** main consults the exact registered owner at that boundary rather than delaying every owner until post-MVP review
+- **AND** the owner remains read-only or inside its existing bounded specialist role and non-authorizing.
+
+#### Scenario: Missing evidence challenge blocks only the broad claim
+
+- **WHEN** a declared broad claim requires fresh evidence-sufficiency challenge and no usable current report exists
+- **THEN** that claim remains `blocked` or `unknown`
+- **AND** the reviewer absence does not itself change Development-Stage or invalidate a supported exact-case claim.
+
+#### Scenario: Missing owner evidence reaches a safety invariant
+
+- **WHEN** a triggered owner is unavailable and the unresolved fact can affect authorization, privacy, data integrity, irreversible action, worktree preservation, writer liveness, or the enforced operating envelope
+- **THEN** main keeps the affected action or stage fact blocked or unknown
+- **AND** the missing owner itself does not authorize a weaker fallback.
 
 ### Requirement: Current work preserves local comprehension
 
@@ -245,14 +210,247 @@ When the unknown behavior or protected prerequisite belongs only to an agent-cho
 - **AND** no lower-fidelity support evidence, artifact rewrite, or process-control update substitutes for that action.
 
 ### Requirement: Shift-left sequencing does not grant live authority
-
 The shift-left contract SHALL NOT authorize credentials, remote or shared-environment access, physical effects, destructive or irreversible action, deployment, installation, activation, release, publication, or owner-controlled cost. Existing protected-boundary decisions, fail-closed safety and identity guards, restoration and cleanup, immutable evidence, equivalence requirements, and blocked-live-attempt offline replay SHALL remain controlling.
 
-Early per-slice characterization and Runtime Proof SHALL remain production-author responsibilities, including the Proof Runner, capture/evaluator, and restoration tooling needed to obtain observations. Automated test harnesses, fixtures, simulators, goldens, and test-oracle artifacts SHALL remain SDET-owned. Material fresh critical-only SDET SHALL remain after current MVP proof and accepted-scope completion.
+Early per-slice characterization, Runtime Proof, proof runners, capture/evaluator, restoration tooling, and post-proof focused regression tests SHALL remain main or production-author responsibilities. Fresh critical-only SDET SHALL remain independent and test-only when the risk-trigger requirement applies.
 
 #### Scenario: A real boundary requires physical access
-
 - **WHEN** the first useful real observation requires a physical, credentialed, shared, costly, or otherwise owner-controlled operation
-- **THEN** local harness and safety preparation MAY proceed
+- **THEN** local harness and safety preparation may proceed
 - **AND** no live request occurs before exact owner authorization and all applicable fail-closed gates are green.
 
+### Requirement: Technical blockers receive bounded self-diagnosis before escalation
+
+Before main declares a technical or evidence blocker, treats a negative observation as product failure, repeats a governed attempt, or escalates an unresolved prerequisite to the owner, it SHALL perform one bounded self-diagnostic pass when the cause or ownership is not already proven. The pass SHALL preserve the accepted goal and envelope; classify the affected layer as Product Candidate, Proof Runner, Evaluator, Environment, Authority, or `unknown`; separate current observed facts from assumptions; inspect material contradictions; verify environment-dependent identities used by the blocker claim; state the narrowest supported claim ceiling; and select the smallest safe causally distinct probe that can falsify a live hypothesis.
+
+An obvious evidenced local defect MAY proceed directly to its authorized correction. When the bounded pass cannot resolve a technical or uncertain failure chain, no unused safe route is known, and owner-only status remains unproven, main SHALL invoke at most one correctly briefed diagnosis-only `troubleshooter` for that failure chain and verify its route. Another equivalent pass or consultation SHALL require new decision-changing evidence or a causally distinct mechanism.
+
+#### Scenario: Contradictory evidence points to the proof path
+- **WHEN** direct runtime facts show that an accepted operation occurred while an indirect mandatory observer reports no event and its canary also reports no event
+- **THEN** main classifies the observer, runner, and environment as live hypotheses before claiming Product Candidate failure
+- **AND** it performs the smallest safe identity, topology, or observation-path probe without asking the owner to waive the evidence requirement.
+
+#### Scenario: Straightforward local defect is already proven
+- **WHEN** current source or runtime evidence proves one authorized local defect and the correction does not cross a protected boundary
+- **THEN** main applies the smallest correction through its normal production-author route
+- **AND** it does not add a generic diagnostic ceremony or invoke `troubleshooter` merely to reconfirm the known cause.
+
+#### Scenario: Owner-only action is already proven
+- **WHEN** the accepted outcome requires an exact protected action and evidence proves that no unused safe goal-preserving route can advance the dependency chain
+- **THEN** main preserves that action as the owner boundary and produces the existing self-contained handoff
+- **AND** it does not run diagnostic probes or invoke `troubleshooter` merely to reconfirm owner authority.
+
+### Requirement: Absence-based evidence is qualified before it supports a blocker
+
+A mandatory evidence source used to claim that an event, state, packet, process, response, or side effect is absent SHALL establish its current identity, freshness, observation point and intersection with the expected execution path, expected observable phenomenon, and one safe positive control that demonstrates the source can observe that phenomenon. If a positive control is unavailable, unauthorized, unsafe, or fails, the source SHALL be `unqualified`; its zero, empty, timeout, or absence result SHALL NOT establish Product Candidate failure, completion failure, or owner-only status.
+
+Missing observer qualification SHALL keep only the dependent evidence lane unknown. It SHALL NOT clear or waive safety, identity, liveness, authorization, data-integrity, restoration, cleanup, irreversible-action, envelope, or live-attempt gates, and it SHALL NOT authorize another live or costly attempt through the same blocked path.
+
+#### Scenario: Positive control fails
+- **WHEN** a mandatory observer reports no accepted event and a safe positive control also produces no observation
+- **THEN** the observer is classified as unqualified and its negative result cannot support a product-failure claim
+- **AND** the next action diagnoses observer identity, configuration, or observation-point relevance at a safe lower rung.
+
+#### Scenario: Qualified observer reports absence
+- **WHEN** current identity and path checks are green, a representative positive control is observed, and the expected correlated event remains absent
+- **THEN** the negative observation may contribute to the scoped blocker evidence
+- **AND** main still preserves its claim ceiling and any contradictory direct runtime facts rather than converting one source into broader lifecycle authority.
+
+#### Scenario: Positive control requires a protected effect
+- **WHEN** qualifying the observer would require an unauthorized physical, credentialed, remote, destructive, costly, deployed, or otherwise protected action
+- **THEN** the observer remains unqualified and the exact qualification path remains owner-blocked
+- **AND** main continues any independent safe diagnosis or sufficient alternate proof route without performing or simulating the protected effect.
+
+### Requirement: Diagnostic disposition remains scoped to the affected lane
+
+The self-diagnostic result SHALL distinguish a blocked proof path from a blocked accepted outcome. A Proof Runner, Evaluator, Environment, or unqualified-observer defect SHALL invalidate only dependent evidence and SHALL NOT erase trustworthy direct observations from the same unchanged Product Candidate. When another sufficient safe route can observe the accepted effect, main SHALL keep the defective path blocked and continue through that route without claiming that it clears the defective path.
+
+#### Scenario: Network observer is invalid but direct startup evidence is trustworthy
+- **WHEN** immutable direct controller and relay observations remain correlated and a separate packet observer fails qualification
+- **THEN** main preserves the direct product observations and marks only the network-observation lane unknown
+- **AND** it does not report that startup failed or that the owner must relax the proof contract solely because the packet observer is invalid.
+
+#### Scenario: Accepted outcome requires the unavailable observation
+- **WHEN** the accepted observable proof explicitly requires one observation, every safe qualification or sufficient alternate route is exhausted, and the remaining prerequisite crosses an exact protected boundary or unavailable external capability
+- **THEN** main stops at that exact decision-ready boundary with the supported claim ceiling
+- **AND** it does not substitute unqualified absence, lower-fidelity evidence, or an agent-authored process-control change for the missing observation.
+
+### Requirement: Ordinary Small reports verified outcome without qualification bookkeeping
+Ordinary Small work SHALL report `Outcome: working | blocked | unknown`, representative runtime proof, applicable focused validation, and known limitations. It SHALL NOT assign RC numbers, promote stable, preserve RC history, or require a `Development-Stage` field unless the user explicitly requests qualification or project policy requires it.
+
+#### Scenario: Bounded local fix is complete
+- **WHEN** a bounded local change has a green representative happy path, complete accepted scope, green focused validation, and no known non-deferrable defect
+- **THEN** its handoff reports `Outcome: working` with proof and validation
+- **AND** contains no RC or stable ceremony.
+
+### Requirement: Qualification stages are scoped to explicit qualification
+The `Development-Stage: development | MVP | RC<n> | stable` lifecycle SHALL apply only when the user explicitly requests stable/full qualification, project policy requires qualification, or main enters qualification for a reachable named critical-risk class. Inside that track, representative proof, accepted scope, applicable validation, critical-risk disposition when triggered, monotonic RC numbering, candidate invalidation, and external-operation separation SHALL remain enforced.
+
+#### Scenario: Material change has no qualification request or critical-risk trigger
+- **WHEN** a Material change alters loaded lifecycle instructions but has no reachable named critical incident and no explicit or project-required qualification
+- **THEN** it completes with verified outcome reporting rather than RC/stable promotion
+- **AND** retains all applicable safety, proof, and validation gates.
+
+#### Scenario: Project requires qualification
+- **WHEN** project policy requires qualification
+- **THEN** the full Development-Stage lifecycle applies
+- **AND** stage labels never authorize deployment, release, credentials, or another protected action.
+
+### Requirement: Critical SDET is risk-triggered and independent
+Fresh test-only SDET SHALL be mandatory only when the enforced current envelope contains a reachable incident involving authorization or privacy compromise, important data corruption or loss, irreversible external action, materially wrong financial, legal, or business outcome, system-wide or mission-critical outage, another explicitly accepted critical consequence, or an explicit project or owner qualification requirement. When invoked, SDET SHALL remain fresh, independent, test-only, critical-focused, non-authorizing, and attributed to the exact candidate.
+
+#### Scenario: Material change has no reachable critical incident
+- **WHEN** a Material change has current proof and validation but no named reachable critical-risk class and no explicit SDET requirement
+- **THEN** SDET is not a completion gate
+- **AND** the handoff records the risk-trigger decision and evidence.
+
+#### Scenario: Security boundary is reachable
+- **WHEN** the current envelope can expose an authorization or privacy compromise
+- **THEN** one fresh critical-focused SDET challenge is required after current proof and accepted-scope completion
+- **AND** main independently dispositions every reported row.
+
+### Requirement: Main may own focused regression tests after proof
+After current representative happy-path proof, main MAY create or update the smallest focused regression test, fixture, or oracle needed for a reproduced accepted-outcome defect or realistic requirement-linked regression in either profile. Main SHALL NOT use this authority to impersonate an independent SDET challenge or create broad speculative coverage. A later SDET, when triggered, SHALL not have authored production and SHALL remain independent from main-authored tests.
+
+#### Scenario: Ordinary regression is reproduced after proof
+- **WHEN** main reproduces a non-critical but accepted-outcome regression after the happy path is current
+- **THEN** main may add the smallest focused regression oracle and correct the defect
+- **AND** runs the affected proof and validation without launching SDET solely for test authorship.
+
+### Requirement: Representative proof and broad completion evidence remain separate
+The active runtime authority SHALL use representative real-boundary proof as the earliest working signal, not as automatic evidence for every member, partition, compatibility surface, substitution, safety property, or phase or milestone claim. Before returning or archiving a broader claim, main SHALL identify its claim-evidence trigger, load the behavioral-substitution qualification workflow when omission or replacement behavior is involved, complete the required closure record and independent challenge, and report the supported claim ceiling.
+
+Ordinary Small exact-case work SHALL retain its proportional route. A finite-population, partitioned-domain, real-system equivalence, compatibility, interchangeability, safety, or phase/milestone claim SHALL remain incomplete while matching population, path, environment, real-oracle, or unresolved-dependency closure is absent, even when accepted tasks, representative Runtime Proof, focused validation, or critical SDET are otherwise green.
+
+#### Scenario: Representative proof supports only the exercised case
+- **WHEN** one representative end-to-end case passes but accepted broad-scope rows remain unresolved
+- **THEN** the exact exercised case may remain `supported`
+- **AND** the broad claim remains `blocked` or `unknown` rather than complete.
+
+#### Scenario: Substitution trigger loads focused qualification
+- **WHEN** a change skips, suppresses, caches, replays, emulates, replaces, or optimizes away behavior whose omission depends on a model of another path or real system
+- **THEN** main loads the focused substitution qualification contract before production mutation
+- **AND** freezes baseline, candidate, population, observations, real boundary, and claim ceiling without turning the skill into authority for protected effects.
+
+#### Scenario: Broad closure becomes current
+- **WHEN** accepted scope is complete and the current closure record, required independent challenge, real-boundary proof, validation, and non-deferrable invariants all match the same candidate and claim
+- **THEN** main may report that exact broader claim as supported
+- **AND** lifecycle stage still does not widen it to another population or environment.
+
+### Requirement: Outcome accountability and practice responsibility stay separate
+
+Main SHALL retain the accepted outcome, scope, implementation and integration decisions, Runtime Proof, finding disposition, lifecycle state, and owner handoff in Ordinary Small and Material work. A registered Practice Owner SHALL own only its practice semantics, trigger applicability, runtime observation, and maintenance consistency. Production workers, SDET, optional reviewers, and control-plane agents SHALL consume applicable practice constraints without becoming outcome owners or additional orchestrators.
+
+When a practice controls a concrete implementation decision, including direct code versus a design seam, main SHALL make and integrate the decision against the accepted outcome after considering the owner evidence. The owner SHALL evaluate the practice and maintain its rule set but SHALL NOT select or authorize the product decision.
+
+#### Scenario: Change locality is materially triggered
+
+- **WHEN** accepted variation, a mixed responsibility, state transition, system boundary, or important invariant makes change locality material
+- **THEN** the `architecture-and-change-locality` owner reviews the named practice boundary
+- **AND** main selects and proves the concrete direct implementation or smallest useful seam.
+
+#### Scenario: Practice Owner recommends broader scope
+
+- **WHEN** an owner report proposes work outside the accepted outcome or enforced envelope
+- **THEN** main treats the proposal as non-authorizing evidence and keeps current scope unchanged
+- **AND** only an independently required dependency closure or explicit owner scope decision can expand it.
+
+#### Scenario: Worker receives an owned-practice constraint
+
+- **WHEN** main delegates a production slice after a Practice Owner identified an applicable invariant
+- **THEN** the brief carries the exact invariant and bounded evidence reference
+- **AND** the worker preserves it or reports a conflict without invoking or impersonating the owner.
+
+### Requirement: Practice routing preserves proportional delivery
+
+Practice ownership SHALL not create an all-practice checklist, a mandatory architecture phase, or a fixed reviewer sequence. Main SHALL evaluate compact triggers while foraging task evidence, invoke no owner for zero-trigger Ordinary Small work, and stop owner consultation once the exact applicable practice evidence is sufficient for the next decision. Multiple owner reports SHALL be batched only when independent and supported by the discovered runtime; otherwise they SHALL be serialized without repeating the same practice.
+
+An owner report SHALL be bounded to decision-relevant evidence and SHALL not restate the complete global philosophy, task transcript, or another owner's rules. Main SHALL integrate the report rather than paste it into later briefs or handoffs unless an exact finding or evidence reference remains material.
+
+#### Scenario: One owner is sufficient
+
+- **WHEN** one owner report resolves the only material practice uncertainty for the next implementation decision
+- **THEN** main proceeds without optional owner or reviewer fan-out
+- **AND** retains only the decision-relevant evidence in later context.
+
+#### Scenario: Owner reports overlap
+
+- **WHEN** two owner reports address the same concern despite registered boundary separation
+- **THEN** main uses the registry to identify the primary practice, preserves both evidence sources, and records the overlap as maintenance evidence
+- **AND** does not create a third adjudicator agent.
+
+### Requirement: Main owns evidence-triggered next-change locality
+
+The main session SHALL remain accountable for both the smallest complete current implementation and the concrete design and integration result that keeps the next plausible change local. The registered `architecture-and-change-locality` Practice Owner SHALL be responsible for the practice's trigger applicability, bounded observation, and maintenance semantics. A plausible change axis MUST be supported by an accepted requirement, an existing or explicitly planned variant, an inspected external or system boundary, a non-trivial state transition, an important invariant, or current source evidence. Hypothetical extensibility without one of those triggers SHALL NOT justify an abstraction or an owner call.
+
+When a supported change axis exists, main SHALL name the responsibility or volatility being contained and select the smallest design seam that both isolates it and improves current comprehension, testability, safety, or change locality. When no supported axis exists, direct cohesive code SHALL remain the default. SOLID and Gang of Four patterns MAY describe a selected solution, but pattern use, pattern count, and formal pattern conformance SHALL NOT be acceptance criteria.
+
+When a supported change axis exists, main SHALL obtain one bounded read-only observation from the registered `architecture-and-change-locality` Practice Owner before finalizing the owning design decision. Main SHALL retain that decision, implementation and integration responsibility when production work is delegated and SHALL communicate the applicable responsibility boundary, named change axis, and forbidden speculative structure through the existing production brief. The Practice Owner SHALL remain non-authorizing and SHALL NOT select the design, edit the candidate, dispatch another agent, or become a completion gate. `code-quality-reviewer` SHALL remain within the separate `simplicity-and-reuse` practice. When no supported change axis exists, no architecture Practice Owner launch SHALL be required solely for compliance.
+
+#### Scenario: One-off owner-local defect remains direct
+
+- **WHEN** inspected evidence shows one cohesive owner-local defect and no requirement-backed variant, system boundary, state transition, or invariant needs isolation
+- **THEN** main selects the smallest direct correction and nearest representative proof
+- **AND** it does not add an interface, factory, strategy, wrapper layer, plugin point, or mandatory architecture review.
+
+#### Scenario: A second behavior variant is already accepted
+
+- **WHEN** the current increment implements one behavior and an accepted requirement identifies a second behavior that changes along the same axis
+- **THEN** main names that axis and chooses the smallest seam that keeps both behaviors under one cohesive owner or narrow interchangeable boundary
+- **AND** the seam provides current comprehension or testability value rather than only hypothetical extensibility.
+
+#### Scenario: Material change axis receives one practice observation
+
+- **WHEN** accepted variation, a mixed responsibility, an inspected external/system boundary, a non-trivial state transition, or an important invariant makes change locality material
+- **THEN** main invokes only the registered `architecture-and-change-locality` Practice Owner for a bounded practice observation
+- **AND** main independently selects, integrates, and proves the concrete direct implementation or smallest useful seam.
+
+#### Scenario: External dependency is an inspected volatility boundary
+
+- **WHEN** accepted behavior depends on an external service, process, storage mechanism, protocol, or platform API whose failure and replacement semantics differ from domain policy
+- **THEN** main keeps the external effect at a narrow cause-preserving boundary and keeps the policy locally testable
+- **AND** it does not introduce a general plugin framework or unrelated infrastructure owner.
+
+#### Scenario: Hypothetical plugin ecosystem is rejected
+
+- **WHEN** the current requirement has one implementation and no evidence identifies another implementation, consumer, or compatibility obligation
+- **THEN** main keeps the implementation direct and records no speculative extension mechanism
+- **AND** future plugin support remains a separate change if evidence later makes it reachable.
+
+#### Scenario: Delegated production slice preserves the decision
+
+- **WHEN** main delegates a bounded production slice that contains a supported change axis or responsibility boundary
+- **THEN** the production brief carries that exact boundary and the worker implements within it or returns a scoped conflict
+- **AND** main verifies the integrated result's current behavior and change locality rather than treating the worker report as architecture approval.
+
+#### Scenario: Pattern label does not prove quality
+
+- **WHEN** a candidate uses a named SOLID principle or Gang of Four pattern
+- **THEN** main evaluates the concrete responsibilities, dependencies, navigation cost, current payoff, and representative proof
+- **AND** the label alone neither requires nor accepts the structure.
+
+### Requirement: Same-responsibility new cases reshape the current owner
+
+When an accepted increment adds behavior that is a new case of a current same-responsibility owner, the main session and production roles SHALL name that owner and implement the case by reshaping the owner. They SHALL NOT add a sibling file, function, or module for that case merely to keep the happy path additive or to avoid an "unrelated refactor".
+
+Reshaping the current owner to absorb an accepted new case inside the existing write scope SHALL count as the smallest complete happy path for that increment. "Unrelated refactor" SHALL remain reserved for work outside the accepted case, named owner, or write scope. Hypothetical shared frameworks, third-copy extractions without a stable common shape, and new-responsibility seams SHALL stay forbidden or routed to `architecture-and-change-locality`.
+
+Owner-local fixes, data/config/generated/mechanical edits, and selected-API glue SHALL remain exempt. A genuinely new responsibility with `no-current-owner` MAY use `build-minimal`. Mixed-file second responsibility or a named change axis SHALL still use the existing architecture practice, not this rule.
+
+#### Scenario: Accepted new case is implemented on the current owner
+
+- **WHEN** inspected source shows one current owner already responsible for the accepted capability and the increment adds another case of that capability
+- **THEN** main or the production author changes that owner so both cases share it
+- **AND** does not add a sibling implementation beside it.
+
+#### Scenario: Additive sibling is rejected as the default happy path
+
+- **WHEN** an implementation plan would add a new file or function that copies a live owner to deliver an accepted new case
+- **THEN** the plan is not the smallest complete happy path
+- **AND** the author records `extend` against the live owner or an exact reason that the responsibility is new.
+
+#### Scenario: Architecture boundary stays separate
+
+- **WHEN** the accepted behavior is a second responsibility in a mixed file or a named new change axis
+- **THEN** main uses `architecture-and-change-locality` rather than forcing `extend` on the mixed owner
+- **AND** `simplicity-and-reuse` is not launched solely for that seam decision.

@@ -1,0 +1,32 @@
+{
+  "candidateId": "task-2-2-staged-readiness-r14",
+  "cleanup": "complete",
+  "environment": {
+    "openCode": "1.18.18",
+    "platform": "win32"
+  },
+  "guardCommands": [
+    "disable-grind",
+    "enable-grind"
+  ],
+  "provider": {
+    "arbiterCalls": 0,
+    "primaryCalls": 2,
+    "requestKinds": [
+      "primary",
+      "primary"
+    ]
+  },
+  "scenario": "retention-preflight",
+  "schemaVersion": 1,
+  "seedStatusTypes": [
+    "absent-idle",
+    "absent-idle"
+  ],
+  "startup": {
+    "hostConfigLoaded": false,
+    "isolatedConfigLoaded": true,
+    "readyMs": 63792,
+    "ripgrepDownloadRequested": false
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "attempts": 2,
+  "cursor": 0,
+  "definitionDigest": "006a905ba723407424b6934d58cd5a381b77b2a4723ca2b90f3bbd2ddffb99dc",
+  "exitCode": 1,
+  "missionId": "configured-provider-proof",
+  "operation": "run",
+  "processEvidence": [
+    {
+      "argv": [
+        "<home>\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+        "<global-source>\\bin\\openspec-operation-gate.ts",
+        "--root",
+        "<project-root>",
+        "--operation",
+        "apply",
+        "--change",
+        "change-a"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"apply\",\n  \"changeId\": \"change-a\",\n  \"generatedAt\": \"2026-08-24T15:59:35.669Z\",\n  \"status\": \"passed\",\n  \"exitCode\": 0,\n  \"checks\": [\n    {\n      \"id\": \"artifact:proposal\",\n      \"label\": \"OpenSpec proposal\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/proposal.md\",\n      \"summary\": \"proposal.md exists.\"\n    },\n    {\n      \"id\": \"artifact:proposal-capsule\",\n      \"label\": \"OpenSpec proposal outcome capsule\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/proposal.md\",\n      \"summary\": \"proposal.md contains every required current-increment Outcome Capsule field.\"\n    },\n    {\n      \"id\": \"artifact:spec-delta\",\n      \"label\": \"OpenSpec spec delta\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/specs\",\n      \"summary\": \"Spec delta artifact exists.\"\n    },\n    {\n      \"id\": \"artifact:strategy-history\",\n      \"label\": \"OpenSpec strategy history\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/history.md\",\n      \"summary\": \"history.md exists for strategy continuity.\"\n    },\n    {\n      \"id\": \"artifact:tasks\",\n      \"label\": \"OpenSpec tasks\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/tasks.md\",\n      \"summary\": \"tasks.md exists with 1/1 unchecked task(s).\"\n    },\n    {\n      \"id\": \"scope:change:exists\",\n      \"label\": \"OpenSpec change directory\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a\",\n      \"summary\": \"Scoped change directory exists.\"\n    }\n  ],\n  \"nextActions\": [\n    {\n      \"label\": \"Continue operation\",\n      \"reason\": \"Operation gate passed for available cheap read-only checks.\"\n    }\n  ]\n}\n"
+    },
+    {
+      "argv": [
+        "node",
+        "tools/provider-executor.mjs",
+        "continue",
+        "change-a",
+        "slice-a",
+        "1",
+        "evidence/mission/slice-a/attempt-1/result.json",
+        "006a905ba723407424b6934d58cd5a381b77b2a4723ca2b90f3bbd2ddffb99dc",
+        "configured-provider-proof"
+      ],
+      "executorDisposition": "transient",
+      "executorResultPath": "evidence/mission/slice-a/attempt-1/result.json",
+      "exitCode": 1,
+      "forced": false,
+      "signal": null,
+      "stderr": "Synthetic local executor preflight failed before provider invocation.\n",
+      "stdout": "",
+      "stopped": false,
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "node",
+        "tools/provider-executor.mjs",
+        "continue",
+        "change-a",
+        "slice-a",
+        "2",
+        "evidence/mission/slice-a/attempt-2/result.json",
+        "006a905ba723407424b6934d58cd5a381b77b2a4723ca2b90f3bbd2ddffb99dc",
+        "configured-provider-proof"
+      ],
+      "executorDisposition": "completed",
+      "executorResultPath": "evidence/mission/slice-a/attempt-2/result.json",
+      "exitCode": 0,
+      "forced": false,
+      "signal": null,
+      "stderr": "",
+      "stdout": "",
+      "stopped": false,
+      "timedOut": false
+    },
+    {
+      "argv": [
+        "<home>\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+        "<global-source>\\bin\\openspec-operation-gate.ts",
+        "--root",
+        "<project-root>",
+        "--operation",
+        "apply",
+        "--change",
+        "change-a"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"apply\",\n  \"changeId\": \"change-a\",\n  \"generatedAt\": \"2026-08-24T15:59:36.640Z\",\n  \"status\": \"passed\",\n  \"exitCode\": 0,\n  \"checks\": [\n    {\n      \"id\": \"artifact:proposal\",\n      \"label\": \"OpenSpec proposal\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/proposal.md\",\n      \"summary\": \"proposal.md exists.\"\n    },\n    {\n      \"id\": \"artifact:proposal-capsule\",\n      \"label\": \"OpenSpec proposal outcome capsule\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/proposal.md\",\n      \"summary\": \"proposal.md contains every required current-increment Outcome Capsule field.\"\n    },\n    {\n      \"id\": \"artifact:spec-delta\",\n      \"label\": \"OpenSpec spec delta\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/specs\",\n      \"summary\": \"Spec delta artifact exists.\"\n    },\n    {\n      \"id\": \"artifact:strategy-history\",\n      \"label\": \"OpenSpec strategy history\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/history.md\",\n      \"summary\": \"history.md exists for strategy continuity.\"\n    },\n    {\n      \"id\": \"artifact:tasks\",\n      \"label\": \"OpenSpec tasks\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/tasks.md\",\n      \"summary\": \"tasks.md exists with 0/1 unchecked task(s).\"\n    },\n    {\n      \"id\": \"scope:change:exists\",\n      \"label\": \"OpenSpec change directory\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a\",\n      \"summary\": \"Scoped change directory exists.\"\n    }\n  ],\n  \"nextActions\": [\n    {\n      \"label\": \"Continue operation\",\n      \"reason\": \"Operation gate passed for available cheap read-only checks.\"\n    }\n  ]\n}\n"
+    },
+    {
+      "argv": [
+        "<home>\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+        "<global-source>\\bin\\openspec-operation-gate.ts",
+        "--root",
+        "<project-root>",
+        "--operation",
+        "archive",
+        "--change",
+        "change-a"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"archive\",\n  \"changeId\": \"change-a\",\n  \"generatedAt\": \"2026-08-24T15:59:37.003Z\",\n  \"status\": \"warning\",\n  \"exitCode\": 0,\n  \"checks\": [\n    {\n      \"id\": \"artifact:proposal\",\n      \"label\": \"OpenSpec proposal\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/proposal.md\",\n      \"summary\": \"proposal.md exists.\"\n    },\n    {\n      \"id\": \"artifact:proposal-capsule\",\n      \"label\": \"OpenSpec proposal outcome capsule\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/proposal.md\",\n      \"summary\": \"proposal.md contains every required current-increment Outcome Capsule field.\"\n    },\n    {\n      \"id\": \"artifact:strategy-history\",\n      \"label\": \"OpenSpec strategy history\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/history.md\",\n      \"summary\": \"history.md exists for strategy continuity.\"\n    },\n    {\n      \"id\": \"artifact:tasks\",\n      \"label\": \"OpenSpec tasks\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/tasks.md\",\n      \"summary\": \"tasks.md exists with 0/1 unchecked task(s).\"\n    },\n    {\n      \"id\": \"evidence:stale\",\n      \"label\": \"OpenSpec task evidence freshness\",\n      \"status\": \"warning\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a/evidence-index.json\",\n      \"summary\": \"Checked task evidence is stale or mismatched for change-a; current candidate change-a; tasks=1.1.\"\n    },\n    {\n      \"id\": \"scope:change:exists\",\n      \"label\": \"OpenSpec change directory\",\n      \"status\": \"passed\",\n      \"blocking\": false,\n      \"source\": \"openspec/changes/change-a\",\n      \"summary\": \"Scoped change directory exists.\"\n    }\n  ],\n  \"nextActions\": [\n    {\n      \"label\": \"Review warning evidence\",\n      \"reason\": \"Warnings are non-blocking but should be reconciled before sensitive lifecycle operations.\"\n    }\n  ]\n}\n"
+    },
+    {
+      "argv": [
+        "<home>\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe",
+        "<global-source>\\bin\\openspec-archive.ts",
+        "--root",
+        "<project-root>",
+        "--change",
+        "change-a",
+        "--",
+        "node",
+        "tools/validate.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "==> OpenSpec status: openspec status --change change-a --json\n==> Completion gate: artifacts=4 tasks=1/1\n==> Strict change validation: openspec validate change-a --strict\n==> Project validation before archive: node tools/validate.mjs\n==> Official OpenSpec archive: openspec archive change-a --yes --json\n==> Post-archive OpenSpec validation: openspec validate --all\n==> Project validation after archive: node tools/validate.mjs\n",
+      "stdout": "{\n  \"schemaVersion\": 1,\n  \"status\": \"archived\",\n  \"change\": \"change-a\",\n  \"archivedAs\": \"2026-08-24-change-a\",\n  \"path\": \"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\roadmap-provider-capture-0gdazX\\\\project\\\\openspec\\\\changes\\\\archive\\\\2026-08-24-change-a\",\n  \"specsUpdated\": true,\n  \"totals\": {\n    \"added\": 1,\n    \"modified\": 0,\n    \"removed\": 0,\n    \"renamed\": 0\n  }\n}\n"
+    },
+    {
+      "argv": [
+        "openspec",
+        "list",
+        "--json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "stderr": "",
+      "stdout": "{\n  \"changes\": [],\n  \"root\": {\n    \"path\": \"C:\\\\Users\\\\noilw\\\\AppData\\\\Local\\\\Temp\\\\roadmap-provider-capture-0gdazX\\\\project\",\n    \"source\": \"nearest\"\n  }\n}\n"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "paused",
+  "tool": "roadmap-mission"
+}

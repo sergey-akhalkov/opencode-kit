@@ -7,15 +7,27 @@ import {
   RoadmapMissionError,
 } from "./contracts.ts";
 import type {
+  MissionExecutorResult,
   RoadmapMissionDefinition,
   RoadmapMissionSlice,
 } from "./contracts.ts";
+import { loadControllerAdapter, safeProjectRelative } from "./controller-adapter.ts";
+import type { ControllerAdapter } from "./controller-adapter.ts";
+import {
+  bounded,
+  invokeMissionExecutor,
+  missionStopRequested,
+  redacted,
+} from "./controller-process.ts";
+import type { ProcessEvidence } from "./controller-process.ts";
+import { expandExecutorArgv, readExecutorResult } from "./controller-result.ts";
 import { preflightMission } from "./preflight.ts";
 import {
   readMissionStateProjection,
   recordMissionTransitionWithLease,
+  acquireWriterLease,
+  releaseWriterLease,
   replayMissionState,
-  withMissionWriterLease,
 } from "./state.ts";
 import type {
   MissionDisposition,
@@ -24,21 +36,6 @@ import type {
   MissionTransitionKind,
   WriterLease,
 } from "./state.ts";
-
-type ControllerAdapter = {
-  executorArgv: string[];
-  maxAttemptsPerSlice: number;
-  maxWallClockMsPerSlice: number;
-  schemaVersion: 1;
-};
-
-type ProcessEvidence = {
-  argv: string[];
-  exitCode: number | null;
-  signal: string | null;
-  stderr: string;
-  stdout: string;
-};
 
 type RunOptions = {
   adapterPath: string;
@@ -57,7 +54,7 @@ export type MissionControllerReport = {
   operation: "run" | "resume";
   processEvidence: ProcessEvidence[];
   schemaVersion: 1;
-  status: "blocked" | "complete" | "paused";
+  status: "blocked" | "complete" | "paused" | "paused-unknown";
   tool: "roadmap-mission";
 };
 
@@ -67,92 +64,16 @@ function record(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
-function safeRelative(root: string, value: unknown, field: string): string {
-  if (typeof value !== "string" || value.trim() === "" || /[\r\n\0]/.test(value)) {
-    throw new RoadmapMissionError(`${field} must be a non-empty single-line project-relative path`, 2);
-  }
-  const normalized = value.trim().replaceAll("\\", "/").replace(/^\.\//, "");
-  if (path.isAbsolute(normalized) || normalized.split("/").some((part) => part === "" || part === "." || part === "..")) {
-    throw new RoadmapMissionError(`${field} must be a contained project-relative path`, 2);
-  }
-  const resolved = path.resolve(root, normalized);
-  const relative = path.relative(root, resolved);
-  if (relative.startsWith("..") || path.isAbsolute(relative)) throw new RoadmapMissionError(`${field} escaped the project root`, 2);
-  return normalized;
-}
-
 function archiveRelativePath(root: string, value: unknown): string {
   if (typeof value !== "string" || value.trim() === "") {
     throw new RoadmapMissionError("OpenSpec archive returned no path", 1);
   }
   const absolute = path.isAbsolute(value) ? path.resolve(value) : path.resolve(root, value);
-  const relative = safeRelative(root, path.relative(root, absolute).replaceAll("\\", "/"), "archive path");
+  const relative = safeProjectRelative(root, path.relative(root, absolute).replaceAll("\\", "/"), "archive path");
   if (!relative.startsWith("openspec/changes/archive/")) {
     throw new RoadmapMissionError("OpenSpec archive path is outside the project archive root", 1);
   }
   return relative;
-}
-
-function requiredArgv(value: unknown, field: string): string[] {
-  if (!Array.isArray(value) || value.length === 0 || value.length > 100) {
-    throw new RoadmapMissionError(`${field} must contain between 1 and 100 argv items`, 2);
-  }
-  return value.map((item, index) => {
-    if (typeof item !== "string" || item.trim() === "" || /[\r\n\0]/.test(item)) {
-      throw new RoadmapMissionError(`${field}[${index}] must be a non-empty single-line argv item`, 2);
-    }
-    return item;
-  });
-}
-
-function integer(value: unknown, field: string, min: number, max: number): number {
-  if (!Number.isSafeInteger(value) || (value as number) < min || (value as number) > max) {
-    throw new RoadmapMissionError(`${field} must be an integer between ${min} and ${max}`, 2);
-  }
-  return value as number;
-}
-
-function loadControllerAdapter(root: string, relative: string): ControllerAdapter {
-  const normalized = safeRelative(root, relative, "controller adapter");
-  const file = path.resolve(root, normalized);
-  let parsed: unknown;
-  try {
-    const stat = fs.lstatSync(file);
-    if (stat.isSymbolicLink() || !stat.isFile()) throw new Error("not a regular file");
-    parsed = JSON.parse(fs.readFileSync(file, "utf8"));
-  } catch (error) {
-    throw new RoadmapMissionError("controller adapter must be a readable regular JSON file", 2, { cause: error });
-  }
-  const input = record(parsed);
-  if (input == null) throw new RoadmapMissionError("controller adapter must be an object", 2);
-  const expected = ["schemaVersion", "executorArgv", "maxAttemptsPerSlice", "maxWallClockMsPerSlice"];
-  const missing = expected.filter((field) => !(field in input));
-  const extras = Object.keys(input).filter((field) => !expected.includes(field));
-  if (missing.length > 0 || extras.length > 0) throw new RoadmapMissionError("controller adapter fields are invalid", 2);
-  if (input.schemaVersion !== 1) throw new RoadmapMissionError("controller adapter schemaVersion must be 1", 2);
-  return {
-    executorArgv: requiredArgv(input.executorArgv, "controller adapter executorArgv"),
-    maxAttemptsPerSlice: integer(input.maxAttemptsPerSlice, "maxAttemptsPerSlice", 1, 20),
-    maxWallClockMsPerSlice: integer(input.maxWallClockMsPerSlice, "maxWallClockMsPerSlice", 1_000, 86_400_000),
-    schemaVersion: 1,
-  };
-}
-
-function expandArgv(argv: string[], slice: RoadmapMissionSlice): string[] {
-  return argv.map((value) => value
-    .replaceAll("{changeId}", slice.changeId)
-    .replaceAll("{operation}", slice.operation)
-    .replaceAll("{sliceId}", slice.id));
-}
-
-function bounded(value: string, max = 20_000): string {
-  return value.length <= max ? value : `${value.slice(0, max)}\n<truncated>`;
-}
-
-function redacted(value: string, roots: string[]): string {
-  return roots.reduce((text, root, index) => text
-    .replaceAll(root, index === 0 ? "<project-root>" : "<global-source>")
-    .replaceAll(root.replaceAll("\\", "/"), index === 0 ? "<project-root>" : "<global-source>"), value);
 }
 
 function invoke(root: string, argv: string[], timeoutMs?: number, additionalRedactions: string[] = []): ProcessEvidence {
@@ -411,7 +332,11 @@ function finishReport(
   };
 }
 
-function execute(options: RunOptions, operation: "run" | "resume"): MissionControllerReport {
+async function execute(
+  options: RunOptions,
+  operation: "run" | "resume",
+  signalRequested: () => boolean,
+): Promise<MissionControllerReport> {
   const definition = loadMissionDefinition(options.root, options.missionPath);
   const adapter = loadControllerAdapter(options.root, options.adapterPath);
   const processEvidence: ProcessEvidence[] = [];
@@ -430,12 +355,15 @@ function execute(options: RunOptions, operation: "run" | "resume"): MissionContr
     if (initialPreflight.status !== "eligible") return finishReport(operation, definition, cursor, 0, processEvidence, "blocked");
   }
 
-  return withMissionWriterLease(options.root, definition, new Date().toISOString(), (writerLease) =>
-    executeOwned(options, operation, definition, adapter, processEvidence, identities, current, cursor, writerLease)
-  );
+  const writerLease = acquireWriterLease(options.root, definition, new Date().toISOString());
+  try {
+    return await executeOwned(options, operation, definition, adapter, processEvidence, identities, current, cursor, writerLease, signalRequested);
+  } finally {
+    releaseWriterLease(options.root, writerLease);
+  }
 }
 
-function executeOwned(
+async function executeOwned(
   options: RunOptions,
   operation: "run" | "resume",
   definition: RoadmapMissionDefinition,
@@ -445,11 +373,31 @@ function executeOwned(
   current: ReturnType<typeof readMissionStateProjection>,
   initialCursor: number,
   writerLease: WriterLease,
-): MissionControllerReport {
+  signalRequested: () => boolean,
+): Promise<MissionControllerReport> {
   let cursor = initialCursor;
   const attributedArchivePaths: string[] = [];
   const recordTransition = (value: MissionTransitionDescriptor): void => {
     recordMissionTransitionWithLease(options.root, definition, value, writerLease);
+  };
+  const finishStop = (attempts: number): MissionControllerReport => {
+    const projection = readMissionStateProjection(options.root, definition);
+    if (projection == null) throw new RoadmapMissionError("cannot stop a mission before its preflight transition", 1);
+    const disposition: MissionDisposition = projection.activeOperation == null ? "paused" : "paused-unknown";
+    recordTransition({
+      activeOperation: projection.activeOperation,
+      checkpoint: projection.checkpoint,
+      createdAt: new Date().toISOString(),
+      cursor: projection.cursor,
+      disposition,
+      evidenceRefs: projection.evidenceRefs,
+      identities: projection.identities,
+      kind: "pause",
+      recovery: projection.recovery,
+      schemaVersion: 1,
+      sliceId: projection.sliceId,
+    });
+    return finishReport(operation, definition, projection.cursor, attempts, processEvidence, disposition);
   };
 
   if (current?.disposition === "awaiting-checkpoint") {
@@ -534,6 +482,7 @@ function executeOwned(
         identities,
         [definition.evidencePath],
       ));
+      if (missionStopRequested(options.root, definition, signalRequested())) return finishStop(0);
     }
 
     if (slice.operation === "continue") {
@@ -554,9 +503,20 @@ function executeOwned(
       return finishReport(operation, definition, cursor, attempts, processEvidence, "paused");
     }
     while (attempts < adapter.maxAttemptsPerSlice && Date.now() - startedAt < adapter.maxWallClockMsPerSlice) {
+      if (missionStopRequested(options.root, definition, signalRequested())) return finishStop(attempts);
       attempts++;
       const recovery = { attempts, sliceStartedAt };
-      const argv = expandArgv(adapter.executorArgv, slice);
+      const executorResultPath = `${definition.evidencePath}/${slice.id}/attempt-${attempts}/result.json`;
+      const argv = expandExecutorArgv(
+        adapter.executorArgv,
+        definition,
+        slice,
+        attempts,
+        options.globalSource,
+        options.missionPath,
+        options.root,
+        executorResultPath,
+      );
       recordTransition(descriptor(
         definition,
         cursor,
@@ -567,18 +527,103 @@ function executeOwned(
         { activeOperation: { kind: "session", processRef: `attempt-${attempts}`, sessionRef: null }, recovery },
       ));
       const remainingMs = adapter.maxWallClockMsPerSlice - (Date.now() - startedAt);
-      const executor = invoke(options.root, argv, Math.max(1, remainingMs));
+      const executor = await invokeMissionExecutor(
+        options.root,
+        options.globalSource,
+        definition,
+        slice,
+        argv,
+        Math.max(1, remainingMs),
+        signalRequested,
+      );
       processEvidence.push(executor);
+      if (missionStopRequested(options.root, definition, signalRequested())) {
+        recordTransition(descriptor(
+          definition,
+          cursor,
+          "session-completion",
+          "paused",
+          identities,
+          [definition.evidencePath],
+          { recovery },
+        ));
+        return finishStop(attempts);
+      }
+      let executorResult: MissionExecutorResult;
+      try {
+        executorResult = readExecutorResult(options.root, definition, slice, attempts, executorResultPath);
+        executor.executorDisposition = executorResult.disposition;
+        executor.executorResultPath = executorResultPath;
+        const expectedExit = executorResult.disposition === "completed"
+          ? 0
+          : executorResult.disposition === "owner-required" || executorResult.disposition === "paused"
+          ? 3
+          : 1;
+        if (executor.exitCode !== expectedExit) {
+          throw new RoadmapMissionError("executor process exit does not match its structured disposition", 1);
+        }
+      } catch (error) {
+        executor.resultError = bounded(error instanceof Error ? error.message : String(error), 1_000);
+        recordTransition(descriptor(
+          definition,
+          cursor,
+          "pause",
+          "paused-unknown",
+          identities,
+          [definition.evidencePath],
+          {
+            activeOperation: { kind: "session", processRef: `attempt-${attempts}`, sessionRef: null },
+            recovery,
+          },
+        ));
+        return finishReport(operation, definition, cursor, attempts, processEvidence, "paused-unknown");
+      }
+      const executorEvidenceRefs = [...new Set([definition.evidencePath, executorResultPath, ...executorResult.evidenceRefs])].sort();
+      const writerUnknown = executorResult.writerClosure === "unknown" || executorResult.cleanup === "unknown";
       recordTransition(descriptor(
         definition,
         cursor,
         "session-completion",
-        executor.exitCode === 0 ? "ready" : "paused",
+        writerUnknown
+          ? "paused-unknown"
+          : executorResult.disposition === "completed"
+          ? "ready"
+          : executorResult.disposition === "terminal"
+          ? "blocked"
+          : "paused",
         identities,
-        [definition.evidencePath],
-        { recovery },
+        executorEvidenceRefs,
+        {
+          ...(writerUnknown ? { activeOperation: { kind: "session" as const, processRef: `attempt-${attempts}`, sessionRef: null } } : {}),
+          recovery,
+        },
       ));
-      if (executor.exitCode !== 0) continue;
+      if (writerUnknown) return finishReport(operation, definition, cursor, attempts, processEvidence, "paused-unknown");
+      if (executorResult.disposition === "transient") continue;
+      if (executorResult.disposition === "owner-required" || executorResult.disposition === "paused") {
+        recordTransition(descriptor(
+          definition,
+          cursor,
+          "pause",
+          "paused",
+          identities,
+          executorEvidenceRefs,
+          { recovery },
+        ));
+        return finishReport(operation, definition, cursor, attempts, processEvidence, "paused");
+      }
+      if (executorResult.disposition === "terminal") {
+        recordTransition(descriptor(
+          definition,
+          cursor,
+          "terminal-stop",
+          "blocked",
+          identities,
+          executorEvidenceRefs,
+          { recovery },
+        ));
+        return finishReport(operation, definition, cursor, attempts, processEvidence, "blocked");
+      }
 
       const postExecutorApplyGate = operationGate(options.root, options.globalSource, "apply", slice.changeId);
       processEvidence.push(postExecutorApplyGate);
@@ -702,10 +747,25 @@ function executeOwned(
   return finishReport(operation, definition, cursor, 0, processEvidence, "blocked");
 }
 
-export function runMissionController(options: RunOptions): MissionControllerReport {
-  return execute(options, "run");
+async function executeWithSignals(options: RunOptions, operation: "run" | "resume"): Promise<MissionControllerReport> {
+  let signalRequested = false;
+  const onSignal = (): void => {
+    signalRequested = true;
+  };
+  process.on("SIGINT", onSignal);
+  process.on("SIGTERM", onSignal);
+  try {
+    return await execute(options, operation, () => signalRequested);
+  } finally {
+    process.off("SIGINT", onSignal);
+    process.off("SIGTERM", onSignal);
+  }
 }
 
-export function resumeMissionController(options: RunOptions): MissionControllerReport {
-  return execute(options, "resume");
+export async function runMissionController(options: RunOptions): Promise<MissionControllerReport> {
+  return await executeWithSignals(options, "run");
+}
+
+export async function resumeMissionController(options: RunOptions): Promise<MissionControllerReport> {
+  return await executeWithSignals(options, "resume");
 }

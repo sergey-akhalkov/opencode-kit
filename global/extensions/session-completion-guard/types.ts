@@ -1,5 +1,6 @@
 import type { Session, TextPartInput } from "@opencode-ai/sdk/v2";
 import type { SessionDeliveryContextResult } from "../../plugin/session-delivery-context/index.ts";
+import type { TerminalCertificateState } from "./terminal-certificate.ts";
 
 export type AuditWindowOptions = {
   closePassedAfterMs: number;
@@ -11,9 +12,13 @@ export type AuditWindowOptions = {
 };
 
 export type GuardOptions = {
+  arbiterActiveLimit: number;
   arbiterPromptTimeoutMs: number;
+  arbiterQueueLimit: number;
   auditWindow: AuditWindowOptions;
   arbiterAgent: string;
+  certificateIssuers: string[];
+  certificateWaitMs: number;
   enabled: boolean;
   initialDelayMs: number;
   maxCycles: number;
@@ -142,8 +147,17 @@ export type OwnerBoundaryVerdict = {
   reason: string;
 };
 
+export type ClaimClosureVerdict = {
+  claimId: string;
+  closureState: "supported" | "narrowed" | "blocked" | "unknown" | "stale";
+  evidenceRefs: string[];
+  maximumSupportedClaim: string;
+  outcomeRef: string;
+};
+
 export type CompletionVerdict = {
   auditID: string;
+  claimMatrix?: ClaimClosureVerdict[];
   confidence: "high" | "low" | "medium";
   evidenceGaps: string[];
   evidenceRefs: string[];
@@ -195,6 +209,7 @@ export type RootState = {
   settleTimer: ReturnType<typeof setTimeout> | null;
   state: GuardStateName;
   statusMessage: string | null;
+  terminalCertificate: TerminalCertificateState;
   waitReason: string | null;
   waitRecheckCount: number;
   waitRecheckTimer: ReturnType<typeof setTimeout> | null;

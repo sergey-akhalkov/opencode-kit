@@ -4,11 +4,12 @@
 Defines explicit portable model-routing profiles, launcher behavior, schema restrictions, and machine-local override boundaries.
 ## Requirements
 ### Requirement: Restricted complete model profiles
-The library SHALL support committed model profiles under `global/model-profiles/<id>.json` and gitignored personal profiles under `global/model-profiles/local/<id>.json`. Each profile SHALL be a complete restricted OpenCode config fragment containing only `$schema`, `model`, `small_model`, and per-agent `model` and `variant` routing. Each profile SHALL cover every governed built-in agent and every agent defined under `global/agents/` without adding model or variant pins to agent Markdown files.
+The library SHALL support committed model profiles under `global/model-profiles/<id>.json` and gitignored personal profiles under `global/model-profiles/local/<id>.json`. Each profile SHALL be a complete restricted OpenCode config fragment containing only `$schema`, `model`, `small_model`, and per-agent `model` and `variant` routing. Each profile SHALL cover every governed built-in agent and every agent defined under `global/agents/` except inherit-from-primary roles, without adding model or variant pins to agent Markdown files.
 
 #### Scenario: Complete committed profile
 - **WHEN** repository validation inspects a committed model profile
-- **THEN** the profile SHALL map the complete governed agent catalog to non-empty `provider/model` identifiers and variants
+- **THEN** the profile SHALL map the complete routed governed agent catalog to non-empty `provider/model` identifiers and variants
+- **AND** inherit-from-primary agents SHALL be omitted from the per-agent matrix
 - **AND** it SHALL contain no permission, tool, provider, prompt, MCP, credential, or unsupported metadata fields.
 
 #### Scenario: New reusable agent is added
@@ -45,11 +46,16 @@ The library SHALL provide a cross-platform launcher that applies one selected mo
 - **AND** the diagnostic SHALL identify the invalid profile selection without exposing unrelated paths or file content.
 
 ### Requirement: Shipped routing presets
-The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` committed presets. `quality-independent` SHALL route creation and diagnosis roles to GPT-5.6 Sol Xhigh and independent challenge roles to Grok 4.6 High. The single-model presets SHALL provide complete deterministic control matrices.
+The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` committed presets. `quality-independent` SHALL route creation roles to GPT-5.6 Sol Xhigh and independent challenge roles to Grok 4.6 High. `troubleshooter` SHALL omit per-agent model and variant pins and inherit the invoking primary session model. The single-model presets SHALL provide complete deterministic control matrices for every routed agent.
 
 #### Scenario: Recommended creator roles
 - **WHEN** `quality-independent` is selected
-- **THEN** `build`, `plan`, `general`, `compaction`, `implementation-worker`, and `troubleshooter` SHALL resolve to `openai/gpt-5.6-sol` with variant `xhigh`.
+- **THEN** `build`, `plan`, `general`, `compaction`, and `implementation-worker` SHALL resolve to `openai/gpt-5.6-sol` with variant `xhigh`.
+
+#### Scenario: Diagnosis role inherits primary
+- **WHEN** any committed profile is selected
+- **THEN** `troubleshooter` SHALL be omitted from the per-agent matrix
+- **AND** it SHALL inherit the invoking primary session model.
 
 #### Scenario: Recommended challenge roles
 - **WHEN** `quality-independent` is selected
@@ -57,8 +63,8 @@ The library SHALL ship `quality-independent`, `sol-only`, and `grok-only` commit
 
 #### Scenario: Single-model controls
 - **WHEN** `sol-only` or `grok-only` is validated
-- **THEN** every governed agent SHALL resolve respectively to `openai/gpt-5.6-sol`/`xhigh` or `xai/grok-4.6`/`high`
-- **AND** no governed agent SHALL rely on inherited routing inside those profiles.
+- **THEN** every routed governed agent SHALL resolve respectively to `openai/gpt-5.6-sol`/`xhigh` or `xai/grok-4.6`/`high`
+- **AND** no routed governed agent SHALL rely on inherited routing inside those profiles.
 
 ### Requirement: Visible selection and override semantics
 The profile launcher SHALL provide stable inspection output for the selected source and complete resolved routing matrix. Explicit OpenCode model overrides SHALL remain permitted, SHALL win over profile defaults at their supported boundary, and SHALL be reported as deviations rather than silently presented as profile-conforming execution.

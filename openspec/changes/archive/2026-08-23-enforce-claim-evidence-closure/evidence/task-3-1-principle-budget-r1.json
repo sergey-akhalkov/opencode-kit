@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "taskId": "3.1",
+  "candidateId": "enforce-claim-evidence-closure-planning-r1",
+  "environmentId": "windows-opencode-working-tree-r1",
+  "recordedAt": "2026-08-23T11:25:52.7544797Z",
+  "invocations": [
+    { "command": "node tools/test-contracts.ts", "status": 0, "tests": 71 },
+    { "command": "node tools/instruction-budget.ts --format json", "status": 0 },
+    { "command": "npm run instruction:inventory -- --source-scope catalog --format json", "status": 0 }
+  ],
+  "observed": {
+    "canonicalPrincipleOccurrences": 1,
+    "globalStartupTokenProxy": { "actual": 11974, "maximum": 13279 },
+    "coreStartupTokenProxy": { "actual": 11974, "maximum": 12000 },
+    "discoveryMetadataTokenProxy": { "actual": 2236, "maximum": 2239 },
+    "duplicatedCompleteWorkflow": false
+  },
+  "result": "complete"
+}
