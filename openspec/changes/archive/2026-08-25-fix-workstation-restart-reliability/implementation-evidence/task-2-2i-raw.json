@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-25T14:01:42.547Z",
+  "mechanism": "repair-complete-static-module-set-then-single-tray-start-and-restart",
+  "sourceHashes": {
+    "controller": "2A7E0ED41FB7FD215C33EFFC249ADBED0127CEBB1B568EFBA5A18120EB6A469F",
+    "sharedTools": "7299EB6BBAC337E4A46972969D7255408527D943418E5416ADDB593073FBF0C9",
+    "configurationModule": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557"
+  },
+  "elevated": true,
+  "before": {
+    "serverTask": {
+      "state": "Ready",
+      "lastRunTime": "2026-08-25T16:31:56.0000000+03:00",
+      "lastTaskResult": 1
+    },
+    "trayTask": {
+      "state": "Ready",
+      "lastRunTime": "2026-08-25T16:31:44.0000000+03:00",
+      "lastTaskResult": 0
+    },
+    "identities": {
+      "status": "exited",
+      "candidate": "db50301a63b53a70507d739cc6974a3fa8ffd7eb0294102c9b0742e3959e7bfa",
+      "supervisorProcessId": 13916,
+      "serverRootProcessId": 12560,
+      "listenerProcessId": 9732,
+      "graphifyRootProcessId": 3096,
+      "graphifyListenerProcessId": 13352,
+      "trayColor": "red"
+    },
+    "portOwners": {
+      "4096": [],
+      "4097": []
+    },
+    "manifestCandidate": "234163db9617b4c51ad4bcaf665090910cd1b4a01f3ab2ddd548ae328879ac11",
+    "errorLogBytes": 216139
+  },
+  "staleTray": [
+    {
+      "processId": 11812,
+      "parentProcessId": 8100,
+      "creationDate": "08/24/2026 18:17:28",
+      "executablePath": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "commandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe\"  -NoLogo -NoProfile -STA -WindowStyle Hidden -File \"C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1\""
+    }
+  ],
+  "trayTaskStop": {
+    "status": 0,
+    "stdout": "Ready",
+    "stderr": ""
+  },
+  "serverTaskStop": {
+    "status": 0,
+    "stdout": "Ready",
+    "stderr": ""
+  },
+  "trayProcessStop": {
+    "processId": 11812,
+    "status": "stopped",
+    "taskkillStatus": 0,
+    "taskkillError": null,
+    "stderr": ""
+  },
+  "install": {
+    "args": [
+      "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.ts",
+      "install"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"install\",\n  \"status\": \"repaired-stopped\",\n  \"candidate\": \"9f5dfb841e453fa385bf5f59543b3e466f3bcdd5ce2f999d0fd8d4cfe3db9630\",\n  \"task\": {\n    \"exists\": true,\n    \"state\": \"Ready\",\n    \"runLevel\": \"Highest\",\n    \"triggerCount\": 0,\n    \"actionCount\": 1,\n    \"actions\": [\n      {\n        \"execute\": \"C:\\\\Windows\\\\System32\\\\wscript.exe\",\n        \"arguments\": \"//nologo C:\\\\ProgramData\\\\OpenCodeWorkstation\\\\invoke.vbs serve\",\n        \"workingDirectory\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\"\n      }\n    ]\n  },\n  \"protectedRoot\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\",\n  \"alacritty\": {\n    \"ordinaryPath\": \"C:\\\\Users\\\\noilw\\\\AppData\\\\Roaming\\\\alacritty\\\\alacritty.toml\",\n    \"ordinarySha256\": \"3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0\",\n    \"protectedPath\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\\\\alacritty.toml\",\n    \"protectedSha256\": \"3483C7B0A0F7EB39C198DBBA2D77D96DE0203AD5D103B39A8FE1798628AA0616\",\n    \"previousExists\": true,\n    \"previousSha256\": \"3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0\",\n    \"backupPath\": \"C:\\\\ProgramData\\\\OpenCodeWorkstation\\\\backup\\\\alacritty.toml\"\n  },\n  \"shortcuts\": {\n    \"start\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode Server - Start.lnk\",\n      \"created\": true\n    },\n    \"restart\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode Server - Restart.lnk\",\n      \"created\": true\n    },\n    \"opencode-kit\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - opencode-kit.lnk\",\n      \"created\": true\n    },\n    \"pmac-emulator\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - pmac-emulator.lnk\",\n      \"created\": true\n    },\n    \"controller-gateway-service\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - controller-gateway-service.lnk\",\n      \"created\": true\n    },\n    \"windows-ui-automation\": {\n      \"path\": \"C:\\\\Users\\\\noilw\\\\OneDrive\\\\Desktop\\\\OpenCode - windows-ui-automation.lnk\",\n      \"created\": true\n    }\n  },\n  \"credential\": {\n    \"present\": true,\n    \"exposed\": false\n  },\n  \"graphifyCredential\": {\n    \"present\": true,\n    \"exposed\": false\n  }\n}\n",
+    "stderr": ""
+  },
+  "installedPackage": {
+    "candidate": "9f5dfb841e453fa385bf5f59543b3e466f3bcdd5ce2f999d0fd8d4cfe3db9630",
+    "controller": {
+      "manifest": "2A7E0ED41FB7FD215C33EFFC249ADBED0127CEBB1B568EFBA5A18120EB6A469F",
+      "actual": "2A7E0ED41FB7FD215C33EFFC249ADBED0127CEBB1B568EFBA5A18120EB6A469F"
+    },
+    "sharedTools": {
+      "manifest": "7299EB6BBAC337E4A46972969D7255408527D943418E5416ADDB593073FBF0C9",
+      "actual": "7299EB6BBAC337E4A46972969D7255408527D943418E5416ADDB593073FBF0C9"
+    },
+    "configurationModule": {
+      "manifest": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557",
+      "actual": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557"
+    }
+  },
+  "installedHelp": {
+    "args": [
+      "C:\\ProgramData\\OpenCodeWorkstation\\opencode-workstation.ts",
+      "--help"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "OpenCode workstation controller\n\nUsage:\n  opencode-workstation.ts --help\n  opencode-workstation.ts preflight [--config <path>]\n  opencode-workstation.ts status\n  opencode-workstation.ts install [--config <path>]\n  opencode-workstation.ts start\n  opencode-workstation.ts stop\n  opencode-workstation.ts restart\n  opencode-workstation.ts launch --repository <id>\n  opencode-workstation.ts rollback\n  opencode-workstation.ts rollback --dry-run\n\nRepository ids:\n  opencode-kit\n  pmac-emulator\n  controller-gateway-service\n  windows-ui-automation\n\nThe help, preflight, and status modes are read-only. All output except help is JSON.\n\nMachine-local mappings live in gitignored opencode-workstation.config.json.\nCopy opencode-workstation.config.example.json to that name and replace placeholders.\nDo not pass the tracked example as --config.\n",
+    "stderr": ""
+  },
+  "trayTaskStart": {
+    "status": 0,
+    "stdout": "Running",
+    "stderr": ""
+  },
+  "freshTrayReady": {
+    "label": "fresh-tray-ready",
+    "ok": true,
+    "waitedMs": 384
+  },
+  "freshTray": [
+    {
+      "processId": 7456,
+      "parentProcessId": 5136,
+      "creationDate": "08/25/2026 17:02:31",
+      "executablePath": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "commandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe\"  -NoLogo -NoProfile -STA -WindowStyle Hidden -File \"C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1\""
+    }
+  ],
+  "initialHealthy": {
+    "label": "tray-started-server-healthy",
+    "ok": true,
+    "waitedMs": 56192
+  },
+  "initialGreen": {
+    "label": "tray-green-before-restart",
+    "ok": true,
+    "waitedMs": 2583
+  },
+  "beforeRestart": {
+    "status": "running",
+    "candidate": "9f5dfb841e453fa385bf5f59543b3e466f3bcdd5ce2f999d0fd8d4cfe3db9630",
+    "supervisorProcessId": 6412,
+    "serverRootProcessId": 13800,
+    "listenerProcessId": 9972,
+    "graphifyRootProcessId": 9940,
+    "graphifyListenerProcessId": 8940,
+    "trayColor": "green"
+  },
+  "trayCommandWrittenAt": "2026-08-25T14:03:31.860Z",
+  "restartingObserved": {
+    "label": "tray-restarting-observed",
+    "ok": true,
+    "waitedMs": 262
+  },
+  "trayRestart": {
+    "label": "one-tray-restart",
+    "ok": true,
+    "waitedMs": 108151
+  },
+  "afterRestart": {
+    "status": "running",
+    "candidate": "9f5dfb841e453fa385bf5f59543b3e466f3bcdd5ce2f999d0fd8d4cfe3db9630",
+    "supervisorProcessId": 14892,
+    "serverRootProcessId": 3396,
+    "listenerProcessId": 8992,
+    "graphifyRootProcessId": 9976,
+    "graphifyListenerProcessId": 5276,
+    "trayColor": "green"
+  },
+  "restartErrors": [],
+  "afterTasks": {
+    "server": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T17:03:57.0000000+03:00",
+      "lastTaskResult": 267009
+    },
+    "tray": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T17:02:31.0000000+03:00",
+      "lastTaskResult": 267009
+    }
+  },
+  "ok": true,
+  "restore": {
+    "skipped": true,
+    "reason": "already-healthy"
+  },
+  "finishedAt": "2026-08-25T14:05:32.463Z"
+}

@@ -5,8 +5,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { CORE_SKILLS } from "../runtime-surface-profile.ts";
-import { materializeRuntimeSurfaceProfile } from "../runtime-surface-profile.ts";
+import { CORE_SKILLS, ROADMAP_MISSION_PLUGIN_FILES, materializeRuntimeSurfaceProfile } from "../runtime-surface-profile.ts";
 
 export type LoaderSkill = { location: string; name: string };
 
@@ -38,6 +37,18 @@ export type LoaderSurfaceEvaluation = LoaderEvaluation & {
   resolvedPaths: Record<string, string>;
 };
 
+export type MissionLoaderEvaluation = {
+  commandNames: string[];
+  configStatus: number | null;
+  missingCommands: string[];
+  missingPlugins: string[];
+  model: unknown;
+  pluginPaths: string[];
+  stagingPathCount: number;
+  status: "failed" | "passed";
+  unresolvedPlaceholderCount: number;
+};
+
 const DOMAIN_SKILLS = [
   "com-activex-adapter-implementation",
   "rust-workspace-bootstrap",
@@ -50,11 +61,12 @@ function usage(): string {
     "Usage:",
     "  npm run proof:runtime-surface-loader -- [options]",
     "",
-    "Start installed OpenCode against a disposable core config and verify skills, agents, paths, and permissions.",
+    "Start installed OpenCode against a disposable generated profile and verify its loader-visible surface.",
     "",
     "Options:",
     "  --candidate-id <id>     Evidence candidate id.",
     "  --evidence-root <path>  Create-new evidence directory. Required with --candidate-id.",
+    "  --profile <core|all>     Generated profile to inspect. Defaults to core.",
     "  --help, -h              Show this help. No effects.",
   ].join("\n");
 }
@@ -63,10 +75,11 @@ function repositoryRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 }
 
-function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: string | null } | null {
+function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: string | null; profile: "all" | "core" } | null {
   if (args.includes("--help") || args.includes("-h")) return null;
   let candidateId: string | null = null;
   let evidenceRoot: string | null = null;
+  let profile: "all" | "core" = "core";
   for (let index = 0; index < args.length; index++) {
     const arg = args[index]!;
     const value = args[index + 1];
@@ -76,6 +89,9 @@ function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: 
     } else if (arg === "--evidence-root" && value != null) {
       evidenceRoot = path.resolve(value);
       index++;
+    } else if (arg === "--profile" && (value === "all" || value === "core")) {
+      profile = value;
+      index++;
     } else {
       throw new Error(`Unknown or incomplete option: ${arg}`);
     }
@@ -83,7 +99,7 @@ function parseArgs(args: string[]): { candidateId: string | null; evidenceRoot: 
   if ((candidateId == null) !== (evidenceRoot == null)) {
     throw new Error("--candidate-id and --evidence-root must be supplied together.");
   }
-  return { candidateId, evidenceRoot };
+  return { candidateId, evidenceRoot, profile };
 }
 
 export function extractJson(text: string): unknown {
@@ -157,7 +173,7 @@ export function evaluateLoaderSkills(
   };
 }
 
-function isolatedEnv(configDir: string, runtimeRoot: string): NodeJS.ProcessEnv {
+function isolatedEnv(configDir: string, runtimeRoot: string, configuredPlugins = false): NodeJS.ProcessEnv {
   const environment = { ...process.env };
   environment.OPENCODE_CONFIG_DIR = configDir;
   environment.XDG_CACHE_HOME = path.join(runtimeRoot, "cache");
@@ -166,7 +182,12 @@ function isolatedEnv(configDir: string, runtimeRoot: string): NodeJS.ProcessEnv 
   environment.XDG_STATE_HOME = path.join(runtimeRoot, "state");
   environment.OPENCODE_DISABLE_EXTERNAL_SKILLS = "1";
   environment.OPENCODE_DISABLE_CLAUDE_CODE_SKILLS = "1";
-  environment.OPENCODE_PURE = "1";
+  if (configuredPlugins) {
+    environment.OPENCODE_DISABLE_DEFAULT_PLUGINS = "1";
+    delete environment.OPENCODE_PURE;
+  } else {
+    environment.OPENCODE_PURE = "1";
+  }
   delete environment.OPENCODE_CONFIG;
   delete environment.OPENCODE_CONFIG_CONTENT;
   return environment;
@@ -325,6 +346,82 @@ export function captureCoreLoaderSurface(root: string): {
   };
 }
 
+function missionPluginPaths(config: Record<string, unknown>, generatedRoot: string): string[] {
+  const plugins = Array.isArray(config.plugin) ? config.plugin : [];
+  return plugins.flatMap((entry) => {
+    const source = typeof entry === "string" ? entry : Array.isArray(entry) && typeof entry[0] === "string" ? entry[0] : null;
+    if (source == null || !source.startsWith("file:")) return [];
+    const relative = path.relative(generatedRoot, fileURLToPath(source)).replaceAll("\\", "/");
+    return relative.startsWith("../") ? [] : [relative];
+  });
+}
+
+export function captureMissionLoaderSurface(root: string): {
+  cleanup: () => void;
+  evaluation: MissionLoaderEvaluation;
+  generatedRoot: string;
+  projectRoot: string;
+} {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), "runtime-surface-loader-all-"));
+  const generatedRoot = path.join(root, "global", ".runtime-profiles", `proof-loader-${process.pid}-${crypto.randomBytes(4).toString("hex")}`);
+  const projectRoot = path.join(work, "unrelated-app");
+  const runtimeRoot = path.join(work, "xdg");
+  fs.mkdirSync(projectRoot, { recursive: true });
+  fs.writeFileSync(path.join(projectRoot, "README.md"), "# Unrelated fixture\n");
+  materializeRuntimeSurfaceProfile({ profileName: "all", root, targetRoot: generatedRoot });
+  fs.copyFileSync(
+    path.join(generatedRoot, "opencode.local.instructions.example.md"),
+    path.join(generatedRoot, "opencode.local.instructions.md"),
+  );
+  const configResult = runOpenCode(projectRoot, ["debug", "config"], isolatedEnv(generatedRoot, runtimeRoot, true));
+  if (configResult.status !== 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    fs.rmSync(generatedRoot, { recursive: true, force: true });
+    throw new Error(`opencode debug config exited ${configResult.status ?? "unknown"}: ${configResult.stderr || configResult.stdout}`);
+  }
+  const config = extractJson(configResult.stdout) as Record<string, unknown>;
+  const pluginPaths = missionPluginPaths(config, generatedRoot);
+  const requiredPlugins = ROADMAP_MISSION_PLUGIN_FILES;
+  const command = config.command != null && typeof config.command === "object" && !Array.isArray(config.command)
+    ? config.command as Record<string, unknown>
+    : {};
+  const commandNames = Object.keys(command).filter((name) => name.startsWith("mission-")).sort((left, right) => left.localeCompare(right));
+  const requiredCommands = ["mission-resume", "mission-run", "mission-status", "mission-stop"];
+  const missingPlugins = requiredPlugins.filter((relative) => pluginPaths.filter((entry) => entry === relative).length !== 1);
+  const missingCommands = requiredCommands.filter((name) => !commandNames.includes(name));
+  const serializedConfig = JSON.stringify(config);
+  const stagingPathCount = serializedConfig.split(".staging-").length - 1;
+  const unresolvedPlaceholderCount = serializedConfig.split("__OPENCODE_").length - 1;
+  const evaluation: MissionLoaderEvaluation = {
+    commandNames,
+    configStatus: configResult.status,
+    missingCommands,
+    missingPlugins,
+    model: config.model,
+    pluginPaths,
+    stagingPathCount,
+    status: configResult.status === 0
+        && config.model === "openai/gpt-5.6-sol"
+        && missingPlugins.length === 0
+        && missingCommands.length === 0
+        && stagingPathCount === 0
+        && unresolvedPlaceholderCount === 0
+      ? "passed"
+      : "failed",
+    unresolvedPlaceholderCount,
+  };
+  return {
+    cleanup: () => {
+      fs.rmSync(work, { recursive: true, force: true });
+      fs.rmSync(generatedRoot, { recursive: true, force: true });
+      if (fs.existsSync(work) || fs.existsSync(generatedRoot)) throw new Error("Disposable loader root still exists after cleanup.");
+    },
+    evaluation,
+    generatedRoot,
+    projectRoot,
+  };
+}
+
 function isMainModule(): boolean {
   const entrypoint = process.argv[1];
   return Boolean(entrypoint && import.meta.url === pathToFileURL(path.resolve(entrypoint)).href);
@@ -336,7 +433,9 @@ if (isMainModule()) {
     console.log(usage());
     process.exit(0);
   }
-  const captured = captureCoreLoaderSurface(repositoryRoot());
+  const captured = options.profile === "all"
+    ? captureMissionLoaderSurface(repositoryRoot())
+    : captureCoreLoaderSurface(repositoryRoot());
   let cleanupComplete = false;
   let exitCode = 1;
   try {
@@ -348,8 +447,9 @@ if (isMainModule()) {
         cleanup: "complete",
         candidateId: options.candidateId,
         evaluation: captured.evaluation,
-        agentStatus: captured.agentStatus,
-        skillStatus: captured.skillStatus,
+        profile: options.profile,
+        agentStatus: "agentStatus" in captured ? captured.agentStatus : null,
+        skillStatus: "skillStatus" in captured ? captured.skillStatus : null,
         tool: "opencode-dev-kit-runtime-surface-loader",
       };
       fs.writeFileSync(path.join(options.evidenceRoot, "raw.json"), `${JSON.stringify(raw, null, 2)}\n`, { flag: "wx" });

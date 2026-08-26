@@ -19,6 +19,11 @@ type Options = {
 };
 
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+const productSourcePaths = [
+  "global/bin/roadmap-mission.ts",
+  "global/extensions/opencode-pty-bridge.ts",
+  "global/extensions/roadmap-mission-launcher.ts",
+] as const;
 
 function usage(): string {
   return [
@@ -151,6 +156,7 @@ function writeProject(project: string): void {
   });
   writeNew(path.join(project, "AGENTS.md"), "# Disposable Launcher Stop Proof\n\n## Runtime Authority\n");
   writeNew(path.join(project, "docs", "roadmap.md"), "# Disposable Roadmap\n");
+  writeNew(path.join(project, "opencode-dev-kit", "missions", "cockpit-failure.json"), json(mission("cockpit-failure")));
   writeNew(path.join(project, "opencode-dev-kit", "missions", "launcher-loss.json"), json(mission("launcher-loss")));
   writeNew(path.join(project, "opencode-dev-kit", "missions", "launcher-proof.json"), json(mission("launcher-proof")));
   writeNew(path.join(project, "opencode-dev-kit", "controller-adapter.json"), json({
@@ -209,10 +215,17 @@ function evaluate(raw: Record<string, unknown>, candidateId: string): Record<str
   const runtimeLoss = record(raw.runtimeLoss);
   const running = record(raw.running);
   const requests = record(raw.requests);
+  const visibilityFailure = record(raw.visibilityFailure);
+  const visibilityFailureStatus = record(visibilityFailure?.status);
+  const controllerPreflight = record(raw.controllerPreflight);
   const checks = {
     candidateMatched: raw.candidateId === candidateId,
     cleanupComplete: raw.cleanup === "complete",
-    cockpitOpenedBeforeSpawn: requests?.cockpit === 3 && requests?.firstCockpitRequest === 0,
+    cockpitFailureBlocked: String(visibilityFailure?.message).includes("PTY cockpit command did not confirm visibility"),
+    cockpitFailureNoController: visibilityFailure?.ptyCountBefore === visibilityFailure?.ptyCountAfter,
+    cockpitFailureStatus: visibilityFailureStatus?.visibility === "not-opened" && visibilityFailureStatus?.pty === null,
+    cockpitOpenedBeforeSpawn: requests?.cockpit === 4 && requests?.firstCockpitRequest === 0,
+    controllerPreflight: controllerPreflight?.exitCode === 0 && Number(controllerPreflight?.eligibleMatches) >= 1,
     gracefulActiveCleared: graceful?.activeOperation === null,
     gracefulPaused: graceful?.durableDisposition === "paused",
     gracefulTerminal: record(graceful?.pty)?.status === "exited",
@@ -257,6 +270,7 @@ async function capture(opts: Options): Promise<void> {
   const lossProject = path.join(fixture, "loss-project");
   const project = path.join(fixture, "project");
   const requests: Array<Record<string, unknown>> = [];
+  let cockpitAvailable = true;
   let providerCalls = 0;
   let hooks: Awaited<ReturnType<typeof createRoadmapMissionLauncher>> | null = null;
   let raw: Record<string, unknown> | null = null;
@@ -278,7 +292,7 @@ async function capture(opts: Options): Promise<void> {
       }
       requests.push({ body, method: request.method, path: url.pathname });
       if (url.pathname.includes("chat/completions")) providerCalls++;
-      if (url.pathname.endsWith("/tui/execute-command")) return Response.json(true);
+      if (url.pathname.endsWith("/tui/execute-command")) return Response.json(cockpitAvailable);
       if (url.pathname.endsWith("/tui/show-toast")) return Response.json(true);
       return Response.json({});
     },
@@ -288,6 +302,33 @@ async function capture(opts: Options): Promise<void> {
     writeProject(lossProject);
     writeProject(project);
     process.env.PATH = `${bin}${path.delimiter}${previousPath ?? ""}`;
+    const preflightPty = SHARED_PTY_MANAGER.spawn({
+      args: [
+        path.join(sourceRoot, "global", "bin", "roadmap-mission.ts"),
+        "preflight",
+        "--root",
+        project,
+        "--global-source",
+        path.join(sourceRoot, "global"),
+        "--mission",
+        "opencode-dev-kit/missions/launcher-proof.json",
+      ],
+      command: process.execPath,
+      notifyOnExit: false,
+      title: "Roadmap mission controller preflight probe",
+      workdir: project,
+    });
+    await waitFor(
+      () => ["exited", "killed"].includes(SHARED_PTY_MANAGER.get(preflightPty.id)?.status ?? ""),
+      "controller preflight probe exit",
+    );
+    const controllerPreflight = {
+      eligibleMatches: SHARED_PTY_MANAGER.search(preflightPty.id, /"status": "eligible"/)?.totalMatches ?? 0,
+      exitCode: SHARED_PTY_MANAGER.get(preflightPty.id)?.exitCode ?? null,
+    };
+    if (controllerPreflight.exitCode !== 0 || controllerPreflight.eligibleMatches < 1) {
+      throw new Error(`Controller preflight probe failed: ${json(controllerPreflight).trimEnd()}`);
+    }
     const client = proofClient(api.url.href, project);
     const launcherInput = {
       client: { _client: (client as unknown as { client: unknown }).client },
@@ -325,6 +366,20 @@ async function capture(opts: Options): Promise<void> {
     await command(hooks, "mission-status");
     const hardKill = JSON.parse(statusText(requests)) as Record<string, unknown>;
 
+    const ptyCountBeforeVisibilityFailure = SHARED_PTY_MANAGER.list().length;
+    cockpitAvailable = false;
+    await command(hooks, "mission-run", "cockpit-failure");
+    const visibilityFailureMessage = statusText(requests);
+    await command(hooks, "mission-status", "cockpit-failure");
+    const visibilityFailureStatus = JSON.parse(statusText(requests)) as Record<string, unknown>;
+    const visibilityFailure = {
+      message: visibilityFailureMessage,
+      ptyCountAfter: SHARED_PTY_MANAGER.list().length,
+      ptyCountBefore: ptyCountBeforeVisibilityFailure,
+      status: visibilityFailureStatus,
+    };
+    cockpitAvailable = true;
+
     await hooks.dispose?.();
     hooks = null;
     const lossClient = proofClient(api.url.href, lossProject);
@@ -353,10 +408,17 @@ async function capture(opts: Options): Promise<void> {
     raw = {
       candidateId: opts.candidateId,
       cleanup: "pending",
+      controllerPreflight,
       fixture: {
         adapterSha256: hash(path.join(project, "opencode-dev-kit", "controller-adapter.json")),
+        cockpitFailureMissionSha256: hash(path.join(project, "opencode-dev-kit", "missions", "cockpit-failure.json")),
         lossMissionSha256: hash(path.join(lossProject, "opencode-dev-kit", "missions", "launcher-loss.json")),
         missionSha256: hash(path.join(project, "opencode-dev-kit", "missions", "launcher-proof.json")),
+      },
+      environment: {
+        bun: Bun.version,
+        node: process.version,
+        platform: process.platform,
       },
       graceful,
       hardKill,
@@ -371,6 +433,11 @@ async function capture(opts: Options): Promise<void> {
       runtimeLoss,
       running,
       schemaVersion: 1,
+      sources: productSourcePaths.map((relative) => ({
+        path: relative,
+        sha256: hash(path.join(sourceRoot, relative)),
+      })),
+      visibilityFailure,
     };
   } catch (error) {
     failure = error;

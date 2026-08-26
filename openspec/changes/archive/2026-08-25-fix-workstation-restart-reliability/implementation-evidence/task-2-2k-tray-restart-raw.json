@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-25T14:45:42.289Z",
+  "elevated": true,
+  "package": {
+    "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+    "sourceController": "184698D0AE8CA55DE2903DD9EE74FB484C6BFFC8CC1BDDC06BAD192D1B3493FE",
+    "installedController": "184698D0AE8CA55DE2903DD9EE74FB484C6BFFC8CC1BDDC06BAD192D1B3493FE",
+    "manifestController": "184698D0AE8CA55DE2903DD9EE74FB484C6BFFC8CC1BDDC06BAD192D1B3493FE"
+  },
+  "before": {
+    "identities": {
+      "status": "running",
+      "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+      "supervisorProcessId": 14768,
+      "serverRootProcessId": 9108,
+      "listenerProcessId": 11576,
+      "graphifyRootProcessId": 10708,
+      "graphifyListenerProcessId": 2812,
+      "trayColor": "green"
+    },
+    "serverTask": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T17:43:15.0000000+03:00",
+      "lastTaskResult": 267009
+    },
+    "trayTask": {
+      "state": "Ready",
+      "lastRunTime": "1999-11-30T00:00:00.0000000+03:00",
+      "lastTaskResult": 267011
+    },
+    "tray": [
+      {
+        "processId": 15112,
+        "parentProcessId": 7304,
+        "creationDate": "08/25/2026 17:36:53",
+        "executablePath": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+        "commandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe\"  -NoLogo -NoProfile -STA -WindowStyle Hidden -File \"C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1\""
+      }
+    ]
+  },
+  "trayTaskStop": {
+    "status": 0,
+    "stdout": "Ready",
+    "stderr": ""
+  },
+  "trayStop": {
+    "processId": 15112,
+    "status": "stopped",
+    "taskkillStatus": 0,
+    "stderr": ""
+  },
+  "trayTaskStart": {
+    "status": 0,
+    "stdout": "Running",
+    "stderr": ""
+  },
+  "freshTrayReady": {
+    "label": "fresh-tray",
+    "ok": true,
+    "waitedMs": 965
+  },
+  "freshTray": [
+    {
+      "processId": 13248,
+      "parentProcessId": 8116,
+      "creationDate": "08/25/2026 17:46:38",
+      "executablePath": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "commandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe\"  -NoLogo -NoProfile -STA -WindowStyle Hidden -File \"C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1\""
+    }
+  ],
+  "greenBeforeRestart": {
+    "label": "healthy-green-before-restart",
+    "ok": true,
+    "waitedMs": 75498
+  },
+  "beforeRestart": {
+    "status": "running",
+    "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+    "supervisorProcessId": 14768,
+    "serverRootProcessId": 9108,
+    "listenerProcessId": 11576,
+    "graphifyRootProcessId": 10708,
+    "graphifyListenerProcessId": 2812,
+    "trayColor": "green"
+  },
+  "commandWrittenAt": "2026-08-25T14:47:57.643Z",
+  "restartingObserved": {
+    "label": "tray-restarting",
+    "ok": true,
+    "waitedMs": 236
+  },
+  "restarted": {
+    "label": "tray-replaced-runtime",
+    "ok": false,
+    "waitedMs": 180000
+  },
+  "afterRestart": {
+    "status": "running",
+    "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+    "supervisorProcessId": 9276,
+    "serverRootProcessId": 13612,
+    "listenerProcessId": 13172,
+    "graphifyRootProcessId": 3004,
+    "graphifyListenerProcessId": 4224,
+    "trayColor": "red"
+  },
+  "restartErrors": [
+    "{\"schemaVersion\":1,\"operation\":\"restart\",\"status\":\"error\",\"error\":{\"type\":\"Error\",\"message\":\"Managed server did not reach validated running state.\",\"cause\":\"Managed server state is 'starting', not running.\",\"stack\":\"Error: Managed server did not reach validated running state.\\n    at waitForValidatedRunningState (C:\\\\ProgramData\\\\OpenCodeWorkstation\\\\opencode-workstation.ts:1028:13)\\n    at async restart (unknown)\\n    at async main (unknown)\"}}"
+  ],
+  "ok": false,
+  "error": "Failed to inspect task 'OpenCode Workstation Shared Server'",
+  "restore": {
+    "before": {
+      "identities": {
+        "status": "running",
+        "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+        "supervisorProcessId": 9276,
+        "serverRootProcessId": 13612,
+        "listenerProcessId": 13172,
+        "graphifyRootProcessId": 3004,
+        "graphifyListenerProcessId": 4224,
+        "trayColor": "red"
+      },
+      "serverTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:48:49.0000000+03:00",
+        "lastTaskResult": 267009
+      },
+      "trayTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:46:38.0000000+03:00",
+        "lastTaskResult": 267009
+      }
+    },
+    "healthy": {
+      "label": "mandatory-health-restore",
+      "ok": true,
+      "waitedMs": 15157
+    },
+    "lampTaskStop": {
+      "status": 0,
+      "stdout": "Ready",
+      "stderr": ""
+    },
+    "lampTrayStop": {
+      "processId": 13248,
+      "status": "stopped",
+      "taskkillStatus": 0,
+      "stderr": ""
+    },
+    "lampTaskStart": {
+      "status": 0,
+      "stdout": "Running",
+      "stderr": ""
+    },
+    "green": {
+      "label": "mandatory-green-restore",
+      "ok": true,
+      "waitedMs": 47602
+    },
+    "after": {
+      "identities": {
+        "status": "running",
+        "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+        "supervisorProcessId": 9276,
+        "serverRootProcessId": 13612,
+        "listenerProcessId": 13172,
+        "graphifyRootProcessId": 3004,
+        "graphifyListenerProcessId": 4224,
+        "trayColor": "green"
+      },
+      "serverTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:48:49.0000000+03:00",
+        "lastTaskResult": 267009
+      },
+      "trayTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:51:37.0000000+03:00",
+        "lastTaskResult": 267009
+      }
+    }
+  },
+  "finishedAt": "2026-08-25T14:52:31.886Z"
+}

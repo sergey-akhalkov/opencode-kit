@@ -1,0 +1,548 @@
+{
+  "candidate": {
+    "sourceIdentity": [
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "f209c96c72bb66a00d7b30dc519ede1dbbffc361092327003e059edfb3064b57"
+      },
+      {
+        "path": "global/plugin/project-memory/index.ts",
+        "sha256": "fb5e913bb2aa252f5951bbd24e063a71fc216d26b825ef58ef17a1bc1de3bacd"
+      },
+      {
+        "path": "global/plugin/project-memory/recall.ts",
+        "sha256": "ac7fd1385d9c05493f63bcd5ea5b8bc5edfc984406deff13d3cfcce5cd71850a"
+      },
+      {
+        "path": "global/plugin/project-memory/records.ts",
+        "sha256": "be2c3468a414d923c387776d783893018f196f2d8b4792e49a7ed15e080baae9"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "f7d38a38778b1b34bf2369375e42dd7985dc15b70ee6383777bf22403681898e"
+      },
+      {
+        "path": "tools/proofs/project-memory-context.ts",
+        "sha256": "99ea3a6f64814745e833444968c90c622117185414db0a990d25d1fe38b31e30"
+      }
+    ]
+  },
+  "checks": {
+    "seed-schema": true,
+    "seed-readback": true,
+    "regeneration-stable": true,
+    "relevant-hit-selector-boost": true,
+    "weak-query-miss": true,
+    "candidate-exclusion": true,
+    "invalidated-exclusion": true,
+    "age-stale-exclusion": true,
+    "fingerprint-mismatch": true,
+    "result-budget": true,
+    "malformed-quarantine": true,
+    "primary-root-injection": true,
+    "privacy-redaction": true,
+    "tools-bounded": true,
+    "root-identity-isolation": true,
+    "disabled-mode": true,
+    "subagent-exclusion-direct": true,
+    "process-direct": true,
+    "process-hooks": true,
+    "serena-read-only": true,
+    "no-side-effects": true,
+    "all-members-supported": true,
+    "cleanup-complete": true
+  },
+  "cleanup": "complete",
+  "environment": {
+    "externalNetworkAllowed": false,
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "fixture": {
+    "path": "tools/proofs/fixtures/project-memory/pmc-001.seed.json",
+    "sha256": "0c40fce19101e9ce1338008c8dfd7d4364ecffdba1d5e504c441bb929cc6a986"
+  },
+  "normalizedOutput": {
+    "memberObservations": [
+      {
+        "memberId": "relevant-active-hit",
+        "checkIds": [
+          "relevant-hit-selector-boost"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "weak-query-miss",
+        "checkIds": [
+          "weak-query-miss"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "exact-selector-boost",
+        "checkIds": [
+          "relevant-hit-selector-boost"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "candidate-exclusion",
+        "checkIds": [
+          "candidate-exclusion"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "invalidated-exclusion",
+        "checkIds": [
+          "invalidated-exclusion"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "age-stale-exclusion",
+        "checkIds": [
+          "age-stale-exclusion"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "fingerprint-mismatch",
+        "checkIds": [
+          "fingerprint-mismatch"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "malformed-quarantine",
+        "checkIds": [
+          "malformed-quarantine",
+          "process-direct"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "project-root-redaction",
+        "checkIds": [
+          "privacy-redaction"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "secret-redaction",
+        "checkIds": [
+          "privacy-redaction"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "result-budget",
+        "checkIds": [
+          "result-budget",
+          "tools-bounded"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "corpus-envelope",
+        "checkIds": [
+          "process-direct"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "root-identity-isolation",
+        "checkIds": [
+          "root-identity-isolation"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "primary-root-injection",
+        "checkIds": [
+          "primary-root-injection"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "subagent-exclusion",
+        "checkIds": [
+          "process-hooks"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "hook-order-timeout",
+        "checkIds": [
+          "process-hooks"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "selection-revalidation",
+        "checkIds": [
+          "process-hooks"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "compaction-continuity",
+        "checkIds": [
+          "process-hooks"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "disabled-mode",
+        "checkIds": [
+          "disabled-mode",
+          "process-direct"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "concurrent-append",
+        "checkIds": [
+          "process-direct"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "serena-read-only",
+        "checkIds": [
+          "serena-read-only"
+        ],
+        "status": "supported"
+      },
+      {
+        "memberId": "no-worktree-external-network-effects",
+        "checkIds": [
+          "no-side-effects"
+        ],
+        "status": "supported"
+      }
+    ],
+    "queryObservations": [
+      {
+        "id": "relevant-hit-selector-boost",
+        "capsuleBytes": 1019,
+        "capsuleSha256": "047f80a719d0306fa16014771599c71092a82f459f61689956212fc400474770",
+        "omitted": 0,
+        "order": [
+          "exact-selector",
+          "relevant-active",
+          "serena:serena_06b95d547a256689"
+        ],
+        "scores": [
+          {
+            "id": "exact-selector",
+            "score": 12.931807481447045,
+            "scoreEvidence": {
+              "bm25": 2.931807481447044,
+              "exactTrigger": false,
+              "exactPath": true,
+              "exactSymbol": true,
+              "matchedTerms": 1
+            }
+          },
+          {
+            "id": "relevant-active",
+            "score": 36.670137301756796,
+            "scoreEvidence": {
+              "bm25": 28.670137301756792,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 2
+            }
+          },
+          {
+            "id": "serena:serena_06b95d547a256689",
+            "score": 11.528018193430663,
+            "scoreEvidence": {
+              "bm25": 11.528018193430663,
+              "exactTrigger": false,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 2
+            }
+          }
+        ],
+        "supported": true,
+        "truncated": false,
+        "warnings": [
+          "malformed:malformed-record:record_7ae1c6113465"
+        ]
+      },
+      {
+        "id": "weak-query-miss",
+        "capsuleBytes": 296,
+        "capsuleSha256": "f43a6fc775935968524f922f91c63e0882804be12c5b1a16dad295ad0a84c160",
+        "omitted": 0,
+        "order": [],
+        "scores": [],
+        "supported": true,
+        "truncated": false,
+        "warnings": [
+          "malformed:malformed-record:record_7ae1c6113465"
+        ]
+      },
+      {
+        "id": "candidate-exclusion",
+        "capsuleBytes": 512,
+        "capsuleSha256": "6dc0c307b0e1d5d90123de7e4a40eaaf8b6ae8fecd2377bd768c7cc4773b2dc2",
+        "omitted": 0,
+        "order": [
+          "candidate-only"
+        ],
+        "scores": [
+          {
+            "id": "candidate-only",
+            "score": 11.45218486942137,
+            "scoreEvidence": {
+              "bm25": 3.4521848694213704,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 2
+            }
+          }
+        ],
+        "supported": true,
+        "truncated": false,
+        "warnings": [
+          "malformed:malformed-record:record_7ae1c6113465"
+        ]
+      },
+      {
+        "id": "invalidated-exclusion",
+        "capsuleBytes": 515,
+        "capsuleSha256": "d151fc2e3e07a636fe82fde37a65e674018da52b2e16ff588e2a8b5258c334aa",
+        "omitted": 0,
+        "order": [
+          "invalidated"
+        ],
+        "scores": [
+          {
+            "id": "invalidated",
+            "score": 11.45218486942137,
+            "scoreEvidence": {
+              "bm25": 3.4521848694213704,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 2
+            }
+          }
+        ],
+        "supported": true,
+        "truncated": false,
+        "warnings": [
+          "malformed:malformed-record:record_7ae1c6113465"
+        ]
+      },
+      {
+        "id": "age-stale-exclusion",
+        "capsuleBytes": 526,
+        "capsuleSha256": "b386e5df6c7b3d37f6dc603cd90b3b4058e28cb3a90c1f8a1efb6f055fc9020a",
+        "omitted": 0,
+        "order": [
+          "age-stale"
+        ],
+        "scores": [
+          {
+            "id": "age-stale",
+            "score": 46.15696683148967,
+            "scoreEvidence": {
+              "bm25": 38.15696683148967,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          }
+        ],
+        "supported": true,
+        "truncated": false,
+        "warnings": [
+          "malformed:malformed-record:record_7ae1c6113465"
+        ]
+      },
+      {
+        "id": "fingerprint-mismatch",
+        "capsuleBytes": 539,
+        "capsuleSha256": "8172870e59c740ea3108b14eb4e3618a8cc8a2517ce9f58cb135bb12bd5ae074",
+        "omitted": 0,
+        "order": [
+          "fingerprint-mismatch"
+        ],
+        "scores": [
+          {
+            "id": "fingerprint-mismatch",
+            "score": 41.65753550386397,
+            "scoreEvidence": {
+              "bm25": 33.65753550386397,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 2
+            }
+          }
+        ],
+        "supported": true,
+        "truncated": false,
+        "warnings": [
+          "malformed:malformed-record:record_7ae1c6113465"
+        ]
+      },
+      {
+        "id": "result-budget",
+        "capsuleBytes": 2130,
+        "capsuleSha256": "d962c1f231308d7f4d30b3394731a6c1d88a12f1dfb9390c3c981e08e12a9dbf",
+        "omitted": 2,
+        "order": [
+          "budget-8",
+          "budget-7",
+          "budget-6",
+          "budget-5",
+          "budget-4",
+          "budget-3",
+          "budget-2"
+        ],
+        "scores": [
+          {
+            "id": "budget-8",
+            "score": 15.134581784847219,
+            "scoreEvidence": {
+              "bm25": 7.134581784847219,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          },
+          {
+            "id": "budget-7",
+            "score": 15.134581784847219,
+            "scoreEvidence": {
+              "bm25": 7.134581784847219,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          },
+          {
+            "id": "budget-6",
+            "score": 15.134581784847219,
+            "scoreEvidence": {
+              "bm25": 7.134581784847219,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          },
+          {
+            "id": "budget-5",
+            "score": 15.134581784847219,
+            "scoreEvidence": {
+              "bm25": 7.134581784847219,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          },
+          {
+            "id": "budget-4",
+            "score": 15.134581784847219,
+            "scoreEvidence": {
+              "bm25": 7.134581784847219,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          },
+          {
+            "id": "budget-3",
+            "score": 15.134581784847219,
+            "scoreEvidence": {
+              "bm25": 7.134581784847219,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          },
+          {
+            "id": "budget-2",
+            "score": 15.134581784847219,
+            "scoreEvidence": {
+              "bm25": 7.134581784847219,
+              "exactTrigger": true,
+              "exactPath": false,
+              "exactSymbol": false,
+              "matchedTerms": 3
+            }
+          }
+        ],
+        "supported": true,
+        "truncated": true,
+        "warnings": [
+          "malformed:malformed-record:record_7ae1c6113465"
+        ]
+      }
+    ],
+    "processOracles": [
+      {
+        "command": "node tools/test-project-memory.ts",
+        "expectedPasses": [
+          "disabled plugin input registers no project-memory surface",
+          "disabled mode performs no project-memory IO",
+          "candidate promote and recall stays bounded redacted and outside the worktree",
+          "lifecycle actions are append-only idempotent and terminal",
+          "schema envelope freshness and evidence exclusions fail closed visibly",
+          "curated Serena recall is bounded redacted read-only and source-independent",
+          "every lifecycle fold permutation keeps invalidation terminal and partial files quarantined",
+          "concurrent processes exclusively claim the final card and lifecycle slots"
+        ],
+        "observedPasses": [
+          "disabled plugin input registers no project-memory surface",
+          "disabled mode performs no project-memory IO",
+          "candidate promote and recall stays bounded redacted and outside the worktree",
+          "lifecycle actions are append-only idempotent and terminal",
+          "schema envelope freshness and evidence exclusions fail closed visibly",
+          "curated Serena recall is bounded redacted read-only and source-independent",
+          "every lifecycle fold permutation keeps invalidation terminal and partial files quarantined",
+          "concurrent processes exclusively claim the final card and lifecycle slots"
+        ],
+        "status": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutSha256": "687b45f71a88187711a005f1a289524eda363ea1aea7590f46c99cd2ae3550ab",
+        "supported": true
+      },
+      {
+        "command": "node tools/test-project-memory-hooks.ts",
+        "expectedPasses": [
+          "session env composes root-only tools and message-before-transform context"
+        ],
+        "observedPasses": [
+          "session env composes root-only tools and message-before-transform context"
+        ],
+        "status": 0,
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutSha256": "dad0fc512d1c10270272e8ca9059e367b73ddac8a86fe9133a9d2bbaf98aac6b",
+        "supported": true
+      }
+    ],
+    "projectRefsDistinct": true,
+    "toolBytes": {
+      "manage": 245,
+      "recall": 1696
+    }
+  },
+  "normalizedOutputSha256": "3f22ad6f8d4566bd76b02121440d4fa613089f5aff2f9a5cfff5a04e92d5fa04",
+  "schemaVersion": 1
+}

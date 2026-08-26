@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-25T15:02:31.493Z",
+  "elevated": true,
+  "package": {
+    "candidate": "501a741dad248753b58b442343d64970cc3fb0233bcf19fc7ffd0260bf0f21f9",
+    "sourceController": "2DAFD9EC0B6EAC6E79A72A177462AD893BFBDBF74D6E5D83B9BB9476DE8333EC",
+    "installedController": "2DAFD9EC0B6EAC6E79A72A177462AD893BFBDBF74D6E5D83B9BB9476DE8333EC",
+    "manifestController": "2DAFD9EC0B6EAC6E79A72A177462AD893BFBDBF74D6E5D83B9BB9476DE8333EC"
+  },
+  "ok": false,
+  "error": "JSON Parse error: Unexpected EOF",
+  "restore": {
+    "skipped": true,
+    "reason": "preflight-failed-before-mutation"
+  },
+  "finishedAt": "2026-08-25T15:02:46.774Z"
+}

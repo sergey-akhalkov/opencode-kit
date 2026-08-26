@@ -1,0 +1,13 @@
+{
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "cleanup": "complete",
+  "installedBoundary": "35-roots-two-active-32-queued-one-overload-31-cancelled-healthy-queued-pass",
+  "providerCalls": {
+    "arbiter": 3,
+    "external": 0,
+    "primary": 35
+  },
+  "scenario": "multi-root",
+  "schemaVersion": 1,
+  "status": "complete"
+}

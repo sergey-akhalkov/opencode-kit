@@ -1,0 +1,1094 @@
+{
+  "schemaVersion": 1,
+  "before": {
+    "controllerSha256": "866fe663db55cf1a8ca4a033a5c9676918568da23509eba8f9583769f0d79575",
+    "manifest": {
+      "schemaVersion": 2,
+      "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+      "installedAt": "2026-08-17T17:32:53.527Z",
+      "owner": {
+        "user": "NEURO\\noilw",
+        "userSidIdentity": "sha256:b47c028cc46c71f1548d6f29ee5bbb5c29965ac34d28340a136b2cb292d2f67d"
+      },
+      "endpoint": "http://127.0.0.1:4096",
+      "opencodeConfigDir": "D:\\home\\sergey-akhalkov\\opencode-kit\\global",
+      "configuration": {
+        "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.config.json",
+        "length": 516,
+        "sha256": "4F844A36C9A9FDCA9DB2431DCCD24F78DA6B5827A1BD96AEB7A485F09442B07A"
+      },
+      "repositories": {
+        "opencode-kit": "D:\\home\\sergey-akhalkov\\opencode-kit",
+        "pmac-emulator": "D:\\mekha\\mtronics\\pmac-emulator",
+        "controller-gateway-service": "D:\\mekha\\mtronics\\controller-gateway-service",
+        "windows-ui-automation": "D:\\mekha\\mtronics\\windows-ui-automation"
+      },
+      "desktop": "C:\\Users\\noilw\\OneDrive\\Desktop",
+      "tools": {
+        "node": {
+          "version": "v24.3.0",
+          "executable": {
+            "path": "C:\\Users\\noilw\\.bun\\bin\\bun.exe",
+            "length": 98480216,
+            "sha256": "0187F68D843F825A72ADA4A7ECA60DB896ED753759A7F8252EDCD31AC1BF1B9C"
+          }
+        },
+        "alacritty": {
+          "version": "alacritty 0.17.0 (94e7c88)",
+          "executable": {
+            "path": "C:\\Program Files\\Alacritty\\alacritty.exe",
+            "length": 6003200,
+            "sha256": "5AD70DDC5C2A2BFE84084A2C4C73558E9360914F035A902D7A69277BE7249F1F"
+          }
+        },
+        "powershell": {
+          "alias": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+          "edition": "Core",
+          "version": "7.6.5",
+          "package": "Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe",
+          "executable": {
+            "path": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+            "length": 301368,
+            "sha256": "362A356CE7F0940EC74F73A8FC2C990A2CC24A38A11C90BBD8ECA947110AD139"
+          }
+        },
+        "opencode": {
+          "version": "1.18.23",
+          "executable": {
+            "path": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+            "length": 15872,
+            "sha256": "59B379B53354DA72D2C5262119FE70C44B4E473826EBBAA94D47A2D58A359B1A"
+          }
+        }
+      },
+      "controller": {
+        "sourcePath": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.ts",
+        "installedPath": "C:\\ProgramData\\OpenCodeWorkstation\\opencode-workstation.ts",
+        "sha256": "866FE663DB55CF1A8CA4A033A5C9676918568DA23509EBA8F9583769F0D79575"
+      },
+      "task": {
+        "name": "OpenCode Workstation Shared Server",
+        "execute": "C:\\Windows\\System32\\wscript.exe",
+        "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs serve",
+        "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation",
+        "runLevel": "Highest",
+        "triggerCount": 0,
+        "multipleInstances": "IgnoreNew"
+      },
+      "shortcuts": {
+        "start": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Start.lnk",
+        "restart": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Restart.lnk",
+        "opencode-kit": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - opencode-kit.lnk",
+        "pmac-emulator": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - pmac-emulator.lnk",
+        "controller-gateway-service": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - controller-gateway-service.lnk",
+        "windows-ui-automation": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - windows-ui-automation.lnk"
+      },
+      "createdShortcutIds": [
+        "start",
+        "restart",
+        "opencode-kit",
+        "pmac-emulator",
+        "controller-gateway-service",
+        "windows-ui-automation"
+      ],
+      "preState": {
+        "protectedRootExists": false,
+        "taskExists": false,
+        "shortcutExistence": {
+          "start": false,
+          "restart": false,
+          "opencode-kit": false,
+          "pmac-emulator": false,
+          "controller-gateway-service": false,
+          "windows-ui-automation": false
+        },
+        "alacrittyConfigExists": false
+      },
+      "alacritty": {
+        "ordinaryPath": "C:\\Users\\noilw\\AppData\\Roaming\\alacritty\\alacritty.toml",
+        "ordinarySha256": "3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0",
+        "protectedPath": "C:\\ProgramData\\OpenCodeWorkstation\\alacritty.toml",
+        "protectedSha256": "3483C7B0A0F7EB39C198DBBA2D77D96DE0203AD5D103B39A8FE1798628AA0616",
+        "previousExists": true,
+        "previousSha256": "3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0",
+        "backupPath": "C:\\ProgramData\\OpenCodeWorkstation\\backup\\alacritty.toml"
+      },
+      "updatedAt": "2026-08-25T14:29:08.454Z",
+      "invoker": {
+        "path": "C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs",
+        "sha256": "127DBBFD8473673A1444990AE5FCF0D4A155A23133B52FFC0FB4E74B52385D58",
+        "wscriptPath": "C:\\Windows\\System32\\wscript.exe"
+      },
+      "tray": {
+        "hostPath": "C:\\ProgramData\\OpenCodeWorkstation\\tray-host.vbs",
+        "hostSha256": "F5480541EBC3AF0CF413F5FCA9829BB06F3F49FAF3900D95FCFE338962C3F8A8",
+        "scriptPath": "C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1",
+        "scriptSha256": "803E763DB8D879C35C91F89F3EE14BDF9572A7E2427A3C95593A099C398C70A2"
+      },
+      "sharedTools": {
+        "sourcePath": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-shared-tools.ts",
+        "installedPath": "C:\\ProgramData\\OpenCodeWorkstation\\opencode-shared-tools.ts",
+        "sha256": "7299EB6BBAC337E4A46972969D7255408527D943418E5416ADDB593073FBF0C9"
+      },
+      "graphify": {
+        "configuration": {
+          "python": {
+            "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "length": 241152,
+            "sha256": "57b7fa7e1b121abe4f8ef9aa63e2b97d281f95759766a7d6c83b174c78edf80a"
+          },
+          "module": {
+            "name": "graphify.serve",
+            "packageVersion": "0.9.44",
+            "source": {
+              "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\serve.py",
+              "length": 108427,
+              "sha256": "2744fdf09bd496e8f7901f25d51e3bc545b360693d02902c24c71e65a1713ca5"
+            }
+          },
+          "graph": {
+            "path": "D:\\mekha\\mtronics\\graphify-knowledgebase\\graphify-out\\graph.json",
+            "length": 129896218,
+            "sha256": "03c316045db331d55eef45305f42390c3c179967ad27e7e93a76bb097df46f09"
+          },
+          "endpoint": {
+            "host": "127.0.0.1",
+            "port": 4097,
+            "path": "/mcp",
+            "url": "http://127.0.0.1:4097/mcp",
+            "transport": "streamable-http",
+            "stateless": true
+          },
+          "command": {
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "argumentDigest": "54a765dd84f1674ed28eba195cf042b6090a13fa9620d4b44ee28d5f407a5dcc",
+            "argumentCount": 14,
+            "module": "graphify.serve"
+          }
+        },
+        "endpoint": "http://127.0.0.1:4097/mcp",
+        "port": 4097,
+        "credentialPath": "C:\\ProgramData\\OpenCodeWorkstation\\graphify-api-key",
+        "configEdit": {
+          "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+          "backupPath": "C:\\ProgramData\\OpenCodeWorkstation\\backup\\opencode-config.before-graphify",
+          "original": {
+            "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+            "length": 9508,
+            "sha256": "62555f02f4d929ce40d49464c261659ebfefd59665b6658adc8f729a449dd872"
+          },
+          "managed": {
+            "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+            "length": 9532,
+            "sha256": "0934E1218DEE1A509D1E0EF54CB02EFBAADCF3EA3703186125EDD71BA2087991"
+          },
+          "originalAcl": {
+            "kind": "windows-sddl",
+            "sha256": "f81b5713783171002228498ad66bdf6bfb12b805ae51b1fdae1ac063e23a79cd"
+          },
+          "originalAclSddl": "O:BAG:S-1-5-21-884397382-598193205-2971158385-1001D:(A;ID;FA;;;BA)(A;ID;FA;;;SY)(A;ID;0x1301bf;;;AU)(A;ID;0x1200a9;;;BU)"
+        }
+      },
+      "configurationModule": {
+        "sourcePath": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation-config.ts",
+        "installedPath": "C:\\ProgramData\\OpenCodeWorkstation\\opencode-workstation-config.ts",
+        "sha256": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557"
+      }
+    },
+    "configSha256": "0934e1218dee1a509d1e0ef54cb02efbaadcf3ea3703186125edd71ba2087991",
+    "status": {
+      "schemaVersion": 1,
+      "operation": "status",
+      "installed": true,
+      "managed": {
+        "installed": true,
+        "integrity": "complete",
+        "controllerHash": "866FE663DB55CF1A8CA4A033A5C9676918568DA23509EBA8F9583769F0D79575",
+        "sharedToolsHash": "7299EB6BBAC337E4A46972969D7255408527D943418E5416ADDB593073FBF0C9",
+        "configurationModuleHash": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557",
+        "credentialPresent": true,
+        "graphifyCredentialPresent": true,
+        "statePresent": true,
+        "task": {
+          "exists": true,
+          "state": "Running",
+          "runLevel": "Highest",
+          "triggerCount": 0,
+          "actionCount": 1,
+          "actions": [
+            {
+              "execute": "C:\\Windows\\System32\\wscript.exe",
+              "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs serve",
+              "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation"
+            }
+          ]
+        },
+        "trayTask": {
+          "exists": true,
+          "state": "Running",
+          "runLevel": "Highest",
+          "triggerCount": 1,
+          "actionCount": 1,
+          "actions": [
+            {
+              "execute": "C:\\Windows\\System32\\wscript.exe",
+              "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\tray-host.vbs",
+              "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation"
+            }
+          ]
+        },
+        "manifest": {
+          "schemaVersion": 2,
+          "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+          "owner": {
+            "user": "NEURO\\noilw",
+            "userSidIdentity": "sha256:b47c028cc46c71f1548d6f29ee5bbb5c29965ac34d28340a136b2cb292d2f67d"
+          },
+          "endpoint": "http://127.0.0.1:4096",
+          "graphifyEndpoint": "http://127.0.0.1:4097/mcp",
+          "installedAt": "2026-08-17T17:32:53.527Z",
+          "configuration": {
+            "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.config.json",
+            "length": 516,
+            "sha256": "4F844A36C9A9FDCA9DB2431DCCD24F78DA6B5827A1BD96AEB7A485F09442B07A"
+          },
+          "createdShortcutIds": [
+            "start",
+            "restart",
+            "opencode-kit",
+            "pmac-emulator",
+            "controller-gateway-service",
+            "windows-ui-automation"
+          ]
+        }
+      },
+      "health": {
+        "reachable": true,
+        "status": 200,
+        "healthy": true,
+        "version": "1.18.23",
+        "openCode": {
+          "reachable": true,
+          "status": 200,
+          "healthy": true,
+          "version": "1.18.23"
+        },
+        "graphify": {
+          "endpoint": "http://127.0.0.1:4097/mcp",
+          "unauthenticatedStatus": 401,
+          "authenticatedStatus": 200,
+          "protocolVersion": "2025-03-26",
+          "serverName": "graphify",
+          "tools": [
+            "get_community",
+            "get_neighbors",
+            "get_node",
+            "get_pr_impact",
+            "god_nodes",
+            "graph_stats",
+            "list_prs",
+            "query_graph",
+            "shortest_path",
+            "triage_prs"
+          ]
+        }
+      },
+      "environment": {
+        "user": "NEURO\\noilw",
+        "userSidIdentity": "sha256:b47c028cc46c71f1548d6f29ee5bbb5c29965ac34d28340a136b2cb292d2f67d",
+        "elevated": true,
+        "desktop": "C:\\Users\\noilw\\OneDrive\\Desktop",
+        "opencodeConfigDir": "D:\\home\\sergey-akhalkov\\opencode-kit\\global",
+        "endpoint": "http://127.0.0.1:4096",
+        "taskName": "OpenCode Workstation Shared Server",
+        "protectedRoot": "C:\\ProgramData\\OpenCodeWorkstation",
+        "alacrittyConfig": "C:\\Users\\noilw\\AppData\\Roaming\\alacritty\\alacritty.toml",
+        "configuration": {
+          "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.config.json",
+          "length": 516,
+          "sha256": "4F844A36C9A9FDCA9DB2431DCCD24F78DA6B5827A1BD96AEB7A485F09442B07A"
+        },
+        "graphify": {
+          "python": {
+            "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "length": 241152,
+            "sha256": "57b7fa7e1b121abe4f8ef9aa63e2b97d281f95759766a7d6c83b174c78edf80a"
+          },
+          "module": {
+            "name": "graphify.serve",
+            "packageVersion": "0.9.44",
+            "source": {
+              "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\serve.py",
+              "length": 108427,
+              "sha256": "2744fdf09bd496e8f7901f25d51e3bc545b360693d02902c24c71e65a1713ca5"
+            }
+          },
+          "graph": {
+            "path": "D:\\mekha\\mtronics\\graphify-knowledgebase\\graphify-out\\graph.json",
+            "length": 129896218,
+            "sha256": "03c316045db331d55eef45305f42390c3c179967ad27e7e93a76bb097df46f09"
+          },
+          "endpoint": {
+            "host": "127.0.0.1",
+            "port": 4097,
+            "path": "/mcp",
+            "url": "http://127.0.0.1:4097/mcp",
+            "transport": "streamable-http",
+            "stateless": true
+          },
+          "command": {
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "argumentDigest": "54a765dd84f1674ed28eba195cf042b6090a13fa9620d4b44ee28d5f407a5dcc",
+            "argumentCount": 14,
+            "module": "graphify.serve"
+          }
+        },
+        "repositories": {
+          "opencode-kit": "D:\\home\\sergey-akhalkov\\opencode-kit",
+          "pmac-emulator": "D:\\mekha\\mtronics\\pmac-emulator",
+          "controller-gateway-service": "D:\\mekha\\mtronics\\controller-gateway-service",
+          "windows-ui-automation": "D:\\mekha\\mtronics\\windows-ui-automation"
+        },
+        "shortcuts": {
+          "start": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Start.lnk",
+            "exists": true
+          },
+          "restart": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Restart.lnk",
+            "exists": true
+          },
+          "opencode-kit": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - opencode-kit.lnk",
+            "exists": true
+          },
+          "pmac-emulator": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - pmac-emulator.lnk",
+            "exists": true
+          },
+          "controller-gateway-service": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - controller-gateway-service.lnk",
+            "exists": true
+          },
+          "windows-ui-automation": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - windows-ui-automation.lnk",
+            "exists": true
+          }
+        },
+        "collisions": {
+          "protectedRootExists": true,
+          "taskExists": true,
+          "trayTaskExists": true,
+          "alacrittyConfigExists": true,
+          "shortcutCount": 6,
+          "portListenerCount": 1,
+          "graphifyPortListenerCount": 1
+        },
+        "task": {
+          "exists": true,
+          "state": "Running",
+          "runLevel": "Highest",
+          "triggerCount": 0,
+          "actionCount": 1,
+          "actions": [
+            {
+              "execute": "C:\\Windows\\System32\\wscript.exe",
+              "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs serve",
+              "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation"
+            }
+          ]
+        },
+        "port": {
+          "listenerCount": 1,
+          "listeners": [
+            {
+              "localAddress": "127.0.0.1",
+              "localPort": 4096,
+              "processId": 11820,
+              "processName": "opencode.exe",
+              "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+              "commandKind": "opencode-serve"
+            }
+          ]
+        },
+        "graphifyPort": {
+          "listenerCount": 1,
+          "listeners": [
+            {
+              "localAddress": "127.0.0.1",
+              "localPort": 4097,
+              "processId": 908,
+              "parentProcessId": 4852,
+              "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+              "creationDate": "08/25/2026 17:37:51",
+              "commandLineSha256": "9dec79ab15e2dd1af47ea50be1769605fb0ed8d57c0467d4238117843b35b9bb"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "operations": {
+    "stop": {
+      "exitCode": 0,
+      "signal": null,
+      "stdoutSha256": "91794d5d464ad1b1673c44ed3382c3c141d23d13aca80d301b6f774084d80854",
+      "stderr": "",
+      "output": {
+        "schemaVersion": 1,
+        "operation": "stop",
+        "status": "stopped",
+        "recordedProcessIds": [
+          4448,
+          11820,
+          4852,
+          908,
+          16340
+        ],
+        "remainingProcessIds": [],
+        "listenerCount": 0,
+        "graphifyListenerCount": 0,
+        "taskState": "Ready"
+      }
+    },
+    "install": {
+      "exitCode": 0,
+      "signal": null,
+      "stdoutSha256": "80be38e487b26b909c5bfe9c9dfb477654462a55db6edb318ef69a4bcaf4546c",
+      "stderr": "",
+      "output": {
+        "schemaVersion": 1,
+        "operation": "install",
+        "status": "repaired-stopped",
+        "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+        "task": {
+          "exists": true,
+          "state": "Ready",
+          "runLevel": "Highest",
+          "triggerCount": 0,
+          "actionCount": 1,
+          "actions": [
+            {
+              "execute": "C:\\Windows\\System32\\wscript.exe",
+              "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs serve",
+              "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation"
+            }
+          ]
+        },
+        "protectedRoot": "C:\\ProgramData\\OpenCodeWorkstation",
+        "alacritty": {
+          "ordinaryPath": "C:\\Users\\noilw\\AppData\\Roaming\\alacritty\\alacritty.toml",
+          "ordinarySha256": "3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0",
+          "protectedPath": "C:\\ProgramData\\OpenCodeWorkstation\\alacritty.toml",
+          "protectedSha256": "3483C7B0A0F7EB39C198DBBA2D77D96DE0203AD5D103B39A8FE1798628AA0616",
+          "previousExists": true,
+          "previousSha256": "3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0",
+          "backupPath": "C:\\ProgramData\\OpenCodeWorkstation\\backup\\alacritty.toml"
+        },
+        "shortcuts": {
+          "start": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Start.lnk",
+            "created": true
+          },
+          "restart": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Restart.lnk",
+            "created": true
+          },
+          "opencode-kit": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - opencode-kit.lnk",
+            "created": true
+          },
+          "pmac-emulator": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - pmac-emulator.lnk",
+            "created": true
+          },
+          "controller-gateway-service": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - controller-gateway-service.lnk",
+            "created": true
+          },
+          "windows-ui-automation": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - windows-ui-automation.lnk",
+            "created": true
+          }
+        },
+        "credential": {
+          "present": true,
+          "exposed": false
+        },
+        "graphifyCredential": {
+          "present": true,
+          "exposed": false
+        }
+      }
+    },
+    "start": {
+      "exitCode": 0,
+      "signal": null,
+      "stdoutSha256": "82f6225fb7b06220efa27b50b41d8ffd5aa6f0d9a62e1d33228df2eb5dd377af",
+      "stderr": "",
+      "output": {
+        "schemaVersion": 1,
+        "operation": "start",
+        "status": "started",
+        "health": {
+          "reachable": true,
+          "status": 200,
+          "healthy": true,
+          "version": "1.18.23",
+          "openCode": {
+            "reachable": true,
+            "status": 200,
+            "healthy": true,
+            "version": "1.18.23"
+          },
+          "graphify": {
+            "endpoint": "http://127.0.0.1:4097/mcp",
+            "unauthenticatedStatus": 401,
+            "authenticatedStatus": 200,
+            "protocolVersion": "2025-03-26",
+            "serverName": "graphify",
+            "tools": [
+              "get_community",
+              "get_neighbors",
+              "get_node",
+              "get_pr_impact",
+              "god_nodes",
+              "graph_stats",
+              "list_prs",
+              "query_graph",
+              "shortest_path",
+              "triage_prs"
+            ]
+          }
+        },
+        "state": {
+          "schemaVersion": 2,
+          "status": "running",
+          "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+          "taskName": "OpenCode Workstation Shared Server",
+          "endpoint": "http://127.0.0.1:4096",
+          "graphifyEndpoint": "http://127.0.0.1:4097/mcp",
+          "startedAt": "2026-08-25T14:43:19.506Z",
+          "supervisor": {
+            "processId": 14768,
+            "parentProcessId": 7908,
+            "creationDate": "08/25/2026 17:43:15",
+            "executablePath": "C:\\Users\\noilw\\.bun\\bin\\bun.exe",
+            "commandLineSha256": "a57f90e71a2d925735c9c2a1d10281ee695fdbe439fdab9b24dc8a4447171b6f"
+          },
+          "graphify": {
+            "root": {
+              "processId": 10708,
+              "parentProcessId": 14768,
+              "creationDate": "08/25/2026 17:43:19",
+              "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+              "commandLineSha256": "9dec79ab15e2dd1af47ea50be1769605fb0ed8d57c0467d4238117843b35b9bb"
+            },
+            "listener": {
+              "processId": 2812,
+              "parentProcessId": 10708,
+              "creationDate": "08/25/2026 17:43:19",
+              "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+              "commandLineSha256": "9dec79ab15e2dd1af47ea50be1769605fb0ed8d57c0467d4238117843b35b9bb"
+            },
+            "health": {
+              "endpoint": "http://127.0.0.1:4097/mcp",
+              "unauthenticatedStatus": 401,
+              "authenticatedStatus": 200,
+              "protocolVersion": "2025-03-26",
+              "serverName": "graphify",
+              "tools": [
+                "get_community",
+                "get_neighbors",
+                "get_node",
+                "get_pr_impact",
+                "god_nodes",
+                "graph_stats",
+                "list_prs",
+                "query_graph",
+                "shortest_path",
+                "triage_prs"
+              ]
+            }
+          },
+          "serverRoot": {
+            "processId": 9108,
+            "parentProcessId": 14768,
+            "creationDate": "08/25/2026 17:43:36",
+            "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+            "commandLineSha256": "aafbc518920c5d42de3bc5797cb5edce4aa481efd8b2c66189608a6fad08bb8a"
+          },
+          "listeners": [
+            {
+              "localAddress": "127.0.0.1",
+              "localPort": 4096,
+              "processId": 11576,
+              "processName": "opencode.exe",
+              "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+              "commandKind": "opencode-serve"
+            }
+          ],
+          "health": {
+            "healthy": true,
+            "openCode": {
+              "reachable": true,
+              "status": 200,
+              "healthy": true,
+              "version": "1.18.23"
+            },
+            "graphify": {
+              "endpoint": "http://127.0.0.1:4097/mcp",
+              "unauthenticatedStatus": 401,
+              "authenticatedStatus": 200,
+              "protocolVersion": "2025-03-26",
+              "serverName": "graphify",
+              "tools": [
+                "get_community",
+                "get_neighbors",
+                "get_node",
+                "get_pr_impact",
+                "god_nodes",
+                "graph_stats",
+                "list_prs",
+                "query_graph",
+                "shortest_path",
+                "triage_prs"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "after": {
+    "controllerSha256": "184698d0ae8ca55de2903dd9ee74fb484c6bffc8cc1bddc06bad192d1b3493fe",
+    "manifest": {
+      "schemaVersion": 2,
+      "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+      "installedAt": "2026-08-17T17:32:53.527Z",
+      "owner": {
+        "user": "NEURO\\noilw",
+        "userSidIdentity": "sha256:b47c028cc46c71f1548d6f29ee5bbb5c29965ac34d28340a136b2cb292d2f67d"
+      },
+      "endpoint": "http://127.0.0.1:4096",
+      "opencodeConfigDir": "D:\\home\\sergey-akhalkov\\opencode-kit\\global",
+      "configuration": {
+        "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.config.json",
+        "length": 516,
+        "sha256": "4F844A36C9A9FDCA9DB2431DCCD24F78DA6B5827A1BD96AEB7A485F09442B07A"
+      },
+      "repositories": {
+        "opencode-kit": "D:\\home\\sergey-akhalkov\\opencode-kit",
+        "pmac-emulator": "D:\\mekha\\mtronics\\pmac-emulator",
+        "controller-gateway-service": "D:\\mekha\\mtronics\\controller-gateway-service",
+        "windows-ui-automation": "D:\\mekha\\mtronics\\windows-ui-automation"
+      },
+      "desktop": "C:\\Users\\noilw\\OneDrive\\Desktop",
+      "tools": {
+        "node": {
+          "version": "v24.3.0",
+          "executable": {
+            "path": "C:\\Users\\noilw\\.bun\\bin\\bun.exe",
+            "length": 98480216,
+            "sha256": "0187F68D843F825A72ADA4A7ECA60DB896ED753759A7F8252EDCD31AC1BF1B9C"
+          }
+        },
+        "alacritty": {
+          "version": "alacritty 0.17.0 (94e7c88)",
+          "executable": {
+            "path": "C:\\Program Files\\Alacritty\\alacritty.exe",
+            "length": 6003200,
+            "sha256": "5AD70DDC5C2A2BFE84084A2C4C73558E9360914F035A902D7A69277BE7249F1F"
+          }
+        },
+        "powershell": {
+          "alias": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+          "edition": "Core",
+          "version": "7.6.5",
+          "package": "Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe",
+          "executable": {
+            "path": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+            "length": 301368,
+            "sha256": "362A356CE7F0940EC74F73A8FC2C990A2CC24A38A11C90BBD8ECA947110AD139"
+          }
+        },
+        "opencode": {
+          "version": "1.18.23",
+          "executable": {
+            "path": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe",
+            "length": 15872,
+            "sha256": "59B379B53354DA72D2C5262119FE70C44B4E473826EBBAA94D47A2D58A359B1A"
+          }
+        }
+      },
+      "controller": {
+        "sourcePath": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.ts",
+        "installedPath": "C:\\ProgramData\\OpenCodeWorkstation\\opencode-workstation.ts",
+        "sha256": "184698D0AE8CA55DE2903DD9EE74FB484C6BFFC8CC1BDDC06BAD192D1B3493FE"
+      },
+      "task": {
+        "name": "OpenCode Workstation Shared Server",
+        "execute": "C:\\Windows\\System32\\wscript.exe",
+        "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs serve",
+        "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation",
+        "runLevel": "Highest",
+        "triggerCount": 0,
+        "multipleInstances": "IgnoreNew"
+      },
+      "shortcuts": {
+        "start": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Start.lnk",
+        "restart": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Restart.lnk",
+        "opencode-kit": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - opencode-kit.lnk",
+        "pmac-emulator": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - pmac-emulator.lnk",
+        "controller-gateway-service": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - controller-gateway-service.lnk",
+        "windows-ui-automation": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - windows-ui-automation.lnk"
+      },
+      "createdShortcutIds": [
+        "start",
+        "restart",
+        "opencode-kit",
+        "pmac-emulator",
+        "controller-gateway-service",
+        "windows-ui-automation"
+      ],
+      "preState": {
+        "protectedRootExists": false,
+        "taskExists": false,
+        "shortcutExistence": {
+          "start": false,
+          "restart": false,
+          "opencode-kit": false,
+          "pmac-emulator": false,
+          "controller-gateway-service": false,
+          "windows-ui-automation": false
+        },
+        "alacrittyConfigExists": false
+      },
+      "alacritty": {
+        "ordinaryPath": "C:\\Users\\noilw\\AppData\\Roaming\\alacritty\\alacritty.toml",
+        "ordinarySha256": "3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0",
+        "protectedPath": "C:\\ProgramData\\OpenCodeWorkstation\\alacritty.toml",
+        "protectedSha256": "3483C7B0A0F7EB39C198DBBA2D77D96DE0203AD5D103B39A8FE1798628AA0616",
+        "previousExists": true,
+        "previousSha256": "3E79514882EF6057A50A9BCD1E24090ED907AEB7CA3966076E19FAFC55333BF0",
+        "backupPath": "C:\\ProgramData\\OpenCodeWorkstation\\backup\\alacritty.toml"
+      },
+      "updatedAt": "2026-08-25T14:42:54.939Z",
+      "invoker": {
+        "path": "C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs",
+        "sha256": "127DBBFD8473673A1444990AE5FCF0D4A155A23133B52FFC0FB4E74B52385D58",
+        "wscriptPath": "C:\\Windows\\System32\\wscript.exe"
+      },
+      "tray": {
+        "hostPath": "C:\\ProgramData\\OpenCodeWorkstation\\tray-host.vbs",
+        "hostSha256": "F5480541EBC3AF0CF413F5FCA9829BB06F3F49FAF3900D95FCFE338962C3F8A8",
+        "scriptPath": "C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1",
+        "scriptSha256": "803E763DB8D879C35C91F89F3EE14BDF9572A7E2427A3C95593A099C398C70A2"
+      },
+      "sharedTools": {
+        "sourcePath": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-shared-tools.ts",
+        "installedPath": "C:\\ProgramData\\OpenCodeWorkstation\\opencode-shared-tools.ts",
+        "sha256": "7299EB6BBAC337E4A46972969D7255408527D943418E5416ADDB593073FBF0C9"
+      },
+      "graphify": {
+        "configuration": {
+          "python": {
+            "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "length": 241152,
+            "sha256": "57b7fa7e1b121abe4f8ef9aa63e2b97d281f95759766a7d6c83b174c78edf80a"
+          },
+          "module": {
+            "name": "graphify.serve",
+            "packageVersion": "0.9.44",
+            "source": {
+              "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\serve.py",
+              "length": 108427,
+              "sha256": "2744fdf09bd496e8f7901f25d51e3bc545b360693d02902c24c71e65a1713ca5"
+            }
+          },
+          "graph": {
+            "path": "D:\\mekha\\mtronics\\graphify-knowledgebase\\graphify-out\\graph.json",
+            "length": 129896218,
+            "sha256": "03c316045db331d55eef45305f42390c3c179967ad27e7e93a76bb097df46f09"
+          },
+          "endpoint": {
+            "host": "127.0.0.1",
+            "port": 4097,
+            "path": "/mcp",
+            "url": "http://127.0.0.1:4097/mcp",
+            "transport": "streamable-http",
+            "stateless": true
+          },
+          "command": {
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "argumentDigest": "54a765dd84f1674ed28eba195cf042b6090a13fa9620d4b44ee28d5f407a5dcc",
+            "argumentCount": 14,
+            "module": "graphify.serve"
+          }
+        },
+        "endpoint": "http://127.0.0.1:4097/mcp",
+        "port": 4097,
+        "credentialPath": "C:\\ProgramData\\OpenCodeWorkstation\\graphify-api-key",
+        "configEdit": {
+          "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+          "backupPath": "C:\\ProgramData\\OpenCodeWorkstation\\backup\\opencode-config.before-graphify",
+          "original": {
+            "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+            "length": 9508,
+            "sha256": "62555f02f4d929ce40d49464c261659ebfefd59665b6658adc8f729a449dd872"
+          },
+          "managed": {
+            "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\global\\opencode.json",
+            "length": 9532,
+            "sha256": "0934E1218DEE1A509D1E0EF54CB02EFBAADCF3EA3703186125EDD71BA2087991"
+          },
+          "originalAcl": {
+            "kind": "windows-sddl",
+            "sha256": "f81b5713783171002228498ad66bdf6bfb12b805ae51b1fdae1ac063e23a79cd"
+          },
+          "originalAclSddl": "O:BAG:S-1-5-21-884397382-598193205-2971158385-1001D:(A;ID;FA;;;BA)(A;ID;FA;;;SY)(A;ID;0x1301bf;;;AU)(A;ID;0x1200a9;;;BU)"
+        }
+      },
+      "configurationModule": {
+        "sourcePath": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation-config.ts",
+        "installedPath": "C:\\ProgramData\\OpenCodeWorkstation\\opencode-workstation-config.ts",
+        "sha256": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557"
+      }
+    },
+    "configSha256": "0934e1218dee1a509d1e0ef54cb02efbaadcf3ea3703186125edd71ba2087991",
+    "configHasEnvReference": true,
+    "configContainsCredential": false,
+    "status": {
+      "schemaVersion": 1,
+      "operation": "status",
+      "installed": true,
+      "managed": {
+        "installed": true,
+        "integrity": "complete",
+        "controllerHash": "184698D0AE8CA55DE2903DD9EE74FB484C6BFFC8CC1BDDC06BAD192D1B3493FE",
+        "sharedToolsHash": "7299EB6BBAC337E4A46972969D7255408527D943418E5416ADDB593073FBF0C9",
+        "configurationModuleHash": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557",
+        "credentialPresent": true,
+        "graphifyCredentialPresent": true,
+        "statePresent": true,
+        "task": {
+          "exists": true,
+          "state": "Running",
+          "runLevel": "Highest",
+          "triggerCount": 0,
+          "actionCount": 1,
+          "actions": [
+            {
+              "execute": "C:\\Windows\\System32\\wscript.exe",
+              "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs serve",
+              "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation"
+            }
+          ]
+        },
+        "trayTask": {
+          "exists": true,
+          "state": "Ready",
+          "runLevel": "Highest",
+          "triggerCount": 1,
+          "actionCount": 1,
+          "actions": [
+            {
+              "execute": "C:\\Windows\\System32\\wscript.exe",
+              "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\tray-host.vbs",
+              "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation"
+            }
+          ]
+        },
+        "manifest": {
+          "schemaVersion": 2,
+          "candidate": "d3a150cf97017030715c06391421cd15628b6c6e7ea45e39079ab9e451deaf50",
+          "owner": {
+            "user": "NEURO\\noilw",
+            "userSidIdentity": "sha256:b47c028cc46c71f1548d6f29ee5bbb5c29965ac34d28340a136b2cb292d2f67d"
+          },
+          "endpoint": "http://127.0.0.1:4096",
+          "graphifyEndpoint": "http://127.0.0.1:4097/mcp",
+          "installedAt": "2026-08-17T17:32:53.527Z",
+          "configuration": {
+            "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.config.json",
+            "length": 516,
+            "sha256": "4F844A36C9A9FDCA9DB2431DCCD24F78DA6B5827A1BD96AEB7A485F09442B07A"
+          },
+          "createdShortcutIds": [
+            "start",
+            "restart",
+            "opencode-kit",
+            "pmac-emulator",
+            "controller-gateway-service",
+            "windows-ui-automation"
+          ]
+        }
+      },
+      "health": {
+        "reachable": true,
+        "status": 200,
+        "healthy": true,
+        "version": "1.18.23",
+        "openCode": {
+          "reachable": true,
+          "status": 200,
+          "healthy": true,
+          "version": "1.18.23"
+        },
+        "graphify": {
+          "endpoint": "http://127.0.0.1:4097/mcp",
+          "unauthenticatedStatus": 401,
+          "authenticatedStatus": 200,
+          "protocolVersion": "2025-03-26",
+          "serverName": "graphify",
+          "tools": [
+            "get_community",
+            "get_neighbors",
+            "get_node",
+            "get_pr_impact",
+            "god_nodes",
+            "graph_stats",
+            "list_prs",
+            "query_graph",
+            "shortest_path",
+            "triage_prs"
+          ]
+        }
+      },
+      "environment": {
+        "user": "NEURO\\noilw",
+        "userSidIdentity": "sha256:b47c028cc46c71f1548d6f29ee5bbb5c29965ac34d28340a136b2cb292d2f67d",
+        "elevated": true,
+        "desktop": "C:\\Users\\noilw\\OneDrive\\Desktop",
+        "opencodeConfigDir": "D:\\home\\sergey-akhalkov\\opencode-kit\\global",
+        "endpoint": "http://127.0.0.1:4096",
+        "taskName": "OpenCode Workstation Shared Server",
+        "protectedRoot": "C:\\ProgramData\\OpenCodeWorkstation",
+        "alacrittyConfig": "C:\\Users\\noilw\\AppData\\Roaming\\alacritty\\alacritty.toml",
+        "configuration": {
+          "path": "D:\\home\\sergey-akhalkov\\opencode-kit\\tools\\windows\\opencode-workstation.config.json",
+          "length": 516,
+          "sha256": "4F844A36C9A9FDCA9DB2431DCCD24F78DA6B5827A1BD96AEB7A485F09442B07A"
+        },
+        "graphify": {
+          "python": {
+            "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "length": 241152,
+            "sha256": "57b7fa7e1b121abe4f8ef9aa63e2b97d281f95759766a7d6c83b174c78edf80a"
+          },
+          "module": {
+            "name": "graphify.serve",
+            "packageVersion": "0.9.44",
+            "source": {
+              "path": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\serve.py",
+              "length": 108427,
+              "sha256": "2744fdf09bd496e8f7901f25d51e3bc545b360693d02902c24c71e65a1713ca5"
+            }
+          },
+          "graph": {
+            "path": "D:\\mekha\\mtronics\\graphify-knowledgebase\\graphify-out\\graph.json",
+            "length": 129896218,
+            "sha256": "03c316045db331d55eef45305f42390c3c179967ad27e7e93a76bb097df46f09"
+          },
+          "endpoint": {
+            "host": "127.0.0.1",
+            "port": 4097,
+            "path": "/mcp",
+            "url": "http://127.0.0.1:4097/mcp",
+            "transport": "streamable-http",
+            "stateless": true
+          },
+          "command": {
+            "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe",
+            "argumentDigest": "54a765dd84f1674ed28eba195cf042b6090a13fa9620d4b44ee28d5f407a5dcc",
+            "argumentCount": 14,
+            "module": "graphify.serve"
+          }
+        },
+        "repositories": {
+          "opencode-kit": "D:\\home\\sergey-akhalkov\\opencode-kit",
+          "pmac-emulator": "D:\\mekha\\mtronics\\pmac-emulator",
+          "controller-gateway-service": "D:\\mekha\\mtronics\\controller-gateway-service",
+          "windows-ui-automation": "D:\\mekha\\mtronics\\windows-ui-automation"
+        },
+        "shortcuts": {
+          "start": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Start.lnk",
+            "exists": true
+          },
+          "restart": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode Server - Restart.lnk",
+            "exists": true
+          },
+          "opencode-kit": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - opencode-kit.lnk",
+            "exists": true
+          },
+          "pmac-emulator": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - pmac-emulator.lnk",
+            "exists": true
+          },
+          "controller-gateway-service": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - controller-gateway-service.lnk",
+            "exists": true
+          },
+          "windows-ui-automation": {
+            "path": "C:\\Users\\noilw\\OneDrive\\Desktop\\OpenCode - windows-ui-automation.lnk",
+            "exists": true
+          }
+        },
+        "collisions": {
+          "protectedRootExists": true,
+          "taskExists": true,
+          "trayTaskExists": true,
+          "alacrittyConfigExists": true,
+          "shortcutCount": 6,
+          "portListenerCount": 1,
+          "graphifyPortListenerCount": 1
+        },
+        "task": {
+          "exists": true,
+          "state": "Running",
+          "runLevel": "Highest",
+          "triggerCount": 0,
+          "actionCount": 1,
+          "actions": [
+            {
+              "execute": "C:\\Windows\\System32\\wscript.exe",
+              "arguments": "//nologo C:\\ProgramData\\OpenCodeWorkstation\\invoke.vbs serve",
+              "workingDirectory": "C:\\ProgramData\\OpenCodeWorkstation"
+            }
+          ]
+        },
+        "port": {
+          "listenerCount": 1,
+          "listeners": [
+            {
+              "localAddress": "127.0.0.1",
+              "localPort": 4096,
+              "processId": 11576,
+              "processName": "opencode.exe",
+              "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe",
+              "commandKind": "opencode-serve"
+            }
+          ]
+        },
+        "graphifyPort": {
+          "listenerCount": 1,
+          "listeners": [
+            {
+              "localAddress": "127.0.0.1",
+              "localPort": 4097,
+              "processId": 2812,
+              "parentProcessId": 10708,
+              "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe",
+              "creationDate": "08/25/2026 17:43:19",
+              "commandLineSha256": "9dec79ab15e2dd1af47ea50be1769605fb0ed8d57c0467d4238117843b35b9bb"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "secretSafe": true
+}

@@ -1,0 +1,30 @@
+{
+  "checks": {
+    "seed-schema": true,
+    "seed-readback": true,
+    "regeneration-stable": true,
+    "relevant-hit-selector-boost": true,
+    "weak-query-miss": true,
+    "candidate-exclusion": true,
+    "invalidated-exclusion": true,
+    "age-stale-exclusion": true,
+    "fingerprint-mismatch": true,
+    "result-budget": true,
+    "malformed-quarantine": true,
+    "primary-root-injection": true,
+    "privacy-redaction": true,
+    "tools-bounded": true,
+    "root-identity-isolation": true,
+    "disabled-mode": true,
+    "subagent-exclusion-direct": true,
+    "process-direct": true,
+    "process-hooks": true,
+    "serena-read-only": true,
+    "no-side-effects": true,
+    "all-members-supported": true,
+    "cleanup-complete": true
+  },
+  "failed": [],
+  "maximumSupportedClaim": "The reviewed provider-free PMC-001 corpus is supported through the production store, recall, renderer, tool, hook, process, privacy, and side-effect boundaries.",
+  "status": "complete"
+}

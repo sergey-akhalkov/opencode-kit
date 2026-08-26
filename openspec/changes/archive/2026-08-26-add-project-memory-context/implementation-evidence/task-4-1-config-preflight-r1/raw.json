@@ -1,0 +1,120 @@
+{
+  "candidate": {
+    "sourceIdentity": [
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "f209c96c72bb66a00d7b30dc519ede1dbbffc361092327003e059edfb3064b57"
+      },
+      {
+        "path": "global/plugin/project-memory/index.ts",
+        "sha256": "fb5e913bb2aa252f5951bbd24e063a71fc216d26b825ef58ef17a1bc1de3bacd"
+      },
+      {
+        "path": "global/plugin/project-memory/recall.ts",
+        "sha256": "ac7fd1385d9c05493f63bcd5ea5b8bc5edfc984406deff13d3cfcce5cd71850a"
+      },
+      {
+        "path": "global/plugin/project-memory/records.ts",
+        "sha256": "be2c3468a414d923c387776d783893018f196f2d8b4792e49a7ed15e080baae9"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "f7d38a38778b1b34bf2369375e42dd7985dc15b70ee6383777bf22403681898e"
+      },
+      {
+        "path": "tools/proofs/project-memory-context.ts",
+        "sha256": "bbaa0cdb90834a912d0a41a478c625d6afa2e3ff1f0166f382fe6433cc67e9c3"
+      }
+    ]
+  },
+  "environment": {
+    "externalNetworkAllowed": false,
+    "node": "v24.18.1",
+    "opencode": "1.18.23",
+    "platform": "win32",
+    "pluginRuntime": {
+      "lockSha256": "a7594a635a447c07d683868f341da95166a80bff0a5a06a94f2cac5d5c97b26c",
+      "packageSha256": "0ed65dcf90c8dbcb5e6da5353929713c9d949efdacaca416e28bf98d8fcab06f",
+      "pluginPackageSha256": "fdbdb09e98b0d103589994fd817cd0adf1cf9a0383499d8952dded59df291c31",
+      "pluginVersion": "1.18.23"
+    },
+    "ripgrepSha256": "50724f5aa5124be1db2dad4038d154ce8fbbaeb8f38aa761c606faa0d3e9d902"
+  },
+  "observations": {
+    "egressTrapCount": 0,
+    "gitStatusAfter": "?? src/\n",
+    "gitStatusBefore": "?? src/\n",
+    "providerRequestCount": 0
+  },
+  "preflights": [
+    {
+      "phase": "plugin-only",
+      "status": 0,
+      "stderr": "",
+      "stdoutSha256": "f81c00ff1a038268e8457431e92911ef411797262d98066461a50f79e670cc90",
+      "timedOut": false,
+      "trace": [
+        {
+          "at": "2026-08-25T22:13:59.387Z",
+          "phase": "factory-enter"
+        },
+        {
+          "at": "2026-08-25T22:13:59.389Z",
+          "phase": "factory-exit",
+          "hooks": [
+            "chat.message",
+            "dispose",
+            "event",
+            "experimental.chat.system.transform",
+            "experimental.session.compacting",
+            "shell.env",
+            "tool",
+            "tool.execute.before"
+          ]
+        }
+      ],
+      "pluginRuntime": {
+        "lockSha256": "a7594a635a447c07d683868f341da95166a80bff0a5a06a94f2cac5d5c97b26c",
+        "packageSha256": "0ed65dcf90c8dbcb5e6da5353929713c9d949efdacaca416e28bf98d8fcab06f",
+        "pluginPackageSha256": "fdbdb09e98b0d103589994fd817cd0adf1cf9a0383499d8952dded59df291c31",
+        "pluginVersion": "1.18.23"
+      },
+      "providerRequestCount": 0
+    },
+    {
+      "phase": "provider-added",
+      "status": 0,
+      "stderr": "",
+      "stdoutSha256": "a323fcc19b996e14e41b407f76695ec97f7d467061bd1d1856f938e6b8b738a5",
+      "timedOut": false,
+      "trace": [
+        {
+          "at": "2026-08-25T22:14:01.393Z",
+          "phase": "factory-enter"
+        },
+        {
+          "at": "2026-08-25T22:14:01.394Z",
+          "phase": "factory-exit",
+          "hooks": [
+            "chat.message",
+            "dispose",
+            "event",
+            "experimental.chat.system.transform",
+            "experimental.session.compacting",
+            "shell.env",
+            "tool",
+            "tool.execute.before"
+          ]
+        }
+      ],
+      "pluginRuntime": {
+        "lockSha256": "a7594a635a447c07d683868f341da95166a80bff0a5a06a94f2cac5d5c97b26c",
+        "packageSha256": "0ed65dcf90c8dbcb5e6da5353929713c9d949efdacaca416e28bf98d8fcab06f",
+        "pluginPackageSha256": "fdbdb09e98b0d103589994fd817cd0adf1cf9a0383499d8952dded59df291c31",
+        "pluginVersion": "1.18.23"
+      },
+      "providerRequestCount": 0
+    }
+  ],
+  "schemaVersion": 1
+}

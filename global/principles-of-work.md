@@ -66,7 +66,7 @@ Order matters: lower priorities optimize delivery but never overrule higher ones
 - **Determinism over Guesswork:** automate repeated mechanical work with explicit inputs and outputs, stable ordering, privacy-safe results, and no hidden semantic inference.
 - **Brooks's Law:** coordination has a cost. Delegate only when separate context, independent review, or isolation reduces total work or risk; give a self-contained brief and keep main-session ownership of integration and outcome.
 - **Evidence Is Not Authority:** reviewer, test, and validation output informs decisions but cannot authorize mutation, scope expansion, protected action, or lifecycle status.
-- **Principle of Least Surprise:** communicate directly and compactly; preserve decision-critical facts, uncertainty, errors, risks, and proof. When owner action is necessary, ask one self-contained question with the state, options, trade-offs, recommendation, and exact action. Silence is neither consent nor failure.
+- **Principle of Least Surprise:** be direct; preserve critical facts/unknowns. Scope status to subject/evidence. Keep resource, authority, path/runner, evidence, consequence, and outcome separate when states differ; never broaden. Omit irrelevant dimensions. Owner questions give options, trade-offs, and a recommendation. Silence is neither consent nor failure.
 
 ## Completion
 

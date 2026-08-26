@@ -1,0 +1,177 @@
+{
+  "candidateId": "task-6-1-current-source-launcher-r3",
+  "cleanup": "complete",
+  "controllerPreflight": {
+    "eligibleMatches": 1,
+    "exitCode": 0
+  },
+  "environment": {
+    "bun": "1.3.14",
+    "node": "v24.3.0",
+    "platform": "win32"
+  },
+  "fixture": {
+    "adapterSha256": "e0775b9585cc08586321ddd099de64576fa2c1363ecc9f0f384b53ad9340042e",
+    "cockpitFailureMissionSha256": "188813e5c13559d244576f62d86cebb6f0f764273372511c4e53b90268d03b86",
+    "lossMissionSha256": "88a115b59b2f4026ff6ecac0a5625fedf44c8272623ebcd34b031e2173403d8e",
+    "missionSha256": "b7296ad2da3f32f966664eec72f093a6fbccf33ac21a8ed4318a0a1fbe33e6d9"
+  },
+  "graceful": {
+    "activeOperation": null,
+    "cursor": 0,
+    "disposition": "paused",
+    "durableDisposition": "paused",
+    "missionId": "launcher-proof",
+    "operation": "status",
+    "pendingLaunch": false,
+    "pty": {
+      "exitCode": 1,
+      "notifyOnExit": false,
+      "ref": "pty:9ade8f97ef46c47f",
+      "status": "exited"
+    },
+    "reconciliation": "not-required",
+    "rootSessionRef": "session:31c96aba4704323e",
+    "runtimeExecutable": "bun.exe",
+    "runtimeRef": "16a608d6382793a1398c229915ff9012ddb3a3358a1451446426638ad4fd9deb",
+    "schemaVersion": 1,
+    "stopRequested": true,
+    "streamPrefixCounts": {
+      "stderr": 1,
+      "stdout": 1
+    },
+    "terminalNotified": true,
+    "terminalToast": "sent",
+    "visibility": "opened"
+  },
+  "hardKill": {
+    "activeOperation": "session",
+    "cursor": 0,
+    "disposition": "paused-unknown",
+    "durableDisposition": "paused-unknown",
+    "missionId": "launcher-proof",
+    "operation": "status",
+    "pendingLaunch": false,
+    "pty": {
+      "exitCode": 0,
+      "notifyOnExit": false,
+      "ref": "pty:0bc9b92b9f130ca7",
+      "status": "killed"
+    },
+    "reconciliation": "paused-unknown",
+    "rootSessionRef": "session:31c96aba4704323e",
+    "runtimeExecutable": "bun.exe",
+    "runtimeRef": "16a608d6382793a1398c229915ff9012ddb3a3358a1451446426638ad4fd9deb",
+    "schemaVersion": 1,
+    "stopRequested": false,
+    "streamPrefixCounts": {
+      "stderr": 1,
+      "stdout": 1
+    },
+    "terminalNotified": true,
+    "terminalToast": "pending",
+    "visibility": "opened"
+  },
+  "mode": "capture",
+  "providerCalls": 0,
+  "requests": {
+    "cockpit": 4,
+    "firstCockpitRequest": 0,
+    "prompts": 10,
+    "toasts": 16
+  },
+  "running": {
+    "activeOperation": "session",
+    "cursor": 0,
+    "disposition": "running",
+    "durableDisposition": "running",
+    "missionId": "launcher-proof",
+    "operation": "status",
+    "pendingLaunch": false,
+    "pty": {
+      "exitCode": null,
+      "notifyOnExit": false,
+      "ref": "pty:9ade8f97ef46c47f",
+      "status": "running"
+    },
+    "reconciliation": "not-required",
+    "rootSessionRef": "session:31c96aba4704323e",
+    "runtimeExecutable": "bun.exe",
+    "runtimeRef": "16a608d6382793a1398c229915ff9012ddb3a3358a1451446426638ad4fd9deb",
+    "schemaVersion": 1,
+    "stopRequested": false,
+    "streamPrefixCounts": {
+      "stderr": 1,
+      "stdout": 1
+    },
+    "terminalNotified": false,
+    "terminalToast": "not-sent",
+    "visibility": "opened"
+  },
+  "runtimeLoss": {
+    "activeOperation": "session",
+    "cursor": 0,
+    "disposition": "paused-unknown",
+    "durableDisposition": "paused-unknown",
+    "missionId": "launcher-loss",
+    "operation": "status",
+    "pendingLaunch": false,
+    "pty": null,
+    "reconciliation": "paused-unknown",
+    "rootSessionRef": null,
+    "runtimeExecutable": "bun.exe",
+    "runtimeRef": "3b153536faafb089bdaa9a32f7adaaaf0bf04991dd0613b92987676af66d1c6d",
+    "schemaVersion": 1,
+    "stopRequested": false,
+    "streamPrefixCounts": {
+      "stderr": 0,
+      "stdout": 0
+    },
+    "terminalNotified": false,
+    "terminalToast": "not-sent",
+    "visibility": "not-opened"
+  },
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/bin/roadmap-mission.ts",
+      "sha256": "6df1c2f293a41df4e48a6bb482ec1844d0f6847e5102f43e2626b4715661747b"
+    },
+    {
+      "path": "global/extensions/opencode-pty-bridge.ts",
+      "sha256": "47ba676ac221168c90cde9bfbd9889393f5cd0d7170cfc01a5b16aa8d67179bc"
+    },
+    {
+      "path": "global/extensions/roadmap-mission-launcher.ts",
+      "sha256": "3832b497cc384ed4e1a13d91455dabbc93f669a5d1412a07fdd3f4ddce66f599"
+    }
+  ],
+  "visibilityFailure": {
+    "message": "Mission command blocked: PTY cockpit command did not confirm visibility",
+    "ptyCountAfter": 3,
+    "ptyCountBefore": 3,
+    "status": {
+      "activeOperation": null,
+      "cursor": 0,
+      "disposition": "not-started",
+      "durableDisposition": "not-started",
+      "missionId": "cockpit-failure",
+      "operation": "status",
+      "pendingLaunch": false,
+      "pty": null,
+      "reconciliation": "not-required",
+      "rootSessionRef": null,
+      "runtimeExecutable": "bun.exe",
+      "runtimeRef": "16a608d6382793a1398c229915ff9012ddb3a3358a1451446426638ad4fd9deb",
+      "schemaVersion": 1,
+      "stopRequested": false,
+      "streamPrefixCounts": {
+        "stderr": 0,
+        "stdout": 0
+      },
+      "terminalNotified": false,
+      "terminalToast": "not-sent",
+      "visibility": "not-opened"
+    }
+  }
+}

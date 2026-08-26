@@ -1,0 +1,16 @@
+# Task 1.1 Ownership And Preflight
+
+- Recorded at: `2026-08-25T23:51:27.9642860Z`.
+- Active source: `OPENCODE_CONFIG_DIR` resolves to the kit `global` source. Host-default and project config collisions remain visible but are foreign and are not mutation targets.
+- Committed mirror ownership: `global/opencode.json.template` is the canonical materialization source; `global/opencode.json` is the active kit-owned copy. `npm run opencode:sources` reported `agent.compaction.prompt` as `same`, digest `6e501365145e1e07d48b99aeafeb749a51a7837e5e1b05b9be2431d58c4d3957`, restart boundary `none`.
+- OpenCode identity: installed version `1.18.23`, executable digest `f831518278ded5090c41cc532b16ab80629e980f710a0b46d1e5b605808bb1d9`.
+- Configured routes: active main `openai/gpt-5.6-sol/xhigh`; active compaction `xai/grok-4.6/high`; route source `global/opencode.json`. The scenario requests profile `quality-independent`, but active source resolution remains authoritative for actual loaded route identity.
+- Baseline source: working-tree governed digest `87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc`; exact path digests are retained in `task-1-1-preflight-r1.json`.
+- Scenario pack: digest `64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c`; fixture digest `bbea5c60a433c7e71880dc093bb2457832a83788f33bd73196426c40cb93f3cc`; members are `known-resource-path-unknown`, `resource-unknown-negative-control`, and `compaction-roundtrip-mixed-status`.
+- Bound: one main response, one actual compaction, and one reconstruction call per arm; six configured-provider calls total across baseline and candidate. Preflight used zero configured-provider calls.
+- Permissions: synthetic prompts allow only read semantics; bash, edit, external-directory, question, skill, task, and webfetch tools are denied. Foreign source mutation is denied. Cleanup requires proof fixture, process, and session removal.
+- Ownership: `ownership.json` is mutation-enabled. `npm run openspec:change-inventory -- --root .` reported one active change, no overlaps, and no cycles; no asynchronous writer or delegated worker exists in this session.
+- Candidate plan: edit and load only the same kit `global` source after the immutable baseline capture. Do not mutate host-default or project config sources.
+- Provider-free preflight: `node tools/proofs/consumer-outcome-regression.ts --mode preflight --pack status-scope --source-ref working-tree --opencode <installed-opencode>/opencode.exe` exited `0` with `status=ready`. `task-1-1-preflight-r2.json` supersedes R1's model-profile route assumption with direct active-config route readback; source, fixture, prompt, executable, ownership, and call-bound identities are unchanged.
+- Focused validation: `npm run test:focused:consumer-outcome` -> `OK: consumer outcome tests=24`; `node --check` passed for the runner, contracts, and focused tests; the fixture checker emitted all three member IDs; `openspec validate prevent-cross-layer-status-ambiguity --strict` passed; the apply gate remained non-blocking with only the expected pre-runtime CSA-001 warning.
+- Cleanup: no proof session or proof server was started; the focused synthetic executable fixture was deleted by its test.

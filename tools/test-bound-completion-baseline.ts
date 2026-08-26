@@ -58,4 +58,55 @@ try {
 } finally {
   fs.rmSync(queryRoot, { recursive: true, force: true });
 }
-process.stdout.write("OK: bound-completion-baseline tests=10\n");
+
+const processRoot = path.join(os.tmpdir(), `bound-completion-process-${process.pid}-${Date.now()}`);
+try {
+  const processProof = spawnSync(
+    process.execPath,
+    ["tools/proofs/bound-completion-baseline.ts", "--mode", "process", "--evidence-root", processRoot],
+    { cwd: root, encoding: "utf8", timeout: 120_000 },
+  );
+  assert(processProof.status === 0, `process mode must exit 0: ${processProof.stderr}`);
+  const summary = JSON.parse(processProof.stdout) as {
+    cleanup: { complete: boolean; fixtureRemoved: boolean };
+    commandClasses: number;
+    missionStateUnchanged: boolean;
+    providerCalls: number;
+    unknownCleanup: { cleanupState: string; retryCount: number; timedOut: boolean };
+  };
+  assert(summary.providerCalls === 0, "process mode is provider-free");
+  assert(summary.commandClasses === 4, "all four command classes must be exercised");
+  assert(summary.cleanup.complete && summary.cleanup.fixtureRemoved, "process fixtures must clean up");
+  assert(summary.missionStateUnchanged, "hung commands must not advance mission state");
+  if (process.platform === "win32") {
+    assert(summary.unknownCleanup.cleanupState === "unknown", "failed cleanup attestation must remain unknown");
+    assert(summary.unknownCleanup.timedOut && summary.unknownCleanup.retryCount === 0, "unknown cleanup must not retry");
+  }
+} finally {
+  fs.rmSync(processRoot, { recursive: true, force: true });
+}
+
+const integratedRoot = path.join(os.tmpdir(), `bound-completion-integrated-${process.pid}-${Date.now()}`);
+try {
+  const integrated = spawnSync(
+    process.execPath,
+    ["tools/proofs/bound-completion-baseline.ts", "--mode", "integrated", "--evidence-root", integratedRoot],
+    { cwd: root, encoding: "utf8", timeout: 180_000 },
+  );
+  assert(integrated.status === 0, `integrated mode must exit 0: ${integrated.stderr}`);
+  const summary = JSON.parse(integrated.stdout) as {
+    cleanup: { largeDbRemoved: boolean; processFixtures: boolean; scheduler: string };
+    fullScan: boolean;
+    maxActive: number;
+    providerCalls: number;
+    queued: number;
+    selectedRows: number;
+  };
+  assert(summary.providerCalls === 0, "integrated mode is provider-free");
+  assert(summary.selectedRows === 3 && !summary.fullScan, "integrated query remains root-correlated");
+  assert(summary.maxActive === 2 && summary.queued === 32, "integrated scheduler remains bounded");
+  assert(summary.cleanup.largeDbRemoved && summary.cleanup.processFixtures && summary.cleanup.scheduler === "complete", "integrated cleanup must complete");
+} finally {
+  fs.rmSync(integratedRoot, { recursive: true, force: true });
+}
+process.stdout.write("OK: bound-completion-baseline tests=23\n");

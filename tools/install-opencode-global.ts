@@ -2,11 +2,15 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
 import {
   GENERATED_RUNTIME_PROFILES_RELATIVE,
+  PORTABLE_WORKFLOW_RUNTIME_FILES,
+  ROADMAP_MISSION_PLUGIN_FILES,
+  ROADMAP_MISSION_RUNTIME_FILES,
   inspectRuntimeSurfaceInstall,
+  materializeRuntimeSurfaceTemplate,
   materializeRuntimeSurfaceProfile,
 } from "./runtime-surface-profile.ts";
 
@@ -22,16 +26,6 @@ type Options = {
 
 const ENV_VAR = "OPENCODE_CONFIG_DIR";
 const GLOBAL_DIR_NAME = "global";
-const PRINCIPLES_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/principles-of-work.md";
-const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md";
-const SCRIPT_RUNTIME_PLACEHOLDER = "__OPENCODE_SCRIPT_RUNTIME__";
-const PLUGIN_PATH_PLACEHOLDERS = [
-  "plugins/notify.ts",
-  "plugin/session-env.ts",
-  "extensions/opencode-pty-bridge.ts",
-  "extensions/roadmap-mission-launcher.ts",
-  "extensions/session-completion-guard.ts",
-] as const;
 export const SETX_SAFE_LIMIT = 900;
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -62,6 +56,7 @@ Options:
   --print                Preview the target path and platform command only (no mutation; not a recovery path).
   --unset                Remove the persisted OPENCODE_CONFIG_DIR value.
   --persist-script <file>  Ensure <file> contains exactly one desired "export OPENCODE_CONFIG_DIR=..." line.
+                          Add --profile <name> to materialize and persist that generated profile.
   --unset-script <file>    Remove every matching "export OPENCODE_CONFIG_DIR=..." line from <file>.
   --dry-run, --what-if   Show what the default mode would do without setting anything.
   --help, -h             Show this help.
@@ -526,7 +521,7 @@ export function removeExportLine(file: string, envName: string): { removed: bool
   return { removed: true, totalLines };
 }
 
-function runPersistScript(file: string): void {
+function runPersistScript(file: string, profileName: string, explicitProfile: boolean): void {
   const errors = validateGlobalDir(globalDir);
   if (errors.length > 0) {
     for (const error of errors) {
@@ -534,7 +529,17 @@ function runPersistScript(file: string): void {
     }
     process.exit(1);
   }
-  const envLine = buildExportLine(globalDir);
+  const targetDir = explicitProfile ? generatedProfileRoot(profileName) : globalDir;
+  if (explicitProfile) {
+    if (!fs.existsSync(targetDir)) {
+      assertSupportedTemplate(path.join(globalDir, "opencode.json.template"));
+      materializeRuntimeSurfaceProfile({ profileName, root: repoRoot, targetRoot: targetDir });
+      ensureLocalInstructions(targetDir);
+    }
+    const generatedErrors = validateGeneratedProfile(targetDir, profileName as "all" | "core");
+    if (generatedErrors.length > 0) throw new Error(generatedErrors.join("\n"));
+  }
+  const envLine = buildExportLine(targetDir);
   const result = appendExportLine(file, envLine, ENV_VAR);
   if (result.appended) {
     console.log(`persisted: ensured exactly one ${envLine} in ${file}`);
@@ -568,10 +573,64 @@ function validateGlobalDir(target: string): string[] {
       errors.push(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
     }
   }
-  for (const required of ["openspec-operation-gate.ts", "openspec-archive.ts", "portable-process.ts", "roadmap-mission.ts", "roadmap-mission/contracts.ts", "roadmap-mission/preflight.ts", "validate-staged.ts"]) {
-    const candidate = path.join(target, "bin", required);
+  for (const required of PORTABLE_WORKFLOW_RUNTIME_FILES) {
+    const candidate = path.join(target, ...required.split("/"));
     if (!fs.existsSync(candidate) || !fs.statSync(candidate).isFile()) {
-      errors.push(`Missing global/bin/${required}: portable project workflow tooling is incomplete.`);
+      errors.push(`Missing global/${required}: portable project workflow tooling is incomplete.`);
+    }
+  }
+  return errors;
+}
+
+function validateGeneratedProfile(target: string, profileName: "all" | "core"): string[] {
+  const errors: string[] = [];
+  if (!fs.existsSync(target) || !fs.statSync(target).isDirectory()) {
+    return [`Missing generated ${profileName} profile: ${target}`];
+  }
+  for (const required of [".runtime-surface.json", "opencode.json", "opencode.local.instructions.md"]) {
+    const candidate = path.join(target, required);
+    if (!fs.existsSync(candidate) || !fs.statSync(candidate).isFile()) {
+      errors.push(`Missing generated ${profileName}/${required}.`);
+    }
+  }
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(target, ".runtime-surface.json"), "utf8")) as Record<string, unknown>;
+    if (manifest.profile !== profileName || manifest.schemaVersion !== 1 || !Array.isArray(manifest.entries)) {
+      errors.push(`Generated ${profileName} manifest identity is invalid.`);
+    }
+  } catch {
+    errors.push(`Generated ${profileName} manifest is unreadable or invalid.`);
+  }
+  let config: Record<string, unknown> | null = null;
+  try {
+    config = assertSupportedLocalConfig(path.join(target, "opencode.json"));
+    const rendered = JSON.stringify(config);
+    if (rendered.includes("__OPENCODE_") || rendered.includes(".staging-")) {
+      errors.push(`Generated ${profileName} config contains an unresolved or staging path.`);
+    }
+  } catch (error) {
+    errors.push(error instanceof Error ? error.message : `Generated ${profileName} config is invalid.`);
+  }
+  if (profileName === "all") {
+    for (const relative of ROADMAP_MISSION_RUNTIME_FILES) {
+      const candidate = path.join(target, ...relative.split("/"));
+      if (!fs.existsSync(candidate) || !fs.statSync(candidate).isFile()) {
+        errors.push(`Missing generated all/${relative}.`);
+      }
+    }
+    const plugins = Array.isArray(config?.plugin) ? config.plugin : [];
+    for (const relative of ROADMAP_MISSION_PLUGIN_FILES) {
+      const expected = path.join(target, ...relative.split("/"));
+      const exact = plugins.filter((entry) => {
+        const source = typeof entry === "string" ? entry : Array.isArray(entry) && typeof entry[0] === "string" ? entry[0] : null;
+        if (source == null || !source.startsWith("file:")) return false;
+        try {
+          return sameConfigPath(fileURLToPath(source), expected);
+        } catch {
+          return false;
+        }
+      });
+      if (exact.length !== 1) errors.push(`Generated all config must load ${relative} exactly once.`);
     }
   }
   return errors;
@@ -621,25 +680,8 @@ function assertSupportedTemplate(templatePath: string): Buffer {
 }
 
 function materializeTemplate(templateBytes: Buffer, target: string): Buffer {
-  let templateText = decodeUtf8Strict(templateBytes, "opencode.json.template");
-  const principlesPlaceholder = JSON.stringify(PRINCIPLES_PLACEHOLDER);
-  const principles = path.join(target, "principles-of-work.md").replaceAll("\\", "/");
-  templateText = templateText.replaceAll(principlesPlaceholder, JSON.stringify(principles));
-  const placeholder = JSON.stringify(LOCAL_INSTRUCTIONS_PLACEHOLDER);
-  const localInstructions = path.join(target, "opencode.local.instructions.md").replaceAll("\\", "/");
-  templateText = templateText.replaceAll(placeholder, JSON.stringify(localInstructions));
-  for (const pluginPath of PLUGIN_PATH_PLACEHOLDERS) {
-    const source = `__OPENCODE_CONFIG_DIR__/${pluginPath}`;
-    templateText = templateText.replaceAll(
-      JSON.stringify(source),
-      JSON.stringify(pathToFileURL(path.join(target, ...pluginPath.split("/"))).href),
-    );
-  }
-  templateText = templateText.replaceAll(
-    JSON.stringify(SCRIPT_RUNTIME_PLACEHOLDER),
-    JSON.stringify(path.resolve(process.execPath).replaceAll("\\", "/")),
-  );
-  return Buffer.from(templateText, "utf8");
+  const templateText = decodeUtf8Strict(templateBytes, "opencode.json.template");
+  return Buffer.from(materializeRuntimeSurfaceTemplate(templateText, target), "utf8");
 }
 
 function inspectExistingSourceConfig(): void {
@@ -774,6 +816,16 @@ function runCheck(profileName: string): void {
     sameConfigPath(current, generatedProfileRoot("core")) ||
     sameConfigPath(current, generatedProfileRoot("all"))
   ) {
+    const generatedProfile = sameConfigPath(current, generatedProfileRoot("all"))
+      ? "all"
+      : sameConfigPath(current, generatedProfileRoot("core")) ? "core" : null;
+    if (generatedProfile != null) {
+      const errors = validateGeneratedProfile(path.resolve(current), generatedProfile);
+      if (errors.length > 0) {
+        for (const error of errors) console.error(error);
+        process.exit(1);
+      }
+    }
     const local = path.join(globalDir, "opencode.json");
     if (fs.existsSync(local)) {
       try {
@@ -794,10 +846,11 @@ function runCheck(profileName: string): void {
   process.exit(1);
 }
 
-function runPrint(): void {
-  console.log(globalDir);
-  console.log(`command (windows): setx ${ENV_VAR} "${globalDir}"`);
-  console.log(`command (posix):   ${buildExportLine(globalDir)}`);
+function runPrint(profileName: string, explicitProfile: boolean): void {
+  const targetDir = explicitProfile ? generatedProfileRoot(profileName) : globalDir;
+  console.log(targetDir);
+  console.log(`command (windows): setx ${ENV_VAR} "${targetDir}"`);
+  console.log(`command (posix):   ${buildExportLine(targetDir)}`);
 }
 
 function generatedProfileRoot(profileName: string): string {
@@ -918,7 +971,7 @@ function runSet(dryRun: boolean, profileName: string, explicitProfile: boolean):
   } else {
     console.log(`Default mode on macOS/Linux does not persist. Safe export line (preview only):`);
     console.log(`  ${buildExportLine(targetDir)}`);
-    console.log(`To persist, run with --persist-script <file> (for example ~/.bashrc or ~/.zshrc), restart the shell, then verify with --check.`);
+    console.log(`To persist, run with --persist-script <file> --profile ${resolved.profileName} (for example ~/.bashrc or ~/.zshrc), restart the shell, then verify with --check.`);
   }
 
   console.log("");
@@ -968,13 +1021,13 @@ function main(): void {
         runPlanMigration(options.profileName);
         break;
       case "print":
-        runPrint();
+        runPrint(options.profileName, options.explicitProfile);
         break;
       case "unset":
         runUnset();
         break;
       case "persist-script":
-        runPersistScript(options.scriptFile ?? "");
+        runPersistScript(options.scriptFile ?? "", options.profileName, options.explicitProfile);
         break;
       case "unset-script":
         runUnsetScript(options.scriptFile ?? "");

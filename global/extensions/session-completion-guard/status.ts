@@ -85,11 +85,15 @@ export class GuardStatusReporter {
         terminalCertificate: { ...terminalCertificate },
         updatedAt: Date.now(),
       };
-      const metadata = {
-        ...(state.root.metadata ?? {}),
-        completionGuard: guard,
-      };
       try {
+        const latest = await dataOf<Session>(this.dependencies.client.session.get({
+          sessionID: state.root.id,
+          directory: state.root.directory,
+        }) as Promise<unknown>, "session.get guard status metadata");
+        const metadata = {
+          ...(latest.metadata ?? {}),
+          completionGuard: guard,
+        };
         state.root = await dataOf<Session>(this.dependencies.client.session.update({
           sessionID: state.root.id,
           directory: state.root.directory,
@@ -148,10 +152,10 @@ export class GuardStatusReporter {
     state.state = next;
     state.statusMessage = message;
     const key = `${next}:${message}`;
-    if (state.lastStatusKey === key) return;
+    const duplicateStatus = state.lastStatusKey === key;
     state.lastStatusKey = key;
     await this.persist(state);
-    if (!this.dependencies.statusToasts) return;
+    if (duplicateStatus || !this.dependencies.statusToasts) return;
     try {
       await ensureNoError(this.dependencies.client.tui.showToast({
         directory: state.root.directory,

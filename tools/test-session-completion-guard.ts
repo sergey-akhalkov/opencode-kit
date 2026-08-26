@@ -28,6 +28,7 @@ import { PtyFallbackScheduler } from "../global/extensions/session-completion-gu
 import { ensureArbiterChild } from "../global/extensions/session-completion-guard/arbiter-child.ts";
 import {
   buildArbiterAuditRequest,
+  captureArbiterEvidence,
   requireBoundedRequest,
 } from "../global/extensions/session-completion-guard/arbiter-evidence.ts";
 import {
@@ -59,13 +60,18 @@ import {
 const RUNAUDIT_DISABLE_ORACLE_FLAG = "--oracle-runaudit-disable-race";
 const QUESTION_REPLY_DISABLE_ORACLE_FLAG = "--oracle-question-reply-disable-race";
 const RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG = "--oracle-retry-prompt-amplification";
+const TERMINAL_CERTIFICATE_RECHECK_ORACLE_FLAG = "--oracle-terminal-certificate-recheck";
 const isBunRuntime = typeof (globalThis as { Bun?: unknown }).Bun !== "undefined";
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function writeMinimalSessionDatabase(dbPath: string, rootSessionID: string): Promise<void> {
+async function writeMinimalSessionDatabase(
+  dbPath: string,
+  rootSessionID: string,
+  assistantMessages = 0,
+): Promise<void> {
   // Bun cannot resolve node:sqlite; Node cannot use bun:sqlite. Keep creation runtime-local.
   if (isBunRuntime) {
     const sqlite = await import("bun:sqlite") as {
@@ -79,6 +85,15 @@ async function writeMinimalSessionDatabase(dbPath: string, rootSessionID: string
     try {
       db.exec("create table session (id text primary key);");
       db.run("insert into session (id) values (?)", rootSessionID);
+      if (assistantMessages > 0) {
+        db.exec("create table message (id text primary key, session_id text not null, time_created integer, data text);");
+        db.exec("create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, data text);");
+        for (let index = 0; index < assistantMessages; index += 1) {
+          const messageID = `message_assistant_${index}`;
+          db.run("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)", messageID, rootSessionID, index + 1, JSON.stringify({ role: "assistant" }));
+          db.run("insert into part (id, message_id, session_id, time_created, data) values (?, ?, ?, ?, ?)", `part_assistant_${index}`, messageID, rootSessionID, index + 1, JSON.stringify({ type: "text", text: `completed step ${index + 1}` }));
+        }
+      }
     } finally {
       db.close();
     }
@@ -95,6 +110,17 @@ async function writeMinimalSessionDatabase(dbPath: string, rootSessionID: string
   try {
     db.exec("create table session (id text primary key);");
     db.prepare("insert into session (id) values (?)").run(rootSessionID);
+    if (assistantMessages > 0) {
+      db.exec("create table message (id text primary key, session_id text not null, time_created integer, data text);");
+      db.exec("create table part (id text primary key, message_id text not null, session_id text not null, time_created integer, data text);");
+      const insertMessage = db.prepare("insert into message (id, session_id, time_created, data) values (?, ?, ?, ?)");
+      const insertPart = db.prepare("insert into part (id, message_id, session_id, time_created, data) values (?, ?, ?, ?, ?)");
+      for (let index = 0; index < assistantMessages; index += 1) {
+        const messageID = `message_assistant_${index}`;
+        insertMessage.run(messageID, rootSessionID, index + 1, JSON.stringify({ role: "assistant" }));
+        insertPart.run(`part_assistant_${index}`, messageID, rootSessionID, index + 1, JSON.stringify({ type: "text", text: `completed step ${index + 1}` }));
+      }
+    }
   } finally {
     db.close();
   }
@@ -1159,6 +1185,88 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "critical: completed message-bearing root preserves inspection and certificate evidence",
+    run: async () => {
+      const { inspectRootEvidence } = await import(
+        "../global/extensions/session-completion-guard/inspection.ts"
+      );
+      const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "scg-terminal-preflight-"));
+      const previousDatabase = process.env.OPENCODE_DB;
+      try {
+        const rootID = "session_root_terminal_preflight";
+        const rootRef = hashRef("session", rootID);
+        const dbPath = path.join(dataDir, "opencode.db");
+        await writeMinimalSessionDatabase(dbPath, rootID, 11);
+        process.env.OPENCODE_DB = dbPath;
+        const root = sessionFixture({
+          id: rootID,
+          directory: dataDir,
+          metadata: {
+            completionGuard: { grindEnabled: true, state: "running" },
+            roadmapMission: {
+              acceptedRequirementIds: ["1.1"],
+              certificateIssuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+              certificateStatus: "pending",
+              terminalCertificate: null,
+            },
+          },
+        });
+        const messages = Array.from({ length: 11 }, (_, index) => ({
+          info: { id: `message_assistant_${index}`, role: "assistant" },
+          parts: index === 1
+            ? [{
+                type: "tool",
+                tool: "bash",
+                state: {
+                  error: [{ depth: 0, message: "permission denied" }],
+                  status: "error",
+                },
+              }]
+            : [{ type: "text", text: `completed step ${index + 1}` }],
+        }));
+        const client = {
+          session: {
+            messages: async () => ({ data: messages }),
+            todo: async () => ({ data: [] }),
+            diff: async () => ({ data: [] }),
+          },
+        };
+        const options = parseGuardOptions({
+          auditWindow: { enabled: false },
+          certificateIssuers: [ROADMAP_MISSION_CERTIFICATE_ISSUER],
+          certificateWaitMs: 5_000,
+          settleMs: 0,
+          statusToasts: false,
+          strategyFallback: "strategy-fallback",
+        });
+        const leases = new AsyncLeaseRegistry({
+          onGeneration: () => { /* no-op */ },
+          onTerminalPty: () => { /* no-op */ },
+        });
+        const inspection = await inspectRootEvidence({
+          client: client as never,
+          configDirectory: dataDir,
+          leases,
+          options,
+          root,
+        });
+        assert(
+          inspection.context.assistantEvidence.length === 11,
+          "Completed message-bearing inspection must retain all assistant evidence refs.",
+        );
+        const evidence = captureArbiterEvidence(rootID, rootRef, dataDir, root.metadata);
+        assert(
+          evidence.session?.sessionRef === rootRef && evidence.missingSessions.length === 0,
+          "Completed message-bearing database must resolve the inspected root without omissions.",
+        );
+      } finally {
+        if (previousDatabase == null) delete process.env.OPENCODE_DB;
+        else process.env.OPENCODE_DB = previousDatabase;
+        fs.rmSync(dataDir, { recursive: true, force: true });
+      }
+    },
+  },
+  {
     name: "critical: guard options default to session-completion-arbiter route",
     run: () => {
       const options = parseGuardOptions({});
@@ -1361,6 +1469,7 @@ const tests: TestCase[] = [
       const reporter = new GuardStatusReporter({
         client: {
           session: {
+            get: async () => ({ data: state.root }),
             update: async (args: { metadata?: unknown }) => {
               updateCalls += 1;
               return { data: { ...root, metadata: args.metadata } };
@@ -2244,6 +2353,7 @@ const tests: TestCase[] = [
       const reporter = new GuardStatusReporter({
         client: {
           session: {
+            get: async () => ({ data: state.root }),
             update: async (args: { sessionID: string; metadata?: unknown }) => {
               updateEntered = true;
               await updateGate;
@@ -2533,6 +2643,310 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "critical: waiting terminal certificate rechecks and validates issued evidence across a transient guard turn",
+    run: async () => {
+      if (!isBunRuntime) {
+        const self = fileURLToPath(import.meta.url);
+        const result = spawnSync("bun", [self, TERMINAL_CERTIFICATE_RECHECK_ORACLE_FLAG], {
+          cwd: path.resolve(path.dirname(self), ".."),
+          encoding: "utf8",
+          env: { ...process.env, OPENCODE_PROOF_TERMINAL_STAGE_STDERR: "1" },
+          shell: false,
+        });
+        const combined = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+        assert(result.status === 0, `Bun terminal-certificate recheck oracle failed (status=${result.status}):\n${combined}`);
+        assert(
+          combined.includes("PASS critical: waiting terminal certificate rechecks and validates issued evidence across a transient guard turn"),
+          `Bun terminal-certificate oracle did not report PASS:\n${combined}`,
+        );
+        assert(
+          combined.includes("[session-completion-guard:terminal-stage]"),
+          `Bun terminal-certificate oracle did not emit the proof-only stage record:\n${combined}`,
+        );
+        return;
+      }
+
+      const { SessionCompletionController } = await import(
+        "../global/extensions/session-completion-guard/controller.ts"
+      );
+      const root = sessionFixture({ id: "session_root_certificate_recheck", directory: "." });
+      const state = {
+        ...initialRootState(root),
+        grindEnabled: true,
+        guardTurnPending: true,
+        state: "settling-idle",
+        terminalCertificate: {
+          challenge: null,
+          deadlineAt: Date.now() + 5_000,
+          evidenceRefs: [],
+          issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+          reason: null,
+          status: "waiting",
+        },
+      } as RootState;
+      const controller = new SessionCompletionController(
+        { client: { app: { log: async () => ({}) } }, directory: "." } as never,
+        { auditWindow: { enabled: false }, settleMs: 10, statusToasts: false },
+        {} as never,
+      );
+      const probe = controller as unknown as {
+        childStatuses(state: RootState, statuses: Record<string, { type: string }>): Promise<Array<{ id: string; status: "idle" | "running" | "unknown" }>>;
+        handleSettledIdle(state: RootState, expectedGeneration: number): Promise<void>;
+        inspectRoot(state: RootState): Promise<RootInspection>;
+        leases: AsyncLeaseRegistry;
+        scheduleIdle(state: RootState, blockedRetry?: boolean): void;
+        session(sessionID: string): Promise<Session>;
+        sessionStatuses(): Promise<Record<string, { type: string }>>;
+        tryTerminalCertificate(state: RootState, inspection: RootInspection): Promise<"accepted" | "fallback" | "waiting">;
+      };
+      probe.session = async () => state.root;
+
+      await probe.handleSettledIdle(state, 0);
+      if (state.settleTimer == null) {
+        throw new Error("Transient guard turn must not drop the waiting certificate recheck.");
+      }
+      clearTimeout(state.settleTimer);
+      state.settleTimer = null;
+
+      state.root = {
+        ...state.root,
+        metadata: {
+          ...(state.root.metadata ?? {}),
+          roadmapMission: {
+            certificateStatus: "issued",
+            terminalCertificate: { disposition: "allow_stop" },
+          },
+        },
+      };
+      let validatorCalls = 0;
+      let statusCalls = 0;
+      probe.sessionStatuses = async () => ({
+        [state.root.id]: { type: statusCalls++ === 0 ? "busy" : "idle" },
+      });
+      probe.childStatuses = async () => [];
+      probe.inspectRoot = async () => ({
+        revision: { leaseGeneration: 0, revisionDigest: "revision_certificate_recheck" },
+      } as RootInspection);
+      probe.tryTerminalCertificate = async () => {
+        validatorCalls += 1;
+        return "accepted";
+      };
+      await probe.handleSettledIdle(state, 0);
+      if (state.settleTimer == null) {
+        throw new Error("An issued certificate must retain a settle recheck after a transient busy status.");
+      }
+      clearTimeout(state.settleTimer);
+      state.settleTimer = null;
+      await probe.handleSettledIdle(state, 0);
+      assert(validatorCalls === 1, "An issued certificate must reach the existing validator despite a transient guard turn.");
+
+      validatorCalls = 0;
+      probe.sessionStatuses = async () => ({ [state.root.id]: { type: "idle" } });
+      const leaseProbe = probe.leases as unknown as {
+        preflight(rootSessionID: string, managerSessions: PTYSessionInfo[], children: Array<{ id: string; status: "idle" | "running" | "unknown" }>): unknown;
+      };
+      const originalPreflight = leaseProbe.preflight;
+      leaseProbe.preflight = () => ({ generation: 1, kind: "clear" });
+      await probe.handleSettledIdle(state, 0);
+      if (state.settleTimer == null) {
+        throw new Error("An issued certificate must retain a settle recheck after preflight generation drift.");
+      }
+      clearTimeout(state.settleTimer);
+      state.settleTimer = null;
+      leaseProbe.preflight = originalPreflight;
+
+      probe.inspectRoot = async () => ({
+        revision: { leaseGeneration: 1, revisionDigest: "revision_certificate_drift" },
+      } as RootInspection);
+      await probe.handleSettledIdle(state, 0);
+      if (state.settleTimer == null) {
+        throw new Error("An issued certificate must retain a settle recheck after inspection generation drift.");
+      }
+      clearTimeout(state.settleTimer);
+      state.settleTimer = null;
+
+      probe.inspectRoot = async () => ({
+        revision: { leaseGeneration: 0, revisionDigest: "revision_certificate_recheck" },
+      } as RootInspection);
+      await probe.handleSettledIdle(state, 0);
+      assert(validatorCalls === 1, "Stable generation must reach terminal certificate validation exactly once.");
+
+      const issuedRoot = state.root;
+      state.root = {
+        ...state.root,
+        metadata: {
+          ...(state.root.metadata ?? {}),
+          roadmapMission: {
+            certificateStatus: "pending",
+            terminalCertificate: null,
+          },
+        },
+      };
+      validatorCalls = 0;
+      probe.session = async () => issuedRoot;
+      await probe.handleSettledIdle(state, 0);
+      if (state.settleTimer != null) {
+        clearTimeout(state.settleTimer);
+        state.settleTimer = null;
+      }
+      assert(validatorCalls === 1, "A waiting certificate must refresh authoritative issued metadata before transient gating.");
+
+      validatorCalls = 0;
+      probe.scheduleIdle(state, true);
+      await sleep(40);
+      assert(state.settleTimer == null, "The scheduled terminal-certificate settle callback must finish.");
+      assert(validatorCalls === 1, "The scheduled settle callback must reach stable certificate validation.");
+      assert(
+        [...state.terminalDiagnosticStages].some((stage) => stage.endsWith(":settle-fired")),
+        "Terminal diagnostics must record actual settle timer delivery.",
+      );
+      assert(
+        [...state.terminalDiagnosticStages].some((stage) => stage.endsWith(":validator-accepted")),
+        "Terminal diagnostics must record validator entry and result.",
+      );
+    },
+  },
+  {
+    name: "critical: repeated certified status persists a changed revision while suppressing duplicate toast",
+    run: async () => {
+      const root = sessionFixture({ id: "session_root_repeated_certified_status" });
+      const state = {
+        ...initialRootState(root),
+        grindEnabled: true,
+      } as RootState;
+      let storedMetadata: Record<string, unknown> = { ...(root.metadata ?? {}) };
+      let updateCalls = 0;
+      let toastCalls = 0;
+      const reporter = new GuardStatusReporter({
+        client: {
+          session: {
+            get: async () => ({ data: { ...root, metadata: storedMetadata } }),
+            update: async (args: { metadata?: unknown }) => {
+              updateCalls += 1;
+              storedMetadata = args.metadata as Record<string, unknown>;
+              return { data: { ...root, metadata: storedMetadata } };
+            },
+          },
+          tui: {
+            showToast: async () => {
+              toastCalls += 1;
+              return {};
+            },
+          },
+        } as never,
+        statusToasts: true,
+        log: async () => { /* ignore */ },
+      });
+
+      state.lastAuditedRevision = "revision_proposal";
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: ["proposal-evidence"],
+        issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+        reason: null,
+        status: "accepted",
+      };
+      await reporter.set(state, "passed", "Completion guard passed (certified)", "success");
+
+      state.state = "settling-idle";
+      state.terminalCertificate = {
+        challenge: createTerminalCertificateChallenge({
+          issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+          leaseGeneration: 0,
+          requirementIds: ["1"],
+          revisionDigest: "revision_apply",
+          rootRef: hashRef("session", root.id),
+        }),
+        deadlineAt: Date.now() + 5_000,
+        evidenceRefs: [],
+        issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+        reason: null,
+        status: "waiting",
+      };
+      await reporter.persist(state);
+
+      state.lastAuditedRevision = "revision_apply";
+      state.terminalCertificate = {
+        challenge: null,
+        deadlineAt: null,
+        evidenceRefs: ["apply-evidence"],
+        issuer: ROADMAP_MISSION_CERTIFICATE_ISSUER,
+        reason: null,
+        status: "accepted",
+      };
+      await reporter.set(state, "passed", "Completion guard passed (certified)", "success");
+
+      const guard = storedMetadata.completionGuard as Record<string, unknown>;
+      const certificate = guard.terminalCertificate as Record<string, unknown>;
+      assert(updateCalls === 3, `Both certified revisions and the waiting transition must persist; updates=${updateCalls}.`);
+      assert(toastCalls === 1, `Repeated certified status must suppress only duplicate toast; toasts=${toastCalls}.`);
+      assert(guard.state === "passed", "Second certified revision must persist passed state.");
+      assert(guard.lastAuditedRevision === "revision_apply", "Second certified revision must replace proposal revision.");
+      assert(certificate.status === "accepted", "Second certified certificate must replace durable waiting state.");
+    },
+  },
+  {
+    name: "critical: guard status persistence preserves a concurrently issued terminal certificate",
+    run: async () => {
+      const root = sessionFixture({
+        id: "session_root_status_certificate",
+        metadata: {
+          roadmapMission: {
+            certificateReason: null,
+            certificateStatus: "pending",
+            terminalCertificate: null,
+          },
+        },
+      });
+      const state = {
+        ...initialRootState(root),
+        grindEnabled: true,
+        state: "settling-idle",
+      } as RootState;
+      const certificate = {
+        challengeRef: "challenge_external",
+        disposition: "allow_stop",
+        issuer: "roadmap-mission-session-executor",
+        requirementIds: ["artifact:proposal"],
+      };
+      let storedMetadata: Record<string, unknown> = {
+        ...(root.metadata ?? {}),
+        roadmapMission: {
+          certificateReason: null,
+          certificateStatus: "issued",
+          terminalCertificate: certificate,
+        },
+      };
+      let getCalls = 0;
+      const reporter = new GuardStatusReporter({
+        client: {
+          session: {
+            get: async () => {
+              getCalls += 1;
+              return { data: { ...root, metadata: storedMetadata } };
+            },
+            update: async (args: { metadata?: unknown }) => {
+              storedMetadata = args.metadata as Record<string, unknown>;
+              return { data: { ...root, metadata: storedMetadata } };
+            },
+          },
+          tui: { showToast: async () => undefined },
+        } as never,
+        statusToasts: false,
+        log: async () => { /* ignore */ },
+      });
+
+      const persisted = await reporter.persist(state);
+      const mission = storedMetadata.roadmapMission as Record<string, unknown>;
+      assert(persisted === true, "Status write with an external certificate must converge.");
+      assert(getCalls === 1, `Status write must refresh metadata exactly once, got ${getCalls}.`);
+      assert(mission.certificateStatus === "issued", "Status write must not restore stale pending certificate status.");
+      assert(mission.terminalCertificate === certificate, "Status write must preserve the externally issued certificate.");
+      assert(storedMetadata.completionGuard != null, "Status write must still persist completion-guard metadata.");
+    },
+  },
+  {
     name: "critical: status persistence terminates after eight non-converging passes",
     run: async () => {
       const root = sessionFixture({ id: "session_root_status_bound" });
@@ -2546,6 +2960,7 @@ const tests: TestCase[] = [
       const reporter = new GuardStatusReporter({
         client: {
           session: {
+            get: async () => ({ data: state.root }),
             update: async (args: { metadata?: unknown }) => {
               updateCalls += 1;
               state.continuationCycles += 1;
@@ -2595,13 +3010,16 @@ const tests: TestCase[] = [
 const onlyRunauditOracle = process.argv.includes(RUNAUDIT_DISABLE_ORACLE_FLAG);
 const onlyQuestionReplyOracle = process.argv.includes(QUESTION_REPLY_DISABLE_ORACLE_FLAG);
 const onlyRetryAmplificationOracle = process.argv.includes(RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG);
+const onlyTerminalCertificateRecheckOracle = process.argv.includes(TERMINAL_CERTIFICATE_RECHECK_ORACLE_FLAG);
 const selectedTests = onlyRunauditOracle
   ? tests.filter((test) => test.name.includes("in-flight runAudit must not call arbiter prompt"))
   : onlyQuestionReplyOracle
     ? tests.filter((test) => test.name.includes("in-flight official question reply must not apply"))
     : onlyRetryAmplificationOracle
       ? tests.filter((test) => test.name.includes("same-epoch arbiter retry must not re-embed completionEvidence"))
-      : tests;
+      : onlyTerminalCertificateRecheckOracle
+        ? tests.filter((test) => test.name.includes("waiting terminal certificate rechecks and validates issued evidence"))
+        : tests;
 
 let failed = 0;
 for (const test of selectedTests) {

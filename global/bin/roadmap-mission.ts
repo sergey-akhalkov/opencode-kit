@@ -64,6 +64,11 @@ function usage(): string {
     "  node roadmap-mission.ts state-reconcile --root <project-root> --mission <project-contained-json> --event <project-contained-json>",
     "  node roadmap-mission.ts run --root <project-root> --global-source <kit-global-source> --mission <project-contained-json> --adapter <project-contained-json>",
     "  node roadmap-mission.ts resume --root <project-root> --global-source <kit-global-source> --mission <project-contained-json> --adapter <project-contained-json>",
+    "",
+    "Installed cockpit commands:",
+    "  /mission-run and /mission-resume open the cockpit and start or continue the controller; they fail closed if the cockpit is unavailable.",
+    "  /mission-status reads durable state only. /mission-stop records graceful stop intent; cockpit Kill is an emergency hard stop and may leave paused-unknown state.",
+    "  Roll back by restoring the installer's prior generated profile or OPENCODE_CONFIG_DIR value, then restart OpenCode.",
   ].join("\n");
 }
 
@@ -91,7 +96,7 @@ export function parseArgs(args: string[]): CliOptions {
     && operation !== "run"
     && operation !== "resume"
   ) {
-    throw new RoadmapMissionError("Supported operations are preflight, definition, workflow, state-record, state-replay, and state-reconcile", 2);
+    throw new RoadmapMissionError("Supported operations are preflight, definition, workflow, state-record, state-replay, state-reconcile, run, and resume", 2);
   }
   let root = "";
   let mission = "";

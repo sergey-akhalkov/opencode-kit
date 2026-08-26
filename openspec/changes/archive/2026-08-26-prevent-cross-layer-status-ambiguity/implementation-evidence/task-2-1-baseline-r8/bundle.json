@@ -1,0 +1,246 @@
+{
+  "byteLength": 10174,
+  "comparisonIdentity": "60ade9807db6bb496f2ddd23c7cf5d7826f9fc2789dcf5b2d0b5b162808fe791",
+  "evaluatorDigest": "5d7801373ba8b471b8bc3f403dfa1a7679ac7e523cb8e71fd0237127d3ca5d0f",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "baseline",
+  "samples": [
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "<installed-opencode>/opencode.exe",
+          "serve",
+          "--hostname",
+          "127.0.0.1",
+          "--port",
+          "<ephemeral>",
+          "--print-logs",
+          "--log-level",
+          "INFO"
+        ],
+        "status": 1,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": [],
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1|models=c7c7a609062651901a9b9026f7a5afef9b36b4e8cb66d22c4f78a3f9cfb6c057",
+        "initialFixtureDigest": "bbea5c60a433c7e71880dc093bb2457832a83788f33bd73196426c40cb93f3cc",
+        "model": "openai/gpt-5.6-sol/xhigh|compaction=xai/grok-4.6/high",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "62b20a636829db45f1034a7eee9f6c9f92e50cd3af744a45a68b978377ba64b6",
+        "profile": "quality-independent",
+        "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+        "validationArgvDigest": "724bb523237c03ce62aea48fe1f9ce45a84a00f23eafd263686453309f50a837",
+        "variant": "xhigh|compaction=high"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "57d78576529dbae226fe0a910ae6cc71fef0143069c0a4005ec69259b6ca6aab"
+        },
+        {
+          "path": "check-fixture.ts",
+          "sha256": "8a8934fa2c9828ce5fe35cbb991a515928996becc2742a9a940b75eb609be40a"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "edit",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 0
+      },
+      "hashes": {
+        "sample": "73548824c63efcbefe9e679c75131465a532a8bb53ad3830229826601184020b"
+      },
+      "permissions": {
+        "allow": [
+          "read"
+        ],
+        "deny": [
+          "bash",
+          "edit",
+          "external_directory",
+          "question",
+          "skill",
+          "task",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"memberIds\":[\"known-resource-path-unknown\",\"resource-unknown-negative-control\",\"compaction-roundtrip-mixed-status\"],\"schemaVersion\":1}\n"
+      },
+      "requestSha256": "f15696b6870060c95f3bc6763b9994f351bff8bcfaf9d91814bc236e9509a23f",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "configured-provider-call",
+        "proof-process",
+        "proof-session"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "5737fa1732a9904dd48df8fb2ccb690c976183b1fb72e43c9648d1bdf3a9d668"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "66806c9fdea8a57c527976314622f1ffec58844dbd6aaf329992f5a2c76dfc05"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "d4f22f58121bcf62c3c4797073a3f3002ff599035591dd9aafe2fc71e6facf20"
+          }
+        ]
+      },
+      "statusScope": {
+        "compactionContext": "",
+        "compactionRoute": "xai/grok-4.6/high",
+        "error": {
+          "facts": [
+            {
+              "depth": 0,
+              "message": "status-scope main response failed",
+              "name": "Error"
+            },
+            {
+              "depth": 1,
+              "name": "UnknownError"
+            }
+          ],
+          "stage": "main"
+        },
+        "mainResponse": "",
+        "mainRoute": "openai/gpt-5.6-sol/xhigh",
+        "messages": {
+          "assistant": [],
+          "toolCalls": []
+        },
+        "providerRequestCount": 1,
+        "reconstructionResponse": "",
+        "server": {
+          "argv": [
+            "<installed-opencode>/opencode.exe",
+            "serve",
+            "--hostname",
+            "127.0.0.1",
+            "--port",
+            "<ephemeral>",
+            "--print-logs",
+            "--log-level",
+            "INFO"
+          ],
+          "executableSha256": "f831518278ded5090c41cc532b16ab80629e980f710a0b46d1e5b605808bb1d9",
+          "signal": "SIGKILL",
+          "status": null,
+          "stderr": "timestamp=2026-08-26T01:01:31.502Z level=INFO run=e30252f7 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T01:01:31.522Z level=INFO run=e30252f7 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T01:01:31.522Z level=INFO run=e30252f7 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:01:31.817Z level=INFO run=e30252f7 message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:01:31.819Z level=INFO run=e30252f7 message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:01:31.841Z level=INFO run=e30252f7 message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:01:31.928Z level=INFO run=e30252f7 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T01:01:31.941Z level=INFO run=e30252f7 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T01:01:31.942Z level=INFO run=e30252f7 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:01:31.977Z level=INFO run=e30252f7 message=loading path=\"<kit-root>\\\\global\\\\opencode.json\"\ntimestamp=2026-08-26T01:01:32.210Z level=INFO run=e30252f7 message=loading path=\"<kit-root>\\\\global\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:01:32.340Z level=INFO run=e30252f7 message=\"all LSPs are disabled\"\ntimestamp=2026-08-26T01:01:32.342Z level=INFO run=e30252f7 message=\"all formatters are disabled\"\ntimestamp=2026-08-26T01:01:32.342Z level=INFO run=e30252f7 message=init\ntimestamp=2026-08-26T01:01:32.504Z level=INFO run=e30252f7 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-26T01:01:32.508Z level=INFO run=e30252f7 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-26T01:01:32.861Z level=INFO run=e30252f7 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-26T01:01:35.277Z level=INFO run=e30252f7 message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-26T01:01:35.291Z level=INFO run=e30252f7 message=created id=ses_fc469c944ffecC656NeGuIxZin slug=crisp-cactus version=1.18.23 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/consumer-outcome-status-scope-USLkuv/fixture workspaceID=undefined parentID=undefined title=consumer-outcome-baseline-status-scope agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787706095291 time.updated=1787706095291\ntimestamp=2026-08-26T01:01:35.358Z level=ERROR run=e30252f7 message=\"share subscriber failed\" type=message.updated cause=\"Cause([Fail(ProviderModelNotFoundError: Model not found: openai/gpt-5.6-sol. Did you mean: gpt-5.6-sol, gpt-5.6-sol-pro, gpt-5.6-sol-fast?)])\"\ntimestamp=2026-08-26T01:01:35.383Z level=INFO run=e30252f7 message=loop session.id=ses_fc469c944ffecC656NeGuIxZin step=0\ntimestamp=2026-08-26T01:01:35.388Z level=ERROR run=e30252f7 message=failed ref=err_fdd97cf2 error=\"ProviderModelNotFoundError: Model not found: openai/gpt-5.6-sol. Did you mean: gpt-5.6-sol, gpt-5.6-sol-pro, gpt-5.6-sol-fast?\" cause=\"ProviderModelNotFoundError: Model not found: openai/gpt-5.6-sol. Did you mean: gpt-5.6-sol, gpt-5.6-sol-pro, gpt-5.6-sol-fast?\\n    at <anonymous> (B:/~BUN/root/chunk-j84dver6.js:439:90962)\\n    at SessionPrompt.getModel (B:/~BUN/root/chunk-jqyzbmj3.js:1096:11500)\\n    at SessionPrompt.getModel (definition) (B:/~BUN/root/chunk-jqyzbmj3.js:1096:908)\\n    at SessionPrompt.run (B:/~BUN/root/chunk-jqyzbmj3.js:1096:15316)\\n    at SessionPrompt.run (definition) (B:/~BUN/root/chunk-jqyzbmj3.js:1096:10498)\\n    at SessionRunState.ensureRunning (B:/~BUN/root/chunk-jqyzbmj3.js:1096:15285)\\n    at SessionRunState.ensureRunning (definition) (B:/~BUN/root/chunk-jqyzbmj3.js:2:8188)\\n    at SessionPrompt.loop (B:/~BUN/root/chunk-jqyzbmj3.js:1096:10220)\\n    at SessionPrompt.loop (definition) (B:/~BUN/root/chunk-jqyzbmj3.js:1096:15221)\\n    at SessionPrompt.prompt (B:/~BUN/root/chunk-6xhcn1a7.js:4:13297)\\n    at SessionPrompt.prompt (definition) (B:/~BUN/root/chunk-jqyzbmj3.js:1096:9838)\"\ntimestamp=2026-08-26T01:01:35.413Z level=INFO run=e30252f7 message=cancel session.id=ses_fc469c944ffecC656NeGuIxZin\ntimestamp=2026-08-26T01:01:35.435Z level=INFO run=e30252f7 message=\"removing share\" sessionID=ses_fc469c944ffecC656NeGuIxZin\n",
+          "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:55779\n"
+        },
+        "sessionID": "ses_fc469c944ffecC656NeGuIxZin",
+        "summarizeAccepted": false
+      },
+      "toolCalls": [],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "5737fa1732a9904dd48df8fb2ccb690c976183b1fb72e43c9648d1bdf3a9d668"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/opencode.json.template",
+        "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "66806c9fdea8a57c527976314622f1ffec58844dbd6aaf329992f5a2c76dfc05"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "d4f22f58121bcf62c3c4797073a3f3002ff599035591dd9aafe2fc71e6facf20"
+      }
+    ]
+  }
+}

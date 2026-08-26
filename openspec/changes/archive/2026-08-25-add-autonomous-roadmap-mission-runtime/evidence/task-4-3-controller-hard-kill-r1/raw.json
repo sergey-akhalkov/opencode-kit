@@ -1,0 +1,135 @@
+{
+  "argv": [
+    "<source-root>\\global\\bin\\roadmap-mission.ts",
+    "run",
+    "--root",
+    "<project>",
+    "--global-source",
+    "<global-source>",
+    "--mission",
+    "mission.json",
+    "--adapter",
+    "controller-adapter.json"
+  ],
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r14-task-4-3-hard-kill-r1",
+  "cleanup": "complete",
+  "closure": {
+    "code": 1,
+    "signal": null
+  },
+  "lifecycle": [
+    {
+      "atMs": 0,
+      "kind": "spawn-called",
+      "pid": 1096
+    },
+    {
+      "atMs": 0,
+      "kind": "spawn",
+      "pid": 1096
+    },
+    {
+      "atMs": 8796,
+      "code": 1,
+      "kind": "exit",
+      "signal": null
+    },
+    {
+      "atMs": 8796,
+      "code": 1,
+      "kind": "close",
+      "signal": null
+    }
+  ],
+  "mode": "hard-kill",
+  "observation": {
+    "kind": "active-streams"
+  },
+  "processes": [
+    {
+      "commandLine": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe D:\\home\\sergey-akhalkov\\opencode-kit\\global\\bin\\roadmap-mission.ts run --root <project> --global-source <global-source> --mission mission.json --adapter controller-adapter.json",
+      "name": "node.exe",
+      "parentPid": 4152,
+      "pid": 1096
+    },
+    {
+      "commandLine": "C:\\Users\\noilw\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe tools/executor.mjs continue change-a slice-a 1 evidence/mission/slice-a/attempt-1/result.json d532d40a14c89e4b53fa8216dbdd311bfd9c0b0500e33f9eebf7c60c742c66a2 controller-proof",
+      "name": "node.exe",
+      "parentPid": 1096,
+      "pid": 13020
+    }
+  ],
+  "reconciledState": {
+    "activeOperation": {
+      "kind": "session",
+      "processRef": "attempt-1",
+      "sessionRef": null
+    },
+    "checkpoint": {
+      "identity": null,
+      "mode": "evidence-only"
+    },
+    "createdAt": "2026-08-25T05:34:36.520Z",
+    "cursor": 0,
+    "definitionDigest": "d532d40a14c89e4b53fa8216dbdd311bfd9c0b0500e33f9eebf7c60c742c66a2",
+    "disposition": "paused-unknown",
+    "evidenceRefs": [
+      "evidence/mission"
+    ],
+    "identities": {
+      "kit": "global-source",
+      "node": "v24.18.1",
+      "openCode": "executor-adapter",
+      "openSpec": "cli-readback",
+      "repository": "project-root"
+    },
+    "lastTransitionDigest": "b74ca23de7b15cd8ab6b91f25c8549d71168f38d640c0a3c57b9a2a53e74eea2",
+    "lastTransitionKind": "pause",
+    "missionId": "controller-proof",
+    "recovery": {
+      "attempts": 1,
+      "sliceStartedAt": "2026-08-25T05:34:35.430Z"
+    },
+    "schemaVersion": 1,
+    "sequence": 3,
+    "sliceId": "slice-a"
+  },
+  "schemaVersion": 1,
+  "state": {
+    "activeOperation": {
+      "kind": "session",
+      "processRef": "attempt-1",
+      "sessionRef": null
+    },
+    "checkpoint": {
+      "identity": null,
+      "mode": "evidence-only"
+    },
+    "createdAt": "2026-08-25T05:34:35.430Z",
+    "cursor": 0,
+    "definitionDigest": "d532d40a14c89e4b53fa8216dbdd311bfd9c0b0500e33f9eebf7c60c742c66a2",
+    "disposition": "running",
+    "evidenceRefs": [
+      "evidence/mission"
+    ],
+    "identities": {
+      "kit": "global-source",
+      "node": "v24.18.1",
+      "openCode": "executor-adapter",
+      "openSpec": "cli-readback",
+      "repository": "project-root"
+    },
+    "lastTransitionDigest": "719af66b1001df5d083ca13920bdb23a5c3dc088bfe1414ddbc7f68a99c54e58",
+    "lastTransitionKind": "session-launch",
+    "missionId": "controller-proof",
+    "recovery": {
+      "attempts": 1,
+      "sliceStartedAt": "2026-08-25T05:34:35.430Z"
+    },
+    "schemaVersion": 1,
+    "sequence": 2,
+    "sliceId": "slice-a"
+  },
+  "stderr": "[slice-a/change-a/session/stdout] controller diagnostic stdout\n[slice-a/change-a/session/stderr] controller diagnostic stderr\n",
+  "stdout": ""
+}

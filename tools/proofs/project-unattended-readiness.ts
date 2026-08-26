@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
+import { materializeRuntimeSurfaceProfile, ROADMAP_MISSION_PLUGIN_FILES, ROADMAP_MISSION_RUNTIME_FILES } from "../runtime-surface-profile.ts";
 
 type Options = {
   candidateId: string;
@@ -16,6 +17,16 @@ type CommandEvidence = {
   exitCode: number | null;
   stderr: string;
   stdout: string;
+};
+
+type InstalledMissionProfile = {
+  configSha256: string;
+  manifestSha256: string;
+  model: unknown;
+  missionSourceDigests: Record<string, string>;
+  pluginPaths: string[];
+  scriptRuntimeAvailable: boolean;
+  unresolvedPlaceholderCount: number;
 };
 
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -85,8 +96,8 @@ function invoke(root: string, entrypoint: string, args: string[], env: NodeJS.Pr
   return {
     argv: ["node", entrypoint, ...args.map((arg) => path.isAbsolute(arg) ? "<fixture>" : arg)],
     exitCode: result.status,
-    stderr: redact(result.stderr).slice(0, 5_000),
-    stdout: redact(result.stdout).slice(0, 20_000),
+    stderr: redact(result.stderr),
+    stdout: redact(result.stdout),
   };
 }
 
@@ -188,6 +199,36 @@ function selectedSources(output: string): Record<string, unknown> {
   };
 }
 
+function installedMissionProfile(profileRoot: string): InstalledMissionProfile {
+  const configFile = path.join(profileRoot, "opencode.json");
+  const config = JSON.parse(fs.readFileSync(configFile, "utf8")) as Record<string, unknown>;
+  const plugins = Array.isArray(config.plugin) ? config.plugin : [];
+  const pluginPaths = plugins.flatMap((entry) => {
+    const source = typeof entry === "string" ? entry : Array.isArray(entry) && typeof entry[0] === "string" ? entry[0] : null;
+    if (source == null || !source.startsWith("file:")) return [];
+    const relative = path.relative(profileRoot, fileURLToPath(source)).replaceAll("\\", "/");
+    return relative.startsWith("../") ? [] : [relative];
+  });
+  const launcher = plugins.find((entry) =>
+    Array.isArray(entry) && typeof entry[0] === "string" && entry[0].endsWith("/extensions/roadmap-mission-launcher.ts")
+  );
+  const launcherOptions = Array.isArray(launcher) && typeof launcher[1] === "object" && launcher[1] != null
+    ? launcher[1] as Record<string, unknown>
+    : {};
+  return {
+    configSha256: sha256(fs.readFileSync(configFile)),
+    manifestSha256: sha256(fs.readFileSync(path.join(profileRoot, ".runtime-surface.json"))),
+    model: config.model,
+    missionSourceDigests: Object.fromEntries(ROADMAP_MISSION_RUNTIME_FILES.map((relative) => [
+      relative,
+      sha256(fs.readFileSync(path.join(profileRoot, ...relative.split("/")))),
+    ])),
+    pluginPaths,
+    scriptRuntimeAvailable: typeof launcherOptions.scriptRuntime === "string" && fs.existsSync(launcherOptions.scriptRuntime),
+    unresolvedPlaceholderCount: JSON.stringify(config).split("__OPENCODE_").length - 1,
+  };
+}
+
 function setupGateChange(project: string): void {
   writeNew(path.join(project, "openspec", "changes", "helper-proof", "proposal.md"), [
     "## Outcome Capsule",
@@ -246,14 +287,17 @@ function assertEvidence(
   freshPreview: CommandEvidence,
   freshWrite: CommandEvidence,
   freshDoctor: CommandEvidence,
+  installedDoctor: CommandEvidence,
   legacyPreview: CommandEvidence,
   legacyWrite: CommandEvidence,
   legacyDoctor: CommandEvidence,
   freshSourceInventory: CommandEvidence,
+  installedSourceInventory: CommandEvidence,
   missingSourceInventory: CommandEvidence,
   legacySourceInventory: CommandEvidence,
   operationGate: CommandEvidence,
   freshManifest: Array<{ path: string; sha256: string }>,
+  installedProfile: InstalledMissionProfile,
   overlayHash: string,
   legacyOverlay: string,
   legacyOverlayRelative: string,
@@ -264,10 +308,12 @@ function assertEvidence(
     freshPreview,
     freshWrite,
     freshDoctor,
+    installedDoctor,
     legacyPreview,
     legacyWrite,
     legacyDoctor,
     freshSourceInventory,
+    installedSourceInventory,
     missingSourceInventory,
     legacySourceInventory,
     operationGate,
@@ -291,8 +337,24 @@ function assertEvidence(
     throw new Error("Explicit overwrite did not preserve the existing AGENTS.md bytes in a backup");
   }
   const fresh = selectedDoctor(freshDoctor.stdout);
-  if (fresh.qualificationStatus !== "pass" || fresh.unattendedMissionStatus !== "pass") {
-    throw new Error(`Fresh doctor did not separate ordinary and unattended readiness: ${stableJson(fresh)}`);
+  if (fresh.qualificationStatus !== "pass") {
+    throw new Error(`Fresh project did not pass ordinary qualification: ${stableJson(fresh)}`);
+  }
+  const installed = selectedDoctor(installedDoctor.stdout);
+  if (installed.qualificationStatus !== "pass" || installed.unattendedMissionStatus !== "pass") {
+    throw new Error(`Installed all-profile doctor did not pass unattended readiness: ${stableJson(installed)}`);
+  }
+  for (const relative of ROADMAP_MISSION_PLUGIN_FILES) {
+    if (installedProfile.pluginPaths.filter((entry) => entry === relative).length !== 1) {
+      throw new Error(`Installed all profile did not load ${relative} exactly once`);
+    }
+  }
+  if (
+    installedProfile.model !== "openai/gpt-5.6-sol"
+    || !installedProfile.scriptRuntimeAvailable
+    || installedProfile.unresolvedPlaceholderCount !== 0
+  ) {
+    throw new Error("Installed all profile did not retain the pinned mission model, executable scriptRuntime, and materialized paths");
   }
   const legacy = selectedDoctor(legacyDoctor.stdout);
   const collision = (legacy.unattendedChecks as Array<{ name: string; status: string }>).find((check) =>
@@ -305,6 +367,13 @@ function assertEvidence(
   );
   if (freshSources.collisionStatus !== "clear" || freshGate?.status !== "resolved" || freshGate.selected == null) {
     throw new Error("Configured-global helper resolution did not select the exact operation gate");
+  }
+  const installedSources = selectedSources(installedSourceInventory.stdout);
+  const installedExecutor = (installedSources.helperResolution as Array<{ relativePath: string; selected: unknown; status: string }>).find((row) =>
+    row.relativePath === "bin/roadmap-mission-session-executor.ts"
+  );
+  if (installedSources.collisionStatus !== "clear" || installedExecutor?.status !== "resolved" || installedExecutor.selected == null) {
+    throw new Error("Installed all-profile source inventory did not resolve the mission session executor");
   }
   const missingSources = selectedSources(missingSourceInventory.stdout);
   const missingGate = (missingSources.helperResolution as Array<{ relativePath: string; selected: unknown; status: string }>).find((row) =>
@@ -335,6 +404,7 @@ function run(options: Options): void {
     const legacy = path.join(fixture, "legacy-non-js");
     const missingGlobal = path.join(fixture, "missing-global");
     const isolatedHome = path.join(fixture, "isolated-home");
+    const installedGlobal = path.join(fixture, "installed-all");
     fs.mkdirSync(fresh);
     fs.mkdirSync(missingGlobal);
     fs.mkdirSync(isolatedHome);
@@ -353,6 +423,34 @@ function run(options: Options): void {
     fs.mkdirSync(path.join(fresh, "docs"), { recursive: true });
     fs.writeFileSync(path.join(fresh, "docs", "roadmap.md"), "# Disposable Roadmap\n", "utf8");
     fs.writeFileSync(path.join(fresh, "mission.json"), missionDefinition(), "utf8");
+    materializeRuntimeSurfaceProfile({ profileName: "all", root: sourceRoot, targetRoot: installedGlobal });
+    fs.copyFileSync(
+      path.join(installedGlobal, "opencode.local.instructions.example.md"),
+      path.join(installedGlobal, "opencode.local.instructions.md"),
+    );
+    const installedEnv = {
+      HOME: isolatedHome,
+      OPENCODE_CONFIG_DIR: installedGlobal,
+      USERPROFILE: isolatedHome,
+      XDG_CONFIG_HOME: path.join(isolatedHome, ".config"),
+    };
+    const installedDoctor = invoke(fixture, "tools/doctor.ts", [
+      "--project",
+      fresh,
+      "--mission",
+      "mission.json",
+      "--require",
+      "unattended",
+      "--format",
+      "json",
+    ], installedEnv);
+    const installedSourceInventory = invoke(
+      fixture,
+      "tools/opencode-runtime-sources.ts",
+      ["--root", fresh],
+      installedEnv,
+    );
+    const installedProfile = installedMissionProfile(installedGlobal);
     const freshDoctor = invoke(fixture, "tools/doctor.ts", [
       "--project",
       fresh,
@@ -394,14 +492,17 @@ function run(options: Options): void {
       freshPreview,
       freshWrite,
       freshDoctor,
+      installedDoctor,
       legacyPreview,
       legacyWrite,
       legacyDoctor,
       freshSourceInventory,
+      installedSourceInventory,
       missingSourceInventory,
       legacySourceInventory,
       operationGate,
       freshManifest,
+      installedProfile,
       overlayHash,
       legacyOverlay,
       legacyOverlayRelative,
@@ -421,6 +522,8 @@ function run(options: Options): void {
       environment: { node: process.version, platform: process.platform },
       freshDoctor: selectedDoctor(freshDoctor.stdout),
       freshManifest,
+      installedDoctor: selectedDoctor(installedDoctor.stdout),
+      installedProfile,
       legacyDoctor: selectedDoctor(legacyDoctor.stdout),
       legacyOverlay: {
         path: legacyOverlayRelative,
@@ -434,6 +537,7 @@ function run(options: Options): void {
         "tools/init-project.ts",
         "tools/doctor.ts",
         "tools/opencode-runtime-sources.ts",
+        "tools/runtime-surface-profile.ts",
         "templates/project/AGENTS.md",
         "templates/project/adapter.json",
         "templates/project/validation.md",
@@ -441,6 +545,7 @@ function run(options: Options): void {
       runtimeSources: {
         collision: selectedSources(legacySourceInventory.stdout),
         configured: selectedSources(freshSourceInventory.stdout),
+        installedAll: selectedSources(installedSourceInventory.stdout),
         missing: selectedSources(missingSourceInventory.stdout),
       },
       operationGate: JSON.parse(operationGate.stdout),
@@ -452,6 +557,7 @@ function run(options: Options): void {
       legacyOverlay: "reported-and-preserved",
       newProjectWorkflowCopies: 0,
       ordinaryQualification: "pass",
+      runtimeSurfaceInstall: "all-profile-pass",
       schemaVersion: 1,
       status: "complete",
       unattendedReadiness: "pass",

@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 2,
+  "changeId": "strengthen-shift-left-behavior-evidence",
+  "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+  "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "0.1",
+      "taskTextDigest": "a7dd851a0a8de8836b0b0b115ef0a485f7fed80898445907ef1a928a7596b0ed",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-apply-readiness-contract",
+        "effects": [
+          "provider-free",
+          "local-write"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-apply-readiness-contract",
+        "effects": [
+          "provider-free",
+          "local-write"
+        ]
+      },
+      "invocation": {
+        "command": "node <active-global-source>/bin/openspec-operation-gate.ts --root <project-root> --operation apply --change strengthen-shift-left-behavior-evidence",
+        "status": 0,
+        "recordedAt": "2026-08-24T18:45:34.354Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "612c7a85fb7679b7daf662c033715d167de59a7ddd0c7acfec9eea019fda08ab",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-pack-preflight",
+        "effects": ["provider-free", "read-only"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-pack-preflight",
+        "effects": ["provider-free", "read-only"]
+      },
+      "invocation": {
+        "command": "npm run proof:consumer-outcome -- --mode preflight --pack shift-left --source-ref HEAD",
+        "status": 0,
+        "recordedAt": "2026-08-24T19:34:33.216Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "b85a4eba8344a4016d236d514b53f651d8a4015a23014a1c6dd22e56f1095244",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-provider-free-replay",
+        "effects": ["provider-free", "local-disposable"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-provider-free-replay",
+        "effects": ["provider-free", "local-disposable"]
+      },
+      "invocation": {
+        "command": "npm run test:focused:consumer-outcome",
+        "status": 0,
+        "recordedAt": "2026-08-24T19:34:33.216Z"
+      },
+      "artifacts": [],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "8e6f1df113c8670842ca6570610cf8702c8fc53a2f5ba7b273bff2d255006927",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-shift-left-baseline",
+        "effects": ["configured-provider", "local-disposable"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-shift-left-baseline",
+        "effects": ["configured-provider", "local-disposable"]
+      },
+      "invocation": {
+        "command": "npm run proof:consumer-outcome -- --mode baseline --pack shift-left --candidate-id shift-left-baseline-r2 --evidence-root <configured-r2-baseline> --source-ref HEAD --session-mode configured",
+        "status": 0,
+        "recordedAt": "2026-08-24T19:34:33.216Z"
+      },
+      "artifacts": [
+        "evidence/configured-r2-baseline/bundle.json",
+        "evidence/configured-r2-baseline/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "f06a447f9d058c91567a40a0c270ec10e782920f932632e7f60740911d69dec5",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-no-instruction-change-disposition",
+        "effects": ["provider-free", "read-only"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-no-instruction-change-disposition",
+        "effects": ["provider-free", "read-only"]
+      },
+      "invocation": {
+        "command": "npm run validate:strict",
+        "status": 0,
+        "recordedAt": "2026-08-24T19:34:33.216Z"
+      },
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "b0d7800dac84dc646d54eae2c477b47e7d6d7db3e750e74a08a8d77df3403681",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-shift-left-matched-candidate",
+        "effects": ["configured-provider", "local-disposable"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-opencode-shift-left-matched-candidate",
+        "effects": ["configured-provider", "local-disposable"]
+      },
+      "invocation": {
+        "command": "npm run proof:consumer-outcome -- --mode capture --pack shift-left --candidate-id shift-left-candidate-r1 --evidence-root <configured-r2-candidate> --baseline <configured-r2-baseline>/bundle.json --source-ref working-tree --session-mode configured",
+        "status": 0,
+        "recordedAt": "2026-08-24T19:34:33.216Z"
+      },
+      "artifacts": [
+        "evidence/configured-r2-candidate/bundle.json",
+        "evidence/configured-r2-candidate/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "830e75b2745a1d94cd7676219e2f869596af82bc448c912d5dccc0ea1c1dbc53",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-proof-inventory-and-claim-closure",
+        "effects": ["provider-free", "read-only"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "shift-left-proof-inventory-and-claim-closure",
+        "effects": ["provider-free", "read-only"]
+      },
+      "invocation": {
+        "command": "node <active-global-source>/bin/openspec-operation-gate.ts --root <project-root> --operation apply --change strengthen-shift-left-behavior-evidence",
+        "status": 0,
+        "recordedAt": "2026-08-24T19:46:46.070Z"
+      },
+      "artifacts": [
+        "evidence/evidence-sufficiency-review-r1.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "84a0a63b97990e4d1e9bcde371d3f71bfbcf2f1b16e8c0aa656c38436298f682",
+      "result": "complete",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation-and-handoff",
+        "effects": ["provider-free", "read-only"]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation-and-handoff",
+        "effects": ["provider-free", "read-only"]
+      },
+      "invocation": {
+        "command": "npm test",
+        "status": 0,
+        "recordedAt": "2026-08-24T20:05:30.252Z"
+      },
+      "artifacts": [
+        "evidence/configured-r2-baseline/evaluation.json",
+        "evidence/configured-r2-candidate/evaluation.json",
+        "evidence/configured-r2-candidate/replay-1.json",
+        "evidence/configured-r2-candidate/replay-2.json",
+        "evidence/evidence-sufficiency-review-r1.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "configured-r1-failed",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "evidence/configured-r1-failed/bundle.json",
+          "bytes": 75671,
+          "digest": "10b9c6564fec312e402609c6c94e564b7c74512ce60e31070b1c64da2f87d119"
+        },
+        {
+          "path": "evidence/configured-r1-failed/evaluation.json",
+          "bytes": 3260,
+          "digest": "2337ecb71d66ccf0845fc248487359551db7bc4001253d76ad7d427a22429fdd"
+        }
+      ]
+    },
+    {
+      "name": "configured-r2-baseline",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/configured-r2-baseline/bundle.json",
+          "bytes": 66213,
+          "digest": "d850e54102c10b936d27af3120eb1741336e7e5f6fb8c187af73dc05ceb63643"
+        },
+        {
+          "path": "evidence/configured-r2-baseline/evaluation.json",
+          "bytes": 3345,
+          "digest": "3f08cc4637f5a80e73ec0cbec232e0a02c0d34ead209f0118bd14633d724f862"
+        }
+      ]
+    },
+    {
+      "name": "configured-r2-candidate",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/configured-r2-candidate/bundle.json",
+          "bytes": 63394,
+          "digest": "c585297295d3ff6b659303c98bee9f5f595ae56a94cfd505321edc05f9de9ac2"
+        },
+        {
+          "path": "evidence/configured-r2-candidate/evaluation.json",
+          "bytes": 5861,
+          "digest": "14785d02dc9207dce926a72ec54656f5ca68edfde11d5875fbf0e0dcf400e556"
+        },
+        {
+          "path": "evidence/configured-r2-candidate/replay-1.json",
+          "bytes": 4539,
+          "digest": "9e2d52be65568bdcc82a51236c1c1d5a0ee3062c50af24ba64bea86cdd9698a9"
+        },
+        {
+          "path": "evidence/configured-r2-candidate/replay-2.json",
+          "bytes": 4539,
+          "digest": "9e2d52be65568bdcc82a51236c1c1d5a0ee3062c50af24ba64bea86cdd9698a9"
+        }
+      ]
+    },
+    {
+      "name": "independent-challenge-r1",
+      "kind": "evaluator",
+      "files": [
+        {
+          "path": "evidence/evidence-sufficiency-review-r1.md",
+          "bytes": 3956,
+          "digest": "9d70911c6b40bd4e33436906818811a468bcb6ec3ec4a654dcd1f7a9903a2178"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "SLBE-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The captured candidate satisfies the two reviewed shift-left sequencing decisions under the recorded environment.",
+      "claimClass": "finite-population",
+      "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+      "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+      "coverageBasis": "finite-population",
+      "population": {
+        "id": "shift-left-scenarios-r1",
+        "members": [
+          "reachable-characterization-first",
+          "sufficient-lower-rung"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "Every model, prompt, repository, task graph, later execution, and higher-rung behavior outside the two reviewed scenarios remains outside the claim."
+      },
+      "paths": {
+        "production": "installed-opencode-loaded-instruction",
+        "baseline": "frozen-pre-correction-source",
+        "candidate": "readable-working-candidate"
+      },
+      "observationBoundary": "checked-shift-left-decision",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "configured-r2-baseline",
+          "configured-r2-candidate"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "reachable-characterization-first",
+          "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+          "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+          "paths": {
+            "production": "installed-opencode-loaded-instruction",
+            "baseline": "frozen-pre-correction-source",
+            "candidate": "readable-working-candidate"
+          },
+          "observationBoundary": "checked-shift-left-decision",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-r2-baseline",
+            "configured-r2-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "sufficient-lower-rung",
+          "candidateId": "strengthen-shift-left-behavior-evidence-working-tree-r1",
+          "environmentId": "windows-opencode-gpt-5.6-sol-xhigh-r1",
+          "paths": {
+            "production": "installed-opencode-loaded-instruction",
+            "baseline": "frozen-pre-correction-source",
+            "candidate": "readable-working-candidate"
+          },
+          "observationBoundary": "checked-shift-left-decision",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-r2-baseline",
+            "configured-r2-candidate"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "configured-r1-failed",
+        "configured-r2-baseline",
+        "configured-r2-candidate",
+        "independent-challenge-r1"
+      ],
+      "materialExclusions": [
+        "Universal model adherence",
+        "Later plan execution",
+        "Productivity improvement",
+        "General safety",
+        "Unobserved higher-rung behavior",
+        "Raw HEAD and working-tree source hashes are not claimed byte-identical across Windows line-ending representations; Git reports no governed-source diff and both configured runs loaded the same global source path."
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "independent-challenge-r1"
+        ]
+      },
+      "maximumSupportedClaim": "The captured candidate produced terminal passing checked-decision oracles for exactly reachable-characterization-first and sufficient-lower-rung, one sample per arm, under the bundle-recorded model, variant, profile, Windows, Node, prompt, fixture, permission, scenario, and evaluator identities. It does not support reliability, later execution, productivity, general safety, higher-rung, other-model, instruction-causation, staged-source-isolation, raw-byte-equivalence, or OpenCode-version claims.",
+      "narrowingAccepted": false,
+      "disposition": "supported"
+    }
+  ]
+}

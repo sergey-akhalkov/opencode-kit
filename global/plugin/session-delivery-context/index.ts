@@ -224,7 +224,12 @@ function discoverDbPaths(
   options: Pick<ReadSessionDeliveryContextOptions, "dataDirs" | "dbPaths" | "useDefaultPaths">,
 ): string[] {
   const dataDirs = candidateDataDirs(options);
-  const candidates = [...(options.dbPaths ?? []).map(resolveInputPath)];
+  const candidates = [
+    ...(options.dbPaths ?? []).map(resolveInputPath),
+    ...(options.useDefaultPaths !== false && process.env.OPENCODE_DB
+      ? [resolveInputPath(process.env.OPENCODE_DB)]
+      : []),
+  ];
   const explicitDataDirs = new Set(
     (options.dataDirs ?? []).map((dir) => normalizeForDedupe(resolveInputPath(dir))),
   );

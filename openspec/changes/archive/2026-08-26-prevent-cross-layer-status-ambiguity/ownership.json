@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "changeId": "prevent-cross-layer-status-ambiguity",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Status communication preserves exact subject and evidence scope",
+        "Scoped-status wording has bounded loaded-behavior evidence"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Live-Attempt Gate reporting remains path-scoped"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/principles-of-work.md",
+    "global/AGENTS.md",
+    "global/skills/change-ready-sdlc/SKILL.md",
+    "global/opencode.json.template",
+    "global/opencode.json",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/lib/opencode-proof-client.ts",
+    "tools/proofs/fixtures/consumer-outcome/status-scope",
+    "tools/proofs/fixtures/consumer-outcome/status-scope-r1.json",
+    "tools/test-consumer-outcome.ts",
+    "tools/opencode-runtime-sources.ts",
+    "tools/validators/opencode-config.ts",
+    "tools/validators/devkit-contract.ts",
+    "tools/test-library/doctor.ts",
+    "tools/test-install-opencode-global.ts",
+    "tools/test-contracts-change-ready.ts",
+    "tools/proofs/README.md"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

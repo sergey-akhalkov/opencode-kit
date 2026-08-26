@@ -930,6 +930,14 @@ async function capture(opts: Options): Promise<void> {
   } catch (error) {
     failure = error;
     if (raw == null && server != null) {
+      const replacements: Array<[string, string]> = [
+        [configDir, "<config-dir>"],
+        [runtimeRoot, "<runtime-root>"],
+        [project, "<project>"],
+        [fixture, "<fixture>"],
+        [sourceRoot, "<source-root>"],
+        [os.homedir(), "<home>"],
+      ];
       raw = {
         candidateId: opts.candidateId,
         cleanup: "pending",
@@ -945,6 +953,8 @@ async function capture(opts: Options): Promise<void> {
           commandNames: server.commandNames,
           readyMs: server.readyMs,
           startup: proofServerStartupFacts(server.stdout.join(""), server.stderr.join(""), configDir),
+          stderrTail: redactedLog(server.stderr.join("").slice(-8_000), replacements),
+          stdoutTail: redactedLog(server.stdout.join("").slice(-8_000), replacements),
         },
       };
     }

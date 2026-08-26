@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "classification": "proof-environment-config-resolution",
+  "checks": {
+    "attemptTerminallyClosed": true,
+    "factoryLoaded": false,
+    "correctedRootLookupExercised": false,
+    "providerRequestPreserved": false
+  },
+  "maximumSupportedClaim": "The corrected candidate was not loaded; this attempt stopped during isolated OpenCode configuration resolution and supports no hook or provider-request conclusion.",
+  "unlockCondition": "Use the preserved materialized fixture for bounded offline config diagnosis and do not repeat the loaded-model mechanism until the config-resolution cause and runner terminal-report failure are corrected."
+}

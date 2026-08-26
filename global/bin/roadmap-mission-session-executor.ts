@@ -10,6 +10,8 @@ function usage(): string {
     "Usage:",
     "  node roadmap-mission-session-executor.ts execute --root <project-root> --mission <project-contained-json> --slice <slice-id> --attempt <number> --result <project-contained-json> [--server-url <loopback-origin>] [--parent-session <session-id>] [--timeout-ms <number>]",
     "  --server-url defaults to OPENCODE_ROADMAP_SERVER_URL; --parent-session defaults to OPENCODE_ROADMAP_PARENT_SESSION.",
+    "  Executes one bounded slice through the current loopback OpenCode runtime; it never starts a nested server or performs archive, commit, or remote mutation itself.",
+    "  Operators use /mission-status for read-only state, /mission-stop for graceful intent, and cockpit Kill only as an emergency hard stop.",
   ].join("\n");
 }
 

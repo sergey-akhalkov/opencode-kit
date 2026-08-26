@@ -71,24 +71,27 @@ Use `npm run setup:global` as the one-command equivalent of `install:mcps` follo
 
 `install:mcps` preserves working installations instead of upgrading them. It installs missing Serena through the official `uv tool install -p 3.13 serena-agent` command, initializes Serena, and installs missing Codebase Memory through the supported `npm install --global codebase-memory-mcp` package. Use `--check`/`--audit` for a read-only availability check or `--dry-run`/`--what-if` to preview missing-package commands. Serena requires `uv`; if `uv` is unavailable, the helper fails before mutation with the official installation URL.
 
-`global/` is a complete kit-owned custom config directory: `global/principles-of-work.md`, `global/AGENTS.md`, `global/skills/`, `global/agents/`, `global/plugin/`, and `global/opencode.json`. OpenCode loads these artifacts directly while other documented source layers may coexist. `principles-of-work.md` owns the working philosophy, `global/AGENTS.md` owns portable operational routing, and personal standing host authorization belongs only in gitignored `global/opencode.local.instructions.md`. `global/opencode.json.template` is the committed full-catalog compatibility source (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`); the installer provisions a local `global/opencode.json` and personal `global/opencode.local.instructions.md` on first run. Both MCP entries use commands from `PATH`, so the committed template contains no user-specific executable path. This permissive tool setting and standing authorization are not an OS sandbox: protected-boundary instructions remain mandatory, while managed enforcement requires a separate policy layer. Both local files are gitignored. Edit kit artifacts under `global/` and restart OpenCode; use `npm run opencode:sources` to inventory safe source locations and collisions.
+`global/` is the complete kit-owned source for principles, operational routing, skills, agents, plugins, and portable binaries. `npm run install:global` materializes the selected profile under `global/.runtime-profiles/` and points `OPENCODE_CONFIG_DIR` at that generated root. The default `core` profile is minimal; use `--profile all` for the full compatibility surface, including the autonomous roadmap mission runtime. `global/opencode.json.template` remains the committed full-catalog compatibility source (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`). The generated `all` config retains its model and plugin tuples while replacing source/runtime placeholders with absolute installed paths. Personal standing host authorization belongs only in gitignored `opencode.local.instructions.md`. Restart OpenCode after any profile change; use `npm run opencode:sources` to inventory safe source locations and collisions.
 
 Options:
 
-- (default): platform-specific. On Windows, persists `OPENCODE_CONFIG_DIR` to `<repo>/global` via `setx` when the measured value is within the safety limit. On macOS/Linux, prints a safe `export` line only and does **not** persist; use `--persist-script` for profile convergence.
-- `--check` or `--audit`: exit `0` if `OPENCODE_CONFIG_DIR` already points at `global/`, `1` otherwise. Recommended after restart/activation.
+- (default): materialize the `core` profile. On Windows, persist `OPENCODE_CONFIG_DIR` to its generated root via `setx` when the measured value is within the safety limit. On macOS/Linux, print a safe `export` line only; use `--persist-script <file> --profile core` for generated-profile convergence.
+- `--profile all`: materialize the full compatibility and autonomous-roadmap-mission surface.
+- `--check` or `--audit`: exit `0` if `OPENCODE_CONFIG_DIR` points at a complete selected profile, `1` otherwise. Recommended after restart/activation.
 - `--print`: preview the target path and the platform command without changing anything. Preview only; not a recovery path for over-limit Windows values.
+- `--preview-profile --profile <core|all>`: print the exact proposed owners and risks without mutation.
+- `--plan-migration --profile <core|all>`: print exact additions/removals and rollback details without mutation.
 - `--unset`: remove the persisted `OPENCODE_CONFIG_DIR` value.
-- `--persist-script <file>`: ensure `<file>` contains exactly one desired POSIX-safe `export OPENCODE_CONFIG_DIR='...'` line (single-quoted literal encoding). Re-runs with the same desired line are no-ops; supported wrong-valued or duplicate standalone assignment lines (unquoted safe token, single-quoted, or legacy double-quoted) are replaced/removed so only the desired line remains. Ambiguous assignment lines fail closed without rewriting the file. Profile mutation uses same-directory temp + fsync + raw-byte preimage check + atomic rename; invalid UTF-8 and symlink/non-regular targets fail closed before mutation.
+- `--persist-script <file> --profile <core|all>`: materialize/validate that generated profile and ensure `<file>` contains exactly one POSIX-safe export to it. Omitting `--profile` retains legacy source-global persistence. Re-runs with the same desired line are no-ops; ambiguous assignments fail closed. Profile-file mutation uses same-directory temp + fsync + raw-byte preimage check + atomic rename; invalid UTF-8 and symlink/non-regular targets fail closed before mutation.
 - `--unset-script <file>`: remove every supported standalone `export OPENCODE_CONFIG_DIR=...` line from `<file>` (POSIX profile); ambiguous lines fail closed without rewriting. Uses the same failure-atomic replacement policy as `--persist-script`.
 - `--dry-run` or `--what-if`: preview the default mode without setting anything.
-- Mode exclusivity: `--check`/`--audit`, `--print`, `--unset`, `--persist-script`, and `--unset-script` are mutually exclusive (including aliases and repeats). Conflicting modes fail before any validation, process call, profile, config, or environment mutation.
+- Mode exclusivity: `--check`/`--audit`, `--print`, `--unset`, `--persist-script`, `--unset-script`, `--preview-profile`, and `--plan-migration` are mutually exclusive (including aliases and repeats). Conflicting modes fail before any validation, process call, profile, config, or environment mutation.
 
 Restart OpenCode after installing; the running process keeps the old environment until restarted. On Windows, GUI apps launched from Explorer may require logoff/logon to inherit the new user environment variable.
 
-Windows `setx` truncates user environment variables at 1024 characters. The installer measures the configured value (`<repo>/global`) and refuses to call `setx` when the resulting `OPENCODE_CONFIG_DIR=<value>` line exceeds 900 characters. Over-limit recovery is to relocate or clone the kit to a shorter path, re-run `install:global`, then verify with `--check`. Do **not** run `setx` manually with the over-limit path, and do not treat `--print` output as a safe recovery command.
+Windows `setx` truncates user environment variables at 1024 characters. The installer measures the selected source/generated-profile path and refuses to call `setx` when the resulting `OPENCODE_CONFIG_DIR=<value>` line exceeds 900 characters. Over-limit recovery is to relocate or clone the kit to a shorter path, re-run `install:global`, then verify with `--check`. Do **not** run `setx` manually with the over-limit path, and do not treat `--print` output as a safe recovery command.
 
-On macOS/Linux, the default mode prints the safe `export` line only and does not persist. To persist, run `npm run install:global -- --persist-script ~/.bashrc` (or `~/.zshrc`, `~/.profile`, …); the helper converges to exactly one desired export line, is safe to re-run, and replaces the profile failure-atomically. The matching `--unset-script <file>` removes every matching export line. Restart the shell and verify with `--check` after activation.
+On macOS/Linux, the default mode prints the safe generated-`core` export line only and does not persist. To materialize and persist it, run `npm run install:global -- --persist-script ~/.bashrc --profile core` (or use `all` and another shell profile); the helper converges to exactly one desired export line, is safe to re-run, and replaces the shell profile failure-atomically. Omitting `--profile` retains legacy source-global persistence. The matching `--unset-script <file>` removes every matching export line. Restart the shell and verify with `--check` after activation.
 
 Important: `OPENCODE_CONFIG_DIR` adds the kit custom directory with documented precedence; it is not evidence that `~/.config/opencode`, project, managed, explicit, or inline sources stopped loading. Keep kit-specific provider/MCP/permission config in local `global/opencode.json`, personal preferences in local `global/opencode.local.instructions.md`, and inspect loader-visible source locations with `npm run opencode:sources`. Exact precedence claims require current documentation or isolated runtime proof for the artifact class.
 
@@ -100,6 +103,19 @@ Runtime activation rollback restores only the active config pointer and reloads 
 2. If the prior state was unset, use `npm run install:global -- --unset` (or the matching profile `--unset-script` path) so the variable is removed rather than pointed at an invented path.
 3. Restart OpenCode so the restored environment is loaded.
 4. Do not treat activation rollback as full change rollback of repository artifacts.
+
+#### Autonomous roadmap missions
+
+Install `all` and restart OpenCode before using `/mission-run`, `/mission-resume`, `/mission-status`, or
+`/mission-stop`. Run and resume open the local cockpit and fail closed if it is unavailable. Status reads
+durable state without mutation. Stop records graceful stop intent and allows boundary cleanup; cockpit **Kill**
+is an emergency hard stop and may leave `paused-unknown`, so inspect status before resuming.
+
+The launcher and executor accept fixed contained inputs rather than arbitrary executable paths or shell
+fragments. The executor uses the current loopback OpenCode runtime and does not start a nested server. The
+pinned configured route is `openai/gpt-5.6-sol` under profile `quality-independent` with variant `xhigh`.
+For rollback, restore the installer-printed prior generated profile (or prior `OPENCODE_CONFIG_DIR`), restart
+OpenCode, and run `npm run doctor -- --require unattended`.
 
 Keep project-specific skills out of `global/` unless their descriptions explicitly scope them to that project. Global skills are visible in unrelated repositories through the skill catalog, so broad or local-product triggers add avoidable routing noise.
 

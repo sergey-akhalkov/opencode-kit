@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "cleanProjectStatus": true,
+    "noExternalEgress": true,
+    "noProviderRequest": true,
+    "phasesComplete": true
+  },
+  "failed": [],
+  "maximumSupportedClaim": "Pinned OpenCode resolved the copied plugin in isolated plugin-only and provider-added no-model configurations with no provider request, trapped egress, or worktree mutation.",
+  "status": "complete"
+}

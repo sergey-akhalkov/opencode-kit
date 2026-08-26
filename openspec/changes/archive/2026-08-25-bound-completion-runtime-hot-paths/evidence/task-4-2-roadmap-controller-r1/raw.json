@@ -1,0 +1,179 @@
+{
+  "archiveCalls": [
+    "change-a",
+    "change-b"
+  ],
+  "archiveFailure": {
+    "activeOperationCleared": true,
+    "causePreserved": true,
+    "disposition": "blocked",
+    "transition": "terminal-stop"
+  },
+  "candidateId": "bound-completion-runtime-hot-paths-task-4-r3",
+  "checkpoints": {
+    "external": {
+      "archiveCallsUnchanged": true,
+      "cursor": 2,
+      "identity": "ad1832d86d99d4ebd482edeaf2306c6763ea743e",
+      "staleIdentityBlocked": true,
+      "status": "blocked"
+    },
+    "localCommit": {
+      "committedPaths": [
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/state.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000001-31744c2e397f39f7.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000002-f853f89d46ecb4bd.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000003-e1e359394a6ae7a6.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000004-4f9d156ab6fcce77.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000005-a86b65df3f8a06d8.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000006-a510b78d16655506.json",
+        ".opencode-dev-kit/runtime/roadmap-missions/local-commit-proof/transitions/00000007-0a282a007e7b53e1.json",
+        "evidence/mission/archive-calls.txt",
+        "evidence/mission/executor-counts.json",
+        "evidence/mission/slice-a/attempt-1/opsx-apply.json",
+        "evidence/mission/slice-a/attempt-1/result.json",
+        "evidence/mission/slice-a/attempt-2/opsx-apply.json",
+        "evidence/mission/slice-a/attempt-2/result.json",
+        "openspec/changes/archive/change-a/history.md",
+        "openspec/changes/archive/change-a/proposal.md",
+        "openspec/changes/archive/change-a/specs/demo/spec.md",
+        "openspec/changes/archive/change-a/tasks.md",
+        "openspec/changes/change-a/history.md",
+        "openspec/changes/change-a/proposal.md",
+        "openspec/changes/change-a/specs/demo/spec.md",
+        "openspec/changes/change-a/tasks.md"
+      ],
+      "headAfter": "6ea7e4f6ee82fab75a13149f3327ca0a24f2b3de",
+      "headBefore": "e0a91b9918fb4f2a4a92abf19ebc2d10a2239bcb",
+      "hook": "ran",
+      "remoteRefsChanged": false
+    }
+  },
+  "controller": {
+    "cursor": 2,
+    "exitCode": 1,
+    "status": "blocked"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "executorCounts": {
+    "slice-a": 2,
+    "slice-b": 1
+  },
+  "mode": "campaign",
+  "oneAttemptSuccessor": {
+    "cursor": 2,
+    "executorCounts": {
+      "slice-a": 2,
+      "slice-b": 1
+    },
+    "status": "blocked",
+    "transitionAfterActivation": "session-launch"
+  },
+  "pausedUnknownResume": {
+    "activeOperation": null,
+    "disposition": "paused-unknown",
+    "executorStarted": false,
+    "exitCode": 1,
+    "stateUnchanged": true
+  },
+  "persistedRetry": {
+    "attemptsAfterResume": 2,
+    "executorCalls": 2,
+    "transitionsAfterResume": 6,
+    "transitionsBeforeResume": 6
+  },
+  "replay": {
+    "definitionDigest": "d532d40a14c89e4b53fa8216dbdd311bfd9c0b0500e33f9eebf7c60c742c66a2",
+    "exitCode": 0,
+    "lastTransitionDigest": "9cfc85566e8f376a48ae278c105b9d0d8f47d0d9bb0a4b942cb446c40036c4c3",
+    "missionId": "controller-proof",
+    "operation": "state-replay",
+    "projectionStatus": "current",
+    "schemaVersion": 1,
+    "sequence": 15,
+    "stateDigest": "9615ed1adc6e5ac0f9accbbec1589eaa7d717958ee832f46afce53a7340dd96a",
+    "status": "valid",
+    "tool": "roadmap-mission",
+    "transitionCount": 15,
+    "writerStatus": "clear"
+  },
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/bin/openspec-operation-gate.ts",
+      "sha256": "5d8393594ca91b636e2f697d12ba2d4fa0d45eb8b5565c12bc36414c3699fdcd"
+    },
+    {
+      "path": "global/bin/openspec-archive.ts",
+      "sha256": "b7fcb48d8082afb176733e73cbad5221d6e428d9398c340a601b11081ad5cfe0"
+    },
+    {
+      "path": "global/bin/portable-process.ts",
+      "sha256": "a99ad2499efd86397f5b1f029b300750c5c4dfa02d814ce94b13fab539eb5bfe"
+    },
+    {
+      "path": "global/bin/portable-process-supervisor.ts",
+      "sha256": "794c29b93569e96a38c95ae817291da22dedb63051f0bcf4e38077aa711f9099"
+    },
+    {
+      "path": "global/bin/roadmap-mission.ts",
+      "sha256": "6df1c2f293a41df4e48a6bb482ec1844d0f6847e5102f43e2626b4715661747b"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "f8cd8c783e83343cfc94f58b0247ea417018681f21cf4e59eaaf1b46bfc3e960"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-adapter.ts",
+      "sha256": "78472724f9a10745fb95201f85135330f9a1554e62c0a24c596a5bcff66d6491"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-process.ts",
+      "sha256": "84933f3df214d0856c82117a6b3915a378c6f8a1ed37d4032fb67370f90c416d"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-result.ts",
+      "sha256": "494c092587a125630e1cb5ee814578c30b9094145109bc287ab911f60ab95781"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller.ts",
+      "sha256": "b04c97aa19c2bc52f60e77dd35c5132b57fee72084c977c9341c7afdec1e868f"
+    },
+    {
+      "path": "global/bin/roadmap-mission/preflight.ts",
+      "sha256": "81377466f7a394588514d9e3879ddbdbe79a812360734d23c0ba1cded4e450cf"
+    },
+    {
+      "path": "global/bin/roadmap-mission/session-executor.ts",
+      "sha256": "16d27b3835007eab3a3b545a80a20f0c867aa0949aff6fde1209e4568dd9d5d9"
+    },
+    {
+      "path": "global/bin/roadmap-mission/state.ts",
+      "sha256": "58a99828bd83117a0d9a5f859e2df7f11f5fcf38b5c5bf4057390475ac4094f3"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+      "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+    }
+  ],
+  "transitionKinds": [
+    "preflight",
+    "session-launch",
+    "session-completion",
+    "session-launch",
+    "session-completion",
+    "archive-launch",
+    "archive",
+    "checkpoint",
+    "successor-activation",
+    "session-launch",
+    "session-completion",
+    "archive-launch",
+    "archive",
+    "checkpoint",
+    "terminal-stop"
+  ]
+}

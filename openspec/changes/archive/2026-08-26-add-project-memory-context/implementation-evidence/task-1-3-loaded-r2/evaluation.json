@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "classification": "proof-runner-or-runtime-unknown",
+  "checks": {
+    "attemptTerminallyClosed": true,
+    "copiedPluginImportsUnderBun": true,
+    "enabledConfigResolves": true,
+    "loadedEntryOracleReached": false,
+    "providerRequestPreserved": false
+  },
+  "maximumSupportedClaim": "The copied plugin imports under Bun and enabled OpenCode config resolution exits successfully; the model run hung after config loading and supports no loaded hook, provider-request, or Product Candidate conclusion.",
+  "unlockCondition": "Materialize the copy outside config/plugin auto-discovery, trace factory and relevant hooks, and enforce exact-PID terminal closure inside the runner before another model attempt."
+}

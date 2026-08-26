@@ -11,7 +11,11 @@ import type {
   RoadmapMissionDefinition,
   RoadmapMissionSlice,
 } from "./contracts.ts";
-import { loadControllerAdapter, safeProjectRelative } from "./controller-adapter.ts";
+import {
+  loadControllerAdapter,
+  ROADMAP_COMMAND_TIMEOUT_MS,
+  safeProjectRelative,
+} from "./controller-adapter.ts";
 import type { ControllerAdapter } from "./controller-adapter.ts";
 import {
   bounded,
@@ -58,6 +62,8 @@ export type MissionControllerReport = {
   tool: "roadmap-mission";
 };
 
+class ProcessCleanupUnknownError extends RoadmapMissionError {}
+
 function record(value: unknown): Record<string, unknown> | null {
   return value != null && typeof value === "object" && !Array.isArray(value)
     ? value as Record<string, unknown>
@@ -76,21 +82,27 @@ function archiveRelativePath(root: string, value: unknown): string {
   return relative;
 }
 
-function invoke(root: string, argv: string[], timeoutMs?: number, additionalRedactions: string[] = []): ProcessEvidence {
+function invoke(root: string, argv: string[], timeoutMs: number, additionalRedactions: string[] = []): ProcessEvidence {
   const result = runPortableCommand(root, argv, { capture: true, timeoutMs });
   const roots = [root, ...additionalRedactions];
   return {
     argv: argv.map((value) => redacted(value, roots)),
+    cleanupState: result.cleanupState,
     exitCode: result.status,
     signal: result.signal,
     stderr: bounded(redacted(result.stderr, roots)),
     stdout: bounded(redacted(result.stdout, roots)),
+    timedOut: result.timedOut,
   };
 }
 
 function requireSuccess(evidence: ProcessEvidence, label: string): void {
+  if (evidence.cleanupState === "unknown") {
+    throw new ProcessCleanupUnknownError(`${label} left process cleanup unknown`, 1);
+  }
   if (evidence.exitCode !== 0) {
-    throw new RoadmapMissionError(`${label} failed with exit ${String(evidence.exitCode)}: ${evidence.stderr || evidence.stdout}`, 1);
+    const timeout = evidence.timedOut ? " after timeout" : "";
+    throw new RoadmapMissionError(`${label} failed${timeout} with exit ${String(evidence.exitCode)}: ${evidence.stderr || evidence.stdout}`, 1);
   }
 }
 
@@ -152,11 +164,11 @@ function operationGate(root: string, globalSource: string, operation: "apply" | 
     operation,
     "--change",
     changeId,
-  ], undefined, [globalSource]);
+  ], ROADMAP_COMMAND_TIMEOUT_MS.openSpec, [globalSource]);
 }
 
 function openSpecList(root: string): { evidence: ProcessEvidence; names: string[] } {
-  const evidence = invoke(root, ["openspec", "list", "--json"]);
+  const evidence = invoke(root, ["openspec", "list", "--json"], ROADMAP_COMMAND_TIMEOUT_MS.openSpec);
   requireSuccess(evidence, "OpenSpec list readback");
   const parsed = parseJson(evidence.stdout, "OpenSpec list readback");
   const names = Array.isArray(parsed.changes)
@@ -178,7 +190,7 @@ function gitDirtyPaths(root: string, processEvidence: ProcessEvidence[]): string
   ];
   const dirty = new Set<string>();
   for (const argv of commands) {
-    const evidence = invoke(root, argv);
+    const evidence = invoke(root, argv, ROADMAP_COMMAND_TIMEOUT_MS.inspection);
     processEvidence.push(evidence);
     requireSuccess(evidence, "Git checkpoint inventory");
     for (const file of evidence.stdout.split("\0").filter(Boolean)) dirty.add(file.replaceAll("\\", "/"));
@@ -198,8 +210,8 @@ function localCommitCheckpoint(
   }
   const slice = definition.slices[cursor];
   const commitSubject = `roadmap-mission(${definition.missionId}): checkpoint ${slice.id}`;
-  const existingHead = invoke(root, ["git", "rev-parse", "HEAD"]);
-  const existingCommit = invoke(root, ["git", "cat-file", "commit", "HEAD"]);
+  const existingHead = invoke(root, ["git", "rev-parse", "HEAD"], ROADMAP_COMMAND_TIMEOUT_MS.inspection);
+  const existingCommit = invoke(root, ["git", "cat-file", "commit", "HEAD"], ROADMAP_COMMAND_TIMEOUT_MS.inspection);
   processEvidence.push(existingHead, existingCommit);
   requireSuccess(existingHead, "Existing local checkpoint identity readback");
   requireSuccess(existingCommit, "Existing local checkpoint subject readback");
@@ -224,10 +236,10 @@ function localCommitCheckpoint(
     throw new RoadmapMissionError(`local-commit checkpoint has unattributed dirty paths: ${unattributed.join(", ")}`, 1);
   }
   if (committable.length === 0) throw new RoadmapMissionError("local-commit checkpoint has no mission-owned changes", 1);
-  const stage = invoke(root, ["git", "add", "--", ...committable]);
+  const stage = invoke(root, ["git", "add", "--", ...committable], ROADMAP_COMMAND_TIMEOUT_MS.gitMutation);
   processEvidence.push(stage);
   requireSuccess(stage, "Scoped checkpoint staging");
-  const staged = invoke(root, ["git", "diff", "--cached", "--no-renames", "--name-only", "-z"]);
+  const staged = invoke(root, ["git", "diff", "--cached", "--no-renames", "--name-only", "-z"], ROADMAP_COMMAND_TIMEOUT_MS.inspection);
   processEvidence.push(staged);
   requireSuccess(staged, "Scoped checkpoint staged readback");
   const stagedPaths = staged.stdout.split("\0").filter(Boolean).map((file) => file.replaceAll("\\", "/")).sort();
@@ -237,10 +249,10 @@ function localCommitCheckpoint(
       1,
     );
   }
-  const commit = invoke(root, ["git", "commit", "-m", commitSubject]);
+  const commit = invoke(root, ["git", "commit", "-m", commitSubject], ROADMAP_COMMAND_TIMEOUT_MS.gitMutation);
   processEvidence.push(commit);
   requireSuccess(commit, "Local checkpoint commit and hooks");
-  const head = invoke(root, ["git", "rev-parse", "HEAD"]);
+  const head = invoke(root, ["git", "rev-parse", "HEAD"], ROADMAP_COMMAND_TIMEOUT_MS.inspection);
   processEvidence.push(head);
   requireSuccess(head, "Local checkpoint identity readback");
   const identity = head.stdout.trim();
@@ -283,7 +295,7 @@ function verifyExternalCheckpoint(
   if (!/^[0-9a-f]{40,64}$/i.test(supplied)) {
     throw new RoadmapMissionError("external checkpoint identity must be a full Git commit id", 2);
   }
-  const head = invoke(root, ["git", "rev-parse", "HEAD"]);
+  const head = invoke(root, ["git", "rev-parse", "HEAD"], ROADMAP_COMMAND_TIMEOUT_MS.inspection);
   processEvidence.push(head);
   requireSuccess(head, "External checkpoint identity readback");
   if (head.stdout.trim().toLowerCase() !== supplied.toLowerCase()) {
@@ -297,7 +309,13 @@ function verifyExternalCheckpoint(
   return supplied.toLowerCase();
 }
 
-function runArchive(root: string, globalSource: string, definition: RoadmapMissionDefinition, slice: RoadmapMissionSlice): ProcessEvidence {
+function runArchive(
+  root: string,
+  globalSource: string,
+  definition: RoadmapMissionDefinition,
+  slice: RoadmapMissionSlice,
+  timeoutMs: number,
+): ProcessEvidence {
   return invoke(root, [
     process.execPath,
     path.join(globalSource, "bin", "openspec-archive.ts"),
@@ -307,7 +325,7 @@ function runArchive(root: string, globalSource: string, definition: RoadmapMissi
     slice.changeId,
     "--",
     ...definition.validationArgv,
-  ], undefined, [globalSource]);
+  ], timeoutMs, [globalSource]);
 }
 
 function finishReport(
@@ -345,6 +363,9 @@ async function execute(
   if (replay.status !== "valid") throw new RoadmapMissionError("mission state replay is blocked", 1);
   const current = readMissionStateProjection(options.root, definition);
   if (current?.activeOperation != null) throw new RoadmapMissionError("mission has an unknown active operation", 1);
+  if (current?.disposition === "paused-unknown") {
+    throw new RoadmapMissionError("mission is paused-unknown; reconcile writer liveness before resume", 1);
+  }
   let cursor = current?.cursor ?? 0;
   if (current?.disposition === "complete") {
     return finishReport(operation, definition, cursor, 0, processEvidence, "complete");
@@ -403,7 +424,26 @@ async function executeOwned(
   if (current?.disposition === "awaiting-checkpoint") {
     const archivePath = current.evidenceRefs.find((reference) => reference.startsWith("openspec/changes/archive/"));
     if (archivePath == null) throw new RoadmapMissionError("awaiting-checkpoint state has no archived path evidence", 1);
-    const checkpoint = checkpointIdentity(options, definition, cursor, archivePath, processEvidence, options.checkpointIdentity);
+    let checkpoint: string | null;
+    try {
+      checkpoint = checkpointIdentity(options, definition, cursor, archivePath, processEvidence, options.checkpointIdentity);
+    } catch (error) {
+      if (error instanceof ProcessCleanupUnknownError) {
+        recordTransition(descriptor(
+          definition,
+          cursor,
+          "pause",
+          "paused-unknown",
+          identities,
+          current.evidenceRefs,
+          {
+            activeOperation: { kind: "checkpoint", processRef: `checkpoint-${definition.slices[cursor].id}`, sessionRef: null },
+            recovery: current.recovery,
+          },
+        ));
+      }
+      throw error;
+    }
     if (checkpoint == null) {
       if (current.lastTransitionKind !== "pause") {
         recordTransition(descriptor(
@@ -467,7 +507,7 @@ async function executeOwned(
     ));
   }
 
-  while (cursor < definition.slices.length) {
+  sliceLoop: while (cursor < definition.slices.length) {
     const slice = definition.slices[cursor];
     if (current == null && cursor === 0) {
       const preflight = preflightMission(options.root, options.globalSource, options.missionPath, cursor, {
@@ -646,17 +686,36 @@ async function executeOwned(
         [definition.evidencePath],
         { activeOperation: { kind: "archive", processRef: `archive-${slice.id}`, sessionRef: null }, recovery },
       ));
-      const archive = runArchive(options.root, options.globalSource, definition, slice);
-      processEvidence.push(archive);
-      requireSuccess(archive, "OpenSpec complete archive");
-      const archiveOutput = parseJson(archive.stdout, "OpenSpec complete archive");
-      if (archiveOutput.status !== "archived" || archiveOutput.change !== slice.changeId) {
-        throw new RoadmapMissionError("OpenSpec archive returned no matching archived result", 1);
+      let archivePath: string;
+      try {
+        const archive = runArchive(options.root, options.globalSource, definition, slice, adapter.validationTimeoutMs);
+        processEvidence.push(archive);
+        requireSuccess(archive, "OpenSpec complete archive");
+        const archiveOutput = parseJson(archive.stdout, "OpenSpec complete archive");
+        if (archiveOutput.status !== "archived" || archiveOutput.change !== slice.changeId) {
+          throw new RoadmapMissionError("OpenSpec archive returned no matching archived result", 1);
+        }
+        archivePath = archiveRelativePath(options.root, archiveOutput.path);
+        const readback = openSpecList(options.root);
+        processEvidence.push(readback.evidence);
+        if (readback.names.includes(slice.changeId)) throw new RoadmapMissionError("Archived change remains active after readback", 1);
+      } catch (error) {
+        recordTransition(descriptor(
+          definition,
+          cursor,
+          error instanceof ProcessCleanupUnknownError ? "pause" : "terminal-stop",
+          error instanceof ProcessCleanupUnknownError ? "paused-unknown" : "blocked",
+          identities,
+          [definition.evidencePath],
+          {
+            ...(error instanceof ProcessCleanupUnknownError
+              ? { activeOperation: { kind: "archive" as const, processRef: `archive-${slice.id}`, sessionRef: null } }
+              : {}),
+            recovery,
+          },
+        ));
+        throw error;
       }
-      const archivePath = archiveRelativePath(options.root, archiveOutput.path);
-      const readback = openSpecList(options.root);
-      processEvidence.push(readback.evidence);
-      if (readback.names.includes(slice.changeId)) throw new RoadmapMissionError("Archived change remains active after readback", 1);
       recordTransition(descriptor(
         definition,
         cursor,
@@ -667,7 +726,26 @@ async function executeOwned(
         { recovery },
       ));
       attributedArchivePaths.push(archivePath);
-      const checkpoint = checkpointIdentity(options, definition, cursor, archivePath, processEvidence);
+      let checkpoint: string | null;
+      try {
+        checkpoint = checkpointIdentity(options, definition, cursor, archivePath, processEvidence);
+      } catch (error) {
+        if (error instanceof ProcessCleanupUnknownError) {
+          recordTransition(descriptor(
+            definition,
+            cursor,
+            "pause",
+            "paused-unknown",
+            identities,
+            [definition.evidencePath, archivePath],
+            {
+              activeOperation: { kind: "checkpoint", processRef: `checkpoint-${slice.id}`, sessionRef: null },
+              recovery,
+            },
+          ));
+        }
+        throw error;
+      }
       if (checkpoint == null) {
         recordTransition(descriptor(
           definition,
@@ -729,7 +807,7 @@ async function executeOwned(
         [definition.evidencePath],
         { checkpointIdentity: checkpoint },
       ));
-      break;
+      continue sliceLoop;
     }
     if (attempts >= adapter.maxAttemptsPerSlice || Date.now() - startedAt >= adapter.maxWallClockMsPerSlice) {
       recordTransition(descriptor(

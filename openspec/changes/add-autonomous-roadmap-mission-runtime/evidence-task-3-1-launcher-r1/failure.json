@@ -1,8 +1,0 @@
-{
-  "candidateId": "task-3-1-launcher-r1",
-  "cleanup": "complete",
-  "error": "OpenCode launcher proof server was not ready: {\"errorChain\":[{\"depth\":0,\"name\":\"Error\",\"message\":\"Launcher commands are not loaded yet\"}],\"probes\":[{\"route\":\"/path\",\"status\":200},{\"route\":\"/session/status\",\"status\":200}],\"startup\":{\"hostConfigLoaded\":false,\"isolatedConfigLoaded\":true,\"ripgrepDownloadRequested\":false}}",
-  "providerCalls": 0,
-  "schemaVersion": 1,
-  "status": "failed"
-}

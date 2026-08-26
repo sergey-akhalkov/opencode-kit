@@ -1,0 +1,14 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r14-task-4-3-hard-kill-r1",
+  "checks": {
+    "activeOperationPreserved": true,
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "closureObserved": true,
+    "pausedUnknown": true,
+    "processStageCaptured": true
+  },
+  "liveCalls": 0,
+  "schemaVersion": 1,
+  "status": "complete"
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import crypto from "node:crypto";
 import fs from "node:fs";
+import { createServer } from "node:net";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,13 +12,14 @@ import {
   parseMissionExecutorResult,
 } from "../../global/bin/roadmap-mission/contracts.ts";
 import { MISSION_SOURCE_PATHS } from "../../global/bin/roadmap-mission/preflight.ts";
-import { inspectRuntime } from "../../global/bin/roadmap-mission/session-executor.ts";
+import { executeMissionSession, inspectRuntime, runtimeUrl } from "../../global/bin/roadmap-mission/session-executor.ts";
 
 type Options = {
   candidateId: string;
   evidenceRoot: string;
   help: boolean;
-  mode: "preflight";
+  inputRoot: string | null;
+  mode: "preflight" | "replay";
 };
 
 type CommandEvidence = {
@@ -62,7 +64,11 @@ function stableJson(value: unknown): string {
 }
 
 function usage(): string {
-  return "Usage: node tools/proofs/roadmap-mission.ts --mode preflight --candidate-id <id> --evidence-root <absolute-new-path>";
+  return [
+    "Usage:",
+    "  node tools/proofs/roadmap-mission.ts --mode preflight --candidate-id <id> --evidence-root <absolute-new-path>",
+    "  node tools/proofs/roadmap-mission.ts --mode replay --candidate-id <id> --input-root <capture-path> --evidence-root <absolute-new-path>",
+  ].join("\n");
 }
 
 function digestBytes(value: string | Buffer): string {
@@ -79,11 +85,12 @@ function requiredValue(args: string[], index: number, option: string): string {
 
 function parseArgs(args: string[]): Options {
   if (args.length === 1 && (args[0] === "--help" || args[0] === "-h")) {
-    return { candidateId: "help", evidenceRoot: sourceRoot, help: true, mode: "preflight" };
+    return { candidateId: "help", evidenceRoot: sourceRoot, help: true, inputRoot: null, mode: "preflight" };
   }
   let mode = "";
   let evidenceRoot = "";
   let candidateId = "";
+  let inputRoot: string | null = null;
   for (let index = 0; index < args.length; index++) {
     const arg = args[index];
     if (arg === "--mode") {
@@ -95,14 +102,18 @@ function parseArgs(args: string[]): Options {
     } else if (arg === "--candidate-id") {
       candidateId = requiredValue(args, index, arg);
       index++;
+    } else if (arg === "--input-root") {
+      inputRoot = path.resolve(requiredValue(args, index, arg));
+      index++;
     } else {
       throw new Error(`Unknown option: ${arg}`);
     }
   }
-  if (mode !== "preflight") throw new Error("--mode must be preflight");
+  if (mode !== "preflight" && mode !== "replay") throw new Error("--mode must be preflight or replay");
   if (!path.isAbsolute(evidenceRoot)) throw new Error("--evidence-root must be absolute");
+  if (mode === "replay" && inputRoot == null) throw new Error("--input-root is required for replay");
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(candidateId)) throw new Error("--candidate-id must be a safe identifier");
-  return { candidateId, evidenceRoot: path.resolve(evidenceRoot), help: false, mode };
+  return { candidateId, evidenceRoot: path.resolve(evidenceRoot), help: false, inputRoot, mode };
 }
 
 function writeNew(file: string, content: string): void {
@@ -110,7 +121,7 @@ function writeNew(file: string, content: string): void {
   fs.writeFileSync(file, content, { encoding: "utf8", flag: "wx" });
 }
 
-type FixtureKind = "ambiguous" | "dirty" | "invalid" | "invalid-checkpoint" | "live-lease" | "missing-active" | "missing-adapter" | "overlay" | "protected" | "queued" | "queued-dirty" | "too-many" | "unreadable-lease" | "valid";
+type FixtureKind = "ambiguous" | "dirty" | "invalid" | "invalid-checkpoint" | "live-lease" | "missing-active" | "missing-adapter" | "overlay" | "protected" | "queued" | "queued-dirty" | "roadmap-prose" | "too-many" | "unlisted-active" | "unreadable-lease" | "valid";
 
 function fixtureManifest(kind: FixtureKind): Record<string, unknown> {
   const protectedEffect = kind === "protected";
@@ -147,7 +158,11 @@ function fixtureManifest(kind: FixtureKind): Record<string, unknown> {
       ];
   return {
     schemaVersion: 1,
-    missionId: kind === "invalid" ? "invalid-forward-dependency" : `generic-${kind}`,
+    missionId: kind === "invalid"
+      ? "invalid-forward-dependency"
+      : kind === "roadmap-prose"
+        ? "generic-valid"
+        : `generic-${kind}`,
     roadmapPath: "docs/roadmap.md",
     evidencePath: "evidence/mission",
     validationArgv: ["node", "tools/validate.mjs"],
@@ -209,11 +224,36 @@ function executorContractEvidence(): Record<string, unknown> {
       failures[name] = error instanceof Error ? error.message : String(error);
     }
   }
+  for (const [name, value] of [
+    ["missing", ""],
+    ["nonLoopback", "https://example.invalid"],
+    ["credentialed", "http://proof@127.0.0.1:4096"],
+  ] as const) {
+    try {
+      runtimeUrl(value);
+      throw new Error(`${name} executor runtime URL unexpectedly passed`);
+    } catch (error) {
+      failures[`runtime-${name}`] = error instanceof Error ? error.message : String(error);
+    }
+  }
+  if (
+    !failures["runtime-missing"].includes("invalid")
+    || !failures["runtime-nonLoopback"].includes("uncredentialed loopback origin")
+    || !failures["runtime-credentialed"].includes("uncredentialed loopback origin")
+  ) {
+    throw new Error(`Unsafe runtime URL checks did not fail closed: ${stableJson(failures)}`);
+  }
   return {
     correlationFailure: failures.correlation,
     malformedFailure: failures.malformed,
     parsedDisposition: parsed.disposition,
     parsedRuntimeRef: parsed.runtimeRef,
+    runtimeUrl: {
+      credentialed: failures["runtime-credentialed"],
+      loopbackOrigin: runtimeUrl("http://127.0.0.1:4096").origin,
+      missing: failures["runtime-missing"],
+      nonLoopback: failures["runtime-nonLoopback"],
+    },
   };
 }
 
@@ -224,14 +264,18 @@ async function runtimeOwnershipEvidence(): Promise<Record<string, unknown>> {
     path: { get: async () => ({ data: { directory: root } }) },
   };
   const execute = async (input: {
+    commands?: string[];
     details?: Record<string, Record<string, unknown>>;
     detailError?: boolean;
+    directory?: string;
     questions?: Array<Record<string, unknown>>;
     sessions?: Array<Record<string, unknown>>;
     statuses?: Record<string, Record<string, unknown>>;
   }): Promise<string> => {
     const client = {
       ...base,
+      command: { list: async () => ({ data: (input.commands ?? ["opsx-apply", "opsx-propose"]).map((name) => ({ name })) }) },
+      path: { get: async () => ({ data: { directory: input.directory ?? root } }) },
       question: { list: async () => ({ data: input.questions ?? [] }) },
       session: {
         get: async ({ sessionID }: { sessionID: string }) => input.detailError
@@ -242,7 +286,7 @@ async function runtimeOwnershipEvidence(): Promise<Record<string, unknown>> {
       v2: { session: { list: async () => ({ data: input.sessions ?? [] }) } },
     };
     try {
-      await inspectRuntime(client as Parameters<typeof inspectRuntime>[0], root, ["change-a"], null);
+      await inspectRuntime(client as unknown as Parameters<typeof inspectRuntime>[0], root, ["change-a"], null);
       return "clear";
     } catch (error) {
       return error instanceof Error ? error.message : String(error);
@@ -255,10 +299,58 @@ async function runtimeOwnershipEvidence(): Promise<Record<string, unknown>> {
   });
   const pendingQuestion = await execute({ questions: [{ id: "question-pending", sessionID: "session-question" }] });
   const unreadable = await execute({ detailError: true, sessions: [{ id: "session-unreadable" }] });
-  if (!busy.includes("activeSessions=1") || !pendingQuestion.includes("pendingQuestions=1") || !unreadable.includes("root session detail failed")) {
-    throw new Error(`Runtime ownership preflight did not fail closed: ${stableJson({ busy, pendingQuestion, unreadable })}`);
+  const directoryMismatch = await execute({ directory: path.dirname(root) });
+  const missingCapability = await execute({ commands: ["opsx-apply"] });
+  if (
+    !busy.includes("activeSessions=1")
+    || !pendingQuestion.includes("pendingQuestions=1")
+    || !unreadable.includes("root session detail failed")
+    || !directoryMismatch.includes("directory")
+    || !missingCapability.includes("missing canonical command")
+  ) {
+    throw new Error(`Runtime ownership preflight did not fail closed: ${stableJson({ busy, directoryMismatch, missingCapability, pendingQuestion, unreadable })}`);
   }
-  return { busy, pendingQuestion, unreadable };
+  return { busy, directoryMismatch, missingCapability, pendingQuestion, unreadable };
+}
+
+async function staleRuntimeEvidence(root: string): Promise<Record<string, unknown>> {
+  const server = createServer();
+  await new Promise<void>((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  const address = server.address();
+  if (address == null || typeof address === "string") throw new Error("Stale runtime probe did not acquire a loopback port");
+  await new Promise<void>((resolve, reject) => server.close((error) => error == null ? resolve() : reject(error)));
+  const resultPath = "evidence/mission/stale-runtime-result.json";
+  const result = await executeMissionSession({
+    attempt: 1,
+    missionPath: "mission.json",
+    parentSessionRef: null,
+    resultPath,
+    root,
+    serverUrl: `http://127.0.0.1:${address.port}`,
+    sliceId: "slice-a",
+    timeoutMs: 1_000,
+  });
+  if (
+    result.disposition !== "terminal"
+    || result.errorClass !== "terminal"
+    || result.rootSessionRef !== null
+    || result.writerClosure !== "terminal"
+    || result.cleanup !== "not-required"
+    || !fs.existsSync(path.join(root, resultPath))
+  ) {
+    throw new Error(`Stale runtime URL did not fail before session creation: ${stableJson(result)}`);
+  }
+  return {
+    cleanup: result.cleanup,
+    disposition: result.disposition,
+    errorClass: result.errorClass,
+    resultPath,
+    rootSessionRef: result.rootSessionRef,
+    writerClosure: result.writerClosure,
+  };
 }
 
 function copyFile(source: string, destination: string): void {
@@ -343,7 +435,12 @@ function git(root: string, args: string[]): void {
 function createProject(root: string, kind: FixtureKind): void {
   fs.mkdirSync(root, { recursive: true });
   writeNew(path.join(root, "AGENTS.md"), "# Project Instructions\n\n## Runtime Authority\n\nGlobal lifecycle authority is required.\n");
-  writeNew(path.join(root, "docs", "roadmap.md"), "# Generic Roadmap\n");
+  writeNew(
+    path.join(root, "docs", "roadmap.md"),
+    kind === "roadmap-prose"
+      ? "# Generic Roadmap\n\n- [ ] Unaccepted prose-only outcome that must not become executable scope.\n"
+      : "# Generic Roadmap\n",
+  );
   writeNew(path.join(root, "tools", "validate.mjs"), "process.exit(0);\n");
   if (kind !== "missing-adapter") {
     writeNew(path.join(root, "opencode-dev-kit", "adapter.json"), stableJson({
@@ -359,7 +456,7 @@ function createProject(root: string, kind: FixtureKind): void {
   }
   writeNew(path.join(root, "mission.json"), stableJson(fixtureManifest(kind)));
   writeNew(path.join(root, ".fixture-openspec-state.json"), stableJson({
-    changes: kind === "ambiguous"
+    changes: kind === "ambiguous" || kind === "unlisted-active"
       ? [{ name: "change-a" }, { name: "other-change" }]
       : kind === "queued" || kind === "queued-dirty"
         ? [{ name: "change-a" }, { name: "change-b" }]
@@ -478,6 +575,16 @@ function assertEvidence(scenarios: Record<FixtureKind, ScenarioEvidence>): void 
   if (queued.exitCode !== 0 || (JSON.parse(queued.stdout) as Record<string, unknown>).status !== "eligible") {
     throw new Error(`Queued active changes were not accepted: ${queued.stdout || queued.stderr}`);
   }
+  const roadmapProse = JSON.parse(scenarios["roadmap-prose"].stdout) as Record<string, unknown>;
+  const roadmapEligible = roadmapProse.eligibleSlice as Record<string, unknown> | null;
+  if (
+    scenarios["roadmap-prose"].exitCode !== 0
+    || roadmapProse.status !== "eligible"
+    || roadmapEligible?.id !== "slice-a"
+    || roadmapProse.definitionDigest !== parsed.definitionDigest
+  ) {
+    throw new Error(`Roadmap prose changed executable mission scope: ${scenarios["roadmap-prose"].stdout || scenarios["roadmap-prose"].stderr}`);
+  }
   if (invalid.exitCode === 0) throw new Error("Invalid forward dependency unexpectedly passed");
   const blocked = JSON.parse(invalid.stderr) as Record<string, unknown>;
   if (blocked.status !== "blocked" || !String(blocked.error).includes("must appear earlier")) {
@@ -496,6 +603,7 @@ function assertEvidence(scenarios: Record<FixtureKind, ScenarioEvidence>): void 
     ["overlay", "workflow:project-overlays", "blocked"],
     ["protected", "mission:next-effects", "blocked"],
     ["queued-dirty", "project:git-state", "blocked"],
+    ["unlisted-active", "project:openspec-state", "blocked"],
     ["unreadable-lease", "mission:writer-lease", "unknown"],
   ];
   for (const [kind, id, status] of expected) {
@@ -535,6 +643,14 @@ function boundedScenarioEvidence(scenario: ScenarioEvidence): Record<string, unk
     beforeDigest: scenario.beforeDigest,
     checks,
     error: typeof report.error === "string" ? report.error.slice(0, 1_000) : null,
+    definitionDigest: typeof report.definitionDigest === "string" ? report.definitionDigest : null,
+    eligibleSlice: typeof (report.eligibleSlice as Record<string, unknown> | undefined)?.id === "string"
+      ? {
+          changeId: (report.eligibleSlice as Record<string, unknown>).changeId,
+          id: (report.eligibleSlice as Record<string, unknown>).id,
+          operation: (report.eligibleSlice as Record<string, unknown>).operation,
+        }
+      : null,
     exitCode: scenario.exitCode,
     fileCount: scenario.fileCount,
     mutation: scenario.mutation,
@@ -564,7 +680,9 @@ async function run(options: Options): Promise<void> {
       "protected",
       "queued",
       "queued-dirty",
+      "roadmap-prose",
       "too-many",
+      "unlisted-active",
       "unreadable-lease",
       "valid",
     ];
@@ -574,13 +692,16 @@ async function run(options: Options): Promise<void> {
       return [kind, invoke(project, globalSource, bin, kind, "mission.json")];
     })) as Record<FixtureKind, ScenarioEvidence>;
     assertEvidence(scenarios);
+    const staleRuntime = await staleRuntimeEvidence(path.join(fixture, "valid-project"));
 
     fs.mkdirSync(options.evidenceRoot, { recursive: false });
     writeNew(path.join(options.evidenceRoot, "raw.json"), stableJson({
       candidateId: options.candidateId,
       environment: {
+        bun: (globalThis as typeof globalThis & { Bun?: { version?: string } }).Bun?.version ?? null,
         node: process.version,
         platform: process.platform,
+        runtimeExecutable: path.basename(process.execPath),
       },
       productionSources: productionSourcePaths.map((relative) => ({
         path: relative,
@@ -590,6 +711,7 @@ async function run(options: Options): Promise<void> {
       runtimeOwnership: await runtimeOwnershipEvidence(),
       scenarios: kinds.map((kind) => boundedScenarioEvidence(scenarios[kind])),
       schemaVersion: 1,
+      staleRuntime,
     }));
     writeNew(path.join(options.evidenceRoot, "evaluation.json"), stableJson({
       candidateId: options.candidateId,
@@ -609,8 +731,11 @@ async function run(options: Options): Promise<void> {
         pendingQuestion: "unknown-blocked",
         queuedActiveChanges: "eligible",
         queuedDirtyChange: "blocked",
+        roadmapProseIgnored: "eligible-definition-owned",
         staleProjectOverlay: "blocked",
+        staleRuntimeUrl: "terminal-before-session",
         tooManySlices: "blocked",
+        unlistedActiveChange: "blocked",
         unreadableWriterLease: "unknown-blocked",
         unreadableSession: "unknown-blocked",
         valid: "eligible",
@@ -637,9 +762,69 @@ async function run(options: Options): Promise<void> {
   }).trimEnd());
 }
 
+function replay(options: Options): void {
+  if (options.inputRoot == null) throw new Error("Replay input root is missing");
+  if (fs.existsSync(options.evidenceRoot)) throw new Error("Evidence root already exists");
+  const raw = JSON.parse(fs.readFileSync(path.join(options.inputRoot, "raw.json"), "utf8")) as Record<string, unknown>;
+  const sourceEvaluation = JSON.parse(fs.readFileSync(path.join(options.inputRoot, "evaluation.json"), "utf8")) as Record<string, unknown>;
+  const expectedScenarios: Record<string, string> = {
+    ambiguous: "blocked",
+    dirty: "blocked",
+    invalid: "blocked",
+    "invalid-checkpoint": "blocked",
+    "live-lease": "blocked",
+    "missing-active": "blocked",
+    "missing-adapter": "blocked",
+    overlay: "blocked",
+    protected: "blocked",
+    queued: "eligible",
+    "queued-dirty": "blocked",
+    "roadmap-prose": "eligible",
+    "too-many": "blocked",
+    "unlisted-active": "blocked",
+    "unreadable-lease": "blocked",
+    valid: "eligible",
+  };
+  const observed = new Map(
+    (Array.isArray(raw.scenarios) ? raw.scenarios : []).flatMap((value) => {
+      const row = value != null && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+      return typeof row?.name === "string" && typeof row.status === "string" ? [[row.name, row.status] as const] : [];
+    }),
+  );
+  const staleRuntime = raw.staleRuntime != null && typeof raw.staleRuntime === "object" && !Array.isArray(raw.staleRuntime)
+    ? raw.staleRuntime as Record<string, unknown>
+    : null;
+  const checks = {
+    candidateMatched: raw.candidateId === options.candidateId && sourceEvaluation.candidateId === options.candidateId,
+    cleanupComplete: sourceEvaluation.cleanup === "complete",
+    scenariosMatched: Object.entries(expectedScenarios).every(([name, status]) => observed.get(name) === status),
+    sourceEvaluationComplete: sourceEvaluation.status === "complete",
+    staleRuntimeTerminal: staleRuntime?.disposition === "terminal" && staleRuntime.rootSessionRef === null && staleRuntime.writerClosure === "terminal",
+  };
+  const evaluation = {
+    candidateId: options.candidateId,
+    checks,
+    liveCalls: 0,
+    replaySource: path.basename(options.inputRoot),
+    schemaVersion: 1,
+    status: Object.values(checks).every(Boolean) ? "complete" : "blocked",
+  };
+  fs.mkdirSync(options.evidenceRoot, { recursive: false });
+  writeNew(path.join(options.evidenceRoot, "evaluation.json"), stableJson(evaluation));
+  console.log(stableJson({
+    candidateId: options.candidateId,
+    evidenceRoot: "<evidence-root>",
+    liveCalls: 0,
+    mode: "replay",
+    status: evaluation.status,
+  }).trimEnd());
+  if (evaluation.status !== "complete") process.exitCode = 1;
+}
+
 try {
   const options = parseArgs(process.argv.slice(2));
   if (options.help) console.log(usage());
+  else if (options.mode === "replay") replay(options);
   else await run(options);
 } catch (error) {
   console.error(stableJson({

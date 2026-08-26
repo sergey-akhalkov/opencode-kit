@@ -1,0 +1,21 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "commandsLoaded": true,
+    "idleApis": true,
+    "missionEligible": true,
+    "missionSessionObservation": true,
+    "noModelCall": true,
+    "proposalOutcomeComplete": true,
+    "ptyFinalization": true,
+    "queuedActive": true,
+    "schemaResolved": true,
+    "serverIsolated": true,
+    "slashBoundary": true
+  },
+  "liveCalls": 0,
+  "schemaVersion": 1,
+  "status": "complete"
+}

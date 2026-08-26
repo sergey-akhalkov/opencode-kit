@@ -1,5 +1,4 @@
 import crypto from "node:crypto";
-import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { createOpencodeClient } from "@opencode-ai/sdk/v2";
@@ -11,6 +10,8 @@ import type {
   TerminalCertificate,
   TerminalCertificateChallenge,
 } from "../../extensions/session-completion-guard/terminal-certificate.ts";
+import { runPortableCommand } from "../portable-process.ts";
+import { ROADMAP_COMMAND_TIMEOUT_MS } from "./controller-adapter.ts";
 import {
   loadMissionDefinition,
   missionDefinitionDigest,
@@ -366,16 +367,17 @@ type PhaseVerification = {
 };
 
 function runOpenSpec(root: string, args: string[]): { status: number | null; stderr: string; stdout: string } {
-  const executable = process.platform === "win32" ? "openspec.cmd" : "openspec";
-  const result = spawnSync(executable, args, {
-    cwd: root,
-    encoding: "utf8",
-    maxBuffer: 8 * 1024 * 1024,
-    shell: false,
+  const result = runPortableCommand(root, ["openspec", ...args], {
+    capture: true,
+    timeoutMs: ROADMAP_COMMAND_TIMEOUT_MS.openSpec,
   });
   return {
     status: result.status,
-    stderr: result.error == null ? result.stderr : result.error.message,
+    stderr: result.cleanupState === "unknown"
+      ? "OpenSpec process cleanup state is unknown"
+      : result.error == null
+      ? result.stderr
+      : `${result.error.message}${result.stderr ? `\n${result.stderr}` : ""}`,
     stdout: result.stdout,
   };
 }
@@ -609,6 +611,7 @@ export async function executeMissionSession(options: SessionExecutorOptions): Pr
     let previousRevision: string | null = null;
     for (const command of commands) {
       terminalCertificate = null;
+      guardState = "unknown";
       const acceptedRequirementIds = phaseRequirementIds(root, slice.changeId, command);
       await updateMissionMetadata(client, root, rootSessionRef, {
         acceptedRequirementIds,

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { pathToFileURL } from "node:url";
 
 export const RUNTIME_SURFACE_PROFILE_SCHEMA_VERSION = 1;
 export const RUNTIME_SURFACE_CONFIG_MODES = ["ask", "all-compatibility"] as const;
@@ -532,6 +533,29 @@ export function listCommandNames(root: string): string[] {
 export const EFFECTIVE_RUNTIME_SURFACE_MANIFEST = ".runtime-surface.json";
 export const GENERATED_RUNTIME_PROFILES_RELATIVE = "global/.runtime-profiles";
 export const CORE_CONFIG_SCHEMA = "https://opencode.ai/config.json";
+export const ROADMAP_MISSION_PLUGIN_FILES = [
+  "extensions/opencode-pty-bridge.ts",
+  "extensions/roadmap-mission-launcher.ts",
+  "extensions/session-completion-guard.ts",
+] as const;
+export const ROADMAP_MISSION_RUNTIME_FILES = [
+  "bin/roadmap-mission.ts",
+  "bin/roadmap-mission-session-executor.ts",
+  "bin/roadmap-mission/contracts.ts",
+  "bin/roadmap-mission/controller.ts",
+  "bin/roadmap-mission/preflight.ts",
+  "bin/roadmap-mission/session-executor.ts",
+  "bin/roadmap-mission/state.ts",
+  ...ROADMAP_MISSION_PLUGIN_FILES,
+  "extensions/session-completion-guard/terminal-certificate.ts",
+] as const;
+export const PORTABLE_WORKFLOW_RUNTIME_FILES = [
+  "bin/openspec-operation-gate.ts",
+  "bin/openspec-archive.ts",
+  "bin/portable-process.ts",
+  ...ROADMAP_MISSION_RUNTIME_FILES,
+  "bin/validate-staged.ts",
+] as const;
 
 export type MaterializeInjectedFailure = "after-backup" | "after-stage";
 
@@ -764,21 +788,71 @@ export function inspectRuntimeSurfaceInstall(options: {
 
 export type RuntimeSurfaceConfigRenderMode = "all-compatibility" | "ask" | "machine-autonomy";
 
-export function renderRuntimeSurfaceConfig(mode: RuntimeSurfaceConfigRenderMode): Record<string, unknown> {
-  const permission = mode === "ask" ? "ask" : "allow";
-  return {
-    $schema: CORE_CONFIG_SCHEMA,
-    instructions: [
-      "__OPENCODE_CONFIG_DIR__/principles-of-work.md",
-      "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md",
-    ],
-    permission,
-  };
+const TEMPLATE_PLUGIN_PATHS = [
+  "plugins/notify.ts",
+  "plugin/session-env.ts",
+  ...ROADMAP_MISSION_PLUGIN_FILES,
+] as const;
+
+export function materializeRuntimeSurfaceTemplate(templateText: string, targetRoot: string): string {
+  const target = path.resolve(targetRoot);
+  let materialized = templateText.replaceAll(
+    JSON.stringify("__OPENCODE_CONFIG_DIR__/principles-of-work.md"),
+    JSON.stringify(path.join(target, "principles-of-work.md").replaceAll("\\", "/")),
+  );
+  materialized = materialized.replaceAll(
+    JSON.stringify("__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md"),
+    JSON.stringify(path.join(target, "opencode.local.instructions.md").replaceAll("\\", "/")),
+  );
+  for (const pluginPath of TEMPLATE_PLUGIN_PATHS) {
+    materialized = materialized.replaceAll(
+      JSON.stringify(`__OPENCODE_CONFIG_DIR__/${pluginPath}`),
+      JSON.stringify(pathToFileURL(path.join(target, ...pluginPath.split("/"))).href),
+    );
+  }
+  return materialized.replaceAll(
+    JSON.stringify("__OPENCODE_SCRIPT_RUNTIME__"),
+    JSON.stringify(path.resolve(process.execPath).replaceAll("\\", "/")),
+  );
 }
 
-export function writeRuntimeSurfaceConfig(targetRoot: string, mode: RuntimeSurfaceConfigRenderMode): string {
+export function renderRuntimeSurfaceConfig(
+  mode: RuntimeSurfaceConfigRenderMode,
+  materializedTemplate?: Record<string, unknown>,
+): Record<string, unknown> {
+  const permission = mode === "ask" ? "ask" : "allow";
+  const instructions = Array.isArray(materializedTemplate?.instructions)
+    ? materializedTemplate.instructions
+    : [
+        "__OPENCODE_CONFIG_DIR__/principles-of-work.md",
+        "__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md",
+      ];
+  const config: Record<string, unknown> = {
+    $schema: CORE_CONFIG_SCHEMA,
+    instructions,
+    permission,
+  };
+  if (mode === "all-compatibility") {
+    if (typeof materializedTemplate?.model !== "string" || !Array.isArray(materializedTemplate.plugin)) {
+      throw new Error("The all profile requires a materialized template with model and plugin entries.");
+    }
+    config.model = materializedTemplate.model;
+    config.plugin = materializedTemplate.plugin;
+  }
+  return config;
+}
+
+export function writeRuntimeSurfaceConfig(
+  targetRoot: string,
+  mode: RuntimeSurfaceConfigRenderMode,
+  runtimeRoot: string = targetRoot,
+): string {
   const file = path.join(path.resolve(targetRoot), "opencode.json");
-  const rendered = renderRuntimeSurfaceConfig(mode);
+  const templateFile = path.join(path.resolve(targetRoot), "opencode.json.template");
+  const materializedTemplate = fs.existsSync(templateFile)
+    ? JSON.parse(materializeRuntimeSurfaceTemplate(fs.readFileSync(templateFile, "utf8"), runtimeRoot)) as Record<string, unknown>
+    : undefined;
+  const rendered = renderRuntimeSurfaceConfig(mode, materializedTemplate);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify(rendered, null, 2)}\n`);
   return file;
@@ -839,6 +913,7 @@ export function materializeRuntimeSurfaceProfile(
     writeRuntimeSurfaceConfig(
       stagingRoot,
       loaded.profile.configMode === "ask" ? "ask" : "all-compatibility",
+      targetRoot,
     );
     const readback = readbackRuntimeSurfaceTree(resolvedRoot, stagingRoot, resolved.entries);
     if (readback.length > 0) {

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "candidateReference": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+  "invocation": "npm run proof:guard-question",
+  "exitStatus": 0,
+  "environment": {
+    "platform": "win32",
+    "bunVersion": "1.3.14"
+  },
+  "sources": {
+    "proofRunnerSha256": "164df3ba061a89462c788eb1542153cca94555da5defcb0ae850fe247fa7957e",
+    "controllerSha256": "edb1064b86347221458140d053312304628faa09ab1261777bfe2a65f6c5d748",
+    "statusSha256": "b31bda42c0df8678d8df2d57c757ff1fd1a2d4321852e92dfc510e964f8169c8",
+    "runtimeSupportSha256": "cbd1414e95ba989c5b99ae19880c545a3eff67a28a9e3387c906d2093cd9fefc"
+  },
+  "compaction": {
+    "started": true,
+    "autocontinuePending": true,
+    "turnPreserved": true,
+    "completed": true
+  },
+  "questionOracles": {
+    "autonomousFinalState": "running",
+    "autonomousQuestionState": "guard-answered",
+    "ownerFinalState": "owner-required",
+    "ownerQuestionState": "owner-required",
+    "replyCalls": 1
+  },
+  "effects": {
+    "providerCalls": 0,
+    "repositoryMutation": false
+  }
+}

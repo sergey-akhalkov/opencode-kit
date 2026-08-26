@@ -1,13 +1,16 @@
 import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export type PortableCommandResult = {
   status: number | null;
   signal: NodeJS.Signals | null;
+  cleanupState?: "not-needed" | "terminal" | "unknown";
   error?: Error;
   stdout: string;
   stderr: string;
+  timedOut?: boolean;
 };
 
 export type PortableCommandOptions = {
@@ -198,6 +201,77 @@ export function formatArgv(argv: readonly string[]): string {
   return argv.map((value) => (/^[A-Za-z0-9._/:\\=@+-]+$/.test(value) ? value : JSON.stringify(value))).join(" ");
 }
 
+function supervisedCommand(
+  root: string,
+  resolution: Extract<PortableCommandResolution, { ok: true }>,
+  options: PortableCommandOptions,
+): PortableCommandResult {
+  const timeoutMs = options.timeoutMs!;
+  const supervisor = fileURLToPath(new URL("./portable-process-supervisor.ts", import.meta.url));
+  const result = spawnSync(process.execPath, [supervisor], {
+    cwd: root,
+    encoding: "utf8",
+    env: process.env,
+    input: JSON.stringify({
+      args: [...resolution.args],
+      cwd: root,
+      env: options.env ?? process.env,
+      executable: resolution.executable,
+      ...(options.input == null ? {} : { input: options.input }),
+      timeoutMs,
+      windowsVerbatimArguments: resolution.kind === "cmd",
+    }),
+    maxBuffer: 12 * 1024 * 1024,
+    shell: false,
+    timeout: timeoutMs + 20_000,
+  });
+  if (result.error != null || result.status !== 0) {
+    const cause = result.error ?? new Error(`Portable process supervisor exited ${String(result.status)}`);
+    return {
+      cleanupState: "unknown",
+      error: cause,
+      signal: result.signal,
+      status: result.status,
+      stderr: typeof result.stderr === "string" ? result.stderr : "",
+      stdout: "",
+      timedOut: (cause as NodeJS.ErrnoException).code === "ETIMEDOUT",
+    };
+  }
+  try {
+    const parsed = JSON.parse(result.stdout) as {
+      cleanupState: PortableCommandResult["cleanupState"];
+      error: { code: string | null; message: string; name: string } | null;
+      signal: NodeJS.Signals | null;
+      status: number | null;
+      stderr: string;
+      stdout: string;
+      timedOut: boolean;
+    };
+    const error = parsed.error == null
+      ? undefined
+      : Object.assign(new Error(parsed.error.message), { code: parsed.error.code, name: parsed.error.name });
+    return {
+      cleanupState: parsed.cleanupState,
+      ...(error == null ? {} : { error }),
+      signal: parsed.signal,
+      status: parsed.status,
+      stderr: parsed.stderr,
+      stdout: parsed.stdout,
+      timedOut: parsed.timedOut,
+    };
+  } catch (error) {
+    return {
+      cleanupState: "unknown",
+      error: new Error("Portable process supervisor returned invalid JSON", { cause: error }),
+      signal: result.signal,
+      status: result.status,
+      stderr: typeof result.stderr === "string" ? result.stderr : "",
+      stdout: "",
+      timedOut: false,
+    };
+  }
+}
+
 export function runPortableCommand(root: string, argv: readonly string[], options: PortableCommandOptions = {}): PortableCommandResult {
   if (argv.length === 0 || argv[0].trim() === "") {
     throw new Error("Command argv must contain a non-empty executable.");
@@ -223,6 +297,9 @@ export function runPortableCommand(root: string, argv: readonly string[], option
       stdout: "",
       stderr: resolution.reason,
     };
+  }
+  if (options.capture === true && options.timeoutMs != null) {
+    return supervisedCommand(root, resolution, options);
   }
   const result = spawnSync(resolution.executable, [...resolution.args], {
     ...common,

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "candidateReference": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+  "status": "complete",
+  "checks": {
+    "entryPointExitedZero": true,
+    "compactionStarted": true,
+    "autocontinuePending": true,
+    "turnPreserved": true,
+    "compactionCompleted": true,
+    "autonomousQuestionContinues": true,
+    "ownerQuestionStops": true,
+    "providerCallsZero": true,
+    "repositoryMutationZero": true
+  },
+  "claimCeiling": "Current provider-free completion-guard question and compaction lifecycle only; not the configured two-slice runtime."
+}

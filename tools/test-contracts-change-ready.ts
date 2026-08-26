@@ -692,6 +692,8 @@ export const changeReadyContractTests: TestCase[] = [
       const reviewer = fs.readFileSync(path.join(root, "global", "agents", "evidence-sufficiency-reviewer.md"), "utf8");
       const qualification = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
       const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      const propose = fs.readFileSync(path.join(root, "global", "skills", "openspec-propose", "SKILL.md"), "utf8");
+      const proposeCommand = fs.readFileSync(path.join(root, "global", "commands", "opsx-propose.md"), "utf8");
       assert((principles.match(/\*\*Evidence Bounds Claims:\*\*/g) ?? []).length === 1, "Principles must contain one canonical Evidence Bounds Claims entry.");
       assertTokens(agents, [
         "Evidence bounds claims",
@@ -704,6 +706,14 @@ export const changeReadyContractTests: TestCase[] = [
       assertTokens(reviewer, EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT, "Evidence-sufficiency reviewer contract drifted");
       assert(qualification.includes("load `behavioral-substitution-qualification`"), "Change-Ready must reference the focused substitution owner.");
       assert(apply.includes("load `behavioral-substitution-qualification`"), "OpenSpec apply must reference the focused substitution owner.");
+      for (const source of [propose, proposeCommand]) {
+        assertTokens(source, [
+          "schema-valid development claim record",
+          "--operation apply",
+          "Do not report `Ready for implementation`",
+          "Never invent evidence",
+        ], "OpenSpec propose broad-claim apply-readiness contract drifted");
+      }
       assert(!qualification.includes("Compare baseline and candidate from the same actor request"), "Change-Ready must not duplicate the focused comparison procedure.");
       for (const forbidden of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
         assert(!reviewer.includes(forbidden), `Evidence-sufficiency reviewer exposes forbidden authority: ${forbidden}`);

@@ -1,0 +1,72 @@
+{
+  "candidate": {
+    "sourceIdentity": [
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "f209c96c72bb66a00d7b30dc519ede1dbbffc361092327003e059edfb3064b57"
+      },
+      {
+        "path": "global/plugin/project-memory/index.ts",
+        "sha256": "bd284776fddcf0687da7ad396dd3e0798e6f88a70b6c4d0badc8bcfbc722b7fc"
+      },
+      {
+        "path": "global/plugin/project-memory/recall.ts",
+        "sha256": "1360cc3a07033696cfd65e115132c5cc1df40bf228f8f49618869fc9935c0a18"
+      },
+      {
+        "path": "global/plugin/project-memory/records.ts",
+        "sha256": "be2c3468a414d923c387776d783893018f196f2d8b4792e49a7ed15e080baae9"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "0e7738dc6e8fcd784040b0e76b0ac5a31eca3529d32962bff9a1d966f86c0bab"
+      },
+      {
+        "path": "tools/proofs/project-memory-context.ts",
+        "sha256": "d63bfbb0756f71e659c173adab869bea5f4802d59ecca046feea7fba6f44438e"
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "<opencode>",
+      "run",
+      "--agent",
+      "build",
+      "--model",
+      "proof/proof-model",
+      "--format",
+      "json",
+      "--dir",
+      "<fixture-root>/project",
+      "--title",
+      "project-memory-loaded-entry-proof",
+      "How should I restart supervisor safely?"
+    ],
+    "status": 1,
+    "signal": null,
+    "stderr": "\u001b[91m\u001b[1mError: \u001b[0mUnexpected error\r\n\r\nunable to open database file\r\n",
+    "stdout": "",
+    "timedOut": false
+  },
+  "environment": {
+    "externalNetworkAllowed": false,
+    "node": "v24.18.1",
+    "opencode": "1.18.23",
+    "platform": "win32",
+    "projectMemoryEnabled": true
+  },
+  "observations": {
+    "capsuleOccurrences": 0,
+    "egressTrapCount": 0,
+    "gitStatusAfter": "?? src/\n",
+    "gitStatusBefore": "?? src/\n",
+    "providerRequestBytes": 4,
+    "providerRequestCount": 0,
+    "providerRequestSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "projectRef": "project_342e98a3bdf40b5a3e9d4ee99c8db510",
+    "toolNames": []
+  },
+  "providerRequest": null,
+  "schemaVersion": 1
+}

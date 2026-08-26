@@ -45,7 +45,7 @@ The workstation SHALL expose Start, Restart, and Stop entry points for exactly o
 - **AND** the operator does not have to invoke Start first
 
 ### Requirement: Restart is ownership-safe and complete
-Restart SHALL terminate only positively identified managed OpenCode, Graphify, supervisor, server-root, and listener identities, SHALL prove that the prior managed listeners are gone before replacement, and SHALL restore both authenticated services or report a cause-preserving failure. Restart invoked from the Desktop entry point or from the tray menu SHALL have the same ownership and replacement contract.
+Restart SHALL terminate only positively identified managed OpenCode, Graphify, supervisor, server-root, and listener identities, SHALL prove that the prior managed listeners are gone before replacement, and SHALL restore both authenticated services or report a cause-preserving failure. Restart SHALL NOT terminate a process that is not one of those validated identities. An already-exited validated identity SHALL count as stopped, not as a controller failure. Restart invoked from the Desktop entry point or from the tray menu SHALL have the same ownership and replacement contract. One operator Restart SHALL perform one replacement attempt; completing that attempt SHALL NOT require a second Restart click.
 
 #### Scenario: Managed server restarts cleanly
 - **WHEN** the managed runtime is healthy and the operator invokes Restart
@@ -61,7 +61,27 @@ Restart SHALL terminate only positively identified managed OpenCode, Graphify, s
 #### Scenario: Stale state cannot authorize process termination
 - **WHEN** persisted process state does not match current process identity, creation time, command, task ownership, parentage, or listener ownership
 - **THEN** Restart and Stop perform no destructive action against the mismatched process
-- **AND** report the exact identity check that failed
+- **AND** reports the exact identity check that failed
+
+#### Scenario: Already-exited validated identity is not a Restart failure
+- **WHEN** the managed runtime identities match and Restart terminates them, and at least one validated identity has already exited
+- **THEN** Restart does not fail merely because the terminator reported that the process was already gone
+- **AND** Restart still refuses to start a replacement while any validated identity or either managed listener remains
+
+#### Scenario: Unmatched descendants are not a Restart failure
+- **WHEN** the managed runtime identities match and unmatched descendant processes exist beside the validated identities
+- **THEN** Restart does not terminate those unmatched processes
+- **AND** Restart still replaces the validated managed identities and restores both authenticated services
+
+#### Scenario: Restart replaces a matching starting server
+- **WHEN** the managed task is Running, persisted state is `starting`, and the recorded supervisor and server-root identities still match
+- **THEN** Restart terminates those matching identities and any matching listener
+- **AND** different elevated managed identities become healthy on `127.0.0.1:4096` and `127.0.0.1:4097`
+
+#### Scenario: Stopping serve does not show the operator command dialog
+- **WHEN** Restart or Stop terminates the managed serve task
+- **THEN** the hidden serve invoker does not present the operator command-failed dialog
+- **AND** Desktop Start or Restart still presents that dialog when those operator commands themselves exit non-zero
 
 ### Requirement: Privileged runtime material is protected
 Every script, manifest, state record, and credential consumed by a highest-privilege task or elevated launcher SHALL be stored so an unelevated process cannot modify it. The server password SHALL be generated locally and SHALL NOT appear in repository files, Desktop artifacts, process arguments, tray helper arguments, or logs.
@@ -156,7 +176,7 @@ The complete non-secret workstation source, strict repository-path configuration
 - **AND** the changed configuration takes effect only through an explicit stopped repair or rollback and reinstall
 
 ### Requirement: Persistent tray lamp reports server liveness
-The workstation SHALL show one notification-area icon labeled `opencode-server` after interactive logon until the operator chooses Exit. The icon SHALL be green only when the managed OpenCode and Graphify services are both healthy, SHALL blink a red restarting state while tray Restart is replacing the runtime, and SHALL be red when either required service is stopped, failed, or degraded while the tray host is running. The tray host SHALL NOT receive either service credential.
+The workstation SHALL show one notification-area icon labeled `opencode-server` after interactive logon until the operator chooses Exit. The icon SHALL be green only when the managed OpenCode and Graphify services are both healthy, SHALL blink a red restarting state while tray Restart is replacing the runtime, SHALL be red when either required service is stopped, failed, or degraded while the tray host is running, and SHALL stay red after a failed tray Restart until a later successful Start or Restart. The tray host SHALL NOT receive either service credential.
 
 #### Scenario: Healthy server shows a green lamp
 - **WHEN** the managed OpenCode and Graphify services are healthy during an interactive owner session
@@ -173,22 +193,44 @@ The workstation SHALL show one notification-area icon labeled `opencode-server` 
 - **THEN** the icon leaves its steady state and blinks in a restarting state until replacement finishes
 - **AND** the icon returns to steady green only when both replacement services are healthy
 
+#### Scenario: Failed tray Restart stays red
+- **WHEN** tray Restart fails to restore both authenticated services
+- **THEN** the icon does not return to green
+- **AND** the icon is red
+- **AND** the icon tooltip reports that Restart failed
+
 ### Requirement: Tray Restart and Exit use the same ownership-safe controller
-The tray icon SHALL expose a right-click menu with exactly Restart and Exit. Restart SHALL perform the same ownership-safe replacement as the Desktop Restart entry point. Exit SHALL perform an ownership-safe stop of only the managed server tree, SHALL close the tray host, and SHALL NOT disable logon autostart.
+The tray icon SHALL expose a right-click menu with exactly Restart and Exit. Restart SHALL perform the same ownership-safe replacement as the Desktop Restart entry point. Exit SHALL perform an ownership-safe stop of only the positively identified managed OpenCode and Graphify identities, SHALL close the tray host, and SHALL NOT disable logon autostart. While a tray Restart attempt is in flight, a further Restart click SHALL NOT start a second controller. A failed tray Restart SHALL present a secret-free balloon that names the controller-error log and SHALL NOT treat a leftover listener as success.
 
 #### Scenario: Tray Restart replaces the managed server
-- **WHEN** the managed server is healthy and the operator chooses Restart from the tray menu
-- **THEN** the prior managed server process identity is gone
-- **AND** a different elevated managed process identity becomes healthy
+- **WHEN** the managed runtime is healthy and the operator chooses Restart from the tray menu
+- **THEN** the prior managed OpenCode and Graphify process identities are gone
+- **AND** different elevated managed identities become healthy for both services
 - **AND** the tray icon remains visible and returns to green after the restarting state
 
 #### Scenario: Tray Exit stops the server and closes the tray
-- **WHEN** the managed server is healthy and the operator chooses Exit from the tray menu
-- **THEN** the managed server process tree and listener are gone
+- **WHEN** the managed runtime is healthy and the operator chooses Exit from the tray menu
+- **THEN** the managed runtime process identities and listeners are gone
 - **AND** the `opencode-server` tray icon is no longer visible
 - **AND** the next owner interactive logon starts the shared server and tray again without a further Start invocation
 
 #### Scenario: Stop is available without a Desktop Stop shortcut
 - **WHEN** the operator invokes the protected controller Stop mode
-- **THEN** only a positively identified managed server tree is stopped
+- **THEN** only the positively identified managed runtime identity set is stopped
 - **AND** no Desktop Stop shortcut is created
+
+#### Scenario: In-flight tray Restart ignores a second click
+- **WHEN** tray Restart is already replacing the managed runtime and the operator chooses Restart again
+- **THEN** the tray does not start a second controller process
+- **AND** the in-flight replacement continues
+
+#### Scenario: Failed tray Restart names the diagnostics log
+- **WHEN** tray Restart fails
+- **THEN** the tray shows a secret-free balloon that names `controller-errors.log`
+- **AND** the balloon and tray state contain neither service credential
+- **AND** the tray does not start an implicit second Start merely because the first Restart failed
+
+#### Scenario: Successful tray Restart does not show the serve-task dialog
+- **WHEN** tray Restart restores both authenticated services
+- **THEN** the operator does not receive the hidden serve-task command-failed dialog
+- **AND** the lamp returns to green after the restarting state

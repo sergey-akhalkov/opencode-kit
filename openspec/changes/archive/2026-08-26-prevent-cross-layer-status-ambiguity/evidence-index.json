@@ -1,0 +1,484 @@
+{
+  "schemaVersion": 2,
+  "changeId": "prevent-cross-layer-status-ambiguity",
+  "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+  "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "7f5851e5dd1541e7d3e5b1d9645da433b4db4afdbfe70bd4ad999cf04bcb6d02",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-status-scope-preflight",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-status-scope-preflight",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/consumer-outcome-regression.ts --mode preflight --pack status-scope --source-ref working-tree --opencode <installed-opencode>/opencode.exe; npm run test:focused:consumer-outcome; npm run opencode:sources; openspec validate prevent-cross-layer-status-ambiguity --strict",
+        "status": 0,
+        "recordedAt": "2026-08-25T23:51:27.9642860Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-1-preflight-r1.json",
+        "implementation-evidence/task-1-1-preflight-r2.json",
+        "implementation-evidence/task-1-1-ownership-preflight-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "66339cc0b3b9de4d5ffc131069267366f6024abbe6731760777283fb7719231d",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-status-scope-terminal-replay-selftest",
+        "effects": [
+          "disposable-local-write",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-status-scope-terminal-replay-selftest",
+        "effects": [
+          "disposable-local-write",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:consumer-outcome; node --check tools/proofs/consumer-outcome/contracts.ts; node --check tools/proofs/consumer-outcome/evaluate.ts; node --check tools/proofs/consumer-outcome/status-scope.ts; node --check tools/proofs/consumer-outcome-regression.ts; node --check tools/proofs/lib/opencode-proof-client.ts; node --check tools/test-consumer-outcome.ts; openspec validate prevent-cross-layer-status-ambiguity --strict",
+        "status": 0,
+        "recordedAt": "2026-08-26T03:24:57.8914752+03:00"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-2-status-scope-harness-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "303157ec4463131aa5e30c839ad8262a1122a68aa4096efe467718a2679bf102",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-status-scope-baseline-and-terminal-replay",
+        "effects": [
+          "configured-provider",
+          "local-disposable"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-status-scope-baseline-and-terminal-replay",
+        "effects": [
+          "configured-provider",
+          "local-disposable"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:consumer-outcome -- --mode baseline --pack status-scope --candidate-id <candidate-id> --evidence-root <task-2-1-baseline-r9> --source-ref working-tree --session-mode configured --opencode <installed-opencode>; provider-free replay twice",
+        "status": 0,
+        "recordedAt": "2026-08-26T02:12:50.1574341Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-1-baseline-r9/bundle.json",
+        "implementation-evidence/task-2-1-baseline-r9/evaluation.json",
+        "implementation-evidence/task-2-1-baseline.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "12d277b553fe76ea93887b1173c2cdd1a8bdda0b9a58a148aabe115d6c1b29f2",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "kit-candidate-source-and-prompt-mirror-readback",
+        "effects": [
+          "repository-write",
+          "local-config-mirror"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "kit-candidate-source-and-prompt-mirror-readback",
+        "effects": [
+          "repository-write",
+          "local-config-mirror"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:consumer-outcome; npm run test:focused:contracts; npm run instruction:budget; npm run validate:strict; npm run opencode:sources; status-scope preflight",
+        "status": 0,
+        "recordedAt": "2026-08-26T02:12:50.1574341Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-1-candidate-source.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "7363f6b7d3bb645ffb60dca0c9a6cdcb863d7e256d13d90d0cef69ce3c27061c",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-status-scope-candidate-and-terminal-replay",
+        "effects": [
+          "configured-provider",
+          "local-disposable"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-status-scope-candidate-and-terminal-replay",
+        "effects": [
+          "configured-provider",
+          "local-disposable"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:consumer-outcome -- --mode capture --pack status-scope --candidate-id <candidate-id> --evidence-root <task-3-2-candidate-r4> --baseline <task-2-1-baseline-r9>/bundle.json --source-ref working-tree --session-mode configured --opencode <installed-opencode>; provider-free improvement replay twice",
+        "status": 0,
+        "recordedAt": "2026-08-26T02:12:50.1574341Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-2-candidate-r4/bundle.json",
+        "implementation-evidence/task-3-2-candidate-r4/evaluation.json",
+        "implementation-evidence/task-3-2-candidate.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "c08643d1545b5b6da786d184821078bfd099051540d5d117eedb68c36adeb567",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "status-scope-claim-and-inventory-readback",
+        "effects": [
+          "repository-write",
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "status-scope-claim-and-inventory-readback",
+        "effects": [
+          "repository-write",
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root . --mode evidence; node tools/evidence-index.ts --index <change>/evidence-index.json --lane <baseline-or-candidate-lane>; openspec validate prevent-cross-layer-status-ambiguity --strict",
+        "status": 0,
+        "recordedAt": "2026-08-26T02:15:58.6449286Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-3-claim-inventory.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "f07a0967232746150b3d80993170193d734a8e1e04bc2b69e979e400b616437d",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-read-only-csa-evidence-sufficiency-challenge",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-read-only-csa-evidence-sufficiency-challenge",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "evidence-sufficiency-reviewer ses_fc423a192ffeXNJoHij9URbSHm; provider-free replay twice with create-new result paths; main disposition readback",
+        "status": 0,
+        "recordedAt": "2026-08-26T02:26:47.9328766Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-1-evidence-sufficiency-review-r1.md",
+        "implementation-evidence/task-3-2-candidate-r4/terminal-replay-r3.json",
+        "implementation-evidence/task-3-2-candidate-r4/terminal-replay-r4.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "36392a09a542d34fbf256949645b301a656f94f4978345de7a04dd0ac4a0967e",
+      "result": "complete",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation-and-installed-readback",
+        "effects": [
+          "provider-free",
+          "local-disposable"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation-and-installed-readback",
+        "effects": [
+          "provider-free",
+          "local-disposable"
+        ]
+      },
+      "invocation": {
+        "command": "npm test; npm run validate:strict; npm run openspec:validate; selected strict validation; focused suites; status-scope preflight; operation gate; evidence inventory; runtime-surface loader; instruction budget; source readback; git diff --check",
+        "status": 0,
+        "recordedAt": "2026-08-26T02:34:41.9763102Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-2-validation.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "task-1-1-status-scope-preflight",
+      "kind": "environment",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-1-preflight-r1.json",
+          "bytes": 3434,
+          "digest": "13ef90d9cee8ac3fc4b11d23135fcc187eff7690804d7963e9e009e68f67bf7c"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-ownership-preflight-r1.md",
+          "bytes": 3232,
+          "digest": "22c1557fa6b8bf08d203c7b8fbb70e4aa707cc4788a539238cf5f8135cb54c38"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-preflight-r2.json",
+          "bytes": 2831,
+          "digest": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a"
+        }
+      ]
+    },
+    {
+      "name": "task-1-2-status-scope-terminal-replay-selftest",
+      "kind": "runner",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-2-status-scope-harness-r1.md",
+          "bytes": 4655,
+          "digest": "e6d4bf174d2303e6f356d7f1c7abf190cf19419ac89c9eaa2334282b64541166"
+        }
+      ]
+    },
+    {
+      "name": "task-2-1-status-scope-baseline-chain",
+      "kind": "raw-bundle",
+      "files": [
+        { "path": "implementation-evidence/task-2-1-baseline-r1/bundle.json", "bytes": 7671, "digest": "406ca57dc40cb0fd2bff4414902b337098eaf4cda203c247cbac4cecdb01b0e8" },
+        { "path": "implementation-evidence/task-2-1-baseline-r1/evaluation.json", "bytes": 6314, "digest": "6a4c4f5c1cf9ddf33ed0d51b90b929879faa66f52891baed5b0ff950557ba5ef" },
+        { "path": "implementation-evidence/task-2-1-baseline-r2/bundle.json", "bytes": 7729, "digest": "d8db70ebd768887ec2ab736eefabbb68ad98f934556e27dd35d8fe0737472222" },
+        { "path": "implementation-evidence/task-2-1-baseline-r2/evaluation.json", "bytes": 6262, "digest": "e374dccb4dbc5dee67944a7fbb973533a9b31d3415be24fd18c6b7bb7cc20843" },
+        { "path": "implementation-evidence/task-2-1-baseline-r3/bundle.json", "bytes": 9870, "digest": "da0238d071f4282d21c6b8b700769c544b7d9947ca606bd344baf42890bf5b8c" },
+        { "path": "implementation-evidence/task-2-1-baseline-r3/evaluation.json", "bytes": 6267, "digest": "1cad9b2c1cfa7c910b50eaae2e810d5c5704195b84f5f9147be49ab18a13ccd6" },
+        { "path": "implementation-evidence/task-2-1-baseline-r4/bundle.json", "bytes": 9669, "digest": "8f380c1da8786315d90256902fbbf7347e147d2d390e1138c177eac156f17157" },
+        { "path": "implementation-evidence/task-2-1-baseline-r4/evaluation.json", "bytes": 6267, "digest": "1cad9b2c1cfa7c910b50eaae2e810d5c5704195b84f5f9147be49ab18a13ccd6" },
+        { "path": "implementation-evidence/task-2-1-baseline-r5/bundle.json", "bytes": 9713, "digest": "a00832f5a5c2f296218110f0d5c7391bef1c4d56432d585f5f4b1bec1d7172bc" },
+        { "path": "implementation-evidence/task-2-1-baseline-r5/evaluation.json", "bytes": 6267, "digest": "1b6a0fce998a6d78f101ddda29206a1c5d745eaf502db76d26525af32a98cfcc" },
+        { "path": "implementation-evidence/task-2-1-baseline-r6/bundle.json", "bytes": 12297, "digest": "d9d39973726bb84a98b94d9b0c7de2eaaae6c2d56c3b181746ff218cdee2be81" },
+        { "path": "implementation-evidence/task-2-1-baseline-r6/evaluation.json", "bytes": 6254, "digest": "6a984d86239b70d37cefd5c72a529d3a7bc0ae64feef212d29f9d2a0c72eeb38" },
+        { "path": "implementation-evidence/task-2-1-baseline-r7/bundle.json", "bytes": 12365, "digest": "e4cd1c812e7bd917b5ca369047e1a405b3c0e1566bb80c735faa67491146eb7b" },
+        { "path": "implementation-evidence/task-2-1-baseline-r7/evaluation.json", "bytes": 6254, "digest": "147be60cfa0e2e13c36c44c6ef7eb47f6c0afb17f8ffad9c614715f65501c30c" },
+        { "path": "implementation-evidence/task-2-1-baseline-r8/bundle.json", "bytes": 12367, "digest": "321da2651d1c6204c1c9dc9715b2db293b7d4e3aa496a04b7c489c15fd303353" },
+        { "path": "implementation-evidence/task-2-1-baseline-r8/evaluation.json", "bytes": 6254, "digest": "147be60cfa0e2e13c36c44c6ef7eb47f6c0afb17f8ffad9c614715f65501c30c" },
+        { "path": "implementation-evidence/task-2-1-baseline-r9/bundle.json", "bytes": 26289, "digest": "4c56dd1d0ecf99210210e8f7d410c95878ab47f5581a92037df40593d2f8db2e" },
+        { "path": "implementation-evidence/task-2-1-baseline-r9/evaluation.json", "bytes": 6399, "digest": "f615b74c86e5e2e00c7580d424161d9d66fe62cbbc12f6b3a9c4541bcc66e1c3" },
+        { "path": "implementation-evidence/task-2-1-baseline.md", "bytes": 1798, "digest": "be3acbb44256a151f923148fb8aa26db390288dc411391422a0d70731c8c81e5" }
+      ]
+    },
+    {
+      "name": "task-3-1-readable-candidate-source",
+      "kind": "environment",
+      "files": [
+        { "path": "implementation-evidence/task-3-1-candidate-source.md", "bytes": 1851, "digest": "c2ea8f82cb405e6e10077ac404aedbf45c93ebedba88c51ef1011a56bd9b5309" }
+      ]
+    },
+    {
+      "name": "task-3-2-status-scope-candidate-chain",
+      "kind": "terminal",
+      "files": [
+        { "path": "implementation-evidence/task-3-2-candidate-r1/bundle.json", "bytes": 24487, "digest": "68746f0b041b55bc4bda4227bb3f8e6dc8f3eae28bc36d9f55f9c33675eaf6a4" },
+        { "path": "implementation-evidence/task-3-2-candidate-r1/evaluation.json", "bytes": 11956, "digest": "d74d3c71e74f07088c002efb5b970e80bd3a35ce6233c543af70568230709e06" },
+        { "path": "implementation-evidence/task-3-2-candidate-r2/bundle.json", "bytes": 24491, "digest": "e64e836bf57ad418af10f41ee1f9a9d43cc7b85369ff277fd2e2a2e5d4632996" },
+        { "path": "implementation-evidence/task-3-2-candidate-r2/evaluation.json", "bytes": 12578, "digest": "8793b57e1546b758a36c7a12e93dd2cc3d9ec179526250f644132e6183c9d35b" },
+        { "path": "implementation-evidence/task-3-2-candidate-r3/bundle.json", "bytes": 22483, "digest": "18f927e65cba22a236123c762a6abc2901fa9de186e01f42c983b0edf4ecc72d" },
+        { "path": "implementation-evidence/task-3-2-candidate-r3/evaluation.json", "bytes": 11889, "digest": "f6b91b39ed365122e5eaed31eebf7d5da9e3829ea40640a6f8d3e72cadbe94ed" },
+        { "path": "implementation-evidence/task-3-2-candidate-r4/bundle.json", "bytes": 25765, "digest": "295952eaecaf788d2d944eb9fa5fb016693b7fae7df61a3b33e0b3ef676879b6" },
+        { "path": "implementation-evidence/task-3-2-candidate-r4/evaluation.json", "bytes": 12434, "digest": "162c29b390fe35c5edef1a5dc59b0c62760b76b7b05923525739928ab0f1098e" },
+        { "path": "implementation-evidence/task-3-2-candidate-r4/terminal-replay-r1.json", "bytes": 9701, "digest": "968791a294fca39c5f07b6ee151815efe13ce652b5435ef127c71d116fae8638" },
+        { "path": "implementation-evidence/task-3-2-candidate-r4/terminal-replay-r2.json", "bytes": 9701, "digest": "968791a294fca39c5f07b6ee151815efe13ce652b5435ef127c71d116fae8638" },
+        { "path": "implementation-evidence/task-3-2-candidate-r4/terminal-replay-r3.json", "bytes": 9701, "digest": "7192396400e901f5842a02618f2bc334a20222d089a8023bccecf568765060c6" },
+        { "path": "implementation-evidence/task-3-2-candidate-r4/terminal-replay-r4.json", "bytes": 9701, "digest": "7192396400e901f5842a02618f2bc334a20222d089a8023bccecf568765060c6" },
+        { "path": "implementation-evidence/task-3-2-candidate.md", "bytes": 3008, "digest": "839444775d9f08378430a07e2acc248554f1915f7902f46a702123d14b1a9c16" }
+      ]
+    },
+    {
+      "name": "task-3-3-claim-inventory-readback",
+      "kind": "evaluator",
+      "files": [
+        { "path": "implementation-evidence/task-3-3-claim-inventory.md", "bytes": 1367, "digest": "48ab4bedd850295c6dcff6ad88205ea16e192941bd927d1ab6363b7b2a33a1e3" }
+      ]
+    },
+    {
+      "name": "task-4-1-independent-challenge-r1",
+      "kind": "evaluator",
+      "files": [
+        { "path": "implementation-evidence/task-4-1-evidence-sufficiency-review-r1.md", "bytes": 2836, "digest": "d5a3c002e32f88d0e0afb4aa716a750ed2455d2a4bde151559c00bdc28bfff5c" }
+      ]
+    },
+    {
+      "name": "task-4-2-final-validation",
+      "kind": "evaluator",
+      "files": [
+        { "path": "implementation-evidence/task-4-2-validation.md", "bytes": 3285, "digest": "6d51efdd8c47738c60ef991288912328f27e01454a89d8aa13aa3b5e02113dba" }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "CSA-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The installed candidate preserves exact subject and evidence scope for every maintained main-response and compaction status-scope scenario without broadening one dimension into another.",
+      "claimClass": "finite-population",
+      "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+      "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+      "coverageBasis": "finite-population",
+      "population": {
+        "id": "csa-reviewed-status-scope-v1",
+        "members": [
+          "known-resource-path-unknown",
+          "resource-unknown-negative-control",
+          "compaction-roundtrip-mixed-status"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "Other models, variants, languages, status vocabularies, long-session contexts, consumer overrides, and unreviewed combinations remain outside this finite claim."
+      },
+      "paths": {
+        "production": "installed-kit-global-source",
+        "baseline": "frozen-pre-change-loaded-source",
+        "candidate": "readable-scoped-status-candidate"
+      },
+      "observationBoundary": "installed-main-response-and-sdk-session-summarize-reconstruction",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "task-2-1-status-scope-baseline-chain",
+          "task-3-2-status-scope-candidate-chain"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "known-resource-path-unknown",
+          "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+          "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+          "paths": { "production": "installed-kit-global-source", "baseline": "frozen-pre-change-loaded-source", "candidate": "readable-scoped-status-candidate" },
+          "observationBoundary": "installed-main-response-and-sdk-session-summarize-reconstruction",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": ["task-2-1-status-scope-baseline-chain", "task-3-2-status-scope-candidate-chain"],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "resource-unknown-negative-control",
+          "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+          "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+          "paths": { "production": "installed-kit-global-source", "baseline": "frozen-pre-change-loaded-source", "candidate": "readable-scoped-status-candidate" },
+          "observationBoundary": "installed-main-response-and-sdk-session-summarize-reconstruction",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": ["task-2-1-status-scope-baseline-chain", "task-3-2-status-scope-candidate-chain"],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "compaction-roundtrip-mixed-status",
+          "candidateId": "d8d6e18c71fbd317691012126f761c11dfb7d3bd86c6432c5a2aa1b86f28969a",
+          "environmentId": "windows-node24.18.1-opencode1.18.23-status-scope-preflight-r2",
+          "paths": { "production": "installed-kit-global-source", "baseline": "frozen-pre-change-loaded-source", "candidate": "readable-scoped-status-candidate" },
+          "observationBoundary": "installed-main-response-and-sdk-session-summarize-reconstruction",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": ["task-2-1-status-scope-baseline-chain", "task-3-2-status-scope-candidate-chain"],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "task-2-1-status-scope-baseline-chain",
+        "task-3-1-readable-candidate-source",
+        "task-3-2-status-scope-candidate-chain",
+        "task-4-1-independent-challenge-r1"
+      ],
+      "materialExclusions": [
+        "Universal model adherence",
+        "Unobserved languages and wording styles",
+        "Consumer-specific instruction overrides",
+        "General prose quality scoring",
+        "Live-attempt authorization or safety equivalence",
+        "Heading-only reader inference beyond the explicit Named path and exact Status Scope values",
+        "Actual compaction execution-model attribution from summary-message metadata; the claim binds the recorded requested route and observed output only"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "task-4-1-independent-challenge-r1"
+        ]
+      },
+      "maximumSupportedClaim": "The R4 candidate preserved every exact main-response and reconstruction field for known-resource-path-unknown, resource-unknown-negative-control, and compaction-roundtrip-mixed-status under the recorded source, requested routes, prompt, fixture, permissions, OpenCode, Windows, Node, environment, terminal replay evaluator, and cleanup identities. It does not support other populations, universal prose quality, heading-only reader inference, live-attempt safety equivalence, or actual compaction execution-model attribution from summary-message metadata.",
+      "narrowingAccepted": false,
+      "disposition": "supported"
+    }
+  ]
+}

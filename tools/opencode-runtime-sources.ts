@@ -701,6 +701,7 @@ export function inspectRuntimeSources(root: string): RuntimeSourceReport {
     "bin/openspec-operation-gate.ts",
     "bin/openspec-archive.ts",
     "bin/roadmap-mission.ts",
+    "bin/roadmap-mission-session-executor.ts",
   ];
   return {
     collisions: inventory.collisions,

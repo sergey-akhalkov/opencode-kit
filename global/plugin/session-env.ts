@@ -1,6 +1,7 @@
 import type { Plugin } from "@opencode-ai/plugin";
 import { readSessionDeliveryContext, type SessionDeliveryContextResult } from "./session-delivery-context/index.ts";
 import { requireExplicitGraphifyRepository } from "./graphify-project-context.ts";
+import { createProjectMemoryPluginHooks } from "./project-memory/index.ts";
 
 export const SESSION_DELIVERY_CONTEXT_TOOL = "session_delivery_context";
 export const SESSION_COMPLETION_ARBITER_AGENT = "session-completion-arbiter";
@@ -31,33 +32,39 @@ function deliveryContextMetadata(result: SessionDeliveryContextResult): Record<s
 
 export default {
   id: "opencode-dev-kit.session-env",
-  server: async () => ({
-    "shell.env": async (input, output) => {
-      if (typeof input.sessionID === "string" && input.sessionID !== "") {
-        output.env.OPENCODE_SESSION_ID = input.sessionID;
-      }
-    },
-    "tool.execute.before": async (input, output) => {
-      requireExplicitGraphifyRepository(input.tool, output.args);
-    },
-    tool: {
-      [SESSION_DELIVERY_CONTEXT_TOOL]: {
-        args: {},
-        description: "Return versioned, redacted root parent session completion evidence with human and synthetic provenance, human question replies, guard interventions, todos, bounded assistant/tool/diff/validation evidence, descendants, background state, strategy refs, audits, and explicit truncation warnings.",
-        async execute(_args, context) {
-          const result = readSessionDeliveryContext({ resolveRoot: true, sessionId: context.sessionID });
-          const metadata = deliveryContextMetadata(result);
-          context.metadata({
-            metadata,
-            title: "Session delivery context",
-          });
-          return {
-            metadata,
-            output: `${JSON.stringify(result, null, 2)}\n`,
-            title: "Session delivery context",
-          };
-        },
+  server: async (input) => {
+    const projectMemoryHooks = createProjectMemoryPluginHooks(input);
+    const projectMemoryTools = "tool" in projectMemoryHooks ? projectMemoryHooks.tool : {};
+    return {
+      ...projectMemoryHooks,
+      "shell.env": async (input, output) => {
+        if (typeof input.sessionID === "string" && input.sessionID !== "") {
+          output.env.OPENCODE_SESSION_ID = input.sessionID;
+        }
       },
-    },
-  }),
+      "tool.execute.before": async (input, output) => {
+        requireExplicitGraphifyRepository(input.tool, output.args);
+      },
+      tool: {
+        [SESSION_DELIVERY_CONTEXT_TOOL]: {
+          args: {},
+          description: "Return versioned, redacted root parent session completion evidence with human and synthetic provenance, human question replies, guard interventions, todos, bounded assistant/tool/diff/validation evidence, descendants, background state, strategy refs, audits, and explicit truncation warnings.",
+          async execute(_args, context) {
+            const result = readSessionDeliveryContext({ resolveRoot: true, sessionId: context.sessionID });
+            const metadata = deliveryContextMetadata(result);
+            context.metadata({
+              metadata,
+              title: "Session delivery context",
+            });
+            return {
+              metadata,
+              output: `${JSON.stringify(result, null, 2)}\n`,
+              title: "Session delivery context",
+            };
+          },
+        },
+        ...projectMemoryTools,
+      },
+    };
+  },
 } satisfies { id: string; server: Plugin };

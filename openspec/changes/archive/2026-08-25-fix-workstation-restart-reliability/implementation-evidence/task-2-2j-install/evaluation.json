@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "passed": false,
+  "checks": {
+    "stopped": true,
+    "repaired": true,
+    "started": true,
+    "schema2": true,
+    "installedHashes": "E7EDAC062B5ECE7B6DEA2797DFBE745D932DF1337B6284A24E3DECEB062EF557",
+    "compositeHealthy": true,
+    "bothListeners": true,
+    "configManaged": false,
+    "envReferenceOnly": true,
+    "secretSafe": true
+  }
+}

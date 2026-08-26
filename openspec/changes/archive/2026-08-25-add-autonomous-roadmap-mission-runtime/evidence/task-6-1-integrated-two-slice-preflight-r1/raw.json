@@ -1,0 +1,434 @@
+{
+  "authPlacement": {
+    "modelsBytes": 4296794,
+    "testHomeBytes": 3167,
+    "xdgBytes": 3167
+  },
+  "candidateId": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+  "cleanup": "complete",
+  "commandRoute": {
+    "agent": "build",
+    "model": "openai/gpt-5.6-sol",
+    "variant": "xhigh"
+  },
+  "deletedRootSessions": 2,
+  "durableTerminalState": {
+    "activeOperation": null,
+    "checkpoint": {
+      "identity": null,
+      "mode": "local-commit"
+    },
+    "createdAt": "2026-08-25T08:24:06.693Z",
+    "cursor": 0,
+    "definitionDigest": "0baa50c5df78c14b5268e8233b98cbd102146c7a6e2643b8f216cbc87c363ea8",
+    "disposition": "paused",
+    "evidenceRefs": [
+      "evidence/mission"
+    ],
+    "identities": {
+      "kit": "global",
+      "node": "v24.3.0",
+      "openCode": "executor-adapter",
+      "openSpec": "cli-readback",
+      "repository": "project-root"
+    },
+    "lastTransitionDigest": "463c95e914fba1de1c63748e9c7b587849a1ad9b36ee151410c276df196e4aaa",
+    "lastTransitionKind": "pause",
+    "missionId": "integrated-proof",
+    "recovery": {
+      "attempts": 0,
+      "sliceStartedAt": null
+    },
+    "schemaVersion": 1,
+    "sequence": 2,
+    "sliceId": "slice-b"
+  },
+  "executorResults": [],
+  "failure": null,
+  "idleApiProbe": [
+    {
+      "actual": "object",
+      "expected": "object",
+      "label": "status",
+      "ok": true
+    },
+    {
+      "actual": "array",
+      "expected": "array",
+      "label": "children",
+      "ok": true
+    },
+    {
+      "actual": "array",
+      "expected": "array",
+      "label": "messages",
+      "ok": true
+    },
+    {
+      "actual": "array",
+      "expected": "array",
+      "label": "todo",
+      "ok": true
+    },
+    {
+      "actual": "array",
+      "expected": "array",
+      "label": "diff",
+      "ok": true
+    },
+    {
+      "actual": "object",
+      "expected": "object",
+      "label": "get",
+      "ok": true
+    }
+  ],
+  "missionSessionFacts": [
+    {
+      "facts": {
+        "assistantMessages": 0,
+        "completedResponses": 0,
+        "errorResponses": 0,
+        "routes": [],
+        "sessions": [
+          {
+            "guard": {
+              "grindEnabled": false,
+              "state": "paused"
+            },
+            "id": "ses_fc7fae779ffeGDzobyKUQrJ39N",
+            "messages": [],
+            "mission": {
+              "certificateReason": "preflight-canary",
+              "certificateStatus": "declined",
+              "missionId": "integrated-proof",
+              "sliceId": "slice-b",
+              "terminalCertificate": null
+            }
+          }
+        ],
+        "tokenReports": 0
+      },
+      "sliceId": "slice-b"
+    }
+  ],
+  "missionSessionObservationCanary": true,
+  "mode": "preflight",
+  "modelRootCreated": false,
+  "openSpec": {
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n  \"changes\": [\n    {\n      \"name\": \"change-a\",\n      \"completedTasks\": 0,\n      \"totalTasks\": 1,\n      \"lastModified\": \"2026-08-25T08:22:26.152Z\",\n      \"status\": \"in-progress\"\n    }\n  ],\n  \"root\": {\n    \"path\": \"<fixture>\\\\project\",\n    \"source\": \"nearest\"\n  }\n}\n"
+  },
+  "operatorRoute": {
+    "agent": "build",
+    "hidden": false,
+    "model": {
+      "modelID": "gpt-5.6-sol",
+      "providerID": "openai"
+    },
+    "variant": "xhigh"
+  },
+  "preflight": {
+    "checks": [
+      {
+        "blocking": false,
+        "id": "definition:checkpoint",
+        "status": "passed",
+        "summary": "Checkpoint policy local-commit is valid for this mission envelope."
+      },
+      {
+        "blocking": false,
+        "id": "definition:contained",
+        "status": "passed",
+        "summary": "Mission, roadmap, and evidence paths are project-contained."
+      },
+      {
+        "blocking": false,
+        "id": "definition:effects",
+        "status": "passed",
+        "summary": "Every slice effect is explicitly allowed and protected effects carry an authority reference."
+      },
+      {
+        "blocking": false,
+        "id": "definition:schema",
+        "status": "passed",
+        "summary": "Mission schema and explicit fields are valid."
+      },
+      {
+        "blocking": false,
+        "id": "definition:serial-order",
+        "status": "passed",
+        "summary": "Mission has 2 explicitly ordered slice(s)."
+      },
+      {
+        "blocking": false,
+        "id": "mission:next-effects",
+        "status": "passed",
+        "summary": "Next slice requires no unsupported owner-controlled effect."
+      },
+      {
+        "blocking": false,
+        "id": "mission:writer-lease",
+        "status": "passed",
+        "summary": "No prior mission writer lease exists."
+      },
+      {
+        "blocking": false,
+        "id": "project:git-state",
+        "status": "passed",
+        "summary": "Dirty paths are fully attributed to prior mission state: .opencode-dev-kit/runtime/roadmap-missions/integrated-proof/state.json, .opencode-dev-kit/runtime/roadmap-missions/integrated-proof/stop-intent.json, .opencode-dev-kit/runtime/roadmap-missions/integrated-proof/transitions/00000001-c986999900d236b0.json, .opencode-dev-kit/runtime/roadmap-missions/integrated-proof/transitions/00000002-463c95e914fba1de.json."
+      },
+      {
+        "blocking": false,
+        "id": "project:openspec-state",
+        "status": "passed",
+        "summary": "OpenSpec 1.10.0 is ready for proposed change change-b; exact queued active set is change-a."
+      },
+      {
+        "blocking": false,
+        "id": "project:runtime-authority",
+        "status": "passed",
+        "summary": "Project runtime authority marker is present."
+      },
+      {
+        "blocking": false,
+        "id": "project:validation-adapter",
+        "status": "passed",
+        "summary": "Project validation adapter and aggregate validation executable are resolved."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:canonical-source",
+        "status": "passed",
+        "summary": "Canonical global workflow files and running mission entrypoint match."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:loaded-identity",
+        "status": "passed",
+        "summary": "Loaded standard OpenSpec skills and commands match the canonical global source."
+      },
+      {
+        "blocking": false,
+        "id": "workflow:project-overlays",
+        "status": "passed",
+        "summary": "Project has no same-name standard OpenSpec workflow overlays."
+      }
+    ],
+    "definitionDigest": "0baa50c5df78c14b5268e8233b98cbd102146c7a6e2643b8f216cbc87c363ea8",
+    "eligibleSlice": {
+      "changeId": "change-b",
+      "id": "slice-b",
+      "operation": "propose"
+    },
+    "exitCode": 0,
+    "missionId": "integrated-proof",
+    "operation": "preflight",
+    "schemaVersion": 1,
+    "status": "eligible",
+    "tool": "roadmap-mission"
+  },
+  "preflightStatus": "{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"not-started\",\n  \"durableDisposition\": \"not-started\",\n  \"missionId\": \"integrated-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": true,\n  \"pty\": {\n    \"exitCode\": null,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:46b57e1661bc1ea9\",\n    \"status\": \"running\"\n  },\n  \"reconciliation\": \"not-required\",\n  \"rootSessionRef\": \"session:d54ef411038e0f14\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"7f4e8f24ea65d1e4488d047aa4309c10eef93e3504b3fec3fe79c4f121c764d2\",\n  \"schemaVersion\": 1,\n  \"stopRequested\": true,\n  \"streamPrefixCounts\": {\n    \"stderr\": 0,\n    \"stdout\": 0\n  },\n  \"terminalNotified\": false,\n  \"terminalToast\": \"not-sent\",\n  \"visibility\": \"opened\"\n}\nPTY Sessions Web Interface URL: http://[::1]:62740\n{\n  \"activeOperation\": null,\n  \"cursor\": 0,\n  \"disposition\": \"paused\",\n  \"durableDisposition\": \"paused\",\n  \"missionId\": \"integrated-proof\",\n  \"operation\": \"status\",\n  \"pendingLaunch\": false,\n  \"pty\": {\n    \"exitCode\": 1,\n    \"notifyOnExit\": false,\n    \"ref\": \"pty:46b57e1661bc1ea9\",\n    \"status\": \"exited\"\n  },\n  \"reconciliation\": \"not-required\",\n  \"rootSessionRef\": \"session:d54ef411038e0f14\",\n  \"runtimeExecutable\": \"bun.exe\",\n  \"runtimeRef\": \"7f4e8f24ea65d1e4488d047aa4309c10eef93e3504b3fec3fe79c4f121c764d2\",\n  \"schemaVersion\": 1,\n  \"stopRequested\": true,\n  \"streamPrefixCounts\": {\n    \"stderr\": 0,\n    \"stdout\": 0\n  },\n  \"terminalNotified\": true,\n  \"terminalToast\": \"sent\",\n  \"visibility\": \"opened\"\n}",
+  "projectFacts": {
+    "marker": null,
+    "markers": {
+      "alpha": null,
+      "beta": null
+    },
+    "phases": [],
+    "result": null,
+    "results": [
+      {
+        "phases": [],
+        "result": null,
+        "sliceId": "slice-b"
+      },
+      {
+        "phases": [],
+        "result": null,
+        "sliceId": "slice-a"
+      }
+    ],
+    "scenario": "two-slice",
+    "state": {
+      "activeOperation": null,
+      "checkpoint": {
+        "identity": null,
+        "mode": "local-commit"
+      },
+      "createdAt": "2026-08-25T08:24:06.693Z",
+      "cursor": 0,
+      "definitionDigest": "0baa50c5df78c14b5268e8233b98cbd102146c7a6e2643b8f216cbc87c363ea8",
+      "disposition": "paused",
+      "evidenceRefs": [
+        "evidence/mission"
+      ],
+      "identities": {
+        "kit": "global",
+        "node": "v24.3.0",
+        "openCode": "executor-adapter",
+        "openSpec": "cli-readback",
+        "repository": "project-root"
+      },
+      "lastTransitionDigest": "463c95e914fba1de1c63748e9c7b587849a1ad9b36ee151410c276df196e4aaa",
+      "lastTransitionKind": "pause",
+      "missionId": "integrated-proof",
+      "recovery": {
+        "attempts": 0,
+        "sliceStartedAt": null
+      },
+      "schemaVersion": 1,
+      "sequence": 2,
+      "sliceId": "slice-b"
+    },
+    "taskEvidence": {
+      "change-a": "## 1. Alpha Marker\n\n- [ ] 1.1 Create and validate `src/alpha.txt`.\n",
+      "change-b": null
+    },
+    "tasks": "## 1. Alpha Marker\n\n- [ ] 1.1 Create and validate `src/alpha.txt`.\n",
+    "transitions": [
+      {
+        "checkpointIdentity": null,
+        "cursor": 0,
+        "kind": "preflight",
+        "sequence": 1,
+        "sliceId": "slice-b"
+      },
+      {
+        "checkpointIdentity": null,
+        "cursor": 0,
+        "kind": "pause",
+        "sequence": 2,
+        "sliceId": "slice-b"
+      }
+    ],
+    "worktree": "?? .opencode-dev-kit/\n"
+  },
+  "proofSchema": {
+    "resolution": {
+      "name": "proof-minimal",
+      "path": "<fixture>\\project\\openspec\\schemas\\proof-minimal",
+      "shadows": [],
+      "source": "project"
+    },
+    "resolutionStatus": 0,
+    "validation": {
+      "issues": [],
+      "name": "proof-minimal",
+      "path": "<fixture>\\project\\openspec\\schemas\\proof-minimal",
+      "valid": true
+    },
+    "validationStatus": 0
+  },
+  "proposalOutcome": "Use the configured proof-minimal single-instruction workflow to create only the complete change-b planning set: proposal.md, specs/synthetic-beta/spec.md, design.md, tasks.md, and history.md for the exact disposable beta marker, then stop when all four configured OpenSpec artifacts are complete and apply-ready.",
+  "providerExecutions": [
+    {
+      "facts": {
+        "assistantMessages": 0,
+        "completedResponses": 0,
+        "errorResponses": 0,
+        "routes": [],
+        "sessions": [
+          {
+            "guard": {
+              "grindEnabled": false,
+              "state": "paused"
+            },
+            "id": "ses_fc7fae779ffeGDzobyKUQrJ39N",
+            "messages": [],
+            "mission": {
+              "certificateReason": "preflight-canary",
+              "certificateStatus": "declined",
+              "missionId": "integrated-proof",
+              "sliceId": "slice-b",
+              "terminalCertificate": null
+            }
+          }
+        ],
+        "tokenReports": 0
+      },
+      "sliceId": "slice-b"
+    }
+  ],
+  "providerMechanism": {
+    "builtInProvider": true,
+    "defaultPlugins": "enabled",
+    "modelDiscovery": "cached-only",
+    "providerScope": "openai-only"
+  },
+  "ptyFacts": {
+    "mission": {
+      "buffer": "{\r\n  \"attempts\": 0,\r\n  \"cursor\": 0,\r\n  \"definitionDigest\": \"0baa50c5df78c14b5268e8233b98cbd102146c7a6e2643b8f216cbc87c363ea8\",\r\n  \"exitCode\": 1,\r\n  \"missionId\": \"integrated-proof\",\r\n  \"operation\": \"run\",\r\n  \"processEvidence\": [],\r\n  \"schemaVersion\": 1,\r\n  \"status\": \"paused\",\r\n  \"tool\": \"roadmap-mission\"\r\n}\r\n",
+      "exitCode": 1,
+      "notifyOnExit": false,
+      "status": "exited"
+    },
+    "totalSessions": 1
+  },
+  "route": "openai/gpt-5.6-sol/xhigh",
+  "runCommand": {
+    "error": {
+      "data": {
+        "message": "Unexpected server error. Check server logs for details.",
+        "ref": "err_4d552559"
+      },
+      "name": "UnknownError"
+    },
+    "request": {
+      "timeout": false
+    },
+    "response": {}
+  },
+  "scenario": "two-slice",
+  "schemaVersion": 1,
+  "server": {
+    "commandNames": [
+      "change-ready-sdlc",
+      "customize-opencode",
+      "disable-grind",
+      "enable-grind",
+      "init",
+      "mission-resume",
+      "mission-run",
+      "mission-status",
+      "mission-stop",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "opsx-apply",
+      "opsx-archive",
+      "opsx-propose",
+      "pty-open-background-spy",
+      "pty-show-server-url",
+      "review"
+    ],
+    "listenObserved": true,
+    "probes": [
+      {
+        "route": "/path",
+        "status": 200
+      },
+      {
+        "route": "/session/status",
+        "status": 200
+      }
+    ],
+    "readyMs": 79675,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    }
+  },
+  "serverDiagnostics": "timestamp=2026-08-25T08:23:46.892Z level=ERROR run=ef9a86b7 message=\"Ignoring MCP config entry without type\" key=codebase-memory-mcp\ntimestamp=2026-08-25T08:23:46.893Z level=ERROR run=ef9a86b7 message=\"Ignoring MCP config entry without type\" key=serena\ntimestamp=2026-08-25T08:23:50.645Z level=INFO run=ef9a86b7 message=command session.id=ses_fc7fb4050ffeGhDryx4032xUAD command=mission-run agent=build\ntimestamp=2026-08-25T08:23:51.568Z level=INFO run=ef9a86b7 message=command session.id=ses_fc7fb4050ffeGhDryx4032xUAD command=pty-show-server-url agent=undefined\ntimestamp=2026-08-25T08:23:53.044Z level=ERROR run=ef9a86b7 message=failed ref=err_a8d4e4ef error=\"Error: Command handled by PTY plugin\" cause=\"Error: Command handled by PTY plugin\\n    at <anonymous> (<source-root>\\\\global\\\\node_modules\\\\opencode-pty\\\\dist\\\\src\\\\plugin.js:42:23)\\n    at processTicksAndRejections (native:7:39)\\n    at Plugin.trigger (B:/~BUN/root/chunk-n1264z96.js:1098:1361)\\n    at Plugin.trigger (definition) (B:/~BUN/root/chunk-ne8c68ye.js:439:28029)\\n    at SessionPrompt.command (B:/~BUN/root/chunk-ebq2bsvy.js:4:14009)\\n    at SessionPrompt.command (definition) (B:/~BUN/root/chunk-n1264z96.js:1096:15472)\\n    at SessionHttpApi.command (B:/~BUN/root/chunk-ebq2bsvy.js:2:84455)\\n    at SessionHttpApi.command (definition) (B:/~BUN/root/chunk-ebq2bsvy.js:4:13919)\\n    at Server.listen (B:/~BUN/root/chunk-ebq2bsvy.js:6:15456)\\n    at Server.listen (definition) (B:/~BUN/root/chunk-ebq2bsvy.js:6:15579)\"\ntimestamp=2026-08-25T08:24:13.191Z level=INFO run=ef9a86b7 message=created id=ses_fc7fae779ffeGDzobyKUQrJ39N slug=nimble-harbor version=1.18.22 projectID=8c962ceb7ab2776779309fda256966ac839f7a1f directory=\"<fixture>\\\\project\" path=\"\" workspaceID=undefined parentID=undefined title=\"integrated mission observation canary\" agent=undefined model=undefined metadata.completionGuard.grindEnabled=false metadata.completionGuard.state=paused metadata.roadmapMission.certificateReason=preflight-canary metadata.roadmapMission.certificateStatus=declined metadata.roadmapMission.missionId=integrated-proof metadata.roadmapMission.sliceId=slice-b metadata.roadmapMission.terminalCertificate=null permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787646253191 time.updated=1787646253191",
+  "terminalPty": {
+    "mission": {
+      "buffer": "{\r\n  \"attempts\": 0,\r\n  \"cursor\": 0,\r\n  \"definitionDigest\": \"0baa50c5df78c14b5268e8233b98cbd102146c7a6e2643b8f216cbc87c363ea8\",\r\n  \"exitCode\": 1,\r\n  \"missionId\": \"integrated-proof\",\r\n  \"operation\": \"run\",\r\n  \"processEvidence\": [],\r\n  \"schemaVersion\": 1,\r\n  \"status\": \"paused\",\r\n  \"tool\": \"roadmap-mission\"\r\n}\r\n",
+      "exitCode": 1,
+      "notifyOnExit": false,
+      "status": "exited"
+    },
+    "totalSessions": 1
+  }
+}

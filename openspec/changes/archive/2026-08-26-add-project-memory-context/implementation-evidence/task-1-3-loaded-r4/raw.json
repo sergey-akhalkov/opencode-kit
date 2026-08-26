@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "attempt": {
+    "runnerSourceSha256": "93c99ee89fd89b61c8f7e132e9153c2fac339378edb7ff8b87a3cee54b974540",
+    "outerTimeoutMs": 300000,
+    "runnerTerminalReportProduced": false,
+    "productLookupCorrectionPresent": true,
+    "ripgrepSha256": "50724f5aa5124be1db2dad4038d154ce8fbbaeb8f38aa761c606faa0d3e9d902"
+  },
+  "closure": {
+    "opencodePid": 12544,
+    "terminallyClosed": true,
+    "liveProcessCountAfter": 0,
+    "stopMechanism": "Stop-Process exact PID without process-tree traversal"
+  },
+  "runtimeLog": {
+    "bytes": 1434,
+    "sha256": "0256ce33428e9e04311130257274aedce6539dbc6531cf0d6323b428f2e5708b",
+    "lastPhase": "loading <fixture-root>/config/opencode.jsonc"
+  },
+  "observations": {
+    "factoryTraceCreated": false,
+    "providerRequestPreserved": false,
+    "disposableGitStatusBefore": "?? src/\n",
+    "disposableGitStatusAfter": "?? src/\n"
+  }
+}

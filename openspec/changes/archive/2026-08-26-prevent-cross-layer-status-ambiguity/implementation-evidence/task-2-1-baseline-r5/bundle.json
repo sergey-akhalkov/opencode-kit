@@ -1,0 +1,242 @@
+{
+  "byteLength": 7537,
+  "comparisonIdentity": "2c526453fd942d4ad2434634d69289338f83de719376bdbd0d39301dabffbade",
+  "evaluatorDigest": "5d7801373ba8b471b8bc3f403dfa1a7679ac7e523cb8e71fd0237127d3ca5d0f",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "baseline",
+  "samples": [
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "<installed-opencode>/opencode.exe",
+          "serve",
+          "--hostname",
+          "127.0.0.1",
+          "--port",
+          "<ephemeral>",
+          "--print-logs",
+          "--log-level",
+          "INFO"
+        ],
+        "status": 1,
+        "stderr": "[{\"depth\":0,\"name\":\"Error\",\"message\":\"Configured route mismatch: main=openai/gpt-5.6-sol/xhigh compaction=xai/grok-4.6/high\"}]",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": [],
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "bbea5c60a433c7e71880dc093bb2457832a83788f33bd73196426c40cb93f3cc",
+        "model": "openai/gpt-5.6-sol/xhigh|compaction=xai/grok-4.6/high",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "62b20a636829db45f1034a7eee9f6c9f92e50cd3af744a45a68b978377ba64b6",
+        "profile": "quality-independent",
+        "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+        "validationArgvDigest": "724bb523237c03ce62aea48fe1f9ce45a84a00f23eafd263686453309f50a837",
+        "variant": "xhigh|compaction=xhigh"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "57d78576529dbae226fe0a910ae6cc71fef0143069c0a4005ec69259b6ca6aab"
+        },
+        {
+          "path": "check-fixture.ts",
+          "sha256": "8a8934fa2c9828ce5fe35cbb991a515928996becc2742a9a940b75eb609be40a"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "edit",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 0
+      },
+      "hashes": {
+        "sample": "3a51e2867d0169748f55836416009bc17febdfddb5e461b60ec6fc333ea63921"
+      },
+      "permissions": {
+        "allow": [
+          "read"
+        ],
+        "deny": [
+          "bash",
+          "edit",
+          "external_directory",
+          "question",
+          "skill",
+          "task",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"memberIds\":[\"known-resource-path-unknown\",\"resource-unknown-negative-control\",\"compaction-roundtrip-mixed-status\"],\"schemaVersion\":1}\n"
+      },
+      "requestSha256": "f15696b6870060c95f3bc6763b9994f351bff8bcfaf9d91814bc236e9509a23f",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "configured-provider-call",
+        "proof-process",
+        "proof-session"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "5737fa1732a9904dd48df8fb2ccb690c976183b1fb72e43c9648d1bdf3a9d668"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "66806c9fdea8a57c527976314622f1ffec58844dbd6aaf329992f5a2c76dfc05"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "d4f22f58121bcf62c3c4797073a3f3002ff599035591dd9aafe2fc71e6facf20"
+          }
+        ]
+      },
+      "statusScope": {
+        "compactionContext": "",
+        "compactionRoute": "xai/grok-4.6/high",
+        "error": {
+          "facts": [
+            {
+              "depth": 0,
+              "message": "Configured route mismatch: main=openai/gpt-5.6-sol/xhigh compaction=xai/grok-4.6/high",
+              "name": "Error"
+            }
+          ],
+          "stage": "session-roundtrip"
+        },
+        "mainResponse": "",
+        "mainRoute": "openai/gpt-5.6-sol/xhigh",
+        "messages": {
+          "assistant": [],
+          "toolCalls": []
+        },
+        "providerRequestCount": 0,
+        "reconstructionResponse": "",
+        "server": {
+          "argv": [
+            "<installed-opencode>/opencode.exe",
+            "serve",
+            "--hostname",
+            "127.0.0.1",
+            "--port",
+            "<ephemeral>",
+            "--print-logs",
+            "--log-level",
+            "INFO"
+          ],
+          "executableSha256": "f831518278ded5090c41cc532b16ab80629e980f710a0b46d1e5b605808bb1d9",
+          "signal": "SIGKILL",
+          "status": null,
+          "stderr": "timestamp=2026-08-26T00:44:56.192Z level=INFO run=53bd8583 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T00:44:56.195Z level=INFO run=53bd8583 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T00:44:56.205Z level=INFO run=53bd8583 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T00:44:56.445Z level=INFO run=53bd8583 message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T00:44:56.446Z level=INFO run=53bd8583 message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T00:44:56.463Z level=INFO run=53bd8583 message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T00:44:56.475Z level=INFO run=53bd8583 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T00:44:56.476Z level=INFO run=53bd8583 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T00:44:56.476Z level=INFO run=53bd8583 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T00:44:56.497Z level=INFO run=53bd8583 message=loading path=\"<kit-root>\\\\global\\\\opencode.json\"\ntimestamp=2026-08-26T00:44:56.699Z level=INFO run=53bd8583 message=loading path=\"<kit-root>\\\\global\\\\opencode.jsonc\"\ntimestamp=2026-08-26T00:44:56.819Z level=INFO run=53bd8583 message=\"all LSPs are disabled\"\ntimestamp=2026-08-26T00:44:56.821Z level=INFO run=53bd8583 message=\"all formatters are disabled\"\ntimestamp=2026-08-26T00:44:56.821Z level=INFO run=53bd8583 message=init\ntimestamp=2026-08-26T00:44:56.977Z level=INFO run=53bd8583 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-26T00:44:56.978Z level=INFO run=53bd8583 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-26T00:44:57.664Z level=INFO run=53bd8583 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\n",
+          "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:55562\n"
+        },
+        "sessionID": null,
+        "summarizeAccepted": false
+      },
+      "toolCalls": [],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "5737fa1732a9904dd48df8fb2ccb690c976183b1fb72e43c9648d1bdf3a9d668"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/opencode.json.template",
+        "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "66806c9fdea8a57c527976314622f1ffec58844dbd6aaf329992f5a2c76dfc05"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "d4f22f58121bcf62c3c4797073a3f3002ff599035591dd9aafe2fc71e6facf20"
+      }
+    ]
+  }
+}

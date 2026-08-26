@@ -309,6 +309,7 @@ export function initialRootState(root: Session): RootState {
       reason: null,
       status: "not-configured",
     },
+    terminalDiagnosticStages: new Set(),
     waitReason: stringValue(metadata?.waitReason),
     waitRecheckCount: boundedInteger(metadata?.waitRecheckCount, 0, 0),
     waitRecheckTimer: null,

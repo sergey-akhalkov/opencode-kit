@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "status": "complete",
+  "cleanup": "complete",
+  "claimScope": "One installed local-provider completion-guard process plus source-current provider-free scheduler, process-tree, query, and roadmap-controller simulations.",
+  "guard": {
+    "artifact": "../task-5-2-installed-guard-r1/evaluation.json",
+    "boundary": "35-roots-two-active-32-queued-one-overload-31-cancelled-healthy-queued-pass",
+    "serverReadyMs": 81316,
+    "serverReadyLimitMs": 180000,
+    "workloadElapsedMs": 33726,
+    "workloadLimitMs": 120000,
+    "primaryCalls": 35,
+    "arbiterCalls": 3,
+    "externalCalls": 0,
+    "cleanup": "complete"
+  },
+  "schedulerAndProcess": {
+    "artifact": "../task-5-1-integrated-r1/evaluation.json",
+    "maxActive": 2,
+    "queueAtCapacity": 32,
+    "overload": "terminal",
+    "cancellation": "terminal",
+    "promotedHealthyRoot": "acquired",
+    "processClasses": 4,
+    "descendantsTerminal": true,
+    "unknownCleanupRetryCount": 0,
+    "cleanup": "complete"
+  },
+  "roadmapController": {
+    "artifact": "../task-4-2-roadmap-controller-r1/evaluation.json",
+    "recordedSourceHashesCurrent": "14/14",
+    "boundedRetry": "complete",
+    "pausedUnknownResume": "blocked-before-executor",
+    "protectedSlice": "blocked-before-executor",
+    "archiveFailure": "terminal-blocked-with-cause",
+    "cleanup": "complete"
+  },
+  "knownLimitations": [
+    "The 35-root installed lane cancels 31 queued roots after proving full queue capacity; complete FIFO drain and process fixtures are established by the provider-free integrated lane.",
+    "The roadmap controller lane is a source-current local simulation rather than an installed OpenCode provider campaign."
+  ]
+}

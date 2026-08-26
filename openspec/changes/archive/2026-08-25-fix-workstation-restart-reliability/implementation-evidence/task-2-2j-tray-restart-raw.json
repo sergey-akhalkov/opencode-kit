@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-25T14:36:23.358Z",
+  "elevated": true,
+  "package": {
+    "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+    "sourceController": "866FE663DB55CF1A8CA4A033A5C9676918568DA23509EBA8F9583769F0D79575",
+    "installedController": "866FE663DB55CF1A8CA4A033A5C9676918568DA23509EBA8F9583769F0D79575",
+    "manifestController": "866FE663DB55CF1A8CA4A033A5C9676918568DA23509EBA8F9583769F0D79575"
+  },
+  "before": {
+    "identities": {
+      "status": "running",
+      "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+      "supervisorProcessId": 15556,
+      "serverRootProcessId": 14616,
+      "listenerProcessId": 11548,
+      "graphifyRootProcessId": 5652,
+      "graphifyListenerProcessId": 13736,
+      "trayColor": "green"
+    },
+    "serverTask": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T17:29:28.0000000+03:00",
+      "lastTaskResult": 267009
+    },
+    "trayTask": {
+      "state": "Ready",
+      "lastRunTime": "1999-11-30T00:00:00.0000000+03:00",
+      "lastTaskResult": 267011
+    },
+    "tray": [
+      {
+        "processId": 7456,
+        "parentProcessId": 5136,
+        "creationDate": "08/25/2026 17:02:31",
+        "executablePath": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+        "commandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe\"  -NoLogo -NoProfile -STA -WindowStyle Hidden -File \"C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1\""
+      }
+    ]
+  },
+  "trayTaskStop": {
+    "status": 0,
+    "stdout": "Ready",
+    "stderr": ""
+  },
+  "trayStop": {
+    "processId": 7456,
+    "status": "stopped",
+    "taskkillStatus": 0,
+    "stderr": ""
+  },
+  "trayTaskStart": {
+    "status": 0,
+    "stdout": "Running",
+    "stderr": ""
+  },
+  "freshTrayReady": {
+    "label": "fresh-tray",
+    "ok": true,
+    "waitedMs": 362
+  },
+  "freshTray": [
+    {
+      "processId": 15112,
+      "parentProcessId": 7304,
+      "creationDate": "08/25/2026 17:36:53",
+      "executablePath": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "commandLine": "\"C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\pwsh.exe\"  -NoLogo -NoProfile -STA -WindowStyle Hidden -File \"C:\\ProgramData\\OpenCodeWorkstation\\tray.ps1\""
+    }
+  ],
+  "greenBeforeRestart": {
+    "label": "healthy-green-before-restart",
+    "ok": true,
+    "waitedMs": 27418
+  },
+  "beforeRestart": {
+    "status": "running",
+    "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+    "supervisorProcessId": 15556,
+    "serverRootProcessId": 14616,
+    "listenerProcessId": 11548,
+    "graphifyRootProcessId": 5652,
+    "graphifyListenerProcessId": 13736,
+    "trayColor": "green"
+  },
+  "commandWrittenAt": "2026-08-25T14:37:22.100Z",
+  "restartingObserved": {
+    "label": "tray-restarting",
+    "ok": true,
+    "waitedMs": 431
+  },
+  "restarted": {
+    "label": "tray-replaced-runtime",
+    "ok": true,
+    "waitedMs": 80567
+  },
+  "afterRestart": {
+    "status": "running",
+    "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+    "supervisorProcessId": 16340,
+    "serverRootProcessId": 4448,
+    "listenerProcessId": 11820,
+    "graphifyRootProcessId": 4852,
+    "graphifyListenerProcessId": 908,
+    "trayColor": "green"
+  },
+  "restartErrors": [],
+  "afterTasks": {
+    "server": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T17:37:47.0000000+03:00",
+      "lastTaskResult": 267009
+    },
+    "tray": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T17:36:53.0000000+03:00",
+      "lastTaskResult": 267009
+    }
+  },
+  "ok": true,
+  "restore": {
+    "before": {
+      "identities": {
+        "status": "running",
+        "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+        "supervisorProcessId": 16340,
+        "serverRootProcessId": 4448,
+        "listenerProcessId": 11820,
+        "graphifyRootProcessId": 4852,
+        "graphifyListenerProcessId": 908,
+        "trayColor": "green"
+      },
+      "serverTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:37:47.0000000+03:00",
+        "lastTaskResult": 267009
+      },
+      "trayTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:36:53.0000000+03:00",
+        "lastTaskResult": 267009
+      }
+    },
+    "healthy": {
+      "label": "mandatory-health-restore",
+      "ok": true,
+      "waitedMs": 9695
+    },
+    "green": {
+      "label": "mandatory-green-restore",
+      "ok": true,
+      "waitedMs": 10614
+    },
+    "after": {
+      "identities": {
+        "status": "running",
+        "candidate": "6d8b72647f67cb1eae5bd4b16667affe0b71a82be1ffdce8bb04c9e426a1dc0e",
+        "supervisorProcessId": 16340,
+        "serverRootProcessId": 4448,
+        "listenerProcessId": 11820,
+        "graphifyRootProcessId": 4852,
+        "graphifyListenerProcessId": 908,
+        "trayColor": "green"
+      },
+      "serverTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:37:47.0000000+03:00",
+        "lastTaskResult": 267009
+      },
+      "trayTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T17:36:53.0000000+03:00",
+        "lastTaskResult": 267009
+      }
+    }
+  },
+  "finishedAt": "2026-08-25T14:39:22.207Z"
+}

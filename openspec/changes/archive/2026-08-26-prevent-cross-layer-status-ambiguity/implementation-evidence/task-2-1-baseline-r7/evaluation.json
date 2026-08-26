@@ -1,0 +1,168 @@
+{
+  "decisionOracles": [],
+  "digest": "530268fdd2d198537dbd0a0f01d962c2783298f2a3f3bb770b60f0de6ec13b20",
+  "evaluation": {
+    "baselineMedians": {
+      "status-scope-roundtrip": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 0
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "51214b57d95bd4c5683fc8a390d60d528952ca771624ef9cddd83bfb709b2f42",
+    "expectation": "baseline-establishment",
+    "improvedField": null,
+    "reasons": [
+      "baseline.status-scope-roundtrip.1.outcome.exitCode",
+      "status-scope:baseline:status-scope-roundtrip:1:summarize",
+      "status-scope:baseline:status-scope-roundtrip:1:compaction-context",
+      "status-scope:baseline:status-scope-roundtrip:1:roundtrip-error:main",
+      "status-scope:baseline:status-scope-roundtrip:1:provider-request-count",
+      "status-scope:baseline:status-scope-roundtrip:1:summary-readback",
+      "status-scope:baseline:status-scope-roundtrip:1:reconstruction-readback",
+      "status-scope-oracle:baseline:main:known-resource-path-unknown:malformed-observation",
+      "status-scope-oracle:baseline:main:resource-unknown-negative-control:malformed-observation",
+      "status-scope-oracle:baseline:main:compaction-roundtrip-mixed-status:malformed-observation",
+      "status-scope-oracle:baseline:reconstruction:known-resource-path-unknown:malformed-observation",
+      "status-scope-oracle:baseline:reconstruction:resource-unknown-negative-control:malformed-observation",
+      "status-scope-oracle:baseline:reconstruction:compaction-roundtrip-mixed-status:malformed-observation"
+    ],
+    "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+    "sourceDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+    "status": "failed",
+    "digest": "bf93cf6b4060355b1df03518be6ef1b3ec8bc182db34440890e46d128ae2bd82",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "three reviewed status-scope members for the recorded model, source, prompt, fixture, and environment only",
+  "statusScopeOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "authorized",
+        "evidenceState": "incomplete",
+        "id": "known-resource-path-unknown",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "proofPathReadiness": "unknown",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "known-resource-path-unknown",
+      "observed": null,
+      "passed": false,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "not-required",
+        "evidenceState": "complete",
+        "id": "resource-unknown-negative-control",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "proofPathReadiness": "ready",
+        "resourceAvailability": "unknown"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "resource-unknown-negative-control",
+      "observed": null,
+      "passed": false,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-offline-route",
+        "actionAuthority": "not-authorized",
+        "evidenceState": "complete",
+        "id": "compaction-roundtrip-mixed-status",
+        "operationalConsequence": "named-live-path-not-run",
+        "proofPathReadiness": "blocked",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "compaction-roundtrip-mixed-status",
+      "observed": null,
+      "passed": false,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "authorized",
+        "evidenceState": "incomplete",
+        "id": "known-resource-path-unknown",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "proofPathReadiness": "unknown",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "known-resource-path-unknown",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "not-required",
+        "evidenceState": "complete",
+        "id": "resource-unknown-negative-control",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "proofPathReadiness": "ready",
+        "resourceAvailability": "unknown"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "resource-unknown-negative-control",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-offline-route",
+        "actionAuthority": "not-authorized",
+        "evidenceState": "complete",
+        "id": "compaction-roundtrip-mixed-status",
+        "operationalConsequence": "named-live-path-not-run",
+        "proofPathReadiness": "blocked",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "compaction-roundtrip-mixed-status",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    }
+  ]
+}

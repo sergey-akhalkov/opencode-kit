@@ -1,0 +1,274 @@
+{
+  "byteLength": 20177,
+  "comparisonIdentity": "7e1bd4b131fae31830d6d0f69faac265d0a40e372563dfcf9251a28de869ae10",
+  "evaluatorDigest": "e862ad2bff913341bf083c3f890387635d2f3a0dedc444c72a73fadb308427c4",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "<installed-opencode>/opencode.exe",
+          "serve",
+          "--hostname",
+          "127.0.0.1",
+          "--port",
+          "<ephemeral>",
+          "--print-logs",
+          "--log-level",
+          "INFO"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"authorized\",\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":\"not-required\",\"proofPathReadiness\":\"ready\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"resource-dependent-action-not-started\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"not-authorized\",\"proofPathReadiness\":\"blocked\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"named-live-path-not-run\",\"acceptedOutcomeState\":\"working-via-offline-route\"}]}\n{\"members\":[{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null}]}"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": [
+          {
+            "modelID": "gpt-5.6-sol",
+            "providerID": "openai"
+          },
+          {
+            "modelID": "gpt-5.6-sol",
+            "providerID": "openai"
+          },
+          {
+            "modelID": "gpt-5.6-sol",
+            "providerID": "openai"
+          }
+        ],
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1|models=c7c7a609062651901a9b9026f7a5afef9b36b4e8cb66d22c4f78a3f9cfb6c057",
+        "initialFixtureDigest": "bbea5c60a433c7e71880dc093bb2457832a83788f33bd73196426c40cb93f3cc",
+        "model": "openai/gpt-5.6-sol/xhigh|compaction=xai/grok-4.6/high",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "62b20a636829db45f1034a7eee9f6c9f92e50cd3af744a45a68b978377ba64b6",
+        "profile": "quality-independent",
+        "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+        "validationArgvDigest": "724bb523237c03ce62aea48fe1f9ce45a84a00f23eafd263686453309f50a837",
+        "variant": "xhigh|compaction=high"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "57d78576529dbae226fe0a910ae6cc71fef0143069c0a4005ec69259b6ca6aab"
+        },
+        {
+          "path": "check-fixture.ts",
+          "sha256": "8a8934fa2c9828ce5fe35cbb991a515928996becc2742a9a940b75eb609be40a"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "edit",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 3,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 0
+      },
+      "hashes": {
+        "sample": "cf85ba5918d599ba1696460248aa1ae33f973068ca11fb93cd795853826256ff"
+      },
+      "permissions": {
+        "allow": [
+          "read"
+        ],
+        "deny": [
+          "bash",
+          "edit",
+          "external_directory",
+          "question",
+          "skill",
+          "task",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"memberIds\":[\"known-resource-path-unknown\",\"resource-unknown-negative-control\",\"compaction-roundtrip-mixed-status\"],\"schemaVersion\":1}\n"
+      },
+      "requestSha256": "f15696b6870060c95f3bc6763b9994f351bff8bcfaf9d91814bc236e9509a23f",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "configured-provider-call",
+        "proof-process",
+        "proof-session"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "4efab854cc439a405806b6bafced17a3f4538fb1a3ed5fe7682e985c02d9257c",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "f0a1eafb8cf23c4a2e898692d39bb388c64c32da7378a21691eb1c9c9053d732"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "46aa3e6189d45fbca87300caa58356c7b45384f70b8153b812dd9ef2ac34330a"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "b81d5156dbdfba399de29b6747ff6c878da0f495335e6400e3b7844d815a1b39"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          }
+        ]
+      },
+      "statusScope": {
+        "compactionContext": "## Original User Goal\n- Return exactly one JSON object preserving all `STATUS_SCOPE_FACTS` member dimensions independently and in supplied order, without tools or actions.\n\n## Goal Status\n- Completed successfully.\n\n## Constraints\n- Exact member keys: `id`, `resourceAvailability`, `actionAuthority`, `proofPathReadiness`, `evidenceState`, `operationalConsequence`, `acceptedOutcomeState`.\n- Preserve supplied order and exact values.\n- Do not broaden one dimension into another.\n- Do not call tools, ask questions, or perform actions.\n\n## Decisions\n- Returned the requested JSON directly with all three members and exact values.\n\n## Worktree State\n- No repository or worktree activity.\n\n## Changed Files\n- None.\n\n## Validation Evidence\n- The prior response contains one JSON object with a `members` array.\n- Member order and all provided values match `STATUS_SCOPE_FACTS`.\n- Each member contains exactly the seven requested keys.\n\n## Failures\n- None.\n\n## Risks\n- None known.\n\n## Todos\n- None.\n\n## Lifecycle State\n- Complete; no coding or follow-up work required.\n- Stagnation: no.\n- Live-Attempt Gate: clear.\n- Gate path/lane: no live-attempt lane applicable; task required response-only transformation.\n\n## Exact Next Action\n- None unless the user supplies a new task.\n\n## Session Reflection\n- Outcome: Requested JSON was delivered exactly.\n- Slowest Loop Or Largest Time Sink: None.\n- Concrete Evidence: Prior assistant response matches the supplied order, fields, and values.\n- Likely Cause And Uncertainty: No issue observed; uncertainty is none.\n- Do Not Repeat: Do not invoke tools or reinterpret independent status dimensions.",
+        "compactionRoute": "xai/grok-4.6/high",
+        "error": null,
+        "mainResponse": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"authorized\",\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":\"not-required\",\"proofPathReadiness\":\"ready\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"resource-dependent-action-not-started\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"not-authorized\",\"proofPathReadiness\":\"blocked\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"named-live-path-not-run\",\"acceptedOutcomeState\":\"working-via-offline-route\"}]}",
+        "mainRoute": "openai/gpt-5.6-sol/xhigh",
+        "messages": {
+          "assistant": [
+            {
+              "agent": "build",
+              "error": null,
+              "finish": "stop",
+              "modelID": "gpt-5.6-sol",
+              "providerID": "openai",
+              "summary": false,
+              "text": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"authorized\",\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":\"not-required\",\"proofPathReadiness\":\"ready\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"resource-dependent-action-not-started\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"not-authorized\",\"proofPathReadiness\":\"blocked\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"named-live-path-not-run\",\"acceptedOutcomeState\":\"working-via-offline-route\"}]}"
+            },
+            {
+              "agent": "compaction",
+              "error": null,
+              "finish": "stop",
+              "modelID": "gpt-5.6-sol",
+              "providerID": "openai",
+              "summary": true,
+              "text": "## Original User Goal\n- Return exactly one JSON object preserving all `STATUS_SCOPE_FACTS` member dimensions independently and in supplied order, without tools or actions.\n\n## Goal Status\n- Completed successfully.\n\n## Constraints\n- Exact member keys: `id`, `resourceAvailability`, `actionAuthority`, `proofPathReadiness`, `evidenceState`, `operationalConsequence`, `acceptedOutcomeState`.\n- Preserve supplied order and exact values.\n- Do not broaden one dimension into another.\n- Do not call tools, ask questions, or perform actions.\n\n## Decisions\n- Returned the requested JSON directly with all three members and exact values.\n\n## Worktree State\n- No repository or worktree activity.\n\n## Changed Files\n- None.\n\n## Validation Evidence\n- The prior response contains one JSON object with a `members` array.\n- Member order and all provided values match `STATUS_SCOPE_FACTS`.\n- Each member contains exactly the seven requested keys.\n\n## Failures\n- None.\n\n## Risks\n- None known.\n\n## Todos\n- None.\n\n## Lifecycle State\n- Complete; no coding or follow-up work required.\n- Stagnation: no.\n- Live-Attempt Gate: clear.\n- Gate path/lane: no live-attempt lane applicable; task required response-only transformation.\n\n## Exact Next Action\n- None unless the user supplies a new task.\n\n## Session Reflection\n- Outcome: Requested JSON was delivered exactly.\n- Slowest Loop Or Largest Time Sink: None.\n- Concrete Evidence: Prior assistant response matches the supplied order, fields, and values.\n- Likely Cause And Uncertainty: No issue observed; uncertainty is none.\n- Do Not Repeat: Do not invoke tools or reinterpret independent status dimensions."
+            },
+            {
+              "agent": "build",
+              "error": null,
+              "finish": "stop",
+              "modelID": "gpt-5.6-sol",
+              "providerID": "openai",
+              "summary": false,
+              "text": "{\"members\":[{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null}]}"
+            }
+          ],
+          "toolCalls": []
+        },
+        "providerRequestCount": 3,
+        "reconstructionResponse": "{\"members\":[{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":null,\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null}]}",
+        "server": {
+          "argv": [
+            "<installed-opencode>/opencode.exe",
+            "serve",
+            "--hostname",
+            "127.0.0.1",
+            "--port",
+            "<ephemeral>",
+            "--print-logs",
+            "--log-level",
+            "INFO"
+          ],
+          "executableSha256": "f831518278ded5090c41cc532b16ab80629e980f710a0b46d1e5b605808bb1d9",
+          "signal": "SIGKILL",
+          "status": null,
+          "stderr": "timestamp=2026-08-26T01:54:50.129Z level=INFO run=195e74c5 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T01:54:50.145Z level=INFO run=195e74c5 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T01:54:50.151Z level=INFO run=195e74c5 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:54:50.374Z level=INFO run=195e74c5 message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:54:50.375Z level=INFO run=195e74c5 message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:54:50.393Z level=INFO run=195e74c5 message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:54:50.406Z level=INFO run=195e74c5 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T01:54:50.407Z level=INFO run=195e74c5 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T01:54:50.407Z level=INFO run=195e74c5 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:54:50.430Z level=INFO run=195e74c5 message=loading path=\"<kit-root>\\\\global\\\\opencode.json\"\ntimestamp=2026-08-26T01:54:50.607Z level=INFO run=195e74c5 message=loading path=\"<kit-root>\\\\global\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:54:50.699Z level=INFO run=195e74c5 message=\"all LSPs are disabled\"\ntimestamp=2026-08-26T01:54:50.701Z level=INFO run=195e74c5 message=\"all formatters are disabled\"\ntimestamp=2026-08-26T01:54:50.701Z level=INFO run=195e74c5 message=init\ntimestamp=2026-08-26T01:54:50.839Z level=INFO run=195e74c5 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-26T01:54:50.841Z level=INFO run=195e74c5 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-26T01:54:51.350Z level=INFO run=195e74c5 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-26T01:54:53.046Z level=INFO run=195e74c5 message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-26T01:54:53.060Z level=INFO run=195e74c5 message=created id=ses_fc438fdfbffeFlQwlGayuK65K5 slug=playful-knight version=1.18.23 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/consumer-outcome-status-scope-vrJ9yy/fixture workspaceID=undefined parentID=undefined title=consumer-outcome-candidate-status-scope agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787709293060 time.updated=1787709293060\ntimestamp=2026-08-26T01:54:53.139Z level=INFO run=195e74c5 message=loop session.id=ses_fc438fdfbffeFlQwlGayuK65K5 step=0\ntimestamp=2026-08-26T01:54:53.228Z level=WARN run=195e74c5 message=\"server unavailable\" key=graphify-global type=remote status=failed\ntimestamp=2026-08-26T01:54:56.126Z level=INFO run=195e74c5 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-26T01:54:56.127Z level=INFO run=195e74c5 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-26T01:54:56.323Z level=INFO run=195e74c5 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-26T01:54:56.352Z level=INFO run=195e74c5 message=process session.id=ses_fc438fdfbffeFlQwlGayuK65K5 messageID=msg_03bc70256001hQS5H136D5enB9\ntimestamp=2026-08-26T01:54:56.354Z level=INFO run=195e74c5 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fc438fdfbffeFlQwlGayuK65K5 small=false agent=build mode=primary\ntimestamp=2026-08-26T01:54:56.368Z level=INFO run=195e74c5 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-26T01:55:04.044Z level=INFO run=195e74c5 message=loop session.id=ses_fc438fdfbffeFlQwlGayuK65K5 step=1\ntimestamp=2026-08-26T01:55:04.047Z level=INFO run=195e74c5 message=\"exiting loop\" session.id=ses_fc438fdfbffeFlQwlGayuK65K5\ntimestamp=2026-08-26T01:55:04.097Z level=INFO run=195e74c5 message=loop session.id=ses_fc438fdfbffeFlQwlGayuK65K5 step=0\ntimestamp=2026-08-26T01:55:04.104Z level=INFO run=195e74c5 message=process session.id=ses_fc438fdfbffeFlQwlGayuK65K5 messageID=msg_03bc72d26001HUEiSoPsAHRrNh\ntimestamp=2026-08-26T01:55:04.105Z level=INFO run=195e74c5 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fc438fdfbffeFlQwlGayuK65K5 small=false agent=compaction mode=primary\ntimestamp=2026-08-26T01:55:04.123Z level=INFO run=195e74c5 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-26T01:55:13.917Z level=INFO run=195e74c5 message=loop session.id=ses_fc438fdfbffeFlQwlGayuK65K5 step=1\ntimestamp=2026-08-26T01:55:13.918Z level=INFO run=195e74c5 message=\"exiting loop\" session.id=ses_fc438fdfbffeFlQwlGayuK65K5\ntimestamp=2026-08-26T01:55:13.985Z level=INFO run=195e74c5 message=loop session.id=ses_fc438fdfbffeFlQwlGayuK65K5 step=0\ntimestamp=2026-08-26T01:55:14.008Z level=INFO run=195e74c5 message=process session.id=ses_fc438fdfbffeFlQwlGayuK65K5 messageID=msg_03bc753c3001ImgZscaWjt0LVB\ntimestamp=2026-08-26T01:55:14.009Z level=INFO run=195e74c5 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fc438fdfbffeFlQwlGayuK65K5 small=false agent=build mode=primary\ntimestamp=2026-08-26T01:55:14.011Z level=INFO run=195e74c5 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-26T01:55:22.296Z level=INFO run=195e74c5 message=loop session.id=ses_fc438fdfbffeFlQwlGayuK65K5 step=1\ntimestamp=2026-08-26T01:55:22.298Z level=INFO run=195e74c5 message=\"exiting loop\" session.id=ses_fc438fdfbffeFlQwlGayuK65K5\ntimestamp=2026-08-26T01:55:22.345Z level=INFO run=195e74c5 message=\"removing share\" sessionID=ses_fc438fdfbffeFlQwlGayuK65K5\n",
+          "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:49853\n"
+        },
+        "sessionID": "ses_fc438fdfbffeFlQwlGayuK65K5",
+        "summarizeAccepted": true
+      },
+      "toolCalls": [],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "4efab854cc439a405806b6bafced17a3f4538fb1a3ed5fe7682e985c02d9257c",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "f0a1eafb8cf23c4a2e898692d39bb388c64c32da7378a21691eb1c9c9053d732"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/opencode.json.template",
+        "sha256": "46aa3e6189d45fbca87300caa58356c7b45384f70b8153b812dd9ef2ac34330a"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "b81d5156dbdfba399de29b6747ff6c878da0f495335e6400e3b7844d815a1b39"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      }
+    ]
+  }
+}

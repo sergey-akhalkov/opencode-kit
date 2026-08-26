@@ -1,0 +1,864 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-autonomous-roadmap-mission-runtime",
+  "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "c66cb77c99f1569b837d8315f5e6c9fabeada12d5a0bbb8e5c45c8f015692f32",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-preflight-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "4db8d67a88eca3a17c4562988a59f41dbb7cd09d3a0737d93b1cf859828f6ea0",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-2-preflight-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "7d5ab5d1064bb0656eb3c0692eccd6554e04cae3a3968e2b8a49c64b646ccd3f",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-2-1-current-r3/failure.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "2837ddccfe741d8be54ab2209104f5d65246f3c2924d13308cfd2c12758b88c8",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-2-2-fast-preflight-r11/raw.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "bb8ca5f977629788064fb32481436c31207f0ac9ffb3553a06b0ff69036daa36",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-3-1-launcher-diagnostic-r2/progress.jsonl"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "02c75f548b02833acf3aafc8819b8692b44ca2275ed2397a00a307acf253cc6d",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-3-2-controller-async-r2/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "a0ffbd7ce2b8832ab3115295814ef5e5c2fe4b0d85e2a1511640e0c23f0f3c65",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-configured-two-slice",
+        "effects": [
+          "configured-provider",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-configured-two-slice",
+        "effects": [
+          "configured-provider",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "bun tools/proofs/roadmap-mission-integrated.ts --mode capture --profile quality-independent --candidate-id add-autonomous-roadmap-mission-runtime-task-6-1-r1 --evidence-root <task-6-1-capture-root> --scenario two-slice",
+        "status": 0,
+        "recordedAt": "2026-08-25T08:34:12.867Z"
+      },
+      "artifacts": [
+        "evidence/task-6-1-integrated-two-slice-capture-r1/raw.json",
+        "evidence/task-6-1-integrated-two-slice-capture-r1/evaluation.json",
+        "evidence/task-6-1-integrated-two-slice-capture-replay-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "faba4434b1c06620ba15d57488b08283494c375f8f5d2e8ddd09ad0576622aff",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-configured-two-slice",
+        "effects": [
+          "configured-provider",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-configured-two-slice",
+        "effects": [
+          "configured-provider",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "bun tools/proofs/roadmap-mission-integrated.ts --mode capture --profile quality-independent --candidate-id add-autonomous-roadmap-mission-runtime-task-6-1-r1 --evidence-root <task-6-1-capture-root> --scenario two-slice",
+        "status": 0,
+        "recordedAt": "2026-08-25T08:34:12.867Z"
+      },
+      "artifacts": [
+        "evidence/task-6-1-integrated-two-slice-capture-r1/raw.json",
+        "evidence/task-6-1-integrated-two-slice-capture-r1/evaluation.json",
+        "evidence/task-6-1-integrated-two-slice-capture-replay-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "9acd72e6709c678b434b297761992b7c5f9228c1380ed71f22eb518e196859fb",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-deterministic-partitions",
+        "effects": [
+          "provider-free",
+          "local-provider",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-deterministic-partitions",
+        "effects": [
+          "provider-free",
+          "local-provider",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:guard-question and recorded task-6-1 contract, launcher, owner-required, and zero-call replay lanes",
+        "status": 0,
+        "recordedAt": "2026-08-25T09:35:38.945Z"
+      },
+      "artifacts": [
+        "evidence/task-6-1-candidate-reference-r1/manifest.md",
+        "evidence/task-6-1-candidate-reference-r1/compaction-evaluation.json",
+        "evidence/task-6-1-current-source-contract-r5/evaluation.json",
+        "evidence/task-6-1-current-source-launcher-r3/evaluation.json",
+        "evidence/task-6-1-owner-required-current-r2/evaluation.json",
+        "evidence/task-4-3-local-blocker-simulate-r1/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "7c031d3a9890b143b447530540bdbccbe055ae983e95db73bb6ff8c02f6fdc5e",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-5-1-install-doctor-loader",
+        "effects": [
+          "read-only",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-5-1-install-doctor-loader",
+        "effects": [
+          "read-only",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:project-unattended -- --candidate-id task-5-1-install-doctor-r5 --evidence-root openspec/changes/add-autonomous-roadmap-mission-runtime/evidence/task-5-1-install-doctor-r5 && npm run proof:runtime-surface-loader -- --profile all --candidate-id task-5-1-runtime-loader-r4 --evidence-root openspec/changes/add-autonomous-roadmap-mission-runtime/evidence/task-5-1-runtime-loader-r4",
+        "status": 0,
+        "recordedAt": "2026-08-25T07:06:23.423Z"
+      },
+      "artifacts": [
+        "evidence/task-5-1-install-doctor-r5/raw.json",
+        "evidence/task-5-1-install-doctor-r5/evaluation.json",
+        "evidence/task-5-1-runtime-loader-r4/raw.json",
+        "evidence/task-5-1-runtime-loader-r4/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.1",
+      "taskTextDigest": "3e700837d75332d751872e3c9b760e413f497f11e6a9906a4f1c4e8c1ea6502d",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-candidate-freeze",
+        "effects": [
+          "configured-provider",
+          "provider-free",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-1-candidate-freeze",
+        "effects": [
+          "configured-provider",
+          "provider-free",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:project-unattended -- --candidate-id add-autonomous-roadmap-mission-runtime-task-6-1-r1 --evidence-root <task-6-1-project-unattended-r1>",
+        "status": 0,
+        "recordedAt": "2026-08-25T09:37:58.111Z"
+      },
+      "artifacts": [
+        "evidence/task-6-1-candidate-reference-r1/manifest.md",
+        "evidence/task-6-1-candidate-reference-r1/validation.md",
+        "evidence/task-6-1-project-unattended-r1/evaluation.json",
+        "evidence/task-6-1-integrated-two-slice-capture-r1/evaluation.json",
+        "evidence/task-6-1-integrated-two-slice-capture-replay-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.2",
+      "taskTextDigest": "4c84686c4b7485120749fb39011c52d194ef5f664fb2a22b0d4a84242584d66c",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-2-sdet-terminal",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-2-sdet-terminal",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "fresh sdet-quality-engineer task for add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+        "status": 0,
+        "recordedAt": "2026-08-25T09:53:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-6-2-sdet-r1/report.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.3",
+      "taskTextDigest": "6599e010503e432fa4f260d35a891639506df3df27d9093dab984da4db126376",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-3-writer-liveness-disposition",
+        "effects": [
+          "provider-free",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-6-3-writer-liveness-disposition",
+        "effects": [
+          "provider-free",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:roadmap-controller -- --candidate-id add-autonomous-roadmap-mission-runtime-task-6-3-r1 --evidence-root <task-6-3-controller-fixed-r1> && npm run proof:roadmap-controller -- --mode replay --candidate-id add-autonomous-roadmap-mission-runtime-task-6-3-r1 --input-root <task-6-3-controller-fixed-r1> --evidence-root <task-6-3-controller-fixed-replay-r1>",
+        "status": 0,
+        "recordedAt": "2026-08-25T10:04:00.000Z"
+      },
+      "artifacts": [
+        "evidence/task-6-3-candidate-reference-r1/disposition.md",
+        "evidence/task-6-3-controller-fixed-r1/raw.json",
+        "evidence/task-6-3-controller-fixed-r1/evaluation.json",
+        "evidence/task-6-3-controller-fixed-replay-r1/evaluation.json",
+        "evidence/task-6-3-sdet-r1/report.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "7.1",
+      "taskTextDigest": "184730dcfe93caf8e0a846b921dfa54aef7484cfc301dc3ac8d73bcfecde3175",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "task-7-1-mvp-handoff",
+        "effects": [
+          "read-only",
+          "provider-free",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "task-7-1-mvp-handoff",
+        "effects": [
+          "read-only",
+          "provider-free",
+          "disposable-local-write",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "npm test && npm run validate:strict && npm run openspec:validate && npx openspec validate add-autonomous-roadmap-mission-runtime --strict with current project-unattended, runtime-loader, doctor, evidence-index, inventory, and diff checks",
+        "status": 0,
+        "recordedAt": "2026-08-25T10:24:00.000Z"
+      },
+      "artifacts": [
+        "handoff.md",
+        "evidence/task-7-1-candidate-reference-r1/validation.md",
+        "evidence/task-7-1-project-unattended-r1/raw.json",
+        "evidence/task-7-1-project-unattended-r1/evaluation.json",
+        "evidence/task-7-1-runtime-loader-r1/raw.json",
+        "evidence/task-7-1-runtime-loader-r1/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "task-14",
+      "taskTextDigest": "4ca26e5129c5332a9f8bc9b65db59714982d191fe57ed22154651818111dc1e2",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-preflight-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "task-15",
+      "taskTextDigest": "a3ed618c9551a53bd96fc3aa054b07fa27e5f178438e564ce7bb623a1a5c4e4d",
+      "result": "complete",
+      "candidateId": "add-autonomous-roadmap-mission-runtime-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-22T08:20:00.000Z"
+      },
+      "artifacts": [
+        "evidence-task-1-1-preflight-r1/evaluation.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "task-5-1-install-doctor-loader",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-5-1-install-doctor-r5/raw.json",
+          "bytes": 29113,
+          "digest": "61da030c9e49badc9596cbd4ecff68772b5c18a4ebdc1e22ecbca1a049b337a3"
+        },
+        {
+          "path": "evidence/task-5-1-install-doctor-r5/evaluation.json",
+          "bytes": 314,
+          "digest": "20cfb85a2431603cc2a57a64cc4b55b287b4738c4530329e93983850c1af334d"
+        },
+        {
+          "path": "evidence/task-5-1-runtime-loader-r4/raw.json",
+          "bytes": 802,
+          "digest": "1c034d456428d9f623041a732353f84d78443788ddafcb240d5b87e630476fd6"
+        },
+        {
+          "path": "evidence/task-5-1-runtime-loader-r4/evaluation.json",
+          "bytes": 105,
+          "digest": "153b67e7d410d3584071e0a3eaa51e5ae5567f73e9c66d6479539061845e7d8d"
+        }
+      ]
+    },
+    {
+      "name": "task-6-1-candidate-freeze",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-6-1-candidate-reference-r1/manifest.md",
+          "bytes": 10888,
+          "digest": "09afff16b5e70a01a523a320f6631f35bbb3e897e502cf4da86d3243e111775c"
+        },
+        {
+          "path": "evidence/task-6-1-candidate-reference-r1/compaction-evaluation.json",
+          "bytes": 581,
+          "digest": "46247154493f7c1f3aafd410bc334729b9c5a6ca2f914685e031bc5656e897e1"
+        },
+        {
+          "path": "evidence/task-6-1-candidate-reference-r1/evidence-sufficiency-review-r2.md",
+          "bytes": 2703,
+          "digest": "9926a0b30caa8705b63571d0da022369563ccbb492f345da09c87a78141369ca"
+        },
+        {
+          "path": "evidence/task-6-1-candidate-reference-r1/validation.md",
+          "bytes": 2655,
+          "digest": "266fec0cd811c7a082dd472b6e12f72a09bde73f5aeff8b523ccb7c4145b17f7"
+        },
+        {
+          "path": "evidence/task-6-1-project-unattended-r1/evaluation.json",
+          "bytes": 338,
+          "digest": "498bf9df9cc51f19aa5591433f86301aaddad1925c9473a2483d30f3a22c3c65"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-two-slice-capture-r1/evaluation.json",
+          "bytes": 734,
+          "digest": "cd18cc4636aaca9a29064ac00b34e19ce62e4b86331c53051e6922f0454ba11f"
+        }
+      ]
+    },
+    {
+      "name": "task-6-2-6-3-disposition",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-6-2-sdet-r1/report.md",
+          "bytes": 2506,
+          "digest": "d493a959871f6d3f9ff26e57e6c58c0ee79cbf15a6054242f1a3cd00517bfd5f"
+        },
+        {
+          "path": "evidence/task-6-3-candidate-reference-r1/disposition.md",
+          "bytes": 3593,
+          "digest": "2eec8d8b59672e5f524ccb359276d7ebfc1077c43ddbe04fed51ffc6801fecd5"
+        },
+        {
+          "path": "evidence/task-6-3-controller-fixed-r1/raw.json",
+          "bytes": 5986,
+          "digest": "945e1a4430e7579dd07e429b69ebdc7a8d58bdc4a25ad8690bdcdee474bf5997"
+        },
+        {
+          "path": "evidence/task-6-3-controller-fixed-r1/evaluation.json",
+          "bytes": 691,
+          "digest": "81b80f5ca06ba731d8d8be57629d970b16d386d072a8636a5cf053226b905848"
+        },
+        {
+          "path": "evidence/task-6-3-controller-fixed-replay-r1/evaluation.json",
+          "bytes": 481,
+          "digest": "da76c0d0487a7fd6e4a2f37ad78745f1b1f011c8961a461e71f31283df0e215f"
+        },
+        {
+          "path": "evidence/task-6-3-sdet-r1/report.md",
+          "bytes": 1874,
+          "digest": "66c08aa468a71b7df571ea4f2194c192c70d1a4882208dd787d47ea10aebf423"
+        }
+      ]
+    },
+    {
+      "name": "task-7-1-mvp-handoff",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "handoff.md",
+          "bytes": 3361,
+          "digest": "1f6ae2d8f73c052e31e6219a0c9b2e88f438fb8f9660446a008ec3afcf5cfc9a"
+        },
+        {
+          "path": "evidence/task-7-1-candidate-reference-r1/validation.md",
+          "bytes": 3194,
+          "digest": "a36ea7751acb0fd1abce803d419b704a81fbe935a9318a4f3be012d861d6c1cd"
+        },
+        {
+          "path": "evidence/task-7-1-project-unattended-r1/raw.json",
+          "bytes": 29137,
+          "digest": "9e08349c88df4ff51a7196aec6767d9966bd15319c85de3c5f74888175eac360"
+        },
+        {
+          "path": "evidence/task-7-1-project-unattended-r1/evaluation.json",
+          "bytes": 338,
+          "digest": "e5cfd68a6891743aabb494c8aa70d08abb9befd47a32dbe9874e3124424432e6"
+        },
+        {
+          "path": "evidence/task-7-1-runtime-loader-r1/raw.json",
+          "bytes": 826,
+          "digest": "c8459f7641a4aced0d59de71b52fbe8d5a4e3d2ca605f834899595dd6818b482"
+        },
+        {
+          "path": "evidence/task-7-1-runtime-loader-r1/evaluation.json",
+          "bytes": 105,
+          "digest": "f4654abc05b092266607152bbf958eacbc352468205e6ac2d8df4e1440648697"
+        }
+      ]
+    },
+    {
+      "name": "pre-archive-current-terminal-corpus",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "evidence/task-4-3-controller-hard-kill-r1/evaluation.json",
+          "bytes": 327,
+          "digest": "2413dd2fd6d668d132ee2172ece3a1f5145047ecabcf76863d6b960766777b7f"
+        },
+        {
+          "path": "evidence/task-4-3-controller-hard-kill-r1/raw.json",
+          "bytes": 3898,
+          "digest": "ad6f6db7a4c0850d11d24f011cc4cde1193990056c2d218d3a02c9a6183e0b77"
+        },
+        {
+          "path": "evidence/task-4-3-controller-hard-kill-replay-r1/evaluation.json",
+          "bytes": 357,
+          "digest": "ae727785a7d6645f1f03a6a6d339f446c46b1dea9833c10aad353997830224b0"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/controller/01.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/controller/01.stdout.json",
+          "bytes": 8017,
+          "digest": "799ff84e06f89507c2338b642db6cf4042585de09fa961989c1838623acd5c73"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/controller/02.stderr.log",
+          "bytes": 104,
+          "digest": "8c1256239221b36832c61d171c37cc0e84b1645d26e1fbe5326fad0c9d5d7c8d"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/controller/02.stdout.json",
+          "bytes": 12788,
+          "digest": "faad045f2f6c1290842bb680b974b19e513cc99be9323c606843bdf2a43fb9a2"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/controller/03.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/controller/03.stdout.json",
+          "bytes": 3112,
+          "digest": "598158db8d4440089643813cee5fa838f7c570896991015a27a534026dc4864c"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/evaluation.json",
+          "bytes": 540,
+          "digest": "7cc292339719876851ac932adfe082d90c46beff397f8c6773ae7582fffca491"
+        },
+        {
+          "path": "evidence/task-4-3-local-blocker-simulate-r1/raw.json",
+          "bytes": 8475,
+          "digest": "f4aaabb2237c38f290202ac3f51414b517aabd4538fcf95f55b13d1c426f449b"
+        },
+        {
+          "path": "evidence/task-6-1-candidate-reference-r1/compaction-raw.json",
+          "bytes": 1057,
+          "digest": "7f43c403119776ee2fb3bb2f3ca5882415c6150eb9b8564dcbe67b2f6ede02bd"
+        },
+        {
+          "path": "evidence/task-6-1-current-source-contract-r5/evaluation.json",
+          "bytes": 974,
+          "digest": "8917c2adad1cc5a47318cefff995d499e78cf8019e346346f0d32b729976f4c4"
+        },
+        {
+          "path": "evidence/task-6-1-current-source-contract-r5/raw.json",
+          "bytes": 33809,
+          "digest": "2cb0801284c47a168dca31dfdc71c39b646ed5d35b57c591cf9f5b2e91c509a8"
+        },
+        {
+          "path": "evidence/task-6-1-current-source-contract-replay-r5/evaluation.json",
+          "bytes": 359,
+          "digest": "ec94d94b42e6696f17b3ddaa3f37259fb60bb4bf9b6e76361fc949d885c44797"
+        },
+        {
+          "path": "evidence/task-6-1-current-source-launcher-r3/evaluation.json",
+          "bytes": 801,
+          "digest": "9906d028da275bf5f4201f3614ccabcf030ed33e73901dfe3d51d3dee46f65fc"
+        },
+        {
+          "path": "evidence/task-6-1-current-source-launcher-r3/raw.json",
+          "bytes": 5192,
+          "digest": "318e836e9a763ccfa42f00a02a6d13f52a94efd8a797a7f26c7297d2d331f5dc"
+        },
+        {
+          "path": "evidence/task-6-1-current-source-launcher-r3-replay/evaluation.json",
+          "bytes": 801,
+          "digest": "9906d028da275bf5f4201f3614ccabcf030ed33e73901dfe3d51d3dee46f65fc"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-finalizer-selftest-r1/evaluation.json",
+          "bytes": 717,
+          "digest": "9e3ca206f2c59cd28880822cc2c42b8c289c4504d0102d0649f9e680be7aa8c0"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-finalizer-selftest-r1/raw.json",
+          "bytes": 8123,
+          "digest": "7c7507c07098bfc050a6ef4adc8e25bce59ce75e11476184e6c0c99365cc67e3"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-two-slice-capture-r1/raw.json",
+          "bytes": 277599,
+          "digest": "b9c502cf101b39c64008430774c941c4356abcd8933d430c7dfec0cd371af734"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-two-slice-capture-replay-r2/evaluation.json",
+          "bytes": 851,
+          "digest": "399e4348e208061924830fe0cac02117191230ba035be60d09312bbdf7a948a0"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-two-slice-preflight-r1/evaluation.json",
+          "bytes": 533,
+          "digest": "369682a08ecc6064b9152a5d320cfbe4c2e7b6792c2399ed8aee2d5c2056ea04"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-two-slice-preflight-r1/raw.json",
+          "bytes": 16786,
+          "digest": "7ad689938c3f4adcd2e81824e2da223ca3ab661e4b7d3835d1e3759192a04686"
+        },
+        {
+          "path": "evidence/task-6-1-integrated-two-slice-preflight-replay-r1/evaluation.json",
+          "bytes": 533,
+          "digest": "369682a08ecc6064b9152a5d320cfbe4c2e7b6792c2399ed8aee2d5c2056ea04"
+        },
+        {
+          "path": "evidence/task-6-1-owner-required-current-r2/evaluation.json",
+          "bytes": 538,
+          "digest": "756ae6cdb22407a0745d524649479c7c0bd00e7ca24fa1a57dbdf182436f0247"
+        },
+        {
+          "path": "evidence/task-6-1-owner-required-current-r2/progress.jsonl",
+          "bytes": 613,
+          "digest": "74db092e704cee7ff29a2db3152d7cf188c3eb53bdeb150547476a0ff1a3cde8"
+        },
+        {
+          "path": "evidence/task-6-1-owner-required-current-r2/raw.json",
+          "bytes": 8520,
+          "digest": "9835d8e547f2b93b51edd14c6e10384e3fd96ea83ec1b1c4546c80897783e9bf"
+        },
+        {
+          "path": "evidence/task-6-1-owner-required-current-replay-r2/evaluation.json",
+          "bytes": 700,
+          "digest": "6895adad136f6f7ba05bbc4382232035f3d80481c0b80f4384d802b78d7c3983"
+        },
+        {
+          "path": "evidence/task-6-1-project-unattended-r1/raw.json",
+          "bytes": 29137,
+          "digest": "37419da6f7fcd5c8354f891401625cc83911a0313257271b9bdb475ee8ec7d1c"
+        },
+        {
+          "path": "evidence/task-7-1-candidate-reference-r1/retention-cleanup.md",
+          "bytes": 943,
+          "digest": "7e918effbf0fecabb7bde1bf359d4ed2a945070371ea6a31f39e7623949384c0"
+        }
+      ]
+    }
+  ]
+}

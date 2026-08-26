@@ -1,8 +1,0 @@
-{
-  "candidateId": "task-3-2-stop-r1",
-  "cleanup": "complete",
-  "error": "OpenCode launcher proof server was not ready: {\"commandNames\":[],\"errorChain\":[{\"depth\":0,\"name\":\"Error\",\"message\":\"launcher command inventory failed\"},{\"depth\":1,\"name\":\"Error\",\"message\":\"Launcher command inventory timed out\"}],\"probes\":[{\"error\":\"The operation was aborted.\",\"route\":\"/path\"},{\"error\":\"The operation was aborted.\",\"route\":\"/session/status\"}],\"startup\":{\"hostConfigLoaded\":false,\"isolatedConfigLoaded\":true,\"ripgrepDownloadRequested\":false}}",
-  "providerCalls": 0,
-  "schemaVersion": 1,
-  "status": "failed"
-}

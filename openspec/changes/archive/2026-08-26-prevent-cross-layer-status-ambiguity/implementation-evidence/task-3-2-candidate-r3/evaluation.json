@@ -1,0 +1,330 @@
+{
+  "decisionOracles": [],
+  "digest": "17670ffa77660e9c1db866a5b578ff45fefc4418d3c7b590497764fa80f40228",
+  "evaluation": {
+    "baselineMedians": {
+      "status-scope-roundtrip": {
+        "configuredProviderRequestCount": 3,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 0
+      }
+    },
+    "candidateMedians": {
+      "status-scope-roundtrip": {
+        "configuredProviderRequestCount": 3,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 0
+      }
+    },
+    "environmentDigest": "51214b57d95bd4c5683fc8a390d60d528952ca771624ef9cddd83bfb709b2f42",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "status-scope:candidate:status-scope-roundtrip:1:unscoped-clear-gate",
+      "status-scope-oracle:evaluator-digest:5d7801373ba8b471b8bc3f403dfa1a7679ac7e523cb8e71fd0237127d3ca5d0f:e862ad2bff913341bf083c3f890387635d2f3a0dedc444c72a73fadb308427c4",
+      "status-scope-oracle:candidate:reconstruction:known-resource-path-unknown:malformed-observation",
+      "status-scope-oracle:candidate:reconstruction:resource-unknown-negative-control:malformed-observation",
+      "status-scope-oracle:candidate:reconstruction:compaction-roundtrip-mixed-status:malformed-observation"
+    ],
+    "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+    "sourceDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+    "status": "blocked",
+    "digest": "d8d44028957e76f12cf68e0c8c15de968ab8b941c0b34aee09fa02744dbb555a",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "three reviewed status-scope members for the recorded model, source, prompt, fixture, and environment only",
+  "statusScopeOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "authorized",
+        "evidenceState": "incomplete",
+        "id": "known-resource-path-unknown",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "proofPathReadiness": "unknown",
+        "resourceAvailability": "available"
+      },
+      "failures": [],
+      "memberId": "known-resource-path-unknown",
+      "observed": {
+        "id": "known-resource-path-unknown",
+        "resourceAvailability": "available",
+        "actionAuthority": "authorized",
+        "proofPathReadiness": "unknown",
+        "evidenceState": "incomplete",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "acceptedOutcomeState": "working-via-provider-free-route"
+      },
+      "passed": true,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "not-required",
+        "evidenceState": "complete",
+        "id": "resource-unknown-negative-control",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "proofPathReadiness": "ready",
+        "resourceAvailability": "unknown"
+      },
+      "failures": [],
+      "memberId": "resource-unknown-negative-control",
+      "observed": {
+        "id": "resource-unknown-negative-control",
+        "resourceAvailability": "unknown",
+        "actionAuthority": "not-required",
+        "proofPathReadiness": "ready",
+        "evidenceState": "complete",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "acceptedOutcomeState": "working-via-provider-free-route"
+      },
+      "passed": true,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-offline-route",
+        "actionAuthority": "not-authorized",
+        "evidenceState": "complete",
+        "id": "compaction-roundtrip-mixed-status",
+        "operationalConsequence": "named-live-path-not-run",
+        "proofPathReadiness": "blocked",
+        "resourceAvailability": "available"
+      },
+      "failures": [],
+      "memberId": "compaction-roundtrip-mixed-status",
+      "observed": {
+        "id": "compaction-roundtrip-mixed-status",
+        "resourceAvailability": "available",
+        "actionAuthority": "not-authorized",
+        "proofPathReadiness": "blocked",
+        "evidenceState": "complete",
+        "operationalConsequence": "named-live-path-not-run",
+        "acceptedOutcomeState": "working-via-offline-route"
+      },
+      "passed": true,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "authorized",
+        "evidenceState": "incomplete",
+        "id": "known-resource-path-unknown",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "proofPathReadiness": "unknown",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "known-resource-path-unknown",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "not-required",
+        "evidenceState": "complete",
+        "id": "resource-unknown-negative-control",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "proofPathReadiness": "ready",
+        "resourceAvailability": "unknown"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "resource-unknown-negative-control",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "acceptedOutcomeState": "working-via-offline-route",
+        "actionAuthority": "not-authorized",
+        "evidenceState": "complete",
+        "id": "compaction-roundtrip-mixed-status",
+        "operationalConsequence": "named-live-path-not-run",
+        "proofPathReadiness": "blocked",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "compaction-roundtrip-mixed-status",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "authorized",
+        "evidenceState": "incomplete",
+        "id": "known-resource-path-unknown",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "proofPathReadiness": "unknown",
+        "resourceAvailability": "available"
+      },
+      "failures": [],
+      "memberId": "known-resource-path-unknown",
+      "observed": {
+        "id": "known-resource-path-unknown",
+        "resourceAvailability": "available",
+        "actionAuthority": "authorized",
+        "proofPathReadiness": "unknown",
+        "evidenceState": "incomplete",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "acceptedOutcomeState": "working-via-provider-free-route"
+      },
+      "passed": true,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "not-required",
+        "evidenceState": "complete",
+        "id": "resource-unknown-negative-control",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "proofPathReadiness": "ready",
+        "resourceAvailability": "unknown"
+      },
+      "failures": [],
+      "memberId": "resource-unknown-negative-control",
+      "observed": {
+        "id": "resource-unknown-negative-control",
+        "resourceAvailability": "unknown",
+        "actionAuthority": "not-required",
+        "proofPathReadiness": "ready",
+        "evidenceState": "complete",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "acceptedOutcomeState": "working-via-provider-free-route"
+      },
+      "passed": true,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "acceptedOutcomeState": "working-via-offline-route",
+        "actionAuthority": "not-authorized",
+        "evidenceState": "complete",
+        "id": "compaction-roundtrip-mixed-status",
+        "operationalConsequence": "named-live-path-not-run",
+        "proofPathReadiness": "blocked",
+        "resourceAvailability": "available"
+      },
+      "failures": [],
+      "memberId": "compaction-roundtrip-mixed-status",
+      "observed": {
+        "id": "compaction-roundtrip-mixed-status",
+        "resourceAvailability": "available",
+        "actionAuthority": "not-authorized",
+        "proofPathReadiness": "blocked",
+        "evidenceState": "complete",
+        "operationalConsequence": "named-live-path-not-run",
+        "acceptedOutcomeState": "working-via-offline-route"
+      },
+      "passed": true,
+      "phase": "main",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "authorized",
+        "evidenceState": "incomplete",
+        "id": "known-resource-path-unknown",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "proofPathReadiness": "unknown",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "known-resource-path-unknown",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "acceptedOutcomeState": "working-via-provider-free-route",
+        "actionAuthority": "not-required",
+        "evidenceState": "complete",
+        "id": "resource-unknown-negative-control",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "proofPathReadiness": "ready",
+        "resourceAvailability": "unknown"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "resource-unknown-negative-control",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "acceptedOutcomeState": "working-via-offline-route",
+        "actionAuthority": "not-authorized",
+        "evidenceState": "complete",
+        "id": "compaction-roundtrip-mixed-status",
+        "operationalConsequence": "named-live-path-not-run",
+        "proofPathReadiness": "blocked",
+        "resourceAvailability": "available"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "compaction-roundtrip-mixed-status",
+      "observed": null,
+      "passed": false,
+      "phase": "reconstruction",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip"
+    }
+  ]
+}

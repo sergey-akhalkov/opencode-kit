@@ -20,6 +20,7 @@ import {
   inspectWorkflowContracts,
   workflowContractDiagnostics,
 } from "./workflow-contracts.ts";
+import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "../runtime-surface-profile.ts";
 
 /**
  * Read a model-facing Markdown instruction surface with structured operative scan.
@@ -407,13 +408,13 @@ export function validateInstallerConfigDirModel(ctx: ValidationContext, root: st
       ctx.addError(`Missing global/${required}: the OPENCODE_CONFIG_DIR target must contain it.`);
     }
   }
-  for (const required of ["bin/openspec-operation-gate.ts", "bin/openspec-archive.ts", "bin/portable-process.ts", "bin/roadmap-mission.ts", "bin/roadmap-mission/contracts.ts", "bin/roadmap-mission/preflight.ts", "bin/validate-staged.ts"]) {
+  for (const required of PORTABLE_WORKFLOW_RUNTIME_FILES) {
     const candidate = path.join(globalDir, required);
     if (!fileExists(candidate)) {
       ctx.addError(`Missing global/${required}: portable project workflow tooling is incomplete.`);
     }
   }
-  for (const entrypoint of ["openspec-operation-gate.ts", "openspec-archive.ts", "roadmap-mission.ts", "validate-staged.ts"]) {
+  for (const entrypoint of ["openspec-operation-gate.ts", "openspec-archive.ts", "roadmap-mission.ts", "roadmap-mission-session-executor.ts", "validate-staged.ts"]) {
     const candidate = path.join(globalDir, "bin", entrypoint);
     if (!fileExists(candidate)) continue;
     const text = readText(candidate);

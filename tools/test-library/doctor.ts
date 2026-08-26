@@ -7,6 +7,7 @@ import {
 import { GLOBAL_ENGINEERING_QUALITY_MARKERS } from "../contracts/engineering-quality.ts";
 import { resolveEvidenceLane } from "../evidence-index.ts";
 import { inspectManagedPromptDrift } from "../opencode-runtime-sources.ts";
+import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "../runtime-surface-profile.ts";
 import {
   asArray,
   asRecord,
@@ -138,15 +139,8 @@ Report Development-Stage and Runtime Proof.
 `;
 
 function writePortableWorkflowTools(globalDir: string): void {
-  for (const relative of [
-    path.join("bin", "openspec-operation-gate.ts"),
-    path.join("bin", "openspec-archive.ts"),
-    path.join("bin", "portable-process.ts"),
-    path.join("bin", "roadmap-mission.ts"),
-    path.join("bin", "roadmap-mission", "contracts.ts"),
-    path.join("bin", "roadmap-mission", "preflight.ts"),
-    path.join("bin", "validate-staged.ts"),
-  ]) {
+  for (const entry of PORTABLE_WORKFLOW_RUNTIME_FILES) {
+    const relative = path.join(...entry.split("/"));
     writeText(path.join(globalDir, relative), `// fixture portable tool ${relative}\n`);
   }
   writeText(path.join(globalDir, "package.json"), "{\n  \"private\": true,\n  \"type\": \"module\"\n}\n");
@@ -175,6 +169,10 @@ function newIsolatedDoctorFixture(name: string, localConfig: string): IsolatedDo
   assert(doctorSource.includes('from "./opencode-runtime-sources.ts"'), "Isolated doctor must retain its runtime-source inspector module edge.");
   assert(!doctorSource.includes('from "js-yaml"'), "Doctor must not import js-yaml directly after active-authority extraction.");
   writeText(doctorPath, doctorSource);
+  writeText(
+    path.join(fixtureRoot, "tools", "runtime-surface-profile.ts"),
+    fs.readFileSync(path.join(root, "tools", "runtime-surface-profile.ts"), "utf8"),
+  );
   const runtimeSourcesSource = fs.readFileSync(path.join(root, "tools", "opencode-runtime-sources.ts"), "utf8")
     .replace('from "jsonc-parser"', `from "${import.meta.resolve("jsonc-parser")}"`);
   assert(!runtimeSourcesSource.includes('from "jsonc-parser"'), "Isolated runtime-sources must resolve the real installed jsonc-parser module.");
@@ -278,6 +276,7 @@ function parseDoctorV2(result: { output: string }): {
     "unattended checkpoint support",
     "unattended canonical workflow",
     "unattended installed binaries",
+    "unattended mission runtime",
     "unattended long-run guard limits",
   ]) {
     findBucket(unattendedChecks, "name", name);

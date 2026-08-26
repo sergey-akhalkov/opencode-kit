@@ -290,6 +290,7 @@ async function runQuestionScenario(
     inspectedRevision: revision.revisionDigest,
     verdict: "allow_stop",
     goalSummary: `Question scenario ${name}`,
+    claimMatrix: [],
     requirementMatrix: [{
       requirementRef: `requirement_${name}`,
       status: "complete",
@@ -382,6 +383,7 @@ const autonomousVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "allow_stop",
   goalSummary: "Select the recommended reversible strategy",
+  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_autonomous_decision",
     status: "complete",
@@ -411,6 +413,7 @@ const ownerVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "owner_required",
   goalSummary: "A protected owner decision remains",
+  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_owner_decision",
     status: "owner_required",
@@ -459,6 +462,7 @@ const repeatedVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "continue",
   goalSummary: "Resolve the repeated technical blocker",
+  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_repeated_technical",
     status: "unresolved",
@@ -533,6 +537,7 @@ const distinctVerdict = parseCompletionVerdict({
   inspectedRevision: completedRevision.revisionDigest,
   verdict: "continue",
   goalSummary: "Resolve a different repeated technical blocker",
+  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_distinct_repeated_technical",
     status: "unresolved",
@@ -704,6 +709,7 @@ try {
     inspectedRevision: revision.revisionDigest,
     verdict: "allow_stop",
     goalSummary: "Reject an unoffered answer",
+    claimMatrix: [],
     requirementMatrix: [],
     unresolved: [],
     strategyAssessment: {
@@ -729,6 +735,7 @@ const continuationVerdict = parseCompletionVerdict({
   inspectedRevision: revision.revisionDigest,
   verdict: "continue",
   goalSummary: "Continue one bounded local action",
+  claimMatrix: [],
   requirementMatrix: [{
     requirementRef: "requirement_continuation",
     status: "unresolved",
@@ -774,7 +781,56 @@ idleProbe.scheduleIdle(idleState);
 const firstIdleTimer = idleState.settleTimer;
 idleProbe.scheduleIdle(idleState);
 const duplicateIdleSuppressed = firstIdleTimer != null && idleState.settleTimer === firstIdleTimer;
+if (idleState.settleTimer != null) clearTimeout(idleState.settleTimer);
+idleState.settleTimer = null;
+idleState.state = "passed";
+idleProbe.scheduleIdle(idleState);
+const terminalIdleSuppressed = idleState.state === "passed" && idleState.settleTimer == null;
 await idleController.dispose();
+const compactionRoot = {
+  ...root,
+  metadata: { completionGuard: { grindEnabled: true, state: "running" } },
+} as Session;
+const compactionController = new SessionCompletionController(
+  { client: { app: { log: async () => ({ data: true }) } }, directory: root.directory } as never,
+  { auditWindow: { enabled: false }, statusToasts: false },
+  client as never,
+);
+const compactionProbe = compactionController as unknown as { roots: Map<string, RootState> };
+const compactionEpoch = epoch("audit_compaction_proof");
+const compactionState: RootState = {
+  ...initialRootState(compactionRoot),
+  activeAudit: compactionEpoch,
+  auditAbort: new AbortController(),
+  grindEnabled: true,
+  state: "auditing",
+};
+compactionProbe.roots.set(rootID, compactionState);
+const compactionHooks = await compactionController.start() as unknown as {
+  "experimental.session.compacting"(input: { sessionID: string }): Promise<void>;
+  "experimental.compaction.autocontinue"(input: { sessionID: string }): Promise<void>;
+  event(input: { event: Record<string, unknown> }): Promise<void>;
+};
+await compactionHooks["experimental.session.compacting"]({ sessionID: rootID });
+const compactionStarted = compactionState.compacting;
+await compactionHooks["experimental.compaction.autocontinue"]({ sessionID: rootID });
+const compactionAutocontinuePending = compactionState.guardTurnPending;
+await compactionHooks.event({ event: { type: "session.compacted", properties: { sessionID: rootID } } });
+const compactionCompleted = !compactionState.compacting && compactionState.guardTurnPending;
+await compactionHooks.event({
+  event: {
+    type: "message.updated",
+    properties: {
+      sessionID: rootID,
+      info: { id: "message_compaction_autocontinue_proof", role: "assistant", sessionID: rootID },
+    },
+  },
+});
+const compactionTurnPreserved =
+  !compactionState.compacting &&
+  !compactionState.guardTurnPending &&
+  compactionState.activeAudit === compactionEpoch;
+await compactionController.dispose();
 const restoredPending = initialRootState({
   ...root,
   metadata: inFlightEvent.metadata,
@@ -783,8 +839,15 @@ const defaultOff = initialRootState({ ...root, metadata: undefined } as Session)
 const matrix = {
   capacity: { replyCalls: capacity.replyCalls },
   customOnly: { rejected: customOnlyRejected },
+  compaction: {
+    autocontinuePending: compactionAutocontinuePending,
+    completed: compactionCompleted,
+    started: compactionStarted,
+    turnPreserved: compactionTurnPreserved,
+  },
   defaultOff: { grindEnabled: defaultOff.grindEnabled, state: defaultOff.state },
   duplicateIdle: { suppressed: duplicateIdleSuppressed },
+  terminalIdle: { suppressed: terminalIdleSuppressed },
   disable: {
     appliedReplies: disabledInFlight.appliedReplies,
     midReplyState: disabledInFlight.midReplyState,
@@ -838,9 +901,14 @@ console.log(JSON.stringify({ matrix }));
 if (
   matrix.capacity.replyCalls !== 0 ||
   matrix.customOnly.rejected !== true ||
+  matrix.compaction.autocontinuePending !== true ||
+  matrix.compaction.completed !== true ||
+  matrix.compaction.started !== true ||
+  matrix.compaction.turnPreserved !== true ||
   matrix.defaultOff.grindEnabled !== false ||
   matrix.defaultOff.state !== "disabled" ||
   matrix.duplicateIdle.suppressed !== true ||
+  matrix.terminalIdle.suppressed !== true ||
   matrix.disable.appliedReplies !== 0 ||
   matrix.disable.midReplyState !== "disabled" ||
   matrix.disable.pendingRefs !== 1 ||

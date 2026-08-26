@@ -275,6 +275,30 @@ export class SessionCompletionController {
     }
   }
 
+  private traceTerminalStage(state: RootState, stage: string, extra: Record<string, unknown> = {}): void {
+    const challengeRef = state.terminalCertificate.challenge?.challengeRef ?? "none";
+    const key = `${challengeRef}:${stage}`;
+    if (state.terminalDiagnosticStages.has(key) || state.terminalDiagnosticStages.size >= 64) return;
+    state.terminalDiagnosticStages.add(key);
+    const diagnostic = {
+      challengeRef: challengeRef === "none" ? null : hashRef("challenge", challengeRef),
+      rootRef: hashRef("session", state.root.id),
+      stage,
+      ...extra,
+    };
+    void this.log("info", "terminal certificate settle stage", diagnostic);
+    const runtime = globalThis as typeof globalThis & {
+      process?: { env?: Record<string, string | undefined>; stderr?: { write(value: string): unknown } };
+    };
+    if (runtime.process?.env?.OPENCODE_PROOF_TERMINAL_STAGE_STDERR === "1") {
+      try {
+        runtime.process.stderr?.write(`[session-completion-guard:terminal-stage] ${JSON.stringify(diagnostic)}\n`);
+      } catch {
+        // Diagnostics must not change guard behavior.
+      }
+    }
+  }
+
   private async session(sessionID: string): Promise<Session> {
     return dataOf<Session>(
       this.client.session.get({ sessionID, directory: this.input.directory }) as Promise<unknown>,
@@ -484,20 +508,25 @@ export class SessionCompletionController {
     await this.status.set(state, "paused", `Guard paused: ${reason}`, "warning");
   }
 
-  private scheduleIdle(state: RootState): void {
+  private scheduleIdle(state: RootState, blockedRetry = false): void {
     if (
       this.disposed ||
       !state.grindEnabled ||
       state.paused ||
-      state.compacting ||
-      state.guardTurnPending ||
-      state.activeAudit != null ||
-      state.settleTimer != null
+      state.state === "passed" ||
+      state.settleTimer != null ||
+      (!blockedRetry && (state.compacting || state.guardTurnPending || state.activeAudit != null))
     ) return;
+    if (state.terminalCertificate.status === "waiting") {
+      this.traceTerminalStage(state, "settle-scheduled", { blockedRetry });
+    }
     state.state = "settling-idle";
     const generation = this.leases.generation(state.root.id);
     state.settleTimer = setTimeout(() => {
       state.settleTimer = null;
+      if (state.terminalCertificate.status === "waiting") {
+        this.traceTerminalStage(state, "settle-fired", { expectedGeneration: generation });
+      }
       void this.handleSettledIdle(state, generation).catch((error) => this.owningFailure(state, "idle preflight", error));
     }, this.options.settleMs);
   }
@@ -562,21 +591,49 @@ export class SessionCompletionController {
     if (
       this.disposed ||
       !state.grindEnabled ||
-      state.paused ||
-      state.compacting ||
-      state.guardTurnPending ||
-      state.activeAudit != null
+      state.paused
     ) return;
+    if (state.terminalCertificate.status === "waiting") {
+      this.traceTerminalStage(state, "settle-entered", { expectedGeneration });
+    }
+    const transientBlocked = state.compacting || state.guardTurnPending || state.activeAudit != null;
+    if (transientBlocked && state.terminalCertificate.status === "waiting") {
+      state.root = await this.session(state.root.id);
+      this.traceTerminalStage(state, "transient-refresh", {
+        activeAudit: state.activeAudit != null,
+        compacting: state.compacting,
+        guardTurnPending: state.guardTurnPending,
+      });
+    }
+    const mission = record(state.root.metadata?.roadmapMission);
+    const issuedCertificate = state.terminalCertificate.status === "waiting" &&
+      mission?.certificateStatus === "issued" && mission.terminalCertificate != null;
+    if (transientBlocked) {
+      if (!issuedCertificate) {
+        if (state.terminalCertificate.status === "waiting") this.scheduleIdle(state, true);
+        return;
+      }
+    }
     const statuses = await this.sessionStatuses();
+    if (state.terminalCertificate.status === "waiting") {
+      this.traceTerminalStage(state, `root-status-${statuses[state.root.id]?.type ?? "absent"}`);
+    }
     if (statuses[state.root.id] != null && statuses[state.root.id]?.type !== "idle") {
       state.state = "running";
-      if (state.terminalCertificate.status === "waiting") this.scheduleIdle(state);
+      if (state.terminalCertificate.status === "waiting") this.scheduleIdle(state, issuedCertificate);
       return;
     }
     const children = await this.childStatuses(state, statuses);
     const preflight = this.leases.preflight(state.root.id, SHARED_PTY_MANAGER.list(), children);
+    if (state.terminalCertificate.status === "waiting") {
+      this.traceTerminalStage(state, `preflight-${preflight.kind}`, {
+        expectedGeneration,
+        observedGeneration: preflight.generation,
+      });
+    }
     if (preflight.generation !== expectedGeneration) {
       state.state = "stale";
+      if (issuedCertificate) this.scheduleIdle(state, true);
       return;
     }
     if (preflight.kind !== "clear") {
@@ -598,9 +655,19 @@ export class SessionCompletionController {
     }
     this.clearWaitRecheck(state);
     const inspection = await this.inspectRoot(state);
-    if (inspection.revision.leaseGeneration !== expectedGeneration) return;
+    if (state.terminalCertificate.status === "waiting") {
+      this.traceTerminalStage(state, "inspection-complete", {
+        expectedGeneration,
+        observedGeneration: inspection.revision.leaseGeneration,
+      });
+    }
+    if (inspection.revision.leaseGeneration !== expectedGeneration) {
+      if (issuedCertificate) this.scheduleIdle(state, true);
+      return;
+    }
     if (state.lastAuditedRevision === inspection.revision.revisionDigest && state.state === "passed") return;
     const certificate = await this.tryTerminalCertificate(state, inspection);
+    this.traceTerminalStage(state, `validator-${certificate}`);
     if (certificate !== "fallback") return;
     const recovery = state.recoveryAudit;
     if (recovery != null) {
@@ -638,7 +705,10 @@ export class SessionCompletionController {
     state: RootState,
     inspection: RootInspection,
   ): Promise<"accepted" | "fallback" | "waiting"> {
+    this.traceTerminalStage(state, "validator-entered");
+    this.traceTerminalStage(state, "validator-refresh-start");
     state.root = await this.session(state.root.id);
+    this.traceTerminalStage(state, "validator-refresh-complete");
     const mission = record(state.root.metadata?.roadmapMission);
     const issuer = stringValue(mission?.certificateIssuer);
     if (issuer == null) {
@@ -664,6 +734,7 @@ export class SessionCompletionController {
       };
       return "fallback";
     }
+    this.traceTerminalStage(state, "validator-bindings-start");
     const completionEvidence = captureArbiterEvidence(
       state.root.id,
       hashRef("session", state.root.id),
@@ -693,6 +764,7 @@ export class SessionCompletionController {
       revisionDigest: inspection.revision.revisionDigest,
       rootRef: hashRef("session", state.root.id),
     });
+    this.traceTerminalStage(state, "validator-bindings-complete");
     const pendingQuestion = [...state.questions.values()].some((question) =>
       question.state !== "guard-answered" && question.state !== "human-replied"
     );
@@ -709,13 +781,16 @@ export class SessionCompletionController {
       return "fallback";
     }
     if (mission?.terminalCertificate != null) {
+      this.traceTerminalStage(state, "validator-issued-evaluation-start");
       const evaluated = evaluateTerminalCertificate({
         certificate: mission.terminalCertificate,
         challenge,
         configuredIssuers: this.options.certificateIssuers,
         pendingQuestion,
       });
+      this.traceTerminalStage(state, `validator-issued-evaluation-${evaluated.status}`);
       if (evaluated.status === "accepted") {
+        this.traceTerminalStage(state, "validator-passed-persist-start");
         state.lastAuditedRevision = inspection.revision.revisionDigest;
         state.recoveryAudit = null;
         state.terminalCertificate = {
@@ -729,6 +804,7 @@ export class SessionCompletionController {
           status: "accepted",
         };
         await this.status.set(state, "passed", "Completion guard passed (certified)", "success");
+        this.traceTerminalStage(state, "validator-passed-persist-complete");
         return "accepted";
       }
       state.terminalCertificate = {

@@ -5,6 +5,7 @@ import { readMissionStopIntent, recordMissionStopIntent } from "./state.ts";
 
 export type ProcessEvidence = {
   argv: string[];
+  cleanupState?: "not-needed" | "terminal" | "unknown";
   exitCode: number | null;
   executorDisposition?: MissionExecutorDisposition;
   executorResultPath?: string;

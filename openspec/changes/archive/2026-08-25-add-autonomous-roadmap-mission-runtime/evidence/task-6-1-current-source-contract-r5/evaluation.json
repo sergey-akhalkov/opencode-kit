@@ -1,0 +1,29 @@
+{
+  "candidateId": "task-6-1-current-source-contract-r5",
+  "cleanup": "complete",
+  "projectMutationCount": 0,
+  "scenarios": {
+    "ambiguousActiveChange": "blocked",
+    "busySession": "unknown-blocked",
+    "dirtyOwnedPath": "blocked",
+    "invalidCheckpoint": "blocked",
+    "invalidForwardDependency": "blocked",
+    "liveWriterLease": "unknown-blocked",
+    "missingAdapter": "blocked",
+    "missingDeclaredActiveChange": "blocked",
+    "pendingQuestion": "unknown-blocked",
+    "protectedEffect": "blocked",
+    "queuedActiveChanges": "eligible",
+    "queuedDirtyChange": "blocked",
+    "roadmapProseIgnored": "eligible-definition-owned",
+    "staleProjectOverlay": "blocked",
+    "staleRuntimeUrl": "terminal-before-session",
+    "tooManySlices": "blocked",
+    "unlistedActiveChange": "blocked",
+    "unreadableSession": "unknown-blocked",
+    "unreadableWriterLease": "unknown-blocked",
+    "valid": "eligible"
+  },
+  "schemaVersion": 1,
+  "status": "complete"
+}

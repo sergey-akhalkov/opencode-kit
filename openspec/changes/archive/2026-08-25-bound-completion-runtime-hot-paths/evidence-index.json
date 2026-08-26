@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 2,
+  "changeId": "bound-completion-runtime-hot-paths",
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "fb7af3b70ef9db4a886f8ccd4f15c2c37b20a8c7328b3942468268394fa20ead",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "owner-recorded-proof", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "owner-recorded-proof", "effects": ["read-only"] },
+      "invocation": { "command": "node tools/openspec-change-inventory.ts --root .", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-1-1-ownership-r1.md"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "1295645c71fc8d44adc106d15db2feca280600f1b1b219ff8ae8650ff9056e09",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "provider-free-baseline", "effects": ["disposable-local-write", "local-process"] },
+      "boundary": { "kind": "named-entrypoint", "name": "provider-free-baseline", "effects": ["disposable-local-write", "local-process"] },
+      "invocation": { "command": "npm.cmd run proof:bound-completion-baseline -- --evidence-root <task-1-2-baseline-r1>", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-1-2-baseline-r1/evaluation.json"],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "d2629297a599e0926a795312ea21362925e9b2edcfa4760c2e6151d97ca68da9",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "bounded-query-proof", "effects": ["disposable-local-write"] },
+      "boundary": { "kind": "named-entrypoint", "name": "bounded-query-proof", "effects": ["disposable-local-write"] },
+      "invocation": { "command": "npm.cmd run proof:bound-completion-baseline -- --mode query --evidence-root <task-2-1-query-r1>", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-2-1-query-r1/evaluation.json"],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "fff201e96b86d5ff49f4bb4c73054ec3be6f953f29ab2ad2f468906faa82084a",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "projection-bound-tests", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "projection-bound-tests", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:session-plugin", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-2-1-query-r1/evaluation.json"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "66406728ff1aa32e78b680018ebeb2be1cf60873b93e9e8d6780643382c9710f",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "guard-convergence-tests", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "guard-convergence-tests", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:session-completion-guard", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-3-1-3-2-r1.md"],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "1dacf17a7cf48c844d8d45f7fe346aaed113a1545672fd42132b20fcf8bcd5e7",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "scheduler-tests", "effects": ["read-only"] },
+      "boundary": { "kind": "named-entrypoint", "name": "scheduler-tests", "effects": ["read-only"] },
+      "invocation": { "command": "npm.cmd run test:focused:bound-completion-baseline", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-3-1-3-2-r1.md", "evidence/task-5-1-integrated-r1/evaluation.json"],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "284cb7a0a474ae49b4a985a48168987b663d08f40538875d2acd4c96448e5ca9",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "bounded-process-proof", "effects": ["disposable-local-write", "local-process"] },
+      "boundary": { "kind": "named-entrypoint", "name": "bounded-process-proof", "effects": ["disposable-local-write", "local-process"] },
+      "invocation": { "command": "npm.cmd run proof:bound-completion-baseline -- --mode process --evidence-root <task-4-1-4-2-process-r3>", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-4-1-4-2-process-r3/evaluation.json"],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "65a0d3b7fd2aca7b765848f3b86486c05b131456a3b2007fd779c26f00f39da2",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "roadmap-controller-proof", "effects": ["disposable-local-write", "local-process"] },
+      "boundary": { "kind": "named-entrypoint", "name": "roadmap-controller-proof", "effects": ["disposable-local-write", "local-process"] },
+      "invocation": { "command": "npm.cmd run proof:roadmap-controller -- --mode campaign --candidate-id bound-completion-runtime-hot-paths-task-4-r3 --evidence-root <task-4-2-roadmap-controller-r1>", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-4-1-4-2-process-r3/evaluation.json", "evidence/task-4-2-roadmap-controller-r1/raw.json", "evidence/task-4-2-roadmap-controller-r1/evaluation.json"],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "893d7188269efb75ebf91c496c28aa52fe042cda897e7735e1bb944b9a8c797f",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "provider-free-integrated-proof", "effects": ["disposable-local-write", "local-process"] },
+      "boundary": { "kind": "named-entrypoint", "name": "provider-free-integrated-proof", "effects": ["disposable-local-write", "local-process"] },
+      "invocation": { "command": "npm.cmd run proof:bound-completion-baseline -- --mode integrated --candidate-id bound-completion-runtime-hot-paths-r1 --evidence-root <task-5-1-integrated-r1>", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-5-1-integrated-r1/evaluation.json"],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.2",
+      "taskTextDigest": "86be2a974a0cce4d61329c50c0b2b260d77b389001ba60f21c0ae1ebda1b6f5c",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "installed-multi-root-proof", "effects": ["effect-blocked-provider", "disposable-local-write", "local-process"] },
+      "boundary": { "kind": "named-entrypoint", "name": "installed-multi-root-proof", "effects": ["effect-blocked-provider", "disposable-local-write", "local-process"] },
+      "invocation": { "command": "npm.cmd run proof:guard-restart -- --scenario multi-root --candidate-id bound-completion-runtime-hot-paths-r1 --evidence-root <task-5-2-installed-guard-r1>", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-5-2-installed-guard-r1/raw.json", "evidence/task-5-2-installed-guard-r1/evaluation.json", "evidence/task-5-2-installed-paired-r1/evaluation.json", "evidence/task-5-3-summary-r1.md"],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "6.1",
+      "taskTextDigest": "6977f264c13be7aa85fd5ed5abd8250eb5973ab02c6a368497bda42df7f98c47",
+      "result": "complete",
+      "candidateId": "bound-completion-runtime-hot-paths-r1",
+      "environmentId": "windows-node24",
+      "requiredBoundary": { "kind": "named-entrypoint", "name": "project-validation", "effects": ["read-only", "local-process"] },
+      "boundary": { "kind": "named-entrypoint", "name": "project-validation", "effects": ["read-only", "local-process"] },
+      "invocation": { "command": "focused tests; npm.cmd test; npm.cmd run validate:strict; openspec validate bound-completion-runtime-hot-paths --strict; npm.cmd run openspec:validate", "status": 0, "recordedAt": "2026-08-25T15:57:17.6075673+03:00" },
+      "artifacts": ["evidence/task-6-1-validation-r1.md"],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        { "path": "evidence/task-1-1-ownership-r1.md", "bytes": 811, "digest": "ca0b4798de3c9d778869fb90f248e85173b1e7c70a980ffdb713fa49c76d053c" },
+        { "path": "evidence/task-1-2-baseline-r1/evaluation.json", "bytes": 1275, "digest": "00b6fe6e18dcde46135e3bb60564db54b81bb6a9fa3f7cd368537e281a017388" },
+        { "path": "evidence/task-2-1-query-r1/evaluation.json", "bytes": 1319, "digest": "e56ca7fdd963d1e106bef9973b24d8ae06e584013da641cd70544c02f76d17f1" },
+        { "path": "evidence/task-3-1-3-2-r1.md", "bytes": 511, "digest": "592e919ad7f4aebf705d6ab48184ebb2b25aa671ef5ad10d1d958ab529bfed04" },
+        { "path": "evidence/task-4-1-4-2-process-r3/evaluation.json", "bytes": 3247, "digest": "1e38c6130670829cd710dbf9504d6ba0924490100fbf12dec982f32c0ac3d1fe" },
+        { "path": "evidence/task-4-2-roadmap-controller-r1/evaluation.json", "bytes": 685, "digest": "4b7515c8d427aa615c6fd93ce809e1cae43bbd15119d7e658882aee79986a74a" },
+        { "path": "evidence/task-4-2-roadmap-controller-r1/raw.json", "bytes": 6295, "digest": "bac81f732fdc6a5de558d9015a4b95ce409565bc335bdd7ccada5adc54a5e317" },
+        { "path": "evidence/task-5-1-integrated-r1/evaluation.json", "bytes": 4406, "digest": "40619a3b426362bc68d24b92f34079e33233b50af6a1f28ad54d2f3a8a6f4eb1" },
+        { "path": "evidence/task-5-2-installed-guard-r1/evaluation.json", "bytes": 343, "digest": "53fd5540992ab4e66ea54c5967b2216aada0ce9ecc0b16c01b8785cd47e5984c" },
+        { "path": "evidence/task-5-2-installed-guard-r1/raw.json", "bytes": 3111, "digest": "d30e7df798a7d4e0303d001b7ee9991b3e76b3fad0bb9418b42a626da471be51" },
+        { "path": "evidence/task-5-2-installed-paired-r1/evaluation.json", "bytes": 1764, "digest": "ef1038c54fb7e86269b93b7c2c86a8e5fb054dec8e58571053947d6c3b693b6d" },
+        { "path": "evidence/task-5-3-summary-r1.md", "bytes": 2115, "digest": "b161cb1854c41a2c717b01e029f738da16bc6c2a2848000d9b13c28b4df4953a" },
+        { "path": "evidence/task-6-1-validation-r1.md", "bytes": 905, "digest": "27fe1f5c86cf2ae0720a5a74ee87a7a8b4a55d261bc20a2eff5ba1c710222cbd" }
+      ]
+    }
+  ],
+  "claims": []
+}

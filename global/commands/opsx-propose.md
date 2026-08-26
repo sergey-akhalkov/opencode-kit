@@ -58,6 +58,7 @@ When ready to implement, run /opsx-apply
       - Read any completed dependency files for context
       - Create the artifact file using `template` as the structure and write it to `resolvedOutputPath`
       - Apply `context` and `rules` as constraints - but do NOT copy them into the file
+      - Keep one change-level `Claim And Evidence Scope` owner. An Ordinary Small exact case uses one concise line naming the exact claim and proof boundary. A declared broad class uses the explicit proposal fields and a structured development record; do not infer the class from prose or repeat the complete record in design/spec/tasks.
       - Show brief progress: "Created <artifact-id>"
 
    b. **Continue until all `applyRequires` artifacts are complete**
@@ -75,34 +76,23 @@ When ready to implement, run /opsx-apply
 
 6. **Validate operation readiness**
 
+   If proposal.md contains `**Claim Class**`, first create one reviewed schema-valid development claim record in `<changeRoot>/evidence-index.json`; absent observations/oracle/challenge stay `unknown`/`missing` with empty refs and a non-supported disposition. Never invent evidence. Concise exact claims need no record.
    Resolve the current project root and active kit global source explicitly. Use `OPENCODE_CONFIG_DIR` first when it is non-empty and contains the exact `bin/openspec-operation-gate.ts` helper. Otherwise inspect the supported host-default source and privacy-safe runtime-source/collision evidence. Never strip a final `global` segment or guess a repository-parent `bin`. Run the portable gate from the verified source; do not require a target-project package script.
-   Run `node "<global-source>/bin/openspec-operation-gate.ts" --root "<project-root>" --operation propose --change "<name>"`, then `openspec validate "<name>" --strict`.
+   Run `node "<global-source>/bin/openspec-operation-gate.ts" --root "<project-root>" --operation propose --change "<name>"`, then `openspec validate "<name>" --strict`, then the same portable gate with `--operation apply`.
 
-   Stop if either command exits non-zero. Do not describe the change as ready from
-   artifact existence alone. Preserve the exact failing command, exit status,
-   stdout/stderr, and named artifact.
+   Stop on any non-zero exit and preserve the command, status, output, and artifact. The apply probe is effect-free. Do not report `Ready for implementation` until it exits `0` for this change.
 
 7. **Show final status**
    Run `openspec status --change "<name>"`.
 
 **Output**
 
-After completing all artifacts and both readiness checks, summarize:
+After completing all artifacts and all three readiness checks, summarize:
 - Change name and location
 - List of artifacts created with brief descriptions
 - What's ready: "Artifacts and deterministic readiness checks passed. Ready for implementation."
 - Prompt: "Run `/opsx-apply` to start implementing."
 - Lifecycle: planning artifacts alone remain `Development-Stage: development`; never emit an RC or stable claim from this command
-
-**Artifact Creation Guidelines**
-
-- Follow the `instruction` field from `openspec instructions` for each artifact type
-- The schema defines what each artifact should contain - follow it
-- Read dependency artifacts for context before creating new ones
-- Use `template` as the structure for your output file - fill in its sections
-- **IMPORTANT**: `context` and `rules` are constraints for YOU, not content for the file
-  - Do NOT copy `<context>`, `<rules>`, `<project_context>` blocks into the artifact
-  - These guide what you write, but should never appear in the output
 
 **Guardrails**
 - Create ALL artifacts needed for implementation (as defined by schema's `apply.requires`)
@@ -113,6 +103,6 @@ After completing all artifacts and both readiness checks, summarize:
 - Create `history.md` before readiness checks and never manufacture attempted strategies
 - Do not append a mandatory final retrospective or process-improvement task; keep optional workflow reflection outside product completion scope
 - Declare exactly one `Automation Dividend`: Material `required - <candidate>`; Ordinary Small may `exempt - <reason>`.
-- Do not claim implementation readiness until the propose gate and strict OpenSpec validation both pass
+- Do not claim implementation readiness until the propose gate, strict OpenSpec validation, and effect-free apply gate all pass
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable
 - Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.

@@ -1,0 +1,19 @@
+{
+  "checks": {
+    "capsuleAppearsExactlyOnce": true,
+    "cleanProjectStatus": true,
+    "commandExited": false,
+    "messageBeforeSystemObserved": true,
+    "noExternalEgress": true,
+    "oneProviderRequest": true,
+    "projectMemoryToolsAdvertised": true,
+    "requestBounded": true,
+    "selectedProcedureObserved": true,
+    "sessionDeliveryToolPreserved": true
+  },
+  "failed": [
+    "commandExited"
+  ],
+  "maximumSupportedClaim": "Loaded-entry project-memory proof did not reach its exact-case terminal oracle.",
+  "status": "failed"
+}

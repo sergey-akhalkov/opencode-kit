@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "mode": "process",
+  "adapters": {
+    "defaultValidationTimeoutMs": 600000,
+    "overrideValidationTimeoutMs": 1000,
+    "rejectedOverrides": [
+      true,
+      true
+    ]
+  },
+  "cleanup": {
+    "complete": true,
+    "fixtureRemoved": true
+  },
+  "commandDefaults": {
+    "gitMutation": 120000,
+    "inspection": 30000,
+    "openSpec": 120000,
+    "validation": 600000
+  },
+  "fixtures": [
+    {
+      "argv": [
+        "inspect",
+        "fixture"
+      ],
+      "cleanupState": "terminal",
+      "commandClass": "inspection",
+      "defaultMs": 30000,
+      "descendantsTerminal": true,
+      "errorCode": "ETIMEDOUT",
+      "signal": null,
+      "status": 1,
+      "timedOut": true
+    },
+    {
+      "argv": [
+        "git",
+        "fixture"
+      ],
+      "cleanupState": "terminal",
+      "commandClass": "git-mutation",
+      "defaultMs": 120000,
+      "descendantsTerminal": true,
+      "errorCode": "ETIMEDOUT",
+      "signal": null,
+      "status": 1,
+      "timedOut": true
+    },
+    {
+      "argv": [
+        "openspec",
+        "fixture"
+      ],
+      "cleanupState": "terminal",
+      "commandClass": "openspec",
+      "defaultMs": 120000,
+      "descendantsTerminal": true,
+      "errorCode": "ETIMEDOUT",
+      "signal": null,
+      "status": 1,
+      "timedOut": true
+    },
+    {
+      "argv": [
+        "npm",
+        "fixture"
+      ],
+      "cleanupState": "terminal",
+      "commandClass": "validation-finalization",
+      "defaultMs": 600000,
+      "descendantsTerminal": true,
+      "errorCode": "ETIMEDOUT",
+      "signal": null,
+      "status": 1,
+      "timedOut": true
+    }
+  ],
+  "missionStateUnchanged": true,
+  "providerCalls": 0,
+  "sources": [
+    {
+      "path": "global/bin/portable-process.ts",
+      "sha256": "a99ad2499efd86397f5b1f029b300750c5c4dfa02d814ce94b13fab539eb5bfe"
+    },
+    {
+      "path": "global/bin/portable-process-supervisor.ts",
+      "sha256": "794c29b93569e96a38c95ae817291da22dedb63051f0bcf4e38077aa711f9099"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-adapter.ts",
+      "sha256": "78472724f9a10745fb95201f85135330f9a1554e62c0a24c596a5bcff66d6491"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-process.ts",
+      "sha256": "84933f3df214d0856c82117a6b3915a378c6f8a1ed37d4032fb67370f90c416d"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller.ts",
+      "sha256": "b04c97aa19c2bc52f60e77dd35c5132b57fee72084c977c9341c7afdec1e868f"
+    },
+    {
+      "path": "global/bin/roadmap-mission/preflight.ts",
+      "sha256": "81377466f7a394588514d9e3879ddbdbe79a812360734d23c0ba1cded4e450cf"
+    },
+    {
+      "path": "global/bin/roadmap-mission/session-executor.ts",
+      "sha256": "16d27b3835007eab3a3b545a80a20f0c867aa0949aff6fde1209e4568dd9d5d9"
+    }
+  ],
+  "sourceInventory": {
+    "controllerInvokeRequiresTimeout": true,
+    "controllerOptionalTimeoutAbsent": true,
+    "preflightPassesTimeout": true,
+    "sessionExecutorUsesPortableBound": true,
+    "sessionExecutorUsesNoDirectSpawnSync": true
+  },
+  "unknownCleanup": {
+    "cleanupState": "unknown",
+    "missionStateUnchanged": true,
+    "retryCount": 0,
+    "timedOut": true
+  }
+}

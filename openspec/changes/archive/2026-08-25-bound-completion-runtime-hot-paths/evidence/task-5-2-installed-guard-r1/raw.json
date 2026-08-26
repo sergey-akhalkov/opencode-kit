@@ -1,0 +1,119 @@
+{
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "cleanup": "complete",
+  "environment": {
+    "model": "proof/proof-model",
+    "platform": "win32",
+    "serverReadyMs": 81316,
+    "sourceHashes": [
+      {
+        "digest": "edca19f2328e2a4c821c2c5758eca0d1ba9536b586975bff54ec0bd28bd37579",
+        "path": "global/extensions/session-completion-guard.ts"
+      },
+      {
+        "digest": "640c64ac23a81c1be9d51b243d894924dfc07fec68a075ca4840235d2d22057a",
+        "path": "global/extensions/session-completion-guard/arbiter-scheduler.ts"
+      },
+      {
+        "digest": "edb1064b86347221458140d053312304628faa09ab1261777bfe2a65f6c5d748",
+        "path": "global/extensions/session-completion-guard/controller.ts"
+      },
+      {
+        "digest": "cbd1414e95ba989c5b99ae19880c545a3eff67a28a9e3387c906d2093cd9fefc",
+        "path": "global/extensions/session-completion-guard/runtime-support.ts"
+      },
+      {
+        "digest": "b31bda42c0df8678d8df2d57c757ff1fd1a2d4321852e92dfc510e964f8169c8",
+        "path": "global/extensions/session-completion-guard/status.ts"
+      },
+      {
+        "digest": "4e730da6e3b8c3ac4dcb7bbb5414cc43869fd9c6b20659a6b5a778afdeae47de",
+        "path": "global/plugin/session-delivery-context/index.ts"
+      },
+      {
+        "digest": "fc4c23bb98432757bb756bfe18abd000fa22c9d275f65e26c312c1efb8933e00",
+        "path": "global/plugin/session-delivery-context/session-graph.ts"
+      },
+      {
+        "digest": "69a6cdf0eee89dfa354757f9a4463dc05087963be203b5fb613508a9f0531ed8",
+        "path": "tools/proofs/session-completion-guard-restart.ts"
+      }
+    ]
+  },
+  "multiRoot": {
+    "accepted": 34,
+    "activeLimit": 2,
+    "cancelled": 31,
+    "errorDiagnostics": [
+      {
+        "message": "Completion audit stopped (input-state) after 1/2 attempts",
+        "rootRef": "session_06963f34d01c",
+        "state": "error"
+      }
+    ],
+    "healthyQueuedPassed": true,
+    "passed": 3,
+    "promptRejected": 0,
+    "queueLimit": 32,
+    "rejected": 1,
+    "roots": 35,
+    "workloadElapsedMs": 33726
+  },
+  "provider": {
+    "arbiterCalls": 3,
+    "arbiterInFlight": 0,
+    "maxArbiterInFlight": 2,
+    "primaryCalls": 35,
+    "requestKinds": [
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "primary",
+      "arbiter-1",
+      "arbiter-2",
+      "arbiter-3"
+    ],
+    "rootRefs": [
+      "session_9e0c6ca22ace",
+      "session_96975acb2876",
+      "session_426dadd589a7"
+    ]
+  },
+  "scenario": "multi-root",
+  "schemaVersion": 1,
+  "serverLogs": {
+    "stderrChars": 96390,
+    "stdoutChars": 119
+  }
+}

@@ -200,6 +200,25 @@ const tests: TestCase[] = [
     }),
   },
   {
+    name: "apply blocks missing broad claim records and warns for development evidence",
+    run: () => withTempRepo("claim-apply", (repo) => {
+      writeChange(repo, "missing-record");
+      writeText(path.join(repo, "openspec", "changes", "missing-record", "proposal.md"), proposalWithCapsule(broadClaimScope()));
+      const missing = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "missing-record", generatedAt });
+      const records = missing.checks.find((item) => item.id === "claim-evidence:records");
+      assert(missing.status === "failed" && missing.exitCode === 1, `Apply must fail without a declared broad claim record, got ${missing.status}.`);
+      assert(records?.status === "failed" && records.blocking, "Missing broad claim record must be an apply-blocking failure.");
+
+      writeChange(repo, "development-record");
+      writeText(path.join(repo, "openspec", "changes", "development-record", "proposal.md"), proposalWithCapsule(broadClaimScope()));
+      writeEvidenceIndex(repo, "development-record", [materializeClaim("unknown-observation")]);
+      const development = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "development-record", generatedAt });
+      const closure = development.checks.find((item) => item.id === "claim-evidence:closure");
+      assert(development.status === "warning" && development.exitCode === 0, `Schema-valid development evidence must reach apply with a warning, got ${development.status}.`);
+      assert(closure?.status === "warning" && !closure.blocking && closure.summary.includes("claim-unknown=unknown"), "Development claim closure must preserve its unknown state without blocking apply planning.");
+    }),
+  },
+  {
     name: "archive gate blocks missing change, unsafe change id, and unchecked tasks",
     run: () => withTempRepo("archive-blocked", (repo) => {
       const missing = runOpenSpecOperationGate(repo, { operation: "archive", generatedAt });

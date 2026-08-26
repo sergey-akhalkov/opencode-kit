@@ -1,0 +1,23 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+  "cleanup": "complete",
+  "command": "opsx-apply",
+  "completionMode": "arbiter-or-nonterminal",
+  "disposition": "owner-required",
+  "guardState": "owner-required",
+  "inputRawSha256": "9835d8e547f2b93b51edd14c6e10384e3fd96ea83ec1b1c4546c80897783e9bf",
+  "liveCalls": 0,
+  "missingObservation": null,
+  "nestedServerStarted": false,
+  "productLane": "complete",
+  "providerCalls": {
+    "arbiter": 1,
+    "primary": 1
+  },
+  "replaySource": "task-6-1-owner-required-current-r2",
+  "rootSession": "created-and-deleted",
+  "scenario": "owner-required",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unlockCondition": null
+}

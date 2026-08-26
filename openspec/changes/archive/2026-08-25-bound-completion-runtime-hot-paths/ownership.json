@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "changeId": "bound-completion-runtime-hot-paths",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-plugin-architecture",
+      "requirements": [
+        "Session evidence acquisition is root-correlated before projection",
+        "Query performance evidence is maintained"
+      ]
+    },
+    {
+      "capability": "session-completion-guard",
+      "requirements": [
+        "Completion audit queries are bounded",
+        "Status convergence is finite and observable",
+        "Arbiter prompts use one process-wide bounded scheduler"
+      ]
+    },
+    {
+      "capability": "unattended-roadmap-orchestration",
+      "requirements": [
+        "Every synchronous mission command has a finite timeout"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/plugin/session-delivery-context",
+    "global/extensions/session-completion-guard",
+    "tools/proofs/bound-completion-baseline.ts",
+    "tools/test-bound-completion-baseline.ts",
+    "tools/test-session-env-plugin.ts",
+    "tools/proofs/session-completion-guard-long-run.ts",
+    "global/bin/portable-process.ts",
+    "global/bin/portable-process-supervisor.ts",
+    "global/bin/roadmap-mission",
+    "global/bin/roadmap-mission-session-executor.ts",
+    "tools/test-portable-process.ts"
+  ],
+  "dependencies": [],
+  "transfers": [
+    {
+      "fromChangeId": "enforce-claim-evidence-closure",
+      "toChangeId": "bound-completion-runtime-hot-paths",
+      "owners": [
+        { "type": "write-root", "path": "global/plugin/session-delivery-context" },
+        { "type": "write-root", "path": "global/extensions/session-completion-guard" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-autonomous-roadmap-mission-runtime",
+      "toChangeId": "bound-completion-runtime-hot-paths",
+      "owners": [
+        { "type": "write-root", "path": "global/bin/roadmap-mission" },
+        { "type": "write-root", "path": "global/bin/roadmap-mission-session-executor.ts" },
+        { "type": "write-root", "path": "global/plugin/session-delivery-context" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

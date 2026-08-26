@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "claimId": "PMC-001",
+  "fixedNow": "2026-08-25T18:00:00.000Z",
+  "supportedCredential": "sk-proj-abcdefghijklmnopqrstuvwxyz",
+  "defaults": {
+    "kind": "procedure",
+    "confidence": "high",
+    "appliesTo": {
+      "paths": [],
+      "symbols": []
+    },
+    "evidencePaths": [],
+    "why": "The reviewed corpus requires deterministic bounded recall.",
+    "evidence": "PMC-001 reviewed synthetic evidence.",
+    "invalidatedWhen": "The reviewed expectation changes."
+  },
+  "cards": [
+    {
+      "id": "relevant-active",
+      "state": "active",
+      "title": "Restart the shared supervisor",
+      "triggers": ["restart supervisor"],
+      "technique": "Use the validated shared-supervisor restart path."
+    },
+    {
+      "id": "exact-selector",
+      "state": "active",
+      "title": "Inspect the configured deadline",
+      "triggers": ["inspect configured deadline"],
+      "appliesTo": {
+        "paths": ["src/config.ts"],
+        "symbols": ["restartDeadline"]
+      },
+      "evidencePaths": ["src/config.ts"],
+      "technique": "Inspect the exact repository path and symbol before restart."
+    },
+    {
+      "id": "candidate-only",
+      "state": "candidate",
+      "title": "Candidate memory exclusion",
+      "triggers": ["candidate exclusion"],
+      "technique": "Keep this record explicit-only until promotion."
+    },
+    {
+      "id": "invalidated",
+      "state": "invalidated",
+      "title": "Invalidated memory exclusion",
+      "triggers": ["invalidated exclusion"],
+      "technique": "Never inject this terminal record."
+    },
+    {
+      "id": "age-stale",
+      "state": "stale",
+      "verifiedAt": "2025-01-01T00:00:00.000Z",
+      "title": "Age stale memory exclusion",
+      "triggers": ["age stale exclusion"],
+      "technique": "Preserve but exclude records older than 180 days."
+    },
+    {
+      "id": "fingerprint-mismatch",
+      "state": "mismatch",
+      "title": "Fingerprint mismatch exclusion",
+      "triggers": ["fingerprint mismatch"],
+      "appliesTo": {
+        "paths": ["src/mismatch.ts"],
+        "symbols": []
+      },
+      "evidencePaths": ["src/mismatch.ts"],
+      "technique": "Exclude this record after its evidence changes."
+    },
+    {
+      "id": "privacy-redaction",
+      "state": "active",
+      "title": "Privacy redaction memory",
+      "triggers": ["privacy redaction"],
+      "technique": "Use $PROJECT_ROOT and $PROJECT_ROOT_SLASH; api_key=$SUPPORTED_CREDENTIAL; home=$HOME_PATH."
+    }
+  ],
+  "series": [
+    {
+      "idPrefix": "budget-",
+      "count": 8,
+      "state": "active",
+      "titlePrefix": "Bounded render memory ",
+      "triggers": ["bounded render memory"],
+      "technique": "Retain stable rank order and omit content beyond the reviewed count and byte budgets."
+    }
+  ],
+  "curated": [
+    {
+      "path": "core.md",
+      "content": "# Project Core\nCurrent source and runtime evidence outrank recalled context."
+    },
+    {
+      "path": "restart.md",
+      "content": "# Curated Restart\nUse current curated restart supervisor guidance."
+    }
+  ],
+  "queries": [
+    {
+      "id": "relevant-hit-selector-boost",
+      "input": {
+        "query": "How should I restart supervisor safely?",
+        "path": "src/config.ts",
+        "symbol": "restartDeadline"
+      },
+      "automatic": true,
+      "expectedFirst": "exact-selector",
+      "expectedContains": ["relevant-active", "exact-selector"],
+      "expectedExactPath": true,
+      "expectedExactSymbol": true,
+      "expectedFirstScore": 12.931807481447045,
+      "expectedFirstBm25": 2.931807481447044,
+      "expectedFirstMatchedTerms": 1
+    },
+    {
+      "id": "weak-query-miss",
+      "input": {
+        "query": "galaxy banana"
+      },
+      "automatic": true,
+      "expectedOrder": []
+    },
+    {
+      "id": "candidate-exclusion",
+      "input": {
+        "query": "candidate exclusion",
+        "statuses": ["candidate"]
+      },
+      "automatic": false,
+      "expectedFirst": "candidate-only",
+      "expectedExclusion": "candidate"
+    },
+    {
+      "id": "invalidated-exclusion",
+      "input": {
+        "query": "invalidated exclusion",
+        "statuses": ["invalidated"]
+      },
+      "automatic": false,
+      "expectedFirst": "invalidated",
+      "expectedExclusion": "invalidated"
+    },
+    {
+      "id": "age-stale-exclusion",
+      "input": {
+        "query": "age stale exclusion"
+      },
+      "automatic": false,
+      "expectedFirst": "age-stale",
+      "expectedExclusion": "stale-verification"
+    },
+    {
+      "id": "fingerprint-mismatch",
+      "input": {
+        "query": "fingerprint mismatch"
+      },
+      "automatic": false,
+      "expectedFirst": "fingerprint-mismatch",
+      "expectedExclusion": "fingerprint-mismatch"
+    },
+    {
+      "id": "result-budget",
+      "input": {
+        "query": "bounded render memory"
+      },
+      "automatic": true,
+      "expectedPrefix": ["budget-8", "budget-7", "budget-6", "budget-5", "budget-4", "budget-3", "budget-2"],
+      "expectedTruncated": true,
+      "expectedOmittedMinimum": 1
+    }
+  ],
+  "processOracles": [
+    {
+      "command": "node tools/test-project-memory.ts",
+      "expectedPasses": [
+        "disabled plugin input registers no project-memory surface",
+        "disabled mode performs no project-memory IO",
+        "candidate promote and recall stays bounded redacted and outside the worktree",
+        "lifecycle actions are append-only idempotent and terminal",
+        "schema envelope freshness and evidence exclusions fail closed visibly",
+        "curated Serena recall is bounded redacted read-only and source-independent",
+        "every lifecycle fold permutation keeps invalidation terminal and partial files quarantined",
+        "distinct canonical git roots isolate stores and never recall each other",
+        "concurrent processes exclusively claim the final card and lifecycle slots"
+      ]
+    },
+    {
+      "command": "node tools/test-project-memory-hooks.ts",
+      "expectedPasses": [
+        "session env composes root-only tools and message-before-transform context"
+      ]
+    }
+  ],
+  "members": [
+    "relevant-active-hit",
+    "weak-query-miss",
+    "exact-selector-boost",
+    "candidate-exclusion",
+    "invalidated-exclusion",
+    "age-stale-exclusion",
+    "fingerprint-mismatch",
+    "malformed-quarantine",
+    "project-root-redaction",
+    "secret-redaction",
+    "result-budget",
+    "corpus-envelope",
+    "root-identity-isolation",
+    "primary-root-injection",
+    "subagent-exclusion",
+    "hook-order-timeout",
+    "selection-revalidation",
+    "compaction-continuity",
+    "disabled-mode",
+    "concurrent-append",
+    "serena-read-only",
+    "no-worktree-external-network-effects"
+  ],
+  "memberChecks": {
+    "relevant-active-hit": ["relevant-hit-selector-boost"],
+    "weak-query-miss": ["weak-query-miss"],
+    "exact-selector-boost": ["relevant-hit-selector-boost"],
+    "candidate-exclusion": ["candidate-exclusion"],
+    "invalidated-exclusion": ["invalidated-exclusion"],
+    "age-stale-exclusion": ["age-stale-exclusion"],
+    "fingerprint-mismatch": ["fingerprint-mismatch"],
+    "malformed-quarantine": ["malformed-quarantine", "process-direct"],
+    "project-root-redaction": ["privacy-redaction"],
+    "secret-redaction": ["privacy-redaction"],
+    "result-budget": ["result-budget", "tools-bounded"],
+    "corpus-envelope": ["process-direct"],
+    "root-identity-isolation": ["root-identity-isolation"],
+    "primary-root-injection": ["primary-root-injection"],
+    "subagent-exclusion": ["process-hooks"],
+    "hook-order-timeout": ["process-hooks"],
+    "selection-revalidation": ["process-hooks"],
+    "compaction-continuity": ["process-hooks"],
+    "disabled-mode": ["disabled-mode", "process-direct"],
+    "concurrent-append": ["process-direct"],
+    "serena-read-only": ["serena-read-only"],
+    "no-worktree-external-network-effects": ["no-side-effects"]
+  }
+}

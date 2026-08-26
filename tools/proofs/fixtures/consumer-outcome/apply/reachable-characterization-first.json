@@ -1,0 +1,5 @@
+{
+  "files": {
+    "decision.json": "{\n  \"caseId\": \"reachable-characterization-first\",\n  \"claimCeiling\": \"selected-characterization-decision-only\",\n  \"currentRung\": \"direct-source-inspection\",\n  \"deferredDependents\": [\"implement-parser\", \"implement-emulator\", \"implement-orchestration\"],\n  \"firstAction\": \"run-read-only-real-characterization\",\n  \"protectedActionDisposition\": \"not-selected\",\n  \"selectedSufficientBoundary\": \"read-only-real-characterization\"\n}\n"
+  }
+}

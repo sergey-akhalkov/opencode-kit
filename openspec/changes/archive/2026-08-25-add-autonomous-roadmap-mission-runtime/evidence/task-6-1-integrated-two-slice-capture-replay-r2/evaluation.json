@@ -1,0 +1,31 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+  "checks": {
+    "archiveReadback": true,
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "controllerTerminal": true,
+    "executorTerminalClear": true,
+    "freshRoots": true,
+    "localCheckpoints": true,
+    "markerValidated": true,
+    "noRemote": true,
+    "noThirdOutcome": true,
+    "orderedAutoChain": true,
+    "proposalVerified": true,
+    "providerExecution": true,
+    "queuedRuntimeClear": true,
+    "serverIsolated": true,
+    "sessionCleanup": true,
+    "taskArtifacts": true,
+    "visibleController": true
+  },
+  "liveCallBasis": "completed-assistant-responses",
+  "liveCalls": 49,
+  "replay": {
+    "liveCalls": 0,
+    "sourceCandidateId": "add-autonomous-roadmap-mission-runtime-task-6-1-r1"
+  },
+  "schemaVersion": 1,
+  "status": "complete"
+}

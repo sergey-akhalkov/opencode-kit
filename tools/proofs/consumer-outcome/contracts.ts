@@ -12,6 +12,8 @@ export const PROFILE = "quality-independent";
 export const BASELINE_POINTER_PATH = "config/consumer-outcome-baseline.json";
 export const MANIFEST_PATH = "config/consumer-outcome-regression.json";
 export const DECISION_GAP_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap.json";
+export const SHIFT_LEFT_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/shift-left-decision-gap-r1.json";
+export const STATUS_SCOPE_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/status-scope-r1.json";
 export const FRICTION_FIELDS = [
   "ownerQuestionCount",
   "configuredProviderRequestCount",
@@ -26,6 +28,7 @@ export type FrictionField = (typeof FRICTION_FIELDS)[number];
 export type Expectation = "no-regression" | "improvement";
 export type Arm = "baseline" | "candidate";
 export type Mode = (typeof MODES)[number];
+export type DecisionPackName = "claim-evidence" | "shift-left" | "status-scope";
 export type EvaluationStatus =
   | "baseline-established"
   | "baseline-current"
@@ -80,15 +83,47 @@ export type ScenarioRecord = {
   validationArgv: string[];
 };
 
-export type ExpectedDecision = {
+export type ClaimEvidenceDecision = {
   claimDisposition: "blocked" | "narrowed" | "supported" | "unknown";
   completionDisposition: "allow_stop" | "continue";
 };
 
+export type ShiftLeftDecision = {
+  claimCeiling: string;
+  currentRung: string;
+  deferredDependents: string[];
+  firstAction: string;
+  protectedActionDisposition: string;
+  selectedSufficientBoundary: string;
+};
+
+export type StatusScopeDecision = {
+  acceptedOutcomeState: string;
+  actionAuthority: string;
+  evidenceState: string;
+  id: string;
+  operationalConsequence: string;
+  proofPathReadiness: string;
+  resourceAvailability: string;
+};
+
+export type StatusScopeDecisionSet = {
+  members: StatusScopeDecision[];
+};
+
+export type ExpectedDecision = ClaimEvidenceDecision | ShiftLeftDecision | StatusScopeDecisionSet;
+
 export type DecisionGapPack = {
+  configuredProviderRequestBound: number;
   expectedDecisions: Record<string, ExpectedDecision>;
   id: string;
   manifest: RegressionManifest;
+  maximumClaim: string;
+  name: DecisionPackName;
+  statusScope?: {
+    memberOrder: string[];
+    reconstructionRequest: string;
+  };
 };
 
 export type RegressionManifest = {
@@ -137,6 +172,41 @@ export type ToolCallFact = {
   status: string | null;
 };
 
+export type StatusScopeEvidence = {
+  compactionContext: string;
+  compactionRoute: string;
+  error: {
+    facts: Array<Record<string, unknown>>;
+    stage: string;
+  } | null;
+  mainResponse: string;
+  mainRoute: string;
+  messages: {
+    assistant: Array<{
+      agent: string | null;
+      error: Array<Record<string, unknown>> | null;
+      finish: string | null;
+      modelID: string | null;
+      providerID: string | null;
+      summary: boolean;
+      text: string;
+    }>;
+    toolCalls: Array<{ name: string; status: string | null }>;
+  };
+  providerRequestCount: number;
+  reconstructionResponse: string;
+  server: {
+    argv: string[];
+    executableSha256: string;
+    signal: string | null;
+    status: number | null;
+    stderr: string;
+    stdout: string;
+  };
+  sessionID: string | null;
+  summarizeAccepted: boolean;
+};
+
 export type SampleEvidence = {
   arm: Arm;
   cleanup: CleanupOracle & { complete: boolean; error: string | null };
@@ -155,6 +225,7 @@ export type SampleEvidence = {
   schemaVersion: number;
   sideEffects: string[];
   sourceIdentity: SourceIdentity;
+  statusScope?: StatusScopeEvidence;
   toolCalls: ToolCallFact[];
   validation: { argv: string[]; status: number | null; stderr: string; stdout: string };
 };
@@ -258,14 +329,61 @@ const DECISION_PACK_KEYS = [
   "scenarios",
   "schemaVersion",
 ] as const;
+const SHIFT_LEFT_DECISION_PACK_KEYS = [...DECISION_PACK_KEYS, "maximumClaim"] as const;
+const STATUS_SCOPE_DECISION_PACK_KEYS = [...SHIFT_LEFT_DECISION_PACK_KEYS, "memberOrder", "reconstructionRequest"] as const;
 const DECISION_SCENARIO_KEYS = [...SCENARIO_KEYS, "expectedDecision"] as const;
 const EXPECTED_DECISION_KEYS = ["claimDisposition", "completionDisposition"] as const;
-const DECISION_SCENARIO_IDS = [
-  "representative-finite-population",
-  "exact-finite-environment",
-  "unavailable-real-oracle",
-  "ordinary-small-exact-case",
+const SHIFT_LEFT_DECISION_KEYS = [
+  "claimCeiling",
+  "currentRung",
+  "deferredDependents",
+  "firstAction",
+  "protectedActionDisposition",
+  "selectedSufficientBoundary",
 ] as const;
+export const STATUS_SCOPE_DECISION_KEYS = [
+  "acceptedOutcomeState",
+  "actionAuthority",
+  "evidenceState",
+  "id",
+  "operationalConsequence",
+  "proofPathReadiness",
+  "resourceAvailability",
+] as const;
+const DECISION_PACK_SPECS = {
+  "claim-evidence": {
+    id: "claim-evidence-decision-gap-r1",
+    maximumClaim: "four reviewed claim-evidence decisions for the recorded model, source, prompt, fixture, and environment only",
+    path: DECISION_GAP_PACK_PATH,
+    requestBound: 8,
+    scenarioIds: [
+      "representative-finite-population",
+      "exact-finite-environment",
+      "unavailable-real-oracle",
+      "ordinary-small-exact-case",
+    ],
+  },
+  "shift-left": {
+    id: "shift-left-decision-gap-r1",
+    maximumClaim: "two reviewed shift-left decisions for the recorded model, source, prompt, fixture, and environment only",
+    path: SHIFT_LEFT_PACK_PATH,
+    requestBound: 4,
+    scenarioIds: ["reachable-characterization-first", "sufficient-lower-rung"],
+  },
+  "status-scope": {
+    id: "status-scope-r1",
+    maximumClaim: "three reviewed status-scope members for the recorded model, source, prompt, fixture, and environment only",
+    path: STATUS_SCOPE_PACK_PATH,
+    requestBound: 6,
+    scenarioIds: ["status-scope-roundtrip"],
+  },
+} as const satisfies Record<DecisionPackName, {
+  id: string;
+  maximumClaim: string;
+  path: string;
+  requestBound: number;
+  scenarioIds: readonly string[];
+}>;
 
 export class ContractError extends Error {
   readonly field: string;
@@ -436,6 +554,39 @@ function parseExpectedDecision(value: unknown, label: string): ExpectedDecision 
   return { claimDisposition, completionDisposition };
 }
 
+function parseShiftLeftDecision(value: unknown, label: string): ShiftLeftDecision {
+  const record = requireExactKeys(value, SHIFT_LEFT_DECISION_KEYS, label);
+  return {
+    claimCeiling: requireString(record.claimCeiling, `${label}.claimCeiling`),
+    currentRung: requireString(record.currentRung, `${label}.currentRung`),
+    deferredDependents: requireStringArray(record.deferredDependents, `${label}.deferredDependents`),
+    firstAction: requireString(record.firstAction, `${label}.firstAction`),
+    protectedActionDisposition: requireString(record.protectedActionDisposition, `${label}.protectedActionDisposition`),
+    selectedSufficientBoundary: requireString(record.selectedSufficientBoundary, `${label}.selectedSufficientBoundary`),
+  };
+}
+
+export function parseStatusScopeDecisionSet(value: unknown, label: string): StatusScopeDecisionSet {
+  const record = requireExactKeys(value, ["members"], label);
+  if (!Array.isArray(record.members) || record.members.length !== 3) {
+    throw new ContractError(`${label}.members`, `${label}.members must contain exactly three records`);
+  }
+  const members = record.members.map((value, index) => {
+    const memberLabel = `${label}.members[${index}]`;
+    const member = requireExactKeys(value, STATUS_SCOPE_DECISION_KEYS, memberLabel);
+    return {
+      acceptedOutcomeState: requireString(member.acceptedOutcomeState, `${memberLabel}.acceptedOutcomeState`),
+      actionAuthority: requireString(member.actionAuthority, `${memberLabel}.actionAuthority`),
+      evidenceState: requireString(member.evidenceState, `${memberLabel}.evidenceState`),
+      id: requireString(member.id, `${memberLabel}.id`),
+      operationalConsequence: requireString(member.operationalConsequence, `${memberLabel}.operationalConsequence`),
+      proofPathReadiness: requireString(member.proofPathReadiness, `${memberLabel}.proofPathReadiness`),
+      resourceAvailability: requireString(member.resourceAvailability, `${memberLabel}.resourceAvailability`),
+    };
+  });
+  return { members };
+}
+
 export function parseManifest(value: unknown): RegressionManifest {
   const record = requireExactKeys(value, MANIFEST_KEYS, "manifest");
   if (record.schemaVersion !== SCHEMA_VERSION) throw new ContractError("manifest.schemaVersion", "manifest.schemaVersion must be 1");
@@ -470,15 +621,21 @@ export function parseManifest(value: unknown): RegressionManifest {
     profile: PROFILE,
     sampleByteLimit: SAMPLE_BYTE_LIMIT,
     sampleCount: 3,
-    scenarios: scenarios.map(parseScenario),
+    scenarios: scenarios.map((scenario, index) => parseScenario(scenario, index)),
     schemaVersion: SCHEMA_VERSION,
   };
 }
 
-export function parseDecisionGapPack(value: unknown): DecisionGapPack {
-  const record = requireExactKeys(value, DECISION_PACK_KEYS, "decisionPack");
+export function parseDecisionGapPack(value: unknown, packName: DecisionPackName = "claim-evidence"): DecisionGapPack {
+  const spec = DECISION_PACK_SPECS[packName];
+  const packKeys = packName === "status-scope"
+    ? STATUS_SCOPE_DECISION_PACK_KEYS
+    : packName === "shift-left"
+      ? SHIFT_LEFT_DECISION_PACK_KEYS
+      : DECISION_PACK_KEYS;
+  const record = requireExactKeys(value, packKeys, "decisionPack");
   if (record.schemaVersion !== SCHEMA_VERSION) throw new ContractError("decisionPack.schemaVersion", "decisionPack.schemaVersion must be 1");
-  if (requireString(record.id, "decisionPack.id") !== "claim-evidence-decision-gap-r1") {
+  if (requireString(record.id, "decisionPack.id") !== spec.id) {
     throw new ContractError("decisionPack.id", "decisionPack.id is invalid");
   }
   if (requireString(record.profile, "decisionPack.profile") !== PROFILE) {
@@ -488,11 +645,18 @@ export function parseDecisionGapPack(value: unknown): DecisionGapPack {
     throw new ContractError("decisionPack.expectation", "focused decision packs must use no-regression");
   }
   const sampleCount = requireInteger(record.sampleCountPerArm, "decisionPack.sampleCountPerArm", 1, 1);
-  const requestBound = requireInteger(record.configuredProviderRequestBound, "decisionPack.configuredProviderRequestBound", 8, 8);
+  const requestBound = requireInteger(record.configuredProviderRequestBound, "decisionPack.configuredProviderRequestBound", spec.requestBound, spec.requestBound);
   const pairOrder = requireStringArray(record.pairOrder, "decisionPack.pairOrder");
   if (pairOrder.join(",") !== "B1,C1") throw new ContractError("decisionPack.pairOrder", "decisionPack.pairOrder must be B1,C1");
-  if (!Array.isArray(record.scenarios) || record.scenarios.length !== DECISION_SCENARIO_IDS.length) {
-    throw new ContractError("decisionPack.scenarios", `decisionPack.scenarios must contain exactly ${DECISION_SCENARIO_IDS.length} records`);
+  const statusScope = packName === "status-scope" ? {
+    memberOrder: requireStringArray(record.memberOrder, "decisionPack.memberOrder"),
+    reconstructionRequest: requireString(record.reconstructionRequest, "decisionPack.reconstructionRequest"),
+  } : null;
+  if (statusScope != null && statusScope.memberOrder.join(",") !== "known-resource-path-unknown,resource-unknown-negative-control,compaction-roundtrip-mixed-status") {
+    throw new ContractError("decisionPack.memberOrder", "decisionPack.memberOrder must match CSA-001");
+  }
+  if (!Array.isArray(record.scenarios) || record.scenarios.length !== spec.scenarioIds.length) {
+    throw new ContractError("decisionPack.scenarios", `decisionPack.scenarios must contain exactly ${spec.scenarioIds.length} records`);
   }
   const scenarios: ScenarioRecord[] = [];
   const expectedDecisions: Record<string, ExpectedDecision> = {};
@@ -504,15 +668,30 @@ export function parseDecisionGapPack(value: unknown): DecisionGapPack {
       index,
       { configuredProviderRequestBound: requestBound, sampleCount },
     );
-    if (scenario.id !== DECISION_SCENARIO_IDS[index]) {
-      throw new ContractError(`${label}.id`, `expected ${DECISION_SCENARIO_IDS[index]}`);
+    if (scenario.id !== spec.scenarioIds[index]) {
+      throw new ContractError(`${label}.id`, `expected ${spec.scenarioIds[index]}`);
     }
     scenarios.push(scenario);
-    expectedDecisions[scenario.id] = parseExpectedDecision(row.expectedDecision, `${label}.expectedDecision`);
+    expectedDecisions[scenario.id] = packName === "shift-left"
+      ? parseShiftLeftDecision(row.expectedDecision, `${label}.expectedDecision`)
+      : packName === "status-scope"
+        ? parseStatusScopeDecisionSet(row.expectedDecision, `${label}.expectedDecision`)
+        : parseExpectedDecision(row.expectedDecision, `${label}.expectedDecision`);
+    if (statusScope != null) {
+      const decision = expectedDecisions[scenario.id] as StatusScopeDecisionSet;
+      if (decision.members.map((member) => member.id).join(",") !== statusScope.memberOrder.join(",")) {
+        throw new ContractError(`${label}.expectedDecision.members`, "status-scope expected members must match memberOrder");
+      }
+    }
   }
+  const maximumClaim = packName === "shift-left" || packName === "status-scope"
+    ? requireString(record.maximumClaim, "decisionPack.maximumClaim")
+    : spec.maximumClaim;
+  if (maximumClaim !== spec.maximumClaim) throw new ContractError("decisionPack.maximumClaim", "decisionPack.maximumClaim is invalid");
   return {
+    configuredProviderRequestBound: requestBound,
     expectedDecisions,
-    id: "claim-evidence-decision-gap-r1",
+    id: spec.id,
     manifest: {
       baselinePointerPath: BASELINE_POINTER_PATH,
       captureByteLimit: CAPTURE_BYTE_LIMIT,
@@ -526,6 +705,9 @@ export function parseDecisionGapPack(value: unknown): DecisionGapPack {
       scenarios,
       schemaVersion: SCHEMA_VERSION,
     },
+    maximumClaim,
+    name: packName,
+    ...(statusScope == null ? {} : { statusScope }),
   };
 }
 
@@ -622,7 +804,7 @@ export function verifyFixtureSeed(repoRoot: string, scenario: ScenarioRecord): {
 
 export function resolveValidationCommand(argv: string[], label: string): void {
   const resolution = resolvePortableCommand(argv, process.env);
-  if (!resolution.ok) throw new ContractError(label, `${label} is unresolved: ${resolution.reason}`);
+  if (!resolution.ok) throw new ContractError(label, `${label} is unresolved: ${"reason" in resolution ? resolution.reason : "unknown resolution failure"}`);
 }
 
 export function loadManifest(repoRoot: string, manifestPath = path.join(repoRoot, MANIFEST_PATH)): { digest: string; manifest: RegressionManifest } {
@@ -640,8 +822,9 @@ export function loadManifest(repoRoot: string, manifestPath = path.join(repoRoot
   return { digest: digestOf(manifest), manifest };
 }
 
-export function loadDecisionGapPack(repoRoot: string, packPath = path.join(repoRoot, DECISION_GAP_PACK_PATH)): { digest: string; pack: DecisionGapPack } {
-  const pack = parseDecisionGapPack(JSON.parse(fs.readFileSync(packPath, "utf8")));
+export function loadDecisionGapPack(repoRoot: string, packName: DecisionPackName = "claim-evidence"): { digest: string; pack: DecisionGapPack } {
+  const packPath = path.join(repoRoot, DECISION_PACK_SPECS[packName].path);
+  const pack = parseDecisionGapPack(JSON.parse(fs.readFileSync(packPath, "utf8")), packName);
   for (const scenario of pack.manifest.scenarios) {
     verifyFixtureSeed(repoRoot, scenario);
     resolveValidationCommand(scenario.validationArgv, `${scenario.id}.validationArgv`);

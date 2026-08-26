@@ -11,7 +11,7 @@ import { loadModelProfile } from "../model-profile.ts";
 import { removeProofFixture } from "./lib/proof-process-cleanup.ts";
 
 type Mode = "capture" | "evaluate" | "preflight" | "simulate";
-type Scenario = "campaign" | "one-slice";
+type Scenario = "campaign" | "one-slice" | "two-slice";
 type Options = {
   candidateId: string;
   evidenceRoot: string;
@@ -60,7 +60,7 @@ const permission = {
     "*<*": "deny",
   },
   edit: "allow",
-  external_directory: "allow",
+  external_directory: "deny",
   glob: "allow",
   grep: "allow",
   question: "deny",
@@ -107,7 +107,7 @@ function requiredValue(args: string[], index: number, option: string): string {
 function usage(): string {
   return [
     "Usage:",
-    "  node tools/proofs/roadmap-mission-provider.ts --mode preflight|simulate|capture|evaluate --candidate-id <id> --evidence-root <absolute-new-path> [--profile quality-independent] [--scenario campaign|one-slice]",
+    "  node tools/proofs/roadmap-mission-provider.ts --mode preflight|simulate|capture|evaluate --candidate-id <id> --evidence-root <absolute-new-path> [--profile quality-independent] [--scenario campaign|one-slice|two-slice]",
     "",
     "preflight, simulate, and evaluate are provider-free; capture uses the configured provider in a disposable project.",
   ].join("\n");
@@ -137,7 +137,7 @@ function parseArgs(args: string[]): Options {
       index++;
     } else if (arg === "--scenario") {
       const value = requiredValue(args, index, arg);
-      if (value !== "campaign" && value !== "one-slice") throw new Error("--scenario must be campaign or one-slice");
+      if (value !== "campaign" && value !== "one-slice" && value !== "two-slice") throw new Error("--scenario must be campaign, one-slice, or two-slice");
       scenario = value;
       index++;
     } else throw new Error(`Unknown option: ${arg}`);
@@ -278,22 +278,31 @@ function mission(scenario: Scenario): string {
       ownedPaths: ["openspec/changes/change-c"],
     },
   ];
+  const selectedSlices = scenario === "one-slice"
+    ? slices.slice(0, 1)
+    : scenario === "two-slice"
+    ? [
+        { ...slices[1], dependsOn: [] },
+        { ...slices[0], dependsOn: ["slice-b"] },
+      ]
+    : slices;
+  const protectedCampaign = scenario === "campaign";
   return json({
-    allowedEffects: scenario === "one-slice"
-      ? ["local-read", "local-write", "provider-inference"]
-      : ["hardware", "local-read", "local-write", "provider-inference"],
-    authorizationRefs: scenario === "one-slice"
-      ? { "provider-inference": "configured-provider-proof-standing-authorization" }
-      : {
+    allowedEffects: protectedCampaign
+      ? ["hardware", "local-read", "local-write", "provider-inference"]
+      : ["local-read", "local-write", "provider-inference"],
+    authorizationRefs: protectedCampaign
+      ? {
           hardware: "unavailable-protected-proof-boundary",
           "provider-inference": "configured-provider-proof-standing-authorization",
-        },
+        }
+      : { "provider-inference": "configured-provider-proof-standing-authorization" },
     checkpoint: { localCommitAuthorized: false, mode: "external", workspace: "persistent" },
     evidencePath: "evidence/mission",
     missionId: "configured-provider-proof",
     roadmapPath: "docs/roadmap.md",
     schemaVersion: 1,
-    slices: scenario === "one-slice" ? slices.slice(0, 1) : slices,
+    slices: selectedSlices,
     stopPolicy: { onExternalBlocked: true, onOwnerRequired: true, onUnknown: true },
     validationArgv: ["node", "tools/validate.mjs"],
     workflowOwner: { mode: "global-canonical" },
@@ -508,10 +517,20 @@ function createProject(project: string, globalSource: string, model: string, var
     "import fs from 'node:fs';",
     "import path from 'node:path';",
     "const exact = (file, content) => fs.existsSync(file) && fs.readFileSync(file, 'utf8') === content;",
-    "if (!exact(path.join('src', 'alpha.txt'), 'alpha\\n')) process.exit(1);",
     "const changes = path.join('openspec', 'changes');",
     "const names = fs.existsSync(changes) ? fs.readdirSync(changes, { recursive: true }).map(String) : [];",
-    "if (names.some((name) => name.includes('change-b')) && !exact(path.join('src', 'beta.txt'), 'beta\\n')) process.exit(1);",
+    ...(scenario === "two-slice" ? [
+      "const checked = (change) => {",
+      "  const normalized = names.map((name) => name.replaceAll('\\\\', '/'));",
+      "  const relative = normalized.find((name) => name === `${change}/tasks.md` || name.endsWith(`-${change}/tasks.md`));",
+      "  return relative != null && fs.readFileSync(path.join(changes, relative), 'utf8').includes('- [x] 1.1');",
+      "};",
+      "if (checked('change-a') && !exact(path.join('src', 'alpha.txt'), 'alpha\\n')) process.exit(1);",
+      "if (checked('change-b') && !exact(path.join('src', 'beta.txt'), 'beta\\n')) process.exit(1);",
+    ] : [
+      "if (!exact(path.join('src', 'alpha.txt'), 'alpha\\n')) process.exit(1);",
+      "if (names.some((name) => name.includes('change-b')) && !exact(path.join('src', 'beta.txt'), 'beta\\n')) process.exit(1);",
+    ]),
     "if (names.some((name) => name.includes('change-c')) || fs.existsSync(path.join('src', 'gamma.txt'))) process.exit(1);",
     "process.exit(0);",
     "",
@@ -754,13 +773,36 @@ function evaluate(options: Options, print = true): Record<string, unknown> {
   const simulationCalls = calls?.filter((call) => call.kind === "simulation") ?? [];
   const localFailures = calls?.filter((call) => call.kind === "local-failure") ?? [];
   const executionMode = (raw.environment as Record<string, unknown> | undefined)?.executionMode;
-  const scenario = raw.scenario === "one-slice" ? "one-slice" : "campaign";
+  const scenario = raw.scenario === "one-slice" ? "one-slice" : raw.scenario === "two-slice" ? "two-slice" : "campaign";
   const expectedSimulationCalls = scenario === "one-slice" ? 1 : 2;
   const expectedConfiguredCalls = scenario === "one-slice" ? 1 : 3;
   const expectedSessionCleanup = scenario === "one-slice" ? 1 : 2;
+  const expectedConfiguredSequence = scenario === "one-slice"
+    ? ["slice-a:opsx-apply"]
+    : scenario === "two-slice"
+    ? ["slice-b:opsx-propose", "slice-b:opsx-apply", "slice-a:opsx-apply"]
+    : ["slice-a:opsx-apply", "slice-b:opsx-propose", "slice-b:opsx-apply"];
+  const expectedSimulationSequence = scenario === "two-slice"
+    ? ["slice-b:deterministic-executor", "slice-a:deterministic-executor"]
+    : scenario === "one-slice"
+    ? ["slice-a:deterministic-executor"]
+    : ["slice-a:deterministic-executor", "slice-b:deterministic-executor"];
+  const configuredSequence = configuredCalls.map((call) => `${call.sliceId}:${call.command}`);
+  const simulationSequence = simulationCalls.map((call) => `${call.sliceId}:${call.command}`);
+  const configuredRootsAreFresh = scenario !== "two-slice" || (
+    configuredCalls[0]?.sessionIds[0] != null &&
+    configuredCalls[0]?.sessionIds[0] === configuredCalls[1]?.sessionIds[0] &&
+    configuredCalls[2]?.sessionIds[0] != null &&
+    configuredCalls[2]?.sessionIds[0] !== configuredCalls[0]?.sessionIds[0]
+  );
   const executionComplete = executionMode === "simulation"
-    ? simulationCalls.length === expectedSimulationCalls && simulationCalls.every((call) => call.status === 0)
-    : configuredCalls.length >= expectedConfiguredCalls && configuredCalls.every((call) => call.status === 0 && call.sessionIds.length >= 1);
+    ? simulationCalls.length === expectedSimulationCalls &&
+      simulationCalls.every((call) => call.status === 0) &&
+      json(simulationSequence) === json(expectedSimulationSequence)
+    : configuredCalls.length === expectedConfiguredCalls &&
+      configuredCalls.every((call) => call.status === 0 && call.sessionIds.length >= 1) &&
+      json(configuredSequence) === json(expectedConfiguredSequence) &&
+      configuredRootsAreFresh;
   const cleanupComplete = executionMode === "simulation"
     ? sessionCleanup?.length === 0
     : sessionCleanup?.length != null && sessionCleanup.length >= expectedSessionCleanup && sessionCleanup.every((item) => item.status === 0);
@@ -773,6 +815,14 @@ function evaluate(options: Options, print = true): Record<string, unknown> {
       archiveCount === 1 && archives?.length === 1 && checkpoints?.length === 1 &&
       marker?.alpha === "alpha\n" && marker?.beta == null && marker?.changeCExists === false &&
       successorActivations === 0
+    : scenario === "two-slice"
+    ? controllerRuns?.length === 3 &&
+      controllerRuns[0]?.status === "paused" && controllerRuns[0]?.cursor === 0 &&
+      controllerRuns[1]?.status === "paused" && controllerRuns[1]?.cursor === 1 &&
+      controllerRuns[2]?.status === "complete" && controllerRuns[2]?.cursor === 1 &&
+      archiveCount === 2 && archives?.length === 2 && checkpoints?.length === 2 &&
+      marker?.alpha === "alpha\n" && marker?.beta === "beta\n" && marker?.changeCExists === false &&
+      successorActivations === 1
     : controllerRuns?.length === 3 &&
       controllerRuns[0]?.status === "paused" && controllerRuns[0]?.cursor === 0 &&
       controllerRuns[1]?.status === "paused" && controllerRuns[1]?.cursor === 1 &&
@@ -799,12 +849,15 @@ function evaluate(options: Options, print = true): Record<string, unknown> {
       : controllerRuns?.length === 3
       ? "run-then-two-resume-processes"
       : "not-proven",
-    protectedSlice: scenario === "one-slice"
+    protectedSlice: scenario !== "campaign"
       ? "not-applicable"
       : controllerRuns?.[2]?.cursor === 2 && controllerRuns[2]?.status === "blocked"
       ? "blocked-before-executor"
       : "not-proven",
     retrospectiveTasks: retrospectiveTasks?.length ?? null,
+    rootIsolation: scenario === "two-slice"
+      ? configuredRootsAreFresh && executionComplete ? "fresh-per-slice" : "not-proven"
+      : "not-applicable",
     scenario,
     schemaVersion: 1,
     sessionCleanup: cleanupComplete ? "complete" : "blocked",
@@ -916,7 +969,9 @@ function capture(options: Options): void {
     if (first.exitCode !== 1 || firstReport.status !== "paused" || firstReport.cursor !== 0) {
       throw new Error(`First controller process did not reach the alpha checkpoint: ${first.stderr || first.stdout}`);
     }
-    checkpoints.push(commitCheckpoint(project, env, "slice-a", ["evidence/mission", "openspec/changes", "openspec/specs", "src/alpha.txt"]));
+    const firstSlice = options.scenario === "two-slice" ? "slice-b" : "slice-a";
+    const firstMarker = firstSlice === "slice-a" ? "src/alpha.txt" : "src/beta.txt";
+    checkpoints.push(commitCheckpoint(project, env, firstSlice, ["evidence/mission", "openspec/changes", "openspec/specs", firstMarker]));
 
     const second = controller(project, globalSource, env, "resume", checkpoints[0], remaining());
     controllerProcesses.push(second);
@@ -927,14 +982,20 @@ function capture(options: Options): void {
       }
     } else {
       if (second.exitCode !== 1 || secondReport.status !== "paused" || secondReport.cursor !== 1) {
-        throw new Error(`Second controller process did not reach the beta checkpoint: ${second.stderr || second.stdout}`);
+        throw new Error(`Second controller process did not reach the second-slice checkpoint: ${second.stderr || second.stdout}`);
       }
-      checkpoints.push(commitCheckpoint(project, env, "slice-b", ["evidence/mission", "openspec/changes", "openspec/specs", "src/beta.txt"]));
+      const secondSlice = options.scenario === "two-slice" ? "slice-a" : "slice-b";
+      const secondMarker = secondSlice === "slice-a" ? "src/alpha.txt" : "src/beta.txt";
+      checkpoints.push(commitCheckpoint(project, env, secondSlice, ["evidence/mission", "openspec/changes", "openspec/specs", secondMarker]));
 
       const third = controller(project, globalSource, env, "resume", checkpoints[1], remaining());
       controllerProcesses.push(third);
       const thirdReport = report(third);
-      if (third.exitCode !== 1 || thirdReport.status !== "blocked" || thirdReport.cursor !== 2) {
+      if (options.scenario === "two-slice") {
+        if (third.exitCode !== 0 || thirdReport.status !== "complete" || thirdReport.cursor !== 1) {
+          throw new Error(`Third controller process did not complete the two-slice mission: ${third.stderr || third.stdout}`);
+        }
+      } else if (third.exitCode !== 1 || thirdReport.status !== "blocked" || thirdReport.cursor !== 2) {
         throw new Error(`Third controller process did not stop before the protected slice: ${third.stderr || third.stdout}`);
       }
     }

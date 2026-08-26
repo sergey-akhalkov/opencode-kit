@@ -19,9 +19,9 @@ On Windows, if PowerShell blocks `.ps1` shims, use `npm.cmd run ...` or `node to
 
 `npm run setup:global` combines the MCP and global-config installation steps. The MCP helper installs only missing Serena and Codebase Memory executables; use `npm run install:mcps -- --check` to verify them without mutation.
 
-By default, the global-config installer installs every repository skill and agent globally through the single `all` profile. The repository does not maintain smaller profile splits.
+The global-config installer defaults to the minimal `core` profile. Use `npm run install:global -- --profile all` for the complete compatibility surface, including the autonomous roadmap mission launcher, PTY bridge, completion guard, and portable mission binaries. Generated profiles live under `global/.runtime-profiles/`; replaced roots are retained as rollback backups.
 
-Restart OpenCode after installation because skills, agents, and config-time files are loaded at startup.
+Restart OpenCode after installation because skills, agents, plugins, and config-time files are loaded at startup. After an `all` install, `/mission-status` is read-only, `/mission-stop` records graceful stop intent, and cockpit Kill is an emergency hard stop that can leave paused-unknown state. Roll back to the installer-printed prior profile or prior `OPENCODE_CONFIG_DIR`, restart OpenCode, and run `npm run doctor -- --require unattended`.
 
 ## Bootstrap A Project
 

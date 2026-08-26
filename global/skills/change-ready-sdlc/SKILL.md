@@ -160,7 +160,7 @@ After restart or compaction, reconstruct the accepted outcome, current Candidate
 - `Outcome`: working | blocked | unknown
 - `Candidate Reference`: readable Product Candidate plus runner/evaluator/environment identities when applicable, or none
 - `Raw Evidence Bundle`: immutable observations and lane status, or N/A with reason
-- `Live-Attempt Gate`: clear | blocked | unknown plus governed path/lane; include failure chain, replay coverage/result, and unlock condition when not clear
+- `Live-Attempt Gate`: clear | blocked | unknown plus governed path/lane; name the path/lane and never clear it because another route/outcome works; retain each relevant status dimension/value explicitly rather than as a claim or context pointer; include failure chain, replay coverage/result, and unlock condition when not clear
 - `Runtime Proof`: boundary, input, expected/actual observation, side effects, outcome
 - `Architecture`: touched responsibilities and `split-or-justify` decisions, or N/A with reason
 - `Diagnostics`: exit status, stdout/stderr, relevant log/exception and artifact paths, or N/A with reason

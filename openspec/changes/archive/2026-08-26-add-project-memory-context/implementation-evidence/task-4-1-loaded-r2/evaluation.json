@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "capsuleAppearsExactlyOnce": true,
+    "cleanProjectStatus": true,
+    "compactionRevalidation": true,
+    "curatedSerenaObserved": true,
+    "explicitActiveRecall": true,
+    "explicitInvalidatedRecall": true,
+    "explicitStaleAndMismatch": true,
+    "hookTimeoutFailsClosed": true,
+    "irrelevantCardOmitted": true,
+    "loadedCandidateCreated": true,
+    "loadedCandidateInvalidated": true,
+    "loadedCandidatePromoted": true,
+    "malformedWarningVisible": true,
+    "messageBeforeSystemObserved": true,
+    "noExternalEgress": true,
+    "overLimitFailsClosedWithCurated": true,
+    "privacyRedacted": true,
+    "projectMemoryToolsAdvertised": true,
+    "requestsBounded": true,
+    "rootSelectedProcedureObserved": true,
+    "serverTerminallyStopped": true,
+    "sessionDeliveryToolPreserved": true,
+    "subagentExcluded": true,
+    "systemRevalidation": true
+  },
+  "failed": [],
+  "maximumSupportedClaim": "Pinned OpenCode loaded the current copied session-env plugin and completed the reviewed PMC-001 tool, root, selection, compaction, curated, failure, privacy, and side-effect scenarios against the loopback provider.",
+  "status": "complete"
+}

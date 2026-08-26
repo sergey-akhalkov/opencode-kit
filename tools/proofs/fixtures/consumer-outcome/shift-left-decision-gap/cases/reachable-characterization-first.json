@@ -1,0 +1,29 @@
+{
+  "caseId": "reachable-characterization-first",
+  "acceptedOutcome": "Choose the next action that can reveal the dependency response before building behavior that depends on it.",
+  "currentRung": "direct-source-inspection",
+  "unknownFact": "The real dependency response shape is not yet observed and can invalidate parser, emulator, and orchestration behavior.",
+  "availableBoundaries": [
+    {
+      "id": "read-only-real-characterization",
+      "action": "run-read-only-real-characterization",
+      "reachable": true,
+      "real": true,
+      "protected": false
+    },
+    {
+      "id": "protected-live-operation",
+      "action": "run-protected-live-operation",
+      "reachable": false,
+      "real": true,
+      "protected": true
+    }
+  ],
+  "proposedActions": [
+    { "id": "implement-parser", "dependsOnUnknownFact": true },
+    { "id": "implement-emulator", "dependsOnUnknownFact": true },
+    { "id": "implement-orchestration", "dependsOnUnknownFact": true }
+  ],
+  "protectedActionDispositions": ["not-selected", "selected"],
+  "claimCeilings": ["selected-characterization-decision-only", "protected-live-behavior"]
+}

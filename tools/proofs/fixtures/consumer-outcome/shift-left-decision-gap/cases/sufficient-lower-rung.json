@@ -1,0 +1,27 @@
+{
+  "caseId": "sufficient-lower-rung",
+  "acceptedOutcome": "Observe the complete accepted effect at the first sufficient real boundary.",
+  "currentRung": "provider-free-replay",
+  "unresolvedEquivalenceRisk": false,
+  "availableBoundaries": [
+    {
+      "id": "installed-local-runtime",
+      "action": "run-installed-local-proof",
+      "observesCompleteAcceptedEffect": true,
+      "reachable": true,
+      "real": true,
+      "protected": false
+    },
+    {
+      "id": "protected-end-to-end-runtime",
+      "action": "run-protected-end-to-end-proof",
+      "observesCompleteAcceptedEffect": true,
+      "reachable": true,
+      "real": true,
+      "protected": true
+    }
+  ],
+  "proposedActions": [],
+  "protectedActionDispositions": ["not-selected", "selected"],
+  "claimCeilings": ["installed-local-observation-only", "protected-end-to-end-observation"]
+}

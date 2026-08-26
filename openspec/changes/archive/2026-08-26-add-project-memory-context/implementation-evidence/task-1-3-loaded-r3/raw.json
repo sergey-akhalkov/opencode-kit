@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "attempt": {
+    "runnerSourceSha256": "d16bd34b1e105f2c280d44818bd2abe287a1111dba3b9e30e9649f0f5724843e",
+    "outerTimeoutMs": 180000,
+    "runnerTerminalReportProduced": false
+  },
+  "closure": {
+    "terminallyClosed": true,
+    "liveProcessCountAfter": 0,
+    "terminalMechanism": "OpenCode exhausted downstream connection retries after the runner parent was terminated"
+  },
+  "pluginTrace": {
+    "sha256": "96320ee17463b9bafddf8494b8a37b6e464a80e0a0f0f65087293fcf2e92ecb2",
+    "observed": [
+      "factory-enter",
+      "factory-exit",
+      "message-enter",
+      "message-exit",
+      "system-enter",
+      "system-exit"
+    ],
+    "systemTransformCalls": 54
+  },
+  "runtimeLog": {
+    "bytes": 73576,
+    "sha256": "585cb4fb924b2fc61a5dbadabaed6d4521d44b9fe98e0b68ab237b675ed2a1ca",
+    "facts": [
+      "copied production factory returned all expected session-env and project-memory hooks",
+      "root chat.message returned before the first system transform",
+      "session lookup rejected unresolved route placeholder %7Bid%7D",
+      "isolated startup attempted a ripgrep download",
+      "model transport later failed after the runner parent and loopback listener were terminated"
+    ]
+  },
+  "sideEffects": {
+    "disposableGitStatusBefore": "?? src/\n",
+    "disposableGitStatusAfter": "?? src/\n",
+    "externalEgressAttemptObserved": true,
+    "providerRequestPreserved": false
+  }
+}

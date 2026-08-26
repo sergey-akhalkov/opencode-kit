@@ -8,17 +8,21 @@ import {
   type DecisionGapPack,
   type EnvironmentIdentity,
   type EvaluationResult,
+  type ExpectedDecision,
   type Expectation,
   type FrictionField,
   type FrictionVector,
   type RegressionManifest,
   type SampleEvidence,
   type SourceIdentity,
+  type StatusScopeDecision,
+  type StatusScopeDecisionSet,
   ContractError,
   FRICTION_FIELDS,
   SAMPLE_BYTE_LIMIT,
   CAPTURE_BYTE_LIMIT,
   SCHEMA_VERSION,
+  STATUS_SCOPE_DECISION_KEYS,
   assertPrivacySafe,
   bundleByteLength,
   containsPrivatePath,
@@ -31,6 +35,7 @@ import {
   loadManifest,
   median,
   parseCandidateRequest,
+  parseStatusScopeDecisionSet,
   privacyMarkers,
   stableJson,
 } from "./contracts.ts";
@@ -360,15 +365,32 @@ export type DecisionGapEvaluation = {
     arm: Arm;
     expected: DecisionGapPack["expectedDecisions"][string];
     observed: (DecisionGapPack["expectedDecisions"][string] & { caseId: string }) | null;
+    failures: string[];
     passed: boolean;
     sampleIndex: number;
     scenarioId: string;
   }>;
   digest: string;
+  evaluatorIdentity?: {
+    capture: { baseline: string; candidate: string | null };
+    terminalReplay: string;
+  };
   evaluation: EvaluationResult;
+  maximumClaim: string;
+  statusScopeOracles?: Array<{
+    arm: Arm;
+    expected: StatusScopeDecision;
+    failures: string[];
+    memberId: string;
+    observed: StatusScopeDecision | null;
+    passed: boolean;
+    phase: "main" | "reconstruction";
+    sampleIndex: number;
+    scenarioId: string;
+  }>;
 };
 
-function observedDecision(stdout: string): (DecisionGapPack["expectedDecisions"][string] & { caseId: string }) | null {
+function observedDecision(stdout: string, expected: ExpectedDecision): (ExpectedDecision & { caseId: string }) | null {
   let parsed: unknown;
   try {
     parsed = JSON.parse(stdout.trim());
@@ -377,36 +399,198 @@ function observedDecision(stdout: string): (DecisionGapPack["expectedDecisions"]
   }
   if (parsed == null || typeof parsed !== "object" || Array.isArray(parsed)) return null;
   const record = parsed as Record<string, unknown>;
-  if (Object.keys(record).sort().join(",") !== "caseId,claimDisposition,completionDisposition") return null;
+  const expectedKeys = ["caseId", ...Object.keys(expected)].sort();
+  if (Object.keys(record).sort().join(",") !== expectedKeys.join(",")) return null;
   const caseId = record.caseId;
-  const claimDisposition = record.claimDisposition;
-  const completionDisposition = record.completionDisposition;
   if (typeof caseId !== "string" || caseId.trim() === "") return null;
-  if (claimDisposition !== "blocked" && claimDisposition !== "narrowed" && claimDisposition !== "supported" && claimDisposition !== "unknown") return null;
-  if (completionDisposition !== "allow_stop" && completionDisposition !== "continue") return null;
-  return { caseId, claimDisposition, completionDisposition };
+  for (const [key, expectedValue] of Object.entries(expected)) {
+    const observedValue = record[key];
+    if (typeof expectedValue === "string" && typeof observedValue !== "string") return null;
+    if (Array.isArray(expectedValue) && (!Array.isArray(observedValue) || observedValue.some((item) => typeof item !== "string"))) return null;
+  }
+  return record as ExpectedDecision & { caseId: string };
+}
+
+function decisionFailures(expected: ExpectedDecision, observed: (ExpectedDecision & { caseId: string }) | null, scenarioId: string): string[] {
+  if (observed == null) return ["malformed-observation"];
+  const failures: string[] = [];
+  if (observed.caseId !== scenarioId) failures.push("caseId");
+  for (const [key, expectedValue] of Object.entries(expected)) {
+    if (stableJson(observed[key as keyof ExpectedDecision]) !== stableJson(expectedValue)) failures.push(key);
+  }
+  return failures;
+}
+
+function observedStatusScope(text: string): StatusScopeDecisionSet | null {
+  try {
+    return parseStatusScopeDecisionSet(JSON.parse(text.trim()), "status-scope observation");
+  } catch {
+    return null;
+  }
+}
+
+function statusScopeMemberFailures(expected: StatusScopeDecision, observed: StatusScopeDecision | null): string[] {
+  if (observed == null) return ["malformed-observation"];
+  return STATUS_SCOPE_DECISION_KEYS.filter((key) => observed[key] !== expected[key]);
+}
+
+function evaluateStatusScopePack(input: {
+  baseline: CaptureBundle;
+  candidate?: CaptureBundle;
+  expectation: Expectation | "baseline-establishment";
+  pack: DecisionGapPack;
+}): DecisionGapEvaluation {
+  const scenario = input.pack.manifest.scenarios[0];
+  const expected = input.pack.expectedDecisions[scenario.id] as StatusScopeDecisionSet;
+  const statusScopeOracles: NonNullable<DecisionGapEvaluation["statusScopeOracles"]> = [];
+  const failures: string[] = [];
+  const expectedScenarioDigest = digestOf(input.pack);
+  for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
+    if (bundle == null) continue;
+    if (bundle.scenarioDigest !== expectedScenarioDigest) {
+      failures.push(`status-scope-oracle:${arm}:scenario-digest:${expectedScenarioDigest}:${bundle.scenarioDigest}`);
+    }
+    for (const sample of groupSamples(bundle, arm, scenario.id)) {
+      const evidence = sample.statusScope;
+      if (evidence == null) {
+        failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:missing-evidence`);
+      } else {
+        if (!evidence.summarizeAccepted) failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:summarize`);
+        if (evidence.compactionContext.trim() === "") failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:compaction-context`);
+        if (evidence.error != null) failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:roundtrip-error:${evidence.error.stage}`);
+        if (evidence.providerRequestCount !== 3 || sample.friction.configuredProviderRequestCount !== evidence.providerRequestCount) {
+          failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:provider-request-count`);
+        }
+        if (evidence.messages.toolCalls.length > 0) failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:tool-call`);
+        const summaries = evidence.messages.assistant.filter((message) => message.summary);
+        const responses = evidence.messages.assistant.filter((message) => !message.summary);
+        if (!summaries.some((message) => message.text === evidence.compactionContext)) {
+          failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:summary-readback`);
+        }
+        if (!responses.some((message) => message.text === evidence.reconstructionResponse)) {
+          failures.push(`status-scope:${arm}:${scenario.id}:${sample.sampleIndex}:reconstruction-readback`);
+        }
+      }
+      for (const phase of ["main", "reconstruction"] as const) {
+        const observedSet = evidence == null
+          ? null
+          : observedStatusScope(phase === "main" ? evidence.mainResponse : evidence.reconstructionResponse);
+        for (const [index, expectedMember] of expected.members.entries()) {
+          const observedMember = observedSet?.members[index] ?? null;
+          const rowFailures = statusScopeMemberFailures(expectedMember, observedMember);
+          statusScopeOracles.push({
+            arm,
+            expected: expectedMember,
+            failures: rowFailures,
+            memberId: expectedMember.id,
+            observed: observedMember,
+            passed: rowFailures.length === 0,
+            phase,
+            sampleIndex: sample.sampleIndex,
+            scenarioId: scenario.id,
+          });
+        }
+      }
+    }
+  }
+  const expectedRows = expected.members.length * 2 * (input.candidate == null ? 1 : 2);
+  if (statusScopeOracles.length !== expectedRows) failures.push(`status-scope-oracle:sampleCount:${expectedRows}:${statusScopeOracles.length}`);
+  const verdictOracles = input.candidate == null
+    ? statusScopeOracles
+    : statusScopeOracles.filter((row) => row.arm === "candidate");
+  failures.push(...verdictOracles.flatMap((row) => row.failures.map(
+    (field) => `status-scope-oracle:${row.arm}:${row.phase}:${row.memberId}:${field}`,
+  )));
+  const baselineHasOracleFailure = statusScopeOracles.some((row) => row.arm === "baseline" && !row.passed);
+  if (input.expectation === "improvement" && !baselineHasOracleFailure) {
+    failures.push("status-scope-oracle:no-baseline-failure");
+  }
+  const configuredProviderRequests = [input.baseline, input.candidate]
+    .filter((bundle): bundle is CaptureBundle => bundle != null)
+    .flatMap((bundle) => bundle.samples)
+    .reduce((sum, sample) => sum + sample.friction.configuredProviderRequestCount, 0);
+  if (configuredProviderRequests > input.pack.configuredProviderRequestBound) {
+    failures.push(`status-scope-oracle:pack-provider-bound:${input.pack.configuredProviderRequestBound}:${configuredProviderRequests}`);
+  }
+  const rawBase = evaluateBundle({
+    baseline: input.baseline,
+    candidate: input.candidate,
+    expectation: input.expectation === "improvement" ? "no-regression" : input.expectation,
+    manifest: input.pack.manifest,
+  });
+  const base = input.expectation === "improvement" ? result({
+    baselineMedians: rawBase.baselineMedians,
+    candidateMedians: rawBase.candidateMedians,
+    environmentDigest: rawBase.environmentDigest,
+    expectation: "improvement",
+    improvedField: null,
+    reasons: rawBase.reasons,
+    scenarioDigest: rawBase.scenarioDigest,
+    sourceDigest: rawBase.sourceDigest,
+    status: rawBase.status === "passed-no-regression" && baselineHasOracleFailure
+      ? "passed-improvement"
+      : rawBase.status,
+  }) : rawBase;
+  const evaluation = failures.length === 0 ? base : result({
+    baselineMedians: base.baselineMedians,
+    candidateMedians: base.candidateMedians,
+    environmentDigest: base.environmentDigest,
+    expectation: base.expectation,
+    improvedField: base.improvedField,
+    reasons: [...base.reasons, ...failures],
+    scenarioDigest: base.scenarioDigest,
+    sourceDigest: base.sourceDigest,
+    status: base.status === "blocked" || base.status === "stale-evidence" || failures.some((failure) => failure.includes("digest")) ? "blocked" : "failed",
+  });
+  const value: DecisionGapEvaluation = {
+    decisionOracles: [],
+    digest: "",
+    evaluatorIdentity: {
+      capture: {
+        baseline: input.baseline.evaluatorDigest,
+        candidate: input.candidate?.evaluatorDigest ?? null,
+      },
+      terminalReplay: evaluatorDigest(),
+    },
+    evaluation,
+    maximumClaim: input.pack.maximumClaim,
+    statusScopeOracles,
+  };
+  value.digest = digestOf({ ...value, digest: "" });
+  return value;
 }
 
 export function evaluateDecisionGapPack(input: {
   baseline: CaptureBundle;
   candidate?: CaptureBundle;
-  expectation: Expectation;
+  expectation: Expectation | "baseline-establishment";
   pack: DecisionGapPack;
 }): DecisionGapEvaluation {
+  if (input.pack.name === "status-scope") return evaluateStatusScopePack(input);
   const decisionOracles: DecisionGapEvaluation["decisionOracles"] = [];
+  const identityFailures: string[] = [];
+  const expectedScenarioDigest = digestOf(input.pack);
+  for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
+    if (bundle != null && bundle.scenarioDigest !== expectedScenarioDigest) {
+      identityFailures.push(`decision-oracle:${arm}:scenario-digest:${expectedScenarioDigest}:${bundle.scenarioDigest}`);
+    }
+  }
+  if (input.candidate != null && input.baseline.evaluatorDigest !== input.candidate.evaluatorDigest) {
+    identityFailures.push(`decision-oracle:evaluator-digest:${input.baseline.evaluatorDigest}:${input.candidate.evaluatorDigest}`);
+  }
   for (const scenario of input.pack.manifest.scenarios) {
     const expected = input.pack.expectedDecisions[scenario.id];
     for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
       if (bundle == null) continue;
       for (const sample of groupSamples(bundle, arm, scenario.id)) {
-        const observed = observedDecision(sample.proof.stdout);
+        const observed = observedDecision(sample.proof.stdout, expected);
+        const failures = decisionFailures(expected, observed, scenario.id);
         decisionOracles.push({
           arm,
           expected,
+          failures,
           observed,
-          passed: observed?.caseId === scenario.id
-            && observed.claimDisposition === expected.claimDisposition
-            && observed.completionDisposition === expected.completionDisposition,
+          passed: failures.length === 0,
           sampleIndex: sample.sampleIndex,
           scenarioId: scenario.id,
         });
@@ -421,9 +605,16 @@ export function evaluateDecisionGapPack(input: {
   });
   const expectedRows = input.pack.manifest.scenarios.length * input.pack.manifest.sampleCount * (input.candidate == null ? 1 : 2);
   const failures = decisionOracles
-    .filter((row) => !row.passed)
-    .map((row) => `decision-oracle:${row.arm}:${row.scenarioId}:${row.sampleIndex}`);
+    .flatMap((row) => row.failures.map((field) => `decision-oracle:${row.arm}:${row.scenarioId}:${row.sampleIndex}:${field}`));
+  failures.push(...identityFailures);
   if (decisionOracles.length !== expectedRows) failures.push(`decision-oracle:sampleCount:${expectedRows}:${decisionOracles.length}`);
+  const configuredProviderRequests = [input.baseline, input.candidate]
+    .filter((bundle): bundle is CaptureBundle => bundle != null)
+    .flatMap((bundle) => bundle.samples)
+    .reduce((sum, sample) => sum + sample.friction.configuredProviderRequestCount, 0);
+  if (configuredProviderRequests > input.pack.configuredProviderRequestBound) {
+    failures.push(`decision-oracle:pack-provider-bound:${input.pack.configuredProviderRequestBound}:${configuredProviderRequests}`);
+  }
   const evaluation = failures.length === 0 ? base : result({
     baselineMedians: base.baselineMedians,
     candidateMedians: base.candidateMedians,
@@ -433,9 +624,9 @@ export function evaluateDecisionGapPack(input: {
     reasons: [...base.reasons, ...failures],
     scenarioDigest: base.scenarioDigest,
     sourceDigest: base.sourceDigest,
-    status: base.status === "blocked" || base.status === "stale-evidence" ? base.status : "failed",
+    status: base.status === "blocked" || base.status === "stale-evidence" || identityFailures.length > 0 ? "blocked" : "failed",
   });
-  const value: DecisionGapEvaluation = { decisionOracles, digest: "", evaluation };
+  const value: DecisionGapEvaluation = { decisionOracles, digest: "", evaluation, maximumClaim: input.pack.maximumClaim };
   value.digest = digestOf({ ...value, digest: "" });
   return value;
 }

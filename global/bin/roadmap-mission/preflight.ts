@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../portable-process.ts";
+import { ROADMAP_COMMAND_TIMEOUT_MS } from "./controller-adapter.ts";
 import {
   loadMissionDefinition,
   missionDefinitionDigest,
@@ -38,6 +39,7 @@ export const MISSION_SOURCE_PATHS = [
   "bin/roadmap-mission/preflight.ts",
   "bin/roadmap-mission/session-executor.ts",
   "bin/roadmap-mission/state.ts",
+  "bin/portable-process-supervisor.ts",
   "extensions/session-completion-guard/terminal-certificate.ts",
 ] as const;
 
@@ -100,8 +102,17 @@ function normalizedArtifactText(value: string): string {
   return value.replaceAll("\r\n", "\n").trim();
 }
 
-function runCaptured(root: string, argv: string[], environment?: NodeJS.ProcessEnv): { stdout: string; error: string | null } {
-  const result = runPortableCommand(root, argv, { capture: true, ...(environment == null ? {} : { env: environment }) });
+function runCaptured(
+  root: string,
+  argv: string[],
+  timeoutMs: number,
+  environment?: NodeJS.ProcessEnv,
+): { stdout: string; error: string | null } {
+  const result = runPortableCommand(root, argv, {
+    capture: true,
+    timeoutMs,
+    ...(environment == null ? {} : { env: environment }),
+  });
   if (result.error != null) return { error: result.error.message, stdout: "" };
   if (result.status !== 0) return { error: `${argv[0]} exited ${String(result.status)}`, stdout: "" };
   if (result.stdout.length > 5_000_000) return { error: `${argv[0]} output exceeded 5000000 bytes`, stdout: "" };
@@ -225,9 +236,9 @@ function projectOverlayCheck(root: string): MissionCheck {
 
 function inspectLoadedWorkflow(root: string, globalSource: string): MissionCheck {
   const environment = { ...process.env, OPENCODE_CONFIG_DIR: globalSource };
-  const skillResult = runCaptured(root, ["opencode", "debug", "skill", "--pure"], environment);
+  const skillResult = runCaptured(root, ["opencode", "debug", "skill", "--pure"], ROADMAP_COMMAND_TIMEOUT_MS.inspection, environment);
   if (skillResult.error != null) return blocked("workflow:loaded-identity", `OpenCode skill inspection failed: ${skillResult.error}.`, "unknown");
-  const configResult = runCaptured(root, ["opencode", "debug", "config", "--pure"], environment);
+  const configResult = runCaptured(root, ["opencode", "debug", "config", "--pure"], ROADMAP_COMMAND_TIMEOUT_MS.inspection, environment);
   if (configResult.error != null) return blocked("workflow:loaded-identity", `OpenCode config inspection failed: ${configResult.error}.`, "unknown");
   try {
     const skills = parseJsonOutput(skillResult.stdout, "OpenCode skill inspection");
@@ -309,7 +320,7 @@ function overlapsOwnedPath(file: string, ownedPaths: string[]): boolean {
 }
 
 function gitCheck(root: string, blockingPaths: string[], attributedPaths: string[]): MissionCheck {
-  const top = runCaptured(root, ["git", "rev-parse", "--show-toplevel"]);
+  const top = runCaptured(root, ["git", "rev-parse", "--show-toplevel"], ROADMAP_COMMAND_TIMEOUT_MS.inspection);
   if (top.error != null) return blocked("project:git-state", `Git root inspection failed: ${top.error}.`, "unknown");
   if (!samePath(top.stdout.trim(), root)) return blocked("project:git-state", "--root is not the exact Git worktree root.");
   const commands = [
@@ -319,7 +330,7 @@ function gitCheck(root: string, blockingPaths: string[], attributedPaths: string
   ];
   const dirty = new Set<string>();
   for (const argv of commands) {
-    const result = runCaptured(root, argv);
+    const result = runCaptured(root, argv, ROADMAP_COMMAND_TIMEOUT_MS.inspection);
     if (result.error != null) return blocked("project:git-state", `Git state inspection failed: ${result.error}.`, "unknown");
     for (const file of result.stdout.split("\0").filter(Boolean)) dirty.add(file.replaceAll("\\", "/"));
   }
@@ -343,13 +354,13 @@ function openSpecCheck(
   cursor: number,
 ): MissionCheck {
   const slice = definition.slices[cursor];
-  const version = runCaptured(root, ["openspec", "--version"]);
+  const version = runCaptured(root, ["openspec", "--version"], ROADMAP_COMMAND_TIMEOUT_MS.openSpec);
   if (version.error != null) return blocked("project:openspec-state", `OpenSpec version inspection failed: ${version.error}.`, "unknown");
   const match = version.stdout.trim().match(/^(\d+)\.(\d+)\.(\d+)/);
   if (match == null || Number(match[1]) !== 1 || Number(match[2]) < 6) {
     return blocked("project:openspec-state", `OpenSpec version is unsupported: ${version.stdout.trim() || "unknown"}.`);
   }
-  const listed = runCaptured(root, ["openspec", "list", "--json"]);
+  const listed = runCaptured(root, ["openspec", "list", "--json"], ROADMAP_COMMAND_TIMEOUT_MS.openSpec);
   if (listed.error != null) return blocked("project:openspec-state", `OpenSpec list failed: ${listed.error}.`, "unknown");
   try {
     const output = record(parseJsonOutput(listed.stdout, "OpenSpec list"));
@@ -366,7 +377,7 @@ function openSpecCheck(
       );
     }
     for (const changeId of expected) {
-      const status = runCaptured(root, ["openspec", "status", "--change", changeId, "--json"]);
+      const status = runCaptured(root, ["openspec", "status", "--change", changeId, "--json"], ROADMAP_COMMAND_TIMEOUT_MS.openSpec);
       if (status.error != null) return blocked("project:openspec-state", `OpenSpec status failed for ${changeId}: ${status.error}.`, "unknown");
       const statusOutput = record(parseJsonOutput(status.stdout, `OpenSpec status for ${changeId}`));
       if (statusOutput?.isComplete !== true) return blocked("project:openspec-state", `Active change ${changeId} is not apply-ready.`);

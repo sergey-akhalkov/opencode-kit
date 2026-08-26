@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-project-memory-context",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "project-memory-context",
+      "requirements": [
+        "Project memory is explicitly enabled and project-isolated",
+        "Memory records use a strict append-only Markdown lifecycle",
+        "Recall is deterministic, relevant, and bounded",
+        "Automatic recall excludes stale or contradicted cards",
+        "Memory context is injected only into verified primary root sessions",
+        "Curated Serena memories remain optional and read-only",
+        "Memory preserves privacy and unrelated state",
+        "Invalid memory input fails visibly without disabling OpenCode"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/plugin/session-env.ts",
+    "global/plugin/project-memory",
+    "package.json",
+    "tools/test-project-memory.ts",
+    "tools/test-project-memory-hooks.ts",
+    "tools/proofs/project-memory-context.ts",
+    "tools/proofs/fixtures/project-memory",
+    "tools/proofs/README.md",
+    "docs/project-memory.md"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

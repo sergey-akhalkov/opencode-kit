@@ -1,0 +1,11 @@
+{
+  "candidateId": "task-5-1-install-doctor-r5",
+  "cleanup": "complete",
+  "legacyOverlay": "reported-and-preserved",
+  "newProjectWorkflowCopies": 0,
+  "ordinaryQualification": "pass",
+  "runtimeSurfaceInstall": "all-profile-pass",
+  "schemaVersion": 1,
+  "status": "complete",
+  "unattendedReadiness": "pass"
+}

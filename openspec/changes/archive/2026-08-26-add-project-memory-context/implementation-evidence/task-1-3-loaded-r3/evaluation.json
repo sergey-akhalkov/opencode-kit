@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "classification": "product-and-proof-runner-defects",
+  "checks": {
+    "attemptTerminallyClosed": true,
+    "factoryLoaded": true,
+    "messageBeforeSystemObserved": true,
+    "rootLookupSucceeded": false,
+    "capsuleObserved": false,
+    "providerRequestPreserved": false,
+    "zeroExternalEgress": false
+  },
+  "maximumSupportedClaim": "Pinned OpenCode loaded the copied production factory and invoked root message before system transform, but the SDK argument mismatch failed root lookup closed and the unseeded ripgrep path violated the proof envelope; no capsule or provider-request claim is supported.",
+  "unlockCondition": "Correct the installed SDK session.get argument shape, prove it in focused tests, seed an explicit local ripgrep executable into the isolated cache, and return streaming-compatible fake-provider output before another loaded attempt."
+}

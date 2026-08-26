@@ -1,0 +1,90 @@
+{
+  "decisionOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimCeiling": "selected-characterization-decision-only",
+        "currentRung": "direct-source-inspection",
+        "deferredDependents": [
+          "implement-parser",
+          "implement-emulator",
+          "implement-orchestration"
+        ],
+        "firstAction": "run-read-only-real-characterization",
+        "protectedActionDisposition": "not-selected",
+        "selectedSufficientBoundary": "read-only-real-characterization"
+      },
+      "failures": [],
+      "observed": {
+        "caseId": "reachable-characterization-first",
+        "claimCeiling": "selected-characterization-decision-only",
+        "currentRung": "direct-source-inspection",
+        "deferredDependents": [
+          "implement-parser",
+          "implement-emulator",
+          "implement-orchestration"
+        ],
+        "firstAction": "run-read-only-real-characterization",
+        "protectedActionDisposition": "not-selected",
+        "selectedSufficientBoundary": "read-only-real-characterization"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "reachable-characterization-first"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "claimCeiling": "installed-local-observation-only",
+        "currentRung": "provider-free-replay",
+        "deferredDependents": [
+          "run-protected-end-to-end-proof"
+        ],
+        "firstAction": "run-installed-local-proof",
+        "protectedActionDisposition": "not-selected",
+        "selectedSufficientBoundary": "installed-local-runtime"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "sufficient-lower-rung"
+    }
+  ],
+  "digest": "65f63e3bbe7dd6ce1a697454fc3bb3fd9b17204c1f84844618c4ca3a0147f87f",
+  "evaluation": {
+    "baselineMedians": {
+      "reachable-characterization-first": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 1,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      },
+      "sufficient-lower-rung": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 1,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 4
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "baaba835d2a89df545eb532341295828c1f83155683114ecd5249977aaa8d484",
+    "expectation": "baseline-establishment",
+    "improvedField": null,
+    "reasons": [
+      "baseline.sufficient-lower-rung.1.proof.exitCode",
+      "baseline.sufficient-lower-rung.1.proof.stdout",
+      "decision-oracle:baseline:sufficient-lower-rung:1:malformed-observation"
+    ],
+    "scenarioDigest": "cfc2b67d3d1e1c70a219de8b873a9a3ae2685e8e5b9e77c651d358465a343b7c",
+    "sourceDigest": "f2d8b515c522e55d25a9069d43818c8f992e0c8f08c663ca588b49eae202ea3e",
+    "status": "failed",
+    "digest": "e662b39bc08276e491e31d843e31f620c523a015b2704d732a8e5e65cc0e7c0a",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "two reviewed shift-left decisions for the recorded model, source, prompt, fixture, and environment only"
+}

@@ -14,6 +14,7 @@ import {
 } from "./validators/active-authority.ts";
 import { engineeringQualityAuthorityProblem } from "./validators/engineering-quality.ts";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
+import { PORTABLE_WORKFLOW_RUNTIME_FILES, ROADMAP_MISSION_PLUGIN_FILES } from "./runtime-surface-profile.ts";
 import {
   inspectWorkflowContracts,
   workflowContractDiagnostics,
@@ -625,19 +626,66 @@ const ACTIVE_OPTIONAL_DEFAULT_ROLE_FILES = [
   path.join("agents", "final-candidate-reviewer.md"),
 ] as const;
 
-const ACTIVE_REQUIRED_PORTABLE_TOOL_FILES = [
-  path.join("bin", "openspec-operation-gate.ts"),
-  path.join("bin", "openspec-archive.ts"),
-  path.join("bin", "portable-process.ts"),
-  path.join("bin", "roadmap-mission.ts"),
-  path.join("bin", "roadmap-mission", "contracts.ts"),
-  path.join("bin", "roadmap-mission", "preflight.ts"),
-  path.join("bin", "validate-staged.ts"),
-] as const;
+const ACTIVE_REQUIRED_PORTABLE_TOOL_FILES = PORTABLE_WORKFLOW_RUNTIME_FILES.map((relative) => path.join(...relative.split("/")));
 
 function nodeMajor(): number {
   const match = process.versions.node.match(/^(\d+)\./);
   return match ? Number(match[1]) : 0;
+}
+
+function configuredPluginSource(entry: unknown): string | null {
+  if (typeof entry === "string") return entry;
+  if (Array.isArray(entry) && typeof entry[0] === "string") return entry[0];
+  return null;
+}
+
+function configuredPluginPath(entry: unknown): string | null {
+  const source = configuredPluginSource(entry);
+  if (source == null) return null;
+  try {
+    if (source.startsWith("file:")) return fileURLToPath(source);
+    return path.isAbsolute(source) ? source : null;
+  } catch {
+    return null;
+  }
+}
+
+function missionRuntimeConfigProblems(file: string, globalDir: string): string[] {
+  if (!pathIsFile(file)) return ["opencode.json is missing"];
+  const inspection = inspectOpenCodeConfigText(fs.readFileSync(file, "utf8"));
+  if (inspection.code !== "valid") return ["opencode.json is invalid or unsupported"];
+  const config = inspection.value;
+  const plugins = Array.isArray(config.plugin) ? config.plugin : [];
+  const labels = ["PTY bridge", "mission launcher", "completion guard"];
+  const expected = ROADMAP_MISSION_PLUGIN_FILES.map((relative, index) => ({ label: labels[index], relative }));
+  const problems: string[] = [];
+  const matches = new Map<string, unknown>();
+  for (const plugin of expected) {
+    const expectedPath = path.join(globalDir, ...plugin.relative.split("/"));
+    const exact = plugins.filter((entry) => {
+      const candidate = configuredPluginPath(entry);
+      return candidate != null && sameConfigPath(candidate, expectedPath);
+    });
+    if (exact.length !== 1) problems.push(`${plugin.label} must be configured exactly once`);
+    else matches.set(plugin.label, exact[0]);
+  }
+  const launcher = matches.get("mission launcher");
+  const launcherOptions = Array.isArray(launcher) && typeof launcher[1] === "object" && launcher[1] != null
+    ? launcher[1] as Record<string, unknown>
+    : null;
+  if (launcherOptions == null || typeof launcherOptions.scriptRuntime !== "string" || !pathIsFile(launcherOptions.scriptRuntime)) {
+    problems.push("mission launcher scriptRuntime must name an installed executable");
+  }
+  const guard = matches.get("completion guard");
+  const guardOptions = Array.isArray(guard) && typeof guard[1] === "object" && guard[1] != null
+    ? guard[1] as Record<string, unknown>
+    : null;
+  const issuers = guardOptions?.certificateIssuers;
+  if (!Array.isArray(issuers) || issuers.length !== 1 || issuers[0] !== "roadmap-mission-session-executor") {
+    problems.push("completion guard certificate issuer must be roadmap-mission-session-executor");
+  }
+  if (config.model !== "openai/gpt-5.6-sol") problems.push("mission runtime model must be openai/gpt-5.6-sol");
+  return problems;
 }
 
 function repositoryContract(project: string): RepositoryContract {
@@ -1067,6 +1115,17 @@ function buildReport(
     missingBinaries.length === 0
       ? "Required local unattended executables are available."
       : `Required unattended executables are unavailable: ${missingBinaries.join(", ")}.`,
+    true,
+  );
+
+  const missionRuntimeProblems = missionRuntimeConfigProblems(localPath, resolvedGlobalDir);
+  addCheck(
+    unattendedChecks,
+    "unattended mission runtime",
+    missionRuntimeProblems.length === 0 ? "pass" : "blocked",
+    missionRuntimeProblems.length === 0
+      ? "Installed config loads exactly one PTY bridge, mission launcher, and completion guard with the pinned mission route and executor certificate issuer."
+      : `Installed mission runtime is incomplete: ${missionRuntimeProblems.join("; ")}.`,
     true,
   );
 

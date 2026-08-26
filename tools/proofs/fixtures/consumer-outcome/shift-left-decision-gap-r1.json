@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "shift-left-decision-gap-r1",
+  "profile": "quality-independent",
+  "expectation": "no-regression",
+  "sampleCountPerArm": 1,
+  "configuredProviderRequestBound": 4,
+  "pairOrder": ["B1,C1"],
+  "maximumClaim": "two reviewed shift-left decisions for the recorded model, source, prompt, fixture, and environment only",
+  "governedSourcePaths": [
+    "REPO_AGENTS.md",
+    "global/AGENTS.md",
+    "global/skills/change-ready-sdlc/SKILL.md",
+    "instructions/reusable-project-agent-instructions.md",
+    "instructions/universal-development-loop.md",
+    "templates/project/AGENTS.md"
+  ],
+  "scenarios": [
+    {
+      "id": "reachable-characterization-first",
+      "shape": "openspec-backed",
+      "fixtureId": "reachable-characterization-first",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/shift-left-decision-gap",
+      "initialManifest": {
+        "files": [
+          "cases/reachable-characterization-first.json",
+          "cases/sufficient-lower-rung.json",
+          "check-decision.ts"
+        ]
+      },
+      "request": "Read only cases/reachable-characterization-first.json as the reviewed scenario. Apply the loaded work principles and write decision.json with exactly caseId, currentRung, selectedSufficientBoundary, firstAction, deferredDependents, protectedActionDisposition, and claimCeiling. Use only identifiers present in that case; deferredDependents contains only IDs from proposedActions in their case order, never boundary IDs. Represent an unselected protected boundary with protectedActionDisposition. Select one bounded first action without performing the hypothetical work. Do not use another case file, ask a question, commit, install, access credentials, or perform remote or protected actions. Finish with the focused validation and proof.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "protected-action", "remote"],
+      "expectedOutcome": { "exitCode": 0, "stateFiles": ["decision.json"], "stdoutIncludes": [] },
+      "validationArgv": ["node", "--check", "check-decision.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-decision.ts", "reachable-characterization-first"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"caseId\":\"reachable-characterization-first\",\"claimCeiling\":\"selected-characterization-decision-only\",\"currentRung\":\"direct-source-inspection\",\"deferredDependents\":[\"implement-parser\",\"implement-emulator\",\"implement-orchestration\"],\"firstAction\":\"run-read-only-real-characterization\",\"protectedActionDisposition\":\"not-selected\",\"selectedSufficientBoundary\":\"read-only-real-characterization\"}"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 4,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": { "allow": ["bash", "edit", "read"], "deny": ["external_directory", "question", "task"] },
+      "cleanupOracle": { "fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true },
+      "expectedDecision": {
+        "claimCeiling": "selected-characterization-decision-only",
+        "currentRung": "direct-source-inspection",
+        "deferredDependents": ["implement-parser", "implement-emulator", "implement-orchestration"],
+        "firstAction": "run-read-only-real-characterization",
+        "protectedActionDisposition": "not-selected",
+        "selectedSufficientBoundary": "read-only-real-characterization"
+      }
+    },
+    {
+      "id": "sufficient-lower-rung",
+      "shape": "openspec-backed",
+      "fixtureId": "sufficient-lower-rung",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/shift-left-decision-gap",
+      "initialManifest": {
+        "files": [
+          "cases/reachable-characterization-first.json",
+          "cases/sufficient-lower-rung.json",
+          "check-decision.ts"
+        ]
+      },
+      "request": "Read only cases/sufficient-lower-rung.json as the reviewed scenario. Apply the loaded work principles and write decision.json with exactly caseId, currentRung, selectedSufficientBoundary, firstAction, deferredDependents, protectedActionDisposition, and claimCeiling. Use only identifiers present in that case; deferredDependents contains only IDs from proposedActions in their case order, never boundary IDs. Represent an unselected protected boundary with protectedActionDisposition. Select one bounded first action without performing the hypothetical work. Do not use another case file, ask a question, commit, install, access credentials, or perform remote or protected actions. Finish with the focused validation and proof.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "install", "protected-action", "remote"],
+      "expectedOutcome": { "exitCode": 0, "stateFiles": ["decision.json"], "stdoutIncludes": [] },
+      "validationArgv": ["node", "--check", "check-decision.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-decision.ts", "sufficient-lower-rung"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"caseId\":\"sufficient-lower-rung\",\"claimCeiling\":\"installed-local-observation-only\",\"currentRung\":\"provider-free-replay\",\"deferredDependents\":[],\"firstAction\":\"run-installed-local-proof\",\"protectedActionDisposition\":\"not-selected\",\"selectedSufficientBoundary\":\"installed-local-runtime\"}"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 4,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": { "allow": ["bash", "edit", "read"], "deny": ["external_directory", "question", "task"] },
+      "cleanupOracle": { "fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true },
+      "expectedDecision": {
+        "claimCeiling": "installed-local-observation-only",
+        "currentRung": "provider-free-replay",
+        "deferredDependents": [],
+        "firstAction": "run-installed-local-proof",
+        "protectedActionDisposition": "not-selected",
+        "selectedSufficientBoundary": "installed-local-runtime"
+      }
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-08-25T15:14:53.255Z",
+  "mechanism": "writer-owned-disposable-listener-and-installed-tray-restart",
+  "writer": {
+    "processId": 13388,
+    "executablePath": "C:\\Users\\noilw\\.bun\\bin\\bun.exe"
+  },
+  "installedControllerHash": "2DAFD9EC0B6EAC6E79A72A177462AD893BFBDBF74D6E5D83B9BB9476DE8333EC",
+  "elevated": true,
+  "before": {
+    "candidate": "501a741dad248753b58b442343d64970cc3fb0233bcf19fc7ffd0260bf0f21f9",
+    "identities": {
+      "status": "running",
+      "candidate": "501a741dad248753b58b442343d64970cc3fb0233bcf19fc7ffd0260bf0f21f9",
+      "supervisorProcessId": 11824,
+      "serverRootProcessId": 13800,
+      "listenerProcessId": 5084,
+      "graphifyRootProcessId": 8368,
+      "graphifyListenerProcessId": 3128,
+      "trayColor": "green"
+    },
+    "serverTask": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T18:11:55.0000000+03:00",
+      "lastTaskResult": 267009
+    },
+    "trayTask": {
+      "state": "Running",
+      "lastRunTime": "2026-08-25T18:05:25.0000000+03:00",
+      "lastTaskResult": 267009
+    },
+    "captured": [
+      {
+        "label": "listener",
+        "observation": {
+          "processId": 5084,
+          "parentProcessId": 13800,
+          "creationDate": "08/25/2026 18:12:14",
+          "executablePath": "C:\\Users\\noilw\\.bun\\install\\global\\node_modules\\opencode-ai\\bin\\opencode.exe"
+        }
+      },
+      {
+        "label": "graphifyListener",
+        "observation": {
+          "processId": 3128,
+          "parentProcessId": 8368,
+          "creationDate": "08/25/2026 18:11:59",
+          "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\python\\cpython-3.13-windows-x86_64-none\\python.exe"
+        }
+      },
+      {
+        "label": "graphifyRoot",
+        "observation": {
+          "processId": 8368,
+          "parentProcessId": 11824,
+          "creationDate": "08/25/2026 18:11:59",
+          "executablePath": "C:\\Users\\noilw\\AppData\\Roaming\\uv\\tools\\graphifyy\\Scripts\\python.exe"
+        }
+      },
+      {
+        "label": "serverRoot",
+        "observation": {
+          "processId": 13800,
+          "parentProcessId": 11824,
+          "creationDate": "08/25/2026 18:12:14",
+          "executablePath": "C:\\Users\\noilw\\.bun\\bin\\opencode.exe"
+        }
+      },
+      {
+        "label": "supervisor",
+        "observation": {
+          "processId": 11824,
+          "parentProcessId": 876,
+          "creationDate": "08/25/2026 18:11:55",
+          "executablePath": "C:\\Users\\noilw\\.bun\\bin\\bun.exe"
+        }
+      }
+    ],
+    "portOwners": {
+      "4096": [
+        {
+          "processId": 5084,
+          "localPort": 4096
+        }
+      ],
+      "4097": [
+        {
+          "processId": 3128,
+          "localPort": 4097
+        }
+      ]
+    }
+  },
+  "managedStop": {
+    "args": [
+      "C:\\ProgramData\\OpenCodeWorkstation\\opencode-workstation.ts",
+      "stop"
+    ],
+    "status": 0,
+    "signal": null,
+    "error": null,
+    "stdout": "{\n  \"schemaVersion\": 1,\n  \"operation\": \"stop\",\n  \"status\": \"stopped\",\n  \"recordedProcessIds\": [\n    13800,\n    5084,\n    8368,\n    3128,\n    11824\n  ],\n  \"remainingProcessIds\": [],\n  \"listenerCount\": 0,\n  \"graphifyListenerCount\": 0,\n  \"taskState\": \"Ready\"\n}\n",
+    "stderr": ""
+  },
+  "managedStopped": {
+    "label": "managed-tree-stopped",
+    "ok": true,
+    "waitedMs": 2765
+  },
+  "disposableListener": {
+    "processId": 13388,
+    "hostname": "127.0.0.1",
+    "port": 4096,
+    "process": {
+      "processId": 13388,
+      "parentProcessId": 7256,
+      "creationDate": "08/25/2026 18:14:53",
+      "executablePath": "C:\\Users\\noilw\\.bun\\bin\\bun.exe"
+    }
+  },
+  "commandWrittenAt": "2026-08-25T15:15:51.629Z",
+  "restartingObserved": {
+    "label": "tray-restarting",
+    "ok": true,
+    "waitedMs": 229
+  },
+  "failureObserved": {
+    "label": "ownership-failure",
+    "ok": true,
+    "waitedMs": 5717
+  },
+  "failure": {
+    "errors": [
+      {
+        "operation": "restart",
+        "status": "error",
+        "type": "Error",
+        "message": "Managed task is 'Ready', not Running.",
+        "cause": null
+      }
+    ],
+    "trayColor": "red",
+    "portOwners": [
+      {
+        "processId": 13388,
+        "localPort": 4096
+      }
+    ],
+    "writerAlive": true,
+    "credentialDisclosure": {
+      "server": false,
+      "graphify": false
+    }
+  },
+  "proofPassed": false,
+  "error": "Unmatched-listener refusal or failure-signaling oracle failed",
+  "cleanup": {
+    "taskStop": {
+      "status": 0,
+      "stdout": "Ready",
+      "stderr": ""
+    },
+    "terminations": [
+      {
+        "label": "listener",
+        "processId": 5084,
+        "status": "already-gone"
+      },
+      {
+        "label": "graphifyListener",
+        "processId": 3128,
+        "status": "already-gone"
+      },
+      {
+        "label": "graphifyRoot",
+        "processId": 8368,
+        "status": "already-gone"
+      },
+      {
+        "label": "serverRoot",
+        "processId": 13800,
+        "status": "already-gone"
+      },
+      {
+        "label": "supervisor",
+        "processId": 11824,
+        "status": "already-gone"
+      }
+    ],
+    "disposableReleased": {
+      "label": "disposable-listener-released",
+      "ok": true,
+      "waitedMs": 940
+    },
+    "portsFree": {
+      "label": "managed-ports-free",
+      "ok": true,
+      "waitedMs": 1717
+    },
+    "portOwners": {
+      "4096": [],
+      "4097": []
+    },
+    "restoreCommandWrittenAt": "2026-08-25T15:16:07.306Z",
+    "restored": {
+      "label": "healthy-green-restore",
+      "ok": true,
+      "waitedMs": 66542
+    },
+    "restoreErrors": [],
+    "after": {
+      "identities": {
+        "status": "running",
+        "candidate": "501a741dad248753b58b442343d64970cc3fb0233bcf19fc7ffd0260bf0f21f9",
+        "supervisorProcessId": 5900,
+        "serverRootProcessId": 9340,
+        "listenerProcessId": 11832,
+        "graphifyRootProcessId": 9152,
+        "graphifyListenerProcessId": 2368,
+        "trayColor": "green"
+      },
+      "serverTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T18:16:17.0000000+03:00",
+        "lastTaskResult": 267009
+      },
+      "trayTask": {
+        "state": "Running",
+        "lastRunTime": "2026-08-25T18:05:25.0000000+03:00",
+        "lastTaskResult": 267009
+      },
+      "portOwners": {
+        "4096": [
+          {
+            "processId": 11832,
+            "localPort": 4096
+          }
+        ],
+        "4097": [
+          {
+            "processId": 2368,
+            "localPort": 4097
+          }
+        ]
+      }
+    }
+  },
+  "ok": false,
+  "finishedAt": "2026-08-25T15:17:18.937Z"
+}

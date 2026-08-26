@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
 import { loadMissionDefinition } from "../../global/bin/roadmap-mission/contracts.ts";
 import { MISSION_SOURCE_PATHS } from "../../global/bin/roadmap-mission/preflight.ts";
-import { readMissionStateProjection, readMissionStopIntent, recordMissionStopIntent, recordMissionUnknownPause } from "../../global/bin/roadmap-mission/state.ts";
+import { clearMissionStopIntent, readMissionStateProjection, readMissionStopIntent, recordMissionStopIntent, recordMissionUnknownPause } from "../../global/bin/roadmap-mission/state.ts";
 
 type Options = { candidateId: string; evidenceRoot: string; help: boolean; inputRoot: string | null; mode: "campaign" | "diagnose" | "hard-kill" | "replay" | "stop" };
 
@@ -471,6 +471,98 @@ function run(options: Options): void {
       throw new Error(`Controller replay failed: ${replay.stderr || replay.stdout}`);
     }
 
+    const unknownResumeProject = path.join(fixture, "paused-unknown-resume-project");
+    createProject(unknownResumeProject);
+    fs.writeFileSync(path.join(unknownResumeProject, "controller-adapter.json"), json({
+      executorArgv: ["node", "tools/executor.mjs", "{operation}", "{changeId}", "{sliceId}", "{attempt}", "{resultPath}", "{definitionDigest}", "{missionId}"],
+      maxAttemptsPerSlice: 1,
+      maxWallClockMsPerSlice: 60_000,
+      schemaVersion: 1,
+    }), "utf8");
+    git(unknownResumeProject, ["add", "--", "."]);
+    git(unknownResumeProject, ["commit", "-m", "configure paused-unknown resume fixture"]);
+    const unknownDefinition = loadMissionDefinition(unknownResumeProject, "mission.json");
+    recordMissionStopIntent(unknownResumeProject, unknownDefinition, {
+      controllerPtyRef: "pty-proof-controller",
+      requestedAt: new Date().toISOString(),
+      rootSessionRef: "session-proof-root",
+      source: "slash",
+    });
+    const stoppedResult = invokeController(unknownResumeProject, globalSource, bin, "run");
+    const stoppedReport = controllerReport(stoppedResult, "paused-unknown setup controller") as { status: string };
+    const stoppedState = readMissionStateProjection(unknownResumeProject, unknownDefinition);
+    if (stoppedResult.status !== 1 || stoppedReport.status !== "paused" || stoppedState?.activeOperation != null) {
+      throw new Error(`Paused-unknown setup did not reach a terminal clear pause: ${stoppedResult.stderr || stoppedResult.stdout}`);
+    }
+    clearMissionStopIntent(unknownResumeProject, unknownDefinition);
+    recordMissionUnknownPause(unknownResumeProject, unknownDefinition);
+    const unknownBefore = readMissionStateProjection(unknownResumeProject, unknownDefinition);
+    const unknownResume = invokeController(unknownResumeProject, globalSource, bin, "resume");
+    const unknownAfter = readMissionStateProjection(unknownResumeProject, unknownDefinition);
+    const unknownExecutorCounts = path.join(unknownResumeProject, "evidence", "mission", "executor-counts.json");
+    if (
+      unknownBefore?.disposition !== "paused-unknown" ||
+      unknownBefore.activeOperation != null ||
+      unknownResume.status !== 1 ||
+      !unknownResume.stderr.includes("reconcile writer liveness before resume") ||
+      fs.existsSync(unknownExecutorCounts) ||
+      unknownAfter?.lastTransitionDigest !== unknownBefore.lastTransitionDigest
+    ) {
+      throw new Error(`Paused-unknown resume did not fail closed before executor launch: ${unknownResume.stderr || unknownResume.stdout}`);
+    }
+
+    const oneAttemptProject = path.join(fixture, "one-attempt-successor-project");
+    createProject(oneAttemptProject);
+    fs.writeFileSync(path.join(oneAttemptProject, "controller-adapter.json"), json({
+      executorArgv: ["node", "tools/executor.mjs", "{operation}", "{changeId}", "{sliceId}", "{attempt}", "{resultPath}", "{definitionDigest}", "{missionId}"],
+      maxAttemptsPerSlice: 1,
+      maxWallClockMsPerSlice: 60_000,
+      schemaVersion: 1,
+    }), "utf8");
+    fs.mkdirSync(path.join(oneAttemptProject, "evidence", "mission"), { recursive: true });
+    fs.writeFileSync(path.join(oneAttemptProject, "evidence", "mission", "executor-counts.json"), json({ "slice-a": 1 }), "utf8");
+    git(oneAttemptProject, ["add", "--", "."]);
+    git(oneAttemptProject, ["commit", "-m", "configure one-attempt successor fixture"]);
+    const oneAttemptResult = invokeController(oneAttemptProject, globalSource, bin, "run");
+    const oneAttemptReport = controllerReport(oneAttemptResult, "one-attempt successor controller") as { cursor: number; status: string };
+    const oneAttemptCounts = JSON.parse(fs.readFileSync(path.join(oneAttemptProject, "evidence", "mission", "executor-counts.json"), "utf8")) as Record<string, number>;
+    const oneAttemptKinds = transitionKinds(oneAttemptProject);
+    const successorIndex = oneAttemptKinds.indexOf("successor-activation");
+    if (
+      oneAttemptResult.status !== 1 ||
+      oneAttemptReport.status !== "blocked" ||
+      oneAttemptReport.cursor !== 2 ||
+      oneAttemptCounts["slice-a"] !== 2 ||
+      oneAttemptCounts["slice-b"] !== 1 ||
+      oneAttemptCounts["slice-c"] != null ||
+      successorIndex < 0 ||
+      oneAttemptKinds[successorIndex + 1] !== "session-launch"
+    ) {
+      throw new Error(`One-attempt successor inherited the prior slice budget: ${oneAttemptResult.stderr || oneAttemptResult.stdout}`);
+    }
+
+    const archiveFailureProject = path.join(fixture, "archive-failure-project");
+    createProject(archiveFailureProject);
+    fs.writeFileSync(path.join(archiveFailureProject, "tools", "validate.mjs"), [
+      "import fs from 'node:fs';",
+      "process.exit(fs.existsSync('openspec/changes/change-a/tasks.md') ? 0 : 1);",
+      "",
+    ].join("\n"), "utf8");
+    git(archiveFailureProject, ["add", "--", "."]);
+    git(archiveFailureProject, ["commit", "-m", "configure after-archive validation failure"]);
+    const archiveFailureResult = invokeController(archiveFailureProject, globalSource, bin, "run");
+    const archiveFailureDefinition = loadMissionDefinition(archiveFailureProject, "mission.json");
+    const archiveFailureState = readMissionStateProjection(archiveFailureProject, archiveFailureDefinition);
+    if (
+      archiveFailureResult.status !== 1 ||
+      archiveFailureState?.disposition !== "blocked" ||
+      archiveFailureState.activeOperation != null ||
+      archiveFailureState.lastTransitionKind !== "terminal-stop" ||
+      !archiveFailureResult.stderr.includes("post-archive validation failed")
+    ) {
+      throw new Error(`Archive failure did not persist terminal blocked state with cause: ${archiveFailureResult.stderr || archiveFailureResult.stdout}`);
+    }
+
     const retryProject = path.join(fixture, "retry-project");
     createProject(retryProject);
     fs.writeFileSync(path.join(retryProject, "controller-adapter.json"), json({
@@ -612,6 +704,25 @@ function run(options: Options): void {
       environment: { node: process.version, platform: process.platform },
       executorCounts: counts,
       mode: "campaign",
+      pausedUnknownResume: {
+        activeOperation: unknownAfter.activeOperation,
+        disposition: unknownAfter.disposition,
+        executorStarted: fs.existsSync(unknownExecutorCounts),
+        exitCode: unknownResume.status,
+        stateUnchanged: unknownAfter.lastTransitionDigest === unknownBefore.lastTransitionDigest,
+      },
+      oneAttemptSuccessor: {
+        cursor: oneAttemptReport.cursor,
+        executorCounts: oneAttemptCounts,
+        status: oneAttemptReport.status,
+        transitionAfterActivation: oneAttemptKinds[successorIndex + 1],
+      },
+      archiveFailure: {
+        activeOperationCleared: archiveFailureState.activeOperation == null,
+        causePreserved: archiveFailureResult.stderr.includes("post-archive validation failed"),
+        disposition: archiveFailureState.disposition,
+        transition: archiveFailureState.lastTransitionKind,
+      },
       replay: JSON.parse(replay.stdout),
       persistedRetry: {
         attemptsAfterResume: retryResumeReport.attempts,
@@ -640,6 +751,7 @@ function run(options: Options): void {
         "global/bin/openspec-operation-gate.ts",
         "global/bin/openspec-archive.ts",
         "global/bin/portable-process.ts",
+        "global/bin/portable-process-supervisor.ts",
         "global/bin/roadmap-mission.ts",
         "global/bin/roadmap-mission/contracts.ts",
         "global/bin/roadmap-mission/controller-adapter.ts",
@@ -647,6 +759,7 @@ function run(options: Options): void {
         "global/bin/roadmap-mission/controller-result.ts",
         "global/bin/roadmap-mission/controller.ts",
         "global/bin/roadmap-mission/preflight.ts",
+        "global/bin/roadmap-mission/session-executor.ts",
         "global/bin/roadmap-mission/state.ts",
         "global/extensions/session-completion-guard/terminal-certificate.ts",
       ].map((relative) => ({ path: relative, sha256: digest(fs.readFileSync(path.join(sourceRoot, relative))) })),
@@ -659,6 +772,9 @@ function run(options: Options): void {
       executorCalls: { sliceA: counts["slice-a"], sliceB: counts["slice-b"], sliceC: counts["slice-c"] ?? 0 },
       schemaVersion: 1,
       status: "complete",
+      archiveFailure: "terminal-blocked-with-cause",
+      oneAttemptSuccessor: "launched-with-fresh-budget",
+      pausedUnknownResume: "blocked-before-executor",
       terminalProtectedSlice: "blocked-before-executor",
       persistedRetry: "exhausted-resume-launched-no-executor",
       uncheckedCompletion: "rejected-and-retried",
@@ -1065,6 +1181,14 @@ function replay(options: Options): void {
           executorSequence: record(raw.executorCounts)?.["slice-a"] === 2
             && record(raw.executorCounts)?.["slice-b"] === 1
             && record(raw.executorCounts)?.["slice-c"] == null,
+          oneAttemptSuccessor: record(raw.oneAttemptSuccessor)?.cursor === 2
+            && record(raw.oneAttemptSuccessor)?.status === "blocked"
+            && record(raw.oneAttemptSuccessor)?.transitionAfterActivation === "session-launch"
+            && record(record(raw.oneAttemptSuccessor)?.executorCounts)?.["slice-b"] === 1,
+          pausedUnknownResume: record(raw.pausedUnknownResume)?.disposition === "paused-unknown"
+            && record(raw.pausedUnknownResume)?.activeOperation == null
+            && record(raw.pausedUnknownResume)?.executorStarted === false
+            && record(raw.pausedUnknownResume)?.stateUnchanged === true,
           persistedRetryFinite: record(raw.persistedRetry)?.executorCalls === 2,
           replayValid: record(raw.replay)?.status === "valid",
           transitionChainCompleted: Array.isArray(raw.transitionKinds)

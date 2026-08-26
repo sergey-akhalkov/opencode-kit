@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "changeId": "fix-workstation-restart-reliability",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "local-opencode-workstation",
+      "requirements": [
+        "Restart is ownership-safe and complete",
+        "Persistent tray lamp reports server liveness",
+        "Tray Restart and Exit use the same ownership-safe controller"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "package.json",
+    "tools/proofs/opencode-workstation-install.ts",
+    "tools/test-workstation-restart-critical.ts",
+    "tools/windows/opencode-workstation.ts"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

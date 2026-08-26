@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "members": [
+    {
+      "id": "known-resource-path-unknown",
+      "facts": {
+        "resourceAvailability": "available",
+        "actionAuthority": "authorized",
+        "proofPathReadiness": "unknown",
+        "evidenceState": "incomplete",
+        "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+        "acceptedOutcomeState": "working-via-provider-free-route"
+      }
+    },
+    {
+      "id": "resource-unknown-negative-control",
+      "facts": {
+        "resourceAvailability": "unknown",
+        "actionAuthority": "not-required",
+        "proofPathReadiness": "ready",
+        "evidenceState": "complete",
+        "operationalConsequence": "resource-dependent-action-not-started",
+        "acceptedOutcomeState": "working-via-provider-free-route"
+      }
+    },
+    {
+      "id": "compaction-roundtrip-mixed-status",
+      "facts": {
+        "resourceAvailability": "available",
+        "actionAuthority": "not-authorized",
+        "proofPathReadiness": "blocked",
+        "evidenceState": "complete",
+        "operationalConsequence": "named-live-path-not-run",
+        "acceptedOutcomeState": "working-via-offline-route"
+      }
+    }
+  ]
+}

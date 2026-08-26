@@ -1,0 +1,508 @@
+{
+  "schemaVersion": 2,
+  "changeId": "fix-workstation-restart-reliability",
+  "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+  "environmentId": "windows-node24",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "0b6d180af0d011693a55abd9888d825e214e6c84b0c3b5f0f4607fe504226603",
+      "result": "complete",
+      "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node implementation-evidence/task-4-2-installed-validation.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T17:14:10.709Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-2-installed-validation-r3.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "9adfda18618b464674c884aafa456c71f4600f45e18a1f3ffa77748d422c82d0",
+      "result": "complete",
+      "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "owner-recorded-proof",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node --check tools/windows/opencode-workstation.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T16:40:00.000Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-1-source.md",
+        "implementation-evidence/task-4-2-installed-validation-r3.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "4bdb494aa614e89f01d0ab85a40d3b39d996678d8e76f4d730f7ef0a29ca55ed",
+      "result": "complete",
+      "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-tray-restart",
+        "effects": [
+          "local-process",
+          "programdata"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "installed-tray-restart",
+        "effects": [
+          "local-process",
+          "programdata"
+        ]
+      },
+      "invocation": {
+        "command": "bun implementation-evidence/task-2-2j-tray-restart.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T15:26:35.546Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-2n-install/raw.json",
+        "implementation-evidence/task-2-2n-install/evaluation.json",
+        "implementation-evidence/task-2-2n-tray-restart-raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "5bbeca48e329713fdb16fdda48b53d0a8111b4a685328ecf7c9eec2c17b7c1cf",
+      "result": "complete",
+      "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "unmatched-listener-refusal",
+        "effects": [
+          "local-process",
+          "loopback"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "unmatched-listener-refusal",
+        "effects": [
+          "local-process",
+          "loopback"
+        ]
+      },
+      "invocation": {
+        "command": "bun implementation-evidence/task-3-1-unmatched-listener.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T15:30:30.384Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-1c-raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "1500298cfc741552789b6134c665b8e8c951ab8097287a16c9fb623a277fd653",
+      "result": "complete",
+      "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "desktop-restart-shortcut",
+        "effects": [
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "desktop-restart-shortcut",
+        "effects": [
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "bun implementation-evidence/task-3-2-desktop-restart.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T15:37:56.083Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-2-raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "da902b6b51353c8b305a9beec2d8d7814df6f696f38ee050761d16eedbbf8452",
+      "result": "complete",
+      "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "critical-restart-regression",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "critical-restart-regression",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/run-focused-test.ts tools/test-workstation-restart-critical.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T16:30:00.000Z"
+      },
+      "artifacts": [
+        "history.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "35f810515556b11a89f38ba7f546ba34b28ec738e0b2b4bbc93a1af9d06a830f",
+      "result": "complete",
+      "candidateId": "8e403f654255d4dc9e85f6d17b23613ecdc98a55ac8126c2bb83124f1a6f4dd9",
+      "environmentId": "windows-node24",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-validation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm test; npm run validate:strict; npx openspec validate fix-workstation-restart-reliability --strict",
+        "status": 0,
+        "recordedAt": "2026-08-25T17:14:10.709Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-2-installed-validation.json",
+        "implementation-evidence/task-4-2-installed-validation-r2.json",
+        "implementation-evidence/task-4-2-installed-validation-r3.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "retained",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/start-tray-only.ts",
+          "bytes": 1631,
+          "digest": "8c22c40edfd8688045948599fb28305b4849dc5df11b43c6fac5b5bf44a5b0a8"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-baseline.md",
+          "bytes": 645,
+          "digest": "62621a344601ee2d8211602c577dcf5f3ad4403f3e1d89a6e2e54b047bc6a0d0"
+        },
+        {
+          "path": "implementation-evidence/task-2-1-source.md",
+          "bytes": 494,
+          "digest": "b5844d4f54391ce256148a2bc362268cc819ca40cf19a3d469e2733b7c6ff318"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-graphify-refresh.json",
+          "bytes": 354,
+          "digest": "7f9c058b8313e605ef043fdab00d1f93a26a354de9359bfd5b9342484721b78b"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-graphify-refresh.ts",
+          "bytes": 2940,
+          "digest": "99becb7c3515dfbf381e17e819b66d38f278892c2068d4d1178df32c8a282ea8"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-raw.json",
+          "bytes": 1658,
+          "digest": "ebaad2ec038f575214a94ac0ac9f51d89016630d6fb3824bbcb8dbf824cc128e"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-repair-restart.ts",
+          "bytes": 7850,
+          "digest": "b15cda463838326986b603b8148a459276b3e6c84d9606e46f93eb7aa7f3a44c"
+        },
+        {
+          "path": "implementation-evidence/task-2-2b-raw.json",
+          "bytes": 7603,
+          "digest": "5b14db944e4d5b9190737b836abcab82026d4d38907c46b5eccad057e81c4176"
+        },
+        {
+          "path": "implementation-evidence/task-2-2c-launch.err.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "implementation-evidence/task-2-2c-launch.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "implementation-evidence/task-2-2c-raw.json",
+          "bytes": 1031,
+          "digest": "9fa56ae803ec7a5c019d1d8d99abf3c97c611951c3e0d98238f294852e63142f"
+        },
+        {
+          "path": "implementation-evidence/task-2-2c-restart-only.ts",
+          "bytes": 8583,
+          "digest": "1f4b267338dfe713f8a3be2a0ef61bb17c9cda0ee5d317c5ef4a49e497c89715"
+        },
+        {
+          "path": "implementation-evidence/task-2-2d-per-pid.ts",
+          "bytes": 10143,
+          "digest": "68abcf640732541778f4cc3cd506c460285a62d81383c7bcd77f02fd31d746d4"
+        },
+        {
+          "path": "implementation-evidence/task-2-2d-raw.json",
+          "bytes": 2659,
+          "digest": "736d3f934d775ebad7590a952cd247d2f613fb976f3fa39bac6b27b908a08996"
+        },
+        {
+          "path": "implementation-evidence/task-2-2e-raw.json",
+          "bytes": 2657,
+          "digest": "11773435f8605b4bfedb517092ea22f54f963106720205427676dc566d3be0ef"
+        },
+        {
+          "path": "implementation-evidence/task-2-2f-launch.err.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "implementation-evidence/task-2-2f-launch.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "implementation-evidence/task-2-2f-per-pid.ts",
+          "bytes": 10159,
+          "digest": "082f77fc963a039cb367ef3733fac3f6987a3a72847bce925eebc40cc757a921"
+        },
+        {
+          "path": "implementation-evidence/task-2-2f-raw.json",
+          "bytes": 1696,
+          "digest": "500bbcbc31413e0011473cdd8e9aa8270e0b96cf67e713084bae4812f14ab405"
+        },
+        {
+          "path": "implementation-evidence/task-2-2g-raw.json",
+          "bytes": 4480,
+          "digest": "5678c5bb07dcfac97fdb90b60eb1b2a782facbed65475f801ba39765fda3d91e"
+        },
+        {
+          "path": "implementation-evidence/task-2-2g-restore.ts",
+          "bytes": 11823,
+          "digest": "96063b4d6ded618c64fa507c0b23a08c5d0d69f6c2241e9b8819d6bf3dcb2349"
+        },
+        {
+          "path": "implementation-evidence/task-2-2h-raw.json",
+          "bytes": 7261,
+          "digest": "ffa06b3cb365c86220a1078e9d0d643aa60dabcc9ead89e7c7bee5b404ecd06e"
+        },
+        {
+          "path": "implementation-evidence/task-2-2h-task-first.ts",
+          "bytes": 14295,
+          "digest": "f0d420fa893609feab4ba34ba2336c963ddc3b79d1c2d8fd6bafc012a6a69f7e"
+        },
+        {
+          "path": "implementation-evidence/task-2-2i-launch.stderr.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "implementation-evidence/task-2-2i-launch.stdout.log",
+          "bytes": 0,
+          "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "implementation-evidence/task-2-2i-package-repair.ts",
+          "bytes": 16052,
+          "digest": "2d98e47b7edf2a450b7652df6bd86a7ae5ad55dc76a4105cc823970ceae61e05"
+        },
+        {
+          "path": "implementation-evidence/task-2-2i-raw.json",
+          "bytes": 8814,
+          "digest": "01fa79ee6780265e80f231a5583d9636fa850f51b4971d1803ee27f659f78231"
+        },
+        {
+          "path": "implementation-evidence/task-2-2j-install/evaluation-replay.json",
+          "bytes": 313,
+          "digest": "d410e4892cf99d6a14a0c175a044a51661765636b6d100a3e7118e8b3ca5f05f"
+        },
+        {
+          "path": "implementation-evidence/task-2-2j-install/evaluation.json",
+          "bytes": 377,
+          "digest": "642782f57c3ab9122331e01d38bffaa43128fb66e9755b4a2249e832d378b6db"
+        },
+        {
+          "path": "implementation-evidence/task-2-2j-install/raw.json",
+          "bytes": 44368,
+          "digest": "c6f0fa2dc1f34669b543e881c2f6332f60617e6b04ddc5fdce21008bc1eefb7f"
+        },
+        {
+          "path": "implementation-evidence/task-2-2j-tray-restart-raw.json",
+          "bytes": 5474,
+          "digest": "eccbe6aa0c99f2fd9e5e66a257f4f8e1efced6d4844e1650fca0205c4286aa72"
+        },
+        {
+          "path": "implementation-evidence/task-2-2j-tray-restart.ts",
+          "bytes": 15629,
+          "digest": "6070d08b24b203ffdb47ccd537701c7121be912bcffd415f15b0a9dcf77a5b55"
+        },
+        {
+          "path": "implementation-evidence/task-2-2k-install/evaluation.json",
+          "bytes": 313,
+          "digest": "d410e4892cf99d6a14a0c175a044a51661765636b6d100a3e7118e8b3ca5f05f"
+        },
+        {
+          "path": "implementation-evidence/task-2-2k-install/raw.json",
+          "bytes": 44368,
+          "digest": "c27662673a9db9858838ffad06e5ccea8c71f263d78048ce69b43133e03dfb75"
+        },
+        {
+          "path": "implementation-evidence/task-2-2k-tray-restart-raw.json",
+          "bytes": 6066,
+          "digest": "0137eafdc3f7ca0424f4594289bc2e58d1d7fb5e058d65270d8b086a87085df5"
+        },
+        {
+          "path": "implementation-evidence/task-2-2l-install/evaluation.json",
+          "bytes": 313,
+          "digest": "d410e4892cf99d6a14a0c175a044a51661765636b6d100a3e7118e8b3ca5f05f"
+        },
+        {
+          "path": "implementation-evidence/task-2-2l-install/raw.json",
+          "bytes": 44363,
+          "digest": "6f1ad6c6dcacc6ea4dd11ab70788d35df5003f565a2b88619f56cd9e44088a01"
+        },
+        {
+          "path": "implementation-evidence/task-2-2l-tray-restart-raw.json",
+          "bytes": 669,
+          "digest": "704009a755ef3c5d3ed422eb4028cf32b6790eee3d36e96f8f7a88ac9102b069"
+        },
+        {
+          "path": "implementation-evidence/task-2-2m-tray-restart-raw.json",
+          "bytes": 5580,
+          "digest": "7136bcabcccbcfcef9ea73e7e590c2411403deb121fce3f30a847e888412e3ec"
+        },
+        {
+          "path": "implementation-evidence/task-2-2n-install/evaluation.json",
+          "bytes": 313,
+          "digest": "d410e4892cf99d6a14a0c175a044a51661765636b6d100a3e7118e8b3ca5f05f"
+        },
+        {
+          "path": "implementation-evidence/task-2-2n-install/raw.json",
+          "bytes": 44368,
+          "digest": "094ae62e92e491418edd388b441c9b32a28ed015328e8543637b6319e288420c"
+        },
+        {
+          "path": "implementation-evidence/task-2-2n-tray-restart-raw.json",
+          "bytes": 5577,
+          "digest": "5e9a95a70a2ca897ab09336d5be90c1980120257fb85ec7934ae65176be2db33"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-raw.json",
+          "bytes": 5228,
+          "digest": "4cd5990f076beff72f94c445ab7f068fcd0c824e174db241059dfa5245ee50b1"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-unmatched-listener.ts",
+          "bytes": 18045,
+          "digest": "c18eddf8d336cdca38cd3959b5c1918076ab016995baf993b2ab3a6c0fa7ee1d"
+        },
+        {
+          "path": "implementation-evidence/task-3-1b-raw.json",
+          "bytes": 6715,
+          "digest": "46521f19c0c23d154969b71014bd9aa0270186f88d4c201bc34c1a2b977ea367"
+        },
+        {
+          "path": "implementation-evidence/task-3-1c-raw.json",
+          "bytes": 6670,
+          "digest": "5e67f4c44f082568da60ae0ee625b370bca315f55dea516b7d70c4f935f9bf83"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-desktop-restart.ts",
+          "bytes": 13626,
+          "digest": "d8a76195f1d9db8616026b7c12e7a892d86e2f51417503daab115bf6b729694f"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-raw.json",
+          "bytes": 4179,
+          "digest": "d4a6ce29a3306dcf8b90997df50bd9fb7eb23022deb7928f39898240b825f4d3"
+        },
+        {
+          "path": "implementation-evidence/task-4-2-installed-validation-r2.json",
+          "bytes": 22455,
+          "digest": "a7e3f7eb2b326871f0a12390a21b778c3850d5593b40a50e919858727b178e65"
+        },
+        {
+          "path": "implementation-evidence/task-4-2-installed-validation-r3.json",
+          "bytes": 22488,
+          "digest": "4b4b415262f3b4baf82eeb4880cd44359db3fddce0e3f7893b3835620c6ce523"
+        },
+        {
+          "path": "implementation-evidence/task-4-2-installed-validation.json",
+          "bytes": 12679,
+          "digest": "4b040e15e6b7394434fd388bbb87c3c4f490eb3b55f7237d432498cdefe9a633"
+        },
+        {
+          "path": "implementation-evidence/task-4-2-installed-validation.ts",
+          "bytes": 3554,
+          "digest": "537d6d32c295992b66b1cad9a506415c5084774b2788dc1eaec7f9410fb6ccbd"
+        }
+      ]
+    }
+  ],
+  "claims": []
+}

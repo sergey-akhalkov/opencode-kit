@@ -14,6 +14,9 @@ const globalConfig = path.join(root, "global", "opencode.json");
 const keyPath = String.raw`C:\ProgramData\OpenCodeWorkstation\graphify-api-key`;
 
 function sha(file: string) { return fs.existsSync(file) ? crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex") : null; }
+function sameHash(left: unknown, right: unknown) {
+  return typeof left === "string" && typeof right === "string" && left.toLowerCase() === right.toLowerCase();
+}
 function run(file: string, args: string[], timeout = 240_000) {
   const result = spawnSync(file, args, { cwd: root, encoding: "utf8", windowsHide: true, timeout });
   let output = null;
@@ -26,10 +29,10 @@ function evaluate(raw: any) {
     repaired: raw.operations.install.exitCode === 0 && raw.operations.install.output?.status === "repaired-stopped",
     started: raw.operations.start.exitCode === 0,
     schema2: raw.after.manifest?.schemaVersion === 2,
-    installedHashes: raw.after.manifest?.controller?.sha256 && raw.after.manifest?.sharedTools?.sha256,
+    installedHashes: Boolean(raw.after.manifest?.controller?.sha256 && raw.after.manifest?.sharedTools?.sha256 && raw.after.manifest?.configurationModule?.sha256),
     compositeHealthy: raw.after.status?.health?.healthy === true,
     bothListeners: raw.after.status?.environment?.port?.listenerCount === 1 && raw.after.status?.environment?.graphifyPort?.listenerCount === 1,
-    configManaged: raw.after.configSha256 === raw.after.manifest?.graphify?.configEdit?.managed?.sha256,
+    configManaged: sameHash(raw.after.configSha256, raw.after.manifest?.graphify?.configEdit?.managed?.sha256),
     envReferenceOnly: raw.after.configHasEnvReference === true && raw.after.configContainsCredential === false,
     secretSafe: raw.secretSafe === true,
   };
@@ -37,9 +40,18 @@ function evaluate(raw: any) {
 }
 
 const args = process.argv.slice(2);
+const replayIndex = args.indexOf("--replay-raw");
+if (replayIndex >= 0) {
+  const rawPath = args[replayIndex + 1] ? path.resolve(args[replayIndex + 1]) : null;
+  if (!rawPath || !fs.existsSync(rawPath)) throw new Error("An existing absolute --replay-raw path is required");
+  const evaluation = evaluate(JSON.parse(fs.readFileSync(rawPath, "utf8")));
+  process.stdout.write(`${JSON.stringify(evaluation, null, 2)}\n`);
+  process.exitCode = evaluation.passed ? 0 : 1;
+}
 const evidenceIndex = args.indexOf("--evidence-root");
 const evidenceRoot = evidenceIndex >= 0 ? path.resolve(args[evidenceIndex + 1]) : null;
-if (!evidenceRoot || fs.existsSync(evidenceRoot)) throw new Error("A new absolute --evidence-root is required");
+if (replayIndex < 0 && (!evidenceRoot || fs.existsSync(evidenceRoot))) throw new Error("A new absolute --evidence-root is required");
+if (replayIndex < 0) {
 fs.mkdirSync(evidenceRoot, { recursive: false });
 const raw: any = {
   schemaVersion: 1,
@@ -78,3 +90,4 @@ const evaluation = evaluate(raw);
 fs.writeFileSync(path.join(evidenceRoot, "raw.json"), `${JSON.stringify(raw, null, 2)}\n`, { flag: "wx" });
 fs.writeFileSync(path.join(evidenceRoot, "evaluation.json"), `${JSON.stringify(evaluation, null, 2)}\n`, { flag: "wx" });
 process.exitCode = evaluation.passed ? 0 : 1;
+}

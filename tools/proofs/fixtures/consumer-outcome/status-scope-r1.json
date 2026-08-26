@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "id": "status-scope-r1",
+  "profile": "quality-independent",
+  "expectation": "no-regression",
+  "sampleCountPerArm": 1,
+  "configuredProviderRequestBound": 6,
+  "pairOrder": ["B1,C1"],
+  "maximumClaim": "three reviewed status-scope members for the recorded model, source, prompt, fixture, and environment only",
+  "memberOrder": [
+    "known-resource-path-unknown",
+    "resource-unknown-negative-control",
+    "compaction-roundtrip-mixed-status"
+  ],
+  "reconstructionRequest": "Using only the compacted session context, reconstruct the three reviewed status-scope members. Return exactly one JSON object with a members array in the original order. Each member must contain exactly id, resourceAvailability, actionAuthority, proofPathReadiness, evidenceState, operationalConsequence, and acceptedOutcomeState. Preserve each independently known value without broadening one dimension into another. Do not call tools, ask questions, or perform any action.",
+  "governedSourcePaths": [
+    "global/principles-of-work.md",
+    "global/AGENTS.md",
+    "global/opencode.json.template",
+    "global/model-profiles/quality-independent.json",
+    "global/skills/change-ready-sdlc/SKILL.md"
+  ],
+  "scenarios": [
+    {
+      "id": "status-scope-roundtrip",
+      "shape": "openspec-backed",
+      "fixtureId": "status-scope-roundtrip",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/status-scope",
+      "initialManifest": {
+        "files": [
+          "cases.json",
+          "check-fixture.ts"
+        ]
+      },
+      "request": "Use the STATUS_SCOPE_FACTS JSON appended to this request as the complete reviewed evidence. Return exactly one JSON object with a members array in the supplied order. Each member must contain exactly id, resourceAvailability, actionAuthority, proofPathReadiness, evidenceState, operationalConsequence, and acceptedOutcomeState. Preserve each independently known value without broadening one dimension into another. Do not call tools, ask questions, or perform any action.",
+      "allowedEffects": ["configured-provider-call", "proof-process", "proof-session"],
+      "forbiddenEffects": ["commit", "credential-read", "edit", "install", "protected-action", "remote"],
+      "expectedOutcome": { "exitCode": 0, "stateFiles": [], "stdoutIncludes": [] },
+      "validationArgv": ["node", "--check", "check-fixture.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-fixture.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": ["{\"memberIds\":[\"known-resource-path-unknown\",\"resource-unknown-negative-control\",\"compaction-roundtrip-mixed-status\"],\"schemaVersion\":1}"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 6,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["read"],
+        "deny": ["bash", "edit", "external_directory", "question", "skill", "task", "webfetch"]
+      },
+      "cleanupOracle": { "fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true },
+      "expectedDecision": {
+        "members": [
+          {
+            "id": "known-resource-path-unknown",
+            "resourceAvailability": "available",
+            "actionAuthority": "authorized",
+            "proofPathReadiness": "unknown",
+            "evidenceState": "incomplete",
+            "operationalConsequence": "repeat-live-attempt-blocked-for-named-path",
+            "acceptedOutcomeState": "working-via-provider-free-route"
+          },
+          {
+            "id": "resource-unknown-negative-control",
+            "resourceAvailability": "unknown",
+            "actionAuthority": "not-required",
+            "proofPathReadiness": "ready",
+            "evidenceState": "complete",
+            "operationalConsequence": "resource-dependent-action-not-started",
+            "acceptedOutcomeState": "working-via-provider-free-route"
+          },
+          {
+            "id": "compaction-roundtrip-mixed-status",
+            "resourceAvailability": "available",
+            "actionAuthority": "not-authorized",
+            "proofPathReadiness": "blocked",
+            "evidenceState": "complete",
+            "operationalConsequence": "named-live-path-not-run",
+            "acceptedOutcomeState": "working-via-offline-route"
+          }
+        ]
+      }
+    }
+  ]
+}

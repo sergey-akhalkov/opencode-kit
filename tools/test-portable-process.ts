@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -24,6 +25,42 @@ function makeTempDir(): string {
 
 function rmTempDir(dir: string): void {
   fs.rmSync(dir, { recursive: true, force: true });
+}
+
+function pidAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function terminateTestPid(pid: number): void {
+  if (!pidAlive(pid)) return;
+  if (process.platform === "win32") {
+    spawnSync("taskkill.exe", ["/PID", String(pid), "/T", "/F"], { shell: false, stdio: "ignore", timeout: 10_000 });
+    return;
+  }
+  try {
+    process.kill(pid, "SIGKILL");
+  } catch {
+    // The proof-owned process is already terminal.
+  }
+}
+
+function writeHungTreeProbe(dir: string): { pidFile: string; probe: string } {
+  const pidFile = path.join(dir, "pids.json");
+  const probe = path.join(dir, "hung-tree.mjs");
+  fs.writeFileSync(probe, [
+    'import { spawn } from "node:child_process";',
+    'import fs from "node:fs";',
+    'const child = spawn(process.execPath, ["-e", "setTimeout(() => {}, 60000)"], { stdio: "ignore" });',
+    'fs.writeFileSync(process.argv[2], JSON.stringify({ child: child.pid, parent: process.pid }));',
+    'setTimeout(() => {}, 60000);',
+    '',
+  ].join("\n"), "utf8");
+  return { pidFile, probe };
 }
 
 function writeWindowsShimPair(dir: string): { binDir: string; argvLog: string; ps1Log: string } {
@@ -192,6 +229,58 @@ const tests: ProcessCheck[] = [
         assert((result.status ?? 1) === 0, `Direct Node must succeed.\nstderr=${result.stderr}`);
         assert(result.stdout.includes(JSON.stringify(literal)), "Direct Node must keep the spaced argument intact.");
       } finally {
+        rmTempDir(dir);
+      }
+    },
+  },
+  {
+    name: "bounded capture terminates the owned process tree and preserves timeout evidence",
+    run: () => {
+      const dir = makeTempDir();
+      let pids: { child: number; parent: number } | null = null;
+      try {
+        const { pidFile, probe } = writeHungTreeProbe(dir);
+        const result = runPortableCommand(dir, [process.execPath, probe, pidFile], { capture: true, timeoutMs: 750 });
+        assert(result.timedOut === true, "Bounded command must report its timeout.");
+        assert(result.cleanupState === "terminal", `Owned tree cleanup must be terminal, got ${String(result.cleanupState)}`);
+        assert((result.error as NodeJS.ErrnoException | undefined)?.code === "ETIMEDOUT", "Timeout cause must retain ETIMEDOUT.");
+        assert(fs.existsSync(pidFile), "Hung fixture must publish exact owned process ids.");
+        pids = JSON.parse(fs.readFileSync(pidFile, "utf8")) as { child: number; parent: number };
+        assert(!pidAlive(pids.parent), "Timed-out parent must be terminal before return.");
+        assert(!pidAlive(pids.child), "Timed-out descendant must be terminal before return.");
+      } finally {
+        if (pids != null) {
+          terminateTestPid(pids.child);
+          terminateTestPid(pids.parent);
+        }
+        rmTempDir(dir);
+      }
+    },
+  },
+  {
+    name: "failed tree attestation reports cleanup unknown",
+    run: () => {
+      if (process.platform !== "win32") return;
+      const dir = makeTempDir();
+      let pids: { child: number; parent: number } | null = null;
+      try {
+        const { pidFile, probe } = writeHungTreeProbe(dir);
+        const result = runPortableCommand(dir, [process.execPath, probe, pidFile], {
+          capture: true,
+          env: { ...process.env, ComSpec: path.join(dir, "missing-system32", "cmd.exe") },
+          timeoutMs: 750,
+        });
+        assert(
+          result.timedOut === true,
+          `Unknown cleanup fixture must still retain the timeout cause: ${JSON.stringify({ cleanupState: result.cleanupState, error: result.error?.message, signal: result.signal, status: result.status, stderr: result.stderr })}`,
+        );
+        assert(result.cleanupState === "unknown", `Failed tree attestation must be unknown, got ${String(result.cleanupState)}`);
+        pids = fs.existsSync(pidFile) ? JSON.parse(fs.readFileSync(pidFile, "utf8")) as { child: number; parent: number } : null;
+      } finally {
+        if (pids != null) {
+          terminateTestPid(pids.child);
+          terminateTestPid(pids.parent);
+        }
         rmTempDir(dir);
       }
     },

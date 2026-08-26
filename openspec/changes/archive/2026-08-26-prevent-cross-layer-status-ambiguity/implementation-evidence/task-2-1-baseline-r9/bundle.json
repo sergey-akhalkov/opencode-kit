@@ -1,0 +1,274 @@
+{
+  "byteLength": 23984,
+  "comparisonIdentity": "26eab511d771eb0eb351e3191c9fa7d8655349bd825a6fb1f438aeba5acae4b0",
+  "evaluatorDigest": "5d7801373ba8b471b8bc3f403dfa1a7679ac7e523cb8e71fd0237127d3ca5d0f",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "baseline",
+  "samples": [
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "<installed-opencode>/opencode.exe",
+          "serve",
+          "--hostname",
+          "127.0.0.1",
+          "--port",
+          "<ephemeral>",
+          "--print-logs",
+          "--log-level",
+          "INFO"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"authorized\",\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":\"not-required\",\"proofPathReadiness\":\"ready\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"resource-dependent-action-not-started\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"not-authorized\",\"proofPathReadiness\":\"blocked\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"named-live-path-not-run\",\"acceptedOutcomeState\":\"working-via-offline-route\"}]}\n{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"known\",\"actionAuthority\":null,\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":null},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null}]}"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": [
+          {
+            "modelID": "gpt-5.6-sol",
+            "providerID": "openai"
+          },
+          {
+            "modelID": "gpt-5.6-sol",
+            "providerID": "openai"
+          },
+          {
+            "modelID": "gpt-5.6-sol",
+            "providerID": "openai"
+          }
+        ],
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1|models=c7c7a609062651901a9b9026f7a5afef9b36b4e8cb66d22c4f78a3f9cfb6c057",
+        "initialFixtureDigest": "bbea5c60a433c7e71880dc093bb2457832a83788f33bd73196426c40cb93f3cc",
+        "model": "openai/gpt-5.6-sol/xhigh|compaction=xai/grok-4.6/high",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "62b20a636829db45f1034a7eee9f6c9f92e50cd3af744a45a68b978377ba64b6",
+        "profile": "quality-independent",
+        "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+        "validationArgvDigest": "724bb523237c03ce62aea48fe1f9ce45a84a00f23eafd263686453309f50a837",
+        "variant": "xhigh|compaction=high"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "57d78576529dbae226fe0a910ae6cc71fef0143069c0a4005ec69259b6ca6aab"
+        },
+        {
+          "path": "check-fixture.ts",
+          "sha256": "8a8934fa2c9828ce5fe35cbb991a515928996becc2742a9a940b75eb609be40a"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "edit",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 3,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 0
+      },
+      "hashes": {
+        "sample": "e58c8e330e18c77d2481bf9a6bac41c45b729e2554894caacbbea209acd995bb"
+      },
+      "permissions": {
+        "allow": [
+          "read"
+        ],
+        "deny": [
+          "bash",
+          "edit",
+          "external_directory",
+          "question",
+          "skill",
+          "task",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"memberIds\":[\"known-resource-path-unknown\",\"resource-unknown-negative-control\",\"compaction-roundtrip-mixed-status\"],\"schemaVersion\":1}\n"
+      },
+      "requestSha256": "f15696b6870060c95f3bc6763b9994f351bff8bcfaf9d91814bc236e9509a23f",
+      "sampleIndex": 1,
+      "scenarioId": "status-scope-roundtrip",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "configured-provider-call",
+        "proof-process",
+        "proof-session"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "5737fa1732a9904dd48df8fb2ccb690c976183b1fb72e43c9648d1bdf3a9d668"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/opencode.json.template",
+            "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "66806c9fdea8a57c527976314622f1ffec58844dbd6aaf329992f5a2c76dfc05"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "d4f22f58121bcf62c3c4797073a3f3002ff599035591dd9aafe2fc71e6facf20"
+          }
+        ]
+      },
+      "statusScope": {
+        "compactionContext": "## Original User Goal\n- Transform the supplied `STATUS_SCOPE_FACTS` into exactly one JSON object with a `members` array in supplied order, preserving each status dimension independently.\n\n## Goal Status\n- Completed successfully; the requested JSON object was returned with all identifiers, values, ordering, and required fields preserved.\n\n## Constraints And Decisions\n- No tools, questions, or external actions.\n- Each member contains exactly: `id`, `resourceAvailability`, `actionAuthority`, `proofPathReadiness`, `evidenceState`, `operationalConsequence`, and `acceptedOutcomeState`.\n- No dimension was inferred from or broadened into another.\n\n## Worktree State\n- No repository or worktree activity occurred.\n\n## Changed Files\n- None.\n\n## Validation Evidence\n- Output contains all three members in supplied order:\n  1. `known-resource-path-unknown`\n  2. `resource-unknown-negative-control`\n  3. `compaction-roundtrip-mixed-status`\n- Every output value exactly matches its corresponding supplied fact.\n\n## Failures\n- None.\n\n## Risks\n- The supplied facts independently retain blocked or unknown live-path states despite accepted provider-free/offline outcomes.\n\n## Todos\n- None for the completed transformation.\n\n## Lifecycle State\n- Accepted output delivered; no coding or repository lifecycle applies.\n\n## Live-Attempt Gate: blocked\n- The supplied evidence explicitly states `repeat-live-attempt-blocked-for-named-path` for `known-resource-path-unknown`.\n\n## Failure Chain\n- `proofPathReadiness: unknown` → `evidenceState: incomplete` → `repeat-live-attempt-blocked-for-named-path`.\n\n## Preserved Raw Bundles\n- The complete `STATUS_SCOPE_FACTS` payload remains in the conversation.\n\n## Offline Replay Coverage\n- Full deterministic field projection and ordering were completed from the supplied payload.\n- No live effects were required.\n\n## Terminal Replay Result\n- The requested JSON transformation succeeded.\n- This does not resolve the independently reported unknown proof-path readiness.\n\n## Unlock Condition\n- Identify the exact missing raw observation needed to determine `proofPathReadiness` for `known-resource-path-unknown`; if live capture is required, treat it only as bounded evidence capture.\n\n## Next Strategy\n- Offline, inspect the preserved `STATUS_SCOPE_FACTS` and any separately available named-path evidence to identify the exact missing proof-readiness observation before considering a live attempt.\n\n## Next-Session Action\n- Offline, inspect the preserved `STATUS_SCOPE_FACTS` and any separately available named-path evidence to identify the exact missing proof-readiness observation before considering a live attempt.\n\n## Exact Next Action\n- None unless the independently blocked named live path becomes in scope; the original requested output is complete.\n\n## Session Reflection\n- **Outcome:** Exact requested JSON was delivered.\n- **Slowest Loop Or Largest Time Sink:** None observed.\n- **Concrete Evidence:** One direct transformation response preserved all three supplied records and fields.\n- **Likely Cause And Uncertainty:** No failure occurred; timing is unknown.\n- **Do Not Repeat:** Do not infer resource availability, authority, readiness, evidence completeness, operational consequence, or accepted outcome from another dimension.",
+        "compactionRoute": "xai/grok-4.6/high",
+        "error": null,
+        "mainResponse": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"authorized\",\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":\"not-required\",\"proofPathReadiness\":\"ready\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"resource-dependent-action-not-started\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"not-authorized\",\"proofPathReadiness\":\"blocked\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"named-live-path-not-run\",\"acceptedOutcomeState\":\"working-via-offline-route\"}]}",
+        "mainRoute": "openai/gpt-5.6-sol/xhigh",
+        "messages": {
+          "assistant": [
+            {
+              "agent": "build",
+              "error": null,
+              "finish": "stop",
+              "modelID": "gpt-5.6-sol",
+              "providerID": "openai",
+              "summary": false,
+              "text": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"authorized\",\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":\"not-required\",\"proofPathReadiness\":\"ready\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"resource-dependent-action-not-started\",\"acceptedOutcomeState\":\"working-via-provider-free-route\"},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":\"available\",\"actionAuthority\":\"not-authorized\",\"proofPathReadiness\":\"blocked\",\"evidenceState\":\"complete\",\"operationalConsequence\":\"named-live-path-not-run\",\"acceptedOutcomeState\":\"working-via-offline-route\"}]}"
+            },
+            {
+              "agent": "compaction",
+              "error": null,
+              "finish": "stop",
+              "modelID": "gpt-5.6-sol",
+              "providerID": "openai",
+              "summary": true,
+              "text": "## Original User Goal\n- Transform the supplied `STATUS_SCOPE_FACTS` into exactly one JSON object with a `members` array in supplied order, preserving each status dimension independently.\n\n## Goal Status\n- Completed successfully; the requested JSON object was returned with all identifiers, values, ordering, and required fields preserved.\n\n## Constraints And Decisions\n- No tools, questions, or external actions.\n- Each member contains exactly: `id`, `resourceAvailability`, `actionAuthority`, `proofPathReadiness`, `evidenceState`, `operationalConsequence`, and `acceptedOutcomeState`.\n- No dimension was inferred from or broadened into another.\n\n## Worktree State\n- No repository or worktree activity occurred.\n\n## Changed Files\n- None.\n\n## Validation Evidence\n- Output contains all three members in supplied order:\n  1. `known-resource-path-unknown`\n  2. `resource-unknown-negative-control`\n  3. `compaction-roundtrip-mixed-status`\n- Every output value exactly matches its corresponding supplied fact.\n\n## Failures\n- None.\n\n## Risks\n- The supplied facts independently retain blocked or unknown live-path states despite accepted provider-free/offline outcomes.\n\n## Todos\n- None for the completed transformation.\n\n## Lifecycle State\n- Accepted output delivered; no coding or repository lifecycle applies.\n\n## Live-Attempt Gate: blocked\n- The supplied evidence explicitly states `repeat-live-attempt-blocked-for-named-path` for `known-resource-path-unknown`.\n\n## Failure Chain\n- `proofPathReadiness: unknown` → `evidenceState: incomplete` → `repeat-live-attempt-blocked-for-named-path`.\n\n## Preserved Raw Bundles\n- The complete `STATUS_SCOPE_FACTS` payload remains in the conversation.\n\n## Offline Replay Coverage\n- Full deterministic field projection and ordering were completed from the supplied payload.\n- No live effects were required.\n\n## Terminal Replay Result\n- The requested JSON transformation succeeded.\n- This does not resolve the independently reported unknown proof-path readiness.\n\n## Unlock Condition\n- Identify the exact missing raw observation needed to determine `proofPathReadiness` for `known-resource-path-unknown`; if live capture is required, treat it only as bounded evidence capture.\n\n## Next Strategy\n- Offline, inspect the preserved `STATUS_SCOPE_FACTS` and any separately available named-path evidence to identify the exact missing proof-readiness observation before considering a live attempt.\n\n## Next-Session Action\n- Offline, inspect the preserved `STATUS_SCOPE_FACTS` and any separately available named-path evidence to identify the exact missing proof-readiness observation before considering a live attempt.\n\n## Exact Next Action\n- None unless the independently blocked named live path becomes in scope; the original requested output is complete.\n\n## Session Reflection\n- **Outcome:** Exact requested JSON was delivered.\n- **Slowest Loop Or Largest Time Sink:** None observed.\n- **Concrete Evidence:** One direct transformation response preserved all three supplied records and fields.\n- **Likely Cause And Uncertainty:** No failure occurred; timing is unknown.\n- **Do Not Repeat:** Do not infer resource availability, authority, readiness, evidence completeness, operational consequence, or accepted outcome from another dimension."
+            },
+            {
+              "agent": "build",
+              "error": null,
+              "finish": "stop",
+              "modelID": "gpt-5.6-sol",
+              "providerID": "openai",
+              "summary": false,
+              "text": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"known\",\"actionAuthority\":null,\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":null},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null}]}"
+            }
+          ],
+          "toolCalls": []
+        },
+        "providerRequestCount": 3,
+        "reconstructionResponse": "{\"members\":[{\"id\":\"known-resource-path-unknown\",\"resourceAvailability\":\"known\",\"actionAuthority\":null,\"proofPathReadiness\":\"unknown\",\"evidenceState\":\"incomplete\",\"operationalConsequence\":\"repeat-live-attempt-blocked-for-named-path\",\"acceptedOutcomeState\":null},{\"id\":\"resource-unknown-negative-control\",\"resourceAvailability\":\"unknown\",\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null},{\"id\":\"compaction-roundtrip-mixed-status\",\"resourceAvailability\":null,\"actionAuthority\":null,\"proofPathReadiness\":null,\"evidenceState\":null,\"operationalConsequence\":null,\"acceptedOutcomeState\":null}]}",
+        "server": {
+          "argv": [
+            "<installed-opencode>/opencode.exe",
+            "serve",
+            "--hostname",
+            "127.0.0.1",
+            "--port",
+            "<ephemeral>",
+            "--print-logs",
+            "--log-level",
+            "INFO"
+          ],
+          "executableSha256": "f831518278ded5090c41cc532b16ab80629e980f710a0b46d1e5b605808bb1d9",
+          "signal": "SIGKILL",
+          "status": null,
+          "stderr": "timestamp=2026-08-26T01:14:39.936Z level=INFO run=15d8dbb3 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T01:14:39.939Z level=INFO run=15d8dbb3 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T01:14:39.953Z level=INFO run=15d8dbb3 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:14:40.165Z level=INFO run=15d8dbb3 message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:14:40.166Z level=INFO run=15d8dbb3 message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:14:40.183Z level=INFO run=15d8dbb3 message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-26T01:14:40.197Z level=INFO run=15d8dbb3 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-26T01:14:40.197Z level=INFO run=15d8dbb3 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-26T01:14:40.198Z level=INFO run=15d8dbb3 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:14:40.219Z level=INFO run=15d8dbb3 message=loading path=\"<kit-root>\\\\global\\\\opencode.json\"\ntimestamp=2026-08-26T01:14:40.413Z level=INFO run=15d8dbb3 message=loading path=\"<kit-root>\\\\global\\\\opencode.jsonc\"\ntimestamp=2026-08-26T01:14:40.527Z level=INFO run=15d8dbb3 message=\"all LSPs are disabled\"\ntimestamp=2026-08-26T01:14:40.528Z level=INFO run=15d8dbb3 message=\"all formatters are disabled\"\ntimestamp=2026-08-26T01:14:40.528Z level=INFO run=15d8dbb3 message=init\ntimestamp=2026-08-26T01:14:40.657Z level=INFO run=15d8dbb3 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-26T01:14:40.659Z level=INFO run=15d8dbb3 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-26T01:14:40.937Z level=INFO run=15d8dbb3 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-26T01:14:42.853Z level=INFO run=15d8dbb3 message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-26T01:14:42.866Z level=INFO run=15d8dbb3 message=created id=ses_fc45dc4cdffe1if0vpTPl2qC4H slug=swift-comet version=1.18.23 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/consumer-outcome-status-scope-7jqgtc/fixture workspaceID=undefined parentID=undefined title=consumer-outcome-baseline-status-scope agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787706882866 time.updated=1787706882866\ntimestamp=2026-08-26T01:14:42.935Z level=INFO run=15d8dbb3 message=loop session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H step=0\ntimestamp=2026-08-26T01:14:43.088Z level=WARN run=15d8dbb3 message=\"server unavailable\" key=graphify-global type=remote status=failed\ntimestamp=2026-08-26T01:14:48.177Z level=INFO run=15d8dbb3 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-26T01:14:48.179Z level=INFO run=15d8dbb3 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-26T01:14:48.326Z level=INFO run=15d8dbb3 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-26T01:14:48.345Z level=INFO run=15d8dbb3 message=process session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H messageID=msg_03ba23b79001XLQ1qBlb7hMqyk\ntimestamp=2026-08-26T01:14:48.347Z level=INFO run=15d8dbb3 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H small=false agent=build mode=primary\ntimestamp=2026-08-26T01:14:48.358Z level=INFO run=15d8dbb3 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-26T01:14:53.148Z level=INFO run=15d8dbb3 message=loop session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H step=1\ntimestamp=2026-08-26T01:14:53.149Z level=INFO run=15d8dbb3 message=\"exiting loop\" session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H\ntimestamp=2026-08-26T01:14:53.200Z level=INFO run=15d8dbb3 message=loop session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H step=0\ntimestamp=2026-08-26T01:14:53.206Z level=INFO run=15d8dbb3 message=process session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H messageID=msg_03ba26394001oIXk5tugUIsi3Q\ntimestamp=2026-08-26T01:14:53.207Z level=INFO run=15d8dbb3 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H small=false agent=compaction mode=primary\ntimestamp=2026-08-26T01:14:53.217Z level=INFO run=15d8dbb3 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-26T01:15:14.047Z level=INFO run=15d8dbb3 message=loop session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H step=1\ntimestamp=2026-08-26T01:15:14.048Z level=INFO run=15d8dbb3 message=\"exiting loop\" session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H\ntimestamp=2026-08-26T01:15:14.116Z level=INFO run=15d8dbb3 message=loop session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H step=0\ntimestamp=2026-08-26T01:15:14.154Z level=INFO run=15d8dbb3 message=process session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H messageID=msg_03ba2b546001yCCta0wcvp9zYs\ntimestamp=2026-08-26T01:15:14.155Z level=INFO run=15d8dbb3 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H small=false agent=build mode=primary\ntimestamp=2026-08-26T01:15:14.158Z level=INFO run=15d8dbb3 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-26T01:15:38.010Z level=INFO run=15d8dbb3 message=loop session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H step=1\ntimestamp=2026-08-26T01:15:38.012Z level=INFO run=15d8dbb3 message=\"exiting loop\" session.id=ses_fc45dc4cdffe1if0vpTPl2qC4H\ntimestamp=2026-08-26T01:15:38.054Z level=INFO run=15d8dbb3 message=\"removing share\" sessionID=ses_fc45dc4cdffe1if0vpTPl2qC4H\n",
+          "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:62912\n"
+        },
+        "sessionID": "ses_fc45dc4cdffe1if0vpTPl2qC4H",
+        "summarizeAccepted": true
+      },
+      "toolCalls": [],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-fixture.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "64454936f0a923bc11baa5fe94823aaff6ac4833d813fbd05a82d496d0dfd99c",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "87f0575bd28bb01de4ca89ab7602c67c7fea9be576736441e1b5c831ce6315fc",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "5737fa1732a9904dd48df8fb2ccb690c976183b1fb72e43c9648d1bdf3a9d668"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/opencode.json.template",
+        "sha256": "17ef16035e2c5ca7538b6d2e65ef0fdb198dd68e5132c83e60f2a4264de9f0be"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "66806c9fdea8a57c527976314622f1ffec58844dbd6aaf329992f5a2c76dfc05"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "d4f22f58121bcf62c3c4797073a3f3002ff599035591dd9aafe2fc71e6facf20"
+      }
+    ]
+  }
+}

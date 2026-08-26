@@ -42,6 +42,8 @@ const controllerSourcePath = fileURLToPath(import.meta.url)
 const installedControllerPath = path.join(protectedRoot, "opencode-workstation.ts")
 const sharedToolsSourcePath = path.join(path.dirname(controllerSourcePath), "opencode-shared-tools.ts")
 const installedSharedToolsPath = path.join(protectedRoot, "opencode-shared-tools.ts")
+const configurationModuleSourcePath = path.join(path.dirname(controllerSourcePath), "opencode-workstation-config.ts")
+const installedConfigurationModulePath = path.join(protectedRoot, "opencode-workstation-config.ts")
 const manifestPath = path.join(protectedRoot, "manifest.json")
 const credentialPath = path.join(protectedRoot, "server-password")
 const graphifyCredentialPath = path.join(protectedRoot, "graphify-api-key")
@@ -869,6 +871,10 @@ function installationPlan(tools, environment) {
       source: fileIdentity(sharedToolsSourcePath),
       installedPath: installedSharedToolsPath,
     },
+    configurationModule: {
+      source: fileIdentity(configurationModuleSourcePath),
+      installedPath: installedConfigurationModulePath,
+    },
     protectedRoot,
     acl: {
       root: ["SYSTEM:F", "BUILTIN\\Administrators:F", "BUILTIN\\Users:RX"],
@@ -923,6 +929,16 @@ function verifyInstalledSharedTools(manifest) {
   const actual = sha256File(installedSharedToolsPath)
   if (actual !== manifest.sharedTools.sha256) {
     throw new Error(`Installed shared-tool module hash mismatch: expected ${manifest.sharedTools.sha256}, observed ${actual}.`)
+  }
+  return actual
+}
+
+function verifyInstalledConfigurationModule(manifest) {
+  if (manifest.schemaVersion !== 2 || !manifest.configurationModule) throw new Error("Managed workstation configuration module is not installed.")
+  if (!existsSync(installedConfigurationModulePath)) throw new Error("Installed workstation configuration module is missing.")
+  const actual = sha256File(installedConfigurationModulePath)
+  if (actual !== manifest.configurationModule.sha256) {
+    throw new Error(`Installed workstation configuration module hash mismatch: expected ${manifest.configurationModule.sha256}, observed ${actual}.`)
   }
   return actual
 }
@@ -998,7 +1014,7 @@ async function waitForHealth(password, validateBeforeProbe, timeoutMilliseconds 
   return last
 }
 
-async function waitForValidatedRunningState(manifest, timeoutMilliseconds = 60_000) {
+async function waitForValidatedRunningState(manifest, timeoutMilliseconds = 120_000) {
   const deadline = Date.now() + timeoutMilliseconds
   let lastError = new Error("Managed server has not published running state.")
   while (Date.now() < deadline) {
@@ -1119,11 +1135,13 @@ function installedObservation(snapshot) {
   const manifest = loadManifest()
   const controllerHash = verifyInstalledController(manifest)
   const sharedToolsHash = manifest.schemaVersion === 2 ? verifyInstalledSharedTools(manifest) : null
+  const configurationModuleHash = manifest.schemaVersion === 2 ? verifyInstalledConfigurationModule(manifest) : null
   return {
     installed: true,
     integrity: "complete",
     controllerHash,
     sharedToolsHash,
+    configurationModuleHash,
     credentialPresent: existsSync(credentialPath),
     graphifyCredentialPresent: existsSync(graphifyCredentialPath),
     statePresent: existsSync(statePath),
@@ -1209,6 +1227,7 @@ async function launch(repository) {
   const manifest = loadManifest()
   verifyInstalledController(manifest)
   verifyInstalledSharedTools(manifest)
+  verifyInstalledConfigurationModule(manifest)
   if (!Object.hasOwn(manifest.repositories, repository)) throw new Error(`Repository '${repository}' is not in the protected manifest.`)
   const currentRepositories = repositoryIdentities(manifest.repositories)
   const repositoryPath = manifest.repositories[repository]
@@ -1289,10 +1308,13 @@ async function install(configurationPath) {
     }
     const sourceIdentity = fileIdentity(controllerSourcePath)
     const sharedToolsIdentity = fileIdentity(sharedToolsSourcePath)
+    const configurationModuleIdentity = fileIdentity(configurationModuleSourcePath)
     const temporaryController = `${installedControllerPath}.${process.pid}.new`
     const previousController = `${installedControllerPath}.${process.pid}.previous`
     const temporarySharedTools = `${installedSharedToolsPath}.${process.pid}.new`
     const previousSharedTools = `${installedSharedToolsPath}.${process.pid}.previous`
+    const temporaryConfigurationModule = `${installedConfigurationModulePath}.${process.pid}.new`
+    const previousConfigurationModule = `${installedConfigurationModulePath}.${process.pid}.previous`
     const originalManifest = readFileSync(manifestPath)
     const previousManifest = JSON.parse(originalManifest.toString("utf8"))
     const ordinaryPath = path.join(process.env.APPDATA ?? "", "alacritty", "alacritty.toml")
@@ -1308,6 +1330,7 @@ async function install(configurationPath) {
       ]),
     )
     const previousSharedToolsExisted = existsSync(installedSharedToolsPath)
+    const previousConfigurationModuleExisted = existsSync(installedConfigurationModulePath)
     const previousGraphifyCredentialExisted = existsSync(graphifyCredentialPath)
     let appliedGraphifyConfig = null
     const graphifyConfigPlan = manifest.schemaVersion === 1
@@ -1315,6 +1338,7 @@ async function install(configurationPath) {
       : null
     if (manifest.schemaVersion === 2) {
       verifyInstalledSharedTools(manifest)
+      if (manifest.configurationModule) verifyInstalledConfigurationModule(manifest)
       manifest.graphify.configEdit = await refreshManagedGraphifyConfigEdit(manifest, configuration.graphify)
     }
     for (const id of previousManifest.createdShortcutIds) {
@@ -1324,33 +1348,49 @@ async function install(configurationPath) {
     }
     copyFileSync(controllerSourcePath, temporaryController)
     copyFileSync(sharedToolsSourcePath, temporarySharedTools)
+    copyFileSync(configurationModuleSourcePath, temporaryConfigurationModule)
     const copiedIdentity = fileIdentity(temporaryController)
     if (copiedIdentity.sha256 !== sourceIdentity.sha256) {
       rmSync(temporaryController, { force: true })
       throw new Error("Repaired controller copy hash mismatch.")
     }
     if (fileIdentity(temporarySharedTools).sha256 !== sharedToolsIdentity.sha256) {
+      rmSync(temporaryController, { force: true })
       rmSync(temporarySharedTools, { force: true })
+      rmSync(temporaryConfigurationModule, { force: true })
       throw new Error("Repaired shared-tool module copy hash mismatch.")
+    }
+    if (fileIdentity(temporaryConfigurationModule).sha256 !== configurationModuleIdentity.sha256) {
+      rmSync(temporaryController, { force: true })
+      rmSync(temporarySharedTools, { force: true })
+      rmSync(temporaryConfigurationModule, { force: true })
+      throw new Error("Repaired workstation configuration module copy hash mismatch.")
     }
     try {
       renameSync(installedControllerPath, previousController)
       renameSync(temporaryController, installedControllerPath)
       if (previousSharedToolsExisted) renameSync(installedSharedToolsPath, previousSharedTools)
       renameSync(temporarySharedTools, installedSharedToolsPath)
+      if (previousConfigurationModuleExisted) renameSync(installedConfigurationModulePath, previousConfigurationModule)
+      renameSync(temporaryConfigurationModule, installedConfigurationModulePath)
       if (!previousGraphifyCredentialExisted) {
         writeFileSync(graphifyCredentialPath, `${randomBytes(32).toString("base64url")}\n`, { encoding: "utf8", flag: "wx" })
         applyCredentialAcl(graphifyCredentialPath)
       }
       if (graphifyConfigPlan) appliedGraphifyConfig = applyGraphifyConfigPlan(graphifyConfigPlan, graphifyConfigBackupPath)
       manifest.schemaVersion = 2
-      manifest.candidate = sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}`)
+      manifest.candidate = sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}:${configurationModuleIdentity.sha256}`)
       manifest.controller.sourcePath = controllerSourcePath
       manifest.controller.sha256 = sourceIdentity.sha256
       manifest.sharedTools = {
         sourcePath: sharedToolsSourcePath,
         installedPath: installedSharedToolsPath,
         sha256: sharedToolsIdentity.sha256,
+      }
+      manifest.configurationModule = {
+        sourcePath: configurationModuleSourcePath,
+        installedPath: installedConfigurationModulePath,
+        sha256: configurationModuleIdentity.sha256,
       }
       manifest.graphify = {
         configuration: environment.graphify,
@@ -1394,6 +1434,7 @@ async function install(configurationPath) {
       writeJsonAtomic(manifestPath, manifest)
       rmSync(previousController, { force: true })
       rmSync(previousSharedTools, { force: true })
+      rmSync(previousConfigurationModule, { force: true })
       return {
         schemaVersion: 1,
         operation: "install",
@@ -1414,6 +1455,9 @@ async function install(configurationPath) {
       if (existsSync(installedSharedToolsPath)) rmSync(installedSharedToolsPath, { force: true })
       if (existsSync(previousSharedTools)) renameSync(previousSharedTools, installedSharedToolsPath)
       if (existsSync(temporarySharedTools)) rmSync(temporarySharedTools, { force: true })
+      if (existsSync(installedConfigurationModulePath)) rmSync(installedConfigurationModulePath, { force: true })
+      if (existsSync(previousConfigurationModule)) renameSync(previousConfigurationModule, installedConfigurationModulePath)
+      if (existsSync(temporaryConfigurationModule)) rmSync(temporaryConfigurationModule, { force: true })
       if (!previousGraphifyCredentialExisted) rmSync(graphifyCredentialPath, { force: true })
       writeFileSync(manifestPath, originalManifest)
       if (ordinaryBytes) writeFileSync(ordinaryPath, ordinaryBytes)
@@ -1470,6 +1514,7 @@ async function install(configurationPath) {
   const created = { root: false, task: false, shortcuts: [], alacritty: false, graphifyConfig: null }
   const sourceIdentity = fileIdentity(controllerSourcePath)
   const sharedToolsIdentity = fileIdentity(sharedToolsSourcePath)
+  const configurationModuleIdentity = fileIdentity(configurationModuleSourcePath)
   const environment = candidate.environment
   const plan = candidate.installationPlan
   try {
@@ -1484,6 +1529,9 @@ async function install(configurationPath) {
     copyFileSync(sharedToolsSourcePath, installedSharedToolsPath)
     const installedSharedToolsIdentity = fileIdentity(installedSharedToolsPath)
     if (installedSharedToolsIdentity.sha256 !== sharedToolsIdentity.sha256) throw new Error("Installed shared-tool module copy hash mismatch.")
+    copyFileSync(configurationModuleSourcePath, installedConfigurationModulePath)
+    const installedConfigurationModuleIdentity = fileIdentity(installedConfigurationModulePath)
+    if (installedConfigurationModuleIdentity.sha256 !== configurationModuleIdentity.sha256) throw new Error("Installed workstation configuration module copy hash mismatch.")
 
     const password = randomBytes(32).toString("base64url")
     writeFileSync(credentialPath, `${password}\n`, { encoding: "utf8", flag: "wx" })
@@ -1495,7 +1543,7 @@ async function install(configurationPath) {
 
     const manifest = {
       schemaVersion: 2,
-      candidate: sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}`),
+      candidate: sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}:${configurationModuleIdentity.sha256}`),
       installedAt: new Date().toISOString(),
       owner: {
         user: snapshot.user,
@@ -1516,6 +1564,11 @@ async function install(configurationPath) {
         sourcePath: sharedToolsSourcePath,
         installedPath: installedSharedToolsPath,
         sha256: installedSharedToolsIdentity.sha256,
+      },
+      configurationModule: {
+        sourcePath: configurationModuleSourcePath,
+        installedPath: installedConfigurationModulePath,
+        sha256: installedConfigurationModuleIdentity.sha256,
       },
       graphify: {
         configuration: environment.graphify,
@@ -1607,6 +1660,7 @@ async function start() {
   const manifest = loadManifest()
   verifyInstalledController(manifest)
   verifyInstalledSharedTools(manifest)
+  verifyInstalledConfigurationModule(manifest)
   const currentSnapshot = windowsSnapshot()
   const listeners = snapshotListeners(currentSnapshot)
   const graphifyListeners = inspectGraphifyListeners()
@@ -1827,21 +1881,37 @@ function validateManagedRunningState(manifest, snapshot) {
 }
 
 function validateManagedStopState(manifest, snapshot) {
+  const currentListeners = snapshotListeners(snapshot)
+  const currentGraphifyListeners = inspectGraphifyListeners()
+  if (!taskMatches(snapshot, manifest)) throw new Error("Managed task identity does not match the protected manifest.")
+  if (snapshot.task.state !== "Running") {
+    if (currentListeners.length > 0) {
+      throw new Error("Current port owner does not match the managed listener identity.")
+    }
+    if (currentGraphifyListeners.length > 0) {
+      throw new Error("Current Graphify port owner does not match the managed listener identity.")
+    }
+    throw new Error(`Managed task is '${snapshot.task.state}', not Running.`)
+  }
   const state = readManagedTaskState(manifest, snapshot)
   if (state.status !== "running" && state.status !== "starting" && state.status !== "degraded") {
+    if (currentListeners.length > 0) {
+      throw new Error("Current port owner does not match the managed listener identity.")
+    }
+    if (currentGraphifyListeners.length > 0) {
+      throw new Error("Current Graphify port owner does not match the managed listener identity.")
+    }
     throw new Error(`Managed server state is '${state.status}', not running.`)
   }
   const supervisor = requireMatchingProcess("supervisor", state.supervisor)
   const serverRoot = requireMatchingProcess("serverRoot", state.serverRoot)
   if (serverRoot.parentProcessId !== supervisor.processId) throw new Error("Managed server root is no longer a child of the supervisor.")
-  const currentListeners = snapshotListeners(snapshot)
   let graphifyRoot
   let graphifyListener
   if (state.graphify?.root && processAlive(state.graphify.root.processId)) {
     graphifyRoot = requireMatchingProcess("Graphify root", state.graphify.root)
     if (graphifyRoot.parentProcessId !== supervisor.processId) throw new Error("Managed Graphify root is no longer a child of the supervisor.")
   }
-  const currentGraphifyListeners = inspectGraphifyListeners()
   if (currentGraphifyListeners.length > 1) throw new Error("Multiple current Graphify port owners exist.")
   if (state.graphify?.listener && processAlive(state.graphify.listener.processId) && graphifyRoot) {
     graphifyListener = requireMatchingListener(graphifyRoot, state.graphify.listener)
@@ -1855,8 +1925,23 @@ function validateManagedStopState(manifest, snapshot) {
   if (state.status === "running") {
     const expectedListener = state.listeners?.[0]
     if (!expectedListener) throw new Error("Managed server state has no listener identity.")
-    const listener = requireMatchingListener(serverRoot, expectedListener)
-    if (currentListeners.length !== 1 || currentListeners[0].processId !== listener.processId) {
+    let listener
+    if (processAlive(expectedListener.processId)) {
+      listener = requireMatchingListener(serverRoot, expectedListener)
+    }
+    if (currentListeners.length > 1) {
+      throw new Error("Current port owner does not match the managed listener identity.")
+    }
+    if (currentListeners.length === 1) {
+      const current = currentListeners[0]
+      if (!listenerOwnedByServerRoot(current.processId, serverRoot.processId)) {
+        throw new Error("Current port owner does not match the managed listener identity.")
+      }
+      if (listener && listener.processId !== current.processId) {
+        throw new Error("Current port owner does not match the managed listener identity.")
+      }
+      if (!listener) listener = processObservation(current.processId)
+    } else if (listener) {
       throw new Error("Current port owner does not match the managed listener identity.")
     }
     return { state, supervisor, serverRoot, listener, graphifyRoot, graphifyListener }
@@ -2066,6 +2151,7 @@ async function serve() {
   const manifest = loadManifest()
   verifyInstalledController(manifest)
   verifyInstalledSharedTools(manifest)
+  verifyInstalledConfigurationModule(manifest)
   const password = readCredential()
   const graphifyPassword = readGraphifyCredential()
   if (snapshotListeners(snapshot).length > 0) throw new Error("Port 4096 is already owned; serve mode refused startup.")
@@ -2272,6 +2358,7 @@ function rollbackDryRun() {
   const checks = {
     controllerHash: verifyInstalledController(manifest) === manifest.controller.sha256,
     sharedToolsHash: verifyInstalledSharedTools(manifest) === manifest.sharedTools.sha256,
+    configurationModuleHash: verifyInstalledConfigurationModule(manifest) === manifest.configurationModule.sha256,
     taskRunLevel: snapshot.task.runLevel === "Highest",
     taskTriggerCount: snapshot.task.triggerCount === 0,
     taskActionCount: snapshot.task.actionCount === 1,
@@ -2362,11 +2449,15 @@ async function preflight(configurationPath) {
   } catch (error) {
     if (!existsSync(manifestPath)) throw error
     const manifest = loadManifest()
-    if (manifest.schemaVersion !== 2 || !sameHash(sha256File(opencodeConfigPath), manifest.graphify.configEdit.managed.sha256)) throw error
+    if (manifest.schemaVersion !== 2) throw error
+    const refreshed = await refreshManagedGraphifyConfigEdit(manifest, configuration.graphify)
+    if (path.resolve(refreshed.path) !== path.resolve(opencodeConfigPath)) {
+      throw new Error("Managed Graphify configuration path drifted; refusing preflight.", { cause: error })
+    }
     configEdit = {
       status: "already-managed",
       source: fileIdentity(opencodeConfigPath),
-      rollback: manifest.graphify.configEdit.original,
+      rollback: refreshed.original,
       projection: { type: "remote", url: GRAPHIFY_ENDPOINT, authorization: "Bearer {env:OPENCODE_GRAPHIFY_API_KEY}" },
     }
   }

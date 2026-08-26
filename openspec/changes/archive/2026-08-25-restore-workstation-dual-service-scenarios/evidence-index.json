@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "changeId": "restore-workstation-dual-service-scenarios",
+  "candidateId": "restore-workstation-dual-service-scenarios-r1",
+  "environmentId": "repository-spec",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "272d626dded3102628802cc9a578c23d38fd94eaf8ee5c339e2be1812b3fa808",
+      "result": "complete",
+      "candidateId": "restore-workstation-dual-service-scenarios-r1",
+      "environmentId": "repository-spec",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-strict-validation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-strict-validation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npx openspec validate restore-workstation-dual-service-scenarios --strict; npm test",
+        "status": 0,
+        "recordedAt": "2026-08-25T17:42:04.953Z"
+      },
+      "artifacts": [
+        "specs/local-opencode-workstation/spec.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [],
+  "claims": []
+}

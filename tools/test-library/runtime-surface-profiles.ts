@@ -21,6 +21,7 @@ import {
   CORE_COMMANDS,
   CORE_FILES,
   CORE_SKILLS,
+  ROADMAP_MISSION_PLUGIN_FILES,
   inspectRuntimeSurfaceProfiles,
   listCommandNames,
   loadRuntimeSurfaceProfile,
@@ -259,6 +260,23 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
         );
         const readback = readbackRuntimeSurfaceTree(libraryRoot, targetRoot, resolved.entries);
         assert(readback.length === 0, `${profileName} generated tree mismatches: ${readback.join("; ")}`);
+        const config = JSON.parse(fs.readFileSync(path.join(targetRoot, "opencode.json"), "utf8")) as Record<string, unknown>;
+        const serializedConfig = JSON.stringify(config).replaceAll("\\", "/");
+        assert(!serializedConfig.includes("__OPENCODE_"), `${profileName} generated config must materialize every placeholder.`);
+        assert(!serializedConfig.includes(".staging-"), `${profileName} generated config must not retain staging paths.`);
+        for (const relative of ["principles-of-work.md", "opencode.local.instructions.md"]) {
+          const expected = path.join(targetRoot, relative).replaceAll("\\", "/");
+          assert(serializedConfig.includes(expected), `${profileName} generated config must reference final ${relative}.`);
+        }
+        if (profileName === "all") {
+          const plugins = Array.isArray(config.plugin) ? config.plugin : [];
+          assert(config.model === "openai/gpt-5.6-sol", "Generated all config must retain the pinned mission model.");
+          for (const relative of ROADMAP_MISSION_PLUGIN_FILES) {
+            const expected = path.join(targetRoot, ...relative.split("/")).replaceAll("\\", "/");
+            const matching = plugins.filter((entry) => JSON.stringify(entry).replaceAll("\\", "/").includes(expected));
+            assert(matching.length === 1, `Generated all config must load ${relative} exactly once from the final profile root.`);
+          }
+        }
       }
     },
   },

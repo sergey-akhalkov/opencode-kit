@@ -11,6 +11,7 @@ import {
   isExportLineFor,
   removeExportLine,
 } from "./install-opencode-global.ts";
+import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "./runtime-surface-profile.ts";
 import { runPortableCommand } from "../global/bin/portable-process.ts";
 type ProcessResult = {
   exitCode: number;
@@ -143,18 +144,8 @@ const LOCAL_INSTRUCTIONS_PLACEHOLDER = "__OPENCODE_CONFIG_DIR__/opencode.local.i
 const LOCAL_INSTRUCTIONS_EXAMPLE = "# Machine-Local OpenCode Preferences\n\nFixture personal instructions example.\n";
 
 function writeFixturePortableTools(fixtureGlobal: string): void {
-  const binDir = path.join(fixtureGlobal, "bin");
-  fs.mkdirSync(binDir, { recursive: true });
-  for (const name of [
-    "openspec-operation-gate.ts",
-    "openspec-archive.ts",
-    "portable-process.ts",
-    "roadmap-mission.ts",
-    "roadmap-mission/contracts.ts",
-    "roadmap-mission/preflight.ts",
-    "validate-staged.ts",
-  ]) {
-    const target = path.join(binDir, name);
+  for (const name of PORTABLE_WORKFLOW_RUNTIME_FILES) {
+    const target = path.join(fixtureGlobal, ...name.split("/"));
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, `// fixture portable tool ${name}\n`, "utf8");
   }
@@ -181,11 +172,20 @@ function writeFixtureRuntimeProfiles(repoDir: string): void {
     skills: [],
   };
   fs.writeFileSync(path.join(profilesDir, "core.json"), `${JSON.stringify(core, null, 2)}\n`);
+  fs.writeFileSync(path.join(profilesDir, "all.json"), `${JSON.stringify({
+    ...core,
+    configMode: "all-compatibility",
+    description: "Fixture all profile.",
+    directories: ["global/bin", "global/extensions", "global/plugin", "global/plugins"],
+    name: "all",
+  }, null, 2)}\n`);
 }
 
 function writeFixtureGlobalSkeleton(fixtureGlobal: string, templateText = "{}\n"): void {
   fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
+  fs.mkdirSync(path.join(fixtureGlobal, "plugin"), { recursive: true });
+  fs.mkdirSync(path.join(fixtureGlobal, "plugins"), { recursive: true });
   fs.writeFileSync(path.join(fixtureGlobal, "AGENTS.md"), "# Fixture\n", "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "principles-of-work.md"), "# Fixture Principles\n", "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateText, "utf8");
@@ -237,6 +237,46 @@ function readFakeProcessCalls(log: string): FakeProcessCall[] {
 }
 
 const tests: { name: string; run: () => void }[] = [
+  {
+    name: "installer materializes and checks a complete mission-capable all profile",
+    run: () => {
+      const { copiedInstaller, dir, fixtureGlobal } = prepareCopiedInstaller("materialize-all-profile");
+      try {
+        fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), `${JSON.stringify({
+          $schema: "https://opencode.ai/config.json",
+          instructions: [PRINCIPLES_PLACEHOLDER, LOCAL_INSTRUCTIONS_PLACEHOLDER],
+          model: "openai/gpt-5.6-sol",
+          permission: "allow",
+          plugin: [
+            "__OPENCODE_CONFIG_DIR__/extensions/opencode-pty-bridge.ts",
+            ["__OPENCODE_CONFIG_DIR__/extensions/roadmap-mission-launcher.ts", { scriptRuntime: "__OPENCODE_SCRIPT_RUNTIME__" }],
+            ["__OPENCODE_CONFIG_DIR__/extensions/session-completion-guard.ts", { certificateIssuers: ["roadmap-mission-session-executor"] }],
+          ],
+        }, null, 2)}\n`, "utf8");
+        const install = invokeCopiedInstaller(copiedInstaller, dir, ["--profile", "all"]);
+        assertSuccess(install, "Copied installer must materialize the all profile.");
+        const generated = path.join(dir, "global", ".runtime-profiles", "all");
+        const config = JSON.parse(fs.readFileSync(path.join(generated, "opencode.json"), "utf8")) as Record<string, unknown>;
+        assert(config.model === "openai/gpt-5.6-sol", "Generated all profile must retain the pinned model.");
+        assert(!JSON.stringify(config).includes("__OPENCODE_"), "Generated all profile must materialize every placeholder.");
+        const check = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: generated });
+        assertSuccess(check, "Installer check must accept the complete generated all profile.");
+        const printed = invokeCopiedInstaller(copiedInstaller, dir, ["--print", "--profile", "all"]);
+        assertSuccess(printed, "Explicit all-profile print must succeed.");
+        assertOutputContains(printed, buildExportLine(generated), "Explicit all-profile print must use the generated target.");
+        const profileFile = path.join(dir, ".profile");
+        const persisted = invokeCopiedInstaller(copiedInstaller, dir, ["--persist-script", profileFile, "--profile", "all"]);
+        assertSuccess(persisted, "Explicit all-profile persistence must succeed.");
+        assert(fs.readFileSync(profileFile, "utf8") === `${buildExportLine(generated)}\n`, "Explicit all-profile persistence must target the generated root.");
+        fs.rmSync(path.join(generated, "extensions", "roadmap-mission-launcher.ts"));
+        const missing = invokeCopiedInstaller(copiedInstaller, dir, ["--check"], { [ENV_VAR]: generated });
+        assertFailure(missing, "Installer check must reject a generated all profile with a missing launcher.");
+        assertOutputContains(missing, "Missing generated all/extensions/roadmap-mission-launcher.ts", "Generated-profile check must identify the missing launcher.");
+      } finally {
+        rmTempDir(path.dirname(dir));
+      }
+    },
+  },
   {
     name: "installer rejects missing portable global bin tools without exposing machine-local config contents",
     run: () => {
@@ -937,16 +977,19 @@ const tests: { name: string; run: () => void }[] = [
       const generatedBefore = fs.existsSync(generatedHome) ? fs.readdirSync(generatedHome).sort() : [];
       const core = invokeInstaller(["--dry-run", "--profile", "core"]);
       const all = invokeInstaller(["--dry-run", "--profile", "all"]);
+      const allPreview = invokeInstaller(["--preview-profile", "--profile", "all"], { [ENV_VAR]: globalPath });
       const preview = invokeInstaller(["--plan-migration", "--profile", "core"], { [ENV_VAR]: globalPath });
       const existing = invokeInstaller(["--dry-run"], { [ENV_VAR]: globalPath });
       const fresh = invokeInstaller(["--dry-run"], { [ENV_VAR]: undefined });
       assertSuccess(core, "Explicit core dry-run must succeed.");
       assertSuccess(all, "Explicit all dry-run must succeed.");
+      assertSuccess(allPreview, "Explicit all profile preview must succeed.");
       assertSuccess(preview, "Migration preview must succeed.");
       assertSuccess(existing, "Existing-install dry-run must succeed.");
       assertSuccess(fresh, "Fresh-install dry-run must succeed.");
       assertOutputContains(core, "would materialize profile core", "Core dry-run must plan generated core.");
       assertOutputContains(all, "would materialize profile all", "All dry-run must plan generated all.");
+      assertOutputContains(allPreview, "proposed profile: all", "All preview must select the requested profile.");
       assertOutputContains(preview, "No file or environment value was changed.", "Migration preview must remain effect-free.");
       assertOutputContains(existing, "keeping existing:", "Existing kit install must stay on the current path.");
       assertOutputContains(fresh, "would materialize profile core", "Fresh install must default to generated core.");

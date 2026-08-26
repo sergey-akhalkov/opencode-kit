@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "changeId": "restore-workstation-dual-service-scenarios",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "local-opencode-workstation",
+      "requirements": [
+        "Restart is ownership-safe and complete",
+        "Persistent tray lamp reports server liveness",
+        "Tray Restart and Exit use the same ownership-safe controller"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "openspec/specs/local-opencode-workstation/spec.md"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

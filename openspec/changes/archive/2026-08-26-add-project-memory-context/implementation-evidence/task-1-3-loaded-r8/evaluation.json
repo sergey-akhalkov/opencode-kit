@@ -1,0 +1,17 @@
+{
+  "checks": {
+    "capsuleAppearsExactlyOnce": true,
+    "cleanProjectStatus": true,
+    "messageBeforeSystemObserved": true,
+    "noExternalEgress": true,
+    "oneProviderRequest": true,
+    "projectMemoryToolsAdvertised": true,
+    "requestBounded": true,
+    "selectedProcedureObserved": true,
+    "serverTerminallyStopped": true,
+    "sessionDeliveryToolPreserved": true
+  },
+  "failed": [],
+  "maximumSupportedClaim": "Pinned OpenCode loaded the copied session-env plugin for one disposable root prompt and sent exactly one bounded advisory project-memory capsule to the loopback provider.",
+  "status": "complete"
+}

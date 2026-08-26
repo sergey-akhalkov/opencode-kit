@@ -210,6 +210,7 @@ export type RootState = {
   state: GuardStateName;
   statusMessage: string | null;
   terminalCertificate: TerminalCertificateState;
+  terminalDiagnosticStages: Set<string>;
   waitReason: string | null;
   waitRecheckCount: number;
   waitRecheckTimer: ReturnType<typeof setTimeout> | null;

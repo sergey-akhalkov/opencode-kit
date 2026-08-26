@@ -11,7 +11,7 @@ import { hashRef } from "../../global/plugin/session-delivery-context/redaction.
 import { isolatedProofServerEnvironment, probeProofServer, proofClient, proofErrorFacts, PROOF_SERVER_CONFIG_LOAD_MS, PROOF_SERVER_PLUGIN_READY_MS, PROOF_SERVER_READINESS_MS, proofServerStartupFacts, requestData, seedProofConfigDependencies } from "./lib/opencode-proof-client.ts";
 import { removeProofFixture, stopProofProcessTree } from "./lib/proof-process-cleanup.ts";
 
-type Scenario = "claims" | "retention" | "retention-preflight" | "retention-recovery" | "retry";
+type Scenario = "claims" | "multi-root" | "retention" | "retention-preflight" | "retention-recovery" | "retry";
 type Mode = "capture" | "evaluate";
 type Options = { candidateId: string; evidenceRoot: string; help: boolean; mode: Mode; scenario: Scenario };
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -27,10 +27,11 @@ function usage(): string {
   return [
     "Usage:",
     "  bun tools/proofs/session-completion-guard-restart.ts --help",
-    "  bun tools/proofs/session-completion-guard-restart.ts --mode capture|evaluate --candidate-id <id> --evidence-root <absolute-path> [--scenario claims|retry|retention-preflight|retention-recovery|retention]",
+    "  bun tools/proofs/session-completion-guard-restart.ts --mode capture|evaluate --candidate-id <id> --evidence-root <absolute-path> [--scenario claims|multi-root|retry|retention-preflight|retention-recovery|retention]",
     "",
     "Scenarios:",
     "  claims      Prove installed claim continuation, exact stop, truncation, and ordinary idle behavior.",
+    "  multi-root  Prove installed process-wide active/queue bounds and overload isolation with a local provider.",
     "  retry       Prove persisted bounded retry resumes in the same child (default).",
     "  retention-preflight   Capture canonical idle status for realistic interrupted child seeds only.",
     "  retention-recovery    Capture one loaded stale rotation and stop before repeat restart.",
@@ -53,7 +54,7 @@ function options(args: string[]): Options {
       index++;
     } else if (args[index] === "--scenario") {
       const value = required(args, index, args[index]);
-      if (value !== "claims" && value !== "retention" && value !== "retention-preflight" && value !== "retention-recovery" && value !== "retry") throw new Error("Scenario must be claims, retry, retention-preflight, retention-recovery, or retention");
+      if (value !== "claims" && value !== "multi-root" && value !== "retention" && value !== "retention-preflight" && value !== "retention-recovery" && value !== "retry") throw new Error("Scenario must be claims, multi-root, retry, retention-preflight, retention-recovery, or retention");
       scenario = value;
       index++;
     } else if (args[index] === "--mode") {
@@ -141,8 +142,13 @@ function streamingCompletion(text: string): Response {
 
 function simulator(scenario: Scenario = "retry") {
   let arbiterCalls = 0;
+  let arbiterInFlight = 0;
   let arbiterOutage = scenario === "retry";
+  let maxArbiterInFlight = 0;
   let primaryCalls = 0;
+  let releaseHeldArbiters: (() => void) | null = null;
+  const heldArbiters = new Promise<void>((resolve) => { releaseHeldArbiters = resolve; });
+  const rootRefs: string[] = [];
   const requestKinds: string[] = [];
   const server = Bun.serve({
     hostname: "127.0.0.1",
@@ -161,12 +167,20 @@ function simulator(scenario: Scenario = "retry") {
       if (auditMatch == null && retryMatch == null) {
         primaryCalls += 1;
         requestKinds.push("primary");
-        return completion("The bounded local task is complete.");
+        const primary = "The bounded local task is complete.";
+        return body.stream === true ? streamingCompletion(primary) : completion(primary);
       }
       arbiterCalls += 1;
       requestKinds.push(`arbiter-${arbiterCalls}`);
       if (arbiterOutage) return Response.json({ error: { message: "temporary proof outage", type: "server_error" } }, { status: 503 });
       const audit = JSON.parse((auditMatch ?? retryMatch)![1]) as Record<string, unknown>;
+      if (scenario === "multi-root") {
+        arbiterInFlight += 1;
+        maxArbiterInFlight = Math.max(maxArbiterInFlight, arbiterInFlight);
+        rootRefs.push(String(audit.rootSessionRef ?? "unknown"));
+        await heldArbiters;
+        arbiterInFlight -= 1;
+      }
       const claimEvidence = record(record(audit.completionEvidence)?.claimEvidence);
       const claims = Array.isArray(claimEvidence?.claims) ? claimEvidence.claims.map(record).filter(Boolean) : [];
       const claimMatrix = claims.map((claim) => ({
@@ -211,8 +225,9 @@ function simulator(scenario: Scenario = "retry") {
   });
   return {
     server,
-    facts: () => ({ arbiterCalls, primaryCalls, requestKinds }),
+    facts: () => ({ arbiterCalls, arbiterInFlight, maxArbiterInFlight, primaryCalls, requestKinds, rootRefs }),
     recover: () => { arbiterOutage = false; },
+    release: () => { releaseHeldArbiters?.(); },
   };
 }
 
@@ -249,6 +264,18 @@ async function offlineUnlockPreflight(): Promise<void> {
     const message = record(choice?.message);
     const verdict = JSON.parse(String(message?.content ?? "")) as Record<string, unknown>;
     assert(verdict.auditID === "audit_offline" && verdict.inspectedRevision === "revision_offline", "Retry envelope preflight lost correlation");
+    const primary = await fetch(`http://${transport.server.hostname}:${transport.server.port}/v1/chat/completions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "user", content: "Complete the local primary turn." }], stream: true }),
+    });
+    const stream = await primary.text();
+    assert(
+      primary.headers.get("content-type")?.includes("text/event-stream") === true
+        && stream.includes('"finish_reason":"stop"')
+        && stream.includes("data: [DONE]"),
+      "Primary streaming preflight omitted the terminal SSE frame",
+    );
   } finally {
     transport.server.stop(true);
   }
@@ -418,11 +445,13 @@ function writeConfig(configDir: string, dataDir: string, providerUrl: string, sc
       },
     },
     plugin: [bridge, [guard, {
+      arbiterActiveLimit: 2,
       arbiterAgent: "session-completion-arbiter",
-      arbiterPromptTimeoutMs: scenario === "retry" ? 5_000 : 2_000,
+      arbiterPromptTimeoutMs: scenario === "multi-root" ? 60_000 : scenario === "retry" ? 5_000 : 2_000,
+      arbiterQueueLimit: 32,
       auditWindow: { enabled: false, mode: "read-only-monitor", scope: "per-root", terminal: "powershell-shell" },
       enabled: true,
-      initialDelayMs: 10_000,
+      initialDelayMs: scenario === "multi-root" ? 100 : 10_000,
       maxCycles: 3,
       maxDelayMs: 10_000,
       maxRequestBytes: 200_000,
@@ -430,7 +459,7 @@ function writeConfig(configDir: string, dataDir: string, providerUrl: string, sc
       maxWaitRechecks: 3,
       retainAuditSessions: 2,
       retryMultiplier: 1,
-      settleMs: scenario === "retry" ? 50 : 2_000,
+      settleMs: scenario === "retry" || scenario === "multi-root" ? 50 : 2_000,
       statusToasts: false,
       strategyFallback: "docs/session-strategy-history",
       waitRecheckMs: 100,
@@ -553,6 +582,52 @@ async function startOpenCode(
 
 async function stopOpenCode(server: ServerProcess): Promise<void> {
   await stopProofProcessTree(server.child);
+  const port = Number(new URL(server.url).port);
+  await stopProofListener(port);
+}
+
+function stopWindowsProofListener(port: number): void {
+  if (process.platform !== "win32") return;
+  const command = [
+    `$listener=Get-NetTCPConnection -State Listen -LocalAddress '127.0.0.1' -LocalPort ${port} -ErrorAction Stop | Select-Object -First 1`,
+    "$process=Get-CimInstance Win32_Process -Filter (\"ProcessId = {0}\" -f $listener.OwningProcess)",
+    `if($null -eq $process -or $process.CommandLine -notlike '*opencode*serve*--port ${port}*'){exit 42}`,
+    "Stop-Process -Id $listener.OwningProcess -Force -ErrorAction Stop",
+  ].join(";");
+  const stopped = spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", command], {
+    shell: false,
+    stdio: "ignore",
+    timeout: 10_000,
+  });
+  if (stopped.status !== 0) throw new Error(`Proof-owned OpenCode listener on port ${port} could not be verified and stopped`);
+}
+
+async function stopProofListener(port: number): Promise<void> {
+  const deadline = Date.now() + 5_000;
+  let closedSince: number | null = null;
+  while (Date.now() < deadline) {
+    if (await listenerOpen(port)) {
+      closedSince = null;
+      stopWindowsProofListener(port);
+    } else {
+      closedSince ??= Date.now();
+      if (Date.now() - closedSince >= 750) return;
+    }
+    await Bun.sleep(100);
+  }
+  if (await listenerOpen(port)) {
+    throw new Error(`Proof-owned OpenCode listener on port ${port} remained active after cleanup`);
+  }
+}
+
+async function listenerOpen(port: number): Promise<boolean> {
+  return await new Promise<boolean>((resolve) => {
+    const socket = net.createConnection({ host: "127.0.0.1", port });
+    socket.setTimeout(500);
+    socket.once("connect", () => { socket.destroy(); resolve(true); });
+    socket.once("error", () => resolve(false));
+    socket.once("timeout", () => { socket.destroy(); resolve(false); });
+  });
 }
 
 async function waitGuard(client: ReturnType<typeof proofClient>, rootID: string, project: string, states: string[], timeoutMs: number) {
@@ -708,6 +783,222 @@ function sourceHashes(): Array<{ digest: string; path: string }> {
     digest: new Bun.CryptoHasher("sha256").update(fs.readFileSync(path.join(sourceRoot, relative))).digest("hex"),
     path: relative,
   }));
+}
+
+function multiRootSourceHashes(): Array<{ digest: string; path: string }> {
+  return [
+    "global/extensions/session-completion-guard.ts",
+    "global/extensions/session-completion-guard/arbiter-scheduler.ts",
+    "global/extensions/session-completion-guard/controller.ts",
+    "global/extensions/session-completion-guard/runtime-support.ts",
+    "global/extensions/session-completion-guard/status.ts",
+    "global/plugin/session-delivery-context/index.ts",
+    "global/plugin/session-delivery-context/session-graph.ts",
+    "tools/proofs/session-completion-guard-restart.ts",
+  ].map((relative) => ({
+    digest: new Bun.CryptoHasher("sha256").update(fs.readFileSync(path.join(sourceRoot, relative))).digest("hex"),
+    path: relative,
+  }));
+}
+
+async function runMultiRoot(opts: Options): Promise<void> {
+  if (fs.existsSync(opts.evidenceRoot)) throw new Error("Evidence root already exists");
+  await offlineUnlockPreflight();
+  const fixture = proofFixture(opts);
+  fs.mkdirSync(fixture, { recursive: false });
+  const configDir = path.join(fixture, "config");
+  const dataDir = path.join(fixture, "data");
+  const project = path.join(fixture, "project");
+  fs.mkdirSync(project, { recursive: true });
+  fs.writeFileSync(path.join(project, "AGENTS.md"), "# Disposable multi-root guard proof\n", "utf8");
+  const provider = simulator("multi-root");
+  const progress = { current: 0, phase: "startup", total: 35 };
+  const progressTimer = setInterval(() => {
+    const facts = provider.facts();
+    console.error(JSON.stringify({
+      arbiterCalls: facts.arbiterCalls,
+      arbiterInFlight: facts.arbiterInFlight,
+      current: progress.current,
+      phase: progress.phase,
+      primaryCalls: facts.primaryCalls,
+      stage: "multi-root-progress",
+      total: progress.total,
+    }));
+  }, 2_000);
+  progressTimer.unref();
+  writeConfig(configDir, dataDir, `http://${provider.server.hostname}:${provider.server.port}`, "multi-root");
+  let server: ServerProcess | null = null;
+  const rootIDs: string[] = [];
+  const liveRootIDs = new Set<string>();
+  let proofError: unknown = null;
+  try {
+    server = await startOpenCode(configDir, dataDir, project);
+    fs.writeFileSync(path.join(fixture, "server-pid.json"), json({ pid: server.child.pid, port: Number(new URL(server.url).port) }), "utf8");
+    stage("multi-root-server-ready");
+    const workloadStartedAt = Date.now();
+    const client = proofClient(server.url, project);
+    progress.phase = "create-roots";
+    for (let index = 0; index < 35; index += 1) {
+      const root = await requestData<Record<string, unknown>>(client.session.create({
+        directory: project,
+        title: `guard multi-root ${String(index).padStart(2, "0")}`,
+        metadata: { completionGuard: { grindEnabled: true, state: "running" } },
+      }), `multi-root create ${index}`);
+      rootIDs.push(String(root.id));
+      liveRootIDs.add(String(root.id));
+      progress.current = rootIDs.length;
+    }
+    progress.phase = "dispatch-prompts";
+    progress.current = 0;
+    const promptsTerminal = Promise.allSettled(rootIDs.map((sessionID, index) => requestData<{ info: Record<string, unknown> }>(
+      client.session.prompt({
+        sessionID,
+        directory: project,
+        model: { providerID: "proof", modelID: "proof-model" },
+        system: "Return one short completion sentence and stop. Do not call tools.",
+        tools: {},
+        parts: [{ type: "text", text: `Complete disposable local root ${index}.` }],
+      }),
+      `multi-root prompt ${index}`,
+    )));
+
+    const states = async (): Promise<Array<{ message: string; rootRef: string; state: string }>> =>
+      await Promise.all(rootIDs.filter((sessionID) => liveRootIDs.has(sessionID)).map(async (sessionID) => {
+        const root = await requestData<Record<string, unknown>>(
+          client.session.get({ sessionID, directory: project }),
+          "multi-root state",
+        );
+        const guard = record(record(root.metadata)?.completionGuard) ?? {};
+        return {
+          message: String(guard.message ?? "").slice(0, 200),
+          rootRef: hashRef("session", sessionID),
+          state: String(guard.state ?? "unknown"),
+        };
+      }));
+
+    let heldStates: Awaited<ReturnType<typeof states>> = [];
+    const heldDeadline = Date.now() + 45_000;
+    progress.phase = "held-poll";
+    while (Date.now() < heldDeadline) {
+      heldStates = await states();
+      progress.current += 1;
+      const facts = provider.facts();
+      if (facts.arbiterCalls === 2 && heldStates.filter((row) => row.state === "error").length === 1) break;
+      await Bun.sleep(100);
+    }
+    const heldFacts = provider.facts();
+    assert(heldFacts.arbiterCalls === 2 && heldFacts.maxArbiterInFlight === 2, "Installed guard exceeded or failed to fill the two active arbiter slots");
+    assert(heldStates.filter((row) => row.state === "error").length === 1, "Installed guard did not reject exactly one root at queue capacity");
+    const activeRefs = new Set(heldFacts.rootRefs);
+    const overload = heldStates.find((row) => row.state === "error");
+    const queuedHealthy = heldStates.find((row) => row.state !== "error" && !activeRefs.has(row.rootRef));
+    assert(overload != null && queuedHealthy != null, "Installed guard did not expose an overload root and a queued healthy root");
+    const retainedRefs = new Set([...activeRefs, overload.rootRef, queuedHealthy.rootRef]);
+    const cancelledRootIDs = rootIDs.filter((sessionID) => !retainedRefs.has(hashRef("session", sessionID)));
+    assert(cancelledRootIDs.length === 31, `Installed guard cancellation population differed: ${cancelledRootIDs.length}`);
+    progress.phase = "cancel-queued";
+    progress.current = 0;
+    for (const sessionID of cancelledRootIDs) {
+      await client.session.delete({ sessionID, directory: project });
+      liveRootIDs.delete(sessionID);
+      progress.current += 1;
+    }
+    await Bun.sleep(500);
+    provider.release();
+
+    let terminalStates: Awaited<ReturnType<typeof states>> = [];
+    const terminalDeadline = Date.now() + 60_000;
+    progress.phase = "terminal-poll";
+    progress.current = 0;
+    while (Date.now() < terminalDeadline) {
+      terminalStates = await states();
+      progress.current += 1;
+      if (terminalStates.every((row) => row.state === "passed" || row.state === "error")) break;
+      await Bun.sleep(100);
+    }
+    progress.phase = "await-prompts";
+    progress.current = 0;
+    const promptResults = await promptsTerminal;
+    const facts = provider.facts();
+    const passed = terminalStates.filter((row) => row.state === "passed");
+    const errors = terminalStates.filter((row) => row.state === "error");
+    assert(passed.length === 3 && errors.length === 1, `Installed multi-root terminal states differed: passed=${passed.length} error=${errors.length}`);
+    assert(passed.some((row) => row.rootRef === queuedHealthy.rootRef), "Queued healthy root did not complete behind the saturated roots");
+    assert(facts.primaryCalls === 35 && facts.arbiterCalls === 3 && facts.maxArbiterInFlight === 2, "Installed provider-call bounds differed");
+    assert(new Set(facts.rootRefs).size === 3, "Installed arbiter routing duplicated or omitted a retained accepted root");
+    fs.mkdirSync(opts.evidenceRoot, { recursive: false });
+    progress.phase = "publish-evidence";
+    fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "pending",
+      environment: {
+        model: "proof/proof-model",
+        platform: process.platform,
+        serverReadyMs: server.readyMs,
+        sourceHashes: multiRootSourceHashes(),
+      },
+      multiRoot: {
+        activeLimit: 2,
+        accepted: 34,
+        cancelled: cancelledRootIDs.length,
+        errorDiagnostics: errors,
+        healthyQueuedPassed: passed.some((row) => row.rootRef === queuedHealthy.rootRef),
+        passed: passed.length,
+        promptRejected: promptResults.filter((result) => result.status === "rejected").length,
+        queueLimit: 32,
+        rejected: errors.length,
+        roots: rootIDs.length,
+        workloadElapsedMs: Date.now() - workloadStartedAt,
+      },
+      provider: facts,
+      scenario: "multi-root",
+      schemaVersion: 1,
+      serverLogs: {
+        stderrChars: server.stderr.join("").length,
+        stdoutChars: server.stdout.join("").length,
+      },
+    }), "utf8");
+  } catch (error) {
+    proofError = error;
+    throw error;
+  } finally {
+    let cleanupError: unknown = null;
+    progress.phase = "cleanup";
+    progress.current = rootIDs.length;
+    provider.release();
+    try {
+      if (server != null) {
+        try {
+          const client = proofClient(server.url, project);
+          for (const rootID of rootIDs.filter((sessionID) => liveRootIDs.has(sessionID))) {
+            const children = await requestData<Array<Record<string, unknown>>>(
+              client.session.children({ sessionID: rootID, directory: project }),
+              "multi-root cleanup children",
+            );
+            for (const child of children) await client.session.delete({ sessionID: String(child.id), directory: project });
+            await client.session.delete({ sessionID: rootID, directory: project });
+          }
+        } finally {
+          await stopOpenCode(server);
+          fs.rmSync(path.join(fixture, "server-pid.json"), { force: true });
+        }
+      }
+      provider.server.stop(true);
+      removeProofFixture(fixture);
+    } catch (error) {
+      cleanupError = error;
+      provider.server.stop(true);
+    }
+    stage("multi-root-cleanup-complete");
+    clearInterval(progressTimer);
+    if (fs.existsSync(path.join(opts.evidenceRoot, "raw.json"))) {
+      const raw = JSON.parse(fs.readFileSync(path.join(opts.evidenceRoot, "raw.json"), "utf8")) as Record<string, unknown>;
+      raw.cleanup = "complete";
+      fs.writeFileSync(path.join(opts.evidenceRoot, "raw.json"), json(raw), "utf8");
+    } else if (proofError == null && cleanupError == null) throw new Error("Multi-root proof did not publish evidence");
+    if (cleanupError != null && proofError == null) throw cleanupError;
+  }
+  stage("multi-root-capture-complete");
 }
 
 async function runClaims(opts: Options): Promise<void> {
@@ -1126,7 +1417,7 @@ async function runRetention(opts: Options): Promise<void> {
   let seedStatusTypes: string[] = [];
   let currentStage = "setup";
   try {
-    server = await startOpenCode(configDir, dataDir, project);
+    server = await startOpenCode(configDir, dataDir, project, true);
     fs.writeFileSync(path.join(fixture, "server-pid.json"), json({ pid: server.child.pid }), "utf8");
     currentStage = "retention-server-1-ready";
     stage("retention-server-1-ready");
@@ -1475,6 +1766,31 @@ function evaluate(opts: Options): void {
     }), { encoding: "utf8", flag: "wx" });
     return;
   }
+  if (opts.scenario === "multi-root") {
+    const multiRoot = record(raw.multiRoot) ?? {};
+    const provider = record(raw.provider) ?? {};
+    const environment = record(raw.environment) ?? {};
+    assert(raw.candidateId === opts.candidateId && raw.scenario === "multi-root", "Multi-root capture candidate correlation mismatch");
+    assert(raw.cleanup === "complete", "Multi-root cleanup is incomplete");
+    assert(multiRoot.roots === 35 && multiRoot.accepted === 34 && multiRoot.passed === 3 && multiRoot.cancelled === 31 && multiRoot.rejected === 1, "Multi-root terminal population differed");
+    assert(multiRoot.healthyQueuedPassed === true, "Multi-root queued healthy root did not complete after saturated-root release");
+    assert(Number(multiRoot.workloadElapsedMs) > 0 && Number(multiRoot.workloadElapsedMs) < 120_000, "Multi-root workload exceeded its terminal bound");
+    assert(multiRoot.activeLimit === 2 && multiRoot.queueLimit === 32, "Multi-root configured bounds differed");
+    assert(provider.primaryCalls === 35 && provider.arbiterCalls === 3 && provider.maxArbiterInFlight === 2, "Multi-root provider bounds differed");
+    assert(Array.isArray(provider.rootRefs) && new Set(provider.rootRefs).size === 3, "Multi-root retained routing was not unique");
+    assert(environment.model === "proof/proof-model" && Array.isArray(environment.sourceHashes) && environment.sourceHashes.length === 8, "Multi-root environment identity is incomplete");
+    assert(Number(environment.serverReadyMs) > 0 && Number(environment.serverReadyMs) <= PROOF_SERVER_READINESS_MS, "Multi-root server readiness exceeded its configured bound");
+    fs.writeFileSync(path.join(opts.evidenceRoot, "evaluation.json"), json({
+      candidateId: opts.candidateId,
+      cleanup: "complete",
+      installedBoundary: "35-roots-two-active-32-queued-one-overload-31-cancelled-healthy-queued-pass",
+      providerCalls: { arbiter: provider.arbiterCalls, external: 0, primary: provider.primaryCalls },
+      scenario: "multi-root",
+      schemaVersion: 1,
+      status: "complete",
+    }), { encoding: "utf8", flag: "wx" });
+    return;
+  }
   if (opts.scenario === "retention-preflight") {
     assert(raw.candidateId === opts.candidateId && raw.scenario === "retention-preflight", "Retention preflight candidate correlation mismatch");
     assert(raw.cleanup === "complete", "Retention preflight cleanup is incomplete");
@@ -1561,22 +1877,39 @@ async function supervise(opts: Options): Promise<void> {
   });
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
-  const timedOut = await new Promise<boolean>((resolve) => {
-    const timer = setTimeout(() => {
-      child.kill();
-      resolve(true);
-    }, 120_000);
-    child.once("exit", () => { clearTimeout(timer); resolve(false); });
+  const timedOutPhase = await new Promise<string | null>((resolve) => {
+    let phase = "startup";
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const arm = (timeoutMs: number) => {
+      if (timer != null) clearTimeout(timer);
+      timer = setTimeout(() => {
+        child.kill();
+        resolve(phase);
+      }, timeoutMs);
+    };
+    arm(opts.scenario === "multi-root" ? PROOF_SERVER_READINESS_MS : 120_000);
+    if (opts.scenario === "multi-root") {
+      child.stderr.on("data", (chunk) => {
+        if (phase === "startup" && String(chunk).includes('"stage":"multi-root-server-ready"')) {
+          phase = "workload";
+          arm(120_000);
+        }
+      });
+    }
+    child.once("exit", () => { if (timer != null) clearTimeout(timer); resolve(null); });
   });
-  if (timedOut) {
+  if (timedOutPhase != null) {
     await new Promise((resolve) => child.exitCode == null ? child.once("exit", resolve) : resolve(undefined));
     const pidFile = path.join(fixture, "server-pid.json");
     if (fs.existsSync(pidFile)) {
-      const pid = Number(record(JSON.parse(fs.readFileSync(pidFile, "utf8")))?.pid);
+      const processRecord = record(JSON.parse(fs.readFileSync(pidFile, "utf8"))) ?? {};
+      const pid = Number(processRecord.pid);
+      const port = Number(processRecord.port);
       if (Number.isSafeInteger(pid) && pid > 0) spawnSync("taskkill", ["/PID", String(pid), "/T", "/F"], { shell: false, stdio: "ignore" });
+      if (Number.isSafeInteger(port) && port > 0 && port <= 65_535) await stopProofListener(port);
     }
     removeProofFixture(fixture);
-    throw new Error("Guard restart worker exceeded its 120000ms terminal limit");
+    throw new Error(`Guard restart worker exceeded its ${timedOutPhase} terminal limit`);
   }
   if (child.exitCode !== 0) throw new Error(`Guard restart worker exited ${String(child.exitCode)}`);
   evaluate(opts);
@@ -1591,7 +1924,13 @@ const execution = parsed.help
   : parsed.mode === "evaluate"
     ? Promise.resolve().then(() => evaluate(parsed))
   : internalWorker
-    ? parsed.scenario === "claims" ? runClaims(parsed) : parsed.scenario === "retry" ? runRetry(parsed) : runRetention(parsed)
+    ? parsed.scenario === "claims"
+      ? runClaims(parsed)
+      : parsed.scenario === "multi-root"
+      ? runMultiRoot(parsed)
+      : parsed.scenario === "retry"
+      ? runRetry(parsed)
+      : runRetention(parsed)
     : supervise(parsed);
 execution.catch((error) => {
   console.error(json({ error: error instanceof Error ? error.message : String(error), status: "blocked" }).trimEnd());

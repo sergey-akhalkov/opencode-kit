@@ -96,7 +96,7 @@ function applySeed(fixtureRoot: string, apply: LocalApply): void {
   }
 }
 
-function commandFact(root: string, argv: string[], timeoutMs = 30_000): { argv: string[]; status: number | null; stderr: string; stdout: string } {
+export function commandFact(root: string, argv: string[], timeoutMs = 30_000): { argv: string[]; status: number | null; stderr: string; stdout: string } {
   const result = runPortableCommand(root, argv, { capture: true, timeoutMs });
   return { argv, status: result.status, stderr: result.stderr.slice(0, 4000), stdout: result.stdout.slice(0, 4000) };
 }
@@ -210,7 +210,7 @@ function frictionFrom(tools: ToolCallFact[]): FrictionVector {
   };
 }
 
-function environmentOf(
+export function environmentOf(
   manifest: RegressionManifest,
   scenario: RegressionManifest["scenarios"][number],
   scenarioDigest: string,
@@ -233,11 +233,36 @@ function environmentOf(
   };
 }
 
-function sealSample(sample: Omit<SampleEvidence, "hashes">): SampleEvidence {
+export function sealSample(sample: Omit<SampleEvidence, "hashes">): SampleEvidence {
   const sealed: SampleEvidence = { ...sample, hashes: { sample: "" } };
   sealed.hashes.sample = digestOf({ ...sealed, hashes: { sample: "" } });
   if (Buffer.byteLength(stableJson(sealed), "utf8") > SAMPLE_BYTE_LIMIT) sealed.diagnostics.truncatedFields.push("sample");
   return sealed;
+}
+
+export function createCaptureBundle(input: {
+  candidateId: string;
+  evidenceRoot: string;
+  kind: CaptureBundle["kind"];
+  samples: SampleEvidence[];
+  scenarioDigest: string;
+  sourceIdentity: SourceIdentity;
+}): CaptureBundle {
+  const bundle: CaptureBundle = {
+    byteLength: 0,
+    comparisonIdentity: digestOf({ candidateId: input.candidateId, kind: input.kind, scenarioDigest: input.scenarioDigest }),
+    evaluatorDigest: evaluatorDigest(),
+    inventory: ["bundle.json"],
+    kind: input.kind,
+    samples: input.samples,
+    scenarioDigest: input.scenarioDigest,
+    schemaVersion: SCHEMA_VERSION,
+    sourceIdentity: input.sourceIdentity,
+  };
+  bundle.byteLength = bundleByteLength(bundle);
+  if (bundle.byteLength > CAPTURE_BYTE_LIMIT) throw new ContractError("bundle.byteLength", "capture exceeds the reviewed byte bound");
+  writeNewFile(path.join(input.evidenceRoot, "bundle.json"), stableJson(bundle));
+  return bundle;
 }
 
 export async function captureLane(manifest: RegressionManifest, scenarioDigest: string, options: CaptureOptions): Promise<CaptureBundle> {
@@ -259,21 +284,14 @@ export async function captureLane(manifest: RegressionManifest, scenarioDigest: 
       if (!sample.cleanup.complete) throw new ContractError("writer", "unknown live writer prevents the next sample");
     }
   }
-  const bundle: CaptureBundle = {
-    byteLength: 0,
-    comparisonIdentity: digestOf({ candidateId: options.candidateId, kind: options.kind, scenarioDigest }),
-    evaluatorDigest: evaluatorDigest(),
-    inventory: ["bundle.json"],
+  return createCaptureBundle({
+    candidateId: options.candidateId,
+    evidenceRoot: options.evidenceRoot,
     kind: options.kind,
     samples,
     scenarioDigest,
-    schemaVersion: SCHEMA_VERSION,
     sourceIdentity: options.sourceIdentity,
-  };
-  bundle.byteLength = bundleByteLength(bundle);
-  if (bundle.byteLength > CAPTURE_BYTE_LIMIT) throw new ContractError("bundle.byteLength", "capture exceeds the reviewed byte bound");
-  writeNewFile(path.join(options.evidenceRoot, "bundle.json"), stableJson(bundle));
-  return bundle;
+  });
 }
 
 async function captureSample(

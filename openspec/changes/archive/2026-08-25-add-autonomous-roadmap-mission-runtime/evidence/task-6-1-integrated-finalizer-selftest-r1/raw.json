@@ -1,0 +1,309 @@
+{
+  "candidateId": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+  "captureEvaluation": {
+    "candidateId": "add-autonomous-roadmap-mission-runtime-task-6-1-r1",
+    "checks": {
+      "archiveReadback": true,
+      "candidateMatched": true,
+      "cleanupComplete": true,
+      "controllerTerminal": true,
+      "executorTerminalClear": true,
+      "freshRoots": true,
+      "localCheckpoints": true,
+      "markerValidated": true,
+      "noRemote": true,
+      "noThirdOutcome": true,
+      "orderedAutoChain": true,
+      "proposalVerified": true,
+      "providerExecution": true,
+      "queuedRuntimeClear": true,
+      "serverIsolated": true,
+      "sessionCleanup": true,
+      "taskArtifacts": true,
+      "visibleController": true
+    },
+    "liveCallBasis": "completed-assistant-responses",
+    "liveCalls": 2,
+    "schemaVersion": 1,
+    "status": "complete"
+  },
+  "certificateIssuerConfigured": true,
+  "cleanup": "complete",
+  "gateStatus": 0,
+  "minimalSchema": {
+    "applyGate": 0,
+    "applyRequires": "tasks",
+    "artifactCount": 4,
+    "proposeGate": 0,
+    "schemaName": "proof-minimal",
+    "status": 0,
+    "strictValidation": 0
+  },
+  "missionSessionFacts": [
+    {
+      "facts": {
+        "completedResponses": 0,
+        "sessions": [
+          {
+            "guard": {
+              "state": "paused"
+            },
+            "mission": {
+              "certificateReason": "preflight-canary",
+              "certificateStatus": "declined",
+              "missionId": "integrated-proof",
+              "sliceId": "slice-b",
+              "terminalCertificate": null
+            }
+          }
+        ]
+      },
+      "sliceId": "slice-b"
+    }
+  ],
+  "missionSessionObservationCanary": true,
+  "mode": "selftest",
+  "observerFacts": {
+    "durableDisposition": "complete",
+    "ptyStatus": "exited"
+  },
+  "partialCapture": {
+    "repository": {
+      "activeChanges": 0,
+      "archiveExists": true,
+      "archives": [
+        "2026-08-25-change-a",
+        "2026-08-25-change-b"
+      ],
+      "checkpoint": "429ece7185b5451914c591066938b3dec629733a",
+      "checkpointSubject": "roadmap-mission(integrated-proof): checkpoint slice-a",
+      "checkpointSubjects": [
+        "roadmap-mission(integrated-proof): checkpoint slice-a",
+        "roadmap-mission(integrated-proof): checkpoint slice-b"
+      ],
+      "marker": null,
+      "markers": {
+        "alpha": null,
+        "beta": "beta\n"
+      },
+      "remotes": "",
+      "validation": {
+        "error": null,
+        "exitCode": 1,
+        "signal": null,
+        "stderr": "",
+        "stdout": ""
+      },
+      "validationExit": 1
+    },
+    "sliceIds": [
+      "slice-b"
+    ]
+  },
+  "projectFacts": {
+    "marker": "alpha\n",
+    "markers": {
+      "alpha": "alpha\n",
+      "beta": "beta\n"
+    },
+    "phases": [
+      {
+        "name": "result.opsx-apply.verification.json",
+        "value": {
+          "facts": {
+            "validationStatus": 0
+          }
+        }
+      },
+      {
+        "name": "result.runtime-inspection.json",
+        "value": {
+          "expectedActiveChanges": [
+            "change-a"
+          ],
+          "status": "clear"
+        }
+      }
+    ],
+    "result": {
+      "cleanup": "complete",
+      "disposition": "completed",
+      "guardState": "passed",
+      "phases": [
+        {
+          "command": "opsx-apply",
+          "status": "completed"
+        }
+      ],
+      "rootSessionRef": "session:98d2805d0d94a18d",
+      "sliceId": "slice-a",
+      "writerClosure": "terminal"
+    },
+    "results": [
+      {
+        "phases": [
+          {
+            "name": "result.opsx-apply.verification.json",
+            "value": {
+              "facts": {
+                "validationStatus": 0
+              }
+            }
+          },
+          {
+            "name": "result.opsx-propose.verification.json",
+            "value": {
+              "eligible": true,
+              "facts": {
+                "artifactCount": 4,
+                "artifactsComplete": true,
+                "validationStatus": 0
+              }
+            }
+          },
+          {
+            "name": "result.runtime-inspection.json",
+            "value": {
+              "expectedActiveChanges": [
+                "change-a"
+              ],
+              "status": "clear"
+            }
+          }
+        ],
+        "result": {
+          "cleanup": "complete",
+          "disposition": "completed",
+          "guardState": "passed",
+          "phases": [
+            {
+              "command": "opsx-propose",
+              "status": "completed"
+            },
+            {
+              "command": "opsx-apply",
+              "status": "completed"
+            }
+          ],
+          "rootSessionRef": "session:f4df61c341e1c2ef",
+          "sliceId": "slice-b",
+          "writerClosure": "terminal"
+        },
+        "sliceId": "slice-b"
+      },
+      {
+        "phases": [
+          {
+            "name": "result.opsx-apply.verification.json",
+            "value": {
+              "facts": {
+                "validationStatus": 0
+              }
+            }
+          },
+          {
+            "name": "result.runtime-inspection.json",
+            "value": {
+              "expectedActiveChanges": [
+                "change-a"
+              ],
+              "status": "clear"
+            }
+          }
+        ],
+        "result": {
+          "cleanup": "complete",
+          "disposition": "completed",
+          "guardState": "passed",
+          "phases": [
+            {
+              "command": "opsx-apply",
+              "status": "completed"
+            }
+          ],
+          "rootSessionRef": "session:98d2805d0d94a18d",
+          "sliceId": "slice-a",
+          "writerClosure": "terminal"
+        },
+        "sliceId": "slice-a"
+      }
+    ],
+    "scenario": "two-slice",
+    "state": {
+      "activeOperation": null,
+      "cursor": 1,
+      "disposition": "complete"
+    },
+    "taskEvidence": {
+      "change-a": "## 1. Alpha Marker\n\n- [x] 1.1 Create and validate `src/alpha.txt`.\n",
+      "change-b": "## 1. Beta Marker\n\n- [x] 1.1 Create `src/beta.txt` with exact text `beta` and one trailing newline, then verify `node tools/validate.mjs` exits zero.\n"
+    },
+    "tasks": "## 1. Alpha Marker\n\n- [x] 1.1 Create and validate `src/alpha.txt`.\n",
+    "transitions": [
+      {
+        "checkpointIdentity": null,
+        "cursor": null,
+        "kind": "archive",
+        "sequence": 1,
+        "sliceId": "slice-b"
+      },
+      {
+        "checkpointIdentity": null,
+        "cursor": null,
+        "kind": "checkpoint",
+        "sequence": 2,
+        "sliceId": "slice-b"
+      },
+      {
+        "checkpointIdentity": null,
+        "cursor": null,
+        "kind": "successor-activation",
+        "sequence": 3,
+        "sliceId": "slice-a"
+      },
+      {
+        "checkpointIdentity": null,
+        "cursor": null,
+        "kind": "archive",
+        "sequence": 4,
+        "sliceId": "slice-a"
+      },
+      {
+        "checkpointIdentity": null,
+        "cursor": null,
+        "kind": "checkpoint",
+        "sequence": 5,
+        "sliceId": "slice-a"
+      },
+      {
+        "checkpointIdentity": null,
+        "cursor": null,
+        "kind": "terminal-stop",
+        "sequence": 6,
+        "sliceId": "slice-a"
+      }
+    ],
+    "worktree": "?? .opencode-dev-kit/\n?? evidence/\n"
+  },
+  "proposalOutcome": "Use the configured proof-minimal single-instruction workflow to create only the complete change-b planning set: proposal.md, specs/synthetic-beta/spec.md, design.md, tasks.md, and history.md for the exact disposable beta marker, then stop when all four configured OpenSpec artifacts are complete and apply-ready.",
+  "ptyFacts": {
+    "mission": {
+      "buffer": "synthetic controller terminal\n",
+      "exitCode": 0,
+      "notifyOnExit": false,
+      "status": "exited"
+    },
+    "totalSessions": 1
+  },
+  "scenario": "two-slice",
+  "schemaVersion": 1,
+  "validationAcrossArchive": {
+    "active": 0,
+    "archived": 0,
+    "betaActive": 0,
+    "betaArchive": 0,
+    "betaArchived": 0,
+    "betaCheckpoint": 0,
+    "checkpoint": 0
+  }
+}

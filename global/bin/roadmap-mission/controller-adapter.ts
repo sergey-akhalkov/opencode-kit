@@ -7,7 +7,15 @@ export type ControllerAdapter = {
   maxAttemptsPerSlice: number;
   maxWallClockMsPerSlice: number;
   schemaVersion: 1;
+  validationTimeoutMs: number;
 };
+
+export const ROADMAP_COMMAND_TIMEOUT_MS = {
+  gitMutation: 120_000,
+  inspection: 30_000,
+  openSpec: 120_000,
+  validation: 600_000,
+} as const;
 
 function record(value: unknown): Record<string, unknown> | null {
   return value != null && typeof value === "object" && !Array.isArray(value)
@@ -62,8 +70,9 @@ export function loadControllerAdapter(root: string, relative: string): Controlle
   const input = record(parsed);
   if (input == null) throw new RoadmapMissionError("controller adapter must be an object", 2);
   const expected = ["schemaVersion", "executorArgv", "maxAttemptsPerSlice", "maxWallClockMsPerSlice"];
+  const allowed = [...expected, "validationTimeoutMs"];
   const missing = expected.filter((field) => !(field in input));
-  const extras = Object.keys(input).filter((field) => !expected.includes(field));
+  const extras = Object.keys(input).filter((field) => !allowed.includes(field));
   if (missing.length > 0 || extras.length > 0) throw new RoadmapMissionError("controller adapter fields are invalid", 2);
   if (input.schemaVersion !== 1) throw new RoadmapMissionError("controller adapter schemaVersion must be 1", 2);
   return {
@@ -71,5 +80,8 @@ export function loadControllerAdapter(root: string, relative: string): Controlle
     maxAttemptsPerSlice: integer(input.maxAttemptsPerSlice, "maxAttemptsPerSlice", 1, 20),
     maxWallClockMsPerSlice: integer(input.maxWallClockMsPerSlice, "maxWallClockMsPerSlice", 1_000, 86_400_000),
     schemaVersion: 1,
+    validationTimeoutMs: input.validationTimeoutMs == null
+      ? ROADMAP_COMMAND_TIMEOUT_MS.validation
+      : integer(input.validationTimeoutMs, "validationTimeoutMs", 1_000, 1_800_000),
   };
 }

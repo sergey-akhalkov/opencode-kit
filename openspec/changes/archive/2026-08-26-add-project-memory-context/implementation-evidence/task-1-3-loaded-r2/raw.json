@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "attempt": {
+    "command": "node tools/proofs/project-memory-context.ts --opencode <opencode> --expected-version 1.18.23 --evidence-dir implementation-evidence/task-1-3-loaded-r2",
+    "outerTimeoutMs": 180000,
+    "runnerTerminalReportProduced": false,
+    "runnerSourceSha256": "7320344bf077fa5bdabde75a53da26dba35b262fc6589c7ce5fadefab4de8eca"
+  },
+  "observations": {
+    "databaseCreated": true,
+    "disposableGitStatusAfter": "?? src/\n",
+    "disposableGitStatusBefore": "?? src/\n",
+    "opencodeLogLastPhase": "loading <fixture-root>/config/opencode.jsonc",
+    "opencodeLogSha256": "b0f71b228e05f340074e36b12d9c89ad7c74b792aa10097430b5306eb59ad2e4",
+    "providerRequestCapture": "lost-with-runner-parent",
+    "stdout": "lost-with-runner-parent",
+    "stderr": "lost-with-runner-parent"
+  },
+  "closure": {
+    "childCountAtClosure": 0,
+    "opencodePid": 5900,
+    "orphanObserved": true,
+    "stopMechanism": "Stop-Process exact PID without process-tree traversal",
+    "terminallyClosed": true
+  },
+  "offlineDiagnostics": {
+    "copiedPluginBunImport": "pass",
+    "copiedPluginId": "opencode-dev-kit.session-env",
+    "disabledDebugConfig": "exit-0",
+    "enabledDebugConfig": "exit-0",
+    "fixtureAmbiguity": "copying the full module directly under config/plugin also enabled OpenCode top-level plugin auto-discovery"
+  }
+}

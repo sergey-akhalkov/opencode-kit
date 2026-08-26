@@ -1,0 +1,1719 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-project-memory-context",
+  "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+  "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": {
+      "maxFiles": 80,
+      "maxBytes": 26214400,
+      "reason": "Distinct pinned loaded predecessors, the selected pre-cleanup terminal bundle, and the required final SDET, challenge, validation, and handoff lanes cannot fit the default 64-file ceiling without deleting causal evidence.",
+      "cleanupRule": "Before archive, inventory every retained file and remove only superseded current-candidate duplicates after preserving causal failures, the selected terminal bundle, challenges, validation, and handoff evidence.",
+      "validation": "node tools/openspec-change-inventory.ts --root . must report zero unindexed files and retained counts within this exception."
+    }
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "1c69b0776292aca6944562a19689fa05440081729d7eb15251c2df05e21594ea",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "ownership-reconciliation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "ownership-reconciliation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run repo:snapshot -- --summary; node tools/openspec-change-inventory.ts --root .; current-source Codebase Memory search and coverage readback",
+        "status": 0,
+        "recordedAt": "2026-08-25T20:36:25.9551148Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-1-ownership-r2.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "60f0b38e206aa57e9ca9610504be5db5e527c833c9071f924f211d430bf7b85e",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "direct-production-module",
+        "effects": [
+          "local-temp-files"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "direct-production-module",
+        "effects": [
+          "local-temp-files"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-project-memory.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T20:36:25.9551148Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-2-direct-module-r2.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "taskTextDigest": "492ccced71dc787add41069359c1f3e73ec04d631f850cee16d38f7f100c4b1c",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "pinned-opencode-loaded-plugin",
+        "effects": [
+          "local-temp-files",
+          "loopback-http",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "pinned-opencode-loaded-plugin",
+        "effects": [
+          "local-temp-files",
+          "loopback-http",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/project-memory-context.ts --mode loaded with pinned owning OpenCode 1.18.23, isolated roots, and loopback provider",
+        "status": 0,
+        "recordedAt": "2026-08-25T20:24:18.009Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-3-loaded-r8.md",
+        "implementation-evidence/task-1-3-loaded-r8/evaluation.json",
+        "implementation-evidence/task-1-3-loaded-r8/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "543f3e469fb85805c87a5e9151401a5fc3106168e7b7884a4b06351f3c117849",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-multiprocess-lifecycle",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-multiprocess-lifecycle",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-project-memory.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T20:54:10.1684662Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-1-lifecycle-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "8e6d7610b497abcbfa678562e73f137fef819e167ad50cfa9836e307d37d78ba",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-schema-envelope",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-schema-envelope",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-project-memory.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T21:00:45.5012631Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-2-schema-envelope-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "261f2eeeaf52f32bf35148cbe8132abe1253cbd36cd8433c0d057e2a37e58eba",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-serena-filesystem",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-serena-filesystem",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-project-memory.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T21:09:09.3413735Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-3-serena-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.4",
+      "taskTextDigest": "4dba3d56a87cfc8dfb7f7ac522b19581c1cd8cc7e1e0dbf3cf3a8a9cf49e0aae",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-hook-revalidation",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-hook-revalidation",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-project-memory-hooks.ts && node tools/test-project-memory.ts && node tools/test-session-env-plugin.ts",
+        "status": 0,
+        "recordedAt": "2026-08-25T21:18:34.6492075Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-4-hooks-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.5",
+      "taskTextDigest": "3a38280d60a9fab3c0de5ef75c63a3a2c8c2e387ac5284066e2331720ea24cdf",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-privacy-output",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-privacy-output",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-project-memory.ts && node tools/test-project-memory-hooks.ts && node tools/test-session-env-plugin.ts && npx openspec validate add-project-memory-context --strict",
+        "status": 0,
+        "recordedAt": "2026-08-25T21:30:28.8523844Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-5-privacy-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "cbcd7c757b923bce17e2d15511e511152420deeb9a80de58bbda498e9661a4d2",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-maintained-corpus",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-maintained-corpus",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/project-memory-context.ts --mode corpus --fixture tools/proofs/fixtures/project-memory/pmc-001.seed.json --evidence-dir openspec/changes/add-project-memory-context/implementation-evidence/task-3-1-corpus-r5",
+        "status": 0,
+        "recordedAt": "2026-08-25T21:46:07.4991217Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-1-corpus-r5.md",
+        "implementation-evidence/task-3-1-corpus-r5/evaluation.json",
+        "implementation-evidence/task-3-1-corpus-r5/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "b207b379199b636988db20c31bf74a5d0081f48e3808e72fb70ca114fe73ee45",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-full-envelope-scan",
+        "effects": [
+          "local-temp-files"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-full-envelope-scan",
+        "effects": [
+          "local-temp-files"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/project-memory-context.ts --mode boundary --evidence-dir openspec/changes/add-project-memory-context/implementation-evidence/task-3-2-boundary-r2",
+        "status": 0,
+        "recordedAt": "2026-08-25T21:52:06.6626605Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-2-boundary-r2.md",
+        "implementation-evidence/task-3-2-boundary-r2/evaluation.json",
+        "implementation-evidence/task-3-2-boundary-r2/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "4119f165607ea951a66100358807ab198c6a057cb462d19533c2b80c07c931f1",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "maintained-package-proof",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "maintained-package-proof",
+        "effects": [
+          "local-temp-files",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:project-memory -- --evidence-dir openspec/changes/add-project-memory-context/implementation-evidence/task-3-3-package-r1",
+        "status": 0,
+        "recordedAt": "2026-08-25T21:56:21.4881202Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-3-proof-inventory-r1.md",
+        "implementation-evidence/task-3-3-package-r1/evaluation.json",
+        "implementation-evidence/task-3-3-package-r1/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.4",
+      "taskTextDigest": "5912d5dbe6e85e7022f019957987647eb13e8d39ae1738642ca8a49f98160310",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "source-verified-operator-docs",
+        "effects": [
+          "read-only-validation"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "source-verified-operator-docs",
+        "effects": [
+          "read-only-validation"
+        ]
+      },
+      "invocation": {
+        "command": "source/package readback; npm run test:focused:project-memory; node tools/proofs/project-memory-context.ts --help; npx openspec validate add-project-memory-context --strict",
+        "status": 0,
+        "recordedAt": "2026-08-25T22:01:20.7335006Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-4-operator-docs-r1.md",
+        "implementation-evidence/task-3-4-doc-ledger.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "5a2f18387d1ab96a5489e5be779b106790bf6c02a49f3e215f7a0b5c6fbefd6a",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "pinned-opencode-complete-loaded-project-memory",
+        "effects": [
+          "local-temp-files",
+          "loopback-http",
+          "local-process"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "pinned-opencode-complete-loaded-project-memory",
+        "effects": [
+          "local-temp-files",
+          "loopback-http",
+          "local-process"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/project-memory-context.ts --mode loaded with pinned owning OpenCode 1.18.23, copied plugin runtime, pinned ripgrep, isolated roots, loopback provider, and pre-cleanup capture",
+        "status": 0,
+        "recordedAt": "2026-08-25T22:24:32.3076106Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-1-loaded-r2.md",
+        "implementation-evidence/task-4-1-config-preflight-r2/evaluation.json",
+        "implementation-evidence/task-4-1-config-preflight-r2/raw.json",
+        "implementation-evidence/task-4-1-loaded-r2/capture.json",
+        "implementation-evidence/task-4-1-loaded-r2/evaluation.json",
+        "implementation-evidence/task-4-1-loaded-r2/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "a188d0f035f5c39702e58c24eda7a78a41cd07dc8d4b791d62899331a94ae667",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-critical-sdet-project-memory",
+        "effects": [
+          "local-temp-files",
+          "local-process",
+          "test-only-mutation"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "fresh-critical-sdet-project-memory",
+        "effects": [
+          "local-temp-files",
+          "local-process",
+          "test-only-mutation"
+        ]
+      },
+      "invocation": {
+        "command": "fresh sdet-quality-engineer ses_fc4f7a19fffeYMB4PCzRXBdAuk; node tools/test-project-memory.ts && node tools/test-project-memory-hooks.ts && npm run test:focused:project-memory",
+        "status": 0,
+        "recordedAt": "2026-08-25T22:40:27.3078585Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-2-sdet-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "66e6976576f31d73828a2a15626da84a532757b938e2e6f6822b07f66b95ccbb",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "frozen-claim-evidence-challenge",
+        "effects": [
+          "read-only-validation"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "frozen-claim-evidence-challenge",
+        "effects": [
+          "read-only-validation"
+        ]
+      },
+      "invocation": {
+        "command": "fresh evidence-sufficiency-reviewer ses_fc4e69b05ffeAu65lFsJBWTXmr; live freeze rehash; node tools/openspec-change-inventory.ts --root .",
+        "status": 0,
+        "recordedAt": "2026-08-25T22:55:04.4230394Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-3-candidate-freeze-r1.md",
+        "implementation-evidence/task-4-3-evidence-sufficiency-r1.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.4",
+      "taskTextDigest": "f4915ca236055ebd692a75dfb2b36e50dafe5cf441322f11cad5cba4dd13d399",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-current-validation",
+        "effects": [
+          "local-temp-files",
+          "local-process",
+          "read-only-validation"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "project-native-current-validation",
+        "effects": [
+          "local-temp-files",
+          "local-process",
+          "read-only-validation"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:project-memory; node tools/test-session-env-plugin.ts; npm run proof:project-memory; npm test; npm run validate:strict; npx openspec validate add-project-memory-context --strict; git diff --check",
+        "status": 0,
+        "recordedAt": "2026-08-25T23:07:54.1477143Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-4-validation-r1.md",
+        "implementation-evidence/task-4-4-package-r1/evaluation.json",
+        "implementation-evidence/task-4-4-package-r1/raw.json",
+        "implementation-evidence/task-4-4-package-r2/evaluation.json",
+        "implementation-evidence/task-4-4-package-r2/raw.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.5",
+      "taskTextDigest": "05b5cdd78ad2f28be598a9dcb3d6b3387a8e743396bebbda317a7f7654586eb9",
+      "result": "complete",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "runtime-surface-coupling-inspection",
+        "effects": [
+          "local-temp-files",
+          "read-only-validation"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "runtime-surface-coupling-inspection",
+        "effects": [
+          "local-temp-files",
+          "read-only-validation"
+        ]
+      },
+      "invocation": {
+        "command": "npm run opencode:sources -- --root .; npm run install:global -- --preview-profile --profile all; node tools/test-session-env-plugin.ts; fresh Codebase Memory index and graph traces; scoped source/diff/config inspection",
+        "status": 0,
+        "recordedAt": "2026-08-25T23:19:02.8207113Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-5-coupling-r1.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "planning-ownership",
+      "kind": "environment",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-1-ownership.md",
+          "bytes": 1515,
+          "digest": "4ff72373b3157f6ce7f3c9222a0bf66ad881cd44fefb1c36eb2eb1038e15f72e"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-ownership-r2.md",
+          "bytes": 1309,
+          "digest": "1e5558a74d574f7f504c7405fb79c2644ac9af61e1ea40738b19e9b5a29808d8"
+        }
+      ]
+    },
+    {
+      "name": "task-1-2-direct-proof",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-2-direct-module.md",
+          "bytes": 1785,
+          "digest": "711b14922d10df5d0af2bb50e33d7f4876bfea509d38547e7dfe4b800b42e57b"
+        },
+        {
+          "path": "implementation-evidence/task-1-2-direct-module-r2.md",
+          "bytes": 1177,
+          "digest": "cf5eed5058af982821e6ecdaf7ec6d9979092a79e4017b539b83bb6cf5285f32"
+        }
+      ]
+    },
+    {
+      "name": "task-1-3-config-preflights",
+      "kind": "environment",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r1/evaluation.json",
+          "bytes": 386,
+          "digest": "b8ab0ff9deb9a149b3fd2634cb0e1ed5a07797a6b357b8191b567fe629793bce"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r1/raw.json",
+          "bytes": 3938,
+          "digest": "02b7aedfa80dd70380bff93b6d23c3a4e0ea836dd16512249d7355c428b06c86"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r2/evaluation.json",
+          "bytes": 386,
+          "digest": "b8ab0ff9deb9a149b3fd2634cb0e1ed5a07797a6b357b8191b567fe629793bce"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r2/raw.json",
+          "bytes": 3938,
+          "digest": "66cf20f5b4d2c86a6f127590d2299956fefa484dc6abb9827942936905cc6ad4"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r3/evaluation.json",
+          "bytes": 386,
+          "digest": "b8ab0ff9deb9a149b3fd2634cb0e1ed5a07797a6b357b8191b567fe629793bce"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r3/raw.json",
+          "bytes": 3938,
+          "digest": "81448a75d37dbe77c5aa831072ccb8e36aaf7f088608b28806aa93c2872e4974"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r4/evaluation.json",
+          "bytes": 386,
+          "digest": "b8ab0ff9deb9a149b3fd2634cb0e1ed5a07797a6b357b8191b567fe629793bce"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-config-preflight-r4/raw.json",
+          "bytes": 3938,
+          "digest": "61cbc4743bb64b6964e34bdbaf26c96f534fa59e1187322f3f55801c03d3ac61"
+        }
+      ]
+    },
+    {
+      "name": "task-1-3-loaded-predecessors",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r1/evaluation.json",
+          "bytes": 673,
+          "digest": "af38e1f6c45d80eeb507d0aaf750a7f8ef18cfcae474d35621f6c20a07d20807"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r1/raw.json",
+          "bytes": 2137,
+          "digest": "1305925c2109b34437215b2540bf71c9d42634455b0189f945073bf02f34196c"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r2/evaluation.json",
+          "bytes": 760,
+          "digest": "653459fb5582c91cedabd8d466a66cc8ef61da52f43e4e4d3967f18288469808"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r2/raw.json",
+          "bytes": 1370,
+          "digest": "f9147be8a8394fbb8d5a1a506bb5a36d8e72cd91d4848806f28f5bf7d7722fb6"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r3/evaluation.json",
+          "bytes": 917,
+          "digest": "c4b9f8b166b0ad601f36434770d70dffd3779fbbdaed253b381682a38324831c"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r3/raw.json",
+          "bytes": 1433,
+          "digest": "f85343bb913ceb2d80730d48f15d8976169a07e5d788bab12856b7bf7ceb4724"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r4/evaluation.json",
+          "bytes": 694,
+          "digest": "fdfd1540413ad2e03066980d7bd207fc0a654f218ef88ea9b5d236554e57346c"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r4/raw.json",
+          "bytes": 905,
+          "digest": "d2a5c2db3fe5cd64ea1088cb4c84148234154274c4e8589a6296f49043b70ad9"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r5/evaluation.json",
+          "bytes": 619,
+          "digest": "93fa0dc2d40b89cedd0aecdb9c970f574efd5d0935b1562b24afba23648a80ba"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r5/raw.json",
+          "bytes": 16545,
+          "digest": "1fbe0e4fa34b5e883642f4cc80cb04bd408d908fa2c61442d93d8752df1dc584"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r6/evaluation.json",
+          "bytes": 545,
+          "digest": "501facad42aaff03dc735707d4f3c52413aadfc821e401b42fcab1749f54bd6b"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r6/raw.json",
+          "bytes": 23352,
+          "digest": "d82813f8b829f9ca8e29ed78a5cb9f2e5b28decc59116a7d78c52951f429a83e"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r7/evaluation.json",
+          "bytes": 135,
+          "digest": "bec2e667e52e0a9d72bb1e514cd0c8e491b373e222f51090504a5a85e6d63279"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r7/raw.json",
+          "bytes": 4096,
+          "digest": "4f00d74457f846e4626c2479af3a689de093f1469a3b164b68475f2def7a2707"
+        }
+      ]
+    },
+    {
+      "name": "task-1-3-loaded-r8",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r8.md",
+          "bytes": 1918,
+          "digest": "6fdb9aca16cea49af6068caa8e156f2c7c37ea2a57d2e62fb4e859ff59edd858"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r8/evaluation.json",
+          "bytes": 624,
+          "digest": "5eaafa178c77c5e1a4fc540f95863212902934d1a725a35b879b214db5c012fe"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-loaded-r8/raw.json",
+          "bytes": 27084,
+          "digest": "c8296042d80a27352a46fe5d0995ba478a2062813576196aa841ce4d567ba662"
+        }
+      ]
+    },
+    {
+      "name": "task-2-1-lifecycle-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-2-1-lifecycle-r1.md",
+          "bytes": 2511,
+          "digest": "7ed71eaf568de5c3ee6cec30889172e2c6ca6c19f7ce1f398229f53a826d822b"
+        }
+      ]
+    },
+    {
+      "name": "task-2-2-schema-envelope-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-2-2-schema-envelope-r1.md",
+          "bytes": 2512,
+          "digest": "a5fd874ad21f0ffdb797a95495a3d77a3ad41ac8b239251e26e23140ea69ae9b"
+        }
+      ]
+    },
+    {
+      "name": "task-2-3-serena-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-2-3-serena-r1.md",
+          "bytes": 2622,
+          "digest": "2ee591949740c5c190249184bc180b518502bb5d04de450328dbdbc42d5932ed"
+        }
+      ]
+    },
+    {
+      "name": "task-2-4-hooks-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-2-4-hooks-r1.md",
+          "bytes": 2899,
+          "digest": "d259cef374497f525cc9cb18f2ce8b6d330629ff8a528d86cdcec0e075618544"
+        }
+      ]
+    },
+    {
+      "name": "task-2-5-privacy-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-2-5-privacy-r1.md",
+          "bytes": 2985,
+          "digest": "9e7490d3f9f07ab90c978fc62e8b7221582165aa617f769f8cfda754a4220c44"
+        }
+      ]
+    },
+    {
+      "name": "task-3-1-corpus-r1-r5",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r1/evaluation.json",
+          "bytes": 915,
+          "digest": "a323b1f1f6bfac16fb1160495a3af3dfc10110b4855db579c7a9834ef96bd5c7"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r1/raw.json",
+          "bytes": 15728,
+          "digest": "221652eb44b146ab4e7277c21b7cf302aa8fa39a1342916edbc264daab78108f"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r2/evaluation.json",
+          "bytes": 979,
+          "digest": "5fa7967c9680fcaf8cf785a20b8f517deda5761117ab721a663e8da7b297413d"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r2/raw.json",
+          "bytes": 15814,
+          "digest": "381f1b7e9b4fb92a7ec5f72988316db26d036739505ece6dda70bca3496d6012"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r3/evaluation.json",
+          "bytes": 979,
+          "digest": "5fa7967c9680fcaf8cf785a20b8f517deda5761117ab721a663e8da7b297413d"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r3/raw.json",
+          "bytes": 15814,
+          "digest": "0dd17583d94b932d1f5b0f424b2fea9345f0d4a31a21c791349f817fca10520a"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r4/evaluation.json",
+          "bytes": 979,
+          "digest": "5fa7967c9680fcaf8cf785a20b8f517deda5761117ab721a663e8da7b297413d"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r4/raw.json",
+          "bytes": 15814,
+          "digest": "09a942d49f576351163f4c75554487b574de06be748618b4dbd03956c0bc8da5"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r5.md",
+          "bytes": 3080,
+          "digest": "7d605857ba937505ba2332a84e241e27ccca18a582c634acc00db9725ef8f27c"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r5/evaluation.json",
+          "bytes": 979,
+          "digest": "5fa7967c9680fcaf8cf785a20b8f517deda5761117ab721a663e8da7b297413d"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-corpus-r5/raw.json",
+          "bytes": 15814,
+          "digest": "09a942d49f576351163f4c75554487b574de06be748618b4dbd03956c0bc8da5"
+        }
+      ]
+    },
+    {
+      "name": "task-3-2-boundary-r1-r2",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-2-boundary-r1/evaluation.json",
+          "bytes": 603,
+          "digest": "6d8bf8db96aeb5548c02723924a2dcd08bff3b3d6f0112d782b01c55787efd60"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-boundary-r1/raw.json",
+          "bytes": 3206,
+          "digest": "81d3939b6f1c30bffe0c6244167dc98b76cf7f9c3843a3ffb28ac6d5b6615135"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-boundary-r2.md",
+          "bytes": 2276,
+          "digest": "3e5066f666c96c278c8faaff493dc2964365d78484bd9036a5ca16c6c1bd97ad"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-boundary-r2/evaluation.json",
+          "bytes": 603,
+          "digest": "6d8bf8db96aeb5548c02723924a2dcd08bff3b3d6f0112d782b01c55787efd60"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-boundary-r2/raw.json",
+          "bytes": 3213,
+          "digest": "cacc64127f92e6f04549e2ec566793d05a9954c4484b31e7d96622568388bb07"
+        }
+      ]
+    },
+    {
+      "name": "task-3-3-proof-inventory-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-3-proof-inventory-r1.md",
+          "bytes": 2292,
+          "digest": "fda2cc9cfab32d1d3fea3e607ce32c9879b3b55de3ba9d07c878ae2427ba3fa5"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-package-r1/evaluation.json",
+          "bytes": 979,
+          "digest": "5fa7967c9680fcaf8cf785a20b8f517deda5761117ab721a663e8da7b297413d"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-package-r1/raw.json",
+          "bytes": 15814,
+          "digest": "59996f067ba3f5323301a1feaef5bd204458d5ca722ee9f3fa6cdeac6fe69c84"
+        }
+      ]
+    },
+    {
+      "name": "task-3-4-operator-docs-r1",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-4-operator-docs-r1.md",
+          "bytes": 2149,
+          "digest": "2e5931422a419bc2e03ee9cf1f2549115571300708ea6136da177932236fdc73"
+        },
+        {
+          "path": "implementation-evidence/task-3-4-doc-ledger.md",
+          "bytes": 5652,
+          "digest": "69c69ce93f4e3ae2f34230ec0985ddfc6b7f68922cdf62b2fde5c3b519f5a1f9"
+        }
+      ]
+    },
+    {
+      "name": "task-4-1-config-preflights",
+      "kind": "environment",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-1-config-preflight-r1/evaluation.json",
+          "bytes": 386,
+          "digest": "b8ab0ff9deb9a149b3fd2634cb0e1ed5a07797a6b357b8191b567fe629793bce"
+        },
+        {
+          "path": "implementation-evidence/task-4-1-config-preflight-r1/raw.json",
+          "bytes": 3938,
+          "digest": "46577de3c1eee5851c390b754168ebc4b4d2cd632a9b24ea3c4a9e598ac29ee6"
+        },
+        {
+          "path": "implementation-evidence/task-4-1-config-preflight-r2/evaluation.json",
+          "bytes": 386,
+          "digest": "b8ab0ff9deb9a149b3fd2634cb0e1ed5a07797a6b357b8191b567fe629793bce"
+        },
+        {
+          "path": "implementation-evidence/task-4-1-config-preflight-r2/raw.json",
+          "bytes": 3938,
+          "digest": "50736219a86a28fcb61f118c2a7c578f322609e16cb505b2982b00dc2e3fe220"
+        }
+      ]
+    },
+    {
+      "name": "task-4-1-loaded-r1-predecessor",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-1-loaded-r1/evaluation.json",
+          "bytes": 1180,
+          "digest": "3ba83f764547bde2358b7a936264c95270030aafb8b379ad8197f5cb2dad60ab"
+        },
+        {
+          "path": "implementation-evidence/task-4-1-loaded-r1/raw.json",
+          "bytes": 466324,
+          "digest": "ada105808af35bc022f270e8e405646607255a9579e573fbf8cde4308f72d00c"
+        }
+      ]
+    },
+    {
+      "name": "task-4-1-loaded-r2",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-1-loaded-r2.md",
+          "bytes": 2526,
+          "digest": "4fc0a87dd90cd46b60f9e91bee12798d4152f4a8f296c75d1711dc7bf4347d74"
+        },
+        {
+          "path": "implementation-evidence/task-4-1-loaded-r2/capture.json",
+          "bytes": 430813,
+          "digest": "ab4558c433dde28d690edde495f4b93345ef5f694fd2356eec87c7b44d835045"
+        },
+        {
+          "path": "implementation-evidence/task-4-1-loaded-r2/evaluation.json",
+          "bytes": 1180,
+          "digest": "3ba83f764547bde2358b7a936264c95270030aafb8b379ad8197f5cb2dad60ab"
+        },
+        {
+          "path": "implementation-evidence/task-4-1-loaded-r2/raw.json",
+          "bytes": 466322,
+          "digest": "7c21107f539b5d6073e25cc2c7002c2735aa5f609a77e7d2da8629b6cd8bb253"
+        }
+      ]
+    },
+    {
+      "name": "task-4-2-sdet-r1",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-2-sdet-r1.md",
+          "bytes": 3742,
+          "digest": "350dad0c4d97fdb9f936cb2fb2bf50cb873c812fe9d8896bcb6a2b3b9ae5f06c"
+        }
+      ]
+    },
+    {
+      "name": "task-4-3-candidate-freeze-r1",
+      "kind": "environment",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-3-candidate-freeze-r1.md",
+          "bytes": 2667,
+          "digest": "f468c55543cbb977276d413eebcce8d4c1051f0dbad83850df4189dec25ba381"
+        }
+      ]
+    },
+    {
+      "name": "task-4-3-evidence-sufficiency-r1",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-3-evidence-sufficiency-r1.md",
+          "bytes": 4586,
+          "digest": "c3e1b4d988864690c511f6c7eb674c8a07cad4358547e286bd27c0ab4ba1d082"
+        }
+      ]
+    },
+    {
+      "name": "task-4-4-package-r1-predecessor",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-4-package-r1/evaluation.json",
+          "bytes": 950,
+          "digest": "027ba9c4e2d3b5588bfbbeeee05fdc8e3d78f6d46766acd838be6aa83e17e681"
+        },
+        {
+          "path": "implementation-evidence/task-4-4-package-r1/raw.json",
+          "bytes": 15890,
+          "digest": "39b7d29d27216eb4ec3def530f62cad719e7cc08963932f5283c06991676cd5d"
+        }
+      ]
+    },
+    {
+      "name": "task-4-4-package-r2",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-4-package-r2/evaluation.json",
+          "bytes": 979,
+          "digest": "5fa7967c9680fcaf8cf785a20b8f517deda5761117ab721a663e8da7b297413d"
+        },
+        {
+          "path": "implementation-evidence/task-4-4-package-r2/raw.json",
+          "bytes": 15984,
+          "digest": "7ac40bb03441aa5cec35b9ffdf6b421edf033856e7423dbe46c924ff4a1bfd51"
+        }
+      ]
+    },
+    {
+      "name": "task-4-4-validation-r1",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-4-validation-r1.md",
+          "bytes": 2634,
+          "digest": "201610bda2ba755fae11e7d785d5d2e45996ec0e888d0fc26e260a2d459f634e"
+        }
+      ]
+    },
+    {
+      "name": "task-4-5-coupling-r1",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-5-coupling-r1.md",
+          "bytes": 4212,
+          "digest": "579a7e6e88343e5bb6514aea88f74c715f749073001971b4eca45fae1e066730"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "PMC-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "Across 22 named maintained scenarios, the enabled project-memory capability selects, excludes, injects, bounds, and redacts local-card or curated Serena memory only at each scenario's cited recorded boundary.",
+      "claimClass": "finite-population",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "pmc-supported-partitions-v1",
+        "members": [
+          "relevant-active-hit",
+          "weak-query-miss",
+          "exact-selector-boost",
+          "candidate-exclusion",
+          "invalidated-exclusion",
+          "age-stale-exclusion",
+          "fingerprint-mismatch",
+          "malformed-quarantine",
+          "project-root-redaction",
+          "secret-redaction",
+          "result-budget",
+          "corpus-envelope",
+          "root-identity-isolation",
+          "primary-root-injection",
+          "subagent-exclusion",
+          "hook-order-timeout",
+          "selection-revalidation",
+          "compaction-continuity",
+          "disabled-mode",
+          "concurrent-append",
+          "serena-read-only",
+          "no-worktree-external-network-effects"
+        ],
+        "partitionRule": "The finite population is exactly 22 named maintained scenarios. Each member is supported only at its cited lane's recorded candidate, runner, environment, path, and oracle; members are not asserted to share one loaded boundary, and uncited interactions are residual.",
+        "materialClasses": [
+          "relevant-active-hit",
+          "weak-query-miss",
+          "exact-selector-boost",
+          "candidate-exclusion",
+          "invalidated-exclusion",
+          "age-stale-exclusion",
+          "fingerprint-mismatch",
+          "malformed-quarantine",
+          "project-root-redaction",
+          "secret-redaction",
+          "result-budget",
+          "corpus-envelope",
+          "root-identity-isolation",
+          "primary-root-injection",
+          "subagent-exclusion",
+          "hook-order-timeout",
+          "selection-revalidation",
+          "compaction-continuity",
+          "disabled-mode",
+          "concurrent-append",
+          "serena-read-only",
+          "no-worktree-external-network-effects"
+        ],
+        "residualSpace": "Unpinned OpenCode versions, unknown secret formats, semantic-only vocabulary matches, behavior beyond the observed process population, stores outside the declared limits, cross-project recall as a feature, hosted or vector backends, and uncited interactions among the named scenarios remain outside this claim."
+      },
+      "paths": {
+        "production": "configured-session-env-scenario-matrix",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "member-specific-recorded-boundaries",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "task-4-1-loaded-r2"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "relevant-active-hit",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "weak-query-miss",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "exact-selector-boost",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "candidate-exclusion",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "invalidated-exclusion",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "age-stale-exclusion",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "fingerprint-mismatch",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "malformed-quarantine",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "project-root-redaction",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-2-5-privacy-r1",
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "secret-redaction",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-2-5-privacy-r1",
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "result-budget",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-2-5-privacy-r1",
+            "task-4-4-package-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "corpus-envelope",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-3-2-boundary-r1-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "root-identity-isolation",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "primary-root-injection",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "subagent-exclusion",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "hook-order-timeout",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "selection-revalidation",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "compaction-continuity",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-2-sdet-r1",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "disabled-mode",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "concurrent-append",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "serena-read-only",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "no-worktree-external-network-effects",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env-scenario-matrix",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "member-specific-recorded-boundaries",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-4-package-r2",
+            "task-4-1-loaded-r2",
+            "task-4-3-candidate-freeze-r1"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "task-2-5-privacy-r1",
+        "task-4-4-package-r2",
+        "task-3-2-boundary-r1-r2",
+        "task-3-3-proof-inventory-r1",
+        "task-3-4-operator-docs-r1",
+        "task-4-1-config-preflights",
+        "task-4-1-loaded-r1-predecessor",
+        "task-4-1-loaded-r2",
+        "task-4-2-sdet-r1",
+        "task-4-3-candidate-freeze-r1",
+        "task-4-3-evidence-sufficiency-r1",
+        "task-4-4-validation-r1"
+      ],
+      "materialExclusions": [
+        "General semantic-memory quality",
+        "Secret-detection completeness",
+        "Cross-version OpenCode compatibility",
+        "Cross-project or hosted-memory behavior",
+        "Stores beyond the declared operating envelope",
+        "Uncited interactions among the 22 maintained scenarios"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "task-4-3-evidence-sufficiency-r1"
+        ]
+      },
+      "maximumSupportedClaim": "The frozen Product Candidate supports exactly the 22 named maintained scenarios at each row's cited provider-free, full-envelope, loaded, or SDET boundary. Loaded R2 supports only its 25 terminal checks; the claim does not establish that every member ran loaded, that all interactions are covered, or any material exclusion.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    },
+    {
+      "claimId": "PMC-1-3-EXACT",
+      "outcomeRef": "task-1-3",
+      "statement": "Pinned OpenCode loads the copied session-env plugin for one disposable root prompt and sends exactly one bounded advisory project-memory capsule to the loopback provider.",
+      "claimClass": "exact-case",
+      "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+      "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+      "coverageBasis": "exact-case",
+      "population": {
+        "id": "task-4-1-loaded-root-r2",
+        "members": [
+          "one-disposable-root-prompt"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "All other lifecycle states, queries, session roles, curated sources, failure modes, and envelope boundaries remain outside this exact-case claim."
+      },
+      "paths": {
+        "production": "configured-session-env",
+        "baseline": null,
+        "candidate": null
+      },
+      "observationBoundary": "pinned-opencode-loopback-provider",
+      "realOracle": {
+        "required": false,
+        "status": "not-required",
+        "evidenceRefs": []
+      },
+      "observations": [
+        {
+          "memberId": "one-disposable-root-prompt",
+          "candidateId": "29ba3b07623d31065236053e30d9d488650e900651d868b63d60b96d73aeed8b",
+          "environmentId": "windows-node24.18.1-pmc-evidence-package-r1",
+          "paths": {
+            "production": "configured-session-env",
+            "baseline": null,
+            "candidate": null
+          },
+          "observationBoundary": "pinned-opencode-loopback-provider",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "task-4-1-loaded-r2"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "task-4-1-config-preflights",
+        "task-4-1-loaded-r2"
+      ],
+      "materialExclusions": [
+        "The complete PMC-001 partitioned population",
+        "Unpinned OpenCode versions",
+        "Non-root and compaction paths"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": false,
+        "status": "not-required",
+        "evidenceRefs": []
+      },
+      "maximumSupportedClaim": "The selected current-candidate R2 loaded root-prompt exact case only.",
+      "narrowingAccepted": false,
+      "disposition": "supported"
+    }
+  ]
+}

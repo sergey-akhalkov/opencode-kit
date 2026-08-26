@@ -18,6 +18,7 @@ import {
   proofServerStartupFacts,
   requestData,
   seedProofConfigDependencies,
+  waitForProofRoute,
 } from "./lib/opencode-proof-client.ts";
 import { removeProofFixture, stopProofProcessTree } from "./lib/proof-process-cleanup.ts";
 
@@ -123,6 +124,25 @@ function json(value: unknown): string {
   return `${JSON.stringify(stableValue(value), null, 2)}\n`;
 }
 
+function sanitizeLog(text: string, replacements: Array<[string, string]>): string {
+  return replacements.reduce((output, [value, placeholder]) => output
+    .replaceAll(value, placeholder)
+    .replaceAll(value.replaceAll("\\", "\\\\"), placeholder), text);
+}
+
+function serverDiagnostics(
+  server: ServerProcess,
+  replacements: Array<[string, string]>,
+): string {
+  const lines = `${server.stderr.join("")}\n${server.stdout.join("")}`.split(/\r?\n/);
+  const selected = lines.filter((line) =>
+    /\b(?:level=(?:ERROR|WARN)|error|failed|completion guard)\b/i.test(line) &&
+    !line.includes("Command handled by roadmap mission launcher") &&
+    !line.includes("Command handled by PTY plugin")
+  );
+  return sanitizeLog([...new Set(selected.slice(-100))].join("\n"), replacements).slice(-20_000);
+}
+
 function record(value: unknown): Record<string, unknown> | null {
   return value != null && typeof value === "object" && !Array.isArray(value)
     ? value as Record<string, unknown>
@@ -221,6 +241,7 @@ function providerSimulator(scenario: Options["scenario"]) {
           verdict: ownerRequired ? "owner_required" : "allow_stop",
           confidence: "high",
           goalSummary: "Disposable roadmap command fixture complete",
+          claimMatrix: [],
           requirementMatrix: ownerRequired
             ? [{ evidenceRefs: [], requirementRef: "owner-boundary-proof", status: "owner_required" }]
             : [],
@@ -393,15 +414,13 @@ async function startOpenCode(configDir: string, dataDir: string, project: string
       await Bun.sleep(100);
     }
   }
-  const sanitizeLog = (text: string) => [
+  const replacements: Array<[string, string]> = [
     [configDir, "<config-dir>"],
     [dataDir, "<data-dir>"],
     [project, "<project>"],
     [sourceRoot, "<source-root>"],
     [os.homedir(), "<home>"],
-  ].reduce((output, [value, placeholder]) => output
-    .replaceAll(value, placeholder)
-    .replaceAll(value.replaceAll("\\", "\\\\"), placeholder), text);
+  ];
   const diagnostics = {
     errorChain: proofErrorFacts(lastError),
     exitCode: child.exitCode,
@@ -410,9 +429,9 @@ async function startOpenCode(configDir: string, dataDir: string, project: string
       ? "configured-plugin-initialization"
       : "config-load",
     stderrChars: stderr.join("").length,
-    stderrTail: sanitizeLog(stderr.join("")).slice(-4_000),
+    stderrTail: sanitizeLog(stderr.join(""), replacements).slice(-4_000),
     stdoutChars: stdout.join("").length,
-    stdoutTail: sanitizeLog(stdout.join("")).slice(-2_000),
+    stdoutTail: sanitizeLog(stdout.join(""), replacements).slice(-2_000),
   };
   await stopOpenCode({ child, readyMs: Date.now() - startedAt, stderr, stdout, url });
   throw new Error(`OpenCode server readiness timed out: ${JSON.stringify(diagnostics)}`);
@@ -593,6 +612,15 @@ async function capture(opts: Options): Promise<void> {
   try {
     server = await startOpenCode(configDir, dataDir, project);
     stage(opts.evidenceRoot, "server-ready", { pid: server.child.pid });
+    const arbiterRoute = await waitForProofRoute(
+      proofClient(server.url, project),
+      project,
+      "session-completion-arbiter",
+      PROOF_SERVER_PLUGIN_READY_MS,
+    );
+    stage(opts.evidenceRoot, "arbiter-route-ready", {
+      model: `${arbiterRoute.model.providerID}/${arbiterRoute.model.modelID}`,
+    });
     if (opts.scenario === "interrupted") {
       const blockedRoot = await requestData<Record<string, unknown>>(proofClient(server.url, project).session.create({
         directory: project,
@@ -638,6 +666,10 @@ async function capture(opts: Options): Promise<void> {
     raw = {
       candidateId: opts.candidateId,
       cleanup: "pending",
+      arbiterRoute: {
+        agent: arbiterRoute.agent,
+        model: arbiterRoute.model,
+      },
       environment: {
         directoryMatched: record(await requestData(proofClient(server.url, project).path.get({ directory: project }) as Promise<unknown>, "runtime proof path"))?.directory === project,
         node: process.version,
@@ -658,6 +690,13 @@ async function capture(opts: Options): Promise<void> {
       schemaVersion: 1,
       scenario: opts.scenario,
       server: {
+        diagnostics: serverDiagnostics(server, [
+          [configDir, "<config-dir>"],
+          [dataDir, "<data-dir>"],
+          [project, "<project>"],
+          [sourceRoot, "<source-root>"],
+          [os.homedir(), "<home>"],
+        ]),
         pid: server.child.pid,
         readyMs: server.readyMs,
         startup: proofServerStartupFacts(server.stdout.join(""), server.stderr.join(""), configDir),
@@ -669,7 +708,10 @@ async function capture(opts: Options): Promise<void> {
         "global/bin/roadmap-mission/session-executor.ts",
         "global/bin/roadmap-mission/contracts.ts",
         "global/extensions/session-completion-guard.ts",
+        "global/extensions/session-completion-guard/controller.ts",
+        "global/extensions/session-completion-guard/status.ts",
         "global/extensions/session-completion-guard/terminal-certificate.ts",
+        "global/extensions/session-completion-guard/verdict.ts",
       ].map((relative) => ({ path: relative, sha256: hash(path.join(sourceRoot, relative)) })),
     };
     stage(opts.evidenceRoot, "raw-ready");

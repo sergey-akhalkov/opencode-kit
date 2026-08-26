@@ -1255,3 +1255,114 @@ The registered `simplicity-and-reuse` Practice Owner SHALL launch only for an ex
 - **WHEN** a task only corrects an owner-local defect and adds no sibling or mechanism
 - **THEN** no Practice Owner launch is required
 - **AND** no reuse-discovery skill load is required.
+
+### Requirement: Shift-left cadence receives direct loaded-behavior evidence
+
+The repository SHALL maintain direct loaded-instruction behavior evidence for the shift-left cadence in addition to deterministic marker validation. The evidence SHALL use the reviewed shift-left focused decision pack to compare an explicit frozen baseline source and readable candidate source under identical model, variant, OpenCode version, prompt bytes, fixture state, permission envelope, capture bounds, evaluator semantics, and operating-system class. Static marker presence, source inspection, unit tests, simulator-only output, or a model explanation without the checked decision artifact SHALL NOT satisfy this behavior evidence.
+
+#### Scenario: Candidate schedules reachable characterization first
+
+- **WHEN** the installed loaded candidate receives the reviewed dependency-chain case with an already reachable sufficient real characterization
+- **THEN** its checked plan decision places that characterization or its smallest prerequisite before every dependent behavior step
+- **AND** the matched evaluator confirms no weaker authorization, safety, cleanup, evidence, or claim-ceiling fact than baseline.
+
+#### Scenario: Candidate avoids unnecessary fidelity escalation
+
+- **WHEN** the installed loaded candidate receives the reviewed case where a lower real boundary is sufficient and a higher protected rung is available
+- **THEN** its checked plan decision selects the lower boundary, leaves the higher rung unexecuted, and limits the claim to the observed boundary
+- **AND** separate authority for the higher rung is neither consumed nor represented as a requirement to climb.
+
+#### Scenario: Marker-complete candidate fails behavior
+
+- **WHEN** all maintained shift-left marker checks pass but either checked candidate decision expands dependent behavior too early, climbs unnecessarily, omits a required blocker or claim ceiling, or weakens a protected gate
+- **THEN** the behavior evaluation fails and the instruction candidate is not retained as shift-left-complete
+- **AND** marker validation remains only a drift tripwire rather than a semantic substitute.
+
+#### Scenario: Existing loaded behavior already passes
+
+- **WHEN** the frozen current-source arm and readable candidate arm both satisfy every shift-left decision, environment, safety, and cleanup oracle without instruction-source differences relevant to the decisions
+- **THEN** the evidence gap MAY close without changing canonical instruction wording
+- **AND** the maintained focused pack, replay evidence, proof inventory, and exact maximum claim remain required outputs of the change.
+
+#### Scenario: Frozen baseline exposes a reproducible instruction defect
+
+- **WHEN** complete matched baseline evidence proves one shift-left decision is wrong while the runner, evaluator, environment, observation path, and cleanup are qualified
+- **THEN** implementation MAY correct only the smallest canonical instruction owner and maintained mirrors required for the accepted cadence
+- **AND** it SHALL preserve higher-priority safety and owner authority, recapture the affected candidate lane, and leave unrelated instruction, lifecycle, reviewer, and qualification behavior unchanged.
+
+#### Scenario: Evidence does not support a universal claim
+
+- **WHEN** the two candidate scenarios pass for the selected configured route
+- **THEN** the result states only that the captured candidate satisfied those two decisions under the recorded environment
+- **AND** it does not claim universal model adherence, later plan execution, productivity improvement, general safety, or any unobserved higher rung.
+
+### Requirement: Broad-claim proposals prove apply readiness before reporting ready
+
+The canonical OpenSpec proposal instruction and maintained command mirror SHALL require every proposal that declares a broad `Claim And Evidence Scope` to materialize one reviewed schema-valid development claim record before implementation readiness is reported. The record SHALL preserve the proposal's claim id, class, population, paths, environment, oracle, unresolved observations, and maximum claim; unavailable observations SHALL remain `unknown`, required independent challenge SHALL remain `missing`, and no evidence or supported disposition SHALL be invented. Proposal readiness SHALL run the effect-free apply operation gate after the propose gate and strict OpenSpec validation so the next implementation command cannot discover a known missing structured-record blocker.
+
+#### Scenario: Broad claim has no structured development record
+
+- **WHEN** proposal artifacts declare a broad claim but `evidence-index.json` has no matching schema-valid claim row
+- **THEN** proposal generation does not report the change as ready for implementation
+- **AND** it identifies the missing structured record as an agent-owned planning correction rather than a user decision or production blocker.
+
+#### Scenario: Broad development record preserves unknown evidence
+
+- **WHEN** the proposal defines a broad claim before runtime observations or independent challenge exist
+- **THEN** proposal generation creates a matching development record with explicit unknown observations, missing required challenge, empty evidence references, and a non-supported disposition
+- **AND** deterministic validation accepts the record without treating it as claim closure or implementation proof.
+
+#### Scenario: Apply readiness is checked before handoff
+
+- **WHEN** all apply-required planning artifacts and the proportional claim record exist
+- **THEN** proposal generation runs the propose gate, strict selected-change validation, and the effect-free apply operation gate
+- **AND** it reports `Ready for implementation` only when all three commands exit `0`.
+
+#### Scenario: Exact concise claim needs no broad record
+
+- **WHEN** an Ordinary Small proposal contains only the concise exact-case claim line and does not declare `Claim Class`
+- **THEN** proposal generation retains the concise path without manufacturing `evidence-index.json`
+- **AND** the effect-free apply gate confirms the exact-line route remains ready.
+
+### Requirement: Status communication preserves exact subject and evidence scope
+
+The active global instructions, user-facing handoffs, and compaction prompt SHALL attach status words such as `blocked`, `unknown`, `unavailable`, `ready`, and `complete` to the exact subject and evidence scope they describe. They SHALL keep resource availability, action authority, path or runner readiness, evidence completeness, operational consequence, and accepted-outcome state separate when those facts differ. A supported status in one dimension SHALL NOT be broadened, inverted, or silently applied to another dimension, and a known adjacent fact SHALL be stated when omitting it could reasonably cause that inference. Responses SHALL remain concise and SHALL NOT enumerate irrelevant dimensions when no ambiguity is plausible.
+
+#### Scenario: Available resource has an unknown proof path
+- **WHEN** current evidence establishes that a resource is available and authorized while the current change lacks evidence needed to classify one proof path
+- **THEN** the response states the known resource and authority facts separately and applies `unknown` only to the named proof path or its evidence
+- **AND** it does not describe the resource, authority, environment, or accepted outcome as unavailable or blocked without separate supporting evidence.
+
+#### Scenario: Resource availability is genuinely unknown
+- **WHEN** proof-path state is known but current evidence does not establish whether the required resource is available
+- **THEN** the response applies `unknown` to resource availability and preserves the independently known path state
+- **AND** it does not manufacture an available resource merely to make the wording symmetrical.
+
+#### Scenario: Compaction reconstructs mixed status dimensions
+- **WHEN** a session is compacted after recording different supported states for resource, authority, path readiness, evidence, operational consequence, and accepted outcome
+- **THEN** the continuation summary preserves each material state with its subject and evidence scope
+- **AND** a fresh session can reconstruct the same states without converting a path-scoped restriction into a broader resource, authority, or outcome claim.
+
+#### Scenario: Status dimensions do not materially differ
+- **WHEN** a short response has one unambiguous subject and no adjacent known fact would be negated or broadened by omission
+- **THEN** the response may state that subject and status directly without a multi-field checklist
+- **AND** the communication remains as short as practical while preserving accuracy.
+
+### Requirement: Scoped-status wording has bounded loaded-behavior evidence
+
+The repository SHALL retain deterministic source and mirror checks plus a finite installed loaded-behavior pack for subject-scoped status communication. The behavior pack SHALL compare a frozen baseline and readable candidate under matched source, model, prompt, fixture, permission, OpenCode, and environment identities; SHALL preserve privacy-safe response and compaction evidence; and SHALL validate exact expected status dimensions without scoring prose quality or inferring correctness from marker presence alone. Its reported claim SHALL remain limited to the maintained scenario population and recorded environment.
+
+#### Scenario: Candidate preserves every reviewed status dimension
+- **WHEN** the installed candidate is captured for every maintained main-response and compaction status-scope scenario
+- **THEN** provider-free evaluation confirms the exact expected resource, authority, path, evidence, operational-consequence, and outcome fields with no forbidden effects
+- **AND** retained response and reconstruction evidence contains no conflicting cross-dimension claim.
+
+#### Scenario: Source marker is present but behavior is wrong
+- **WHEN** deterministic instruction checks pass but a candidate broadens `unknown`, `blocked`, or `unavailable` beyond the expected subject in a maintained scenario
+- **THEN** the behavior evaluation fails and the candidate is not represented as satisfying the scoped-status change
+- **AND** the marker check remains a drift tripwire rather than semantic proof.
+
+#### Scenario: Maintained population passes
+- **WHEN** every candidate scenario and cleanup oracle is green under the recorded environment
+- **THEN** the result states only the finite maximum claim declared by CSA-001
+- **AND** it does not claim universal wording quality, language coverage, or compliance by unobserved models and contexts.

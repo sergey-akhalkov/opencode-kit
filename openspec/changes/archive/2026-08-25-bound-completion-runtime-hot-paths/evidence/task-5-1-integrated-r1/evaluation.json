@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "bound-completion-runtime-hot-paths-r1",
+  "mode": "integrated",
+  "baseline": {
+    "elapsedMs": 1539,
+    "heapDeltaBytes": 27610984,
+    "queryPlanHasFullScan": true,
+    "selectedRows": 100004
+  },
+  "candidate": {
+    "elapsedMs": 1073,
+    "heapDeltaBytes": 22264,
+    "queryPlan": [
+      {
+        "id": 2,
+        "parent": 0,
+        "notused": 39,
+        "detail": "SEARCH session USING COVERING INDEX sqlite_autoindex_session_1 (id=?)"
+      },
+      {
+        "id": 3,
+        "parent": 0,
+        "notused": 62,
+        "detail": "SEARCH session USING INDEX session_parent_idx (parent_id=?)"
+      }
+    ],
+    "queryPlanHasFullScan": false,
+    "selectedRows": 3
+  },
+  "cleanup": {
+    "largeDbRemoved": true,
+    "processFixtures": true,
+    "scheduler": "complete"
+  },
+  "process": {
+    "commandDefaults": {
+      "gitMutation": 120000,
+      "inspection": 30000,
+      "openSpec": 120000,
+      "validation": 600000
+    },
+    "fixtures": [
+      {
+        "argv": [
+          "inspect",
+          "fixture"
+        ],
+        "cleanupState": "terminal",
+        "commandClass": "inspection",
+        "defaultMs": 30000,
+        "descendantsTerminal": true,
+        "errorCode": "ETIMEDOUT",
+        "signal": null,
+        "status": 1,
+        "timedOut": true
+      },
+      {
+        "argv": [
+          "git",
+          "fixture"
+        ],
+        "cleanupState": "terminal",
+        "commandClass": "git-mutation",
+        "defaultMs": 120000,
+        "descendantsTerminal": true,
+        "errorCode": "ETIMEDOUT",
+        "signal": null,
+        "status": 1,
+        "timedOut": true
+      },
+      {
+        "argv": [
+          "openspec",
+          "fixture"
+        ],
+        "cleanupState": "terminal",
+        "commandClass": "openspec",
+        "defaultMs": 120000,
+        "descendantsTerminal": true,
+        "errorCode": "ETIMEDOUT",
+        "signal": null,
+        "status": 1,
+        "timedOut": true
+      },
+      {
+        "argv": [
+          "npm",
+          "fixture"
+        ],
+        "cleanupState": "terminal",
+        "commandClass": "validation-finalization",
+        "defaultMs": 600000,
+        "descendantsTerminal": true,
+        "errorCode": "ETIMEDOUT",
+        "signal": null,
+        "status": 1,
+        "timedOut": true
+      }
+    ],
+    "unknownCleanup": {
+      "cleanupState": "unknown",
+      "missionStateUnchanged": true,
+      "retryCount": 0,
+      "timedOut": true
+    }
+  },
+  "providerCalls": 0,
+  "scheduler": {
+    "active": [
+      "acquired",
+      "acquired"
+    ],
+    "activeAfterPromotion": 2,
+    "cancelled": "cancelled",
+    "cleanup": "complete",
+    "elapsedMs": 5,
+    "maxActiveObserved": 2,
+    "originalRevision": "cancelled",
+    "outcomes": {
+      "acquired": 1,
+      "cancelled": 32
+    },
+    "overload": "overload",
+    "promoted": "acquired",
+    "queueAtCapacity": 32,
+    "queuedAfterCancellation": 30
+  },
+  "sources": [
+    {
+      "path": "global/bin/portable-process.ts",
+      "sha256": "a99ad2499efd86397f5b1f029b300750c5c4dfa02d814ce94b13fab539eb5bfe"
+    },
+    {
+      "path": "global/bin/portable-process-supervisor.ts",
+      "sha256": "794c29b93569e96a38c95ae817291da22dedb63051f0bcf4e38077aa711f9099"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-adapter.ts",
+      "sha256": "78472724f9a10745fb95201f85135330f9a1554e62c0a24c596a5bcff66d6491"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-process.ts",
+      "sha256": "84933f3df214d0856c82117a6b3915a378c6f8a1ed37d4032fb67370f90c416d"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller.ts",
+      "sha256": "b04c97aa19c2bc52f60e77dd35c5132b57fee72084c977c9341c7afdec1e868f"
+    },
+    {
+      "path": "global/bin/roadmap-mission/preflight.ts",
+      "sha256": "81377466f7a394588514d9e3879ddbdbe79a812360734d23c0ba1cded4e450cf"
+    },
+    {
+      "path": "global/bin/roadmap-mission/session-executor.ts",
+      "sha256": "16d27b3835007eab3a3b545a80a20f0c867aa0949aff6fde1209e4568dd9d5d9"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-scheduler.ts",
+      "sha256": "640c64ac23a81c1be9d51b243d894924dfc07fec68a075ca4840235d2d22057a"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/session-graph.ts",
+      "sha256": "fc4c23bb98432757bb756bfe18abd000fa22c9d275f65e26c312c1efb8933e00"
+    }
+  ]
+}

@@ -1,0 +1,422 @@
+{
+  "candidate": {
+    "sourceIdentity": [
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "f209c96c72bb66a00d7b30dc519ede1dbbffc361092327003e059edfb3064b57"
+      },
+      {
+        "path": "global/plugin/project-memory/index.ts",
+        "sha256": "ec51b50420857a40e58a6793c9cf3a7110f779a65368f33efbc25a09a488a54d"
+      },
+      {
+        "path": "global/plugin/project-memory/recall.ts",
+        "sha256": "1360cc3a07033696cfd65e115132c5cc1df40bf228f8f49618869fc9935c0a18"
+      },
+      {
+        "path": "global/plugin/project-memory/records.ts",
+        "sha256": "be2c3468a414d923c387776d783893018f196f2d8b4792e49a7ed15e080baae9"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "0e7738dc6e8fcd784040b0e76b0ac5a31eca3529d32962bff9a1d966f86c0bab"
+      },
+      {
+        "path": "tools/proofs/project-memory-context.ts",
+        "sha256": "84c469541d09ded358617b746f60956b267c514145a51e95ce908591acd571e4"
+      }
+    ]
+  },
+  "command": {
+    "argv": [
+      "<opencode>",
+      "run",
+      "--agent",
+      "build",
+      "--model",
+      "proof/proof-model",
+      "--format",
+      "json",
+      "--dir",
+      "<fixture-root>/project",
+      "--title",
+      "project-memory-loaded-entry-proof",
+      "How should I restart supervisor safely?"
+    ],
+    "status": 4294967295,
+    "signal": null,
+    "stderr": "",
+    "stdout": "{\"type\":\"step_start\",\"timestamp\":1787689012421,\"sessionID\":\"ses_fc56e7e30ffedbVm7zK2LTvaFW\",\"part\":{\"id\":\"prt_03a918cb3001HFveX4ohDM8Fbm\",\"messageID\":\"msg_03a918436001aQLLC22GAmRoTo\",\"sessionID\":\"ses_fc56e7e30ffedbVm7zK2LTvaFW\",\"snapshot\":\"ba1acded474a1d6a3e6e99f40b9a4b25c6439df2\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787689012421,\"sessionID\":\"ses_fc56e7e30ffedbVm7zK2LTvaFW\",\"part\":{\"id\":\"prt_03a918cb8001PZGNEUbKJ6rf5K\",\"messageID\":\"msg_03a918436001aQLLC22GAmRoTo\",\"sessionID\":\"ses_fc56e7e30ffedbVm7zK2LTvaFW\",\"type\":\"text\",\"text\":\"Loopback project-memory proof complete.\",\"time\":{\"start\":1787689012408,\"end\":1787689012413}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787689012656,\"sessionID\":\"ses_fc56e7e30ffedbVm7zK2LTvaFW\",\"part\":{\"id\":\"prt_03a918da1001NNqfgxG6AurbBM\",\"reason\":\"stop\",\"snapshot\":\"ba1acded474a1d6a3e6e99f40b9a4b25c6439df2\",\"messageID\":\"msg_03a918436001aQLLC22GAmRoTo\",\"sessionID\":\"ses_fc56e7e30ffedbVm7zK2LTvaFW\",\"type\":\"step-finish\",\"tokens\":{\"input\":0,\"output\":0,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n",
+    "timedOut": true
+  },
+  "environment": {
+    "externalNetworkAllowed": false,
+    "node": "v24.18.1",
+    "opencode": "1.18.23",
+    "platform": "win32",
+    "pluginRuntime": {
+      "lockSha256": "a7594a635a447c07d683868f341da95166a80bff0a5a06a94f2cac5d5c97b26c",
+      "packageSha256": "0ed65dcf90c8dbcb5e6da5353929713c9d949efdacaca416e28bf98d8fcab06f",
+      "pluginPackageSha256": "fdbdb09e98b0d103589994fd817cd0adf1cf9a0383499d8952dded59df291c31",
+      "pluginVersion": "1.18.23"
+    },
+    "projectMemoryEnabled": true,
+    "ripgrepSha256": "50724f5aa5124be1db2dad4038d154ce8fbbaeb8f38aa761c606faa0d3e9d902"
+  },
+  "observations": {
+    "capsuleOccurrences": 1,
+    "egressTrapCount": 0,
+    "gitStatusAfter": "?? src/\n",
+    "gitStatusBefore": "?? src/\n",
+    "providerRequestBytes": 12236,
+    "providerRequestCount": 1,
+    "providerRequestSha256": "ceeed432bb05610c58bca64c3a786b8374b97b968eb76478a75e4bed0fba2883",
+    "projectRef": "project_d466f534ce25a6d6c5f7c02c34a529fa",
+    "tracePhases": [
+      "factory-enter",
+      "factory-exit",
+      "message-enter",
+      "message-exit",
+      "system-enter",
+      "system-exit"
+    ],
+    "toolNames": [
+      "project_memory_manage",
+      "project_memory_recall",
+      "session_delivery_context"
+    ]
+  },
+  "pluginTrace": [
+    {
+      "at": "2026-08-25T20:13:51.237Z",
+      "phase": "factory-enter"
+    },
+    {
+      "at": "2026-08-25T20:13:51.239Z",
+      "phase": "factory-exit",
+      "hooks": [
+        "chat.message",
+        "dispose",
+        "event",
+        "experimental.chat.system.transform",
+        "experimental.session.compacting",
+        "shell.env",
+        "tool",
+        "tool.execute.before"
+      ]
+    },
+    {
+      "at": "2026-08-25T20:16:49.688Z",
+      "phase": "message-enter"
+    },
+    {
+      "at": "2026-08-25T20:16:49.714Z",
+      "phase": "message-exit"
+    },
+    {
+      "at": "2026-08-25T20:16:52.345Z",
+      "phase": "system-enter"
+    },
+    {
+      "at": "2026-08-25T20:16:52.346Z",
+      "phase": "system-exit"
+    }
+  ],
+  "preflights": [
+    {
+      "phase": "plugin-only",
+      "status": 0,
+      "stderr": "",
+      "stdoutSha256": "45b29315b70074b53b40ce4d617478467b55a0e86bdc84075af27092afc8c5b8",
+      "timedOut": false,
+      "trace": [
+        {
+          "at": "2026-08-25T20:13:46.476Z",
+          "phase": "factory-enter"
+        },
+        {
+          "at": "2026-08-25T20:13:46.478Z",
+          "phase": "factory-exit",
+          "hooks": [
+            "chat.message",
+            "dispose",
+            "event",
+            "experimental.chat.system.transform",
+            "experimental.session.compacting",
+            "shell.env",
+            "tool",
+            "tool.execute.before"
+          ]
+        }
+      ],
+      "pluginRuntime": {
+        "lockSha256": "a7594a635a447c07d683868f341da95166a80bff0a5a06a94f2cac5d5c97b26c",
+        "packageSha256": "0ed65dcf90c8dbcb5e6da5353929713c9d949efdacaca416e28bf98d8fcab06f",
+        "pluginPackageSha256": "fdbdb09e98b0d103589994fd817cd0adf1cf9a0383499d8952dded59df291c31",
+        "pluginVersion": "1.18.23"
+      },
+      "providerRequestCount": 0
+    },
+    {
+      "phase": "provider-added",
+      "status": 0,
+      "stderr": "",
+      "stdoutSha256": "e88456d45079dbf2a77ff2d3d9343209e5f14bb20175b1a6210189b7f5e9d180",
+      "timedOut": false,
+      "trace": [
+        {
+          "at": "2026-08-25T20:13:48.754Z",
+          "phase": "factory-enter"
+        },
+        {
+          "at": "2026-08-25T20:13:48.756Z",
+          "phase": "factory-exit",
+          "hooks": [
+            "chat.message",
+            "dispose",
+            "event",
+            "experimental.chat.system.transform",
+            "experimental.session.compacting",
+            "shell.env",
+            "tool",
+            "tool.execute.before"
+          ]
+        }
+      ],
+      "pluginRuntime": {
+        "lockSha256": "a7594a635a447c07d683868f341da95166a80bff0a5a06a94f2cac5d5c97b26c",
+        "packageSha256": "0ed65dcf90c8dbcb5e6da5353929713c9d949efdacaca416e28bf98d8fcab06f",
+        "pluginPackageSha256": "fdbdb09e98b0d103589994fd817cd0adf1cf9a0383499d8952dded59df291c31",
+        "pluginVersion": "1.18.23"
+      },
+      "providerRequestCount": 0
+    }
+  ],
+  "providerRequest": {
+    "model": "proof-model",
+    "max_tokens": 10000,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are opencode, an interactive CLI tool that helps users with software engineering tasks. Use the instructions below and the tools available to you to assist the user.\n\nIMPORTANT: You must NEVER generate or guess URLs for the user unless you are confident that the URLs are for helping the user with programming. You may use URLs provided by the user in their messages or local files.\n\nIf the user asks for help or wants to give feedback inform them of the following:\n- /help: Get help with using opencode\n- To give feedback, users should report the issue at https://github.com/anomalyco/opencode/issues\n\nWhen the user directly asks about opencode (eg 'can opencode do...', 'does opencode have...') or asks in second person (eg 'are you able...', 'can you do...'), first use the WebFetch tool to gather information to answer the question from opencode docs at https://opencode.ai\n\n# Tone and style\nYou should be concise, direct, and to the point. When you run a non-trivial bash command, you should explain what the command does and why you are running it, to make sure the user understands what you are doing (this is especially important when you are running a command that will make changes to the user's system).\nRemember that your output will be displayed on a command line interface. Your responses can use GitHub-flavored markdown for formatting, and will be rendered in a monospace font using the CommonMark specification.\nOutput text to communicate with the user; all text you output outside of tool use is displayed to the user. Only use tools to complete tasks. Never use tools like Bash or code comments as means to communicate with the user during the session.\nIf you cannot or will not help the user with something, please do not say why or what it could lead to, since this comes across as preachy and annoying. Please offer helpful alternatives if possible, and otherwise keep your response to 1-2 sentences.\nOnly use emojis if the user explicitly requests it. Avoid using emojis in all communication unless asked.\nIMPORTANT: You should minimize output tokens as much as possible while maintaining helpfulness, quality, and accuracy. Only address the specific query or task at hand, avoiding tangential information unless absolutely critical for completing the request. If you can answer in 1-3 sentences or a short paragraph, please do.\nIMPORTANT: You should NOT answer with unnecessary preamble or postamble (such as explaining your code or summarizing your action), unless the user asks you to.\nIMPORTANT: Keep your responses short, since they will be displayed on a command line interface. You MUST answer concisely with fewer than 4 lines (not including tool use or code generation), unless user asks for detail. Answer the user's question directly, without elaboration, explanation, or details. One word answers are best. Avoid introductions, conclusions, and explanations. You MUST avoid text before/after your response, such as \"The answer is <answer>.\", \"Here is the content of the file...\" or \"Based on the information provided, the answer is...\" or \"Here is what I will do next...\". Here are some examples to demonstrate appropriate verbosity:\n<example>\nuser: what is 2+2?\nassistant: 4\n</example>\n\n<example>\nuser: is 11 a prime number?\nassistant: Yes\n</example>\n\n<example>\nuser: what command should I run to list files in the current directory?\nassistant: ls\n</example>\n\n<example>\nuser: what command should I run to watch files in the current directory?\nassistant: [use the ls tool to list the files in the current directory, then read docs/commands in the relevant file to find out how to watch files]\nnpm run dev\n</example>\n\n<example>\nuser: what files are in the directory src/?\nassistant: [runs ls and sees foo.c, bar.c, baz.c]\nuser: which file contains the implementation of foo?\nassistant: src/foo.c\n</example>\n\n<example>\nuser: write tests for new feature\nassistant: [uses grep and glob search tools to find where similar tests are defined, uses concurrent read file tool use blocks in one tool call to read relevant files at the same time, uses edit file tool to write new tests]\n</example>\n\n# Proactiveness\nYou are allowed to be proactive, but only when the user asks you to do something. You should strive to strike a balance between:\n1. Doing the right thing when asked, including taking actions and follow-up actions\n2. Not surprising the user with actions you take without asking\nFor example, if the user asks you how to approach something, you should do your best to answer their question first, and not immediately jump into taking actions.\n3. Do not add additional code explanation summary unless requested by the user. After working on a file, just stop, rather than providing an explanation of what you did.\n\n# Following conventions\nWhen making changes to files, first understand the file's code conventions. Mimic code style, use existing libraries and utilities, and follow existing patterns.\n- NEVER assume that a given library is available, even if it is well known. Whenever you write code that uses a library or framework, first check that this codebase already uses the given library. For example, you might look at neighboring files, or check the package.json (or cargo.toml, and so on depending on the language).\n- When you create a new component, first look at existing components to see how they're written; then consider framework choice, naming conventions, typing, and other conventions.\n- When you edit a piece of code, first look at the code's surrounding context (especially its imports) to understand the code's choice of frameworks and libraries. Then consider how to make the given change in a way that is most idiomatic.\n- Always follow security best practices. Never introduce code that exposes or logs secrets and keys. Never commit secrets or keys to the repository.\n\n# Code style\n- IMPORTANT: DO NOT ADD ***ANY*** COMMENTS unless asked\n\n# Doing tasks\nThe user will primarily request you perform software engineering tasks. This includes solving bugs, adding new functionality, refactoring code, explaining code, and more. For these tasks the following steps are recommended:\n- Use the available search tools to understand the codebase and the user's query. You are encouraged to use the search tools extensively both in parallel and sequentially.\n- Implement the solution using all tools available to you\n- Verify the solution if possible with tests. NEVER assume specific test framework or test script. Check the README or search codebase to determine the testing approach.\n- VERY IMPORTANT: When you have completed a task, you MUST run the lint and typecheck commands (e.g. npm run lint, npm run typecheck, ruff, etc.) with Bash if they were provided to you to ensure your code is correct. If you are unable to find the correct command, ask the user for the command to run and if they supply it, proactively suggest writing it to AGENTS.md so that you will know to run it next time.\nNEVER commit changes unless the user explicitly asks you to. It is VERY IMPORTANT to only commit when explicitly asked, otherwise the user will feel that you are being too proactive.\n\n- Tool results and user messages may include <system-reminder> tags. <system-reminder> tags contain useful information and reminders. They are NOT part of the user's provided input or the tool result.\n\n# Tool usage policy\n- When doing file search, prefer to use the Task tool in order to reduce context usage.\n- You have the capability to call multiple tools in a single response. When multiple independent pieces of information are requested, batch your tool calls together for optimal performance. When making multiple bash tool calls, you MUST send a single message with multiple tools calls to run the calls in parallel. For example, if you need to run \"git status\" and \"git diff\", send a single message with two tool calls to run the calls in parallel.\n\nYou MUST answer concisely with fewer than 4 lines of text (not including tool use or code generation), unless user asks for detail.\n\nIMPORTANT: Before you begin work, think about what the code you're editing is supposed to do based on the filenames directory structure.\n\n# Code References\n\nWhen referencing specific functions or pieces of code include the pattern `file_path:line_number` to allow the user to easily navigate to the source code location.\n\n<example>\nuser: Where are errors from the client handled?\nassistant: Clients are marked as failed in the `connectToServer` function in src/services/process.ts:712.\n</example>\n\nYou are powered by the model named proof-model. The exact model ID is proof/proof-model\nHere is some useful information about the environment you are running in:\n<env>\n  Working directory: <fixture-root>\\project\n  Workspace root folder: <fixture-root>\\project\n  Is directory a git repo: yes\n  Platform: win32\n  Today's date: Tue Aug 25 2026\n</env>"
+      },
+      {
+        "role": "system",
+        "content": "# Advisory Project Memory\nCurrent user instructions, source, specifications, and runtime evidence take precedence over recalled memory.\n## Restart the shared supervisor\nRef: card_9e5749cd783e36206f40031867122215; source: local; confidence: high; verified: 2026-08-25T20:13:48.843Z\nUse the validated shared-supervisor restart path.\nWhy: It preserves process ownership.\n"
+      },
+      {
+        "role": "user",
+        "content": "\"How should I restart supervisor safely?\""
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "project_memory_manage",
+          "description": "Append one explicit project-memory candidate, promotion, or invalidation event under the machine-local project store.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "candidate"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "enum": [
+                          "tip",
+                          "pitfall",
+                          "procedure"
+                        ]
+                      },
+                      "confidence": {
+                        "enum": [
+                          "low",
+                          "medium",
+                          "high"
+                        ]
+                      },
+                      "triggers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "appliesTo": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "paths": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "symbols": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "evidencePaths": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "technique": {
+                        "type": "string"
+                      },
+                      "why": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "string"
+                      },
+                      "invalidatedWhen": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "title",
+                      "kind",
+                      "confidence",
+                      "triggers",
+                      "technique",
+                      "why",
+                      "evidence",
+                      "invalidatedWhen"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "promote"
+                      },
+                      "cardRef": {
+                        "type": "string"
+                      },
+                      "evidence": {
+                        "type": "string"
+                      },
+                      "verifiedAt": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "cardRef",
+                      "evidence"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "action": {
+                        "const": "invalidate"
+                      },
+                      "cardRef": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "cardRef",
+                      "reason"
+                    ]
+                  }
+                ]
+              }
+            },
+            "required": [
+              "input"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "project_memory_recall",
+          "description": "Recall bounded current project memory. Input requires query and may include repository-relative path, symbol, statuses, and limit.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "query": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "statuses": {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "candidate",
+                        "active",
+                        "invalidated"
+                      ]
+                    }
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 7
+                  }
+                },
+                "required": [
+                  "query"
+                ]
+              }
+            },
+            "required": [
+              "input"
+            ]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "session_463de059189e",
+          "description": "Return versioned, redacted root parent session completion evidence with human and synthetic provenance, human question replies, guard interventions, todos, bounded assistant/tool/diff/validation evidence, descendants, background state, strategy refs, audits, and explicit truncation warnings.",
+          "parameters": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "properties": {}
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    }
+  },
+  "schemaVersion": 1
+}

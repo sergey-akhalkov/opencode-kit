@@ -1,8 +1,0 @@
-{
-  "candidateId": "task-2-2-staged-readiness-r14",
-  "cleanup": "complete",
-  "scenario": "retention-preflight",
-  "schemaVersion": 1,
-  "seedStatus": "canonical-idle",
-  "status": "complete"
-}

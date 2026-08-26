@@ -1,0 +1,113 @@
+{
+  "candidate": {
+    "sourceIdentity": [
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "f209c96c72bb66a00d7b30dc519ede1dbbffc361092327003e059edfb3064b57"
+      },
+      {
+        "path": "global/plugin/project-memory/index.ts",
+        "sha256": "fb5e913bb2aa252f5951bbd24e063a71fc216d26b825ef58ef17a1bc1de3bacd"
+      },
+      {
+        "path": "global/plugin/project-memory/recall.ts",
+        "sha256": "ac7fd1385d9c05493f63bcd5ea5b8bc5edfc984406deff13d3cfcce5cd71850a"
+      },
+      {
+        "path": "global/plugin/project-memory/records.ts",
+        "sha256": "be2c3468a414d923c387776d783893018f196f2d8b4792e49a7ed15e080baae9"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "f7d38a38778b1b34bf2369375e42dd7985dc15b70ee6383777bf22403681898e"
+      },
+      {
+        "path": "tools/proofs/project-memory-context.ts",
+        "sha256": "f562eb474b24e70d38ea7b41c717ce87f52c689f881e0bfaeda2dc2ebf187fc4"
+      }
+    ]
+  },
+  "checks": {
+    "candidateNearMaximum": true,
+    "cleanupComplete": true,
+    "deterministicProjection": true,
+    "exactCardCount": true,
+    "exactEventCount": true,
+    "invalidationFolded": true,
+    "lifecycleNearMaximum": true,
+    "noExternalEgress": true,
+    "noWarnings": true,
+    "projectUnchanged": true,
+    "renderBounded": true
+  },
+  "cleanup": "complete",
+  "environment": {
+    "externalNetworkAllowed": false,
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "observations": {
+    "bytes": {
+      "candidate": 15683,
+      "invalidation": 3781,
+      "promotion": 3841
+    },
+    "elapsedMs": {
+      "recall": 2281.672200000001,
+      "scan": 4428.062900000001
+    },
+    "fixtureSha256": "3f07399db9fc1c694c2ffaed232608a04c165da6a7ebd390c4ed734d07626241",
+    "memoryBytes": {
+      "afterRecall": {
+        "rss": 340676608,
+        "heapTotal": 281706496,
+        "heapUsed": 150700360,
+        "external": 11746691,
+        "arrayBuffers": 217187
+      },
+      "afterScan": {
+        "rss": 261300224,
+        "heapTotal": 206471168,
+        "heapUsed": 101416000,
+        "external": 19121860,
+        "arrayBuffers": 216979
+      },
+      "before": {
+        "rss": 82067456,
+        "heapTotal": 22708224,
+        "heapUsed": 12966536,
+        "external": 13562732,
+        "arrayBuffers": 539779
+      }
+    },
+    "projection": {
+      "capsuleBytes": 8192,
+      "capsuleSha256": "f6c594c829a085f704ec6176fce0621150134372965f0426c0c06b9dce9339b6",
+      "cardFiles": 2000,
+      "eventFiles": 8000,
+      "firstResult": {
+        "ref": "card_00000000000000000000000000000001",
+        "score": 14.257085075826232,
+        "scoreEvidence": {
+          "bm25": 6.257085075826232,
+          "exactTrigger": true,
+          "exactPath": false,
+          "exactSymbol": false,
+          "matchedTerms": 3
+        },
+        "source": "local"
+      },
+      "omitted": 0,
+      "resultCount": 1,
+      "statusCounts": {
+        "active": 1,
+        "candidate": 0,
+        "invalidated": 1999
+      },
+      "truncated": true,
+      "warnings": []
+    },
+    "projectionSha256": "81abbde99e98790865be230c6fbe0223d36a0da0590796c7205d8edda29468a0"
+  },
+  "schemaVersion": 1
+}
