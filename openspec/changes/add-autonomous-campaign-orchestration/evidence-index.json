@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-autonomous-campaign-orchestration",
+  "candidateId": "autonomous-work-campaign-planning-r1",
+  "environmentId": "planning-no-runtime-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [],
+  "lanes": [],
+  "claims": [
+    {
+      "claimId": "autonomous-work-campaign-v1",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The exercised installed Windows environment and reviewed generic partitions can resume and complete one bounded campaign, freeze and run traceable P0/P1 remediation waves through the existing mission, preserve P2/P3 and protected controls, and derive a current closure report.",
+      "claimClass": "partitioned-domain",
+      "candidateId": "autonomous-work-campaign-planning-r1",
+      "environmentId": "planning-no-runtime-r1",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "autonomous-work-campaign-partitions-v1",
+        "members": [
+          "valid-campaign-definition",
+          "invalid-or-unsafe-definition",
+          "complete-inventory",
+          "isolated-read-only-discovery",
+          "confirmed-p0",
+          "confirmed-material-quality-p1",
+          "p2-p3-report-only",
+          "credible-unknown-p0-p1-investigation",
+          "optional-polish-exclusion",
+          "two-frozen-remediation-waves",
+          "incomplete-or-failed-mission",
+          "active-change-conflict",
+          "dirty-path-conflict",
+          "protected-effect",
+          "controller-or-opencode-interruption",
+          "windows-supervisor-reentry",
+          "changed-block-rereview",
+          "report-drift-prevention",
+          "budget-exhaustion",
+          "terminal-completion"
+        ],
+        "partitionRule": "Versioned reviewed fixtures partition campaign behavior by definition validity, inventory and discovery completeness, finding disposition, work admission, frozen-wave execution, ownership and effect controls, interruption and host recovery, re-review, report consistency, budget state, and terminal closure.",
+        "materialClasses": [
+          "valid-campaign-definition",
+          "invalid-or-unsafe-definition",
+          "complete-inventory",
+          "isolated-read-only-discovery",
+          "confirmed-p0",
+          "confirmed-material-quality-p1",
+          "p2-p3-report-only",
+          "credible-unknown-p0-p1-investigation",
+          "optional-polish-exclusion",
+          "two-frozen-remediation-waves",
+          "incomplete-or-failed-mission",
+          "active-change-conflict",
+          "dirty-path-conflict",
+          "protected-effect",
+          "controller-or-opencode-interruption",
+          "windows-supervisor-reentry",
+          "changed-block-rereview",
+          "report-drift-prevention",
+          "budget-exhaustion",
+          "terminal-completion"
+        ],
+        "residualSpace": "Other models and providers, unreviewed repositories and defect classes, long-duration behavior beyond bounded proof, locked interactive credentials after reboot, Linux or macOS host integration, multi-repository campaigns, additional playbooks, and protected product or external effects remain outside the claim."
+      },
+      "paths": {
+        "production": "protected-windows-supervisor-to-campaign-and-mission",
+        "baseline": "manual-audit-and-static-mission-workflow",
+        "candidate": "candidate-autonomous-campaign-workflow"
+      },
+      "observationBoundary": "installed-windows-supervisor-configured-campaign-disposable-project-readback-and-cleanup",
+      "realOracle": {
+        "required": true,
+        "status": "unknown",
+        "evidenceRefs": []
+      },
+      "observations": [],
+      "evidenceRefs": [],
+      "materialExclusions": [
+        "Universal defect discovery or semantic correctness for every project",
+        "P2 or P3 remediation",
+        "Concurrent source writers or concurrent campaigns in one worktree",
+        "Multi-repository transactions",
+        "Linux or macOS host-reboot recovery",
+        "Additional campaign playbooks",
+        "Remote mutation, deployment, release, credentials, or destructive external effects",
+        "Autonomous resolution of protected product, security, privacy, authorization, legal, or policy decisions"
+      ],
+      "unknowns": [
+        "No provider-free campaign core or reviewed fixture population has been implemented or captured.",
+        "No configured semantic campaign or real frozen-wave mission handoff has been observed.",
+        "The installed Windows supervisor and restart-reentry boundary has not been exercised.",
+        "No declared population member has a terminal observation.",
+        "Required critical writer-safety SDET and fresh evidence-sufficiency challenge have not run."
+      ],
+      "independentChallenge": {
+        "required": true,
+        "status": "missing",
+        "evidenceRefs": []
+      },
+      "maximumSupportedClaim": "Planning artifacts define the intended autonomous campaign workflow and reviewed proof population; no runtime, restart-recovery, cross-project, or remediation-completion behavior claim is currently supported.",
+      "narrowingAccepted": false,
+      "disposition": "blocked"
+    }
+  ]
+}

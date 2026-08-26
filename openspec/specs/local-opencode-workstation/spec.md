@@ -44,6 +44,13 @@ The workstation SHALL expose Start, Restart, and Stop entry points for exactly o
 - **THEN** the shared elevated OpenCode and Graphify services become healthy without a visible console
 - **AND** the operator does not have to invoke Start first
 
+#### Scenario: Unexpected server failure receives bounded recovery
+- **WHEN** the tray observes a managed `exited` state with a non-zero exit while no operator lifecycle command is active
+- **THEN** the tray invokes the existing protected Start path at most three times, one minute apart
+- **AND** a replacement run preserves the prior OpenCode and Graphify stdout and stderr generation under fixed `*.previous` paths before opening new current logs
+- **AND** project launchers continue to fail closed rather than starting an implicit server while recovery is incomplete
+- **AND** explicit operator Stop records `stopped` and does not trigger automatic recovery
+
 ### Requirement: Restart is ownership-safe and complete
 Restart SHALL terminate only positively identified managed OpenCode, Graphify, supervisor, server-root, and listener identities, SHALL prove that the prior managed listeners are gone before replacement, and SHALL restore both authenticated services or report a cause-preserving failure. Restart SHALL NOT terminate a process that is not one of those validated identities. An already-exited validated identity SHALL count as stopped, not as a controller failure. Restart invoked from the Desktop entry point or from the tray menu SHALL have the same ownership and replacement contract. One operator Restart SHALL perform one replacement attempt; completing that attempt SHALL NOT require a second Restart click.
 
@@ -97,7 +104,7 @@ Every script, manifest, state record, and credential consumed by a highest-privi
 - **AND** authentication is supplied to OpenCode through its supported environment mechanism
 
 ### Requirement: Project launchers attach to the shared server
-The Desktop SHALL contain elevated launchers for `opencode-kit`, `pmac-emulator`, `controller-gateway-service`, and `windows-ui-automation`. Each launcher SHALL validate its configured Git worktree, verify the complete authenticated shared runtime, start exactly one maximized Alacritty with stable PowerShell, invoke `opencode attach` with that repository as `--dir`, and release all launch-owned hidden invocation/elevation processes after the direct elevated controller completes.
+The Desktop SHALL contain elevated launchers for `opencode-kit`, `pmac-emulator`, `controller-gateway-service`, and `windows-ui-automation`. Each launcher SHALL validate its configured Git worktree, verify the complete protected shared runtime identities and credential availability, start exactly one maximized Alacritty with stable PowerShell, invoke authenticated `opencode attach` with that repository as `--dir`, and release all launch-owned hidden invocation/elevation processes after the direct elevated controller completes.
 
 #### Scenario: Each selected repository opens through the shared server
 - **WHEN** the shared runtime is healthy and the operator invokes any selected project launcher
@@ -113,6 +120,12 @@ The Desktop SHALL contain elevated launchers for `opencode-kit`, `pmac-emulator`
 - **THEN** both elevated Alacritty/OpenCode client trees remain active with their own exact mapped directories
 - **AND** both use the same authenticated OpenCode and Graphify endpoints
 - **AND** launching or closing either client does not replace the managed services or terminate the other client
+
+#### Scenario: Busy authenticated health does not reject attach handoff
+- **WHEN** the protected running identities and listeners remain valid while the authenticated health route is temporarily busy under existing client load
+- **THEN** a project launcher starts its authenticated attach client without reporting the managed server as unavailable
+- **AND** the tray remains responsible for showing red until a current authenticated health probe succeeds
+- **AND** the launcher does not start or replace either shared service
 
 #### Scenario: Missing server does not create an implicit server
 - **WHEN** OpenCode or Graphify is unavailable and the operator invokes a project launcher
@@ -176,12 +189,23 @@ The complete non-secret workstation source, strict repository-path configuration
 - **AND** the changed configuration takes effect only through an explicit stopped repair or rollback and reinstall
 
 ### Requirement: Persistent tray lamp reports server liveness
-The workstation SHALL show one notification-area icon labeled `opencode-server` after interactive logon until the operator chooses Exit. The icon SHALL be green only when the managed OpenCode and Graphify services are both healthy, SHALL blink a red restarting state while tray Restart is replacing the runtime, SHALL be red when either required service is stopped, failed, or degraded while the tray host is running, and SHALL stay red after a failed tray Restart until a later successful Start or Restart. The tray host SHALL NOT receive either service credential.
+The workstation SHALL show one notification-area icon labeled `opencode-server` after interactive logon until the operator chooses Exit. The icon SHALL be green only when the managed OpenCode and Graphify services are both healthy, SHALL blink a red restarting state while tray Restart is replacing the runtime, SHALL be red when either required service is stopped, failed, or degraded while the tray host is running, and SHALL stay red after a failed tray Restart until a later successful Start or Restart. Listener, process, and endpoint health IO SHALL run outside the tray UI thread. The tray host SHALL NOT receive either service credential.
 
 #### Scenario: Healthy server shows a green lamp
 - **WHEN** the managed OpenCode and Graphify services are healthy during an interactive owner session
 - **THEN** the notification area shows one `opencode-server` icon
 - **AND** that icon is green
+
+#### Scenario: Authenticated OpenCode health stalls behind a live port
+- **WHEN** the recorded OpenCode listener still returns an unauthenticated challenge but a recent protected-controller authenticated health probe does not succeed
+- **THEN** the notification icon is red rather than green
+- **AND** the probe child reads the protected credential without passing it to the tray process, command arguments, tray state, or logs
+
+#### Scenario: Slow health probe does not block the tray menu
+- **WHEN** listener discovery or either endpoint health request is slow or stalled
+- **THEN** the tray context menu remains responsive to operator input
+- **AND** Restart and Exit clicks are processed without waiting for the health request to finish
+- **AND** a probe result from before a lifecycle replacement cannot turn the replacement runtime green
 
 #### Scenario: Graphify degradation shows red without stopping clients
 - **WHEN** OpenCode remains healthy but the managed Graphify service exits or fails readiness

@@ -11,7 +11,7 @@ This directory is the source of truth for the local Windows OpenCode workstation
 - The four configured repositories checked out as exact Git worktree roots
 - The configured Graphify Python/module and fixed read-only graph
 
-The setup installs no package, Windows service, firewall rule, or remote listener. The tray host has an owner AtLogon trigger; the shared server task stays demand-start and is started by the tray at logon.
+The setup installs no package, Windows service, firewall rule, or remote listener. The tray host has an owner AtLogon trigger; the shared server task stays demand-start and is started by the tray at logon. While the tray is running, an unexpected non-zero server exit is recovered through the protected Start path at most three times, one minute apart. Explicit operator Stop records `stopped` and remains stopped.
 
 ## Machine Configuration
 
@@ -47,7 +47,7 @@ Install self-elevates when required. It creates one highest-privilege demand-sta
 
 ## Operate
 
-At interactive logon the tray host starts Graphify on `http://127.0.0.1:4097/mcp` before OpenCode on `http://127.0.0.1:4096`. The `opencode-server` lamp is green only when recorded identities for both listeners are running, and blinks red/amber during Restart. Right-click **Restart** replaces both managed sibling identities. Right-click **Exit** stops both and closes the tray until the next logon. Exit does not disable autostart.
+At interactive logon the tray host starts Graphify on `http://127.0.0.1:4097/mcp` before OpenCode on `http://127.0.0.1:4096`. The `opencode-server` lamp is green only when both recorded listener identities are running, startup readiness succeeded, fresh credential-free probes confirm that both endpoints respond with the expected authentication challenge, and a recent protected-controller child authenticated the OpenCode health endpoint. The child performs all listener and network probes and reads the protected credential; the tray UI thread only consumes its exit status, so the menu remains responsive while health IO is slow. The tray never receives either credential. It blinks red/amber during Restart. Right-click **Restart** replaces both managed sibling identities. Right-click **Exit** stops both and closes the tray until the next logon. Exit does not disable autostart.
 
 | Component | Ownership |
 |---|---|
@@ -58,7 +58,7 @@ At interactive logon the tray host starts Graphify on `http://127.0.0.1:4097/mcp
 
 Graphify PR/repository tools require an explicit non-empty `repo`; graph-only tools keep the fixed graph and optional explicit `project_path`. If Graphify exits after readiness, OpenCode remains available for existing clients, Status/tray become degraded/red, and new launches fail with a Restart diagnostic.
 
-Start still raises a stopped server. Repeated Start reuses the healthy managed server. Each project shortcut opens exactly one maximized elevated Alacritty, starts stable PowerShell, and runs `opencode attach http://127.0.0.1:4096 --dir <configured-path>`. It never falls back to a second server and does not leave a controller console.
+Start still raises a stopped server. Repeated Start reuses the healthy managed server. Each project shortcut validates the running protected process and listener identities, opens exactly one maximized elevated Alacritty, starts stable PowerShell, and runs the authenticated `opencode attach http://127.0.0.1:4096 --dir <configured-path>`. A temporarily busy authenticated health route does not create a false launcher failure; the tray remains the strict current-health indicator. The launcher never falls back to a second server and does not leave a controller console.
 
 After leaving the TUI, the elevated PowerShell window remains open. To attach a different folder manually from that elevated shell without putting the password in process arguments:
 
@@ -70,7 +70,7 @@ Remove-Item Env:OPENCODE_SERVER_PASSWORD -ErrorAction SilentlyContinue
 
 Restart replaces only a positively identified managed server tree. Existing clients are not expected to reconnect automatically; reopen their shortcuts afterward.
 
-Multiple project shortcuts may stay open concurrently; they attach independent working directories to the same managed listener. Controller failures from Start, Restart, Status, install/rollback, or any project launcher are appended as secret-free JSON lines to `C:\ProgramData\OpenCodeWorkstation\logs\controller-errors.log`.
+Multiple project shortcuts may stay open concurrently; they attach independent working directories to the same managed listener. Controller failures from Start, Restart, Status, install/rollback, or any project launcher are appended as secret-free JSON lines to `C:\ProgramData\OpenCodeWorkstation\logs\controller-errors.log`. Before a replacement server run opens its four service output logs, it rotates the prior files to the corresponding `*.previous` paths so the triggering run is not erased.
 
 Read-only status and rollback planning are available from the protected controller:
 

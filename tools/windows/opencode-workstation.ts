@@ -36,7 +36,8 @@ import { resolveWorkstationConfigurationPath } from "./opencode-workstation-conf
 const protectedRoot = String.raw`C:\ProgramData\OpenCodeWorkstation`
 const taskName = "OpenCode Workstation Shared Server"
 const trayTaskName = "OpenCode Workstation Tray"
-const endpoint = "http://127.0.0.1:4096"
+const OPEN_CODE_PORT = 4096
+const endpoint = `http://127.0.0.1:${OPEN_CODE_PORT}`
 const publicModes = new Set(["install", "preflight", "status", "start", "stop", "restart", "launch", "rollback"])
 const controllerSourcePath = fileURLToPath(import.meta.url)
 const installedControllerPath = path.join(protectedRoot, "opencode-workstation.ts")
@@ -326,6 +327,15 @@ $stateFile = ${JSON.stringify(trayStatePath)}
 $script:phase = 'starting'
 $script:worker = $null
 $script:blinkOn = $true
+$script:recoveryAttempts = 0
+$script:nextRecoveryAt = [DateTime]::MinValue
+$script:recoveryBlocked = $false
+$script:authenticatedHealthWorker = $null
+$script:authenticatedHealthWorkerGeneration = -1
+$script:healthGeneration = 0
+$script:lastAuthenticatedHealthStartedAt = [DateTime]::MinValue
+$script:lastAuthenticatedHealthCompletedAt = [DateTime]::MinValue
+$script:managedRuntimeHealthy = $false
 
 function New-LampIcon([System.Drawing.Color]$color) {
   $bitmap = New-Object System.Drawing.Bitmap 16, 16
@@ -342,18 +352,59 @@ function Write-LampState([string]$color) {
   [IO.File]::WriteAllText($stateFile, $payload)
 }
 
-function Test-ServerListening {
+function Test-ServerHealthy {
+  $script:managedRuntimeHealthy -and ([DateTime]::UtcNow - $script:lastAuthenticatedHealthCompletedAt).TotalSeconds -le 20
+}
+
+function Invalidate-ManagedHealth {
+  $script:healthGeneration += 1
+  $script:managedRuntimeHealthy = $false
+  $script:lastAuthenticatedHealthCompletedAt = [DateTime]::MinValue
+}
+
+function Update-AuthenticatedHealth {
+  $now = [DateTime]::UtcNow
+  if ($script:authenticatedHealthWorker -and $script:authenticatedHealthWorker.HasExited) {
+    if ($script:authenticatedHealthWorkerGeneration -eq $script:healthGeneration -and $script:phase -eq 'idle') {
+      $script:managedRuntimeHealthy = [int]$script:authenticatedHealthWorker.ExitCode -eq 0
+      $script:lastAuthenticatedHealthCompletedAt = $now
+    }
+    $script:authenticatedHealthWorker = $null
+  }
+  if ($script:phase -eq 'idle' -and -not $script:authenticatedHealthWorker -and ($now - $script:lastAuthenticatedHealthStartedAt).TotalSeconds -ge 10) {
+    $script:lastAuthenticatedHealthStartedAt = $now
+    $script:authenticatedHealthWorkerGeneration = $script:healthGeneration
+    $script:authenticatedHealthWorker = Start-Process -FilePath $node -ArgumentList @($controller, 'tray-health-probe') -WindowStyle Hidden -PassThru
+  }
+  if (($now - $script:lastAuthenticatedHealthCompletedAt).TotalSeconds -gt 20) {
+    $script:managedRuntimeHealthy = $false
+  }
+}
+
+function Test-RecoverableServerExit {
   if (-not (Test-Path -LiteralPath $serverState)) { return $false }
   try { $state = Get-Content -LiteralPath $serverState -Raw | ConvertFrom-Json } catch { return $false }
-  if ([string]$state.status -ne 'running') { return $false }
-  $openCode = Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort 4096 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
-  $graphify = Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort 4097 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
-  $null -ne $openCode -and $null -ne $graphify -and [int]$openCode.OwningProcess -eq [int]$state.listeners[0].processId -and [int]$graphify.OwningProcess -eq [int]$state.graphify.listener.processId
+  if ([string]$state.status -ne 'exited' -or $null -eq $state.exit) { return $false }
+  ($null -ne $state.exit.code -and [int]$state.exit.code -ne 0) -or -not [string]::IsNullOrWhiteSpace([string]$state.exit.signal)
 }
 
 function Start-ControllerAsync([string]$mode) {
   if ($script:worker -and -not $script:worker.HasExited) { return }
   $script:worker = Start-Process -FilePath $node -ArgumentList @($controller, $mode) -WindowStyle Hidden -PassThru
+}
+
+function Invoke-Recovery {
+  if ($script:phase -ne 'idle' -or $script:recoveryBlocked -or $script:recoveryAttempts -ge 3) { return }
+  if ([DateTime]::UtcNow -lt $script:nextRecoveryAt -or -not (Test-RecoverableServerExit)) { return }
+  Invalidate-ManagedHealth
+  $script:phase = 'recovering'
+  $script:recoveryAttempts += 1
+  $script:nextRecoveryAt = [DateTime]::UtcNow.AddMinutes(1)
+  $script:blinkOn = $true
+  $notify.Icon = $red
+  $notify.Text = "$label (recovering)"
+  Write-LampState 'recovering'
+  Start-ControllerAsync 'start'
 }
 
 $green = New-LampIcon ([System.Drawing.Color]::FromArgb(0, 180, 0))
@@ -377,7 +428,7 @@ function Set-SteadyLamp([string]$color) {
 }
 
 function Update-Lamp {
-  if (Test-ServerListening) { Set-SteadyLamp 'green' } else { Set-SteadyLamp 'red' }
+  if (Test-ServerHealthy) { Set-SteadyLamp 'green' } else { Set-SteadyLamp 'red' }
 }
 
 function Close-Tray {
@@ -389,7 +440,10 @@ function Close-Tray {
 }
 
 function Invoke-Restart {
-  if ($script:phase -eq 'restarting' -or $script:phase -eq 'exiting') { return }
+  if ($script:phase -eq 'restarting' -or $script:phase -eq 'recovering' -or $script:phase -eq 'exiting') { return }
+  Invalidate-ManagedHealth
+  $script:recoveryBlocked = $true
+  $script:recoveryAttempts = 0
   $script:phase = 'restarting'
   $script:blinkOn = $true
   $notify.Icon = $red
@@ -400,6 +454,8 @@ function Invoke-Restart {
 
 function Invoke-Exit {
   if ($script:phase -eq 'exiting') { return }
+  Invalidate-ManagedHealth
+  $script:recoveryBlocked = $true
   $script:phase = 'exiting'
   Set-SteadyLamp 'red'
   Start-ControllerAsync 'stop'
@@ -420,6 +476,7 @@ $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 400
 $timer.add_Tick({
   try {
+    Update-AuthenticatedHealth
     if (Test-Path -LiteralPath $commandFile) {
       $requested = $null
       try { $requested = (Get-Content -LiteralPath $commandFile -Raw | ConvertFrom-Json).command } catch {}
@@ -431,9 +488,27 @@ $timer.add_Tick({
       $code = [int]$script:worker.ExitCode
       $script:worker = $null
       if ($script:phase -eq 'exiting') { Close-Tray; return }
-      if ($script:phase -eq 'restarting') {
-        if ($code -eq 0 -and (Test-ServerListening)) {
+      if ($script:phase -eq 'recovering') {
+        if ($code -eq 0) {
           $script:phase = 'idle'
+          $script:recoveryAttempts = 0
+          $script:nextRecoveryAt = [DateTime]::MinValue
+          Update-Lamp
+          return
+        }
+        $script:phase = 'idle'
+        Set-SteadyLamp 'red'
+        if ($script:recoveryAttempts -ge 3) {
+          $script:recoveryBlocked = $true
+          $notify.Text = "$label (recovery failed)"
+          $notify.ShowBalloonTip(8000, 'OpenCode Workstation', "Automatic recovery failed. See $errorLog", [System.Windows.Forms.ToolTipIcon]::Error)
+        }
+        return
+      }
+      if ($script:phase -eq 'restarting') {
+        if ($code -eq 0) {
+          $script:phase = 'idle'
+          $script:recoveryBlocked = $false
           Update-Lamp
           return
         }
@@ -445,19 +520,24 @@ $timer.add_Tick({
         return
       }
       $script:phase = 'idle'
+      if ($code -eq 0 -and (Test-ServerHealthy)) {
+        $script:recoveryAttempts = 0
+        $script:nextRecoveryAt = [DateTime]::MinValue
+      }
       Update-Lamp
       return
     }
-    if ($script:phase -eq 'restarting' -or $script:phase -eq 'starting') {
+    if ($script:phase -eq 'restarting' -or $script:phase -eq 'starting' -or $script:phase -eq 'recovering') {
       $script:blinkOn = -not $script:blinkOn
       $notify.Icon = $(if ($script:blinkOn) { $red } else { $amber })
-      $notify.Text = $(if ($script:phase -eq 'restarting') { "$label (restarting)" } else { "$label (starting)" })
+      $notify.Text = $(if ($script:phase -eq 'restarting') { "$label (restarting)" } elseif ($script:phase -eq 'recovering') { "$label (recovering)" } else { "$label (starting)" })
       Write-LampState $script:phase
     } elseif ($script:phase -eq 'failed') {
       $notify.Icon = $red
       $notify.Text = "$label (restart failed)"
     } elseif ($script:phase -eq 'idle') {
       Update-Lamp
+      Invoke-Recovery
     }
   } catch {}
 })
@@ -547,14 +627,47 @@ $triggers = @($task.Triggers | Where-Object { $null -ne $_.CimClass -and -not [s
 function unregisterTrayTask() {
   runPowerShellJson(String.raw`
 $ErrorActionPreference = 'Stop'
+$commandPath = '${trayCommandPath}'
+$scriptPath = '${trayScriptPath}'
+$scriptArgument = '-File "' + $scriptPath + '"'
+function Get-ManagedTrayProcesses {
+  @(Get-CimInstance Win32_Process -Filter "Name = 'pwsh.exe'" -ErrorAction SilentlyContinue | Where-Object {
+    [string]$_.CommandLine -like ('*' + $scriptArgument + '*')
+  })
+}
 $task = Get-ScheduledTask -TaskName 'OpenCode Workstation Tray' -ErrorAction SilentlyContinue
-if ($null -ne $task) {
-  if ([string]$task.State -eq 'Running') {
+$processes = @(Get-ManagedTrayProcesses)
+$graceful = ($null -eq $task -or [string]$task.State -ne 'Running') -and $processes.Count -eq 0
+$forcedProcessCount = 0
+if ($null -ne $task -and ([string]$task.State -eq 'Running' -or $processes.Count -gt 0)) {
+  [IO.File]::WriteAllText($commandPath, '{"schemaVersion":1,"command":"exit"}')
+  $deadline = [DateTime]::UtcNow.AddSeconds(15)
+  do {
+    Start-Sleep -Milliseconds 200
+    $task = Get-ScheduledTask -TaskName 'OpenCode Workstation Tray' -ErrorAction SilentlyContinue
+    $processes = @(Get-ManagedTrayProcesses)
+  } while (($null -ne $task -and [string]$task.State -eq 'Running' -or $processes.Count -gt 0) -and [DateTime]::UtcNow -lt $deadline)
+  $graceful = ($null -eq $task -or [string]$task.State -ne 'Running') -and $processes.Count -eq 0
+}
+if (-not $graceful) {
+  if ($null -ne $task -and [string]$task.State -eq 'Running') {
     Stop-ScheduledTask -TaskName 'OpenCode Workstation Tray' -ErrorAction SilentlyContinue
   }
+  $processes = @(Get-ManagedTrayProcesses)
+  $forcedProcessCount = $processes.Count
+  $processes | ForEach-Object { Stop-Process -Id ([int]$_.ProcessId) -Force -ErrorAction Stop }
+  $deadline = [DateTime]::UtcNow.AddSeconds(15)
+  do {
+    Start-Sleep -Milliseconds 200
+    $processes = @(Get-ManagedTrayProcesses)
+  } while ($processes.Count -gt 0 -and [DateTime]::UtcNow -lt $deadline)
+  if ($processes.Count -gt 0) { throw 'Managed tray process remained after task stop.' }
+}
+if ($null -ne $task) {
   Unregister-ScheduledTask -TaskName 'OpenCode Workstation Tray' -Confirm:$false -ErrorAction Stop
 }
-[ordered]@{ removed = $null -ne $task } | ConvertTo-Json -Compress
+Remove-Item -LiteralPath $commandPath -Force -ErrorAction SilentlyContinue
+[ordered]@{ removed = $null -ne $task; graceful = $graceful; forcedProcessCount = $forcedProcessCount } | ConvertTo-Json -Compress
 `)
 }
 
@@ -966,9 +1079,9 @@ function readGraphifyCredential() {
   return value
 }
 
-async function healthProbe(password) {
+async function healthProbe(password, timeoutMilliseconds = 10_000) {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 2_000)
+  const timeout = setTimeout(() => controller.abort(), timeoutMilliseconds)
   try {
     const response = await fetch(`${endpoint}/global/health`, {
       headers: {
@@ -1059,13 +1172,14 @@ async function validatedManagedHealth(manifest, snapshot = windowsSnapshot()) {
   return { ownership, health }
 }
 
-async function waitForValidatedManagedHealth(manifest, timeoutMilliseconds = 15_000) {
+async function waitForValidatedManagedHealth(manifest, timeoutMilliseconds = 15_000, initialSnapshot) {
   const deadline = Date.now() + timeoutMilliseconds
-  let observed = await validatedManagedHealth(manifest)
+  const snapshot = initialSnapshot ?? windowsSnapshot()
+  let observed = await validatedManagedHealth(manifest, snapshot)
   while (!observed.health.healthy && Date.now() < deadline) {
     if (observed.health.reachable && (observed.health.status === 401 || observed.health.status === 403)) return observed
     await new Promise((resolve) => setTimeout(resolve, 250))
-    observed = await validatedManagedHealth(manifest)
+    observed = await validatedManagedHealth(manifest, snapshot)
   }
   return observed
 }
@@ -1237,11 +1351,8 @@ async function launch(repository) {
   if (!manifest.alacritty || !existsSync(manifest.alacritty.protectedPath)) {
     throw new Error("Protected Alacritty config is missing.")
   }
-  rejectDegradedState(manifest, windowsSnapshot())
-  const observed = await waitForValidatedManagedHealth(manifest)
-  if (!observed.health.healthy) {
-    throw new Error(`Shared OpenCode server is unavailable; run the Start shortcut first (${healthDiagnostic(observed.health)}).`)
-  }
+  rejectDegradedState(manifest, snapshot)
+  validateManagedRunningState(manifest, snapshot)
   const password = readCredential()
 
   const command = `& ${powershellSingleQuoted(manifest.tools.opencode.executable.path)} attach ${powershellSingleQuoted(endpoint)} --dir ${powershellSingleQuoted(repositoryPath)}`
@@ -2028,6 +2139,7 @@ async function stopManagedServer() {
   verifyInstalledController(manifest)
   const snapshot = windowsSnapshot()
   if (snapshot.task.state !== "Running" && snapshotListeners(snapshot).length === 0 && inspectGraphifyListeners().length === 0) {
+    writeManagedStoppedState()
     return { status: "already-stopped", recordedProcessIds: [] }
   }
   const validated = validateManagedStopState(manifest, snapshot)
@@ -2075,6 +2187,7 @@ async function stopManagedServer() {
   if (remaining.length > 0 || finalListeners.length > 0 || finalGraphifyListeners.length > 0 || finalSnapshot.task.state === "Running") {
     throw new Error(`Managed server cleanup incomplete; remaining processes '${remaining.join(",")}', listeners '${finalListeners.length}', Graphify listeners '${finalGraphifyListeners.length}', task '${finalSnapshot.task.state}'.`)
   }
+  writeManagedStoppedState()
   return {
     status: "stopped",
     recordedProcessIds,
@@ -2083,6 +2196,48 @@ async function stopManagedServer() {
     graphifyListenerCount: finalGraphifyListeners.length,
     taskState: finalSnapshot.task.state,
   }
+}
+
+async function unauthenticatedChallenge(uri, timeoutMilliseconds = 2_000) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMilliseconds)
+  try {
+    const response = await fetch(uri, { signal: controller.signal })
+    await response.body?.cancel()
+    return response.status === 401
+  } catch {
+    return false
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+function trayListenerSnapshot() {
+  return runPowerShellJson(String.raw`
+$ErrorActionPreference = 'Stop'
+$listeners = @(@(4096, 4097) | ForEach-Object {
+  $port = $_
+  @(Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort $port -State Listen -ErrorAction SilentlyContinue | ForEach-Object {
+    [ordered]@{ localPort = [int]$_.LocalPort; processId = [int]$_.OwningProcess }
+  })
+})
+[ordered]@{ listeners = $listeners } | ConvertTo-Json -Compress -Depth 3
+`)
+}
+
+function trayListenerMatches(snapshot, port, processId) {
+  const listeners = Array.isArray(snapshot.listeners) ? snapshot.listeners : snapshot.listeners ? [snapshot.listeners] : []
+  const matches = listeners.filter((listener) => listener.localPort === port)
+  return matches.length === 1 && matches[0].processId === processId
+}
+
+function writeManagedStoppedState() {
+  if (!existsSync(statePath)) return
+  const state = readJson(statePath)
+  state.status = "stopped"
+  state.stoppedAt = new Date().toISOString()
+  state.health = { ...state.health, healthy: false }
+  writeJsonAtomic(statePath, state)
 }
 
 async function stop() {
@@ -2142,6 +2297,16 @@ async function restart() {
   }
 }
 
+function openManagedServiceLog(name) {
+  const currentPath = path.join(logsPath, name)
+  const previousPath = `${currentPath}.previous`
+  if (existsSync(currentPath)) {
+    rmSync(previousPath, { force: true })
+    renameSync(currentPath, previousPath)
+  }
+  return openSync(currentPath, "w")
+}
+
 async function serve() {
   if (path.resolve(controllerSourcePath).toLowerCase() !== path.resolve(installedControllerPath).toLowerCase()) {
     throw new Error("Serve mode is allowed only from the protected installed controller.")
@@ -2158,10 +2323,10 @@ async function serve() {
   if (inspectGraphifyListeners().length > 0) throw new Error(`Port ${GRAPHIFY_PORT} is already owned; serve mode refused startup.`)
 
   const handles = {
-    serverStdout: openSync(path.join(logsPath, "server.stdout.log"), "w"),
-    serverStderr: openSync(path.join(logsPath, "server.stderr.log"), "w"),
-    graphifyStdout: openSync(path.join(logsPath, "graphify.stdout.log"), "w"),
-    graphifyStderr: openSync(path.join(logsPath, "graphify.stderr.log"), "w"),
+    serverStdout: openManagedServiceLog("server.stdout.log"),
+    serverStderr: openManagedServiceLog("server.stderr.log"),
+    graphifyStdout: openManagedServiceLog("graphify.stdout.log"),
+    graphifyStderr: openManagedServiceLog("graphify.stderr.log"),
   }
   const graphifyArgs = graphifyArguments(manifest.graphify.configuration)
   const graphifyChild = spawn(manifest.graphify.configuration.python.path, graphifyArgs, {
@@ -2332,6 +2497,33 @@ async function serve() {
     }
   }
   if (failure) throw failure
+}
+
+async function probeManagedRuntimeHealthForTray() {
+  if (path.resolve(controllerSourcePath).toLowerCase() !== path.resolve(installedControllerPath).toLowerCase()) {
+    throw new Error("Tray health probe is allowed only from the protected installed controller.")
+  }
+  const manifest = loadManifest()
+  verifyInstalledController(manifest)
+  verifyInstalledSharedTools(manifest)
+  verifyInstalledConfigurationModule(manifest)
+  if (!existsSync(statePath)) return false
+  const state = readJson(statePath)
+  const openCodeProcessId = state.listeners?.[0]?.processId
+  const graphifyProcessId = state.graphify?.listener?.processId
+  if (state.status !== "running" || state.health?.healthy !== true || !Number.isInteger(openCodeProcessId) || !Number.isInteger(graphifyProcessId)) {
+    return false
+  }
+  const listeners = trayListenerSnapshot()
+  if (!trayListenerMatches(listeners, OPEN_CODE_PORT, openCodeProcessId) || !trayListenerMatches(listeners, GRAPHIFY_PORT, graphifyProcessId)) {
+    return false
+  }
+  const [openCode, openCodeChallenge, graphifyChallenge] = await Promise.all([
+    healthProbe(readCredential()),
+    unauthenticatedChallenge(`${endpoint}/global/health`),
+    unauthenticatedChallenge(GRAPHIFY_ENDPOINT),
+  ])
+  return openCode.healthy && openCodeChallenge && graphifyChallenge
 }
 
 function rollbackDryRun() {
@@ -2517,6 +2709,10 @@ function parseInvocation(args) {
     if (args.length !== 1) throw new Error("Serve accepts no additional arguments.")
     return { mode, repository: undefined, configurationPath: undefined, dryRun: false }
   }
+  if (mode === "tray-health-probe") {
+    if (args.length !== 1) throw new Error("Tray health probe accepts no additional arguments.")
+    return { mode, repository: undefined, configurationPath: undefined, dryRun: false }
+  }
   if (!publicModes.has(mode)) throw new Error(`Unknown mode '${mode}'. Run --help for usage.`)
   if (mode === "launch") {
     if (args.length !== 3 || args[1] !== "--repository") {
@@ -2567,6 +2763,8 @@ async function main() {
       writeJson(await restart())
     } else if (operation === "serve") {
       await serve()
+    } else if (operation === "tray-health-probe") {
+      process.exitCode = (await probeManagedRuntimeHealthForTray()) ? 0 : 1
     } else if (operation === "rollback" && invocation.dryRun) {
       writeJson(rollbackDryRun())
     } else if (operation === "rollback") {
@@ -2577,6 +2775,7 @@ async function main() {
   } catch (error) {
     const diagnostic = {
       schemaVersion: 1,
+      recordedAt: new Date().toISOString(),
       operation,
       status: "error",
       error: {

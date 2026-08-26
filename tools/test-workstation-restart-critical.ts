@@ -125,27 +125,72 @@ const tests = [
     },
   },
   {
-    name: "tray failure stays red, names the log, and does not treat a leftover listener as success",
+    name: "tray green requires current endpoint health and failure stays red",
     run: () => {
       const tray = extractFunction("managedTrayScriptContents");
       assert(tray.includes("ShowBalloonTip"), "Failed tray Restart must show a balloon.");
       assert(tray.includes("controller-errors.log"), "Balloon must name controller-errors.log.");
       assert(tray.includes("$label (restart failed)"), "Failed Restart tooltip must stay restart-failed.");
       assert(tray.includes("Write-LampState 'red'"), "Failed Restart must persist red lamp state.");
-      assert(/if \(\$code -eq 0 -and \(Test-ServerListening\)\)/.test(tray), "Green return requires both exit 0 and identity-matched listen.");
-      assert(tray.includes("[int]$openCode.OwningProcess -eq [int]$state.listeners[0].processId"), "Port listen alone must not count as healthy replacement.");
-      assert((tray.match(/Start-ControllerAsync 'start'/g) ?? []).length === 1, "Tray must launch Start only at host startup, never after Restart failure.");
-      assert(tray.includes("if ($script:phase -eq 'restarting' -or $script:phase -eq 'exiting') { return }"), "In-flight Restart must ignore a second click.");
+      assert(!tray.includes("Invoke-WebRequest") && !tray.includes("Get-NetTCPConnection"), "Tray UI callbacks must not perform blocking network or listener probes.");
+      assert(!tray.includes("Test-ServerIdentityAndChallenge"), "Lifecycle completion must wait for the asynchronous health child instead of blocking the UI thread.");
+      assert(tray.includes("'tray-health-probe'") && tray.includes("$script:managedRuntimeHealthy"), "Green must require a recent complete runtime probe delegated to the protected controller.");
+      assert(tray.includes("TotalSeconds -le 20") && tray.includes("TotalSeconds -ge 10"), "Authenticated tray health must have bounded cadence and freshness.");
+      assert(tray.includes("$script:authenticatedHealthWorkerGeneration -eq $script:healthGeneration") && tray.includes("Invalidate-ManagedHealth"), "A stale probe generation must not turn a replacement runtime green.");
+      assert((tray.match(/Start-ControllerAsync 'start'/g) ?? []).length === 2, "Tray may launch Start only at host startup and through bounded unexpected-exit recovery.");
+      const restartFailure = tray.slice(tray.indexOf("if ($script:phase -eq 'restarting')"), tray.indexOf("$script:phase = 'idle'", tray.indexOf("if ($script:phase -eq 'restarting')") + 1));
+      assert(!restartFailure.includes("Start-ControllerAsync 'start'"), "Explicit Restart failure must not trigger an automatic successor attempt.");
+      assert(tray.includes("if ($script:phase -eq 'restarting' -or $script:phase -eq 'recovering' -or $script:phase -eq 'exiting') { return }"), "In-flight Restart or recovery must ignore a second click.");
+      assert(tray.includes("Test-RecoverableServerExit") && tray.includes("[string]$state.status -ne 'exited'"), "Automatic recovery must require an unexpected exited state.");
+      assert(tray.includes("$script:recoveryAttempts -ge 3") && tray.includes("AddMinutes(1)"), "Automatic recovery must be bounded to three attempts one minute apart.");
+      assert(tray.includes("Invoke-Recovery") && tray.includes("Start-ControllerAsync 'start'"), "Idle tray monitoring must recover through the existing protected Start path.");
       assert(!/OPENCODE_SERVER_PASSWORD|GRAPHIFY_API_KEY|server-password|graphify-api-key/.test(tray), "Tray script must not receive or name credential material.");
+    },
+  },
+  {
+    name: "tray task removal closes the exact protected tray process",
+    run: () => {
+      const unregister = extractFunction("unregisterTrayTask");
+      assert(unregister.includes('"command":"exit"'), "Tray removal must request graceful Exit first.");
+      assert(unregister.indexOf('"command":"exit"') < unregister.indexOf("Stop-ScheduledTask"), "Graceful Exit must precede forced task stop.");
+      assert(unregister.includes("$scriptArgument") && unregister.includes("CommandLine"), "Forced cleanup must match the protected tray script argument.");
+      assert(unregister.includes("Stop-Process -Id ([int]$_.ProcessId) -Force"), "A bounded exact-process fallback must close an orphaned tray.");
+      assert((unregister.match(/AddSeconds\(15\)/g) ?? []).length === 2, "Graceful and forced tray cleanup must each have a bounded shutdown window.");
+      assert(unregister.includes("Managed tray process remained after task stop."), "Failed exact tray cleanup must fail closed.");
     },
   },
   {
     name: "Desktop serve kill stays silent and operator Restart keeps the secret-free dialog",
     run: () => {
       const invoker = extractFunction("managedInvokerContents");
+      const serverTask = extractFunction("registerServerTask");
+      const serviceLog = extractFunction("openManagedServiceLog");
+      const serve = extractFunction("serve");
+      const stop = extractFunction("stopManagedServer");
+      const launch = extractFunction("launch");
+      const waitForHealth = extractFunction("waitForValidatedManagedHealth");
+      const healthProbe = extractFunction("healthProbe");
+      const trayHealth = extractFunction("probeManagedRuntimeHealthForTray");
+      const trayListeners = extractFunction("trayListenerSnapshot");
+      const unauthorizedChallenge = extractFunction("unauthenticatedChallenge");
       assert(invoker.includes('LCase(WScript.Arguments(0)) <> \\"serve\\"'), "Serve-task termination must not show the operator dialog.");
       assert(invoker.includes("controller-errors.log"), "Desktop operator failure must name the same log.");
       assert(!/OPENCODE_SERVER_PASSWORD|password/.test(invoker), "Invoker dialog must stay secret-free.");
+      assert(!serverTask.includes("-RestartCount"), "Recovery must not claim an ineffective demand-task RestartOnFailure policy.");
+      assert((stop.match(/writeManagedStoppedState\(\)/g) ?? []).length === 2, "Explicit Stop must persist stopped state on both already-stopped and active cleanup paths.");
+      assert(launch.includes("validateManagedRunningState(manifest, snapshot)"), "Launch must validate both managed listener identities before authenticated client handoff.");
+      assert(!launch.includes("waitForValidatedManagedHealth"), "Launch must not reject a valid attach handoff because the authenticated health route is busy.");
+      assert(waitForHealth.includes("const snapshot = initialSnapshot ?? windowsSnapshot()"), "Validated health wait must accept the launch snapshot while retaining a fresh fallback.");
+      assert((waitForHealth.match(/validatedManagedHealth\(manifest, snapshot\)/g) ?? []).length === 2, "Validated health retries must reuse the checked snapshot instead of repeating the expensive host inventory.");
+      assert(healthProbe.includes("timeoutMilliseconds = 10_000") && healthProbe.includes("controller.abort(), timeoutMilliseconds"), "Authenticated health must tolerate observed transient stalls without becoming unbounded.");
+      assert(trayHealth.includes("healthProbe(readCredential())") && trayHealth.includes("protected installed controller"), "Tray health must delegate credential use to the protected installed controller.");
+      assert(source.includes("const OPEN_CODE_PORT = 4096") && trayHealth.includes("OPEN_CODE_PORT"), "Tray health must use the declared OpenCode listener port.");
+      assert(trayHealth.includes("trayListenerMatches") && trayHealth.includes("state.health?.healthy !== true"), "Tray health child must validate both recorded listener owners and supervisor readiness.");
+      assert((trayHealth.match(/unauthenticatedChallenge\(/g) ?? []).length === 2, "Tray health child must verify both current authentication challenges.");
+      assert(trayListeners.includes("Get-NetTCPConnection") && unauthorizedChallenge.includes("response.status === 401"), "Listener and challenge IO must remain in the protected child rather than the tray UI thread.");
+      assert(serviceLog.includes(".previous") && serviceLog.includes("renameSync(currentPath, previousPath)"), "Replacement startup must preserve the prior service log generation.");
+      assert((serve.match(/openManagedServiceLog\(/g) ?? []).length === 4, "OpenCode and Graphify stdout/stderr must all retain one previous generation.");
+      assert(source.includes("recordedAt: new Date().toISOString()"), "Controller diagnostics must carry correlation time.");
     },
   },
 ];
