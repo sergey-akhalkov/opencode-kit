@@ -1,0 +1,267 @@
+{
+  "byteLength": 6928,
+  "comparisonIdentity": "47ece6f0e2bb01ba80222e27e8be75d16d7ab63cc228b1e6fcdf2bef83e2de04",
+  "evaluatorDigest": "e9b339f794eea6436bb47091966177cceb0a37318e469ffdd73f75e2be8807b5",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "baseline",
+  "samples": [
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "local-provider",
+          "--url",
+          "<provider>"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "4cf4425ad4b557855e00808e42149232b3ce3c87f0f8dad9d0d8ab7a50be16cd",
+        "model": "proof/proof-model",
+        "opencodeVersion": "local-fixture",
+        "osClass": "windows",
+        "permissionDigest": "9ac40abd108e410267a88cf0aa9a10c5c04c36a2baa3822e176a21b1410a3541",
+        "profile": "quality-independent",
+        "scenarioDigest": "6cbbdf4c8144fe43986ac88cba04cda54cacd00083377f02f090f021a9078232",
+        "validationArgvDigest": "fe79995aab4a75fd8906052d5fb3a188d375c4783883d90cf81b92fd89200f64",
+        "variant": "none"
+      },
+      "files": [
+        {
+          "path": "case.json",
+          "sha256": "7b8ed73d48be1dd19685b7e191a691e337de79da364b033503921a7a1ee5b728"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "9a857b246778aa15e589dba3b825cffbf581d43b64ebf23906f741e933384a4d"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "b9c127bfeae827d182bd54e54d8fd9dafed1ba26cc28be53802926fc82da84f4"
+        },
+        {
+          "path": "src/inventory.ts",
+          "sha256": "a66baebfe6cd7d878408c6d70d23b09ab7e1c44e8700e79f5f90003584f023f5"
+        },
+        {
+          "path": "src/order-service.ts",
+          "sha256": "1baa71fdea4b9cd78e39cd7ca6950d09bafb3a71ca6a1eafc707e7cc2f987ad1"
+        },
+        {
+          "path": "src/payments.ts",
+          "sha256": "3ad8e540d2c24186d6b753526fc74c1d04c29db1fe2ec8ffb6cc659132b22f47"
+        },
+        {
+          "path": "src/receipts.ts",
+          "sha256": "40811faf551d0c62f377d481cb40c19196f4629c2b55872a38d2009de0c2e538"
+        },
+        {
+          "path": "src/run-order.ts",
+          "sha256": "ca4eaa2838c79340fe76742562a11c5454f332ae7c18d32c4541aef29df8a9bf"
+        },
+        {
+          "path": "test/scenario.test.ts",
+          "sha256": "1facfbd171adee8583caabf036939b97e1db62500094f61481e7e4ba395d5acf"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 0,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 1
+      },
+      "hashes": {
+        "sample": "a79aa3a3767d31b5f55e0a783870d580951bedd9f6383622122e0b5f8ce51d27"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read",
+          "skill:complexity-management"
+        ],
+        "deny": [
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "task",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"admissionClass\":\"unknown\",\"architectureMap\":{\"cohesiveOwners\":[\"src/inventory.ts\",\"src/payments.ts\",\"src/receipts.ts\",\"src/run-order.ts\"],\"consumer\":\"src/run-order.ts\",\"effects\":[\"inventory-reservation\",\"payment-charge\",\"receipt-record\"],\"entrypoint\":\"node src/run-order.ts <card>\",\"failures\":[\"PaymentDeclinedError: payment declined\"],\"hiddenInternals\":[],\"intendedExtensionSurface\":\"unknown\",\"proofEntrypoints\":[\"node test/scenario.test.ts\",\"node check-decision.ts\"],\"unknowns\":[\"focused-workflow-unavailable\"]},\"caseId\":\"useful-current-consumer-facade\",\"changeRehearsal\":{\"candidateResponse\":\"not-evaluated\",\"essentialContext\":[\"src/run-order.ts\",\"src/inventory.ts\",\"src/payments.ts\",\"src/receipts.ts\",\"test/scenario.test.ts\"],\"expectedEditSet\":[],\"observedPressure\":\"consumer-coordinates-three-stable-internals\",\"proofSet\":[\"node test/scenario.test.ts\",\"node check-decision.ts\"],\"sameScenarioResult\":\"not-run\",\"scenario\":\"place-one-order-with-success-and-declined-payment\"},\"claimCeiling\":\"configured-baseline-unavailable-only\",\"facadeDisposition\":\"not-evaluated\",\"inventoryStatus\":\"unavailable\"}\n"
+      },
+      "requestSha256": "400c3aa037da398b755555ee11377a6387f5abcb1bec646f28b9a4a7ef482edb",
+      "sampleIndex": 1,
+      "scenarioId": "useful-current-consumer-facade",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "4abcf8980134e8d33baa4eb36962151b62e1a9abcee4c2a7fd29f43383f1bffe",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6336c60789767467c469586109e4f1c22ed4c774adb9b881cdf8564c4a027fb9"
+          },
+          {
+            "path": "global/bin/complexity-foraging-contract.ts",
+            "sha256": "8af6ecbb3236221504d2d6d89bc28254d7ef55b1b9cdf17b1f6d813ad4814b0e"
+          },
+          {
+            "path": "global/bin/complexity-foraging-inventory.ts",
+            "sha256": "4c7faa1d53fe9d7e70f5e10f5cc05e02030b61cff3c013ee5b5ba5f366971849"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/skills/complexity-management/SKILL.md",
+            "sha256": "de9fb27cc4051f4e6efd138c7c9026c1dfb3b3d6c68e06829f7d28ad7bf066ea"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "108c09e93063e2bb7c8b34b7b412717d05d3c84a29fbbadafe903f0fa5064027"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome-regression.ts",
+            "sha256": "6ec8554fc01be1e4d026c3a9c8c9ae79d9d1e102b6a075a7ca0584ba3a5de2ea"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome/capture.ts",
+            "sha256": "509ed86491e3fff74906eac3e6558186a1645fc0eb8b8f75d48e19e0bee5719d"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome/contracts.ts",
+            "sha256": "19cae3426f3508992733c8c582e25a0b138d122abca356cd8468772c5eb2fdd4"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome/evaluate.ts",
+            "sha256": "4b39341534b69ac8a37b46d930158731f3a7fca4fac3a9229bf4d4f066082251"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "312353e1796192c89037aec241f9c07b4c3f18f79e3cb6bce78fad2bea306aa0",
+          "name": "edit",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "test/scenario.test.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "OK: order scenario effects=3 failure=PaymentDeclinedError\n"
+      }
+    }
+  ],
+  "scenarioDigest": "6cbbdf4c8144fe43986ac88cba04cda54cacd00083377f02f090f021a9078232",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "4abcf8980134e8d33baa4eb36962151b62e1a9abcee4c2a7fd29f43383f1bffe",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6336c60789767467c469586109e4f1c22ed4c774adb9b881cdf8564c4a027fb9"
+      },
+      {
+        "path": "global/bin/complexity-foraging-contract.ts",
+        "sha256": "8af6ecbb3236221504d2d6d89bc28254d7ef55b1b9cdf17b1f6d813ad4814b0e"
+      },
+      {
+        "path": "global/bin/complexity-foraging-inventory.ts",
+        "sha256": "4c7faa1d53fe9d7e70f5e10f5cc05e02030b61cff3c013ee5b5ba5f366971849"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/skills/complexity-management/SKILL.md",
+        "sha256": "de9fb27cc4051f4e6efd138c7c9026c1dfb3b3d6c68e06829f7d28ad7bf066ea"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "108c09e93063e2bb7c8b34b7b412717d05d3c84a29fbbadafe903f0fa5064027"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome-regression.ts",
+        "sha256": "6ec8554fc01be1e4d026c3a9c8c9ae79d9d1e102b6a075a7ca0584ba3a5de2ea"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/capture.ts",
+        "sha256": "509ed86491e3fff74906eac3e6558186a1645fc0eb8b8f75d48e19e0bee5719d"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/contracts.ts",
+        "sha256": "19cae3426f3508992733c8c582e25a0b138d122abca356cd8468772c5eb2fdd4"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/evaluate.ts",
+        "sha256": "4b39341534b69ac8a37b46d930158731f3a7fca4fac3a9229bf4d4f066082251"
+      }
+    ]
+  }
+}

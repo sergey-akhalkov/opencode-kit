@@ -1,0 +1,148 @@
+{
+  "boundedFalsificationOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "coherent-wrong-outcome-candidate-r1",
+        "caseId": "coherent-wrong-outcome",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "accepted-output-format-and-success-boundary",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "coherent-wrong-outcome-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "failures": [],
+      "memberId": "coherent-wrong-outcome",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "coherent-wrong-outcome-candidate-r1",
+        "caseId": "coherent-wrong-outcome",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "accepted-output-format-and-success-boundary",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "coherent-wrong-outcome-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "coherent-wrong-outcome"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "coherent-wrong-outcome-candidate-r1",
+        "caseId": "coherent-wrong-outcome",
+        "challengeCount": 1,
+        "correctionRef": "coherent-wrong-outcome-correction-r1",
+        "decisionSurface": "accepted-output-format-and-success-boundary",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [
+          "accepted-outcome",
+          "observable-proof"
+        ],
+        "mainDispositions": [
+          "BFR-001:confirmed"
+        ],
+        "materialFindings": [
+          "BFR-001"
+        ],
+        "originalRequestRef": "coherent-wrong-outcome-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "confirmed-correction-closed",
+        "terminalState": "closed"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "memberId": "coherent-wrong-outcome",
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "coherent-wrong-outcome"
+    }
+  ],
+  "decisionOracles": [],
+  "digest": "a03590f070accece27c3e583b4994bce41d623930f58645113fef4230124c8fe",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317",
+      "candidate": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317"
+    },
+    "terminalReplay": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "coherent-wrong-outcome": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 2
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "c6a708eea746400fd32403ac76da140b05814ccfb162aca2e292ae6b637c4603",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "environment:initialFixtureDigest",
+      "bounded-falsification-oracle:candidate:coherent-wrong-outcome:1:malformed-observation"
+    ],
+    "scenarioDigest": "9603d433cd65e24fd69292d1c7ebb5914eb46158b58f76c8e871bed751c21afb",
+    "sourceDigest": "af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a",
+    "status": "blocked",
+    "digest": "a3670491160f1dd87ebf115efbcf43e31160286496f1f97eeb87b0acb9c3b910",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "the exercised configured model and selected bounded-falsification scenarios (coherent-wrong-outcome) cover only their 1 explicit members under the recorded identities"
+}

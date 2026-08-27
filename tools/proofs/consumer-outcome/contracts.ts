@@ -14,6 +14,9 @@ export const MANIFEST_PATH = "config/consumer-outcome-regression.json";
 export const DECISION_GAP_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/claim-evidence-decision-gap.json";
 export const SHIFT_LEFT_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/shift-left-decision-gap-r1.json";
 export const STATUS_SCOPE_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/status-scope-r1.json";
+export const FOUNDATION_INTEGRITY_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/foundation-integrity-r1.json";
+export const BOUNDED_FALSIFICATION_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/bounded-falsification-r1.json";
+export const COMPLEXITY_MANAGEMENT_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/complexity-management-r1.json";
 export const FRICTION_FIELDS = [
   "ownerQuestionCount",
   "configuredProviderRequestCount",
@@ -28,7 +31,7 @@ export type FrictionField = (typeof FRICTION_FIELDS)[number];
 export type Expectation = "no-regression" | "improvement";
 export type Arm = "baseline" | "candidate";
 export type Mode = (typeof MODES)[number];
-export type DecisionPackName = "claim-evidence" | "shift-left" | "status-scope";
+export type DecisionPackName = "bounded-falsification" | "claim-evidence" | "complexity" | "foundation-integrity" | "shift-left" | "status-scope";
 export type EvaluationStatus =
   | "baseline-established"
   | "baseline-current"
@@ -111,7 +114,100 @@ export type StatusScopeDecisionSet = {
   members: StatusScopeDecision[];
 };
 
-export type ExpectedDecision = ClaimEvidenceDecision | ShiftLeftDecision | StatusScopeDecisionSet;
+export type FoundationIntegrityArtifactRow = {
+  artifactId: string;
+  path: string;
+  stateSha256: string;
+};
+
+export type FoundationIntegrityTerminalRow = {
+  memberId: string;
+  status: "supported" | "unknown";
+};
+
+export type FoundationIntegrityObservation = {
+  artifactRows: FoundationIntegrityArtifactRow[];
+  caseId: string;
+  correctedReviewCount: number;
+  incidentId: string;
+  initialReviewCount: number;
+  ownerAgent: "foundation-integrity-reviewer" | "none";
+  recoverySkillCount: number;
+  reproductionDisposition: "ambiguous" | "confirmed" | "falsified" | "not-run";
+  terminalRows: FoundationIntegrityTerminalRow[];
+  terminalState: "closed" | "falsified" | "not-applicable" | "owner-boundary" | "unavailable";
+};
+
+export type FoundationIntegrityScenarioExpectation = {
+  baseline: FoundationIntegrityObservation;
+  candidate: FoundationIntegrityObservation;
+};
+
+export type BoundedFalsificationObservation = {
+  attackClasses: string[];
+  candidateRef: string;
+  caseId: string;
+  challengeCount: number;
+  correctionRef: string;
+  decisionSurface: string;
+  effectiveModel: string;
+  exactOwnerAgent: "instruction-artifact-reviewer" | "none";
+  invalidatedSurfaces: string[];
+  mainDispositions: string[];
+  materialFindings: string[];
+  originalRequestRef: string;
+  reviewerAgent: "implementation-readiness-reviewer" | "none";
+  reviewerLaunchCount: number;
+  reviewerSessionRef: string;
+  semanticReadiness: "ready" | "unknown";
+  structuralReadiness: "failed" | "passed";
+  terminalReason: string;
+  terminalState: "closed" | "exempt" | "unknown";
+};
+
+export type BoundedFalsificationScenarioExpectation = {
+  baseline: BoundedFalsificationObservation;
+  candidate: BoundedFalsificationObservation;
+};
+
+export type ComplexityArchitectureMap = {
+  cohesiveOwners: string[];
+  consumer: string;
+  effects: string[];
+  entrypoint: string;
+  failures: string[];
+  hiddenInternals: string[];
+  intendedExtensionSurface: string;
+  proofEntrypoints: string[];
+  unknowns: string[];
+};
+
+export type ComplexityChangeRehearsal = {
+  candidateResponse: string;
+  essentialContext: string[];
+  expectedEditSet: string[];
+  observedPressure: string;
+  proofSet: string[];
+  sameScenarioResult: string;
+  scenario: string;
+};
+
+export type ComplexityFacadeObservation = {
+  admissionClass: "accepted-refactor" | "unknown";
+  architectureMap: ComplexityArchitectureMap;
+  caseId: string;
+  changeRehearsal: ComplexityChangeRehearsal;
+  claimCeiling: string;
+  facadeDisposition: "admitted-current-encapsulation" | "not-evaluated";
+  inventoryStatus: "supported" | "unavailable";
+};
+
+export type ComplexityFacadeScenarioExpectation = {
+  baseline: ComplexityFacadeObservation;
+  candidate: ComplexityFacadeObservation;
+};
+
+export type ExpectedDecision = BoundedFalsificationScenarioExpectation | ClaimEvidenceDecision | ComplexityFacadeScenarioExpectation | FoundationIntegrityScenarioExpectation | ShiftLeftDecision | StatusScopeDecisionSet;
 
 export type DecisionGapPack = {
   configuredProviderRequestBound: number;
@@ -123,6 +219,15 @@ export type DecisionGapPack = {
   statusScope?: {
     memberOrder: string[];
     reconstructionRequest: string;
+  };
+  foundationIntegrity?: {
+    memberOrder: string[];
+  };
+  boundedFalsification?: {
+    memberOrder: string[];
+  };
+  complexity?: {
+    memberOrder: string[];
   };
 };
 
@@ -210,7 +315,19 @@ export type StatusScopeEvidence = {
 export type SampleEvidence = {
   arm: Arm;
   cleanup: CleanupOracle & { complete: boolean; error: string | null };
-  command: { argv: string[]; status: number | null; stderr: string; stdout: string };
+  command: {
+    argv: string[];
+    status: number | null;
+    stderr: string;
+    stdout: string;
+    termination?: {
+      cleanupState: "not-needed" | "terminal" | "unknown";
+      error: { code: string | null; message: string; name: string; stack: string | null } | null;
+      signal: string | null;
+      timedOut: boolean;
+      timeoutMs: number;
+    };
+  };
   diagnostics: { elapsedMs: number | null; tokens: unknown; truncatedFields: string[] };
   environmentIdentity: EnvironmentIdentity;
   forbiddenEffects: Array<{ name: string; observed: boolean }>;
@@ -331,6 +448,9 @@ const DECISION_PACK_KEYS = [
 ] as const;
 const SHIFT_LEFT_DECISION_PACK_KEYS = [...DECISION_PACK_KEYS, "maximumClaim"] as const;
 const STATUS_SCOPE_DECISION_PACK_KEYS = [...SHIFT_LEFT_DECISION_PACK_KEYS, "memberOrder", "reconstructionRequest"] as const;
+const FOUNDATION_INTEGRITY_PACK_KEYS = [...SHIFT_LEFT_DECISION_PACK_KEYS, "memberOrder"] as const;
+const BOUNDED_FALSIFICATION_PACK_KEYS = [...SHIFT_LEFT_DECISION_PACK_KEYS, "memberOrder"] as const;
+const COMPLEXITY_MANAGEMENT_PACK_KEYS = [...SHIFT_LEFT_DECISION_PACK_KEYS, "memberOrder"] as const;
 const DECISION_SCENARIO_KEYS = [...SCENARIO_KEYS, "expectedDecision"] as const;
 const EXPECTED_DECISION_KEYS = ["claimDisposition", "completionDisposition"] as const;
 const SHIFT_LEFT_DECISION_KEYS = [
@@ -350,7 +470,119 @@ export const STATUS_SCOPE_DECISION_KEYS = [
   "proofPathReadiness",
   "resourceAvailability",
 ] as const;
+const FOUNDATION_INTEGRITY_EXPECTATION_KEYS = ["baseline", "candidate"] as const;
+export const FOUNDATION_INTEGRITY_OBSERVATION_KEYS = [
+  "artifactRows",
+  "caseId",
+  "correctedReviewCount",
+  "incidentId",
+  "initialReviewCount",
+  "ownerAgent",
+  "recoverySkillCount",
+  "reproductionDisposition",
+  "terminalRows",
+  "terminalState",
+] as const;
+const FOUNDATION_INTEGRITY_ARTIFACT_KEYS = ["artifactId", "path", "stateSha256"] as const;
+const FOUNDATION_INTEGRITY_TERMINAL_KEYS = ["memberId", "status"] as const;
+const BOUNDED_FALSIFICATION_EXPECTATION_KEYS = ["baseline", "candidate"] as const;
+const COMPLEXITY_FACADE_EXPECTATION_KEYS = ["baseline", "candidate"] as const;
+export const COMPLEXITY_FACADE_OBSERVATION_KEYS = [
+  "admissionClass",
+  "architectureMap",
+  "caseId",
+  "changeRehearsal",
+  "claimCeiling",
+  "facadeDisposition",
+  "inventoryStatus",
+] as const;
+const COMPLEXITY_ARCHITECTURE_MAP_KEYS = [
+  "cohesiveOwners",
+  "consumer",
+  "effects",
+  "entrypoint",
+  "failures",
+  "hiddenInternals",
+  "intendedExtensionSurface",
+  "proofEntrypoints",
+  "unknowns",
+] as const;
+const COMPLEXITY_CHANGE_REHEARSAL_KEYS = [
+  "candidateResponse",
+  "essentialContext",
+  "expectedEditSet",
+  "observedPressure",
+  "proofSet",
+  "sameScenarioResult",
+  "scenario",
+] as const;
+export const BOUNDED_FALSIFICATION_OBSERVATION_KEYS = [
+  "attackClasses",
+  "candidateRef",
+  "caseId",
+  "challengeCount",
+  "correctionRef",
+  "decisionSurface",
+  "effectiveModel",
+  "exactOwnerAgent",
+  "invalidatedSurfaces",
+  "mainDispositions",
+  "materialFindings",
+  "originalRequestRef",
+  "reviewerAgent",
+  "reviewerLaunchCount",
+  "reviewerSessionRef",
+  "semanticReadiness",
+  "structuralReadiness",
+  "terminalReason",
+  "terminalState",
+] as const;
+export const BOUNDED_FALSIFICATION_ATTACK_CLASSES = [
+  "coherent-wrong-outcome",
+  "silent-owner-decision",
+  "missing-observable-oracle",
+  "late-implementation-invalidation",
+  "internal-contradiction",
+  "unnecessary-scope",
+] as const;
+export const BOUNDED_FALSIFICATION_MEMBER_ORDER = [
+  "coherent-wrong-outcome",
+  "silent-owner-decision",
+  "missing-observable-oracle",
+  "late-implementation-surprise",
+  "unnecessary-scope",
+  "clean-no-finding",
+  "material-correction-rereview",
+  "unchanged-repeat",
+  "optional-polish",
+  "ordinary-small-exempt",
+  "exact-practice-owner",
+  "material-inline-plan",
+] as const;
+export const FOUNDATION_INTEGRITY_MEMBER_ORDER = [
+  "current-cross-family-mismatch",
+  "confirmed-unique-correction",
+  "archive-preservation",
+  "false-positive-falsification",
+  "dependent-versus-unrelated-active-changes",
+  "overlapping-dependent-ownership",
+  "protected-product-ambiguity",
+  "aligned-binding",
+  "historical-only-evidence",
+  "ordinary-small-exact-case",
+  "non-critical-architecture-polish",
+  "unchanged-hypothesis-anti-loop",
+] as const;
+export const COMPLEXITY_MANAGEMENT_MEMBER_ORDER = ["useful-current-consumer-facade"] as const;
 const DECISION_PACK_SPECS = {
+  "bounded-falsification": {
+    id: "bounded-falsification-r1",
+    maximumClaim: "for the exercised configured model and twelve reviewed generic partitions, the candidate performs one bounded fresh falsification episode, admits only represented material findings, preserves negative controls, and terminates without a generic third challenge; no unreviewed model, domain, repository, or universal planning-quality claim is supported",
+    path: BOUNDED_FALSIFICATION_PACK_PATH,
+    requestBound: 24,
+    scenarioRequestBound: 1,
+    scenarioIds: BOUNDED_FALSIFICATION_MEMBER_ORDER,
+  },
   "claim-evidence": {
     id: "claim-evidence-decision-gap-r1",
     maximumClaim: "four reviewed claim-evidence decisions for the recorded model, source, prompt, fixture, and environment only",
@@ -362,6 +594,14 @@ const DECISION_PACK_SPECS = {
       "unavailable-real-oracle",
       "ordinary-small-exact-case",
     ],
+  },
+  complexity: {
+    id: "complexity-management-r1",
+    maximumClaim: "the useful-current-consumer-facade fixture under the recorded source, model, prompt, permission, environment, and runtime identities only; provider-free preflight and replay establish fixture, effect, bound, and cleanup readiness but no configured semantic outcome until a live diagnostic is captured",
+    path: COMPLEXITY_MANAGEMENT_PACK_PATH,
+    requestBound: 1,
+    scenarioRequestBound: 1,
+    scenarioIds: COMPLEXITY_MANAGEMENT_MEMBER_ORDER,
   },
   "shift-left": {
     id: "shift-left-decision-gap-r1",
@@ -377,11 +617,28 @@ const DECISION_PACK_SPECS = {
     requestBound: 6,
     scenarioIds: ["status-scope-roundtrip"],
   },
+  "foundation-integrity": {
+    id: "foundation-integrity-r1",
+    maximumClaim: "the exercised configured model and seven reviewed foundation-integrity scenarios cover twelve explicit partitions without provider, model, consumer-project, or protected-decision generalization",
+    path: FOUNDATION_INTEGRITY_PACK_PATH,
+    requestBound: 14,
+    scenarioRequestBound: 1,
+    scenarioIds: [
+      "mismatch-unique-recovery",
+      "false-positive-falsification",
+      "dependent-inventory-sweep",
+      "overlapping-dependent-ownership",
+      "protected-product-ambiguity",
+      "aligned-historical-controls",
+      "ordinary-small-polish-anti-loop",
+    ],
+  },
 } as const satisfies Record<DecisionPackName, {
   id: string;
   maximumClaim: string;
   path: string;
   requestBound: number;
+  scenarioRequestBound?: number;
   scenarioIds: readonly string[];
 }>;
 
@@ -566,6 +823,59 @@ function parseShiftLeftDecision(value: unknown, label: string): ShiftLeftDecisio
   };
 }
 
+export function parseComplexityFacadeObservation(value: unknown, label: string): ComplexityFacadeObservation {
+  const record = requireExactKeys(value, COMPLEXITY_FACADE_OBSERVATION_KEYS, label);
+  const architecture = requireExactKeys(record.architectureMap, COMPLEXITY_ARCHITECTURE_MAP_KEYS, `${label}.architectureMap`);
+  const rehearsal = requireExactKeys(record.changeRehearsal, COMPLEXITY_CHANGE_REHEARSAL_KEYS, `${label}.changeRehearsal`);
+  const admissionClass = requireString(record.admissionClass, `${label}.admissionClass`);
+  if (admissionClass !== "accepted-refactor" && admissionClass !== "unknown") {
+    throw new ContractError(`${label}.admissionClass`, `${label}.admissionClass is invalid`);
+  }
+  const facadeDisposition = requireString(record.facadeDisposition, `${label}.facadeDisposition`);
+  if (facadeDisposition !== "admitted-current-encapsulation" && facadeDisposition !== "not-evaluated") {
+    throw new ContractError(`${label}.facadeDisposition`, `${label}.facadeDisposition is invalid`);
+  }
+  const inventoryStatus = requireString(record.inventoryStatus, `${label}.inventoryStatus`);
+  if (inventoryStatus !== "supported" && inventoryStatus !== "unavailable") {
+    throw new ContractError(`${label}.inventoryStatus`, `${label}.inventoryStatus is invalid`);
+  }
+  return {
+    admissionClass,
+    architectureMap: {
+      cohesiveOwners: requireStringArray(architecture.cohesiveOwners, `${label}.architectureMap.cohesiveOwners`),
+      consumer: requireString(architecture.consumer, `${label}.architectureMap.consumer`),
+      effects: requireStringArray(architecture.effects, `${label}.architectureMap.effects`),
+      entrypoint: requireString(architecture.entrypoint, `${label}.architectureMap.entrypoint`),
+      failures: requireStringArray(architecture.failures, `${label}.architectureMap.failures`),
+      hiddenInternals: requireStringArray(architecture.hiddenInternals, `${label}.architectureMap.hiddenInternals`),
+      intendedExtensionSurface: requireString(architecture.intendedExtensionSurface, `${label}.architectureMap.intendedExtensionSurface`),
+      proofEntrypoints: requireStringArray(architecture.proofEntrypoints, `${label}.architectureMap.proofEntrypoints`),
+      unknowns: requireStringArray(architecture.unknowns, `${label}.architectureMap.unknowns`),
+    },
+    caseId: requireString(record.caseId, `${label}.caseId`),
+    changeRehearsal: {
+      candidateResponse: requireString(rehearsal.candidateResponse, `${label}.changeRehearsal.candidateResponse`),
+      essentialContext: requireStringArray(rehearsal.essentialContext, `${label}.changeRehearsal.essentialContext`),
+      expectedEditSet: requireStringArray(rehearsal.expectedEditSet, `${label}.changeRehearsal.expectedEditSet`),
+      observedPressure: requireString(rehearsal.observedPressure, `${label}.changeRehearsal.observedPressure`),
+      proofSet: requireStringArray(rehearsal.proofSet, `${label}.changeRehearsal.proofSet`),
+      sameScenarioResult: requireString(rehearsal.sameScenarioResult, `${label}.changeRehearsal.sameScenarioResult`),
+      scenario: requireString(rehearsal.scenario, `${label}.changeRehearsal.scenario`),
+    },
+    claimCeiling: requireString(record.claimCeiling, `${label}.claimCeiling`),
+    facadeDisposition,
+    inventoryStatus,
+  };
+}
+
+function parseComplexityFacadeExpectation(value: unknown, label: string): ComplexityFacadeScenarioExpectation {
+  const record = requireExactKeys(value, COMPLEXITY_FACADE_EXPECTATION_KEYS, label);
+  return {
+    baseline: parseComplexityFacadeObservation(record.baseline, `${label}.baseline`),
+    candidate: parseComplexityFacadeObservation(record.candidate, `${label}.candidate`),
+  };
+}
+
 export function parseStatusScopeDecisionSet(value: unknown, label: string): StatusScopeDecisionSet {
   const record = requireExactKeys(value, ["members"], label);
   if (!Array.isArray(record.members) || record.members.length !== 3) {
@@ -585,6 +895,129 @@ export function parseStatusScopeDecisionSet(value: unknown, label: string): Stat
     };
   });
   return { members };
+}
+
+export function parseFoundationIntegrityObservation(value: unknown, label: string): FoundationIntegrityObservation {
+  const record = requireExactKeys(value, FOUNDATION_INTEGRITY_OBSERVATION_KEYS, label);
+  const ownerAgent = requireString(record.ownerAgent, `${label}.ownerAgent`);
+  if (ownerAgent !== "foundation-integrity-reviewer" && ownerAgent !== "none") {
+    throw new ContractError(`${label}.ownerAgent`, `${label}.ownerAgent is invalid`);
+  }
+  const reproductionDisposition = requireString(record.reproductionDisposition, `${label}.reproductionDisposition`);
+  if (reproductionDisposition !== "ambiguous" && reproductionDisposition !== "confirmed" && reproductionDisposition !== "falsified" && reproductionDisposition !== "not-run") {
+    throw new ContractError(`${label}.reproductionDisposition`, `${label}.reproductionDisposition is invalid`);
+  }
+  const terminalState = requireString(record.terminalState, `${label}.terminalState`);
+  if (terminalState !== "closed" && terminalState !== "falsified" && terminalState !== "not-applicable" && terminalState !== "owner-boundary" && terminalState !== "unavailable") {
+    throw new ContractError(`${label}.terminalState`, `${label}.terminalState is invalid`);
+  }
+  if (!Array.isArray(record.artifactRows) || record.artifactRows.length === 0) {
+    throw new ContractError(`${label}.artifactRows`, `${label}.artifactRows must contain explicit records`);
+  }
+  const artifactRows = record.artifactRows.map((value, index) => {
+    const rowLabel = `${label}.artifactRows[${index}]`;
+    const row = requireExactKeys(value, FOUNDATION_INTEGRITY_ARTIFACT_KEYS, rowLabel);
+    const stateSha256 = requireString(row.stateSha256, `${rowLabel}.stateSha256`);
+    if (!/^[a-f0-9]{64}$/.test(stateSha256)) throw new ContractError(`${rowLabel}.stateSha256`, `${rowLabel}.stateSha256 must be sha256`);
+    return {
+      artifactId: requireString(row.artifactId, `${rowLabel}.artifactId`),
+      path: assertRelativeContained(requireString(row.path, `${rowLabel}.path`), "state", `${rowLabel}.path`),
+      stateSha256,
+    };
+  });
+  if (!Array.isArray(record.terminalRows) || record.terminalRows.length === 0) {
+    throw new ContractError(`${label}.terminalRows`, `${label}.terminalRows must contain explicit records`);
+  }
+  const terminalRows = record.terminalRows.map((value, index) => {
+    const rowLabel = `${label}.terminalRows[${index}]`;
+    const row = requireExactKeys(value, FOUNDATION_INTEGRITY_TERMINAL_KEYS, rowLabel);
+    const status = requireString(row.status, `${rowLabel}.status`);
+    if (status !== "supported" && status !== "unknown") throw new ContractError(`${rowLabel}.status`, `${rowLabel}.status is invalid`);
+    return { memberId: requireString(row.memberId, `${rowLabel}.memberId`), status: status as FoundationIntegrityTerminalRow["status"] };
+  });
+  return {
+    artifactRows,
+    caseId: requireString(record.caseId, `${label}.caseId`),
+    correctedReviewCount: requireInteger(record.correctedReviewCount, `${label}.correctedReviewCount`, 0, 1),
+    incidentId: requireString(record.incidentId, `${label}.incidentId`),
+    initialReviewCount: requireInteger(record.initialReviewCount, `${label}.initialReviewCount`, 0, 1),
+    ownerAgent,
+    recoverySkillCount: requireInteger(record.recoverySkillCount, `${label}.recoverySkillCount`, 0, 1),
+    reproductionDisposition,
+    terminalRows,
+    terminalState,
+  };
+}
+
+export function parseBoundedFalsificationObservation(value: unknown, label: string): BoundedFalsificationObservation {
+  const record = requireExactKeys(value, BOUNDED_FALSIFICATION_OBSERVATION_KEYS, label);
+  const attackClasses = requireStringArray(record.attackClasses, `${label}.attackClasses`);
+  if (attackClasses.length !== BOUNDED_FALSIFICATION_ATTACK_CLASSES.length) {
+    throw new ContractError(`${label}.attackClasses`, `${label}.attackClasses must contain every reviewed attack class exactly once`);
+  }
+  for (const [index, attackClass] of BOUNDED_FALSIFICATION_ATTACK_CLASSES.entries()) {
+    const value = attackClasses[index];
+    if (value !== `${attackClass}:attempted` && value !== `${attackClass}:not-applicable` && value !== `${attackClass}:unknown`) {
+      throw new ContractError(`${label}.attackClasses[${index}]`, `${label}.attackClasses must preserve reviewed class order and explicit terminal states`);
+    }
+  }
+  const reviewerAgent = requireString(record.reviewerAgent, `${label}.reviewerAgent`);
+  if (reviewerAgent !== "implementation-readiness-reviewer" && reviewerAgent !== "none") {
+    throw new ContractError(`${label}.reviewerAgent`, `${label}.reviewerAgent is invalid`);
+  }
+  const exactOwnerAgent = requireString(record.exactOwnerAgent, `${label}.exactOwnerAgent`);
+  if (exactOwnerAgent !== "instruction-artifact-reviewer" && exactOwnerAgent !== "none") {
+    throw new ContractError(`${label}.exactOwnerAgent`, `${label}.exactOwnerAgent is invalid`);
+  }
+  const structuralReadiness = requireString(record.structuralReadiness, `${label}.structuralReadiness`);
+  if (structuralReadiness !== "failed" && structuralReadiness !== "passed") {
+    throw new ContractError(`${label}.structuralReadiness`, `${label}.structuralReadiness is invalid`);
+  }
+  const semanticReadiness = requireString(record.semanticReadiness, `${label}.semanticReadiness`);
+  if (semanticReadiness !== "ready" && semanticReadiness !== "unknown") {
+    throw new ContractError(`${label}.semanticReadiness`, `${label}.semanticReadiness is invalid`);
+  }
+  const terminalState = requireString(record.terminalState, `${label}.terminalState`);
+  if (terminalState !== "closed" && terminalState !== "exempt" && terminalState !== "unknown") {
+    throw new ContractError(`${label}.terminalState`, `${label}.terminalState is invalid`);
+  }
+  return {
+    attackClasses,
+    candidateRef: requireString(record.candidateRef, `${label}.candidateRef`),
+    caseId: requireString(record.caseId, `${label}.caseId`),
+    challengeCount: requireInteger(record.challengeCount, `${label}.challengeCount`, 0, 2),
+    correctionRef: requireString(record.correctionRef, `${label}.correctionRef`),
+    decisionSurface: requireString(record.decisionSurface, `${label}.decisionSurface`),
+    effectiveModel: requireString(record.effectiveModel, `${label}.effectiveModel`),
+    exactOwnerAgent,
+    invalidatedSurfaces: requireStringArray(record.invalidatedSurfaces, `${label}.invalidatedSurfaces`),
+    mainDispositions: requireStringArray(record.mainDispositions, `${label}.mainDispositions`),
+    materialFindings: requireStringArray(record.materialFindings, `${label}.materialFindings`),
+    originalRequestRef: requireString(record.originalRequestRef, `${label}.originalRequestRef`),
+    reviewerAgent,
+    reviewerLaunchCount: requireInteger(record.reviewerLaunchCount, `${label}.reviewerLaunchCount`, 0, 2),
+    reviewerSessionRef: requireString(record.reviewerSessionRef, `${label}.reviewerSessionRef`),
+    semanticReadiness,
+    structuralReadiness,
+    terminalReason: requireString(record.terminalReason, `${label}.terminalReason`),
+    terminalState,
+  };
+}
+
+function parseBoundedFalsificationExpectation(value: unknown, label: string): BoundedFalsificationScenarioExpectation {
+  const record = requireExactKeys(value, BOUNDED_FALSIFICATION_EXPECTATION_KEYS, label);
+  return {
+    baseline: parseBoundedFalsificationObservation(record.baseline, `${label}.baseline`),
+    candidate: parseBoundedFalsificationObservation(record.candidate, `${label}.candidate`),
+  };
+}
+
+function parseFoundationIntegrityExpectation(value: unknown, label: string): FoundationIntegrityScenarioExpectation {
+  const record = requireExactKeys(value, FOUNDATION_INTEGRITY_EXPECTATION_KEYS, label);
+  return {
+    baseline: parseFoundationIntegrityObservation(record.baseline, `${label}.baseline`),
+    candidate: parseFoundationIntegrityObservation(record.candidate, `${label}.candidate`),
+  };
 }
 
 export function parseManifest(value: unknown): RegressionManifest {
@@ -630,6 +1063,12 @@ export function parseDecisionGapPack(value: unknown, packName: DecisionPackName 
   const spec = DECISION_PACK_SPECS[packName];
   const packKeys = packName === "status-scope"
     ? STATUS_SCOPE_DECISION_PACK_KEYS
+    : packName === "bounded-falsification"
+      ? BOUNDED_FALSIFICATION_PACK_KEYS
+    : packName === "foundation-integrity"
+      ? FOUNDATION_INTEGRITY_PACK_KEYS
+    : packName === "complexity"
+      ? COMPLEXITY_MANAGEMENT_PACK_KEYS
     : packName === "shift-left"
       ? SHIFT_LEFT_DECISION_PACK_KEYS
       : DECISION_PACK_KEYS;
@@ -655,6 +1094,24 @@ export function parseDecisionGapPack(value: unknown, packName: DecisionPackName 
   if (statusScope != null && statusScope.memberOrder.join(",") !== "known-resource-path-unknown,resource-unknown-negative-control,compaction-roundtrip-mixed-status") {
     throw new ContractError("decisionPack.memberOrder", "decisionPack.memberOrder must match CSA-001");
   }
+  const foundationIntegrity = packName === "foundation-integrity" ? {
+    memberOrder: requireStringArray(record.memberOrder, "decisionPack.memberOrder"),
+  } : null;
+  if (foundationIntegrity != null && [...foundationIntegrity.memberOrder].sort().join(",") !== [...FOUNDATION_INTEGRITY_MEMBER_ORDER].sort().join(",")) {
+    throw new ContractError("decisionPack.memberOrder", "decisionPack.memberOrder must contain every reviewed foundation-integrity partition exactly once");
+  }
+  const boundedFalsification = packName === "bounded-falsification" ? {
+    memberOrder: requireStringArray(record.memberOrder, "decisionPack.memberOrder"),
+  } : null;
+  if (boundedFalsification != null && boundedFalsification.memberOrder.join(",") !== BOUNDED_FALSIFICATION_MEMBER_ORDER.join(",")) {
+    throw new ContractError("decisionPack.memberOrder", "decisionPack.memberOrder must contain every reviewed bounded-falsification partition exactly once in order");
+  }
+  const complexity = packName === "complexity" ? {
+    memberOrder: requireStringArray(record.memberOrder, "decisionPack.memberOrder"),
+  } : null;
+  if (complexity != null && complexity.memberOrder.join(",") !== COMPLEXITY_MANAGEMENT_MEMBER_ORDER.join(",")) {
+    throw new ContractError("decisionPack.memberOrder", "decisionPack.memberOrder must contain the reviewed complexity member exactly once");
+  }
   if (!Array.isArray(record.scenarios) || record.scenarios.length !== spec.scenarioIds.length) {
     throw new ContractError("decisionPack.scenarios", `decisionPack.scenarios must contain exactly ${spec.scenarioIds.length} records`);
   }
@@ -666,13 +1123,19 @@ export function parseDecisionGapPack(value: unknown, packName: DecisionPackName 
     const scenario = parseScenario(
       Object.fromEntries(SCENARIO_KEYS.map((key) => [key, row[key]])),
       index,
-      { configuredProviderRequestBound: requestBound, sampleCount },
+      { configuredProviderRequestBound: "scenarioRequestBound" in spec ? spec.scenarioRequestBound : requestBound, sampleCount },
     );
     if (scenario.id !== spec.scenarioIds[index]) {
       throw new ContractError(`${label}.id`, `expected ${spec.scenarioIds[index]}`);
     }
     scenarios.push(scenario);
-    expectedDecisions[scenario.id] = packName === "shift-left"
+    expectedDecisions[scenario.id] = packName === "bounded-falsification"
+      ? parseBoundedFalsificationExpectation(row.expectedDecision, `${label}.expectedDecision`)
+      : packName === "foundation-integrity"
+      ? parseFoundationIntegrityExpectation(row.expectedDecision, `${label}.expectedDecision`)
+      : packName === "complexity"
+      ? parseComplexityFacadeExpectation(row.expectedDecision, `${label}.expectedDecision`)
+      : packName === "shift-left"
       ? parseShiftLeftDecision(row.expectedDecision, `${label}.expectedDecision`)
       : packName === "status-scope"
         ? parseStatusScopeDecisionSet(row.expectedDecision, `${label}.expectedDecision`)
@@ -683,8 +1146,37 @@ export function parseDecisionGapPack(value: unknown, packName: DecisionPackName 
         throw new ContractError(`${label}.expectedDecision.members`, "status-scope expected members must match memberOrder");
       }
     }
+    if (foundationIntegrity != null) {
+      const decision = expectedDecisions[scenario.id] as FoundationIntegrityScenarioExpectation;
+      const baselineMembers = decision.baseline.terminalRows.map((member) => member.memberId).join(",");
+      const candidateMembers = decision.candidate.terminalRows.map((member) => member.memberId).join(",");
+      if (baselineMembers !== candidateMembers) {
+        throw new ContractError(`${label}.expectedDecision.terminalRows`, "baseline and candidate terminal rows must cover the same members in the same order");
+      }
+    }
+    if (boundedFalsification != null) {
+      const decision = expectedDecisions[scenario.id] as BoundedFalsificationScenarioExpectation;
+      if (decision.baseline.caseId !== scenario.id || decision.candidate.caseId !== scenario.id) {
+        throw new ContractError(`${label}.expectedDecision.caseId`, "bounded-falsification observations must match the scenario id");
+      }
+    }
+    if (complexity != null) {
+      const decision = expectedDecisions[scenario.id] as ComplexityFacadeScenarioExpectation;
+      if (decision.baseline.caseId !== scenario.id || decision.candidate.caseId !== scenario.id) {
+        throw new ContractError(`${label}.expectedDecision.caseId`, "complexity observations must match the scenario id");
+      }
+    }
   }
-  const maximumClaim = packName === "shift-left" || packName === "status-scope"
+  if (foundationIntegrity != null) {
+    const members = scenarios.flatMap((scenario) => {
+      const decision = expectedDecisions[scenario.id] as FoundationIntegrityScenarioExpectation;
+      return decision.candidate.terminalRows.map((member) => member.memberId);
+    });
+    if (members.join(",") !== foundationIntegrity.memberOrder.join(",")) {
+      throw new ContractError("decisionPack.scenarios", "foundation-integrity terminal rows must cover memberOrder exactly once in scenario order");
+    }
+  }
+  const maximumClaim = packName === "bounded-falsification" || packName === "complexity" || packName === "foundation-integrity" || packName === "shift-left" || packName === "status-scope"
     ? requireString(record.maximumClaim, "decisionPack.maximumClaim")
     : spec.maximumClaim;
   if (maximumClaim !== spec.maximumClaim) throw new ContractError("decisionPack.maximumClaim", "decisionPack.maximumClaim is invalid");
@@ -708,6 +1200,9 @@ export function parseDecisionGapPack(value: unknown, packName: DecisionPackName 
     maximumClaim,
     name: packName,
     ...(statusScope == null ? {} : { statusScope }),
+    ...(foundationIntegrity == null ? {} : { foundationIntegrity }),
+    ...(boundedFalsification == null ? {} : { boundedFalsification }),
+    ...(complexity == null ? {} : { complexity }),
   };
 }
 
@@ -896,6 +1391,31 @@ export function privacyMarkers(): RegExp[] {
     /\bBearer\s+[A-Za-z0-9._~+/-]+=*/,
     /\b(password|secret|token)\s*[:=]\s*\S+/i,
   ];
+}
+
+export function redactPrivacyMarkers(text: string): {
+  counts: Record<"authorizationHeader" | "credentialName" | "providerPrefix" | "sensitiveAssignment", number>;
+  text: string;
+} {
+  const counts = {
+    authorizationHeader: 0,
+    credentialName: 0,
+    providerPrefix: 0,
+    sensitiveAssignment: 0,
+  };
+  let redacted = text;
+  for (const [name, pattern] of [
+    ["providerPrefix", /\bsk-[A-Za-z0-9_-]{8,}\b/g],
+    ["credentialName", /\bapi[_-]?key\b/gi],
+    ["authorizationHeader", /\bBearer\s+[A-Za-z0-9._~+/-]+=*/g],
+    ["sensitiveAssignment", /\b(password|secret|token)\s*[:=]\s*[^\s,;]+/gi],
+  ] as const) {
+    redacted = redacted.replace(pattern, () => {
+      counts[name] += 1;
+      return "<redacted-credential>";
+    });
+  }
+  return { counts, text: redacted };
 }
 
 export function containsPrivatePath(text: string): boolean {

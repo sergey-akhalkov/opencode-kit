@@ -1,0 +1,54 @@
+{
+  "cleanup": "complete",
+  "candidateId": "continuous-complexity-management-profile-r1",
+  "evaluation": {
+    "extraCoreSkills": [],
+    "hiddenParentHits": [],
+    "missingCoreSkills": [],
+    "skillNames": [
+      "behavioral-substitution-qualification",
+      "change-ready-sdlc",
+      "complain",
+      "complexity-management",
+      "customize-opencode",
+      "foundation-integrity-recovery",
+      "next-step",
+      "openspec-abandon-change",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "reuse-discovery"
+    ],
+    "status": "passed",
+    "agentName": "foundation-integrity-reviewer",
+    "agentStatus": 0,
+    "authorityMarkers": {
+      "evidenceBoundsPrinciple": true,
+      "claimRoutingTrigger": true,
+      "foundationRoutingTrigger": true
+    },
+    "canonicalOpenSpecSkills": [
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose"
+    ],
+    "missingCanonicalOpenSpecSkills": [],
+    "permissionFailures": [],
+    "resolvedPaths": {
+      "behavioralSubstitutionSkill": "<generated>/skills/behavioral-substitution-qualification/SKILL.md",
+      "complexityForagingContract": "<generated>/bin/complexity-foraging-contract.ts",
+      "complexityForagingInventory": "<generated>/bin/complexity-foraging-inventory.ts",
+      "complexityManagementSkill": "<generated>/skills/complexity-management/SKILL.md",
+      "evidenceSufficiencyReviewer": "<generated>/agents/evidence-sufficiency-reviewer.md",
+      "foundationIntegrityRecoverySkill": "<generated>/skills/foundation-integrity-recovery/SKILL.md",
+      "foundationIntegrityReviewer": "<generated>/agents/foundation-integrity-reviewer.md",
+      "openspecApplySkill": "<generated>/skills/openspec-apply-change/SKILL.md",
+      "openspecArchiveSkill": "<generated>/skills/openspec-archive-change/SKILL.md",
+      "openspecProposeSkill": "<generated>/skills/openspec-propose/SKILL.md"
+    }
+  },
+  "profile": "core",
+  "agentStatus": 0,
+  "skillStatus": 0,
+  "tool": "opencode-dev-kit-runtime-surface-loader"
+}

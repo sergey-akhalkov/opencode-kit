@@ -1,0 +1,217 @@
+{
+  "decisionOracles": [],
+  "digest": "b2e9f738df1282e3ce4b66dbd216aaffda7f49e408c14de0915725a31b067e60",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac",
+      "candidate": "9f387a2be7024d3d1f007babb72b7a4bc5e2eebedfa5c4247669c74b545c0206"
+    },
+    "terminalReplay": "9f387a2be7024d3d1f007babb72b7a4bc5e2eebedfa5c4247669c74b545c0206"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "false-positive-falsification": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      }
+    },
+    "candidateMedians": {
+      "false-positive-falsification": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 11
+      }
+    },
+    "environmentDigest": "0a6d29830c1eb56e67dc273b686019851b82f215e30d7630fe249fe74526ee9a",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "foundation-integrity-oracle:candidate:false-positive-falsification:1:recoverySkillCount",
+      "foundation-integrity-oracle:candidate:false-positive-falsification:1:recovery-skill-tool-count"
+    ],
+    "scenarioDigest": "34254b00f0818d1a627cb1ca87fd22492bf78b83df7485026ae37f337670ef9a",
+    "sourceDigest": "98c9db0db053ee2f072ee93084fcdece0d85d49138e935e465cbe6b251713468",
+    "status": "failed",
+    "digest": "44700c0b7974ca28ffc008f962897ba7b851f06fe7f6a2dfd85ea772a4fef96f",
+    "schemaVersion": 1
+  },
+  "foundationIntegrityOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "fi-false-positive-falsification-r1",
+        "initialReviewCount": 1,
+        "ownerAgent": "foundation-integrity-reviewer",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "falsified",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "falsified"
+      },
+      "failures": [
+        "recoverySkillCount",
+        "recovery-skill-tool-count"
+      ],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "fi-false-positive-falsification-r1",
+        "initialReviewCount": 1,
+        "ownerAgent": "foundation-integrity-reviewer",
+        "recoverySkillCount": 1,
+        "reproductionDisposition": "falsified",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "falsified"
+      },
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    }
+  ],
+  "foundationIntegrityRows": [
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "false-positive-falsification",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [],
+      "memberId": "false-positive-falsification",
+      "observedStatus": "supported",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    }
+  ],
+  "maximumClaim": "the exercised configured model and selected foundation-integrity scenarios (false-positive-falsification) cover only their 1 explicit members under the recorded identities"
+}

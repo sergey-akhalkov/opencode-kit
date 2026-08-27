@@ -1,0 +1,180 @@
+{
+  "decisionOracles": [],
+  "digest": "681488b6a2a6b407d0a93e1304263768dcc6a3568e980362646e17b5587d27ff",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac",
+      "candidate": "ac4f0c77043278135ec10ac92c0ba82e8075a4306ea4f1602aaf68a9b2079167"
+    },
+    "terminalReplay": "ac4f0c77043278135ec10ac92c0ba82e8075a4306ea4f1602aaf68a9b2079167"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "overlapping-dependent-ownership": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "f601d4d208c7ae85eabcff120d4edd518a2e37007951b1f38b60724d686f2e5c",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "candidate.overlapping-dependent-ownership.1.outcome.stateFiles.decision.json",
+      "candidate.overlapping-dependent-ownership.1.outcome.exitCode",
+      "candidate.overlapping-dependent-ownership.1.proof.exitCode",
+      "foundation-integrity-oracle:candidate:overlapping-dependent-ownership:1:malformed-observation"
+    ],
+    "scenarioDigest": "134627a3aaa551081524022e03495da26c27329da0a28b88220e67fa0aac174c",
+    "sourceDigest": "98c9db0db053ee2f072ee93084fcdece0d85d49138e935e465cbe6b251713468",
+    "status": "failed",
+    "digest": "421dea6cd73926f2ce2d96980ff5a6eec4ddd1ef08138fbd3d51d71817a4b835",
+    "schemaVersion": 1
+  },
+  "foundationIntegrityOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "ownership-plan",
+            "path": "state/overlapping-dependent-ownership.json",
+            "stateSha256": "a656f4debb837be1d4056677512b4d5ef96335998b2b3ee1c7ef5a983e416918"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "overlapping-dependent-ownership",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "overlapping-dependent-ownership",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "ownership-plan",
+            "path": "state/overlapping-dependent-ownership.json",
+            "stateSha256": "a656f4debb837be1d4056677512b4d5ef96335998b2b3ee1c7ef5a983e416918"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "overlapping-dependent-ownership",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "overlapping-dependent-ownership",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "overlapping-dependent-ownership"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "ownership-plan",
+            "path": "state/overlapping-dependent-ownership.json",
+            "stateSha256": "a1206f8bcefdf69dd85c8000c375d15dd68bc8307c929c4cd76f988fcbe851d8"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "overlapping-dependent-ownership",
+        "correctedReviewCount": 1,
+        "incidentId": "fi-overlapping-dependent-ownership-r1",
+        "initialReviewCount": 1,
+        "ownerAgent": "foundation-integrity-reviewer",
+        "recoverySkillCount": 1,
+        "reproductionDisposition": "confirmed",
+        "terminalRows": [
+          {
+            "memberId": "overlapping-dependent-ownership",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "closed"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "overlapping-dependent-ownership"
+    }
+  ],
+  "foundationIntegrityRows": [
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "overlapping-dependent-ownership",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "overlapping-dependent-ownership"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "overlapping-dependent-ownership",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "overlapping-dependent-ownership"
+    }
+  ],
+  "maximumClaim": "the exercised configured model and selected foundation-integrity scenarios (overlapping-dependent-ownership) cover only their 1 explicit members under the recorded identities"
+}

@@ -1,0 +1,11 @@
+# Task 4.1 Evidence Index
+
+- Candidate: `bounded-falsification-review-current-r1`; governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`.
+- Environment: `openai/gpt-5.6-sol` / `xhigh`, Node `24.18.1`, Windows, profile `quality-independent`; OpenCode version is retained per current member bundle as literal `opencode` or `1.18.23`, not normalized to one version.
+- Population: all twelve exact `bounded-falsification-review-v1` members have one current terminal supported observation bound to a member-specific lane. The real oracle is observed from the configured main/fresh-child behavior, artifact readback, terminal status, and cleanup recorded in those lanes.
+- Identity: immutable captures retain their five truthful capture-evaluator identities. The current provider-free replay evaluator is `bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643`; no bundle or evaluator identity was rewritten and no mixed-evaluator aggregate bundle was synthesized.
+- Replay: each member's current replay and verification replay have identical indexed byte count and SHA-256 digest; all twelve record zero live calls. Historical baseline comparison remains excluded from causal improvement because initial-fixture identity differs, with OpenCode version also differing for later captures.
+- Retention: schema-v2 index size is 46,409 bytes before this record; 14 lanes resolve 120 retained files totaling 2,215,997 bytes with zero unindexed files. A reviewed exception permits at most 160 files and 4,194,304 bytes because deleting failed-finalized, historical, or replay records would erase causal and identity evidence.
+- Claim state: `unknown (12/12)` only because the required fresh instruction-governance maintenance observation and fresh evidence-sufficiency challenge have not run. The maximum claim is limited to the exercised model, environment, routes, and represented partitions.
+- Validation: evidence materialization resolved 120 files in 14 lanes; direct lane resolution passed; twelve current replay pairs matched; evidence inventory reported `overLimit: false` and zero unindexed files; strict selected-change validation passed.
+- External operations: none. No configured call, recapture, consumer mutation, install, activation, archive, commit, push, remote, destructive, or protected effect occurred in task 4.1.

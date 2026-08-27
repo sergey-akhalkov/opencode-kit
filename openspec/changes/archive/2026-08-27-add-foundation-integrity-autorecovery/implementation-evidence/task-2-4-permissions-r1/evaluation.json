@@ -1,0 +1,13 @@
+{
+  "candidateId": "foundation-integrity-permissions-r1",
+  "configuredMainPrecedence": {
+    "allow": "allow",
+    "ask": "ask",
+    "deny": "deny"
+  },
+  "hiddenArbiterTools": "all-false",
+  "mainDefault": "permissive-when-configured",
+  "schemaVersion": 1,
+  "specialistRestrictions": "preserved",
+  "status": "complete"
+}

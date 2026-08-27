@@ -1,0 +1,1872 @@
+{
+  "candidateId": "foundation-integrity-dependent-inventory-candidate-r2",
+  "cleanup": {
+    "complete": true,
+    "fixtureRemoved": true,
+    "processesRemoved": true,
+    "sessionsRemoved": true
+  },
+  "diagnosticOnly": true,
+  "digest": "23a623b51433ddfcbf45234488f0badf609066a9c60357f3e3d2249d3e0a9275",
+  "elapsedMs": 306002,
+  "environment": {
+    "configuredRoute": "openai/gpt-5.6-sol/xhigh",
+    "modelsCatalogSha256": "0c8a466825e3e7830bf3460f57425c35be89e43a0372ab03be6a43243df33e4f",
+    "openCode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.23"
+    },
+    "resolvedRoute": "openai/gpt-5.6-sol/xhigh",
+    "runtimeManifest": [
+      {
+        "bytes": 71950,
+        "path": "cache/bun/@t@/1befdff57c2e91ce.debug.pile",
+        "sha256": "3cecb691b96cde5ab81b86702cec5ecd7482a75e13d6e0b98ba5809d1cb09be2"
+      },
+      {
+        "bytes": 77746,
+        "path": "cache/bun/@t@/ba30bcc857af0b8f.debug.pile",
+        "sha256": "8d2d0074140ee65d9891c11b7a9d3125ee6dfef08cf5d5e5339f5a3b3d3e9ee6"
+      },
+      {
+        "bytes": 128552,
+        "path": "cache/bun/@t@/c7e33d1ffcdd8413.debug.pile",
+        "sha256": "25b5a4df8a4bfcc2281689b81682258388336d5ae4548eb7f058eaafe1d7051f"
+      },
+      {
+        "bytes": 4334527,
+        "path": "cache/opencode/models.json",
+        "sha256": "0c8a466825e3e7830bf3460f57425c35be89e43a0372ab03be6a43243df33e4f"
+      },
+      {
+        "bytes": 63,
+        "path": "config-home/opencode/.gitignore",
+        "sha256": "663a068e76d264d0bc6740f5450b6c4193c7b41ecf5e0dc222485b8a17404d95"
+      },
+      {
+        "bytes": 433,
+        "path": "config-home/opencode/node_modules/.bin/download-msgpackr-prebuilds",
+        "sha256": "2a724fd969f81ab4398677c27929b42f47fea3deef75e1ba69da544d06892764"
+      },
+      {
+        "bytes": 347,
+        "path": "config-home/opencode/node_modules/.bin/download-msgpackr-prebuilds.cmd",
+        "sha256": "6a51303e514b4cd98080d58e56387e83cabb521239b7417152ced91111066f96"
+      },
+      {
+        "bytes": 893,
+        "path": "config-home/opencode/node_modules/.bin/download-msgpackr-prebuilds.ps1",
+        "sha256": "435f76c83f9c027a05a7432a14d706ae46adc768293c2c1789e89d19819001b4"
+      },
+      {
+        "bytes": 427,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages",
+        "sha256": "370cd1adf49660bf0e7fffbf40d199589e04533d483f67d98aac00cbb4d40885"
+      },
+      {
+        "bytes": 437,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages-optional",
+        "sha256": "b41a0adc2f71a24f6a97618f8f4756194867a2cae3d3b9a3b39bb919ea198d0f"
+      },
+      {
+        "bytes": 349,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages-optional.cmd",
+        "sha256": "625648271b984e25982ff1825af34db1285fe2cf4ab26ce68d9fc24d408dd200"
+      },
+      {
+        "bytes": 901,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages-optional.ps1",
+        "sha256": "12fafb4bcb38df8b44fd7b7261cdf30a633e982c8adf884e7241ba11589f5e02"
+      },
+      {
+        "bytes": 441,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages-test",
+        "sha256": "c63fb3b436078861d787afdacc412617bd0874454b8de32ae1a865ae12ca5a3f"
+      },
+      {
+        "bytes": 351,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages-test.cmd",
+        "sha256": "214c81947b09398897b161b930066f70d8d0ba4e2f4b3469585f823113db9680"
+      },
+      {
+        "bytes": 909,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages-test.ps1",
+        "sha256": "ccb907ca4726e038e7ee37a304dafad1351080fc7acf404d2aca4e396bdc3b26"
+      },
+      {
+        "bytes": 344,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages.cmd",
+        "sha256": "d55766613db490f35ea234a2c34a09af614016e5b22e75d7b4cc0b0ad24c6969"
+      },
+      {
+        "bytes": 881,
+        "path": "config-home/opencode/node_modules/.bin/node-gyp-build-optional-packages.ps1",
+        "sha256": "a5c686840e32b57fb4faf7d72026451aa3e1f7c6131dee11992cd74247e91422"
+      },
+      {
+        "bytes": 389,
+        "path": "config-home/opencode/node_modules/.bin/node-which",
+        "sha256": "ae614137ec19cd41eab2f7a85cc508e6a19042b0dda0a2815c07e5fb43a6e059"
+      },
+      {
+        "bytes": 325,
+        "path": "config-home/opencode/node_modules/.bin/node-which.cmd",
+        "sha256": "818856453703b9e61de47223e7505ad77cb4f40f456e348dae2ca9cd501abad0"
+      },
+      {
+        "bytes": 805,
+        "path": "config-home/opencode/node_modules/.bin/node-which.ps1",
+        "sha256": "d293014f7b06fffc145f94cd02bd82b53c2dbbc3eba99ff62dedf882adcc1711"
+      },
+      {
+        "bytes": 395,
+        "path": "config-home/opencode/node_modules/.bin/uuid",
+        "sha256": "09b97b0f6f9bd6a0221ce5aeb55dab7ec6bd57898ac9a1cb73183a14bb79de4f"
+      },
+      {
+        "bytes": 328,
+        "path": "config-home/opencode/node_modules/.bin/uuid.cmd",
+        "sha256": "7674e1c825a59a95f0b325e5882b96fac1992b68c18d61e24fc74b07778775aa"
+      },
+      {
+        "bytes": 817,
+        "path": "config-home/opencode/node_modules/.bin/uuid.ps1",
+        "sha256": "4aad1bb01930fe546e42a4ca95fbd71daf2c8274f3e198625e5987e43df2a5f9"
+      },
+      {
+        "bytes": 373,
+        "path": "config-home/opencode/node_modules/.bin/yaml",
+        "sha256": "16d4e808827daf638b1f0fc3f7f56de0e5f3a5e2950b0b8ef7535cdf4724bce6"
+      },
+      {
+        "bytes": 317,
+        "path": "config-home/opencode/node_modules/.bin/yaml.cmd",
+        "sha256": "fd3e6538ec1018083ba89d43d80b406fc13ae722b7a5ba512211d70965d3f50a"
+      },
+      {
+        "bytes": 773,
+        "path": "config-home/opencode/node_modules/.bin/yaml.ps1",
+        "sha256": "33e7d103b962140a5b3a797f1344e2299c31521c4486683c69e09c2310158c70"
+      },
+      {
+        "bytes": 12147,
+        "path": "config-home/opencode/node_modules/.package-lock.json",
+        "sha256": "59ef3468905434ea2a94837dbe8764b0af368cced7e3d1717c4619ed22c26843"
+      },
+      {
+        "bytes": 22998,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/CHANGELOG.md",
+        "sha256": "10730ae593d146d02ca483157fc1cab14fef76b331481e04daf2878c31b0322c"
+      },
+      {
+        "bytes": 129727,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/dist/index.d.mts",
+        "sha256": "6ff4c27ce1c30040730481cab949bf344938252c250111642ae5e12c51de8324"
+      },
+      {
+        "bytes": 129727,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/dist/index.d.ts",
+        "sha256": "6ff4c27ce1c30040730481cab949bf344938252c250111642ae5e12c51de8324"
+      },
+      {
+        "bytes": 13933,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/dist/index.js",
+        "sha256": "4f3a232f9f98f225bf0ee3ac5a264e05e975233c8b74c5bdd50b38576e02eef1"
+      },
+      {
+        "bytes": 25245,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/dist/index.js.map",
+        "sha256": "a00de6fbda169b4ff856a70d9c71fadfecfbde6e0ec9931c5e41675d2bfddf41"
+      },
+      {
+        "bytes": 12081,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/dist/index.mjs",
+        "sha256": "7f543e6fe850de4cc0c547d4a0281b65c6b5897d163627c4fa6fccd67e1200ac"
+      },
+      {
+        "bytes": 24441,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/dist/index.mjs.map",
+        "sha256": "8d5aa622dbaccfe1c43a9570fe994f58f1742edeb0ccc2aa2be810ee66672771"
+      },
+      {
+        "bytes": 552,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/LICENSE",
+        "sha256": "b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529"
+      },
+      {
+        "bytes": 1452,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/package.json",
+        "sha256": "dbb3c1855b5dd36804d968b962521bd424511b070ce72233dc83f46ffa30750d"
+      },
+      {
+        "bytes": 49,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/README.md",
+        "sha256": "4fa049bf3e6a3ae7a95e4db42a88d5a983a64b83189b2e4317457353c8814e60"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 189,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v2/embedding-model-v2-embedding.ts",
+        "sha256": "2126b8d80874bf0be5eb8e9efa8580109909060a22cca4b0f7309b4c2bc24cf8"
+      },
+      {
+        "bytes": 3044,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v2/embedding-model-v2.ts",
+        "sha256": "0feef5ca866cadd4eaa2fc080950a9383284297ce2353450369d396722aec65f"
+      },
+      {
+        "bytes": 86,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v2/index.ts",
+        "sha256": "f9b8bfa1bcfc8fe084a6ba96ae82174095fb433cead55af2e5272e01c9c8611f"
+      },
+      {
+        "bytes": 706,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3-call-options.ts",
+        "sha256": "2319516f4354eb385296369b6dadd2f8e9b53414bd423fcab30a472fb999c327"
+      },
+      {
+        "bytes": 189,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3-embedding.ts",
+        "sha256": "1a5f8e385fa8d5bb66197cdc1b157b28439d14c508322a40345484203693f194"
+      },
+      {
+        "bytes": 1098,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3-result.ts",
+        "sha256": "f439ed40f5a18cbdb328992671d65802e3e76365c6163e93071d91729efe0280"
+      },
+      {
+        "bytes": 1537,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3.ts",
+        "sha256": "e1a7fbaac71640122770b39aa5d847a7998572c7676f441f4eea5b6c595523f2"
+      },
+      {
+        "bytes": 182,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model/v3/index.ts",
+        "sha256": "a04840a21876c0a97a9915ee0e5ec7212f75da29d33ab5bd1c5ad516f984c9c0"
+      },
+      {
+        "bytes": 28,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model-middleware/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 2669,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model-middleware/v3/embedding-model-v3-middleware.ts",
+        "sha256": "40a8f34fa0dfbaf6ec1bd94eda56323861c6560ce8c69a7042e0ec609677e153"
+      },
+      {
+        "bytes": 49,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/embedding-model-middleware/v3/index.ts",
+        "sha256": "981dca53fcb08636c99a3e582deb50cd733d8cf4c18422a5f6ea8739e178ffb8"
+      },
+      {
+        "bytes": 1604,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/ai-sdk-error.ts",
+        "sha256": "d307f5fcfaeb9aba6ebd06dda911a75b0795671d13afd37a618b74e4a4f0b059"
+      },
+      {
+        "bytes": 1519,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/api-call-error.ts",
+        "sha256": "c5797b3db888abff0c9ef1778875dcc2cbca7ffaf6e2ac42d75ce54fb69d387b"
+      },
+      {
+        "bytes": 522,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/empty-response-body-error.ts",
+        "sha256": "5c7eee94765c3e4a7d89e3ff054884d07df1a0a966f28c9067942393b9f2b81f"
+      },
+      {
+        "bytes": 273,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/get-error-message.ts",
+        "sha256": "24f8f9029a8d37f77712e4e3ed598982bd8f2c35adedcd35703f8334c03e26aa"
+      },
+      {
+        "bytes": 1028,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/index.ts",
+        "sha256": "2ccb3b80ed96dc8f1eea1c4617b1576183c26534161ec1aeab39f998d250f517"
+      },
+      {
+        "bytes": 679,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/invalid-argument-error.ts",
+        "sha256": "d809723bb942b9b156ceb5dbb021b57dfbf837dee614f58fb36397842088bb4d"
+      },
+      {
+        "bytes": 763,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/invalid-prompt-error.ts",
+        "sha256": "6ee894e93007769570bd9a2aaa400abe2217e9d8f091957f3d8fee1fa11ffb6d"
+      },
+      {
+        "bytes": 797,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/invalid-response-data-error.ts",
+        "sha256": "f99e803be11fa773934be95b739bca88442dc583f32a2a784d99c8c75de08f4b"
+      },
+      {
+        "bytes": 734,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/json-parse-error.ts",
+        "sha256": "cc5c2e6a1d2973275fc84e4d4e78b77d5c39053e9ba47fdb042dcfbb627dd965"
+      },
+      {
+        "bytes": 471,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/load-<redacted-credential>-error.ts",
+        "sha256": "191dbc1714c09b77e1eda794d39603da76431f0ac1a2d361a151f2190a77192a"
+      },
+      {
+        "bytes": 474,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/load-setting-error.ts",
+        "sha256": "46baa0337cbd2c033961bedd5c8a75f6993cc4c96ae825f3020b5d2b0fadb756"
+      },
+      {
+        "bytes": 604,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/no-content-generated-error.ts",
+        "sha256": "5b49b40818d7b477b0734d4fe0dd55a7940303ade6f2c32d7fbf134318648914"
+      },
+      {
+        "bytes": 1081,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/no-such-model-error.ts",
+        "sha256": "a37504de4182d7a8974db731068f7181400165cd56ea2922be521f6a71e4eaa5"
+      },
+      {
+        "bytes": 1200,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/too-many-embedding-values-for-call-error.ts",
+        "sha256": "29e69aaa78b15993f4ecd498dac21093fb5ecf5e126b675250a933c9c0c126c7"
+      },
+      {
+        "bytes": 2879,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/type-validation-error.ts",
+        "sha256": "b94d1f99f03934e6f43a3efbfe44b6c140152c3d63d4df7acdafb62299271d36"
+      },
+      {
+        "bytes": 701,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/errors/unsupported-functionality-error.ts",
+        "sha256": "b266a4f0a683f5d9642a57656af32cd4320bd7a1e3671b96d080799ca942ce67"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 1404,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v2/image-model-v2-call-options.ts",
+        "sha256": "c0eb1cd04084a9a8ec10c4c9ddcecd10af6766c96d71773699f5d08ef3409b2b"
+      },
+      {
+        "bytes": 455,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v2/image-model-v2-call-warning.ts",
+        "sha256": "883fcf4109f8454f676e66d5e8cddf1cdaa2b2e2c42374fece983fb876b0a191"
+      },
+      {
+        "bytes": 3050,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v2/image-model-v2.ts",
+        "sha256": "b556eb60d0038c9e600216fa5c0d320321f6239e0d91de0292e427d0fd8b2714"
+      },
+      {
+        "bytes": 245,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v2/index.ts",
+        "sha256": "eb17aec505f2a262191cf82e0cd1edf9c4ac4ad70322ec326d6cfb2ab67d3b84"
+      },
+      {
+        "bytes": 1910,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3-call-options.ts",
+        "sha256": "f49002c815aa7ee6960295cd83271360b94b9d146ebb9b6ba1573ebc9008a291"
+      },
+      {
+        "bytes": 1224,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3-file.ts",
+        "sha256": "98d9b86de960ed435aaa62c8c35a81995400501bd436edcb0c4204216a6dca03"
+      },
+      {
+        "bytes": 411,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3-usage.ts",
+        "sha256": "827b4e5c596c1f82c45415ce0756ffcb7e88d6eb4909aace05ea41bb3d5dd307"
+      },
+      {
+        "bytes": 3234,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3.ts",
+        "sha256": "1a556e98a667a3f87872a529803e002bdb2548cf3881d0b56abb3818473a20f4"
+      },
+      {
+        "bytes": 295,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model/v3/index.ts",
+        "sha256": "5e5e1a9b1ed66c7367350e81ad263c37cef43272fab2fb4a6e4edf7f8b280a5d"
+      },
+      {
+        "bytes": 28,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model-middleware/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 2270,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model-middleware/v3/image-model-v3-middleware.ts",
+        "sha256": "42c09769706c0df306c4c726f0405aae91d44284d721ad6d0a22b9840f62718a"
+      },
+      {
+        "bytes": 45,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/image-model-middleware/v3/index.ts",
+        "sha256": "eb1910e6c2c0dedc290918305ca9098d95291cccf1ddf464ae0e26be47202d27"
+      },
+      {
+        "bytes": 636,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/index.ts",
+        "sha256": "a58b6c19ceeb60c09cf6a932c5c37c605df52f1040e0de22069a6b52eb5492ad"
+      },
+      {
+        "bytes": 138,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/json-value/index.ts",
+        "sha256": "fe407cdc70a15d9cd3a2b007f5efeff1e59e0d5fb9bb0ec2747d186c1777ac2e"
+      },
+      {
+        "bytes": 967,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/json-value/is-json.ts",
+        "sha256": "87e24cfd920242c2d422ff14c9fc7758dac6550f3ee63e0c6a5cf26f580f2bc8"
+      },
+      {
+        "bytes": 384,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/json-value/json-value.ts",
+        "sha256": "c7bbd280e0dcefbd547f042459880ea0bc78388f8fc3e368cadb95b499dc96ab"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 855,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/index.ts",
+        "sha256": "3903b0ebaf27c27f45c8e700551e66d4792ad59e1c84964f008f874c0f16a520"
+      },
+      {
+        "bytes": 3710,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-call-options.ts",
+        "sha256": "0c210f1a1d0f37e5694f01c812117b5f08262719eb404282660675094e9a83cc"
+      },
+      {
+        "bytes": 806,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-call-warning.ts",
+        "sha256": "15011ce76b5d7963a217374768a351f670574426cf3b186395a1bb69bff421d3"
+      },
+      {
+        "bytes": 620,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-content.ts",
+        "sha256": "a855ade86fc10f618f1983380f4f3c1960b81763242d17835eab18d66b9bba50"
+      },
+      {
+        "bytes": 156,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-data-content.ts",
+        "sha256": "37f7bc7ca1135d6083d0f73cbc8d9674ac1eda60520a01aa169a9d80b5633f8f"
+      },
+      {
+        "bytes": 810,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-file.ts",
+        "sha256": "8abc4d11568fd06903c5fc5b1235ad2235288769d3a5c6f84f861b3b9ce4d92f"
+      },
+      {
+        "bytes": 890,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-finish-reason.ts",
+        "sha256": "2142ccc52ceaea65a6771bf3a697354ff5e2a29dfc10196260f92299b86f2080"
+      },
+      {
+        "bytes": 1012,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-function-tool.ts",
+        "sha256": "e50e0577888a41a9ccdddfbdea0bdb83f733642376c44147c36e8429b5a7efd6"
+      },
+      {
+        "bytes": 5823,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-prompt.ts",
+        "sha256": "246106a29bf8907960152d3d4eec9df5454de6b9b5e113f19300ace49033a18a"
+      },
+      {
+        "bytes": 610,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-provider-defined-tool.ts",
+        "sha256": "e7329d0f0c598a3bc1187b8a826671a3b11c2b760a8040002719ed6ee983b7ce"
+      },
+      {
+        "bytes": 315,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-reasoning.ts",
+        "sha256": "32331c0484ad0b08ef77a1440636407b212130ac5b38dbecdd39ba48fa53f21d"
+      },
+      {
+        "bytes": 393,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-response-metadata.ts",
+        "sha256": "f68ea16b415a5785f5040b82946ebfcf748f25b1774702a17c7bce74217e803a"
+      },
+      {
+        "bytes": 1327,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-source.ts",
+        "sha256": "d8d086ad925ef38366727cf2bd27473b881c4ad105674fe165c3c720305d9bbb"
+      },
+      {
+        "bytes": 2815,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-stream-part.ts",
+        "sha256": "ccc85f18ddddac8f805cae49f3f76785473ba15024738b2e506615b41b89fa0b"
+      },
+      {
+        "bytes": 290,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-text.ts",
+        "sha256": "c2516b3acf09b57226b894e16718f1718c20c8a5a75e36b3d16f7f8302681dbc"
+      },
+      {
+        "bytes": 855,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-tool-call.ts",
+        "sha256": "d7e2128f55e4100fc4804d9749779ea2396b1959996b934ea5632f9a1aea814a"
+      },
+      {
+        "bytes": 311,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-tool-choice.ts",
+        "sha256": "b46ce9b5e843edb00ff3625e8bc06e18822ec4d0173147ab17aabd90b0b2ecfb"
+      },
+      {
+        "bytes": 1007,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-tool-result.ts",
+        "sha256": "c79bf6edb86bce5357d2596ba8625e806bc9518e2f27639e01d96c9aa13db3a2"
+      },
+      {
+        "bytes": 858,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-usage.ts",
+        "sha256": "615e54f074afce86e86beffd73471b89f24bdedbd058d35327ea3823eefcb54d"
+      },
+      {
+        "bytes": 3915,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2.ts",
+        "sha256": "a5f7442fc61464f66ed398e150a60224508f1f43bb54e9a2d9a43315585a307f"
+      },
+      {
+        "bytes": 1009,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/index.ts",
+        "sha256": "2e3099977e8a062e3eecd87212303f414dd48d7b39ae7dcf8ab0e1c12ebdeb0c"
+      },
+      {
+        "bytes": 3680,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-call-options.ts",
+        "sha256": "42b0bd97e5b7b5a4eadb75ac21b7bed76a71286bb3132ebfe24e3d5728b3b687"
+      },
+      {
+        "bytes": 755,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-content.ts",
+        "sha256": "7a252861f0e2221bfc8cd90df9b7916e98b16b69c95f0993d589d78629923306"
+      },
+      {
+        "bytes": 156,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-data-content.ts",
+        "sha256": "65372fbf4f4e161e280069e59683e10b086f364be4188e795506ab02aaa7738a"
+      },
+      {
+        "bytes": 988,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-file.ts",
+        "sha256": "e7882d130b08a14fe2f38ff2963a03bc5f4341d32bd4341925164ae444364d44"
+      },
+      {
+        "bytes": 1115,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-finish-reason.ts",
+        "sha256": "96c33f5a48a57742389ff79f08c6c8b52691de34e7e3b37f951fde07ce78043e"
+      },
+      {
+        "bytes": 1523,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-function-tool.ts",
+        "sha256": "b542c1c85af887eb241dcbe9ac48729531f970adcb11de750f115d2380c04567"
+      },
+      {
+        "bytes": 1662,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-generate-result.ts",
+        "sha256": "0816546e458583e8df1989ccbc0e8a6c30fae4d3c2a1379d255775a4febba127"
+      },
+      {
+        "bytes": 10739,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-prompt.ts",
+        "sha256": "d4c7157dbbae9e025162364bcf15723a940409673b995aadf943a53e88df3e48"
+      },
+      {
+        "bytes": 755,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-provider-tool.ts",
+        "sha256": "5eff91a86be5f857affcec5fa724db9bbb6b3fb862861df0e5ccaa8ec3303c08"
+      },
+      {
+        "bytes": 315,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-reasoning.ts",
+        "sha256": "32b719b03319ad1d797600c790939a6b76fce39c9ee26cb34c953585736fca0a"
+      },
+      {
+        "bytes": 393,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-response-metadata.ts",
+        "sha256": "879347aeed956b70284e14e5c9b01eaa00e6b0ab1400378e6e3f177f2ac6532e"
+      },
+      {
+        "bytes": 1327,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-source.ts",
+        "sha256": "54dd6d1b10ed10ee8c098b14fc27200cb3225a8f0518cfef2bc080a3e8c1e292"
+      },
+      {
+        "bytes": 2976,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-stream-part.ts",
+        "sha256": "c7e3ab61e4f434f27a9f96a1ffc97be043885b5d255aef40f50e21be5fe8a23d"
+      },
+      {
+        "bytes": 646,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-stream-result.ts",
+        "sha256": "88a6e57fb1d3aabac50b48fae346061e6c133aef205de16ce004966dd0b6bb75"
+      },
+      {
+        "bytes": 290,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-text.ts",
+        "sha256": "35971d3c5f923af0153160684e21bb604cd26fafb904cc78b78352032cc48aa0"
+      },
+      {
+        "bytes": 812,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-approval-request.ts",
+        "sha256": "5f0eacb6a5824c910bc27f2c68e961d03f965ffc6f20bbcb7f39202aa76cd85b"
+      },
+      {
+        "bytes": 1036,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-call.ts",
+        "sha256": "93666fe66da088c80d174bb1dd6ff82758a726c71237af3356c3afa9f1282e19"
+      },
+      {
+        "bytes": 311,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-choice.ts",
+        "sha256": "b5516cbd1844fbe4d73f9d1ad676de87d8733d4c0126ed09b01e339069208a32"
+      },
+      {
+        "bytes": 1352,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-result.ts",
+        "sha256": "e20186b5d81c2f40b5268f1400bcc255cffd31d8e8edbbd6602122c58288fe64"
+      },
+      {
+        "bytes": 1272,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-usage.ts",
+        "sha256": "86914ff4c18bddadd8783dd54c25f59920e9596a63359fa5158caee597164980"
+      },
+      {
+        "bytes": 1882,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3.ts",
+        "sha256": "6b1565f37415310ad28d31735f476a16ad0bdffef2f758e3f4904538f47c2820"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model-middleware/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 48,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model-middleware/v2/index.ts",
+        "sha256": "2812006362b47947e2dfe4912c84404dbd79e93d55c8d58f34a791bbee883b06"
+      },
+      {
+        "bytes": 3486,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model-middleware/v2/language-model-v2-middleware.ts",
+        "sha256": "760ae29c2dd623b0155dce521562a37e29740c41eb614bc42272613c15f7b2b7"
+      },
+      {
+        "bytes": 48,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model-middleware/v3/index.ts",
+        "sha256": "1e274c7208e555a021fcb1f8290fd5a514f9fff81bf92a09fff26ec0bfdc3bf5"
+      },
+      {
+        "bytes": 3634,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/language-model-middleware/v3/language-model-v3-middleware.ts",
+        "sha256": "2a025df8a45bc4c2dfaff23f33cd51c7584a01cbd40a3cf07e3a696b5e6ad69d"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/provider/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 49,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/provider/v2/index.ts",
+        "sha256": "ca1c9bda6b44ae2262f719b6f769d21d0ace12de9e1c16d3b58fc88b0f253853"
+      },
+      {
+        "bytes": 2320,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/provider/v2/provider-v2.ts",
+        "sha256": "8b3cb66d07d757b2f3c204f16cbe5a81834adc8b5fcbbdb5c74302766b574b8a"
+      },
+      {
+        "bytes": 49,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/provider/v3/index.ts",
+        "sha256": "43b72f54e32e2add5626dcd9666e85630fe1253a24c4434f6db6976ed41824a5"
+      },
+      {
+        "bytes": 3295,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/provider/v3/provider-v3.ts",
+        "sha256": "3a10cfa2a022c3c479e73f6c4381f8d533d053e17db2f1b675e065c10a110780"
+      },
+      {
+        "bytes": 28,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/reranking-model/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 148,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/reranking-model/v3/index.ts",
+        "sha256": "a3b30fbb301344d350c1671fbe88e1dcf39d9a05a59f84c15ce7a8884cd4285b"
+      },
+      {
+        "bytes": 1070,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/reranking-model/v3/reranking-model-v3-call-options.ts",
+        "sha256": "a759ee131a3716fec6df8f28a2d5e36cd0363a812a237aed37bc7b102e471bf3"
+      },
+      {
+        "bytes": 2283,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/reranking-model/v3/reranking-model-v3.ts",
+        "sha256": "c562737c8b626c55916d6a47038cdc411ba4d2e84cd82c957a69bce53b598b54"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 130,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v2/index.ts",
+        "sha256": "669f0ed1514b5ada346046d2c55d19c1a271aa242bf4f8d849d3676bf6a534d9"
+      },
+      {
+        "bytes": 54,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v2/shared-v2-headers.ts",
+        "sha256": "3ead479bd20dbc7522c1ada3d4ac443535627416229c9d115eb6ec17169de709"
+      },
+      {
+        "bytes": 743,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v2/shared-v2-provider-metadata.ts",
+        "sha256": "8c863827d95355e1b98ef5e44b73d5ef52e75a757f332a6759dea18183fb4437"
+      },
+      {
+        "bytes": 730,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v2/shared-v2-provider-options.ts",
+        "sha256": "e31136a76c4dd7d073e882d270bc25d72289596f4b207589b1d74650ff00cf7f"
+      },
+      {
+        "bytes": 167,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v3/index.ts",
+        "sha256": "9fe31678b40c1bf037740725b065c2777058a929aaabfecbadc48751fccf1056"
+      },
+      {
+        "bytes": 54,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-headers.ts",
+        "sha256": "7f088bc70641ab1717285ddc553478ee500a45827068b196513cbfa8ce9bf05c"
+      },
+      {
+        "bytes": 723,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-provider-metadata.ts",
+        "sha256": "64c071b4fd680fba43d23645da9cf86c9e691bc2cba26f7309f1f9ea5d915f77"
+      },
+      {
+        "bytes": 716,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-provider-options.ts",
+        "sha256": "0b33abda9dc17e9d71d94e7bacc10ebafbf3e8739a15ab483074c06dfc0fdf73"
+      },
+      {
+        "bytes": 990,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-warning.ts",
+        "sha256": "912f75d7b4503aca020d96928eb65daac9167eaeb9beec0f17a1ceb331e91dd7"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/index.ts",
+        "sha256": "905563f3521e747a2c2d5d4f35609181a2c1f56ac485b01860fd1879bca20d91"
+      },
+      {
+        "bytes": 216,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/v2/index.ts",
+        "sha256": "fd6ca1625ab2e5595fa8b1162592bd0333d217371c223224967e6a682cc21e2f"
+      },
+      {
+        "bytes": 1526,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/v2/speech-model-v2-call-options.ts",
+        "sha256": "4c1b3fa81df82a1b9c3e0497ec0bb6245aeaeb15500964fafce646a8078dff0c"
+      },
+      {
+        "bytes": 459,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/v2/speech-model-v2-call-warning.ts",
+        "sha256": "99b90d2628d9c617e2724b8775b7eb6ad0e8464837b7acfd1ee71e86766a2d42"
+      },
+      {
+        "bytes": 2451,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/v2/speech-model-v2.ts",
+        "sha256": "616bad4192884f4f4dbc1ad0cb7ca07b1a1f286133e642c019774f7eb04e4a03"
+      },
+      {
+        "bytes": 136,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/v3/index.ts",
+        "sha256": "887b452cafdd6c2cb72ccd94f77657eccea33ceb7043fc399b9ed86563856232"
+      },
+      {
+        "bytes": 1512,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/v3/speech-model-v3-call-options.ts",
+        "sha256": "3f8bfcc24abc69e80b08d3a9840895f8fd84c754dfa18725535df851ac20b8ce"
+      },
+      {
+        "bytes": 2422,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/speech-model/v3/speech-model-v3.ts",
+        "sha256": "c0408a0d2bf77ab36ae20a2a6364255281593fd927f5bf238bac472995818d8b"
+      },
+      {
+        "bytes": 56,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/index.ts",
+        "sha256": "905563f3521e747a2c2d5d4f35609181a2c1f56ac485b01860fd1879bca20d91"
+      },
+      {
+        "bytes": 258,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/v2/index.ts",
+        "sha256": "a8f3618eff417ec044672104e3b03abf5c4e55dd1a17bd98bd215dea6bfe9b67"
+      },
+      {
+        "bytes": 1182,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/v2/transcription-model-v2-call-options.ts",
+        "sha256": "7e5f9e8ce4c2a91f5047c785f775e5378c0851fb03d456bddca9ca8d56c1d547"
+      },
+      {
+        "bytes": 487,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/v2/transcription-model-v2-call-warning.ts",
+        "sha256": "66f252666a820d085125784850fd693f4a72b8560d4f7dd6c3d3eaf927e81145"
+      },
+      {
+        "bytes": 3193,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/v2/transcription-model-v2.ts",
+        "sha256": "76619be41c446f5de45114b997d3caa056a1bb76dff0b8d0d4d3ee8f86069979"
+      },
+      {
+        "bytes": 164,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/v3/index.ts",
+        "sha256": "91507cebbfecc00382dd80781d65668949da013d151daffc1c79faa78394ca14"
+      },
+      {
+        "bytes": 1162,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/v3/transcription-model-v3-call-options.ts",
+        "sha256": "0637f368e30289af5f0db3b36d0fcdb62aeb31512232caf98c580ddd963ec0ba"
+      },
+      {
+        "bytes": 3143,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/transcription-model/v3/transcription-model-v3.ts",
+        "sha256": "cc51cd7b6a364cc3b3a20412f301618a6c53470d7fe0720aa703aa8a4b6c0611"
+      },
+      {
+        "bytes": 28,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/video-model/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 363,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/video-model/v3/index.ts",
+        "sha256": "9fac0810005bd87872bf257593e9cdefcbeeac2d7902171092b2c26ffea03798"
+      },
+      {
+        "bytes": 2076,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/video-model/v3/video-model-v3-call-options.ts",
+        "sha256": "d7ccefe15424becf8cfb77e39aaeed4c7225c2243a1882b4b4b3cf4361939bd8"
+      },
+      {
+        "bytes": 1020,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/video-model/v3/video-model-v3-file.ts",
+        "sha256": "78f52d726fb78978fe7920f0e8f66c6a2eae49d726c199c70be95403ef7e85e8"
+      },
+      {
+        "bytes": 3579,
+        "path": "config-home/opencode/node_modules/@ai-sdk/provider/src/video-model/v3/video-model-v3.ts",
+        "sha256": "2d955d23f0d76858894ea72fb960974617c47f64eccac67d4f18737555d6cc85"
+      },
+      {
+        "bytes": 0,
+        "path": "config-home/opencode/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/index.js",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 112640,
+        "path": "config-home/opencode/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/node.abi115.node",
+        "sha256": "300b188fb8c997214cb65bf1b00729da293176c7d57035e40c2f432ea384dd89"
+      },
+      {
+        "bytes": 112640,
+        "path": "config-home/opencode/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/node.napi.node",
+        "sha256": "6958541c624784dfcebfc4f3c360c57f71cfeedd0530c2393845061729081a08"
+      },
+      {
+        "bytes": 377,
+        "path": "config-home/opencode/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/package.json",
+        "sha256": "5ca28cd9343e1d079307257ecc7e57249cb129448385cf797dbf4e69a950f71a"
+      },
+      {
+        "bytes": 79,
+        "path": "config-home/opencode/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/README.md",
+        "sha256": "6515d786bbf6a155c368ef74905e3447d3250d096e929f1392c6737d86d8e4d9"
+      },
+      {
+        "bytes": 141,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/example-workspace.d.ts",
+        "sha256": "da51d51412349664a3e2901d2b7ddcb75b3e4a2018b0f19bc692377619613af2"
+      },
+      {
+        "bytes": 938,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/example-workspace.js",
+        "sha256": "57aa0216a504b7264f21b5691ad548e42c44b9b17cf53ae04d57f8bd46d4a68c"
+      },
+      {
+        "bytes": 81,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/example.d.ts",
+        "sha256": "ba1871db5442e49c90630686e08323d6d8303b1749d0752646e69701572560e0"
+      },
+      {
+        "bytes": 440,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/example.js",
+        "sha256": "ab28bdefc32ebe226d115074e1a7f11f24bd321d799b45b5977428f76c1ae509"
+      },
+      {
+        "bytes": 9285,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/index.d.ts",
+        "sha256": "f3ec1a150d1354be3c9d93928fa130edc118c63fb468533ebb01eb3d6ed77f92"
+      },
+      {
+        "bytes": 27,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/index.js",
+        "sha256": "a3d26196e07062e858fc0ee44cfbddeb6143be740f9c93df4286b162a8b3e298"
+      },
+      {
+        "bytes": 3248,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/shell.d.ts",
+        "sha256": "340d8057526217987a3a797d93a03b6e6c9a9e1cd8e7c46a676ea008a710afe1"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/shell.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 1527,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/tool.d.ts",
+        "sha256": "5237b30a9b5a9a814f93327ce446e73b726da139fe2eba8edf88c4a45b4b8b2d"
+      },
+      {
+        "bytes": 92,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/tool.js",
+        "sha256": "a01230d42fa1055ddb4b378e0128f156e2db07f6f6eadbf2da174eb634380b16"
+      },
+      {
+        "bytes": 17573,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/tui.d.ts",
+        "sha256": "2f5b7db88c3659c04d2301d367eb1c7b6e8ee0038e8c6b3a2f53d89c053e445e"
+      },
+      {
+        "bytes": 480,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/tui.js",
+        "sha256": "47fa179cd59c815e42408472ee1ad87aaa33b40f5f8a741034ab0f0ef82897fb"
+      },
+      {
+        "bytes": 429,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.d.ts",
+        "sha256": "4103980b9c2366743c71529ddec86716be7ae8606a0b061e57fee805dc90ee1f"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 529,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.d.ts",
+        "sha256": "9b5412f526686a59b852a7d1b7aa8d95330fe613cb35f08a2072e08423b2bcc3"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 1119,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/catalog.d.ts",
+        "sha256": "2ac691ee45da364a65244b617b5c7c0ba2405297488e06645912b828331e720d"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/catalog.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 408,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/command.d.ts",
+        "sha256": "f62cb41feccecf37efafdbd60b87740bc273a9ce283d11e70ab35754c1e676ff"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/command.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 913,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/context.d.ts",
+        "sha256": "49215f2681483ab2e4af560010d8b87ab678c2c022a90a9baa33ee0356c58408"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/context.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 294,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/event.d.ts",
+        "sha256": "9113e8ed458d3258a6534d1f22fd26c97fea29f84bc331658fbcc50861506e66"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/event.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 718,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.d.ts",
+        "sha256": "411764ced63fd5fec73aacf2ee169008f1bb64889ce5dd37f6b53875e738fcf2"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 132,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.d.ts",
+        "sha256": "9bcafa47a5e09d7a8602a775ea817b873325d9f9a5c95478671b4163a13e7694"
+      },
+      {
+        "bytes": 38,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/index.js",
+        "sha256": "32c069ba55d606f7b0ab14381c81594d925c71b32a188c983f21330106d3b15a"
+      },
+      {
+        "bytes": 2109,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/integration.d.ts",
+        "sha256": "4ba1672c6db7aaa02f8317c3e065dbc475710fae990997586db131869a5798e1"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/integration.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 129,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/location.d.ts",
+        "sha256": "40c80e330b06a9cc8625d976f20ae335bcd2bef7d35bdbf90cabeb79bc496daa"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/location.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 192,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/npm.d.ts",
+        "sha256": "87927ace689cd32e7b2045fcba64d631a2b48fd72f49decb7dc2341c1d6c2981"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/npm.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 192,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/path.d.ts",
+        "sha256": "52c4f54624a777e2bb82511ebcefdcdcadb70bd2418b5eddba895cbc93b1aee0"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/path.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 476,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/plugin.d.ts",
+        "sha256": "2858e232fae74e396f1eba0ea52356bf9bb70de88c8cd0ca40e348282a01fa91"
+      },
+      {
+        "bytes": 54,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/plugin.js",
+        "sha256": "5a9acae3250f1259b79ccd0c42f366fe863c19fea43fabb9eebc1108c349d61b"
+      },
+      {
+        "bytes": 446,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/reference.d.ts",
+        "sha256": "15ec06b9347bd0e826f49ca87c23affe20a1d4d1ef03729fb289a8e61cfd35a2"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/reference.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 378,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts",
+        "sha256": "0b5b803f64c79dc0c4d0924ad2279327837e6718ce41f5d3a759f428c17d116e"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 287,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/skill.d.ts",
+        "sha256": "6bb1574452801c3a917e8103f1d1f6f130725c7cb8689694289b87361097b57b"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/effect/skill.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 59,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/options.d.ts",
+        "sha256": "da083f4e23582702a9df1025ef44123720198cd94b27a54f4c840ad87d6280c6"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/options.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 194,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/agent.d.ts",
+        "sha256": "1df4fa59aeb449337f81af94dc08c649ced96d3ce80afe1eb6940c5418e95e2d"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/agent.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 529,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/aisdk.d.ts",
+        "sha256": "9b5412f526686a59b852a7d1b7aa8d95330fe613cb35f08a2072e08423b2bcc3"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/aisdk.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 250,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/catalog.d.ts",
+        "sha256": "b54d1791f837d9b281b93a277dabc1d8597a99333aaad34c74e442b3a6cf71e4"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/catalog.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 204,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/command.d.ts",
+        "sha256": "f8f63184f58bcdc59142950d44a00fa5bf88c3f19e98ea6c2f0a3c05ddcfe66e"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/command.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 913,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/context.d.ts",
+        "sha256": "49215f2681483ab2e4af560010d8b87ab678c2c022a90a9baa33ee0356c58408"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/context.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 751,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/index.d.ts",
+        "sha256": "5711c3e6e5871233e512aa8f80d9884102d406fe2043a31c88afa59ca56b3d00"
+      },
+      {
+        "bytes": 38,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/index.js",
+        "sha256": "32c069ba55d606f7b0ab14381c81594d925c71b32a188c983f21330106d3b15a"
+      },
+      {
+        "bytes": 657,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/integration.d.ts",
+        "sha256": "5dc5a1a2550d35d18ed0bea20dfcc0fc1545f3018f70e94dc43b337ea5f226a9"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/integration.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 369,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/plugin.d.ts",
+        "sha256": "68b7e9a29f7f38de4eb910ca82bab5829c18a5d78b374f807f810e6dcc3901cc"
+      },
+      {
+        "bytes": 54,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/plugin.js",
+        "sha256": "5a9acae3250f1259b79ccd0c42f366fe863c19fea43fabb9eebc1108c349d61b"
+      },
+      {
+        "bytes": 214,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/reference.d.ts",
+        "sha256": "2629c4d73f7d5f599aec302e182bc1508ecf196a4bcf50f75e7a9d7afa7a3554"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/reference.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 295,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/registration.d.ts",
+        "sha256": "9b1b366eaf065efee45d6a7133d629539e02db0694c370015abeb51fea64caa4"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/registration.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 194,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/skill.d.ts",
+        "sha256": "4a3f680f773da0e4459fa5fcdc43f5c90da586321cd14d4d6b8abd9b316787e1"
+      },
+      {
+        "bytes": 11,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/dist/v2/promise/skill.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 1786,
+        "path": "config-home/opencode/node_modules/@opencode-ai/plugin/package.json",
+        "sha256": "fdbdb09e98b0d103589994fd817cd0adf1cf9a0383499d8952dded59df291c31"
+      },
+      {
+        "bytes": 317,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/client.d.ts",
+        "sha256": "84edb938f2b673df750cf83e9516218404e9df7e32e66f2f063c813d7f4d0e62"
+      },
+      {
+        "bytes": 1688,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/client.js",
+        "sha256": "a05b2a3b58c5d1e584ebfbb61d33fe340ef107ab21db7b19b9aff17f6656d281"
+      },
+      {
+        "bytes": 776,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/error-interceptor.d.ts",
+        "sha256": "474627780ed8bae0145261f0a88ecaabcfd694619f8ab2d28eeee6f4826663de"
+      },
+      {
+        "bytes": 2138,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/error-interceptor.js",
+        "sha256": "4e73fad50ec7cea030097d7b7d4fa4b57f39d29abb7b922aed301a4228f77dc5"
+      },
+      {
+        "bytes": 118,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/client.gen.d.ts",
+        "sha256": "358599da1d31542e1d3ebf35a4a98665395ea8eaf0063826b8838974f7e826e5"
+      },
+      {
+        "bytes": 5674,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/client.gen.js",
+        "sha256": "a4303bf5538ac7652dd7ab06f709024356a674318e452f71bf391ffe6b30a727"
+      },
+      {
+        "bytes": 620,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/index.d.ts",
+        "sha256": "06240cf9eca32a7ea5436ee67c8420bc1ddacfaf0d28cd17d09dd56a65c8fb9a"
+      },
+      {
+        "bytes": 346,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/index.js",
+        "sha256": "190026b1b139eaf999907d9be7af64a4485dcf07e15f392fbb46c391f625aa58"
+      },
+      {
+        "bytes": 6888,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/types.gen.d.ts",
+        "sha256": "11f6e61b31e0c89eae79ce790895bf85b918572c32c2de45998f7cbacbb3b963"
+      },
+      {
+        "bytes": 65,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/types.gen.js",
+        "sha256": "17ebe2baaa8d2f0c94afaaaae74a46e43e2b163a0f4ffd69adb39ad57c318e78"
+      },
+      {
+        "bytes": 2374,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/utils.gen.d.ts",
+        "sha256": "77fed0312d2ec2b08afb890b7760b5f2328f6e09065ea05b5fc35d5294fbb434"
+      },
+      {
+        "bytes": 7285,
+        "path": "config-home/opencode/node_modules/@opencode-ai/sdk/dist/gen/client/utils.gen.js",
+        "sha256": "723a458bd538ada79b036e49a2c28d29e674647b51e28b61ba3fd8074ae41d84"
+      }
+    ],
+    "startupFacts": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    }
+  },
+  "files": {
+    "after": [
+      {
+        "path": "cases/aligned-historical-controls.json",
+        "sha256": "099046651448620c7c04cfb951fb994317bf011a985fe04e8ddc5c0cb070a55e"
+      },
+      {
+        "path": "cases/dependent-inventory-sweep.json",
+        "sha256": "9656df1136c46c987e697ccb504b326a7b7e03b7e5de7aa6083fdadd0132997f"
+      },
+      {
+        "path": "cases/false-positive-falsification.json",
+        "sha256": "40e2bfccf3a7ac0caba03cf620aa9b84e00815d903769191ecf26616f0410d6e"
+      },
+      {
+        "path": "cases/mismatch-unique-recovery.json",
+        "sha256": "499928088179793cb8fc44a99833e9523eecb587288b624de8a30bfd11549bec"
+      },
+      {
+        "path": "cases/ordinary-small-polish-anti-loop.json",
+        "sha256": "499d6cb6470a3e4f43b4bbb6809869d05561704faf7ffc82912230a1b09fb148"
+      },
+      {
+        "path": "cases/overlapping-dependent-ownership.json",
+        "sha256": "901bb2ce53b56c03b58d0e17e7e286841c7768bfc3ef7a0f0e0bf642c4156df3"
+      },
+      {
+        "path": "cases/protected-product-ambiguity.json",
+        "sha256": "74aaa2ad4ba3a3bb5359c9315bfd6b00246758ecf9dd0bd35121fd401c048cbb"
+      },
+      {
+        "path": "check-decision.ts",
+        "sha256": "b13f1bd42d68c84863827f71895e3fdd15f9ff19c0d9328aa49dedf1d9f1fb51"
+      },
+      {
+        "path": "decision.json",
+        "sha256": "7040220b73b9b3e37b50934e8bf25e0e2f87f2c425e8ff249c1c900840bd8af0"
+      },
+      {
+        "path": "state/aligned-historical-controls.json",
+        "sha256": "d773a4d31c3eee052a50daf474bb6989b3e7997e816524ccafd80551659ffd02"
+      },
+      {
+        "path": "state/archive-record.json",
+        "sha256": "78a7b827a0bb1648a7b2a856598ef3e31d913c681b8f30ab09cfdbd097627091"
+      },
+      {
+        "path": "state/dependent-inventory-sweep.json",
+        "sha256": "11ea6cbac72aa8b51e5519eabb036d2c62bc127265adefd68f1e1102cc8f65ee"
+      },
+      {
+        "path": "state/false-positive-falsification.json",
+        "sha256": "418e44d9e59d547c72986f9a2f89381f1b8481f5384e83e2707f42e0c73372d2"
+      },
+      {
+        "path": "state/mismatch-unique-recovery.json",
+        "sha256": "719ff07174e831a7d2f1e17086f207f306387b51a00aece4ca47ebdda30fe159"
+      },
+      {
+        "path": "state/ordinary-small-polish-anti-loop.json",
+        "sha256": "75a30aa83591b520d0930b12671f371fc3b1557d9a9655ce98950a4fbe3c64cf"
+      },
+      {
+        "path": "state/overlapping-dependent-ownership.json",
+        "sha256": "5bd4cd3ffa0a9658bf7dcfa005187c04350964a06fe74ff5bf973ce8264a3065"
+      },
+      {
+        "path": "state/protected-product-ambiguity.json",
+        "sha256": "515f400df79c0b3ddf20877055986592b4b0e4404c391ca86b3fcdb88db843a4"
+      },
+      {
+        "path": "state/unrelated-active-change.json",
+        "sha256": "d86d2019bb6618f541c031694dca48a40074608f64b8465b7b378fce6d1fc0d7"
+      }
+    ],
+    "before": [
+      {
+        "path": "cases/aligned-historical-controls.json",
+        "sha256": "099046651448620c7c04cfb951fb994317bf011a985fe04e8ddc5c0cb070a55e"
+      },
+      {
+        "path": "cases/dependent-inventory-sweep.json",
+        "sha256": "9656df1136c46c987e697ccb504b326a7b7e03b7e5de7aa6083fdadd0132997f"
+      },
+      {
+        "path": "cases/false-positive-falsification.json",
+        "sha256": "40e2bfccf3a7ac0caba03cf620aa9b84e00815d903769191ecf26616f0410d6e"
+      },
+      {
+        "path": "cases/mismatch-unique-recovery.json",
+        "sha256": "499928088179793cb8fc44a99833e9523eecb587288b624de8a30bfd11549bec"
+      },
+      {
+        "path": "cases/ordinary-small-polish-anti-loop.json",
+        "sha256": "499d6cb6470a3e4f43b4bbb6809869d05561704faf7ffc82912230a1b09fb148"
+      },
+      {
+        "path": "cases/overlapping-dependent-ownership.json",
+        "sha256": "901bb2ce53b56c03b58d0e17e7e286841c7768bfc3ef7a0f0e0bf642c4156df3"
+      },
+      {
+        "path": "cases/protected-product-ambiguity.json",
+        "sha256": "74aaa2ad4ba3a3bb5359c9315bfd6b00246758ecf9dd0bd35121fd401c048cbb"
+      },
+      {
+        "path": "check-decision.ts",
+        "sha256": "b13f1bd42d68c84863827f71895e3fdd15f9ff19c0d9328aa49dedf1d9f1fb51"
+      },
+      {
+        "path": "state/aligned-historical-controls.json",
+        "sha256": "d773a4d31c3eee052a50daf474bb6989b3e7997e816524ccafd80551659ffd02"
+      },
+      {
+        "path": "state/archive-record.json",
+        "sha256": "78a7b827a0bb1648a7b2a856598ef3e31d913c681b8f30ab09cfdbd097627091"
+      },
+      {
+        "path": "state/dependent-inventory-sweep.json",
+        "sha256": "30f3844aec3c440ef75119c4a481b5a7561f45e703cae993d9af306720f690b4"
+      },
+      {
+        "path": "state/false-positive-falsification.json",
+        "sha256": "418e44d9e59d547c72986f9a2f89381f1b8481f5384e83e2707f42e0c73372d2"
+      },
+      {
+        "path": "state/mismatch-unique-recovery.json",
+        "sha256": "719ff07174e831a7d2f1e17086f207f306387b51a00aece4ca47ebdda30fe159"
+      },
+      {
+        "path": "state/ordinary-small-polish-anti-loop.json",
+        "sha256": "75a30aa83591b520d0930b12671f371fc3b1557d9a9655ce98950a4fbe3c64cf"
+      },
+      {
+        "path": "state/overlapping-dependent-ownership.json",
+        "sha256": "5bd4cd3ffa0a9658bf7dcfa005187c04350964a06fe74ff5bf973ce8264a3065"
+      },
+      {
+        "path": "state/protected-product-ambiguity.json",
+        "sha256": "515f400df79c0b3ddf20877055986592b4b0e4404c391ca86b3fcdb88db843a4"
+      },
+      {
+        "path": "state/unrelated-active-change.json",
+        "sha256": "d86d2019bb6618f541c031694dca48a40074608f64b8465b7b378fce6d1fc0d7"
+      }
+    ]
+  },
+  "mode": "configured-diagnostic",
+  "privacyRedactions": {
+    "authorizationHeader": 0,
+    "credentialName": 1,
+    "providerPrefix": 0,
+    "sensitiveAssignment": 0
+  },
+  "proof": {
+    "argv": [
+      "node",
+      "check-decision.ts",
+      "dependent-inventory-sweep"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"caseId\":\"dependent-inventory-sweep\",\"correctedReviewCount\":1,\"incidentId\":\"fi-dependent-inventory-sweep-r1\",\"initialReviewCount\":1,\"ownerAgent\":\"foundation-integrity-reviewer\",\"recoverySkillCount\":1,\"reproductionDisposition\":\"confirmed\",\"terminalRows\":[{\"memberId\":\"dependent-versus-unrelated-active-changes\",\"status\":\"supported\"}],\"terminalState\":\"closed\",\"artifactRows\":[{\"artifactId\":\"active-change-inventory\",\"path\":\"state/dependent-inventory-sweep.json\",\"stateSha256\":\"3b0b8c24b9a65899081cfa229bbe975adb00e486dd6ee57ba2f73b71e465014a\"},{\"artifactId\":\"archived-result\",\"path\":\"state/archive-record.json\",\"stateSha256\":\"f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e\"},{\"artifactId\":\"unrelated-active-change\",\"path\":\"state/unrelated-active-change.json\",\"stateSha256\":\"e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c\"}]}\n"
+  },
+  "providerRequestCount": 1,
+  "requestSha256": "277f55846a5602d99852c5b6f347890febcfb5b5daba1ef998b7bebcf1326e5a",
+  "runtimeErrors": [],
+  "scenarioDigest": "ac6105b6482ae2481669b80a11e37f813e7f08dc5999de09500a1e04d4130592",
+  "scenarioId": "dependent-inventory-sweep",
+  "schemaVersion": 1,
+  "server": {
+    "signal": null,
+    "status": 1,
+    "stderr": "timestamp=2026-08-27T00:06:42.303Z level=INFO run=d492aa28 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-27T00:06:42.308Z level=INFO run=d492aa28 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-27T00:06:42.309Z level=INFO run=d492aa28 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-27T00:06:42.612Z level=INFO run=d492aa28 message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-27T00:06:42.613Z level=INFO run=d492aa28 message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-27T00:06:42.632Z level=INFO run=d492aa28 message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-27T00:06:42.651Z level=INFO run=d492aa28 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-27T00:06:42.652Z level=INFO run=d492aa28 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-27T00:06:42.653Z level=INFO run=d492aa28 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-27T00:06:42.704Z level=INFO run=d492aa28 message=loading path=\"<kit-root>\\\\global\\\\opencode.json\"\ntimestamp=2026-08-27T00:06:42.997Z level=INFO run=d492aa28 message=loading path=\"<kit-root>\\\\global\\\\opencode.jsonc\"\ntimestamp=2026-08-27T00:06:43.142Z level=INFO run=d492aa28 message=\"all LSPs are disabled\"\ntimestamp=2026-08-27T00:06:43.144Z level=INFO run=d492aa28 message=\"all formatters are disabled\"\ntimestamp=2026-08-27T00:06:43.144Z level=INFO run=d492aa28 message=init\ntimestamp=2026-08-27T00:06:43.308Z level=INFO run=d492aa28 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-27T00:06:43.311Z level=INFO run=d492aa28 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-27T00:06:43.652Z level=INFO run=d492aa28 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-27T00:06:45.848Z level=INFO run=d492aa28 message=created id=ses_fbf759ea7ffentxLeJY3SWwQl0 slug=swift-tiger version=1.18.23 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn/fixture workspaceID=undefined parentID=undefined title=consumer-outcome-diagnostic-dependent-inventory-sweep agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787789205848 time.updated=1787789205848\ntimestamp=2026-08-27T00:06:45.936Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=0\ntimestamp=2026-08-27T00:06:45.965Z level=INFO run=d492aa28 message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-27T00:06:46.048Z level=WARN run=d492aa28 message=\"server unavailable\" key=graphify-global type=remote status=failed\ntimestamp=2026-08-27T00:06:49.514Z level=INFO run=d492aa28 message=init count=33\ntimestamp=2026-08-27T00:06:49.619Z level=INFO run=d492aa28 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-27T00:06:49.620Z level=INFO run=d492aa28 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-27T00:06:49.844Z level=INFO run=d492aa28 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-27T00:06:49.858Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408a61b5001tz72S2aR6fP0sK\ntimestamp=2026-08-27T00:06:49.860Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:06:49.879Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:06:55.238Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\cases\\\\dependent-inventory-sweep.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:06:55.275Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\cases\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:06:55.306Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=1\ntimestamp=2026-08-27T00:06:55.339Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408a864d00167Q5NmXG6fpWqG\ntimestamp=2026-08-27T00:06:55.340Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:06:55.352Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:07:11.651Z level=INFO run=d492aa28 message=evaluated permission=task pattern=foundation-integrity-reviewer action.permission=task action.pattern=foundation-integrity-reviewer action.action=allow\ntimestamp=2026-08-27T00:07:11.653Z level=INFO run=d492aa28 message=created id=ses_fbf7539daffeVB7xC52H4BZtoB slug=mighty-comet version=1.18.23 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn/fixture workspaceID=undefined parentID=ses_fbf759ea7ffentxLeJY3SWwQl0 title=\"Review dependent inventory mismatch (@foundation-integrity-reviewer subagent)\" agent=foundation-integrity-reviewer model=undefined metadata=undefined permission=[] cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787789231653 time.updated=1787789231653\ntimestamp=2026-08-27T00:07:11.687Z level=INFO run=d492aa28 message=loop session.id=ses_fbf7539daffeVB7xC52H4BZtoB step=0\ntimestamp=2026-08-27T00:07:11.730Z level=INFO run=d492aa28 message=process session.id=ses_fbf7539daffeVB7xC52H4BZtoB messageID=msg_0408ac648001vONDf45DwfndfH\ntimestamp=2026-08-27T00:07:11.731Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf7539daffeVB7xC52H4BZtoB small=false agent=foundation-integrity-reviewer mode=subagent\ntimestamp=2026-08-27T00:07:11.743Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:07:18.646Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\cases\\\\dependent-inventory-sweep.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:07:18.665Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:07:18.668Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\archive-record.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:07:18.669Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\unrelated-active-change.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:07:18.698Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\cases\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:07:18.699Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:07:18.727Z level=INFO run=d492aa28 message=loop session.id=ses_fbf7539daffeVB7xC52H4BZtoB step=1\ntimestamp=2026-08-27T00:07:18.736Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\"\ntimestamp=2026-08-27T00:07:18.736Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\"\ntimestamp=2026-08-27T00:07:18.770Z level=INFO run=d492aa28 message=process session.id=ses_fbf7539daffeVB7xC52H4BZtoB messageID=msg_0408ae1c8001M2r4s96enVNGdq\ntimestamp=2026-08-27T00:07:18.771Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf7539daffeVB7xC52H4BZtoB small=false agent=foundation-integrity-reviewer mode=subagent\ntimestamp=2026-08-27T00:07:18.773Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:08:45.969Z level=INFO run=d492aa28 message=loop session.id=ses_fbf7539daffeVB7xC52H4BZtoB step=2\ntimestamp=2026-08-27T00:08:45.971Z level=INFO run=d492aa28 message=\"exiting loop\" session.id=ses_fbf7539daffeVB7xC52H4BZtoB\ntimestamp=2026-08-27T00:08:45.991Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=2\ntimestamp=2026-08-27T00:08:46.039Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408c36ab001wejJP1eWuN9EvP\ntimestamp=2026-08-27T00:08:46.040Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:08:46.050Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:08:52.319Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:08:52.320Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\archive-record.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:08:52.321Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\unrelated-active-change.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:08:52.347Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:08:52.348Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\"\ntimestamp=2026-08-27T00:08:52.373Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=3\ntimestamp=2026-08-27T00:08:52.384Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\"\ntimestamp=2026-08-27T00:08:52.417Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408c4f97001MJ04y7ByiXJMmw\ntimestamp=2026-08-27T00:08:52.418Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:08:52.420Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:08:56.165Z level=INFO run=d492aa28 message=evaluated permission=skill pattern=foundation-integrity-recovery action.permission=skill action.pattern=foundation-integrity-recovery action.action=allow\ntimestamp=2026-08-27T00:08:56.243Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=4\ntimestamp=2026-08-27T00:08:56.272Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408c5eb5001ujvYXrHV69s474\ntimestamp=2026-08-27T00:08:56.273Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:08:56.284Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:09:09.890Z level=INFO run=d492aa28 message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn/fixture/state/dependent-inventory-sweep.json action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:09:09.892Z level=INFO run=d492aa28 message=formatting file=\"<proof-root>\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:09:09.893Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:09:09.946Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=5\ntimestamp=2026-08-27T00:09:09.968Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408c943c001d0BVfCSLAxEdKU\ntimestamp=2026-08-27T00:09:09.969Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:09:09.986Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:09:26.615Z level=INFO run=d492aa28 message=evaluated permission=task pattern=foundation-integrity-reviewer action.permission=task action.pattern=foundation-integrity-reviewer action.action=allow\ntimestamp=2026-08-27T00:09:26.616Z level=INFO run=d492aa28 message=created id=ses_fbf732aa7ffepTxIYh5SmP6f0g slug=eager-river version=1.18.23 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn/fixture workspaceID=undefined parentID=ses_fbf759ea7ffentxLeJY3SWwQl0 title=\"Review corrected inventory (@foundation-integrity-reviewer subagent)\" agent=foundation-integrity-reviewer model=undefined metadata=undefined permission=[] cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787789366616 time.updated=1787789366616\ntimestamp=2026-08-27T00:09:26.638Z level=INFO run=d492aa28 message=loop session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g step=0\ntimestamp=2026-08-27T00:09:26.673Z level=INFO run=d492aa28 message=process session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g messageID=msg_0408cd570001DPyUKX3E9bpOg0\ntimestamp=2026-08-27T00:09:26.675Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g small=false agent=foundation-integrity-reviewer mode=subagent\ntimestamp=2026-08-27T00:09:26.677Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:09:33.962Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\cases\\\\dependent-inventory-sweep.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:09:33.963Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:09:33.964Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\archive-record.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:09:33.964Z level=INFO run=d492aa28 message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn\\\\fixture\\\\state\\\\unrelated-active-change.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:09:33.994Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\cases\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:09:33.995Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\dependent-inventory-sweep.json\"\ntimestamp=2026-08-27T00:09:33.995Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\"\ntimestamp=2026-08-27T00:09:34.017Z level=INFO run=d492aa28 message=loop session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g step=1\ntimestamp=2026-08-27T00:09:34.026Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\"\ntimestamp=2026-08-27T00:09:34.052Z level=INFO run=d492aa28 message=process session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g messageID=msg_0408cf242001a8Ki88EfB7iank\ntimestamp=2026-08-27T00:09:34.053Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g small=false agent=foundation-integrity-reviewer mode=subagent\ntimestamp=2026-08-27T00:09:34.057Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:11:26.011Z level=INFO run=d492aa28 message=loop session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g step=2\ntimestamp=2026-08-27T00:11:26.014Z level=INFO run=d492aa28 message=\"exiting loop\" session.id=ses_fbf732aa7ffepTxIYh5SmP6f0g\ntimestamp=2026-08-27T00:11:26.027Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=6\ntimestamp=2026-08-27T00:11:26.063Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408ea7cd001FognAcixbcrxmb\ntimestamp=2026-08-27T00:11:26.064Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:11:26.075Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:11:35.781Z level=INFO run=d492aa28 message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-dependent-inventory-sweep-fGV6Dn/fixture/decision.json action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-27T00:11:35.788Z level=INFO run=d492aa28 message=formatting file=\"<proof-root>\\\\fixture\\\\decision.json\"\ntimestamp=2026-08-27T00:11:35.788Z level=INFO run=d492aa28 message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\decision.json\"\ntimestamp=2026-08-27T00:11:35.850Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=7\ntimestamp=2026-08-27T00:11:35.864Z level=INFO run=d492aa28 message=process session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 messageID=msg_0408ece2c0015BgWLSGZBtZ9j2\ntimestamp=2026-08-27T00:11:35.865Z level=INFO run=d492aa28 message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 small=false agent=build mode=primary\ntimestamp=2026-08-27T00:11:35.868Z level=INFO run=d492aa28 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-27T00:11:43.421Z level=INFO run=d492aa28 message=loop session.id=ses_fbf759ea7ffentxLeJY3SWwQl0 step=8\ntimestamp=2026-08-27T00:11:43.423Z level=INFO run=d492aa28 message=\"exiting loop\" session.id=ses_fbf759ea7ffentxLeJY3SWwQl0\ntimestamp=2026-08-27T00:11:43.488Z level=INFO run=d492aa28 message=\"removing share\" sessionID=ses_fbf7539daffeVB7xC52H4BZtoB\ntimestamp=2026-08-27T00:11:43.493Z level=INFO run=d492aa28 message=\"removing share\" sessionID=ses_fbf732aa7ffepTxIYh5SmP6f0g\ntimestamp=2026-08-27T00:11:43.495Z level=INFO run=d492aa28 message=\"removing share\" sessionID=ses_fbf759ea7ffentxLeJY3SWwQl0\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:56685\n"
+  },
+  "session": {
+    "cleanup": {
+      "error": null,
+      "sessionsRemoved": true
+    },
+    "latestAssistant": {
+      "agent": "build",
+      "error": null,
+      "finish": "stop",
+      "modelID": "gpt-5.6-sol",
+      "providerID": "openai",
+      "summary": false,
+      "text": "Outcome: working\n\n- Corrected `state/dependent-inventory-sweep.json` exactly to `facts.correctedState`.\n- Preserved archive and unrelated artifacts.\n- Completed one initial and one corrected owner review.\n- Wrote `decision.json` with incident `fi-dependent-inventory-sweep-r1`, status `supported`, and terminal state `closed`."
+    },
+    "messages": {
+      "assistant": [
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "I’ll inspect the case manifest first, then restrict all further reads and writes to its named artifact paths and the required `decision.json`."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "The manifest names a current identity mismatch and both the foundation-integrity owner and recovery skill are available. I’m invoking the read-only owner on only the manifest and its three artifact paths before any correction."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "The owner found an exact-path contradiction in the dependent inventory and excluded the archive and unrelated active artifact from the sweep. I’ll independently reproduce those facts from the three allowed artifacts before loading recovery."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "Independent reproduction confirms the dependent file alone carries the invalid current identity; the archive is explicitly immutable historical evidence and the other active file is unrelated. I’m loading the available recovery procedure now, then will apply its exact correction and terminal-record rules."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "Recovery admission is confirmed with no protected choice: `dependent-inventory-sweep.json` is `dependent-rebind`; `archive-record.json` and `unrelated-active-change.json` are `not-dependent`. I’ll serialize the sole correction by replacing that file with the manifest’s exact `facts.correctedState`, leaving both excluded artifacts untouched."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "stop",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "Outcome: working\n\n- Corrected `state/dependent-inventory-sweep.json` exactly to `facts.correctedState`.\n- Preserved archive and unrelated artifacts.\n- Completed one initial and one corrected owner review.\n- Wrote `decision.json` with incident `fi-dependent-inventory-sweep-r1`, status `supported`, and terminal state `closed`."
+        }
+      ],
+      "toolCalls": [
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "skill",
+          "status": "completed"
+        },
+        {
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ]
+    },
+    "response": "Outcome: working\n\n- Corrected `state/dependent-inventory-sweep.json` exactly to `facts.correctedState`.\n- Preserved archive and unrelated artifacts.\n- Completed one initial and one corrected owner review.\n- Wrote `decision.json` with incident `fi-dependent-inventory-sweep-r1`, status `supported`, and terminal state `closed`.",
+    "sessionID": "<session>"
+  },
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "bd42a5fac7f18d0f123765a2c041d8505ecbb99db889602db713a0fc24c05ad5",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "af28e8b17db3061639f949f723d1e61941a7a91219b7a06a2884c3a5c64a7078"
+      },
+      {
+        "path": "global/agents/code-quality-reviewer.md",
+        "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+      },
+      {
+        "path": "global/agents/deployment-config-reviewer.md",
+        "sha256": "54d66775f3a978eb66b94183eca61635463244a861c0db4be73be4bfff37552e"
+      },
+      {
+        "path": "global/agents/evidence-sufficiency-reviewer.md",
+        "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+      },
+      {
+        "path": "global/agents/execution-safety-reviewer.md",
+        "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/foundation-integrity-reviewer.md",
+        "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+      },
+      {
+        "path": "global/agents/implementation-worker.md",
+        "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+      },
+      {
+        "path": "global/agents/instruction-artifact-reviewer.md",
+        "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+      },
+      {
+        "path": "global/agents/legacy-client-compatibility-reviewer.md",
+        "sha256": "55925ce569db3f564c02e7b1c42a2893ce5943fe9175908bd3803a784dd8b16b"
+      },
+      {
+        "path": "global/agents/legacy-evidence-reviewer.md",
+        "sha256": "cdbd2b4b35a3a302901f6c6779ce893a7c505d71b6c4dc0174f60b495b22a647"
+      },
+      {
+        "path": "global/agents/openspec-architecture-reviewer.md",
+        "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+      },
+      {
+        "path": "global/agents/performance-reliability-reviewer.md",
+        "sha256": "823f6467a59c292cde98c581fb9aeeabb0b698c7ff361e53ed1da5db342aa98d"
+      },
+      {
+        "path": "global/agents/protocol-api-reviewer.md",
+        "sha256": "b4829759470a0a846d0d1c5153dbe67a11138da40f928efc6634c140658a347a"
+      },
+      {
+        "path": "global/agents/qwen-local-worker.md",
+        "sha256": "30338fb50ac2f281f8212e4b5bf1a7421142af46f472e805c91c00f6e76e99f5"
+      },
+      {
+        "path": "global/agents/rust-concurrency-reviewer.md",
+        "sha256": "541ae915ea26bce493f3c187603d52c0025754925ca495b053b0b9daf1c7eddb"
+      },
+      {
+        "path": "global/agents/sdet-quality-engineer.md",
+        "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+      },
+      {
+        "path": "global/agents/session-completion-arbiter.md",
+        "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+      },
+      {
+        "path": "global/agents/test-coverage-reviewer.md",
+        "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+      },
+      {
+        "path": "global/agents/troubleshooter.md",
+        "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+      },
+      {
+        "path": "global/agents/wire-protocol-reviewer.md",
+        "sha256": "c9ea68a5ff742eeed362efc7da44be21a470723c9225aad0f15285f47f97f3f4"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+        "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/code-quality-audit/SKILL.md",
+        "sha256": "08b4a38293e2b563d49919bc7af874ef98f9b4352098ba211f091ca381c50f66"
+      },
+      {
+        "path": "global/skills/codebase-audit-ledger/SKILL.md",
+        "sha256": "d41b7b8e3169b0e868691110dda8bc6f24ef2f7e5e02633da315cfec8f3530cb"
+      },
+      {
+        "path": "global/skills/codebase-audit-loop/SKILL.md",
+        "sha256": "d5d33438b85da793c460d4262f347cf1878e52da4a1e0e6cc9fa8924159cfaaa"
+      },
+      {
+        "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+        "sha256": "0cb550ef238ca167249073f7cbe5e823c77c305ba6b7dd91c9455fc3e3e297d5"
+      },
+      {
+        "path": "global/skills/complain/SKILL.md",
+        "sha256": "6f3a6173833fa1bcba095fda7343158e9732e7bd730d9b486d5a1a0547bf13fe"
+      },
+      {
+        "path": "global/skills/config-schema-validation/SKILL.md",
+        "sha256": "0ef7131ff695d4cf468a1ea9c35fa9844d105f8ab534465fd23180741ed4c78e"
+      },
+      {
+        "path": "global/skills/deduplication-audit/SKILL.md",
+        "sha256": "467f0326f8f29197e425aff37aed7b93d82e8d309281f812049769bcd6ea30b8"
+      },
+      {
+        "path": "global/skills/deep-task-planning/SKILL.md",
+        "sha256": "e49c1f653a39ebd17e9c02be3b4738c6ebaa2f1c5120e6010e1e67d7621f6b26"
+      },
+      {
+        "path": "global/skills/documentation-block-ledger/SKILL.md",
+        "sha256": "5e0b4b44e1f422c981bce9714db731963df4a8ef6364b65c5220644795ec4f52"
+      },
+      {
+        "path": "global/skills/documentation-hardening-loop/SKILL.md",
+        "sha256": "14891d79c85f6e5e23a28e65d2c509343020955bd1876a2c2642eafd2ed07d08"
+      },
+      {
+        "path": "global/skills/documentation-learning-quest/SKILL.md",
+        "sha256": "d419818a10b32f530679206c6fad6efc9ca18afd3539bb047a84815ecd81d1f3"
+      },
+      {
+        "path": "global/skills/external-service-simulator-harness/SKILL.md",
+        "sha256": "3ac53a6a18ad5aded3b8b429a8dbf1d3f3d8ea01e9a4cb931ffcca3aa3783758"
+      },
+      {
+        "path": "global/skills/foundation-integrity-recovery/SKILL.md",
+        "sha256": "26a58da4e1c4d58ca4aaa269cfb525113ea46dc70755e61c0cf9fa900ada37f7"
+      },
+      {
+        "path": "global/skills/framed-protocol-implementation/SKILL.md",
+        "sha256": "4aa6c7e67074f5080d5582ead8e08588192ed92ef1a76a24bdfde32758139a6d"
+      },
+      {
+        "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+        "sha256": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35"
+      },
+      {
+        "path": "global/skills/latency-benchmark-pack/SKILL.md",
+        "sha256": "1e7c5c92c59452c8a01742c0fb15a9dd2497b9766d04af63d40af2c1c47c1a5e"
+      },
+      {
+        "path": "global/skills/legacy-contract-extract/SKILL.md",
+        "sha256": "c0d4be024cd7689f1274898e2520035152ef66980c55291886d238d7316515dd"
+      },
+      {
+        "path": "global/skills/merge-request-author/SKILL.md",
+        "sha256": "559352f4043b24a3cdb22c230d055daa560e0add346e97d391c5c23dddbe9578"
+      },
+      {
+        "path": "global/skills/next-step/SKILL.md",
+        "sha256": "21f4ed8cf6b7568b8a2aa0cef9c20e8cf05dae4b914c1319573f867cc4f7c9d7"
+      },
+      {
+        "path": "global/skills/openspec-abandon-change/SKILL.md",
+        "sha256": "bd578db2fd0d0c33c097385736e04a7ce57d0b5c261e869db6883498cb25fd05"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+      },
+      {
+        "path": "global/skills/openspec-archive-change/SKILL.md",
+        "sha256": "47aeaafed696932f8eb1ea798decdd56c3b0b5db41236f24981fe4a14aa40bfd"
+      },
+      {
+        "path": "global/skills/openspec-consistency-review/SKILL.md",
+        "sha256": "346ff1e00d066996968c9365a04eae6852f4f7a301a841e74d512225b8806aad"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+      },
+      {
+        "path": "global/skills/reuse-discovery/SKILL.md",
+        "sha256": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4"
+      },
+      {
+        "path": "global/skills/root-cause-analysis/SKILL.md",
+        "sha256": "08cbc0dc60bea43b0b0425e2d03d65da381f593f65e4b4b2c8b779e63390e3ca"
+      },
+      {
+        "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+        "sha256": "798e2cc252fdfce2a7ea034f57f65f04a42e0290a5248d48e857853a63ad19c1"
+      },
+      {
+        "path": "global/skills/service-architecture-design/SKILL.md",
+        "sha256": "8b811eb0036a9fce52535b49a571492767d4391d93c31ca759fee0b640b86093"
+      },
+      {
+        "path": "global/skills/windows-service-packaging/SKILL.md",
+        "sha256": "639ff92ffd85386bafc94ab7b63c9935c9ba1290b6137c14c525fa682bd9c64e"
+      },
+      {
+        "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+        "sha256": "bd8c4df9fe9f35069cdd40d5b34974407a2d3cc30d755d1fc7ce4b2eef2a5e47"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  },
+  "terminalClassification": "completed-observation",
+  "validation": {
+    "argv": [
+      "node",
+      "--check",
+      "check-decision.ts"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": ""
+  }
+}

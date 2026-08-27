@@ -1,0 +1,333 @@
+{
+  "byteLength": 46803,
+  "comparisonIdentity": "b20e3e46c0e02f3d8e21af6cce8249962e8250317758402d0138dee3a7c41839",
+  "evaluatorDigest": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-coherent-wrong-outcome-1",
+          "Read only case.json and candidate.md. Apply the loaded main planning-readiness and Practice Owner routing used by propose; do not invoke a command or skill and do not infer an absent contract from this request. If loaded instructions do not define a bounded-falsification episode, copy baselineDecision exactly to decision.json and leave candidate.md unchanged. Otherwise launch only implementation-readiness-reviewer once. Supply the child only originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, the current local envelope, six attack classes, and read-only boundaries; do not supply candidateDecision or correctedArtifact. Main then independently reproduces any complete current material row. Only if the represented mismatch is confirmed, replace candidate.md exactly with correctedArtifact and copy candidateDecision exactly to decision.json. Do not write candidateDecision before the artifact correction is complete. Do not ask questions, use another reviewer, access external directories or credentials, install, commit, or perform remote, destructive, product, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787799267006,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04123e6b7001kUefR3X4Lbpr5S\",\"messageID\":\"msg_04123d155001yRllZ200KzAioq\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787799270652,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04123eb1c0012juuBtNjMDsTB5\",\"messageID\":\"msg_04123d155001yRllZ200KzAioq\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"text\",\"text\":\"I will inspect only `case.json` and `candidate.md`, then apply the loaded bounded readiness challenge exactly within the stated read-only review envelope.\",\"time\":{\"start\":1787799268124,\"end\":1787799270611},\"metadata\":{\"openai\":{\"itemId\":\"msg_039a41f6f084c653016a8fa6e5d43c87d29fe5d9f0d7ccaac0\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787799270689,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_RkaKNi14lWf8FMig5hFxn4d7\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\case.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\case.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"schemaVersion\\\": 1,\\n3:   \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n4:   \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n5:   \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n6:   \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n7:   \\\"originalAcceptedRequest\\\": \\\"Produce a migration plan whose observable result is a JSON export accepted by the existing importer.\\\",\\n8:   \\\"successBoundary\\\": \\\"The existing importer accepts the produced JSON without translation.\\\",\\n9:   \\\"candidateArtifact\\\": \\\"The candidate is internally coherent but plans a CSV export and validates only CSV syntax.\\\",\\n10:   \\\"representedRisk\\\": \\\"All planned tasks can pass while the requested importer still rejects the result.\\\",\\n11:   \\\"initialCandidateArtifact\\\": \\\"# Migration Plan\\\\n\\\\n- Produce a CSV export.\\\\n- Validate CSV syntax.\\\\n\\\",\\n12:   \\\"correctedArtifact\\\": \\\"# Migration Plan\\\\n\\\\n- Produce a JSON export.\\\\n- Validate the export with the existing importer without translation.\\\\n\\\",\\n13:   \\\"baselineDecision\\\": {\\n14:     \\\"attackClasses\\\": [\\n15:       \\\"coherent-wrong-outcome:unknown\\\",\\n16:       \\\"silent-owner-decision:unknown\\\",\\n17:       \\\"missing-observable-oracle:unknown\\\",\\n18:       \\\"late-implementation-invalidation:unknown\\\",\\n19:       \\\"internal-contradiction:unknown\\\",\\n20:       \\\"unnecessary-scope:unknown\\\"\\n21:     ],\\n22:     \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n23:     \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n24:     \\\"challengeCount\\\": 0,\\n25:     \\\"correctionRef\\\": \\\"none\\\",\\n26:     \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n27:     \\\"effectiveModel\\\": \\\"none\\\",\\n28:     \\\"exactOwnerAgent\\\": \\\"none\\\",\\n29:     \\\"invalidatedSurfaces\\\": [],\\n30:     \\\"mainDispositions\\\": [],\\n31:     \\\"materialFindings\\\": [],\\n32:     \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n33:     \\\"reviewerAgent\\\": \\\"none\\\",\\n34:     \\\"reviewerLaunchCount\\\": 0,\\n35:     \\\"reviewerSessionRef\\\": \\\"none\\\",\\n36:     \\\"semanticReadiness\\\": \\\"unknown\\\",\\n37:     \\\"structuralReadiness\\\": \\\"passed\\\",\\n38:     \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n39:     \\\"terminalState\\\": \\\"unknown\\\"\\n40:   },\\n41:   \\\"candidateDecision\\\": {\\n42:     \\\"attackClasses\\\": [\\n43:       \\\"coherent-wrong-outcome:attempted\\\",\\n44:       \\\"silent-owner-decision:attempted\\\",\\n45:       \\\"missing-observable-oracle:attempted\\\",\\n46:       \\\"late-implementation-invalidation:attempted\\\",\\n47:       \\\"internal-contradiction:attempted\\\",\\n48:       \\\"unnecessary-scope:attempted\\\"\\n49:     ],\\n50:     \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n51:     \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n52:     \\\"challengeCount\\\": 1,\\n53:     \\\"correctionRef\\\": \\\"coherent-wrong-outcome-correction-r1\\\",\\n54:     \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n55:     \\\"effectiveModel\\\": \\\"xai/grok-4.6\\\",\\n56:     \\\"exactOwnerAgent\\\": \\\"none\\\",\\n57:     \\\"invalidatedSurfaces\\\": [\\n58:       \\\"accepted-outcome\\\",\\n59:       \\\"observable-proof\\\"\\n60:     ],\\n61:     \\\"mainDispositions\\\": [\\n62:       \\\"BFR-001:confirmed\\\"\\n63:     ],\\n64:     \\\"materialFindings\\\": [\\n65:       \\\"BFR-001\\\"\\n66:     ],\\n67:     \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n68:     \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n69:     \\\"reviewerLaunchCount\\\": 1,\\n70:     \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r2\\\",\\n71:     \\\"semanticReadiness\\\": \\\"ready\\\",\\n72:     \\\"structuralReadiness\\\": \\\"passed\\\",\\n73:     \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n74:     \\\"terminalState\\\": \\\"closed\\\"\\n75:   }\\n76: }\\n\\n(End of file - total 76 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"schemaVersion\\\": 1,\\n  \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n  \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n  \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n  \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n  \\\"originalAcceptedRequest\\\": \\\"Produce a migration plan whose observable result is a JSON export accepted by the existing importer.\\\",\\n  \\\"successBoundary\\\": \\\"The existing importer accepts the produced JSON without translation.\\\",\\n  \\\"candidateArtifact\\\": \\\"The candidate is internally coherent but plans a CSV export and validates only CSV syntax.\\\",\\n  \\\"representedRisk\\\": \\\"All planned tasks can pass while the requested importer still rejects the result.\\\",\\n  \\\"initialCandidateArtifact\\\": \\\"# Migration Plan\\\\n\\\\n- Produce a CSV export.\\\\n- Validate CSV syntax.\\\\n\\\",\\n  \\\"correctedArtifact\\\": \\\"# Migration Plan\\\\n\\\\n- Produce a JSON export.\\\\n- Validate the export with the existing importer without translation.\\\\n\\\",\\n  \\\"baselineDecision\\\": {\\n    \\\"attackClasses\\\": [\\n      \\\"coherent-wrong-outcome:unknown\\\",\\n      \\\"silent-owner-decision:unknown\\\",\\n      \\\"missing-observable-oracle:unknown\\\",\\n      \\\"late-implementation-invalidation:unknown\\\",\\n      \\\"internal-contradiction:unknown\\\",\\n      \\\"unnecessary-scope:unknown\\\"\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\case.json\",\"text\":\"{\\n  \\\"schemaVersion\\\": 1,\\n  \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n  \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n  \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n  \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n  \\\"originalAcceptedRequest\\\": \\\"Produce a migration plan whose observable result is a JSON export accepted by the existing importer.\\\",\\n  \\\"successBoundary\\\": \\\"The existing importer accepts the produced JSON without translation.\\\",\\n  \\\"candidateArtifact\\\": \\\"The candidate is internally coherent but plans a CSV export and validates only CSV syntax.\\\",\\n  \\\"representedRisk\\\": \\\"All planned tasks can pass while the requested importer still rejects the result.\\\",\\n  \\\"initialCandidateArtifact\\\": \\\"# Migration Plan\\\\n\\\\n- Produce a CSV export.\\\\n- Validate CSV syntax.\\\\n\\\",\\n  \\\"correctedArtifact\\\": \\\"# Migration Plan\\\\n\\\\n- Produce a JSON export.\\\\n- Validate the export with the existing importer without translation.\\\\n\\\",\\n  \\\"baselineDecision\\\": {\\n    \\\"attackClasses\\\": [\\n      \\\"coherent-wrong-outcome:unknown\\\",\\n      \\\"silent-owner-decision:unknown\\\",\\n      \\\"missing-observable-oracle:unknown\\\",\\n      \\\"late-implementation-invalidation:unknown\\\",\\n      \\\"internal-contradiction:unknown\\\",\\n      \\\"unnecessary-scope:unknown\\\"\\n    ],\\n    \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n    \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n    \\\"challengeCount\\\": 0,\\n    \\\"correctionRef\\\": \\\"none\\\",\\n    \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n    \\\"effectiveModel\\\": \\\"none\\\",\\n    \\\"exactOwnerAgent\\\": \\\"none\\\",\\n    \\\"invalidatedSurfaces\\\": [],\\n    \\\"mainDispositions\\\": [],\\n    \\\"materialFindings\\\": [],\\n    \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n    \\\"reviewerAgent\\\": \\\"none\\\",\\n    \\\"reviewerLaunchCount\\\": 0,\\n    \\\"reviewerSessionRef\\\": \\\"none\\\",\\n    \\\"semanticReadiness\\\": \\\"unknown\\\",\\n    \\\"structuralReadiness\\\": \\\"passed\\\",\\n    \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n    \\\"terminalState\\\": \\\"unknown\\\"\\n  },\\n  \\\"candidateDecision\\\": {\\n    \\\"attackClasses\\\": [\\n      \\\"coherent-wrong-outcome:attempted\\\",\\n      \\\"silent-owner-decision:attempted\\\",\\n      \\\"missing-observable-oracle:attempted\\\",\\n      \\\"late-implementation-invalidation:attempted\\\",\\n      \\\"internal-contradiction:attempted\\\",\\n      \\\"unnecessary-scope:attempted\\\"\\n    ],\\n    \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n    \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n    \\\"challengeCount\\\": 1,\\n    \\\"correctionRef\\\": \\\"coherent-wrong-outcome-correction-r1\\\",\\n    \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n    \\\"effectiveModel\\\": \\\"xai/grok-4.6\\\",\\n    \\\"exactOwnerAgent\\\": \\\"none\\\",\\n    \\\"invalidatedSurfaces\\\": [\\n      \\\"accepted-outcome\\\",\\n      \\\"observable-proof\\\"\\n    ],\\n    \\\"mainDispositions\\\": [\\n      \\\"BFR-001:confirmed\\\"\\n    ],\\n    \\\"materialFindings\\\": [\\n      \\\"BFR-001\\\"\\n    ],\\n    \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n    \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n    \\\"reviewerLaunchCount\\\": 1,\\n    \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r2\\\",\\n    \\\"semanticReadiness\\\": \\\"ready\\\",\\n    \\\"structuralReadiness\\\": \\\"passed\\\",\\n    \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n    \\\"terminalState\\\": \\\"closed\\\"\\n  }\\n}\",\"lineStart\":1,\"lineEnd\":76,\"totalLines\":76,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-coherent-wrong-outcome-y0lX5M\\\\fixture\\\\case.json\",\"time\":{\"start\":1787799270629,\"end\":1787799270684}},\"metadata\":{\"openai\":{\"itemId\":\"fc_039a41f6f084c653016a8fa6e848d487d28a9abbd3b085455d\"}},\"id\":\"prt_04123f4d800169S4VEiLm3iDjM\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"messageID\":\"msg_04123d155001yRllZ200KzAioq\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787799270730,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_cI9cFWCbNntfevfGD8LnxPwO\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\"},\"output\":\"<path><proof-root>\\\\fixture\\\\candidate.md</path>\\n<type>file</type>\\n<content>\\n1: # Migration Plan\\n2: \\n3: - Produce a CSV export.\\n4: - Validate CSV syntax.\\n\\n(End of file - total 4 lines)\\n</content>\",\"metadata\":{\"preview\":\"# Migration Plan\\n\\n- Produce a CSV export.\\n- Validate CSV syntax.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"text\":\"# Migration Plan\\n\\n- Produce a CSV export.\\n- Validate CSV syntax.\",\"lineStart\":1,\"lineEnd\":4,\"totalLines\":4,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-coherent-wrong-outcome-y0lX5M\\\\fixture\\\\candidate.md\",\"time\":{\"start\":1787799270641,\"end\":1787799270703}},\"metadata\":{\"openai\":{\"itemId\":\"fc_039a41f6f084c653016a8fa6e848e487d29018613dfbe141ef\"}},\"id\":\"prt_04123f4ea001yM687kAkbvTfXA\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"messageID\":\"msg_04123d155001yRllZ200KzAioq\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787799270731,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04123f5350014w8Mjxlaax31Ad\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04123d155001yRllZ200KzAioq\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-finish\",\"tokens\":{\"total\":14437,\"input\":14239,\"output\":154,\"reasoning\":44,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787799273225,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04123ff020013FCX7QeXYTVTqv\",\"messageID\":\"msg_04123f543001gSckN6HiS7Ygxa\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787799279130,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_041241594001P5TNeWctwpG3pU\",\"messageID\":\"msg_04123f543001gSckN6HiS7Ygxa\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"text\",\"text\":\"The loaded Practice Owner contract defines one bounded falsification episode. I found a direct represented mismatch between the requested importer-ready JSON outcome and the candidate’s CSV-only plan, so I am sending exactly that candidate surface to the sole permitted readiness reviewer.\",\"time\":{\"start\":1787799278996,\"end\":1787799279112},\"metadata\":{\"openai\":{\"itemId\":\"msg_0ad6ae80d59f8840016a8fa6f0aa4487d2ac8065b21c6c4713\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787799364660,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_EmGEnrFoFO4UrMAJoyQOuIoD\",\"state\":{\"status\":\"completed\",\"input\":{\"description\":\"Challenge migration readiness\",\"subagent_type\":\"implementation-readiness-reviewer\",\"prompt\":\"originalAcceptedRequest: Produce a migration plan whose observable result is a JSON export accepted by the existing importer.\\nsuccessBoundary: The existing importer accepts the produced JSON without translation.\\ncandidateArtifact: The candidate is internally coherent but plans a CSV export and validates only CSV syntax.\\nrepresentedRisk: All planned tasks can pass while the requested importer still rejects the result.\\ncurrent local envelope: One bounded semantic implementation-readiness challenge of the supplied candidate artifact before implementation; assess only the current migration-plan outcome and observable proof, with no implementation or external action.\\nsix attack classes: coherent-wrong-outcome; silent-owner-decision; missing-observable-oracle; late-implementation-invalidation; internal-contradiction; unnecessary-scope.\\nread-only boundaries: Read-only review. Do not access files, external directories, credentials, tools, commands, skills, or other agents. Do not mutate artifacts, write code or tests, ask the user questions, commit, install, perform remote or destructive action, or decide product/protected semantics. Return only current evidence-backed material readiness findings, or no-material-finding.\"},\"output\":\"<task id=\\\"ses_fbedbdb76ffe2pfdDIbsdUoQUO\\\" state=\\\"completed\\\">\\n<task_result>\\n**Candidate Reference / RC:** independently supplied pre-implementation candidate artifact: internally coherent plan for a CSV export validated only by CSV syntax (`pre-proof design consultation`)\\n\\n**Effective Model:** `xai/grok-4.6`\\n\\n**Practice Observation:** findings-reported\\n\\n**Falsification Matrix:**\\n- coherent-wrong-outcome -> attempted -> candidate completion is CSV export + CSV-syntax checks; original request and success boundary require a JSON export the existing importer accepts without translation. Admitted: `R-COWO-001`\\n- silent-owner-decision -> attempted -> export format and acceptance gate are already fixed by the independently supplied request/boundary (JSON, existing importer, no translation). No unresolved owner decision is required to see the miss. Admitted: none\\n- missing-observable-oracle -> attempted -> planned proof observes only CSV syntax, not “existing importer accepts produced JSON without translation.” All planned tasks can pass while that boundary remains unobserved. Admitted: `R-COWO-001`\\n- late-implementation-invalidation -> attempted -> no later envelope, identity, or dependency shift is specified; failure is present in the current planned outcome/proof, not a post-slice invalidation. Admitted: none\\n- internal-contradiction -> attempted -> candidate is described as internally coherent (CSV plan and CSV-syntax validation agree). Admitted: none\\n- unnecessary-scope -> attempted -> CSV is a substitute for the accepted JSON/importer outcome, not extra future/polish work on top of it. Admitted: none\\n\\n**Risk Matrix:**\\n- **Risk ID:** `R-COWO-001`\\n- **Requirement / invariant:** Produce a migration plan whose observable result is a JSON export the existing importer accepts without translation.\\n- **Reachable scenario and enforced envelope:** Current local envelope is this bounded semantic readiness challenge of the supplied migration-plan candidate (no implementation or external action). If the candidate is implemented as written, the working increment emits CSV and gates on CSV syntax only. That path is inside the current plan envelope and does not exercise JSON or the existing importer.\\n- **Path / line or live evidence:** Independently supplied original request: JSON export accepted by the existing importer. Independently supplied success boundary: existing importer accepts the produced JSON without translation. Independently supplied candidate: internally coherent CSV export; validates only CSV syntax. Represented current-envelope failure: all planned tasks can pass while the requested importer still rejects the result.\\n- **Business consequence:** A completed, internally green migration plan still fails the accepted outcome: the existing importer does not receive acceptable JSON, so migration data is not importable without a later translation the boundary forbids.\\n- **Likelihood:** high (candidate completion literally specifies a different artifact and a non-matching oracle)\\n- **Confidence:** high (literal mismatch between independently supplied request/boundary and candidate; candidate consistency is not task-fit evidence)\\n- **Reproduction procedure:** Compare the candidate’s planned deliverable and checks with the original request and success boundary without using candidate self-consistency. Observe planned output = CSV and planned validation = CSV syntax; observe required output = JSON and required check = existing importer acceptance without translation.\\n- **Smallest mitigation note:** Align the plan’s deliverable and proof to the accepted boundary: JSON export, and an observable check that the existing importer accepts that JSON without translation. Do not treat CSV-syntax success as the acceptance gate.\\n\\n**Readiness Matrix:**\\n- Problem / goal: JSON export accepted by the existing importer -> gap: candidate goal is CSV export\\n- Scope of next increment: JSON artifact the current importer can consume -> gap: scoped work is CSV production\\n- Non-goals: translation layer before import is outside the success boundary (“without translation”) -> evidence: boundary is explicit; candidate does not introduce a stated translation non-goal, it replaces the artifact\\n- Acceptance criteria / happy-path proof: existing importer accepts produced JSON -> gap: planned oracle is CSV syntax only\\n- Design decisions affecting current outcome / envelope / proof: export format and acceptance oracle -> gap: candidate silently substitutes CSV + CSV syntax for already-accepted JSON + importer acceptance\\n- Scenario-based observability in current envelope: importer-accepts-JSON is named and observable -> gap: that scenario is not in the candidate’s validation path\\n- Dependencies / migrations / compatibility / rollback: migration through existing importer -> gap: plan does not bind proof to that importer\\n- Source/context discoverability and project-native validation: not evidenced in the supplied candidate (review is artifact-only, no file/tool access)\\n- Profile: migration-plan outcome with an existing importer acceptance gate -> Material-leaning on the supplied request; Ordinary Small would still require the same JSON/importer happy path. Profile label does not repair the outcome miss\\n- Execution-ready brief / cold-context implementability: a cold implementer following the candidate would build and “prove” CSV, not the accepted JSON/importer result\\n- code-quality-reviewer gate: not applicable until a behavior candidate exists; unnecessary for this plan-only challenge\\n\\n**Evidence Gaps And Residual Risks:**\\n- No repository/importer source, schema, or live importer run was inspected (read-only artifact challenge; tools/files forbidden). That does not weaken `R-COWO-001`; the miss is literal against the independently supplied request and success boundary.\\n- Unresolved owner decision: none required to see the current miss.\\n- Missing proof boundary on the candidate: yes — no observable “existing importer accepts JSON without translation” gate.\\n- Effective model: `xai/grok-4.6` (known).\\n- Future-scope / polish: none blocking beyond `R-COWO-001`.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"sessionId\":\"ses_fbedbdb76ffe2pfdDIbsdUoQUO\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge migration readiness\",\"time\":{\"start\":1787799282829,\"end\":1787799364637}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0ad6ae80d59f8840016a8fa6f0bae087d29f7f4ad4b6ba0990\"}},\"id\":\"prt_04124160a001WH3VtpC89uXOvB\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"messageID\":\"msg_04123f543001gSckN6HiS7Ygxa\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787799364661,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_041256421001gcXgAKamRXJLY5\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04123f543001gSckN6HiS7Ygxa\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-finish\",\"tokens\":{\"total\":16056,\"input\":15547,\"output\":314,\"reasoning\":195,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787799368437,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_0412572ec001ie4yElAgpYk52r\",\"messageID\":\"msg_04125642c001AZPJXAm0riDnri\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787799373248,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125817f001ojDp8hPPHZfdkP\",\"messageID\":\"msg_04125642c001AZPJXAm0riDnri\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"text\",\"text\":\"The reviewer produced one complete material row, and I independently confirmed it from the supplied text: the candidate’s deliverable and oracle are CSV/CSV syntax, while the accepted outcome and success boundary explicitly require JSON accepted by the existing importer without translation. I will now replace `candidate.md` exactly with `correctedArtifact`, verify that correction, and only then write `candidateDecision` to `decision.json`.\",\"time\":{\"start\":1787799372159,\"end\":1787799373242},\"metadata\":{\"openai\":{\"itemId\":\"msg_07c7216f671e006c016a8fa74de22c87d2aa35c096f9308c2d\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787799375657,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_Y6NbBaH8NGngHiepNUFF6YQS\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\fixture\\\\candidate.md\\n@@\\n # Migration Plan\\n \\n-- Produce a CSV export.\\n-- Validate CSV syntax.\\n+- Produce a JSON export.\\n+- Validate the export with the existing importer without translation.\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-coherent-wrong-outcome-y0lX5M/fixture/candidate.md\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,4 +1,4 @@\\n # Migration Plan\\n \\n-- Produce a CSV export.\\n-- Validate CSV syntax.\\n+- Produce a JSON export.\\n+- Validate the export with the existing importer without translation.\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-coherent-wrong-outcome-y0lX5M/fixture/candidate.md\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,4 +1,4 @@\\n # Migration Plan\\n \\n-- Produce a CSV export.\\n-- Validate CSV syntax.\\n+- Produce a JSON export.\\n+- Validate the export with the existing importer without translation.\\n\",\"additions\":2,\"deletions\":2}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-coherent-wrong-outcome-y0lX5M/fixture/candidate.md\",\"time\":{\"start\":1787799375614,\"end\":1787799375636}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07c7216f671e006c016a8fa74efdfc87d294880cd5ff60fc37\"}},\"id\":\"prt_0412585bd001ngmMlUTBfMXiv1\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"messageID\":\"msg_04125642c001AZPJXAm0riDnri\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787799375657,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_041258f17001zkfZTeWO9a9KHf\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04125642c001AZPJXAm0riDnri\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-finish\",\"tokens\":{\"total\":17618,\"input\":2414,\"output\":196,\"reasoning\":160,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787799381510,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125a602001I7of3lV52f2H5c\",\"messageID\":\"msg_041258f22001s2iyb7hKzeqb1U\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787799382905,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_7FxNqbEVO2smRgA43Ci2TspW\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\"},\"output\":\"<path><proof-root>\\\\fixture\\\\candidate.md</path>\\n<type>file</type>\\n<content>\\n1: # Migration Plan\\n2: \\n3: - Produce a JSON export.\\n4: - Validate the export with the existing importer without translation.\\n\\n(End of file - total 4 lines)\\n</content>\",\"metadata\":{\"preview\":\"# Migration Plan\\n\\n- Produce a JSON export.\\n- Validate the export with the existing importer without translation.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"text\":\"# Migration Plan\\n\\n- Produce a JSON export.\\n- Validate the export with the existing importer without translation.\",\"lineStart\":1,\"lineEnd\":4,\"totalLines\":4,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-coherent-wrong-outcome-y0lX5M\\\\fixture\\\\candidate.md\",\"time\":{\"start\":1787799382867,\"end\":1787799382902}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e8d6d758ab9d043016a8fa7580ab087d28c23bd6d00dd72e8\"}},\"id\":\"prt_04125a933001O4uF9D4pfznzWj\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"messageID\":\"msg_041258f22001s2iyb7hKzeqb1U\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787799382951,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125ab950018PlWnXmkG45tjF\",\"reason\":\"tool-calls\",\"messageID\":\"msg_041258f22001s2iyb7hKzeqb1U\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-finish\",\"tokens\":{\"total\":17737,\"input\":772,\"output\":54,\"reasoning\":15,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787799385885,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125b717001u8CkJHgB4JkHZj\",\"messageID\":\"msg_04125aba0001EvdvUYp6ciRgm8\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787799394672,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_5p7i4mYujxDqPBb0okdA8sE2\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"coherent-wrong-outcome-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"accepted-outcome\\\",\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-001:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-001\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r2\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-coherent-wrong-outcome-y0lX5M/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"coherent-wrong-outcome-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"accepted-outcome\\\",\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-001:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-001\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r2\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-coherent-wrong-outcome-y0lX5M/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"coherent-wrong-outcome-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"coherent-wrong-outcome\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"coherent-wrong-outcome-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"accepted-output-format-and-success-boundary\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"accepted-outcome\\\",\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-001:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-001\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"coherent-wrong-outcome-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r2\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":35,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-coherent-wrong-outcome-y0lX5M/fixture/decision.json\",\"time\":{\"start\":1787799394655,\"end\":1787799394670}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0840dff64d5b9ea7016a8fa75c7dc087d2b9d808382755a8d8\"}},\"id\":\"prt_04125ba900018ARhKrl6HL2QeW\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"messageID\":\"msg_04125aba0001EvdvUYp6ciRgm8\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787799394730,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125d99b0011z59llP0s4g1nK\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04125aba0001EvdvUYp6ciRgm8\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-finish\",\"tokens\":{\"total\":18324,\"input\":943,\"output\":463,\"reasoning\":22,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787799397250,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125e37d001LfuuZgJE004P5C\",\"messageID\":\"msg_04125d9a2001cuF2cY7hAeTlE0\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787799401007,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125efe3001aoxI0i04H5qgOj\",\"messageID\":\"msg_04125d9a2001cuF2cY7hAeTlE0\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"text\",\"text\":\"Outcome: working\\n\\n- Launched `implementation-readiness-reviewer` exactly once.\\n- Independently confirmed the JSON/CSV outcome mismatch.\\n- Replaced `candidate.md` exactly with `correctedArtifact`.\\n- Wrote `candidateDecision` exactly to `decision.json` afterward.\",\"time\":{\"start\":1787799400419,\"end\":1787799401005},\"metadata\":{\"openai\":{\"itemId\":\"msg_0716052805c3844c016a8fa76a1b0487d2aad9e34869384e1c\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787799401090,\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"part\":{\"id\":\"prt_04125f276001xG0aD3zdRC6kmm\",\"reason\":\"stop\",\"messageID\":\"msg_04125d9a2001cuF2cY7hAeTlE0\",\"sessionID\":\"ses_fbedc3104ffeAQ9CQ4CXUSNAwL\",\"type\":\"step-finish\",\"tokens\":{\"total\":18578,\"input\":4550,\"output\":63,\"reasoning\":141,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "ca73f8e13eb2f5ce6d8159c7456c4636eeb7084ad5f7a59036616ac7c9d36a6b",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "3d50be5f007d5beb65e41870e7d8dfde6c3a9e5fb49b7ee9600644b3f6ccc8ec",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "candidate.md",
+          "sha256": "0cf4686794e60bce8943ded3fae95a1119fafe82e4cd38eebeb34af00cde5b31"
+        },
+        {
+          "path": "case.json",
+          "sha256": "bd3de8aa3ef6af39d495fa54fa4e3cbedc3b55613df04d26d3900b8c4ca6ff11"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "f91af1533a0322b4c089fd3845010e62443f495d6a19fd35a6c4856e775db187"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "eb2ece0f83350636b526642a62ca2453318765b72dc78752d0a462c9e1c399d8"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      },
+      "hashes": {
+        "sample": "0fe3cc77a6ca5ee795ffe746eba35a1ef2c4e5f2bb000e18f68bfdce0437fc7a"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "coherent-wrong-outcome"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:attempted\",\"silent-owner-decision:attempted\",\"missing-observable-oracle:attempted\",\"late-implementation-invalidation:attempted\",\"internal-contradiction:attempted\",\"unnecessary-scope:attempted\"],\"candidateRef\":\"coherent-wrong-outcome-candidate-r1\",\"caseId\":\"coherent-wrong-outcome\",\"challengeCount\":1,\"correctionRef\":\"coherent-wrong-outcome-correction-r1\",\"decisionSurface\":\"accepted-output-format-and-success-boundary\",\"effectiveModel\":\"xai/grok-4.6\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[\"accepted-outcome\",\"observable-proof\"],\"mainDispositions\":[\"BFR-001:confirmed\"],\"materialFindings\":[\"BFR-001\"],\"originalRequestRef\":\"coherent-wrong-outcome-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":1,\"reviewerSessionRef\":\"fresh-readiness-child-r2\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"confirmed-correction-closed\",\"terminalState\":\"closed\"}\n"
+      },
+      "requestSha256": "5ea4e9b03acbd0974f8cc6c6958b6404477faf776fedb3f6539b95db98033596",
+      "sampleIndex": 1,
+      "scenarioId": "coherent-wrong-outcome",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "730a4f2816f85b91d001f8d7c24fd31036090a7289bca7ff82b793fca137f715",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "3c56628b42ef8ac63cade9a9ada2b43332d3b2c0cc848d46c97002e75fe1e01f",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "cf492016b8bf4f465a4cd9ed7ca8951cedc5d41becc3cd97c2b97e8da9b03cc6",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "c79d1a1128b3eec652dfe59dfb44886e43204a6e956494dd6ff57513f2e3b4ff",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "3c56628b42ef8ac63cade9a9ada2b43332d3b2c0cc848d46c97002e75fe1e01f",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "5591696d72f8094357e861337a8703625eda7eb32d7690cf48a48e1c3fd60ba6",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "3d50be5f007d5beb65e41870e7d8dfde6c3a9e5fb49b7ee9600644b3f6ccc8ec",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+# Material-Inline-Plan Candidate Live Gate R2
+
+- Lane: `bounded-falsification-review-v1/material-inline-plan`; Live-Attempt Gate: clear for one causally distinct candidate r2 capture, consumed at start.
+- Identity: governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`; revised selected scenario `552b0931b0b36a73e57d58d5b1fc1c9c288149698196ee32b5208a63086dee5d`; revised request `55ee56eb1732410670eae54681084d4b4eb690c5ea6730278c7328ae8e4f6ae3`; source fixture `05b0f29dc51db2618b6c68883d64e7e1e78542c85bc74f648a3d79ebe4e429fe`; pack file `1a9a69e17d55c548365ccb224cbb68a60a7dd9142b67e09e0ba9a344f9b6bfc5`; OpenCode `1.18.23`.
+- Failure/replay: r1 is failed-finalized at aggregate digest `6344129d99f596ad6861964604055ae54dee09821e49257667ad8699a914b60d`; command status zero and cleanup complete, but offset 159 exceeded the projected 72-line fixture and no terminal record was written. Zero-call replay is preserved in its candidate-session directory.
+- Causal change: address the sole projected row instead of historical shared-file lines; explicitly form the minimal inline frame from its independent request/success/candidate/risk fields; give no expected decision to the child; retain exactly one early readiness child, no OpenSpec tree, no late final reviewer, and the same checker/evaluator/permissions.
+- Offline: consumer-outcome tests 33; selected preflight ready with zero model calls. Required observation is the exact candidate tuple, status/proof/validation zero, `timedOut=false`, and complete cleanup.
+- Retry condition: any successor requires another dependency-invalidating change, terminal replay, and new gate. Historical baseline remains separate and supports no causal claim.

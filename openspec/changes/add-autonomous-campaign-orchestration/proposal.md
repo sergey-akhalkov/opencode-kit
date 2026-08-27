@@ -188,8 +188,10 @@ material findings still unresolved.
   session executor, session completion guard, OpenSpec operation/archive gates,
   portable process and evidence helpers, Windows workstation protected lifecycle,
   project doctor/bootstrap, and current proof capture/replay conventions.
-- **Ownership/dependency:** implementation must not begin on overlapping instruction,
-  OpenSpec workflow, runtime-profile, proof, or workstation surfaces until
+- **Ownership/dependency:** `replace-instruction-limits-with-context-quality` must apply
+  first, or this change must explicitly rebase on its context-quality contract.
+  Implementation must not begin on overlapping instruction, OpenSpec workflow,
+  runtime-profile, proof, or workstation surfaces until
   `add-foundation-integrity-autorecovery` and current workstation edits are terminal,
   archived/checkpointed, or explicitly transferred and re-read. Proposal artifacts do
   not authorize modification of those active files.

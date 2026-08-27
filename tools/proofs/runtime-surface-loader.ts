@@ -30,6 +30,8 @@ export type LoaderSurfaceEvaluation = LoaderEvaluation & {
   authorityMarkers: {
     evidenceBoundsPrinciple: boolean;
     claimRoutingTrigger: boolean;
+    complexityRoutingTrigger: boolean;
+    foundationRoutingTrigger: boolean;
   };
   canonicalOpenSpecSkills: string[];
   missingCanonicalOpenSpecSkills: string[];
@@ -238,17 +240,28 @@ export function evaluateLoaderSurface(
     const actual = finalExactPermission(agent, permission, pattern);
     return actual === expected ? [] : [`${permission}:${pattern} expected=${expected} observed=${actual ?? "missing"}`];
   });
-  if (agent.name !== "evidence-sufficiency-reviewer") permissionFailures.push(`agent-name=${agent.name}`);
+  if (agent.name !== "foundation-integrity-reviewer") permissionFailures.push(`agent-name=${agent.name}`);
   if (agent.mode !== "subagent") permissionFailures.push(`agent-mode=${agent.mode}`);
-  if (!agent.prompt.includes("Claim-Evidence Matrix") || !agent.prompt.includes("Do not return an acceptance/rejection verdict")) {
+  if (!agent.prompt.includes("Foundation Relation Matrix") || !agent.prompt.includes("Do not return an acceptance/rejection verdict")) {
     permissionFailures.push("agent-prompt-markers-missing");
   }
   const principles = fs.readFileSync(path.join(generatedRoot, "principles-of-work.md"), "utf8");
   const routing = fs.readFileSync(path.join(generatedRoot, "AGENTS.md"), "utf8");
   const resolvedPaths = {
     behavioralSubstitutionSkill: generatedLocation(skills, "behavioral-substitution-qualification", generatedRoot),
+    complexityForagingContract: fs.existsSync(path.join(generatedRoot, "bin", "complexity-foraging-contract.ts"))
+      ? "<generated>/bin/complexity-foraging-contract.ts"
+      : "<missing>",
+    complexityForagingInventory: fs.existsSync(path.join(generatedRoot, "bin", "complexity-foraging-inventory.ts"))
+      ? "<generated>/bin/complexity-foraging-inventory.ts"
+      : "<missing>",
+    complexityManagementSkill: generatedLocation(skills, "complexity-management", generatedRoot),
     evidenceSufficiencyReviewer: fs.existsSync(path.join(generatedRoot, "agents", "evidence-sufficiency-reviewer.md"))
       ? "<generated>/agents/evidence-sufficiency-reviewer.md"
+      : "<missing>",
+    foundationIntegrityRecoverySkill: generatedLocation(skills, "foundation-integrity-recovery", generatedRoot),
+    foundationIntegrityReviewer: fs.existsSync(path.join(generatedRoot, "agents", "foundation-integrity-reviewer.md"))
+      ? "<generated>/agents/foundation-integrity-reviewer.md"
       : "<missing>",
     openspecApplySkill: generatedLocation(skills, "openspec-apply-change", generatedRoot),
     openspecArchiveSkill: generatedLocation(skills, "openspec-archive-change", generatedRoot),
@@ -257,6 +270,11 @@ export function evaluateLoaderSurface(
   const authorityMarkers = {
     evidenceBoundsPrinciple: principles.includes("**Evidence Bounds Claims:**"),
     claimRoutingTrigger: routing.includes("behavioral-substitution-qualification") && routing.includes("evidence-sufficiency-reviewer"),
+    complexityRoutingTrigger: routing.includes("Proportional context-efficient architecture")
+      && routing.includes("`complexity-management`")
+      && routing.includes("`codebase-audit-loop`")
+      && routing.includes("project mode unavailable without approximating coverage"),
+    foundationRoutingTrigger: routing.includes("foundation-integrity-reviewer") && routing.includes("foundation-integrity-recovery"),
   };
   const pathFailures = Object.values(resolvedPaths).filter((value) => !value.startsWith("<generated>/"));
   const passed = skillEvaluation.status === "passed"
@@ -265,7 +283,9 @@ export function evaluateLoaderSurface(
     && permissionFailures.length === 0
     && pathFailures.length === 0
     && authorityMarkers.evidenceBoundsPrinciple
-    && authorityMarkers.claimRoutingTrigger;
+    && authorityMarkers.claimRoutingTrigger
+    && authorityMarkers.complexityRoutingTrigger
+    && authorityMarkers.foundationRoutingTrigger;
   return {
     ...skillEvaluation,
     agentName: agent.name,
@@ -321,7 +341,7 @@ export function captureCoreLoaderSurface(root: string): {
     throw new Error(`opencode debug skill exited ${skill.status ?? "unknown"}: ${skill.stderr || skill.stdout}`);
   }
   const skills = parseLoaderSkills(extractJson(skill.stdout));
-  const agent = runOpenCode(projectRoot, ["debug", "agent", "evidence-sufficiency-reviewer"], env);
+  const agent = runOpenCode(projectRoot, ["debug", "agent", "foundation-integrity-reviewer"], env);
   if (agent.status !== 0) {
     fs.rmSync(work, { recursive: true, force: true });
     throw new Error(`opencode debug agent exited ${agent.status ?? "unknown"}: ${agent.stderr || agent.stdout}`);

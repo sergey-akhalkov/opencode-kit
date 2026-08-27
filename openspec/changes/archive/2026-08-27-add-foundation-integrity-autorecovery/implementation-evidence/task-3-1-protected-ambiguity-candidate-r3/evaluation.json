@@ -1,0 +1,180 @@
+{
+  "decisionOracles": [],
+  "digest": "316bd7a5cff11e74d5d90dd25041aa7b564e13f916a14568fed47d65b9afbbe7",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac",
+      "candidate": "e2c18e420a39d7f4b3abf1150dc4981949b79a451bd4e2a96d4acc5c6ae62057"
+    },
+    "terminalReplay": "e2c18e420a39d7f4b3abf1150dc4981949b79a451bd4e2a96d4acc5c6ae62057"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "protected-product-ambiguity": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "c3a9435da9504f998ab69da9774c15af0df1af02a77f9bc0d9bf72e11ca3f144",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "candidate.protected-product-ambiguity.1.outcome.stateFiles.decision.json",
+      "candidate.protected-product-ambiguity.1.outcome.exitCode",
+      "candidate.protected-product-ambiguity.1.proof.exitCode",
+      "foundation-integrity-oracle:candidate:protected-product-ambiguity:1:malformed-observation"
+    ],
+    "scenarioDigest": "69839d9cf4dbaed7d7a26417117d4d9e1abaa301a9b1f54c8fd42b0419092a62",
+    "sourceDigest": "98c9db0db053ee2f072ee93084fcdece0d85d49138e935e465cbe6b251713468",
+    "status": "failed",
+    "digest": "fb9ed107c5d9a1f997dffa11b2f440775661fa01f3a3e6b81deb33b65924c93b",
+    "schemaVersion": 1
+  },
+  "foundationIntegrityOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "protected-boundary",
+            "path": "state/protected-product-ambiguity.json",
+            "stateSha256": "ab83e9139a8648fcd79ce61b5ecf4fa455de506da4eaccaa9997a568ff713b53"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "protected-product-ambiguity",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "protected-product-ambiguity",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "protected-boundary",
+            "path": "state/protected-product-ambiguity.json",
+            "stateSha256": "ab83e9139a8648fcd79ce61b5ecf4fa455de506da4eaccaa9997a568ff713b53"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "protected-product-ambiguity",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "protected-product-ambiguity",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "protected-product-ambiguity"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "protected-boundary",
+            "path": "state/protected-product-ambiguity.json",
+            "stateSha256": "ab83e9139a8648fcd79ce61b5ecf4fa455de506da4eaccaa9997a568ff713b53"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "protected-product-ambiguity",
+        "correctedReviewCount": 0,
+        "incidentId": "fi-protected-product-ambiguity-r1",
+        "initialReviewCount": 1,
+        "ownerAgent": "foundation-integrity-reviewer",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "ambiguous",
+        "terminalRows": [
+          {
+            "memberId": "protected-product-ambiguity",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "owner-boundary"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "protected-product-ambiguity"
+    }
+  ],
+  "foundationIntegrityRows": [
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "protected-product-ambiguity",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "protected-product-ambiguity"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "protected-product-ambiguity",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "protected-product-ambiguity"
+    }
+  ],
+  "maximumClaim": "the exercised configured model and selected foundation-integrity scenarios (protected-product-ambiguity) cover only their 1 explicit members under the recorded identities"
+}

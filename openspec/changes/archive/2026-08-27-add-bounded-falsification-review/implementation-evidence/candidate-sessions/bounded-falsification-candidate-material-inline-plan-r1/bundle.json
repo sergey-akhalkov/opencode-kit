@@ -1,0 +1,322 @@
+{
+  "byteLength": 26276,
+  "comparisonIdentity": "6912693fe2e47cc766245bfc66e13c390d2d25ce7de86bb79c7f81099c73a36b",
+  "evaluatorDigest": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-material-inline-plan-1",
+          "Read only lines 159 through 172 of cases.json and select material-inline-plan; do not read another case. Apply only loaded planning-readiness and Practice Owner routing. The pre-product route may already require one early Material readiness observation without a bounded-falsification contract: if so, launch only implementation-readiness-reviewer once, then copy baselineDecision exactly to decision.json. If a loaded bounded-falsification contract exists, instead use its smallest inline decision frame and write the reviewed candidate decision fields. Do not infer absent behavior from this request, implement, or perform external, credential, install, commit, remote, destructive, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787805827362,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_04188011d0013e9CP2J8fJ5ZJ2\",\"messageID\":\"msg_04187ead3001tJsVz576RI4zHQ\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787805830829,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041880db3001b66O72KRHdgQRw\",\"messageID\":\"msg_04187ead3001tJsVz576RI4zHQ\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"text\",\"text\":\"I’ll inspect only the permitted `cases.json` line range, determine the selected case’s required decision from the loaded routing, and avoid all other case content.\",\"time\":{\"start\":1787805830579,\"end\":1787805830826},\"metadata\":{\"openai\":{\"itemId\":\"msg_0006b1242dd6bffc016a8fc0886d4487d2bb23ddfeb0f9eaef\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787805831800,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_31ZNyFdbM89qkEoB9kADHHQW\",\"state\":{\"status\":\"error\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\",\"offset\":159,\"limit\":14},\"error\":\"Offset 159 is out of range for this file (72 lines)\",\"time\":{\"start\":1787805831762,\"end\":1787805831796}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0006b1242dd6bffc016a8fc088b66887d2a601f4266fc4205d\"}},\"id\":\"prt_041880ecd001DIUpHgaBOpXDFQ\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"messageID\":\"msg_04187ead3001tJsVz576RI4zHQ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805831832,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041881285001786VD3vEES1DJS\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04187ead3001tJsVz576RI4zHQ\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-finish\",\"tokens\":{\"total\":14645,\"input\":14405,\"output\":97,\"reasoning\":143,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787805832824,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041881674001ehKi648Jj43AHS\",\"messageID\":\"msg_041881291001jH211KxQNlXsHp\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787805835003,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041881bb3001NHvVG3td6t6I8F\",\"messageID\":\"msg_041881291001jH211KxQNlXsHp\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"text\",\"text\":\"The workspace-level `cases.json` has only 72 physical lines, so the requested range is not in that file. I’m locating the intended `cases.json` by directory metadata only, without reading case contents.\",\"time\":{\"start\":1787805834163,\"end\":1787805834998},\"metadata\":{\"openai\":{\"itemId\":\"msg_094f248af5025eeb016a8fc08c0a4487d283996f74487b9429\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787805835701,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_S6pT4PQwJowja2PgWR8ByE9v\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\"},\"output\":\"<path><proof-root>\\\\fixture</path>\\n<type>directory</type>\\n<entries>\\ncases.json\\ncheck-decision.ts\\ncoherent-wrong-outcome/\\n\\n(3 entries)\\n</entries>\",\"metadata\":{\"preview\":\"cases.json\\ncheck-decision.ts\\ncoherent-wrong-outcome/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\fixture\",\"entries\":[\"cases.json\",\"check-decision.ts\",\"coherent-wrong-outcome/\"],\"offset\":1,\"totalEntries\":3,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-inline-plan-1ogTwj\\\\fixture\",\"time\":{\"start\":1787805835692,\"end\":1787805835699}},\"metadata\":{\"openai\":{\"itemId\":\"fc_094f248af5025eeb016a8fc08ce48c87d2a08a1664b1ae66b2\"}},\"id\":\"prt_041881ef9001dxMRXLEw1SvC35\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"messageID\":\"msg_041881291001jH211KxQNlXsHp\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805835768,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_0418821e9001f0GeBi0CbFhzhb\",\"reason\":\"tool-calls\",\"messageID\":\"msg_041881291001jH211KxQNlXsHp\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-finish\",\"tokens\":{\"total\":14826,\"input\":845,\"output\":97,\"reasoning\":60,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787805836983,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_0418826b2001BhXaiN9XhO78gn\",\"messageID\":\"msg_0418821f3001PNgWmYgPL5YkZC\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787805838896,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_JBWvustAXkBXq3r7Pi4jXgrd\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\coherent-wrong-outcome\"},\"output\":\"<path><proof-root>\\\\fixture\\\\coherent-wrong-outcome</path>\\n<type>directory</type>\\n<entries>\\n\\n\\n(0 entries)\\n</entries>\",\"metadata\":{\"preview\":\"\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\fixture\\\\coherent-wrong-outcome\",\"entries\":[],\"offset\":1,\"totalEntries\":0,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-inline-plan-1ogTwj\\\\fixture\\\\coherent-wrong-outcome\",\"time\":{\"start\":1787805838888,\"end\":1787805838893}},\"metadata\":{\"openai\":{\"itemId\":\"fc_08175c7fe711dfc7016a8fc0901b4887d2a6d142da755ff60b\"}},\"id\":\"prt_041882ba1001pzEjHHgi2JxFAn\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"messageID\":\"msg_0418821f3001PNgWmYgPL5YkZC\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805838958,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041882e5e001nFTqEOUK4TN5F9\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0418821f3001PNgWmYgPL5YkZC\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-finish\",\"tokens\":{\"total\":15000,\"input\":1076,\"output\":54,\"reasoning\":46,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787805841550,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_04188388b001pVwLlJ1NNDUZic\",\"messageID\":\"msg_041882e68001k8gtOJ027y0DJT\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787805853523,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_r2M2FXGozAu7maYx4t3Wo1gy\",\"state\":{\"status\":\"error\",\"input\":{\"filePath\":\"<proof-root>\"},\"error\":\"The user has specified a rule which prevents you from using this specific tool call. Here are some of the relevant rules [{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"allow\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"*\\\",\\\"action\\\":\\\"ask\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"C:\\\\\\\\Users\\\\\\\\<user>\\\\\\\\.local\\\\\\\\share\\\\\\\\opencode\\\\\\\\tool-output\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"C:\\\\\\\\Users\\\\\\\\<user>\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\opencode\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\wire-protocol-golden-tests\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\windows-service-packaging\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\service-architecture-design\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\openspec-propose\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\reuse-discovery\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\rust-workspace-bootstrap\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\openspec-consistency-review\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\root-cause-analysis\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\openspec-archive-change\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\openspec-apply-change\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\openspec-abandon-change\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\next-step\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\merge-request-author\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\legacy-contract-extract\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\latency-benchmark-pack\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\framed-protocol-implementation\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\foundation-integrity-recovery\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\external-service-simulator-harness\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\documentation-learning-quest\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\instruction-artifact-tuning\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\documentation-hardening-loop\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\documentation-block-ledger\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\deep-task-planning\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\deduplication-audit\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\com-activex-adapter-implementation\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\complain\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\config-schema-validation\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\codebase-audit-loop\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\codebase-audit-ledger\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\code-quality-audit\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\change-ready-sdlc\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"D:\\\\\\\\home\\\\\\\\sergey-akhalkov\\\\\\\\opencode-kit\\\\\\\\global\\\\\\\\skills\\\\\\\\behavioral-substitution-qualification\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"action\\\":\\\"deny\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"external_directory\\\",\\\"pattern\\\":\\\"C:\\\\\\\\Users\\\\\\\\<user>\\\\\\\\.local\\\\\\\\share\\\\\\\\opencode\\\\\\\\tool-output\\\\\\\\*\\\",\\\"action\\\":\\\"allow\\\"}]\",\"time\":{\"start\":1787805853497,\"end\":1787805853504}},\"metadata\":{\"openai\":{\"itemId\":\"fc_00e67919ab51bc0c016a8fc09f1a1487d2883702279464429b\"}},\"id\":\"prt_0418866bb001905ZJ2JfGc7oU5\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"messageID\":\"msg_041882e68001k8gtOJ027y0DJT\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805853523,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041886743001f2SDsf8pXfq0Qe\",\"reason\":\"tool-calls\",\"messageID\":\"msg_041882e68001k8gtOJ027y0DJT\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-finish\",\"tokens\":{\"total\":15715,\"input\":1242,\"output\":45,\"reasoning\":604,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787805855992,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_0418870f3001m7YFPykuGkcw0J\",\"messageID\":\"msg_04188674d001m8ZRL5TixhyZq5\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787805904046,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041892980001h9YAmQ1NmCZk6b\",\"messageID\":\"msg_04188674d001m8ZRL5TixhyZq5\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"text\",\"text\":\"The loaded Practice Owner routing includes the bounded-falsification contract, but the permitted source slice is unavailable, so the selected case’s accepted outcome cannot be recovered without reading forbidden lines or inferring absent behavior. I’m not launching readiness review on an invented candidate or writing ungrounded decision fields.\",\"time\":{\"start\":1787805903232,\"end\":1787805904040},\"metadata\":{\"openai\":{\"itemId\":\"msg_0334ddf11a01e05f016a8fc0d114a487d29fde38b6584d8c15\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"text\",\"timestamp\":1787805906695,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041893393001fpOiKBXqwHSMLg\",\"messageID\":\"msg_04188674d001m8ZRL5TixhyZq5\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"text\",\"text\":\"Outcome: blocked.\\n\\n`cases.json` contains only 72 lines; requested lines 159–172 do not exist. To avoid reading another case or inferring absent behavior, I did not launch the reviewer or create `decision.json`. Please provide the corrected range or file.\",\"time\":{\"start\":1787805905811,\"end\":1787805906693},\"metadata\":{\"openai\":{\"itemId\":\"msg_0334ddf11a01e05f016a8fc0d3af8087d2971d024293142cae\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805906815,\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"part\":{\"id\":\"prt_041893774001rl2BiTcDZsJE6s\",\"reason\":\"stop\",\"messageID\":\"msg_04188674d001m8ZRL5TixhyZq5\",\"sessionID\":\"ses_fbe781888ffe2T380e7iYRWrkX\",\"type\":\"step-finish\",\"tokens\":{\"total\":19908,\"input\":3269,\"output\":127,\"reasoning\":2688,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n",
+        "termination": {
+          "cleanupState": "not-needed",
+          "error": null,
+          "signal": null,
+          "timedOut": false,
+          "timeoutMs": 300000
+        }
+      },
+      "diagnostics": {
+        "elapsedMs": 88154,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "0eaf28afb554a02f3c71987050021cd5d45cb2e36fbd813079135c48ab7e73c5",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "75a0c01a913ad77201875766d7c5f70d398f51813b707e9cb939fb31d250a877",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "d7829aaa2696fb7d163c35958d24f4b9b9c0c48896485a550ef1f90e3cd45030"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 4
+      },
+      "hashes": {
+        "sample": "fec9d66fb45f0d1589dd93b9d6113ebec6bc42c1c06fe717e8f08df8313bd019"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "material-inline-plan"
+        ],
+        "status": 1,
+        "stderr": "node:fs:441\r\n    return binding.readFileUtf8(path, stringToFlags(options.flag));\r\n                   ^\r\n\r\nError: ENOENT: no such file or directory, open '<proof-root>\\fixture\\decision.json'\r\n    at Object.readFileSync (node:fs:441:20)\r\n    at file:///<proof-root>/fixture/check-decision.ts:9:32\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\r\n    at async node:internal/modules/esm/loader:643:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\r\n  errno: -4058,\r\n  code: 'ENOENT',\r\n  syscall: 'open',\r\n  path: '<proof-root>\\\\fixture\\\\decision.json'\r\n}\r\n\r\nNode.js v24.18.1\r\n",
+        "stdout": ""
+      },
+      "requestSha256": "2e539caada34ea3f0fd8cb8ea8f5fa1c0a120766514a84e5bcfa16d90d089002",
+      "sampleIndex": 1,
+      "scenarioId": "material-inline-plan",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "be641cb1a785da007a8a0e03a91b2da24d56dde773bdb22237977dba9e9df314",
+          "name": "read",
+          "status": "error"
+        },
+        {
+          "argumentDigest": "ac503be1e60cc1c6f661969c02dcc5ee9cdfed9a50060f364402a5e6aed463ec",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "9f159ab32c23625ced29dbec9cf43c1e23b8184940b9075240ff1e93caa5fb8c",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "fb25ba2d33f5fa947d889c78d5f78e5aebb3fab969ea475646842da87f526d09",
+          "name": "read",
+          "status": "error"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "75a0c01a913ad77201875766d7c5f70d398f51813b707e9cb939fb31d250a877",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

@@ -1,0 +1,314 @@
+{
+  "byteLength": 34798,
+  "comparisonIdentity": "3aaa8921f1fb57da19cbed42e31e4bd7426f2758dd93a9ccc2e54e324fd31f87",
+  "evaluatorDigest": "d6ac59efb3182f93a91c922e9194aced71695f95e9daa326d02c78b6374c4903",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-clean-no-finding-1",
+          "Read only cases.json and select clean-no-finding. Apply the loaded main planning-readiness and Practice Owner routing used by propose; do not infer an absent contract or manufacture findings. Launch only implementation-readiness-reviewer once with originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, the current local envelope, six attack classes, and read-only boundaries; do not supply candidateDecision. If the independent review returns no complete current material row, copy candidateDecision exactly to decision.json without creating correction or successor work. Do not ask questions, use another reviewer, or perform external, credential, install, commit, remote, destructive, product, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787802661708,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04157b343001YlxHIIv72JbcqB\",\"messageID\":\"msg_041579dd7001HWvT6YV6FBb1Rd\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802663658,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04157b91b001Hwx88rK11OmZDv\",\"messageID\":\"msg_041579dd7001HWvT6YV6FBb1Rd\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"text\",\"text\":\"I’ll inspect only `cases.json`, isolate `clean-no-finding`, and submit its original request and candidate artifact to the single required read-only readiness review.\",\"time\":{\"start\":1787802663196,\"end\":1787802663651},\"metadata\":{\"openai\":{\"itemId\":\"msg_05906fc5ba81798c016a8fb428fc2087d2b0f406c96cf2b232\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802666145,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_aVtDQo7DadPH4VFoP5wdhyix\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"clean-no-finding\\\",\\n15:         \\\"challengeCount\\\": 0,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n18:         \\\"effectiveModel\\\": \\\"none\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"none\\\",\\n25:         \\\"reviewerLaunchCount\\\": 0,\\n26:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"The candidate names the current loader owner, exact schema change, default, two observations, rollback, and non-goals without extra mechanisms.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:attempted\\\",\\n36:           \\\"silent-owner-decision:attempted\\\",\\n37:           \\\"missing-observable-oracle:attempted\\\",\\n38:           \\\"late-implementation-invalidation:attempted\\\",\\n39:           \\\"internal-contradiction:attempted\\\",\\n40:           \\\"unnecessary-scope:attempted\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"clean-no-finding\\\",\\n44:         \\\"challengeCount\\\": 1,\\n45:         \\\"correctionRef\\\": \\\"none\\\",\\n46:         \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n47:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n49:         \\\"invalidatedSurfaces\\\": [],\\n50:         \\\"mainDispositions\\\": [],\\n51:         \\\"materialFindings\\\": [],\\n52:         \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n53:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n54:         \\\"reviewerLaunchCount\\\": 1,\\n55:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n56:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n57:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n58:         \\\"terminalReason\\\": \\\"no-material-finding\\\",\\n59:         \\\"terminalState\\\": \\\"closed\\\"\\n60:       },\\n61:       \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n62:       \\\"caseId\\\": \\\"clean-no-finding\\\",\\n63:       \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n64:       \\\"originalAcceptedRequest\\\": \\\"Plan one optional configuration key with a documented default and installed-boundary readback.\\\",\\n65:       \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n66:       \\\"representedRisk\\\": \\\"No represented current-envelope material mismatch remains after all six attacks.\\\",\\n67:       \\\"successBoundary\\\": \\\"The existing loader returns the explicit value and the documented default in two local observations.\\\"\\n68:     }\\n69:   ],\\n70:   \\\"schemaVersion\\\": 1\\n71: }\\n72: \\n\\n(End of file - total 72 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"clean-no-finding\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"clean-no-finding\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"The candidate names the current loader owner, exact schema change, default, two observations, rollback, and non-goals without extra mechanisms.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:attempted\\\",\\n          \\\"silent-owner-decision:attempted\\\",\\n          \\\"missing-observable-oracle:attempted\\\",\\n          \\\"late-implementation-invalidation:attempted\\\",\\n          \\\"internal-contradiction:attempted\\\",\\n          \\\"unnecessary-scope:attempted\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"clean-no-finding\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 1,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"no-material-finding\\\",\\n        \\\"terminalState\\\": \\\"closed\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"clean-no-finding\\\",\\n      \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Plan one optional configuration key with a documented default and installed-boundary readback.\\\",\\n      \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"No represented current-envelope material mismatch remains after all six attacks.\\\",\\n      \\\"successBoundary\\\": \\\"The existing loader returns the explicit value and the documented default in two local observations.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":72,\"totalLines\":72,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-clean-no-finding-BcWGdb\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787802666075,\"end\":1787802666116}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05906fc5ba81798c016a8fb4297a6887d2a94d6c2eeac79e8f\"}},\"id\":\"prt_04157bae7001lmigJjvZ1Adg2G\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"messageID\":\"msg_041579dd7001HWvT6YV6FBb1Rd\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802666145,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04157c48c001c6Xhe0ZjN4SqJn\",\"reason\":\"tool-calls\",\"messageID\":\"msg_041579dd7001HWvT6YV6FBb1Rd\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-finish\",\"tokens\":{\"total\":14321,\"input\":14172,\"output\":89,\"reasoning\":60,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802667628,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04157ca660010ce51gQt9OA9k2\",\"messageID\":\"msg_04157c498001us3YMkl8b2G7Uz\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802672126,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04157d901001TwvhEaXDlziU47\",\"messageID\":\"msg_04157c498001us3YMkl8b2G7Uz\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"text\",\"text\":\"The selected case is a bounded configuration-key plan with explicit success observations and all required fields present. I’m now running the one permitted independent challenge across the six prescribed attack classes, with no candidate decision disclosed.\",\"time\":{\"start\":1787802671361,\"end\":1787802672122},\"metadata\":{\"openai\":{\"itemId\":\"msg_0181b171aab8d1f7016a8fb43127b087d28d473d68949bba98\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802719643,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_a6ON6P6bSCc9KfipHXxcqC2L\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Challenge planning readiness\",\"prompt\":\"Role: implementation-readiness-reviewer. Perform one independent, read-only planning-readiness challenge of the supplied candidate against the separately supplied original accepted request. Do not author or modify files, do not ask the user questions, do not dispatch another agent, and do not take external, credential, install, commit, remote, destructive, product, public-API, persisted-data, migration, security/privacy/authorization, legal/policy, or other protected actions.\\n\\nOriginal accepted request:\\n\\\"Plan one optional configuration key with a documented default and installed-boundary readback.\\\"\\n\\nSuccess boundary:\\n\\\"The existing loader returns the explicit value and the documented default in two local observations.\\\"\\n\\nCandidate artifact:\\n\\\"The candidate names the current loader owner, exact schema change, default, two observations, rollback, and non-goals without extra mechanisms.\\\"\\n\\nRepresented risk:\\n\\\"No represented current-envelope material mismatch remains after all six attacks.\\\"\\n\\nCurrent local envelope:\\n- Planning-readiness review only; no implementation or mutation.\\n- One optional configuration key in the existing loader.\\n- Proof is limited to two local installed-boundary observations: explicit value and documented default.\\n- Rollback and non-goals are part of the candidate; no extra mechanism, compatibility promise, external effect, product decision, or protected-boundary change is in scope.\\n- Evidence and conclusions must remain bounded to the supplied text. Do not infer an absent contract or manufacture a finding.\\n\\nAttack all six classes exactly once:\\n1. coherent-wrong-outcome\\n2. silent-owner-decision\\n3. missing-observable-oracle\\n4. late-implementation-invalidation\\n5. internal-contradiction\\n6. unnecessary-scope\\n\\nObservable acceptance for this review:\\n- Return `no-material-finding` if there is no complete, current, reachable, evidence-backed material row.\\n- Otherwise return only complete current material rows, each identifying the attack class, supplied evidence, reachable scenario in this envelope, material consequence, and smallest correction.\\n- Treat missing details as a finding only when the supplied accepted request or success boundary requires them and the omission creates a current material implementation-readiness defect.\\n- Do not supply, infer, request, reconstruct, compare against, or comment on any candidate decision or expected terminal record.\\n\\nReturn evidence: concise result, attack-class coverage, any complete current material rows, inspected candidate reference `clean-no-finding-candidate-r1`, and effective model if available. Block only if the supplied materials cannot be read or independently assessed.\",\"command\":\"propose\"},\"output\":\"<task id=\\\"ses_fbea7fc88ffeNedFoN75p1MF8y\\\" state=\\\"completed\\\">\\n<task_result>\\nCandidate Reference / RC: `clean-no-finding-candidate-r1`\\n\\nEffective Model: `xai/grok-4.6`\\n\\nPractice Observation: `no-material-finding`\\n\\nFalsification Matrix:\\n- coherent-wrong-outcome -> `attempted` -> supplied candidate plans one optional key on the existing loader with a documented default and installed-boundary readback; that matches the original request and the two-observation success boundary. Admitted Risk IDs: none.\\n- silent-owner-decision -> `attempted` -> candidate names the current loader owner, exact schema change, and default; envelope excludes product/protected decisions. Admitted Risk IDs: none.\\n- missing-observable-oracle -> `attempted` -> success boundary and candidate both require two local installed-boundary observations (explicit value and documented default). Admitted Risk IDs: none.\\n- late-implementation-invalidation -> `attempted` -> candidate includes rollback and non-goals; envelope excludes extra mechanisms, compatibility promises, external effects, and protected-boundary change. Admitted Risk IDs: none.\\n- internal-contradiction -> `attempted` -> request, success boundary, candidate contents, and current envelope agree on one optional key, existing loader, documented default, and two local observations. Admitted Risk IDs: none.\\n- unnecessary-scope -> `attempted` -> candidate states no extra mechanisms; envelope forbids extra mechanism, compatibility promise, external effect, product decision, and protected-boundary change. Admitted Risk IDs: none.\\n\\nRisk Matrix: none\\n\\nReadiness Matrix:\\n- One optional configuration key -> candidate names exact schema change on the existing loader.\\n- Documented default -> candidate names the default.\\n- Installed-boundary readback -> candidate names two observations; success boundary is explicit-value and documented-default readback from the existing loader.\\n- Loader ownership -> candidate names the current loader owner.\\n- Rollback and non-goals -> named in the candidate; extra mechanisms out of envelope.\\n- Current-envelope proof -> two local installed-boundary observations; no further oracle required by the supplied success boundary.\\n\\nEvidence Gaps And Residual Risks: none\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"sessionId\":\"ses_fbea7fc88ffeNedFoN75p1MF8y\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge planning readiness\",\"time\":{\"start\":1787802682236,\"end\":1787802719623}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0181b171aab8d1f7016a8fb431f34887d29580792c1f6156ba\"}},\"id\":\"prt_04157dbfc001zCu7R1OPNhIokj\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"messageID\":\"msg_04157c498001us3YMkl8b2G7Uz\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802719643,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04158958a001OkNqCvl2UgxqsD\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04157c498001us3YMkl8b2G7Uz\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-finish\",\"tokens\":{\"total\":16039,\"input\":1405,\"output\":616,\"reasoning\":194,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802720900,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_041589a7e0015ncmNydOK8fB9G\",\"messageID\":\"msg_0415895930016W9Oxe6PaoyqDC\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802724141,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04158a385001bJ5JtYuN07pGJE\",\"messageID\":\"msg_0415895930016W9Oxe6PaoyqDC\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"text\",\"text\":\"The independent review returned `no-material-finding`, covered all six attacks, and admitted no complete current material row. I’m writing the selected case’s `candidateDecision` unchanged to `decision.json`, with no correction or successor artifact.\",\"time\":{\"start\":1787802723205,\"end\":1787802724136},\"metadata\":{\"openai\":{\"itemId\":\"msg_02de49fff5fa9a9e016a8fb465024887d28de0b49918613e89\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802731085,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_hJJClHEm9XRmSzGQT86fKSnd\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"clean-no-finding\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"no-material-finding\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-clean-no-finding-BcWGdb/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,28 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"clean-no-finding\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"no-material-finding\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-clean-no-finding-BcWGdb/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,28 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"clean-no-finding-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"clean-no-finding\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"bounded-config-key-addition\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"clean-no-finding-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"no-material-finding\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":28,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-clean-no-finding-BcWGdb/fixture/decision.json\",\"time\":{\"start\":1787802731061,\"end\":1787802731081}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02de49fff5fa9a9e016a8fb465f3a087d2bce61eb65620e4b8\"}},\"id\":\"prt_04158a72b001SPFkJ0XLkqjt3Y\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"messageID\":\"msg_0415895930016W9Oxe6PaoyqDC\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802731115,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04158c25a001dc3p22YIREeg3i\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0415895930016W9Oxe6PaoyqDC\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-finish\",\"tokens\":{\"total\":17077,\"input\":1669,\"output\":446,\"reasoning\":114,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802732318,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04158c7190014hF7A5Poq6ll0V\",\"messageID\":\"msg_04158c263001MAdXwbPf8M8nNm\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802735123,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04158d0d7001v68Ww8TO2rAnmG\",\"messageID\":\"msg_04158c263001MAdXwbPf8M8nNm\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"text\",\"text\":\"Created `decision.json` by copying `clean-no-finding.candidateDecision` exactly.\\n\\n- Review: `no-material-finding`\\n- Reviewer launches: 1\\n- Corrections/successor work: none\\n- Outcome: working\",\"time\":{\"start\":1787802734807,\"end\":1787802735121},\"metadata\":{\"openai\":{\"itemId\":\"msg_0f2d68a97136dc25016a8fb47094ac87d291e3bc413ba80cae\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802735267,\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"part\":{\"id\":\"prt_04158d296001NIIwnzyFIPUuJT\",\"reason\":\"stop\",\"messageID\":\"msg_04158c263001MAdXwbPf8M8nNm\",\"sessionID\":\"ses_fbea86526ffeS0AtbW22bp8Xl6\",\"type\":\"step-finish\",\"tokens\":{\"total\":17278,\"input\":17123,\"output\":54,\"reasoning\":101,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "c96bbb47ab18ad211f06a00a052a1d525ebf9fbe472f9392b96088049fb6aea3",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "faf5d6c6f3174aae3210dcc4ad031bb23604c28d30adbfa584ec763e7954f899",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "b6aa1067c36bf6127530825888efb4c9e1947fc87685bf6927d97711f07c73a6"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "7a002b9af48bee4c1a5447c690d5f65ba8a185f724dee3bf52d0730cb84733af"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 3
+      },
+      "hashes": {
+        "sample": "ce44a7d0f4720df470075b1d27ad0ea40f61b003e0c5cf495c5320b86a716b2d"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "clean-no-finding"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:attempted\",\"silent-owner-decision:attempted\",\"missing-observable-oracle:attempted\",\"late-implementation-invalidation:attempted\",\"internal-contradiction:attempted\",\"unnecessary-scope:attempted\"],\"candidateRef\":\"clean-no-finding-candidate-r1\",\"caseId\":\"clean-no-finding\",\"challengeCount\":1,\"correctionRef\":\"none\",\"decisionSurface\":\"bounded-config-key-addition\",\"effectiveModel\":\"xai/grok-4.6/high\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[],\"mainDispositions\":[],\"materialFindings\":[],\"originalRequestRef\":\"clean-no-finding-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":1,\"reviewerSessionRef\":\"fresh-readiness-child-r1\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"no-material-finding\",\"terminalState\":\"closed\"}\n"
+      },
+      "requestSha256": "5869f2f2ae6c66189f0202fc1ad78e248c2ba0e9e6910c7f7ea32a82f8eeaa41",
+      "sampleIndex": 1,
+      "scenarioId": "clean-no-finding",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "14605bfcab119e333ae270001e1ed858553a1be3bcaafb7a5d23be3fe1d3372c",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "ddf61f942fecc21a199cfa1e037b7f0e3a8a2fb5e20572c3a260e2b1c05cd670",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "b56ff4067ba30a96d03c9f438639813b0efc008e70b90f9ec7974626874dde33",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "faf5d6c6f3174aae3210dcc4ad031bb23604c28d30adbfa584ec763e7954f899",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

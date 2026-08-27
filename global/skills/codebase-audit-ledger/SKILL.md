@@ -57,7 +57,12 @@ Use this helper with `codebase-audit-loop` when the audit must prove coverage ra
 
 ## Failure Mode Matrix
 - W01 | scenario | trigger | expected behavior | evidence | missing gate/blocker
+
+## Complexity Pressure Matrix
+- C01 | area/subsystem | current consumer/change scenario | observed context/change pressure | source/test/runtime evidence | current owner or unknown | entrypoint | admission class: current-dependency/accepted-refactor/deferred-debt/unknown | focused-scenario ref or none
 ```
+
+The complexity matrix is present only for an explicit whole-project/exhaustive complexity request. It reuses existing coverage and finding rows, remains review-only by default, creates no map/rehearsal per block, and authorizes no mutation; a separately accepted refactor links one named focused scenario.
 
 ## Completion Gate
 

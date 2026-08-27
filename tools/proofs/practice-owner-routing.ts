@@ -76,6 +76,7 @@ const OWNER_AGENTS = [
   "code-quality-reviewer",
   "openspec-architecture-reviewer",
   "execution-safety-reviewer",
+  "foundation-integrity-reviewer",
   "instruction-artifact-reviewer",
   "troubleshooter",
   "deployment-config-reviewer",

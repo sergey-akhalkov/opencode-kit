@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-foundation-integrity-autorecovery",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-foundation-integrity",
+      "requirements": [
+        "Material foundation bindings receive one event-triggered integrity review",
+        "Foundation findings are evidence-backed and material",
+        "Main autonomously recovers confirmed foundation defects",
+        "Confirmed invalidation propagates only to dependent current work",
+        "Recovery preserves evidence and terminates without polishing loops"
+      ]
+    },
+    {
+      "capability": "library-practice-ownership",
+      "requirements": [
+        "The initial roster covers core and maintained domain practices"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Confirmed foundation defects recover autonomously and proportionally"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Foundation detection and recovery use separate instruction responsibilities",
+        "Foundation routing remains compact proportional and non-inferential",
+        "Matched behavior evidence covers recovery and anti-polishing controls"
+      ]
+    },
+    {
+      "capability": "library-runtime-surface-profiles",
+      "requirements": [
+        "Core runtime profiles include context-qualified foundation integrity and recovery"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "Foundation invalidation propagates through current planning without rewriting history",
+        "Foundation recovery episodes have explicit terminal state"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "config/instruction-context-quality.json",
+    "config/practice-owners.json",
+    "config/practice-owners.view.md",
+    "global/AGENTS.md",
+    "global/agents/foundation-integrity-reviewer.md",
+    "global/skills/foundation-integrity-recovery",
+    "instructions/practice-owner-agent-contract.md",
+    "profiles/all.json",
+    "profiles/core.json",
+    "tools/contracts/agents.ts",
+    "tools/contracts/reviewer-binding.ts",
+    "tools/model-profile.ts",
+    "tools/practice-owners.ts",
+    "tools/proofs/README.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/runtime-surface-loader.ts",
+    "tools/proofs/fixtures/consumer-outcome/foundation-integrity-v1",
+    "tools/runtime-surface-profile.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-contracts.ts",
+    "tools/test-model-profile.ts",
+    "tools/test-library/runtime-surface-profiles.ts",
+    "tools/test-practice-owners.ts",
+    "tools/validators"
+  ],
+  "dependencies": [],
+  "transfers": [
+    {
+      "fromChangeId": "add-foundation-integrity-autorecovery",
+      "toChangeId": "add-bounded-falsification-review",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "config/practice-owners.json" },
+        { "type": "write-root", "path": "config/practice-owners.view.md" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-foundation-integrity-autorecovery",
+      "toChangeId": "add-continuous-complexity-management",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-foundation-integrity-autorecovery",
+      "toChangeId": "add-specialist-team-advisor",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-foundation-integrity-autorecovery",
+      "toChangeId": "add-autonomous-campaign-orchestration",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

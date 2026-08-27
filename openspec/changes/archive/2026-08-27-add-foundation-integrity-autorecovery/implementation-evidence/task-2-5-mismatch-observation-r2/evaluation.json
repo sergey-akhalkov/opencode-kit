@@ -1,0 +1,248 @@
+{
+  "decisionOracles": [],
+  "digest": "9d9c4aac72c153dfd34b07c41629c614b4c279d2a9f7d9364e160d0b0c7b447c",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac",
+      "candidate": "95e901a457cbeb097785ed6a56fe9901715a1ee9af392416148b18b18a89dc43"
+    },
+    "terminalReplay": "95e901a457cbeb097785ed6a56fe9901715a1ee9af392416148b18b18a89dc43"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "mismatch-unique-recovery": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 2
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "e293cbf408ddd1b0bdf7a4d99df5c2a06e325b523b16caea37df91d517adb351",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "candidate.mismatch-unique-recovery.1.outcome.stateFiles.decision.json",
+      "candidate.mismatch-unique-recovery.1.outcome.exitCode",
+      "candidate.mismatch-unique-recovery.1.proof.exitCode",
+      "foundation-integrity-oracle:candidate:mismatch-unique-recovery:1:malformed-observation"
+    ],
+    "scenarioDigest": "6cfcbecbeacfe352c4e5884cb3ae1f1f6a5c59e0f8b27b5a81c016990abaadf9",
+    "sourceDigest": "98c9db0db053ee2f072ee93084fcdece0d85d49138e935e465cbe6b251713468",
+    "status": "failed",
+    "digest": "f7582794a40e7111ec5337c828533a00539f661b40ed80a35f165d0e46d74d32",
+    "schemaVersion": 1
+  },
+  "foundationIntegrityOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "mismatch-plan",
+            "path": "state/mismatch-unique-recovery.json",
+            "stateSha256": "fd4d4db92db328dd6fbc99007a5f60ab778c26b37d0dfd16cf41ac06434be47e"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "mismatch-unique-recovery",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "current-cross-family-mismatch",
+            "status": "unknown"
+          },
+          {
+            "memberId": "confirmed-unique-correction",
+            "status": "unknown"
+          },
+          {
+            "memberId": "archive-preservation",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "mismatch-plan",
+            "path": "state/mismatch-unique-recovery.json",
+            "stateSha256": "fd4d4db92db328dd6fbc99007a5f60ab778c26b37d0dfd16cf41ac06434be47e"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "mismatch-unique-recovery",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "current-cross-family-mismatch",
+            "status": "unknown"
+          },
+          {
+            "memberId": "confirmed-unique-correction",
+            "status": "unknown"
+          },
+          {
+            "memberId": "archive-preservation",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "mismatch-plan",
+            "path": "state/mismatch-unique-recovery.json",
+            "stateSha256": "be9576332b41ddf51ef41d51f2e7ab938ce0bccd521b47f1c0597d2e34c5abef"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "mismatch-unique-recovery",
+        "correctedReviewCount": 1,
+        "incidentId": "fi-mismatch-unique-recovery-r1",
+        "initialReviewCount": 1,
+        "ownerAgent": "foundation-integrity-reviewer",
+        "recoverySkillCount": 1,
+        "reproductionDisposition": "confirmed",
+        "terminalRows": [
+          {
+            "memberId": "current-cross-family-mismatch",
+            "status": "supported"
+          },
+          {
+            "memberId": "confirmed-unique-correction",
+            "status": "supported"
+          },
+          {
+            "memberId": "archive-preservation",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "closed"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    }
+  ],
+  "foundationIntegrityRows": [
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "current-cross-family-mismatch",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "confirmed-unique-correction",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "archive-preservation",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "current-cross-family-mismatch",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "confirmed-unique-correction",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "archive-preservation",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    }
+  ],
+  "maximumClaim": "the exercised configured model and selected foundation-integrity scenarios (mismatch-unique-recovery) cover only their 3 explicit members under the recorded identities"
+}

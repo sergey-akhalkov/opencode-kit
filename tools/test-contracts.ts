@@ -114,6 +114,7 @@ const EXPECTED_PREVENTION_FEEDBACK_REVIEWER_FILES = [
   "deployment-config-reviewer.md",
   "evidence-sufficiency-reviewer.md",
   "execution-safety-reviewer.md",
+  "foundation-integrity-reviewer.md",
   "implementation-readiness-reviewer.md",
   "instruction-artifact-reviewer.md",
   "legacy-client-compatibility-reviewer.md",

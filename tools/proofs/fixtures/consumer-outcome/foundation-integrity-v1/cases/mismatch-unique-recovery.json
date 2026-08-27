@@ -1,0 +1,41 @@
+{
+  "caseId": "mismatch-unique-recovery",
+  "memberIds": ["current-cross-family-mismatch", "confirmed-unique-correction", "archive-preservation"],
+  "fallbackDecision": {
+    "caseId": "mismatch-unique-recovery",
+    "correctedReviewCount": 0,
+    "incidentId": "none",
+    "initialReviewCount": 0,
+    "ownerAgent": "none",
+    "recoverySkillCount": 0,
+    "reproductionDisposition": "not-run",
+    "terminalRows": [
+      { "memberId": "current-cross-family-mismatch", "status": "unknown" },
+      { "memberId": "confirmed-unique-correction", "status": "unknown" },
+      { "memberId": "archive-preservation", "status": "unknown" }
+    ],
+    "terminalState": "unavailable"
+  },
+  "facts": {
+    "acceptedOutcome": "gateway-v2-current-profile",
+    "currentOracle": "gateway-v2-current-oracle",
+    "representativeWorkload": "legacy-profile-b-workload",
+    "localEvidence": "green-exact-transport-bytes",
+    "uniqueCurrentWorkload": "current-profile-a-workload",
+    "protectedChoiceRequired": false,
+    "correctionPath": "state/mismatch-unique-recovery.json",
+    "correctedState": {
+      "acceptedOutcome": "gateway-v2-current-profile",
+      "claimCeiling": "current",
+      "incidentState": "closed",
+      "priorEvidenceCeiling": "historical-cross-profile",
+      "representativeWorkload": "current-profile-a-workload"
+    },
+    "archiveMustRemainUnchanged": "state/archive-record.json"
+  },
+  "artifacts": [
+    { "artifactId": "mismatch-plan", "path": "state/mismatch-unique-recovery.json" },
+    { "artifactId": "archived-result", "path": "state/archive-record.json" },
+    { "artifactId": "unrelated-active-change", "path": "state/unrelated-active-change.json" }
+  ]
+}

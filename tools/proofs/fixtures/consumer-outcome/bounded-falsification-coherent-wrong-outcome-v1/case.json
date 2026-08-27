@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "caseId": "coherent-wrong-outcome",
+  "originalRequestRef": "coherent-wrong-outcome-request-r1",
+  "candidateRef": "coherent-wrong-outcome-candidate-r1",
+  "decisionSurface": "accepted-output-format-and-success-boundary",
+  "originalAcceptedRequest": "Produce a migration plan whose observable result is a JSON export accepted by the existing importer.",
+  "successBoundary": "The existing importer accepts the produced JSON without translation.",
+  "candidateArtifact": "The candidate is internally coherent but plans a CSV export and validates only CSV syntax.",
+  "representedRisk": "All planned tasks can pass while the requested importer still rejects the result.",
+  "initialCandidateArtifact": "# Migration Plan\n\n- Produce a CSV export.\n- Validate CSV syntax.\n",
+  "correctedArtifact": "# Migration Plan\n\n- Produce a JSON export.\n- Validate the export with the existing importer without translation.\n",
+  "baselineDecision": {
+    "attackClasses": [
+      "coherent-wrong-outcome:unknown",
+      "silent-owner-decision:unknown",
+      "missing-observable-oracle:unknown",
+      "late-implementation-invalidation:unknown",
+      "internal-contradiction:unknown",
+      "unnecessary-scope:unknown"
+    ],
+    "candidateRef": "coherent-wrong-outcome-candidate-r1",
+    "caseId": "coherent-wrong-outcome",
+    "challengeCount": 0,
+    "correctionRef": "none",
+    "decisionSurface": "accepted-output-format-and-success-boundary",
+    "effectiveModel": "none",
+    "exactOwnerAgent": "none",
+    "invalidatedSurfaces": [],
+    "mainDispositions": [],
+    "materialFindings": [],
+    "originalRequestRef": "coherent-wrong-outcome-request-r1",
+    "reviewerAgent": "none",
+    "reviewerLaunchCount": 0,
+    "reviewerSessionRef": "none",
+    "semanticReadiness": "unknown",
+    "structuralReadiness": "passed",
+    "terminalReason": "bounded-contract-unavailable",
+    "terminalState": "unknown"
+  },
+  "candidateDecision": {
+    "attackClasses": [
+      "coherent-wrong-outcome:attempted",
+      "silent-owner-decision:attempted",
+      "missing-observable-oracle:attempted",
+      "late-implementation-invalidation:attempted",
+      "internal-contradiction:attempted",
+      "unnecessary-scope:attempted"
+    ],
+    "candidateRef": "coherent-wrong-outcome-candidate-r1",
+    "caseId": "coherent-wrong-outcome",
+    "challengeCount": 1,
+    "correctionRef": "coherent-wrong-outcome-correction-r1",
+    "decisionSurface": "accepted-output-format-and-success-boundary",
+    "effectiveModel": "xai/grok-4.6",
+    "exactOwnerAgent": "none",
+    "invalidatedSurfaces": [
+      "accepted-outcome",
+      "observable-proof"
+    ],
+    "mainDispositions": [
+      "BFR-001:confirmed"
+    ],
+    "materialFindings": [
+      "BFR-001"
+    ],
+    "originalRequestRef": "coherent-wrong-outcome-request-r1",
+    "reviewerAgent": "implementation-readiness-reviewer",
+    "reviewerLaunchCount": 1,
+    "reviewerSessionRef": "fresh-readiness-child-r2",
+    "semanticReadiness": "ready",
+    "structuralReadiness": "passed",
+    "terminalReason": "confirmed-correction-closed",
+    "terminalState": "closed"
+  }
+}

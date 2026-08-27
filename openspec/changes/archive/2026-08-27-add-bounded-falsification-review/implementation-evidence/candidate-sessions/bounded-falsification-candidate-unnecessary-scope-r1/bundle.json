@@ -1,0 +1,328 @@
+{
+  "byteLength": 50451,
+  "comparisonIdentity": "5554673332b8d8319e3965d4c88ca4d7db2e4936ebb6e4349d715e2321414ea1",
+  "evaluatorDigest": "d6ac59efb3182f93a91c922e9194aced71695f95e9daa326d02c78b6374c4903",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-unnecessary-scope-1",
+          "Read only cases.json and candidate.md, then select unnecessary-scope. Apply the loaded main planning-readiness and Practice Owner routing used by propose. Launch only implementation-readiness-reviewer once with originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, the current local envelope, six attack classes, and read-only boundaries; do not supply candidateDecision or correctedArtifact. Main independently reproduces any complete current material row. Only if the unrelated framework, service, and persistence scope is confirmed unnecessary, replace candidate.md exactly with correctedArtifact and copy candidateDecision exactly to decision.json. Do not write candidateDecision before artifact correction. Do not implement, ask questions, or perform external, credential, install, commit, remote, destructive, product, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787802275138,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04151cd3b001orMYPofmojY2ce\",\"messageID\":\"msg_04151b5f0001kPc5V3OpNRn4Cp\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802281561,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04151dace001XacC6fF9xDMg20\",\"messageID\":\"msg_04151b5f0001kPc5V3OpNRn4Cp\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"text\",\"text\":\"I’ll inspect only `cases.json` and `candidate.md`, select the `unnecessary-scope` case, and submit the current candidate once for the required read-only readiness challenge. Any reviewer finding will be independently checked against those two artifacts before the tightly scoped writes.\",\"time\":{\"start\":1787802278606,\"end\":1787802281522},\"metadata\":{\"openai\":{\"itemId\":\"msg_03ac4fa1a69ee690016a8fb2a8659487d2bfb8e5de3328d51c\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802281602,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_IhjaUXJHZQyeEuGDRr0TG4EY\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n15:         \\\"challengeCount\\\": 0,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n18:         \\\"effectiveModel\\\": \\\"none\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"none\\\",\\n25:         \\\"reviewerLaunchCount\\\": 0,\\n26:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"The candidate also introduces a plugin framework, registry service, and persistence layer not needed by the rule.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:attempted\\\",\\n36:           \\\"silent-owner-decision:attempted\\\",\\n37:           \\\"missing-observable-oracle:attempted\\\",\\n38:           \\\"late-implementation-invalidation:attempted\\\",\\n39:           \\\"internal-contradiction:attempted\\\",\\n40:           \\\"unnecessary-scope:attempted\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n44:         \\\"challengeCount\\\": 1,\\n45:         \\\"correctionRef\\\": \\\"unnecessary-scope-correction-r1\\\",\\n46:         \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n47:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n49:         \\\"invalidatedSurfaces\\\": [\\n50:           \\\"capability-scope\\\",\\n51:           \\\"task-scope\\\"\\n52:         ],\\n53:         \\\"mainDispositions\\\": [\\n54:           \\\"BFR-005:confirmed\\\"\\n55:         ],\\n56:         \\\"materialFindings\\\": [\\n57:           \\\"BFR-005\\\"\\n58:         ],\\n59:         \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n60:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n61:         \\\"reviewerLaunchCount\\\": 1,\\n62:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n63:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n64:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n65:         \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n66:         \\\"terminalState\\\": \\\"closed\\\"\\n67:       },\\n68:       \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n69:       \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n70:       \\\"correctedArtifact\\\": \\\"# Schema Validation Plan\\\\n\\\\n- Add the local validation rule to the existing validator.\\\\n- Prove rejection and acceptance through the current validator entrypoint.\\\\n\\\",\\n71:       \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n72:       \\\"initialCandidateArtifact\\\": \\\"# Schema Validation Plan\\\\n\\\\n- Add the local validation rule.\\\\n- Build a plugin framework.\\\\n- Add a registry service and persistence layer.\\\\n\\\",\\n73:       \\\"originalAcceptedRequest\\\": \\\"Plan one local schema validation rule and its focused regression proof.\\\",\\n74:       \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n75:       \\\"representedRisk\\\": \\\"Unrelated mechanisms multiply implementation and maintenance cost without supporting the accepted outcome.\\\",\\n76:       \\\"successBoundary\\\": \\\"The existing validator rejects the invalid field and accepts the valid field through its current entrypoint.\\\"\\n77:     }\\n78:   ],\\n79:   \\\"schemaVersion\\\": 1\\n80: }\\n81: \\n\\n(End of file - total 81 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"The candidate also introduces a plugin framework, registry service, and persistence layer not needed by the rule.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:attempted\\\",\\n          \\\"silent-owner-decision:attempted\\\",\\n          \\\"missing-observable-oracle:attempted\\\",\\n          \\\"late-implementation-invalidation:attempted\\\",\\n          \\\"internal-contradiction:attempted\\\",\\n          \\\"unnecessary-scope:attempted\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"unnecessary-scope-correction-r1\\\",\\n        \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [\\n          \\\"capability-scope\\\",\\n          \\\"task-scope\\\"\\n        ],\\n        \\\"mainDispositions\\\": [\\n          \\\"BFR-005:confirmed\\\"\\n        ],\\n        \\\"materialFindings\\\": [\\n          \\\"BFR-005\\\"\\n        ],\\n        \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 1,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n        \\\"terminalState\\\": \\\"closed\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n      \\\"correctedArtifact\\\": \\\"# Schema Validation Plan\\\\n\\\\n- Add the local validation rule to the existing validator.\\\\n- Prove rejection and acceptance through the current validator entrypoint.\\\\n\\\",\\n      \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n      \\\"initialCandidateArtifact\\\": \\\"# Schema Validation Plan\\\\n\\\\n- Add the local validation rule.\\\\n- Build a plugin framework.\\\\n- Add a registry service and persistence layer.\\\\n\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Plan one local schema validation rule and its focused regression proof.\\\",\\n      \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"Unrelated mechanisms multiply implementation and maintenance cost without supporting the accepted outcome.\\\",\\n      \\\"successBoundary\\\": \\\"The existing validator rejects the invalid field and accepts the valid field through its current entrypoint.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":81,\"totalLines\":81,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-unnecessary-scope-GJ6Ak6\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787802281540,\"end\":1787802281596}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03ac4fa1a69ee690016a8fb2ab44d487d28b9f8a60c0bf0d5d\"}},\"id\":\"prt_04151e637001idXQAPIW4ERWoC\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"messageID\":\"msg_04151b5f0001kPc5V3OpNRn4Cp\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802281644,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_NeIj0lwNMu19Hhvo7TT3Ey5a\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\"},\"output\":\"<path><proof-root>\\\\fixture\\\\candidate.md</path>\\n<type>file</type>\\n<content>\\n1: # Schema Validation Plan\\n2: \\n3: - Add the local validation rule.\\n4: - Build a plugin framework.\\n5: - Add a registry service and persistence layer.\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"# Schema Validation Plan\\n\\n- Add the local validation rule.\\n- Build a plugin framework.\\n- Add a registry service and persistence layer.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"text\":\"# Schema Validation Plan\\n\\n- Add the local validation rule.\\n- Build a plugin framework.\\n- Add a registry service and persistence layer.\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-unnecessary-scope-GJ6Ak6\\\\fixture\\\\candidate.md\",\"time\":{\"start\":1787802281551,\"end\":1787802281614}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03ac4fa1a69ee690016a8fb2ab44e087d28d49a02aef460a3a\"}},\"id\":\"prt_04151e648001A5GX5zGMuwDgzL\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"messageID\":\"msg_04151b5f0001kPc5V3OpNRn4Cp\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802281644,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04151e695001hpT46RKizpSACF\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04151b5f0001kPc5V3OpNRn4Cp\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-finish\",\"tokens\":{\"total\":14794,\"input\":14428,\"output\":173,\"reasoning\":193,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802289488,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04152054b0011uCQU3dwxyxbas\",\"messageID\":\"msg_04151e6a30012oXmwP6V9eS2O7\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802298478,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_0415225be001d3gTn0iom6YucK\",\"messageID\":\"msg_04151e6a30012oXmwP6V9eS2O7\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"text\",\"text\":\"The selected candidate expands a one-rule validator change into three unrelated mechanisms. I’m now challenging whether that scope supports the stated current-entrypoint outcome, with all six required attack classes and no expected correction or decision supplied to the reviewer.\",\"time\":{\"start\":1787802297790,\"end\":1787802298471},\"metadata\":{\"openai\":{\"itemId\":\"msg_044800637d295b4a016a8fb2bb900487d2913aa71cf0e456e9\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802435667,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_17vRvvCRPV75Qz7FZYE0Ow6P\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Challenge schema plan readiness\",\"prompt\":\"Role: implementation-readiness-reviewer, acting once as the read-only Practice Owner for semantic implementation-readiness challenge.\\n\\nOutcome/value objective: Challenge whether the supplied planning artifact is semantically ready for a capable cold-context implementer to deliver the original accepted outcome without unnecessary scope or an unresolved owner decision. This is review only; do not implement or mutate anything.\\n\\noriginalAcceptedRequest (independently supplied): \\\"Plan one local schema validation rule and its focused regression proof.\\\"\\n\\nsuccessBoundary: \\\"The existing validator rejects the invalid field and accepts the valid field through its current entrypoint.\\\"\\n\\ncandidateArtifact (current candidate, supplied separately from the request):\\n# Schema Validation Plan\\n\\n- Add the local validation rule.\\n- Build a plugin framework.\\n- Add a registry service and persistence layer.\\n\\nrepresentedRisk: \\\"Unrelated mechanisms multiply implementation and maintenance cost without supporting the accepted outcome.\\\"\\n\\nCurrent local envelope: This is decision-material planning for one local validation-rule increment. The outcome is bounded to the existing validator and its current entrypoint, with focused rejection and acceptance proof. Non-goals include implementation, a new extension architecture, new services, persistence, deployment, installation, credentials, remote activity, destructive activity, and changes to product/public API/protocol/persisted-data/security/privacy/authorization/legal semantics. No external access is allowed or needed.\\n\\nAttack exactly these six classes, each explicitly: coherent-wrong-outcome; silent-owner-decision; missing-observable-oracle; late-implementation-invalidation; internal-contradiction; unnecessary-scope. Test realistic current-envelope failure paths, especially whether each proposed mechanism is required by the original request or success boundary.\\n\\nObserved state/evidence: The original request, success boundary, represented risk, local envelope, and complete current candidate are provided above. No implementation or runtime proof exists or is in scope. Assumptions/unknowns: repository internals beyond these supplied facts are unknown and must not be invented; no need for the added mechanisms has been established.\\n\\nDeliverable: Return one evidence-backed readiness risk matrix containing only current, reachable material findings, or `no-material-finding`. For every finding include a stable Risk ID; requirement/invariant; reachable scenario and enforced envelope; candidate location or quoted line evidence; business consequence; likelihood or `unknown`; confidence; a reproduction procedure feasible from the supplied artifacts; the smallest mitigation note; inspected candidate reference `unnecessary-scope-candidate-r1`; and Effective Model. Explicitly record the result of all six attack classes. Identify any decision surface invalidated by a complete material finding. Do not give an acceptance/rejection verdict or lifecycle-blocker field. Do not author work beyond the smallest mitigation note.\\n\\nIn scope/read scope: Analyze only the text and facts in this brief. No additional file, repository, web, network, credential, or environment access is needed.\\n\\nWrite scope: None. Read-only review; return the report only in your final response.\\n\\nForbidden actions: Do not ask the user questions; do not dispatch or resume agents; do not mutate source, config, tests, instructions, candidate artifacts, or decision files; do not implement; do not commit; do not perform external, credential, install, remote, destructive, product, protected, release, or deployment actions. Do not infer absent requirements.\\n\\nRequired invariants/resolved decisions: Preserve the accepted one-rule/current-validator/current-entrypoint boundary. Evidence is not authority. Unnecessary capability must not be treated as implicitly accepted. Review only the candidate supplied above.\\n\\nInputs/dependencies: All inputs are in this brief; no other dependency is required.\\n\\nObservable acceptance/exact checks: (1) all six named attacks are visibly attempted; (2) any row is traceable to exact supplied candidate text and the accepted outcome; (3) the report distinguishes evidence from unknowns; (4) only current material scope/readiness risks are returned; (5) candidate reference and Effective Model are present; (6) no mutation occurs.\\n\\nReturn evidence: Provide the complete report in one final message, including the six attack outcomes and any risk rows sufficient for main to independently reproduce against the supplied request, boundary, and candidate.\\n\\nBlocker/escalation policy: Do not ask questions. If the supplied evidence is insufficient, record the narrow evidence gap as a risk row or return `no-material-finding` as appropriate; do not expand scope or access other artifacts.\"},\"output\":\"<task id=\\\"ses_fbead94d5ffesdPzjR00j2o6xR\\\" state=\\\"completed\\\">\\n<task_result>\\n**Candidate Reference / RC:** `unnecessary-scope-candidate-r1`\\n\\n**Effective Model:** `xai/grok-4.6`\\n\\n**Practice Observation:** `findings-reported`\\n\\nThe independently supplied accepted outcome is one local schema validation rule plus focused regression proof: the existing validator rejects the invalid field and accepts the valid field through its current entrypoint. The candidate is a three-bullet plan. No implementation, runtime proof, or repository internals were in scope; none were invented.\\n\\n---\\n\\n## Falsification Matrix\\n\\n| Attack class | Result | Evidence | Admitted Risk IDs |\\n|---|---|---|---|\\n| coherent-wrong-outcome | attempted | Candidate is a coherent “validation platform” plan (local rule + plugin framework + registry/persistence). That is not the accepted increment (one rule on the **existing** validator via its **current** entrypoint). Same extra bullets as unnecessary-scope; no separate row. | `UNNECESSARY-SCOPE-01` |\\n| silent-owner-decision | attempted | Plugin framework, registry service, and persistence would be owner-protected architecture/persisted-data decisions. Envelope already lists those as non-goals. Minting a “decide the plugin/persistence design” row would expand scope; the material defect is that those mechanisms are in the plan at all. | `UNNECESSARY-SCOPE-01` |\\n| missing-observable-oracle | attempted | Original request requires focused regression proof. Success boundary is reject-invalid / accept-valid through the current entrypoint. Candidate has no proof, entrypoint, or accept/reject oracle. | `MISSING-ORACLE-01` |\\n| late-implementation-invalidation | attempted | Executing bullets 2–3 first would introduce a new extension/service/persistence path and can replace or bypass the current entrypoint, invalidating the accepted proof boundary during implementation. Same candidate text as unnecessary-scope; no separate row. | `UNNECESSARY-SCOPE-01` |\\n| internal-contradiction | attempted | Candidate bullets 2–3 contradict the supplied envelope non-goals (no new extension architecture, no new services, no persistence). Candidate does not contradict itself internally. Same evidence as unnecessary-scope; no separate row. | `UNNECESSARY-SCOPE-01` |\\n| unnecessary-scope | attempted | “Build a plugin framework” and “Add a registry service and persistence layer” are not required by the original request or success boundary. No need for them is established. | `UNNECESSARY-SCOPE-01` |\\n\\n---\\n\\n## Risk Matrix\\n\\n### `UNNECESSARY-SCOPE-01`\\n\\n- **Requirement / invariant:** One local schema validation rule on the existing validator through its current entrypoint. Non-goals include a new extension architecture, new services, and persistence.\\n- **Reachable scenario / enforced envelope:** A cold-context implementer treats the three-bullet plan as the increment and builds a plugin framework plus registry/persistence in addition to (or instead of) a single local rule. Envelope is local planning only; no deployment, credentials, remote, or product-API change is authorized.\\n- **Evidence:** Candidate lines: “Build a plugin framework.” “Add a registry service and persistence layer.” Original request and success boundary name neither mechanism. Envelope lists new extension architecture, new services, and persistence as non-goals. Represented risk matches: unrelated mechanisms multiply cost without supporting the accepted outcome.\\n- **Business consequence:** Implementation and maintenance cost multiply for work that does not deliver the accepted one-rule/current-entrypoint outcome; work can escape into a new architecture and persisted-data path.\\n- **Likelihood:** high\\n- **Confidence:** high\\n- **Reproduction:** Compare original request (“one local schema validation rule and its focused regression proof”) and success boundary (“existing validator… current entrypoint”) to candidate bullets 2–3; those bullets have no supporting requirement.\\n- **Smallest mitigation note:** Remove the plugin framework, registry service, and persistence layer from this increment.\\n- **Candidate Reference / RC:** `unnecessary-scope-candidate-r1`\\n- **Effective Model:** `xai/grok-4.6`\\n\\n**Invalidated decision surface:** Treating a plugin framework, registry service, or persistence layer as in-scope work for this increment.\\n\\n### `MISSING-ORACLE-01`\\n\\n- **Requirement / invariant:** Focused regression proof that the existing validator rejects the invalid field and accepts the valid field through its current entrypoint. Behavior-changing planning must define that observable happy-path gate before mutation.\\n- **Reachable scenario / enforced envelope:** An implementer completes only “Add the local validation rule” with no named entrypoint and no reject/accept observation. Current envelope is the existing validator and its current entrypoint.\\n- **Evidence:** Candidate contains only “Add the local validation rule.” It does not mention proof, current entrypoint, rejection of the invalid field, or acceptance of the valid field. Those oracles exist only in the independently supplied request/boundary, not in the candidate.\\n- **Business consequence:** No independently checkable acceptance gate; a completed change cannot be shown to meet the success boundary.\\n- **Likelihood:** high\\n- **Confidence:** high\\n- **Reproduction:** Read the candidate in isolation; there is no observable reject/accept/current-entrypoint check to execute.\\n- **Smallest mitigation note:** Add the focused proof boundary: existing validator current entrypoint rejects the invalid field and accepts the valid field.\\n- **Candidate Reference / RC:** `unnecessary-scope-candidate-r1`\\n- **Effective Model:** `xai/grok-4.6`\\n\\n**Invalidated decision surface:** The candidate’s implicit claim that “Add the local validation rule” is a complete, provable increment.\\n\\n---\\n\\n## Readiness Matrix\\n\\n| Requirement / decision | Evidence / gap |\\n|---|---|\\n| One local validation rule | Candidate bullet 1 states it; no extra rule semantics were supplied in the original request. |\\n| Use existing validator / current entrypoint | Gap: not in the candidate; bullets 2–3 point at a new framework/service path. |\\n| Focused regression proof (reject invalid, accept valid) | Gap: absent from the candidate (`MISSING-ORACLE-01`). |\\n| Non-goal: no new extension architecture | Contradicted by “Build a plugin framework.” (`UNNECESSARY-SCOPE-01`) |\\n| Non-goal: no new services / persistence | Contradicted by “Add a registry service and persistence layer.” (`UNNECESSARY-SCOPE-01`) |\\n| Owner decisions on persistence / public-API / product semantics | Not required if extra mechanisms are dropped; unresolved only if those bullets remain. |\\n| Project-native validation commands / source paths | Unknown; not supplied; not invented. Not a current material row at this planning grain. |\\n| Profile | Decision-material planning for one local increment (Material planning frame). |\\n\\n---\\n\\n## Evidence Gaps And Residual Risks\\n\\n- Unresolved owner decision if bullets 2–3 are kept (plugin architecture, registry service, persistence/persisted-data). That surface is invalidated for this increment by `UNNECESSARY-SCOPE-01`; it is not a decision that needs to be made to proceed with the accepted outcome.\\n- Missing proof boundary in the candidate (`MISSING-ORACLE-01`).\\n- Repository internals (validator module, exact field name, project-native proof command) were not supplied and were not invented; they are not required to establish the two material rows above.\\n- Future-scope / polish: none beyond the extra mechanisms already reported.\\n- Effective model is known: `xai/grok-4.6`.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"sessionId\":\"ses_fbead94d5ffesdPzjR00j2o6xR\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge schema plan readiness\",\"time\":{\"start\":1787802315568,\"end\":1787802435644}},\"metadata\":{\"openai\":{\"itemId\":\"fc_044800637d295b4a016a8fb2bc4a0087d2854dd136892e1fcb\"}},\"id\":\"prt_04152286b001ycz4TMsr1awAfZ\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"messageID\":\"msg_04151e6a30012oXmwP6V9eS2O7\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802435667,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_041544040001pp1poABX2sdVt6\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04151e6a30012oXmwP6V9eS2O7\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-finish\",\"tokens\":{\"total\":17384,\"input\":2112,\"output\":1010,\"reasoning\":438,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802437275,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_041544694001DRY4GJo4YZqFCB\",\"messageID\":\"msg_04154404c001QUMGwvQvlrNtkF\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802447117,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_0415467a3001wmdiiA4pxIC2PN\",\"messageID\":\"msg_04154404c001QUMGwvQvlrNtkF\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"text\",\"text\":\"Independent reproduction confirms both current rows: the original request and success boundary require only the existing validator rule plus reject/accept proof, while the candidate’s framework, registry service, and persistence layer support neither requirement; the candidate also omits the proof oracle. I’ll first replace `candidate.md` with the case’s exact corrected artifact, then write the case’s exact decision object to `decision.json`.\",\"time\":{\"start\":1787802445731,\"end\":1787802447113},\"metadata\":{\"openai\":{\"itemId\":\"msg_0c3732f7dfce176b016a8fb34f7bf087d2a8b7b120cf4f6815\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802449265,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_BsSJpOBEeXLpcKE71ZBuHiU9\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\fixture\\\\candidate.md\\n@@\\n # Schema Validation Plan\\n \\n-- Add the local validation rule.\\n-- Build a plugin framework.\\n-- Add a registry service and persistence layer.\\n+- Add the local validation rule to the existing validator.\\n+- Prove rejection and acceptance through the current validator entrypoint.\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-unnecessary-scope-GJ6Ak6/fixture/candidate.md\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,5 +1,4 @@\\n # Schema Validation Plan\\n \\n-- Add the local validation rule.\\n-- Build a plugin framework.\\n-- Add a registry service and persistence layer.\\n+- Add the local validation rule to the existing validator.\\n+- Prove rejection and acceptance through the current validator entrypoint.\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-unnecessary-scope-GJ6Ak6/fixture/candidate.md\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,5 +1,4 @@\\n # Schema Validation Plan\\n \\n-- Add the local validation rule.\\n-- Build a plugin framework.\\n-- Add a registry service and persistence layer.\\n+- Add the local validation rule to the existing validator.\\n+- Prove rejection and acceptance through the current validator entrypoint.\\n\",\"additions\":2,\"deletions\":3}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-unnecessary-scope-GJ6Ak6/fixture/candidate.md\",\"time\":{\"start\":1787802449241,\"end\":1787802449262}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c3732f7dfce176b016a8fb350f0c887d2b4c77c7a46f7bb24\"}},\"id\":\"prt_041546d0c001IpVi5OgdDDNhr3\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"messageID\":\"msg_04154404c001QUMGwvQvlrNtkF\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802449314,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_041547591001EvBnxHxYKopB2q\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04154404c001QUMGwvQvlrNtkF\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-finish\",\"tokens\":{\"total\":19680,\"input\":4171,\"output\":211,\"reasoning\":450,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802453440,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_0415485b8001L8VNYmWvhsSYvd\",\"messageID\":\"msg_04154759c0015rp3jQBgyrqaJD\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802462668,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_M929ebMN0fxg0h4TkQ2c3SBW\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"unnecessary-scope-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"capability-scope\\\",\\n+    \\\"task-scope\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-005:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-005\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-unnecessary-scope-GJ6Ak6/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"unnecessary-scope-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"capability-scope\\\",\\n+    \\\"task-scope\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-005:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-005\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-unnecessary-scope-GJ6Ak6/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"unnecessary-scope-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"unnecessary-scope\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"unnecessary-scope-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"minimum-local-validation-change\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"capability-scope\\\",\\n+    \\\"task-scope\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-005:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-005\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"unnecessary-scope-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":35,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-unnecessary-scope-GJ6Ak6/fixture/decision.json\",\"time\":{\"start\":1787802462660,\"end\":1787802462665}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02f819091f7e893a016a8fb358a5e887d2906f812fc16234a6\"}},\"id\":\"prt_041548b44001wtjW9CVDOVS5Hj\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"messageID\":\"msg_04154759c0015rp3jQBgyrqaJD\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802462742,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04154aa060016Qg0H4H3MDh2tY\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04154759c0015rp3jQBgyrqaJD\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-finish\",\"tokens\":{\"total\":20239,\"input\":1807,\"output\":452,\"reasoning\":60,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802465669,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04154b57e001d5Nnm8i78JAazd\",\"messageID\":\"msg_04154aa0f001xQv63Mc6FDaotT\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802471443,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04154c48d001a6OgFmMHoeGVkP\",\"messageID\":\"msg_04154aa0f001xQv63Mc6FDaotT\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"text\",\"text\":\"Outcome: working\\n\\n- Launched `implementation-readiness-reviewer` exactly once.\\n- Independently confirmed the framework, registry service, and persistence layer were unnecessary.\\n- Replaced `candidate.md` exactly with `correctedArtifact`.\\n- Created `decision.json` exactly from `candidateDecision`, after correcting the artifact.\\n- No implementation or external/protected actions performed.\",\"time\":{\"start\":1787802469517,\"end\":1787802471441},\"metadata\":{\"openai\":{\"itemId\":\"msg_044a51b2bfb7533e016a8fb3673fb087d2a598449d9693cec8\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802471594,\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"part\":{\"id\":\"prt_04154cc9a001bpe884m4aOTykQ\",\"reason\":\"stop\",\"messageID\":\"msg_04154aa0f001xQv63Mc6FDaotT\",\"sessionID\":\"ses_fbeae4d11ffem1iwm2Zf0bhaiT\",\"type\":\"step-finish\",\"tokens\":{\"total\":20514,\"input\":1342,\"output\":80,\"reasoning\":148,\"cache\":{\"write\":0,\"read\":18944}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "e51a977524a1c9c3a3ad1a95401b42b66193218700542f9866ef14403bdc283c",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "2ca50b82cea46f8e9837c84b12d964525c1ed3969d0f4cb1359794f35372bf1f",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "candidate.md",
+          "sha256": "714293f4e0d47b553925233575007e18fcf2c45907f5c72216d6dee8d9c0c1b2"
+        },
+        {
+          "path": "cases.json",
+          "sha256": "6d16f2aa4bd2f6e59d75b7a24edb3cdd9d289c1cd815fcc75c5a9f9653ff7d8d"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "002a33417122a208736658250e89b620a04c784ff81150f8565fab1f33299692"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "hashes": {
+        "sample": "4f72f4ae34d851d37dd9b74427413efb43a9bc1168878e78c9f1bf21e290fff1"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "unnecessary-scope"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:attempted\",\"silent-owner-decision:attempted\",\"missing-observable-oracle:attempted\",\"late-implementation-invalidation:attempted\",\"internal-contradiction:attempted\",\"unnecessary-scope:attempted\"],\"candidateRef\":\"unnecessary-scope-candidate-r1\",\"caseId\":\"unnecessary-scope\",\"challengeCount\":1,\"correctionRef\":\"unnecessary-scope-correction-r1\",\"decisionSurface\":\"minimum-local-validation-change\",\"effectiveModel\":\"xai/grok-4.6/high\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[\"capability-scope\",\"task-scope\"],\"mainDispositions\":[\"BFR-005:confirmed\"],\"materialFindings\":[\"BFR-005\"],\"originalRequestRef\":\"unnecessary-scope-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":1,\"reviewerSessionRef\":\"fresh-readiness-child-r1\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"confirmed-correction-closed\",\"terminalState\":\"closed\"}\n"
+      },
+      "requestSha256": "5cbd771b8b778932c354480eb5ab55f763137c63c87998a317fa6b4298e16a7f",
+      "sampleIndex": 1,
+      "scenarioId": "unnecessary-scope",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "8d6823d8ae0fb2df1d4a03b474a2d703338ab7d13481affc18b321f6c442526e",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "d01d448e7f2507221cc601918a3e9398768c8f1a097d70a0b3ee6e8f6d567d13",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "4925365037a60f43c65a75ea78b259e1d530e6f3a41181b3a5a1b0f406cba1e8",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "122436d5aadcd7c4cb751b9fadfab778df5a02f1ffea868e1f97f64ae17fd680",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "a58560707a7e5a7f8974e1b865f26bd52f9c22f65973e0dac761f9479027a959",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "2ca50b82cea46f8e9837c84b12d964525c1ed3969d0f4cb1359794f35372bf1f",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "boundedFalsificationOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "unchanged-repeat-candidate-r1",
+        "caseId": "unchanged-repeat",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "unchanged-terminal-episode-reuse",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "unchanged-repeat-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "failures": [],
+      "memberId": "unchanged-repeat",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "unchanged-repeat-candidate-r1",
+        "caseId": "unchanged-repeat",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "unchanged-terminal-episode-reuse",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "unchanged-repeat-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unchanged-repeat"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "unchanged-repeat-candidate-r1",
+        "caseId": "unchanged-repeat",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "unchanged-terminal-episode-reuse",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "unchanged-repeat-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "reused-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "unchanged-terminal-reused",
+        "terminalState": "closed"
+      },
+      "failures": [],
+      "memberId": "unchanged-repeat",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "unchanged-repeat-candidate-r1",
+        "caseId": "unchanged-repeat",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "unchanged-terminal-episode-reuse",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "unchanged-repeat-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "reused-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "unchanged-terminal-reused",
+        "terminalState": "closed"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unchanged-repeat"
+    }
+  ],
+  "decisionOracles": [],
+  "digest": "718b42f194868c35c784edeaff7b2e714a7a2c7acd8b0a6ec2150ffa7334cc9a",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317",
+      "candidate": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095"
+    },
+    "terminalReplay": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "unchanged-repeat": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 2
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "10e0d9a421d472d52c448303fed3cb659ad88d1a5e5703ea514766b67556bfd7",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "environment:initialFixtureDigest,opencodeVersion"
+    ],
+    "scenarioDigest": "214c446a0e12604fe74256c86b1f39548d197474c185356d51603e33386d91cc",
+    "sourceDigest": "af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a",
+    "status": "blocked",
+    "digest": "369fa16126827419b00cd8285f1ba9d2e2335053b093e48200b70de1fffd2b67",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "the exercised configured model and selected bounded-falsification scenarios (unchanged-repeat) cover only their 1 explicit members under the recorded identities"
+}

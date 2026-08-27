@@ -1,0 +1,760 @@
+{
+  "byteLength": 62847,
+  "comparisonIdentity": "428711b9cc14b50212b160eaa4c8118135749c5d3be046155daf5824e47e8997",
+  "evaluatorDigest": "95e901a457cbeb097785ed6a56fe9901715a1ee9af392416148b18b18a89dc43",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-mismatch-unique-recovery-1",
+          "Read only cases/mismatch-unique-recovery.json and the artifact paths it names. Use the loaded foundation-integrity owner and recovery procedure only if they exist; do not infer a missing procedure from this request. If they are unavailable, make no owner or skill call and no artifact mutation; copy fallbackDecision exactly to decision.json and do not invent alternate values. Otherwise apply the loaded routing, reproduction, correction, sweep, re-review, and termination contracts. A uniquely determined correction must write facts.correctedState to facts.correctionPath while preserving every other artifact. Use incident ID fi-mismatch-unique-recovery-r1. Write decision.json with exactly caseId, correctedReviewCount, incidentId, initialReviewCount, ownerAgent, recoverySkillCount, reproductionDisposition, terminalRows, and terminalState. terminalRows must follow memberIds and use supported or unknown. Do not ask questions, access external directories or credentials, install, commit, or perform remote, destructive, or protected actions."
+        ],
+        "status": 1,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787781259280,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040112008001CPiSE11qyLRXyu\",\"messageID\":\"msg_04010fe0e001nkEglFjkrvcfkT\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787781261430,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_04011285b001Q5zE6oWTzahqob\",\"messageID\":\"msg_04010fe0e001nkEglFjkrvcfkT\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"text\",\"text\":\"I’ll inspect the case definition first, then limit all further reads and writes to the artifact paths it explicitly names.\",\"time\":{\"start\":1787781261404,\"end\":1787781261418},\"metadata\":{\"openai\":{\"itemId\":\"msg_0f70349578504701016a8f608eb0ec87d2b48f7c888ed6a989\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781262392,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_ViXZ9qENuRuQGlGWJfs0WGYb\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases\\\\mismatch-unique-recovery.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases\\\\mismatch-unique-recovery.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"caseId\\\": \\\"mismatch-unique-recovery\\\",\\n3:   \\\"memberIds\\\": [\\\"current-cross-family-mismatch\\\", \\\"confirmed-unique-correction\\\", \\\"archive-preservation\\\"],\\n4:   \\\"fallbackDecision\\\": {\\n5:     \\\"caseId\\\": \\\"mismatch-unique-recovery\\\",\\n6:     \\\"correctedReviewCount\\\": 0,\\n7:     \\\"incidentId\\\": \\\"none\\\",\\n8:     \\\"initialReviewCount\\\": 0,\\n9:     \\\"ownerAgent\\\": \\\"none\\\",\\n10:     \\\"recoverySkillCount\\\": 0,\\n11:     \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n12:     \\\"terminalRows\\\": [\\n13:       { \\\"memberId\\\": \\\"current-cross-family-mismatch\\\", \\\"status\\\": \\\"unknown\\\" },\\n14:       { \\\"memberId\\\": \\\"confirmed-unique-correction\\\", \\\"status\\\": \\\"unknown\\\" },\\n15:       { \\\"memberId\\\": \\\"archive-preservation\\\", \\\"status\\\": \\\"unknown\\\" }\\n16:     ],\\n17:     \\\"terminalState\\\": \\\"unavailable\\\"\\n18:   },\\n19:   \\\"facts\\\": {\\n20:     \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n21:     \\\"currentOracle\\\": \\\"gateway-v2-current-oracle\\\",\\n22:     \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\",\\n23:     \\\"localEvidence\\\": \\\"green-exact-transport-bytes\\\",\\n24:     \\\"uniqueCurrentWorkload\\\": \\\"current-profile-a-workload\\\",\\n25:     \\\"protectedChoiceRequired\\\": false,\\n26:     \\\"correctionPath\\\": \\\"state/mismatch-unique-recovery.json\\\",\\n27:     \\\"correctedState\\\": {\\n28:       \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n29:       \\\"claimCeiling\\\": \\\"current\\\",\\n30:       \\\"incidentState\\\": \\\"closed\\\",\\n31:       \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n32:       \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n33:     },\\n34:     \\\"archiveMustRemainUnchanged\\\": \\\"state/archive-record.json\\\"\\n35:   },\\n36:   \\\"artifacts\\\": [\\n37:     { \\\"artifactId\\\": \\\"mismatch-plan\\\", \\\"path\\\": \\\"state/mismatch-unique-recovery.json\\\" },\\n38:     { \\\"artifactId\\\": \\\"archived-result\\\", \\\"path\\\": \\\"state/archive-record.json\\\" },\\n39:     { \\\"artifactId\\\": \\\"unrelated-active-change\\\", \\\"path\\\": \\\"state/unrelated-active-change.json\\\" }\\n40:   ]\\n41: }\\n\\n(End of file - total 41 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"caseId\\\": \\\"mismatch-unique-recovery\\\",\\n  \\\"memberIds\\\": [\\\"current-cross-family-mismatch\\\", \\\"confirmed-unique-correction\\\", \\\"archive-preservation\\\"],\\n  \\\"fallbackDecision\\\": {\\n    \\\"caseId\\\": \\\"mismatch-unique-recovery\\\",\\n    \\\"correctedReviewCount\\\": 0,\\n    \\\"incidentId\\\": \\\"none\\\",\\n    \\\"initialReviewCount\\\": 0,\\n    \\\"ownerAgent\\\": \\\"none\\\",\\n    \\\"recoverySkillCount\\\": 0,\\n    \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n    \\\"terminalRows\\\": [\\n      { \\\"memberId\\\": \\\"current-cross-family-mismatch\\\", \\\"status\\\": \\\"unknown\\\" },\\n      { \\\"memberId\\\": \\\"confirmed-unique-correction\\\", \\\"status\\\": \\\"unknown\\\" },\\n      { \\\"memberId\\\": \\\"archive-preservation\\\", \\\"status\\\": \\\"unknown\\\" }\\n    ],\\n    \\\"terminalState\\\": \\\"unavailable\\\"\\n  },\\n  \\\"facts\\\": {\\n    \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases\\\\mismatch-unique-recovery.json\",\"text\":\"{\\n  \\\"caseId\\\": \\\"mismatch-unique-recovery\\\",\\n  \\\"memberIds\\\": [\\\"current-cross-family-mismatch\\\", \\\"confirmed-unique-correction\\\", \\\"archive-preservation\\\"],\\n  \\\"fallbackDecision\\\": {\\n    \\\"caseId\\\": \\\"mismatch-unique-recovery\\\",\\n    \\\"correctedReviewCount\\\": 0,\\n    \\\"incidentId\\\": \\\"none\\\",\\n    \\\"initialReviewCount\\\": 0,\\n    \\\"ownerAgent\\\": \\\"none\\\",\\n    \\\"recoverySkillCount\\\": 0,\\n    \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n    \\\"terminalRows\\\": [\\n      { \\\"memberId\\\": \\\"current-cross-family-mismatch\\\", \\\"status\\\": \\\"unknown\\\" },\\n      { \\\"memberId\\\": \\\"confirmed-unique-correction\\\", \\\"status\\\": \\\"unknown\\\" },\\n      { \\\"memberId\\\": \\\"archive-preservation\\\", \\\"status\\\": \\\"unknown\\\" }\\n    ],\\n    \\\"terminalState\\\": \\\"unavailable\\\"\\n  },\\n  \\\"facts\\\": {\\n    \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n    \\\"currentOracle\\\": \\\"gateway-v2-current-oracle\\\",\\n    \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\",\\n    \\\"localEvidence\\\": \\\"green-exact-transport-bytes\\\",\\n    \\\"uniqueCurrentWorkload\\\": \\\"current-profile-a-workload\\\",\\n    \\\"protectedChoiceRequired\\\": false,\\n    \\\"correctionPath\\\": \\\"state/mismatch-unique-recovery.json\\\",\\n    \\\"correctedState\\\": {\\n      \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n      \\\"claimCeiling\\\": \\\"current\\\",\\n      \\\"incidentState\\\": \\\"closed\\\",\\n      \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n      \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n    },\\n    \\\"archiveMustRemainUnchanged\\\": \\\"state/archive-record.json\\\"\\n  },\\n  \\\"artifacts\\\": [\\n    { \\\"artifactId\\\": \\\"mismatch-plan\\\", \\\"path\\\": \\\"state/mismatch-unique-recovery.json\\\" },\\n    { \\\"artifactId\\\": \\\"archived-result\\\", \\\"path\\\": \\\"state/archive-record.json\\\" },\\n    { \\\"artifactId\\\": \\\"unrelated-active-change\\\", \\\"path\\\": \\\"state/unrelated-active-change.json\\\" }\\n  ]\\n}\",\"lineStart\":1,\"lineEnd\":41,\"totalLines\":41,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-mismatch-unique-recovery-425Cid\\\\fixture\\\\cases\\\\mismatch-unique-recovery.json\",\"time\":{\"start\":1787781262295,\"end\":1787781262362}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0f70349578504701016a8f608ebc3c87d29d2a3de921f4eb80\"}},\"id\":\"prt_04011286f0013c1DvOfeDHtkOM\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_04010fe0e001nkEglFjkrvcfkT\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787781262392,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040112c21001D1q9wqUrqydmx2\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04010fe0e001nkEglFjkrvcfkT\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-finish\",\"tokens\":{\"total\":14169,\"input\":13991,\"output\":88,\"reasoning\":90,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787781263631,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040113108001jQXrhsktcjVWm3\",\"messageID\":\"msg_040112c2f00101RCBJNTyFyJJx\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781269173,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_k3kPIufyPPiMhj1MrqKGZ05T\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n3:   \\\"claimCeiling\\\": \\\"current\\\",\\n4:   \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n  \\\"claimCeiling\\\": \\\"current\\\",\\n  \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\",\"text\":\"{\\n  \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n  \\\"claimCeiling\\\": \\\"current\\\",\\n  \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-mismatch-unique-recovery-425Cid\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\",\"time\":{\"start\":1787781269095,\"end\":1787781269169}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05488bd10054bd3d016a8f6096519487d2bd0c9a6a7458a408\"}},\"id\":\"prt_04011465c001fSTCBVhVXWat9Q\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_040112c2f00101RCBJNTyFyJJx\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781269192,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_VgMHqqiYme6Jnj3OTocNSPWv\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\archive-record.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n3:   \\\"immutable\\\": true,\\n4:   \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\",\"text\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-mismatch-unique-recovery-425Cid\\\\fixture\\\\state\\\\archive-record.json\",\"time\":{\"start\":1787781269118,\"end\":1787781269186}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05488bd10054bd3d016a8f609651a887d2acf6baef1db61703\"}},\"id\":\"prt_04011466a00113LpC246fth1wR\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_040112c2f00101RCBJNTyFyJJx\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781269229,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_ZLzTj6AJDPc8it8o7UUA2twb\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"changeId\\\": \\\"unrelated-change\\\",\\n3:   \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n4:   \\\"status\\\": \\\"unchanged\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"text\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-mismatch-unique-recovery-425Cid\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"time\":{\"start\":1787781269130,\"end\":1787781269204}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05488bd10054bd3d016a8f609651b087d2b0d1b88275993fc8\"}},\"id\":\"prt_040114682001evTjAC7IKFpSdK\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_040112c2f00101RCBJNTyFyJJx\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787781269229,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_0401146d9001eywLmMGVU8lOyk\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040112c2f00101RCBJNTyFyJJx\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-finish\",\"tokens\":{\"total\":15068,\"input\":948,\"output\":172,\"reasoning\":124,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787781270832,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040114d27001PbCJzJuiHRwvYe\",\"messageID\":\"msg_0401146e4001R1I0CwmWy2dih6\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787781275073,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040115b2c001BNajRiUfIwIhKa\",\"messageID\":\"msg_0401146e4001R1I0CwmWy2dih6\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"text\",\"text\":\"The current artifact binds the accepted current profile to a legacy profile-B workload while the case identifies profile A as the unique current workload. I’m invoking the loaded foundation owner for the required fresh, read-only initial review before any correction.\",\"time\":{\"start\":1787781274412,\"end\":1787781275065},\"metadata\":{\"openai\":{\"itemId\":\"msg_04fa7bc605a66ecc016a8f609b945087d2b820b4bb792ea1bd\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781388528,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_dzdrRqksEouJORfMbCfqOSAt\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"foundation-integrity-reviewer\",\"description\":\"Review current foundation mismatch\",\"prompt\":\"Role: fresh read-only Foundation Integrity Practice Owner.\\nOutcome/value objective: review the current foundation binding for case `mismatch-unique-recovery` before any mutation and report whether current evidence supports a durable identity mismatch requiring recovery.\\nObserved state/evidence: workspace root is `<proof-root>\\\\fixture`. The case at `cases/mismatch-unique-recovery.json` states acceptedOutcome=`gateway-v2-current-profile`, currentOracle=`gateway-v2-current-oracle`, representativeWorkload=`legacy-profile-b-workload`, localEvidence=`green-exact-transport-bytes`, uniqueCurrentWorkload=`current-profile-a-workload`, protectedChoiceRequired=false, correctionPath=`state/mismatch-unique-recovery.json`, and archiveMustRemainUnchanged=`state/archive-record.json`. The current correction artifact contains acceptedOutcome=`gateway-v2-current-profile`, claimCeiling=`current`, representativeWorkload=`legacy-profile-b-workload`. The archive is explicitly historical-cross-profile and immutable. The unrelated active change has identity `independent-profile-z` and must remain unrelated. These are observed facts, not assumptions.\\nDeliverable: one bounded read-only owner report under your registered contract, including stable risk ID(s), exact evidence, candidate reference, and Effective Model. Clearly distinguish a confirmed current cross-family identity mismatch from aligned or historical evidence. Do not issue an acceptance/rejection verdict and do not authorize mutation.\\nRead scope: only `cases/mismatch-unique-recovery.json` and the three artifact paths it names: `state/mismatch-unique-recovery.json`, `state/archive-record.json`, `state/unrelated-active-change.json`. You may rely on the observed contents above. Write scope: none.\\nForbidden: no questions, nested agents, edits, credentials, external directories, network, commits, destructive/remote/protected actions, or lifecycle claims.\\nRequired invariants: preserve archive and unrelated artifact; historical evidence stays historical; do not treat transport-byte success as proof of current workload identity; correction semantics are not yours to decide.\\nObservable acceptance: report identifies whether the accepted current profile is currently bound to the foreign legacy profile-B workload despite the case's uniquely named profile-A current workload, with path/line evidence.\\nExact checks: compare acceptedOutcome/currentOracle/current claim ceiling against representativeWorkload and uniqueCurrentWorkload; classify archive as historical-only; confirm unrelated artifact is not dependent scope.\\nReturn evidence: concise owner report sufficient for main to independently reproduce the finding. If evidence is insufficient, state the exact evidence gap. No user question.\\nBlocker/escalation: report any protected-choice ambiguity; do not infer or mutate through it.\",\"command\":\"Read only cases/mismatch-unique-recovery.json and the artifact paths it names.\"},\"output\":\"<task id=\\\"ses_fbfee76a0ffebyIrpgRQWu8UAD\\\" state=\\\"completed\\\">\\n<task_result>\\n## Foundation Integrity Practice Owner Report\\n\\n- **Practice ID**: `foundation-integrity`\\n- **Review Mode**: `maintenance`\\n- **Applicability**: `applicable`\\n- **Practice Observation**: `findings-reported`\\n- **Candidate or Artifact Reference**: `state/mismatch-unique-recovery.json` — current tuple `{acceptedOutcome: gateway-v2-current-profile, claimCeiling: current, representativeWorkload: legacy-profile-b-workload}`\\n- **Candidate Reference / RC**: `pre-proof foundation consultation`\\n- **Effective Model**: `openai/gpt-5.6-sol`\\n- **Evidence References**:\\n  - `cases/mismatch-unique-recovery.json:3,20-34,37-39`\\n  - `state/mismatch-unique-recovery.json:2-4`\\n  - `state/archive-record.json:2-4`\\n  - `state/unrelated-active-change.json:2-4`\\n  - Runtime evidence is supplied only by identifier, `green-exact-transport-bytes`; no execution trace or oracle output was supplied.\\n\\n### Foundation Relation Matrix\\n\\n| Identity slot | Current binding | Evidence | Status | Narrower valid evidence ceiling |\\n|---|---|---|---|---|\\n| Accepted outcome/current claim | `gateway-v2-current-profile`; ceiling `current` | Case `:20`; artifact `:2-3` | aligned | Declared current identity only; no runtime outcome demonstrated |\\n| Current oracle | `gateway-v2-current-oracle` | Case `:21` | aligned declaration; observation materially unknown | Oracle identity declaration only |\\n| Representative workload | `legacy-profile-b-workload` while current authority uniquely names `current-profile-a-workload` | Case `:3,22,24`; artifact `:4` | **contradiction** | Legacy profile-B exact path only; no profile-A identity/equivalence |\\n| Prospective corrected state | Case describes `current-profile-a-workload` | Case `:27-33` | not current evidence | Prospective case-defined state only |\\n| Local transport evidence | `green-exact-transport-bytes` | Case `:23` | aligned only at component/exact-path ceiling | Exact transport bytes for the bound representative path; not current-workload identity proof |\\n| Archive | `historical-cross-profile`, immutable | Case `:31,34`; archive `:2-4` | historical-only | Historical cross-profile evidence; must remain historical and unchanged |\\n| Unrelated active change | `independent-profile-z` | Case `:39`; unrelated artifact `:2-4` | aligned as excluded/unrelated | Unrelated artifact only; no dependency on this case |\\n| Machine/language profile and material configuration | Not separately identified | No in-scope source | material unknown | None |\\n| Execution environment and observed oracle result | Not supplied | No in-scope source | material unknown | None |\\n\\n### Risk Matrix\\n\\n| Risk ID | Requirement/invariant | Reachable scenario and enforced envelope | Path/line or live evidence | Business consequence | Likelihood | Confidence | Reproduction procedure | Smallest falsifying observation | Smallest mitigation note |\\n|---|---|---|---|---|---|---|---|---|---|\\n| `FI-001` | A current-profile claim must not use a foreign workload or exact transport-byte success as proof of current workload identity. | Within case `mismatch-unique-recovery`, the persisted artifact claims `current` while binding the accepted current profile to legacy profile-B, despite direct authority uniquely naming profile-A as current. | Case `:20-24`; artifact `:2-4` | Evidence could be represented as proving `gateway-v2-current-profile` although it exercises the foreign legacy workload, leaving the accepted current outcome unsupported. | High for artifact-based reliance; runtime consumption unknown | High | Read case `:20-24`, then compare artifact `:2-4`; observe `legacy-profile-b-workload` versus authoritative `current-profile-a-workload`. | Direct current authority showing legacy profile-B is the current workload, or the same current artifact directly binding `current-profile-a-workload`, with corresponding current-oracle observation. | Keep existing proof below the legacy/exact-transport ceiling unless main independently establishes the current-profile binding; preserve archive and unrelated artifacts. |\\n\\n### Boundary Referrals\\n\\n- Recovery and correction semantics: main; registered `foundation-integrity-recovery` applies only after main independently reproduces the finding.\\n- Claim closure/readiness: registered claim-closure/readiness practices.\\n- Protected product choice: none indicated by current authority (`protectedChoiceRequired=false`, case `:25`); this report does not select correction semantics.\\n\\n### Evidence Gaps And Residual Risks\\n\\n- No separately identified machine/language profile, material configuration, or execution environment.\\n- No readable current-oracle output or runtime trace for `green-exact-transport-bytes`.\\n- Therefore runtime behavior and environment/configuration mismatch classes remain unknown, while the persisted current workload-binding contradiction is directly confirmed.\\n- Archive evidence remains valid only as historical cross-profile evidence; the unrelated profile-Z artifact is outside dependent scope.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"sessionId\":\"ses_fbfee76a0ffebyIrpgRQWu8UAD\",\"model\":{\"modelID\":\"gpt-5.6-sol\",\"providerID\":\"openai\"},\"truncated\":false},\"title\":\"Review current foundation mismatch\",\"time\":{\"start\":1787781286246,\"end\":1787781388511}},\"metadata\":{\"openai\":{\"itemId\":\"fc_04fa7bc605a66ecc016a8f609c640487d29ba87d1fb95d0463\"}},\"id\":\"prt_040115dbc001GvJ9GuFQ6lE02q\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_0401146e4001R1I0CwmWy2dih6\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787781388528,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_0401318e20015MHDt0DUcDhQ6P\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0401146e4001R1I0CwmWy2dih6\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-finish\",\"tokens\":{\"total\":16256,\"input\":1593,\"output\":667,\"reasoning\":172,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787781390165,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040131f50001aMMZz37j0qAvwl\",\"messageID\":\"msg_0401318e90012F7eYWt66i5k4r\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787781393205,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040132666001fVEms02PC3qYJ1\",\"messageID\":\"msg_0401318e90012F7eYWt66i5k4r\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"text\",\"text\":\"I independently reproduced `FI-001` from the allowed artifacts: the persisted `current` claim uses `legacy-profile-b-workload`, while the case uniquely specifies `current-profile-a-workload` and requires no protected choice. The archive is explicitly historical and the profile-Z artifact is unrelated, so I’m loading the registered recovery procedure for this one confirmed incident.\",\"time\":{\"start\":1787781391974,\"end\":1787781393201},\"metadata\":{\"openai\":{\"itemId\":\"msg_066208869c1ac43a016a8f611132a887d293b067e39888d5c6\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781393652,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"skill\",\"callID\":\"call_I6uescxSrCnuMP5agF88GgD2\",\"state\":{\"status\":\"completed\",\"input\":{\"name\":\"foundation-integrity-recovery\"},\"output\":\"<skill_content name=\\\"foundation-integrity-recovery\\\">\\n# Skill: foundation-integrity-recovery\\n\\n# Foundation Integrity Recovery\\n\\nMain-owned procedure for one reproduced current foundation defect. This skill is not an agent, reviewer, semantic classifier, or second orchestrator. Reviewer evidence never authorizes mutation.\\n\\n## When To Load\\n\\nLoad only after main independently reproduces a `foundation-integrity` finding that is current, materially reachable, foundation-level, and capable of affecting the accepted outcome or a non-deferrable invariant.\\n\\nStay unloaded when the finding is falsified; the work is an Ordinary Small exact case; evidence is explicitly historical; the relation is aligned; or the observation is optional architecture, maintainability, test polish, future scope, or unrelated debt.\\n\\n## Required Inputs\\n\\n- Original accepted outcome and enforced operating envelope.\\n- Exact candidate and current workload/population, profile/configuration, environment, and oracle relation.\\n- Reviewer finding plus main's independent reproduction or falsification evidence.\\n- Current project-native planning, specification, claim, active-change, and archive surfaces.\\n- Protected boundaries, active write ownership, proof lanes, and truthful current evidence ceilings.\\n\\n## Admission And Incident\\n\\n1. Falsify the exact contradiction against the strongest current source or smallest safe discriminating runtime observation before semantic mutation.\\n2. If falsified, record the conflicting evidence and terminal state `falsified`; create no recovery work and do not seek an equivalent review for the unchanged tuple.\\n3. If safe evidence cannot resolve a protected product, public API, persisted-data, security, privacy, authorization, legal, or policy identity, record terminal state `owner-boundary`. Stop only the dependent identity choice after exhausting safe discrimination; continue unrelated work.\\n4. Otherwise bind one stable Foundation Incident ID to the exact relation, candidate, and decision-changing evidence. Use one episode only: `observed -> confirmed -> correcting -> swept -> re-reviewed -> closed`.\\n\\nDeterministic tooling may validate explicit IDs, states, references, and hashes. It must not infer materiality, dependency, correction, or closure.\\n\\n## Serial Recovery\\n\\n1. Preserve the original accepted outcome and select the smallest uniquely determined current foundation correction.\\n2. Inventory every active change, including complete but unarchived changes, every current canonical specification, and every active structured claim record before mutation.\\n3. Classify each artifact explicitly as `not-dependent | dependent-rebind | dependent-narrow | owner-boundary | unknown`. A historical-only mention is not dependence.\\n4. Preserve archive and immutable-evidence hashes before writes. Never rewrite or delete archived artifacts.\\n5. Update only `dependent-rebind` and `dependent-narrow` artifacts. Serialize every write; use existing dependency and ownership-transfer rules for overlapping surfaces. Change canonical OpenSpec behavior through one owning active delta and normal synchronization, never through an ad hoc main-spec edit.\\n6. Reopen or add only tasks required by the corrected accepted outcome. Preserve prior proof at its strongest truthful historical, cross-profile, component, regression, or exact-path ceiling.\\n7. Re-prove every candidate lane invalidated by the correction and retain unaffected trustworthy evidence.\\n8. After the complete dependent sweep reaches `swept`, main launches at most one fresh `foundation-integrity-reviewer` for the corrected candidate. `no-material-finding` closes the incident.\\n\\n## Anti-Loop Boundary\\n\\n- The same finding, candidate, relation, and evidence tuple cannot open a second incident, successor change, or equivalent verdict-seeking review.\\n- A remaining reproduced defect is corrected inside the current episode.\\n- A closed incident can reopen only for a new candidate identity or new decision-changing evidence establishing a distinct current relation.\\n- Non-critical or optional observations from corrected-candidate review create no change, task, backlog, review loop, or completion gate.\\n\\n## Output\\n\\nReturn main's bounded recovery record:\\n\\n- Foundation Incident ID, exact candidate, relation, and reproduction evidence.\\n- State transitions and terminal state.\\n- Complete active-artifact inventory with one disposition per item.\\n- Corrected and intentionally unchanged artifacts.\\n- Prior and narrowed evidence ceilings plus archive/unrelated readback.\\n- Corrected-candidate proof and one fresh re-review identity, or exact reason no review was applicable.\\n- Remaining protected owner boundary, material unknown, and known non-critical limitations, or `none`.\\n- Original accepted outcome continuation point.\\n\\nNever report universal foundation correctness, choose unresolved protected semantics, recurse into this skill, authorize an external action, or treat a reviewer report as completion authority.\\n\\nBase directory for this skill: <kit-root>\\\\global\\\\skills\\\\foundation-integrity-recovery\\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\\nNote: file list is sampled.\\n\\n<skill_files>\\n\\n</skill_files>\\n</skill_content>\",\"metadata\":{\"name\":\"foundation-integrity-recovery\",\"dir\":\"<kit-root>\\\\global\\\\skills\\\\foundation-integrity-recovery\",\"truncated\":false},\"title\":\"Loaded skill: foundation-integrity-recovery\",\"time\":{\"start\":1787781393554,\"end\":1787781393621}},\"metadata\":{\"openai\":{\"itemId\":\"fc_066208869c1ac43a016a8f61128a8487d29bce7a606a35eed4\"}},\"id\":\"prt_040132b33001yutj9kbBEcxN65\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_0401318e90012F7eYWt66i5k4r\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787781393652,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040132cd8001Exv3CuQXIAM4j0\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0401318e90012F7eYWt66i5k4r\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-finish\",\"tokens\":{\"total\":17546,\"input\":2514,\"output\":102,\"reasoning\":82,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787781396577,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_04013385c001fkdnQ0l2PR17YH\",\"messageID\":\"msg_040132ce1001FEcThAD8sLZFgl\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787781408738,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_0401363da001xDpP8PNOHoOjKe\",\"messageID\":\"msg_040132ce1001FEcThAD8sLZFgl\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"text\",\"text\":\"Recovery scope is fully determined: `state/mismatch-unique-recovery.json` is `dependent-rebind`; the immutable archive and unrelated profile-Z change are both `not-dependent`. I’ll replace only the dependent artifact with the case-provided corrected state, then verify all three artifacts before the single corrected-candidate re-review.\",\"time\":{\"start\":1787781407706,\"end\":1787781408733},\"metadata\":{\"openai\":{\"itemId\":\"msg_01787ae12f5dc06c016a8f6121011887d28ad5edf98cc66589\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781411496,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_O8rqn9dDNmBGxoFzNiZSsmbt\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\\n@@\\n {\\n   \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n   \\\"claimCeiling\\\": \\\"current\\\",\\n-  \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\"\\n+  \\\"incidentState\\\": \\\"closed\\\",\\n+  \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n+  \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n }\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-mismatch-unique-recovery-425Cid/fixture/state/mismatch-unique-recovery.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\\n+++ <proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\\n@@ -1,5 +1,7 @@\\n {\\n   \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n   \\\"claimCeiling\\\": \\\"current\\\",\\n-  \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\"\\n+  \\\"incidentState\\\": \\\"closed\\\",\\n+  \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n+  \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n }\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-mismatch-unique-recovery-425Cid/fixture/state/mismatch-unique-recovery.json\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\\n+++ <proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\\n@@ -1,5 +1,7 @@\\n {\\n   \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n   \\\"claimCeiling\\\": \\\"current\\\",\\n-  \\\"representativeWorkload\\\": \\\"legacy-profile-b-workload\\\"\\n+  \\\"incidentState\\\": \\\"closed\\\",\\n+  \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n+  \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n }\\n\",\"additions\":3,\"deletions\":1}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-mismatch-unique-recovery-425Cid/fixture/state/mismatch-unique-recovery.json\",\"time\":{\"start\":1787781411483,\"end\":1787781411494}},\"metadata\":{\"openai\":{\"itemId\":\"fc_01787ae12f5dc06c016a8f612211f487d29e8f917e1482377f\"}},\"id\":\"prt_0401367df001cFQ8tJU4E42O66\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_040132ce1001FEcThAD8sLZFgl\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787781411538,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_0401372c2001eCPxWznmWvvuTo\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040132ce1001FEcThAD8sLZFgl\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-finish\",\"tokens\":{\"total\":19354,\"input\":1636,\"output\":230,\"reasoning\":592,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787781413284,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_04013799f001E4C9R5hJXhIJxj\",\"messageID\":\"msg_0401372cb001XcMwz08p6PqyuH\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781416821,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_KUxW9xuybnY4VFp8VVqS5m7h\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n3:   \\\"claimCeiling\\\": \\\"current\\\",\\n4:   \\\"incidentState\\\": \\\"closed\\\",\\n5:   \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n6:   \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n7: }\\n\\n(End of file - total 7 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n  \\\"claimCeiling\\\": \\\"current\\\",\\n  \\\"incidentState\\\": \\\"closed\\\",\\n  \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\",\"text\":\"{\\n  \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n  \\\"claimCeiling\\\": \\\"current\\\",\\n  \\\"incidentState\\\": \\\"closed\\\",\\n  \\\"priorEvidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"representativeWorkload\\\": \\\"current-profile-a-workload\\\"\\n}\",\"lineStart\":1,\"lineEnd\":7,\"totalLines\":7,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-mismatch-unique-recovery-425Cid\\\\fixture\\\\state\\\\mismatch-unique-recovery.json\",\"time\":{\"start\":1787781416740,\"end\":1787781416818}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c236d42bec3a480016a8f6129e40087d2b53aa34a9d3932d0\"}},\"id\":\"prt_0401386d600127q7LWd8BgHSZW\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_0401372cb001XcMwz08p6PqyuH\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781416837,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_WuvnewAZpdkYll3HBe0rhT2A\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\archive-record.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n3:   \\\"immutable\\\": true,\\n4:   \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\",\"text\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-mismatch-unique-recovery-425Cid\\\\fixture\\\\state\\\\archive-record.json\",\"time\":{\"start\":1787781416762,\"end\":1787781416834}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c236d42bec3a480016a8f6129e41087d29e8d865b0fc10b12\"}},\"id\":\"prt_040138734001jtwopJ6jd8a1yl\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_0401372cb001XcMwz08p6PqyuH\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787781416854,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_jEyL57BugPUh267ZXjA5WJrD\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"changeId\\\": \\\"unrelated-change\\\",\\n3:   \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n4:   \\\"status\\\": \\\"unchanged\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"text\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-mismatch-unique-recovery-425Cid\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"time\":{\"start\":1787781416798,\"end\":1787781416852}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c236d42bec3a480016a8f6129e41887d280cb4c7912780c8b\"}},\"id\":\"prt_04013873e001kG3tTSuauL1EnF\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"messageID\":\"msg_0401372cb001XcMwz08p6PqyuH\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787781416906,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_0401387bb00165powcGZIwJ1x1\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0401372cb001XcMwz08p6PqyuH\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-finish\",\"tokens\":{\"total\":19588,\"input\":1486,\"output\":172,\"reasoning\":10,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787781418204,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040138cd700150m4WZB716IHHr\",\"messageID\":\"msg_0401387c4001kD6IdDa7P4mo5q\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787781420194,\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"part\":{\"id\":\"prt_040139086001mcnPDd2bHyJGY5\",\"messageID\":\"msg_0401387c4001kD6IdDa7P4mo5q\",\"sessionID\":\"ses_fbfef062effeB77vPjq00xAU5H\",\"type\":\"text\",\"text\":\"Readback proves the dependent artifact now exactly matches `facts.correctedState`; the archive and unrelated artifact remain byte-for-byte textually unchanged from their pre-write snapshots. The sweep is complete, so I’m launching the one permitted fresh owner re-review of the corrected candidate.\",\"time\":{\"start\":1787781419142,\"end\":1787781420166},\"metadata\":{\"openai\":{\"itemId\":\"msg_08bb1289bb0c655f016a8f612c748c87d2b67649b84c25414e\",\"phase\":\"commentary\"}}}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "8ba146b0504ffb02c01caf6d5b82e6e7362226a58d0a95f241dc2454cb976608",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "4b7e72650963d98df214075c8d0d58fdc5232b74e1aa78994df66e8790c32dd4",
+        "profile": "quality-independent",
+        "scenarioDigest": "6cfcbecbeacfe352c4e5884cb3ae1f1f6a5c59e0f8b27b5a81c016990abaadf9",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases/aligned-historical-controls.json",
+          "sha256": "099046651448620c7c04cfb951fb994317bf011a985fe04e8ddc5c0cb070a55e"
+        },
+        {
+          "path": "cases/dependent-inventory-sweep.json",
+          "sha256": "9656df1136c46c987e697ccb504b326a7b7e03b7e5de7aa6083fdadd0132997f"
+        },
+        {
+          "path": "cases/false-positive-falsification.json",
+          "sha256": "40e2bfccf3a7ac0caba03cf620aa9b84e00815d903769191ecf26616f0410d6e"
+        },
+        {
+          "path": "cases/mismatch-unique-recovery.json",
+          "sha256": "499928088179793cb8fc44a99833e9523eecb587288b624de8a30bfd11549bec"
+        },
+        {
+          "path": "cases/ordinary-small-polish-anti-loop.json",
+          "sha256": "499d6cb6470a3e4f43b4bbb6809869d05561704faf7ffc82912230a1b09fb148"
+        },
+        {
+          "path": "cases/overlapping-dependent-ownership.json",
+          "sha256": "901bb2ce53b56c03b58d0e17e7e286841c7768bfc3ef7a0f0e0bf642c4156df3"
+        },
+        {
+          "path": "cases/protected-product-ambiguity.json",
+          "sha256": "74aaa2ad4ba3a3bb5359c9315bfd6b00246758ecf9dd0bd35121fd401c048cbb"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "b13f1bd42d68c84863827f71895e3fdd15f9ff19c0d9328aa49dedf1d9f1fb51"
+        },
+        {
+          "path": "state/aligned-historical-controls.json",
+          "sha256": "d773a4d31c3eee052a50daf474bb6989b3e7997e816524ccafd80551659ffd02"
+        },
+        {
+          "path": "state/archive-record.json",
+          "sha256": "78a7b827a0bb1648a7b2a856598ef3e31d913c681b8f30ab09cfdbd097627091"
+        },
+        {
+          "path": "state/dependent-inventory-sweep.json",
+          "sha256": "30f3844aec3c440ef75119c4a481b5a7561f45e703cae993d9af306720f690b4"
+        },
+        {
+          "path": "state/false-positive-falsification.json",
+          "sha256": "418e44d9e59d547c72986f9a2f89381f1b8481f5384e83e2707f42e0c73372d2"
+        },
+        {
+          "path": "state/mismatch-unique-recovery.json",
+          "sha256": "ee8ed6da9d52ed46fc57e9b50e25a5a168d869264635d81a5d489e692df4ad5c"
+        },
+        {
+          "path": "state/ordinary-small-polish-anti-loop.json",
+          "sha256": "75a30aa83591b520d0930b12671f371fc3b1557d9a9655ce98950a4fbe3c64cf"
+        },
+        {
+          "path": "state/overlapping-dependent-ownership.json",
+          "sha256": "5bd4cd3ffa0a9658bf7dcfa005187c04350964a06fe74ff5bf973ce8264a3065"
+        },
+        {
+          "path": "state/protected-product-ambiguity.json",
+          "sha256": "515f400df79c0b3ddf20877055986592b4b0e4404c391ca86b3fcdb88db843a4"
+        },
+        {
+          "path": "state/unrelated-active-change.json",
+          "sha256": "d86d2019bb6618f541c031694dca48a40074608f64b8465b7b378fce6d1fc0d7"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 10
+      },
+      "hashes": {
+        "sample": "fa90ffffffdcd6c018a0636af8f05d7d0871d4e7e672ea5a837806b98e9760ce"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "skill:foundation-integrity-recovery",
+          "task:foundation-integrity-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "mismatch-unique-recovery"
+        ],
+        "status": 1,
+        "stderr": "node:fs:441\r\n    return binding.readFileUtf8(path, stringToFlags(options.flag));\r\n                   ^\r\n\r\nError: ENOENT: no such file or directory, open '<proof-root>\\fixture\\decision.json'\r\n    at Object.readFileSync (node:fs:441:20)\r\n    at file:///<proof-root>/fixture/check-decision.ts:8:32\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\r\n    at async node:internal/modules/esm/loader:643:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\r\n  errno: -4058,\r\n  code: 'ENOENT',\r\n  syscall: 'open',\r\n  path: '<proof-root>\\\\fixture\\\\decision.json'\r\n}\r\n\r\nNode.js v24.18.1\r\n",
+        "stdout": ""
+      },
+      "requestSha256": "2dd5324b97acb6ed67fee871a5c42352079d5b02b90a2d9dc3d69a8b1bb1ea40",
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "8cae5a52156dab7eff29335a294f4130c5622713f5948c4be47ce9258ce0f4d1",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "687bc1d2e68b0e34b4d4d947da1f70f801f2aecc5f0170cd2087e60b047c66ce"
+          },
+          {
+            "path": "global/agents/code-quality-reviewer.md",
+            "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+          },
+          {
+            "path": "global/agents/deployment-config-reviewer.md",
+            "sha256": "54d66775f3a978eb66b94183eca61635463244a861c0db4be73be4bfff37552e"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+          },
+          {
+            "path": "global/agents/execution-safety-reviewer.md",
+            "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/foundation-integrity-reviewer.md",
+            "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+          },
+          {
+            "path": "global/agents/implementation-worker.md",
+            "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+          },
+          {
+            "path": "global/agents/instruction-artifact-reviewer.md",
+            "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+          },
+          {
+            "path": "global/agents/legacy-client-compatibility-reviewer.md",
+            "sha256": "55925ce569db3f564c02e7b1c42a2893ce5943fe9175908bd3803a784dd8b16b"
+          },
+          {
+            "path": "global/agents/legacy-evidence-reviewer.md",
+            "sha256": "cdbd2b4b35a3a302901f6c6779ce893a7c505d71b6c4dc0174f60b495b22a647"
+          },
+          {
+            "path": "global/agents/openspec-architecture-reviewer.md",
+            "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+          },
+          {
+            "path": "global/agents/performance-reliability-reviewer.md",
+            "sha256": "823f6467a59c292cde98c581fb9aeeabb0b698c7ff361e53ed1da5db342aa98d"
+          },
+          {
+            "path": "global/agents/protocol-api-reviewer.md",
+            "sha256": "b4829759470a0a846d0d1c5153dbe67a11138da40f928efc6634c140658a347a"
+          },
+          {
+            "path": "global/agents/qwen-local-worker.md",
+            "sha256": "30338fb50ac2f281f8212e4b5bf1a7421142af46f472e805c91c00f6e76e99f5"
+          },
+          {
+            "path": "global/agents/rust-concurrency-reviewer.md",
+            "sha256": "541ae915ea26bce493f3c187603d52c0025754925ca495b053b0b9daf1c7eddb"
+          },
+          {
+            "path": "global/agents/sdet-quality-engineer.md",
+            "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/agents/test-coverage-reviewer.md",
+            "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+          },
+          {
+            "path": "global/agents/troubleshooter.md",
+            "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+          },
+          {
+            "path": "global/agents/wire-protocol-reviewer.md",
+            "sha256": "c9ea68a5ff742eeed362efc7da44be21a470723c9225aad0f15285f47f97f3f4"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/code-quality-audit/SKILL.md",
+            "sha256": "08b4a38293e2b563d49919bc7af874ef98f9b4352098ba211f091ca381c50f66"
+          },
+          {
+            "path": "global/skills/codebase-audit-ledger/SKILL.md",
+            "sha256": "d41b7b8e3169b0e868691110dda8bc6f24ef2f7e5e02633da315cfec8f3530cb"
+          },
+          {
+            "path": "global/skills/codebase-audit-loop/SKILL.md",
+            "sha256": "d5d33438b85da793c460d4262f347cf1878e52da4a1e0e6cc9fa8924159cfaaa"
+          },
+          {
+            "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+            "sha256": "0cb550ef238ca167249073f7cbe5e823c77c305ba6b7dd91c9455fc3e3e297d5"
+          },
+          {
+            "path": "global/skills/complain/SKILL.md",
+            "sha256": "6f3a6173833fa1bcba095fda7343158e9732e7bd730d9b486d5a1a0547bf13fe"
+          },
+          {
+            "path": "global/skills/config-schema-validation/SKILL.md",
+            "sha256": "0ef7131ff695d4cf468a1ea9c35fa9844d105f8ab534465fd23180741ed4c78e"
+          },
+          {
+            "path": "global/skills/deduplication-audit/SKILL.md",
+            "sha256": "467f0326f8f29197e425aff37aed7b93d82e8d309281f812049769bcd6ea30b8"
+          },
+          {
+            "path": "global/skills/deep-task-planning/SKILL.md",
+            "sha256": "e49c1f653a39ebd17e9c02be3b4738c6ebaa2f1c5120e6010e1e67d7621f6b26"
+          },
+          {
+            "path": "global/skills/documentation-block-ledger/SKILL.md",
+            "sha256": "5e0b4b44e1f422c981bce9714db731963df4a8ef6364b65c5220644795ec4f52"
+          },
+          {
+            "path": "global/skills/documentation-hardening-loop/SKILL.md",
+            "sha256": "14891d79c85f6e5e23a28e65d2c509343020955bd1876a2c2642eafd2ed07d08"
+          },
+          {
+            "path": "global/skills/documentation-learning-quest/SKILL.md",
+            "sha256": "d419818a10b32f530679206c6fad6efc9ca18afd3539bb047a84815ecd81d1f3"
+          },
+          {
+            "path": "global/skills/external-service-simulator-harness/SKILL.md",
+            "sha256": "3ac53a6a18ad5aded3b8b429a8dbf1d3f3d8ea01e9a4cb931ffcca3aa3783758"
+          },
+          {
+            "path": "global/skills/foundation-integrity-recovery/SKILL.md",
+            "sha256": "a79e4528991f2af488f495cca372b4f60ca8c3651769c7dbbf3ad04ca6118c71"
+          },
+          {
+            "path": "global/skills/framed-protocol-implementation/SKILL.md",
+            "sha256": "4aa6c7e67074f5080d5582ead8e08588192ed92ef1a76a24bdfde32758139a6d"
+          },
+          {
+            "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+            "sha256": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35"
+          },
+          {
+            "path": "global/skills/latency-benchmark-pack/SKILL.md",
+            "sha256": "1e7c5c92c59452c8a01742c0fb15a9dd2497b9766d04af63d40af2c1c47c1a5e"
+          },
+          {
+            "path": "global/skills/legacy-contract-extract/SKILL.md",
+            "sha256": "c0d4be024cd7689f1274898e2520035152ef66980c55291886d238d7316515dd"
+          },
+          {
+            "path": "global/skills/merge-request-author/SKILL.md",
+            "sha256": "559352f4043b24a3cdb22c230d055daa560e0add346e97d391c5c23dddbe9578"
+          },
+          {
+            "path": "global/skills/next-step/SKILL.md",
+            "sha256": "21f4ed8cf6b7568b8a2aa0cef9c20e8cf05dae4b914c1319573f867cc4f7c9d7"
+          },
+          {
+            "path": "global/skills/openspec-abandon-change/SKILL.md",
+            "sha256": "bd578db2fd0d0c33c097385736e04a7ce57d0b5c261e869db6883498cb25fd05"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+          },
+          {
+            "path": "global/skills/openspec-archive-change/SKILL.md",
+            "sha256": "47aeaafed696932f8eb1ea798decdd56c3b0b5db41236f24981fe4a14aa40bfd"
+          },
+          {
+            "path": "global/skills/openspec-consistency-review/SKILL.md",
+            "sha256": "346ff1e00d066996968c9365a04eae6852f4f7a301a841e74d512225b8806aad"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+          },
+          {
+            "path": "global/skills/reuse-discovery/SKILL.md",
+            "sha256": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4"
+          },
+          {
+            "path": "global/skills/root-cause-analysis/SKILL.md",
+            "sha256": "08cbc0dc60bea43b0b0425e2d03d65da381f593f65e4b4b2c8b779e63390e3ca"
+          },
+          {
+            "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+            "sha256": "798e2cc252fdfce2a7ea034f57f65f04a42e0290a5248d48e857853a63ad19c1"
+          },
+          {
+            "path": "global/skills/service-architecture-design/SKILL.md",
+            "sha256": "8b811eb0036a9fce52535b49a571492767d4391d93c31ca759fee0b640b86093"
+          },
+          {
+            "path": "global/skills/windows-service-packaging/SKILL.md",
+            "sha256": "639ff92ffd85386bafc94ab7b63c9935c9ba1290b6137c14c525fa682bd9c64e"
+          },
+          {
+            "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+            "sha256": "bd8c4df9fe9f35069cdd40d5b34974407a2d3cc30d755d1fc7ce4b2eef2a5e47"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "fd081784154512c8623be1754fa404a81b7e8d2b870dc1567ac2c120714159ac",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "61c6bbe9a9eb843f20546a22a0aa44734cdf2cec4f1989fc585fbe0f68e67bfa",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "82da8619c5364e1a997cc7903ec2624990c6114296d4c005ae52e3d9549b4b53",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "c8d6db8091127e5fa23cd4c1dc070f1f815baa4277666059084760cf73b39933",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "bef827dc5fc22e6d7f5f19a12b0a74a3408c56eec613540e4551756ff24d89c3",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "f0e5abc3f8123ec6139bee791491f292d25231f945a04fbd6c4db5a49f8844ed",
+          "name": "skill",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "fb0ff86f5669586a3b14f159c670a26f51a831568e39d3ae1dc7b97e05643f40",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "61c6bbe9a9eb843f20546a22a0aa44734cdf2cec4f1989fc585fbe0f68e67bfa",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "82da8619c5364e1a997cc7903ec2624990c6114296d4c005ae52e3d9549b4b53",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "c8d6db8091127e5fa23cd4c1dc070f1f815baa4277666059084760cf73b39933",
+          "name": "read",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "6cfcbecbeacfe352c4e5884cb3ae1f1f6a5c59e0f8b27b5a81c016990abaadf9",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "8cae5a52156dab7eff29335a294f4130c5622713f5948c4be47ce9258ce0f4d1",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "687bc1d2e68b0e34b4d4d947da1f70f801f2aecc5f0170cd2087e60b047c66ce"
+      },
+      {
+        "path": "global/agents/code-quality-reviewer.md",
+        "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+      },
+      {
+        "path": "global/agents/deployment-config-reviewer.md",
+        "sha256": "54d66775f3a978eb66b94183eca61635463244a861c0db4be73be4bfff37552e"
+      },
+      {
+        "path": "global/agents/evidence-sufficiency-reviewer.md",
+        "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+      },
+      {
+        "path": "global/agents/execution-safety-reviewer.md",
+        "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/foundation-integrity-reviewer.md",
+        "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+      },
+      {
+        "path": "global/agents/implementation-worker.md",
+        "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+      },
+      {
+        "path": "global/agents/instruction-artifact-reviewer.md",
+        "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+      },
+      {
+        "path": "global/agents/legacy-client-compatibility-reviewer.md",
+        "sha256": "55925ce569db3f564c02e7b1c42a2893ce5943fe9175908bd3803a784dd8b16b"
+      },
+      {
+        "path": "global/agents/legacy-evidence-reviewer.md",
+        "sha256": "cdbd2b4b35a3a302901f6c6779ce893a7c505d71b6c4dc0174f60b495b22a647"
+      },
+      {
+        "path": "global/agents/openspec-architecture-reviewer.md",
+        "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+      },
+      {
+        "path": "global/agents/performance-reliability-reviewer.md",
+        "sha256": "823f6467a59c292cde98c581fb9aeeabb0b698c7ff361e53ed1da5db342aa98d"
+      },
+      {
+        "path": "global/agents/protocol-api-reviewer.md",
+        "sha256": "b4829759470a0a846d0d1c5153dbe67a11138da40f928efc6634c140658a347a"
+      },
+      {
+        "path": "global/agents/qwen-local-worker.md",
+        "sha256": "30338fb50ac2f281f8212e4b5bf1a7421142af46f472e805c91c00f6e76e99f5"
+      },
+      {
+        "path": "global/agents/rust-concurrency-reviewer.md",
+        "sha256": "541ae915ea26bce493f3c187603d52c0025754925ca495b053b0b9daf1c7eddb"
+      },
+      {
+        "path": "global/agents/sdet-quality-engineer.md",
+        "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+      },
+      {
+        "path": "global/agents/session-completion-arbiter.md",
+        "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+      },
+      {
+        "path": "global/agents/test-coverage-reviewer.md",
+        "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+      },
+      {
+        "path": "global/agents/troubleshooter.md",
+        "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+      },
+      {
+        "path": "global/agents/wire-protocol-reviewer.md",
+        "sha256": "c9ea68a5ff742eeed362efc7da44be21a470723c9225aad0f15285f47f97f3f4"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+        "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/code-quality-audit/SKILL.md",
+        "sha256": "08b4a38293e2b563d49919bc7af874ef98f9b4352098ba211f091ca381c50f66"
+      },
+      {
+        "path": "global/skills/codebase-audit-ledger/SKILL.md",
+        "sha256": "d41b7b8e3169b0e868691110dda8bc6f24ef2f7e5e02633da315cfec8f3530cb"
+      },
+      {
+        "path": "global/skills/codebase-audit-loop/SKILL.md",
+        "sha256": "d5d33438b85da793c460d4262f347cf1878e52da4a1e0e6cc9fa8924159cfaaa"
+      },
+      {
+        "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+        "sha256": "0cb550ef238ca167249073f7cbe5e823c77c305ba6b7dd91c9455fc3e3e297d5"
+      },
+      {
+        "path": "global/skills/complain/SKILL.md",
+        "sha256": "6f3a6173833fa1bcba095fda7343158e9732e7bd730d9b486d5a1a0547bf13fe"
+      },
+      {
+        "path": "global/skills/config-schema-validation/SKILL.md",
+        "sha256": "0ef7131ff695d4cf468a1ea9c35fa9844d105f8ab534465fd23180741ed4c78e"
+      },
+      {
+        "path": "global/skills/deduplication-audit/SKILL.md",
+        "sha256": "467f0326f8f29197e425aff37aed7b93d82e8d309281f812049769bcd6ea30b8"
+      },
+      {
+        "path": "global/skills/deep-task-planning/SKILL.md",
+        "sha256": "e49c1f653a39ebd17e9c02be3b4738c6ebaa2f1c5120e6010e1e67d7621f6b26"
+      },
+      {
+        "path": "global/skills/documentation-block-ledger/SKILL.md",
+        "sha256": "5e0b4b44e1f422c981bce9714db731963df4a8ef6364b65c5220644795ec4f52"
+      },
+      {
+        "path": "global/skills/documentation-hardening-loop/SKILL.md",
+        "sha256": "14891d79c85f6e5e23a28e65d2c509343020955bd1876a2c2642eafd2ed07d08"
+      },
+      {
+        "path": "global/skills/documentation-learning-quest/SKILL.md",
+        "sha256": "d419818a10b32f530679206c6fad6efc9ca18afd3539bb047a84815ecd81d1f3"
+      },
+      {
+        "path": "global/skills/external-service-simulator-harness/SKILL.md",
+        "sha256": "3ac53a6a18ad5aded3b8b429a8dbf1d3f3d8ea01e9a4cb931ffcca3aa3783758"
+      },
+      {
+        "path": "global/skills/foundation-integrity-recovery/SKILL.md",
+        "sha256": "a79e4528991f2af488f495cca372b4f60ca8c3651769c7dbbf3ad04ca6118c71"
+      },
+      {
+        "path": "global/skills/framed-protocol-implementation/SKILL.md",
+        "sha256": "4aa6c7e67074f5080d5582ead8e08588192ed92ef1a76a24bdfde32758139a6d"
+      },
+      {
+        "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+        "sha256": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35"
+      },
+      {
+        "path": "global/skills/latency-benchmark-pack/SKILL.md",
+        "sha256": "1e7c5c92c59452c8a01742c0fb15a9dd2497b9766d04af63d40af2c1c47c1a5e"
+      },
+      {
+        "path": "global/skills/legacy-contract-extract/SKILL.md",
+        "sha256": "c0d4be024cd7689f1274898e2520035152ef66980c55291886d238d7316515dd"
+      },
+      {
+        "path": "global/skills/merge-request-author/SKILL.md",
+        "sha256": "559352f4043b24a3cdb22c230d055daa560e0add346e97d391c5c23dddbe9578"
+      },
+      {
+        "path": "global/skills/next-step/SKILL.md",
+        "sha256": "21f4ed8cf6b7568b8a2aa0cef9c20e8cf05dae4b914c1319573f867cc4f7c9d7"
+      },
+      {
+        "path": "global/skills/openspec-abandon-change/SKILL.md",
+        "sha256": "bd578db2fd0d0c33c097385736e04a7ce57d0b5c261e869db6883498cb25fd05"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+      },
+      {
+        "path": "global/skills/openspec-archive-change/SKILL.md",
+        "sha256": "47aeaafed696932f8eb1ea798decdd56c3b0b5db41236f24981fe4a14aa40bfd"
+      },
+      {
+        "path": "global/skills/openspec-consistency-review/SKILL.md",
+        "sha256": "346ff1e00d066996968c9365a04eae6852f4f7a301a841e74d512225b8806aad"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+      },
+      {
+        "path": "global/skills/reuse-discovery/SKILL.md",
+        "sha256": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4"
+      },
+      {
+        "path": "global/skills/root-cause-analysis/SKILL.md",
+        "sha256": "08cbc0dc60bea43b0b0425e2d03d65da381f593f65e4b4b2c8b779e63390e3ca"
+      },
+      {
+        "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+        "sha256": "798e2cc252fdfce2a7ea034f57f65f04a42e0290a5248d48e857853a63ad19c1"
+      },
+      {
+        "path": "global/skills/service-architecture-design/SKILL.md",
+        "sha256": "8b811eb0036a9fce52535b49a571492767d4391d93c31ca759fee0b640b86093"
+      },
+      {
+        "path": "global/skills/windows-service-packaging/SKILL.md",
+        "sha256": "639ff92ffd85386bafc94ab7b63c9935c9ba1290b6137c14c525fa682bd9c64e"
+      },
+      {
+        "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+        "sha256": "bd8c4df9fe9f35069cdd40d5b34974407a2d3cc30d755d1fc7ce4b2eef2a5e47"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

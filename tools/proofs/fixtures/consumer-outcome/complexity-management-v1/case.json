@@ -1,0 +1,38 @@
+{
+  "caseId": "useful-current-consumer-facade",
+  "acceptedOutcome": "Place one order while preserving visible success, effects, and declined-payment failure semantics.",
+  "currentConsumer": "src/run-order.ts",
+  "currentEntrypoint": "node src/run-order.ts <card>",
+  "stableInternals": ["src/inventory.ts", "src/payments.ts", "src/receipts.ts"],
+  "materialEffects": ["inventory-reservation", "payment-charge", "receipt-record"],
+  "materialFailure": "PaymentDeclinedError: payment declined",
+  "proofCommands": ["node test/scenario.test.ts", "node check-decision.ts"],
+  "requiredDecisionFields": ["admissionClass", "architectureMap", "caseId", "changeRehearsal", "claimCeiling", "facadeDisposition", "inventoryStatus"],
+  "fallbackDecision": {
+    "admissionClass": "unknown",
+    "architectureMap": {
+      "cohesiveOwners": ["src/inventory.ts", "src/payments.ts", "src/receipts.ts", "src/run-order.ts"],
+      "consumer": "src/run-order.ts",
+      "effects": ["inventory-reservation", "payment-charge", "receipt-record"],
+      "entrypoint": "node src/run-order.ts <card>",
+      "failures": ["PaymentDeclinedError: payment declined"],
+      "hiddenInternals": [],
+      "intendedExtensionSurface": "unknown",
+      "proofEntrypoints": ["node test/scenario.test.ts", "node check-decision.ts"],
+      "unknowns": ["focused-workflow-unavailable"]
+    },
+    "caseId": "useful-current-consumer-facade",
+    "changeRehearsal": {
+      "candidateResponse": "not-evaluated",
+      "essentialContext": ["src/run-order.ts", "src/inventory.ts", "src/payments.ts", "src/receipts.ts", "test/scenario.test.ts"],
+      "expectedEditSet": [],
+      "observedPressure": "consumer-coordinates-three-stable-internals",
+      "proofSet": ["node test/scenario.test.ts", "node check-decision.ts"],
+      "sameScenarioResult": "not-run",
+      "scenario": "place-one-order-with-success-and-declined-payment"
+    },
+    "claimCeiling": "configured-baseline-unavailable-only",
+    "facadeDisposition": "not-evaluated",
+    "inventoryStatus": "unavailable"
+  }
+}

@@ -3,13 +3,19 @@ import path from "node:path";
 import {
   type Arm,
   type BaselinePointer,
+  type BoundedFalsificationObservation,
+  type BoundedFalsificationScenarioExpectation,
   type CaptureBundle,
   type CandidateRequest,
+  type ComplexityFacadeObservation,
+  type ComplexityFacadeScenarioExpectation,
   type DecisionGapPack,
   type EnvironmentIdentity,
   type EvaluationResult,
   type ExpectedDecision,
   type Expectation,
+  type FoundationIntegrityObservation,
+  type FoundationIntegrityScenarioExpectation,
   type FrictionField,
   type FrictionVector,
   type RegressionManifest,
@@ -18,7 +24,10 @@ import {
   type StatusScopeDecision,
   type StatusScopeDecisionSet,
   ContractError,
+  BOUNDED_FALSIFICATION_OBSERVATION_KEYS,
+  COMPLEXITY_FACADE_OBSERVATION_KEYS,
   FRICTION_FIELDS,
+  FOUNDATION_INTEGRITY_OBSERVATION_KEYS,
   SAMPLE_BYTE_LIMIT,
   CAPTURE_BYTE_LIMIT,
   SCHEMA_VERSION,
@@ -35,6 +44,9 @@ import {
   loadManifest,
   median,
   parseCandidateRequest,
+  parseBoundedFalsificationObservation,
+  parseComplexityFacadeObservation,
+  parseFoundationIntegrityObservation,
   parseStatusScopeDecisionSet,
   privacyMarkers,
   stableJson,
@@ -377,6 +389,25 @@ export type DecisionGapEvaluation = {
   };
   evaluation: EvaluationResult;
   maximumClaim: string;
+  foundationIntegrityOracles?: Array<{
+    arm: Arm;
+    expected: FoundationIntegrityObservation;
+    failures: string[];
+    observed: FoundationIntegrityObservation | null;
+    passed: boolean;
+    sampleIndex: number;
+    scenarioId: string;
+  }>;
+  foundationIntegrityRows?: Array<{
+    arm: Arm;
+    expectedStatus: "supported" | "unknown";
+    failures: string[];
+    memberId: string;
+    observedStatus: "supported" | "unknown" | null;
+    passed: boolean;
+    sampleIndex: number;
+    scenarioId: string;
+  }>;
   statusScopeOracles?: Array<{
     arm: Arm;
     expected: StatusScopeDecision;
@@ -385,6 +416,26 @@ export type DecisionGapEvaluation = {
     observed: StatusScopeDecision | null;
     passed: boolean;
     phase: "main" | "reconstruction";
+    sampleIndex: number;
+    scenarioId: string;
+  }>;
+  boundedFalsificationOracles?: Array<{
+    arm: Arm;
+    expected: BoundedFalsificationObservation;
+    failures: string[];
+    memberId: string;
+    observed: BoundedFalsificationObservation | null;
+    passed: boolean;
+    sampleIndex: number;
+    scenarioId: string;
+  }>;
+  complexityOracles?: Array<{
+    arm: Arm;
+    expected: ComplexityFacadeObservation;
+    failures: string[];
+    memberId: string;
+    observed: ComplexityFacadeObservation | null;
+    passed: boolean;
     sampleIndex: number;
     scenarioId: string;
   }>;
@@ -419,6 +470,123 @@ function decisionFailures(expected: ExpectedDecision, observed: (ExpectedDecisio
     if (stableJson(observed[key as keyof ExpectedDecision]) !== stableJson(expectedValue)) failures.push(key);
   }
   return failures;
+}
+
+function observedBoundedFalsification(text: string): BoundedFalsificationObservation | null {
+  try {
+    return parseBoundedFalsificationObservation(JSON.parse(text.trim()), "bounded-falsification observation");
+  } catch {
+    return null;
+  }
+}
+
+function boundedFalsificationFailures(
+  expected: BoundedFalsificationObservation,
+  observed: BoundedFalsificationObservation | null,
+  sample: SampleEvidence,
+): string[] {
+  if (observed == null) return ["malformed-observation"];
+  const failures: string[] = BOUNDED_FALSIFICATION_OBSERVATION_KEYS
+    .filter((key) => stableJson(observed[key]) !== stableJson(expected[key]));
+  const completedTasks = sample.toolCalls.filter((tool) => tool.name === "task" && tool.status === "completed").length;
+  const expectedTasks = expected.reviewerLaunchCount + (expected.exactOwnerAgent === "none" ? 0 : 1);
+  if (completedTasks !== expectedTasks) failures.push("review-tool-count");
+  if (sample.toolCalls.some((tool) => tool.name === "task" && tool.status !== "completed")) failures.push("review-tool-failure");
+  return failures;
+}
+
+function evaluateBoundedFalsificationPack(input: {
+  baseline: CaptureBundle;
+  candidate?: CaptureBundle;
+  expectation: Expectation | "baseline-establishment";
+  pack: DecisionGapPack;
+}): DecisionGapEvaluation {
+  const boundedFalsificationOracles: NonNullable<DecisionGapEvaluation["boundedFalsificationOracles"]> = [];
+  const identityFailures: string[] = [];
+  const expectedScenarioDigest = digestOf(input.pack);
+  for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
+    if (bundle == null) continue;
+    if (bundle.scenarioDigest !== expectedScenarioDigest) {
+      identityFailures.push(`bounded-falsification-oracle:${arm}:scenario-digest:${expectedScenarioDigest}:${bundle.scenarioDigest}`);
+    }
+    for (const scenario of input.pack.manifest.scenarios) {
+      const expectation = input.pack.expectedDecisions[scenario.id] as BoundedFalsificationScenarioExpectation;
+      const expected = expectation[arm];
+      for (const sample of groupSamples(bundle, arm, scenario.id)) {
+        const observed = observedBoundedFalsification(sample.proof.stdout);
+        const failures = boundedFalsificationFailures(expected, observed, sample);
+        boundedFalsificationOracles.push({
+          arm,
+          expected,
+          failures,
+          memberId: scenario.id,
+          observed,
+          passed: failures.length === 0,
+          sampleIndex: sample.sampleIndex,
+          scenarioId: scenario.id,
+        });
+      }
+    }
+  }
+  const expectedRows = input.pack.manifest.scenarios.length * input.pack.manifest.sampleCount * (input.candidate == null ? 1 : 2);
+  if (boundedFalsificationOracles.length !== expectedRows) {
+    identityFailures.push(`bounded-falsification-oracle:sampleCount:${expectedRows}:${boundedFalsificationOracles.length}`);
+  }
+  const rawBase = evaluateBundle({
+    baseline: input.baseline,
+    candidate: input.candidate,
+    expectation: input.expectation,
+    manifest: input.pack.manifest,
+  });
+  const baseReasons = rawBase.reasons.filter((reason) => !reason.startsWith("friction-regression:"));
+  const base = rawBase.status === "failed" && baseReasons.length === 0 && input.candidate != null
+    ? result({
+      baselineMedians: rawBase.baselineMedians,
+      candidateMedians: rawBase.candidateMedians,
+      environmentDigest: rawBase.environmentDigest,
+      expectation: rawBase.expectation,
+      improvedField: null,
+      reasons: [],
+      scenarioDigest: rawBase.scenarioDigest,
+      sourceDigest: rawBase.sourceDigest,
+      status: "passed-no-regression",
+    })
+    : rawBase;
+  const failures = boundedFalsificationOracles.flatMap((row) => row.failures.map(
+    (field) => `bounded-falsification-oracle:${row.arm}:${row.scenarioId}:${row.sampleIndex}:${field}`,
+  ));
+  failures.push(...identityFailures);
+  const configuredProviderRequests = [input.baseline, input.candidate]
+    .filter((bundle): bundle is CaptureBundle => bundle != null)
+    .flatMap((bundle) => bundle.samples)
+    .reduce((sum, sample) => sum + sample.friction.configuredProviderRequestCount, 0);
+  if (configuredProviderRequests > input.pack.configuredProviderRequestBound) {
+    failures.push(`bounded-falsification-oracle:pack-provider-bound:${input.pack.configuredProviderRequestBound}:${configuredProviderRequests}`);
+  }
+  const evaluation = failures.length === 0 ? base : result({
+    baselineMedians: base.baselineMedians,
+    candidateMedians: base.candidateMedians,
+    environmentDigest: base.environmentDigest,
+    expectation: base.expectation,
+    improvedField: base.improvedField,
+    reasons: [...base.reasons, ...failures],
+    scenarioDigest: base.scenarioDigest,
+    sourceDigest: base.sourceDigest,
+    status: base.status === "blocked" || base.status === "stale-evidence" || identityFailures.length > 0 ? "blocked" : "failed",
+  });
+  const value: DecisionGapEvaluation = {
+    boundedFalsificationOracles,
+    decisionOracles: [],
+    digest: "",
+    evaluatorIdentity: {
+      capture: { baseline: input.baseline.evaluatorDigest, candidate: input.candidate?.evaluatorDigest ?? null },
+      terminalReplay: evaluatorDigest(),
+    },
+    evaluation,
+    maximumClaim: input.pack.maximumClaim,
+  };
+  value.digest = digestOf({ ...value, digest: "" });
+  return value;
 }
 
 function observedStatusScope(text: string): StatusScopeDecisionSet | null {
@@ -560,13 +728,268 @@ function evaluateStatusScopePack(input: {
   return value;
 }
 
+function observedFoundationIntegrity(text: string): FoundationIntegrityObservation | null {
+  try {
+    return parseFoundationIntegrityObservation(JSON.parse(text.trim()), "foundation-integrity observation");
+  } catch {
+    return null;
+  }
+}
+
+function foundationIntegrityFailures(
+  expected: FoundationIntegrityObservation,
+  observed: FoundationIntegrityObservation | null,
+  sample: SampleEvidence,
+): string[] {
+  if (observed == null) return ["malformed-observation"];
+  const failures: string[] = FOUNDATION_INTEGRITY_OBSERVATION_KEYS
+    .filter((key) => stableJson(observed[key]) !== stableJson(expected[key]));
+  const completedTasks = sample.toolCalls.filter((tool) => tool.name === "task" && tool.status === "completed").length;
+  const completedSkills = sample.toolCalls.filter((tool) => tool.name === "skill" && tool.status === "completed").length;
+  if (completedTasks !== expected.initialReviewCount + expected.correctedReviewCount) failures.push("owner-tool-count");
+  if (completedSkills !== expected.recoverySkillCount) failures.push("recovery-skill-tool-count");
+  if (sample.toolCalls.some((tool) => (tool.name === "task" || tool.name === "skill") && tool.status !== "completed")) {
+    failures.push("owner-or-recovery-tool-failure");
+  }
+  return failures;
+}
+
+function evaluateFoundationIntegrityPack(input: {
+  baseline: CaptureBundle;
+  candidate?: CaptureBundle;
+  expectation: Expectation | "baseline-establishment";
+  pack: DecisionGapPack;
+}): DecisionGapEvaluation {
+  const foundationIntegrityOracles: NonNullable<DecisionGapEvaluation["foundationIntegrityOracles"]> = [];
+  const foundationIntegrityRows: NonNullable<DecisionGapEvaluation["foundationIntegrityRows"]> = [];
+  const identityFailures: string[] = [];
+  const expectedScenarioDigest = digestOf(input.pack);
+  for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
+    if (bundle == null) continue;
+    if (bundle.scenarioDigest !== expectedScenarioDigest) {
+      identityFailures.push(`foundation-integrity-oracle:${arm}:scenario-digest:${expectedScenarioDigest}:${bundle.scenarioDigest}`);
+    }
+    for (const scenario of input.pack.manifest.scenarios) {
+      const expectation = input.pack.expectedDecisions[scenario.id] as FoundationIntegrityScenarioExpectation;
+      const expected = expectation[arm];
+      for (const sample of groupSamples(bundle, arm, scenario.id)) {
+        const observed = observedFoundationIntegrity(sample.proof.stdout);
+        const failures = foundationIntegrityFailures(expected, observed, sample);
+        foundationIntegrityOracles.push({
+          arm,
+          expected,
+          failures,
+          observed,
+          passed: failures.length === 0,
+          sampleIndex: sample.sampleIndex,
+          scenarioId: scenario.id,
+        });
+        for (const [index, expectedRow] of expected.terminalRows.entries()) {
+          const observedRow = observed?.terminalRows[index] ?? null;
+          const rowFailures: string[] = [];
+          if (observedRow == null) rowFailures.push("missing-row");
+          else {
+            if (observedRow.memberId !== expectedRow.memberId) rowFailures.push("memberId");
+            if (observedRow.status !== expectedRow.status) rowFailures.push("status");
+          }
+          foundationIntegrityRows.push({
+            arm,
+            expectedStatus: expectedRow.status,
+            failures: rowFailures,
+            memberId: expectedRow.memberId,
+            observedStatus: observedRow?.status ?? null,
+            passed: rowFailures.length === 0,
+            sampleIndex: sample.sampleIndex,
+            scenarioId: scenario.id,
+          });
+        }
+      }
+    }
+  }
+  const armCount = input.candidate == null ? 1 : 2;
+  const expectedScenarioRows = input.pack.manifest.scenarios.length * input.pack.manifest.sampleCount * armCount;
+  if (foundationIntegrityOracles.length !== expectedScenarioRows) {
+    identityFailures.push(`foundation-integrity-oracle:sampleCount:${expectedScenarioRows}:${foundationIntegrityOracles.length}`);
+  }
+  const expectedTerminalRows = (input.pack.foundationIntegrity?.memberOrder.length ?? 0) * input.pack.manifest.sampleCount * armCount;
+  if (foundationIntegrityRows.length !== expectedTerminalRows) {
+    identityFailures.push(`foundation-integrity-terminal-row:sampleCount:${expectedTerminalRows}:${foundationIntegrityRows.length}`);
+  }
+  const base = evaluateBundle({
+    baseline: input.baseline,
+    candidate: input.candidate,
+    expectation: input.expectation,
+    manifest: input.pack.manifest,
+  });
+  const baseReasons = base.reasons.filter((reason) => !reason.startsWith("friction-regression:"));
+  const normalizedBase = base.status === "failed" && baseReasons.length === 0 && input.candidate != null
+    ? result({
+      baselineMedians: base.baselineMedians,
+      candidateMedians: base.candidateMedians,
+      environmentDigest: base.environmentDigest,
+      expectation: base.expectation,
+      improvedField: null,
+      reasons: [],
+      scenarioDigest: base.scenarioDigest,
+      sourceDigest: base.sourceDigest,
+      status: "passed-no-regression",
+    })
+    : base;
+  const failures = foundationIntegrityOracles.flatMap((row) => row.failures.map(
+    (field) => `foundation-integrity-oracle:${row.arm}:${row.scenarioId}:${row.sampleIndex}:${field}`,
+  ));
+  failures.push(...identityFailures);
+  const configuredProviderRequests = [input.baseline, input.candidate]
+    .filter((bundle): bundle is CaptureBundle => bundle != null)
+    .flatMap((bundle) => bundle.samples)
+    .reduce((sum, sample) => sum + sample.friction.configuredProviderRequestCount, 0);
+  if (configuredProviderRequests > input.pack.configuredProviderRequestBound) {
+    failures.push(`foundation-integrity-oracle:pack-provider-bound:${input.pack.configuredProviderRequestBound}:${configuredProviderRequests}`);
+  }
+  const evaluation = failures.length === 0 ? normalizedBase : result({
+    baselineMedians: normalizedBase.baselineMedians,
+    candidateMedians: normalizedBase.candidateMedians,
+    environmentDigest: normalizedBase.environmentDigest,
+    expectation: normalizedBase.expectation,
+    improvedField: normalizedBase.improvedField,
+    reasons: [...normalizedBase.reasons, ...failures],
+    scenarioDigest: normalizedBase.scenarioDigest,
+    sourceDigest: normalizedBase.sourceDigest,
+    status: normalizedBase.status === "blocked" || normalizedBase.status === "stale-evidence" || identityFailures.length > 0 ? "blocked" : "failed",
+  });
+  const value: DecisionGapEvaluation = {
+    decisionOracles: [],
+    digest: "",
+    evaluatorIdentity: {
+      capture: { baseline: input.baseline.evaluatorDigest, candidate: input.candidate?.evaluatorDigest ?? null },
+      terminalReplay: evaluatorDigest(),
+    },
+    evaluation,
+    foundationIntegrityOracles,
+    foundationIntegrityRows,
+    maximumClaim: input.pack.maximumClaim,
+  };
+  value.digest = digestOf({ ...value, digest: "" });
+  return value;
+}
+
+function observedComplexityFacade(text: string): ComplexityFacadeObservation | null {
+  try {
+    return parseComplexityFacadeObservation(JSON.parse(text.trim()), "complexity facade observation");
+  } catch {
+    return null;
+  }
+}
+
+function complexityFacadeFailures(
+  expected: ComplexityFacadeObservation,
+  observed: ComplexityFacadeObservation | null,
+): string[] {
+  if (observed == null) return ["malformed-observation"];
+  return COMPLEXITY_FACADE_OBSERVATION_KEYS
+    .filter((key) => stableJson(observed[key]) !== stableJson(expected[key]));
+}
+
+function evaluateComplexityPack(input: {
+  baseline: CaptureBundle;
+  candidate?: CaptureBundle;
+  expectation: Expectation | "baseline-establishment";
+  pack: DecisionGapPack;
+}): DecisionGapEvaluation {
+  const complexityOracles: NonNullable<DecisionGapEvaluation["complexityOracles"]> = [];
+  const failures: string[] = [];
+  const expectedScenarioDigest = digestOf(input.pack);
+  for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
+    if (bundle == null) continue;
+    if (bundle.scenarioDigest !== expectedScenarioDigest) {
+      failures.push(`complexity-oracle:${arm}:scenario-digest:${expectedScenarioDigest}:${bundle.scenarioDigest}`);
+    }
+    for (const scenario of input.pack.manifest.scenarios) {
+      const expectation = input.pack.expectedDecisions[scenario.id] as ComplexityFacadeScenarioExpectation;
+      const expected = expectation[arm];
+      for (const sample of groupSamples(bundle, arm, scenario.id)) {
+        const observed = observedComplexityFacade(sample.proof.stdout);
+        const rowFailures = complexityFacadeFailures(expected, observed);
+        complexityOracles.push({
+          arm,
+          expected,
+          failures: rowFailures,
+          memberId: scenario.id,
+          observed,
+          passed: rowFailures.length === 0,
+          sampleIndex: sample.sampleIndex,
+          scenarioId: scenario.id,
+        });
+      }
+    }
+  }
+  const expectedRows = input.pack.manifest.scenarios.length * input.pack.manifest.sampleCount * (input.candidate == null ? 1 : 2);
+  if (complexityOracles.length !== expectedRows) failures.push(`complexity-oracle:sampleCount:${expectedRows}:${complexityOracles.length}`);
+  failures.push(...complexityOracles.flatMap((row) => row.failures.map(
+    (field) => `complexity-oracle:${row.arm}:${row.scenarioId}:${row.sampleIndex}:${field}`,
+  )));
+  if (input.candidate != null) {
+    const baselineSample = groupSamples(input.baseline, "baseline", input.pack.manifest.scenarios[0]!.id)[0];
+    const candidateSample = groupSamples(input.candidate, "candidate", input.pack.manifest.scenarios[0]!.id)[0];
+    for (const relative of ["src/order-service.ts", "src/run-order.ts"]) {
+      const before = baselineSample?.files.find((file) => file.path === relative)?.sha256;
+      const after = candidateSample?.files.find((file) => file.path === relative)?.sha256;
+      if (before == null || after == null) failures.push(`complexity-fact-diff:${relative}:missing`);
+      else if (before === after) failures.push(`complexity-fact-diff:${relative}:unchanged`);
+    }
+    if (baselineSample?.validation.status !== candidateSample?.validation.status || baselineSample?.validation.stdout !== candidateSample?.validation.stdout) {
+      failures.push("complexity-fact-diff:representative-proof");
+    }
+  }
+  const configuredProviderRequests = [input.baseline, input.candidate]
+    .filter((bundle): bundle is CaptureBundle => bundle != null)
+    .flatMap((bundle) => bundle.samples)
+    .reduce((sum, sample) => sum + sample.friction.configuredProviderRequestCount, 0);
+  if (configuredProviderRequests > input.pack.configuredProviderRequestBound) {
+    failures.push(`complexity-oracle:pack-provider-bound:${input.pack.configuredProviderRequestBound}:${configuredProviderRequests}`);
+  }
+  const base = evaluateBundle({
+    baseline: input.baseline,
+    candidate: input.candidate,
+    expectation: input.expectation,
+    manifest: input.pack.manifest,
+  });
+  const evaluation = failures.length === 0 ? base : result({
+    baselineMedians: base.baselineMedians,
+    candidateMedians: base.candidateMedians,
+    environmentDigest: base.environmentDigest,
+    expectation: base.expectation,
+    improvedField: base.improvedField,
+    reasons: [...base.reasons, ...failures],
+    scenarioDigest: base.scenarioDigest,
+    sourceDigest: base.sourceDigest,
+    status: base.status === "blocked" || base.status === "stale-evidence" || failures.some((failure) => failure.includes("digest")) ? "blocked" : "failed",
+  });
+  const value: DecisionGapEvaluation = {
+    complexityOracles,
+    decisionOracles: [],
+    digest: "",
+    evaluatorIdentity: {
+      capture: { baseline: input.baseline.evaluatorDigest, candidate: input.candidate?.evaluatorDigest ?? null },
+      terminalReplay: evaluatorDigest(),
+    },
+    evaluation,
+    maximumClaim: input.pack.maximumClaim,
+  };
+  value.digest = digestOf({ ...value, digest: "" });
+  return value;
+}
+
 export function evaluateDecisionGapPack(input: {
   baseline: CaptureBundle;
   candidate?: CaptureBundle;
   expectation: Expectation | "baseline-establishment";
   pack: DecisionGapPack;
 }): DecisionGapEvaluation {
+  if (input.pack.name === "bounded-falsification") return evaluateBoundedFalsificationPack(input);
   if (input.pack.name === "status-scope") return evaluateStatusScopePack(input);
+  if (input.pack.name === "foundation-integrity") return evaluateFoundationIntegrityPack(input);
+  if (input.pack.name === "complexity") return evaluateComplexityPack(input);
   const decisionOracles: DecisionGapEvaluation["decisionOracles"] = [];
   const identityFailures: string[] = [];
   const expectedScenarioDigest = digestOf(input.pack);
@@ -579,7 +1002,7 @@ export function evaluateDecisionGapPack(input: {
     identityFailures.push(`decision-oracle:evaluator-digest:${input.baseline.evaluatorDigest}:${input.candidate.evaluatorDigest}`);
   }
   for (const scenario of input.pack.manifest.scenarios) {
-    const expected = input.pack.expectedDecisions[scenario.id];
+    const expected = input.pack.expectedDecisions[scenario.id] as ExpectedDecision;
     for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
       if (bundle == null) continue;
       for (const sample of groupSamples(bundle, arm, scenario.id)) {

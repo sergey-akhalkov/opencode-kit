@@ -1,0 +1,33 @@
+{
+  "caseId": "ordinary-small-polish-anti-loop",
+  "memberIds": ["ordinary-small-exact-case", "non-critical-architecture-polish", "unchanged-hypothesis-anti-loop"],
+  "fallbackDecision": {
+    "caseId": "ordinary-small-polish-anti-loop",
+    "correctedReviewCount": 0,
+    "incidentId": "none",
+    "initialReviewCount": 0,
+    "ownerAgent": "none",
+    "recoverySkillCount": 0,
+    "reproductionDisposition": "not-run",
+    "terminalRows": [
+      { "memberId": "ordinary-small-exact-case", "status": "unknown" },
+      { "memberId": "non-critical-architecture-polish", "status": "unknown" },
+      { "memberId": "unchanged-hypothesis-anti-loop", "status": "unknown" }
+    ],
+    "terminalState": "unavailable"
+  },
+  "facts": {
+    "change": "one-local-exact-case",
+    "bindOrRebindEvent": false,
+    "reviewerObservation": "optional-module-split-only",
+    "priorIncident": "fi-prior-closed-r1",
+    "priorCandidate": "candidate-r1",
+    "repeatedFinding": "same-candidate-same-evidence-same-relation",
+    "decisionChangingEvidence": false
+  },
+  "artifacts": [
+    { "artifactId": "ordinary-plan", "path": "state/ordinary-small-polish-anti-loop.json" },
+    { "artifactId": "archived-result", "path": "state/archive-record.json" },
+    { "artifactId": "unrelated-active-change", "path": "state/unrelated-active-change.json" }
+  ]
+}

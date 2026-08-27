@@ -1,0 +1,759 @@
+{
+  "byteLength": 68645,
+  "comparisonIdentity": "244e63132db8cad36a01e0788c9a8cb19d4a09e705312478668739556d1ae20b",
+  "evaluatorDigest": "ac4f0c77043278135ec10ac92c0ba82e8075a4306ea4f1602aaf68a9b2079167",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-overlapping-dependent-ownership-1",
+          "Read only cases/overlapping-dependent-ownership.json and the artifact paths it names. Use the loaded foundation-integrity owner and recovery procedure only if they exist; do not infer a missing procedure. If unavailable, make no owner or skill call and no artifact mutation; copy fallbackDecision exactly to decision.json and do not invent alternate values. Otherwise apply the loaded reproduction, ownership-transfer, serial-write, sweep, and re-review contracts. Write facts.correctedState only to facts.correctionPath and preserve archive and unrelated artifacts. Use incident ID fi-overlapping-dependent-ownership-r1. Write decision.json with exactly caseId, correctedReviewCount, incidentId, initialReviewCount, ownerAgent, recoverySkillCount, reproductionDisposition, terminalRows, and terminalState. terminalRows must follow memberIds and use supported or unknown. Do not ask questions, access external directories or credentials, install, commit, or perform remote, destructive, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787785748752,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_04055a107001Hjdj7jYcxB6TlA\",\"messageID\":\"msg_04055872e001cwbPzU7HHrYMEp\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787785750419,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_04055a54e001JUbStKDSdukeCu\",\"messageID\":\"msg_04055872e001cwbPzU7HHrYMEp\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"text\",\"text\":\"I’ll inspect the case manifest first, then limit all reads and writes to its named artifact paths and apply the loaded owner/recovery contracts only if the manifest’s prerequisites are satisfied.\",\"time\":{\"start\":1787785749838,\"end\":1787785750413},\"metadata\":{\"openai\":{\"itemId\":\"msg_0ce76dfb02191203016a8f72173d6087d288f69e08d131e020\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785751443,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_VrIlStQDsdhkJXhiNnZb1eAx\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases\\\\overlapping-dependent-ownership.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases\\\\overlapping-dependent-ownership.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n3:   \\\"memberIds\\\": [\\\"overlapping-dependent-ownership\\\"],\\n4:   \\\"fallbackDecision\\\": {\\n5:     \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n6:     \\\"correctedReviewCount\\\": 0,\\n7:     \\\"incidentId\\\": \\\"none\\\",\\n8:     \\\"initialReviewCount\\\": 0,\\n9:     \\\"ownerAgent\\\": \\\"none\\\",\\n10:     \\\"recoverySkillCount\\\": 0,\\n11:     \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n12:     \\\"terminalRows\\\": [{ \\\"memberId\\\": \\\"overlapping-dependent-ownership\\\", \\\"status\\\": \\\"unknown\\\" }],\\n13:     \\\"terminalState\\\": \\\"unavailable\\\"\\n14:   },\\n15:   \\\"facts\\\": {\\n16:     \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n17:     \\\"invalidCurrentIdentity\\\": \\\"legacy-profile-b-workload\\\",\\n18:     \\\"dependentChanges\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n19:     \\\"sharedSurface\\\": \\\"current-workload-binding\\\",\\n20:     \\\"requiredWriteMode\\\": \\\"serial-transfer-alpha-then-beta\\\",\\n21:     \\\"correctionPath\\\": \\\"state/overlapping-dependent-ownership.json\\\",\\n22:     \\\"correctedState\\\": {\\n23:       \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n24:       \\\"incidentState\\\": \\\"closed\\\",\\n25:       \\\"ownership\\\": \\\"serial-transfer-alpha-then-beta\\\"\\n26:     },\\n27:     \\\"protectedChoiceRequired\\\": false\\n28:   },\\n29:   \\\"artifacts\\\": [\\n30:     { \\\"artifactId\\\": \\\"ownership-plan\\\", \\\"path\\\": \\\"state/overlapping-dependent-ownership.json\\\" },\\n31:     { \\\"artifactId\\\": \\\"archived-result\\\", \\\"path\\\": \\\"state/archive-record.json\\\" },\\n32:     { \\\"artifactId\\\": \\\"unrelated-active-change\\\", \\\"path\\\": \\\"state/unrelated-active-change.json\\\" }\\n33:   ]\\n34: }\\n\\n(End of file - total 34 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n  \\\"memberIds\\\": [\\\"overlapping-dependent-ownership\\\"],\\n  \\\"fallbackDecision\\\": {\\n    \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n    \\\"correctedReviewCount\\\": 0,\\n    \\\"incidentId\\\": \\\"none\\\",\\n    \\\"initialReviewCount\\\": 0,\\n    \\\"ownerAgent\\\": \\\"none\\\",\\n    \\\"recoverySkillCount\\\": 0,\\n    \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n    \\\"terminalRows\\\": [{ \\\"memberId\\\": \\\"overlapping-dependent-ownership\\\", \\\"status\\\": \\\"unknown\\\" }],\\n    \\\"terminalState\\\": \\\"unavailable\\\"\\n  },\\n  \\\"facts\\\": {\\n    \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n    \\\"invalidCurrentIdentity\\\": \\\"legacy-profile-b-workload\\\",\\n    \\\"dependentChanges\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n    \\\"sharedSurface\\\": \\\"current-workload-binding\\\",\\n    \\\"requiredWriteMode\\\": \\\"serial-transfer-alpha-then-beta\\\",\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases\\\\overlapping-dependent-ownership.json\",\"text\":\"{\\n  \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n  \\\"memberIds\\\": [\\\"overlapping-dependent-ownership\\\"],\\n  \\\"fallbackDecision\\\": {\\n    \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n    \\\"correctedReviewCount\\\": 0,\\n    \\\"incidentId\\\": \\\"none\\\",\\n    \\\"initialReviewCount\\\": 0,\\n    \\\"ownerAgent\\\": \\\"none\\\",\\n    \\\"recoverySkillCount\\\": 0,\\n    \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n    \\\"terminalRows\\\": [{ \\\"memberId\\\": \\\"overlapping-dependent-ownership\\\", \\\"status\\\": \\\"unknown\\\" }],\\n    \\\"terminalState\\\": \\\"unavailable\\\"\\n  },\\n  \\\"facts\\\": {\\n    \\\"acceptedOutcome\\\": \\\"gateway-v2-current-profile\\\",\\n    \\\"invalidCurrentIdentity\\\": \\\"legacy-profile-b-workload\\\",\\n    \\\"dependentChanges\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n    \\\"sharedSurface\\\": \\\"current-workload-binding\\\",\\n    \\\"requiredWriteMode\\\": \\\"serial-transfer-alpha-then-beta\\\",\\n    \\\"correctionPath\\\": \\\"state/overlapping-dependent-ownership.json\\\",\\n    \\\"correctedState\\\": {\\n      \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n      \\\"incidentState\\\": \\\"closed\\\",\\n      \\\"ownership\\\": \\\"serial-transfer-alpha-then-beta\\\"\\n    },\\n    \\\"protectedChoiceRequired\\\": false\\n  },\\n  \\\"artifacts\\\": [\\n    { \\\"artifactId\\\": \\\"ownership-plan\\\", \\\"path\\\": \\\"state/overlapping-dependent-ownership.json\\\" },\\n    { \\\"artifactId\\\": \\\"archived-result\\\", \\\"path\\\": \\\"state/archive-record.json\\\" },\\n    { \\\"artifactId\\\": \\\"unrelated-active-change\\\", \\\"path\\\": \\\"state/unrelated-active-change.json\\\" }\\n  ]\\n}\",\"lineStart\":1,\"lineEnd\":34,\"totalLines\":34,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-overlapping-dependent-ownership-4aVC4w\\\\fixture\\\\cases\\\\overlapping-dependent-ownership.json\",\"time\":{\"start\":1787785751364,\"end\":1787785751414}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0ce76dfb02191203016a8f7217db3c87d28b5e7d079480fcf0\"}},\"id\":\"prt_04055a7910015KBy6q2LrkO0yJ\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_04055872e001cwbPzU7HHrYMEp\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785751443,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_04055ab7c001aifT2Et7Jevsaj\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04055872e001cwbPzU7HHrYMEp\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":14190,\"input\":14040,\"output\":102,\"reasoning\":48,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785752736,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_04055b099001IxjQGjPA19LtcX\",\"messageID\":\"msg_04055ab8b0013zd7aCxYjlQKdv\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785756277,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_JLcuigjDrphTY3mB8kXwSJyz\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n3:   \\\"incidentState\\\": \\\"absent\\\",\\n4:   \\\"ownership\\\": \\\"overlap\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n  \\\"incidentState\\\": \\\"absent\\\",\\n  \\\"ownership\\\": \\\"overlap\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\",\"text\":\"{\\n  \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n  \\\"incidentState\\\": \\\"absent\\\",\\n  \\\"ownership\\\": \\\"overlap\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-overlapping-dependent-ownership-4aVC4w\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\",\"time\":{\"start\":1787785756225,\"end\":1787785756272}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d543c110e6ef5b0016a8f721d930087d297401bfd2311cf05\"}},\"id\":\"prt_04055be3b001cVvBLURwshoylF\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_04055ab8b0013zd7aCxYjlQKdv\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785756277,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_5EcCkXJGtSEXDYD8cmXtKIaB\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\archive-record.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n3:   \\\"immutable\\\": true,\\n4:   \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\",\"text\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-overlapping-dependent-ownership-4aVC4w\\\\fixture\\\\state\\\\archive-record.json\",\"time\":{\"start\":1787785756232,\"end\":1787785756275}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d543c110e6ef5b0016a8f721d931487d2a2127b24151c5d56\"}},\"id\":\"prt_04055be43001yX8I252SsCLcr3\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_04055ab8b0013zd7aCxYjlQKdv\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785756309,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_XERgk0H7kVltRRLd6wF65J1W\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"changeId\\\": \\\"unrelated-change\\\",\\n3:   \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n4:   \\\"status\\\": \\\"unchanged\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"text\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-overlapping-dependent-ownership-4aVC4w\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"time\":{\"start\":1787785756242,\"end\":1787785756290}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d543c110e6ef5b0016a8f721d931c87d289967ba2eb8d3147\"}},\"id\":\"prt_04055be4c0011r8RBufVwr8hM7\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_04055ab8b0013zd7aCxYjlQKdv\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785756309,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_04055be84001360rvB0l4VomTg\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04055ab8b0013zd7aCxYjlQKdv\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":14871,\"input\":857,\"output\":177,\"reasoning\":13,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785758122,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_04055c5a50014K6GR41SkNry7d\",\"messageID\":\"msg_04055be8e001qBkA8540KjPKCc\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787785763851,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_04055d796001RbL7c9XSLeWJ3X\",\"messageID\":\"msg_04055be8e001qBkA8540KjPKCc\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"text\",\"text\":\"The manifest identifies a current accepted identity mismatch and an overlapping shared-surface owner; the current state confirms the overlap while the archive remains explicitly historical. The foundation-integrity owner and recovery skill are available, so I’m invoking the owner for the required fresh, read-only initial review before any mutation.\",\"time\":{\"start\":1787785762710,\"end\":1787785763841},\"metadata\":{\"openai\":{\"itemId\":\"msg_051e3d45ca126a8a016a8f722421ec87d2860e5be40563b7dd\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785845598,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_ZA3YMr1GkzTahtJOBdgjazhT\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"foundation-integrity-reviewer\",\"description\":\"Review foundation mismatch\",\"prompt\":\"Role: fresh read-only foundation-integrity Practice Owner.\\nOutcome/value objective: Review incident candidate fi-overlapping-dependent-ownership-r1 and determine whether the current foundation binding is materially contradictory and whether recovery is applicable under the loaded foundation-integrity contract.\\nObserved state/evidence: The case manifest is cases/overlapping-dependent-ownership.json. It declares acceptedOutcome=gateway-v2-current-profile, invalidCurrentIdentity=legacy-profile-b-workload, dependentChanges=[change-alpha, change-beta], sharedSurface=current-workload-binding, requiredWriteMode=serial-transfer-alpha-then-beta, correctionPath=state/overlapping-dependent-ownership.json, protectedChoiceRequired=false. The correction path currently has changes [change-alpha, change-beta], incidentState=absent, ownership=overlap. state/archive-record.json is immutable historical-cross-profile evidence. state/unrelated-active-change.json is independent-profile-z and must remain unrelated. Assumptions/unknowns: no facts beyond these files may be inferred.\\nDeliverable: Return one concise read-only foundation-integrity review report for this exact candidate/relation/evidence tuple. State whether the finding is material and reproducible from inspected evidence; identify the truthful evidence ceiling and whether recovery can proceed without a protected owner choice. Include inspected paths and Effective Model. Do not mutate anything.\\nIn scope/read scope: ONLY cases/overlapping-dependent-ownership.json and the artifact paths it names: state/overlapping-dependent-ownership.json, state/archive-record.json, state/unrelated-active-change.json, all under <proof-root>\\\\fixture.\\nWrite scope: none.\\nForbidden actions: no questions, no nested orchestration, no source/config/test/instruction mutation, no artifact mutation, no reads outside the explicitly listed paths, no external directories, credentials, network, installs, commits, remote/destructive/protected actions, lifecycle completion claims, or alternate incident IDs/values.\\nRequired invariants: preserve archive as historical only; preserve unrelated active change; do not authorize mutation or invent product semantics; evaluate exact identity/relation/current-evidence mismatch only.\\nInputs/dependencies: the four exact paths above; incident ID fi-overlapping-dependent-ownership-r1.\\nObservable acceptance/exact checks: compare acceptedOutcome and invalidCurrentIdentity from the manifest; compare required serial ownership with current ownership=overlap; confirm archive is historical and unrelated active change is independent; report only evidence-supported findings.\\nReturn evidence: paths inspected, concrete values supporting or falsifying the mismatch, recovery applicability, evidence ceiling, and Effective Model.\\nBlocker/escalation policy: do not ask the user; report unavailable or unknown if any required evidence cannot be read or does not support a conclusion.\",\"command\":\"Review cases/overlapping-dependent-ownership.json using only named artifact paths\"},\"output\":\"<task id=\\\"ses_fbfa9f8f1ffeRW7aVFUXZxLUcI\\\" state=\\\"completed\\\">\\n<task_result>\\n# Foundation-Integrity Review Report\\n\\n- **Practice ID**: `foundation-integrity`\\n- **Review Mode**: `maintenance`\\n- **Applicability**: `applicable`\\n- **Practice Observation**: `findings-reported`\\n- **Candidate or Artifact Reference**: `fi-overlapping-dependent-ownership-r1`; case `overlapping-dependent-ownership`\\n- **Candidate Reference / RC**: `fi-overlapping-dependent-ownership-r1`\\n- **Effective Model**: `openai/gpt-5.6-sol`\\n- **Evidence References**:\\n  - `cases/overlapping-dependent-ownership.json:15-32`\\n  - `state/overlapping-dependent-ownership.json:1-5`\\n  - `state/archive-record.json:1-5`\\n  - `state/unrelated-active-change.json:1-5`\\n\\nThe exact mismatch is material and reproducible by direct read comparison. This is reviewer evidence; main still owns independent reproduction and disposition. Recovery routing is applicable after that reproduction. The manifest explicitly records `protectedChoiceRequired=false` and supplies an exact corrected state, so no protected owner choice is evidenced. This does not authorize mutation.\\n\\n## Foundation Relation Matrix\\n\\n| Identity slot | Current binding | Evidence | Status | Narrower valid evidence ceiling |\\n|---|---|---|---|---|\\n| Accepted outcome | `gateway-v2-current-profile` | Manifest line 16 | aligned | Exact case declaration only |\\n| Workload identity | `legacy-profile-b-workload`, explicitly designated `invalidCurrentIdentity` | Manifest line 17 | contradiction | Exact candidate/relation only; no broader profile compatibility claim |\\n| Shared-surface ownership | `overlap` for `change-alpha` and `change-beta` | Manifest lines 18-20; state lines 2-4 | contradiction | Exact `current-workload-binding` ownership state |\\n| Required ownership | `serial-transfer-alpha-then-beta` | Manifest lines 20, 22-25 | aligned authority | Exact named changes and order only |\\n| Machine/language/material configuration | Not separately named | No direct evidence in permitted files | material unknown | No configuration relation claim |\\n| Environment/observation oracle | Not separately named | No direct evidence in permitted files | material unknown | No runtime/environment claim |\\n| Archive | `historical-cross-profile`, immutable | Archive lines 2-4 | historical-only | Historical cross-profile evidence only |\\n| Unrelated active change | `independent-profile-z`, `unchanged` | Unrelated state lines 2-4 | aligned/excluded | Independent unrelated change only |\\n\\n## Risk Matrix\\n\\n| Risk ID | Requirement/invariant | Reachable scenario and enforced envelope | Evidence | Business consequence | Likelihood | Confidence | Reproduction procedure | Smallest falsifying observation | Smallest mitigation note |\\n|---|---|---|---|---|---|---|---|---|---|\\n| `FI-ODO-001` | Current foundation must support `gateway-v2-current-profile` | Exact case binds an explicitly invalid workload identity to `current-workload-binding` | Manifest lines 16-20 | Foreign-profile evidence could be represented as proof of the accepted current outcome | Observed | High | Read lines 16-20 and compare `acceptedOutcome` with the explicitly labeled `invalidCurrentIdentity` | Direct current authority showing that identity is no longer the current binding or is valid for this accepted outcome | Limit any main-controlled recovery to the exact named relation after independent reproduction |\\n| `FI-ODO-002` | Shared dependent ownership must be `serial-transfer-alpha-then-beta` | Both named dependent changes currently have `ownership=overlap` | Manifest lines 18-25; state lines 2-4 | Overlapping ownership can contaminate attribution and correction of the shared current binding | Observed | High | Compare manifest `requiredWriteMode` with current state `ownership` | Current correction artifact records the same changes with ownership exactly `serial-transfer-alpha-then-beta` | Preserve serial alpha-then-beta transfer; do not touch archive or unrelated state |\\n\\n## Boundary Referrals\\n\\n`none`\\n\\n## Evidence Gaps And Residual Risks\\n\\nCurrent-oracle, machine/language configuration, environment, and observation-oracle identities are not separately specified. Therefore the evidence supports only this exact maintenance-state contradiction—not runtime, population, generalized compatibility, or cross-profile validity claims.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"sessionId\":\"ses_fbfa9f8f1ffeRW7aVFUXZxLUcI\",\"model\":{\"modelID\":\"gpt-5.6-sol\",\"providerID\":\"openai\"},\"truncated\":false},\"title\":\"Review foundation mismatch\",\"time\":{\"start\":1787785774866,\"end\":1787785845580}},\"metadata\":{\"openai\":{\"itemId\":\"fc_051e3d45ca126a8a016a8f722542dc87d281cccee7ca02895c\"}},\"id\":\"prt_04055dc04001CeH4OVUiOAwU5Z\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_04055be8e001qBkA8540KjPKCc\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785845598,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040571b4e001HXpecQn3CSiAy0\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04055be8e001qBkA8540KjPKCc\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":16144,\"input\":1395,\"output\":688,\"reasoning\":237,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785846721,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040571fbc001N2858rUroWMO97\",\"messageID\":\"msg_040571b56001GEcLKoBRUhb2DA\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787785850078,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_0405726cc001dwrkpaCt5wHLc4\",\"messageID\":\"msg_040571b56001GEcLKoBRUhb2DA\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"text\",\"text\":\"The initial owner review confirms the exact current-binding and ownership contradictions without relying on the historical archive. I independently reproduce them from the permitted files: `gateway-v2-current-profile` is paired with the explicitly invalid `legacy-profile-b-workload`, and required `serial-transfer-alpha-then-beta` conflicts with current `overlap`; no protected choice is required, so I’m loading the available recovery procedure before editing.\",\"time\":{\"start\":1787785848524,\"end\":1787785850072},\"metadata\":{\"openai\":{\"itemId\":\"msg_07ab0d877973bd04016a8f7279f27887d2bccbe625700fe434\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785850341,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"skill\",\"callID\":\"call_phmziEvtiJBUF0sJD2pltxuk\",\"state\":{\"status\":\"completed\",\"input\":{\"name\":\"foundation-integrity-recovery\"},\"output\":\"<skill_content name=\\\"foundation-integrity-recovery\\\">\\n# Skill: foundation-integrity-recovery\\n\\n# Foundation Integrity Recovery\\n\\nMain-owned procedure for one reproduced current foundation defect. This skill is not an agent, reviewer, semantic classifier, or second orchestrator. Reviewer evidence never authorizes mutation.\\n\\n## When To Load\\n\\nLoad only after main independently reproduces a `foundation-integrity` finding that is current, materially reachable, foundation-level, and capable of affecting the accepted outcome or a non-deferrable invariant.\\n\\nStay unloaded when the finding is falsified; the work is an Ordinary Small exact case; evidence is explicitly historical; the relation is aligned; or the observation is optional architecture, maintainability, test polish, future scope, or unrelated debt.\\n\\n## Required Inputs\\n\\n- Original accepted outcome and enforced operating envelope.\\n- Exact candidate and current workload/population, profile/configuration, environment, and oracle relation.\\n- Reviewer finding plus main's independent reproduction or falsification evidence.\\n- Current project-native planning, specification, claim, active-change, and archive surfaces.\\n- Protected boundaries, active write ownership, proof lanes, and truthful current evidence ceilings.\\n\\n## Admission And Incident\\n\\n1. Falsify the exact contradiction against the strongest current source or smallest safe discriminating runtime observation before semantic mutation.\\n2. If falsified, record the conflicting evidence and terminal state `falsified`; create no recovery work and do not seek an equivalent review for the unchanged tuple.\\n3. If safe evidence cannot resolve a protected product, public API, persisted-data, security, privacy, authorization, legal, or policy identity, record terminal state `owner-boundary`. Stop only the dependent identity choice after exhausting safe discrimination; continue unrelated work.\\n4. Otherwise bind one stable Foundation Incident ID to the exact relation, candidate, and decision-changing evidence. Use one episode only: `observed -> confirmed -> correcting -> swept -> re-reviewed -> closed`.\\n\\nDeterministic tooling may validate explicit IDs, states, references, and hashes. It must not infer materiality, dependency, correction, or closure.\\n\\n## Serial Recovery\\n\\n1. Preserve the original accepted outcome and select the smallest uniquely determined current foundation correction.\\n2. Inventory every active change, including complete but unarchived changes, every current canonical specification, and every active structured claim record before mutation.\\n3. Classify each artifact explicitly as `not-dependent | dependent-rebind | dependent-narrow | owner-boundary | unknown`. A historical-only mention is not dependence.\\n4. Preserve archive and immutable-evidence hashes before writes. Never rewrite or delete archived artifacts.\\n5. Update only `dependent-rebind` and `dependent-narrow` artifacts. Serialize every write; use existing dependency and ownership-transfer rules for overlapping surfaces. Change canonical OpenSpec behavior through one owning active delta and normal synchronization, never through an ad hoc main-spec edit.\\n6. Reopen or add only tasks required by the corrected accepted outcome. Preserve prior proof at its strongest truthful historical, cross-profile, component, regression, or exact-path ceiling.\\n7. Re-prove every candidate lane invalidated by the correction and retain unaffected trustworthy evidence.\\n8. After the complete dependent sweep reaches `swept`, immediately call at most one fresh `foundation-integrity-reviewer` for the corrected candidate. Do not narrate a pending call or repeat main-only readback first; the fresh review must directly inspect the corrected and preserved artifacts. When it returns `no-material-finding`, immediately record the required terminal recovery result without another main-only readback or narrated pending write, then close the incident.\\n\\n## Anti-Loop Boundary\\n\\n- The same finding, candidate, relation, and evidence tuple cannot open a second incident, successor change, or equivalent verdict-seeking review.\\n- A remaining reproduced defect is corrected inside the current episode.\\n- A closed incident can reopen only for a new candidate identity or new decision-changing evidence establishing a distinct current relation.\\n- Non-critical or optional observations from corrected-candidate review create no change, task, backlog, review loop, or completion gate.\\n- A narrated owner, skill, or tool invocation that was not actually called is no evidence and cannot advance incident state.\\n\\n## Output\\n\\nReturn main's bounded recovery record:\\n\\n- Foundation Incident ID, exact candidate, relation, and reproduction evidence.\\n- State transitions and terminal state.\\n- Complete active-artifact inventory with one disposition per item.\\n- Corrected and intentionally unchanged artifacts.\\n- Prior and narrowed evidence ceilings plus archive/unrelated readback.\\n- Corrected-candidate proof and one fresh re-review identity, or exact reason no review was applicable.\\n- Remaining protected owner boundary, material unknown, and known non-critical limitations, or `none`.\\n- Original accepted outcome continuation point.\\n\\nNever report universal foundation correctness, choose unresolved protected semantics, recurse into this skill, authorize an external action, or treat a reviewer report as completion authority.\\n\\nBase directory for this skill: <kit-root>\\\\global\\\\skills\\\\foundation-integrity-recovery\\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\\nNote: file list is sampled.\\n\\n<skill_files>\\n\\n</skill_files>\\n</skill_content>\",\"metadata\":{\"name\":\"foundation-integrity-recovery\",\"dir\":\"<kit-root>\\\\global\\\\skills\\\\foundation-integrity-recovery\",\"truncated\":false},\"title\":\"Loaded skill: foundation-integrity-recovery\",\"time\":{\"start\":1787785850279,\"end\":1787785850319}},\"metadata\":{\"openai\":{\"itemId\":\"fc_07ab0d877973bd04016a8f727b835c87d287507724a003b3ce\"}},\"id\":\"prt_040572cda001QGt2XXoaGE1923\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_040571b56001GEcLKoBRUhb2DA\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785850341,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040572dd1001iAdSo2iCteAgYV\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040571b56001GEcLKoBRUhb2DA\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":17278,\"input\":2239,\"output\":112,\"reasoning\":79,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785852082,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_0405734ae001kY5g1t5OFm4Rgi\",\"messageID\":\"msg_040572dd7001uHwRHgD12OsgV4\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787785855311,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040573bd7001bESfHsU6QnrPWT\",\"messageID\":\"msg_040572dd7001uHwRHgD12OsgV4\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"text\",\"text\":\"Recovery admission is confirmed for incident `fi-overlapping-dependent-ownership-r1`. The permitted inventory classifies the correction path as `dependent-rebind`, the immutable archive as historical `not-dependent`, and the independent active change as `not-dependent`; I will now perform the sole serialized write by replacing only the correction path with `facts.correctedState`.\",\"time\":{\"start\":1787785853911,\"end\":1787785855308},\"metadata\":{\"openai\":{\"itemId\":\"msg_0cb664788fb31d9b016a8f727f54cc87d2a31892eb66bac4b2\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785857800,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_8Q2JhcNACUSbmBsp4WnKD5Pu\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\\n@@\\n {\\n   \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n-  \\\"incidentState\\\": \\\"absent\\\",\\n-  \\\"ownership\\\": \\\"overlap\\\"\\n+  \\\"incidentState\\\": \\\"closed\\\",\\n+  \\\"ownership\\\": \\\"serial-transfer-alpha-then-beta\\\"\\n }\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-overlapping-dependent-ownership-4aVC4w/fixture/state/overlapping-dependent-ownership.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\\n+++ <proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\\n@@ -1,5 +1,5 @@\\n {\\n   \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n-  \\\"incidentState\\\": \\\"absent\\\",\\n-  \\\"ownership\\\": \\\"overlap\\\"\\n+  \\\"incidentState\\\": \\\"closed\\\",\\n+  \\\"ownership\\\": \\\"serial-transfer-alpha-then-beta\\\"\\n }\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-overlapping-dependent-ownership-4aVC4w/fixture/state/overlapping-dependent-ownership.json\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\\n+++ <proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json\\n@@ -1,5 +1,5 @@\\n {\\n   \\\"changes\\\": [\\\"change-alpha\\\", \\\"change-beta\\\"],\\n-  \\\"incidentState\\\": \\\"absent\\\",\\n-  \\\"ownership\\\": \\\"overlap\\\"\\n+  \\\"incidentState\\\": \\\"closed\\\",\\n+  \\\"ownership\\\": \\\"serial-transfer-alpha-then-beta\\\"\\n }\\n\",\"additions\":2,\"deletions\":2}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-overlapping-dependent-ownership-4aVC4w/fixture/state/overlapping-dependent-ownership.json\",\"time\":{\"start\":1787785857758,\"end\":1787785857783}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0cb664788fb31d9b016a8f7280abe887d2a36d79d2c94efc16\"}},\"id\":\"prt_040574150001vPuIHz7HkHZvXx\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_040572dd7001uHwRHgD12OsgV4\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785857800,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040574afa001TaWlu7ywrT8WOm\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040572dd7001uHwRHgD12OsgV4\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":18641,\"input\":1441,\"output\":217,\"reasoning\":87,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785859308,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_0405750e8001L2xuuvltrdQqbA\",\"messageID\":\"msg_040574b03001I6gIjG5A4c8LgE\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785919367,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_iuM7u39v65fx7YwSnaEuzf0F\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"foundation-integrity-reviewer\",\"description\":\"Re-review corrected foundation\",\"prompt\":\"Role: fresh read-only foundation-integrity Practice Owner for the one corrected-candidate re-review allowed by incident fi-overlapping-dependent-ownership-r1.\\nOutcome/value objective: Directly inspect the corrected candidate and preserved artifacts after the complete permitted dependent sweep, and report whether any material foundation finding remains for the exact candidate/relation/evidence tuple.\\nObserved state/evidence before correction: cases/overlapping-dependent-ownership.json declared acceptedOutcome=gateway-v2-current-profile, invalidCurrentIdentity=legacy-profile-b-workload, dependentChanges=[change-alpha,change-beta], sharedSurface=current-workload-binding, requiredWriteMode=serial-transfer-alpha-then-beta, correctionPath=state/overlapping-dependent-ownership.json, exact correctedState, and protectedChoiceRequired=false. Initial state had incidentState=absent and ownership=overlap. Main independently reproduced that mismatch, admitted incident fi-overlapping-dependent-ownership-r1, classified the correction path dependent-rebind and the archive/unrelated artifact not-dependent, then serialized the one exact correction-path write. Assumptions/unknowns: no current post-write values may be assumed; inspect them directly.\\nDeliverable: Return one concise corrected-candidate foundation-integrity report. State `no-material-finding` if and only if the permitted current evidence directly shows the exact corrected state and preserved historical/unrelated boundaries; otherwise identify the evidence-backed remaining material finding. Include inspected paths and Effective Model. Do not mutate anything.\\nIn scope/read scope: ONLY cases/overlapping-dependent-ownership.json and its named artifact paths: state/overlapping-dependent-ownership.json, state/archive-record.json, state/unrelated-active-change.json, all under <proof-root>\\\\fixture.\\nWrite scope: none.\\nForbidden actions: no questions, no nested orchestration, no source/config/test/instruction or artifact mutation, no reads outside the explicitly listed paths, no external directories, credentials, network, installs, commits, remote/destructive/protected actions, lifecycle completion claims, repeat/successor review requests, or invented semantics.\\nRequired invariants: corrected path must equal manifest facts.correctedState exactly; ownership order must be serial-transfer-alpha-then-beta for change-alpha then change-beta; archive must remain immutable historical evidence; unrelated active change must remain independent and unchanged; evidence ceiling remains exact case only.\\nInputs/dependencies: the four exact paths above and incident fi-overlapping-dependent-ownership-r1.\\nObservable acceptance/exact checks: compare the whole correction artifact to facts.correctedState; directly verify archive-record values and unrelated-active-change values; distinguish exact correction from broad runtime/profile/compatibility claims.\\nReturn evidence: paths inspected, exact observed values, finding status, evidence ceiling, and Effective Model.\\nBlocker/escalation policy: do not ask the user; return an evidence gap/unknown if any required permitted file cannot be read or direct comparison cannot be made.\",\"command\":\"Re-review corrected incident fi-overlapping-dependent-ownership-r1\"},\"output\":\"<task id=\\\"ses_fbfa87c34ffeaZJSizvmqhhJGu\\\" state=\\\"completed\\\">\\n<task_result>\\n# Foundation-Integrity Report\\n\\n- **Practice ID**: `foundation-integrity`\\n- **Review Mode**: `maintenance`\\n- **Applicability**: `applicable`\\n- **Practice Observation**: `no-material-finding`\\n- **Candidate or Artifact Reference**: `<proof-root>\\\\fixture\\\\state\\\\overlapping-dependent-ownership.json`\\n- **Candidate Reference / RC**: corrected candidate for `fi-overlapping-dependent-ownership-r1`\\n- **Effective Model**: `openai/gpt-5.6-sol`\\n\\n## Evidence References\\n\\n- `cases/overlapping-dependent-ownership.json:15-32`\\n- `state/overlapping-dependent-ownership.json:1-5`\\n- `state/archive-record.json:1-5`\\n- `state/unrelated-active-change.json:1-5`\\n\\n## Foundation Relation Matrix\\n\\n| Identity slot | Current binding | Evidence | Status | Narrower valid evidence ceiling |\\n|---|---|---|---|---|\\n| Accepted outcome/profile | `gateway-v2-current-profile` | Manifest line 16 | aligned relation | exact case only |\\n| Invalid workload identity | `legacy-profile-b-workload`, expressly designated invalid | Manifest line 17; absent from the complete corrected-state object | aligned relation | exact corrected-state contract only |\\n| Dependent changes | `[\\\"change-alpha\\\",\\\"change-beta\\\"]` | Manifest lines 18, 23; candidate line 2 | aligned relation | exact case only |\\n| Material ownership configuration | `serial-transfer-alpha-then-beta` | Manifest lines 20, 25; candidate line 4 | aligned relation | exact ordered transfer for `change-alpha` then `change-beta` |\\n| Correction state | `{\\\"changes\\\":[\\\"change-alpha\\\",\\\"change-beta\\\"],\\\"incidentState\\\":\\\"closed\\\",\\\"ownership\\\":\\\"serial-transfer-alpha-then-beta\\\"}` | Candidate lines 1-5 structurally equal the complete `facts.correctedState` at manifest lines 22-26 | aligned relation | exact artifact only |\\n| Historical archive | `evidenceCeiling=\\\"historical-cross-profile\\\"`, `immutable=true`, `recordId=\\\"archive-fixture-r1\\\"` | `archive-record.json:1-5` | historical-only evidence | historical cross-profile only |\\n| Unrelated active change | `changeId=\\\"unrelated-change\\\"`, `currentIdentity=\\\"independent-profile-z\\\"`, `status=\\\"unchanged\\\"` | `unrelated-active-change.json:1-5` | aligned relation | independent artifact only |\\n| Environment and observation oracle | Named fixture plus direct JSON structural/value comparison | Four permitted files above | aligned relation | exact local case; no broad runtime/profile/compatibility claim |\\n\\n## Risk Matrix\\n\\nNo reportable material-risk rows remain for the inspected candidate/relation/evidence tuple.\\n\\n## Boundary Referrals\\n\\n`none`\\n\\n## Evidence Gaps And Residual Risks\\n\\n`none` within the exact-case evidence ceiling. This evidence does not establish broader runtime, profile, population, or compatibility behavior.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"sessionId\":\"ses_fbfa87c34ffeaZJSizvmqhhJGu\",\"model\":{\"modelID\":\"gpt-5.6-sol\",\"providerID\":\"openai\"},\"truncated\":false},\"title\":\"Re-review corrected foundation\",\"time\":{\"start\":1787785872335,\"end\":1787785919347}},\"metadata\":{\"openai\":{\"itemId\":\"fc_033130056ecdeeb2016a8f72861dc887d299918618969cba1b\"}},\"id\":\"prt_0405756880015cRCdvB1kXqvKg\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_040574b03001I6gIjG5A4c8LgE\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785919367,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040583b76001hPGcAr9SgXFlpF\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040574b03001I6gIjG5A4c8LgE\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":19413,\"input\":775,\"output\":663,\"reasoning\":55,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785920525,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_0405840090011CVjJ7B41dlXfJ\",\"messageID\":\"msg_040583b80001XDrJ07N0H718e8\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785931032,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_xR0DPCuihZbe2zRBhC6zNEol\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n+  \\\"correctedReviewCount\\\": 1,\\n+  \\\"incidentId\\\": \\\"fi-overlapping-dependent-ownership-r1\\\",\\n+  \\\"initialReviewCount\\\": 1,\\n+  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n+  \\\"recoverySkillCount\\\": 1,\\n+  \\\"reproductionDisposition\\\": \\\"confirmed\\\",\\n+  \\\"terminalRows\\\": [\\n+    {\\n+      \\\"memberId\\\": \\\"overlapping-dependent-ownership\\\",\\n+      \\\"status\\\": \\\"supported\\\"\\n+    }\\n+  ],\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-overlapping-dependent-ownership-4aVC4w/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,16 @@\\n+{\\n+  \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n+  \\\"correctedReviewCount\\\": 1,\\n+  \\\"incidentId\\\": \\\"fi-overlapping-dependent-ownership-r1\\\",\\n+  \\\"initialReviewCount\\\": 1,\\n+  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n+  \\\"recoverySkillCount\\\": 1,\\n+  \\\"reproductionDisposition\\\": \\\"confirmed\\\",\\n+  \\\"terminalRows\\\": [\\n+    {\\n+      \\\"memberId\\\": \\\"overlapping-dependent-ownership\\\",\\n+      \\\"status\\\": \\\"supported\\\"\\n+    }\\n+  ],\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-overlapping-dependent-ownership-4aVC4w/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,16 @@\\n+{\\n+  \\\"caseId\\\": \\\"overlapping-dependent-ownership\\\",\\n+  \\\"correctedReviewCount\\\": 1,\\n+  \\\"incidentId\\\": \\\"fi-overlapping-dependent-ownership-r1\\\",\\n+  \\\"initialReviewCount\\\": 1,\\n+  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n+  \\\"recoverySkillCount\\\": 1,\\n+  \\\"reproductionDisposition\\\": \\\"confirmed\\\",\\n+  \\\"terminalRows\\\": [\\n+    {\\n+      \\\"memberId\\\": \\\"overlapping-dependent-ownership\\\",\\n+      \\\"status\\\": \\\"supported\\\"\\n+    }\\n+  ],\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":16,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-overlapping-dependent-ownership-4aVC4w/fixture/decision.json\",\"time\":{\"start\":1787785931023,\"end\":1787785931030}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fb9efaf796fb2f0016a8f72c9495487d2bc0837d488a01074\"}},\"id\":\"prt_040585cde001QBR532AW5cEFaM\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"messageID\":\"msg_040583b80001XDrJ07N0H718e8\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785931105,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040586952001Z66ivOWZKye2P3\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040583b80001XDrJ07N0H718e8\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":20670,\"input\":2171,\"output\":218,\"reasoning\":361,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785934255,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_0405875ac0010nPH7kyRX6GDFd\",\"messageID\":\"msg_040586959001q2dreej931GNcV\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787785938588,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040588101001PGulHn2Z88VdVS\",\"messageID\":\"msg_040586959001q2dreej931GNcV\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"text\",\"text\":\"Outcome: working\\n\\n- Corrected `state/overlapping-dependent-ownership.json` exactly to `facts.correctedState`.\\n- Preserved archive and unrelated artifacts.\\n- Completed one initial owner review and one corrected re-review.\\n- Recorded incident `fi-overlapping-dependent-ownership-r1` as `closed`.\\n- Wrote the required exact fields to `decision.json`.\\n- No external, protected, destructive, credential, install, commit, or remote actions performed.\",\"time\":{\"start\":1787785937153,\"end\":1787785938585},\"metadata\":{\"openai\":{\"itemId\":\"msg_0bf2a53d851cddec016a8f72d288d887d2a5fd2cd1c2ad3b1a\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785938800,\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"part\":{\"id\":\"prt_040588764001xXCsGGj89UeepF\",\"reason\":\"stop\",\"messageID\":\"msg_040586959001q2dreej931GNcV\",\"sessionID\":\"ses_fbfaa7c7dffe7ry0FgF0rS53bQ\",\"type\":\"step-finish\",\"tokens\":{\"total\":20954,\"input\":751,\"output\":99,\"reasoning\":136,\"cache\":{\"write\":0,\"read\":19968}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "8ba146b0504ffb02c01caf6d5b82e6e7362226a58d0a95f241dc2454cb976608",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "4b7e72650963d98df214075c8d0d58fdc5232b74e1aa78994df66e8790c32dd4",
+        "profile": "quality-independent",
+        "scenarioDigest": "134627a3aaa551081524022e03495da26c27329da0a28b88220e67fa0aac174c",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases/aligned-historical-controls.json",
+          "sha256": "099046651448620c7c04cfb951fb994317bf011a985fe04e8ddc5c0cb070a55e"
+        },
+        {
+          "path": "cases/dependent-inventory-sweep.json",
+          "sha256": "9656df1136c46c987e697ccb504b326a7b7e03b7e5de7aa6083fdadd0132997f"
+        },
+        {
+          "path": "cases/false-positive-falsification.json",
+          "sha256": "40e2bfccf3a7ac0caba03cf620aa9b84e00815d903769191ecf26616f0410d6e"
+        },
+        {
+          "path": "cases/mismatch-unique-recovery.json",
+          "sha256": "499928088179793cb8fc44a99833e9523eecb587288b624de8a30bfd11549bec"
+        },
+        {
+          "path": "cases/ordinary-small-polish-anti-loop.json",
+          "sha256": "499d6cb6470a3e4f43b4bbb6809869d05561704faf7ffc82912230a1b09fb148"
+        },
+        {
+          "path": "cases/overlapping-dependent-ownership.json",
+          "sha256": "901bb2ce53b56c03b58d0e17e7e286841c7768bfc3ef7a0f0e0bf642c4156df3"
+        },
+        {
+          "path": "cases/protected-product-ambiguity.json",
+          "sha256": "74aaa2ad4ba3a3bb5359c9315bfd6b00246758ecf9dd0bd35121fd401c048cbb"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "b13f1bd42d68c84863827f71895e3fdd15f9ff19c0d9328aa49dedf1d9f1fb51"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "a0510f2073032283dd02215cc948a20157daff3b028c4f3ff7f9b736ec5fa28f"
+        },
+        {
+          "path": "state/aligned-historical-controls.json",
+          "sha256": "d773a4d31c3eee052a50daf474bb6989b3e7997e816524ccafd80551659ffd02"
+        },
+        {
+          "path": "state/archive-record.json",
+          "sha256": "78a7b827a0bb1648a7b2a856598ef3e31d913c681b8f30ab09cfdbd097627091"
+        },
+        {
+          "path": "state/dependent-inventory-sweep.json",
+          "sha256": "30f3844aec3c440ef75119c4a481b5a7561f45e703cae993d9af306720f690b4"
+        },
+        {
+          "path": "state/false-positive-falsification.json",
+          "sha256": "418e44d9e59d547c72986f9a2f89381f1b8481f5384e83e2707f42e0c73372d2"
+        },
+        {
+          "path": "state/mismatch-unique-recovery.json",
+          "sha256": "719ff07174e831a7d2f1e17086f207f306387b51a00aece4ca47ebdda30fe159"
+        },
+        {
+          "path": "state/ordinary-small-polish-anti-loop.json",
+          "sha256": "75a30aa83591b520d0930b12671f371fc3b1557d9a9655ce98950a4fbe3c64cf"
+        },
+        {
+          "path": "state/overlapping-dependent-ownership.json",
+          "sha256": "3d34f2ef4351d56d1a07bb43df4cfbb5fadb85c5c1fcf433294d4fe5fa866dfe"
+        },
+        {
+          "path": "state/protected-product-ambiguity.json",
+          "sha256": "515f400df79c0b3ddf20877055986592b4b0e4404c391ca86b3fcdb88db843a4"
+        },
+        {
+          "path": "state/unrelated-active-change.json",
+          "sha256": "d86d2019bb6618f541c031694dca48a40074608f64b8465b7b378fce6d1fc0d7"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 9
+      },
+      "hashes": {
+        "sample": "5137c14f81f7d3338b1236bf8300ddb53a24d23ce0ac1ca9eee31ff919cebbfa"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "skill:foundation-integrity-recovery",
+          "task:foundation-integrity-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "overlapping-dependent-ownership"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"caseId\":\"overlapping-dependent-ownership\",\"correctedReviewCount\":1,\"incidentId\":\"fi-overlapping-dependent-ownership-r1\",\"initialReviewCount\":1,\"ownerAgent\":\"foundation-integrity-reviewer\",\"recoverySkillCount\":1,\"reproductionDisposition\":\"confirmed\",\"terminalRows\":[{\"memberId\":\"overlapping-dependent-ownership\",\"status\":\"supported\"}],\"terminalState\":\"closed\",\"artifactRows\":[{\"artifactId\":\"ownership-plan\",\"path\":\"state/overlapping-dependent-ownership.json\",\"stateSha256\":\"a1206f8bcefdf69dd85c8000c375d15dd68bc8307c929c4cd76f988fcbe851d8\"},{\"artifactId\":\"archived-result\",\"path\":\"state/archive-record.json\",\"stateSha256\":\"f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e\"},{\"artifactId\":\"unrelated-active-change\",\"path\":\"state/unrelated-active-change.json\",\"stateSha256\":\"e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c\"}]}\n"
+      },
+      "requestSha256": "eaba5eda7a3a1635b070ec767e373afe65c05fbeccefde4c3bfe6c7cd0b13f9c",
+      "sampleIndex": 1,
+      "scenarioId": "overlapping-dependent-ownership",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "9d3cf9b43390efdaab3b319cff470b15273759289a3b37cb691ce835cadc926a",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "925e6df06f59d6cdd65843e1d128eba0c3f01df7d502b8d5f7a88a954a940e23"
+          },
+          {
+            "path": "global/agents/code-quality-reviewer.md",
+            "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+          },
+          {
+            "path": "global/agents/deployment-config-reviewer.md",
+            "sha256": "54d66775f3a978eb66b94183eca61635463244a861c0db4be73be4bfff37552e"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+          },
+          {
+            "path": "global/agents/execution-safety-reviewer.md",
+            "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/foundation-integrity-reviewer.md",
+            "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+          },
+          {
+            "path": "global/agents/implementation-worker.md",
+            "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+          },
+          {
+            "path": "global/agents/instruction-artifact-reviewer.md",
+            "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+          },
+          {
+            "path": "global/agents/legacy-client-compatibility-reviewer.md",
+            "sha256": "55925ce569db3f564c02e7b1c42a2893ce5943fe9175908bd3803a784dd8b16b"
+          },
+          {
+            "path": "global/agents/legacy-evidence-reviewer.md",
+            "sha256": "cdbd2b4b35a3a302901f6c6779ce893a7c505d71b6c4dc0174f60b495b22a647"
+          },
+          {
+            "path": "global/agents/openspec-architecture-reviewer.md",
+            "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+          },
+          {
+            "path": "global/agents/performance-reliability-reviewer.md",
+            "sha256": "823f6467a59c292cde98c581fb9aeeabb0b698c7ff361e53ed1da5db342aa98d"
+          },
+          {
+            "path": "global/agents/protocol-api-reviewer.md",
+            "sha256": "b4829759470a0a846d0d1c5153dbe67a11138da40f928efc6634c140658a347a"
+          },
+          {
+            "path": "global/agents/qwen-local-worker.md",
+            "sha256": "30338fb50ac2f281f8212e4b5bf1a7421142af46f472e805c91c00f6e76e99f5"
+          },
+          {
+            "path": "global/agents/rust-concurrency-reviewer.md",
+            "sha256": "541ae915ea26bce493f3c187603d52c0025754925ca495b053b0b9daf1c7eddb"
+          },
+          {
+            "path": "global/agents/sdet-quality-engineer.md",
+            "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/agents/test-coverage-reviewer.md",
+            "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+          },
+          {
+            "path": "global/agents/troubleshooter.md",
+            "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+          },
+          {
+            "path": "global/agents/wire-protocol-reviewer.md",
+            "sha256": "c9ea68a5ff742eeed362efc7da44be21a470723c9225aad0f15285f47f97f3f4"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/code-quality-audit/SKILL.md",
+            "sha256": "08b4a38293e2b563d49919bc7af874ef98f9b4352098ba211f091ca381c50f66"
+          },
+          {
+            "path": "global/skills/codebase-audit-ledger/SKILL.md",
+            "sha256": "d41b7b8e3169b0e868691110dda8bc6f24ef2f7e5e02633da315cfec8f3530cb"
+          },
+          {
+            "path": "global/skills/codebase-audit-loop/SKILL.md",
+            "sha256": "d5d33438b85da793c460d4262f347cf1878e52da4a1e0e6cc9fa8924159cfaaa"
+          },
+          {
+            "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+            "sha256": "0cb550ef238ca167249073f7cbe5e823c77c305ba6b7dd91c9455fc3e3e297d5"
+          },
+          {
+            "path": "global/skills/complain/SKILL.md",
+            "sha256": "6f3a6173833fa1bcba095fda7343158e9732e7bd730d9b486d5a1a0547bf13fe"
+          },
+          {
+            "path": "global/skills/config-schema-validation/SKILL.md",
+            "sha256": "0ef7131ff695d4cf468a1ea9c35fa9844d105f8ab534465fd23180741ed4c78e"
+          },
+          {
+            "path": "global/skills/deduplication-audit/SKILL.md",
+            "sha256": "467f0326f8f29197e425aff37aed7b93d82e8d309281f812049769bcd6ea30b8"
+          },
+          {
+            "path": "global/skills/deep-task-planning/SKILL.md",
+            "sha256": "e49c1f653a39ebd17e9c02be3b4738c6ebaa2f1c5120e6010e1e67d7621f6b26"
+          },
+          {
+            "path": "global/skills/documentation-block-ledger/SKILL.md",
+            "sha256": "5e0b4b44e1f422c981bce9714db731963df4a8ef6364b65c5220644795ec4f52"
+          },
+          {
+            "path": "global/skills/documentation-hardening-loop/SKILL.md",
+            "sha256": "14891d79c85f6e5e23a28e65d2c509343020955bd1876a2c2642eafd2ed07d08"
+          },
+          {
+            "path": "global/skills/documentation-learning-quest/SKILL.md",
+            "sha256": "d419818a10b32f530679206c6fad6efc9ca18afd3539bb047a84815ecd81d1f3"
+          },
+          {
+            "path": "global/skills/external-service-simulator-harness/SKILL.md",
+            "sha256": "3ac53a6a18ad5aded3b8b429a8dbf1d3f3d8ea01e9a4cb931ffcca3aa3783758"
+          },
+          {
+            "path": "global/skills/foundation-integrity-recovery/SKILL.md",
+            "sha256": "26a58da4e1c4d58ca4aaa269cfb525113ea46dc70755e61c0cf9fa900ada37f7"
+          },
+          {
+            "path": "global/skills/framed-protocol-implementation/SKILL.md",
+            "sha256": "4aa6c7e67074f5080d5582ead8e08588192ed92ef1a76a24bdfde32758139a6d"
+          },
+          {
+            "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+            "sha256": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35"
+          },
+          {
+            "path": "global/skills/latency-benchmark-pack/SKILL.md",
+            "sha256": "1e7c5c92c59452c8a01742c0fb15a9dd2497b9766d04af63d40af2c1c47c1a5e"
+          },
+          {
+            "path": "global/skills/legacy-contract-extract/SKILL.md",
+            "sha256": "c0d4be024cd7689f1274898e2520035152ef66980c55291886d238d7316515dd"
+          },
+          {
+            "path": "global/skills/merge-request-author/SKILL.md",
+            "sha256": "559352f4043b24a3cdb22c230d055daa560e0add346e97d391c5c23dddbe9578"
+          },
+          {
+            "path": "global/skills/next-step/SKILL.md",
+            "sha256": "21f4ed8cf6b7568b8a2aa0cef9c20e8cf05dae4b914c1319573f867cc4f7c9d7"
+          },
+          {
+            "path": "global/skills/openspec-abandon-change/SKILL.md",
+            "sha256": "bd578db2fd0d0c33c097385736e04a7ce57d0b5c261e869db6883498cb25fd05"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+          },
+          {
+            "path": "global/skills/openspec-archive-change/SKILL.md",
+            "sha256": "47aeaafed696932f8eb1ea798decdd56c3b0b5db41236f24981fe4a14aa40bfd"
+          },
+          {
+            "path": "global/skills/openspec-consistency-review/SKILL.md",
+            "sha256": "346ff1e00d066996968c9365a04eae6852f4f7a301a841e74d512225b8806aad"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+          },
+          {
+            "path": "global/skills/reuse-discovery/SKILL.md",
+            "sha256": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4"
+          },
+          {
+            "path": "global/skills/root-cause-analysis/SKILL.md",
+            "sha256": "08cbc0dc60bea43b0b0425e2d03d65da381f593f65e4b4b2c8b779e63390e3ca"
+          },
+          {
+            "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+            "sha256": "798e2cc252fdfce2a7ea034f57f65f04a42e0290a5248d48e857853a63ad19c1"
+          },
+          {
+            "path": "global/skills/service-architecture-design/SKILL.md",
+            "sha256": "8b811eb0036a9fce52535b49a571492767d4391d93c31ca759fee0b640b86093"
+          },
+          {
+            "path": "global/skills/windows-service-packaging/SKILL.md",
+            "sha256": "639ff92ffd85386bafc94ab7b63c9935c9ba1290b6137c14c525fa682bd9c64e"
+          },
+          {
+            "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+            "sha256": "bd8c4df9fe9f35069cdd40d5b34974407a2d3cc30d755d1fc7ce4b2eef2a5e47"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "c3cdff2a6a547c17e2209eb2ed3a1f7e5bb05a744c15ce461d0e4b2c01d8d502",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "8aba0375bf8a40830eddc80ab4255706702830782014b7341c8a567bcf938abb",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "04ee5c2b90e7b2910e840679f959dbdde9631884cf1a48c1fcf8e19ab4613ee3",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "93ab7b900198f32249462c5aec366197e8b9e3f23de431e039948c1698b11b21",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "11260c6a5f49aa7f76537194d0ba682455b6b55c2db5b1978737bb34a2c59200",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "f0e5abc3f8123ec6139bee791491f292d25231f945a04fbd6c4db5a49f8844ed",
+          "name": "skill",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "ba34dc5064c11fc5710c61616f13d45f865643887dab7cfd59e566d923952e4f",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "f935703c2d1e8492fca074e400a3541f3d10bacf40c7af4714622e7b5eebc2a1",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "4b08937d10f44364ad6911bb5d4ab74fe8e9c912c38ba5f5493b4874a2f98ec2",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "134627a3aaa551081524022e03495da26c27329da0a28b88220e67fa0aac174c",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "9d3cf9b43390efdaab3b319cff470b15273759289a3b37cb691ce835cadc926a",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "925e6df06f59d6cdd65843e1d128eba0c3f01df7d502b8d5f7a88a954a940e23"
+      },
+      {
+        "path": "global/agents/code-quality-reviewer.md",
+        "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+      },
+      {
+        "path": "global/agents/deployment-config-reviewer.md",
+        "sha256": "54d66775f3a978eb66b94183eca61635463244a861c0db4be73be4bfff37552e"
+      },
+      {
+        "path": "global/agents/evidence-sufficiency-reviewer.md",
+        "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+      },
+      {
+        "path": "global/agents/execution-safety-reviewer.md",
+        "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/foundation-integrity-reviewer.md",
+        "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+      },
+      {
+        "path": "global/agents/implementation-worker.md",
+        "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+      },
+      {
+        "path": "global/agents/instruction-artifact-reviewer.md",
+        "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+      },
+      {
+        "path": "global/agents/legacy-client-compatibility-reviewer.md",
+        "sha256": "55925ce569db3f564c02e7b1c42a2893ce5943fe9175908bd3803a784dd8b16b"
+      },
+      {
+        "path": "global/agents/legacy-evidence-reviewer.md",
+        "sha256": "cdbd2b4b35a3a302901f6c6779ce893a7c505d71b6c4dc0174f60b495b22a647"
+      },
+      {
+        "path": "global/agents/openspec-architecture-reviewer.md",
+        "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+      },
+      {
+        "path": "global/agents/performance-reliability-reviewer.md",
+        "sha256": "823f6467a59c292cde98c581fb9aeeabb0b698c7ff361e53ed1da5db342aa98d"
+      },
+      {
+        "path": "global/agents/protocol-api-reviewer.md",
+        "sha256": "b4829759470a0a846d0d1c5153dbe67a11138da40f928efc6634c140658a347a"
+      },
+      {
+        "path": "global/agents/qwen-local-worker.md",
+        "sha256": "30338fb50ac2f281f8212e4b5bf1a7421142af46f472e805c91c00f6e76e99f5"
+      },
+      {
+        "path": "global/agents/rust-concurrency-reviewer.md",
+        "sha256": "541ae915ea26bce493f3c187603d52c0025754925ca495b053b0b9daf1c7eddb"
+      },
+      {
+        "path": "global/agents/sdet-quality-engineer.md",
+        "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+      },
+      {
+        "path": "global/agents/session-completion-arbiter.md",
+        "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+      },
+      {
+        "path": "global/agents/test-coverage-reviewer.md",
+        "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+      },
+      {
+        "path": "global/agents/troubleshooter.md",
+        "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+      },
+      {
+        "path": "global/agents/wire-protocol-reviewer.md",
+        "sha256": "c9ea68a5ff742eeed362efc7da44be21a470723c9225aad0f15285f47f97f3f4"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+        "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/code-quality-audit/SKILL.md",
+        "sha256": "08b4a38293e2b563d49919bc7af874ef98f9b4352098ba211f091ca381c50f66"
+      },
+      {
+        "path": "global/skills/codebase-audit-ledger/SKILL.md",
+        "sha256": "d41b7b8e3169b0e868691110dda8bc6f24ef2f7e5e02633da315cfec8f3530cb"
+      },
+      {
+        "path": "global/skills/codebase-audit-loop/SKILL.md",
+        "sha256": "d5d33438b85da793c460d4262f347cf1878e52da4a1e0e6cc9fa8924159cfaaa"
+      },
+      {
+        "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+        "sha256": "0cb550ef238ca167249073f7cbe5e823c77c305ba6b7dd91c9455fc3e3e297d5"
+      },
+      {
+        "path": "global/skills/complain/SKILL.md",
+        "sha256": "6f3a6173833fa1bcba095fda7343158e9732e7bd730d9b486d5a1a0547bf13fe"
+      },
+      {
+        "path": "global/skills/config-schema-validation/SKILL.md",
+        "sha256": "0ef7131ff695d4cf468a1ea9c35fa9844d105f8ab534465fd23180741ed4c78e"
+      },
+      {
+        "path": "global/skills/deduplication-audit/SKILL.md",
+        "sha256": "467f0326f8f29197e425aff37aed7b93d82e8d309281f812049769bcd6ea30b8"
+      },
+      {
+        "path": "global/skills/deep-task-planning/SKILL.md",
+        "sha256": "e49c1f653a39ebd17e9c02be3b4738c6ebaa2f1c5120e6010e1e67d7621f6b26"
+      },
+      {
+        "path": "global/skills/documentation-block-ledger/SKILL.md",
+        "sha256": "5e0b4b44e1f422c981bce9714db731963df4a8ef6364b65c5220644795ec4f52"
+      },
+      {
+        "path": "global/skills/documentation-hardening-loop/SKILL.md",
+        "sha256": "14891d79c85f6e5e23a28e65d2c509343020955bd1876a2c2642eafd2ed07d08"
+      },
+      {
+        "path": "global/skills/documentation-learning-quest/SKILL.md",
+        "sha256": "d419818a10b32f530679206c6fad6efc9ca18afd3539bb047a84815ecd81d1f3"
+      },
+      {
+        "path": "global/skills/external-service-simulator-harness/SKILL.md",
+        "sha256": "3ac53a6a18ad5aded3b8b429a8dbf1d3f3d8ea01e9a4cb931ffcca3aa3783758"
+      },
+      {
+        "path": "global/skills/foundation-integrity-recovery/SKILL.md",
+        "sha256": "26a58da4e1c4d58ca4aaa269cfb525113ea46dc70755e61c0cf9fa900ada37f7"
+      },
+      {
+        "path": "global/skills/framed-protocol-implementation/SKILL.md",
+        "sha256": "4aa6c7e67074f5080d5582ead8e08588192ed92ef1a76a24bdfde32758139a6d"
+      },
+      {
+        "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+        "sha256": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35"
+      },
+      {
+        "path": "global/skills/latency-benchmark-pack/SKILL.md",
+        "sha256": "1e7c5c92c59452c8a01742c0fb15a9dd2497b9766d04af63d40af2c1c47c1a5e"
+      },
+      {
+        "path": "global/skills/legacy-contract-extract/SKILL.md",
+        "sha256": "c0d4be024cd7689f1274898e2520035152ef66980c55291886d238d7316515dd"
+      },
+      {
+        "path": "global/skills/merge-request-author/SKILL.md",
+        "sha256": "559352f4043b24a3cdb22c230d055daa560e0add346e97d391c5c23dddbe9578"
+      },
+      {
+        "path": "global/skills/next-step/SKILL.md",
+        "sha256": "21f4ed8cf6b7568b8a2aa0cef9c20e8cf05dae4b914c1319573f867cc4f7c9d7"
+      },
+      {
+        "path": "global/skills/openspec-abandon-change/SKILL.md",
+        "sha256": "bd578db2fd0d0c33c097385736e04a7ce57d0b5c261e869db6883498cb25fd05"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+      },
+      {
+        "path": "global/skills/openspec-archive-change/SKILL.md",
+        "sha256": "47aeaafed696932f8eb1ea798decdd56c3b0b5db41236f24981fe4a14aa40bfd"
+      },
+      {
+        "path": "global/skills/openspec-consistency-review/SKILL.md",
+        "sha256": "346ff1e00d066996968c9365a04eae6852f4f7a301a841e74d512225b8806aad"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+      },
+      {
+        "path": "global/skills/reuse-discovery/SKILL.md",
+        "sha256": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4"
+      },
+      {
+        "path": "global/skills/root-cause-analysis/SKILL.md",
+        "sha256": "08cbc0dc60bea43b0b0425e2d03d65da381f593f65e4b4b2c8b779e63390e3ca"
+      },
+      {
+        "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+        "sha256": "798e2cc252fdfce2a7ea034f57f65f04a42e0290a5248d48e857853a63ad19c1"
+      },
+      {
+        "path": "global/skills/service-architecture-design/SKILL.md",
+        "sha256": "8b811eb0036a9fce52535b49a571492767d4391d93c31ca759fee0b640b86093"
+      },
+      {
+        "path": "global/skills/windows-service-packaging/SKILL.md",
+        "sha256": "639ff92ffd85386bafc94ab7b63c9935c9ba1290b6137c14c525fa682bd9c64e"
+      },
+      {
+        "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+        "sha256": "bd8c4df9fe9f35069cdd40d5b34974407a2d3cc30d755d1fc7ce4b2eef2a5e47"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

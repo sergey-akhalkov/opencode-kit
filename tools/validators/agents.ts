@@ -7,6 +7,8 @@ import {
   CODE_QUALITY_REVIEWER_REQUIRED_TEXT,
   FINAL_CANDIDATE_REVIEWER_FILE,
   FINAL_CANDIDATE_REVIEWER_REQUIRED_TEXT,
+  IMPLEMENTATION_READINESS_REVIEWER_FILE,
+  IMPLEMENTATION_READINESS_REVIEWER_REQUIRED_TEXT,
   LEAF_REVIEWER_AGENT_CONTRACT_RELATIVE_PATH,
   LEAF_REVIEWER_SHARED_EFFECTIVE_MODEL_REQUIRED_TEXT,
   REVIEW_DELIVERY_AGENT_FILES,
@@ -863,6 +865,17 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
             surfaces.operativeBody,
             required,
             "Code quality reduction-only contract",
+            file,
+          );
+        }
+      }
+      if (agentFileName === IMPLEMENTATION_READINESS_REVIEWER_FILE) {
+        for (const required of IMPLEMENTATION_READINESS_REVIEWER_REQUIRED_TEXT) {
+          requireTextContains(
+            ctx,
+            surfaces.operativeBody,
+            required,
+            "Implementation readiness bounded-falsification contract",
             file,
           );
         }

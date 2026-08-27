@@ -1,0 +1,614 @@
+{
+  "schemaVersion": 1,
+  "rules": [
+    {
+      "id": "replace-in-order-to",
+      "source": "in order to",
+      "canonical": "to",
+      "scope": "prose",
+      "rationale": "Remove an unnecessary exact phrase without changing the actor, action, obligation, or condition."
+    }
+  ],
+  "duplicateExceptions": [
+    {
+      "id": "audit-output-findings",
+      "owner": {
+        "path": "global/skills/codebase-audit-loop/SKILL.md",
+        "heading": "Codebase Audit Loop > Output"
+      },
+      "consumers": [
+        {
+          "path": "instructions/instruction-artifact-audit-runbook.md",
+          "heading": "Instruction Artifact Audit Runbook > Output Contract"
+        }
+      ],
+      "reason": "The general audit skill and instruction-artifact audit runbook load independently and each requires the common finding field."
+    },
+    {
+      "id": "audit-scope-goal",
+      "owner": {
+        "path": "global/skills/codebase-audit-loop/SKILL.md",
+        "heading": "Codebase Audit Loop > Scope Contract"
+      },
+      "consumers": [
+        {
+          "path": "instructions/instruction-artifact-audit-runbook.md",
+          "heading": "Instruction Artifact Audit Runbook > Scope Contract"
+        }
+      ],
+      "reason": "The general audit skill and instruction-artifact audit runbook load independently and each requires an explicit goal field."
+    },
+    {
+      "id": "helper-ledger-determinism",
+      "owner": {
+        "path": "global/skills/codebase-audit-ledger/SKILL.md",
+        "heading": "Codebase Audit Ledger > Deterministic Helper Automation"
+      },
+      "consumers": [
+        {
+          "path": "global/skills/documentation-block-ledger/SKILL.md",
+          "heading": "Documentation Block Ledger > Deterministic Helper Automation"
+        }
+      ],
+      "reason": "The code and documentation ledger skills load independently and each requires the same deterministic helper contract."
+    },
+    {
+      "id": "instruction-artifact-authority-check",
+      "owner": {
+        "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+        "heading": "Instruction Artifact Tuning > What To Optimize"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/instruction-artifact-reviewer.md",
+          "heading": "Checks"
+        }
+      ],
+      "reason": "The instruction tuning skill and reviewer agent load independently and each requires the shared authority-clarity check."
+    },
+    {
+      "id": "openspec-store-selection",
+      "owner": {
+        "path": ".opencode/skills/openspec-explore/SKILL.md",
+        "heading": "<root>"
+      },
+      "consumers": [
+        {
+          "path": "global/skills/openspec-apply-change/SKILL.md",
+          "heading": "<root>"
+        },
+        {
+          "path": "global/skills/openspec-propose/SKILL.md",
+          "heading": "<root>"
+        }
+      ],
+      "reason": "The OpenSpec lifecycle skills load independently and each must resolve the selected standalone store before invoking its own commands."
+    },
+    {
+      "id": "project-autonomy-continuation",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Autonomy"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Autonomy"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each must prohibit routine continuation questions."
+    },
+    {
+      "id": "project-change-ready-routing",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Runtime Authority And Development Loop"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Process Control"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each must retain conditional change-ready routing."
+    },
+    {
+      "id": "project-delegation-brief",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Process Control"
+      },
+      "consumers": [
+        {
+          "path": "REPO_AGENTS.md",
+          "heading": "Repository Maintainer Instructions > Delegation ROI"
+        },
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Process Control"
+        }
+      ],
+      "reason": "The reusable baseline, this repository's maintainer contract, and generated project template load independently and each must require a complete worker brief."
+    },
+    {
+      "id": "project-main-integration-ownership",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Process Control > Main Ownership"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Process Control > Main Ownership"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each must keep integration and synthesis with main."
+    },
+    {
+      "id": "project-optional-review-routing",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Process Control > Optional Reviewers"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Process Control > Optional Reviewers"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each must keep optional review risk-driven."
+    },
+    {
+      "id": "project-prompt-orchestration",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Process Control > Coordinated Orchestration"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Process Control > Coordinated Orchestration"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each bounds coordinated prompt-only orchestration."
+    },
+    {
+      "id": "project-remote-state-guard",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Git And Remote State"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Autonomy"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each must retain the remote-state guard."
+    },
+    {
+      "id": "project-scope-and-evidence-authority",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Process Control > Scope And Evidence"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Process Control > Scope And Evidence"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each separates user scope from reviewer evidence."
+    },
+    {
+      "id": "project-sdet-terminal-contract",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Process Control > Critical SDET"
+      },
+      "consumers": [
+        {
+          "path": "REPO_AGENTS.md",
+          "heading": "Repository Maintainer Instructions > Autonomous Work Contract"
+        }
+      ],
+      "reason": "The reusable project baseline and this repository's maintainer contract load independently and each must preserve the critical-SDET terminal contract."
+    },
+    {
+      "id": "project-worktree-preservation",
+      "owner": {
+        "path": "instructions/reusable-project-agent-instructions.md",
+        "heading": "Reusable Project Agent Instructions > Work Style"
+      },
+      "consumers": [
+        {
+          "path": "templates/project/AGENTS.md",
+          "heading": "Project Agent Instructions > Autonomy"
+        }
+      ],
+      "reason": "The reusable baseline and generated project template are alternative standalone project instruction sources and each must protect unrelated worktree changes."
+    },
+    {
+      "id": "reviewer-candidate-reference",
+      "owner": {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "heading": "Leaf Reviewer Agent Contract > Output Schema"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/code-quality-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/deployment-config-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/execution-safety-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/instruction-artifact-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-client-compatibility-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-evidence-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/performance-reliability-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/protocol-api-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/rust-concurrency-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/test-coverage-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/wire-protocol-reviewer.md",
+          "heading": "Output"
+        }
+      ],
+      "reason": "Reviewer agents load independently and each must emit the candidate identity defined by the shared leaf-reviewer contract."
+    },
+    {
+      "id": "reviewer-effective-model",
+      "owner": {
+        "path": "global/agents/code-quality-reviewer.md",
+        "heading": "Output"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/deployment-config-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/execution-safety-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/foundation-integrity-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/implementation-readiness-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/instruction-artifact-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-client-compatibility-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-evidence-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/openspec-architecture-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/performance-reliability-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/protocol-api-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/rust-concurrency-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/test-coverage-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/wire-protocol-reviewer.md",
+          "heading": "Output"
+        }
+      ],
+      "reason": "Reviewer agents load independently and each must report the effective model identity locally."
+    },
+    {
+      "id": "reviewer-evidence-gaps",
+      "owner": {
+        "path": "global/agents/deployment-config-reviewer.md",
+        "heading": "Output"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/execution-safety-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-evidence-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/openspec-architecture-reviewer.md",
+          "heading": "Output"
+        }
+      ],
+      "reason": "These reviewer agents load independently and each must expose the same bounded evidence-gap field."
+    },
+    {
+      "id": "reviewer-no-product-decision",
+      "owner": {
+        "path": "global/agents/code-quality-reviewer.md",
+        "heading": "Practice Ownership"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/deployment-config-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/implementation-readiness-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/instruction-artifact-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/legacy-client-compatibility-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/legacy-evidence-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/performance-reliability-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/protocol-api-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/rust-concurrency-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/test-coverage-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/wire-protocol-reviewer.md",
+          "heading": "Practice Ownership"
+        }
+      ],
+      "reason": "Practice reviewer agents load independently and each must state its non-authorizing product boundary locally."
+    },
+    {
+      "id": "reviewer-practice-contract",
+      "owner": {
+        "path": "global/agents/evidence-sufficiency-reviewer.md",
+        "heading": "Practice Ownership"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/execution-safety-reviewer.md",
+          "heading": "Practice Ownership"
+        },
+        {
+          "path": "global/agents/foundation-integrity-reviewer.md",
+          "heading": "Practice Ownership"
+        }
+      ],
+      "reason": "The two practice-owner reviewers load independently and each must reference the shared practice-owner contract locally."
+    },
+    {
+      "id": "reviewer-preproof-candidate",
+      "owner": {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "heading": "Output"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/openspec-architecture-reviewer.md",
+          "heading": "Output"
+        }
+      ],
+      "reason": "The two pre-proof design reviewers load independently and each must permit the same bounded consultation identity."
+    },
+    {
+      "id": "reviewer-risk-matrix",
+      "owner": {
+        "path": "global/agents/deployment-config-reviewer.md",
+        "heading": "Output"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/execution-safety-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/implementation-readiness-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/instruction-artifact-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-client-compatibility-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-evidence-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/openspec-architecture-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/performance-reliability-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/protocol-api-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/rust-concurrency-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/test-coverage-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/wire-protocol-reviewer.md",
+          "heading": "Output"
+        }
+      ],
+      "reason": "Reviewer agents load independently and each must carry the shared evidence-backed risk-matrix row contract."
+    },
+    {
+      "id": "reviewer-terminal-non-authority",
+      "owner": {
+        "path": "global/agents/deployment-config-reviewer.md",
+        "heading": "Output"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/execution-safety-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/instruction-artifact-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/legacy-evidence-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/performance-reliability-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/protocol-api-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/rust-concurrency-reviewer.md",
+          "heading": "Output"
+        },
+        {
+          "path": "global/agents/wire-protocol-reviewer.md",
+          "heading": "Output"
+        }
+      ],
+      "reason": "Reviewer agents load independently and each must retain the same terminal non-authority boundary."
+    },
+    {
+      "id": "skill-no-remote-mutation",
+      "owner": {
+        "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+        "heading": "COM ActiveX Adapter Implementation > Safety"
+      },
+      "consumers": [
+        {
+          "path": "global/skills/config-schema-validation/SKILL.md",
+          "heading": "Config Schema Validation > Safety"
+        },
+        {
+          "path": "global/skills/external-service-simulator-harness/SKILL.md",
+          "heading": "External Service Simulator Harness > Safety"
+        },
+        {
+          "path": "global/skills/framed-protocol-implementation/SKILL.md",
+          "heading": "Framed Protocol Implementation > Safety"
+        },
+        {
+          "path": "global/skills/latency-benchmark-pack/SKILL.md",
+          "heading": "Latency Benchmark Pack > Safety"
+        },
+        {
+          "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+          "heading": "Rust Workspace Bootstrap > Safety"
+        },
+        {
+          "path": "global/skills/windows-service-packaging/SKILL.md",
+          "heading": "Windows Service Packaging > Safety"
+        },
+        {
+          "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+          "heading": "Wire Protocol Golden Tests > Safety"
+        }
+      ],
+      "reason": "These specialist skills load independently and each must retain the same local remote-state and destructive-cleanup guard."
+    },
+    {
+      "id": "skill-output-findings",
+      "owner": {
+        "path": "global/skills/documentation-hardening-loop/SKILL.md",
+        "heading": "Documentation Hardening Loop > Output"
+      },
+      "consumers": [
+        {
+          "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+          "heading": "Instruction Artifact Tuning > Output"
+        },
+        {
+          "path": "global/skills/openspec-consistency-review/SKILL.md",
+          "heading": "OpenSpec Consistency Review > Output"
+        }
+      ],
+      "reason": "These review skills load independently and each requires the same evidence-backed findings field."
+    },
+    {
+      "id": "worker-confidence-field",
+      "owner": {
+        "path": "instructions/evidence-and-validation.md",
+        "heading": "Evidence And Validation Discipline > Finding Format"
+      },
+      "consumers": [
+        {
+          "path": "global/agents/qwen-local-worker.md",
+          "heading": "Output"
+        }
+      ],
+      "reason": "The local worker loads independently and must carry the confidence field defined by the evidence contract."
+    }
+  ]
+}

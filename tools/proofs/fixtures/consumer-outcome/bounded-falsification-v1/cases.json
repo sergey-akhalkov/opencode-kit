@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "caseId": "coherent-wrong-outcome",
+      "originalRequestRef": "coherent-wrong-outcome-request-r1",
+      "candidateRef": "coherent-wrong-outcome-candidate-r1",
+      "decisionSurface": "accepted-output-format-and-success-boundary",
+      "originalAcceptedRequest": "Produce a migration plan whose observable result is a JSON export accepted by the existing importer.",
+      "successBoundary": "The existing importer accepts the produced JSON without translation.",
+      "candidateArtifact": "The candidate is internally coherent but plans a CSV export and validates only CSV syntax.",
+      "representedRisk": "All planned tasks can pass while the requested importer still rejects the result.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "coherent-wrong-outcome-candidate-r1", "caseId": "coherent-wrong-outcome", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "accepted-output-format-and-success-boundary", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "coherent-wrong-outcome-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "silent-owner-decision",
+      "originalRequestRef": "silent-owner-decision-request-r1",
+      "candidateRef": "silent-owner-decision-candidate-r1",
+      "decisionSurface": "owner-controlled-retention-policy",
+      "originalAcceptedRequest": "Plan local cleanup while preserving owner authority over the retention period.",
+      "successBoundary": "The plan exposes the retention period as an unresolved owner decision before deletion behavior is designed.",
+      "candidateArtifact": "The candidate silently selects seven days and treats that product policy as settled.",
+      "representedRisk": "Implementation can irreversibly delete data under an owner policy that was never accepted.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "silent-owner-decision-candidate-r1", "caseId": "silent-owner-decision", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "owner-controlled-retention-policy", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "silent-owner-decision-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "missing-observable-oracle",
+      "originalRequestRef": "missing-observable-oracle-request-r1",
+      "candidateRef": "missing-observable-oracle-candidate-r1",
+      "decisionSurface": "observable-latency-acceptance",
+      "originalAcceptedRequest": "Plan a latency reduction that can be verified at the installed command boundary.",
+      "successBoundary": "The installed command reports a representative before-and-after latency observation under identical inputs.",
+      "candidateArtifact": "The candidate requires compilation and unit tests but names no runtime measurement or threshold.",
+      "representedRisk": "Every task can pass without observing whether user-visible latency changed.",
+      "initialCandidateArtifact": "# Latency Plan\n\n- Compile the command.\n- Run unit tests.\n",
+      "correctedArtifact": "# Latency Plan\n\n- Run the installed command with representative identical inputs before and after the change.\n- Record and compare the observed latency at that command boundary.\n",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "missing-observable-oracle-candidate-r1", "caseId": "missing-observable-oracle", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "observable-latency-acceptance", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "missing-observable-oracle-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "late-implementation-surprise",
+      "originalRequestRef": "late-implementation-surprise-request-r1",
+      "candidateRef": "late-implementation-surprise-candidate-r1",
+      "decisionSurface": "dependency-response-contract-before-dependent-work",
+      "originalAcceptedRequest": "Plan parsing and orchestration only after characterizing the reachable dependency response.",
+      "successBoundary": "A read-only real response observation fixes the parser input before dependent implementation tasks begin.",
+      "candidateArtifact": "The candidate schedules parser, simulator, and orchestration implementation before any dependency characterization.",
+      "representedRisk": "A later response-shape observation can invalidate all dependent tasks.",
+      "initialCandidateArtifact": "# Dependency Integration Plan\n\n1. Implement the parser.\n2. Build a simulator.\n3. Implement orchestration.\n4. Characterize the dependency response.\n",
+      "correctedArtifact": "# Dependency Integration Plan\n\n1. Observe one reachable dependency response through the read-only real boundary.\n2. Fix the parser input contract from that observation.\n3. Only then plan parser, simulator, and orchestration implementation.\n",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "late-implementation-surprise-candidate-r1", "caseId": "late-implementation-surprise", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "dependency-response-contract-before-dependent-work", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "late-implementation-surprise-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "unnecessary-scope",
+      "originalRequestRef": "unnecessary-scope-request-r1",
+      "candidateRef": "unnecessary-scope-candidate-r1",
+      "decisionSurface": "minimum-local-validation-change",
+      "originalAcceptedRequest": "Plan one local schema validation rule and its focused regression proof.",
+      "successBoundary": "The existing validator rejects the invalid field and accepts the valid field through its current entrypoint.",
+      "candidateArtifact": "The candidate also introduces a plugin framework, registry service, and persistence layer not needed by the rule.",
+      "representedRisk": "Unrelated mechanisms multiply implementation and maintenance cost without supporting the accepted outcome.",
+      "initialCandidateArtifact": "# Schema Validation Plan\n\n- Add the local validation rule.\n- Build a plugin framework.\n- Add a registry service and persistence layer.\n",
+      "correctedArtifact": "# Schema Validation Plan\n\n- Add the local validation rule to the existing validator.\n- Prove rejection and acceptance through the current validator entrypoint.\n",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "unnecessary-scope-candidate-r1", "caseId": "unnecessary-scope", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "minimum-local-validation-change", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "unnecessary-scope-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "clean-no-finding",
+      "originalRequestRef": "clean-no-finding-request-r1",
+      "candidateRef": "clean-no-finding-candidate-r1",
+      "decisionSurface": "bounded-config-key-addition",
+      "originalAcceptedRequest": "Plan one optional configuration key with a documented default and installed-boundary readback.",
+      "successBoundary": "The existing loader returns the explicit value and the documented default in two local observations.",
+      "candidateArtifact": "The candidate names the current loader owner, exact schema change, default, two observations, rollback, and non-goals without extra mechanisms.",
+      "representedRisk": "No represented current-envelope material mismatch remains after all six attacks.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "clean-no-finding-candidate-r1", "caseId": "clean-no-finding", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "bounded-config-key-addition", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "clean-no-finding-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "material-correction-rereview",
+      "originalRequestRef": "material-correction-rereview-request-r1",
+      "candidateRef": "material-correction-rereview-candidate-r1",
+      "decisionSurface": "correlated-request-and-proof-boundary",
+      "originalAcceptedRequest": "Plan a correlated request/response path with observable timeout and cancellation behavior.",
+      "successBoundary": "The real protocol boundary proves correlation, timeout, and cancellation under one current contract.",
+      "candidateArtifact": "The first candidate omits cancellation; the smallest correction changes the challenged protocol and proof surfaces.",
+      "representedRisk": "The changed decision surface requires one fresh corrected-candidate challenge and then finite closure.",
+      "initialCandidateArtifact": "# Correlated Request Plan\n\n- Correlate requests and responses.\n- Observe timeout behavior.\n- Cancellation is not included.\n",
+      "correctedArtifact": "# Correlated Request Plan\n\n- Correlate requests and responses.\n- Observe timeout behavior.\n- Prove cancellation at the same real protocol boundary under the current contract.\n",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "material-correction-rereview-candidate-r1", "caseId": "material-correction-rereview", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "correlated-request-and-proof-boundary", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "material-correction-rereview-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "unchanged-repeat",
+      "originalRequestRef": "unchanged-repeat-request-r1",
+      "candidateRef": "unchanged-repeat-candidate-r1",
+      "decisionSurface": "unchanged-terminal-episode-reuse",
+      "originalAcceptedRequest": "Use the current terminal planning disposition without repeating equivalent generic review.",
+      "successBoundary": "The unchanged request, candidate, environment, and evidence tuple reuses one terminal challenge record.",
+      "candidateArtifact": "A current no-material-finding episode already exists and no decision-changing input has changed.",
+      "representedRisk": "Confidence-seeking repetition would create an unbounded review loop without new evidence.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "unchanged-repeat-candidate-r1", "caseId": "unchanged-repeat", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "unchanged-terminal-episode-reuse", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "unchanged-repeat-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "optional-polish",
+      "originalRequestRef": "optional-polish-request-r1",
+      "candidateRef": "optional-polish-candidate-r1",
+      "decisionSurface": "accepted-cli-error-fix",
+      "originalAcceptedRequest": "Plan correction of one reproduced CLI error while preserving current output shape.",
+      "successBoundary": "The installed CLI returns the corrected exit and message for the reproducer.",
+      "candidateArtifact": "The outcome and proof are complete; the reviewer can only suggest optional wording and module-name polish.",
+      "representedRisk": "Optional polish must not become accepted work or trigger another generic challenge.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "optional-polish-candidate-r1", "caseId": "optional-polish", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "accepted-cli-error-fix", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "optional-polish-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "ordinary-small-exempt",
+      "originalRequestRef": "ordinary-small-exempt-request-r1",
+      "candidateRef": "ordinary-small-exempt-candidate-r1",
+      "decisionSurface": "exact-local-label-correction",
+      "originalAcceptedRequest": "Correct one misspelled local label and run its existing focused check.",
+      "successBoundary": "The same local entrypoint renders the corrected label.",
+      "candidateArtifact": "One owner-local reversible text correction has no unresolved outcome, envelope, invariant, proof, owner, or material-risk decision.",
+      "representedRisk": "A generic review would add ceremony without a decision-material surface.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "ordinary-small-exempt-candidate-r1", "caseId": "ordinary-small-exempt", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "exact-local-label-correction", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "ordinary-small-exempt-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "exact-practice-owner",
+      "originalRequestRef": "exact-practice-owner-request-r1",
+      "candidateRef": "exact-practice-owner-candidate-r1",
+      "decisionSurface": "loaded-instruction-trigger-and-task-fit",
+      "originalAcceptedRequest": "Plan a loaded instruction-routing change with a bounded task-fit challenge and exact instruction-governance review.",
+      "successBoundary": "The readiness owner challenges task fit once while the instruction owner independently checks trigger and mirror integrity.",
+      "candidateArtifact": "The candidate reaches both decision-material readiness and the registered instruction-governance trigger.",
+      "representedRisk": "A generic reviewer must not impersonate or replace the exact Practice Owner.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "exact-practice-owner-candidate-r1", "caseId": "exact-practice-owner", "challengeCount": 0, "correctionRef": "none", "decisionSurface": "loaded-instruction-trigger-and-task-fit", "effectiveModel": "none", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "exact-practice-owner-request-r1", "reviewerAgent": "none", "reviewerLaunchCount": 0, "reviewerSessionRef": "none", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "bounded-contract-unavailable", "terminalState": "unknown"
+      }
+    },
+    {
+      "caseId": "material-inline-plan",
+      "originalRequestRef": "material-inline-plan-request-r1",
+      "candidateRef": "material-inline-plan-candidate-r1",
+      "decisionSurface": "material-inline-decision-frame-before-mutation",
+      "originalAcceptedRequest": "Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.",
+      "successBoundary": "A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.",
+      "candidateArtifact": "No formal plan exists, but the request is Material and production mutation has not started.",
+      "representedRisk": "Skipping early framing would defer task-fit decisions until after production investment.",
+      "baselineDecision": {
+        "attackClasses": ["coherent-wrong-outcome:unknown", "silent-owner-decision:unknown", "missing-observable-oracle:unknown", "late-implementation-invalidation:unknown", "internal-contradiction:unknown", "unnecessary-scope:unknown"],
+        "candidateRef": "material-inline-plan-candidate-r1", "caseId": "material-inline-plan", "challengeCount": 1, "correctionRef": "none", "decisionSurface": "material-inline-decision-frame-before-mutation", "effectiveModel": "xai/grok-4.6/high", "exactOwnerAgent": "none", "invalidatedSurfaces": [], "mainDispositions": [], "materialFindings": [], "originalRequestRef": "material-inline-plan-request-r1", "reviewerAgent": "implementation-readiness-reviewer", "reviewerLaunchCount": 1, "reviewerSessionRef": "fresh-readiness-child-baseline-r1", "semanticReadiness": "unknown", "structuralReadiness": "passed", "terminalReason": "existing-material-readiness-observed", "terminalState": "unknown"
+      }
+    }
+  ]
+}

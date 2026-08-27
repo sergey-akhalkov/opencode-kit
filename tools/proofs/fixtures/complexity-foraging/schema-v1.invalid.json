@@ -1,0 +1,233 @@
+[
+  {
+    "id": "schema-version",
+    "expectedField": "schemaVersion",
+    "record": {
+      "recordType": "input",
+      "schemaVersion": 2,
+      "root": {
+        "kind": "sha256",
+        "digest": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "bounds": {
+        "maxFiles": 100000,
+        "maxBytes": 536870912,
+        "timeoutMs": 120000
+      }
+    }
+  },
+  {
+    "id": "scope-class",
+    "expectedField": "scope.includes[0].class",
+    "record": {
+      "recordType": "input",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "scope": {
+        "includes": [
+          {
+            "path": "src",
+            "class": "critical",
+            "reason": "semantic class is forbidden"
+          }
+        ],
+        "excludes": []
+      },
+      "bounds": {
+        "maxFiles": 100000,
+        "maxBytes": 536870912,
+        "timeoutMs": 120000
+      }
+    }
+  },
+  {
+    "id": "root-identity",
+    "expectedField": "root.digest",
+    "record": {
+      "recordType": "input",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "private-root"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "bounds": {
+        "maxFiles": 100000,
+        "maxBytes": 536870912,
+        "timeoutMs": 120000
+      }
+    }
+  },
+  {
+    "id": "bounds",
+    "expectedField": "bounds.maxFiles",
+    "record": {
+      "recordType": "input",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "bounds": {
+        "maxFiles": 0,
+        "maxBytes": 536870912,
+        "timeoutMs": 120000
+      }
+    }
+  },
+  {
+    "id": "detector-evidence",
+    "expectedField": "candidates[0].evidence.detector",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "support": {
+        "state": "complete",
+        "unsupportedFields": [],
+        "unknownFields": []
+      },
+      "candidates": [
+        {
+          "kind": "source",
+          "path": "src/main.ts",
+          "evidence": {
+            "detector": "semantic-guess",
+            "value": "looks important"
+          }
+        }
+      ],
+      "counts": {
+        "files": 1,
+        "directories": 1,
+        "bytes": 1,
+        "lines": 1,
+        "maintained": 1,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 0,
+        "unreadable": 0
+      },
+      "largestMaintainedFiles": [],
+      "topLevelConcentration": [],
+      "diagnostics": []
+    }
+  },
+  {
+    "id": "support-state",
+    "expectedField": "support.state",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "support": {
+        "state": "healthy",
+        "unsupportedFields": [],
+        "unknownFields": []
+      },
+      "candidates": [],
+      "counts": {
+        "files": 0,
+        "directories": 0,
+        "bytes": 0,
+        "lines": 0,
+        "maintained": 0,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 0,
+        "unreadable": 0
+      },
+      "largestMaintainedFiles": [],
+      "topLevelConcentration": [],
+      "diagnostics": []
+    }
+  },
+  {
+    "id": "cause",
+    "expectedField": "diagnostics[0].cause.code",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "support": {
+        "state": "blocked",
+        "unsupportedFields": [],
+        "unknownFields": [
+          "project"
+        ]
+      },
+      "candidates": [],
+      "counts": {
+        "files": 0,
+        "directories": 0,
+        "bytes": 0,
+        "lines": 0,
+        "maintained": 0,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 0,
+        "unreadable": 0
+      },
+      "largestMaintainedFiles": [],
+      "topLevelConcentration": [],
+      "diagnostics": [
+        {
+          "stage": "cancellation",
+          "path": null,
+          "cause": {
+            "name": "AbortError",
+            "code": "",
+            "message": "Traversal was cancelled"
+          }
+        }
+      ]
+    }
+  }
+]

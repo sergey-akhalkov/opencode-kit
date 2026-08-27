@@ -1,0 +1,18 @@
+Usage:
+  node global/bin/complexity-foraging-inventory.ts --help
+  node global/bin/complexity-foraging-inventory.ts --root <path> [options]
+
+Read-only, provider-free project foraging facts. Help performs no scan and creates no files.
+
+Options:
+  --root <path>       Explicit local project root (required for a scan).
+  --scope <path>      Optional versioned reviewed scope JSON; never generated heuristically.
+  --format json       Stable JSON output. Markdown is completed by the later full-contract task.
+  --max-files <n>     Traversed file bound (default 100000, hard cap 1000000).
+  --max-bytes <n>     Maintained text-read bound (default 536870912, hard cap 4294967296).
+  --timeout-ms <n>    Wall-clock bound (default 120000, hard cap 600000).
+  --help, -h          Show this effect-free help.
+
+Output uses a SHA-256 root identity, project-relative paths, exact detector evidence, reviewed exclusions,
+and explicit complete/partial/unsupported fallback states. It emits no source payload or semantic score.
+A successful scan exits 0; invalid input, unreadable roots, or exhausted bounds exit non-zero.

@@ -1,0 +1,328 @@
+{
+  "byteLength": 45250,
+  "comparisonIdentity": "a833de65fb689a78b9ba9d01a8306d148261a446615298c815866c11923b9513",
+  "evaluatorDigest": "d6ac59efb3182f93a91c922e9194aced71695f95e9daa326d02c78b6374c4903",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-missing-observable-oracle-1",
+          "Read only cases.json and candidate.md, then select missing-observable-oracle. Apply the loaded main planning-readiness and Practice Owner routing used by propose; do not infer an absent contract from this request. Launch only implementation-readiness-reviewer once. Supply the child only originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, the current local envelope, six attack classes, and read-only boundaries; do not supply candidateDecision or correctedArtifact. Main independently reproduces any complete current material row. Only if the missing runtime oracle is confirmed, replace candidate.md exactly with correctedArtifact and copy candidateDecision exactly to decision.json. Do not write candidateDecision before the artifact correction is complete. Do not ask questions, use another reviewer, or perform external, credential, install, commit, remote, destructive, product, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787801518399,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_04146413800141LDTa6pA2fJ03\",\"messageID\":\"msg_041462b6c001IuFVazpP3YZmgm\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787801522619,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_041464824001BeAnAbCRLfZu0D\",\"messageID\":\"msg_041462b6c001IuFVazpP3YZmgm\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"text\",\"text\":\"I will inspect only `cases.json` and `candidate.md`, select the named case, then run the single required read-only readiness review against that candidate.\",\"time\":{\"start\":1787801520164,\"end\":1787801522607},\"metadata\":{\"openai\":{\"itemId\":\"msg_0bbc3acb7c8a09f9016a8fafb1de3087d28ed0d50018aaab3b\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787801522781,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_FqhPir452U6z6NUylBZ72ck6\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n15:         \\\"challengeCount\\\": 0,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n18:         \\\"effectiveModel\\\": \\\"none\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"none\\\",\\n25:         \\\"reviewerLaunchCount\\\": 0,\\n26:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"The candidate requires compilation and unit tests but names no runtime measurement or threshold.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:attempted\\\",\\n36:           \\\"silent-owner-decision:attempted\\\",\\n37:           \\\"missing-observable-oracle:attempted\\\",\\n38:           \\\"late-implementation-invalidation:attempted\\\",\\n39:           \\\"internal-contradiction:attempted\\\",\\n40:           \\\"unnecessary-scope:attempted\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n44:         \\\"challengeCount\\\": 1,\\n45:         \\\"correctionRef\\\": \\\"missing-observable-oracle-correction-r1\\\",\\n46:         \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n47:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n49:         \\\"invalidatedSurfaces\\\": [\\n50:           \\\"observable-proof\\\"\\n51:         ],\\n52:         \\\"mainDispositions\\\": [\\n53:           \\\"BFR-003:confirmed\\\"\\n54:         ],\\n55:         \\\"materialFindings\\\": [\\n56:           \\\"BFR-003\\\"\\n57:         ],\\n58:         \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n59:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n60:         \\\"reviewerLaunchCount\\\": 1,\\n61:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n62:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n63:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n64:         \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n65:         \\\"terminalState\\\": \\\"closed\\\"\\n66:       },\\n67:       \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n68:       \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n69:       \\\"correctedArtifact\\\": \\\"# Latency Plan\\\\n\\\\n- Run the installed command with representative identical inputs before and after the change.\\\\n- Record and compare the observed latency at that command boundary.\\\\n\\\",\\n70:       \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n71:       \\\"initialCandidateArtifact\\\": \\\"# Latency Plan\\\\n\\\\n- Compile the command.\\\\n- Run unit tests.\\\\n\\\",\\n72:       \\\"originalAcceptedRequest\\\": \\\"Plan a latency reduction that can be verified at the installed command boundary.\\\",\\n73:       \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n74:       \\\"representedRisk\\\": \\\"Every task can pass without observing whether user-visible latency changed.\\\",\\n75:       \\\"successBoundary\\\": \\\"The installed command reports a representative before-and-after latency observation under identical inputs.\\\"\\n76:     }\\n77:   ],\\n78:   \\\"schemaVersion\\\": 1\\n79: }\\n80: \\n\\n(End of file - total 80 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"The candidate requires compilation and unit tests but names no runtime measurement or threshold.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:attempted\\\",\\n          \\\"silent-owner-decision:attempted\\\",\\n          \\\"missing-observable-oracle:attempted\\\",\\n          \\\"late-implementation-invalidation:attempted\\\",\\n          \\\"internal-contradiction:attempted\\\",\\n          \\\"unnecessary-scope:attempted\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"missing-observable-oracle-correction-r1\\\",\\n        \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [\\n          \\\"observable-proof\\\"\\n        ],\\n        \\\"mainDispositions\\\": [\\n          \\\"BFR-003:confirmed\\\"\\n        ],\\n        \\\"materialFindings\\\": [\\n          \\\"BFR-003\\\"\\n        ],\\n        \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 1,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n        \\\"terminalState\\\": \\\"closed\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n      \\\"correctedArtifact\\\": \\\"# Latency Plan\\\\n\\\\n- Run the installed command with representative identical inputs before and after the change.\\\\n- Record and compare the observed latency at that command boundary.\\\\n\\\",\\n      \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n      \\\"initialCandidateArtifact\\\": \\\"# Latency Plan\\\\n\\\\n- Compile the command.\\\\n- Run unit tests.\\\\n\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Plan a latency reduction that can be verified at the installed command boundary.\\\",\\n      \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"Every task can pass without observing whether user-visible latency changed.\\\",\\n      \\\"successBoundary\\\": \\\"The installed command reports a representative before-and-after latency observation under identical inputs.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":80,\"totalLines\":80,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-missing-observable-oracle-dccled\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787801522711,\"end\":1787801522774}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bbc3acb7c8a09f9016a8fafb444c087d28a41380248de9614\"}},\"id\":\"prt_0414651b7001aYu8Z8WjDXWfZl\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"messageID\":\"msg_041462b6c001IuFVazpP3YZmgm\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787801522833,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_219FYsmPcVKXLtzzyxaKHHNX\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\"},\"output\":\"<path><proof-root>\\\\fixture\\\\candidate.md</path>\\n<type>file</type>\\n<content>\\n1: # Latency Plan\\n2: \\n3: - Compile the command.\\n4: - Run unit tests.\\n\\n(End of file - total 4 lines)\\n</content>\",\"metadata\":{\"preview\":\"# Latency Plan\\n\\n- Compile the command.\\n- Run unit tests.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"text\":\"# Latency Plan\\n\\n- Compile the command.\\n- Run unit tests.\",\"lineStart\":1,\"lineEnd\":4,\"totalLines\":4,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-missing-observable-oracle-dccled\\\\fixture\\\\candidate.md\",\"time\":{\"start\":1787801522724,\"end\":1787801522799}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bbc3acb7c8a09f9016a8fafb444cc87d2b1f4a218f73bf648\"}},\"id\":\"prt_04146521d001gwJn6EruAKSber\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"messageID\":\"msg_041462b6c001IuFVazpP3YZmgm\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787801522833,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_041465278001ydlmQlWBgjKpc0\",\"reason\":\"tool-calls\",\"messageID\":\"msg_041462b6c001IuFVazpP3YZmgm\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-finish\",\"tokens\":{\"total\":14671,\"input\":14443,\"output\":150,\"reasoning\":78,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787801524006,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_041465722001VAPztwtv3gZD3O\",\"messageID\":\"msg_0414652890014wjaYUCqYPSxkg\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787801530123,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_041466bc5001FhXiH1cWfzWO1b\",\"messageID\":\"msg_0414652890014wjaYUCqYPSxkg\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"text\",\"text\":\"The selected candidate matches the case’s initial artifact and lacks the required installed-command latency observation. I am now issuing the one permitted fresh, read-only challenge using only the bounded fields specified.\",\"time\":{\"start\":1787801529285,\"end\":1787801530121},\"metadata\":{\"openai\":{\"itemId\":\"msg_0f41c8271e7fa07f016a8fafbb0ab887d2854943e77007466d\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787801683808,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_CUcY1mM8ZmiwQAmQe42nJVWS\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Review candidate readiness\",\"prompt\":\"originalAcceptedRequest:\\nPlan a latency reduction that can be verified at the installed command boundary.\\n\\nsuccessBoundary:\\nThe installed command reports a representative before-and-after latency observation under identical inputs.\\n\\ncandidateArtifact:\\n# Latency Plan\\n\\n- Compile the command.\\n- Run unit tests.\\n\\nrepresentedRisk:\\nEvery task can pass without observing whether user-visible latency changed.\\n\\ncurrent local envelope:\\nOne bounded planning-readiness challenge for the selected local candidate. No questions, no implementation, no correction authoring, and no external, credential, install, commit, remote, destructive, product, or protected actions. Report only current, reachable, evidence-backed material readiness findings; no acceptance or rejection verdict and no lifecycle decision.\\n\\nsix attack classes:\\n- coherent-wrong-outcome\\n- silent-owner-decision\\n- missing-observable-oracle\\n- late-implementation-invalidation\\n- internal-contradiction\\n- unnecessary-scope\\n\\nread-only boundaries:\\nRead-only review. Do not write or modify files, dispatch or resume agents, ask the user questions, execute external actions, or perform implementation. Return one evidence-backed risk matrix with stable Risk ID, requirement/invariant, reachable scenario and enforced envelope, candidate path/line evidence, consequence, likelihood or unknown, confidence, reproduction procedure when feasible, smallest mitigation note, inspected candidate reference, and Effective Model.\"},\"output\":\"<task id=\\\"ses_fbeb97ba6ffeA43ZsQSqLd5mdU\\\" state=\\\"completed\\\">\\n<task_result>\\n## Candidate Reference / RC\\n`missing-observable-oracle-candidate-r1` (`candidate.md`)\\n\\n## Effective Model\\n`xai/grok-4.6`\\n\\n## Practice Observation\\n`findings-reported`\\n\\n## Falsification Matrix\\n\\n| Attack class | Status | Evidence | Admitted Risk IDs |\\n|---|---|---|---|\\n| coherent-wrong-outcome | attempted | Literal completion of `candidate.md` is compile-success plus unit-test-success. Independently supplied request/success boundary is a latency reduction proved at the installed command with before-and-after observation under identical inputs. The candidate is a coherent substitute done-state, not a rival latency design; the current-scope defect is absent observation, not a competing product outcome. | none |\\n| silent-owner-decision | attempted | Success boundary already names the oracle (installed command, representative identical inputs, before-and-after latency). Candidate does not silently pick a product/API/data/threshold/owner policy; it omits observation. No owner decision is required to name that already-accepted proof. | none |\\n| missing-observable-oracle | attempted | `candidate.md` lines 3–4 are only “Compile the command” and “Run unit tests.” No installed-command invocation, no identical inputs, no before measurement, no after measurement, no comparison. Both listed tasks can pass with user-visible latency unchanged and unobserved. | BFR-003 |\\n| late-implementation-invalidation | attempted | The proof gap is already visible on the planning artifact. Nothing in the current envelope indicates a later hidden constraint that would newly invalidate an otherwise sufficient plan. | none |\\n| internal-contradiction | attempted | The two tasks do not conflict with each other. The title “Latency Plan” is not paired with a contradictory SHALL; there are no two current-scope requirements that cannot both be true. | none |\\n| unnecessary-scope | attempted | Compile and unit tests are extra relative to the accepted installed-command latency observation. Extra compile/test hygiene is residual/optional here; it does not create a current-scope material row. The blocking gap is missing required observation, not surplus work. | none |\\n\\n## Risk Matrix\\n\\n| Field | BFR-003 |\\n|---|---|\\n| Risk ID | BFR-003 |\\n| Requirement / invariant | Independently supplied success boundary: the installed command reports a representative before-and-after latency observation under identical inputs. Behavior-changing / planning increment must define that observable happy-path proof before mutation. |\\n| Reachable scenario and enforced envelope | Current envelope is this planning candidate as the next working increment. A cold implementer following `candidate.md` as written finishes compile and unit tests and treats the latency plan as done. No installed-command run, identical-input pair, or latency record is required. Fixture contains no other proof procedure that could supply that oracle. |\\n| Path / line or live evidence | `candidate.md:3-4` — only “Compile the command.” and “Run unit tests.” No installed-command boundary, inputs, before/after observation, or comparison. Workspace also has no project-native command, measurement, or test that observes latency. |\\n| Business consequence | Every listed task can pass while user-visible latency is unchanged and unobserved. The accepted outcome (a latency reduction verifiable at the installed command) cannot be confirmed or falsified. |\\n| Likelihood | high |\\n| Confidence | high |\\n| Reproduction procedure | 1. Read `candidate.md`. 2. Treat lines 3–4 as the completion criteria. 3. Note both can succeed without invoking an installed command or recording latency. 4. Compare that done-state to the independently supplied success boundary (installed command, identical inputs, before-and-after latency). |\\n| Smallest mitigation note | Replace the compile/unit-test-only done-state with running the installed command on representative identical inputs before and after the change, and recording/comparing observed latency at that boundary. |\\n\\n## Readiness Matrix\\n\\n| Requirement / decision | Evidence / gap |\\n|---|---|\\n| Problem / goal | Requested: plan a latency reduction verifiable at the installed command. Candidate title says “Latency Plan”; body never states a latency change or that verification. |\\n| Scope of next increment | Candidate scope is compile + unit tests only (`candidate.md:3-4`). That is not the accepted increment. |\\n| Non-goals | Unstated. Not material; no extra non-goal was invented. |\\n| Acceptance / happy-path oracle | **Gap (BFR-003).** Success boundary requires installed-command before-and-after latency under identical inputs. Candidate oracle is compile + unit tests. |\\n| Scenario-based observable requirements inside current envelope | Not present. No representative input, no command identity, no before/after observation, no comparison. |\\n| Owner / product decisions that change outcome, envelope, invariants, proof, or material risk | None missing for the already-accepted proof shape. Technique/threshold not required by the supplied success boundary. |\\n| Implementation context / discoverable sources | Fixture is the plan artifact (`candidate.md`). No installed command, source entry point, or project-native proof CLI is named or present. Residual context gap; not a second acceptance requirement. |\\n| Validation commands | Candidate names generic “compile” and “unit tests” with no project-native procedure. Discovered workspace has none. Does not substitute for the installed-command latency oracle. |\\n| Profile | Planning-readiness challenge on a local candidate. No named protected-boundary Material trigger in the supplied request. Unknown profile does not change the missing-oracle defect. |\\n| Execution-ready brief (UTC, proportional) | Compact plan only. Missing the observable acceptance field the success boundary already named. |\\n| Behavior dependency / fidelity rung | Accepted real boundary is the installed command. Candidate stops at compile/unit tests and never names that rung, the blocker, or an unblocking task. |\\n| `code-quality-reviewer` gate | Unnecessary for this 4-line plan; no large-file or boundary-extraction issue. |\\n\\n## Evidence Gaps And Residual Risks\\n- Missing observable proof boundary on the candidate (BFR-003): installed-command before-and-after latency under identical inputs is not an acceptance task.\\n- Residual, non-blocking: installed command binary/name and project-native compile/test commands are unspecified in this fixture.\\n- No unresolved owner decision, no unknown effective model, no future-scope blocker.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"sessionId\":\"ses_fbeb97ba6ffeA43ZsQSqLd5mdU\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Review candidate readiness\",\"time\":{\"start\":1787801535580,\"end\":1787801683788}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0f41c8271e7fa07f016a8fafbbd35887d29fc15d8454bcb544\"}},\"id\":\"prt_041466f370016y91fHFj7gHrVO\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"messageID\":\"msg_0414652890014wjaYUCqYPSxkg\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787801683808,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_04148c750001a2WQtD7KJgfL19\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0414652890014wjaYUCqYPSxkg\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-finish\",\"tokens\":{\"total\":16430,\"input\":1966,\"output\":364,\"reasoning\":276,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787801685591,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_04148ce51001nUSBll35hqeJeK\",\"messageID\":\"msg_04148c758001tU4plHaUo6vjom\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787801691984,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_04148e211001s9BHCHFtEYXZWl\",\"messageID\":\"msg_04148c758001tU4plHaUo6vjom\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"text\",\"text\":\"Main reproduction confirms `BFR-003` from the supplied contract and `candidate.md:3-4`: compile and unit tests can complete without the required installed-command before/after latency observation under identical inputs. I will first replace `candidate.md` exactly with the case’s corrected artifact; only after that write completes will I create `decision.json`.\",\"time\":{\"start\":1787801690641,\"end\":1787801691973},\"metadata\":{\"openai\":{\"itemId\":\"msg_03e9a9622f837217016a8fb05c64f887d283bbb810b4d6ee6f\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787801693764,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_K315eTexqF8jogvTuxVWilXQ\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\fixture\\\\candidate.md\\n@@\\n # Latency Plan\\n \\n-- Compile the command.\\n-- Run unit tests.\\n+- Run the installed command with representative identical inputs before and after the change.\\n+- Record and compare the observed latency at that command boundary.\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-missing-observable-oracle-dccled/fixture/candidate.md\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,4 +1,4 @@\\n # Latency Plan\\n \\n-- Compile the command.\\n-- Run unit tests.\\n+- Run the installed command with representative identical inputs before and after the change.\\n+- Record and compare the observed latency at that command boundary.\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-missing-observable-oracle-dccled/fixture/candidate.md\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,4 +1,4 @@\\n # Latency Plan\\n \\n-- Compile the command.\\n-- Run unit tests.\\n+- Run the installed command with representative identical inputs before and after the change.\\n+- Record and compare the observed latency at that command boundary.\\n\",\"additions\":2,\"deletions\":2}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-missing-observable-oracle-dccled/fixture/candidate.md\",\"time\":{\"start\":1787801693743,\"end\":1787801693762}},\"metadata\":{\"openai\":{\"itemId\":\"fc_03e9a9622f837217016a8fb05dbb4c87d2b04b63ea0542e161\"}},\"id\":\"prt_04148e748001h4SKz1YEaLILvG\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"messageID\":\"msg_04148c758001tU4plHaUo6vjom\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787801693801,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_04148ee5d001kG8vaT4n3nbGmZ\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04148c758001tU4plHaUo6vjom\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-finish\",\"tokens\":{\"total\":18237,\"input\":2940,\"output\":192,\"reasoning\":257,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787801694988,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_04148f309001mb39i0FOhjCXFD\",\"messageID\":\"msg_04148ee63001x0ay75B1OqCzAQ\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787801704500,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_pocUuJ0mkQaM0h3jbumyxjk9\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"missing-observable-oracle-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-003:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-003\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-missing-observable-oracle-dccled/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,34 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"missing-observable-oracle-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-003:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-003\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-missing-observable-oracle-dccled/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,34 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"missing-observable-oracle-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"missing-observable-oracle\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"missing-observable-oracle-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"observable-latency-acceptance\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-003:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-003\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"missing-observable-oracle-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":34,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-missing-observable-oracle-dccled/fixture/decision.json\",\"time\":{\"start\":1787801704491,\"end\":1787801704497}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e7e90ec37d7d440016a8fb062e78887d2967407cf596e1333\"}},\"id\":\"prt_04148fb8e001Ze0S4i2Hv1SLfX\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"messageID\":\"msg_04148ee63001x0ay75B1OqCzAQ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787801704568,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_04149186700122uQOzXdoXoJ9a\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04148ee63001x0ay75B1OqCzAQ\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-finish\",\"tokens\":{\"total\":18809,\"input\":1388,\"output\":449,\"reasoning\":76,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787801705788,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_041491d37001x38yceuFiMklWf\",\"messageID\":\"msg_04149186f001VpgEeiyM7FFAbF\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787801711075,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_041492daa001oKrP9HJCRdPRSC\",\"messageID\":\"msg_04149186f001VpgEeiyM7FFAbF\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"text\",\"text\":\"Outcome: working.\\n\\n- Launched `implementation-readiness-reviewer` exactly once.\\n- Independently confirmed `BFR-003`, the missing runtime oracle.\\n- Replaced `candidate.md` with `correctedArtifact`.\\n- Created `decision.json` from `candidateDecision` only after correction completed.\\n- No prohibited actions performed.\",\"time\":{\"start\":1787801709994,\"end\":1787801711072},\"metadata\":{\"openai\":{\"itemId\":\"msg_092c94e0dd0b6fa7016a8fb06fc54887d2b77b6881c0a6e0df\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787801711161,\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"part\":{\"id\":\"prt_041493225001E3FCihidj39ftR\",\"reason\":\"stop\",\"messageID\":\"msg_04149186f001VpgEeiyM7FFAbF\",\"sessionID\":\"ses_fbeb9d73dffe09UKvERc0i678J\",\"type\":\"step-finish\",\"tokens\":{\"total\":19147,\"input\":936,\"output\":73,\"reasoning\":218,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "1f5c8d48da17a80c03436b32e7dfed69084db0fdde26aacbd5b9e5b531273562",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "5567a9d223e99725fd9243ae163984e60325a880c2beea02d2f3f48e8a0daf31",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "candidate.md",
+          "sha256": "feb3ffafc3335e667b186b80ea4a8dd7809470f92854733e7ea86de103448bcb"
+        },
+        {
+          "path": "cases.json",
+          "sha256": "13e4be920a63991095fccf31571c683df5a76abbf25547080e85bc69ab3e3638"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "e87e8998b0d4d1684483afc98ba2da53c7aff96c03b5e17f110f0a8a761966f2"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "hashes": {
+        "sample": "3ec9fa364304c4296f6776b60abc70c38292b7e0e8c26fde054af67dade82a53"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "missing-observable-oracle"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:attempted\",\"silent-owner-decision:attempted\",\"missing-observable-oracle:attempted\",\"late-implementation-invalidation:attempted\",\"internal-contradiction:attempted\",\"unnecessary-scope:attempted\"],\"candidateRef\":\"missing-observable-oracle-candidate-r1\",\"caseId\":\"missing-observable-oracle\",\"challengeCount\":1,\"correctionRef\":\"missing-observable-oracle-correction-r1\",\"decisionSurface\":\"observable-latency-acceptance\",\"effectiveModel\":\"xai/grok-4.6/high\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[\"observable-proof\"],\"mainDispositions\":[\"BFR-003:confirmed\"],\"materialFindings\":[\"BFR-003\"],\"originalRequestRef\":\"missing-observable-oracle-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":1,\"reviewerSessionRef\":\"fresh-readiness-child-r1\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"confirmed-correction-closed\",\"terminalState\":\"closed\"}\n"
+      },
+      "requestSha256": "d52dcc0f517b99adac1238a6e97e7e5eacd0fbe451a60fad445b44234c9d5ada",
+      "sampleIndex": 1,
+      "scenarioId": "missing-observable-oracle",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "a585b68141e373ade4129f8977a6fb51328e39eca304328131c2eb5d429e19e3",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "9baf049e296b50a550007ccbb6a4a70ed9194afe7f972f1b929b005440fdddb5",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "c4b26cc21d5551d96f0e8e45aa29ca3e18d0aff2b0e8e954e0c1780de3d86c9c",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "10e8424dbd24509d7c96e184c7803c5003ba182916bd1bb6643450b9c09c1c50",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "e26ad1f4f983240862891e51a9fc802e49546256dd1f970453f021620559a1d0",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "5567a9d223e99725fd9243ae163984e60325a880c2beea02d2f3f48e8a0daf31",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

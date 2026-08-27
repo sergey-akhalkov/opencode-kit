@@ -32,7 +32,10 @@ import {
 import { validateImplementationWorkerRouting } from "./validators/routing.ts";
 import { validateEngineeringQualityContracts } from "./validators/engineering-quality.ts";
 import { validatePracticeOwners } from "./validators/practice-owners.ts";
-import { validateInstructionBudget } from "./instruction-budget.ts";
+import {
+  evaluateInstructionContextQuality,
+  type ContextQualityFinding,
+} from "./instruction-context-quality.ts";
 
 type Options = {
   failOnWarnings: boolean;
@@ -134,13 +137,13 @@ function getInstructionNames(root: string): string[] {
   return listFiles(instructionsDir, ".md").map((file) => path.basename(file));
 }
 
-function ownsInstructionBudget(root: string): boolean {
-  try {
-    const packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")) as Record<string, unknown>;
-    return packageJson.name === "opencode-dev-kit";
-  } catch {
-    return false;
-  }
+function ownsInstructionContextQuality(root: string): boolean {
+  return fs.existsSync(path.join(root, "config", "instruction-context-quality.json"));
+}
+
+function formatContextQualityFinding(finding: ContextQualityFinding): string {
+  const locations = finding.locations.map((item) => `${item.path}:${item.startLine}-${item.endLine} [${item.heading}]`).join("; ");
+  return `${finding.code}${finding.ruleId ? ` (${finding.ruleId})` : ""}: ${finding.message}${locations === "" ? "" : ` ${locations}`}`;
 }
 
 function main(): void {
@@ -164,16 +167,17 @@ function main(): void {
   validateReadme(ctx, root, skillNames, agentNames, instructionNames);
   validateRepoAgentsMd(ctx, root);
   validateInstallerConfigDirModel(ctx, root);
-  if (ownsInstructionBudget(root)) {
+  if (ownsInstructionContextQuality(root)) {
     try {
-      const budget = validateInstructionBudget(root);
-      for (const boundary of [
-        ...budget.boundaries,
-        ...(budget.core?.boundaries ?? []),
-      ].filter((item) => item.status === "failed")) {
-        ctx.addError(
-          `Instruction budget exceeded for ${boundary.name}: actual=${boundary.actual} maximum=${boundary.maximum}. Intentional growth requires a reviewed direct seed edit; lowering-only command: ${budget.materializationCommand}`,
-        );
+      const report = evaluateInstructionContextQuality({ mode: "check", root, target: root });
+      for (const finding of report.deterministicErrors) {
+        ctx.addError(`Instruction context quality failed: ${formatContextQualityFinding(finding)}`);
+      }
+      for (const finding of report.safeFixes) {
+        ctx.addError(`Instruction context canonicalization required: ${formatContextQualityFinding(finding)}`);
+      }
+      for (const finding of report.reviewOnly) {
+        ctx.addInfo(`Instruction context review only: ${formatContextQualityFinding(finding)}`);
       }
     } catch (error) {
       ctx.addError(error instanceof Error ? error.message : String(error));

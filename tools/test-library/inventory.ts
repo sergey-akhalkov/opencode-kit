@@ -10,10 +10,8 @@ import {
   assertOutputExcludes,
   assertSuccess,
   findBucket,
-  invokeInstructionBudget,
   invokeInstructionInventory,
   invokeProjectInventory,
-  invokeValidator,
   isolatedOpenCodeEnv,
   libraryRoot,
   newTempDir,
@@ -257,12 +255,23 @@ export const inventoryTests: TestCase[] = [
     },
   },
   {
-    name: "default catalog inventory stays version 1 compatible with explicit catalog scope",
+    name: "default catalog inventory stays version 3 compatible with explicit catalog scope",
     run: () => {
       const catalog = newTempDir("catalog-compat");
       writeText(path.join(catalog, "README.md"), "root doc\n");
       writeText(path.join(catalog, "global", "AGENTS.md"), "authority\n");
       writeText(path.join(catalog, "instructions", "example.md"), "instruction\n");
+      const maintainedContextQuality = JSON.parse(
+        fs.readFileSync(path.join(libraryRoot, "config", "instruction-context-quality.json"), "utf8"),
+      ) as { rules: unknown[]; schemaVersion: number };
+      writeText(
+        path.join(catalog, "config", "instruction-context-quality.json"),
+        `${JSON.stringify({
+          schemaVersion: maintainedContextQuality.schemaVersion,
+          rules: maintainedContextQuality.rules,
+          duplicateExceptions: [],
+        }, null, 2)}\n`,
+      );
       const defaultResult = invokeInstructionInventory(["--root", catalog, "--format", "json"]);
       const explicitResult = invokeInstructionInventory([
         "--root",
@@ -276,9 +285,10 @@ export const inventoryTests: TestCase[] = [
       assertSuccess(explicitResult, "Explicit catalog scope must remain invocable.");
       const defaultReport = asRecord(parseJsonOutput(defaultResult), "Default catalog JSON root should be an object.");
       const explicitReport = asRecord(parseJsonOutput(explicitResult), "Explicit catalog JSON root should be an object.");
-      assertEqual(defaultReport.version, 1, "Default inventory must remain catalog version 1.");
-      assertEqual(defaultReport.sourceScope, undefined, "Default catalog output must not switch to loader-visible.");
+      assertEqual(defaultReport.version, 3, "Default inventory must expose catalog context-quality schema version 3.");
+      assertEqual(defaultReport.sourceScope, "catalog", "Default catalog output must identify catalog scope.");
       assertEqual(defaultReport.categories, undefined, "Default catalog output must not emit loader-visible categories.");
+      asRecord(defaultReport.contextQuality, "Default catalog output should include context quality.");
       assertDeepEqual(defaultReport, explicitReport, "Default catalog output must match explicit --source-scope catalog.");
       findBucket(asArray(defaultReport.artifacts, "Catalog artifacts should be an array."), "path", "instructions/example.md");
     },
@@ -367,97 +377,6 @@ export const inventoryTests: TestCase[] = [
         throw new Error("Vendor tree entries must not appear as loader-visible sources.");
       }
       findBucket(sources, "evidenceClass", "config-declared");
-    },
-  },
-  {
-    name: "instruction budget separates maintained boundaries and never materializes growth",
-    run: () => {
-      const kit = newTempDir("budget-kit");
-      writeText(path.join(kit, "README.md"), "aaaaa");
-      writeText(path.join(kit, "global", "AGENTS.md"), "bbbb");
-      writeText(path.join(kit, "global", "principles-of-work.md"), "cccc");
-      writeText(path.join(kit, "global", "commands", "demo.md"), "---\ndescription: Demo command.\n---\n\nCommand body.\n");
-      writeText(path.join(kit, "global", "skills", "demo", "SKILL.md"), "---\ndescription: Demo skill.\n---\n\nSkill body.\n");
-      const seed = path.join(kit, "config", "instruction-budget.json");
-      writeText(seed, lines([
-        "{",
-        "  \"limits\": {",
-        "    \"discoveryMetadataTokenProxy\": 100,",
-        "    \"globalStartupTokenProxy\": 100,",
-        "    \"onDemandBodiesTokenProxy\": 100",
-        "  },",
-        "  \"schemaVersion\": 2",
-        "}",
-        "",
-      ]));
-      const materialized = invokeInstructionBudget([
-        "--root",
-        kit,
-        "--seed",
-        seed,
-        "--format",
-        "json",
-        "--materialize-seed",
-      ]);
-      assertSuccess(materialized, "Budget seed materialization should lower reviewed maxima on a disposable kit.");
-      const loweredSeed = fs.readFileSync(seed, "utf8");
-      const loweredReport = asRecord(parseJsonOutput(materialized), "Materialized budget JSON root should be an object.");
-      assertEqual(loweredReport.schemaVersion, 2, "Budget report must use schema version 2.");
-      const loweredBoundaries = asArray(loweredReport.boundaries, "Materialized boundaries should be an array.");
-      const startup = findBucket(loweredBoundaries, "name", "globalStartupTokenProxy");
-      const discovery = findBucket(loweredBoundaries, "name", "discoveryMetadataTokenProxy");
-      const onDemand = findBucket(loweredBoundaries, "name", "onDemandBodiesTokenProxy");
-      assertEqual(startup.actual, 2, "Both committed startup files, but no on-demand bodies, must count as global startup authority.");
-      if (Number(discovery.actual) < 1 || Number(onDemand.actual) < 1) {
-        throw new Error("Discovery metadata and on-demand body boundaries must measure maintained artifacts.");
-      }
-
-      writeText(path.join(kit, "global", "AGENTS.md"), "bbbbgrow");
-      const growth = invokeInstructionBudget(["--root", kit, "--seed", seed, "--format", "json"]);
-      assertFailure(growth, "Token-proxy growth beyond the reviewed maximum must fail closed.");
-      const growthReport = asRecord(parseJsonOutput(growth), "Failed budget JSON root should be an object.");
-      assertEqual(growthReport.status, "failed", "Over-budget status must be failed.");
-      const grownStartup = findBucket(
-        asArray(growthReport.boundaries, "Budget boundaries should be an array."),
-        "name",
-        "globalStartupTokenProxy",
-      );
-      assertEqual(grownStartup.status, "failed", "Startup boundary must fail when actual exceeds maximum.");
-      if (Number(grownStartup.actual) <= Number(grownStartup.maximum)) {
-        throw new Error(`Growth failure must report actual above maximum.\nBoundary:\n${JSON.stringify(grownStartup, null, 2)}`);
-      }
-      assertEqual(
-        growthReport.materializationCommand,
-        "npm run instruction:budget -- --materialize-seed",
-        "Budget failure must name the lowering-only materialization command.",
-      );
-
-      const rejectedMaterialization = invokeInstructionBudget([
-        "--root", kit, "--seed", seed, "--format", "json", "--materialize-seed",
-      ]);
-      assertFailure(rejectedMaterialization, "Materialization must reject growth above a reviewed maximum.");
-      assertOutputContains(rejectedMaterialization, "refuses to increase reviewed maxima", "Growth rejection must explain the protected boundary.");
-      assertEqual(fs.readFileSync(seed, "utf8"), loweredSeed, "Rejected growth must not mutate the reviewed seed.");
-
-      writeText(seed, "{ malformed\n");
-      const malformed = invokeInstructionBudget(["--root", kit, "--seed", seed, "--format", "json"]);
-      assertFailure(malformed, "Malformed budget seed must fail closed.");
-      assertOutputContains(malformed, "unreadable or malformed", "Malformed seed must keep a cause-preserving error.");
-      assertOutputContains(malformed, "review it directly", "Malformed seed must require a reviewed direct correction.");
-
-      const consumer = newTempDir("budget-consumer");
-      writeText(path.join(consumer, "package.json"), lines([
-        "{",
-        "  \"name\": \"consumer-app\"",
-        "}",
-        "",
-      ]));
-      const validated = invokeValidator(consumer);
-      assertOutputExcludes(
-        validated,
-        "Instruction budget",
-        "Consumer roots without a project-owned budget must not be assigned kit maxima.",
-      );
     },
   },
 ];

@@ -1,0 +1,28 @@
+{
+  "recordType": "scope",
+  "schemaVersion": 1,
+  "includes": [
+    {
+      "path": "package.json",
+      "class": "maintained",
+      "reason": "reviewed project manifest"
+    },
+    {
+      "path": "src",
+      "class": "maintained",
+      "reason": "reviewed maintained source"
+    }
+  ],
+  "excludes": [
+    {
+      "path": "docs/corpus",
+      "class": "corpus",
+      "reason": "reviewed reference corpus"
+    },
+    {
+      "path": "runs",
+      "class": "evidence",
+      "reason": "generated proof evidence"
+    }
+  ]
+}

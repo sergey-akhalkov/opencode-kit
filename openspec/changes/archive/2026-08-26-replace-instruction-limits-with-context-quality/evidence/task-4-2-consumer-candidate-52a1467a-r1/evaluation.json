@@ -1,0 +1,43 @@
+{
+  "baselineMedians": {
+    "ordinary-small-greeting": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 0,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 5
+    },
+    "openspec-add-json-output": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 1,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 20
+    }
+  },
+  "candidateMedians": {
+    "ordinary-small-greeting": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 0,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 5
+    },
+    "openspec-add-json-output": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 1,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 20
+    }
+  },
+  "environmentDigest": "b2d2f02fb19a516647f1c789cc07dfb5d20000699c35b248cd5c12a2e060966c",
+  "expectation": "no-regression",
+  "improvedField": null,
+  "reasons": [],
+  "scenarioDigest": "c44a1065e3089ecd90ab42c693d2078996359985bbdd19126ca2a25b32fcc223",
+  "sourceDigest": "64ce5bddad890999a3e5224d269e66228711d19df5b19fcb997d67e875b61e5f",
+  "status": "passed-no-regression",
+  "digest": "a7e201e6f9c3708f5597c051290832a5532b4cf2ee295890a4b295ae7e58cd37",
+  "schemaVersion": 1
+}

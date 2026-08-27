@@ -1,0 +1,559 @@
+{
+  "decisionOracles": [],
+  "digest": "9d584418912e0c29c28fbc008c113dd4d36763582791240e283956449dced945",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac",
+      "candidate": null
+    },
+    "terminalReplay": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "mismatch-unique-recovery": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "false-positive-falsification": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      },
+      "dependent-inventory-sweep": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "overlapping-dependent-ownership": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "protected-product-ambiguity": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      },
+      "aligned-historical-controls": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      },
+      "ordinary-small-polish-anti-loop": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 6
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "5e2c8d6dc8930c6ec745775b67aa1849dd26772f559ce2d851f850e8d7c21ae5",
+    "expectation": "baseline-establishment",
+    "improvedField": null,
+    "reasons": [
+      "baseline.mismatch-unique-recovery.1.proof.exitCode",
+      "baseline.false-positive-falsification.1.proof.exitCode",
+      "baseline.dependent-inventory-sweep.1.proof.exitCode",
+      "baseline.overlapping-dependent-ownership.1.proof.exitCode",
+      "baseline.protected-product-ambiguity.1.proof.exitCode",
+      "baseline.aligned-historical-controls.1.proof.exitCode",
+      "baseline.ordinary-small-polish-anti-loop.1.proof.exitCode",
+      "foundation-integrity-oracle:baseline:mismatch-unique-recovery:1:malformed-observation",
+      "foundation-integrity-oracle:baseline:false-positive-falsification:1:malformed-observation",
+      "foundation-integrity-oracle:baseline:dependent-inventory-sweep:1:malformed-observation",
+      "foundation-integrity-oracle:baseline:overlapping-dependent-ownership:1:malformed-observation",
+      "foundation-integrity-oracle:baseline:protected-product-ambiguity:1:malformed-observation",
+      "foundation-integrity-oracle:baseline:aligned-historical-controls:1:malformed-observation",
+      "foundation-integrity-oracle:baseline:ordinary-small-polish-anti-loop:1:malformed-observation"
+    ],
+    "scenarioDigest": "540f8a18ce6a2c3db5617e5b55919c455b745371b3b087258ad45c9aec2ddaa6",
+    "sourceDigest": "98c9db0db053ee2f072ee93084fcdece0d85d49138e935e465cbe6b251713468",
+    "status": "failed",
+    "digest": "52becb89da872aa3265e8ad09b2f2c30caf2e425fa96370a67370bce7351e829",
+    "schemaVersion": 1
+  },
+  "foundationIntegrityOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "mismatch-plan",
+            "path": "state/mismatch-unique-recovery.json",
+            "stateSha256": "fd4d4db92db328dd6fbc99007a5f60ab778c26b37d0dfd16cf41ac06434be47e"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "mismatch-unique-recovery",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "current-cross-family-mismatch",
+            "status": "unknown"
+          },
+          {
+            "memberId": "confirmed-unique-correction",
+            "status": "unknown"
+          },
+          {
+            "memberId": "archive-preservation",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "active-change-inventory",
+            "path": "state/dependent-inventory-sweep.json",
+            "stateSha256": "b0ba2480c8c929531f5386a08b16d0abde96fddd06338e550bd0e4bd4b5c3337"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "dependent-inventory-sweep",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "dependent-versus-unrelated-active-changes",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "dependent-inventory-sweep"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "ownership-plan",
+            "path": "state/overlapping-dependent-ownership.json",
+            "stateSha256": "a656f4debb837be1d4056677512b4d5ef96335998b2b3ee1c7ef5a983e416918"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "overlapping-dependent-ownership",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "overlapping-dependent-ownership",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "overlapping-dependent-ownership"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "protected-boundary",
+            "path": "state/protected-product-ambiguity.json",
+            "stateSha256": "ab83e9139a8648fcd79ce61b5ecf4fa455de506da4eaccaa9997a568ff713b53"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "protected-product-ambiguity",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "protected-product-ambiguity",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "protected-product-ambiguity"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "aligned-plan",
+            "path": "state/aligned-historical-controls.json",
+            "stateSha256": "3b2a8a623f851c5096255c760805600fa388daf727439cb71d2f1d9a3b8b0a8a"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "aligned-historical-controls",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "aligned-binding",
+            "status": "unknown"
+          },
+          {
+            "memberId": "historical-only-evidence",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "ordinary-plan",
+            "path": "state/ordinary-small-polish-anti-loop.json",
+            "stateSha256": "debabc044c333f762b06cd97906b2ac87c102c0ac6a8cbec694398b0d9405ea9"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "ordinary-small-polish-anti-loop",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "ordinary-small-exact-case",
+            "status": "unknown"
+          },
+          {
+            "memberId": "non-critical-architecture-polish",
+            "status": "unknown"
+          },
+          {
+            "memberId": "unchanged-hypothesis-anti-loop",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-polish-anti-loop"
+    }
+  ],
+  "foundationIntegrityRows": [
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "current-cross-family-mismatch",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "confirmed-unique-correction",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "archive-preservation",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "mismatch-unique-recovery"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "false-positive-falsification",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "dependent-versus-unrelated-active-changes",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "dependent-inventory-sweep"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "overlapping-dependent-ownership",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "overlapping-dependent-ownership"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "protected-product-ambiguity",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "protected-product-ambiguity"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "aligned-binding",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "historical-only-evidence",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "ordinary-small-exact-case",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-polish-anti-loop"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "non-critical-architecture-polish",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-polish-anti-loop"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "unchanged-hypothesis-anti-loop",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-polish-anti-loop"
+    }
+  ],
+  "maximumClaim": "the exercised configured model and seven reviewed foundation-integrity scenarios cover twelve explicit partitions without provider, model, consumer-project, or protected-decision generalization"
+}

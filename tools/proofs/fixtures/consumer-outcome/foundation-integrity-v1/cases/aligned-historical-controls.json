@@ -1,0 +1,31 @@
+{
+  "caseId": "aligned-historical-controls",
+  "memberIds": ["aligned-binding", "historical-only-evidence"],
+  "fallbackDecision": {
+    "caseId": "aligned-historical-controls",
+    "correctedReviewCount": 0,
+    "incidentId": "none",
+    "initialReviewCount": 0,
+    "ownerAgent": "none",
+    "recoverySkillCount": 0,
+    "reproductionDisposition": "not-run",
+    "terminalRows": [
+      { "memberId": "aligned-binding", "status": "unknown" },
+      { "memberId": "historical-only-evidence", "status": "unknown" }
+    ],
+    "terminalState": "unavailable"
+  },
+  "facts": {
+    "acceptedOutcome": "gateway-v2-current-profile",
+    "currentOracle": "gateway-v2-current-oracle",
+    "representativeWorkload": "current-profile-a-workload",
+    "historicalEvidence": "legacy-profile-b-component-regression-only",
+    "currentBindingAligned": true,
+    "bindOrRebindEvent": false
+  },
+  "artifacts": [
+    { "artifactId": "aligned-plan", "path": "state/aligned-historical-controls.json" },
+    { "artifactId": "archived-result", "path": "state/archive-record.json" },
+    { "artifactId": "unrelated-active-change", "path": "state/unrelated-active-change.json" }
+  ]
+}

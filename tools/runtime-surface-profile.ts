@@ -11,6 +11,8 @@ export const CORE_SKILLS = [
   "behavioral-substitution-qualification",
   "change-ready-sdlc",
   "complain",
+  "complexity-management",
+  "foundation-integrity-recovery",
   "next-step",
   "openspec-abandon-change",
   "openspec-apply-change",
@@ -23,6 +25,7 @@ export const CORE_AGENTS = [
   "code-quality-reviewer",
   "evidence-sufficiency-reviewer",
   "execution-safety-reviewer",
+  "foundation-integrity-reviewer",
   "implementation-readiness-reviewer",
   "implementation-worker",
   "instruction-artifact-reviewer",
@@ -36,6 +39,8 @@ export const CORE_COMMANDS = ["opsx-apply", "opsx-archive", "opsx-propose"] as c
 
 export const CORE_FILES = [
   "global/AGENTS.md",
+  "global/bin/complexity-foraging-contract.ts",
+  "global/bin/complexity-foraging-inventory.ts",
   "global/opencode.json.template",
   "global/opencode.local.instructions.example.md",
   "global/principles-of-work.md",

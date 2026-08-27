@@ -12,9 +12,8 @@ Default mode is `review-only` unless the user explicitly asks for `audit-and-fix
 
 ## Scope Contract
 
-Before deep work, define:
+Before deep work, define `Goal`: one bounded audit objective.
 
-- `Goal`: one bounded audit objective.
 - `Scope`: files, directories, diff, change, or subsystem.
 - `Non-goals`: adjacent work not included.
 - `Material Success Criteria`: what must be covered before stopping.
@@ -68,6 +67,12 @@ Good audit helpers gather explicit evidence: file/block inventories, line counts
 
 Helper code must define explicit inputs, outputs, fixtures or schemas, stable ordering, privacy-safe output where applicable, and failure states. Do not encode fuzzy scoring, probabilistic classification, model-like summarization, inferred severity, or hidden risk ranking in helper code. If a helper cannot prove a fact from its inputs, it reports `unknown`, `unreadable`, `unsupported`, or `blocked`; findings and severity remain reviewer judgments.
 
+## Complexity Pressure Matrix
+
+When the user explicitly requests whole-project or exhaustive complexity coverage, keep the audit review-only by default and add one matrix over existing coverage/finding rows. Each row contains: area or subsystem; current consumer/change scenario; observed context or change pressure; source/test/runtime evidence; current owner or `unknown`; entrypoint; admission class (`current-dependency`, `accepted-refactor`, `deferred-debt`, or `unknown`); and focused-scenario reference or `none`.
+
+Do not create an Architecture Comprehension Map or Change Rehearsal for every audited block. A matrix row authorizes no mutation. Only a separately accepted subsystem refactor enters `complexity-management` with one named scenario; unrelated pressure stays `deferred-debt` and review-only.
+
 ## Output
 
 Return:
@@ -76,6 +81,7 @@ Return:
 - `Coverage`: what was reviewed and what was not.
 - `Findings`: severity, evidence, evidence type, impact, likely root cause, recommendation, confidence.
 - `Project Structure Ergonomics`: human navigability, agent navigability, folder taxonomy, dumping-ground candidates, canonical entrypoints, and tool/documentation discoverability.
+- `Complexity Pressure Matrix`: exact project-mode fields above for explicit exhaustive complexity coverage, or `not requested`.
 - `Redundancy Matrix`: required for broad audits; include duplicate/dead/merge/extract/keep candidates with class, evidence, impact, and recommendation, or state `not run: <reason>`.
 - `Test Gap Matrix`: behavior -> evidence -> missing gate.
 - `Failure Mode Matrix`: scenario -> expected behavior -> evidence or blocker.

@@ -1,0 +1,169 @@
+{
+  "boundedFalsificationOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "optional-polish-candidate-r1",
+        "caseId": "optional-polish",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "accepted-cli-error-fix",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "optional-polish-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "failures": [],
+      "memberId": "optional-polish",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "optional-polish-candidate-r1",
+        "caseId": "optional-polish",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "accepted-cli-error-fix",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "optional-polish-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "optional-polish"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "optional-polish-candidate-r1",
+        "caseId": "optional-polish",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "accepted-cli-error-fix",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [
+          "BFR-009:optional"
+        ],
+        "materialFindings": [],
+        "originalRequestRef": "optional-polish-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "optional-observation-parked",
+        "terminalState": "closed"
+      },
+      "failures": [],
+      "memberId": "optional-polish",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "optional-polish-candidate-r1",
+        "caseId": "optional-polish",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "accepted-cli-error-fix",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [
+          "BFR-009:optional"
+        ],
+        "materialFindings": [],
+        "originalRequestRef": "optional-polish-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "optional-observation-parked",
+        "terminalState": "closed"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "optional-polish"
+    }
+  ],
+  "decisionOracles": [],
+  "digest": "8812aa99e3ec6e74c1d7bb51fe59189f481b57f1130e0429e0d95c643eaa1a41",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317",
+      "candidate": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095"
+    },
+    "terminalReplay": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "optional-polish": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 2
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "47ae89ee40779e479e23e4367fc40dd0b15203e2ceea24ad14a5ad261875b38c",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "environment:initialFixtureDigest,opencodeVersion"
+    ],
+    "scenarioDigest": "707c95254d3fa3ef26482563658337849bb5f9bbbcb6d3dd0f1542161df6b930",
+    "sourceDigest": "af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a",
+    "status": "blocked",
+    "digest": "5914bebe8c33e885fa75ce8113bcd6fffde1a335cc83694408c42a41c6df82d4",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "the exercised configured model and selected bounded-falsification scenarios (optional-polish) cover only their 1 explicit members under the recorded identities"
+}

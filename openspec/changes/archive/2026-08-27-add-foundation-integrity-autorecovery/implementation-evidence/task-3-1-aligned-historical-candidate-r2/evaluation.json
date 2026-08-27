@@ -1,0 +1,247 @@
+{
+  "decisionOracles": [],
+  "digest": "c4a0d6f06f17d5d398141c4a371188cec30dc0265b2993c79db14e50391d2bf6",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac",
+      "candidate": "9f387a2be7024d3d1f007babb72b7a4bc5e2eebedfa5c4247669c74b545c0206"
+    },
+    "terminalReplay": "9f387a2be7024d3d1f007babb72b7a4bc5e2eebedfa5c4247669c74b545c0206"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "aligned-historical-controls": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      }
+    },
+    "candidateMedians": {
+      "aligned-historical-controls": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      }
+    },
+    "environmentDigest": "c982f51098f92652f33a5f48ffed29f4394d428ff92c4b5e263f91be25ad4373",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [],
+    "scenarioDigest": "8c1b16a71d06e0b2c46a189b0b1138e6c1ec371cc1f134c1c78f9579a690039d",
+    "sourceDigest": "98c9db0db053ee2f072ee93084fcdece0d85d49138e935e465cbe6b251713468",
+    "status": "passed-no-regression",
+    "digest": "309a0624c34ea85c3391321ea7ea149dfc05864076aaddc5ca7e18a2ee6c8093",
+    "schemaVersion": 1
+  },
+  "foundationIntegrityOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "aligned-plan",
+            "path": "state/aligned-historical-controls.json",
+            "stateSha256": "3b2a8a623f851c5096255c760805600fa388daf727439cb71d2f1d9a3b8b0a8a"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "aligned-historical-controls",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "aligned-binding",
+            "status": "unknown"
+          },
+          {
+            "memberId": "historical-only-evidence",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "aligned-plan",
+            "path": "state/aligned-historical-controls.json",
+            "stateSha256": "3b2a8a623f851c5096255c760805600fa388daf727439cb71d2f1d9a3b8b0a8a"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "aligned-historical-controls",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "aligned-binding",
+            "status": "unknown"
+          },
+          {
+            "memberId": "historical-only-evidence",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "aligned-plan",
+            "path": "state/aligned-historical-controls.json",
+            "stateSha256": "3b2a8a623f851c5096255c760805600fa388daf727439cb71d2f1d9a3b8b0a8a"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "aligned-historical-controls",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "aligned-binding",
+            "status": "supported"
+          },
+          {
+            "memberId": "historical-only-evidence",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "not-applicable"
+      },
+      "failures": [],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "aligned-plan",
+            "path": "state/aligned-historical-controls.json",
+            "stateSha256": "3b2a8a623f851c5096255c760805600fa388daf727439cb71d2f1d9a3b8b0a8a"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "aligned-historical-controls",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "aligned-binding",
+            "status": "supported"
+          },
+          {
+            "memberId": "historical-only-evidence",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "not-applicable"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    }
+  ],
+  "foundationIntegrityRows": [
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "aligned-binding",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    },
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "historical-only-evidence",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [],
+      "memberId": "aligned-binding",
+      "observedStatus": "supported",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [],
+      "memberId": "historical-only-evidence",
+      "observedStatus": "supported",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "aligned-historical-controls"
+    }
+  ],
+  "maximumClaim": "the exercised configured model and selected foundation-integrity scenarios (aligned-historical-controls) cover only their 2 explicit members under the recorded identities"
+}

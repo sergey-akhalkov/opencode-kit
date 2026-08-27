@@ -7,6 +7,12 @@ import {
   type InstructionEvidenceClass,
   type LoaderVisibleInstructionSource,
 } from "./opencode-runtime-sources.ts";
+import {
+  evaluateInstructionContextQuality,
+  instructionContextCategory,
+  type InstructionContextCategory,
+  type InstructionContextQualityReport,
+} from "./instruction-context-quality.ts";
 import { walkMarkdownFiles } from "./validators/context.ts";
 
 type OutputFormat = "json" | "markdown";
@@ -20,7 +26,7 @@ type Options = {
   sourceScope: SourceScope;
 };
 
-type ArtifactKind = "agent" | "instruction" | "root" | "skill" | "template";
+type ArtifactKind = InstructionContextCategory;
 
 type Artifact = {
   chars: number;
@@ -31,16 +37,12 @@ type Artifact = {
   tokenProxy: number;
 };
 
-type RepeatedLine = {
-  count: number;
-  line: string;
-};
-
 export type InstructionInventory = {
   artifacts: Artifact[];
+  contextQuality: InstructionContextQualityReport;
   counts: Record<ArtifactKind, number>;
-  repeatedLines: RepeatedLine[];
   root: string;
+  sourceScope: "catalog";
   totals: {
     artifacts: number;
     chars: number;
@@ -48,13 +50,7 @@ export type InstructionInventory = {
     tokenProxy: number;
   };
   tool: "opencode-dev-kit-instruction-artifacts-inventory";
-  version: 1;
-};
-
-export type MaintainedInstructionBudgetMetrics = {
-  discoveryMetadataTokenProxy: number;
-  globalStartupTokenProxy: number;
-  onDemandBodiesTokenProxy: number;
+  version: 3;
 };
 
 type LoaderVisibleMetric = {
@@ -195,28 +191,6 @@ function countLines(text: string): number {
   return normalized.endsWith("\n") ? newlineCount : newlineCount + 1;
 }
 
-function classify(relative: string): ArtifactKind | null {
-  if (/^global\/skills\/[^/]+\/SKILL\.md$/.test(relative)) {
-    return "skill";
-  }
-  if (/^global\/agents\/[^/]+\.md$/.test(relative)) {
-    return "agent";
-  }
-  if (relative === "global/AGENTS.md" || relative === "global/principles-of-work.md") {
-    return "instruction";
-  }
-  if (/^instructions\/.+\.md$/.test(relative)) {
-    return "instruction";
-  }
-  if (/^templates\/.+\.md$/.test(relative)) {
-    return "template";
-  }
-  if (relative === "README.md" || relative === "AGENTS.md" || relative === "REPO_AGENTS.md") {
-    return "root";
-  }
-  return null;
-}
-
 export function extractDescriptionChars(text: string): number | null {
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) {
@@ -229,64 +203,54 @@ export function extractDescriptionChars(text: string): number | null {
   return description.slice("description:".length).trim().replace(/^['"]|['"]$/g, "").length;
 }
 
-function repeatedLines(artifacts: Array<{ text: string }>): RepeatedLine[] {
-  const counts = new Map<string, number>();
-  for (const artifact of artifacts) {
-    const seenInFile = new Set<string>();
-    for (const line of artifact.text.split(/\r?\n/)) {
-      const trimmed = line.trim();
-      if (trimmed.length < 40 || trimmed.startsWith("|") || trimmed.startsWith("---")) {
-        continue;
-      }
-      seenInFile.add(trimmed);
-    }
-    for (const line of seenInFile) {
-      counts.set(line, (counts.get(line) ?? 0) + 1);
-    }
-  }
-  return [...counts.entries()]
-    .filter(([, count]) => count >= 3)
-    .map(([line, count]) => ({ line, count }))
-    .sort((left, right) => right.count - left.count || left.line.localeCompare(right.line))
-    .slice(0, 20);
-}
-
 function buildCatalogInventoryFromOptions(options: Pick<Options, "root" | "showRoot">): InstructionInventory {
   if (!fs.existsSync(options.root) || !fs.statSync(options.root).isDirectory()) {
     throw new Error(`Root is not a directory: ${options.showRoot ? options.root : "<redacted>"}`);
   }
   const files = walkMarkdownFiles(options.root);
-  const artifactsWithText: Array<Artifact & { text: string }> = [];
+  const artifacts: Artifact[] = [];
   for (const file of files) {
     const relative = toRelative(options.root, file);
-    const kind = classify(relative);
+    const kind = instructionContextCategory(relative);
     if (!kind) {
       continue;
     }
     const text = fs.readFileSync(file, "utf8");
     const chars = text.length;
     const lines = countLines(text);
-    artifactsWithText.push({
+    artifacts.push({
       chars,
       descriptionChars: extractDescriptionChars(text),
       kind,
       lines,
       path: relative,
-      text,
       tokenProxy: Math.ceil(chars / 4),
     });
   }
-  artifactsWithText.sort((left, right) => right.chars - left.chars || left.path.localeCompare(right.path));
-  const artifacts = artifactsWithText.map(({ text: _text, ...artifact }) => artifact);
-  const counts: Record<ArtifactKind, number> = { agent: 0, instruction: 0, root: 0, skill: 0, template: 0 };
+  artifacts.sort((left, right) => right.chars - left.chars || left.path.localeCompare(right.path));
+  const counts: Record<ArtifactKind, number> = {
+    agent: 0,
+    command: 0,
+    instruction: 0,
+    "openspec-instruction": 0,
+    "root-instruction": 0,
+    skill: 0,
+    template: 0,
+  };
   for (const artifact of artifacts) {
     counts[artifact.kind]++;
   }
   return {
     artifacts,
+    contextQuality: evaluateInstructionContextQuality({
+      mode: "check",
+      root: options.root,
+      showRoot: options.showRoot,
+      target: options.root,
+    }),
     counts,
-    repeatedLines: repeatedLines(artifactsWithText),
     root: options.showRoot ? options.root : "<redacted>",
+    sourceScope: "catalog",
     totals: {
       artifacts: artifacts.length,
       chars: artifacts.reduce((sum, artifact) => sum + artifact.chars, 0),
@@ -294,42 +258,12 @@ function buildCatalogInventoryFromOptions(options: Pick<Options, "root" | "showR
       tokenProxy: artifacts.reduce((sum, artifact) => sum + artifact.tokenProxy, 0),
     },
     tool: "opencode-dev-kit-instruction-artifacts-inventory",
-    version: 1,
+    version: 3,
   };
 }
 
 export function buildCatalogInventory(root = defaultRoot(), showRoot = false): InstructionInventory {
   return buildCatalogInventoryFromOptions({ root: path.resolve(root), showRoot });
-}
-
-export function buildMaintainedInstructionBudgetMetrics(root = defaultRoot()): MaintainedInstructionBudgetMetrics {
-  const resolvedRoot = path.resolve(root);
-  const startupAuthorityFiles = ["global/AGENTS.md", "global/principles-of-work.md"];
-  let globalStartupTokenProxy = 0;
-  for (const relative of startupAuthorityFiles) {
-    try {
-      const text = fs.readFileSync(path.join(resolvedRoot, ...relative.split("/")), "utf8");
-      globalStartupTokenProxy += Math.ceil(text.length / 4);
-    } catch {
-      throw new Error(`Committed global startup authority is unreadable: ${relative}`);
-    }
-  }
-
-  const onDemandPattern = /^global\/(?:agents|commands)\/[^/]+\.md$|^global\/skills\/[^/]+\/SKILL\.md$/;
-  let discoveryMetadataTokenProxy = 0;
-  let onDemandBodiesTokenProxy = 0;
-  for (const file of walkMarkdownFiles(resolvedRoot)) {
-    if (!onDemandPattern.test(toRelative(resolvedRoot, file))) continue;
-    const text = fs.readFileSync(file, "utf8");
-    const descriptionChars = extractDescriptionChars(text);
-    discoveryMetadataTokenProxy += descriptionChars == null ? 0 : Math.ceil(descriptionChars / 4);
-    onDemandBodiesTokenProxy += Math.ceil(text.length / 4);
-  }
-  return {
-    discoveryMetadataTokenProxy,
-    globalStartupTokenProxy,
-    onDemandBodiesTokenProxy,
-  };
 }
 
 function metricForText(text: string): LoaderVisibleMetric {
@@ -454,6 +388,11 @@ function buildLoaderVisibleInventory(options: Options): LoaderVisibleInventory {
 }
 
 function renderMarkdown(inventory: InstructionInventory): string {
+  const qualityRows = [
+    ...inventory.contextQuality.deterministicErrors,
+    ...inventory.contextQuality.safeFixes,
+    ...inventory.contextQuality.reviewOnly,
+  ];
   return [
     "# Instruction Artifacts Inventory",
     "",
@@ -475,9 +414,17 @@ function renderMarkdown(inventory: InstructionInventory): string {
     "| --- | --- | ---: | ---: | ---: | ---: |",
     ...inventory.artifacts.slice(0, 20).map((artifact) => `| ${artifact.path} | ${artifact.kind} | ${artifact.lines} | ${artifact.chars} | ${artifact.tokenProxy} | ${artifact.descriptionChars ?? 0} |`),
     "",
-    "## Repeated Lines",
+    "## Context Quality",
     "",
-    inventory.repeatedLines.length === 0 ? "none" : ["| Count | Line |", "| ---: | --- |", ...inventory.repeatedLines.map((line) => `| ${line.count} | ${line.line.replace(/\|/g, "\\|")} |`)].join("\n"),
+    `Status: ${inventory.contextQuality.status}`,
+    `Safe fixes: ${inventory.contextQuality.safeFixes.length}`,
+    `Deterministic errors: ${inventory.contextQuality.deterministicErrors.length}`,
+    `Review only: ${inventory.contextQuality.reviewOnly.length}`,
+    `Duplicate exceptions: ${inventory.contextQuality.duplicateExceptions.active}/${inventory.contextQuality.duplicateExceptions.total} active`,
+    "",
+    qualityRows.length === 0
+      ? "none"
+      : qualityRows.map((finding) => `- ${finding.code}${finding.ruleId ? ` (${finding.ruleId})` : ""}: ${finding.message} ${finding.locations.map((item) => `${item.path}:${item.startLine}-${item.endLine} [${item.heading}]`).join("; ")}`.trimEnd()).join("\n"),
     "",
   ].join("\n");
 }
@@ -527,10 +474,11 @@ if (isMainModule()) {
       : buildLoaderVisibleInventory(options);
     const rendered = options.format === "json"
       ? JSON.stringify(inventory, null, 2)
-      : inventory.version === 1
+      : options.sourceScope === "catalog"
         ? renderMarkdown(inventory)
         : renderLoaderVisibleMarkdown(inventory);
     console.log(rendered);
+    if (options.sourceScope === "catalog" && inventory.contextQuality.status !== "passed") process.exitCode = 1;
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

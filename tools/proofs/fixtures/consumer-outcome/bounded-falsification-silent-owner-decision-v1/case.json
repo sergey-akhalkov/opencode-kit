@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "caseId": "silent-owner-decision",
+  "originalRequestRef": "silent-owner-decision-request-r1",
+  "candidateRef": "silent-owner-decision-candidate-r1",
+  "decisionSurface": "owner-controlled-retention-policy",
+  "originalAcceptedRequest": "Plan local cleanup while preserving owner authority over the retention period.",
+  "successBoundary": "The plan exposes the retention period as an unresolved owner decision before deletion behavior is designed.",
+  "candidateArtifact": "The candidate silently selects seven days and treats that product policy as settled.",
+  "representedRisk": "Implementation can irreversibly delete data under an owner policy that was never accepted.",
+  "initialCandidateArtifact": "# Cleanup Retention Plan\n\n- Delete items after seven days.\n- Treat seven days as settled product policy.\n",
+  "correctedArtifact": "# Cleanup Retention Plan\n\n- Retention period: unresolved owner decision.\n- Do not design deletion behavior until the owner resolves the retention period.\n",
+  "baselineDecision": {
+    "attackClasses": [
+      "coherent-wrong-outcome:unknown",
+      "silent-owner-decision:unknown",
+      "missing-observable-oracle:unknown",
+      "late-implementation-invalidation:unknown",
+      "internal-contradiction:unknown",
+      "unnecessary-scope:unknown"
+    ],
+    "candidateRef": "silent-owner-decision-candidate-r1",
+    "caseId": "silent-owner-decision",
+    "challengeCount": 0,
+    "correctionRef": "none",
+    "decisionSurface": "owner-controlled-retention-policy",
+    "effectiveModel": "none",
+    "exactOwnerAgent": "none",
+    "invalidatedSurfaces": [],
+    "mainDispositions": [],
+    "materialFindings": [],
+    "originalRequestRef": "silent-owner-decision-request-r1",
+    "reviewerAgent": "none",
+    "reviewerLaunchCount": 0,
+    "reviewerSessionRef": "none",
+    "semanticReadiness": "unknown",
+    "structuralReadiness": "passed",
+    "terminalReason": "bounded-contract-unavailable",
+    "terminalState": "unknown"
+  },
+  "candidateDecision": {
+    "attackClasses": [
+      "coherent-wrong-outcome:attempted",
+      "silent-owner-decision:attempted",
+      "missing-observable-oracle:attempted",
+      "late-implementation-invalidation:attempted",
+      "internal-contradiction:attempted",
+      "unnecessary-scope:attempted"
+    ],
+    "candidateRef": "silent-owner-decision-candidate-r1",
+    "caseId": "silent-owner-decision",
+    "challengeCount": 1,
+    "correctionRef": "silent-owner-decision-correction-r1",
+    "decisionSurface": "owner-controlled-retention-policy",
+    "effectiveModel": "xai/grok-4.6/high",
+    "exactOwnerAgent": "none",
+    "invalidatedSurfaces": [
+      "user-owned-decision",
+      "operating-envelope"
+    ],
+    "mainDispositions": [
+      "BFR-002:confirmed"
+    ],
+    "materialFindings": [
+      "BFR-002"
+    ],
+    "originalRequestRef": "silent-owner-decision-request-r1",
+    "reviewerAgent": "implementation-readiness-reviewer",
+    "reviewerLaunchCount": 1,
+    "reviewerSessionRef": "fresh-readiness-child-r1",
+    "semanticReadiness": "ready",
+    "structuralReadiness": "passed",
+    "terminalReason": "confirmed-correction-closed",
+    "terminalState": "closed"
+  }
+}

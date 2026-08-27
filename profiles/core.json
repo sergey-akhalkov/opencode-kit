@@ -7,6 +7,7 @@
     "code-quality-reviewer",
     "evidence-sufficiency-reviewer",
     "execution-safety-reviewer",
+    "foundation-integrity-reviewer",
     "implementation-readiness-reviewer",
     "implementation-worker",
     "instruction-artifact-reviewer",
@@ -23,6 +24,8 @@
   "directories": [],
   "files": [
     "global/AGENTS.md",
+    "global/bin/complexity-foraging-contract.ts",
+    "global/bin/complexity-foraging-inventory.ts",
     "global/opencode.json.template",
     "global/opencode.local.instructions.example.md",
     "global/principles-of-work.md"
@@ -31,6 +34,8 @@
     "behavioral-substitution-qualification",
     "change-ready-sdlc",
     "complain",
+    "complexity-management",
+    "foundation-integrity-recovery",
     "next-step",
     "openspec-abandon-change",
     "openspec-apply-change",

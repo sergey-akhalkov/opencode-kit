@@ -1,0 +1,323 @@
+{
+  "byteLength": 45339,
+  "comparisonIdentity": "aeacc6bba5e3c4d5dcdd68f97c212b570d54b275e7f1fdb69de66d99a779d13c",
+  "evaluatorDigest": "d6ac59efb3182f93a91c922e9194aced71695f95e9daa326d02c78b6374c4903",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-late-implementation-surprise-1",
+          "Read only cases.json and candidate.md, then select late-implementation-surprise. Apply the loaded main planning-readiness and Practice Owner routing used by propose. Launch only implementation-readiness-reviewer once with originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, the current local envelope, six attack classes, and read-only boundaries; do not supply candidateDecision or correctedArtifact. Main independently reproduces any complete current material row. Only if late dependency characterization is confirmed to invalidate dependent work, replace candidate.md exactly with correctedArtifact and copy candidateDecision exactly to decision.json. Do not write candidateDecision before artifact correction. Do not perform implementation or any external, credential, install, commit, remote, destructive, product, or protected action."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787801923299,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414c6edb001Mi4BZF1qiKwEtr\",\"messageID\":\"msg_0414c5bcc001z8J8q7dUsO1I2S\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787801927767,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414c761e001JI9P0krhF3E21y\",\"messageID\":\"msg_0414c5bcc001z8J8q7dUsO1I2S\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"text\",\"text\":\"I’ll inspect only `cases.json` and `candidate.md`, identify the selected case and its current-envelope readiness risk, then issue the single required read-only readiness challenge.\",\"time\":{\"start\":1787801925150,\"end\":1787801927729},\"metadata\":{\"openai\":{\"itemId\":\"msg_0170fa596094cfa5016a8fb146f14087d28bbc570621db3b2f\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787801927802,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_b2I0s3mUQxuuH6GB9hTDgtns\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n15:         \\\"challengeCount\\\": 0,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n18:         \\\"effectiveModel\\\": \\\"none\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"none\\\",\\n25:         \\\"reviewerLaunchCount\\\": 0,\\n26:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"The candidate schedules parser, simulator, and orchestration implementation before any dependency characterization.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:attempted\\\",\\n36:           \\\"silent-owner-decision:attempted\\\",\\n37:           \\\"missing-observable-oracle:attempted\\\",\\n38:           \\\"late-implementation-invalidation:attempted\\\",\\n39:           \\\"internal-contradiction:attempted\\\",\\n40:           \\\"unnecessary-scope:attempted\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n44:         \\\"challengeCount\\\": 1,\\n45:         \\\"correctionRef\\\": \\\"late-implementation-surprise-correction-r1\\\",\\n46:         \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n47:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n49:         \\\"invalidatedSurfaces\\\": [\\n50:           \\\"proof-boundary\\\",\\n51:           \\\"task-order\\\"\\n52:         ],\\n53:         \\\"mainDispositions\\\": [\\n54:           \\\"BFR-004:confirmed\\\"\\n55:         ],\\n56:         \\\"materialFindings\\\": [\\n57:           \\\"BFR-004\\\"\\n58:         ],\\n59:         \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n60:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n61:         \\\"reviewerLaunchCount\\\": 1,\\n62:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n63:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n64:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n65:         \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n66:         \\\"terminalState\\\": \\\"closed\\\"\\n67:       },\\n68:       \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n69:       \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n70:       \\\"correctedArtifact\\\": \\\"# Dependency Integration Plan\\\\n\\\\n1. Observe one reachable dependency response through the read-only real boundary.\\\\n2. Fix the parser input contract from that observation.\\\\n3. Only then plan parser, simulator, and orchestration implementation.\\\\n\\\",\\n71:       \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n72:       \\\"initialCandidateArtifact\\\": \\\"# Dependency Integration Plan\\\\n\\\\n1. Implement the parser.\\\\n2. Build a simulator.\\\\n3. Implement orchestration.\\\\n4. Characterize the dependency response.\\\\n\\\",\\n73:       \\\"originalAcceptedRequest\\\": \\\"Plan parsing and orchestration only after characterizing the reachable dependency response.\\\",\\n74:       \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n75:       \\\"representedRisk\\\": \\\"A later response-shape observation can invalidate all dependent tasks.\\\",\\n76:       \\\"successBoundary\\\": \\\"A read-only real response observation fixes the parser input before dependent implementation tasks begin.\\\"\\n77:     }\\n78:   ],\\n79:   \\\"schemaVersion\\\": 1\\n80: }\\n81: \\n\\n(End of file - total 81 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"The candidate schedules parser, simulator, and orchestration implementation before any dependency characterization.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:attempted\\\",\\n          \\\"silent-owner-decision:attempted\\\",\\n          \\\"missing-observable-oracle:attempted\\\",\\n          \\\"late-implementation-invalidation:attempted\\\",\\n          \\\"internal-contradiction:attempted\\\",\\n          \\\"unnecessary-scope:attempted\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"late-implementation-surprise-correction-r1\\\",\\n        \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [\\n          \\\"proof-boundary\\\",\\n          \\\"task-order\\\"\\n        ],\\n        \\\"mainDispositions\\\": [\\n          \\\"BFR-004:confirmed\\\"\\n        ],\\n        \\\"materialFindings\\\": [\\n          \\\"BFR-004\\\"\\n        ],\\n        \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 1,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n        \\\"terminalState\\\": \\\"closed\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n      \\\"correctedArtifact\\\": \\\"# Dependency Integration Plan\\\\n\\\\n1. Observe one reachable dependency response through the read-only real boundary.\\\\n2. Fix the parser input contract from that observation.\\\\n3. Only then plan parser, simulator, and orchestration implementation.\\\\n\\\",\\n      \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n      \\\"initialCandidateArtifact\\\": \\\"# Dependency Integration Plan\\\\n\\\\n1. Implement the parser.\\\\n2. Build a simulator.\\\\n3. Implement orchestration.\\\\n4. Characterize the dependency response.\\\\n\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Plan parsing and orchestration only after characterizing the reachable dependency response.\\\",\\n      \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"A later response-shape observation can invalidate all dependent tasks.\\\",\\n      \\\"successBoundary\\\": \\\"A read-only real response observation fixes the parser input before dependent implementation tasks begin.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":81,\"totalLines\":81,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-late-implementation-surprise-WtiQjr\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787801927747,\"end\":1787801927798}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0170fa596094cfa5016a8fb14976a887d2b0be9525ac722a75\"}},\"id\":\"prt_0414c8038001pvB1yWZiyZ7I0U\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"messageID\":\"msg_0414c5bcc001z8J8q7dUsO1I2S\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787801927836,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_vwgYlnbhmylVpAIL1MhKecV3\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\"},\"output\":\"<path><proof-root>\\\\fixture\\\\candidate.md</path>\\n<type>file</type>\\n<content>\\n1: # Dependency Integration Plan\\n2: \\n3: 1. Implement the parser.\\n4: 2. Build a simulator.\\n5: 3. Implement orchestration.\\n6: 4. Characterize the dependency response.\\n\\n(End of file - total 6 lines)\\n</content>\",\"metadata\":{\"preview\":\"# Dependency Integration Plan\\n\\n1. Implement the parser.\\n2. Build a simulator.\\n3. Implement orchestration.\\n4. Characterize the dependency response.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"text\":\"# Dependency Integration Plan\\n\\n1. Implement the parser.\\n2. Build a simulator.\\n3. Implement orchestration.\\n4. Characterize the dependency response.\",\"lineStart\":1,\"lineEnd\":6,\"totalLines\":6,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-late-implementation-surprise-WtiQjr\\\\fixture\\\\candidate.md\",\"time\":{\"start\":1787801927759,\"end\":1787801927814}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0170fa596094cfa5016a8fb14976bc87d29af22f59adfe1605\"}},\"id\":\"prt_0414c8048001by8v4loIK5yXIM\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"messageID\":\"msg_0414c5bcc001z8J8q7dUsO1I2S\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787801927836,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414c808b001b6ap6ah6G0r3la\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0414c5bcc001z8J8q7dUsO1I2S\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-finish\",\"tokens\":{\"total\":14672,\"input\":14425,\"output\":155,\"reasoning\":92,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787801929364,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414c868e0013NXRKwMyKwth6i\",\"messageID\":\"msg_0414c8096001V8fD5f6GMBORWr\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787801938287,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414ca58f001HQwFRTW5V0xybX\",\"messageID\":\"msg_0414c8096001V8fD5f6GMBORWr\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"text\",\"text\":\"The selected candidate orders parser, simulator, and orchestration work before the response contract is known, while the accepted boundary requires that contract to be fixed by a read-only real observation first. I’m now sending that exact decision surface through the one permitted fresh readiness review, with no correction or decision payload disclosed to the reviewer.\",\"time\":{\"start\":1787801937295,\"end\":1787801938283},\"metadata\":{\"openai\":{\"itemId\":\"msg_094b533a46cf548e016a8fb1530b3087d294946ead2abaadef\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802045485,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_fpLzrvOfhD9P50JmEj6KD3H9\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Challenge dependency plan readiness\",\"prompt\":\"Role: implementation-readiness-reviewer. Perform one bounded, fresh, read-only semantic implementation-readiness challenge. Do not mutate files, implement anything, launch agents, ask the user questions, or perform network, external, credential, install, commit, remote, destructive, product, public-API, persisted-data, migration, security/privacy/authorization, legal/policy, or other protected actions.\\n\\noriginalAcceptedRequest:\\nPlan parsing and orchestration only after characterizing the reachable dependency response.\\n\\nsuccessBoundary:\\nA read-only real response observation fixes the parser input before dependent implementation tasks begin.\\n\\ncandidateArtifact:\\n# Dependency Integration Plan\\n\\n1. Implement the parser.\\n2. Build a simulator.\\n3. Implement orchestration.\\n4. Characterize the dependency response.\\n\\nrepresentedRisk:\\nA later response-shape observation can invalidate all dependent tasks.\\n\\ncurrentLocalEnvelope:\\n- This is planning-readiness assessment only; no implementation is authorized.\\n- The reachable dependency response has not yet been characterized in the supplied evidence.\\n- The only allowed boundary contemplated by the accepted request is a read-only real response observation.\\n- No external, credential, install, commit, remote, destructive, product, or protected action is authorized.\\n- Treat the candidate exactly as supplied and assess whether a capable cold-context implementer can execute and prove it without late dependency discovery invalidating dependent work.\\n\\nsixAttackClasses:\\n1. coherent-wrong-outcome\\n2. silent-owner-decision\\n3. missing-observable-oracle\\n4. late-implementation-invalidation\\n5. internal-contradiction\\n6. unnecessary-scope\\n\\nreadOnlyBoundaries:\\n- Review only the supplied originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, and currentLocalEnvelope.\\n- Do not read or write workspace files.\\n- Do not propose or perform implementation.\\n- Do not infer authorization beyond this assessment.\\n- Do not return an acceptance/rejection verdict or lifecycle blocker field.\\n\\nDeliverable: Challenge all six attack classes. Return either `no-material-finding` or one evidence-backed risk matrix containing only complete, current, reachable material rows. For every row include a stable Risk ID, implicated attack class(es), requirement/invariant, reachable scenario and enforced envelope, exact candidate evidence, consequence to the accepted outcome, likelihood or `unknown`, confidence, a feasible read-only reproduction procedure, the smallest mitigation note, inspected candidate reference `late-implementation-surprise-candidate-r1`, and Effective Model. Distinguish observations from inferences and unknowns. Do not author files or take corrective action.\"},\"output\":\"<task id=\\\"ses_fbeb32b4dffe19ir14TRTpfWGx\\\" state=\\\"completed\\\">\\n<task_result>\\nCandidate Reference / RC: `late-implementation-surprise-candidate-r1`\\n\\nEffective Model: `xai/grok-4.6`\\n\\nPractice Observation: `findings-reported`\\n\\nFalsification Matrix:\\n- coherent-wrong-outcome -> `attempted` -> Candidate is a coherent four-step integration sequence, but it inverts the independently supplied outcome (characterize, then plan/implement parser and orchestration). Admitted: `IR-LATE-001`.\\n- silent-owner-decision -> `attempted` -> Sequence and characterization method are already resolved by the original request and success boundary (read-only real response observation before dependents). No additional user-owned decision is required to start the next increment. Admitted: none.\\n- missing-observable-oracle -> `attempted` -> Success boundary requires a read-only real response observation that fixes parser input before dependents. Candidate has no such gate; step 4 only says “Characterize the dependency response.” Same inverted sequence makes that oracle unreachable as a precondition. Admitted: `IR-LATE-001`.\\n- late-implementation-invalidation -> `attempted` -> Steps 1–3 implement parser, simulator, and orchestration; step 4 characterizes last, while the envelope states the reachable response is not yet characterized. Admitted: `IR-LATE-001`.\\n- internal-contradiction -> `attempted` -> The four candidate steps are internally consistent with each other. Contradiction is with the independently supplied request/boundary, not within the candidate text. Admitted: none.\\n- unnecessary-scope -> `attempted` -> “Build a simulator” is not in the accepted next increment. Treated as residual extra current-slice work overlapping `IR-LATE-001`, not a separate material row. Admitted: none.\\n\\nRisk Matrix:\\n\\n- Risk ID: `IR-LATE-001`\\n- Implicated attack class(es): `late-implementation-invalidation`, `coherent-wrong-outcome`, `missing-observable-oracle`\\n- Requirement/invariant: Plan parsing and orchestration only after characterizing the reachable dependency response. A read-only real response observation must fix parser input before dependent implementation tasks begin.\\n- Reachable scenario and enforced envelope: Planning-readiness only; no implementation authorized. Envelope states the reachable dependency response has not been characterized. Only contemplated boundary is a read-only real response observation. A cold-context implementer following the candidate would start parser/simulator/orchestration against an unfixed response shape.\\n- Exact candidate evidence: `# Dependency Integration Plan` steps `1. Implement the parser.` `2. Build a simulator.` `3. Implement orchestration.` `4. Characterize the dependency response.`\\n- Business consequence: A later real response-shape observation can invalidate the parser, simulator, and orchestration work. The accepted outcome (dependents only after characterization) is not executable as specified.\\n- Likelihood: `high`\\n- Confidence: `high`\\n- Reproduction procedure: Compare the independently supplied original request and success boundary with candidate steps 1–4. Observe that dependent implementation is ordered first and characterization last, and that no read-only real-response oracle gates parser input. Envelope already records that the response is uncharacterized.\\n- Smallest mitigation note: Put a read-only real response observation that fixes parser input before any parser, simulator, or orchestration implementation.\\n- Inspected candidate reference: `late-implementation-surprise-candidate-r1`\\n- Effective Model: `xai/grok-4.6`\\n\\nObservation vs inference vs unknown:\\n- Observation: original request and success boundary require characterization-first via read-only real observation; candidate orders implementation first and characterization last; envelope says the response is not yet characterized.\\n- Inference: executing that order would make later characterization able to invalidate prior dependent work.\\n- Unknown: actual dependency response shape (not in evidence); whether step 4 was meant to use the simulator rather than a real response (candidate does not say).\\n\\nReadiness Matrix:\\n- Characterize reachable dependency response first -> gap: candidate places characterization at step 4.\\n- Read-only real response observation fixes parser input before dependents -> gap: no such oracle or gate; simulator appears as step 2 instead.\\n- Parser and orchestration only after that fixed input -> gap: planned as steps 1 and 3.\\n- Next increment bounded to planning/characterization under current envelope -> gap: candidate presents implementation tasks as current sequence.\\n- Simulator as current work -> residual/not required by accepted request; not a separate material row.\\n\\nEvidence Gaps And Residual Risks:\\n- Missing proof boundary: candidate does not define the success-boundary oracle (read-only real response observation fixing parser input).\\n- Response shape unknown, as already stated by the envelope.\\n- Simulator step is residual extra current-slice scope, not a separate admitted risk.\\n- No unresolved owner decision for the next increment (sequence and observation method are already specified).\\n- Effective model is known: `xai/grok-4.6`.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"sessionId\":\"ses_fbeb32b4dffe19ir14TRTpfWGx\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge dependency plan readiness\",\"time\":{\"start\":1787801949366,\"end\":1787802045466}},\"metadata\":{\"openai\":{\"itemId\":\"fc_094b533a46cf548e016a8fb154180887d2977a1618a34c933b\"}},\"id\":\"prt_0414ca96d001MYfpJRpQM3QTgz\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"messageID\":\"msg_0414c8096001V8fD5f6GMBORWr\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802045485,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414e4c1d00196aBZpnsn07Zbo\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0414c8096001V8fD5f6GMBORWr\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-finish\",\"tokens\":{\"total\":16920,\"input\":2031,\"output\":649,\"reasoning\":416,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802047244,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414e5307001h6yB0iG6SGRKgE\",\"messageID\":\"msg_0414e4c27001UhEM14Blk21G1b\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802058428,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414e7836001djenuvGTP4vXlm\",\"messageID\":\"msg_0414e4c27001UhEM14Blk21G1b\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"text\",\"text\":\"Main reproduction confirms `IR-LATE-001`: steps 1–3 depend on the response shape, but the candidate defers the only contract-fixing observation to step 4, so that late observation can invalidate all prior dependent work. I’ll now make only the conditional artifact correction and, after that correction in the same patch, materialize the selected case’s `candidateDecision` unchanged as `decision.json`.\",\"time\":{\"start\":1787802056758,\"end\":1787802058420},\"metadata\":{\"openai\":{\"itemId\":\"msg_0532b6ced29bd380016a8fb1ca8c1887d28e6c269fac94303e\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802070071,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_BlcOmgwL6ao2bB9iVutPm8PW\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\fixture\\\\candidate.md\\n@@\\n # Dependency Integration Plan\\n \\n-1. Implement the parser.\\n-2. Build a simulator.\\n-3. Implement orchestration.\\n-4. Characterize the dependency response.\\n+1. Observe one reachable dependency response through the read-only real boundary.\\n+2. Fix the parser input contract from that observation.\\n+3. Only then plan parser, simulator, and orchestration implementation.\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"late-implementation-surprise-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"proof-boundary\\\",\\n+    \\\"task-order\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-004:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-004\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-late-implementation-surprise-WtiQjr/fixture/candidate.md\\nA <home>/AppData/Local/Temp/consumer-outcome-late-implementation-surprise-WtiQjr/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,6 +1,5 @@\\n # Dependency Integration Plan\\n \\n-1. Implement the parser.\\n-2. Build a simulator.\\n-3. Implement orchestration.\\n-4. Characterize the dependency response.\\n+1. Observe one reachable dependency response through the read-only real boundary.\\n+2. Fix the parser input contract from that observation.\\n+3. Only then plan parser, simulator, and orchestration implementation.\\n\\nIndex: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"late-implementation-surprise-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"proof-boundary\\\",\\n+    \\\"task-order\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-004:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-004\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-late-implementation-surprise-WtiQjr/fixture/candidate.md\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,6 +1,5 @@\\n # Dependency Integration Plan\\n \\n-1. Implement the parser.\\n-2. Build a simulator.\\n-3. Implement orchestration.\\n-4. Characterize the dependency response.\\n+1. Observe one reachable dependency response through the read-only real boundary.\\n+2. Fix the parser input contract from that observation.\\n+3. Only then plan parser, simulator, and orchestration implementation.\\n\",\"additions\":3,\"deletions\":4},{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-late-implementation-surprise-WtiQjr/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"late-implementation-surprise-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"late-implementation-surprise\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"late-implementation-surprise-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"dependency-response-contract-before-dependent-work\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"proof-boundary\\\",\\n+    \\\"task-order\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-004:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-004\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"late-implementation-surprise-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"confirmed-correction-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":35,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-late-implementation-surprise-WtiQjr/fixture/candidate.md\\nA <home>/AppData/Local/Temp/consumer-outcome-late-implementation-surprise-WtiQjr/fixture/decision.json\",\"time\":{\"start\":1787802070049,\"end\":1787802070069}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0532b6ced29bd380016a8fb1cc27b087d2ad256fca7466b43e\"}},\"id\":\"prt_0414e7eb7001Hs2Yn0labc1nXf\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"messageID\":\"msg_0414e4c27001UhEM14Blk21G1b\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802070136,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414eac68001el34FEzXdtyIQ4\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0414e4c27001UhEM14Blk21G1b\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-finish\",\"tokens\":{\"total\":19177,\"input\":3139,\"output\":674,\"reasoning\":516,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802071424,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414eb17d0013Ns3TxK00jN7s4\",\"messageID\":\"msg_0414eac72001vCRH1QRS4V663G\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802075396,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414ebb700018XPeyYdlTo4mNZ\",\"messageID\":\"msg_0414eac72001vCRH1QRS4V663G\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"text\",\"text\":\"Outcome: working\\n\\n- Selected `late-implementation-surprise`.\\n- Launched `implementation-readiness-reviewer` exactly once.\\n- Independently confirmed late characterization invalidates dependent work.\\n- Replaced `candidate.md` with `correctedArtifact`.\\n- Copied `candidateDecision` unchanged to `decision.json`.\\n- Performed no implementation, external, credential, install, commit, remote, destructive, product, or protected action.\",\"time\":{\"start\":1787802073968,\"end\":1787802075393},\"metadata\":{\"openai\":{\"itemId\":\"msg_0f8184c5c068746d016a8fb1dbc27087d2a46235ac3211cf0e\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802075480,\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"part\":{\"id\":\"prt_0414ec149001TYuzwTbx7iXe64\",\"reason\":\"stop\",\"messageID\":\"msg_0414eac72001vCRH1QRS4V663G\",\"sessionID\":\"ses_fbeb3a6aeffeWRcDMWJkE0QRty\",\"type\":\"step-finish\",\"tokens\":{\"total\":19473,\"input\":19256,\"output\":93,\"reasoning\":124,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "83b3850db3f39fd8148975c56813e3a135d67b3098552047fa159e5e974352a4",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "82cd66f20a99ebc9a59691fa145001d7857f887f8a6b17afcccdbb1f2f7d8bbc",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "candidate.md",
+          "sha256": "b1faefbdd7536de6757d59990503c17efff70db5bc483b44f847b102985465c7"
+        },
+        {
+          "path": "cases.json",
+          "sha256": "43ea3e430d2e6ce2be24a5f1fe045e6d5b2f9dd46e1c99826ca6b3d38f77cc24"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "dab6ad60044df4762813df665fef79e11d820f0852c5017bf64cd66bb8785835"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 4
+      },
+      "hashes": {
+        "sample": "01c70bf360cca6bebd32532d6c83f2731cf0b32412d90ffc3a3eb8f040ebc61b"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "late-implementation-surprise"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:attempted\",\"silent-owner-decision:attempted\",\"missing-observable-oracle:attempted\",\"late-implementation-invalidation:attempted\",\"internal-contradiction:attempted\",\"unnecessary-scope:attempted\"],\"candidateRef\":\"late-implementation-surprise-candidate-r1\",\"caseId\":\"late-implementation-surprise\",\"challengeCount\":1,\"correctionRef\":\"late-implementation-surprise-correction-r1\",\"decisionSurface\":\"dependency-response-contract-before-dependent-work\",\"effectiveModel\":\"xai/grok-4.6/high\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[\"proof-boundary\",\"task-order\"],\"mainDispositions\":[\"BFR-004:confirmed\"],\"materialFindings\":[\"BFR-004\"],\"originalRequestRef\":\"late-implementation-surprise-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":1,\"reviewerSessionRef\":\"fresh-readiness-child-r1\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"confirmed-correction-closed\",\"terminalState\":\"closed\"}\n"
+      },
+      "requestSha256": "65cb4ed772856e172efd9a0ed09aca4031f3b286f631b97c284bb6852f4187bc",
+      "sampleIndex": 1,
+      "scenarioId": "late-implementation-surprise",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "042479933978d7e7b6456167cd962f9b0d448c6c039480e797fa3fe871d58e55",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "250e08efff54c70e7bef3665817ebe6e424d0052747179833481d81fd6282ecd",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "c87175a7ed191bbb536a2158400f3392c6990f29f02c400b71323e12526e425a",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "e0b6ca349b867f0658ade18e4491c3982f96114c8bdcea093520ba9718b4a2b9",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "82cd66f20a99ebc9a59691fa145001d7857f887f8a6b17afcccdbb1f2f7d8bbc",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

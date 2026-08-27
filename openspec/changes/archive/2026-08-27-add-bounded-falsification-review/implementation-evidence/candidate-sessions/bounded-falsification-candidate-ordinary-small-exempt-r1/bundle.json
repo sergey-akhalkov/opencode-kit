@@ -1,0 +1,316 @@
+{
+  "byteLength": 26913,
+  "comparisonIdentity": "d49dc2efb3c9ed10da586b76a3029843185d8346acb7c8d130de96f5ed3a41ba",
+  "evaluatorDigest": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-ordinary-small-exempt-1",
+          "Read only cases.json and select ordinary-small-exempt. Apply only loaded planning-readiness and Practice Owner routing; do not infer an absent review contract from this request. If the loaded instructions do not define a bounded-falsification declaration or exemption, copy baselineDecision exactly to decision.json. Otherwise preserve the exact Ordinary Small route without launching a generic reviewer and write only the reviewed decision fields. Do not perform external, credential, install, commit, remote, destructive, product, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787805614820,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_04184c2dd001urr6Vwji1UBfMZ\",\"messageID\":\"msg_04184ae3a0010w1SyYapZIRCwu\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787805617330,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_04184caa3001xPKoxwpd7eXqRo\",\"messageID\":\"msg_04184ae3a0010w1SyYapZIRCwu\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"text\",\"text\":\"I’ll inspect only `cases.json`, select `ordinary-small-exempt`, and write the corresponding decision without invoking a reviewer.\",\"time\":{\"start\":1787805616803,\"end\":1787805617317},\"metadata\":{\"openai\":{\"itemId\":\"msg_098d57b0527d70bb016a8fbfb2ad2c87d2badd2f6f1f8f23a4\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787805620416,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_gDNz39wVeBG66ufKuswsdahe\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n15:         \\\"challengeCount\\\": 0,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n18:         \\\"effectiveModel\\\": \\\"none\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"none\\\",\\n25:         \\\"reviewerLaunchCount\\\": 0,\\n26:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"One owner-local reversible text correction has no unresolved outcome, envelope, invariant, proof, owner, or material-risk decision.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:not-applicable\\\",\\n36:           \\\"silent-owner-decision:not-applicable\\\",\\n37:           \\\"missing-observable-oracle:not-applicable\\\",\\n38:           \\\"late-implementation-invalidation:not-applicable\\\",\\n39:           \\\"internal-contradiction:not-applicable\\\",\\n40:           \\\"unnecessary-scope:not-applicable\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n44:         \\\"challengeCount\\\": 0,\\n45:         \\\"correctionRef\\\": \\\"none\\\",\\n46:         \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n47:         \\\"effectiveModel\\\": \\\"none\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n49:         \\\"invalidatedSurfaces\\\": [],\\n50:         \\\"mainDispositions\\\": [],\\n51:         \\\"materialFindings\\\": [],\\n52:         \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n53:         \\\"reviewerAgent\\\": \\\"none\\\",\\n54:         \\\"reviewerLaunchCount\\\": 0,\\n55:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n56:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n57:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n58:         \\\"terminalReason\\\": \\\"reviewed-ordinary-small-exemption\\\",\\n59:         \\\"terminalState\\\": \\\"exempt\\\"\\n60:       },\\n61:       \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n62:       \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n63:       \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n64:       \\\"originalAcceptedRequest\\\": \\\"Correct one misspelled local label and run its existing focused check.\\\",\\n65:       \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n66:       \\\"representedRisk\\\": \\\"A generic review would add ceremony without a decision-material surface.\\\",\\n67:       \\\"successBoundary\\\": \\\"The same local entrypoint renders the corrected label.\\\"\\n68:     }\\n69:   ],\\n70:   \\\"schemaVersion\\\": 1\\n71: }\\n72: \\n\\n(End of file - total 72 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"One owner-local reversible text correction has no unresolved outcome, envelope, invariant, proof, owner, or material-risk decision.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:not-applicable\\\",\\n          \\\"silent-owner-decision:not-applicable\\\",\\n          \\\"missing-observable-oracle:not-applicable\\\",\\n          \\\"late-implementation-invalidation:not-applicable\\\",\\n          \\\"internal-contradiction:not-applicable\\\",\\n          \\\"unnecessary-scope:not-applicable\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"reviewed-ordinary-small-exemption\\\",\\n        \\\"terminalState\\\": \\\"exempt\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n      \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Correct one misspelled local label and run its existing focused check.\\\",\\n      \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"A generic review would add ceremony without a decision-material surface.\\\",\\n      \\\"successBoundary\\\": \\\"The same local entrypoint renders the corrected label.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":72,\"totalLines\":72,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-ordinary-small-exempt-YHxJZ6\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787805620386,\"end\":1787805620412}},\"metadata\":{\"openai\":{\"itemId\":\"fc_098d57b0527d70bb016a8fbfb335a887d2a5c0d6b76a9328f5\"}},\"id\":\"prt_04184ccab001nFxjcR1SDa3wK8\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"messageID\":\"msg_04184ae3a0010w1SyYapZIRCwu\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805621371,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_04184dc620016W1HPZOJZUrLn1\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04184ae3a0010w1SyYapZIRCwu\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"step-finish\",\"tokens\":{\"total\":14334,\"input\":14140,\"output\":84,\"reasoning\":110,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787805622509,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_04184e0e9001lzpyGA401rVTbY\",\"messageID\":\"msg_04184dc73001g8IgWd0b4Zi88D\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787805624608,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_04184e6aa001ncnpviJcooBxBP\",\"messageID\":\"msg_04184dc73001g8IgWd0b4Zi88D\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"text\",\"text\":\"The loaded routing explicitly exempts exact Ordinary Small cases from the bounded readiness challenge. I’ll write only the supplied exempt decision fields from the selected case, preserving zero reviewer launches.\",\"time\":{\"start\":1787805623978,\"end\":1787805624604},\"metadata\":{\"openai\":{\"itemId\":\"msg_05f4631943475ace016a8fbfb9d32087d287581c8e8a113d51\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787805631342,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_0E6vjGsdCrKy2yzpMG7wr4Dw\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:not-applicable\\\",\\n+    \\\"silent-owner-decision:not-applicable\\\",\\n+    \\\"missing-observable-oracle:not-applicable\\\",\\n+    \\\"late-implementation-invalidation:not-applicable\\\",\\n+    \\\"internal-contradiction:not-applicable\\\",\\n+    \\\"unnecessary-scope:not-applicable\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n+  \\\"challengeCount\\\": 0,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n+  \\\"effectiveModel\\\": \\\"none\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"none\\\",\\n+  \\\"reviewerLaunchCount\\\": 0,\\n+  \\\"reviewerSessionRef\\\": \\\"none\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"reviewed-ordinary-small-exemption\\\",\\n+  \\\"terminalState\\\": \\\"exempt\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-ordinary-small-exempt-YHxJZ6/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,28 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:not-applicable\\\",\\n+    \\\"silent-owner-decision:not-applicable\\\",\\n+    \\\"missing-observable-oracle:not-applicable\\\",\\n+    \\\"late-implementation-invalidation:not-applicable\\\",\\n+    \\\"internal-contradiction:not-applicable\\\",\\n+    \\\"unnecessary-scope:not-applicable\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n+  \\\"challengeCount\\\": 0,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n+  \\\"effectiveModel\\\": \\\"none\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"none\\\",\\n+  \\\"reviewerLaunchCount\\\": 0,\\n+  \\\"reviewerSessionRef\\\": \\\"none\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"reviewed-ordinary-small-exemption\\\",\\n+  \\\"terminalState\\\": \\\"exempt\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-ordinary-small-exempt-YHxJZ6/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,28 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:not-applicable\\\",\\n+    \\\"silent-owner-decision:not-applicable\\\",\\n+    \\\"missing-observable-oracle:not-applicable\\\",\\n+    \\\"late-implementation-invalidation:not-applicable\\\",\\n+    \\\"internal-contradiction:not-applicable\\\",\\n+    \\\"unnecessary-scope:not-applicable\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"ordinary-small-exempt-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"ordinary-small-exempt\\\",\\n+  \\\"challengeCount\\\": 0,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"exact-local-label-correction\\\",\\n+  \\\"effectiveModel\\\": \\\"none\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"ordinary-small-exempt-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"none\\\",\\n+  \\\"reviewerLaunchCount\\\": 0,\\n+  \\\"reviewerSessionRef\\\": \\\"none\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"reviewed-ordinary-small-exemption\\\",\\n+  \\\"terminalState\\\": \\\"exempt\\\"\\n+}\\n\",\"additions\":28,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-ordinary-small-exempt-YHxJZ6/fixture/decision.json\",\"time\":{\"start\":1787805631324,\"end\":1787805631338}},\"metadata\":{\"openai\":{\"itemId\":\"fc_05f4631943475ace016a8fbfba7f3487d28e6a0d74ec23effc\"}},\"id\":\"prt_04184e91e001KQ5uLK3BSCkXH9\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"messageID\":\"msg_04184dc73001g8IgWd0b4Zi88D\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805631394,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_041850394001sOlodGqxiYKezs\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04184dc73001g8IgWd0b4Zi88D\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"step-finish\",\"tokens\":{\"total\":15708,\"input\":1396,\"output\":423,\"reasoning\":65,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787805632916,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_041850990001KbRpAqgtLdMoIW\",\"messageID\":\"msg_04185039d001MA7n3R7IK6accL\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787805635394,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_04185120c001qfStv9emfzqF9O\",\"messageID\":\"msg_04185039d001MA7n3R7IK6accL\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"text\",\"text\":\"Created `decision.json` with the exact Ordinary Small exemption decision fields. No reviewer launched or protected actions performed.\",\"time\":{\"start\":1787805635084,\"end\":1787805635392},\"metadata\":{\"openai\":{\"itemId\":\"msg_0ef66bc402e861ae016a8fbfc4ee8c87d29bbb8bc93f886a67\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787805635552,\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"part\":{\"id\":\"prt_0418513cd0018H9Cf1Par4d5Zb\",\"reason\":\"stop\",\"messageID\":\"msg_04185039d001MA7n3R7IK6accL\",\"sessionID\":\"ses_fbe7b54a1ffebE7eqlnOzqdWHb\",\"type\":\"step-finish\",\"tokens\":{\"total\":15890,\"input\":908,\"output\":28,\"reasoning\":106,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n",
+        "termination": {
+          "cleanupState": "not-needed",
+          "error": null,
+          "signal": null,
+          "timedOut": false,
+          "timeoutMs": 300000
+        }
+      },
+      "diagnostics": {
+        "elapsedMs": 29601,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "60b7090ec0e164bb3d3b8b4719e884058f40a606703287b149240a42690b8096",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "133a9ca8ee00d5d34678dd673887f5bb2e6cd90921efe8601f7daa4265738df6",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "be066bc367d0162f864c41f2f9dd6791d958b7e065a93b8d21af9724448ac1c9"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "a39d0ba1b56ebf416846f2065f2894024a3d120258b2adafa36a094bace98f2d"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 2
+      },
+      "hashes": {
+        "sample": "4aa30f3d23031964fefb58366f21dc298c4a818aa183ca9dcc82258ae1a75a24"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "ordinary-small-exempt"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:not-applicable\",\"silent-owner-decision:not-applicable\",\"missing-observable-oracle:not-applicable\",\"late-implementation-invalidation:not-applicable\",\"internal-contradiction:not-applicable\",\"unnecessary-scope:not-applicable\"],\"candidateRef\":\"ordinary-small-exempt-candidate-r1\",\"caseId\":\"ordinary-small-exempt\",\"challengeCount\":0,\"correctionRef\":\"none\",\"decisionSurface\":\"exact-local-label-correction\",\"effectiveModel\":\"none\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[],\"mainDispositions\":[],\"materialFindings\":[],\"originalRequestRef\":\"ordinary-small-exempt-request-r1\",\"reviewerAgent\":\"none\",\"reviewerLaunchCount\":0,\"reviewerSessionRef\":\"none\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"reviewed-ordinary-small-exemption\",\"terminalState\":\"exempt\"}\n"
+      },
+      "requestSha256": "eba919577298e0b6c81dcbc7e580baed0ec0d0bf4266194f9646196c2969744a",
+      "sampleIndex": 1,
+      "scenarioId": "ordinary-small-exempt",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "624f1ad1a7de446b54ee53add4b596350966eb665f12ecf6700e324f4910b02c",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "6324749a255bcc2416715ba6a0a1f73b4390b1238160ff1401146af1ee28f6da",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "133a9ca8ee00d5d34678dd673887f5bb2e6cd90921efe8601f7daa4265738df6",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

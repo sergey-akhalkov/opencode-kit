@@ -266,10 +266,7 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     }
   }
 
-  for (const relative of [
-    "global/skills/openspec-apply-change/SKILL.md",
-    "global/commands/opsx-apply.md",
-  ]) {
+  for (const relative of ["global/skills/openspec-apply-change/SKILL.md"]) {
     const candidate = path.join(root, relative);
     if (!fileExists(candidate)) continue;
     const text = readText(candidate);
@@ -278,10 +275,43 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     }
   }
 
-  for (const relative of [
-    "global/skills/openspec-archive-change/SKILL.md",
-    "global/commands/opsx-archive.md",
-  ]) {
+  const boundedFalsificationWorkflowMarkers: Array<{ relative: string; markers: string[] }> = [
+    {
+      relative: "global/skills/openspec-propose/SKILL.md",
+      markers: [
+        "Bounded Falsification Review",
+        "original accepted request",
+        "implementation-readiness-reviewer",
+        "no-material-finding",
+        "falsification-review.md",
+        "Structural artifact readiness",
+        "Semantic implementation readiness",
+        "no unchanged, optional, or confidence-seeking third challenge",
+      ],
+    },
+    {
+      relative: "global/skills/openspec-apply-change/SKILL.md",
+      markers: [
+        "Bounded Falsification Review",
+        "falsification-review.md",
+        "Reuse a current terminal episode",
+        "do not relaunch an equivalent generic review",
+        "final-candidate-reviewer` as a mandatory fallback",
+        "Structural artifact readiness",
+        "Semantic implementation readiness",
+      ],
+    },
+  ];
+  for (const surface of boundedFalsificationWorkflowMarkers) {
+    const candidate = path.join(root, surface.relative);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const marker of surface.markers) {
+      requireTextContains(ctx, text, marker, "OpenSpec bounded-falsification workflow", candidate);
+    }
+  }
+
+  for (const relative of ["global/skills/openspec-archive-change/SKILL.md"]) {
     const candidate = path.join(root, relative);
     if (!fileExists(candidate)) continue;
     const text = readText(candidate);
@@ -292,11 +322,8 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
 
   const helperSurfaces: Array<{ helper: string; relative: string }> = [
     { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-propose/SKILL.md" },
-    { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-propose.md" },
     { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-apply-change/SKILL.md" },
-    { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-apply.md" },
     { helper: "bin/openspec-archive.ts", relative: "global/skills/openspec-archive-change/SKILL.md" },
-    { helper: "bin/openspec-archive.ts", relative: "global/commands/opsx-archive.md" },
   ];
   for (const surface of helperSurfaces) {
     const candidate = path.join(root, surface.relative);
@@ -304,6 +331,20 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     const text = readText(candidate);
     for (const marker of ["OPENCODE_CONFIG_DIR", surface.helper, "privacy-safe runtime-source/collision evidence", "Never strip a final `global` segment"]) {
       requireTextContains(ctx, text, marker, "portable active-global helper resolution", candidate);
+    }
+  }
+
+  const commandSkillRoutes: Array<{ relative: string; skill: string }> = [
+    { relative: "global/commands/opsx-propose.md", skill: "openspec-propose" },
+    { relative: "global/commands/opsx-apply.md", skill: "openspec-apply-change" },
+    { relative: "global/commands/opsx-archive.md", skill: "openspec-archive-change" },
+  ];
+  for (const surface of commandSkillRoutes) {
+    const candidate = path.join(root, surface.relative);
+    if (!fileExists(candidate)) continue;
+    const text = readText(candidate);
+    for (const marker of [`Load the \`${surface.skill}\` skill`, "complete workflow", "$ARGUMENTS", "If the skill is unavailable", "do not recreate a partial"]) {
+      requireTextContains(ctx, text, marker, "OpenSpec command canonical-skill route", candidate);
     }
   }
 

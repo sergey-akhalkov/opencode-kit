@@ -1,0 +1,321 @@
+{
+  "byteLength": 38473,
+  "comparisonIdentity": "d1fb1002737014c659da624f0dcfe95f52572a8b5c6fb0d6c24b42b46899f754",
+  "evaluatorDigest": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-material-inline-plan-1",
+          "Read only cases.json and select its sole projected material-inline-plan row. Apply only loaded planning-readiness and Practice Owner routing. If the loaded instructions do not define a bounded-falsification contract, copy baselineDecision exactly to decision.json. Otherwise use originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, and the current local envelope as the smallest inline decision frame before production mutation; launch exactly one fresh implementation-readiness-reviewer with that frame, all six attack classes, and read-only boundaries, without supplying candidateDecision. Then copy candidateDecision exactly to decision.json. Do not create an OpenSpec tree, launch a late final reviewer, infer absent behavior, implement, or perform external, credential, install, commit, remote, destructive, product, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787806068165,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418badbe001QsWMfjfoRgYxku\",\"messageID\":\"msg_0418b99cd0016TDref3awpVmAS\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787806069467,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418bb041001ki7fE1dSxg2BdN\",\"messageID\":\"msg_0418b99cd0016TDref3awpVmAS\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"text\",\"text\":\"I’ll inspect only `cases.json`, select the sole projected `material-inline-plan` row, and follow its bounded readiness route without modifying anything except `decision.json`.\",\"time\":{\"start\":1787806068801,\"end\":1787806069459},\"metadata\":{\"openai\":{\"itemId\":\"msg_039b6fe3d70acc06016a8fc176b00087d2a8d50211bf6eea81\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787806070267,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_MgYAnWdAdzPboz7J5EYdRuzc\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"material-inline-plan\\\",\\n15:         \\\"challengeCount\\\": 1,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n18:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n25:         \\\"reviewerLaunchCount\\\": 1,\\n26:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"No formal plan exists, but the request is Material and production mutation has not started.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:attempted\\\",\\n36:           \\\"silent-owner-decision:attempted\\\",\\n37:           \\\"missing-observable-oracle:attempted\\\",\\n38:           \\\"late-implementation-invalidation:attempted\\\",\\n39:           \\\"internal-contradiction:attempted\\\",\\n40:           \\\"unnecessary-scope:attempted\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"material-inline-plan\\\",\\n44:         \\\"challengeCount\\\": 1,\\n45:         \\\"correctionRef\\\": \\\"none\\\",\\n46:         \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n47:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n49:         \\\"invalidatedSurfaces\\\": [],\\n50:         \\\"mainDispositions\\\": [],\\n51:         \\\"materialFindings\\\": [],\\n52:         \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n53:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n54:         \\\"reviewerLaunchCount\\\": 1,\\n55:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n56:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n57:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n58:         \\\"terminalReason\\\": \\\"material-inline-frame-reviewed\\\",\\n59:         \\\"terminalState\\\": \\\"closed\\\"\\n60:       },\\n61:       \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n62:       \\\"caseId\\\": \\\"material-inline-plan\\\",\\n63:       \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n64:       \\\"originalAcceptedRequest\\\": \\\"Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.\\\",\\n65:       \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n66:       \\\"representedRisk\\\": \\\"Skipping early framing would defer task-fit decisions until after production investment.\\\",\\n67:       \\\"successBoundary\\\": \\\"A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.\\\"\\n68:     }\\n69:   ],\\n70:   \\\"schemaVersion\\\": 1\\n71: }\\n72: \\n\\n(End of file - total 72 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"material-inline-plan\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"material-inline-plan\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 1,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"No formal plan exists, but the request is Material and production mutation has not started.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:attempted\\\",\\n          \\\"silent-owner-decision:attempted\\\",\\n          \\\"missing-observable-oracle:attempted\\\",\\n          \\\"late-implementation-invalidation:attempted\\\",\\n          \\\"internal-contradiction:attempted\\\",\\n          \\\"unnecessary-scope:attempted\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"material-inline-plan\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 1,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"material-inline-frame-reviewed\\\",\\n        \\\"terminalState\\\": \\\"closed\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"material-inline-plan\\\",\\n      \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.\\\",\\n      \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"Skipping early framing would defer task-fit decisions until after production investment.\\\",\\n      \\\"successBoundary\\\": \\\"A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":72,\"totalLines\":72,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-inline-plan-obBJcm\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787806070198,\"end\":1787806070234}},\"metadata\":{\"openai\":{\"itemId\":\"fc_039b6fe3d70acc06016a8fc1775c3087d2aa8a0709ec38c9ee\"}},\"id\":\"prt_0418bb2d70016Tio47vv2Jv20w\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"messageID\":\"msg_0418b99cd0016TDref3awpVmAS\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787806070268,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418bb5e3001RVSiogZoS5NM0G\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0418b99cd0016TDref3awpVmAS\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-finish\",\"tokens\":{\"total\":14312,\"input\":14192,\"output\":88,\"reasoning\":32,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787806072668,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418bbf56001q9K5hDhK8hCkIY\",\"messageID\":\"msg_0418bb5f3001Ne6KQEIgdJhjJV\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787806076448,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418bcab6001a0HrQVGed66nRF\",\"messageID\":\"msg_0418bb5f3001Ne6KQEIgdJhjJV\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"text\",\"text\":\"The loaded instructions define the bounded six-class falsification contract. I selected the sole row and am sending its minimal inline frame to exactly one fresh, read-only `implementation-readiness-reviewer`; the supplied material excludes `candidateDecision`.\",\"time\":{\"start\":1787806075574,\"end\":1787806076442},\"metadata\":{\"openai\":{\"itemId\":\"msg_0e25bc5ed68fc29a016a8fc17d75d887d2997542c49297cb9a\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787806213057,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_VkkGD1sflxjFjVBTs8M9y4R8\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Challenge inline decision frame\",\"prompt\":\"Role: Fresh implementation-readiness reviewer performing one bounded read-only readiness challenge before any production mutation.\\n\\nOutcome/value objective: Challenge whether the supplied Material inline decision frame is semantically implementation-ready for the original accepted request, using all six required attack classes. Return one concise readiness review to main; do not authorize or perform mutation.\\n\\nOriginal accepted request (supplied separately from the candidate): Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.\\n\\nCandidate inline decision frame:\\n- Candidate reference: material-inline-plan-candidate-r1\\n- Decision surface: material-inline-decision-frame-before-mutation\\n- Candidate artifact/current state: No formal plan exists, but the request is Material and production mutation has not started.\\n- Outcome: Prepare the requested Material authorization-boundary change for implementation using the smallest inline decision frame, with no OpenSpec tree and no production mutation in this task.\\n- Success boundary / observable proof: A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.\\n- Represented risk: Skipping early framing would defer task-fit decisions until after production investment.\\n- Current local operating envelope: Read only cases.json; select its sole projected material-inline-plan row; apply only loaded planning-readiness and Practice Owner routing; launch exactly one fresh implementation-readiness-reviewer; write only decision.json after review routing; do not create an OpenSpec tree, launch a late final reviewer, infer absent behavior, implement, or perform external, credential, install, commit, remote, destructive, product, or protected actions.\\n- Non-goals: Implementation, behavior inference, OpenSpec authoring, final-candidate review, external or protected actions.\\n- Non-deferrable invariants: Preserve owner authority at the authorization boundary; do not mutate production; do not expand beyond the stated local envelope; keep the original request and proof boundary explicit.\\n- Stop line: Stop after this single read-only readiness challenge; no production or protected action is authorized.\\n\\nRequired attack classes (attempt every one):\\n1. coherent-wrong-outcome\\n2. silent-owner-decision\\n3. missing-observable-oracle\\n4. late-implementation-invalidation\\n5. internal-contradiction\\n6. unnecessary-scope\\n\\nObserved evidence: cases.json contains exactly one case row with caseId material-inline-plan and the values reproduced above. No other workspace file may be read. Assumptions/unknowns: No behavior beyond the row and loaded instructions may be inferred.\\n\\nDeliverables: Report material findings, if any, tied to attack class and current reachable evidence; otherwise return no-material-finding. Identify any decision surface invalidated by a material finding. Keep optional/polish concerns separate and non-blocking.\\n\\nRead scope: Only the complete information in this prompt. Do not read cases.json or any workspace file. Write scope: None.\\n\\nForbidden actions: No file writes, code/config/test/instruction mutation, implementation, OpenSpec tree, nested agents, user questions, tool use that reads the workspace, external/network/credential/install/commit/remote/destructive/product/protected actions, lifecycle completion claims, or use/inference of any candidateDecision value.\\n\\nAcceptance: All six attacks are explicitly attempted against this exact frame; conclusions are evidence-backed and bounded to the local envelope; no absent behavior is inferred; output is a read-only report.\\n\\nReturn evidence: State the candidate reference, each attack disposition, material findings or no-material-finding, invalidated surfaces if any, and Effective Model if available; unknown if unavailable.\\n\\nBlocker/escalation: Do not ask the user. If evidence is insufficient, report the exact evidence gap as a review finding or unknown rather than seeking more data.\",\"command\":\"Read only cases.json and select its sole projected material-inline-plan row. Apply only loaded planning-readiness and Practice Owner routing.\"},\"output\":\"<task id=\\\"ses_fbe73f6fdffeApKUp8XwrBIiom\\\" state=\\\"completed\\\">\\n<task_result>\\nCandidate Reference / RC: `material-inline-plan-candidate-r1`\\n\\nEffective Model: `xai/grok-4.6`\\n\\nPractice Observation: `no-material-finding`\\n\\nFalsification Matrix:\\n- coherent-wrong-outcome -> attempted -> Independently supplied request is to prepare a Material authorization-boundary change for implementation with no OpenSpec tree. The frame’s outcome is that same preparation via the smallest inline decision frame, with no production mutation in this task. Completing the frame-plus-early-challenge is the requested increment, not a substitute product-auth implementation. Admitted Risk IDs: none.\\n- silent-owner-decision -> attempted -> Authorization semantics are explicitly blocked (preserve owner authority; no product/protected action). This slice does not require an implementer to guess those owner decisions. Admitted Risk IDs: none.\\n- missing-observable-oracle -> attempted -> Current-slice oracle is stated: the inline frame carries the original request, envelope, proof boundary, and failure hypotheses into this fresh readiness challenge. This increment is not behavior-changing production work, so no product happy-path oracle is owed now. Admitted Risk IDs: none.\\n- late-implementation-invalidation -> attempted -> Stop line and envelope forbid production/protected mutation after this challenge; only `decision.json` write is in-envelope for main. No reachable current-envelope path starts the authorization-boundary product change from this frame. Admitted Risk IDs: none.\\n- internal-contradiction -> attempted -> “Prepare for implementation” vs “do not implement / no production mutation” is sequencing, not conflict. Envelope, non-goals, invariants, and stop line agree that this task is framing plus one read-only challenge. Admitted Risk IDs: none.\\n- unnecessary-scope -> attempted -> Frame excludes OpenSpec authoring, implementation, behavior inference, late final review, and external/protected actions. No extra acceptance scope added. Admitted Risk IDs: none.\\n\\nRisk Matrix: none\\n\\nReadiness Matrix:\\n- Original request (prepare Material authorization-boundary change; no OpenSpec tree) -> present in independently supplied request and restated in the frame outcome.\\n- Next-increment outcome / non-goals / envelope / stop line -> present and aligned: inline frame, one fresh readiness challenge, write-only `decision.json` after routing, no production mutation.\\n- Non-deferrable invariants (owner authority at authorization boundary; no production mutation; no envelope expansion; keep request and proof boundary explicit) -> stated and not contradicted by current-slice actions.\\n- Observable proof for this slice -> defined as this early challenge against the frame; not a product-behavior proof.\\n- Material/auth product behavior, source targets, project-native product validation, SDET, code-quality gate -> out of current envelope / future-scope; explicitly blocked rather than silently decided.\\n- Cold-handoff implementation brief for the authorization-boundary product change -> not required for this non-mutating slice.\\n\\nEvidence Gaps And Residual Risks: none for current-slice readiness. Residual future-scope (non-blocking): the product authorization-boundary behavior, its happy-path oracle, and any later SDET/code-quality gates remain owner-blocked and unspecified; they are not this increment.\\n\\nInvalidated decision surfaces: none.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"sessionId\":\"ses_fbe73f6fdffeApKUp8XwrBIiom\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge inline decision frame\",\"time\":{\"start\":1787806091528,\"end\":1787806213041}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e25bc5ed68fc29a016a8fc17e57e487d2b0878cf85aaef134\"}},\"id\":\"prt_0418bce1d001vf1mbZfEUy7QjI\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"messageID\":\"msg_0418bb5f3001Ne6KQEIgdJhjJV\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787806213057,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418de3b40010cpneVZUXFcRyj\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0418bb5f3001Ne6KQEIgdJhjJV\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-finish\",\"tokens\":{\"total\":16283,\"input\":1416,\"output\":896,\"reasoning\":147,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787806214276,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418de87f001m7LEDoWOo8klFS\",\"messageID\":\"msg_0418de3bb001xgcOXR85rQb0LW\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787806216679,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418def65001DRGgal8UkNyMGP\",\"messageID\":\"msg_0418de3bb001xgcOXR85rQb0LW\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"text\",\"text\":\"The fresh review attempted all six attacks and returned `no-material-finding` with no invalidated surfaces. I will now copy the selected row’s `candidateDecision` object verbatim into `decision.json`, with no other workspace changes.\",\"time\":{\"start\":1787806216037,\"end\":1787806216674},\"metadata\":{\"openai\":{\"itemId\":\"msg_06063cca3ca9ecc0016a8fc209cc4c87d2912c2b281424f09c\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787806223551,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_hSrvsKTqZzow3WFx0tTtyx0i\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"material-inline-plan\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"material-inline-frame-reviewed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-material-inline-plan-obBJcm/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,28 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"material-inline-plan\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"material-inline-frame-reviewed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-material-inline-plan-obBJcm/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,28 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"material-inline-plan\\\",\\n+  \\\"challengeCount\\\": 1,\\n+  \\\"correctionRef\\\": \\\"none\\\",\\n+  \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [],\\n+  \\\"mainDispositions\\\": [],\\n+  \\\"materialFindings\\\": [],\\n+  \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 1,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"material-inline-frame-reviewed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":28,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-material-inline-plan-obBJcm/fixture/decision.json\",\"time\":{\"start\":1787806223528,\"end\":1787806223547}},\"metadata\":{\"openai\":{\"itemId\":\"fc_06063cca3ca9ecc0016a8fc20a918087d2ac3c14365cd7690e\"}},\"id\":\"prt_0418df1e5001HryDcjokgsJWzq\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"messageID\":\"msg_0418de3bb001xgcOXR85rQb0LW\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787806223620,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418e0cf4001IHuJR8AAmrGB18\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0418de3bb001xgcOXR85rQb0LW\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-finish\",\"tokens\":{\"total\":17501,\"input\":2141,\"output\":444,\"reasoning\":68,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787806224852,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418e11d0001oNaXzKv7Cn3HxM\",\"messageID\":\"msg_0418e0cfe001Mt2H0dngLZWyxS\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787806229448,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418e1dde001I4SxwQOzQcSfYs\",\"messageID\":\"msg_0418e0cfe001Mt2H0dngLZWyxS\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"text\",\"text\":\"Outcome: working. Selected the sole `material-inline-plan` row, completed exactly one fresh six-class readiness review, and copied `candidateDecision` exactly to `decision.json`. No other actions were performed.\",\"time\":{\"start\":1787806227934,\"end\":1787806229446},\"metadata\":{\"openai\":{\"itemId\":\"msg_06ff9b0d0de4b387016a8fc215b5c887d28da944b6aad362a1\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787806229489,\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"part\":{\"id\":\"prt_0418e23e5001xWPA3DtU2orfAm\",\"reason\":\"stop\",\"messageID\":\"msg_0418e0cfe001Mt2H0dngLZWyxS\",\"sessionID\":\"ses_fbe7468dfffer2p6ckXH9475UM\",\"type\":\"step-finish\",\"tokens\":{\"total\":17722,\"input\":649,\"output\":47,\"reasoning\":130,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n",
+        "termination": {
+          "cleanupState": "not-needed",
+          "error": null,
+          "signal": null,
+          "timedOut": false,
+          "timeoutMs": 300000
+        }
+      },
+      "diagnostics": {
+        "elapsedMs": 169222,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "0eaf28afb554a02f3c71987050021cd5d45cb2e36fbd813079135c48ab7e73c5",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "552b0931b0b36a73e57d58d5b1fc1c9c288149698196ee32b5208a63086dee5d",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "d7829aaa2696fb7d163c35958d24f4b9b9c0c48896485a550ef1f90e3cd45030"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "e4444d3cb2b12c50f30a84225b6f94c2585f79974dfbb691eaecbed0db46b92a"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 3
+      },
+      "hashes": {
+        "sample": "7e5d9e2b521968bb679b3ae701119164928fee030b117949700ac9b6cada15cc"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "material-inline-plan"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:attempted\",\"silent-owner-decision:attempted\",\"missing-observable-oracle:attempted\",\"late-implementation-invalidation:attempted\",\"internal-contradiction:attempted\",\"unnecessary-scope:attempted\"],\"candidateRef\":\"material-inline-plan-candidate-r1\",\"caseId\":\"material-inline-plan\",\"challengeCount\":1,\"correctionRef\":\"none\",\"decisionSurface\":\"material-inline-decision-frame-before-mutation\",\"effectiveModel\":\"xai/grok-4.6/high\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[],\"mainDispositions\":[],\"materialFindings\":[],\"originalRequestRef\":\"material-inline-plan-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":1,\"reviewerSessionRef\":\"fresh-readiness-child-r1\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"material-inline-frame-reviewed\",\"terminalState\":\"closed\"}\n"
+      },
+      "requestSha256": "55ee56eb1732410670eae54681084d4b4eb690c5ea6730278c7328ae8e4f6ae3",
+      "sampleIndex": 1,
+      "scenarioId": "material-inline-plan",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "a55d643f18795b3336db0c14095477a04811e1753c24eae4db5c04afca35e09d",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "08784853032af7cfcf51cebb4b0a1dc7ba06b64858de895491512d760883cffe",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "7bd632f96569b49a154ea4b9bd1fef45022d2cf5af3bae04fa5ce01e6184c360",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "552b0931b0b36a73e57d58d5b1fc1c9c288149698196ee32b5208a63086dee5d",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

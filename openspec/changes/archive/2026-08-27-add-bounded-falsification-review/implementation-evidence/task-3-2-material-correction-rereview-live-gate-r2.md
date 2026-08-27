@@ -1,0 +1,10 @@
+# Material-Correction-Re-Review Candidate Live Gate R2
+
+- Governed lane: `bounded-falsification-review-v1/material-correction-rereview`; Live-Attempt Gate: clear for one causally distinct r2 capture, consumed at start.
+- Product/source unchanged: `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`; revised scenario `d02d1084459f3e3e36fa419e50b61fa71d1418ce244cae8a75f2fa8edd09b116`; revised request `41f0da8fd17769780da3d17ee803f9c4812e61f677fac5851d3fb5ba127798d0`; actor fixture remains `43399dc22570e600c9ca4a68d78a9dc3429e9b940076319eec427fb66baef2db`.
+- Failure chain: r1 completed both reviews, correction, record, proof, and cleanup, but status was one because a redundant reread consumed the final response step. Preserved bundle/replay: `candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r1/{bundle.json,replay-r1.json}`.
+- Replay result: candidate row passes at `9fd076fc62f8362ca4eaef0a6d0e05129a90a73799056cd5e84a2d1b11a0fa87`; aggregate historical mismatch `fb6af71403ccdc2ed01df8d59ef829d8b9e1cf32a6819de4ce6e7b285d0d5179`; zero live calls; cleanup complete.
+- Causal change: the actor reads only the one projected case, treats `candidate.md` as the exact declared initial artifact, does not reread after exact replacement, and returns a concise final outcome after the terminal write. Both fresh child reviews, independent inputs, correction, checker, evaluator, permissions, and finite challenge ceiling remain unchanged.
+- Offline: consumer-outcome tests 32; selected preflight ready with zero model calls. Exact missing observation is normal command exit zero after the already-proven two-review terminal row.
+- Envelope: one primary, exactly two completed readiness children, no third review, reviewed permissions, local writes, finite bounds, complete cleanup. Historical baseline remains non-matched.
+- Unlock condition: complete r1 replay plus changed request path, green offline checks, and this explicit gate. Any future successor requires another dependency-invalidating change and gate. External effects: none.

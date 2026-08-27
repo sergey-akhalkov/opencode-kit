@@ -27,7 +27,7 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 - Prefer the next useful working increment inside a technically enforced operating envelope; remove/narrow/reuse/local guard before new mechanisms.
 - Minimize time-to-first-real-signal per behavior dependency chain: execute the first safely reachable real boundary sufficient to observe the accepted effect before dependent expansion, or record the exact blocker/unblocking or replan task, authorization, effect suppression, restoration/cleanup, evidence, and path-scoped stop condition. Shift-left sequencing does not authorize external operations or weaken protected gates.
 - No unrelated cleanup/refactors. Scope expansion (changed accepted outcome, out-of-envelope behavior, weakened invariant, protected-boundary crossing) needs explicit user approval; necessary local reversible dependency closure does not. Plans, OpenSpec artifacts, tasks, revisions, attempt limits, and stop lines are autonomous process controls when accepted semantics remain unchanged; update them and continue instead of asking for process approval, while separately gating the underlying protected action.
-- Keep touched human-written code locally understandable. Line count is a navigation signal, not a quota; adding a responsibility to an already mixed file requires one cohesive extraction or a `split-or-justify` decision, not wrapper-only fragmentation or a broad cleanup.
+- Keep touched human-written code locally understandable; line count is a navigation signal, not a quota. Zero-pressure work stays direct. A seam/mixed-responsibility question retains the exact global Practice Owner route. If an explicit focused existing-project assessment or unresolved current comprehension pressure remains after targeted foraging and owner routing, use discovered `complexity-management` before dependent expansion; if unavailable, report focused mode unavailable without guessing a source. Explicit exhaustive complexity coverage uses the discovered audit/ledger owners or reports project mode unavailable without approximation. Adding responsibility to mixed code still requires one cohesive extraction or `split-or-justify`, not wrapper-only fragmentation or broad cleanup.
 - At meaningful failure boundaries, use existing project diagnostics, preserve the original exception cause/stack, and add structured safe operation/correlation context without duplicate or routine-noise logging. Real-boundary proof retains exit status, stdout/stderr, relevant logs/exceptions, and artifact paths for inspection before mutation or rerun.
 - Preserve user and teammate changes. Never revert files you did not change unless explicitly requested.
 - Ordinary Small: after happy-path proof, main may create or modify the smallest focused regression test when useful. Prefer existing tests when sufficient.
@@ -59,10 +59,25 @@ The conceptual Universal Development Loop is optional guidance only when it stay
 - When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
 - After current proof, complete accepted scope and use fresh critical-only `sdet-quality-engineer` only when a reachable named critical consequence or explicit project/owner requirement triggers it; optional reviewers never become mandatory gates.
 - If `implementation-worker` is unavailable, main retains production authorship or uses another conforming author; block only when no conforming path exists. Keep writers serial when scope is unclear, write targets overlap, work is coupled, or integration outweighs fan-out.
+
+### Coordinated Orchestration
+
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
+
+### Main Ownership
+
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
+
+### Scope And Evidence
+
 - User-owned scope is accepted outcome and protected-boundary decisions. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery evidence must never authorize mutation.
+
+### Optional Reviewers
+
 - Optional final-candidate, delivery, code-quality, and domain reviewers may run after current proof when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected candidate/RC when one exists; missing or unusable optional output is not itself a stage blocker.
+
+### Critical SDET
+
 - Triggered fresh SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; main independently dispositions every row. Non-critical findings are parked.
 - Handoff reports ordinary `Outcome` or qualification-only `Development-Stage: development | MVP | RC<n> | stable`; `Stable Candidate: RC<n>` appears only inside qualification.
 

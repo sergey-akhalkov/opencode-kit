@@ -1,0 +1,28 @@
+{
+  "caseId": "protected-product-ambiguity",
+  "memberIds": ["protected-product-ambiguity"],
+  "fallbackDecision": {
+    "caseId": "protected-product-ambiguity",
+    "correctedReviewCount": 0,
+    "incidentId": "none",
+    "initialReviewCount": 0,
+    "ownerAgent": "none",
+    "recoverySkillCount": 0,
+    "reproductionDisposition": "not-run",
+    "terminalRows": [{ "memberId": "protected-product-ambiguity", "status": "unknown" }],
+    "terminalState": "unavailable"
+  },
+  "facts": {
+    "acceptedOutcome": "ambiguous-between-product-a-and-product-b",
+    "safeEvidence": "cannot-distinguish-current-product-identity",
+    "candidateIdentities": ["public-api-a", "public-api-b"],
+    "choiceChangesProtectedMeaning": true,
+    "safeDiscriminatingRoutesExhausted": true,
+    "unrelatedWorkCanContinue": true
+  },
+  "artifacts": [
+    { "artifactId": "protected-boundary", "path": "state/protected-product-ambiguity.json" },
+    { "artifactId": "archived-result", "path": "state/archive-record.json" },
+    { "artifactId": "unrelated-active-change", "path": "state/unrelated-active-change.json" }
+  ]
+}

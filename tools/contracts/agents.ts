@@ -109,6 +109,25 @@ export const FINAL_CANDIDATE_REVIEWER_FILE = "final-candidate-reviewer.md";
 
 export const EVIDENCE_SUFFICIENCY_REVIEWER_FILE = "evidence-sufficiency-reviewer.md";
 
+export const IMPLEMENTATION_READINESS_REVIEWER_FILE = "implementation-readiness-reviewer.md";
+
+export const IMPLEMENTATION_READINESS_REVIEWER_REQUIRED_TEXT: readonly string[] = [
+  "original accepted request",
+  "candidate consistency is not task-fit evidence",
+  "newly authored decision-material",
+  "coherent-wrong-outcome",
+  "silent-owner-decision",
+  "missing-observable-oracle",
+  "late-implementation-invalidation",
+  "internal-contradiction",
+  "unnecessary-scope",
+  "no-material-finding",
+  "Finding count, novelty, severity, and review length are not success measures",
+  "Practice Observation",
+  "Falsification Matrix",
+  "Do not decide the product result",
+];
+
 export const EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT: readonly string[] = [
   "fresh read-only evidence-sufficiency reviewer",
   "Original Outcome Comparison",
@@ -170,6 +189,7 @@ export const REVIEW_DELIVERY_AGENT_FILES: readonly string[] = [
   "evidence-sufficiency-reviewer.md",
   "execution-safety-reviewer.md",
   "final-candidate-reviewer.md",
+  "foundation-integrity-reviewer.md",
   "implementation-readiness-reviewer.md",
   "instruction-artifact-reviewer.md",
   "legacy-client-compatibility-reviewer.md",

@@ -1,0 +1,8 @@
+# Task 3.2 Ordinary-Small Exempt R1
+
+- Outcome: the current configured Ordinary Small negative-control member passed under governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`, scenario `133a9ca8ee00d5d34678dd673887f5bb2e6cd90921efe8601f7daa4265738df6`, request `eba919577298e0b6c81dcbc7e580baed0ec0d0bf4266194f9646196c2969744a`, and fixture `60b7090ec0e164bb3d3b8b4719e884058f40a606703287b149240a42690b8096`.
+- Bundle: `candidate-sessions/bounded-falsification-candidate-ordinary-small-exempt-r1/bundle.json`; one `openai/gpt-5.6-sol` / `xhigh` primary request and no reviewer child.
+- Behavior: all six generic attack classes are `not-applicable`; challenge and reviewer launch counts are zero; no finding, disposition, correction, or empty review artifact was created; the exact terminal state is `exempt`.
+- Diagnostics: OpenCode `1.18.23`; status, validation, and proof zero; elapsed `29601` ms under `300000` ms; two completed tools; no timeout, failed or duplicate call, question, violation, forbidden effect, or cleanup error. Decision digest: `a39d0ba1b56ebf416846f2065f2894024a3d120258b2adafa36a094bace98f2d`.
+- Replays: `replay-r1.json` and `replay-verify-r1.json` are identical under terminal evaluator `bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643`; candidate oracle `260be49e3e7f81a8901ea5fdafbe0bf82efeecb974fe27219aa99fc4638a27fe`; both have `liveCalls: 0`.
+- Claim ceiling: one current exemption member. Historical comparison is blocked by `initialFixtureDigest,opencodeVersion` and supports no causal, population, or universal-quality claim. External operations: none.

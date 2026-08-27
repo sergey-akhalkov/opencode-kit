@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:original-accepted-request
+- **Reviewed Request Ref**: event:original-accepted-request
+- **Accepted Outcome Ref**: outcome:proposal-outcome
+- **Candidate Ref**: candidate:bounded-falsification-review-planning-r2
+- **Reviewed Candidate Ref**: candidate:bounded-falsification-review-planning-r2
+- **Decision Surface**: decision-material authored artifacts and Material inline decision frames before semantic implementation readiness
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fc19ca067ffeJw2nB4A7NkhD9G
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: unknown
+- **Attack Class silent-owner-decision**: unknown
+- **Attack Class missing-observable-oracle**: unknown
+- **Attack Class late-implementation-invalidation**: unknown
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: unknown
+- **Material Findings**: BFR-R1
+- **Main Dispositions**: BFR-R1=confirmed
+- **Correction Ref**: correction:bounded-falsification-review-planning-r2
+- **Invalidated Surfaces**: review-routing, claim-population
+- **Terminal Reason**: corrected-candidate-rereview-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: per-attack-class-readback

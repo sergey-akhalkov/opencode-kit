@@ -237,16 +237,17 @@ npm run project:inventory -- --root <project-path> --format markdown
 - Launch optional reviewers after current proof only when concrete risk, project policy, or the owner makes them useful. Reviewer output informs main disposition but never gates completion or qualification.
 - Convert repeated manual counting, drift checks, or report assembly into deterministic helpers.
 
-Inspect this kit's instruction context cost with:
+Inspect this kit's instruction context and deterministic quality checks with:
 
 ```sh
 npm run instruction:inventory -- --format markdown
-npm run instruction:budget -- --format markdown
+npm run instruction:canonicalize -- --check .
 ```
 
-The budget reports committed global startup authority, discovery metadata, and
-on-demand bodies separately. Its materializer is lowering-only and cannot approve
-growth.
+The inventory reports startup-visible candidates, discovery metadata, on-demand
+bodies, and unknown sources separately without turning those measurements into a
+quality verdict. The canonicalization check reports exact duplicate ownership and
+reviewed mechanical fixes without mutating source.
 
 ### Manual Skills
 
@@ -287,6 +288,8 @@ Global install is enough for fresh projects: when `docs/feedbacks` is missing, a
 ### Manual Commands
 
 OpenCode prompt commands are configured through `opencode.json` under `command`. The standard `opsx-propose`, `opsx-apply`, and `opsx-archive` commands are globally owned by this kit and must not be copied into a project under the same names. Project-specific commands remain differently named domain helpers.
+
+`opsx-propose` reports structural artifact readiness separately from semantic implementation readiness. Decision-material planning uses one bounded original-request-grounded `implementation-readiness-reviewer` episode before semantic readiness is represented; an exact Ordinary Small change may use a reviewed exemption. Deterministic OpenSpec gates validate explicit structure only, and `final-candidate-reviewer` remains optional and post-proof.
 
 Project bootstrap writes only runtime-authority, config, feedback, validation, and adapter files. It never copies the canonical OpenSpec skills or commands. Preview and doctor report legacy same-name overlays as unattended-incompatible safe paths and preserve them for manual migration.
 
@@ -332,6 +335,7 @@ npm run openspec:validate
 Run deterministic operation gates before sensitive OpenSpec lifecycle steps with:
 
 ```sh
+npm run openspec:gate -- --operation propose --change <change-id>
 npm run openspec:gate -- --operation apply --change <change-id>
 npm run openspec:gate -- --operation archive --change <change-id>
 ```
@@ -405,6 +409,7 @@ Routing and reviewer maps assume the default `all` install profile.
 - Skip/omit/suppress/cache/replay/emulation/replacement/optimized-bypass equivalence -> `behavioral-substitution-qualification`; exact non-substitution work stays on its normal concise route.
 - Credentials, destructive/remote/install action, unrecognized dirty worktree, or unknown writer liveness -> `execution-safety-reviewer`; it cannot authorize the action.
 - Finite-population, partitioned-domain, real-equivalence, compatibility/interchangeability, safety, or phase/milestone completion -> fresh read-only `evidence-sufficiency-reviewer` challenge before the broad claim is represented as complete.
+- Material outcome/workload/profile/environment/oracle bind or rebind with a named current contradiction -> `foundation-integrity-reviewer`; after main reproduces one current defect, use `foundation-integrity-recovery` to correct and serially sweep only dependent current work.
 - Optional delegated production slices -> `implementation-worker` only when isolation, proof boundary, and evidenced benefit justify handoff; main remains default author.
 - Reachable named critical risk or explicit SDET requirement after proof and accepted-scope completion -> fresh `sdet-quality-engineer` when installed.
 - Optional post-MVP candidate risk review -> `final-candidate-reviewer` when concrete risk, policy, or the owner requires it.
@@ -413,7 +418,8 @@ Routing and reviewer maps assume the default `all` install profile.
 - Opt-in root completion enforcement -> `/enable-grind` enables deterministic async preflight and the hidden `session-completion-arbiter` for only the current root; `/disable-grind` returns it to ordinary chat. New roots default off.
 - Skills, agents, prompts, `AGENTS.md`, and other instruction artifacts -> `instruction-artifact-tuning`; current-session friction notes -> `complain`; for broad audits also use `instruction-artifact-audit-runbook.md`; use `instruction-artifact-reviewer` as the read-only post-change gate.
 - Documentation review selection: use `documentation-learning-quest` for guided onboarding, `documentation-hardening-loop` for non-trivial doc/spec hardening, `openspec-consistency-review` for OpenSpec synchronization, and `codebase-audit-loop` only for exhaustive codebase audits.
-- Code maintainability/readability after non-trivial implementation, refactoring, large-file navigation, duplication, DRY/SOLID/YAGNI, or design-pattern trade-off work -> `code-quality-audit`; the Material `code-quality-reviewer` gate returns only a safe net-reduction matrix.
+- Focused pre-expansion assessment of an existing project's architecture comprehension, current change pressure, useful interface, or refactoring locality -> `complexity-management`; cohesive deltas stay direct, seam-only questions retain their Practice Owner route, and explicit exhaustive coverage retains `codebase-audit-loop`.
+- Changed-code maintainability/readability after non-trivial implementation or refactoring, including large-file navigation, duplication, DRY/SOLID/YAGNI, and design-pattern trade-offs -> `code-quality-audit`; the Material `code-quality-reviewer` gate returns only a safe net-reduction matrix.
 
 ## Reviewer Gate Map
 
@@ -422,6 +428,7 @@ Routing and reviewer maps assume the default `all` install profile.
 - Safe deletion, reuse, deduplication, state simplification, and public-surface narrowing -> `code-quality-reviewer` reduction matrix.
 - Implementation readiness, stable scope, blockers, validation path -> `implementation-readiness-reviewer`.
 - Original-outcome versus population/path/oracle evidence sufficiency for a declared broad claim -> `evidence-sufficiency-reviewer`.
+- Current accepted-outcome/workload/profile/environment/oracle relation at a material bind or rebind -> `foundation-integrity-reviewer`; main retains falsification and recovery authority.
 - Optional post-MVP risk review of the complete current candidate -> `final-candidate-reviewer`.
 - Root goal alignment, unfinished accepted scope, and owner-boundary routing in an explicitly grind-enabled root -> session completion guard plus hidden `session-completion-arbiter`.
 - OpenSpec/design/architecture ownership and consistency -> `openspec-architecture-reviewer`.
@@ -453,10 +460,12 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `next-step`: discover OpenSpec-backed workstreams and choose one serial next step.
 - `merge-request-author`: reviewer-friendly PR/MR title/body/validation/risk authoring.
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
+- `complexity-management`: focused pre-expansion Architecture Comprehension Map, Change Rehearsal, abstraction-value admission, and same-scenario refactor recheck for an existing project; not changed-code review, new service design, or exhaustive coverage.
 - `reuse-discovery`: bounded reuse-first discovery for new mechanisms across current-repository, platform/dependency, explicitly configured cross-project, and read-only ecosystem evidence.
 - `behavioral-substitution-qualification`: on-demand closure for skip/omit/suppress/cache/replay/emulation/replacement/optimized-bypass equivalence at the owning boundary.
 - `root-cause-analysis`: evidence-backed 5 Whys/causal-chain analysis for symptoms, recurrence paths, unknown-cause investigations, and remediation-ready cause records.
 - `complain`: record current-session workflow friction, instruction conflicts, tooling pain, validation noise, or reusable improvement opportunities in `docs/feedbacks/**`.
+- `foundation-integrity-recovery`: main-owned falsification-first correction, dependent current-artifact sweep, evidence narrowing, archive preservation, and one-incident termination after a reproduced foundation finding.
 
 ### Review And Learning
 
@@ -465,7 +474,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 ### Documentation And Audit
 
 - `deduplication-audit`: explicit scoped `/dedup` clone audit using global `jscpd` candidate evidence plus symbols, owners, callers, tests, and the existing read-only code-quality reviewer.
-- `code-quality-audit`: pragmatic code-health review after non-trivial code changes, focusing on maintainability, readability, file navigation, duplication, overengineering, code smells, and minimal refactoring remedies.
+- `code-quality-audit`: post-change code-health review focused on maintainability, readability, file navigation, duplication, overengineering, code smells, and minimal refactoring remedies rather than pre-expansion map/rehearsal work.
 - `documentation-hardening-loop`: docs/spec review-fix-validate loop.
 - `documentation-block-ledger`: helper ledger for full docs block coverage.
 - `codebase-audit-loop`: exhaustive audit workflow for bugs, project-structure ergonomics, redundancy, test gaps, performance, and maintainability.
@@ -474,7 +483,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 ### OpenSpec
 
 - `openspec-abandon-change`: preserve an intentionally incomplete OpenSpec change without claiming completion or syncing specs.
-- `openspec-propose`: create one apply-ready OpenSpec change with proposal, design, specs, tasks, strategy history, one `Automation Dividend`, and deterministic readiness checks.
+- `openspec-propose`: create one OpenSpec planning set with proposal, design, specs, tasks, strategy history, one `Automation Dividend`, one bounded-falsification declaration, deterministic structural checks, and a separately reported semantic-readiness result.
 - `openspec-apply-change`: implement one OpenSpec change through evidence-bound tasks, happy-path runtime proof, and focused validation.
 - `openspec-archive-change`: validate and complete-archive one finished OpenSpec change through the portable deterministic helper. A required Automation Dividend needs its tagged task and current evidence row; an exempt Ordinary Small declaration has no tagged task.
 - `openspec-consistency-review`: review proposal/design/spec/tasks/docs/tests sync.
@@ -490,14 +499,14 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `external-service-simulator-harness`: deterministic fake external services for tests.
 - `framed-protocol-implementation`: framed protocol/schema/session implementation.
 - `wire-protocol-golden-tests`: golden byte/vector tests for protocols.
-- `service-architecture-design`: service architecture gate.
+- `service-architecture-design`: new-service and material service-architecture design gate; not focused comprehension assessment of an existing project.
 - `com-activex-adapter-implementation`: COM/ActiveX adapter compatibility workflow.
 
 ## Agent Catalog
 
 - `code-quality-reviewer`: read-only safe net-reduction reviewer for deletion, reuse, deduplication, state simplification, and public-surface narrowing while retaining unique critical/compatibility oracles.
 - `test-coverage-reviewer`: task/repro/runtime-envelope coverage, requirement-to-test matrix, missing tests, weak assertions.
-- `implementation-readiness-reviewer`: stable scope, decisions, blockers, validation readiness.
+- `implementation-readiness-reviewer`: original-request task fit, stable scope, decisions, observable proof, failure paths, unnecessary work, and bounded semantic-readiness evidence; `no-material-finding` is valid.
 - `openspec-architecture-reviewer`: architecture/OpenSpec consistency and ownership risks.
 - `rust-concurrency-reviewer`: Rust async/concurrency/backpressure/shutdown risks.
 - `performance-reliability-reviewer`: latency, throughput, starvation, overload, recovery evidence.
@@ -507,6 +516,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `sdet-quality-engineer`: write-capable test-only SDET for independent risk/oracle assessment and automated-test evidence after applicable proof; never edits production or claims readiness.
 - `final-candidate-reviewer`: optional fresh read-only post-MVP risk reviewer; returns an evidence-backed risk matrix and never edits candidate artifacts or approves a stage.
 - `evidence-sufficiency-reviewer`: fresh read-only challenge of whether current population, path, environment, real-oracle, and unresolved-observation evidence entails the original broad claim and its maximum ceiling.
+- `foundation-integrity-reviewer`: fresh read-only Practice Owner for current material outcome/workload/profile/environment/oracle bind or rebind contradictions; stays quiet for Ordinary Small, aligned, and historical-only controls.
 - `execution-safety-reviewer`: read-only execution-safety owner for authority, secrets, worktree, and destructive effects; never authorizes the action.
 - `troubleshooter`: inherited-model diagnosis-only pre-escalation consultant for hard or uncertain technical blockers after safe distinct mechanisms are exhausted; returns one goal-preserving route or proves the exact owner action, while main retains correction/proof and fresh SDET retains test authorship.
 - `qwen-local-worker`: inherited-model first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks.

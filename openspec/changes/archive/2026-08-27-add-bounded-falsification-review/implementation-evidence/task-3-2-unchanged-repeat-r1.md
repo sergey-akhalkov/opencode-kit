@@ -1,0 +1,8 @@
+# Task 3.2 Unchanged-Repeat R1
+
+- Outcome: the current configured unchanged-candidate reuse member passed under governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`, scenario `214c446a0e12604fe74256c86b1f39548d197474c185356d51603e33386d91cc`, request `8c84e3be71111fe4bf42c4362fce564ec1d1987c1005420fef576cca60d721f7`, and fixture `3d8e57f1f359d5d13e44cb4c8bf82625aa321aecd7dc259345cdc3327d82845e`.
+- Bundle: `candidate-sessions/bounded-falsification-candidate-unchanged-repeat-r1/bundle.json`; one `openai/gpt-5.6-sol` / `xhigh` primary request and no new reviewer child.
+- Behavior: the current terminal episode is reused with challenge count one, reviewer launch count zero, no invalidation, correction, finding, disposition, or duplicate generic challenge; the exact terminal reason is `unchanged-terminal-reused`.
+- Diagnostics: OpenCode `1.18.23`; status, validation, and proof zero; elapsed `27745` ms under `300000` ms; two completed tools; no timeout, failed or duplicate call, question, violation, forbidden effect, or cleanup error. Decision digest: `d316101331bd16e322cc98edbf9176b1e8cb0000b2bc0f76ff80bd18d10c198d`.
+- Replays: `replay-r1.json` and `replay-verify-r1.json` are identical under terminal evaluator `bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643`; candidate oracle `1571104aa791c0d428312bbe180c8a5fb6fc4a53675a3e39ea22738a8483d45d`; both have `liveCalls: 0`.
+- Claim ceiling: one current anti-repeat member. Historical comparison is blocked by `initialFixtureDigest,opencodeVersion` and supports no causal, population, or universal-quality claim. External operations: none.

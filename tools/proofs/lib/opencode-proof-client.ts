@@ -3,12 +3,13 @@ import {
   type OpencodeClient,
   type Session,
 } from "../../../global/node_modules/@opencode-ai/sdk/dist/v2/client.js";
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
+import { stopProofProcessTree } from "./proof-process-cleanup.ts";
 
 export type ProofRoute = {
   agent: string;
@@ -79,6 +80,21 @@ export type SummarizedProofEvidence = {
   summarizeAccepted: boolean;
 };
 
+export type DiagnosticProofEvidence = {
+  cleanup: {
+    error: Array<Record<string, unknown>> | null;
+    sessionsRemoved: boolean;
+  };
+  errors: Array<{
+    facts: Array<Record<string, unknown>>;
+    stage: "create" | "prompt" | "abort" | "readback";
+  }>;
+  messages: SummarizedProofEvidence["messages"];
+  providerRequestCount: number;
+  response: string;
+  sessionID: string | null;
+};
+
 export const PROOF_SERVER_CONFIG_LOAD_MS = 15_000;
 export const PROOF_SERVER_PLUGIN_READY_MS = 165_000;
 export const PROOF_SERVER_READINESS_MS = PROOF_SERVER_CONFIG_LOAD_MS + PROOF_SERVER_PLUGIN_READY_MS;
@@ -86,11 +102,21 @@ export const PROOF_SERVER_READINESS_MS = PROOF_SERVER_CONFIG_LOAD_MS + PROOF_SER
 export function installedOpenCodeIdentity(executable: string): { sha256: string; version: string } {
   if (!path.isAbsolute(executable) || !fs.statSync(executable).isFile()) throw new Error("Installed OpenCode executable is unreadable");
   const packagePath = path.resolve(path.dirname(executable), "..", "package.json");
-  const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf8")) as Record<string, unknown>;
-  if (typeof packageJson.version !== "string" || packageJson.version.trim() === "") throw new Error("Installed OpenCode version is unreadable");
+  const packageVersion = fs.existsSync(packagePath)
+    ? (JSON.parse(fs.readFileSync(packagePath, "utf8")) as Record<string, unknown>).version
+    : null;
+  const versionResult = packageVersion == null
+    ? spawnSync(executable, ["--version"], { encoding: "utf8", shell: false, windowsHide: true })
+    : null;
+  const version = typeof packageVersion === "string" && packageVersion.trim() !== ""
+    ? packageVersion.trim()
+    : versionResult?.status === 0
+      ? versionResult.stdout.trim().split(/\r?\n/, 1)[0]
+      : null;
+  if (version == null || version === "") throw new Error("Installed OpenCode version is unreadable");
   return {
     sha256: crypto.createHash("sha256").update(fs.readFileSync(executable)).digest("hex"),
-    version: packageJson.version,
+    version,
   };
 }
 
@@ -511,7 +537,7 @@ export function proofServerStartupFailure(error: unknown): ProofServerStartupFai
 }
 
 export async function stopProofServer(server: ProofServerHandle): Promise<{ signal: NodeJS.Signals | null; status: number | null }> {
-  if (server.child.exitCode == null && !server.child.killed) server.child.kill("SIGKILL");
+  if (server.child.exitCode == null && server.child.signalCode == null) await stopProofProcessTree(server.child);
   const terminal = await Promise.race([
     server.completion,
     new Promise<never>((_resolve, reject) => setTimeout(() => reject(new Error("Pinned OpenCode proof server did not terminate within 10000ms")), 10_000)),
@@ -689,6 +715,79 @@ export async function runSummarizedProofSession(input: {
         evidence.cleanup.sessionsRemoved = true;
       } catch (error) {
         evidence.cleanup.error = proofErrorFacts(error);
+      }
+    } else {
+      evidence.cleanup.sessionsRemoved = true;
+    }
+  }
+  return evidence;
+}
+
+export async function runDiagnosticProofSession(input: {
+  client: OpencodeClient;
+  directory: string;
+  prompt: string;
+  route: ProofRoute;
+  timeoutMs?: number;
+  title: string;
+}): Promise<DiagnosticProofEvidence> {
+  const timeoutMs = input.timeoutMs ?? 180_000;
+  const evidence: DiagnosticProofEvidence = {
+    cleanup: { error: null, sessionsRemoved: false },
+    errors: [],
+    messages: { assistant: [], toolCalls: [] },
+    providerRequestCount: 0,
+    response: "",
+    sessionID: null,
+  };
+  let stage: DiagnosticProofEvidence["errors"][number]["stage"] = "create";
+  try {
+    const session = await requestWithTimeout<Session>(
+      (signal) => input.client.session.create({ directory: input.directory, title: input.title }, { signal }),
+      "diagnostic session create",
+      timeoutMs,
+    );
+    evidence.sessionID = session.id;
+    stage = "prompt";
+    evidence.providerRequestCount = 1;
+    const response = await requestWithTimeout<Record<string, unknown>>(
+      (signal) => input.client.session.prompt({
+        agent: input.route.agent,
+        directory: input.directory,
+        parts: [{ type: "text", text: input.prompt }],
+        sessionID: session.id,
+      }, { signal }),
+      "diagnostic prompt",
+      timeoutMs,
+    );
+    evidence.response = messageText(response);
+  } catch (error) {
+    evidence.errors.push({ facts: proofErrorFacts(error), stage });
+    if (stage === "prompt" && evidence.sessionID != null) {
+      try {
+        await input.client.session.abort({ directory: input.directory, sessionID: evidence.sessionID });
+      } catch (abortError) {
+        evidence.errors.push({ facts: proofErrorFacts(abortError), stage: "abort" });
+      }
+    }
+  } finally {
+    if (evidence.sessionID != null) {
+      try {
+        const messages = await requestWithTimeout<unknown[]>(
+          (signal) => input.client.session.messages({ directory: input.directory, limit: 100, sessionID: evidence.sessionID! }, { signal }),
+          "diagnostic message readback",
+          timeoutMs,
+        );
+        evidence.messages = messageProjection(messages);
+      } catch (readbackError) {
+        evidence.errors.push({ facts: proofErrorFacts(readbackError), stage: "readback" });
+      }
+      try {
+        const response = await input.client.session.delete({ directory: input.directory, sessionID: evidence.sessionID }) as { error?: unknown };
+        if (response.error != null) throw response.error;
+        evidence.cleanup.sessionsRemoved = true;
+      } catch (cleanupError) {
+        evidence.cleanup.error = proofErrorFacts(cleanupError);
       }
     } else {
       evidence.cleanup.sessionsRemoved = true;

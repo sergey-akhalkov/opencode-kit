@@ -1,0 +1,141 @@
+{
+  "recordType": "output",
+  "schemaVersion": 1,
+  "root": {
+    "kind": "sha256",
+    "digest": "12a69baeda89c99e27dc675442edefb769a3e2ef8434ae47f053bd44e2c014c1"
+  },
+  "scope": {
+    "includes": [],
+    "excludes": []
+  },
+  "support": {
+    "state": "complete",
+    "unsupportedFields": [],
+    "unknownFields": []
+  },
+  "candidates": [
+    {
+      "kind": "component",
+      "path": "src",
+      "evidence": {
+        "detector": "exact-name",
+        "value": "src"
+      }
+    },
+    {
+      "kind": "entrypoint",
+      "path": "src/index.ts",
+      "evidence": {
+        "detector": "exact-name",
+        "value": "index.ts"
+      }
+    },
+    {
+      "kind": "manifest",
+      "path": "package.json",
+      "evidence": {
+        "detector": "exact-name",
+        "value": "package.json"
+      }
+    },
+    {
+      "kind": "proof",
+      "path": "test/widget.test.ts",
+      "evidence": {
+        "detector": "path-segment",
+        "value": "test"
+      }
+    },
+    {
+      "kind": "public-surface",
+      "path": "src/index.ts",
+      "evidence": {
+        "detector": "manifest-field",
+        "value": "exports"
+      }
+    },
+    {
+      "kind": "source",
+      "path": "src/index.ts",
+      "evidence": {
+        "detector": "extension",
+        "value": ".ts"
+      }
+    },
+    {
+      "kind": "source",
+      "path": "src/widget.ts",
+      "evidence": {
+        "detector": "extension",
+        "value": ".ts"
+      }
+    },
+    {
+      "kind": "test",
+      "path": "test/widget.test.ts",
+      "evidence": {
+        "detector": "exact-name",
+        "value": "widget.test.ts"
+      }
+    }
+  ],
+  "counts": {
+    "files": 4,
+    "directories": 2,
+    "bytes": 385,
+    "lines": 13,
+    "maintained": 4,
+    "generated": 0,
+    "vendor": 0,
+    "evidence": 0,
+    "corpus": 0,
+    "dependency": 0,
+    "unknown": 0,
+    "unsupported": 0,
+    "unreadable": 0
+  },
+  "largestMaintainedFiles": [
+    {
+      "path": "test/widget.test.ts",
+      "bytes": 141,
+      "lines": 3
+    },
+    {
+      "path": "package.json",
+      "bytes": 114,
+      "lines": 6
+    },
+    {
+      "path": "src/widget.ts",
+      "bytes": 84,
+      "lines": 3
+    },
+    {
+      "path": "src/index.ts",
+      "bytes": 46,
+      "lines": 1
+    }
+  ],
+  "topLevelConcentration": [
+    {
+      "path": "test",
+      "files": 1,
+      "bytes": 141,
+      "lines": 3
+    },
+    {
+      "path": "src",
+      "files": 2,
+      "bytes": 130,
+      "lines": 4
+    },
+    {
+      "path": "package.json",
+      "files": 1,
+      "bytes": 114,
+      "lines": 6
+    }
+  ],
+  "diagnostics": []
+}

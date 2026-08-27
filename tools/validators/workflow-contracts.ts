@@ -42,16 +42,8 @@ const CONTRACTS: ContractDefinition[] = [
         source: "global/skills/openspec-propose/SKILL.md",
       },
       {
-        marker: "Do not append a mandatory final retrospective",
-        source: "global/commands/opsx-propose.md",
-      },
-      {
         marker: "Optional retrospective or workflow feedback stays outside the product task graph",
         source: "global/skills/openspec-apply-change/SKILL.md",
-      },
-      {
-        marker: "Optional retrospective or workflow feedback stays outside the product task graph",
-        source: "global/commands/opsx-apply.md",
       },
     ],
     id: "final-history-retrospective",

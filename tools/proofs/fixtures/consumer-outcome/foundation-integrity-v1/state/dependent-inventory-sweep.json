@@ -1,0 +1,5 @@
+{
+  "dependentChange": "legacy-profile-b-workload",
+  "incidentState": "absent",
+  "unrelatedChange": "independent-profile-z"
+}

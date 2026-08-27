@@ -1,0 +1,6 @@
+{
+  "name": "complexity-noisy-fixture",
+  "private": true,
+  "type": "module",
+  "exports": "./src/core.ts"
+}

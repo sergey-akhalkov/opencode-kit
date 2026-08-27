@@ -693,7 +693,9 @@ export const changeReadyContractTests: TestCase[] = [
       const qualification = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
       const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
       const propose = fs.readFileSync(path.join(root, "global", "skills", "openspec-propose", "SKILL.md"), "utf8");
-      const proposeCommand = fs.readFileSync(path.join(root, "global", "commands", "opsx-propose.md"), "utf8");
+      const readinessReviewer = fs.readFileSync(path.join(root, "global", "agents", "implementation-readiness-reviewer.md"), "utf8");
+      const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
+      const instructionSpec = fs.readFileSync(path.join(root, "openspec", "specs", "library-instruction-artifacts", "spec.md"), "utf8");
       assert((principles.match(/\*\*Evidence Bounds Claims:\*\*/g) ?? []).length === 1, "Principles must contain one canonical Evidence Bounds Claims entry.");
       assertTokens(agents, [
         "Evidence bounds claims",
@@ -706,14 +708,51 @@ export const changeReadyContractTests: TestCase[] = [
       assertTokens(reviewer, EVIDENCE_SUFFICIENCY_REVIEWER_REQUIRED_TEXT, "Evidence-sufficiency reviewer contract drifted");
       assert(qualification.includes("load `behavioral-substitution-qualification`"), "Change-Ready must reference the focused substitution owner.");
       assert(apply.includes("load `behavioral-substitution-qualification`"), "OpenSpec apply must reference the focused substitution owner.");
-      for (const source of [propose, proposeCommand]) {
-        assertTokens(source, [
-          "schema-valid development claim record",
-          "--operation apply",
-          "Do not report `Ready for implementation`",
-          "Never invent evidence",
-        ], "OpenSpec propose broad-claim apply-readiness contract drifted");
-      }
+      assertTokens(propose, [
+        "schema-valid development claim record",
+        "--operation apply",
+        "Structural artifact readiness",
+        "Semantic implementation readiness",
+        "implementation-readiness-reviewer",
+        "no-material-finding",
+        "no unchanged, optional, or confidence-seeking third challenge",
+        "Never invent evidence",
+      ], "OpenSpec propose broad-claim apply-readiness contract drifted");
+      assert(!propose.includes("Create artifacts in sequence until apply-ready"), "OpenSpec propose must not collapse artifact completion into implementation readiness.");
+      assert(!readme.includes("create one apply-ready OpenSpec change"), "README must not collapse structural and semantic readiness.");
+      assertTokens(readme, [
+        "reports structural artifact readiness separately from semantic implementation readiness",
+        "one bounded-falsification declaration",
+        "`final-candidate-reviewer` remains optional and post-proof",
+      ], "README bounded-falsification routing drifted");
+      assert(!instructionSpec.includes("reports `Ready for implementation` only when all three commands exit `0`"), "Canonical spec must not derive semantic readiness from deterministic checks.");
+      assertTokens(instructionSpec, [
+        "`Structural artifact readiness: passed` only when all three commands exit `0`",
+        "semantic implementation readiness remains separate",
+      ], "Canonical structural-versus-semantic readiness wording drifted");
+      assertTokens(apply, [
+        "Bounded Falsification Review",
+        "falsification-review.md",
+        "Reuse a current terminal episode",
+        "do not relaunch an equivalent generic review",
+        "final-candidate-reviewer` as a mandatory fallback",
+        "Semantic implementation readiness",
+      ], "OpenSpec apply bounded-falsification consumption contract drifted");
+      assertTokens(readinessReviewer, [
+        "accepted outcome or non-deferrable invariant at risk",
+        "reachable current-envelope scenario",
+        "concrete consequence",
+        "exact evidence",
+        "current-scope justification",
+        "smallest mitigation note",
+        "Optional, future-scope, stylistic, polish, and generic-uncertainty rows create no work",
+      ], "Implementation-readiness finding-admission contract drifted");
+      assertTokens(agents, [
+        "Material inline decision frame",
+        "Material work without a formal plan creates the smallest inline frame before production mutation",
+        "Ordinary Small exact cases stay direct",
+        "independently matched exact Practice Owners keep their boundaries",
+      ], "Non-OpenSpec bounded-falsification fallback drifted");
       assert(!qualification.includes("Compare baseline and candidate from the same actor request"), "Change-Ready must not duplicate the focused comparison procedure.");
       for (const forbidden of REVIEWER_SDET_FORBIDDEN_ACTION_FIELDS) {
         assert(!reviewer.includes(forbidden), `Evidence-sufficiency reviewer exposes forbidden authority: ${forbidden}`);

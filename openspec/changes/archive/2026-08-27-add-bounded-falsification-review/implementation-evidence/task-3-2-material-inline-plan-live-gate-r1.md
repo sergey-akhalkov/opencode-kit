@@ -1,0 +1,7 @@
+# Material-Inline-Plan Candidate Live Gate R1
+
+- Lane: `bounded-falsification-review-v1/material-inline-plan`; Live-Attempt Gate: clear for one candidate r1 capture, consumed at start. Frozen baseline remains separately established as r2 historical characterization.
+- Identity: governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`; selected scenario `75a0c01a913ad77201875766d7c5f70d398f51813b707e9cb939fb31d250a877`; request `2e539caada34ea3f0fd8cb8ea8f5fa1c0a120766514a84e5bcfa16d90d089002`; source fixture `05b0f29dc51db2618b6c68883d64e7e1e78542c85bc74f648a3d79ebe4e429fe`; OpenCode `1.18.23`; runner `capture.ts=66429a74eaa787cb0324b2f8f0c66192a8a070d587e768ea5670886014f0df66`.
+- Required observation: create/use the smallest inline decision frame before production mutation, launch exactly one early readiness child, record the reviewed candidate tuple without inventing an OpenSpec tree or late final reviewer, exit/proof/validation zero, `timedOut=false`, and clean up.
+- Envelope: one configured primary and one readiness child; read only the selected projected row; no product implementation, OpenSpec scaffold, final reviewer, exact-owner substitution, question, protected/external effect, or baseline-identity waiver. Selected preflight is ready with zero model calls; focused provider-free tests are 33/33.
+- Retry condition: only a dependency-invalidating candidate/request/fixture/environment change plus terminal replay and a new gate. Historical baseline supports characterization only.

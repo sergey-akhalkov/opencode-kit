@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "id": "complexity-management-r1",
+  "profile": "quality-independent",
+  "expectation": "no-regression",
+  "sampleCountPerArm": 1,
+  "configuredProviderRequestBound": 1,
+  "pairOrder": ["B1,C1"],
+  "maximumClaim": "the useful-current-consumer-facade fixture under the recorded source, model, prompt, permission, environment, and runtime identities only; provider-free preflight and replay establish fixture, effect, bound, and cleanup readiness but no configured semantic outcome until a live diagnostic is captured",
+  "memberOrder": ["useful-current-consumer-facade"],
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/bin/complexity-foraging-contract.ts",
+    "global/bin/complexity-foraging-inventory.ts",
+    "global/model-profiles/quality-independent.json",
+    "global/skills/complexity-management/SKILL.md",
+    "profiles/core.json",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/capture.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/evaluate.ts"
+  ],
+  "scenarios": [
+    {
+      "id": "useful-current-consumer-facade",
+      "shape": "ordinary-small",
+      "fixtureId": "useful-current-consumer-facade",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/complexity-management-v1",
+      "initialManifest": {
+        "files": [
+          "case.json",
+          "check-decision.ts",
+          "src/inventory.ts",
+          "src/order-service.ts",
+          "src/payments.ts",
+          "src/receipts.ts",
+          "src/run-order.ts",
+          "test/scenario.test.ts"
+        ]
+      },
+      "request": "Read case.json, src/run-order.ts, src/inventory.ts, src/payments.ts, src/receipts.ts, src/order-service.ts, and test/scenario.test.ts. If the loaded complexity-management skill or its active-source complexity-foraging helper is unavailable, leave source unchanged and copy fallbackDecision from case.json to decision.json. Otherwise load only complexity-management, invoke the helper from the resolved active global source with this fixture root, produce the required Architecture Comprehension Map and Change Rehearsal fields, and implement the smallest useful facade only when current encapsulation value is admitted. Write decision.json with exactly admissionClass, architectureMap, caseId, changeRehearsal, claimCeiling, facadeDisposition, and inventoryStatus. Preserve the success output, inventory/payment/receipt effects, PaymentDeclinedError name and message, and both proof commands. Do not read apply seeds, ask questions, use nested agents, access external directories or credentials, install, commit, or perform remote, destructive, or protected actions.",
+      "allowedEffects": ["local-read", "local-write"],
+      "forbiddenEffects": ["commit", "credential-read", "destructive-action", "install", "protected-action", "remote"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": ["decision.json", "src/order-service.ts", "src/run-order.ts"],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "test/scenario.test.ts"],
+      "proofExpectations": {
+        "argv": ["node", "check-decision.ts"],
+        "exitCode": 0,
+        "stdoutIncludes": []
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": [
+        "ownerQuestionCount",
+        "configuredProviderRequestCount",
+        "failedToolCallCount",
+        "duplicateFailedToolInvocationCount",
+        "totalToolCallCount"
+      ],
+      "permissions": {
+        "allow": ["bash", "edit", "read", "skill:complexity-management"],
+        "deny": ["external_directory", "glob", "grep", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "expectedDecision": {
+        "baseline": {
+          "admissionClass": "unknown",
+          "architectureMap": {
+            "cohesiveOwners": ["src/inventory.ts", "src/payments.ts", "src/receipts.ts", "src/run-order.ts"],
+            "consumer": "src/run-order.ts",
+            "effects": ["inventory-reservation", "payment-charge", "receipt-record"],
+            "entrypoint": "node src/run-order.ts <card>",
+            "failures": ["PaymentDeclinedError: payment declined"],
+            "hiddenInternals": [],
+            "intendedExtensionSurface": "unknown",
+            "proofEntrypoints": ["node test/scenario.test.ts", "node check-decision.ts"],
+            "unknowns": ["focused-workflow-unavailable"]
+          },
+          "caseId": "useful-current-consumer-facade",
+          "changeRehearsal": {
+            "candidateResponse": "not-evaluated",
+            "essentialContext": ["src/run-order.ts", "src/inventory.ts", "src/payments.ts", "src/receipts.ts", "test/scenario.test.ts"],
+            "expectedEditSet": [],
+            "observedPressure": "consumer-coordinates-three-stable-internals",
+            "proofSet": ["node test/scenario.test.ts", "node check-decision.ts"],
+            "sameScenarioResult": "not-run",
+            "scenario": "place-one-order-with-success-and-declined-payment"
+          },
+          "claimCeiling": "configured-baseline-unavailable-only",
+          "facadeDisposition": "not-evaluated",
+          "inventoryStatus": "unavailable"
+        },
+        "candidate": {
+          "admissionClass": "accepted-refactor",
+          "architectureMap": {
+            "cohesiveOwners": ["src/order-service.ts"],
+            "consumer": "src/run-order.ts",
+            "effects": ["inventory-reservation", "payment-charge", "receipt-record"],
+            "entrypoint": "node src/run-order.ts <card>",
+            "failures": ["PaymentDeclinedError: payment declined"],
+            "hiddenInternals": ["src/inventory.ts", "src/payments.ts", "src/receipts.ts"],
+            "intendedExtensionSurface": "src/order-service.ts#placeOrder",
+            "proofEntrypoints": ["node test/scenario.test.ts", "node check-decision.ts"],
+            "unknowns": []
+          },
+          "caseId": "useful-current-consumer-facade",
+          "changeRehearsal": {
+            "candidateResponse": "extract-narrow-order-service-facade",
+            "essentialContext": ["src/run-order.ts", "src/order-service.ts", "test/scenario.test.ts"],
+            "expectedEditSet": ["src/order-service.ts", "src/run-order.ts"],
+            "observedPressure": "consumer-coordinates-three-stable-internals",
+            "proofSet": ["node test/scenario.test.ts", "node check-decision.ts"],
+            "sameScenarioResult": "behavior-effects-and-failure-preserved",
+            "scenario": "place-one-order-with-success-and-declined-payment"
+          },
+          "claimCeiling": "useful-current-consumer-facade-only",
+          "facadeDisposition": "admitted-current-encapsulation",
+          "inventoryStatus": "supported"
+        }
+      }
+    }
+  ]
+}

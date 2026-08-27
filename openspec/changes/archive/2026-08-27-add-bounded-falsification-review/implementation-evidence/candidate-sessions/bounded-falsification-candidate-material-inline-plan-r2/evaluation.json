@@ -1,0 +1,165 @@
+{
+  "boundedFalsificationOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "material-inline-plan-candidate-r1",
+        "caseId": "material-inline-plan",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "material-inline-decision-frame-before-mutation",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "material-inline-plan-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-baseline-r1",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "existing-material-readiness-observed",
+        "terminalState": "unknown"
+      },
+      "failures": [],
+      "memberId": "material-inline-plan",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "material-inline-plan-candidate-r1",
+        "caseId": "material-inline-plan",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "material-inline-decision-frame-before-mutation",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "material-inline-plan-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-baseline-r1",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "existing-material-readiness-observed",
+        "terminalState": "unknown"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "material-inline-plan"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "material-inline-plan-candidate-r1",
+        "caseId": "material-inline-plan",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "material-inline-decision-frame-before-mutation",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "material-inline-plan-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "material-inline-frame-reviewed",
+        "terminalState": "closed"
+      },
+      "failures": [],
+      "memberId": "material-inline-plan",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "material-inline-plan-candidate-r1",
+        "caseId": "material-inline-plan",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "material-inline-decision-frame-before-mutation",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "material-inline-plan-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "material-inline-frame-reviewed",
+        "terminalState": "closed"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "material-inline-plan"
+    }
+  ],
+  "decisionOracles": [],
+  "digest": "6e083538ea802874c7ce8b028bffda3de6b443c0f361365ab74429ff440bc24f",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317",
+      "candidate": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095"
+    },
+    "terminalReplay": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "material-inline-plan": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 4
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "5a0ad27d166988fd111a808e25535c312b36949c880e4d813cf4c90f2ea255de",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "environment:initialFixtureDigest,opencodeVersion"
+    ],
+    "scenarioDigest": "552b0931b0b36a73e57d58d5b1fc1c9c288149698196ee32b5208a63086dee5d",
+    "sourceDigest": "af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a",
+    "status": "blocked",
+    "digest": "92d28b214ec472f44133ddc89f1113ee527b498766907e2053eb9212fd92eb4a",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "the exercised configured model and selected bounded-falsification scenarios (material-inline-plan) cover only their 1 explicit members under the recorded identities"
+}

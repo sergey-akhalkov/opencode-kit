@@ -1,0 +1,749 @@
+{
+  "byteLength": 51355,
+  "comparisonIdentity": "3c89b1ed33d9d893dffaa5c0e35ab8870971cdb4ccd7e080758efcf729e27812",
+  "evaluatorDigest": "ac4f0c77043278135ec10ac92c0ba82e8075a4306ea4f1602aaf68a9b2079167",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-protected-product-ambiguity-1",
+          "Read only cases/protected-product-ambiguity.json and the artifact paths it names. Use the loaded foundation-integrity owner and recovery procedure only if they exist; do not infer a missing procedure. If unavailable, make no owner or skill call and no artifact mutation; copy fallbackDecision exactly to decision.json and do not invent alternate values. Otherwise apply the loaded review, reproduction, and protected owner-boundary contracts without choosing an identity or loading recovery. Use incident ID fi-protected-product-ambiguity-r1. Write decision.json with exactly caseId, correctedReviewCount, incidentId, initialReviewCount, ownerAgent, recoverySkillCount, reproductionDisposition, terminalRows, and terminalState. terminalRows must follow memberIds and use supported or unknown. Do not ask a synthetic owner question, access external directories or credentials, install, commit, or perform remote, destructive, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787785961688,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_04058e0cf001xLWot0NdKsE0hZ\",\"messageID\":\"msg_04058c671001JcUBUUmGb89VNb\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787785963126,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_04058e4e2001oS3QierInPYmHp\",\"messageID\":\"msg_04058c671001JcUBUUmGb89VNb\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"text\",\"text\":\"I’ll inspect the case manifest first, then limit all reads and any permitted write to the artifact paths it explicitly names.\",\"time\":{\"start\":1787785962722,\"end\":1787785963112},\"metadata\":{\"openai\":{\"itemId\":\"msg_0704d59f4e605bc8016a8f72ec089887d2b34985f673aa10f8\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785964100,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_2ZQayJwZxV1rITIt2rLsaXZ4\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases\\\\protected-product-ambiguity.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases\\\\protected-product-ambiguity.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n3:   \\\"memberIds\\\": [\\\"protected-product-ambiguity\\\"],\\n4:   \\\"fallbackDecision\\\": {\\n5:     \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n6:     \\\"correctedReviewCount\\\": 0,\\n7:     \\\"incidentId\\\": \\\"none\\\",\\n8:     \\\"initialReviewCount\\\": 0,\\n9:     \\\"ownerAgent\\\": \\\"none\\\",\\n10:     \\\"recoverySkillCount\\\": 0,\\n11:     \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n12:     \\\"terminalRows\\\": [{ \\\"memberId\\\": \\\"protected-product-ambiguity\\\", \\\"status\\\": \\\"unknown\\\" }],\\n13:     \\\"terminalState\\\": \\\"unavailable\\\"\\n14:   },\\n15:   \\\"facts\\\": {\\n16:     \\\"acceptedOutcome\\\": \\\"ambiguous-between-product-a-and-product-b\\\",\\n17:     \\\"safeEvidence\\\": \\\"cannot-distinguish-current-product-identity\\\",\\n18:     \\\"candidateIdentities\\\": [\\\"public-api-a\\\", \\\"public-api-b\\\"],\\n19:     \\\"choiceChangesProtectedMeaning\\\": true,\\n20:     \\\"safeDiscriminatingRoutesExhausted\\\": true,\\n21:     \\\"unrelatedWorkCanContinue\\\": true\\n22:   },\\n23:   \\\"artifacts\\\": [\\n24:     { \\\"artifactId\\\": \\\"protected-boundary\\\", \\\"path\\\": \\\"state/protected-product-ambiguity.json\\\" },\\n25:     { \\\"artifactId\\\": \\\"archived-result\\\", \\\"path\\\": \\\"state/archive-record.json\\\" },\\n26:     { \\\"artifactId\\\": \\\"unrelated-active-change\\\", \\\"path\\\": \\\"state/unrelated-active-change.json\\\" }\\n27:   ]\\n28: }\\n\\n(End of file - total 28 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n  \\\"memberIds\\\": [\\\"protected-product-ambiguity\\\"],\\n  \\\"fallbackDecision\\\": {\\n    \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n    \\\"correctedReviewCount\\\": 0,\\n    \\\"incidentId\\\": \\\"none\\\",\\n    \\\"initialReviewCount\\\": 0,\\n    \\\"ownerAgent\\\": \\\"none\\\",\\n    \\\"recoverySkillCount\\\": 0,\\n    \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n    \\\"terminalRows\\\": [{ \\\"memberId\\\": \\\"protected-product-ambiguity\\\", \\\"status\\\": \\\"unknown\\\" }],\\n    \\\"terminalState\\\": \\\"unavailable\\\"\\n  },\\n  \\\"facts\\\": {\\n    \\\"acceptedOutcome\\\": \\\"ambiguous-between-product-a-and-product-b\\\",\\n    \\\"safeEvidence\\\": \\\"cannot-distinguish-current-product-identity\\\",\\n    \\\"candidateIdentities\\\": [\\\"public-api-a\\\", \\\"public-api-b\\\"],\\n    \\\"choiceChangesProtectedMeaning\\\": true,\\n    \\\"safeDiscriminatingRoutesExhausted\\\": true,\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases\\\\protected-product-ambiguity.json\",\"text\":\"{\\n  \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n  \\\"memberIds\\\": [\\\"protected-product-ambiguity\\\"],\\n  \\\"fallbackDecision\\\": {\\n    \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n    \\\"correctedReviewCount\\\": 0,\\n    \\\"incidentId\\\": \\\"none\\\",\\n    \\\"initialReviewCount\\\": 0,\\n    \\\"ownerAgent\\\": \\\"none\\\",\\n    \\\"recoverySkillCount\\\": 0,\\n    \\\"reproductionDisposition\\\": \\\"not-run\\\",\\n    \\\"terminalRows\\\": [{ \\\"memberId\\\": \\\"protected-product-ambiguity\\\", \\\"status\\\": \\\"unknown\\\" }],\\n    \\\"terminalState\\\": \\\"unavailable\\\"\\n  },\\n  \\\"facts\\\": {\\n    \\\"acceptedOutcome\\\": \\\"ambiguous-between-product-a-and-product-b\\\",\\n    \\\"safeEvidence\\\": \\\"cannot-distinguish-current-product-identity\\\",\\n    \\\"candidateIdentities\\\": [\\\"public-api-a\\\", \\\"public-api-b\\\"],\\n    \\\"choiceChangesProtectedMeaning\\\": true,\\n    \\\"safeDiscriminatingRoutesExhausted\\\": true,\\n    \\\"unrelatedWorkCanContinue\\\": true\\n  },\\n  \\\"artifacts\\\": [\\n    { \\\"artifactId\\\": \\\"protected-boundary\\\", \\\"path\\\": \\\"state/protected-product-ambiguity.json\\\" },\\n    { \\\"artifactId\\\": \\\"archived-result\\\", \\\"path\\\": \\\"state/archive-record.json\\\" },\\n    { \\\"artifactId\\\": \\\"unrelated-active-change\\\", \\\"path\\\": \\\"state/unrelated-active-change.json\\\" }\\n  ]\\n}\",\"lineStart\":1,\"lineEnd\":28,\"totalLines\":28,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-protected-product-ambiguity-s2trAS\\\\fixture\\\\cases\\\\protected-product-ambiguity.json\",\"time\":{\"start\":1787785964029,\"end\":1787785964069}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0704d59f4e605bc8016a8f72ec8f9087d2936b41fd48352b24\"}},\"id\":\"prt_04058e66e001BdgKWJh4zzbuPO\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"messageID\":\"msg_04058c671001JcUBUUmGb89VNb\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785964101,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_04058ea2b001ZqVcIdc7odXXj0\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04058c671001JcUBUUmGb89VNb\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-finish\",\"tokens\":{\"total\":14157,\"input\":14028,\"output\":89,\"reasoning\":40,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785965339,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_04058ef16001subIRNO9h0NKsn\",\"messageID\":\"msg_04058ea3b001nJ9P993Umcf0AK\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785971721,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_TaHKLfrbZoO55Ct0VtnwuUFd\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\protected-product-ambiguity.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\protected-product-ambiguity.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"candidateIdentities\\\": [\\\"public-api-a\\\", \\\"public-api-b\\\"],\\n3:   \\\"selectedIdentity\\\": null\\n4: }\\n\\n(End of file - total 4 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"candidateIdentities\\\": [\\\"public-api-a\\\", \\\"public-api-b\\\"],\\n  \\\"selectedIdentity\\\": null\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\protected-product-ambiguity.json\",\"text\":\"{\\n  \\\"candidateIdentities\\\": [\\\"public-api-a\\\", \\\"public-api-b\\\"],\\n  \\\"selectedIdentity\\\": null\\n}\",\"lineStart\":1,\"lineEnd\":4,\"totalLines\":4,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-protected-product-ambiguity-s2trAS\\\\fixture\\\\state\\\\protected-product-ambiguity.json\",\"time\":{\"start\":1787785971696,\"end\":1787785971719}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bd7d46a0282577c016a8f72f4f7f487d286449d00480147c8\"}},\"id\":\"prt_0405907a3001PMVpkTCluWvnNu\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"messageID\":\"msg_04058ea3b001nJ9P993Umcf0AK\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785971783,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_6W5fUsNIwD6FV0hnJUfkxMQI\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\archive-record.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n3:   \\\"immutable\\\": true,\\n4:   \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\archive-record.json\",\"text\":\"{\\n  \\\"evidenceCeiling\\\": \\\"historical-cross-profile\\\",\\n  \\\"immutable\\\": true,\\n  \\\"recordId\\\": \\\"archive-fixture-r1\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-protected-product-ambiguity-s2trAS\\\\fixture\\\\state\\\\archive-record.json\",\"time\":{\"start\":1787785971737,\"end\":1787785971781}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bd7d46a0282577c016a8f72f4f80487d2881252b6032ef072\"}},\"id\":\"prt_0405907f3001OVs8ivXgPCgUPL\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"messageID\":\"msg_04058ea3b001nJ9P993Umcf0AK\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787785971787,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_J6Co3s4jbSeOMJ8F4RxodgWy\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"changeId\\\": \\\"unrelated-change\\\",\\n3:   \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n4:   \\\"status\\\": \\\"unchanged\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"text\":\"{\\n  \\\"changeId\\\": \\\"unrelated-change\\\",\\n  \\\"currentIdentity\\\": \\\"independent-profile-z\\\",\\n  \\\"status\\\": \\\"unchanged\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-protected-product-ambiguity-s2trAS\\\\fixture\\\\state\\\\unrelated-active-change.json\",\"time\":{\"start\":1787785971749,\"end\":1787785971785}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bd7d46a0282577c016a8f72f4f80c87d2b8d3264386c8e906\"}},\"id\":\"prt_04059081e001yykLzUiEMuiajd\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"messageID\":\"msg_04058ea3b001nJ9P993Umcf0AK\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787785971835,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_040590869001T5OZU1El3YKOk2\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04058ea3b001nJ9P993Umcf0AK\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-finish\",\"tokens\":{\"total\":14931,\"input\":762,\"output\":174,\"reasoning\":171,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787785972905,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_040590ca5001Y2Tf9vRVb82pad\",\"messageID\":\"msg_040590874001OBUHck92kve4kx\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787785977793,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_040591b92001CbZgh2uwVTZ06Y\",\"messageID\":\"msg_040590874001OBUHck92kve4kx\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"text\",\"text\":\"The manifest and named artifacts confirm two unresolved public API identities, no selected identity, exhausted safe discrimination, and an immutable historical record. I’m invoking the loaded foundation-integrity owner for one fresh read-only review; recovery will remain unloaded because resolving the ambiguity would require a protected product choice.\",\"time\":{\"start\":1787785976722,\"end\":1787785977788},\"metadata\":{\"openai\":{\"itemId\":\"msg_0fc3ec6f1bdd3553016a8f72fa24f087d2bd27ff30ba921949\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787786065141,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_1ne28FF0x2ujW9j5Iq40s1q6\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"foundation-integrity-reviewer\",\"description\":\"Review protected identity ambiguity\",\"prompt\":\"Role: fresh read-only foundation-integrity Practice Owner.\\nOutcome/value objective: review one current protected product-identity ambiguity and return the loaded owner-contract finding needed for main-session reproduction and terminal owner-boundary handling.\\nObserved state/evidence: caseId protected-product-ambiguity; accepted outcome is ambiguous-between-product-a-and-product-b; candidate identities are public-api-a and public-api-b; choice changes protected meaning; safe evidence cannot distinguish current product identity; safe discriminating routes are exhausted. Named current artifact state/protected-product-ambiguity.json has selectedIdentity null and those two candidates. Named archive state/archive-record.json is immutable historical-cross-profile evidence. Named unrelated state/unrelated-active-change.json is independent-profile-z and unchanged. These facts were read by main from the only allowed inputs.\\nAssumptions/unknowns: neither product identity is owner-selected; no safe evidence supports choosing one.\\nDeliverable: one bounded owner review report under your loaded read-only contract. Explicitly distinguish the current ambiguous protected boundary, historical archive, and unrelated current work. State whether the evidence supports a unique correction or instead requires protected owner-boundary handling. Do not select an identity.\\nIn scope/read scope: use only the facts included in this brief. Do not access any files, directories, credentials, network, or external sources.\\nWrite scope: none.\\nForbidden actions: no mutation, no nested agent/skill call, no synthetic owner question, no identity choice, no recovery action, no install/commit/remote/destructive/protected action, and no lifecycle acceptance verdict.\\nRequired invariants/resolved decisions: incident ID for any later main handling is fi-protected-product-ambiguity-r1; member order contains only protected-product-ambiguity; immutable archive stays historical and unchanged; unrelated active work remains unchanged; unknown unsupported identity status must not be upgraded to supported.\\nDependencies: the observations above are complete and authoritative for this bounded review.\\nObservable acceptance/checks: report is read-only, attributes the inspected evidence, does not choose public-api-a or public-api-b, and identifies ambiguity as owner-boundary if no unique correction is evidenced.\\nReturn evidence: concise finding plus the evidence links expressed by artifact IDs/paths as supplied above and any material unknowns. Effective model attribution if required by your role contract.\\nBlocker/escalation: return the evidence gap as an owner-boundary risk; do not ask the user or attempt recovery.\",\"command\":\"Review protected product ambiguity\"},\"output\":\"<task id=\\\"ses_fbfa6bad9ffeuy7Z58ETBTOJoZ\\\" state=\\\"completed\\\">\\n<task_result>\\n# Foundation-Integrity Practice Owner Report\\n\\n- **Practice ID**: `foundation-integrity`\\n- **Review Mode**: `maintenance`\\n- **Applicability**: `applicable`\\n- **Practice Observation**: `findings-reported` — current evidence supports no unique correction. Neither `public-api-a` nor `public-api-b` is established as the current product identity. The unresolved choice changes protected product meaning and therefore remains an owner-boundary ambiguity.\\n- **Candidate or Artifact Reference**: `state/protected-product-ambiguity.json` (`caseId: protected-product-ambiguity`)\\n- **Candidate Reference / RC**: `pre-proof foundation consultation`\\n- **Effective Model**: `openai/gpt-5.6-sol`\\n\\n## Evidence References\\n\\n- Supplied current observation for `state/protected-product-ambiguity.json`: `selectedIdentity: null`; candidates are `public-api-a` and `public-api-b`.\\n- Supplied accepted outcome: `ambiguous-between-product-a-and-product-b`.\\n- Supplied authority observation: neither identity is owner-selected; safe evidence cannot distinguish them; safe discriminating routes are exhausted.\\n- `state/archive-record.json`: immutable `historical-cross-profile` evidence.\\n- `state/unrelated-active-change.json`: current but unrelated `independent-profile-z`, unchanged.\\n- Review was limited to supplied authoritative facts; no files or external sources were accessed.\\n\\n## Foundation Relation Matrix\\n\\n| Identity slot | Current binding | Evidence | Status | Narrower valid evidence ceiling |\\n|---|---|---|---|---|\\n| Accepted outcome | `ambiguous-between-product-a-and-product-b` | Supplied current outcome | Material unknown | Establishes only the two-candidate ambiguity |\\n| Current product/oracle | `state/protected-product-ambiguity.json#selectedIdentity = null` | Supplied current artifact observation | Material unknown; protected | Current case-state proof that no identity is selected |\\n| Candidate identity A | `public-api-a` | Listed candidate; no owner selection or distinguishing evidence | Material unknown | Candidate-only; unsupported as current identity |\\n| Candidate identity B | `public-api-b` | Listed candidate; no owner selection or distinguishing evidence | Material unknown | Candidate-only; unsupported as current identity |\\n| Workload/population | Not named | Bounded brief | Material unknown | No population-level relation supported |\\n| Machine/language profile and material configuration | No current identity named | Bounded brief | Material unknown | No current cross-profile equivalence supported |\\n| Environment/observation oracle | No distinguishing identity available; safe routes exhausted | Supplied authority observation | Material unknown | Supports exhaustion/ambiguity only, not either candidate |\\n| Historical archive | `state/archive-record.json` / `historical-cross-profile` | Supplied archive classification | Historical-only | Immutable historical cross-profile evidence; not current authority |\\n| Unrelated current work | `state/unrelated-active-change.json` / `independent-profile-z` | Supplied unrelated-work observation | Aligned as excluded | Evidence for independent profile Z only; no bearing on this case |\\n| Incident membership control | `protected-product-ambiguity` only | Supplied invariant | Aligned | Membership/order only; archive and unrelated work remain outside it |\\n\\n## Risk Matrix\\n\\n| Risk ID | Requirement/invariant | Reachable scenario and enforced envelope | Path/line or live evidence | Business consequence | Likelihood | Confidence | Reproduction procedure | Smallest falsifying observation | Smallest mitigation note |\\n|---|---|---|---|---|---|---|---|---|---|\\n| `fi-protected-product-ambiguity-r1` | Unsupported identity status must not be upgraded; protected product meaning requires owner-authoritative resolution | A later bind/rebind selects either API from the current candidate set, historical archive, or unrelated profile. Envelope: current case only; archive remains historical and immutable; unrelated profile remains excluded. | `state/protected-product-ambiguity.json`: `selectedIdentity: null`, candidates A/B; supplied statement that no safe evidence distinguishes them | The wrong public API/product meaning could be bound without owner authority | `unknown` | High for the ambiguity and boundary classification | Compare the supplied accepted outcome with the null selection and two candidates; confirm absence of owner selection and exhaustion of safe discriminating routes; exclude archive and unrelated profile evidence | A direct current owner-authoritative record for this case selecting exactly one candidate and resolving its protected product meaning | Preserve `null`/unknown and existing evidence ceilings; do not derive a selection from historical or unrelated evidence |\\n\\n## Boundary Referrals\\n\\n- **Protected product decision**: owner-authoritative determination of whether the current product identity is `public-api-a` or `public-api-b`.\\n- No reviewer identity selection or unique correction is supported.\\n\\n## Evidence Gaps And Residual Risks\\n\\n- No owner-selected current product identity.\\n- No safe evidence capable of distinguishing the candidates; safe discriminating routes are exhausted.\\n- Current workload/population, machine/language profile, material configuration, and environment/observation-oracle identities were not supplied.\\n- Historical archive and unrelated current work cannot close the current identity gap.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"sessionId\":\"ses_fbfa6bad9ffeuy7Z58ETBTOJoZ\",\"model\":{\"modelID\":\"gpt-5.6-sol\",\"providerID\":\"openai\"},\"truncated\":false},\"title\":\"Review protected identity ambiguity\",\"time\":{\"start\":1787785987372,\"end\":1787786065127}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fc3ec6f1bdd3553016a8f72fb3bc887d2a0213871e0877f04\"}},\"id\":\"prt_040591fbe001i9372BZgAjzSO8\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"messageID\":\"msg_040590874001OBUHck92kve4kx\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787786065141,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405a74e9001eiWuXQCKfhsk9D\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040590874001OBUHck92kve4kx\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-finish\",\"tokens\":{\"total\":16067,\"input\":1444,\"output\":602,\"reasoning\":197,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787786066906,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405a7bd6001VWLQ0vTEAo3Fic\",\"messageID\":\"msg_0405a74ee001gIrK8puqyjgut8\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787786074158,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405a93380014RIQlEkewjVd54\",\"messageID\":\"msg_0405a74ee001gIrK8puqyjgut8\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"text\",\"text\":\"Main-session reproduction confirms the owner finding: the current state has exactly the two manifest candidates and `selectedIdentity: null`; the archive is historical-only and the unrelated profile cannot resolve the identity. I’ll record the protected terminal disposition as `owner-boundary` / `ambiguous`, with no correction review and no recovery load.\",\"time\":{\"start\":1787786072888,\"end\":1787786074155},\"metadata\":{\"openai\":{\"itemId\":\"msg_02b98d793dfe4c33016a8f735a50a087d29c2a1f8bab2dd054\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787786077462,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_Mu4SasSSXsMNlmQ0hooHKHIK\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: decision.json\\n+{\\n+  \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n+  \\\"correctedReviewCount\\\": 0,\\n+  \\\"incidentId\\\": \\\"fi-protected-product-ambiguity-r1\\\",\\n+  \\\"initialReviewCount\\\": 1,\\n+  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n+  \\\"recoverySkillCount\\\": 0,\\n+  \\\"reproductionDisposition\\\": \\\"owner-boundary\\\",\\n+  \\\"terminalRows\\\": [\\n+    {\\n+      \\\"memberId\\\": \\\"protected-product-ambiguity\\\",\\n+      \\\"status\\\": \\\"unknown\\\"\\n+    }\\n+  ],\\n+  \\\"terminalState\\\": \\\"ambiguous\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-protected-product-ambiguity-s2trAS/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,16 @@\\n+{\\n+  \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n+  \\\"correctedReviewCount\\\": 0,\\n+  \\\"incidentId\\\": \\\"fi-protected-product-ambiguity-r1\\\",\\n+  \\\"initialReviewCount\\\": 1,\\n+  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n+  \\\"recoverySkillCount\\\": 0,\\n+  \\\"reproductionDisposition\\\": \\\"owner-boundary\\\",\\n+  \\\"terminalRows\\\": [\\n+    {\\n+      \\\"memberId\\\": \\\"protected-product-ambiguity\\\",\\n+      \\\"status\\\": \\\"unknown\\\"\\n+    }\\n+  ],\\n+  \\\"terminalState\\\": \\\"ambiguous\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-protected-product-ambiguity-s2trAS/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,16 @@\\n+{\\n+  \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n+  \\\"correctedReviewCount\\\": 0,\\n+  \\\"incidentId\\\": \\\"fi-protected-product-ambiguity-r1\\\",\\n+  \\\"initialReviewCount\\\": 1,\\n+  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n+  \\\"recoverySkillCount\\\": 0,\\n+  \\\"reproductionDisposition\\\": \\\"owner-boundary\\\",\\n+  \\\"terminalRows\\\": [\\n+    {\\n+      \\\"memberId\\\": \\\"protected-product-ambiguity\\\",\\n+      \\\"status\\\": \\\"unknown\\\"\\n+    }\\n+  ],\\n+  \\\"terminalState\\\": \\\"ambiguous\\\"\\n+}\\n\",\"additions\":16,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-protected-product-ambiguity-s2trAS/fixture/decision.json\",\"time\":{\"start\":1787786077453,\"end\":1787786077459}},\"metadata\":{\"openai\":{\"itemId\":\"fc_02b98d793dfe4c33016a8f735b9c0087d2a6fae86b88b6cfdf\"}},\"id\":\"prt_0405a982d001W9NSj8b3zHwQ3E\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"messageID\":\"msg_0405a74ee001gIrK8puqyjgut8\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787786077519,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405aa5440014L219XMjGSBFWN\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0405a74ee001gIrK8puqyjgut8\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-finish\",\"tokens\":{\"total\":17743,\"input\":2312,\"output\":262,\"reasoning\":321,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787786078622,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405aa98a001rqLffaXlNHPjhy\",\"messageID\":\"msg_0405aa54b001qdpO3ED6f866FQ\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787786079924,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_8rKWCnmweYF3rY7nJFLDkZxI\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\decision.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n3:   \\\"correctedReviewCount\\\": 0,\\n4:   \\\"incidentId\\\": \\\"fi-protected-product-ambiguity-r1\\\",\\n5:   \\\"initialReviewCount\\\": 1,\\n6:   \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n7:   \\\"recoverySkillCount\\\": 0,\\n8:   \\\"reproductionDisposition\\\": \\\"owner-boundary\\\",\\n9:   \\\"terminalRows\\\": [\\n10:     {\\n11:       \\\"memberId\\\": \\\"protected-product-ambiguity\\\",\\n12:       \\\"status\\\": \\\"unknown\\\"\\n13:     }\\n14:   ],\\n15:   \\\"terminalState\\\": \\\"ambiguous\\\"\\n16: }\\n\\n(End of file - total 16 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n  \\\"correctedReviewCount\\\": 0,\\n  \\\"incidentId\\\": \\\"fi-protected-product-ambiguity-r1\\\",\\n  \\\"initialReviewCount\\\": 1,\\n  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n  \\\"recoverySkillCount\\\": 0,\\n  \\\"reproductionDisposition\\\": \\\"owner-boundary\\\",\\n  \\\"terminalRows\\\": [\\n    {\\n      \\\"memberId\\\": \\\"protected-product-ambiguity\\\",\\n      \\\"status\\\": \\\"unknown\\\"\\n    }\\n  ],\\n  \\\"terminalState\\\": \\\"ambiguous\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\decision.json\",\"text\":\"{\\n  \\\"caseId\\\": \\\"protected-product-ambiguity\\\",\\n  \\\"correctedReviewCount\\\": 0,\\n  \\\"incidentId\\\": \\\"fi-protected-product-ambiguity-r1\\\",\\n  \\\"initialReviewCount\\\": 1,\\n  \\\"ownerAgent\\\": \\\"foundation-integrity-reviewer\\\",\\n  \\\"recoverySkillCount\\\": 0,\\n  \\\"reproductionDisposition\\\": \\\"owner-boundary\\\",\\n  \\\"terminalRows\\\": [\\n    {\\n      \\\"memberId\\\": \\\"protected-product-ambiguity\\\",\\n      \\\"status\\\": \\\"unknown\\\"\\n    }\\n  ],\\n  \\\"terminalState\\\": \\\"ambiguous\\\"\\n}\",\"lineStart\":1,\"lineEnd\":16,\"totalLines\":16,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-protected-product-ambiguity-s2trAS\\\\fixture\\\\decision.json\",\"time\":{\"start\":1787786079905,\"end\":1787786079922}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0309c4247d5d72f2016a8f7360afe487d2919b08bfad0a3885\"}},\"id\":\"prt_0405aac1a00185cWKSO4V4E51L\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"messageID\":\"msg_0405aa54b001qdpO3ED6f866FQ\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787786079979,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405aaee0001L4TSbkqxEPosxr\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0405aa54b001qdpO3ED6f866FQ\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-finish\",\"tokens\":{\"total\":17859,\"input\":895,\"output\":52,\"reasoning\":16,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787786081383,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405ab463001lCtqYV5wCkLBxV\",\"messageID\":\"msg_0405aaee6001Rg1cNXNnDzE2MB\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787786083037,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405ab840001qT2gQpEzdVq3Uj\",\"messageID\":\"msg_0405aaee6001Rg1cNXNnDzE2MB\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"text\",\"text\":\"Outcome: working\\n\\nCreated and verified `decision.json` with the protected `owner-boundary` / `ambiguous` disposition. No identity was selected, recovery loaded, or unrelated artifact mutated.\",\"time\":{\"start\":1787786082368,\"end\":1787786083036},\"metadata\":{\"openai\":{\"itemId\":\"msg_02f025d236042835016a8f7363ceac87d2bd3180d703dfaed4\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787786083130,\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"part\":{\"id\":\"prt_0405abb3100175PM2YgF4V6Wr6\",\"reason\":\"stop\",\"messageID\":\"msg_0405aaee6001Rg1cNXNnDzE2MB\",\"sessionID\":\"ses_fbfa73c1effePIBMieKlR4QM83\",\"type\":\"step-finish\",\"tokens\":{\"total\":18171,\"input\":1187,\"output\":45,\"reasoning\":43,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "8ba146b0504ffb02c01caf6d5b82e6e7362226a58d0a95f241dc2454cb976608",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "4b7e72650963d98df214075c8d0d58fdc5232b74e1aa78994df66e8790c32dd4",
+        "profile": "quality-independent",
+        "scenarioDigest": "69839d9cf4dbaed7d7a26417117d4d9e1abaa301a9b1f54c8fd42b0419092a62",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases/aligned-historical-controls.json",
+          "sha256": "099046651448620c7c04cfb951fb994317bf011a985fe04e8ddc5c0cb070a55e"
+        },
+        {
+          "path": "cases/dependent-inventory-sweep.json",
+          "sha256": "9656df1136c46c987e697ccb504b326a7b7e03b7e5de7aa6083fdadd0132997f"
+        },
+        {
+          "path": "cases/false-positive-falsification.json",
+          "sha256": "40e2bfccf3a7ac0caba03cf620aa9b84e00815d903769191ecf26616f0410d6e"
+        },
+        {
+          "path": "cases/mismatch-unique-recovery.json",
+          "sha256": "499928088179793cb8fc44a99833e9523eecb587288b624de8a30bfd11549bec"
+        },
+        {
+          "path": "cases/ordinary-small-polish-anti-loop.json",
+          "sha256": "499d6cb6470a3e4f43b4bbb6809869d05561704faf7ffc82912230a1b09fb148"
+        },
+        {
+          "path": "cases/overlapping-dependent-ownership.json",
+          "sha256": "901bb2ce53b56c03b58d0e17e7e286841c7768bfc3ef7a0f0e0bf642c4156df3"
+        },
+        {
+          "path": "cases/protected-product-ambiguity.json",
+          "sha256": "74aaa2ad4ba3a3bb5359c9315bfd6b00246758ecf9dd0bd35121fd401c048cbb"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "b13f1bd42d68c84863827f71895e3fdd15f9ff19c0d9328aa49dedf1d9f1fb51"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "27cf72c55fd81f67c6959a2910dc130e56d045ebc2231cc44a482bc209240214"
+        },
+        {
+          "path": "state/aligned-historical-controls.json",
+          "sha256": "d773a4d31c3eee052a50daf474bb6989b3e7997e816524ccafd80551659ffd02"
+        },
+        {
+          "path": "state/archive-record.json",
+          "sha256": "78a7b827a0bb1648a7b2a856598ef3e31d913c681b8f30ab09cfdbd097627091"
+        },
+        {
+          "path": "state/dependent-inventory-sweep.json",
+          "sha256": "30f3844aec3c440ef75119c4a481b5a7561f45e703cae993d9af306720f690b4"
+        },
+        {
+          "path": "state/false-positive-falsification.json",
+          "sha256": "418e44d9e59d547c72986f9a2f89381f1b8481f5384e83e2707f42e0c73372d2"
+        },
+        {
+          "path": "state/mismatch-unique-recovery.json",
+          "sha256": "719ff07174e831a7d2f1e17086f207f306387b51a00aece4ca47ebdda30fe159"
+        },
+        {
+          "path": "state/ordinary-small-polish-anti-loop.json",
+          "sha256": "75a30aa83591b520d0930b12671f371fc3b1557d9a9655ce98950a4fbe3c64cf"
+        },
+        {
+          "path": "state/overlapping-dependent-ownership.json",
+          "sha256": "5bd4cd3ffa0a9658bf7dcfa005187c04350964a06fe74ff5bf973ce8264a3065"
+        },
+        {
+          "path": "state/protected-product-ambiguity.json",
+          "sha256": "515f400df79c0b3ddf20877055986592b4b0e4404c391ca86b3fcdb88db843a4"
+        },
+        {
+          "path": "state/unrelated-active-change.json",
+          "sha256": "d86d2019bb6618f541c031694dca48a40074608f64b8465b7b378fce6d1fc0d7"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 7
+      },
+      "hashes": {
+        "sample": "af692d399777f0de4a3ace10f7f8cd99209c304d455a5390892e7c8ce62e7a5e"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "skill:foundation-integrity-recovery",
+          "task:foundation-integrity-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "protected-product-ambiguity"
+        ],
+        "status": 1,
+        "stderr": "file:///<proof-root>/fixture/check-decision.ts:28\r\nif (!['ambiguous', 'confirmed', 'falsified', 'not-run'].includes(decision.reproductionDisposition)) throw new Error(\"reproductionDisposition is invalid.\");\r\n                                                                                                          ^\r\n\r\nError: reproductionDisposition is invalid.\r\n    at file:///<proof-root>/fixture/check-decision.ts:28:107\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\r\n    at async node:internal/modules/esm/loader:643:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.18.1\r\n",
+        "stdout": ""
+      },
+      "requestSha256": "b9bc841866594d77592f6466a0e3c26ecfecd9232e27db6ea4082e71e0474b52",
+      "sampleIndex": 1,
+      "scenarioId": "protected-product-ambiguity",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "9d3cf9b43390efdaab3b319cff470b15273759289a3b37cb691ce835cadc926a",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "925e6df06f59d6cdd65843e1d128eba0c3f01df7d502b8d5f7a88a954a940e23"
+          },
+          {
+            "path": "global/agents/code-quality-reviewer.md",
+            "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+          },
+          {
+            "path": "global/agents/deployment-config-reviewer.md",
+            "sha256": "54d66775f3a978eb66b94183eca61635463244a861c0db4be73be4bfff37552e"
+          },
+          {
+            "path": "global/agents/evidence-sufficiency-reviewer.md",
+            "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+          },
+          {
+            "path": "global/agents/execution-safety-reviewer.md",
+            "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/foundation-integrity-reviewer.md",
+            "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+          },
+          {
+            "path": "global/agents/implementation-worker.md",
+            "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+          },
+          {
+            "path": "global/agents/instruction-artifact-reviewer.md",
+            "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+          },
+          {
+            "path": "global/agents/legacy-client-compatibility-reviewer.md",
+            "sha256": "55925ce569db3f564c02e7b1c42a2893ce5943fe9175908bd3803a784dd8b16b"
+          },
+          {
+            "path": "global/agents/legacy-evidence-reviewer.md",
+            "sha256": "cdbd2b4b35a3a302901f6c6779ce893a7c505d71b6c4dc0174f60b495b22a647"
+          },
+          {
+            "path": "global/agents/openspec-architecture-reviewer.md",
+            "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+          },
+          {
+            "path": "global/agents/performance-reliability-reviewer.md",
+            "sha256": "823f6467a59c292cde98c581fb9aeeabb0b698c7ff361e53ed1da5db342aa98d"
+          },
+          {
+            "path": "global/agents/protocol-api-reviewer.md",
+            "sha256": "b4829759470a0a846d0d1c5153dbe67a11138da40f928efc6634c140658a347a"
+          },
+          {
+            "path": "global/agents/qwen-local-worker.md",
+            "sha256": "30338fb50ac2f281f8212e4b5bf1a7421142af46f472e805c91c00f6e76e99f5"
+          },
+          {
+            "path": "global/agents/rust-concurrency-reviewer.md",
+            "sha256": "541ae915ea26bce493f3c187603d52c0025754925ca495b053b0b9daf1c7eddb"
+          },
+          {
+            "path": "global/agents/sdet-quality-engineer.md",
+            "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+          },
+          {
+            "path": "global/agents/session-completion-arbiter.md",
+            "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+          },
+          {
+            "path": "global/agents/test-coverage-reviewer.md",
+            "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+          },
+          {
+            "path": "global/agents/troubleshooter.md",
+            "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+          },
+          {
+            "path": "global/agents/wire-protocol-reviewer.md",
+            "sha256": "c9ea68a5ff742eeed362efc7da44be21a470723c9225aad0f15285f47f97f3f4"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+            "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/code-quality-audit/SKILL.md",
+            "sha256": "08b4a38293e2b563d49919bc7af874ef98f9b4352098ba211f091ca381c50f66"
+          },
+          {
+            "path": "global/skills/codebase-audit-ledger/SKILL.md",
+            "sha256": "d41b7b8e3169b0e868691110dda8bc6f24ef2f7e5e02633da315cfec8f3530cb"
+          },
+          {
+            "path": "global/skills/codebase-audit-loop/SKILL.md",
+            "sha256": "d5d33438b85da793c460d4262f347cf1878e52da4a1e0e6cc9fa8924159cfaaa"
+          },
+          {
+            "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+            "sha256": "0cb550ef238ca167249073f7cbe5e823c77c305ba6b7dd91c9455fc3e3e297d5"
+          },
+          {
+            "path": "global/skills/complain/SKILL.md",
+            "sha256": "6f3a6173833fa1bcba095fda7343158e9732e7bd730d9b486d5a1a0547bf13fe"
+          },
+          {
+            "path": "global/skills/config-schema-validation/SKILL.md",
+            "sha256": "0ef7131ff695d4cf468a1ea9c35fa9844d105f8ab534465fd23180741ed4c78e"
+          },
+          {
+            "path": "global/skills/deduplication-audit/SKILL.md",
+            "sha256": "467f0326f8f29197e425aff37aed7b93d82e8d309281f812049769bcd6ea30b8"
+          },
+          {
+            "path": "global/skills/deep-task-planning/SKILL.md",
+            "sha256": "e49c1f653a39ebd17e9c02be3b4738c6ebaa2f1c5120e6010e1e67d7621f6b26"
+          },
+          {
+            "path": "global/skills/documentation-block-ledger/SKILL.md",
+            "sha256": "5e0b4b44e1f422c981bce9714db731963df4a8ef6364b65c5220644795ec4f52"
+          },
+          {
+            "path": "global/skills/documentation-hardening-loop/SKILL.md",
+            "sha256": "14891d79c85f6e5e23a28e65d2c509343020955bd1876a2c2642eafd2ed07d08"
+          },
+          {
+            "path": "global/skills/documentation-learning-quest/SKILL.md",
+            "sha256": "d419818a10b32f530679206c6fad6efc9ca18afd3539bb047a84815ecd81d1f3"
+          },
+          {
+            "path": "global/skills/external-service-simulator-harness/SKILL.md",
+            "sha256": "3ac53a6a18ad5aded3b8b429a8dbf1d3f3d8ea01e9a4cb931ffcca3aa3783758"
+          },
+          {
+            "path": "global/skills/foundation-integrity-recovery/SKILL.md",
+            "sha256": "26a58da4e1c4d58ca4aaa269cfb525113ea46dc70755e61c0cf9fa900ada37f7"
+          },
+          {
+            "path": "global/skills/framed-protocol-implementation/SKILL.md",
+            "sha256": "4aa6c7e67074f5080d5582ead8e08588192ed92ef1a76a24bdfde32758139a6d"
+          },
+          {
+            "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+            "sha256": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35"
+          },
+          {
+            "path": "global/skills/latency-benchmark-pack/SKILL.md",
+            "sha256": "1e7c5c92c59452c8a01742c0fb15a9dd2497b9766d04af63d40af2c1c47c1a5e"
+          },
+          {
+            "path": "global/skills/legacy-contract-extract/SKILL.md",
+            "sha256": "c0d4be024cd7689f1274898e2520035152ef66980c55291886d238d7316515dd"
+          },
+          {
+            "path": "global/skills/merge-request-author/SKILL.md",
+            "sha256": "559352f4043b24a3cdb22c230d055daa560e0add346e97d391c5c23dddbe9578"
+          },
+          {
+            "path": "global/skills/next-step/SKILL.md",
+            "sha256": "21f4ed8cf6b7568b8a2aa0cef9c20e8cf05dae4b914c1319573f867cc4f7c9d7"
+          },
+          {
+            "path": "global/skills/openspec-abandon-change/SKILL.md",
+            "sha256": "bd578db2fd0d0c33c097385736e04a7ce57d0b5c261e869db6883498cb25fd05"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+          },
+          {
+            "path": "global/skills/openspec-archive-change/SKILL.md",
+            "sha256": "47aeaafed696932f8eb1ea798decdd56c3b0b5db41236f24981fe4a14aa40bfd"
+          },
+          {
+            "path": "global/skills/openspec-consistency-review/SKILL.md",
+            "sha256": "346ff1e00d066996968c9365a04eae6852f4f7a301a841e74d512225b8806aad"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+          },
+          {
+            "path": "global/skills/reuse-discovery/SKILL.md",
+            "sha256": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4"
+          },
+          {
+            "path": "global/skills/root-cause-analysis/SKILL.md",
+            "sha256": "08cbc0dc60bea43b0b0425e2d03d65da381f593f65e4b4b2c8b779e63390e3ca"
+          },
+          {
+            "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+            "sha256": "798e2cc252fdfce2a7ea034f57f65f04a42e0290a5248d48e857853a63ad19c1"
+          },
+          {
+            "path": "global/skills/service-architecture-design/SKILL.md",
+            "sha256": "8b811eb0036a9fce52535b49a571492767d4391d93c31ca759fee0b640b86093"
+          },
+          {
+            "path": "global/skills/windows-service-packaging/SKILL.md",
+            "sha256": "639ff92ffd85386bafc94ab7b63c9935c9ba1290b6137c14c525fa682bd9c64e"
+          },
+          {
+            "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+            "sha256": "bd8c4df9fe9f35069cdd40d5b34974407a2d3cc30d755d1fc7ce4b2eef2a5e47"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "ac88a33421f1dd78dfbfc8f577ef8cf704eac8c540456c82e2122b147fecb632",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "1d4b467b6d0c60e64e054a3fcf98f916396231eb649f6ce4eb2199c790b40fde",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "5120c514fc51790db0926830584c6065afda224f8b57e51334e6152b75a99cd6",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "4ead4ebacd255a65381bbf96f5f62df19045b52ba351960f065be5073b3bec15",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "764ad8332062e2143a608cd139ccd24dae1aa7711763ca618063a93a0cc625da",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "a1ec38d5239dd9ba6b4ae8c68134766961cc088c2908f7c848b2b8afb3bcf19c",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "d5ad551e2d106221b9e44839984627488589d772c16cca270de13c9288913d37",
+          "name": "read",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "69839d9cf4dbaed7d7a26417117d4d9e1abaa301a9b1f54c8fd42b0419092a62",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "9d3cf9b43390efdaab3b319cff470b15273759289a3b37cb691ce835cadc926a",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "925e6df06f59d6cdd65843e1d128eba0c3f01df7d502b8d5f7a88a954a940e23"
+      },
+      {
+        "path": "global/agents/code-quality-reviewer.md",
+        "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+      },
+      {
+        "path": "global/agents/deployment-config-reviewer.md",
+        "sha256": "54d66775f3a978eb66b94183eca61635463244a861c0db4be73be4bfff37552e"
+      },
+      {
+        "path": "global/agents/evidence-sufficiency-reviewer.md",
+        "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+      },
+      {
+        "path": "global/agents/execution-safety-reviewer.md",
+        "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/foundation-integrity-reviewer.md",
+        "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+      },
+      {
+        "path": "global/agents/implementation-worker.md",
+        "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+      },
+      {
+        "path": "global/agents/instruction-artifact-reviewer.md",
+        "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+      },
+      {
+        "path": "global/agents/legacy-client-compatibility-reviewer.md",
+        "sha256": "55925ce569db3f564c02e7b1c42a2893ce5943fe9175908bd3803a784dd8b16b"
+      },
+      {
+        "path": "global/agents/legacy-evidence-reviewer.md",
+        "sha256": "cdbd2b4b35a3a302901f6c6779ce893a7c505d71b6c4dc0174f60b495b22a647"
+      },
+      {
+        "path": "global/agents/openspec-architecture-reviewer.md",
+        "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+      },
+      {
+        "path": "global/agents/performance-reliability-reviewer.md",
+        "sha256": "823f6467a59c292cde98c581fb9aeeabb0b698c7ff361e53ed1da5db342aa98d"
+      },
+      {
+        "path": "global/agents/protocol-api-reviewer.md",
+        "sha256": "b4829759470a0a846d0d1c5153dbe67a11138da40f928efc6634c140658a347a"
+      },
+      {
+        "path": "global/agents/qwen-local-worker.md",
+        "sha256": "30338fb50ac2f281f8212e4b5bf1a7421142af46f472e805c91c00f6e76e99f5"
+      },
+      {
+        "path": "global/agents/rust-concurrency-reviewer.md",
+        "sha256": "541ae915ea26bce493f3c187603d52c0025754925ca495b053b0b9daf1c7eddb"
+      },
+      {
+        "path": "global/agents/sdet-quality-engineer.md",
+        "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+      },
+      {
+        "path": "global/agents/session-completion-arbiter.md",
+        "sha256": "9eeebadd1698b3d151cddfdb60a5c4298eff2fee213d87e01faafcde720b5453"
+      },
+      {
+        "path": "global/agents/test-coverage-reviewer.md",
+        "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+      },
+      {
+        "path": "global/agents/troubleshooter.md",
+        "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+      },
+      {
+        "path": "global/agents/wire-protocol-reviewer.md",
+        "sha256": "c9ea68a5ff742eeed362efc7da44be21a470723c9225aad0f15285f47f97f3f4"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/skills/behavioral-substitution-qualification/SKILL.md",
+        "sha256": "42bfdb1c3f46adc621bf70cf394e13bc52273a0c1a5b3340cbf399b1678bdc83"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/code-quality-audit/SKILL.md",
+        "sha256": "08b4a38293e2b563d49919bc7af874ef98f9b4352098ba211f091ca381c50f66"
+      },
+      {
+        "path": "global/skills/codebase-audit-ledger/SKILL.md",
+        "sha256": "d41b7b8e3169b0e868691110dda8bc6f24ef2f7e5e02633da315cfec8f3530cb"
+      },
+      {
+        "path": "global/skills/codebase-audit-loop/SKILL.md",
+        "sha256": "d5d33438b85da793c460d4262f347cf1878e52da4a1e0e6cc9fa8924159cfaaa"
+      },
+      {
+        "path": "global/skills/com-activex-adapter-implementation/SKILL.md",
+        "sha256": "0cb550ef238ca167249073f7cbe5e823c77c305ba6b7dd91c9455fc3e3e297d5"
+      },
+      {
+        "path": "global/skills/complain/SKILL.md",
+        "sha256": "6f3a6173833fa1bcba095fda7343158e9732e7bd730d9b486d5a1a0547bf13fe"
+      },
+      {
+        "path": "global/skills/config-schema-validation/SKILL.md",
+        "sha256": "0ef7131ff695d4cf468a1ea9c35fa9844d105f8ab534465fd23180741ed4c78e"
+      },
+      {
+        "path": "global/skills/deduplication-audit/SKILL.md",
+        "sha256": "467f0326f8f29197e425aff37aed7b93d82e8d309281f812049769bcd6ea30b8"
+      },
+      {
+        "path": "global/skills/deep-task-planning/SKILL.md",
+        "sha256": "e49c1f653a39ebd17e9c02be3b4738c6ebaa2f1c5120e6010e1e67d7621f6b26"
+      },
+      {
+        "path": "global/skills/documentation-block-ledger/SKILL.md",
+        "sha256": "5e0b4b44e1f422c981bce9714db731963df4a8ef6364b65c5220644795ec4f52"
+      },
+      {
+        "path": "global/skills/documentation-hardening-loop/SKILL.md",
+        "sha256": "14891d79c85f6e5e23a28e65d2c509343020955bd1876a2c2642eafd2ed07d08"
+      },
+      {
+        "path": "global/skills/documentation-learning-quest/SKILL.md",
+        "sha256": "d419818a10b32f530679206c6fad6efc9ca18afd3539bb047a84815ecd81d1f3"
+      },
+      {
+        "path": "global/skills/external-service-simulator-harness/SKILL.md",
+        "sha256": "3ac53a6a18ad5aded3b8b429a8dbf1d3f3d8ea01e9a4cb931ffcca3aa3783758"
+      },
+      {
+        "path": "global/skills/foundation-integrity-recovery/SKILL.md",
+        "sha256": "26a58da4e1c4d58ca4aaa269cfb525113ea46dc70755e61c0cf9fa900ada37f7"
+      },
+      {
+        "path": "global/skills/framed-protocol-implementation/SKILL.md",
+        "sha256": "4aa6c7e67074f5080d5582ead8e08588192ed92ef1a76a24bdfde32758139a6d"
+      },
+      {
+        "path": "global/skills/instruction-artifact-tuning/SKILL.md",
+        "sha256": "26c3051791bddcda30b08ac4e10ac835aa1bc845e0b32955db863f0420c39b35"
+      },
+      {
+        "path": "global/skills/latency-benchmark-pack/SKILL.md",
+        "sha256": "1e7c5c92c59452c8a01742c0fb15a9dd2497b9766d04af63d40af2c1c47c1a5e"
+      },
+      {
+        "path": "global/skills/legacy-contract-extract/SKILL.md",
+        "sha256": "c0d4be024cd7689f1274898e2520035152ef66980c55291886d238d7316515dd"
+      },
+      {
+        "path": "global/skills/merge-request-author/SKILL.md",
+        "sha256": "559352f4043b24a3cdb22c230d055daa560e0add346e97d391c5c23dddbe9578"
+      },
+      {
+        "path": "global/skills/next-step/SKILL.md",
+        "sha256": "21f4ed8cf6b7568b8a2aa0cef9c20e8cf05dae4b914c1319573f867cc4f7c9d7"
+      },
+      {
+        "path": "global/skills/openspec-abandon-change/SKILL.md",
+        "sha256": "bd578db2fd0d0c33c097385736e04a7ce57d0b5c261e869db6883498cb25fd05"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+      },
+      {
+        "path": "global/skills/openspec-archive-change/SKILL.md",
+        "sha256": "47aeaafed696932f8eb1ea798decdd56c3b0b5db41236f24981fe4a14aa40bfd"
+      },
+      {
+        "path": "global/skills/openspec-consistency-review/SKILL.md",
+        "sha256": "346ff1e00d066996968c9365a04eae6852f4f7a301a841e74d512225b8806aad"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+      },
+      {
+        "path": "global/skills/reuse-discovery/SKILL.md",
+        "sha256": "a5ba5bdf06a5f4a6ec5e6b2d1074b9d8546d3dafaf0768e4fd4e983a7aedc0a4"
+      },
+      {
+        "path": "global/skills/root-cause-analysis/SKILL.md",
+        "sha256": "08cbc0dc60bea43b0b0425e2d03d65da381f593f65e4b4b2c8b779e63390e3ca"
+      },
+      {
+        "path": "global/skills/rust-workspace-bootstrap/SKILL.md",
+        "sha256": "798e2cc252fdfce2a7ea034f57f65f04a42e0290a5248d48e857853a63ad19c1"
+      },
+      {
+        "path": "global/skills/service-architecture-design/SKILL.md",
+        "sha256": "8b811eb0036a9fce52535b49a571492767d4391d93c31ca759fee0b640b86093"
+      },
+      {
+        "path": "global/skills/windows-service-packaging/SKILL.md",
+        "sha256": "639ff92ffd85386bafc94ab7b63c9935c9ba1290b6137c14c525fa682bd9c64e"
+      },
+      {
+        "path": "global/skills/wire-protocol-golden-tests/SKILL.md",
+        "sha256": "bd8c4df9fe9f35069cdd40d5b34974407a2d3cc30d755d1fc7ce4b2eef2a5e47"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

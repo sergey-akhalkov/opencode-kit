@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:original-accepted-request
+- **Reviewed Request Ref**: event:original-accepted-request
+- **Accepted Outcome Ref**: outcome:proposal-outcome
+- **Candidate Ref**: candidate:continuous-complexity-management-planning-r4
+- **Reviewed Candidate Ref**: candidate:continuous-complexity-management-planning-r4
+- **Decision Surface**: project-neutral complexity workflow ownership, proportional routing, and executable proof boundary
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fbe02b866ffegQYkLb8Py9q7Ri
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: CCM-IR-001
+- **Main Dispositions**: CCM-IR-001=confirmed
+- **Correction Ref**: correction:continuous-complexity-management-planning-r4
+- **Invalidated Surfaces**: task-1.2-proof-boundary, task-sequencing
+- **Terminal Reason**: corrected-candidate-rereview-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: none

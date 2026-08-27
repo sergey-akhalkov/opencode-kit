@@ -41,22 +41,19 @@ on-demand bodies, and unknown sources. Its token proxy is `ceil(chars / 4)`, not
 provider tokenization or proof that a candidate reaches the final prompt. Remote
 URLs, globs, inline config, malformed config, and unreadable files remain unknown.
 
-The checked-in schema-v2 `config/instruction-budget.json` is the only budget seed.
-It measures committed global startup authority as the combined
-`global/principles-of-work.md` and `global/AGENTS.md` token proxy, with separate maxima for maintained
-discovery metadata, and maintained on-demand bodies; measurements and drift are
-derived from source:
+The inventory remains the single measurement owner. It reports startup-visible
+candidates, discovery metadata, on-demand bodies, and unknown sources separately,
+without maxima or a pass/fail verdict. Context quality is checked through the
+reviewed duplicate-owner and canonicalization contract:
 
 ```sh
-npm run instruction:budget -- --format markdown
+npm run instruction:canonicalize -- --check .
 ```
 
-The reviewed maxima are `13,279` startup tokens, `2,239` discovery-metadata tokens,
-and `66,244` on-demand-body tokens. They are growth brakes, not claims that every
-source enters one prompt. `npm run instruction:budget -- --materialize-seed` may
-only retain or lower every maximum; growth fails without seed mutation and requires
-a direct reviewed seed edit with rationale. A malformed seed also requires direct
-review and is never repaired by materialization.
+Strict validation consumes the same read-only context-quality result and does not
+reject unique instruction growth solely because a measurement increased. Automatic
+writes require the explicit `--write` mode, apply only reviewed mechanical rules,
+and must reach a byte-identical second pass before source replacement.
 
 Code navigation risk:
 

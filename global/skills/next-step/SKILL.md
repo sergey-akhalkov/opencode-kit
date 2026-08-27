@@ -47,7 +47,7 @@ When two or more independent OpenSpec-backed workstreams are available:
 
 Use this when parallel coordination is not appropriate or the user chooses serial mode.
 
-Return:
+Return one next-step block:
 
 - `Recommended Next Step`: one action with why it is best now.
 - `Scope`: files, specs, tests, or commands likely involved.
@@ -61,7 +61,7 @@ Return:
 
 Use this before parallel coordination approval.
 
-Return:
+Return one discovery block:
 
 - `Available OpenSpec Workstreams`: high-level workstreams, each with status and outcome.
 - `Recommended Coordination`: whether to run one serial slice, run a subset, stay discovery-only, or block.

@@ -28,9 +28,10 @@ Evidence Gaps And Residual Risks
 
 | Practice ID | Owner | Launch when |
 | --- | --- | --- |
-| `outcome-readiness` | `implementation-readiness-reviewer` | outcome, envelope, or first real boundary is unresolved |
+| `outcome-readiness` | `implementation-readiness-reviewer` | outcome/envelope/proof is unresolved, or newly authored decision-material work is about to be called semantically ready |
 | `verification-and-tests` | `test-coverage-reviewer` | a result is about to be represented as proved |
 | `claim-evidence` | `evidence-sufficiency-reviewer` | a declared broad claim |
+| `foundation-integrity` | `foundation-integrity-reviewer` | a material bind/rebind or named current foundation contradiction |
 | `simplicity-and-reuse` | `code-quality-reviewer` | explicit sibling of a live owner, or same-versus-new uncertainty |
 | `architecture-and-change-locality` | `openspec-architecture-reviewer` | mixed responsibility or second variant |
 | `execution-safety` | `execution-safety-reviewer` | credentials, destructive/remote action, dirty worktree, or writer liveness |

@@ -44,10 +44,25 @@ This project follows verified-outcome delivery with conditional Development/MVP/
 - When delegating to `implementation-worker`, pass a Universal Task Briefing Contract production brief (proportional for Ordinary Small; complete for Material/cold handoff) with exact read/write scope, forbidden actions, Acceptance Criteria, and Verification.
 - After current proof, main may author the smallest focused regression. Use fresh critical-only `sdet-quality-engineer` only for a reachable named critical consequence or explicit project/owner requirement; optional reviewers never become mandatory gates.
 - If the preferred production adapter is unavailable, main retains production authorship or uses another conforming author; block only when no conforming path exists. Keep writers serial when scope is unclear, write targets overlap, or integration outweighs fan-out.
+
+### Coordinated Orchestration
+
 - Use prompt-only orchestration only for broad work with independent bounded tracks where coordinated fan-out, fan-in, validation gates, or isolation is worth the overhead.
+
+### Main Ownership
+
 - Keep task tracking, integration, validation, reviewer gates, cleanup, and final synthesis in the main session.
+
+### Scope And Evidence
+
 - User-owned scope is accepted outcome and protected-boundary decisions. Necessary local reversible dependency closure is autonomous; optional cleanup is not. Reviewer/SDET/delivery evidence must never authorize mutation.
+
+### Optional Reviewers
+
 - Optional final-candidate, delivery, code-quality, and domain reviewers may run after current proof when concrete risk, project policy, or the owner requires them. Each returns a risk matrix tied to the inspected candidate/RC when one exists; missing or unusable optional output is not itself a stage blocker.
+
+### Critical SDET
+
 - Triggered fresh SDET returns exactly `critical-risks-reported | no-critical-risk | blocked`; main dispositions its rows and never treats it as mutation or lifecycle authority. Non-critical findings are parked.
 
 ## Quality
@@ -55,7 +70,7 @@ This project follows verified-outcome delivery with conditional Development/MVP/
 - Treat source, tests, schemas, scripts, generated artifacts, and live output as primary evidence.
 - Implement and observably prove the smallest complete happy path for the next working increment before edge-case testing. Prefer remove/narrow/reuse/local guard before new mechanisms.
 - Minimize time-to-first-real-signal for each behavior dependency chain. Run the first safely reachable real boundary sufficient to observe the accepted effect; if deferred, record its blocker, unblocker, safeguards, cleanup, evidence, and stop condition. Shift-left sequencing does not authorize external operations or weaken owner-controlled gates.
-- Keep touched human-written code locally understandable. Treat line count as a navigation signal, not a quota; do not add a new responsibility to an already mixed file without extracting one cohesive owner or recording `split-or-justify`. Do not replace a god file with wrapper-only micro-files.
+- Keep touched human-written code locally understandable; line count is a navigation signal, not a quota. Keep zero-pressure work direct and seam-only questions on the exact global Practice Owner route. When an explicit focused existing-project assessment or unresolved current comprehension pressure remains after targeted foraging and owner routing, use discovered `complexity-management` before dependent expansion; if unavailable, report focused mode unavailable rather than guessing a source. Route explicit exhaustive complexity coverage only to discovered audit/ledger owners or report project mode unavailable without approximation. Do not add responsibility to mixed code without extracting one cohesive owner or recording `split-or-justify`, and do not replace a god file with wrapper-only micro-files.
 - Use the project's existing error/logging mechanism at meaningful failure boundaries. Preserve the original exception cause/stack, add structured safe operation/correlation context when useful, and avoid duplicate or routine-noise logging.
 - Runtime proof must retain exit status, stdout/stderr, relevant logs/exceptions, side effects, and artifact paths. Inspect that evidence before mutation or rerun; add only the smallest missing instrumentation needed to distinguish realistic causes.
 - After happy-path proof in either profile, main may create or update the smallest focused requirement-linked regression test. Prefer existing tests when sufficient.

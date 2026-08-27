@@ -81,6 +81,7 @@ remove permission capability.
 - Record the inherited `Effective Model` on every review handoff. An unknown effective model is an evidence-gap row and the run is not conforming role evidence; it still consumes the role's one launch.
 - Recommendation order: remove, narrow, reuse, local guard, then deferral. No separate action-authoring field.
 - For implementation changes, report missing original requirements, current Runtime Proof, Candidate Reference continuity, risk evidence, and validation evidence when relevant.
+- A registered Practice Owner reports `Practice Observation: no-material-finding | findings-reported | unknown | not-applicable`. `no-material-finding` is conforming evidence and must not be replaced with optional recommendations merely to make a report non-empty.
 - Reviewers do not write deterministic helpers. Any helper idea is a residual risk note and needs explicit I/O, schemas/fixtures, stable ordering, privacy-safe output, and no fuzzy scoring if separately authorized.
 
 ## Risk Evidence
@@ -114,6 +115,7 @@ Return:
 
 - `Candidate Reference / RC`: exact candidate inspected.
 - `Effective Model: <effective model id when known, or unknown>`.
+- `Practice Observation`: registered Practice Owners only; use the exact common-field states.
 - `Risk Matrix`: common row fields from Risk Evidence.
 - `Domain Matrix`: role-specific evidence map when useful.
 - `Evidence Gaps And Residual Risks`: unknown effective model, unreadable evidence, future-scope/optional risks, or `none`.

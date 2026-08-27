@@ -3,8 +3,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { automationDividendTasks, parseAutomationDividend } from "./openspec-change/automation-dividend.ts";
+import { inspectBoundedFalsificationReview, parseBoundedFalsificationDeclaration } from "./openspec-change/bounded-falsification.ts";
 import { inspectEvidenceDocument, taskTextDigest } from "./openspec-change/evidence.ts";
 import { ownershipEvidenceGateChecks } from "./openspec-change/gate.ts";
+
+export { formatBoundedFalsificationReview, inspectBoundedFalsificationReview } from "./openspec-change/bounded-falsification.ts";
+export type { BoundedFalsificationReview } from "./openspec-change/bounded-falsification.ts";
 
 export type OpenSpecOperationGateStatus = "passed" | "warning" | "failed" | "blocked" | "unknown" | "not-applicable";
 
@@ -279,6 +283,51 @@ function dividendChecks(root: string, operation: string, changeId: string | unde
   return checks;
 }
 
+function falsificationChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+  if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) return [];
+  if (!["propose", "apply", "review", "acceptance", "archive"].includes(operation)) return [];
+  const proposalPath = changePath(root, changeId, "proposal.md");
+  if (!fs.existsSync(proposalPath)) return [];
+  const declaration = parseBoundedFalsificationDeclaration(fs.readFileSync(proposalPath, "utf8"));
+  const proposalSource = `openspec/changes/${changeId}/proposal.md`;
+  if (declaration.status === "missing") {
+    const blocking = operation === "propose" || operation === "archive";
+    return [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", blocking ? "failed" : "warning", blocking, proposalSource, "proposal.md is missing Bounded Falsification Review: required - <decision surface> or exempt - <Ordinary Small reason>.")];
+  }
+  if (declaration.status === "duplicate") {
+    return [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "failed", true, proposalSource, `proposal.md has ${declaration.count} Bounded Falsification Review declarations.`)];
+  }
+  if (declaration.status === "malformed") {
+    return [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "failed", true, proposalSource, declaration.reason)];
+  }
+
+  const checks = [check("artifact:bounded-falsification-declaration", "OpenSpec bounded falsification declaration", "passed", false, proposalSource, `Bounded Falsification Review is ${declaration.mode}; applicability remains reviewed semantic input.`)];
+  const reviewPath = changePath(root, changeId, "falsification-review.md");
+  const reviewSource = `openspec/changes/${changeId}/falsification-review.md`;
+  if (declaration.mode === "exempt") {
+    checks.push(fs.existsSync(reviewPath)
+      ? check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "failed", true, reviewSource, "An exempt declaration must not create a synthetic falsification-review.md record.")
+      : check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "passed", false, proposalSource, "Reviewed exemption has no synthetic review record; exemption correctness remains semantic input."));
+    return checks;
+  }
+  if (!fs.existsSync(reviewPath)) {
+    const blocking = operation === "archive";
+    checks.push(check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", blocking ? "failed" : "warning", blocking, reviewSource, "Required falsification-review.md is missing; structural artifacts may remain valid while semantic readiness is unknown."));
+    return checks;
+  }
+  const review = inspectBoundedFalsificationReview(fs.readFileSync(reviewPath, "utf8"));
+  if (review.status === "invalid") {
+    checks.push(check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "failed", true, reviewSource, review.reason));
+    return checks;
+  }
+  if (review.value.decisionSurface !== declaration.text) {
+    checks.push(check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "failed", true, reviewSource, "Decision Surface does not match the proposal declaration."));
+    return checks;
+  }
+  checks.push(check("artifact:bounded-falsification-record", "OpenSpec bounded falsification record", "passed", false, reviewSource, `Record is structurally valid for ${review.value.candidateRef}; deterministic semantic readiness remains ${review.semanticReadiness}.`));
+  return checks;
+}
+
 function operationChecks(root: string, operation: string, changeId: string | undefined, enforcement?: "advisory" | "blocking"): OpenSpecOperationGateCheck[] {
   if (!knownOperations.has(operation)) {
     return [check("operation:known", "OpenSpec operation registry", "unknown", true, operation, `Unknown OpenSpec operation ${operation}.`)];
@@ -287,6 +336,7 @@ function operationChecks(root: string, operation: string, changeId: string | und
     ...requiredChangeChecks(root, operation, changeId),
     ...artifactChecks(root, operation, changeId),
     ...dividendChecks(root, operation, changeId),
+    ...falsificationChecks(root, operation, changeId),
     ...ownershipEvidenceGateChecks({ root, operation, changeId, enforcement }),
   ];
 }
@@ -402,6 +452,10 @@ function parseArgs(args: string[]): CliOptions {
 
 export function runOpenSpecOperationGateCli(args: string[]): number {
   try {
+    if (args.includes("--help") || args.includes("-h")) {
+      console.log("Usage: openspec-operation-gate --root <project-root> --operation <operation> --change <change-id> [--persist] [--enforcement advisory|blocking]");
+      return 0;
+    }
     const options = parseArgs(args);
     const output = runOpenSpecOperationGate(options.root, options);
     console.log(JSON.stringify(output, null, 2));

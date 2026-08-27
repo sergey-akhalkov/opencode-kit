@@ -52,6 +52,7 @@ const EXPECTED_CATALOG = [
   "execution-safety-reviewer",
   "explore",
   "final-candidate-reviewer",
+  "foundation-integrity-reviewer",
   "general",
   "implementation-readiness-reviewer",
   "implementation-worker",

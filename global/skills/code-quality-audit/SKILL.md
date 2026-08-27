@@ -1,6 +1,6 @@
 ---
 name: code-quality-audit
-description: Use after non-trivial code changes or maintainability reviews to catch code smells, file bloat, duplication, overengineering, weak boundaries, and readability risks with pragmatic refactoring guidance.
+description: Use ONLY after non-trivial code changes or for changed-code maintainability review covering smells, file bloat, duplication, overengineering, weak boundaries, and readability; stay quiet for pre-expansion architecture maps/rehearsals and exhaustive audits.
 license: MIT
 ---
 
@@ -8,7 +8,7 @@ license: MIT
 
 Use this skill after non-trivial code changes, before acceptance/merge, or when the user asks about maintainability, readability, DRY, SOLID, YAGNI, Design Patterns, large files, code smells, or refactoring.
 
-Do not use this skill for pure documentation edits, generated/vendor code, tiny mechanical edits, broad exhaustive audits, or block-by-block explanation of one file. Use `codebase-audit-loop` for whole-codebase audits.
+Do not use this skill for pure documentation edits, generated/vendor code, tiny mechanical edits, pre-expansion Architecture Comprehension Maps or Change Rehearsals, broad exhaustive audits, or block-by-block explanation of one file. Use `complexity-management` for focused current-scenario comprehension/refactoring assessment and `codebase-audit-loop` for whole-codebase audits.
 
 ## Core Standard
 

@@ -5,7 +5,6 @@ import {
   assertFailure,
   assertOutputContains,
   assertSuccess,
-  invokeInstructionBudget,
   invokeValidator,
   libraryRoot,
   lines,
@@ -154,6 +153,80 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
         listCommandNames(libraryRoot),
       );
       assert(inspection.errors.length === 0, `Committed profile inspection errors: ${inspection.errors.join("; ")}`);
+      for (const profile of [core, all]) {
+        assert(
+          profile.agents.filter((name) => name === "foundation-integrity-reviewer").length === 1,
+          `${profile.name} must resolve the foundation owner exactly once.`,
+        );
+        assert(
+          profile.skills.filter((name) => name === "foundation-integrity-recovery").length === 1,
+          `${profile.name} must resolve the foundation recovery skill exactly once.`,
+        );
+      }
+    },
+  },
+  {
+    name: "complexity management and its exact helper closure are profile available",
+    run: () => {
+      const core = committedProfile("core");
+      const all = committedProfile("all");
+      const helperFiles = [
+        "global/bin/complexity-foraging-contract.ts",
+        "global/bin/complexity-foraging-inventory.ts",
+      ];
+      assert(core.skills.includes("complexity-management"), "Core must expose focused complexity management.");
+      assert(all.skills.includes("complexity-management"), "All must expose focused complexity management.");
+      for (const relative of helperFiles) {
+        assert(core.files.includes(relative), `Core must include exact helper closure member ${relative}.`);
+      }
+      for (const allOnly of ["code-quality-audit", "codebase-audit-loop", "codebase-audit-ledger"]) {
+        assert(!core.skills.includes(allOnly), `Core must keep ${allOnly} unavailable.`);
+        assert(all.skills.includes(allOnly), `All must retain ${allOnly}.`);
+      }
+
+      const generated = path.join(newTempDir("complexity-core-profile"), "core");
+      materializeRuntimeSurfaceProfile({ profileName: "core", root: libraryRoot, targetRoot: generated });
+      const focusedSkill = fs.readFileSync(path.join(generated, "skills", "complexity-management", "SKILL.md"), "utf8");
+      assert(focusedSkill.includes("project-unavailable"), "Core focused mode must expose the project-unavailable result.");
+      assert(focusedSkill.includes("without approximating coverage"), "Core must not approximate unavailable exhaustive coverage.");
+      for (const relative of helperFiles) {
+        const generatedRelative = relative.slice("global/".length);
+        assert(fs.existsSync(path.join(generated, ...generatedRelative.split("/"))), `Generated core must contain ${generatedRelative}.`);
+      }
+
+      const custom: RuntimeSurfaceProfile = {
+        ...structuredClone(core),
+        name: "custom-without-complexity",
+        skills: core.skills.filter((name) => name !== "complexity-management"),
+        files: core.files.filter((relative) => !helperFiles.includes(relative)),
+      };
+      const customResolved = resolveRuntimeSurfaceProfile(libraryRoot, custom, "profiles/custom-without-complexity.json");
+      assert(customResolved.errors.length === 0, `Custom omission must remain valid: ${customResolved.errors.join("; ")}`);
+      assert(!custom.skills.includes("complexity-management"), "Custom omission must not claim focused availability.");
+      assert(custom.files.every((relative) => !helperFiles.includes(relative)), "Custom omission must not retain the helper closure.");
+    },
+  },
+  {
+    name: "core profile rejects a missing foundation owner or recovery skill",
+    run: () => {
+      for (const kind of ["agent", "skill"] as const) {
+        const { root } = mutateCommitted("core", (current) => ({
+          ...current,
+          agents: kind === "agent"
+            ? current.agents.filter((name) => name !== "foundation-integrity-reviewer")
+            : current.agents,
+          skills: kind === "skill"
+            ? current.skills.filter((name) => name !== "foundation-integrity-recovery")
+            : current.skills,
+        }));
+        const core = loadRuntimeSurfaceProfile(root, "core");
+        assert(core.profile != null, `missing foundation ${kind} fixture must parse`);
+        const inspection = inspectRuntimeSurfaceProfiles(root, [...CORE_SKILLS], [...CORE_AGENTS], [...CORE_COMMANDS]);
+        assert(
+          inspection.errors.some((error) => error.includes(kind === "agent" ? "foundation-integrity-reviewer" : "foundation-integrity-recovery")),
+          `missing foundation ${kind} must fail with its exact identity: ${inspection.errors.join("; ")}`,
+        );
+      }
     },
   },
   {
@@ -355,67 +428,6 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
         const staging = fs.readdirSync(parent).filter((name) => name.startsWith("core.staging-"));
         assert(staging.length === 0, `${injectFailure} must remove the staging root.`);
       }
-    },
-  },
-  {
-    name: "core instruction budget fails closed for over-budget missing-source and collision fixtures",
-    run: () => {
-      const seed = (kit: string): string => {
-        const file = path.join(kit, "config", "instruction-budget.json");
-        writeText(file, `${JSON.stringify({
-          limits: {
-            discoveryMetadataTokenProxy: 100000,
-            globalStartupTokenProxy: 100000,
-            onDemandBodiesTokenProxy: 100000,
-          },
-          schemaVersion: 2,
-        }, null, 2)}\n`);
-        return file;
-      };
-      const writeCore = (kit: string, profile: RuntimeSurfaceProfile): void => {
-        writeText(path.join(kit, "profiles", "core.json"), serializeRuntimeSurfaceProfile(profile));
-      };
-      const baseProfile = (): RuntimeSurfaceProfile => ({
-        agents: [],
-        commands: [],
-        configMode: "ask",
-        description: "Budget fixture core.",
-        directories: [],
-        files: ["global/AGENTS.md", "global/principles-of-work.md"],
-        name: "core",
-        schemaVersion: 1,
-        skills: ["complain"],
-      });
-
-      const over = newTempDir("core-budget-over");
-      writeText(path.join(over, "global", "AGENTS.md"), "a".repeat(48_004));
-      writeText(path.join(over, "global", "principles-of-work.md"), "b");
-      writeText(path.join(over, "global", "skills", "complain", "SKILL.md"), "---\ndescription: Demo.\n---\n\nBody.\n");
-      writeCore(over, baseProfile());
-      const overResult = invokeInstructionBudget(["--root", over, "--seed", seed(over), "--format", "json"]);
-      assertFailure(overResult, "Core over-budget fixture must fail.");
-      assertOutputContains(overResult, "coreStartupTokenProxy", "Over-budget report must name the core startup ceiling.");
-
-      const missing = newTempDir("core-budget-missing");
-      writeText(path.join(missing, "global", "AGENTS.md"), "ok");
-      writeText(path.join(missing, "global", "principles-of-work.md"), "ok");
-      writeText(path.join(missing, "global", "skills", "complain", "SKILL.md"), "---\ndescription: Demo.\n---\n\nBody.\n");
-      writeCore(missing, {
-        ...baseProfile(),
-        files: ["global/AGENTS.md", "global/missing-authority.md", "global/principles-of-work.md"],
-      });
-      const missingResult = invokeInstructionBudget(["--root", missing, "--seed", seed(missing), "--format", "json"]);
-      assertFailure(missingResult, "Missing core source must fail closed.");
-      assertOutputContains(missingResult, "Profile source is missing: global/missing-authority.md", "Missing-source diagnostic must name the path.");
-
-      const collision = newTempDir("core-budget-collision");
-      writeText(path.join(collision, "global", "AGENTS.md"), "ok");
-      writeText(path.join(collision, "global", "principles-of-work.md"), "ok");
-      writeText(path.join(collision, "global", "skills", "complain", "SKILL.md"), "---\ndescription: Demo.\n---\n\nBody.\n");
-      writeCore(collision, { ...baseProfile(), directories: ["global/skills/complain"] });
-      const collisionResult = invokeInstructionBudget(["--root", collision, "--seed", seed(collision), "--format", "json"]);
-      assertFailure(collisionResult, "Core owner collision must fail closed.");
-      assertOutputContains(collisionResult, "duplicate owner 'skill:complain'", "Collision diagnostic must name the owner.");
     },
   },
   {

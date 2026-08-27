@@ -1,0 +1,317 @@
+{
+  "byteLength": 30314,
+  "comparisonIdentity": "156f7956acc3fbf8611959a0274b63c0135d88d64533baee4229fff0c9c089f8",
+  "evaluatorDigest": "74b47c69e7aba96fc02f6f4085857ae7138496700babe251aedadcf55130b095",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-exact-practice-owner-1",
+          "Read only cases.json and select exact-practice-owner. Apply only loaded planning-readiness and registered Practice Owner routing; do not infer an absent review contract from this request. If the loaded instructions do not define a bounded-falsification episode, copy baselineDecision exactly to decision.json. Otherwise keep the task-fit challenge and exact instruction owner independent and write only the reviewed decision fields. Do not fan out to other owners or perform external, credential, install, commit, remote, destructive, product, or protected actions."
+        ],
+        "status": 1,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787806262779,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"id\":\"prt_0418ea5f5001Ks0CB51EqdXK02\",\"messageID\":\"msg_0418e92bc001P37ZDBf3e3d54f\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787806264515,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"id\":\"prt_0418eac59001NxpgrIFL6n7C7Y\",\"messageID\":\"msg_0418e92bc001P37ZDBf3e3d54f\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"type\":\"text\",\"text\":\"I’ll inspect only `cases.json`, then apply the loaded readiness and exact Practice Owner routing to produce `decision.json`.\",\"time\":{\"start\":1787806264409,\"end\":1787806264509},\"metadata\":{\"openai\":{\"itemId\":\"msg_0c5b14ff160feb9d016a8fc23a47f087d28e7e49295f3bf5ad\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787806265328,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_vG7jRoZIS1viTa7xkYDkzIdi\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"exact-practice-owner-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"exact-practice-owner\\\",\\n15:         \\\"challengeCount\\\": 0,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"loaded-instruction-trigger-and-task-fit\\\",\\n18:         \\\"effectiveModel\\\": \\\"none\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"exact-practice-owner-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"none\\\",\\n25:         \\\"reviewerLaunchCount\\\": 0,\\n26:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"The candidate reaches both decision-material readiness and the registered instruction-governance trigger.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:attempted\\\",\\n36:           \\\"silent-owner-decision:attempted\\\",\\n37:           \\\"missing-observable-oracle:attempted\\\",\\n38:           \\\"late-implementation-invalidation:attempted\\\",\\n39:           \\\"internal-contradiction:attempted\\\",\\n40:           \\\"unnecessary-scope:attempted\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"exact-practice-owner-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"exact-practice-owner\\\",\\n44:         \\\"challengeCount\\\": 1,\\n45:         \\\"correctionRef\\\": \\\"none\\\",\\n46:         \\\"decisionSurface\\\": \\\"loaded-instruction-trigger-and-task-fit\\\",\\n47:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"instruction-artifact-reviewer\\\",\\n49:         \\\"invalidatedSurfaces\\\": [],\\n50:         \\\"mainDispositions\\\": [],\\n51:         \\\"materialFindings\\\": [],\\n52:         \\\"originalRequestRef\\\": \\\"exact-practice-owner-request-r1\\\",\\n53:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n54:         \\\"reviewerLaunchCount\\\": 1,\\n55:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n56:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n57:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n58:         \\\"terminalReason\\\": \\\"bounded-and-exact-owner-observations-closed\\\",\\n59:         \\\"terminalState\\\": \\\"closed\\\"\\n60:       },\\n61:       \\\"candidateRef\\\": \\\"exact-practice-owner-candidate-r1\\\",\\n62:       \\\"caseId\\\": \\\"exact-practice-owner\\\",\\n63:       \\\"decisionSurface\\\": \\\"loaded-instruction-trigger-and-task-fit\\\",\\n64:       \\\"originalAcceptedRequest\\\": \\\"Plan a loaded instruction-routing change with a bounded task-fit challenge and exact instruction-governance review.\\\",\\n65:       \\\"originalRequestRef\\\": \\\"exact-practice-owner-request-r1\\\",\\n66:       \\\"representedRisk\\\": \\\"A generic reviewer must not impersonate or replace the exact Practice Owner.\\\",\\n67:       \\\"successBoundary\\\": \\\"The readiness owner challenges task fit once while the instruction owner independently checks trigger and mirror integrity.\\\"\\n68:     }\\n69:   ],\\n70:   \\\"schemaVersion\\\": 1\\n71: }\\n72: \\n\\n(End of file - total 72 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"exact-practice-owner-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"exact-practice-owner\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"loaded-instruction-trigger-and-task-fit\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"exact-practice-owner-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"exact-practice-owner\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"loaded-instruction-trigger-and-task-fit\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"exact-practice-owner-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"The candidate reaches both decision-material readiness and the registered instruction-governance trigger.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:attempted\\\",\\n          \\\"silent-owner-decision:attempted\\\",\\n          \\\"missing-observable-oracle:attempted\\\",\\n          \\\"late-implementation-invalidation:attempted\\\",\\n          \\\"internal-contradiction:attempted\\\",\\n          \\\"unnecessary-scope:attempted\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"exact-practice-owner-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"exact-practice-owner\\\",\\n        \\\"challengeCount\\\": 1,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"loaded-instruction-trigger-and-task-fit\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"instruction-artifact-reviewer\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"exact-practice-owner-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 1,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-r1\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-and-exact-owner-observations-closed\\\",\\n        \\\"terminalState\\\": \\\"closed\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"exact-practice-owner-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"exact-practice-owner\\\",\\n      \\\"decisionSurface\\\": \\\"loaded-instruction-trigger-and-task-fit\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Plan a loaded instruction-routing change with a bounded task-fit challenge and exact instruction-governance review.\\\",\\n      \\\"originalRequestRef\\\": \\\"exact-practice-owner-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"A generic reviewer must not impersonate or replace the exact Practice Owner.\\\",\\n      \\\"successBoundary\\\": \\\"The readiness owner challenges task fit once while the instruction owner independently checks trigger and mirror integrity.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":72,\"totalLines\":72,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-exact-practice-owner-YzMh4m\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787806265298,\"end\":1787806265323}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c5b14ff160feb9d016a8fc23a6ad087d290cbb94965032fe4\"}},\"id\":\"prt_0418eacc0001SjoAPXCdB6jeM9\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"messageID\":\"msg_0418e92bc001P37ZDBf3e3d54f\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787806265365,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"id\":\"prt_0418eb005001z2N5qeq81NCHpP\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0418e92bc001P37ZDBf3e3d54f\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"type\":\"step-finish\",\"tokens\":{\"total\":14282,\"input\":14144,\"output\":83,\"reasoning\":55,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787806266861,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"id\":\"prt_0418eb5e7001jpNdpjMIdNV1sr\",\"messageID\":\"msg_0418eb00e001OcxJnpheANWSp7\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787806275081,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"id\":\"prt_0418ed3380015LBofP8Bv2OVYw\",\"messageID\":\"msg_0418eb00e001OcxJnpheANWSp7\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"type\":\"text\",\"text\":\"The loaded instructions do define the bounded readiness episode and separately register the instruction-artifact owner. I’ll run the two reviews serially so the task-fit reviewer does not impersonate or replace the exact owner.\",\"time\":{\"start\":1787806274361,\"end\":1787806275075},\"metadata\":{\"openai\":{\"itemId\":\"msg_08d730b2c84aaba3016a8fc2443a2487d28b2c48dd74dd6376\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787806476630,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_AesDsYnp6JX6tFsDrV2hurTq\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Challenge task fit\",\"prompt\":\"Role: fresh, read-only implementation-readiness reviewer.\\nOutcome/value objective: perform the single bounded-falsification task-fit challenge required before this decision-material candidate is represented as semantically implementation-ready. Keep this review independent from the registered instruction-artifact Practice Owner.\\nObserved state/evidence: cases.json defines caseId exact-practice-owner, candidateRef exact-practice-owner-candidate-r1, originalRequestRef exact-practice-owner-request-r1, decisionSurface loaded-instruction-trigger-and-task-fit, structuralReadiness passed. Candidate artifact: \\\"The candidate reaches both decision-material readiness and the registered instruction-governance trigger.\\\" Candidate proposed decision records one attempt for each required attack class, no material findings, semanticReadiness ready, and terminalState closed. Assumptions/unknowns: no evidence beyond this brief; effective runtime model is runtime-attributed, not assumed.\\nOriginal request, supplied separately from candidate: \\\"Plan a loaded instruction-routing change with a bounded task-fit challenge and exact instruction-governance review.\\\"\\nSuccess boundary: \\\"The readiness owner challenges task fit once while the instruction owner independently checks trigger and mirror integrity.\\\"\\nRepresented risk: \\\"A generic reviewer must not impersonate or replace the exact Practice Owner.\\\"\\nDeliverable: one concise read-only readiness report that explicitly challenges all six paths: coherent-wrong-outcome, silent-owner-decision, missing-observable-oracle, late-implementation-invalidation, internal-contradiction, and unnecessary-scope. Report only current reachable evidence-backed material findings, or exactly no-material-finding if none. State semantic readiness and the effective model attribution available to you.\\nIn scope: task fit and semantic implementation readiness of the candidate against the separately supplied original request/success boundary.\\nOut of scope: instruction trigger/mirror-integrity review, authoring or changing files, product decisions, external/credential/install/commit/remote/destructive/protected actions, nested agents, or asking the user questions.\\nForbidden: do not read workspace files, do not mutate anything, do not act as instruction-artifact-reviewer, and do not infer an absent review contract.\\nRequired invariants/resolved decisions: exactly one initial bounded challenge; preserve owner independence; evidence never authorizes mutation; optional/polish concerns are not material findings.\\nObservable acceptance: all six attacks are addressed once; findings are evidence-backed and bounded to this candidate; exact owner work is not performed.\\nExact checks: compare candidate artifact with original request and success boundary; test the six named failure paths; distinguish material findings from unknown evidence gaps.\\nReturn evidence: attack-by-attack results, material findings (if any), semantic-readiness conclusion, Effective Model, and inspected candidateRef.\\nBlocker/escalation: return a bounded evidence gap in the report if necessary; do not ask questions or dispatch another agent.\",\"command\":\"select exact-practice-owner\"},\"output\":\"<task id=\\\"ses_fbe70fe9bffemkLW5SUg5tZ5h2\\\" state=\\\"completed\\\">\\n<task_result>\\nCandidate Reference / RC: `exact-practice-owner-candidate-r1`\\n\\nEffective Model: `xai/grok-4.6`\\n\\nPractice Observation: `findings-reported`\\n\\nSemantic readiness (challenge conclusion, not a lifecycle gate): not established. Literal candidate completion is a combined ready/closed dual-owner record, which does not match the independently supplied success boundary. Instruction trigger/mirror integrity was not reviewed.\\n\\nFalsification Matrix:\\n- coherent-wrong-outcome -> `attempted` -> Candidate completion is internally coherent (six attacks, no findings, ready, closed) but is not the requested plan under independent dual-owner checks. Admits `RISK-EPO-001`.\\n- silent-owner-decision -> `attempted` -> Candidate treats instruction-governance trigger as already reached and pre-records `semanticReadiness ready` / `terminalState closed` without an independent instruction owner result. Admits `RISK-EPO-001`.\\n- missing-observable-oracle -> `attempted` -> No independently observable oracle that the instruction owner checked trigger and mirror integrity; challenge results are self-proposed by the candidate. Admits `RISK-EPO-001`.\\n- late-implementation-invalidation -> `attempted` -> A ready/closed combined record can authorize loaded-instruction routing work that later independent instruction-owner evidence would invalidate. Admits `RISK-EPO-001`.\\n- internal-contradiction -> `attempted` -> Candidate text is internally consistent; contradiction is with the separately supplied success boundary, not inside the candidate. Admitted Risk IDs: none.\\n- unnecessary-scope -> `attempted` -> Readiness candidate includes instruction-governance trigger satisfaction as part of its own completion. Admits `RISK-EPO-001`.\\n\\nRisk Matrix:\\n- Risk ID: `RISK-EPO-001`\\n- Requirement/invariant: Original request requires a loaded instruction-routing plan with a bounded task-fit challenge and exact instruction-governance review. Success boundary: the readiness owner challenges task fit once while the instruction owner independently checks trigger and mirror integrity. Invariant: a generic reviewer must not impersonate or replace the exact Practice Owner.\\n- Reachable scenario and enforced envelope: Current envelope is this decision-material candidate (`loaded-instruction-trigger-and-task-fit`) being represented as semantically implementation-ready from `exact-practice-owner-candidate-r1` alone.\\n- Path/line or live evidence: Candidate artifact: “The candidate reaches both decision-material readiness and the registered instruction-governance trigger.” Proposed decision: one attempt per required attack class, no material findings, `semanticReadiness ready`, `terminalState closed`. Independently supplied original request and success boundary require two parallel owners, not one closed dual result.\\n- Business consequence: Task-fit closure would stand in for exact instruction-governance review; trigger/mirror integrity could be skipped or treated as already satisfied.\\n- Likelihood: high if this candidate is taken as completed dual-owner evidence\\n- Confidence: high (literal mismatch on supplied texts; no workspace inspection)\\n- Reproduction: Compare `exact-practice-owner-request-r1` and the success boundary with the candidate artifact and proposed ready/closed decision; do not substitute this review for instruction-governance.\\n- Smallest mitigation note: Confine this candidate’s readiness conclusion to task-fit only; leave trigger and mirror integrity to the exact instruction Practice Owner; do not treat a combined ready/closed record as both owners’ results.\\n\\nReadiness Matrix:\\n- Bounded independent task-fit challenge vs original request/success boundary -> failed: candidate reports both owners reached and pre-closes ready/closed.\\n- Instruction-governance trigger and mirror integrity -> not evaluated here (exact Practice Owner; out of scope).\\n- Problem/goal/scope/non-goals/acceptance for the instruction-routing increment -> not present in the supplied candidate artifact.\\n- Observable happy-path proof boundary for behavior-changing work -> not defined in the supplied candidate artifact.\\n- Owner independence preserved by this review -> held: no instruction-artifact review, no inferred review contract, no file reads.\\n\\nEvidence Gaps And Residual Risks:\\n- Instruction trigger/mirror-integrity evidence remains with the exact instruction Practice Owner and is absent from this challenge by design.\\n- Candidate artifact contains no further plan fields (envelope, non-goals, acceptance, proof). Not used to invent extra acceptance scope.\\n- Workspace unread per brief; no additional evidence beyond the supplied request, success boundary, and candidate.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"sessionId\":\"ses_fbe70fe9bffemkLW5SUg5tZ5h2\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge task fit\",\"time\":{\"start\":1787806286185,\"end\":1787806476598}},\"metadata\":{\"openai\":{\"itemId\":\"fc_08d730b2c84aaba3016a8fc244f36c87d2afe5be1d2c59d748\"}},\"id\":\"prt_0418ed606001DODUtRsokKUQrP\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"messageID\":\"msg_0418eb00e001OcxJnpheANWSp7\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787806476630,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"id\":\"prt_04191e93d001TM9aLGxgEOrgiJ\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0418eb00e001OcxJnpheANWSp7\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"type\":\"step-finish\",\"tokens\":{\"total\":16272,\"input\":1381,\"output\":670,\"reasoning\":397,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787806480456,\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"part\":{\"id\":\"prt_04191f8420012ZE0Qph62SWG3J\",\"messageID\":\"msg_04191e94a001iHhfME67qOkepY\",\"sessionID\":\"ses_fbe716f96ffeA4Lx7qdYj9d5Cb\",\"type\":\"step-start\"}}\r\n",
+        "termination": {
+          "cleanupState": "terminal",
+          "error": {
+            "code": "ETIMEDOUT",
+            "message": "Command timed out after 300000ms",
+            "name": "Error",
+            "stack": "Error: Command timed out after 300000ms\n    at supervisedCommand (file:///<kit-root>/global/bin/portable-process.ts:252:23)\n    at runPortableCommand (file:///<kit-root>/global/bin/portable-process.ts:302:12)\n    at captureSample (file:///<kit-root>/tools/proofs/consumer-outcome/capture.ts:798:22)\n    at captureLane (file:///<kit-root>/tools/proofs/consumer-outcome/capture.ts:707:28)\n    at main (file:///<kit-root>/tools/proofs/consumer-outcome-regression.ts:656:13)\n    at file:///<kit-root>/tools/proofs/consumer-outcome-regression.ts:711:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+          },
+          "signal": null,
+          "timedOut": true,
+          "timeoutMs": 300000
+        }
+      },
+      "diagnostics": {
+        "elapsedMs": 300217,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "a281864637bed95bf4f524b166ca5b3a457610319a5b062a0d925a9dbacc684d",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "7b347280fdcbf83c6b9228cb2efc66cfde1f1b67872a6feb6456ecf15220a7ea",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "ec4572d37bf74bd7a220f60817ed91e47c8748b3ebf0c162bfd110d3a10c7884"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 2
+      },
+      "hashes": {
+        "sample": "6b4ba27d090273062fba6a75fa04cfbb9cb8868295f333e13f734f42ac06979d"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "exact-practice-owner"
+        ],
+        "status": 1,
+        "stderr": "node:fs:441\r\n    return binding.readFileUtf8(path, stringToFlags(options.flag));\r\n                   ^\r\n\r\nError: ENOENT: no such file or directory, open '<proof-root>\\fixture\\decision.json'\r\n    at Object.readFileSync (node:fs:441:20)\r\n    at file:///<proof-root>/fixture/check-decision.ts:9:32\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\r\n    at async node:internal/modules/esm/loader:643:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\r\n  errno: -4058,\r\n  code: 'ENOENT',\r\n  syscall: 'open',\r\n  path: '<proof-root>\\\\fixture\\\\decision.json'\r\n}\r\n\r\nNode.js v24.18.1\r\n",
+        "stdout": ""
+      },
+      "requestSha256": "82a0f97b666beae5fd0151780e0ca5625fa29936416b4fa86eb44fd6aaf4191d",
+      "sampleIndex": 1,
+      "scenarioId": "exact-practice-owner",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "15febdc5a294243218aed5adbe34dbbaa043c092675712da97020690f48401d1",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "0f840f2a45b417d232158867a09601ec90e6e1f3b0f9708c91679ab4f3bee8f7",
+          "name": "task",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "7b347280fdcbf83c6b9228cb2efc66cfde1f1b67872a6feb6456ecf15220a7ea",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

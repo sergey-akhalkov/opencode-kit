@@ -1,0 +1,28 @@
+{
+  "baselineMedians": {
+    "ordinary-small-greeting": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 0,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 5
+    },
+    "openspec-add-json-output": {
+      "configuredProviderRequestCount": 1,
+      "duplicateFailedToolInvocationCount": 0,
+      "failedToolCallCount": 1,
+      "ownerQuestionCount": 0,
+      "totalToolCallCount": 20
+    }
+  },
+  "candidateMedians": null,
+  "environmentDigest": "b2d2f02fb19a516647f1c789cc07dfb5d20000699c35b248cd5c12a2e060966c",
+  "expectation": "baseline-establishment",
+  "improvedField": null,
+  "reasons": [],
+  "scenarioDigest": "c44a1065e3089ecd90ab42c693d2078996359985bbdd19126ca2a25b32fcc223",
+  "sourceDigest": "64ce5bddad890999a3e5224d269e66228711d19df5b19fcb997d67e875b61e5f",
+  "status": "baseline-established",
+  "digest": "69fde5912e267830e00657546384a642f6d463e58117e86b86655a2ce9ab1734",
+  "schemaVersion": 1
+}

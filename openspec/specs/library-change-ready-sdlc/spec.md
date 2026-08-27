@@ -478,3 +478,78 @@ Every reported `Live-Attempt Gate: clear | blocked | unknown` SHALL name the exa
 - **WHEN** preserved-corpus replay clears the Live-Attempt Gate for a named path but the underlying live action still requires separate authorization or safeguards
 - **THEN** the report states the clear path gate and the separate unresolved authority or safeguard state
 - **AND** no live action is performed or described as authorized solely because the gate is clear.
+
+### Requirement: Confirmed foundation defects recover autonomously and proportionally
+When the registered foundation-integrity owner reports an applicable material
+finding, main SHALL independently reproduce or falsify it before mutation. A
+confirmed defect whose correction is uniquely determined by the accepted outcome
+and safe current evidence SHALL become autonomous dependency-closure work: main
+SHALL load the foundation recovery procedure, correct and re-prove the affected
+path, and continue without requesting approval for planning artifacts, task state,
+attempt controls, reviewer launches, or continuation.
+
+Reviewer output alone SHALL NOT authorize mutation. Non-critical, speculative,
+future-scope, style, architecture-polish, optional-test, and unrelated-maintainability
+findings SHALL remain parked or omitted and MUST NOT extend the accepted scope or
+qualification path. A genuinely unresolved protected product decision SHALL stop
+only its dependent identity choice after safe discriminating work is exhausted;
+unrelated work SHALL continue.
+
+#### Scenario: Confirmed defect has one outcome-preserving correction
+- **WHEN** main reproduces a current workload/profile/oracle mismatch and the accepted outcome identifies one matching current path
+- **THEN** main corrects the dependent planning and proof route autonomously and returns it through affected Runtime Proof and validation
+- **AND** no owner question is asked solely to approve the recovery process.
+
+#### Scenario: Finding is non-critical architecture polish
+- **WHEN** a reviewer observation changes neither the accepted outcome, current foundation relation, non-deferrable invariant, nor required proof
+- **THEN** it creates no recovery task or lifecycle blocker
+- **AND** current accepted work continues.
+
+#### Scenario: Correction requires a protected product choice
+- **WHEN** no safe evidence-backed route selects between materially different product identities and choosing one changes protected semantics
+- **THEN** main preserves the exact ambiguity and asks only that owner decision under the existing owner-boundary contract
+- **AND** the foundation reviewer does not decide or authorize it.
+
+### Requirement: Decision-material work receives one early falsification episode
+
+Change-Ready routing SHALL place the bounded falsification episode at the earliest
+decision boundary before dependent implementation investment. Decision-material plans,
+specifications, and architecture decisions SHALL use the pre-implementation readiness
+owner. A Material request without such an artifact SHALL first create the smallest
+project-native or session-local decision frame and use the same pre-implementation owner
+before production mutation. `final-candidate-reviewer` SHALL remain optional and
+concrete-risk-driven. A candidate whose implementation remains inside a current
+challenged decision surface SHALL NOT receive a duplicate generic post-proof review
+solely for compliance.
+
+#### Scenario: Material change has a decision-material plan
+
+- **WHEN** the plan receives a current terminal pre-implementation falsification episode and implementation preserves its challenged decision surface
+- **THEN** main proceeds through proof and validation without a duplicate generic final review
+- **AND** independently triggered exact Practice Owners and critical SDET retain their existing boundaries.
+
+#### Scenario: Material change has no prior decision artifact
+
+- **WHEN** a Material request has no OpenSpec change or other durable decision artifact before production mutation
+- **THEN** main creates the smallest decision frame and supplies it with the original accepted request to one fresh `implementation-readiness-reviewer`
+- **AND** production mutation waits for that early bounded disposition rather than a mandatory late generic review.
+
+#### Scenario: Material implementation changes the challenged decision surface
+
+- **WHEN** implementation evidence requires changing a previously challenged outcome, envelope, invariant, proof boundary, user-owned decision, or material-risk decision
+- **THEN** main uses the episode's one permitted corrected-candidate re-review if still available
+- **AND** an exhausted generic budget routes any exact remaining defect to focused proof or its registered Practice Owner rather than another generic verdict.
+
+### Requirement: Review cannot convert non-critical observations into mandatory scope
+
+Before and after representative proof, optional, future-scope, stylistic, speculative,
+and non-critical quality observations SHALL remain outside mandatory accepted work unless
+the owner separately changes the accepted outcome. A bounded falsification report SHALL
+not override the existing post-MVP rule that only incomplete accepted scope and confirmed
+accepted-outcome, critical, or non-deferrable defects require correction.
+
+#### Scenario: Review reports optional architecture improvement
+
+- **WHEN** the candidate already satisfies the accepted outcome and the row has no reachable current consequence
+- **THEN** main parks or omits the observation without creating implementation or re-review work
+- **AND** the episode terminates under its current material disposition.

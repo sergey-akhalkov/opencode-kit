@@ -1,0 +1,34 @@
+{
+  "caseId": "overlapping-dependent-ownership",
+  "memberIds": ["overlapping-dependent-ownership"],
+  "fallbackDecision": {
+    "caseId": "overlapping-dependent-ownership",
+    "correctedReviewCount": 0,
+    "incidentId": "none",
+    "initialReviewCount": 0,
+    "ownerAgent": "none",
+    "recoverySkillCount": 0,
+    "reproductionDisposition": "not-run",
+    "terminalRows": [{ "memberId": "overlapping-dependent-ownership", "status": "unknown" }],
+    "terminalState": "unavailable"
+  },
+  "facts": {
+    "acceptedOutcome": "gateway-v2-current-profile",
+    "invalidCurrentIdentity": "legacy-profile-b-workload",
+    "dependentChanges": ["change-alpha", "change-beta"],
+    "sharedSurface": "current-workload-binding",
+    "requiredWriteMode": "serial-transfer-alpha-then-beta",
+    "correctionPath": "state/overlapping-dependent-ownership.json",
+    "correctedState": {
+      "changes": ["change-alpha", "change-beta"],
+      "incidentState": "closed",
+      "ownership": "serial-transfer-alpha-then-beta"
+    },
+    "protectedChoiceRequired": false
+  },
+  "artifacts": [
+    { "artifactId": "ownership-plan", "path": "state/overlapping-dependent-ownership.json" },
+    { "artifactId": "archived-result", "path": "state/archive-record.json" },
+    { "artifactId": "unrelated-active-change", "path": "state/unrelated-active-change.json" }
+  ]
+}

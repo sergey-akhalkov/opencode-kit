@@ -1,0 +1,28 @@
+{
+  "caseId": "false-positive-falsification",
+  "memberIds": ["false-positive-falsification"],
+  "fallbackDecision": {
+    "caseId": "false-positive-falsification",
+    "correctedReviewCount": 0,
+    "incidentId": "none",
+    "initialReviewCount": 0,
+    "ownerAgent": "none",
+    "recoverySkillCount": 0,
+    "reproductionDisposition": "not-run",
+    "terminalRows": [{ "memberId": "false-positive-falsification", "status": "unknown" }],
+    "terminalState": "unavailable"
+  },
+  "facts": {
+    "acceptedOutcome": "gateway-v2-current-profile",
+    "currentOracle": "gateway-v2-current-oracle",
+    "representativeWorkload": "gateway-v2-current-workload-alias",
+    "directSourceIdentity": "gateway-v2-current-workload-alias-is-current-profile-a-workload",
+    "reviewerFinding": "workload-alias-is-foreign",
+    "protectedChoiceRequired": false
+  },
+  "artifacts": [
+    { "artifactId": "falsification-plan", "path": "state/false-positive-falsification.json" },
+    { "artifactId": "archived-result", "path": "state/archive-record.json" },
+    { "artifactId": "unrelated-active-change", "path": "state/unrelated-active-change.json" }
+  ]
+}

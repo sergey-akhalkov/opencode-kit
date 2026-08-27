@@ -1,12 +1,14 @@
 ---
 name: service-architecture-design
-description: "Architecture design gate for services: boundaries, ownership, concurrency, failure model, deployment, observability, compatibility, and implementation-ready decisions."
+description: "Use ONLY to design a new service or material service architecture before implementation: boundaries, ownership, concurrency, failure, deployment, observability, compatibility, and implementation-ready decisions; stay quiet for focused comprehension assessment of an existing project."
 license: MIT
 ---
 
 # Service Architecture Design
 
 Use this skill when shaping service architecture, design docs, specs, or implementation plans before coding. Resolve only next-increment outcome, enforced operating envelope, non-deferrable invariants, proof, or material residual risk. Unreachable future-scale design is residual.
+
+Stay quiet when the primary request is a focused assessment of an existing project's architecture comprehension, current change pressure, or refactoring locality; use `complexity-management` unless new service design is the primary outcome.
 
 ## Design Areas
 

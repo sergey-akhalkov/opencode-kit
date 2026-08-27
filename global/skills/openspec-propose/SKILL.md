@@ -50,9 +50,11 @@ When ready to implement, run /opsx-apply
    - `artifacts`: list of all artifacts with their status and dependencies
    - `planningHome`, `changeRoot`, `artifactPaths`, and `actionContext`: path and scope context. Use these instead of assuming repo-local paths.
 
-4. **Create artifacts in sequence until apply-ready**
+4. **Create artifacts in sequence until apply requirements are complete**
 
    Use the **TodoWrite tool** to track progress through the artifacts.
+
+   Before drafting the first candidate, work from the original accepted request rather than the scaffold: identify the observable success boundary, current envelope/non-goals, strongest coherent-wrong-outcome path, silent owner-decision path, missing-oracle path, likely late implementation invalidation, and strongest unnecessary-scope candidate. Use those hypotheses to improve the artifacts. Persist only decision-relevant outcomes; never persist raw private request text, hidden reasoning, or a reviewer transcript.
 
    Loop through artifacts in dependency order (artifacts with no pending dependencies first):
 
@@ -69,6 +71,7 @@ When ready to implement, run /opsx-apply
       - Create the artifact file using `template` as the structure and write it to `resolvedOutputPath`
       - Apply `context` and `rules` as constraints - but do NOT copy them into the file
       - Keep one change-level `Claim And Evidence Scope` owner. An Ordinary Small exact case uses one concise line naming the exact claim and proof boundary. A declared broad class uses the explicit fields supplied by the proposal rule; do not infer the class from prose or repeat the complete record in design/spec/tasks.
+      - In proposal.md, declare exactly one `Bounded Falsification Review`: `required - <decision surface>` for decision-material work, or `exempt - <Ordinary Small reason>` only after main reviews that exact exemption. Deterministic tooling validates shape, not materiality or task fit.
       - Show brief progress: "Created <artifact-id>"
 
    b. **Continue until all `applyRequires` artifacts are complete**
@@ -84,15 +87,24 @@ When ready to implement, run /opsx-apply
 
    Create `<changeRoot>/history.md` with `# Strategy History`. Record only materially distinct strategies actually considered or tried while preparing this change. Each entry contains objective, approach, evidence, outcome, reason, do-not-repeat condition, and evidence-based retry condition. If no strategy has been tried, retain the heading and state that no attempts are recorded yet; do not invent history.
 
-6. **Validate operation readiness**
+6. **Run the bounded falsification episode**
+
+   Read the proposal declaration. If it is `exempt`, create no `falsification-review.md`; the reviewed reason remains semantic main-owned input. If it is `required`:
+   - Reuse a current terminal record only when the original request, candidate, decision surface, and decision-changing evidence are unchanged. Never launch an equivalent challenge for confidence.
+   - Otherwise launch one fresh `implementation-readiness-reviewer`. Supply the original accepted request and success boundary separately from the candidate, plus the apply-required artifacts, envelope, non-goals, invariants, proof boundary, and relevant evidence. Require the six attack classes, explicit permission for `no-material-finding`, and the role's read-only/no-question/no-nested-agent/non-authorizing boundary.
+   - Main independently reproduces and dispositions only rows containing a current accepted outcome or non-deferrable invariant, reachable current-envelope scenario, concrete consequence, exact evidence, current-scope justification, and smallest correction. Optional, future, style, polish, and unproven rows create no work.
+   - Apply the smallest confirmed correction. Launch at most one fresh corrected-candidate re-review only when that correction changes the challenged outcome, envelope, invariant, proof boundary, user-owned decision, or material-risk surface. A second challenge exhausts the generic episode; no unchanged, optional, or confidence-seeking third challenge is permitted.
+   - Write `<changeRoot>/falsification-review.md` using only the operation-gate contract's privacy-safe references and explicit facts: original/reviewed request, accepted outcome, candidate/reviewed candidate, decision surface, reviewer/session/model, challenge count, six attack rows, material findings and main dispositions, correction/invalidation, terminal reason/state, and unresolved evidence. If the reviewer is unavailable or unusable, preserve only observed `unknown` facts and do not claim semantic readiness.
+
+7. **Validate operation readiness**
 
    If proposal.md contains `**Claim Class**`, first create one reviewed schema-valid development claim record in `<changeRoot>/evidence-index.json`; absent observations/oracle/challenge stay `unknown`/`missing` with empty refs and a non-supported disposition. Never invent evidence. Concise exact claims need no record.
    Resolve the current project root and active kit global source explicitly. Use `OPENCODE_CONFIG_DIR` first when it is non-empty and contains the exact `bin/openspec-operation-gate.ts` helper. Otherwise inspect the supported host-default source and privacy-safe runtime-source/collision evidence. Never strip a final `global` segment or guess a repository-parent `bin`. Run the portable gate from the verified source; do not require a target-project package script.
    Run `node "<global-source>/bin/openspec-operation-gate.ts" --root "<project-root>" --operation propose --change "<name>"`, then `openspec validate "<name>" --strict`, then the same portable gate with `--operation apply`.
 
-   Stop on any non-zero exit and preserve the command, status, output, and artifact. The apply probe is effect-free. Do not report `Ready for implementation` until it exits `0` for this change.
+   Stop on any non-zero exit and preserve the command, status, output, and artifact. The apply probe is effect-free. Deterministic gate success proves structural artifact readiness only; it never supplies semantic task-fit evidence.
 
-7. **Show final status**
+8. **Show final status**
    Run `openspec status --change "<name>"`.
 
 **Output**
@@ -100,7 +112,9 @@ When ready to implement, run /opsx-apply
 After completing all artifacts and all three readiness checks, summarize:
 - Change name and location
 - List of artifacts created with brief descriptions
-- What's ready: "Artifacts and deterministic readiness checks passed. Ready for implementation."
+- `Structural artifact readiness: passed | failed`
+- `Bounded falsification: exempt | no-material-finding | corrected-and-closed | unknown`
+- `Semantic implementation readiness: ready | unknown`; emit `ready` only for a reviewed exemption or current closed episode, never from deterministic checks alone
 - Prompt: "Run `/opsx-apply` or ask me to implement to start working on the tasks."
 - Lifecycle: planning artifacts alone remain `Development-Stage: development`; never emit an RC or stable claim from this command
 
@@ -116,7 +130,9 @@ Return the change/location, three readiness outcomes, blockers or `none`, and `D
 - Verify each artifact file exists after writing before proceeding to next
 - Create `history.md` before readiness checks and never manufacture attempted strategies
 - Do not append a mandatory final retrospective or process-improvement task; keep optional workflow reflection outside product completion scope
-- Do not claim implementation readiness until the propose gate, strict OpenSpec validation, and effect-free apply gate all pass
+- Do not collapse structural artifact readiness and semantic implementation readiness into one `Ready for implementation` phrase
+- Do not claim semantic implementation readiness until structural checks pass and the reviewed exemption or current required episode is terminal
 - Do not treat implementation readiness as implemented, runtime-proved, RC-qualified, or stable
 - Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.
 - Declare exactly one `Automation Dividend`: Material `required - <candidate>`; Ordinary Small may `exempt - <reason>`. Do not infer the mode.
+- Declare exactly one `Bounded Falsification Review`; no empty record for an exemption, raw request persistence, duplicate generic review, or deterministic semantic inference.

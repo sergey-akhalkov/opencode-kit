@@ -24,12 +24,18 @@ context: |
   basis, production/comparison paths, environment, real oracle, unresolved
   observations, and maximum claim before mutation; deterministic helpers validate
   only those reviewed fields and never infer breadth or semantics from prose.
+  Before representing decision-material planning as semantically implementation-ready,
+  main obtains one bounded original-request-grounded challenge from the existing
+  outcome-readiness owner. Ordinary Small exact work may use a reviewed exemption.
+  Deterministic checks establish structural artifact readiness only and never supply
+  semantic task-fit evidence.
   Edits alone never complete a task.
 
 rules:
   proposal:
     - Include an Outcome Capsule with all seven current-increment fields from project context.
     - Include one Claim And Evidence Scope owner. Use one concise exact-claim/proof-boundary line for Ordinary Small exact work; for a declared broad class use explicit Claim ID, Claim Class, Population, Coverage Basis, Production Path, Comparison Paths, Environment, Real Oracle, Unresolved Observations, and Maximum Claim fields.
+    - Include exactly one Bounded Falsification Review declaration: required with the decision surface for decision-material work, or exempt with a reviewed Ordinary Small reason. Keep structural artifact readiness separate from semantic implementation readiness.
     - State user value and why this bounded increment is needed now.
     - List exact new and modified capabilities; do not hide behavior changes as implementation detail.
   design:

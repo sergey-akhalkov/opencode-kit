@@ -1,0 +1,12 @@
+# Task 2.5 Candidate Attempt 1 Failure Chain
+
+- Invocation: one configured `mismatch-unique-recovery` candidate call against the accepted task-1.3 baseline, selected foundation pack, working-tree source, and candidate id `foundation-integrity-mismatch-candidate-r1`.
+- Observed terminal CLI result: non-zero with `ENOENT` while opening the proof-owned fixture `decision.json`; the absolute temporary path is intentionally not retained here.
+- Writer closure: the synchronous capture command returned terminally. The runner's `finally` path removed its proof fixture; no asynchronous or mutation-capable attempt remains open.
+- Preserved bundle: none. The runner tried to hash the missing acceptance file before constructing the sample and therefore created the evidence root but no `bundle.json` or evaluator output.
+- Layer classification: Proof Runner defect first. A missing expected output is a valid negative Product Candidate observation, but the runner incorrectly threw before preserving command output, tool facts, proof exit, missing-file state, session deletion, and cleanup.
+- Product Candidate status: unknown. The only trustworthy product observation is that `decision.json` was absent at the runner's readback boundary. The command/model text and tool trace were not preserved, so owner launch, skill use, cause, and candidate behavior cannot be classified.
+- Offline replay coverage: unavailable because no raw bundle was sealed. Focused provider-free tests cover the same post-run missing-file path after correction; they do not reconstruct the lost live command output.
+- Causal correction: capture hashes only tracked files that exist, preserving missing expected state as an evaluator-visible outcome failure instead of throwing before the sample is sealed. No owner, skill, fixture semantics, evaluator expectation, or candidate instruction changed.
+- Live-Attempt Gate: blocked for task 2.5 until the corrected complete post-run/evaluator path is exercised provider-free and the next live invocation is recorded in advance as bounded evidence capture for the exact missing raw observation, not acceptance proof.
+- Unlock condition: focused tests and provider-free failure-path capture/evaluation must reach a terminal verdict with cleanup, then one bounded configured evidence capture may acquire the previously lost command/tool/missing-file facts. Another acceptance-proof attempt requires decision-changing candidate evidence or a causal candidate correction.

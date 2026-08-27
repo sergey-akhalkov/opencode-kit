@@ -9,6 +9,7 @@ Generated from `config/practice-owners.json`. Do not edit by hand.
 | `claim-evidence` | `evidence-sufficiency-reviewer` | core | core, all |
 | `configuration-and-deployment` | `deployment-config-reviewer` | domain | all |
 | `execution-safety` | `execution-safety-reviewer` | core | core, all |
+| `foundation-integrity` | `foundation-integrity-reviewer` | core | core, all |
 | `instruction-governance` | `instruction-artifact-reviewer` | core | core, all |
 | `legacy-client-compatibility` | `legacy-client-compatibility-reviewer` | domain | all |
 | `legacy-contract-evidence` | `legacy-evidence-reviewer` | domain | all |

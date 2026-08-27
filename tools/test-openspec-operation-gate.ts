@@ -6,7 +6,12 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { taskTextDigest } from "./contracts/openspec-evidence.ts";
-import { runOpenSpecOperationGate } from "./openspec-operation-gate.ts";
+import {
+  formatBoundedFalsificationReview,
+  inspectBoundedFalsificationReview,
+  runOpenSpecOperationGate,
+  type BoundedFalsificationReview,
+} from "./openspec-operation-gate.ts";
 
 type TestCase = { name: string; run: () => void };
 
@@ -58,7 +63,46 @@ function writeText(filePath: string, text: string): void {
 
 function proposalWithCapsule(extra = ""): string {
   const fields = OUTCOME_CAPSULE.map((field) => `- **${field}**: fixture value for ${field}.`).join("\n");
-  return `# Proposal\n\n## Why\n\nNeed change.\n\n### Outcome Capsule\n\n${fields}\n- **Automation Dividend**: exempt - fixture does not introduce repeated automation.\n\n## Claim And Evidence Scope\n\n- **Claim And Evidence Scope**: Exact fixture claim at the fixture-boundary proof.\n${extra}`;
+  return `# Proposal\n\n## Why\n\nNeed change.\n\n### Outcome Capsule\n\n${fields}\n- **Automation Dividend**: exempt - fixture does not introduce repeated automation.\n- **Bounded Falsification Review**: exempt - exact Ordinary Small fixture.\n\n## Claim And Evidence Scope\n\n- **Claim And Evidence Scope**: Exact fixture claim at the fixture-boundary proof.\n${extra}`;
+}
+
+function validFalsificationReview(overrides: Partial<BoundedFalsificationReview> = {}): BoundedFalsificationReview {
+  const candidateRef = overrides.candidateRef ?? "candidate:demo-r1";
+  const originalRequestRef = overrides.originalRequestRef ?? "event:request-r1";
+  return {
+    originalRequestRef,
+    reviewedRequestRef: overrides.reviewedRequestRef ?? originalRequestRef,
+    acceptedOutcomeRef: "outcome:proposal-capsule-r1",
+    candidateRef,
+    reviewedCandidateRef: overrides.reviewedCandidateRef ?? candidateRef,
+    decisionSurface: "fixture-decision-surface",
+    reviewerAgent: "implementation-readiness-reviewer",
+    reviewerSessionRef: "session:review-r1",
+    effectiveModel: "provider/model/variant",
+    challengeCount: 1,
+    attackClasses: [
+      { id: "coherent-wrong-outcome", status: "attempted" },
+      { id: "silent-owner-decision", status: "attempted" },
+      { id: "missing-observable-oracle", status: "attempted" },
+      { id: "late-implementation-invalidation", status: "attempted" },
+      { id: "internal-contradiction", status: "attempted" },
+      { id: "unnecessary-scope", status: "attempted" },
+    ],
+    materialFindings: [],
+    mainDispositions: [],
+    correctionRef: "none",
+    invalidatedSurfaces: [],
+    terminalReason: "no-material-finding",
+    terminalState: "closed",
+    unresolvedEvidence: [],
+    ...overrides,
+  };
+}
+
+function writeRequiredFalsificationReview(repo: string, changeId: string, review = validFalsificationReview()): void {
+  const changeRoot = path.join(repo, "openspec", "changes", changeId);
+  writeText(path.join(changeRoot, "proposal.md"), proposalWithCapsule().replace("exempt - exact Ordinary Small fixture.", "required - fixture-decision-surface"));
+  writeText(path.join(changeRoot, "falsification-review.md"), formatBoundedFalsificationReview(review));
 }
 
 function broadClaimScope(omit?: string): string {
@@ -418,6 +462,195 @@ const tests: TestCase[] = [
       const exempt = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "exempt-tagged", generatedAt });
       assert(exempt.exitCode === 1 && exempt.checks.some((item) => item.id === "artifact:automation-dividend-task" && item.summary.includes("Exempt")), "Apply must reject an exempt declaration with a tagged task.");
     }),
+  },
+  {
+    name: "bounded falsification declaration rejects missing duplicate and malformed values",
+    run: () => withTempRepo("falsification-declaration", (repo) => {
+      writeChange(repo, "missing-review-declaration");
+      const proposalPath = path.join(repo, "openspec", "changes", "missing-review-declaration", "proposal.md");
+      writeText(proposalPath, proposalWithCapsule().replace("- **Bounded Falsification Review**: exempt - exact Ordinary Small fixture.\n", ""));
+      const missing = runOpenSpecOperationGate(repo, { operation: "propose", changeId: "missing-review-declaration", generatedAt });
+      assert(missing.exitCode === 1 && missing.checks.some((item) => item.id === "artifact:bounded-falsification-declaration" && item.summary.includes("missing")), "Propose must reject a missing bounded-falsification declaration.");
+
+      writeChange(repo, "duplicate-review-declaration");
+      const duplicatePath = path.join(repo, "openspec", "changes", "duplicate-review-declaration", "proposal.md");
+      writeText(duplicatePath, `${proposalWithCapsule()}\n- **Bounded Falsification Review**: required - another surface.\n`);
+      const duplicate = runOpenSpecOperationGate(repo, { operation: "propose", changeId: "duplicate-review-declaration", generatedAt });
+      assert(duplicate.exitCode === 1 && duplicate.checks.some((item) => item.id === "artifact:bounded-falsification-declaration" && item.summary.includes("2")), "Propose must reject duplicate bounded-falsification declarations.");
+
+      writeChange(repo, "malformed-review-declaration");
+      const malformedPath = path.join(repo, "openspec", "changes", "malformed-review-declaration", "proposal.md");
+      writeText(malformedPath, proposalWithCapsule().replace("exempt - exact Ordinary Small fixture.", "maybe later"));
+      const malformed = runOpenSpecOperationGate(repo, { operation: "propose", changeId: "malformed-review-declaration", generatedAt });
+      assert(malformed.exitCode === 1 && malformed.checks.some((item) => item.id === "artifact:bounded-falsification-declaration" && item.summary.includes("required - <decision surface>")), "Propose must reject malformed bounded-falsification declarations for the exact shape cause.");
+    }),
+  },
+  {
+    name: "bounded falsification record round-trips explicit facts and keeps semantics unknown",
+    run: () => withTempRepo("falsification-roundtrip", (repo) => {
+      const review = validFalsificationReview();
+      const text = formatBoundedFalsificationReview(review);
+      const inspected = inspectBoundedFalsificationReview(text);
+      assert(inspected.status === "ok" && inspected.semanticReadiness === "unknown", "Structurally valid review must round-trip without deterministic semantic inference.");
+      if (inspected.status !== "ok") return;
+      assertEqual(inspected.value, review, "Bounded-falsification review readback must preserve every explicit fact.");
+
+      writeChange(repo, "required-current");
+      writeRequiredFalsificationReview(repo, "required-current", review);
+      const current = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "required-current", generatedAt });
+      const record = current.checks.find((item) => item.id === "artifact:bounded-falsification-record");
+      assert(current.exitCode === 0 && record?.status === "passed" && record.summary.includes("semantic readiness remains unknown"), `Current structural record must pass without a semantic verdict, got ${current.status}.`);
+
+      writeChange(repo, "required-missing");
+      writeText(path.join(repo, "openspec", "changes", "required-missing", "proposal.md"), proposalWithCapsule().replace("exempt - exact Ordinary Small fixture.", "required - fixture-decision-surface"));
+      const missing = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "required-missing", generatedAt });
+      assert(missing.status === "warning" && missing.checks.some((item) => item.id === "artifact:bounded-falsification-record" && item.summary.includes("semantic readiness is unknown")), "Missing required record must preserve structural apply with semantic readiness unknown.");
+
+      writeChange(repo, "exempt-with-record");
+      writeText(path.join(repo, "openspec", "changes", "exempt-with-record", "falsification-review.md"), text);
+      const exempt = runOpenSpecOperationGate(repo, { operation: "apply", changeId: "exempt-with-record", generatedAt });
+      assert(exempt.exitCode === 1 && exempt.checks.some((item) => item.id === "artifact:bounded-falsification-record" && item.summary.includes("must not create")), "Exempt declaration must reject a synthetic review record.");
+    }),
+  },
+  {
+    name: "bounded falsification record rejects stale private over-budget missing and semantic inference facts",
+    run: () => withTempRepo("falsification-negative", (repo) => {
+      const cases = [
+        ["stale-candidate", formatBoundedFalsificationReview(validFalsificationReview({ reviewedCandidateRef: "candidate:stale-r0" })), "stale for Candidate Ref"],
+        ["over-budget", formatBoundedFalsificationReview(validFalsificationReview({ challengeCount: 3 })), "two-challenge ceiling"],
+        ["private-request", formatBoundedFalsificationReview(validFalsificationReview()).replace("event:request-r1", "Please transfer the private production data"), "privacy-safe reference"],
+        ["missing-terminal", formatBoundedFalsificationReview(validFalsificationReview()).replace(/^- \*\*Terminal State\*\*:.*\n/mu, ""), "missing required field(s): Terminal State"],
+        ["semantic-inference", `${formatBoundedFalsificationReview(validFalsificationReview())}- **Semantic Materiality**: material\n`, "semantic materiality and task fit remain unknown"],
+      ] as const;
+      for (const [changeId, text, cause] of cases) {
+        writeChange(repo, changeId);
+        writeRequiredFalsificationReview(repo, changeId);
+        writeText(path.join(repo, "openspec", "changes", changeId, "falsification-review.md"), text);
+        const output = runOpenSpecOperationGate(repo, { operation: "apply", changeId, generatedAt });
+        const record = output.checks.find((item) => item.id === "artifact:bounded-falsification-record");
+        assert(output.exitCode === 1 && record?.status === "failed" && record.summary.includes(cause), `${changeId} must fail for exact cause '${cause}', got '${record?.summary ?? "missing check"}'.`);
+      }
+    }),
+  },
+  {
+    name: "bounded falsification record covers terminal disposition correction and reuse states",
+    run: () => {
+      const inspect = (overrides: Partial<BoundedFalsificationReview>) =>
+        inspectBoundedFalsificationReview(formatBoundedFalsificationReview(validFalsificationReview(overrides)));
+
+      assert(inspect({}).status === "ok", "No-material-finding must remain a valid closed terminal state.");
+      for (const status of ["falsified", "unreachable", "optional", "polish"] as const) {
+        const parked = inspect({
+          materialFindings: ["F1"],
+          mainDispositions: [{ findingId: "F1", status }],
+          terminalReason: `${status}-without-work`,
+        });
+        assert(parked.status === "ok", `${status} must not require correction or successor-review state.`);
+      }
+
+      const confirmedCorrection = {
+        materialFindings: ["F1"],
+        mainDispositions: [{ findingId: "F1", status: "confirmed" as const }],
+        correctionRef: "correction:fixture-r2",
+      };
+      assert(inspect({
+        ...confirmedCorrection,
+        invalidatedSurfaces: ["outcome"],
+        terminalReason: "corrected-surface-awaits-rereview",
+        terminalState: "unknown",
+        unresolvedEvidence: ["corrected-rereview"],
+      }).status === "ok", "A first correction may await re-review only after recording challenged-surface invalidation.");
+      assert(inspect({
+        ...confirmedCorrection,
+        challengeCount: 2,
+        invalidatedSurfaces: ["outcome"],
+        terminalReason: "corrected-rereview-closed",
+      }).status === "ok", "One corrected-candidate re-review must close with challenge count two.");
+
+      const unknownAttacks = validFalsificationReview().attackClasses.map((item) => ({ ...item, status: "unknown" as const }));
+      assert(inspect({
+        reviewerSessionRef: "none",
+        effectiveModel: "unknown",
+        challengeCount: 0,
+        attackClasses: unknownAttacks,
+        terminalReason: "reviewer-unavailable",
+        terminalState: "unknown",
+        unresolvedEvidence: ["reviewer-unavailable"],
+      }).status === "ok", "Unavailable review must remain an explicit unknown state.");
+
+      const unchanged = formatBoundedFalsificationReview(validFalsificationReview());
+      assertEqual(
+        inspectBoundedFalsificationReview(unchanged),
+        inspectBoundedFalsificationReview(unchanged),
+        "An unchanged candidate record must be reusable without changing its terminal state.",
+      );
+    },
+  },
+  {
+    name: "bounded falsification record rejects impossible lifecycle transitions with exact causes",
+    run: () => {
+      const unknownAttacks = validFalsificationReview().attackClasses.map((item) => ({ ...item, status: "unknown" as const }));
+      const cases: Array<{ review: BoundedFalsificationReview; reason: string }> = [
+        {
+          review: validFalsificationReview({
+            materialFindings: ["F1"],
+            mainDispositions: [{ findingId: "F1", status: "confirmed" }],
+          }),
+          reason: "A confirmed material finding requires a Correction Ref.",
+        },
+        {
+          review: validFalsificationReview({ correctionRef: "correction:fixture-r2" }),
+          reason: "Correction Ref requires at least one confirmed material finding.",
+        },
+        {
+          review: validFalsificationReview({ invalidatedSurfaces: ["outcome"] }),
+          reason: "Invalidated Surfaces require a Correction Ref.",
+        },
+        {
+          review: validFalsificationReview({
+            challengeCount: 2,
+            materialFindings: ["F1"],
+            mainDispositions: [{ findingId: "F1", status: "confirmed" }],
+            correctionRef: "correction:fixture-r2",
+          }),
+          reason: "Challenge Count 2 requires a confirmed correction that invalidated a challenged surface.",
+        },
+        {
+          review: validFalsificationReview({
+            reviewerSessionRef: "none",
+            effectiveModel: "unknown",
+            challengeCount: 0,
+            attackClasses: unknownAttacks,
+            materialFindings: ["F1"],
+            mainDispositions: [{ findingId: "F1", status: "falsified" }],
+            terminalReason: "reviewer-unavailable",
+            terminalState: "unknown",
+            unresolvedEvidence: ["reviewer-unavailable"],
+          }),
+          reason: "Challenge Count 0 cannot contain findings, dispositions, correction, or invalidation.",
+        },
+        {
+          review: validFalsificationReview({ terminalState: "unknown" }),
+          reason: "Terminal State unknown requires Unresolved Evidence.",
+        },
+      ];
+
+      for (const testCase of cases) {
+        const inspected = inspectBoundedFalsificationReview(formatBoundedFalsificationReview(testCase.review));
+        assert(inspected.status === "invalid", `Expected invalid transition: ${testCase.reason}`);
+        if (inspected.status === "invalid") {
+          assertEqual(inspected.reason, testCase.reason, "Impossible transition must preserve its exact cause.");
+        }
+      }
+    },
+  },
+  {
+    name: "CLI help is effect-free",
+    run: () => {
+      const result = spawnSync("node", [gate, "--help"], { cwd: root, encoding: "utf8", shell: false });
+      if (result.error) throw result.error;
+      assert(result.status === 0 && (result.stdout ?? "").includes("Usage: openspec-operation-gate"), `Help must exit zero without project or provider state, stderr=${result.stderr ?? ""}.`);
+    },
   },
   {
     name: "archive fails incomplete required dividend facts and allows current exempt",

@@ -1,8 +1,0 @@
-{
-  "limits": {
-    "discoveryMetadataTokenProxy": 2239,
-    "globalStartupTokenProxy": 13279,
-    "onDemandBodiesTokenProxy": 66244
-  },
-  "schemaVersion": 2
-}

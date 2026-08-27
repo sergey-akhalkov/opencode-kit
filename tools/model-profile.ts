@@ -16,7 +16,7 @@ export const GOVERNED_BUILTIN_AGENTS = [
   "title",
 ] as const;
 
-export const INHERIT_FROM_PRIMARY_AGENTS = new Set(["troubleshooter"]);
+export const INHERIT_FROM_PRIMARY_AGENTS = new Set(["foundation-integrity-reviewer", "troubleshooter"]);
 
 export function routedAgentNames(governedAgents: readonly string[]): string[] {
   return [...new Set(governedAgents)]

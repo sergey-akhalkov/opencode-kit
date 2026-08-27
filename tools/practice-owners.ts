@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 export const PRACTICE_OWNER_SCHEMA_VERSION = 1;
-export const PRACTICE_OWNER_COUNT = 15;
+export const PRACTICE_OWNER_COUNT = 16;
 export const CORE_NON_OWNER_AGENTS = ["implementation-worker", "sdet-quality-engineer"] as const;
 export const OPTIONAL_FINAL_REVIEW_AGENT = "final-candidate-reviewer";
 

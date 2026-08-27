@@ -9,6 +9,7 @@
     "evidence-sufficiency-reviewer",
     "execution-safety-reviewer",
     "final-candidate-reviewer",
+    "foundation-integrity-reviewer",
     "implementation-readiness-reviewer",
     "implementation-worker",
     "instruction-artifact-reviewer",
@@ -40,6 +41,8 @@
   ],
   "files": [
     "global/AGENTS.md",
+    "global/bin/complexity-foraging-contract.ts",
+    "global/bin/complexity-foraging-inventory.ts",
     "global/opencode.json.template",
     "global/opencode.local.instructions.example.md",
     "global/principles-of-work.md"
@@ -52,6 +55,7 @@
     "codebase-audit-loop",
     "com-activex-adapter-implementation",
     "complain",
+    "complexity-management",
     "config-schema-validation",
     "deduplication-audit",
     "deep-task-planning",
@@ -59,6 +63,7 @@
     "documentation-hardening-loop",
     "documentation-learning-quest",
     "external-service-simulator-harness",
+    "foundation-integrity-recovery",
     "framed-protocol-implementation",
     "instruction-artifact-tuning",
     "latency-benchmark-pack",

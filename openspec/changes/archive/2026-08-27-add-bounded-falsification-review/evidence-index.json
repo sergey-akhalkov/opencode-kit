@@ -1,0 +1,1549 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-bounded-falsification-review",
+  "candidateId": "bounded-falsification-review-current-r1",
+  "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": {
+      "maxFiles": 160,
+      "maxBytes": 4194304,
+      "reason": "The twelve-member configured population retains immutable current bundles, two provider-free replays per member, and separately identified failed-finalized and historical captures; deleting or rewriting those records would erase causal failure and identity evidence.",
+      "cleanupRule": "Retain only files explicitly indexed by this change through archive; add no duplicate replay copy, raw private request, credential, consumer repository, or mutable disposable fixture.",
+      "validation": "The evidence inventory must report at most 160 retained files, at most 4194304 bytes, zero unindexed files, and every schema-v2 lane must resolve with current size and SHA-256 readback."
+    }
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "fe9a630aea3284fb9194c20db90f068cd4b005265c88e6d366035363f05ae7b2",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-canonicalize",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-canonicalize",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run instruction:canonicalize -- --check .",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-1-ownership.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "ad0339d88eefb5880d44f3dc4cbe7ab9e7f85031bc480bbab377beffedb13a4e",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "consumer-outcome-baseline",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "consumer-outcome-baseline",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:consumer-outcome",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-2-baseline-freeze.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "284ae5b9cea1bc80f0a5a22af5a7fc2346474abcbced44f5b0046dec67172b65",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate-tests",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate-tests",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:openspec-gate",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-1-contracts.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "533ffcf337c3700e4df80131caa1a0b183d4c285d309cc1cef2afd01ef2a3898",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-contract-tests",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-contract-tests",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:contracts",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-2-loaded-routing.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "f86424fc276f012891ff49d9805e9f73dc40c99affc327ba6829cb314354ff34",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-propose-apply-contracts",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-propose-apply-contracts",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:openspec-gate",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-3-propose-apply.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.4",
+      "taskTextDigest": "b1b17457780bc3e2dbff2e2eada91d0865637596f5084a4e449a3f7949750e3e",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-coherent-wrong-outcome",
+        "effects": [
+          "configured-model-call",
+          "local-disposable-write"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-coherent-wrong-outcome",
+        "effects": [
+          "configured-model-call",
+          "local-disposable-write"
+        ]
+      },
+      "invocation": {
+        "command": "configured invocation preserved in bounded-falsification-candidate-coherent-wrong-outcome-r2/bundle.json",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-4-candidate-r2.md",
+        "implementation-evidence/candidate-sessions/bounded-falsification-candidate-coherent-wrong-outcome-r2/bundle.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "a9a54f8e38de30096fabb6c58b69d831330aee29c5cb7e36fa8f8ce9445cc788",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "bounded-falsification-state-tests",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "bounded-falsification-state-tests",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:openspec-gate",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-1-explicit-states.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "258c78c8b2cfd8a016df9760defcb707fe78f36af1281c3b519199d8bd6f6c74",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-population-replay",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-population-replay",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "provider-free twelve-member replay verification recorded in task-3-2-population.md",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-2-population.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "8824ab00988bea1701dafeb762fc83edee72880e4921d178168d01a2d748e600",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-canonicalize",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-canonicalize",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run instruction:canonicalize -- --check .",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-3-synchronization.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "84d304aed6e8a17d836b95c189d884292cd70cebc224f2c4d265437d866d0f7c",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "evidence-index-readback",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "evidence-index-readback",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/openspec-change/inventory.ts --root . --mode evidence",
+        "status": 0,
+        "recordedAt": "2026-08-27T05:36:42.325Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-1-evidence-index.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "569c24cac69b6019cd17f9cd991bc93add71f246374e297b9569cc54ef595ae0",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-artifact-reviewer",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "instruction-artifact-reviewer",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "task instruction-artifact-reviewer session ses_fbe40e3b9ffe4c87RHd6KJg1Nt",
+        "status": 0,
+        "recordedAt": "2026-08-27T05:50:06.470Z"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-2-instruction-review.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "926b3867bf680a049fdc0a5818ab57e57c15ea0e0a2b9af4269aa797b6311a0e",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "evidence-sufficiency-reviewer",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "evidence-sufficiency-reviewer",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "task evidence-sufficiency-reviewer session ses_fbe39125bffeZ2VXqf1Ygg95xr",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-3-claim-challenge.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "91473817a0a32e8a72fa559ce029f2c38b1f7cf1ee6b1a4ee05723a2eb5372b2",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-project-validation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "provider-free-project-validation",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "provider-free validation matrix recorded in task-5-1-validation.md",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-5-1-validation.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.2",
+      "taskTextDigest": "3fdaed7fe49c6eef85fcc0d02a55c375de2f70d9151c126a68ecc466aa4940f7",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "local-implementation-handoff",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "local-implementation-handoff",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "local handoff recorded in task-5-2-local-handoff.md",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-5-2-local-handoff.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.3",
+      "taskTextDigest": "7d1eaa80cbbbbac87d6c4ad7e3d0605fd1dcce9ef7dc43d9e13ea9220082f210",
+      "result": "complete",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "archive-readiness-gate",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "archive-readiness-gate",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "bounded falsification record parser and apply/archive gate preflight",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "falsification-review.md",
+        "planning-review-disposition.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "implementation-records",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-1-evidence-index.md",
+          "bytes": 2363,
+          "digest": "796726b986b02bd67038e3e384e544d6467acc4c7c74bb7129aab23eae0d3768"
+        },
+        {
+          "path": "planning-review-disposition.md",
+          "bytes": 1644,
+          "digest": "bde815c466550eb28e3886bfca00696d8cb90c70bdd893b61c001964f9136c71"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-ownership.md",
+          "bytes": 2309,
+          "digest": "52945b5586a373802ec15952b17b7896fedfdd5fb0fa691d536d45372e9a153d"
+        },
+        {
+          "path": "implementation-evidence/task-1-2-baseline-freeze.md",
+          "bytes": 2721,
+          "digest": "a98573f120ae077ebed27f6c2f72c9dda25584f1d2f54d63ceb37298715871f6"
+        },
+        {
+          "path": "implementation-evidence/task-1-2-baseline-live-gate-r2.md",
+          "bytes": 2053,
+          "digest": "9d90156a83aa7e1b63daccd1763fedf8b45d7e7515f7da565ec35f45bb4a0fef"
+        },
+        {
+          "path": "implementation-evidence/task-1-2-baseline-live-gate.md",
+          "bytes": 1509,
+          "digest": "9d11ac1fbbf32b571e39f379a212d6f47d06ab66fa20a13bfc906d4e22f958c3"
+        },
+        {
+          "path": "implementation-evidence/task-2-1-contracts.md",
+          "bytes": 4341,
+          "digest": "2dcd75a0293e6cf59d597af8fe901c6c6c2aeca9b7019a1c9b6d27d6dcf82870"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-loaded-routing.md",
+          "bytes": 3918,
+          "digest": "86323cc70c9e55952fb65d64ba94a46916d569ca5a857f9478e2b7b5feb7e3ff"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-propose-apply.md",
+          "bytes": 3580,
+          "digest": "21edd9d9cf170f0697653581f9216f312a4ce0223ddcce85c7111ff9cb2832b0"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-candidate-live-gate-r2.md",
+          "bytes": 4859,
+          "digest": "253120e8584831649b503264f5b083ec4cecf7c200b77615f23e8fcedbfdd504"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-candidate-live-gate.md",
+          "bytes": 3774,
+          "digest": "b506ce140248cf2c7205a71edac8fe4f6a20a2d035db928ca792dec115ba6d52"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-candidate-r1-diagnostic.md",
+          "bytes": 5438,
+          "digest": "998642966b56e07f243ecce1922cddb4b0cc920bf8ba5b332eee5f59d0179b61"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-candidate-r2.md",
+          "bytes": 3664,
+          "digest": "4e3377d32cd306644b696b5fdeb2c2c4f78e100ca9d12153e16785ccd59250d8"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-explicit-states.md",
+          "bytes": 2808,
+          "digest": "df0821074ff1e997a1eb1f71c706924b2fab76455700749c3a22f431e4542259"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-clean-no-finding-live-gate.md",
+          "bytes": 1890,
+          "digest": "aa6751f2a257938c16071584b4b4907cecba5ec3d683e7cefbbad33acc0bd7c9"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-clean-no-finding-r1.md",
+          "bytes": 1205,
+          "digest": "8da658d055f9b45165e1c24784201f5140bcacd8f0a3ac6be8e526d0fe2c3a03"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-exact-practice-owner-live-gate-r1.md",
+          "bytes": 1478,
+          "digest": "22a87b0be7a86c2328e91c44aedfd42297a04098c345d806e3962a140e6462a1"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-exact-practice-owner-live-gate-r2.md",
+          "bytes": 1789,
+          "digest": "f1c0b9a86729709edba93d858d6ccd71a50e766f4d7422bbd8adecb117c79bfd"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-exact-practice-owner-r2.md",
+          "bytes": 1848,
+          "digest": "35130bda271eca0e730e4667f83294333d5e055f4392df5b00b1d1084fcf1c5b"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-late-implementation-surprise-live-gate.md",
+          "bytes": 2535,
+          "digest": "77765bf9b691193e2c8b2970c50b2a9dfd14e22dfb214608bc6c558458e1e09b"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-late-implementation-surprise-r1.md",
+          "bytes": 1344,
+          "digest": "88586d1b66021c93a5654b28f734b6a5283a70fca5e75461bf00ccb777e4dc2a"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-material-correction-rereview-live-gate-r2.md",
+          "bytes": 2084,
+          "digest": "4cbbca8a40d5216a351d6a5738d4bdefa2b3c0f49443fe404d3635a0e3e4f199"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-material-correction-rereview-live-gate-r3.md",
+          "bytes": 3550,
+          "digest": "9e8c2ce8d49cbb7fdfa4ec060e0360b17fc27e48639902922e9ecf89a5f01e45"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-material-correction-rereview-live-gate.md",
+          "bytes": 2270,
+          "digest": "258bfd6fb2b0edaba186614b896b54e78c8d3703115bc628d2401afc6baf9687"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-material-correction-rereview-r3.md",
+          "bytes": 2601,
+          "digest": "84221af7d09aa7f5eacd4475cd721aa04c12b264d2085ae8971d6856cf9fe689"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-material-inline-plan-live-gate-r1.md",
+          "bytes": 1535,
+          "digest": "65931853eb03dad25a44437bff02061a513dd524b3b4d3c3899a616be7ebb582"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-material-inline-plan-live-gate-r2.md",
+          "bytes": 1730,
+          "digest": "3186b6ec3dd5ca406350ba99ca74b63c64af487320a7870886f6fdc44964a5ab"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-material-inline-plan-r2.md",
+          "bytes": 1775,
+          "digest": "a95ae435a375973fe04f0837510c3220111114b4ef3abf313c35a7bdbacee199"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-missing-observable-oracle-live-gate.md",
+          "bytes": 3555,
+          "digest": "0e19f8508989ef8e7f272e5eb9e6253c8620cbc9ae236f1731611542cbcfc291"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-missing-observable-oracle-r1.md",
+          "bytes": 1488,
+          "digest": "097fce6eca6a0d822223df836f1f56aa96020afe2bd4a217bc252f897f2cc8d6"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-optional-polish-live-gate-r1.md",
+          "bytes": 1355,
+          "digest": "a1b99bc7f495d28987000554fe4058ffbead8d7a044501e4f7eb9b85b7d4952f"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-optional-polish-r1.md",
+          "bytes": 1672,
+          "digest": "ffe9cea702d41c3cd5d430ab6a53b28efa6b3c9f1cd6c95a98731fd68c1b7ecd"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-ordinary-small-exempt-live-gate-r1.md",
+          "bytes": 1362,
+          "digest": "0448d88bf2e8b8bd00592df5e596085afddeb15bb4ad0a753c2cfa22f5483364"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-ordinary-small-exempt-r1.md",
+          "bytes": 1637,
+          "digest": "9cd5702806ed7e3be5abf9c58031bb50ad6ab1d273f20a6faf360e1da6777f52"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-population.md",
+          "bytes": 4925,
+          "digest": "473f1c207ca741464052be84545b43feebd565a262d2a04838ae65f16482f066"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-silent-owner-decision-live-gate-r2.md",
+          "bytes": 5390,
+          "digest": "02f7fed54a3244b0d654274084012138b59377330fbcdfdd8add7949618d2180"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-silent-owner-decision-live-gate.md",
+          "bytes": 4069,
+          "digest": "933f120bab9ce6999108553f6cda6b74547439cac192d8f5114a757bd3ca8d30"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-silent-owner-decision-r2.md",
+          "bytes": 2431,
+          "digest": "73772763596762ce8103262a754a6a0dbfdfa1032259f2cc863be8f3ce01426d"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-unchanged-repeat-live-gate-r1.md",
+          "bytes": 1321,
+          "digest": "8577ea21eb743df7f319698144221876e52df5aadeaa5e0200e114f95950c8f5"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-unchanged-repeat-r1.md",
+          "bytes": 1648,
+          "digest": "9ad0927cecc23ae37b6deba6416633b5fdbf6c7e7667bdb735b624891a6fc224"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-unnecessary-scope-live-gate.md",
+          "bytes": 2239,
+          "digest": "0a71c434b0bd2da2fd8f6d9f890aabe2497847c8c930e054484ac768698d21ac"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-unnecessary-scope-r1.md",
+          "bytes": 1278,
+          "digest": "5bfebe59d683f27c597765a60ef46cf2191db401cede061c5bb4b0526c781c4e"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-synchronization.md",
+          "bytes": 2656,
+          "digest": "12dd11f00fc39b2af5517ed9c957bb808133fe65632919c9a72caa96b3abbefd"
+        }
+      ]
+    },
+    {
+      "name": "historical-baseline",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/baseline-sessions/bounded-falsification-baseline-material-inline-r2/bundle.json",
+          "bytes": 47332,
+          "digest": "2e94ea8e55f6b648799a594ad7259206672c9407318c53a6d62ad76d4837043a"
+        },
+        {
+          "path": "implementation-evidence/baseline-sessions/bounded-falsification-baseline-material-inline-r2/evaluation.json",
+          "bytes": 3940,
+          "digest": "b480c1c26721fbeed63a57519990bef15c3548dd62d23a973cd5587c9a36338b"
+        },
+        {
+          "path": "implementation-evidence/baseline-sessions/bounded-falsification-baseline-r1/bundle.json",
+          "bytes": 848421,
+          "digest": "7d0100f7343dd84145ddd6e6e02fd175d3ecd155436cb0b7cfd4259cd9319d97"
+        },
+        {
+          "path": "implementation-evidence/baseline-sessions/bounded-falsification-baseline-r1/evaluation.json",
+          "bytes": 31567,
+          "digest": "c8ffc91f5a275127f741e72849b342b6bc1267448f0c830c5cc1c9751e86387b"
+        },
+        {
+          "path": "implementation-evidence/baseline-sessions/bounded-falsification-baseline-r1/terminal-replay-r1.json",
+          "bytes": 23515,
+          "digest": "b495bbd9eaf6ddc002fb293c2535cac0cda0ae47cc5a0cbc5292a904709e0380"
+        }
+      ]
+    },
+    {
+      "name": "member-clean-no-finding",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-clean-no-finding-r1/bundle.json",
+          "bytes": 38680,
+          "digest": "c465b2298d30f8a207848486b686607026dd98d9b5f8400be3ab6af6505beed0"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-clean-no-finding-r1/evaluation.json",
+          "bytes": 6218,
+          "digest": "f8f5f6df5b579db6fff1c5a7a8fb00ceccab5793791c394d145febe7a6b519e2"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-clean-no-finding-r1/replay-current-r1.json",
+          "bytes": 4812,
+          "digest": "2923ecfc5fc1ffca5988d5e8678c4d81dd411c9ea7015c2d81a6732ebcec1395"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-clean-no-finding-r1/replay-r1.json",
+          "bytes": 4812,
+          "digest": "342a1cd326b5b4715386bdfd5b62b9df85a5363804127cc5a17de2225e09ab56"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-clean-no-finding-r1/replay-verify-r1.json",
+          "bytes": 4812,
+          "digest": "2923ecfc5fc1ffca5988d5e8678c4d81dd411c9ea7015c2d81a6732ebcec1395"
+        }
+      ]
+    },
+    {
+      "name": "member-coherent-wrong-outcome",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-coherent-wrong-outcome-r1/bundle.json",
+          "bytes": 83435,
+          "digest": "80ed30540e6231026c18313555f4a927a6c03a4f2e589a262a4ea60bdde3c873"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-coherent-wrong-outcome-r1/evaluation.json",
+          "bytes": 5569,
+          "digest": "a03c8bc46b04ae1a70b1e3337b953ec8ca6bf24eb8808a12082dbf2f3d367092"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-coherent-wrong-outcome-r2/bundle.json",
+          "bytes": 50761,
+          "digest": "9638c1b88b1053a2cd761164529b2969d4576909fb878a5842e4b31748bcf57e"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-coherent-wrong-outcome-r2/evaluation.json",
+          "bytes": 6732,
+          "digest": "5d70832eb9fa062bd2530e3687b29e35d0418d5181636f8186cebb53c4132579"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-coherent-wrong-outcome-r2/replay-r2.json",
+          "bytes": 5184,
+          "digest": "5f5eba017072e7a4b4724d50b21d1938e3f9723c677947d61ae7bbe13bfea669"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-coherent-wrong-outcome-r2/replay-verify-r2.json",
+          "bytes": 5184,
+          "digest": "5f5eba017072e7a4b4724d50b21d1938e3f9723c677947d61ae7bbe13bfea669"
+        }
+      ]
+    },
+    {
+      "name": "member-exact-practice-owner",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-exact-practice-owner-r1/bundle.json",
+          "bytes": 34208,
+          "digest": "ba42151c33df67dfa2396233a2ac81c9185185dd19e00be034fdb3d7a9792169"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-exact-practice-owner-r1/evaluation.json",
+          "bytes": 5414,
+          "digest": "3ff00fca16b733b4ba6a931273c1267e1e02339433d83f64fe9f0b99ae01a130"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-exact-practice-owner-r1/replay-r1.json",
+          "bytes": 4257,
+          "digest": "bd415b3a4e97e3202d86e4bf5f214bdaab161a049fc0660dedce63ecb4831a3c"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-exact-practice-owner-r2/bundle.json",
+          "bytes": 56492,
+          "digest": "34274eb9a70e0561425fe61c1898eac0cf169faa98858f08aad6841828330461"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-exact-practice-owner-r2/evaluation.json",
+          "bytes": 6452,
+          "digest": "36b95862c0a232f5f751442a9eb1a0a388952ec976611d3328d7a18111aebf4c"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-exact-practice-owner-r2/replay-r2.json",
+          "bytes": 5046,
+          "digest": "303b9bb1967b4963279f3aa84ab09f127170b6ad250bef4cb40cadc3d6be23dc"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-exact-practice-owner-r2/replay-verify-r2.json",
+          "bytes": 5046,
+          "digest": "303b9bb1967b4963279f3aa84ab09f127170b6ad250bef4cb40cadc3d6be23dc"
+        }
+      ]
+    },
+    {
+      "name": "member-late-implementation-surprise",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-late-implementation-surprise-r1/bundle.json",
+          "bytes": 49257,
+          "digest": "5af29b6b2506dc5b90c7b3f93b6909f102eb926a279ef89cc473ec7660d54045"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-late-implementation-surprise-r1/evaluation.json",
+          "bytes": 6874,
+          "digest": "cb3a44ed997db7c5904eb95b4b08c486664096e3d0ab11e742e56f1c43efd6c7"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-late-implementation-surprise-r1/replay-current-r1.json",
+          "bytes": 5326,
+          "digest": "c2637b73da476bf817f938c2185f27d64d5f5b8b157ed7e0a1aa98035b95272f"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-late-implementation-surprise-r1/replay-r1.json",
+          "bytes": 5326,
+          "digest": "f98bbe4f94cfcbce2b4492845fdd7ee59b520e8e05800e25ce508baf52eff708"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-late-implementation-surprise-r1/replay-verify-r1.json",
+          "bytes": 5326,
+          "digest": "c2637b73da476bf817f938c2185f27d64d5f5b8b157ed7e0a1aa98035b95272f"
+        }
+      ]
+    },
+    {
+      "name": "member-material-inline-plan",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-inline-plan-r1/bundle.json",
+          "bytes": 30190,
+          "digest": "0019e0ffe278b815cbb04efbbb92fe5a283b4fc6e6d8f304b95ac430359b83d9"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-inline-plan-r1/evaluation.json",
+          "bytes": 5555,
+          "digest": "6253df1c0f5636c01bedb946f342e9f2494c675180a96e8a07353904b2727052"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-inline-plan-r1/replay-r1.json",
+          "bytes": 4398,
+          "digest": "9a6e8b38bd8561aa31ee3c3b7b1652de8cf93d4b0d1ebaac66f2c26723ce59d1"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-inline-plan-r2/bundle.json",
+          "bytes": 42383,
+          "digest": "8dc25ac71bc655bbf5bd631b7edb94ef3b260f10a83cf6e964005ba9cc3280f0"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-inline-plan-r2/evaluation.json",
+          "bytes": 6562,
+          "digest": "b8cda33e21b1b64440d5620daeee89ca644157c1cbf828eb603db4080e0b2ffb"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-inline-plan-r2/replay-r2.json",
+          "bytes": 5156,
+          "digest": "6ef19a5c97cc39bb2dfa307568741cdd10b0ec8c0479e6ea96df2c1ee3c359ee"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-inline-plan-r2/replay-verify-r2.json",
+          "bytes": 5156,
+          "digest": "6ef19a5c97cc39bb2dfa307568741cdd10b0ec8c0479e6ea96df2c1ee3c359ee"
+        }
+      ]
+    },
+    {
+      "name": "member-material-correction-rereview",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r1/bundle.json",
+          "bytes": 63401,
+          "digest": "60b535f9377d54aed27d859d0c34abc03db751b090e706bbe499aa42748d7e0b"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r1/evaluation.json",
+          "bytes": 6868,
+          "digest": "5b5bee9a7c2645b626f46639e624980c0946af57335538c7ebd2f9867e2a83de"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r1/replay-observer-r3.json",
+          "bytes": 5320,
+          "digest": "5059d7b550b6b722bbdb0a2dc9de2b16505b8c03d2f8f32276ca5a0da6a652a4"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r1/replay-r1.json",
+          "bytes": 5320,
+          "digest": "87e39ff86faee4b44955a6564f96c36ec8f90a72b5f3c4eb9d292a1989efce89"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r2/bundle.json",
+          "bytes": 41311,
+          "digest": "c32671bdda17988dcd818ac5487b2e805c02d601a0681913c293b6a2aa398baf"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r2/evaluation.json",
+          "bytes": 5668,
+          "digest": "1dc38b38323c590a3e8088a200ee5c173d7496ee356d19da7190c3e44c61eb02"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r2/replay-observer-r3.json",
+          "bytes": 4440,
+          "digest": "ea55467ef44cb030813098ce37eeae21da0ba5be40d30e60e66cbbe892488499"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r2/replay-r2.json",
+          "bytes": 4440,
+          "digest": "1b3f395e74c82c8436ee61481086382caf4836ba7867063b73a18c2eab830a1f"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r3/bundle.json",
+          "bytes": 68114,
+          "digest": "f2730fc56890019e722e9a83453395f9a9c465552d156e623910a6ca924f984f"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r3/evaluation.json",
+          "bytes": 6884,
+          "digest": "8ed49bdd14e13352e70fddc4e704faa97dba1841350d8fd4dc4d1e7191e36b94"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r3/replay-current-r3.json",
+          "bytes": 5336,
+          "digest": "99d6b13d48b4d55b4ba727d4673f8f224c46e6fe997bc9dae09c911504377191"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r3/replay-r3.json",
+          "bytes": 5336,
+          "digest": "400d7c753e78318a862cfa2cb1a38eedb5ea699cc72125db613726c132be0c7e"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-material-correction-rereview-r3/replay-verify-r3.json",
+          "bytes": 5336,
+          "digest": "99d6b13d48b4d55b4ba727d4673f8f224c46e6fe997bc9dae09c911504377191"
+        }
+      ]
+    },
+    {
+      "name": "member-missing-observable-oracle",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-missing-observable-oracle-r1/bundle.json",
+          "bytes": 49188,
+          "digest": "37a45b36e89c9a7debb6a4eca3d7954e6a0592e10950447f2531e00a2f3a8c65"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-missing-observable-oracle-r1/evaluation.json",
+          "bytes": 6686,
+          "digest": "89ceec3d01b8bf257e30c6d77c31af11930ed1e024bfa6f27933fbcb1fa66308"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-missing-observable-oracle-r1/replay-current-r1.json",
+          "bytes": 5160,
+          "digest": "868da9ff5fb3c90306dc2233a2e6098170c46ce686b55de4568189751a3a3599"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-missing-observable-oracle-r1/replay-r1.json",
+          "bytes": 5160,
+          "digest": "0964a71269c286b6652cf1b05322b1bee55322d79493c7d1c46b4cc55fe3a9ba"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-missing-observable-oracle-r1/replay-verify-r1.json",
+          "bytes": 5160,
+          "digest": "868da9ff5fb3c90306dc2233a2e6098170c46ce686b55de4568189751a3a3599"
+        }
+      ]
+    },
+    {
+      "name": "member-optional-polish",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-optional-polish-r1/bundle.json",
+          "bytes": 40401,
+          "digest": "e90cc3cc11d911f45245f3f8a68508b9c546bbd39ac3b634aaddb54ec9fa4f3a"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-optional-polish-r1/evaluation.json",
+          "bytes": 6288,
+          "digest": "0aa2f683708768b088c1864f630a86c11ddae3bef0394932d7c4d525e3e9a0fa"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-optional-polish-r1/replay-r1.json",
+          "bytes": 4842,
+          "digest": "f11c05f7b0dd2c6138d91cc28ba92786622db37bbf6909bd32a3d582b21772fc"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-optional-polish-r1/replay-verify-r1.json",
+          "bytes": 4842,
+          "digest": "f11c05f7b0dd2c6138d91cc28ba92786622db37bbf6909bd32a3d582b21772fc"
+        }
+      ]
+    },
+    {
+      "name": "member-ordinary-small-exempt",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-ordinary-small-exempt-r1/bundle.json",
+          "bytes": 30803,
+          "digest": "3a5734abd366b470c3c4bb48d18dd6fdc66c1175ac4d848b187ef42701bd9a2f"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-ordinary-small-exempt-r1/evaluation.json",
+          "bytes": 6292,
+          "digest": "af4ec036759709532f6cd946bd3cfd63232988cbf279ee1a48d52ceee1197913"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-ordinary-small-exempt-r1/replay-r1.json",
+          "bytes": 4886,
+          "digest": "138f775be37c17c8eb4811b67d874cb151ff207d8586ffa6600561833d9e79d2"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-ordinary-small-exempt-r1/replay-verify-r1.json",
+          "bytes": 4886,
+          "digest": "138f775be37c17c8eb4811b67d874cb151ff207d8586ffa6600561833d9e79d2"
+        }
+      ]
+    },
+    {
+      "name": "member-silent-owner-decision",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r1/bundle.json",
+          "bytes": 42949,
+          "digest": "bde02d8d52e753be9ea1b037732cbbe9aab35a74ef7f6cfea561b0746d08a577"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r1/evaluation.json",
+          "bytes": 5527,
+          "digest": "6cc08cef9f40cd9d082cfa0ef35542289aeb8a7b7a8780dc339445768401148f"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r1/replay-r1.json",
+          "bytes": 4299,
+          "digest": "dcfb6fe6b96d43855784a41d471592305c77ce771c2d9aac8209500ff4814901"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r2/bundle.json",
+          "bytes": 49047,
+          "digest": "8e481ad8b11cff60a72d001315c9d526823ae5b519a3b709567e85567e974465"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r2/evaluation.json",
+          "bytes": 6692,
+          "digest": "9d0dceb1f76e5e751e1ea585dd6cf4abb1f20a1e0bb4e44724cf1cb1ae38b49a"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r2/replay-current-r2.json",
+          "bytes": 5144,
+          "digest": "e9ce4d8b9999a1033ad76ff81c0c373308577b0d3bafc6d4a693c552ae9dfb87"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r2/replay-r2.json",
+          "bytes": 5144,
+          "digest": "99d23a5bb7ca976a6410be82d012fd666a6a0e8c409021a1a3bc1c3e50b90882"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-silent-owner-decision-r2/replay-verify-r2.json",
+          "bytes": 5144,
+          "digest": "e9ce4d8b9999a1033ad76ff81c0c373308577b0d3bafc6d4a693c552ae9dfb87"
+        }
+      ]
+    },
+    {
+      "name": "member-unchanged-repeat",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unchanged-repeat-r1/bundle.json",
+          "bytes": 30942,
+          "digest": "c9fb22b54a79889db99dfd28e87ba6c2605beddeb416b120099a704b649c94f8"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unchanged-repeat-r1/evaluation.json",
+          "bytes": 6268,
+          "digest": "7bf0a5d28a8ffb47bd154667d95d248fdbfdffada44ee92bd238b1bb52709095"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unchanged-repeat-r1/replay-r1.json",
+          "bytes": 4862,
+          "digest": "93e62a39d9f3e24b2de22dcd82f25cac37af9aa29b90ce7dff0e1f65f2610030"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unchanged-repeat-r1/replay-verify-r1.json",
+          "bytes": 4862,
+          "digest": "93e62a39d9f3e24b2de22dcd82f25cac37af9aa29b90ce7dff0e1f65f2610030"
+        }
+      ]
+    },
+    {
+      "name": "member-unnecessary-scope",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unnecessary-scope-r1/bundle.json",
+          "bytes": 54389,
+          "digest": "b0aa2c5a52c5f82a216da5f1ac37d08e136706292974b3df79f3cae3620fb63d"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unnecessary-scope-r1/evaluation.json",
+          "bytes": 6582,
+          "digest": "5a52d84caa0ee388fed3cbd009e9a2d09b46e11634e759f241092a6d924902b8"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unnecessary-scope-r1/replay-current-r1.json",
+          "bytes": 5034,
+          "digest": "1f5b237e22391e191df24bc5eb0f1c1a1f49bfe73eb2e4c3b8bef1879b4cb441"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unnecessary-scope-r1/replay-r1.json",
+          "bytes": 5034,
+          "digest": "91d9362e8a1c923d06951b724439f58a174f2f22c2ba11c2be47611bd9c60168"
+        },
+        {
+          "path": "implementation-evidence/candidate-sessions/bounded-falsification-candidate-unnecessary-scope-r1/replay-verify-r1.json",
+          "bytes": 5034,
+          "digest": "1f5b237e22391e191df24bc5eb0f1c1a1f49bfe73eb2e4c3b8bef1879b4cb441"
+        }
+      ]
+    },
+    {
+      "name": "maintenance-review",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-2-instruction-review.md",
+          "bytes": 3146,
+          "digest": "9fbdeced9b5de24a87fda9daf86982a297bb47ef4ccdcc3623761db6df3c4e6e"
+        }
+      ]
+    },
+    {
+      "name": "claim-challenge",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-3-claim-challenge.md",
+          "bytes": 2370,
+          "digest": "ff558a95722eef427160c85059768329b90e43e40772a61f9c31dfc200ccb972"
+        }
+      ]
+    },
+    {
+      "name": "final-validation",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-5-1-validation.md",
+          "bytes": 4905,
+          "digest": "8b3e9fdc1148257dc69854a02bb676103a1f7f0380884ca972b3d94fe38b5701"
+        }
+      ]
+    },
+    {
+      "name": "local-handoff",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-5-2-local-handoff.md",
+          "bytes": 8290,
+          "digest": "7086e840c0369f62421b1a5adeaa8f2e3746f84a63ea67ebde7b470d1b5db03e"
+        }
+      ]
+    },
+    {
+      "name": "planning-falsification-review",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "falsification-review.md",
+          "bytes": 1345,
+          "digest": "2338f6920b65d5dc98d0379c8deda5781d86972607b26793ae165591c2c41fac"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "bounded-falsification-review-v1",
+      "outcomeRef": "proposal-outcome",
+      "statement": "For the exercised configured model and reviewed partitions, decision-material authored work receives one bounded fresh task-fit challenge that admits only represented material findings, preserves negative controls, and terminates without a generic third review.",
+      "claimClass": "partitioned-domain",
+      "candidateId": "bounded-falsification-review-current-r1",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "bounded-falsification-review-partitions-v1",
+        "members": [
+          "clean-no-finding",
+          "coherent-wrong-outcome",
+          "exact-practice-owner",
+          "late-implementation-surprise",
+          "material-inline-plan",
+          "material-correction-rereview",
+          "missing-observable-oracle",
+          "optional-polish",
+          "ordinary-small-exempt",
+          "silent-owner-decision",
+          "unchanged-repeat",
+          "unnecessary-scope"
+        ],
+        "partitionRule": "Versioned reviewed configured-session fixtures partition bounded falsification behavior by task-fit defect class, no-finding and exemption controls, exact-owner separation, correction invalidation, and unchanged-candidate termination.",
+        "materialClasses": [
+          "clean-no-finding",
+          "coherent-wrong-outcome",
+          "exact-practice-owner",
+          "late-implementation-surprise",
+          "material-inline-plan",
+          "material-correction-rereview",
+          "missing-observable-oracle",
+          "optional-polish",
+          "ordinary-small-exempt",
+          "silent-owner-decision",
+          "unchanged-repeat",
+          "unnecessary-scope"
+        ],
+        "residualSpace": "Other models, providers, prompt histories, repositories, domains, incomplete original requests, unrepresented defect classes, long-term defect-rate or latency effects, non-OpenSpec planning systems, and interactions with active unimplemented changes remain outside the claim."
+      },
+      "paths": {
+        "production": "loaded-main-readiness-routing",
+        "baseline": "historical-characterization",
+        "candidate": "member-local-candidate"
+      },
+      "observationBoundary": "configured-member-local-main-and-fresh-child",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "member-clean-no-finding",
+          "member-coherent-wrong-outcome",
+          "member-exact-practice-owner",
+          "member-late-implementation-surprise",
+          "member-material-inline-plan",
+          "member-material-correction-rereview",
+          "member-missing-observable-oracle",
+          "member-optional-polish",
+          "member-ordinary-small-exempt",
+          "member-silent-owner-decision",
+          "member-unchanged-repeat",
+          "member-unnecessary-scope"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "clean-no-finding",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-clean-no-finding"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "coherent-wrong-outcome",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-coherent-wrong-outcome"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "exact-practice-owner",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-exact-practice-owner"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "late-implementation-surprise",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-late-implementation-surprise"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "material-inline-plan",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-material-inline-plan"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "material-correction-rereview",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-material-correction-rereview"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "missing-observable-oracle",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-missing-observable-oracle"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "optional-polish",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-optional-polish"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "ordinary-small-exempt",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-ordinary-small-exempt"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "silent-owner-decision",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-silent-owner-decision"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unchanged-repeat",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-unchanged-repeat"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unnecessary-scope",
+          "candidateId": "bounded-falsification-review-current-r1",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-version-per-member-node-24.18.1-win32",
+          "paths": {
+            "production": "loaded-main-readiness-routing",
+            "baseline": "historical-characterization",
+            "candidate": "member-local-candidate"
+          },
+          "observationBoundary": "configured-member-local-main-and-fresh-child",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "member-unnecessary-scope"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "implementation-records",
+        "historical-baseline",
+        "member-clean-no-finding",
+        "member-coherent-wrong-outcome",
+        "member-exact-practice-owner",
+        "member-late-implementation-surprise",
+        "member-material-inline-plan",
+        "member-material-correction-rereview",
+        "member-missing-observable-oracle",
+        "member-optional-polish",
+        "member-ordinary-small-exempt",
+        "member-silent-owner-decision",
+        "member-unchanged-repeat",
+        "member-unnecessary-scope",
+        "maintenance-review",
+        "claim-challenge",
+        "final-validation"
+      ],
+      "materialExclusions": [
+        "Defect-free planning or guaranteed discovery of every material issue",
+        "Universal review judgment across models, providers, domains, or repositories",
+        "Every-task, scheduled, exhaustive, or all-practice review",
+        "Semantic quality scoring or finding-count optimization",
+        "Replacement of exact Practice Owners, critical SDET, runtime proof, or validation",
+        "Consumer-product implementation, migration, deployment, release, remote mutation, credentials, cost, or protected actions",
+        "Causal improvement over frozen historical characterization whose initial fixture or runtime identity differs from the current member-local candidate",
+        "One matched OpenCode runtime version across all twelve current member captures",
+        "Literal openspec-propose skill execution or its post-capture apply-requirements heading wording"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "claim-challenge"
+        ]
+      },
+      "maximumSupportedClaim": "For primary openai/gpt-5.6-sol xhigh quality-independent, governed source d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f, and the twelve named member-local captures with OpenCode version retained per member as recorded, every current member produced its represented terminal loaded-routing behavior with complete cleanup and two identical zero-call current replays under evaluator bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643. The sole post-capture governed-source delta is an unexecuted openspec-propose heading under the skill-denied member envelope. This does not entail one matched OpenCode version, causal historical improvement, literal opsx-propose execution, post-install consumer behavior, defect-free or universal planning quality, or unreviewed models, providers, domains, or repositories.",
+      "narrowingAccepted": true,
+      "disposition": "narrowed"
+    }
+  ]
+}

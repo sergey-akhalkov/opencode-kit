@@ -31,19 +31,6 @@ The kit SHALL retain `all` as an explicit compatibility profile and MAY define d
 - **THEN** installation fails before mutation
 - **AND** names both portable source identities
 
-### Requirement: Core context has enforced ceilings
-The maintained core surface SHALL remain at or below 12,000 startup token-proxy and 1,200 discovery metadata token-proxy under the loader-visible inventory. The full catalog SHALL retain separate reporting and SHALL NOT consume the core budget. A reduction SHALL preserve required safety markers and pass the maintained consumer no-regression expectation before becoming the default.
-
-#### Scenario: Core grows beyond its ceiling
-- **WHEN** loader-visible core inventory exceeds either ceiling
-- **THEN** strict validation fails with actual and allowed values
-- **AND** a larger `all` profile does not excuse the core regression
-
-#### Scenario: Smaller core drops a safety oracle
-- **WHEN** a candidate is under budget but the consumer outcome gate loses a required authority/proof/safety result
-- **THEN** the candidate is rejected
-- **AND** the previous default remains selected
-
 ### Requirement: Existing installations are not silently migrated
 Profile-aware installation SHALL preview exact additions/removals and preserve an existing machine-local config and installed catalog unless the operator explicitly selects a migration mode. Migration SHALL create a recoverable backup and verify the effective loader-visible surface before reporting success.
 
@@ -81,30 +68,68 @@ Owner agents SHALL remain loader-visible through concise discovery metadata whil
 - **THEN** every initial core and domain Practice Owner is loader-visible exactly once
 - **AND** execution, optional cross-cutting, helper, and control-plane roles retain their separate classifications.
 
-### Requirement: Core includes core Practice Owners within existing budgets
+### Requirement: Core context is governed by complete ownership and observable behavior
 
-The default `core` surface SHALL include every owner for the registered core practices that govern portable outcome readiness, verification and tests, claim evidence, simplicity and reuse, architecture and change locality, execution safety, instruction governance, and blocker recovery. The candidate core manifest SHALL add `openspec-architecture-reviewer`, `instruction-artifact-reviewer`, and `execution-safety-reviewer`, and SHALL move the optional non-owner `final-candidate-reviewer` to `all` while preserving its explicit optional route. It SHALL preserve the existing core maximum of 12,000 startup token proxy and 1,200 discovery-metadata token proxy, the separate 13,279 committed global-authority maximum, and the matched consumer no-regression contract.
+The maintained `core` surface SHALL include every owner for the registered core practices that govern portable outcome readiness, verification and tests, claim evidence, simplicity and reuse, architecture and change locality, execution safety, instruction governance, and blocker recovery. It SHALL retain `openspec-architecture-reviewer`, `instruction-artifact-reviewer`, and `execution-safety-reviewer` in core and SHALL retain the optional non-owner `final-candidate-reviewer` outside core while preserving its explicit optional route.
 
-#### Scenario: Core owner additions fit the budget
+Loader-visible inventory SHALL report core startup authority, discovery metadata, and on-demand bodies separately with source/profile identity and unknown-source status. Core selection and validation SHALL NOT impose a numeric token-proxy ceiling or frozen-size baseline. A core candidate SHALL instead preserve every required owner and profile invariant, pass canonical ownership, exact-duplicate, canonicalization, privacy, and source-collision checks, and satisfy the maintained matched consumer no-regression contract.
 
-- **WHEN** the candidate core manifest includes all registered core owners
-- **THEN** loader-visible inventory remains within both existing core ceilings
-- **AND** matched consumer and practice-routing scenarios preserve outcome, safety, proof, and cleanup.
+#### Scenario: Required core owner adds unique discovery metadata
 
-#### Scenario: Core cannot fit an owner by adding metadata
+- **WHEN** a required registered core owner adds unique trigger-complete discovery metadata and all context-quality and matched behavior checks pass
+- **THEN** inventory reports the discovery delta without rejecting the owner because of a numeric ceiling
+- **AND** core retains every required owner and prior behavior oracle.
 
-- **WHEN** adding a required core owner would exceed a reviewed discovery boundary
-- **THEN** implementation first compresses redundant descriptions or removes a proven optional non-owner surface without weakening required behavior
-- **AND** does not raise the budget or omit the owner automatically.
+#### Scenario: Smaller core drops a safety oracle
 
-#### Scenario: Optional final review remains available outside core
+- **WHEN** a candidate reduces startup or discovery measurements but loses a required authority, proof, routing, safety, permission, or cleanup result
+- **THEN** the candidate is rejected by the maintained consumer outcome gate
+- **AND** the previous default remains selected regardless of the measured reduction.
 
-- **WHEN** a core consumer needs the optional post-MVP final candidate reviewer
-- **THEN** runtime reports that the relevant optional profile or `all` surface is required
-- **AND** practice ownership does not silently load a checkout or compatibility alias.
+#### Scenario: Full catalog remains separately visible
+
+- **WHEN** the `all` compatibility profile contains more artifacts or larger on-demand bodies than core
+- **THEN** inventory reports each profile and category separately
+- **AND** neither profile's complete catalog total is represented as one startup prompt size.
 
 #### Scenario: Core practice owner is unavailable at runtime
 
 - **WHEN** a resolved core manifest names an owner but live loader evidence cannot discover it
-- **THEN** runtime readiness reports the exact profile/loader mismatch
-- **AND** the practice does not silently fall back to an unregistered agent.
+- **THEN** runtime readiness reports the exact profile and loader mismatch
+- **AND** the practice does not silently fall back to an unregistered agent or pass because context measurements are small.
+
+#### Scenario: Exact routing text is duplicated across core artifacts
+
+- **WHEN** core model-facing artifacts contain an exact repeated operative prose block without one reviewed canonical owner and loader-boundary exception
+- **THEN** strict validation rejects the profile candidate with every maintained source location
+- **AND** no numeric measurement or `all` profile behavior excuses the duplicate authority.
+
+### Requirement: Core runtime profiles include context-qualified foundation integrity and recovery
+Every maintained profile that selects the core Practice Ownership runtime SHALL
+include exactly one `foundation-integrity-reviewer` agent and the on-demand
+`foundation-integrity-recovery` skill from the same verified source as the other core
+artifacts. Profile resolution SHALL fail before mutation when the registered owner
+or recovery skill is absent, duplicated, stale, conflicting, or omitted from the
+effective manifest.
+
+The added owner description, skill discovery metadata, compact routing, and profile
+catalog changes SHALL preserve canonical ownership, exact-duplicate handling,
+context quality, and loaded behavior. Inventory size and token-proxy measurements
+SHALL remain diagnostics rather than acceptance ceilings. The implementation MUST NOT
+remove another required core owner or weaken an existing trigger merely to reduce a
+diagnostic measurement.
+
+#### Scenario: Core profile resolves the new practice
+- **WHEN** strict profile resolution loads the maintained core runtime
+- **THEN** the exact registered foundation owner and recovery skill are loader-visible once with matching source identities
+- **AND** all previously required core owners and skills remain present.
+
+#### Scenario: Unique metadata changes an inventory diagnostic
+- **WHEN** the candidate owner, skill, catalog, or routing metadata adds unique required behavior and increases a size or token-proxy measurement
+- **THEN** inventory reports the changed diagnostic and context-quality plus loaded behavior checks remain authoritative
+- **AND** validation neither introduces a replacement size ceiling nor silently omits an existing artifact.
+
+#### Scenario: Runtime profile omits the registered owner
+- **WHEN** a selected profile includes the foundation practice binding but lacks the exact owner agent or recovery skill
+- **THEN** profile resolution fails with the missing artifact identity before project mutation
+- **AND** no fallback owner or top-level default-primary agent is inferred.

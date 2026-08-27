@@ -1,0 +1,8 @@
+# Task 3.2 Optional-Polish R1
+
+- Outcome: the current configured optional-polish member passed under governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`, scenario `707c95254d3fa3ef26482563658337849bb5f9bbbcb6d3dd0f1542161df6b930`, request `23bf75fa5e3379ed4eed02d622ae5121b54953c09dbbd391b7cfc67547eff89d`, and fixture `a6ef6c0fc5b1d21e61d8e454652e616266260a0c406f5cdbaee3cf5920b2ebf8`.
+- Bundle: `candidate-sessions/bounded-falsification-candidate-optional-polish-r1/bundle.json`; one `openai/gpt-5.6-sol` / `xhigh` primary request and one completed readiness child.
+- Behavior: all six attacks were attempted; the reviewer observation was parked as `BFR-009:optional`; no material finding, correction, invalidation, successor work, or second challenge was created; the exact terminal reason is `optional-observation-parked`.
+- Diagnostics: OpenCode `1.18.23`; status, validation, and proof zero; elapsed `115409` ms under `300000` ms; three completed tools; no timeout, failed or duplicate call, question, violation, forbidden effect, or cleanup error. Decision digest: `1d3d435a43624bb7930587c2b9b6a82131dd7bde8902b8f4acf31206004f9653`.
+- Replays: `replay-r1.json` and `replay-verify-r1.json` are identical under terminal evaluator `bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643`; candidate oracle `909ae9e2e15d0e71e9380a4deb3dec1556c701ea7d4a72a74e3afff29efb8ddf`; both have `liveCalls: 0`.
+- Claim ceiling: one current optional-work negative control. Historical comparison is blocked by `initialFixtureDigest,opencodeVersion` and supports no causal, population, or universal-quality claim. External operations: none.

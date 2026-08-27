@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-bounded-falsification-review",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-bounded-falsification-review",
+      "requirements": [
+        "Decision-material authoring starts from failure hypotheses",
+        "Fresh challenge receives independent task and candidate inputs",
+        "Challenge attacks task fit and unnecessary work",
+        "Material findings require complete admission evidence",
+        "Main owns disposition and correction",
+        "One episode has a finite challenge budget",
+        "Review state remains candidate-correlated and structurally honest"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Decision-material work receives one early falsification episode",
+        "Review cannot convert non-critical observations into mandatory scope"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Falsification before confidence is a bounded operational rule",
+        "Configured behavior proves instruction effectiveness"
+      ]
+    },
+    {
+      "capability": "library-practice-ownership",
+      "requirements": [
+        "Outcome readiness owns pre-investment task-fit falsification",
+        "Unavailable challenge narrows readiness rather than inventing conformance"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "Propose separates structural and semantic readiness",
+        "Apply consumes current review state without reopening a loop"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "config/practice-owners.json",
+    "config/practice-owners.view.md",
+    "global/AGENTS.md",
+    "global/agents/implementation-readiness-reviewer.md",
+    "global/bin/openspec-change",
+    "global/bin/openspec-operation-gate.ts",
+    "global/commands/opsx-apply.md",
+    "global/commands/opsx-propose.md",
+    "global/principles-of-work.md",
+    "global/skills/openspec-apply-change/SKILL.md",
+    "global/skills/openspec-propose/SKILL.md",
+    "instructions/leaf-reviewer-agent-contract.md",
+    "instructions/practice-owner-agent-contract.md",
+    "openspec/config.yaml",
+    "templates/project/AGENTS.md",
+    "tools/contracts",
+    "tools/evidence-index.ts",
+    "tools/proofs/README.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/fixtures/consumer-outcome/bounded-falsification-r1.json",
+    "tools/proofs/fixtures/consumer-outcome/bounded-falsification-v1",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-contracts.ts",
+    "tools/test-openspec-operation-gate.ts",
+    "tools/test-practice-owners.ts",
+    "tools/validators"
+  ],
+  "dependencies": [
+    {
+      "changeId": "replace-instruction-limits-with-context-quality",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/principles-of-work.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" }
+      ],
+      "transferCondition": "archived-2026-08-26"
+    },
+    {
+      "changeId": "add-foundation-integrity-autorecovery",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "config/practice-owners.json" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" }
+      ],
+      "transferCondition": "archived-2026-08-27"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "add-bounded-falsification-review",
+      "toChangeId": "add-continuous-complexity-management",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/principles-of-work.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-bounded-falsification-review",
+      "toChangeId": "add-specialist-team-advisor",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "config/practice-owners.json" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-bounded-falsification-review",
+      "toChangeId": "add-autonomous-campaign-orchestration",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/skills/openspec-apply-change/SKILL.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

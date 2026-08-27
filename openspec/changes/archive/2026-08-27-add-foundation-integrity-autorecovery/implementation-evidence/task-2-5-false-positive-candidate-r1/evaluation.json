@@ -1,0 +1,178 @@
+{
+  "decisionOracles": [],
+  "digest": "bb1edceb4cc1d8a2c093b490114ec8a755b508d570d7e41858e4af1a618da7a3",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ca4e149a7140617aa0298e59da73e50b625352c69b4d9772886ef4507819ecac",
+      "candidate": "ac4f0c77043278135ec10ac92c0ba82e8075a4306ea4f1602aaf68a9b2079167"
+    },
+    "terminalReplay": "ac4f0c77043278135ec10ac92c0ba82e8075a4306ea4f1602aaf68a9b2079167"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "false-positive-falsification": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 5
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "0a6d29830c1eb56e67dc273b686019851b82f215e30d7630fe249fe74526ee9a",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "candidate.false-positive-falsification.1.proof.exitCode",
+      "foundation-integrity-oracle:candidate:false-positive-falsification:1:malformed-observation"
+    ],
+    "scenarioDigest": "34254b00f0818d1a627cb1ca87fd22492bf78b83df7485026ae37f337670ef9a",
+    "sourceDigest": "98c9db0db053ee2f072ee93084fcdece0d85d49138e935e465cbe6b251713468",
+    "status": "failed",
+    "digest": "a3e6b539b1d35849c0732f0100c9047371c9bc7ae57f95718d12faa9282121ec",
+    "schemaVersion": 1
+  },
+  "foundationIntegrityOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "failures": [],
+      "observed": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "none",
+        "initialReviewCount": 0,
+        "ownerAgent": "none",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "not-run",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "unknown"
+          }
+        ],
+        "terminalState": "unavailable"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "artifactRows": [
+          {
+            "artifactId": "falsification-plan",
+            "path": "state/false-positive-falsification.json",
+            "stateSha256": "4c231ae57cef900250c531f1bc218fa7a27b3a1c121fed80085c7248d17724dd"
+          },
+          {
+            "artifactId": "archived-result",
+            "path": "state/archive-record.json",
+            "stateSha256": "f782ef20ac068aa1c41684b4e13d68e2f0094d63895258d9165a5c2a52e11c3e"
+          },
+          {
+            "artifactId": "unrelated-active-change",
+            "path": "state/unrelated-active-change.json",
+            "stateSha256": "e495608e6be663bcf50f06ea5abebd6f50df8ad81e62d396b663cda65e6bf92c"
+          }
+        ],
+        "caseId": "false-positive-falsification",
+        "correctedReviewCount": 0,
+        "incidentId": "fi-false-positive-falsification-r1",
+        "initialReviewCount": 1,
+        "ownerAgent": "foundation-integrity-reviewer",
+        "recoverySkillCount": 0,
+        "reproductionDisposition": "falsified",
+        "terminalRows": [
+          {
+            "memberId": "false-positive-falsification",
+            "status": "supported"
+          }
+        ],
+        "terminalState": "falsified"
+      },
+      "failures": [
+        "malformed-observation"
+      ],
+      "observed": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    }
+  ],
+  "foundationIntegrityRows": [
+    {
+      "arm": "baseline",
+      "expectedStatus": "unknown",
+      "failures": [],
+      "memberId": "false-positive-falsification",
+      "observedStatus": "unknown",
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    },
+    {
+      "arm": "candidate",
+      "expectedStatus": "supported",
+      "failures": [
+        "missing-row"
+      ],
+      "memberId": "false-positive-falsification",
+      "observedStatus": null,
+      "passed": false,
+      "sampleIndex": 1,
+      "scenarioId": "false-positive-falsification"
+    }
+  ],
+  "maximumClaim": "the exercised configured model and selected foundation-integrity scenarios (false-positive-falsification) cover only their 1 explicit members under the recorded identities"
+}

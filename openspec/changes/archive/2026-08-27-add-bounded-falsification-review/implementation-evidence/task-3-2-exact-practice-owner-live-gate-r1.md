@@ -1,0 +1,7 @@
+# Exact-Practice-Owner Candidate Live Gate R1
+
+- Lane: `bounded-falsification-review-v1/exact-practice-owner`; Live-Attempt Gate: clear for one r1 capture, consumed at start.
+- Identity: governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`; selected scenario `7b347280fdcbf83c6b9228cb2efc66cfde1f1b67872a6feb6456ecf15220a7ea`; request `82a0f97b666beae5fd0151780e0ca5625fa29936416b4fa86eb44fd6aaf4191d`; source fixture `05b0f29dc51db2618b6c68883d64e7e1e78542c85bc74f648a3d79ebe4e429fe`; OpenCode `1.18.23`; runner `capture.ts=66429a74eaa787cb0324b2f8f0c66192a8a070d587e768ea5670886014f0df66`.
+- Required observation: exactly one generic readiness child handles task fit and one independent `instruction-artifact-reviewer` handles instruction governance; neither impersonates the other or fans out; reviewed terminal row, exit/proof/validation zero, `timedOut=false`, and cleanup complete.
+- Envelope: one configured primary, exactly two independent read-only children under existing permissions and 300000 ms bound, no third/fan-out owner, question, mutation outside fixture, product/protected/external effect, or semantic evaluator rewriting. Selected preflight is ready with zero model calls; focused provider-free tests are 33/33.
+- Retry condition: only a dependency-invalidating candidate/request/fixture/environment or proved runner-bound change plus terminal replay and a new gate. A timeout remains a Proof Runner fact, not product failure.

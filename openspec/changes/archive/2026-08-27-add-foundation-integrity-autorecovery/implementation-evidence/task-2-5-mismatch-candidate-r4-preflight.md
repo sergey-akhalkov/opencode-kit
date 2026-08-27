@@ -1,0 +1,8 @@
+# Task 2.5 Corrected Runner Candidate R4 Preflight
+
+- Candidate class: acceptance attempt through a causally corrected Proof Runner. Product governed source remains `231a2c5b1f1d0058f3e3a427479350a0e3fc1dad2ba64b6d34e50db540785e93`; selected scenario digest remains `6cfcbecbeacfe352c4e5884cb3ae1f1f6a5c59e0f8b27b5a81c016990abaadf9`.
+- Decision-changing diagnostic: `task-2-5-r3-runtime-diagnostic-r2/diagnostic.json` observes the exact 180-second runner abort while the actual corrected-candidate reviewer task was in progress. It does not establish a Product Candidate failure.
+- Causal runner changes: foundation configured prompts alone receive 300 seconds; server diagnostics use the maintained Windows process-tree stopper. No expected decision, fixture request, owner/skill source, permission, provider-request count, or accepted outcome changed.
+- Provider-free gates: consumer-outcome tests 29 cover timeout selection, structured diagnostic readback, privacy sealing, process-tree cleanup, scenario projection/composition, and missing-output preservation. Contracts tests 71 and selected-pack preflight pass.
+- Scope: one candidate call for `mismatch-unique-recovery`, three members, one configured primary invocation, accepted baseline projection, create-new immutable evidence root.
+- Stop line: require terminal `passed-no-regression`, valid `decision.json`, real initial and corrected owner calls, one recovery skill load, corrected-only artifact state, archive/unrelated preservation, session/process/fixture cleanup, and provider-free replay. Otherwise stop and preserve; do not start the other six scenarios.

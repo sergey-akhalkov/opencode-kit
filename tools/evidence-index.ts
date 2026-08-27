@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 
 type EvidenceReferenceRole = "current-terminal" | "first-causal-failure" | "successor-unlock";
@@ -202,12 +203,47 @@ export function resolveEvidenceLane(indexFile: string, laneName: string): Resolv
   };
 }
 
+export function materializeEvidenceIndex(indexFile: string): { files: number; lanes: number } {
+  const absoluteIndex = path.resolve(indexFile);
+  const parsed = JSON.parse(fs.readFileSync(absoluteIndex, "utf8")) as unknown;
+  if (!plainRecord(parsed) || parsed.schemaVersion !== 2 || !Array.isArray(parsed.lanes)) {
+    throw new Error("Evidence index materialization requires schemaVersion 2 with a lanes array.");
+  }
+  const directory = path.dirname(absoluteIndex);
+  let fileCount = 0;
+  for (const laneValue of parsed.lanes) {
+    if (!plainRecord(laneValue) || !Array.isArray(laneValue.files) || laneValue.files.length === 0) {
+      throw new Error("Evidence index materialization requires every lane to contain files.");
+    }
+    for (const fileValue of laneValue.files) {
+      if (!plainRecord(fileValue)) throw new Error("Evidence index lane file must be an object.");
+      const relative = safeRelativeFile(fileValue.path, "lane file path");
+      const absolute = path.resolve(directory, relative);
+      const boundary = `${directory}${path.sep}`;
+      if (!absolute.startsWith(boundary)) throw new Error("Evidence index lane file escapes the index directory.");
+      const stat = fs.lstatSync(absolute);
+      if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`Evidence lane path is not a regular file: ${relative}`);
+      const content = fs.readFileSync(absolute);
+      fileValue.bytes = content.byteLength;
+      fileValue.digest = createHash("sha256").update(content).digest("hex");
+      fileCount += 1;
+    }
+  }
+  const serialized = `${JSON.stringify(parsed, null, 2)}\n`;
+  if (Buffer.byteLength(serialized, "utf8") > MAX_INDEX_BYTES) throw new Error("Materialized evidence index exceeds 65536 bytes.");
+  fs.writeFileSync(absoluteIndex, serialized, "utf8");
+  readIndex(absoluteIndex);
+  return { files: fileCount, lanes: parsed.lanes.length };
+}
+
 function usage(): string {
   return `Usage:
   node tools/evidence-index.ts --index <file> --lane <name>
+  node tools/evidence-index.ts --index <file> --materialize
 
 Reads bounded index metadata and checks only the selected lane's referenced files.
-It never reads or prints referenced bundle content.`;
+Materialize deterministically refreshes schema-v2 lane file sizes and SHA-256 digests.
+Neither mode prints referenced bundle content.`;
 }
 
 function isMainModule(): boolean {
@@ -225,6 +261,11 @@ if (isMainModule()) {
     const laneAt = process.argv.indexOf("--lane");
     const indexFile = indexAt >= 0 ? process.argv[indexAt + 1] : undefined;
     const lane = laneAt >= 0 ? process.argv[laneAt + 1] : undefined;
+    if (process.argv.includes("--materialize")) {
+      if (indexFile == null) throw new Error("--index is required.");
+      console.log(JSON.stringify(materializeEvidenceIndex(indexFile), null, 2));
+      process.exit(0);
+    }
     if (indexFile == null || lane == null) throw new Error("--index and --lane are required.");
     console.log(JSON.stringify(resolveEvidenceLane(indexFile, lane), null, 2));
   } catch (error) {

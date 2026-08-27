@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-continuous-complexity-management",
+  "candidateId": "continuous-complexity-management-routing-r1",
+  "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "6237b5b1b515c42b35c1f0f9746d90fb997287f2bb5b149252ecc0c7a4281130",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run openspec:change-inventory -- --root . --mode all",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-1-ownership.md",
+        "ownership.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.1.1",
+      "taskTextDigest": "296a2da3c59c9e6372cfc483426299db026101de129998ec5f9dac0641cc0301",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate-apply",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate-apply",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/openspec-operation-gate.ts --root . --operation apply --change add-continuous-complexity-management",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "falsification-review.md",
+        "implementation-evidence/task-1-1-1-falsification.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "48e6c96447867c0330fd6e5061762724350e0cda8331bed021d9c4170066fa2f",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-schema-roundtrip",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-schema-roundtrip",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-complexity-foraging-contract.ts",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-2-schema.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "taskTextDigest": "342e8b27033940aebdf9e2fa7be529d2ce95e80c9da8b6cb1d89de8d963ef0e1",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-inventory-cli",
+        "effects": [
+          "read-only",
+          "temporary-files"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-inventory-cli",
+        "effects": [
+          "read-only",
+          "temporary-files"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-complexity-foraging-inventory.ts",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-3-cli.md",
+        "implementation-evidence/task-1-3-help.txt",
+        "implementation-evidence/task-1-3-cohesive.json",
+        "implementation-evidence/task-1-3-noisy.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "d8b1449f6d126bc06b11d87495189b34f70b7d3ed6ba3585658352adb05cf75a",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-management-skill-contract-readback",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-management-skill-contract-readback",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node --input-type=module -e <focused complexity-management discovery contract readback>",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-1-skill.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "5d8b793b4e0b1fb46a664969cda8adf021f906facb18094404f0fdc0acf98b05",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-core",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-core",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:runtime-surface-loader -- --candidate-id continuous-complexity-management-profile-r1 --evidence-root openspec/changes/add-continuous-complexity-management/implementation-evidence/task-2-2-runtime-core-r2 --profile core",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-2-profiles.md",
+        "implementation-evidence/task-2-2-runtime-core-r2/raw.json",
+        "implementation-evidence/task-2-2-runtime-core-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "7af6938f03c9f226652e424945366a5d61140ff3333902486dbaea43528ed6aa",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-integrated-routing",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-integrated-routing",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:runtime-surface-loader -- --candidate-id continuous-complexity-management-routing-r1 --evidence-root openspec/changes/add-continuous-complexity-management/implementation-evidence/task-2-3-runtime-core-r2 --profile core",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-3-routing.md",
+        "implementation-evidence/task-2-3-runtime-core-r2/raw.json",
+        "implementation-evidence/task-2-3-runtime-core-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "implementation-records",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "planning-review-disposition.md",
+          "bytes": 7880,
+          "digest": "3d7f046ed452a35c28d0916108174aceef46f63c5533ec5359599419c7ab5d75"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-ownership.md",
+          "bytes": 3404,
+          "digest": "5070141ff647fd2a94f013bcc8c523be9a3b7e9f02dbe3d228b216ce7f007524"
+        },
+        {
+          "path": "falsification-review.md",
+          "bytes": 1347,
+          "digest": "6013af1d9ffadb59d0ec647e16e9b9312b1e2f53d9fbc77527a710cc724142e7"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-1-falsification.md",
+          "bytes": 3542,
+          "digest": "5d55fba5081184b44483f19f098479c57c0da09191a8420ba74dd024b7490381"
+        },
+        {
+          "path": "implementation-evidence/task-1-2-schema.md",
+          "bytes": 4849,
+          "digest": "59bf5bc5751c23e8fa1e0e18ecc4d73ca1b76979e0e43a949a54759dd61b8e70"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-cli.md",
+          "bytes": 4676,
+          "digest": "f0ca6241e8272c2b62a76716636f88da79b2a88f07e660d581bfac445d827d20"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-help.txt",
+          "bytes": 1109,
+          "digest": "1029b84145aef48bbc099081bedf7afc46b126d86a9159e0ad35f261643f16b3"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-cohesive.json",
+          "bytes": 2576,
+          "digest": "b24ac70a20f4e7653ac4c5fec17f663b108d0e87748deca93ac214e3ed2f43f3"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-noisy.json",
+          "bytes": 2657,
+          "digest": "133d7eb3342304c79baa55662d56c128d1c89330fc7ddb1eb72af51aa951f802"
+        },
+        {
+          "path": "implementation-evidence/task-2-1-skill.md",
+          "bytes": 3932,
+          "digest": "1c1e34ec3ee3419387654af0c86c8f1062fcc8c296f3b83794be6598b3ce47a9"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-profiles.md",
+          "bytes": 4726,
+          "digest": "5461bc4c23692abd129528a94d4bd6f6c3a2acf6b54c463b9263e66cbc470ce1"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core/raw.json",
+          "bytes": 1804,
+          "digest": "dcf346a0c754853827d3f5de9464b3770f4d1f0ca6fcafebce451f5f4c5972a6"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core/evaluation.json",
+          "bytes": 105,
+          "digest": "64daec9b1d40c22ef9640a62746c9bbe497be574b5c03b1c165ce2d8e033fa9c"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core-r2/raw.json",
+          "bytes": 2068,
+          "digest": "0e0284e652f7773f7cb3886b792f952167c69801b9fde73a04afa7074754228e"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core-r2/evaluation.json",
+          "bytes": 105,
+          "digest": "a3981009f2d439529c1faa4d93fc62e289ea7cabcd3c65e759bc9c01a089dcbb"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-routing.md",
+          "bytes": 4755,
+          "digest": "fa6cdab047f961275d5553afb9f50622284e97195f0d1a1767290c48ab9e5a35"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core/raw.json",
+          "bytes": 2108,
+          "digest": "840cb47b6a327d175ffa4173b4fef2fca10e6e3db2d9c87b69419c10633e44cf"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core/evaluation.json",
+          "bytes": 105,
+          "digest": "178501178343498eb5274e8b002a4ec88299be6a0da249056bca9cb13d492f08"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core-r2/raw.json",
+          "bytes": 2108,
+          "digest": "840cb47b6a327d175ffa4173b4fef2fca10e6e3db2d9c87b69419c10633e44cf"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core-r2/evaluation.json",
+          "bytes": 105,
+          "digest": "178501178343498eb5274e8b002a4ec88299be6a0da249056bca9cb13d492f08"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-gate.md",
+          "bytes": 5866,
+          "digest": "8eecc8c5d114025249e299ac26b25e1b6d59bf75758075425d953f981eac623c"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r1/bundle.json",
+          "bytes": 9950,
+          "digest": "86a11007e1d4c668d98910b3560811c924098d115689bfe0cf34bb38d6dd70a9"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r1/evaluation.json",
+          "bytes": 5510,
+          "digest": "cef0292deff8f42123afc0ef5eedb659e00320b9b1e66d6aa790fcb5ff8d32d9"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r2/bundle.json",
+          "bytes": 9950,
+          "digest": "d112cab3e4485d6a566fa714eb45a01e6ef0652420bddab3722399bf98bd0777"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r2/evaluation.json",
+          "bytes": 5196,
+          "digest": "544c5c7b5af79813fa6c6d21438a6e51fd7dfd1cb6429cab4073f2fcfdd4d924"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/bundle.json",
+          "bytes": 10033,
+          "digest": "7f8ff216329c1e88baa41fb6c5463a884babfa955cfb431ae46df753976c692e"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/evaluation.json",
+          "bytes": 9309,
+          "digest": "6ab6ba4b08c93a1d63b3805242884838f885002b30e597cad43a7595a5476b18"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/replay-1.json",
+          "bytes": 6545,
+          "digest": "606c0b8a709ad822f5e8ceacc5784918dd3097267b07f17c542a2b4ca7147262"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/replay-2.json",
+          "bytes": 6545,
+          "digest": "606c0b8a709ad822f5e8ceacc5784918dd3097267b07f17c542a2b4ca7147262"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "continuous-complexity-management-v1",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The exercised installed environment and reviewed project partitions gather stable explicit facts, produce a bounded architecture and change view, distinguish useful encapsulation from speculative layers, and preserve behavior with lower consumer context or change pressure for the represented refactor.",
+      "claimClass": "partitioned-domain",
+      "candidateId": "continuous-complexity-management-routing-r1",
+      "environmentId": "opencode-1.18.23-node-24.18.1-core-routing-r1",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "continuous-complexity-management-partitions-v1",
+        "members": [
+          "cohesive-small-project",
+          "modular-multi-component-project",
+          "noisy-corpus-or-evidence-project",
+          "mixed-owner-module",
+          "useful-current-consumer-facade",
+          "frozen-compatibility-and-current-extension",
+          "redundant-wrapper-chain",
+          "speculative-generic-abstraction",
+          "explicit-review-only-project-assessment",
+          "default-core-availability",
+          "unreadable-root",
+          "unsupported-ecosystem"
+        ],
+        "partitionRule": "Versioned reviewed disposable fixtures partition one loaded complexity workflow by proportional mode, repository scope/noise, ownership locality, facade value, compatibility path, speculative structure, default-core availability, and evidence support state.",
+        "materialClasses": [
+          "cohesive-small-project",
+          "modular-multi-component-project",
+          "noisy-corpus-or-evidence-project",
+          "mixed-owner-module",
+          "useful-current-consumer-facade",
+          "frozen-compatibility-and-current-extension",
+          "redundant-wrapper-chain",
+          "speculative-generic-abstraction",
+          "explicit-review-only-project-assessment",
+          "default-core-availability",
+          "unreadable-root",
+          "unsupported-ecosystem"
+        ],
+        "residualSpace": "The separate read-only PMAC diagnostic, other models, providers, hosts, repositories, ecosystems, unreviewed change axes, long-term architecture-map drift, defect-rate and productivity effects, and optimal architecture remain outside the claim."
+      },
+      "paths": {
+        "production": "configured-loaded-complexity-workflow-in-disposable-project",
+        "baseline": "current-loaded-locality-workflow-in-disposable-project",
+        "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+      },
+      "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+      "realOracle": {
+        "required": true,
+        "status": "unknown",
+        "evidenceRefs": []
+      },
+      "observations": [],
+      "evidenceRefs": [
+        "implementation-records"
+      ],
+      "materialExclusions": [
+        "Universal architecture quality or understandability for every project",
+        "Optimal abstraction or automatic pattern selection",
+        "Long-term productivity, defect-rate, or maintenance-cost improvement",
+        "Mandatory scheduled or every-task architecture review",
+        "Consumer-project production refactoring or migration",
+        "Provider, model, host, or ecosystem generalization beyond captured partitions",
+        "Remote mutation, deployment, release, credentials, or protected product effects"
+      ],
+      "unknowns": [
+        "No configured semantic complexity assessment or project workflow result has been observed.",
+        "No configured baseline or candidate workflow partition has been captured.",
+        "No configured model-selected map, rehearsal, or same-scenario executable refactor has been observed; the provider-free local apply is readiness evidence only.",
+        "No population member has a terminal configured observation.",
+        "The required fresh evidence-sufficiency challenge has not run."
+      ],
+      "independentChallenge": {
+        "required": true,
+        "status": "missing",
+        "evidenceRefs": []
+      },
+      "maximumSupportedClaim": "Planning artifacts, provider-free schema and cohesive/noisy CLI scans, a structurally valid focused skill, exact review-only project matrix/routing, actual generated-core OpenCode loader readback, and a reviewed provider-free useful-facade materialization support stable privacy-safe facts, integrated focused/exhaustive availability routing without hidden parent discovery, and fixture/effect/bound/cleanup readiness; no configured semantic decision, population member, cross-project effectiveness, refactor-improvement, or external-case behavior claim is currently supported.",
+      "narrowingAccepted": false,
+      "disposition": "unknown"
+    }
+  ]
+}

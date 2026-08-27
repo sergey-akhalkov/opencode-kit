@@ -4,9 +4,8 @@ Use this runbook for broad audits of OpenCode skills, agents, `AGENTS.md`, confi
 
 ## Scope Contract
 
-Before deep work, define:
+Before deep work, define `Goal`: one bounded audit objective.
 
-- `Goal`: one bounded audit objective.
 - `Source Scope`: repo artifacts, project-local config, global config, personal skill folders, installed copies, or selected diffs.
 - `Runtime Scope`: startup rules, skill discovery, agent invocation, permissions, loader behavior, or provider/remote behavior in scope.
 - `Non-goals`: adjacent repositories, unrelated skills, plugin implementation, or runtime enforcement work not included.

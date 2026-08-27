@@ -1,0 +1,516 @@
+[
+  {
+    "id": "cohesive-input",
+    "record": {
+      "recordType": "input",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "scope": {
+        "includes": [
+          {
+            "path": "src",
+            "class": "maintained",
+            "reason": "reviewed maintained source"
+          }
+        ],
+        "excludes": []
+      },
+      "bounds": {
+        "maxFiles": 100000,
+        "maxBytes": 536870912,
+        "timeoutMs": 120000
+      }
+    }
+  },
+  {
+    "id": "reviewed-scope",
+    "record": {
+      "recordType": "scope",
+      "schemaVersion": 1,
+      "includes": [
+        {
+          "path": "src",
+          "class": "maintained",
+          "reason": "reviewed maintained source"
+        }
+      ],
+      "excludes": [
+        {
+          "path": "docs/corpus",
+          "class": "corpus",
+          "reason": "reviewed reference corpus"
+        },
+        {
+          "path": "runs",
+          "class": "evidence",
+          "reason": "generated proof evidence"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cohesive-output",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "scope": {
+        "includes": [
+          {
+            "path": "src",
+            "class": "maintained",
+            "reason": "reviewed maintained source"
+          }
+        ],
+        "excludes": []
+      },
+      "support": {
+        "state": "complete",
+        "unsupportedFields": [],
+        "unknownFields": []
+      },
+      "candidates": [
+        {
+          "kind": "component",
+          "path": "src/widget.ts",
+          "evidence": {
+            "detector": "reviewed-scope",
+            "value": "src"
+          }
+        },
+        {
+          "kind": "entrypoint",
+          "path": "src/main.ts",
+          "evidence": {
+            "detector": "exact-name",
+            "value": "main.ts"
+          }
+        },
+        {
+          "kind": "manifest",
+          "path": "package.json",
+          "evidence": {
+            "detector": "exact-name",
+            "value": "package.json"
+          }
+        },
+        {
+          "kind": "proof",
+          "path": "test/widget.test.ts",
+          "evidence": {
+            "detector": "path-segment",
+            "value": "test"
+          }
+        },
+        {
+          "kind": "source",
+          "path": "src/widget.ts",
+          "evidence": {
+            "detector": "extension",
+            "value": ".ts"
+          }
+        },
+        {
+          "kind": "test",
+          "path": "test/widget.test.ts",
+          "evidence": {
+            "detector": "exact-name",
+            "value": "widget.test.ts"
+          }
+        }
+      ],
+      "counts": {
+        "files": 4,
+        "directories": 2,
+        "bytes": 820,
+        "lines": 42,
+        "maintained": 3,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 1,
+        "unsupported": 0,
+        "unreadable": 0
+      },
+      "largestMaintainedFiles": [
+        {
+          "path": "src/widget.ts",
+          "bytes": 420,
+          "lines": 22
+        },
+        {
+          "path": "src/main.ts",
+          "bytes": 240,
+          "lines": 12
+        }
+      ],
+      "topLevelConcentration": [
+        {
+          "path": "src",
+          "files": 2,
+          "bytes": 660,
+          "lines": 34
+        },
+        {
+          "path": "test",
+          "files": 1,
+          "bytes": 120,
+          "lines": 6
+        }
+      ],
+      "diagnostics": []
+    }
+  },
+  {
+    "id": "noisy-output",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "scope": {
+        "includes": [
+          {
+            "path": "src",
+            "class": "maintained",
+            "reason": "reviewed maintained source"
+          }
+        ],
+        "excludes": [
+          {
+            "path": "docs/corpus",
+            "class": "corpus",
+            "reason": "reviewed reference corpus"
+          },
+          {
+            "path": "runs",
+            "class": "evidence",
+            "reason": "generated proof evidence"
+          }
+        ]
+      },
+      "support": {
+        "state": "complete",
+        "unsupportedFields": [],
+        "unknownFields": []
+      },
+      "candidates": [
+        {
+          "kind": "source",
+          "path": "src/core.ts",
+          "evidence": {
+            "detector": "extension",
+            "value": ".ts"
+          }
+        }
+      ],
+      "counts": {
+        "files": 103,
+        "directories": 7,
+        "bytes": 2500000,
+        "lines": 18000,
+        "maintained": 1,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 12,
+        "corpus": 90,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 0,
+        "unreadable": 0
+      },
+      "largestMaintainedFiles": [
+        {
+          "path": "src/core.ts",
+          "bytes": 800,
+          "lines": 40
+        }
+      ],
+      "topLevelConcentration": [
+        {
+          "path": "src",
+          "files": 1,
+          "bytes": 800,
+          "lines": 40
+        }
+      ],
+      "diagnostics": [
+        {
+          "stage": "scope",
+          "path": "docs/corpus",
+          "cause": {
+            "name": "ScopeNotice",
+            "code": "EXCLUSION_NOT_ABSENCE",
+            "message": "Reviewed exclusion is not proof that no relevant evidence exists"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "unsupported-output",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "support": {
+        "state": "unsupported",
+        "unsupportedFields": [
+          "ecosystem.entrypoints"
+        ],
+        "unknownFields": [
+          "public-surface"
+        ]
+      },
+      "candidates": [
+        {
+          "kind": "source",
+          "path": "app/module.zz",
+          "evidence": {
+            "detector": "reviewed-scope",
+            "value": "app"
+          }
+        }
+      ],
+      "counts": {
+        "files": 1,
+        "directories": 1,
+        "bytes": 80,
+        "lines": 4,
+        "maintained": 1,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 1,
+        "unreadable": 0
+      },
+      "largestMaintainedFiles": [
+        {
+          "path": "app/module.zz",
+          "bytes": 80,
+          "lines": 4
+        }
+      ],
+      "topLevelConcentration": [
+        {
+          "path": "app",
+          "files": 1,
+          "bytes": 80,
+          "lines": 4
+        }
+      ],
+      "diagnostics": [
+        {
+          "stage": "detector",
+          "path": "app/module.zz",
+          "cause": {
+            "name": "SupportNotice",
+            "code": "UNSUPPORTED_ECOSYSTEM",
+            "message": "No maintained ecosystem detector matched this reviewed source"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "unreadable-output",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "4444444444444444444444444444444444444444444444444444444444444444"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "support": {
+        "state": "unreadable",
+        "unsupportedFields": [],
+        "unknownFields": [
+          "project"
+        ]
+      },
+      "candidates": [],
+      "counts": {
+        "files": 0,
+        "directories": 0,
+        "bytes": 0,
+        "lines": 0,
+        "maintained": 0,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 0,
+        "unreadable": 1
+      },
+      "largestMaintainedFiles": [],
+      "topLevelConcentration": [],
+      "diagnostics": [
+        {
+          "stage": "root",
+          "path": null,
+          "cause": {
+            "name": "Error",
+            "code": "ENOENT",
+            "message": "Target root is unavailable"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "partial-output",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      "scope": {
+        "includes": [
+          {
+            "path": "src",
+            "class": "maintained",
+            "reason": "reviewed maintained source"
+          }
+        ],
+        "excludes": []
+      },
+      "support": {
+        "state": "partial",
+        "unsupportedFields": [],
+        "unknownFields": [
+          "src.private"
+        ]
+      },
+      "candidates": [
+        {
+          "kind": "source",
+          "path": "src/main.ts",
+          "evidence": {
+            "detector": "extension",
+            "value": ".ts"
+          }
+        }
+      ],
+      "counts": {
+        "files": 2,
+        "directories": 2,
+        "bytes": 100,
+        "lines": 5,
+        "maintained": 1,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 0,
+        "unreadable": 1
+      },
+      "largestMaintainedFiles": [
+        {
+          "path": "src/main.ts",
+          "bytes": 100,
+          "lines": 5
+        }
+      ],
+      "topLevelConcentration": [
+        {
+          "path": "src",
+          "files": 1,
+          "bytes": 100,
+          "lines": 5
+        }
+      ],
+      "diagnostics": [
+        {
+          "stage": "read",
+          "path": "src/private/secret.ts",
+          "cause": {
+            "name": "Error",
+            "code": "EACCES",
+            "message": "Nested path is unreadable"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "blocked-output",
+    "record": {
+      "recordType": "output",
+      "schemaVersion": 1,
+      "root": {
+        "kind": "sha256",
+        "digest": "6666666666666666666666666666666666666666666666666666666666666666"
+      },
+      "scope": {
+        "includes": [],
+        "excludes": []
+      },
+      "support": {
+        "state": "blocked",
+        "unsupportedFields": [],
+        "unknownFields": [
+          "project"
+        ]
+      },
+      "candidates": [],
+      "counts": {
+        "files": 1,
+        "directories": 1,
+        "bytes": 50,
+        "lines": 2,
+        "maintained": 1,
+        "generated": 0,
+        "vendor": 0,
+        "evidence": 0,
+        "corpus": 0,
+        "dependency": 0,
+        "unknown": 0,
+        "unsupported": 0,
+        "unreadable": 0
+      },
+      "largestMaintainedFiles": [],
+      "topLevelConcentration": [],
+      "diagnostics": [
+        {
+          "stage": "cancellation",
+          "path": null,
+          "cause": {
+            "name": "AbortError",
+            "code": "ABORTED",
+            "message": "Traversal was cancelled before scope completion"
+          }
+        }
+      ]
+    }
+  }
+]

@@ -61,6 +61,21 @@
       "exclusions": ["instruction-governance"]
     },
     {
+      "id": "foundation-integrity",
+      "owner": "foundation-integrity-reviewer",
+      "class": "core",
+      "anchors": [
+        { "path": "global/AGENTS.md", "marker": "foundation-integrity-recovery" },
+        { "path": "global/agents/foundation-integrity-reviewer.md", "marker": "Practice ID: `foundation-integrity`" }
+      ],
+      "maintenanceSurfaces": [
+        "global/agents/foundation-integrity-reviewer.md",
+        "global/skills/foundation-integrity-recovery/SKILL.md"
+      ],
+      "profiles": ["core", "all"],
+      "exclusions": ["claim-evidence", "outcome-readiness"]
+    },
+    {
       "id": "instruction-governance",
       "owner": "instruction-artifact-reviewer",
       "class": "core",
@@ -99,12 +114,12 @@
       "owner": "implementation-readiness-reviewer",
       "class": "core",
       "anchors": [
-        { "path": "global/principles-of-work.md", "marker": "Outcome over Output" },
-        { "path": "global/AGENTS.md", "marker": "Ordinary Small" }
+        { "path": "global/principles-of-work.md", "marker": "Falsification Before Confidence" },
+        { "path": "global/AGENTS.md", "marker": "newly authored decision-material" }
       ],
       "maintenanceSurfaces": ["global/agents/implementation-readiness-reviewer.md"],
       "profiles": ["core", "all"],
-      "exclusions": ["verification-and-tests"]
+      "exclusions": ["foundation-integrity", "verification-and-tests"]
     },
     {
       "id": "performance-and-reliability",

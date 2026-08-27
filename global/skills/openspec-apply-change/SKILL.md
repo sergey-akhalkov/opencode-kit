@@ -72,15 +72,25 @@ Use this skill when the user asks to start or continue implementation of one Ope
 
     Read the change-level Claim And Evidence Scope once. Before mutating a declared broad class, require its structured evidence-index record; incomplete `blocked` or `unknown` closure may remain during development, but it cannot be promoted to accepted completion. Exact-case work keeps its concise proposal line and existing proof path.
 
+    Read the proposal's `Bounded Falsification Review` declaration and the operation-gate result before substantial production mutation:
+    - A reviewed `exempt - <Ordinary Small reason>` declaration proceeds without creating an empty `falsification-review.md`.
+    - For `required`, read `<changeRoot>/falsification-review.md`. Reuse a current terminal episode when its original request, candidate, decision surface, and decision-changing evidence remain unchanged; do not relaunch an equivalent generic review.
+    - If the record is missing, malformed, `unknown`, or stale for a materially changed challenged surface, preserve structural readiness separately and keep semantic implementation readiness `unknown`. Before production mutation, use only the remaining episode budget through the existing `implementation-readiness-reviewer`, with the original request supplied separately, then let main disposition and correct current evidence-backed material rows. Never infer conformance or use `final-candidate-reviewer` as a mandatory fallback.
+    - A confirmed correction permits one fresh corrected-candidate re-review only when it changes the challenged decision surface. After two generic challenges, close further defects through focused proof or the exact Practice Owner; never reset the budget for an unchanged accepted outcome.
+    - Persist privacy-safe references and explicit statuses only. Do not store raw user requests, hidden reasoning, or reviewer transcripts.
+
     If that record claims skipped, omitted, suppressed, cached, replayed, emulated, replaced, or optimized-bypass behavior preserves an existing result, load `behavioral-substitution-qualification` for the detailed closure workflow rather than duplicating it here.
 
 6. **Show current progress**
 
-   Display:
+   Display current progress:
    - Schema being used
    - Progress: "N/M tasks complete"
    - Remaining tasks overview
    - Dynamic instruction from CLI
+   - `Structural artifact readiness: passed | failed`
+   - `Bounded falsification: exempt | no-material-finding | corrected-and-closed | unknown`
+   - `Semantic implementation readiness: ready | unknown`
 
 7. **Implement tasks (loop until done or owner-blocked)**
 
@@ -112,7 +122,7 @@ Use this skill when the user asks to start or continue implementation of one Ope
 
 8. **On completion or owner-blocked pause, show status**
 
-   Display:
+   Display completion or blocker status:
    - Tasks completed this session
    - Overall progress: "N/M tasks complete"
    - If all done after accepted-outcome reconciliation: report that implementation tasks are complete and archive checks are next
@@ -174,6 +184,7 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 
 **Guardrails**
 - If the proposal declares a required Automation Dividend, keep exactly one `N.N [automation-dividend]` task and inspect Git state with `node global/bin/repo-candidate-snapshot.ts`.
+- Consume the current bounded-falsification declaration and record before production mutation; do not launch a duplicate for an unchanged terminal episode or create an empty record for an exemption.
 - Choose smallest dependency-valid pending slice to the earliest real boundary; continue until done unless the user bounded this request, interrupts, or an exact owner boundary stops it
 - Always read context files before starting (from the apply instructions output)
 - If a task's accepted behavior or protected semantics are materially ambiguous and lack a safe reversible interpretation, pause and ask one exact question
@@ -186,6 +197,7 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 - Diagnose and correct ordinary errors and locally resolvable blockers without asking whether to continue; do not guess across an exact owner boundary
 - Use contextFiles from CLI output, don't assume specific file names
 - Reference claim ids in implementation tasks and evidence; do not duplicate unchanged population/path/oracle fields or infer claim class from prose.
+- Keep structural readiness separate from semantic readiness; deterministic operation gates never decide materiality, task fit, or exemption correctness.
 
 **Fluid Workflow Integration**
 

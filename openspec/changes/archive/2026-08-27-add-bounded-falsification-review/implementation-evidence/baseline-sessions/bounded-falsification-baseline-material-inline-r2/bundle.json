@@ -1,0 +1,319 @@
+{
+  "byteLength": 43431,
+  "comparisonIdentity": "183904449ab7073a8f9e11291f289cecb63e2a41efcaa0181a40af4779fb9820",
+  "evaluatorDigest": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "baseline",
+  "samples": [
+    {
+      "arm": "baseline",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-baseline-material-inline-plan-1",
+          "Read only lines 159 through 172 of cases.json and select material-inline-plan; do not read another case. Apply only loaded planning-readiness and Practice Owner routing. The pre-product route may already require one early Material readiness observation without a bounded-falsification contract: if so, launch only implementation-readiness-reviewer once, then copy baselineDecision exactly to decision.json. If a loaded bounded-falsification contract exists, instead use its smallest inline decision frame and write the reviewed candidate decision fields. Do not infer absent behavior from this request, implement, or perform external, credential, install, commit, remote, destructive, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787794366044,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040d91e55001Njv0Ji0qX9gIjH\",\"messageID\":\"msg_040d90b350011KW0BwFXYAMfbb\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787794369619,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040d92a74001FHr05tCEUPCtWc\",\"messageID\":\"msg_040d90b350011KW0BwFXYAMfbb\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"text\",\"text\":\"I’ll inspect only the specified `cases.json` slice, then follow the loaded readiness routing without opening any other case or source file.\",\"time\":{\"start\":1787794369140,\"end\":1787794369611},\"metadata\":{\"openai\":{\"itemId\":\"msg_0706bd6f6067e094016a8f93c2c03c87d2a7ffcd14080542a2\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787794370558,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_zvkqm5dE0kRboKY2dhAFVlHM\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\",\"offset\":159,\"limit\":14},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n159:       \\\"caseId\\\": \\\"material-inline-plan\\\",\\n160:       \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n161:       \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n162:       \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n163:       \\\"originalAcceptedRequest\\\": \\\"Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.\\\",\\n164:       \\\"successBoundary\\\": \\\"A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.\\\",\\n165:       \\\"candidateArtifact\\\": \\\"No formal plan exists, but the request is Material and production mutation has not started.\\\",\\n166:       \\\"representedRisk\\\": \\\"Skipping early framing would defer task-fit decisions until after production investment.\\\",\\n167:       \\\"baselineDecision\\\": {\\n168:         \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n169:         \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n170:       }\\n171:     }\\n172:   ]\\n\\n(Showing lines 159-172 of 173. Use offset=173 to continue.)\\n</content>\",\"metadata\":{\"preview\":\"      \\\"caseId\\\": \\\"material-inline-plan\\\",\\n      \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n      \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n      \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.\\\",\\n      \\\"successBoundary\\\": \\\"A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.\\\",\\n      \\\"candidateArtifact\\\": \\\"No formal plan exists, but the request is Material and production mutation has not started.\\\",\\n      \\\"representedRisk\\\": \\\"Skipping early framing would defer task-fit decisions until after production investment.\\\",\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n        \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n      }\\n    }\\n  ]\",\"truncated\":true,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"      \\\"caseId\\\": \\\"material-inline-plan\\\",\\n      \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\",\\n      \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\",\\n      \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.\\\",\\n      \\\"successBoundary\\\": \\\"A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.\\\",\\n      \\\"candidateArtifact\\\": \\\"No formal plan exists, but the request is Material and production mutation has not started.\\\",\\n      \\\"representedRisk\\\": \\\"Skipping early framing would defer task-fit decisions until after production investment.\\\",\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n        \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n      }\\n    }\\n  ]\",\"lineStart\":159,\"lineEnd\":172,\"totalLines\":173,\"truncated\":true}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-inline-plan-WhvBGV\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787794370519,\"end\":1787794370553}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0706bd6f6067e094016a8f93c33e5887d297212cc6df6a0cb1\"}},\"id\":\"prt_040d92c4e001MAWglHkR2AP4S0\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"messageID\":\"msg_040d90b350011KW0BwFXYAMfbb\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787794370606,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040d9301b001EEXlf9fZKVksPG\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040d90b350011KW0BwFXYAMfbb\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-finish\",\"tokens\":{\"total\":14337,\"input\":14081,\"output\":92,\"reasoning\":164,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787794371894,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040d93531001MRit40RtgQrMiU\",\"messageID\":\"msg_040d93028001E0rDDziE45CCND\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787794378626,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040d94b750010WP2Wsowp3kHFH\",\"messageID\":\"msg_040d93028001E0rDDziE45CCND\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"text\",\"text\":\"The loaded context has no bounded-falsification contract, while this candidate is explicitly Material and pre-mutation. I’m therefore invoking the single early `implementation-readiness-reviewer` observation, after which `decision.json` will be an exact copy of `baselineDecision`.\",\"time\":{\"start\":1787794377589,\"end\":1787794378621},\"metadata\":{\"openai\":{\"itemId\":\"msg_00067c392165a9f6016a8f93cb34ec87d2b6f07174ded25aef\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787794442574,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_X7pzWDhdSZUnQPRrJhmMI74z\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Review material readiness\",\"command\":\"material-inline-plan\",\"prompt\":\"Role: implementation-readiness-reviewer, fresh read-only early planning-readiness observer.\\nOutcome/value objective: challenge whether the supplied Material pre-product candidate is ready for implementation, without authoring or changing any artifact.\\nObserved state/evidence: caseId=material-inline-plan; originalRequestRef=material-inline-plan-request-r1; candidateRef=material-inline-plan-candidate-r1; decisionSurface=material-inline-decision-frame-before-mutation; originalAcceptedRequest=\\\"Prepare a Material authorization-boundary change for implementation without creating an OpenSpec tree.\\\"; successBoundary=\\\"A minimal project-native decision frame carries the original request, envelope, proof boundary, and failure hypotheses into an early fresh readiness challenge.\\\"; candidateArtifact=\\\"No formal plan exists, but the request is Material and production mutation has not started.\\\"; representedRisk=\\\"Skipping early framing would defer task-fit decisions until after production investment.\\\" Assumptions/unknowns: all implementation specifics and semantic decisions not stated above are unknown.\\nDeliverable: one concise readiness observation identifying structural readiness, semantic readiness, material findings, and terminal reason/state; include the inspected candidate reference and effective model attribution.\\nIn scope: assess only the supplied candidate facts for stable requirements, owner decisions, blockers, context, tests/proof boundary, validation evidence, and scope boundaries.\\nOut of scope/read boundaries: do not read any workspace file, including cases.json or any other case; use only this brief.\\nWrite scope: none. Forbidden actions: no questions, nested agents, file/source/config/test/instruction mutation, implementation, credentials, installs, network/external/remote/destructive/protected actions, commits, or lifecycle completion claims.\\nRequired invariants/resolved decisions: this is one early Material readiness observation before production mutation; no formal OpenSpec tree is required; do not infer absent behavior or make owner-controlled authorization semantics.\\nInputs/dependencies: only the facts in this brief.\\nObservable acceptance/checks: report is attributable to material-inline-plan-candidate-r1, stays read-only, surfaces unknowns rather than inventing decisions, and returns one bounded readiness observation.\\nReturn evidence: concise report with inspected candidate reference, structural/semantic readiness, findings, terminal reason/state, and effective model.\\nBlocker policy: report evidence gaps as unknown; do not ask the user or perform further discovery.\"},\"output\":\"<task id=\\\"ses_fbf268ce0ffewfOmKsugFa4H7B\\\" state=\\\"completed\\\">\\n<task_result>\\n## Candidate Reference / RC\\n`material-inline-plan-candidate-r1` (`decisionSurface=material-inline-decision-frame-before-mutation`; `originalRequestRef=material-inline-plan-request-r1`; no formal plan; production mutation not started)\\n\\n## Effective Model\\n`xai/grok-4.6`\\n\\n## Concise Readiness Observation\\n**Structural readiness:** not ready. The candidate is an informal pre-mutation Material request. No OpenSpec tree is required, but the supplied decision frame does not yet carry a stable increment: no scoped files, no non-goals, no operating envelope, no observable proof boundary, no failure hypotheses, no project-native validation procedure, and no execution-ready implementation brief.\\n\\n**Semantic readiness:** not ready. The accepted request names a Material authorization-boundary change, but owner-controlled authorization semantics are unstated. Those semantics are not inferred.\\n\\n**Material findings:** missing owner/product authorization decisions; missing happy-path proof boundary before mutation; missing envelope, non-goals, acceptance gate, source context, and validation path. Named high-risk domain (authorization) is present; SDET/testing is not yet triggered because there is no current proof or behavior candidate.\\n\\n**Terminal reason/state:** `not-implementation-ready` — evidence gaps on Material authorization semantics and pre-mutation proof/envelope/acceptance gates; observation only, not a lifecycle decision.\\n\\n## Risk Matrix\\n\\n| Risk ID | Requirement / invariant | Reachable scenario and enforced envelope | Path/line or live evidence | Business consequence | Likelihood | Confidence | Reproduction | Smallest mitigation note |\\n|---|---|---|---|---|---|---|---|---|\\n| RR-AUTH-001 | Owner-controlled authorization semantics must be explicit before a Material authorization-boundary change; do not infer them | Scenario: implement the named authorization-boundary change. Envelope: unknown | Brief only: `originalAcceptedRequest` names the change; `Assumptions/unknowns` leave all semantic decisions unknown; no spec/source | Wrong allow/deny, privilege, or privacy boundary if implementation proceeds on guessed semantics | unknown | high that the decision is absent; unknown whether a reachable defect would follow | N/A — no candidate behavior or envelope to exercise | Keep authorization semantics as an unresolved owner decision; do not treat the request label as accepted behavior |\\n| RR-PROOF-002 | Behavior-changing work must define an observable happy-path proof boundary before mutation | Scenario: start production mutation for the Material change. Envelope: unknown | Brief: `candidateArtifact` = no formal plan; successBoundary asks for envelope/proof/failure hypotheses, but none are supplied as facts | Mutation without an observable boundary; later “working” claims unbounded | unknown | high that the boundary is absent | N/A — no entry point, input, or oracle named | Define the current-slice happy-path observation at the first safely reachable real boundary before mutation |\\n| RR-ENV-003 | Readiness requires a technically enforced operating envelope and known non-goals | Scenario: next working increment of the authorization-boundary change. Envelope: unknown | Brief supplies request + Material profile only; envelope, non-goals, stop line, and failure hypotheses are not stated | Scope/envelope escape or unprotected-boundary action treated as in-scope | unknown | high that envelope/non-goals are absent | N/A | Record envelope and non-goals as unknown until owner/project facts exist |\\n| RR-CTX-004 | Required source files, implementation context, and project-native validation must be discoverable | Scenario: a cold implementer builds the next slice. Envelope: unknown | Brief forbids workspace discovery; no paths, adapters, or native validation commands given | Implementer must guess stack, files, and checks | unknown | high that context is not in this candidate | N/A — out-of-scope to search the workspace | Treat source/validation as unknown; do not invent a stack or procedure |\\n| RR-SDET-005 | SDET is mandatory only for a reachable named critical consequence (authorization/privacy) or explicit owner/project requirement; production and SDET authorship stay exclusive; this role does not review a behavior candidate | Scenario: later qualification of an authorization-boundary behavior candidate after proof. Envelope: unknown | Named Material authorization-boundary request; no current proof, no behavior candidate, no explicit SDET trigger artifact | If later implemented without an independent critical oracle, a reachable authz/privacy incident could go unchallenged | unknown | medium — trigger class is named, reachability unproven | N/A — pre-proof; no candidate to assess | After current proof only, and only if a reachable named critical consequence remains; do not invent SDET acceptance scope now |\\n\\n## Readiness Matrix\\n\\n| Requirement / decision | Evidence / gap |\\n|---|---|\\n| Problem | Partial: Material authorization-boundary change is named; concrete current-state defect/behavior is unknown |\\n| Goal / next increment | Gap: no bounded next-slice outcome beyond “prepare for implementation” |\\n| Scope | Gap: no in-scope files, symbols, interfaces, or authorization rule |\\n| Non-goals | Gap: not stated |\\n| Acceptance criteria | Gap: no observable scenario/oracle for the authorization change |\\n| Scenario-based requirements inside an enforced envelope | Gap: no scenarios; envelope unknown |\\n| Design decisions that change outcome/envelope/invariants/proof/material risk | Gap: owner authorization semantics unresolved; not inferred |\\n| Future-scope/polish residual | Unknown — current slice itself is unspecified |\\n| Dependencies, migrations, compatibility, config, deploy, rollback | Unknown — not in the brief |\\n| Observable happy-path proof boundary before mutation | Gap: not defined |\\n| Behavior-dependency fidelity rung / real boundary / blocker | Gap: no chain identified |\\n| Discoverable source/context | Gap: none supplied; workspace read forbidden |\\n| Project-native validation commands | Gap: none supplied; none invented |\\n| Material/qualification adapters | Gap: accepted track unnamed; SDET not yet applicable (no proof/candidate); optional reviewers must not invent scope |\\n| Universal Task Briefing Contract for implementation | Gap: this briefing is reviewer-only; no cold implementation brief with exact scopes, acceptance, verification, return contract |\\n| Profile | Material, by explicit request (authorization-boundary); not Ordinary Small |\\n| Production vs SDET authorship | Intact: no behavior candidate; this observation is pre-proof design consultation only |\\n| Candidate Reference capture | `material-inline-plan-candidate-r1` inspected; full qualification capture N/A at this stage |\\n| `code-quality-reviewer` gate | N/A — no source/diff; no maintainability evidence |\\n\\n## Evidence Gaps And Residual Risks\\n- Unresolved owner decision: authorization-boundary semantics (allow/deny, identity, privilege, privacy, compatibility).\\n- Missing proof boundary, operating envelope, non-goals, failure hypotheses, and acceptance gate.\\n- Missing implementation context, source files, and project-native validation.\\n- No formal plan (allowed) but also no substitute decision frame contents.\\n- Effective model is attributed as `xai/grok-4.6`; candidate identity is `material-inline-plan-candidate-r1` only.\\n- Future-scope risk: unknown, because current-slice behavior is unspecified.\\n- Residual: skipping this early frame would defer task-fit and authz decisions until after production investment (`representedRisk`); that risk remains because the frame is still incomplete.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"sessionId\":\"ses_fbf268ce0ffewfOmKsugFa4H7B\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Review material readiness\",\"time\":{\"start\":1787794387748,\"end\":1787794442559}},\"metadata\":{\"openai\":{\"itemId\":\"fc_00067c392165a9f6016a8f93cc3db087d29905dff6cb3a223f\"}},\"id\":\"prt_040d94f80001XFJIheMZfZFYaW\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"messageID\":\"msg_040d93028001E0rDDziE45CCND\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787794442574,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da4941001BwO5P1SBqzE35F\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040d93028001E0rDDziE45CCND\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-finish\",\"tokens\":{\"total\":15718,\"input\":2041,\"output\":574,\"reasoning\":303,\"cache\":{\"write\":0,\"read\":12800}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787794443648,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da4d7b001BLhVyXywrjFyOu\",\"messageID\":\"msg_040da4948001z1ohojt0rHIdTv\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787794446054,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da542b001eTJFYfvJL0msAc\",\"messageID\":\"msg_040da4948001z1ohojt0rHIdTv\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"text\",\"text\":\"The required single review is complete. Per the selected route, its differing observations do not alter the fixture decision; I’m writing the captured `baselineDecision` verbatim as the JSON document.\",\"time\":{\"start\":1787794445355,\"end\":1787794446050},\"metadata\":{\"openai\":{\"itemId\":\"msg_00ecce5cc01cc151016a8f940ef79487d2a357259e71010078\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787794451031,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_bFQ7tflHaZX0AuzPDwIVIh8e\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n+  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-material-inline-plan-WhvBGV/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,4 @@\\n+{\\n+  \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n+  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-material-inline-plan-WhvBGV/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,4 @@\\n+{\\n+  \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n+  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n+}\\n\",\"additions\":4,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-material-inline-plan-WhvBGV/fixture/decision.json\",\"time\":{\"start\":1787794451022,\"end\":1787794451029}},\"metadata\":{\"openai\":{\"itemId\":\"fc_00ecce5cc01cc151016a8f940fae1087d28dc2a723145513c5\"}},\"id\":\"prt_040da56e4001mdn0b3YR9iwJrG\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"messageID\":\"msg_040da4948001z1ohojt0rHIdTv\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787794451086,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da6a83001g25sx7pHYqHWHD\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040da4948001z1ohojt0rHIdTv\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-finish\",\"tokens\":{\"total\":17687,\"input\":3455,\"output\":330,\"reasoning\":78,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787794455158,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da7a720017webX34l4E2xxn\",\"messageID\":\"msg_040da6a89001PQ6LCv1ytJF3LU\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787794459105,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_3QBtsSprfIGfZBnQvYgty6sx\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"offset\":1,\"limit\":5},\"output\":\"<path><proof-root>\\\\fixture\\\\decision.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n3:   \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n4: }\\n\\n(End of file - total 4 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\decision.json\",\"text\":\"{\\n  \\\"attackClasses\\\": [\\\"coherent-wrong-outcome:unknown\\\", \\\"silent-owner-decision:unknown\\\", \\\"missing-observable-oracle:unknown\\\", \\\"late-implementation-invalidation:unknown\\\", \\\"internal-contradiction:unknown\\\", \\\"unnecessary-scope:unknown\\\"],\\n  \\\"candidateRef\\\": \\\"material-inline-plan-candidate-r1\\\", \\\"caseId\\\": \\\"material-inline-plan\\\", \\\"challengeCount\\\": 1, \\\"correctionRef\\\": \\\"none\\\", \\\"decisionSurface\\\": \\\"material-inline-decision-frame-before-mutation\\\", \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\", \\\"exactOwnerAgent\\\": \\\"none\\\", \\\"invalidatedSurfaces\\\": [], \\\"mainDispositions\\\": [], \\\"materialFindings\\\": [], \\\"originalRequestRef\\\": \\\"material-inline-plan-request-r1\\\", \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\", \\\"reviewerLaunchCount\\\": 1, \\\"reviewerSessionRef\\\": \\\"fresh-readiness-child-baseline-r1\\\", \\\"semanticReadiness\\\": \\\"unknown\\\", \\\"structuralReadiness\\\": \\\"passed\\\", \\\"terminalReason\\\": \\\"existing-material-readiness-observed\\\", \\\"terminalState\\\": \\\"unknown\\\"\\n}\",\"lineStart\":1,\"lineEnd\":4,\"totalLines\":4,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-inline-plan-WhvBGV\\\\fixture\\\\decision.json\",\"time\":{\"start\":1787794459087,\"end\":1787794459103}},\"metadata\":{\"openai\":{\"itemId\":\"fc_042017447a951d4d016a8f941bf86487d28a29a6ec56201eb0\"}},\"id\":\"prt_040da86ed001Z5v1iDX7ihxIAa\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"messageID\":\"msg_040da6a89001PQ6LCv1ytJF3LU\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787794459157,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da8a0a0015XyEWoFuTuVDNu\",\"reason\":\"tool-calls\",\"messageID\":\"msg_040da6a89001PQ6LCv1ytJF3LU\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-finish\",\"tokens\":{\"total\":17946,\"input\":837,\"output\":58,\"reasoning\":155,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787794460728,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da9033001GQQA02uEJ7s0sh\",\"messageID\":\"msg_040da8a10001Xe5UTHgQ6Yhbb5\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787794462449,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da9548001Qqd0mAyO72fVOc\",\"messageID\":\"msg_040da8a10001Xe5UTHgQ6Yhbb5\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"text\",\"text\":\"Outcome: working. Launched `implementation-readiness-reviewer` once and copied `baselineDecision` exactly to `decision.json`. No other case was read or actions performed.\",\"time\":{\"start\":1787794462024,\"end\":1787794462447},\"metadata\":{\"openai\":{\"itemId\":\"msg_0cf1e21daf71d357016a8f941f99c887d2a4621fe2cd6ffe08\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787794462537,\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"part\":{\"id\":\"prt_040da973b001i68yoREP7soKlB\",\"reason\":\"stop\",\"messageID\":\"msg_040da8a10001Xe5UTHgQ6Yhbb5\",\"sessionID\":\"ses_fbf26f73bffevHJ443m6fqqmSb\",\"type\":\"step-finish\",\"tokens\":{\"total\":18354,\"input\":1366,\"output\":41,\"reasoning\":51,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "d7de230ec296fd01f57a10c8f43c3cec546f04898ad3d6edfb8eb2e87dcc892a",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "75a0c01a913ad77201875766d7c5f70d398f51813b707e9cb939fb31d250a877",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "cases.json",
+          "sha256": "f58f5d6b76bbd39fba092c117402cffbac97ff6f411da87958a502b66f2132f6"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "02a4d5366c18edae8ae9a46938ccbe4a401c412317263138ab7464a1690cb324"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "b1d972b83b97c3f12b30cbcb451e4875c70cadbecf0f24455e91664cc161bc9e"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 4
+      },
+      "hashes": {
+        "sample": "309b089079c6c57d554a0b45a3dc985461eb947b7732de726024c91fe03ef26a"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "material-inline-plan"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:unknown\",\"silent-owner-decision:unknown\",\"missing-observable-oracle:unknown\",\"late-implementation-invalidation:unknown\",\"internal-contradiction:unknown\",\"unnecessary-scope:unknown\"],\"candidateRef\":\"material-inline-plan-candidate-r1\",\"caseId\":\"material-inline-plan\",\"challengeCount\":1,\"correctionRef\":\"none\",\"decisionSurface\":\"material-inline-decision-frame-before-mutation\",\"effectiveModel\":\"xai/grok-4.6/high\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[],\"mainDispositions\":[],\"materialFindings\":[],\"originalRequestRef\":\"material-inline-plan-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":1,\"reviewerSessionRef\":\"fresh-readiness-child-baseline-r1\",\"semanticReadiness\":\"unknown\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"existing-material-readiness-observed\",\"terminalState\":\"unknown\"}\n"
+      },
+      "requestSha256": "2e539caada34ea3f0fd8cb8ea8f5fa1c0a120766514a84e5bcfa16d90d089002",
+      "sampleIndex": 1,
+      "scenarioId": "material-inline-plan",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "af28e8b17db3061639f949f723d1e61941a7a91219b7a06a2884c3a5c64a7078"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "b81d5156dbdfba399de29b6747ff6c878da0f495335e6400e3b7844d815a1b39"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "3b2f24eee6df2f333c0b0ae9faef5dfe4836bc7a6c7c456feb7b56be4fea073c",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "30e71da7fc2992865b029bc198bc6b5d3d5803c6e92f95db3ef4106d5e1c79ca",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "37bf598c6250af7a3bf65a388ac9f3ae4d2d671e3d24305de7af385c9e42104b",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "481b6e3139a9631a40ddcd0a2bef84ccd3c6f2fb76c5b04ee1b7f4b70919bcfa",
+          "name": "read",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "75a0c01a913ad77201875766d7c5f70d398f51813b707e9cb939fb31d250a877",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "c8a3e5974480231b5984a425490aa1ff7848eb156862c42c366b2ab71aecb19d"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "af28e8b17db3061639f949f723d1e61941a7a91219b7a06a2884c3a5c64a7078"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "551accd7b30e6705e1284988919120f8a433b8cb14f191ccda9e99bd5dc08df3"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "b81d5156dbdfba399de29b6747ff6c878da0f495335e6400e3b7844d815a1b39"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "1216e350287de5d74d2eca58c343b6fe06cff22e3831604e05e03c1bee1852f0"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "a682a9b03354eebb55ed9615fb4e054ce9b1504a7363326bf06073d03aa60cf1"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "b28315801098545ddcc0e154d66e0cb3dcd20304f50ee699f100a35b347662ce"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "39db4eb356a470c022de6f26370b1d3a5fe09eb13c2b6f7dfb6d3c06386947a9"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

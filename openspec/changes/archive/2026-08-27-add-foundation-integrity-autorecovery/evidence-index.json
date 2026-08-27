@@ -1,0 +1,581 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-foundation-integrity-autorecovery",
+  "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+  "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [],
+  "lanes": [
+    {
+      "name": "source-loader-permissions",
+      "kind": "product",
+      "files": [
+        {
+          "path": "implementation-evidence/tasks-2-1-through-2-4.md",
+          "bytes": 2176,
+          "digest": "7b6fb70b41b4fcba27069c31f0f6187cb030eeac76b2579f3465a3b699fa1b95"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-loader-r1/raw.json",
+          "bytes": 1760,
+          "digest": "30e4d8e884c46423d7fc5738d1439de673753dcc2cf6f26bbd5d8358edde1ce3"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-loader-r1/evaluation.json",
+          "bytes": 105,
+          "digest": "3279f7f5d3aff927da20a71e043069ccfa9ad2448f91a5e4cfae493fd0ca4fe1"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-permissions-r1/raw.json",
+          "bytes": 8902,
+          "digest": "849c3a2e3c7893131fde229dacd1b31151b18a74bae42e94d011cd36b73c9be9"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-permissions-r1/evaluation.json",
+          "bytes": 326,
+          "digest": "77aa9c85dff356d4e6ff5e54e05d4c1ec47b3abba96a1d6293e4546833de3e06"
+        }
+      ]
+    },
+    {
+      "name": "baseline-capture",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/baseline-sessions/foundation-integrity-baseline-r2/bundle.json",
+          "bytes": 275450,
+          "digest": "b0577f2cfa63c05172334fe9b5ba90a3e83dcf9fb9fa821e2e5cc1106387b4cb"
+        },
+        {
+          "path": "implementation-evidence/baseline-sessions/foundation-integrity-baseline-r2/evaluation.json",
+          "bytes": 24972,
+          "digest": "327639c4fc8af1fd3380a7fb155701c3fdfc2c27f3d663f073f8fe148cc41958"
+        },
+        {
+          "path": "implementation-evidence/baseline-sessions/foundation-integrity-baseline-r2/terminal-replay-1.json",
+          "bytes": 17429,
+          "digest": "128bf12de23b362215dff85a6974cabc681edfb5577fd39831d360af52b10db3"
+        },
+        {
+          "path": "implementation-evidence/baseline-sessions/foundation-integrity-baseline-r2/terminal-replay-2.json",
+          "bytes": 17429,
+          "digest": "128bf12de23b362215dff85a6974cabc681edfb5577fd39831d360af52b10db3"
+        }
+      ]
+    },
+    {
+      "name": "mismatch-recovery",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-mismatch-candidate-r6/bundle.json",
+          "bytes": 34432,
+          "digest": "68ea89ffbc8f25393815e2a608c8d2722ecce4cd43ecfb012d7827345a792c66"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-mismatch-candidate-r6/diagnostic.json",
+          "bytes": 103588,
+          "digest": "382f7db76f895c69ecede938abf14bc8adfa4ba9ca41f51cb8963c9470371115"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-mismatch-candidate-r6/evaluation.json",
+          "bytes": 9347,
+          "digest": "a5e31161fa62f2eb33d1d3db5c98861596b73d2e3ada6f9c6e56fa3b91bcd216"
+        }
+      ]
+    },
+    {
+      "name": "falsification-control",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-false-positive-candidate-r4/bundle.json",
+          "bytes": 31883,
+          "digest": "41c44e5a293ea2641fdbcb739dd9ea0aadbf75112cbb88f5669d3b063b1a88c2"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-false-positive-candidate-r4/diagnostic.json",
+          "bytes": 94139,
+          "digest": "ccfaa6b629f06de0c21d8eb206d3815fa5dbc8033963c23af781782de0cf2fdf"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-false-positive-candidate-r4/evaluation.json",
+          "bytes": 7475,
+          "digest": "3e42a3372012ab43ce74b418adeca7c922cdfe8b92ce29fc606e24d846bff007"
+        }
+      ]
+    },
+    {
+      "name": "dependent-inventory",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-dependent-inventory-candidate-r2/bundle.json",
+          "bytes": 34206,
+          "digest": "e9a6a02fa3eb0fb3d911d6dd2d5c99c396c6a1321107d369183f54055e1d6028"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-dependent-inventory-candidate-r2/diagnostic.json",
+          "bytes": 103302,
+          "digest": "036957646b183d8db6762797623b0d85e2d55f6e0fe76ee5db0430cc12456c15"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-dependent-inventory-candidate-r2/evaluation.json",
+          "bytes": 7516,
+          "digest": "8d4d0247bcd8fbdbe948a4296d77cc496cf528a0fa125bc6a6ab42d932805059"
+        }
+      ]
+    },
+    {
+      "name": "overlapping-ownership",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-overlapping-ownership-candidate-r3/bundle.json",
+          "bytes": 34366,
+          "digest": "c2f4a8e2322137d4ddf12c1d81401974fbcd5f186093e05f822436d59c04800c"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-overlapping-ownership-candidate-r3/diagnostic.json",
+          "bytes": 103789,
+          "digest": "af7b2d5e86a9ffc022136fd7df406eab97a46bc372c2ca526253aa31e290e21c"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-overlapping-ownership-candidate-r3/evaluation.json",
+          "bytes": 7522,
+          "digest": "c41b303ea7acbc44142fa1c2d26213fea8793fa83b7006c30afc8b9f85937ea9"
+        }
+      ]
+    },
+    {
+      "name": "protected-ambiguity",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-protected-ambiguity-candidate-r5/bundle.json",
+          "bytes": 33387,
+          "digest": "ae32a2cb024ed4ef2c41b81869252f8d947edb4d68c9911bc83f561a648be43b"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-protected-ambiguity-candidate-r5/diagnostic.json",
+          "bytes": 97704,
+          "digest": "3ef8d7958581a39f16699f2a907f4ae19592deaa9420382c92a07cfeccad7618"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-protected-ambiguity-candidate-r5/evaluation.json",
+          "bytes": 7463,
+          "digest": "be9b2cb85d4ff58f1422e3cbc1a0d615efad2cfc5e093a1257157931655fe320"
+        }
+      ]
+    },
+    {
+      "name": "aligned-historical-controls",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-aligned-historical-candidate-r2/bundle.json",
+          "bytes": 31207,
+          "digest": "cf61a9439bdbd59b232a222c6db24deea31565aff99cd2ab5cbefb3e1b067625"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-aligned-historical-candidate-r2/diagnostic.json",
+          "bytes": 88286,
+          "digest": "24133a416d723e4ea90121712c0915fa544754d1c21ced171238fcef563ce3f2"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-aligned-historical-candidate-r2/evaluation.json",
+          "bytes": 8243,
+          "digest": "9db7a2ce938814c21496d72898067338b7b7a2ab3601680cb5e5709b6978b571"
+        }
+      ]
+    },
+    {
+      "name": "ordinary-small-controls",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-ordinary-small-candidate-r3/bundle.json",
+          "bytes": 31538,
+          "digest": "789da63ce7def7c3449afb658a4564f95e4abf715ef9c55bc95c0e78be84fd48"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-ordinary-small-candidate-r3/diagnostic.json",
+          "bytes": 88708,
+          "digest": "a226b844790eae4e2c33f557fb1f4cc10114fbc8b3a8c5f0f994ba389ab81759"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-ordinary-small-candidate-r3/evaluation.json",
+          "bytes": 9484,
+          "digest": "e49d17559d6dfa5198e04018b4ddcf4fc3642e14af6ef3664bcf9426efd303d6"
+        }
+      ]
+    },
+    {
+      "name": "population-replay",
+      "kind": "replay",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-1-full-candidate-r2/evaluation.json",
+          "bytes": 34458,
+          "digest": "9ca0eabd7dfd9037364e27e0cb25fecc0cc9622966f541bc920c3c9c67477004"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-full-candidate-r2/replay-2.json",
+          "bytes": 34458,
+          "digest": "9ca0eabd7dfd9037364e27e0cb25fecc0cc9622966f541bc920c3c9c67477004"
+        },
+        {
+          "path": "implementation-evidence/task-4-3-final-replay.json",
+          "bytes": 34458,
+          "digest": "9ca0eabd7dfd9037364e27e0cb25fecc0cc9622966f541bc920c3c9c67477004"
+        }
+      ]
+    },
+    {
+      "name": "focused-validation",
+      "kind": "runner",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-2-validation.md",
+          "bytes": 1095,
+          "digest": "e8fa9f6a6adf693441ea11816c72569d02cdd1bd3b94b4ca5fd9eb7dd9a36f9e"
+        },
+        {
+          "path": "implementation-evidence/task-4-3-validation.md",
+          "bytes": 1518,
+          "digest": "592024b87deadbd63a92f0c7820521989369416c9569547b2c6be545d8c05fc2"
+        }
+      ]
+    },
+    {
+      "name": "independent-challenge",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-2-evidence-sufficiency-review.md",
+          "bytes": 3166,
+          "digest": "36ca6ee29a7141b329bac1d398c741b5e6dc890df169cc44f449cd0960237ad1"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "foundation-integrity-autorecovery-v1",
+      "outcomeRef": "proposal-outcome",
+      "statement": "The exercised configured model and seven reviewed foundation-integrity scenarios cover twelve represented partitions: confirmed material mismatches are corrected and swept, while falsified, protected-boundary, and non-applicable controls terminate without unauthorized recovery or mutation.",
+      "claimClass": "partitioned-domain",
+      "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "foundation-integrity-partitions-v1",
+        "members": [
+          "aligned-binding",
+          "archive-preservation",
+          "confirmed-unique-correction",
+          "current-cross-family-mismatch",
+          "dependent-versus-unrelated-active-changes",
+          "false-positive-falsification",
+          "historical-only-evidence",
+          "non-critical-architecture-polish",
+          "ordinary-small-exact-case",
+          "overlapping-dependent-ownership",
+          "protected-product-ambiguity",
+          "unchanged-hypothesis-anti-loop"
+        ],
+        "partitionRule": "Versioned reviewed fixtures partition current foundation behavior by trigger applicability, confirmation disposition, propagation boundary, protected ambiguity, evidence preservation, and anti-loop termination.",
+        "materialClasses": [
+          "aligned-binding",
+          "archive-preservation",
+          "confirmed-unique-correction",
+          "current-cross-family-mismatch",
+          "dependent-versus-unrelated-active-changes",
+          "false-positive-falsification",
+          "historical-only-evidence",
+          "non-critical-architecture-polish",
+          "ordinary-small-exact-case",
+          "overlapping-dependent-ownership",
+          "protected-product-ambiguity",
+          "unchanged-hypothesis-anti-loop"
+        ],
+        "residualSpace": "Other models, providers, prompt histories, consumer-specific semantics, missing or contradictory project authority, non-OpenSpec planning implementations, and unrepresented mismatch classes remain outside the claim."
+      },
+      "paths": {
+        "production": "loaded-primary-foundation-owner-and-main-recovery",
+        "baseline": "baseline-capture",
+        "candidate": "seven-lane-candidate"
+      },
+      "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "mismatch-recovery",
+          "falsification-control",
+          "dependent-inventory",
+          "overlapping-ownership",
+          "protected-ambiguity",
+          "aligned-historical-controls",
+          "ordinary-small-controls",
+          "population-replay"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "aligned-binding",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "aligned-historical-controls",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "archive-preservation",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "mismatch-recovery",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "confirmed-unique-correction",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "mismatch-recovery",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "current-cross-family-mismatch",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "mismatch-recovery",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "dependent-versus-unrelated-active-changes",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "dependent-inventory",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "false-positive-falsification",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "falsification-control",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "historical-only-evidence",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "aligned-historical-controls",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "non-critical-architecture-polish",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "ordinary-small-controls",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "ordinary-small-exact-case",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "ordinary-small-controls",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "overlapping-dependent-ownership",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "overlapping-ownership",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "protected-product-ambiguity",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "protected-ambiguity",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unchanged-hypothesis-anti-loop",
+          "candidateId": "foundation-integrity-autorecovery-bd42a5fa",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "loaded-primary-foundation-owner-and-main-recovery",
+            "baseline": "baseline-capture",
+            "candidate": "seven-lane-candidate"
+          },
+          "observationBoundary": "configured-foundation-integrity-workflow-and-disposable-artifact-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "ordinary-small-controls",
+            "population-replay"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "source-loader-permissions",
+        "baseline-capture",
+        "mismatch-recovery",
+        "falsification-control",
+        "dependent-inventory",
+        "overlapping-ownership",
+        "protected-ambiguity",
+        "aligned-historical-controls",
+        "ordinary-small-controls",
+        "population-replay",
+        "focused-validation",
+        "independent-challenge"
+      ],
+      "materialExclusions": [
+        "Universal project-risk discovery",
+        "Semantic correctness for every consumer project",
+        "Autonomous selection among unresolved protected product identities",
+        "Provider or model generalization beyond the captured route",
+        "Consumer repository migration or product implementation",
+        "Deployment, release, remote mutation, credentials, cost, or protected actions"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "independent-challenge"
+        ]
+      },
+      "maximumSupportedClaim": "The exercised OpenAI gpt-5.6-sol xhigh configured route and seven reviewed foundation-integrity scenarios cover twelve explicit partitions under the recorded Windows/OpenCode/Node identities; no provider, model, consumer-project, unrepresented-domain, or protected-decision generalization is supported.",
+      "narrowingAccepted": false,
+      "disposition": "supported"
+    }
+  ]
+}

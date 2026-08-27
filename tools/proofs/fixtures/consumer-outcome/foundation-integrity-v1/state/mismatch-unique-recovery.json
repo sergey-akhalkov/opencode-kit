@@ -1,0 +1,5 @@
+{
+  "acceptedOutcome": "gateway-v2-current-profile",
+  "claimCeiling": "current",
+  "representativeWorkload": "legacy-profile-b-workload"
+}

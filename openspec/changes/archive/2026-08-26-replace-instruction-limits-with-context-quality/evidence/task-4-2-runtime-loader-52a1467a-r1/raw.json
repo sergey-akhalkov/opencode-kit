@@ -1,0 +1,46 @@
+{
+  "cleanup": "complete",
+  "candidateId": "instruction-context-52a1467ae666-r1",
+  "evaluation": {
+    "extraCoreSkills": [],
+    "hiddenParentHits": [],
+    "missingCoreSkills": [],
+    "skillNames": [
+      "behavioral-substitution-qualification",
+      "change-ready-sdlc",
+      "complain",
+      "customize-opencode",
+      "next-step",
+      "openspec-abandon-change",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "reuse-discovery"
+    ],
+    "status": "passed",
+    "agentName": "evidence-sufficiency-reviewer",
+    "agentStatus": 0,
+    "authorityMarkers": {
+      "evidenceBoundsPrinciple": true,
+      "claimRoutingTrigger": true
+    },
+    "canonicalOpenSpecSkills": [
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose"
+    ],
+    "missingCanonicalOpenSpecSkills": [],
+    "permissionFailures": [],
+    "resolvedPaths": {
+      "behavioralSubstitutionSkill": "<generated>/skills/behavioral-substitution-qualification/SKILL.md",
+      "evidenceSufficiencyReviewer": "<generated>/agents/evidence-sufficiency-reviewer.md",
+      "openspecApplySkill": "<generated>/skills/openspec-apply-change/SKILL.md",
+      "openspecArchiveSkill": "<generated>/skills/openspec-archive-change/SKILL.md",
+      "openspecProposeSkill": "<generated>/skills/openspec-propose/SKILL.md"
+    }
+  },
+  "profile": "core",
+  "agentStatus": 0,
+  "skillStatus": 0,
+  "tool": "opencode-dev-kit-runtime-surface-loader"
+}

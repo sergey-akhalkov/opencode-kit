@@ -436,8 +436,10 @@ unrelated-work ownership.
 
 ## Migration Plan
 
-1. Wait for terminal closure or explicit ownership transfer of the active foundation
-   change and current workstation edits; record current source/ownership/budget/runtime
+1. Apply `replace-instruction-limits-with-context-quality`, or explicitly rebase this
+   change on its replacement contract, then wait for terminal closure or explicit
+   ownership transfer of the active foundation change and current workstation edits;
+   record current source/ownership/instruction-diagnostics/runtime-budget/runtime
    identities and reject this checkout as a campaign target during implementation.
 2. Build provider-free campaign contracts, state, ledger/report materializer, and
    deterministic fixtures; prove append/replay/drift behavior before a model or source

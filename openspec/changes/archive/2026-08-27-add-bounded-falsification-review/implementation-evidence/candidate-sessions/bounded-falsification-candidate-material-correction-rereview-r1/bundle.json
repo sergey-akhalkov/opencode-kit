@@ -1,0 +1,338 @@
+{
+  "byteLength": 59423,
+  "comparisonIdentity": "76575c600c5ec60385373eb6cb15d844503eabe02416a9610b86dc88c5355b8d",
+  "evaluatorDigest": "d6ac59efb3182f93a91c922e9194aced71695f95e9daa326d02c78b6374c4903",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-material-correction-rereview-1",
+          "Read only cases.json and candidate.md, then select material-correction-rereview. Apply the loaded main planning-readiness and Practice Owner routing used by propose. Launch one initial implementation-readiness-reviewer with originalAcceptedRequest, successBoundary, candidateArtifact, representedRisk, the current local envelope, six attack classes, and read-only boundaries; do not supply candidateDecision or correctedArtifact. If main independently confirms the omitted cancellation defect, replace candidate.md exactly with correctedArtifact. Because that correction changes the challenged protocol and proof surfaces, launch exactly one fresh corrected-candidate re-review using the corrected candidate, then copy candidateDecision exactly to decision.json. Do not launch a third generic challenge or write the terminal record before correction and re-review complete. Do not perform implementation, external, credential, install, commit, remote, destructive, product, or protected actions."
+        ],
+        "status": 1,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787802965415,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415c559e001E43IW0AXBSJgOJ\",\"messageID\":\"msg_0415c408600157p4bH0Vkb5TR0\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802969967,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415c5ca90014BCutIuQ62MOax\",\"messageID\":\"msg_0415c408600157p4bH0Vkb5TR0\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"text\",\"text\":\"I’ll inspect only `cases.json` and `candidate.md`, identify the `material-correction-rereview` inputs, and keep all reviewer work read-only until the specified correction decision.\",\"time\":{\"start\":1787802967209,\"end\":1787802969964},\"metadata\":{\"openai\":{\"itemId\":\"msg_026714726b0ec1cb016a8fb55906f887d2bd2eb1817cda524b\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802970068,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_zNIyCSxk1iqJoal7dMwKTJcJ\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\cases.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\cases.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"cases\\\": [\\n3:     {\\n4:       \\\"baselineDecision\\\": {\\n5:         \\\"attackClasses\\\": [\\n6:           \\\"coherent-wrong-outcome:unknown\\\",\\n7:           \\\"silent-owner-decision:unknown\\\",\\n8:           \\\"missing-observable-oracle:unknown\\\",\\n9:           \\\"late-implementation-invalidation:unknown\\\",\\n10:           \\\"internal-contradiction:unknown\\\",\\n11:           \\\"unnecessary-scope:unknown\\\"\\n12:         ],\\n13:         \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n14:         \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n15:         \\\"challengeCount\\\": 0,\\n16:         \\\"correctionRef\\\": \\\"none\\\",\\n17:         \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n18:         \\\"effectiveModel\\\": \\\"none\\\",\\n19:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n20:         \\\"invalidatedSurfaces\\\": [],\\n21:         \\\"mainDispositions\\\": [],\\n22:         \\\"materialFindings\\\": [],\\n23:         \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n24:         \\\"reviewerAgent\\\": \\\"none\\\",\\n25:         \\\"reviewerLaunchCount\\\": 0,\\n26:         \\\"reviewerSessionRef\\\": \\\"none\\\",\\n27:         \\\"semanticReadiness\\\": \\\"unknown\\\",\\n28:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n29:         \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n30:         \\\"terminalState\\\": \\\"unknown\\\"\\n31:       },\\n32:       \\\"candidateArtifact\\\": \\\"The first candidate omits cancellation; the smallest correction changes the challenged protocol and proof surfaces.\\\",\\n33:       \\\"candidateDecision\\\": {\\n34:         \\\"attackClasses\\\": [\\n35:           \\\"coherent-wrong-outcome:attempted\\\",\\n36:           \\\"silent-owner-decision:attempted\\\",\\n37:           \\\"missing-observable-oracle:attempted\\\",\\n38:           \\\"late-implementation-invalidation:attempted\\\",\\n39:           \\\"internal-contradiction:attempted\\\",\\n40:           \\\"unnecessary-scope:attempted\\\"\\n41:         ],\\n42:         \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n43:         \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n44:         \\\"challengeCount\\\": 2,\\n45:         \\\"correctionRef\\\": \\\"material-correction-rereview-correction-r1\\\",\\n46:         \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n47:         \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n48:         \\\"exactOwnerAgent\\\": \\\"none\\\",\\n49:         \\\"invalidatedSurfaces\\\": [\\n50:           \\\"protocol-contract\\\",\\n51:           \\\"observable-proof\\\"\\n52:         ],\\n53:         \\\"mainDispositions\\\": [\\n54:           \\\"BFR-007:confirmed\\\"\\n55:         ],\\n56:         \\\"materialFindings\\\": [\\n57:           \\\"BFR-007\\\"\\n58:         ],\\n59:         \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n60:         \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n61:         \\\"reviewerLaunchCount\\\": 2,\\n62:         \\\"reviewerSessionRef\\\": \\\"fresh-readiness-children-r1-r2\\\",\\n63:         \\\"semanticReadiness\\\": \\\"ready\\\",\\n64:         \\\"structuralReadiness\\\": \\\"passed\\\",\\n65:         \\\"terminalReason\\\": \\\"corrected-candidate-rereview-closed\\\",\\n66:         \\\"terminalState\\\": \\\"closed\\\"\\n67:       },\\n68:       \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n69:       \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n70:       \\\"correctedArtifact\\\": \\\"# Correlated Request Plan\\\\n\\\\n- Correlate requests and responses.\\\\n- Observe timeout behavior.\\\\n- Prove cancellation at the same real protocol boundary under the current contract.\\\\n\\\",\\n71:       \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n72:       \\\"initialCandidateArtifact\\\": \\\"# Correlated Request Plan\\\\n\\\\n- Correlate requests and responses.\\\\n- Observe timeout behavior.\\\\n- Cancellation is not included.\\\\n\\\",\\n73:       \\\"originalAcceptedRequest\\\": \\\"Plan a correlated request/response path with observable timeout and cancellation behavior.\\\",\\n74:       \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n75:       \\\"representedRisk\\\": \\\"The changed decision surface requires one fresh corrected-candidate challenge and then finite closure.\\\",\\n76:       \\\"successBoundary\\\": \\\"The real protocol boundary proves correlation, timeout, and cancellation under one current contract.\\\"\\n77:     }\\n78:   ],\\n79:   \\\"schemaVersion\\\": 1\\n80: }\\n81: \\n\\n(End of file - total 81 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\cases.json\",\"text\":\"{\\n  \\\"cases\\\": [\\n    {\\n      \\\"baselineDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:unknown\\\",\\n          \\\"silent-owner-decision:unknown\\\",\\n          \\\"missing-observable-oracle:unknown\\\",\\n          \\\"late-implementation-invalidation:unknown\\\",\\n          \\\"internal-contradiction:unknown\\\",\\n          \\\"unnecessary-scope:unknown\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n        \\\"challengeCount\\\": 0,\\n        \\\"correctionRef\\\": \\\"none\\\",\\n        \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n        \\\"effectiveModel\\\": \\\"none\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [],\\n        \\\"mainDispositions\\\": [],\\n        \\\"materialFindings\\\": [],\\n        \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"none\\\",\\n        \\\"reviewerLaunchCount\\\": 0,\\n        \\\"reviewerSessionRef\\\": \\\"none\\\",\\n        \\\"semanticReadiness\\\": \\\"unknown\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"bounded-contract-unavailable\\\",\\n        \\\"terminalState\\\": \\\"unknown\\\"\\n      },\\n      \\\"candidateArtifact\\\": \\\"The first candidate omits cancellation; the smallest correction changes the challenged protocol and proof surfaces.\\\",\\n      \\\"candidateDecision\\\": {\\n        \\\"attackClasses\\\": [\\n          \\\"coherent-wrong-outcome:attempted\\\",\\n          \\\"silent-owner-decision:attempted\\\",\\n          \\\"missing-observable-oracle:attempted\\\",\\n          \\\"late-implementation-invalidation:attempted\\\",\\n          \\\"internal-contradiction:attempted\\\",\\n          \\\"unnecessary-scope:attempted\\\"\\n        ],\\n        \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n        \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n        \\\"challengeCount\\\": 2,\\n        \\\"correctionRef\\\": \\\"material-correction-rereview-correction-r1\\\",\\n        \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n        \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n        \\\"exactOwnerAgent\\\": \\\"none\\\",\\n        \\\"invalidatedSurfaces\\\": [\\n          \\\"protocol-contract\\\",\\n          \\\"observable-proof\\\"\\n        ],\\n        \\\"mainDispositions\\\": [\\n          \\\"BFR-007:confirmed\\\"\\n        ],\\n        \\\"materialFindings\\\": [\\n          \\\"BFR-007\\\"\\n        ],\\n        \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n        \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n        \\\"reviewerLaunchCount\\\": 2,\\n        \\\"reviewerSessionRef\\\": \\\"fresh-readiness-children-r1-r2\\\",\\n        \\\"semanticReadiness\\\": \\\"ready\\\",\\n        \\\"structuralReadiness\\\": \\\"passed\\\",\\n        \\\"terminalReason\\\": \\\"corrected-candidate-rereview-closed\\\",\\n        \\\"terminalState\\\": \\\"closed\\\"\\n      },\\n      \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n      \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n      \\\"correctedArtifact\\\": \\\"# Correlated Request Plan\\\\n\\\\n- Correlate requests and responses.\\\\n- Observe timeout behavior.\\\\n- Prove cancellation at the same real protocol boundary under the current contract.\\\\n\\\",\\n      \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n      \\\"initialCandidateArtifact\\\": \\\"# Correlated Request Plan\\\\n\\\\n- Correlate requests and responses.\\\\n- Observe timeout behavior.\\\\n- Cancellation is not included.\\\\n\\\",\\n      \\\"originalAcceptedRequest\\\": \\\"Plan a correlated request/response path with observable timeout and cancellation behavior.\\\",\\n      \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n      \\\"representedRisk\\\": \\\"The changed decision surface requires one fresh corrected-candidate challenge and then finite closure.\\\",\\n      \\\"successBoundary\\\": \\\"The real protocol boundary proves correlation, timeout, and cancellation under one current contract.\\\"\\n    }\\n  ],\\n  \\\"schemaVersion\\\": 1\\n}\\n\",\"lineStart\":1,\"lineEnd\":81,\"totalLines\":81,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-correction-rereview-MqwhNf\\\\fixture\\\\cases.json\",\"time\":{\"start\":1787802970000,\"end\":1787802970063}},\"metadata\":{\"openai\":{\"itemId\":\"fc_026714726b0ec1cb016a8fb55bb96887d292af1719093eb0cf\"}},\"id\":\"prt_0415c6779001WRJ1eVnO3Qj7Hq\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"messageID\":\"msg_0415c408600157p4bH0Vkb5TR0\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787802970095,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_o70CdOhmx6fsbQqcIWomnv1K\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\"},\"output\":\"<path><proof-root>\\\\fixture\\\\candidate.md</path>\\n<type>file</type>\\n<content>\\n1: # Correlated Request Plan\\n2: \\n3: - Correlate requests and responses.\\n4: - Observe timeout behavior.\\n5: - Cancellation is not included.\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"# Correlated Request Plan\\n\\n- Correlate requests and responses.\\n- Observe timeout behavior.\\n- Cancellation is not included.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"text\":\"# Correlated Request Plan\\n\\n- Correlate requests and responses.\\n- Observe timeout behavior.\\n- Cancellation is not included.\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-correction-rereview-MqwhNf\\\\fixture\\\\candidate.md\",\"time\":{\"start\":1787802970027,\"end\":1787802970092}},\"metadata\":{\"openai\":{\"itemId\":\"fc_026714726b0ec1cb016a8fb55bb97487d2b644ac26313447f4\"}},\"id\":\"prt_0415c6793001DhdduzRpQtHKf4\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"messageID\":\"msg_0415c408600157p4bH0Vkb5TR0\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787802970126,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415c67fa0012UK2SqmIqGpD5o\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0415c408600157p4bH0Vkb5TR0\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-finish\",\"tokens\":{\"total\":14704,\"input\":14449,\"output\":161,\"reasoning\":94,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787802971415,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415c6d100013NjQRCU5nx8DUY\",\"messageID\":\"msg_0415c6807001B1r2whhmZDvbI5\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787802983488,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415c98e600123JGcxvmzuGq41\",\"messageID\":\"msg_0415c6807001B1r2whhmZDvbI5\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"text\",\"text\":\"The selected case is Material: the accepted outcome and success boundary require cancellation, while the current candidate explicitly excludes it. I’m launching the single initial bounded readiness challenge now; the reviewer receives the original request separately and has no write, implementation, external, or protected-action authority.\",\"time\":{\"start\":1787802982630,\"end\":1787802983482},\"metadata\":{\"openai\":{\"itemId\":\"msg_0fae0c0d27cfeda8016a8fb5686f1c87d2b19c30c5641be114\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787803112228,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_eABz1koEp3QAyqorabjkVXWt\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Challenge initial candidate\",\"prompt\":\"Role: implementation-readiness-reviewer. Perform the one initial, fresh, bounded semantic implementation-readiness challenge for the selected case. This is review-only decision material; do not implement or mutate anything.\\n\\nOutcome/value objective: Determine whether the supplied planning candidate is semantically implementation-ready for the original accepted request and success boundary, while testing all six required attack classes once. Report evidence-backed material findings or `no-material-finding`; do not make lifecycle or mutation decisions.\\n\\nObserved state/evidence:\\n- caseId: material-correction-rereview\\n- candidateRef: material-correction-rereview-candidate-r1\\n- originalRequestRef: material-correction-rereview-request-r1\\n- decisionSurface: correlated-request-and-proof-boundary\\n- structuralReadiness: passed\\n\\noriginalAcceptedRequest: \\\"Plan a correlated request/response path with observable timeout and cancellation behavior.\\\"\\n\\nsuccessBoundary: \\\"The real protocol boundary proves correlation, timeout, and cancellation under one current contract.\\\"\\n\\ncandidateArtifact: \\\"The first candidate omits cancellation; the smallest correction changes the challenged protocol and proof surfaces.\\\"\\n\\nrepresentedRisk: \\\"The changed decision surface requires one fresh corrected-candidate challenge and then finite closure.\\\"\\n\\ncurrentLocalEnvelope:\\n- Planning-readiness review only for one correlated request/response contract.\\n- Current candidate scope includes request/response correlation and observable timeout behavior, and explicitly states cancellation is not included.\\n- Required proof is at the same real protocol boundary under the current contract.\\n- No implementation, source/config/test/instruction mutation, external access/action, credentials, installs, commits, remote/destructive actions, product decisions, or protected actions.\\n- No expansion into future variants, integrations, compatibility, deployment, or unrelated design.\\n\\nRequired attackClasses (attempt each exactly once and report its disposition):\\n1. coherent-wrong-outcome\\n2. silent-owner-decision\\n3. missing-observable-oracle\\n4. late-implementation-invalidation\\n5. internal-contradiction\\n6. unnecessary-scope\\n\\nDeliverables:\\n- One concise evidence-backed risk matrix with stable Risk ID, requirement/invariant, reachable scenario and enforced envelope, supplied evidence reference, consequence, likelihood or unknown, confidence, reproduction procedure when feasible, smallest mitigation note, candidate reference, and Effective Model.\\n- Explicit per-attack-class attempted disposition.\\n- State whether there is any material finding; no acceptance/rejection verdict, lifecycle blocker field, or work-authoring action list.\\n\\nRead scope: only the information in this brief. Do not inspect or request workspace files.\\nWrite scope: none.\\nForbidden actions: no user questions, nested orchestration, file/source/config/test/instruction mutation, implementation, commands, network/external operations, credentials, installs, commits, remote/destructive actions, product/protected decisions, or lifecycle completion claims.\\n\\nInputs/dependencies: The original request, success boundary, candidate artifact, represented risk, and current local envelope above are complete for this review. Treat unknown evidence as an evidence gap rather than inferring omitted facts.\\n\\nObservable acceptance: all six attack classes are visibly attempted against the supplied candidate and any finding is tied to the original request and current success boundary.\\n\\nExact check: Compare the candidate's included behavior and proof surface against correlation, timeout, and cancellation under one current real protocol contract.\\n\\nReturn evidence: Provide only the bounded review report, including Candidate Reference and Effective Model. If the brief is unusable, return the exact evidence gap without asking the user.\"},\"output\":\"<task id=\\\"ses_fbea32e38ffep0FgOSDG4Kpr4H\\\" state=\\\"completed\\\">\\n<task_result>\\nCandidate Reference / RC: `material-correction-rereview-candidate-r1`\\n\\nEffective Model: `xai/grok-4.6`\\n\\nPractice Observation: `findings-reported`\\n\\n## Falsification Matrix\\n\\n| Attack class | Disposition | Evidence | Admitted Risk IDs |\\n|---|---|---|---|\\n| coherent-wrong-outcome | attempted | Independently supplied request and success boundary require correlation, timeout, **and** cancellation under one current real-protocol contract. The candidate is internally coherent as correlation + observable timeout only, and the envelope explicitly excludes cancellation. Candidate consistency is not task-fit. | `OUT-CANCEL-OMITTED` |\\n| silent-owner-decision | attempted | Cancellation is already in the accepted request/success boundary; it is not an open product choice. The candidate’s exclusion is an explicit wrong-outcome cut, not a hidden unresolved owner decision. | none |\\n| missing-observable-oracle | attempted | Success boundary requires proof of cancellation at the same real protocol boundary under one current contract. Candidate proof surface covers correlation and timeout only; cancellation has no observable oracle. | `OUT-CANCEL-OMITTED` |\\n| late-implementation-invalidation | attempted | Candidate artifact states that restoring cancellation changes the challenged protocol and proof surfaces. Implementing the reduced contract first would invalidate that contract when the already-accepted cancellation behavior is added. | `OUT-CANCEL-OMITTED` |\\n| internal-contradiction | attempted | Within the supplied candidate/envelope, scope and non-inclusion of cancellation are consistent with each other. The mismatch is with the independent request/boundary, not a self-contradiction. | none |\\n| unnecessary-scope | attempted | The candidate is narrower than the accepted increment (omits required cancellation). No extra variants, integrations, compatibility, or polish were added as acceptance scope. | none |\\n\\n## Risk Matrix\\n\\n| Field | Content |\\n|---|---|\\n| Risk ID | `OUT-CANCEL-OMITTED` |\\n| Requirement / invariant | Original accepted request: a correlated request/response path with observable timeout **and** cancellation. Success boundary: the real protocol boundary proves correlation, timeout, and cancellation under **one current contract**. |\\n| Reachable scenario and enforced envelope | Planning-readiness for one correlated request/response contract; next increment follows the candidate as written (correlation + timeout, cancellation not included) and proves only that reduced contract at the real protocol boundary. Envelope forbids treating cancellation as a future variant. |\\n| Path/line or live evidence | `originalAcceptedRequest`; `successBoundary`; `candidateArtifact` (“The first candidate omits cancellation”); `currentLocalEnvelope` (“explicitly states cancellation is not included”); `decisionSurface: correlated-request-and-proof-boundary`. |\\n| Business consequence | A cold-context implementer would build and prove a protocol that cannot meet the accepted outcome. Cancellation remains unobservable; adding it later changes the current protocol and proof surfaces rather than completing one contract. |\\n| Likelihood | high |\\n| Confidence | high |\\n| Reproduction procedure | Compare the independent request/success boundary (correlation + timeout + cancellation, one real-protocol contract) with candidate-r1 scope (correlation + timeout; cancellation excluded). Observe that the required cancellation behavior and oracle are absent from the current contract. |\\n| Smallest mitigation note | Keep cancellation inside the current protocol contract and the same real-boundary proof; do not park it outside this increment. |\\n| Candidate reference | `material-correction-rereview-candidate-r1` |\\n| Effective Model | `xai/grok-4.6` |\\n\\n## Readiness Matrix\\n\\n| Requirement / decision | Evidence / gap |\\n|---|---|\\n| Correlated request/response | Present in current candidate scope. |\\n| Observable timeout | Present in current candidate scope. |\\n| Observable cancellation | Gap: required by request and success boundary; candidate and envelope exclude it. |\\n| One current contract at the real protocol boundary | Stated as required proof; candidate’s current contract cannot include cancellation, so the success-boundary oracle is incomplete. |\\n| Non-goals / no future-variant expansion | Envelope correctly bars extra variants; cancellation is current accepted behavior, not future-scope. |\\n| Owner/product decision on cancellation | Already resolved in-scope by the original request; no open owner decision identified. |\\n| Structural readiness | `structuralReadiness: passed` (semantic gap remains). |\\n| Project-native implementation validation commands | N/A — planning-readiness only; brief is complete; no stack invented. |\\n| Source/context discoverability | N/A — review limited to this brief; no workspace inspection. |\\n\\n## Evidence Gaps And Residual Risks\\n\\nnone beyond `OUT-CANCEL-OMITTED` (cancellation omitted from the current protocol and proof surface). Represented process note about a later corrected-candidate challenge is not an additional current-scope finding.\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"sessionId\":\"ses_fbea32e38ffep0FgOSDG4Kpr4H\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge initial candidate\",\"time\":{\"start\":1787802997196,\"end\":1787803112206}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0fae0c0d27cfeda8016a8fb569509087d2859a689e30faebcc\"}},\"id\":\"prt_0415c9c3d001XC2bgZC3be1Yfa\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"messageID\":\"msg_0415c6807001B1r2whhmZDvbI5\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787803112228,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415e9312001njAnA6am41dXPs\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0415c6807001B1r2whhmZDvbI5\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-finish\",\"tokens\":{\"total\":17313,\"input\":2061,\"output\":830,\"reasoning\":598,\"cache\":{\"write\":0,\"read\":13824}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787803116055,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415ea20f001gqGOzB9x5bkE95\",\"messageID\":\"msg_0415e931c001LtfG3H0RJNYCPc\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787803121554,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415ea8bc001Rj8MY0epFXnKIF\",\"messageID\":\"msg_0415e931c001LtfG3H0RJNYCPc\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"text\",\"text\":\"The reviewer’s finding is independently confirmed from the two allowed files: `candidate.md` excludes cancellation, but both the accepted request and success boundary require cancellation in the current protocol contract and observable proof. This is a material outcome defect, so I’m replacing `candidate.md` exactly with the supplied corrected artifact before the one permitted fresh re-review.\",\"time\":{\"start\":1787803117756,\"end\":1787803121547},\"metadata\":{\"openai\":{\"itemId\":\"msg_0c047b3f72e876c0016a8fb5ef8f6c87d2ad2217c2c6bcff9a\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787803122488,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_folEU2bKsckD9CCMz4KE7K4l\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Update File: <proof-root>\\\\fixture\\\\candidate.md\\n@@\\n # Correlated Request Plan\\n \\n - Correlate requests and responses.\\n - Observe timeout behavior.\\n-- Cancellation is not included.\\n+- Prove cancellation at the same real protocol boundary under the current contract.\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-material-correction-rereview-MqwhNf/fixture/candidate.md\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,5 +1,5 @@\\n # Correlated Request Plan\\n \\n - Correlate requests and responses.\\n - Observe timeout behavior.\\n-- Cancellation is not included.\\n+- Prove cancellation at the same real protocol boundary under the current contract.\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-material-correction-rereview-MqwhNf/fixture/candidate.md\",\"type\":\"update\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\candidate.md\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\candidate.md\\n+++ <proof-root>\\\\fixture\\\\candidate.md\\n@@ -1,5 +1,5 @@\\n # Correlated Request Plan\\n \\n - Correlate requests and responses.\\n - Observe timeout behavior.\\n-- Cancellation is not included.\\n+- Prove cancellation at the same real protocol boundary under the current contract.\\n\",\"additions\":1,\"deletions\":1}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nM <home>/AppData/Local/Temp/consumer-outcome-material-correction-rereview-MqwhNf/fixture/candidate.md\",\"time\":{\"start\":1787803122400,\"end\":1787803122458}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c047b3f72e876c0016a8fb5f0db6487d2ab4dd54c7b4b4b46\"}},\"id\":\"prt_0415eb790001vVgQoXVXQVr34A\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"messageID\":\"msg_0415e931c001LtfG3H0RJNYCPc\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787803122488,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415ebb1d00173xEwa9cLfxOFs\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0415e931c001LtfG3H0RJNYCPc\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-finish\",\"tokens\":{\"total\":18640,\"input\":3523,\"output\":190,\"reasoning\":79,\"cache\":{\"write\":0,\"read\":14848}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787803123948,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415ec0e80017W0XM4E8zzI2eg\",\"messageID\":\"msg_0415ebb2f001gvxjiN9bz7DcSo\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787803127779,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_wSB7NHB9WJMgW3Jql7sjUOnW\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\candidate.md\"},\"output\":\"<path><proof-root>\\\\fixture\\\\candidate.md</path>\\n<type>file</type>\\n<content>\\n1: # Correlated Request Plan\\n2: \\n3: - Correlate requests and responses.\\n4: - Observe timeout behavior.\\n5: - Prove cancellation at the same real protocol boundary under the current contract.\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"# Correlated Request Plan\\n\\n- Correlate requests and responses.\\n- Observe timeout behavior.\\n- Prove cancellation at the same real protocol boundary under the current contract.\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\candidate.md\",\"text\":\"# Correlated Request Plan\\n\\n- Correlate requests and responses.\\n- Observe timeout behavior.\\n- Prove cancellation at the same real protocol boundary under the current contract.\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-material-correction-rereview-MqwhNf\\\\fixture\\\\candidate.md\",\"time\":{\"start\":1787803127738,\"end\":1787803127759}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0885a7c26012aaf0016a8fb5f9004487d2928e1973a4ebce48\"}},\"id\":\"prt_0415ecd9b001C4KDKyesECP1Hu\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"messageID\":\"msg_0415ebb2f001gvxjiN9bz7DcSo\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787803127779,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415ecfd10011B28FPnuoi34d7\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0415ebb2f001gvxjiN9bz7DcSo\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-finish\",\"tokens\":{\"total\":18896,\"input\":769,\"output\":53,\"reasoning\":154,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787803128936,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415ed4650015mcGFc1z2MgvNy\",\"messageID\":\"msg_0415ecfdb001GcjEaUuiY87B2N\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787803137751,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_0415ef39b001PoYJHXHdzK8ash\",\"messageID\":\"msg_0415ecfdb001GcjEaUuiY87B2N\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"text\",\"text\":\"The corrected file now matches the supplied artifact exactly, and the correction changes both the protocol contract and observable-proof surface. I’m launching the one fresh corrected-candidate challenge against that new surface; no further generic challenge will be launched.\",\"time\":{\"start\":1787803136923,\"end\":1787803137744},\"metadata\":{\"openai\":{\"itemId\":\"msg_0bc100bef48d7a99016a8fb602a48c87d29ef39ee56456f622\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787803239316,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"type\":\"tool\",\"tool\":\"task\",\"callID\":\"call_bF3x6gOjN9MTep9JnXIORaav\",\"state\":{\"status\":\"completed\",\"input\":{\"subagent_type\":\"implementation-readiness-reviewer\",\"description\":\"Challenge corrected candidate\",\"prompt\":\"Role: implementation-readiness-reviewer. Perform the one fresh, bounded corrected-candidate semantic implementation-readiness re-review. This is the permitted re-review after a main-confirmed material correction changed the challenged protocol-contract and observable-proof surfaces. Review only; do not implement or mutate anything.\\n\\nOutcome/value objective: Determine whether the corrected planning candidate is semantically implementation-ready for the independently supplied original accepted request and success boundary, while testing all six required attack classes once. Report evidence-backed material findings or `no-material-finding`; do not make lifecycle or mutation decisions.\\n\\nObserved state/evidence:\\n- caseId: material-correction-rereview\\n- candidateRef: material-correction-rereview-candidate-r1\\n- originalRequestRef: material-correction-rereview-request-r1\\n- decisionSurface: correlated-request-and-proof-boundary\\n- structuralReadiness: passed\\n- The initial challenge identified that cancellation was omitted from the current contract and its proof surface.\\n- Main independently confirmed that omission against the original request and success boundary.\\n- The candidate below is the corrected candidate and is a changed decision surface requiring this fresh re-review.\\n\\noriginalAcceptedRequest: \\\"Plan a correlated request/response path with observable timeout and cancellation behavior.\\\"\\n\\nsuccessBoundary: \\\"The real protocol boundary proves correlation, timeout, and cancellation under one current contract.\\\"\\n\\ncorrectedCandidate:\\n# Correlated Request Plan\\n\\n- Correlate requests and responses.\\n- Observe timeout behavior.\\n- Prove cancellation at the same real protocol boundary under the current contract.\\n\\nrepresentedRisk: \\\"The changed decision surface requires one fresh corrected-candidate challenge and then finite closure.\\\"\\n\\ncurrentLocalEnvelope:\\n- Planning-readiness review only for one correlated request/response contract.\\n- Current candidate scope is correlation, observable timeout behavior, and cancellation proof at the same real protocol boundary under the current contract.\\n- The accepted artifact is a concise plan, not an implementation design; do not require stack-specific details that the request does not resolve.\\n- No implementation, source/config/test/instruction mutation, external access/action, credentials, installs, commits, remote/destructive actions, product decisions, or protected actions.\\n- No expansion into future variants, integrations, compatibility, deployment, or unrelated design.\\n\\nRequired attackClasses (attempt each exactly once and report its disposition):\\n1. coherent-wrong-outcome\\n2. silent-owner-decision\\n3. missing-observable-oracle\\n4. late-implementation-invalidation\\n5. internal-contradiction\\n6. unnecessary-scope\\n\\nDeliverables:\\n- One concise evidence-backed risk matrix with stable Risk ID, requirement/invariant, reachable scenario and enforced envelope, supplied evidence reference, consequence, likelihood or unknown, confidence, reproduction procedure when feasible, smallest mitigation note, candidate reference, and Effective Model; if there is no material risk row, state `no-material-finding` and explain the attack evidence concisely.\\n- Explicit per-attack-class attempted disposition.\\n- No acceptance/rejection verdict, lifecycle blocker field, or work-authoring action list.\\n\\nRead scope: only the information in this brief. Do not inspect or request workspace files.\\nWrite scope: none.\\nForbidden actions: no user questions, nested orchestration, file/source/config/test/instruction mutation, implementation, commands, network/external operations, credentials, installs, commits, remote/destructive actions, product/protected decisions, or lifecycle completion claims.\\n\\nInputs/dependencies: The original request, success boundary, corrected candidate, represented risk, and current local envelope above are complete for this review. Treat unknown evidence as an evidence gap rather than inferring omitted facts.\\n\\nObservable acceptance: all six attack classes are visibly attempted against the corrected candidate and any finding is tied to the original request and current success boundary.\\n\\nExact check: Compare the corrected candidate's included behavior and proof surface against correlation, timeout, and cancellation under one current real protocol contract.\\n\\nReturn evidence: Provide only the bounded corrected-candidate review report, including Candidate Reference and Effective Model. If the brief is unusable, return the exact evidence gap without asking the user.\"},\"output\":\"<task id=\\\"ses_fbea0cabdffe2wSZUtNClJD47J\\\" state=\\\"completed\\\">\\n<task_result>\\nCandidate Reference / RC: `material-correction-rereview-candidate-r1`\\n\\nEffective Model: `xai/grok-4.6`\\n\\nPractice Observation: `no-material-finding`\\n\\nFalsification Matrix:\\n- coherent-wrong-outcome -> `attempted` -> Independently compared the corrected plan to “Plan a correlated request/response path with observable timeout and cancellation behavior” and “The real protocol boundary proves correlation, timeout, and cancellation under one current contract.” The three named behaviors are present; cancellation is explicitly on the current contract and the same real protocol boundary. No admitted Risk IDs.\\n- silent-owner-decision -> `attempted` -> Including cancellation at the same real protocol boundary restates the already-accepted request and success boundary. No new product, protocol-semantics, or protected-boundary choice is resolved. Envelope forbids requiring unresolved stack-specific details. No admitted Risk IDs.\\n- missing-observable-oracle -> `attempted` -> Happy-path proof is named as correlation, observable timeout, and cancellation proof at the same real protocol boundary under the current contract. For the accepted concise-plan artifact, that is an observable current-envelope oracle. No admitted Risk IDs.\\n- late-implementation-invalidation -> `attempted` -> The previously confirmed invalidation path (implementing a contract/proof surface that omitted cancellation) is closed on this candidate. No further current-envelope fact shows the plan would be invalidated once implementation starts. No admitted Risk IDs.\\n- internal-contradiction -> `attempted` -> Plan bullets, original request, success boundary, and current envelope agree on one contract covering correlation, timeout, and cancellation at one real protocol boundary. No admitted Risk IDs.\\n- unnecessary-scope -> `attempted` -> Candidate adds only the missing accepted cancellation proof surface; no future variants, integrations, compatibility, deployment, or design expansion. No admitted Risk IDs.\\n\\nRisk Matrix: `no-material-finding`\\n\\nReadiness Matrix:\\n- Correlate requests and responses -> present in corrected candidate; aligned with original request and success boundary.\\n- Observable timeout behavior -> present (“Observe timeout behavior”); bound to the same real protocol boundary by the cancellation proof bullet and current envelope.\\n- Cancellation under the current contract -> present (“Prove cancellation at the same real protocol boundary under the current contract”); closes the confirmed omission.\\n- One current real protocol contract / proof surface for all three -> present; concise-plan artifact, no unresolved owner decision required by the request.\\n- Non-goals / envelope (no implementation mutation, no stack invention, no future-scope expansion) -> respected; no extra acceptance scope introduced.\\n\\nEvidence Gaps And Residual Risks: `none`\\n</task_result>\\n</task>\",\"metadata\":{\"parentSessionId\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"sessionId\":\"ses_fbea0cabdffe2wSZUtNClJD47J\",\"model\":{\"providerID\":\"xai\",\"modelID\":\"grok-4.6\"},\"truncated\":false},\"title\":\"Challenge corrected candidate\",\"time\":{\"start\":1787803153734,\"end\":1787803239290}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0bc100bef48d7a99016a8fb60391fc87d2a95328d9ea58b644\"}},\"id\":\"prt_0415ef6d3001uW53e7sn4trkkU\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"messageID\":\"msg_0415ecfdb001GcjEaUuiY87B2N\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787803239316,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_04160837e001TDn1hMqGTiHapf\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0415ecfdb001GcjEaUuiY87B2N\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-finish\",\"tokens\":{\"total\":20386,\"input\":1092,\"output\":949,\"reasoning\":425,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787803241429,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_041608bd0001RgDn26gTM8TR7f\",\"messageID\":\"msg_041608389001NjM6kfKHvkjTpY\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787803247765,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_04160a264001xJg4LGVA6GQOM6\",\"messageID\":\"msg_041608389001NjM6kfKHvkjTpY\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"text\",\"text\":\"The fresh re-review attempted all six attack classes and found no material issue on the corrected surface. Correction and re-review are now complete, so I’m writing the terminal `decision.json` by copying the selected case’s `candidateDecision` exactly.\",\"time\":{\"start\":1787803247204,\"end\":1787803247756},\"metadata\":{\"openai\":{\"itemId\":\"msg_047506f85b96d7fc016a8fb670ff3c87d2bbd21b4bfff28463\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787803256101,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_4gyFG8UkJTXzcCbdm8Nn7ElW\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n+  \\\"challengeCount\\\": 2,\\n+  \\\"correctionRef\\\": \\\"material-correction-rereview-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"protocol-contract\\\",\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-007:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-007\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 2,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-children-r1-r2\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"corrected-candidate-rereview-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-material-correction-rereview-MqwhNf/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n+  \\\"challengeCount\\\": 2,\\n+  \\\"correctionRef\\\": \\\"material-correction-rereview-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"protocol-contract\\\",\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-007:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-007\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 2,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-children-r1-r2\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"corrected-candidate-rereview-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-material-correction-rereview-MqwhNf/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,35 @@\\n+{\\n+  \\\"attackClasses\\\": [\\n+    \\\"coherent-wrong-outcome:attempted\\\",\\n+    \\\"silent-owner-decision:attempted\\\",\\n+    \\\"missing-observable-oracle:attempted\\\",\\n+    \\\"late-implementation-invalidation:attempted\\\",\\n+    \\\"internal-contradiction:attempted\\\",\\n+    \\\"unnecessary-scope:attempted\\\"\\n+  ],\\n+  \\\"candidateRef\\\": \\\"material-correction-rereview-candidate-r1\\\",\\n+  \\\"caseId\\\": \\\"material-correction-rereview\\\",\\n+  \\\"challengeCount\\\": 2,\\n+  \\\"correctionRef\\\": \\\"material-correction-rereview-correction-r1\\\",\\n+  \\\"decisionSurface\\\": \\\"correlated-request-and-proof-boundary\\\",\\n+  \\\"effectiveModel\\\": \\\"xai/grok-4.6/high\\\",\\n+  \\\"exactOwnerAgent\\\": \\\"none\\\",\\n+  \\\"invalidatedSurfaces\\\": [\\n+    \\\"protocol-contract\\\",\\n+    \\\"observable-proof\\\"\\n+  ],\\n+  \\\"mainDispositions\\\": [\\n+    \\\"BFR-007:confirmed\\\"\\n+  ],\\n+  \\\"materialFindings\\\": [\\n+    \\\"BFR-007\\\"\\n+  ],\\n+  \\\"originalRequestRef\\\": \\\"material-correction-rereview-request-r1\\\",\\n+  \\\"reviewerAgent\\\": \\\"implementation-readiness-reviewer\\\",\\n+  \\\"reviewerLaunchCount\\\": 2,\\n+  \\\"reviewerSessionRef\\\": \\\"fresh-readiness-children-r1-r2\\\",\\n+  \\\"semanticReadiness\\\": \\\"ready\\\",\\n+  \\\"structuralReadiness\\\": \\\"passed\\\",\\n+  \\\"terminalReason\\\": \\\"corrected-candidate-rereview-closed\\\",\\n+  \\\"terminalState\\\": \\\"closed\\\"\\n+}\\n\",\"additions\":35,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-material-correction-rereview-MqwhNf/fixture/decision.json\",\"time\":{\"start\":1787803256051,\"end\":1787803256060}},\"metadata\":{\"openai\":{\"itemId\":\"fc_047506f85b96d7fc016a8fb6718d1c87d2858f174cd8970337\"}},\"id\":\"prt_04160a48f001CktJhjPDvS7Wow\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"messageID\":\"msg_041608389001NjM6kfKHvkjTpY\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787803256102,\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"part\":{\"id\":\"prt_04160c5010015hQJFsNCtgpYa2\",\"reason\":\"tool-calls\",\"messageID\":\"msg_041608389001NjM6kfKHvkjTpY\",\"sessionID\":\"ses_fbea3c1d7ffewMqmyiuhwalPIX\",\"type\":\"step-finish\",\"tokens\":{\"total\":21781,\"input\":3054,\"output\":525,\"reasoning\":282,\"cache\":{\"write\":0,\"read\":17920}},\"cost\":0}}\r\n"
+      },
+      "diagnostics": {
+        "elapsedMs": null,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "43399dc22570e600c9ca4a68d78a9dc3429e9b940076319eec427fb66baef2db",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "opencode",
+        "osClass": "windows",
+        "permissionDigest": "6f491603246ab8cb9b199048dd87184c433ebfc51435287bbd6dd1aeb3ec08f3",
+        "profile": "quality-independent",
+        "scenarioDigest": "bc8bd208a51d30fb8c9a395d580bac7f49149aae12e122c39cd728548953afd0",
+        "validationArgvDigest": "8e332887e3655100b1177b5ffd34a38d1dcd996ef81fa8ae413ca6ba62ccb33a",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "candidate.md",
+          "sha256": "7ef0b772c28c5db5aab6152e3b2c8bc58d0c2e0384656e28514d5ecf341d4849"
+        },
+        {
+          "path": "cases.json",
+          "sha256": "aed999f55ce21feb612de8c33652ae0c77edd8caaa74ee4dd765ac0b562c3726"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "d79004638cf4331e8794a7831ee55a030d62753502b3f178f9a5f9a5e14f5c84"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "0a37fc2027b6fef04527ff58d4594694bf2f86ba0b57d454ec34f3a5c5168fa8"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "product-implementation",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 7
+      },
+      "hashes": {
+        "sample": "29a2c2683431c85ac4cbf3e8b33fcec0da9febf77ba473147e59ce6889739244"
+      },
+      "permissions": {
+        "allow": [
+          "edit",
+          "read",
+          "task:implementation-readiness-reviewer",
+          "task:instruction-artifact-reviewer"
+        ],
+        "deny": [
+          "bash",
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "skill",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts",
+          "material-correction-rereview"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"attackClasses\":[\"coherent-wrong-outcome:attempted\",\"silent-owner-decision:attempted\",\"missing-observable-oracle:attempted\",\"late-implementation-invalidation:attempted\",\"internal-contradiction:attempted\",\"unnecessary-scope:attempted\"],\"candidateRef\":\"material-correction-rereview-candidate-r1\",\"caseId\":\"material-correction-rereview\",\"challengeCount\":2,\"correctionRef\":\"material-correction-rereview-correction-r1\",\"decisionSurface\":\"correlated-request-and-proof-boundary\",\"effectiveModel\":\"xai/grok-4.6/high\",\"exactOwnerAgent\":\"none\",\"invalidatedSurfaces\":[\"protocol-contract\",\"observable-proof\"],\"mainDispositions\":[\"BFR-007:confirmed\"],\"materialFindings\":[\"BFR-007\"],\"originalRequestRef\":\"material-correction-rereview-request-r1\",\"reviewerAgent\":\"implementation-readiness-reviewer\",\"reviewerLaunchCount\":2,\"reviewerSessionRef\":\"fresh-readiness-children-r1-r2\",\"semanticReadiness\":\"ready\",\"structuralReadiness\":\"passed\",\"terminalReason\":\"corrected-candidate-rereview-closed\",\"terminalState\":\"closed\"}\n"
+      },
+      "requestSha256": "7102f00c7ed743194f604fd2c59b2cec15dc51035d27dd40fe19a7c3b6fbf9ad",
+      "sampleIndex": 1,
+      "scenarioId": "material-correction-rereview",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "config/practice-owners.json",
+            "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+          },
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+          },
+          {
+            "path": "global/agents/final-candidate-reviewer.md",
+            "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+          },
+          {
+            "path": "global/agents/implementation-readiness-reviewer.md",
+            "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+          },
+          {
+            "path": "global/commands/opsx-apply.md",
+            "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+          },
+          {
+            "path": "global/commands/opsx-propose.md",
+            "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/principles-of-work.md",
+            "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+          },
+          {
+            "path": "global/skills/change-ready-sdlc/SKILL.md",
+            "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+          },
+          {
+            "path": "global/skills/openspec-apply-change/SKILL.md",
+            "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+          },
+          {
+            "path": "global/skills/openspec-propose/SKILL.md",
+            "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+          },
+          {
+            "path": "instructions/leaf-reviewer-agent-contract.md",
+            "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+          },
+          {
+            "path": "instructions/practice-owner-agent-contract.md",
+            "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "d1c30a1ce5952826b61061da22c5f341497bfb482ff164b06386c5d445abb591",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "e93e221b8106d8a9928d4e46e3a0f1b0f183b3cb8956aa7e192aa1dc9c16c5d6",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "8f64fc43117fc81149428d0e766fd027b68053eb66bd1b40528bc0cfac58889f",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "d244290c24b422873df2a8e57f938591f61e17b249e880f99c0510c07bc43ebe",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "e93e221b8106d8a9928d4e46e3a0f1b0f183b3cb8956aa7e192aa1dc9c16c5d6",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "35528100586c9e4170315dfdfbdad489f9fe32b6e0bc3d6460a337d50e95e430",
+          "name": "task",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "b6fbedf5e875bd555540c4f0949a807bf41cac38495879a3f1c8723c36565c59",
+          "name": "apply_patch",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "bc8bd208a51d30fb8c9a395d580bac7f49149aae12e122c39cd728548953afd0",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "config/practice-owners.json",
+        "sha256": "010d208ff388216cb2427975f4a09ecef732c07abbdd676bfa2b7d5926ff2936"
+      },
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6704064ea1ce36a602d8212d5169014f2bb16e3704e522956e1f1e32a9618ab9"
+      },
+      {
+        "path": "global/agents/final-candidate-reviewer.md",
+        "sha256": "0ab8e004815211869075345778a5916a4ed1ee3f558163b6ed1d9f5f753cf0cd"
+      },
+      {
+        "path": "global/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "path": "global/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "path": "global/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/principles-of-work.md",
+        "sha256": "34eb6611e1838417357cb37116a5d2baedcec23c8a890f314fb6410b6f792571"
+      },
+      {
+        "path": "global/skills/change-ready-sdlc/SKILL.md",
+        "sha256": "360dfafb1d874795f67ba8d1b83bd9da2019e3f9ebacdb607b18f8a1ee5fe142"
+      },
+      {
+        "path": "global/skills/openspec-apply-change/SKILL.md",
+        "sha256": "d8af0305dcd3543cd10578c9f6ad65c5b4088fde9fc4ad28eb34dfa96e647bc4"
+      },
+      {
+        "path": "global/skills/openspec-propose/SKILL.md",
+        "sha256": "fd643139f0821a004b152bedfc0a5fcec7c7c9566e0e67ff5eda1fa573bb8b11"
+      },
+      {
+        "path": "instructions/leaf-reviewer-agent-contract.md",
+        "sha256": "290a13496b159be24e099fa76bc6d2a0493bfc26e8420e9e50ecc19e30513027"
+      },
+      {
+        "path": "instructions/practice-owner-agent-contract.md",
+        "sha256": "6294eab7025eb86172ada2607088b02c61c2d188efde0f8398bd12ccb140e172"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "157fb762a80cdee5683809addfd3671fd0c3c38a4ffd9df761f688f94a0a1852"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "c872119b6f027b7f080f8ab84566bc071dec6ac8c396614715f9c0bf4ea03684"
+      }
+    ]
+  }
+}

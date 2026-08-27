@@ -1,0 +1,8 @@
+# Task 3.2 Material-Inline Plan R2
+
+- Outcome: the corrected configured Material-without-formal-plan member passed under governed source `d6d7dcfba687a51f38b5df249de4a32e1be1ba11379cd6f7c9629d17ec8cb80f`, scenario `552b0931b0b36a73e57d58d5b1fc1c9c288149698196ee32b5208a63086dee5d`, request `55ee56eb1732410670eae54681084d4b4eb690c5ea6730278c7328ae8e4f6ae3`, and fixture `0eaf28afb554a02f3c71987050021cd5d45cb2e36fbd813079135c48ab7e73c5`.
+- Bundle: `candidate-sessions/bounded-falsification-candidate-material-inline-plan-r2/bundle.json`; one `openai/gpt-5.6-sol` / `xhigh` primary request and one completed readiness child. Failed-finalized r1 remains consumed and separate.
+- Behavior: the actor read only the projected member row, used the same early readiness owner before production mutation, attempted all six attack classes, and wrote one challenge with exact closed reason `material-inline-frame-reviewed`; no duplicate generic or exact-owner route was launched.
+- Diagnostics: OpenCode `1.18.23`; status, validation, and proof zero; elapsed `169222` ms under `300000` ms; three completed tools; no timeout, failed or duplicate call, question, violation, forbidden effect, or cleanup error. Decision digest: `e4444d3cb2b12c50f30a84225b6f94c2585f79974dfbb691eaecbed0db46b92a`.
+- Replays: `replay-r2.json` and `replay-verify-r2.json` are identical under terminal evaluator `bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643`; candidate oracle `1a70262ed2ac32f9f60b93bc490733f3db617d1d77d481fea24e02dc5e9c7cad`; both have `liveCalls: 0`.
+- Claim ceiling: one current Material-inline route. Historical comparison is blocked by `initialFixtureDigest,opencodeVersion` and supports no causal, population, or universal-quality claim. External operations: none.

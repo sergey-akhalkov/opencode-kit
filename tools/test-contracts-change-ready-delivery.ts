@@ -112,10 +112,9 @@ function resolveSessionCompletionGuardHistoryPaths(): string[] {
   return found;
 }
 
-/** Active OpenSpec apply surfaces that must share the owner-only pause contract. */
+/** Canonical OpenSpec apply owner for the complete owner-only pause contract. */
 const OPENSPEC_APPLY_AUTONOMY_SURFACES = [
   "global/skills/openspec-apply-change/SKILL.md",
-  "global/commands/opsx-apply.md",
 ] as const;
 
 /** Workflow surfaces that must omit removed completion ceremony. */
@@ -140,7 +139,6 @@ const REMOVED_COMPLETION_CEREMONY_MARKERS = [
 
 const APPLY_OUTCOME_RECONCILIATION_SURFACES = [
   "global/skills/openspec-apply-change/SKILL.md",
-  "global/commands/opsx-apply.md",
 ] as const;
 
 const APPLY_OUTCOME_RECONCILIATION_MARKERS = [
@@ -153,7 +151,6 @@ const APPLY_OUTCOME_RECONCILIATION_MARKERS = [
 
 const ARCHIVE_OUTCOME_RECONCILIATION_SURFACES = [
   "global/skills/openspec-archive-change/SKILL.md",
-  "global/commands/opsx-archive.md",
 ] as const;
 
 const ARCHIVE_OUTCOME_RECONCILIATION_MARKERS = [
@@ -165,11 +162,8 @@ const ARCHIVE_OUTCOME_RECONCILIATION_MARKERS = [
 
 const HELPER_RESOLUTION_SURFACES = [
   { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-propose/SKILL.md" },
-  { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-propose.md" },
   { helper: "bin/openspec-operation-gate.ts", relative: "global/skills/openspec-apply-change/SKILL.md" },
-  { helper: "bin/openspec-operation-gate.ts", relative: "global/commands/opsx-apply.md" },
   { helper: "bin/openspec-archive.ts", relative: "global/skills/openspec-archive-change/SKILL.md" },
-  { helper: "bin/openspec-archive.ts", relative: "global/commands/opsx-archive.md" },
 ] as const;
 
 const HELPER_RESOLUTION_MARKERS = [
@@ -177,6 +171,20 @@ const HELPER_RESOLUTION_MARKERS = [
   "privacy-safe runtime-source/collision evidence",
   "Never strip a final `global` segment",
 ] as const;
+
+const COMMAND_SKILL_ROUTES = [
+  { relative: "global/commands/opsx-propose.md", skill: "openspec-propose" },
+  { relative: "global/commands/opsx-apply.md", skill: "openspec-apply-change" },
+  { relative: "global/commands/opsx-archive.md", skill: "openspec-archive-change" },
+] as const;
+
+const commandSkillRouteMarkers = (skill: string): string[] => [
+  `Load the \`${skill}\` skill`,
+  "complete workflow",
+  "$ARGUMENTS",
+  "If the skill is unavailable",
+  "do not recreate a partial",
+];
 
 const COMPACTION_REFLECTION_MARKERS = [
   "optional evidence outside product completion scope",
@@ -238,7 +246,6 @@ function operativeInstructionText(source: string): string {
 
 const TASK_SEQUENCING_APPLY_SURFACES = [
   "global/skills/openspec-apply-change/SKILL.md",
-  "global/commands/opsx-apply.md",
 ] as const;
 
 const TASK_SEQUENCING_GLOBAL_MARKERS = [
@@ -276,7 +283,7 @@ const TASK_SEQUENCING_FORBIDDEN_GENERIC_SCOPE =
 
 export const changeReadyDeliveryContractTests: TestCase[] = [
   {
-    name: "contracts: OpenSpec apply skill and slash command keep owner-only pause autonomy",
+    name: "contracts: OpenSpec apply canonical skill keeps owner-only pause autonomy",
     run: () => {
       for (const relative of OPENSPEC_APPLY_AUTONOMY_SURFACES) {
         const text = fs.readFileSync(path.join(root, relative), "utf8");
@@ -514,6 +521,15 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
           text,
           [...HELPER_RESOLUTION_MARKERS, surface.helper],
           `${surface.relative} missing portable helper-resolution marker`,
+        );
+      }
+
+      for (const surface of COMMAND_SKILL_ROUTES) {
+        const text = fs.readFileSync(path.join(root, surface.relative), "utf8");
+        assertTokens(
+          text,
+          commandSkillRouteMarkers(surface.skill),
+          `${surface.relative} missing canonical skill route`,
         );
       }
 

@@ -1,0 +1,13 @@
+# Task 1.2 Baseline Freeze
+
+- Candidate source: loaded pre-product instruction paths at governed digest `af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a`.
+- Current pack identity: `bounded-falsification-r1` at scenario digest `54eb3332099b94d636b9629c0ccbeb4d4a81e43a6b3f6bc27319f094d64de109`.
+- Population: the exact twelve ordered `bounded-falsification-review-v1` member IDs in `tools/proofs/fixtures/consumer-outcome/bounded-falsification-r1.json`.
+- Reviewed seeds: `tools/proofs/fixtures/consumer-outcome/bounded-falsification-v1/cases.json`; every baseline decision was read back against the pack and every baseline/candidate record passed the fixture checker.
+- Matched controls: model, variant, `quality-independent` profile, permissions, environment, request, and initial manifest.
+- Permission envelope: local read/write plus only `implementation-readiness-reviewer` and `instruction-artifact-reviewer`; questions, shell, skills, external directories, glob, grep, and web fetch are denied.
+- Identity boundary: governed source includes readiness/final reviewers, propose/apply, Practice Ownership, profiles, and canonical routing. It deliberately excludes `tools/proofs/**` and `openspec/changes/**`, so fixture/runner/evaluator evolution cannot rewrite the frozen pre-product instruction identity.
+- Provider-free proof: `node tools/proofs/consumer-outcome-regression.ts --mode preflight --pack bounded-falsification --source-ref working-tree` exited zero with `modelCalls: 0`; two identical preflights and terminal replays were asserted by `npm run test:focused:consumer-outcome`.
+- Configured baseline: eleven terminal r1 members are preserved in `baseline-sessions/bounded-falsification-baseline-r1/bundle.json`; their selected replay passed `baseline-established` at digest `30117ed06dc99f0ba82d496f0e74f743f8dcba0c23bda8b84a3fbc563558d0b2`. The exact missing `material-inline-plan` member is preserved in `baseline-sessions/bounded-falsification-baseline-material-inline-r2/bundle.json`; its selected replay passed `baseline-established` at digest `2e8813256865caa1c78efd6baa66349a4fc69c9bf2eb3a42c17c677fb4a7ba85` with scenario digest `75a0c01a913ad77201875766d7c5f70d398f51813b707e9cb939fb31d250a877`.
+- Validation: focused consumer-outcome suite passed 32 tests. Every configured fixture, primary process, and child session reports terminal cleanup; temporary checker and replay roots were deleted in `finally`.
+- Claim ceiling: all twelve pre-product baseline members now have terminal attributed observations under the unchanged governed source digest. This is baseline characterization only; no bounded-falsification product candidate or semantic-readiness improvement is claimed.

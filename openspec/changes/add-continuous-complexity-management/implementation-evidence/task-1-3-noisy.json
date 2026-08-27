@@ -1,0 +1,134 @@
+{
+  "recordType": "output",
+  "schemaVersion": 1,
+  "root": {
+    "kind": "sha256",
+    "digest": "209c40a3e4fc1a2bda36dac9684d5bc11fbad24746be4a22e7afe12b7ccb8b8c"
+  },
+  "scope": {
+    "includes": [
+      {
+        "path": "package.json",
+        "class": "maintained",
+        "reason": "reviewed project manifest"
+      },
+      {
+        "path": "src",
+        "class": "maintained",
+        "reason": "reviewed maintained source"
+      }
+    ],
+    "excludes": [
+      {
+        "path": "docs/corpus",
+        "class": "corpus",
+        "reason": "reviewed reference corpus"
+      },
+      {
+        "path": "runs",
+        "class": "evidence",
+        "reason": "generated proof evidence"
+      }
+    ]
+  },
+  "support": {
+    "state": "complete",
+    "unsupportedFields": [],
+    "unknownFields": []
+  },
+  "candidates": [
+    {
+      "kind": "component",
+      "path": "src",
+      "evidence": {
+        "detector": "reviewed-scope",
+        "value": "src"
+      }
+    },
+    {
+      "kind": "manifest",
+      "path": "package.json",
+      "evidence": {
+        "detector": "exact-name",
+        "value": "package.json"
+      }
+    },
+    {
+      "kind": "public-surface",
+      "path": "src/core.ts",
+      "evidence": {
+        "detector": "manifest-field",
+        "value": "exports"
+      }
+    },
+    {
+      "kind": "source",
+      "path": "src/core.ts",
+      "evidence": {
+        "detector": "extension",
+        "value": ".ts"
+      }
+    }
+  ],
+  "counts": {
+    "files": 5,
+    "directories": 4,
+    "bytes": 267,
+    "lines": 9,
+    "maintained": 2,
+    "generated": 0,
+    "vendor": 0,
+    "evidence": 1,
+    "corpus": 2,
+    "dependency": 0,
+    "unknown": 0,
+    "unsupported": 0,
+    "unreadable": 0
+  },
+  "largestMaintainedFiles": [
+    {
+      "path": "package.json",
+      "bytes": 110,
+      "lines": 6
+    },
+    {
+      "path": "src/core.ts",
+      "bytes": 56,
+      "lines": 3
+    }
+  ],
+  "topLevelConcentration": [
+    {
+      "path": "package.json",
+      "files": 1,
+      "bytes": 110,
+      "lines": 6
+    },
+    {
+      "path": "src",
+      "files": 1,
+      "bytes": 56,
+      "lines": 3
+    }
+  ],
+  "diagnostics": [
+    {
+      "stage": "scope",
+      "path": "docs/corpus",
+      "cause": {
+        "name": "ScopeNotice",
+        "code": "EXCLUSION_NOT_ABSENCE",
+        "message": "Reviewed exclusion is not proof that no relevant evidence exists"
+      }
+    },
+    {
+      "stage": "scope",
+      "path": "runs",
+      "cause": {
+        "name": "ScopeNotice",
+        "code": "EXCLUSION_NOT_ABSENCE",
+        "message": "Reviewed exclusion is not proof that no relevant evidence exists"
+      }
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "boundedFalsificationOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "exact-practice-owner-candidate-r1",
+        "caseId": "exact-practice-owner",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "loaded-instruction-trigger-and-task-fit",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "exact-practice-owner-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "failures": [],
+      "memberId": "exact-practice-owner",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:unknown",
+          "silent-owner-decision:unknown",
+          "missing-observable-oracle:unknown",
+          "late-implementation-invalidation:unknown",
+          "internal-contradiction:unknown",
+          "unnecessary-scope:unknown"
+        ],
+        "candidateRef": "exact-practice-owner-candidate-r1",
+        "caseId": "exact-practice-owner",
+        "challengeCount": 0,
+        "correctionRef": "none",
+        "decisionSurface": "loaded-instruction-trigger-and-task-fit",
+        "effectiveModel": "none",
+        "exactOwnerAgent": "none",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "exact-practice-owner-request-r1",
+        "reviewerAgent": "none",
+        "reviewerLaunchCount": 0,
+        "reviewerSessionRef": "none",
+        "semanticReadiness": "unknown",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-contract-unavailable",
+        "terminalState": "unknown"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "exact-practice-owner"
+    },
+    {
+      "arm": "candidate",
+      "expected": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "exact-practice-owner-candidate-r1",
+        "caseId": "exact-practice-owner",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "loaded-instruction-trigger-and-task-fit",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "instruction-artifact-reviewer",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "exact-practice-owner-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-and-exact-owner-observations-closed",
+        "terminalState": "closed"
+      },
+      "failures": [],
+      "memberId": "exact-practice-owner",
+      "observed": {
+        "attackClasses": [
+          "coherent-wrong-outcome:attempted",
+          "silent-owner-decision:attempted",
+          "missing-observable-oracle:attempted",
+          "late-implementation-invalidation:attempted",
+          "internal-contradiction:attempted",
+          "unnecessary-scope:attempted"
+        ],
+        "candidateRef": "exact-practice-owner-candidate-r1",
+        "caseId": "exact-practice-owner",
+        "challengeCount": 1,
+        "correctionRef": "none",
+        "decisionSurface": "loaded-instruction-trigger-and-task-fit",
+        "effectiveModel": "xai/grok-4.6/high",
+        "exactOwnerAgent": "instruction-artifact-reviewer",
+        "invalidatedSurfaces": [],
+        "mainDispositions": [],
+        "materialFindings": [],
+        "originalRequestRef": "exact-practice-owner-request-r1",
+        "reviewerAgent": "implementation-readiness-reviewer",
+        "reviewerLaunchCount": 1,
+        "reviewerSessionRef": "fresh-readiness-child-r1",
+        "semanticReadiness": "ready",
+        "structuralReadiness": "passed",
+        "terminalReason": "bounded-and-exact-owner-observations-closed",
+        "terminalState": "closed"
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "exact-practice-owner"
+    }
+  ],
+  "decisionOracles": [],
+  "digest": "5ff3b5d3559f2a13a618feab2410571a789e89f3080ff9e975b4db64846b0ab0",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "3b7b5bd45c91f6d06c66aa565b96c733d0b678ce85437e84f1c6801230ad0317",
+      "candidate": "bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643"
+    },
+    "terminalReplay": "bbc0c137a4e3b808db68c3d9882e07508402005b80b057fbfd6d84346c128643"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "exact-practice-owner": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 2
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "48480184384a20b974bc339a0657cebd4ad669a58adf5598a9061cb8bffa9670",
+    "expectation": "no-regression",
+    "improvedField": null,
+    "reasons": [
+      "environment:initialFixtureDigest,opencodeVersion"
+    ],
+    "scenarioDigest": "7b347280fdcbf83c6b9228cb2efc66cfde1f1b67872a6feb6456ecf15220a7ea",
+    "sourceDigest": "af9e8a56a6cca47fe071f486e79ff3c50b11b96bb917fc56f17db0c304730c6a",
+    "status": "blocked",
+    "digest": "95289939239593846fe8e2c822d89967bcf239d7455a5c02152ffe10b29bbe5c",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "the exercised configured model and selected bounded-falsification scenarios (exact-practice-owner) cover only their 1 explicit members under the recorded identities"
+}
