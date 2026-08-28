@@ -1,0 +1,1021 @@
+{
+  "candidateId": "foundation-fi-camp-003-r5",
+  "cleanup": "complete",
+  "effects": {
+    "hostEffects": 0,
+    "processStarts": 0,
+    "providerCalls": 0
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "fixturePack": {
+    "baseRecord": {
+      "definition": {
+        "allowedEffects": [
+          "local-read",
+          "local-write",
+          "local-commit"
+        ],
+        "authorizationRefs": [
+          "authorization:fixture-local"
+        ],
+        "budgets": {
+          "evidenceBytes": 1048576,
+          "modelCalls": 4,
+          "wallClockSeconds": 300,
+          "waves": 2
+        },
+        "campaignId": "fixture-campaign",
+        "checkpointPolicy": "local-git",
+        "exclusions": [
+          ".work-campaign/evidence"
+        ],
+        "hostResume": "disabled",
+        "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+        "paths": {
+          "evidence": ".work-campaign/evidence",
+          "report": ".work-campaign/report.md",
+          "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+        },
+        "playbook": "audit-remediate",
+        "protectedDecisionPolicy": "owner-required",
+        "schemaVersion": 1,
+        "scopeRoots": [
+          "src"
+        ],
+        "stopPolicy": "explicit-or-terminal",
+        "validationArgv": [
+          "node",
+          "validate.mjs"
+        ]
+      },
+      "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+      "reportProjection": {
+        "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+        "totals": {
+          "all": 2,
+          "confirmed": 1,
+          "p0": 0,
+          "p1": 1,
+          "p2": 1,
+          "p3": 0,
+          "reportOnly": 1,
+          "waveItems": 1
+        }
+      },
+      "schemaVersion": 1,
+      "wave": {
+        "id": "wave-1",
+        "workItemIds": [
+          "item-p1"
+        ]
+      },
+      "workItems": [
+        {
+          "disposition": "confirmed",
+          "id": "item-p1",
+          "severity": "P1"
+        },
+        {
+          "disposition": "report-only",
+          "id": "item-p2",
+          "severity": "P2"
+        }
+      ]
+    },
+    "packId": "work-campaign-provider-free-v1",
+    "scenarios": [
+      {
+        "expected": {
+          "failedCheck": null,
+          "status": "complete"
+        },
+        "id": "valid",
+        "operation": {
+          "kind": "none"
+        }
+      },
+      {
+        "expected": {
+          "failedCheck": "definition:exact-fields",
+          "status": "blocked"
+        },
+        "id": "extra-field",
+        "operation": {
+          "kind": "set",
+          "path": [
+            "definition",
+            "unexpected"
+          ],
+          "value": true
+        }
+      },
+      {
+        "expected": {
+          "failedCheck": "definition:exact-fields",
+          "status": "blocked"
+        },
+        "id": "missing-field",
+        "operation": {
+          "kind": "delete",
+          "path": [
+            "definition",
+            "playbook"
+          ]
+        }
+      },
+      {
+        "expected": {
+          "failedCheck": "definition:paths-contained",
+          "status": "blocked"
+        },
+        "id": "path-escape",
+        "operation": {
+          "kind": "set",
+          "path": [
+            "definition",
+            "paths",
+            "report"
+          ],
+          "value": "../outside/report.md"
+        }
+      },
+      {
+        "expected": {
+          "failedCheck": "definition:digest-current",
+          "status": "blocked"
+        },
+        "id": "stale-digest",
+        "operation": {
+          "kind": "set",
+          "path": [
+            "definitionDigest"
+          ],
+          "value": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      {
+        "expected": {
+          "failedCheck": "wave:eligible-items",
+          "status": "blocked"
+        },
+        "id": "p2-in-wave",
+        "operation": {
+          "kind": "set",
+          "path": [
+            "wave",
+            "workItemIds"
+          ],
+          "value": [
+            "item-p2"
+          ]
+        }
+      },
+      {
+        "expected": {
+          "failedCheck": "report:totals-current",
+          "status": "blocked"
+        },
+        "id": "report-drift",
+        "operation": {
+          "kind": "set",
+          "path": [
+            "reportProjection",
+            "totals",
+            "p2"
+          ],
+          "value": 0
+        }
+      }
+    ],
+    "schemaVersion": 1
+  },
+  "fixturePackDigest": "sha256:2fc147d19024f714a062f9108dd893a8346b82d2e719db9f9ded89910398da8c",
+  "fixturePath": "tools/proofs/fixtures/consumer-outcome/work-campaign-v1/seeds.json",
+  "projectManifest": {
+    "afterDigest": "sha256:f1bfc72a60b5294648f1196101c75ef4b88ffb7213a25509cb382f2bca2dea43",
+    "beforeDigest": "sha256:f1bfc72a60b5294648f1196101c75ef4b88ffb7213a25509cb382f2bca2dea43",
+    "sourceWrites": 0
+  },
+  "runnerDigest": "sha256:61ddacef82d27137f5b0f95adb7706effa39a83bcbd22fd223b926b5f582f300",
+  "scenarios": [
+    {
+      "checks": {
+        "definition:allowed-effects": true,
+        "definition:authorization-refs": true,
+        "definition:budgets-exact": true,
+        "definition:budgets-finite": true,
+        "definition:checkpoint-policy": true,
+        "definition:digest-current": true,
+        "definition:exact-fields": true,
+        "definition:exclusions": true,
+        "definition:host-resume": true,
+        "definition:outcome": true,
+        "definition:paths-contained": true,
+        "definition:paths-exact": true,
+        "definition:playbook": true,
+        "definition:protected-decision-policy": true,
+        "definition:safe-id": true,
+        "definition:schema-version": true,
+        "definition:scope": true,
+        "definition:stop-policy": true,
+        "definition:validation-argv": true,
+        "record:exact-fields": true,
+        "record:schema-version": true,
+        "report:shape": true,
+        "report:source-current": true,
+        "report:totals-current": true,
+        "wave:eligible-items": true,
+        "wave:shape": true,
+        "work-items:explicit-policy": true,
+        "work-items:ids": true,
+        "work-items:shape": true
+      },
+      "expected": {
+        "failedCheck": null,
+        "status": "complete"
+      },
+      "failedChecks": [],
+      "id": "valid",
+      "record": {
+        "definition": {
+          "allowedEffects": [
+            "local-read",
+            "local-write",
+            "local-commit"
+          ],
+          "authorizationRefs": [
+            "authorization:fixture-local"
+          ],
+          "budgets": {
+            "evidenceBytes": 1048576,
+            "modelCalls": 4,
+            "wallClockSeconds": 300,
+            "waves": 2
+          },
+          "campaignId": "fixture-campaign",
+          "checkpointPolicy": "local-git",
+          "exclusions": [
+            ".work-campaign/evidence"
+          ],
+          "hostResume": "disabled",
+          "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+          "paths": {
+            "evidence": ".work-campaign/evidence",
+            "report": ".work-campaign/report.md",
+            "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+          },
+          "playbook": "audit-remediate",
+          "protectedDecisionPolicy": "owner-required",
+          "schemaVersion": 1,
+          "scopeRoots": [
+            "src"
+          ],
+          "stopPolicy": "explicit-or-terminal",
+          "validationArgv": [
+            "node",
+            "validate.mjs"
+          ]
+        },
+        "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+        "reportProjection": {
+          "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+          "totals": {
+            "all": 2,
+            "confirmed": 1,
+            "p0": 0,
+            "p1": 1,
+            "p2": 1,
+            "p3": 0,
+            "reportOnly": 1,
+            "waveItems": 1
+          }
+        },
+        "schemaVersion": 1,
+        "wave": {
+          "id": "wave-1",
+          "workItemIds": [
+            "item-p1"
+          ]
+        },
+        "workItems": [
+          {
+            "disposition": "confirmed",
+            "id": "item-p1",
+            "severity": "P1"
+          },
+          {
+            "disposition": "report-only",
+            "id": "item-p2",
+            "severity": "P2"
+          }
+        ]
+      },
+      "status": "complete"
+    },
+    {
+      "checks": {
+        "definition:allowed-effects": true,
+        "definition:authorization-refs": true,
+        "definition:budgets-exact": true,
+        "definition:budgets-finite": true,
+        "definition:checkpoint-policy": true,
+        "definition:digest-current": false,
+        "definition:exact-fields": false,
+        "definition:exclusions": true,
+        "definition:host-resume": true,
+        "definition:outcome": true,
+        "definition:paths-contained": true,
+        "definition:paths-exact": true,
+        "definition:playbook": true,
+        "definition:protected-decision-policy": true,
+        "definition:safe-id": true,
+        "definition:schema-version": true,
+        "definition:scope": true,
+        "definition:stop-policy": true,
+        "definition:validation-argv": true,
+        "record:exact-fields": true,
+        "record:schema-version": true,
+        "report:shape": true,
+        "report:source-current": true,
+        "report:totals-current": true,
+        "wave:eligible-items": true,
+        "wave:shape": true,
+        "work-items:explicit-policy": true,
+        "work-items:ids": true,
+        "work-items:shape": true
+      },
+      "expected": {
+        "failedCheck": "definition:exact-fields",
+        "status": "blocked"
+      },
+      "failedChecks": [
+        "definition:exact-fields",
+        "definition:digest-current"
+      ],
+      "id": "extra-field",
+      "record": {
+        "definition": {
+          "allowedEffects": [
+            "local-read",
+            "local-write",
+            "local-commit"
+          ],
+          "authorizationRefs": [
+            "authorization:fixture-local"
+          ],
+          "budgets": {
+            "evidenceBytes": 1048576,
+            "modelCalls": 4,
+            "wallClockSeconds": 300,
+            "waves": 2
+          },
+          "campaignId": "fixture-campaign",
+          "checkpointPolicy": "local-git",
+          "exclusions": [
+            ".work-campaign/evidence"
+          ],
+          "hostResume": "disabled",
+          "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+          "paths": {
+            "evidence": ".work-campaign/evidence",
+            "report": ".work-campaign/report.md",
+            "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+          },
+          "playbook": "audit-remediate",
+          "protectedDecisionPolicy": "owner-required",
+          "schemaVersion": 1,
+          "scopeRoots": [
+            "src"
+          ],
+          "stopPolicy": "explicit-or-terminal",
+          "unexpected": true,
+          "validationArgv": [
+            "node",
+            "validate.mjs"
+          ]
+        },
+        "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+        "reportProjection": {
+          "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+          "totals": {
+            "all": 2,
+            "confirmed": 1,
+            "p0": 0,
+            "p1": 1,
+            "p2": 1,
+            "p3": 0,
+            "reportOnly": 1,
+            "waveItems": 1
+          }
+        },
+        "schemaVersion": 1,
+        "wave": {
+          "id": "wave-1",
+          "workItemIds": [
+            "item-p1"
+          ]
+        },
+        "workItems": [
+          {
+            "disposition": "confirmed",
+            "id": "item-p1",
+            "severity": "P1"
+          },
+          {
+            "disposition": "report-only",
+            "id": "item-p2",
+            "severity": "P2"
+          }
+        ]
+      },
+      "status": "blocked"
+    },
+    {
+      "checks": {
+        "definition:allowed-effects": true,
+        "definition:authorization-refs": true,
+        "definition:budgets-exact": true,
+        "definition:budgets-finite": true,
+        "definition:checkpoint-policy": true,
+        "definition:digest-current": false,
+        "definition:exact-fields": false,
+        "definition:exclusions": true,
+        "definition:host-resume": true,
+        "definition:outcome": true,
+        "definition:paths-contained": true,
+        "definition:paths-exact": true,
+        "definition:playbook": false,
+        "definition:protected-decision-policy": true,
+        "definition:safe-id": true,
+        "definition:schema-version": true,
+        "definition:scope": true,
+        "definition:stop-policy": true,
+        "definition:validation-argv": true,
+        "record:exact-fields": true,
+        "record:schema-version": true,
+        "report:shape": true,
+        "report:source-current": true,
+        "report:totals-current": true,
+        "wave:eligible-items": true,
+        "wave:shape": true,
+        "work-items:explicit-policy": true,
+        "work-items:ids": true,
+        "work-items:shape": true
+      },
+      "expected": {
+        "failedCheck": "definition:exact-fields",
+        "status": "blocked"
+      },
+      "failedChecks": [
+        "definition:exact-fields",
+        "definition:playbook",
+        "definition:digest-current"
+      ],
+      "id": "missing-field",
+      "record": {
+        "definition": {
+          "allowedEffects": [
+            "local-read",
+            "local-write",
+            "local-commit"
+          ],
+          "authorizationRefs": [
+            "authorization:fixture-local"
+          ],
+          "budgets": {
+            "evidenceBytes": 1048576,
+            "modelCalls": 4,
+            "wallClockSeconds": 300,
+            "waves": 2
+          },
+          "campaignId": "fixture-campaign",
+          "checkpointPolicy": "local-git",
+          "exclusions": [
+            ".work-campaign/evidence"
+          ],
+          "hostResume": "disabled",
+          "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+          "paths": {
+            "evidence": ".work-campaign/evidence",
+            "report": ".work-campaign/report.md",
+            "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+          },
+          "protectedDecisionPolicy": "owner-required",
+          "schemaVersion": 1,
+          "scopeRoots": [
+            "src"
+          ],
+          "stopPolicy": "explicit-or-terminal",
+          "validationArgv": [
+            "node",
+            "validate.mjs"
+          ]
+        },
+        "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+        "reportProjection": {
+          "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+          "totals": {
+            "all": 2,
+            "confirmed": 1,
+            "p0": 0,
+            "p1": 1,
+            "p2": 1,
+            "p3": 0,
+            "reportOnly": 1,
+            "waveItems": 1
+          }
+        },
+        "schemaVersion": 1,
+        "wave": {
+          "id": "wave-1",
+          "workItemIds": [
+            "item-p1"
+          ]
+        },
+        "workItems": [
+          {
+            "disposition": "confirmed",
+            "id": "item-p1",
+            "severity": "P1"
+          },
+          {
+            "disposition": "report-only",
+            "id": "item-p2",
+            "severity": "P2"
+          }
+        ]
+      },
+      "status": "blocked"
+    },
+    {
+      "checks": {
+        "definition:allowed-effects": true,
+        "definition:authorization-refs": true,
+        "definition:budgets-exact": true,
+        "definition:budgets-finite": true,
+        "definition:checkpoint-policy": true,
+        "definition:digest-current": false,
+        "definition:exact-fields": true,
+        "definition:exclusions": true,
+        "definition:host-resume": true,
+        "definition:outcome": true,
+        "definition:paths-contained": false,
+        "definition:paths-exact": true,
+        "definition:playbook": true,
+        "definition:protected-decision-policy": true,
+        "definition:safe-id": true,
+        "definition:schema-version": true,
+        "definition:scope": true,
+        "definition:stop-policy": true,
+        "definition:validation-argv": true,
+        "record:exact-fields": true,
+        "record:schema-version": true,
+        "report:shape": true,
+        "report:source-current": true,
+        "report:totals-current": true,
+        "wave:eligible-items": true,
+        "wave:shape": true,
+        "work-items:explicit-policy": true,
+        "work-items:ids": true,
+        "work-items:shape": true
+      },
+      "expected": {
+        "failedCheck": "definition:paths-contained",
+        "status": "blocked"
+      },
+      "failedChecks": [
+        "definition:paths-contained",
+        "definition:digest-current"
+      ],
+      "id": "path-escape",
+      "record": {
+        "definition": {
+          "allowedEffects": [
+            "local-read",
+            "local-write",
+            "local-commit"
+          ],
+          "authorizationRefs": [
+            "authorization:fixture-local"
+          ],
+          "budgets": {
+            "evidenceBytes": 1048576,
+            "modelCalls": 4,
+            "wallClockSeconds": 300,
+            "waves": 2
+          },
+          "campaignId": "fixture-campaign",
+          "checkpointPolicy": "local-git",
+          "exclusions": [
+            ".work-campaign/evidence"
+          ],
+          "hostResume": "disabled",
+          "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+          "paths": {
+            "evidence": ".work-campaign/evidence",
+            "report": "../outside/report.md",
+            "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+          },
+          "playbook": "audit-remediate",
+          "protectedDecisionPolicy": "owner-required",
+          "schemaVersion": 1,
+          "scopeRoots": [
+            "src"
+          ],
+          "stopPolicy": "explicit-or-terminal",
+          "validationArgv": [
+            "node",
+            "validate.mjs"
+          ]
+        },
+        "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+        "reportProjection": {
+          "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+          "totals": {
+            "all": 2,
+            "confirmed": 1,
+            "p0": 0,
+            "p1": 1,
+            "p2": 1,
+            "p3": 0,
+            "reportOnly": 1,
+            "waveItems": 1
+          }
+        },
+        "schemaVersion": 1,
+        "wave": {
+          "id": "wave-1",
+          "workItemIds": [
+            "item-p1"
+          ]
+        },
+        "workItems": [
+          {
+            "disposition": "confirmed",
+            "id": "item-p1",
+            "severity": "P1"
+          },
+          {
+            "disposition": "report-only",
+            "id": "item-p2",
+            "severity": "P2"
+          }
+        ]
+      },
+      "status": "blocked"
+    },
+    {
+      "checks": {
+        "definition:allowed-effects": true,
+        "definition:authorization-refs": true,
+        "definition:budgets-exact": true,
+        "definition:budgets-finite": true,
+        "definition:checkpoint-policy": true,
+        "definition:digest-current": false,
+        "definition:exact-fields": true,
+        "definition:exclusions": true,
+        "definition:host-resume": true,
+        "definition:outcome": true,
+        "definition:paths-contained": true,
+        "definition:paths-exact": true,
+        "definition:playbook": true,
+        "definition:protected-decision-policy": true,
+        "definition:safe-id": true,
+        "definition:schema-version": true,
+        "definition:scope": true,
+        "definition:stop-policy": true,
+        "definition:validation-argv": true,
+        "record:exact-fields": true,
+        "record:schema-version": true,
+        "report:shape": true,
+        "report:source-current": true,
+        "report:totals-current": true,
+        "wave:eligible-items": true,
+        "wave:shape": true,
+        "work-items:explicit-policy": true,
+        "work-items:ids": true,
+        "work-items:shape": true
+      },
+      "expected": {
+        "failedCheck": "definition:digest-current",
+        "status": "blocked"
+      },
+      "failedChecks": [
+        "definition:digest-current"
+      ],
+      "id": "stale-digest",
+      "record": {
+        "definition": {
+          "allowedEffects": [
+            "local-read",
+            "local-write",
+            "local-commit"
+          ],
+          "authorizationRefs": [
+            "authorization:fixture-local"
+          ],
+          "budgets": {
+            "evidenceBytes": 1048576,
+            "modelCalls": 4,
+            "wallClockSeconds": 300,
+            "waves": 2
+          },
+          "campaignId": "fixture-campaign",
+          "checkpointPolicy": "local-git",
+          "exclusions": [
+            ".work-campaign/evidence"
+          ],
+          "hostResume": "disabled",
+          "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+          "paths": {
+            "evidence": ".work-campaign/evidence",
+            "report": ".work-campaign/report.md",
+            "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+          },
+          "playbook": "audit-remediate",
+          "protectedDecisionPolicy": "owner-required",
+          "schemaVersion": 1,
+          "scopeRoots": [
+            "src"
+          ],
+          "stopPolicy": "explicit-or-terminal",
+          "validationArgv": [
+            "node",
+            "validate.mjs"
+          ]
+        },
+        "definitionDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "reportProjection": {
+          "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+          "totals": {
+            "all": 2,
+            "confirmed": 1,
+            "p0": 0,
+            "p1": 1,
+            "p2": 1,
+            "p3": 0,
+            "reportOnly": 1,
+            "waveItems": 1
+          }
+        },
+        "schemaVersion": 1,
+        "wave": {
+          "id": "wave-1",
+          "workItemIds": [
+            "item-p1"
+          ]
+        },
+        "workItems": [
+          {
+            "disposition": "confirmed",
+            "id": "item-p1",
+            "severity": "P1"
+          },
+          {
+            "disposition": "report-only",
+            "id": "item-p2",
+            "severity": "P2"
+          }
+        ]
+      },
+      "status": "blocked"
+    },
+    {
+      "checks": {
+        "definition:allowed-effects": true,
+        "definition:authorization-refs": true,
+        "definition:budgets-exact": true,
+        "definition:budgets-finite": true,
+        "definition:checkpoint-policy": true,
+        "definition:digest-current": true,
+        "definition:exact-fields": true,
+        "definition:exclusions": true,
+        "definition:host-resume": true,
+        "definition:outcome": true,
+        "definition:paths-contained": true,
+        "definition:paths-exact": true,
+        "definition:playbook": true,
+        "definition:protected-decision-policy": true,
+        "definition:safe-id": true,
+        "definition:schema-version": true,
+        "definition:scope": true,
+        "definition:stop-policy": true,
+        "definition:validation-argv": true,
+        "record:exact-fields": true,
+        "record:schema-version": true,
+        "report:shape": true,
+        "report:source-current": false,
+        "report:totals-current": true,
+        "wave:eligible-items": false,
+        "wave:shape": true,
+        "work-items:explicit-policy": true,
+        "work-items:ids": true,
+        "work-items:shape": true
+      },
+      "expected": {
+        "failedCheck": "wave:eligible-items",
+        "status": "blocked"
+      },
+      "failedChecks": [
+        "wave:eligible-items",
+        "report:source-current"
+      ],
+      "id": "p2-in-wave",
+      "record": {
+        "definition": {
+          "allowedEffects": [
+            "local-read",
+            "local-write",
+            "local-commit"
+          ],
+          "authorizationRefs": [
+            "authorization:fixture-local"
+          ],
+          "budgets": {
+            "evidenceBytes": 1048576,
+            "modelCalls": 4,
+            "wallClockSeconds": 300,
+            "waves": 2
+          },
+          "campaignId": "fixture-campaign",
+          "checkpointPolicy": "local-git",
+          "exclusions": [
+            ".work-campaign/evidence"
+          ],
+          "hostResume": "disabled",
+          "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+          "paths": {
+            "evidence": ".work-campaign/evidence",
+            "report": ".work-campaign/report.md",
+            "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+          },
+          "playbook": "audit-remediate",
+          "protectedDecisionPolicy": "owner-required",
+          "schemaVersion": 1,
+          "scopeRoots": [
+            "src"
+          ],
+          "stopPolicy": "explicit-or-terminal",
+          "validationArgv": [
+            "node",
+            "validate.mjs"
+          ]
+        },
+        "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+        "reportProjection": {
+          "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+          "totals": {
+            "all": 2,
+            "confirmed": 1,
+            "p0": 0,
+            "p1": 1,
+            "p2": 1,
+            "p3": 0,
+            "reportOnly": 1,
+            "waveItems": 1
+          }
+        },
+        "schemaVersion": 1,
+        "wave": {
+          "id": "wave-1",
+          "workItemIds": [
+            "item-p2"
+          ]
+        },
+        "workItems": [
+          {
+            "disposition": "confirmed",
+            "id": "item-p1",
+            "severity": "P1"
+          },
+          {
+            "disposition": "report-only",
+            "id": "item-p2",
+            "severity": "P2"
+          }
+        ]
+      },
+      "status": "blocked"
+    },
+    {
+      "checks": {
+        "definition:allowed-effects": true,
+        "definition:authorization-refs": true,
+        "definition:budgets-exact": true,
+        "definition:budgets-finite": true,
+        "definition:checkpoint-policy": true,
+        "definition:digest-current": true,
+        "definition:exact-fields": true,
+        "definition:exclusions": true,
+        "definition:host-resume": true,
+        "definition:outcome": true,
+        "definition:paths-contained": true,
+        "definition:paths-exact": true,
+        "definition:playbook": true,
+        "definition:protected-decision-policy": true,
+        "definition:safe-id": true,
+        "definition:schema-version": true,
+        "definition:scope": true,
+        "definition:stop-policy": true,
+        "definition:validation-argv": true,
+        "record:exact-fields": true,
+        "record:schema-version": true,
+        "report:shape": true,
+        "report:source-current": true,
+        "report:totals-current": false,
+        "wave:eligible-items": true,
+        "wave:shape": true,
+        "work-items:explicit-policy": true,
+        "work-items:ids": true,
+        "work-items:shape": true
+      },
+      "expected": {
+        "failedCheck": "report:totals-current",
+        "status": "blocked"
+      },
+      "failedChecks": [
+        "report:totals-current"
+      ],
+      "id": "report-drift",
+      "record": {
+        "definition": {
+          "allowedEffects": [
+            "local-read",
+            "local-write",
+            "local-commit"
+          ],
+          "authorizationRefs": [
+            "authorization:fixture-local"
+          ],
+          "budgets": {
+            "evidenceBytes": 1048576,
+            "modelCalls": 4,
+            "wallClockSeconds": 300,
+            "waves": 2
+          },
+          "campaignId": "fixture-campaign",
+          "checkpointPolicy": "local-git",
+          "exclusions": [
+            ".work-campaign/evidence"
+          ],
+          "hostResume": "disabled",
+          "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+          "paths": {
+            "evidence": ".work-campaign/evidence",
+            "report": ".work-campaign/report.md",
+            "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign"
+          },
+          "playbook": "audit-remediate",
+          "protectedDecisionPolicy": "owner-required",
+          "schemaVersion": 1,
+          "scopeRoots": [
+            "src"
+          ],
+          "stopPolicy": "explicit-or-terminal",
+          "validationArgv": [
+            "node",
+            "validate.mjs"
+          ]
+        },
+        "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+        "reportProjection": {
+          "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+          "totals": {
+            "all": 2,
+            "confirmed": 1,
+            "p0": 0,
+            "p1": 1,
+            "p2": 0,
+            "p3": 0,
+            "reportOnly": 1,
+            "waveItems": 1
+          }
+        },
+        "schemaVersion": 1,
+        "wave": {
+          "id": "wave-1",
+          "workItemIds": [
+            "item-p1"
+          ]
+        },
+        "workItems": [
+          {
+            "disposition": "confirmed",
+            "id": "item-p1",
+            "severity": "P1"
+          },
+          {
+            "disposition": "report-only",
+            "id": "item-p2",
+            "severity": "P2"
+          }
+        ]
+      },
+      "status": "blocked"
+    }
+  ],
+  "schemaVersion": 1
+}

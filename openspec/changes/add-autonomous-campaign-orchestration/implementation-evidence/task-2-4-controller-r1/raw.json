@@ -1,0 +1,253 @@
+{
+  "candidateId": "autonomous-work-campaign-controller-r1",
+  "cleanup": "complete",
+  "commands": [
+    {
+      "disposition": "blocked",
+      "exitCode": 1,
+      "field": null,
+      "name": "status-before",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": null,
+      "exitCode": 0,
+      "field": null,
+      "name": "preflight",
+      "phase": "inventory",
+      "status": "eligible",
+      "writerClosure": null
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 3,
+      "field": null,
+      "name": "run",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": null,
+      "exitCode": 0,
+      "field": null,
+      "name": "report-readback",
+      "phase": null,
+      "status": "report-current",
+      "writerClosure": null
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 0,
+      "field": null,
+      "name": "status-after",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 0,
+      "field": null,
+      "name": "replay",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 3,
+      "field": null,
+      "name": "idempotent-run",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": null,
+      "exitCode": 2,
+      "field": "playbook",
+      "name": "invalid-definition",
+      "phase": null,
+      "status": "blocked",
+      "writerClosure": null
+    },
+    {
+      "disposition": "blocked",
+      "exitCode": 1,
+      "field": null,
+      "name": "dirty-worktree",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "blocked",
+      "exitCode": 1,
+      "field": null,
+      "name": "active-change",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-unknown",
+      "exitCode": 1,
+      "field": null,
+      "name": "unknown-writer",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "unknown"
+    },
+    {
+      "disposition": "paused-stop",
+      "exitCode": 0,
+      "field": null,
+      "name": "stop",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-stop",
+      "exitCode": 0,
+      "field": null,
+      "name": "stopped-status",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    }
+  ],
+  "effects": {
+    "controllerGitMutationCalls": 0,
+    "controllerOpenSpecMutationCalls": 0,
+    "fixtureGitMutationCalls": 4,
+    "fixtureOpenSpecMutationCalls": 2,
+    "hostEffects": 0,
+    "missionCalls": 0,
+    "openCodeCalls": 0,
+    "processStarts": 23,
+    "providerCalls": 0,
+    "sourceWrites": 0
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "openSpec": "1.11.0",
+    "platform": "win32"
+  },
+  "invocation": {
+    "argv": [
+      "node",
+      "tools/test-work-campaign-controller.ts"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "OK: work-campaign provider-free controller suite\n"
+  },
+  "negativeControls": {
+    "activeChange": 1,
+    "dirtyWorktree": 1,
+    "invalidDefinition": 2,
+    "unknownWriter": 1
+  },
+  "proofKind": "campaign-provider-free-controller",
+  "report": {
+    "digest": "faefea91b461eb9d9f2bf6a4dbb23e285624d7edcfab51856a520321ae80ab23",
+    "p1Present": true,
+    "p2ReportOnly": true
+  },
+  "schemaVersion": 1,
+  "sourceCandidate": [
+    {
+      "path": "global/bin/work-campaign.ts",
+      "sha256": "d40e9511da632f3b0f76262f12b747cccf6a81d38462ece2249aefcc61afa386"
+    },
+    {
+      "path": "global/bin/work-campaign/contracts.ts",
+      "sha256": "2f60336b8f28c579eb67362a9f7827d9402c0e073b830f1274d102e05c6abd4e"
+    },
+    {
+      "path": "global/bin/work-campaign/controller.ts",
+      "sha256": "b828e8e9ece2319cfb1f2fc67f46fdb25541d66678954492ed6f59ad30844db6"
+    },
+    {
+      "path": "global/bin/work-campaign/materializer.ts",
+      "sha256": "41ded5c65622271380875a7198297d83917a4c0f1fe12c69e80526c6f5b86365"
+    },
+    {
+      "path": "global/bin/work-campaign/phase-input.ts",
+      "sha256": "b5ded999db6362ecbb87274d8c379a82f0ed96438cf1e0059eb8967906b58b92"
+    },
+    {
+      "path": "global/bin/work-campaign/preflight.ts",
+      "sha256": "a17b9cf8ab10501af27a369bd613f257c3e3db3eb8d0db020c426de5e9016dda"
+    },
+    {
+      "path": "global/bin/work-campaign/state.ts",
+      "sha256": "074b87120235cc3b8efbdf97641dddd03c345bfae501545040c05f98c1759074"
+    },
+    {
+      "path": "tools/proofs/work-campaign.ts",
+      "sha256": "ffcd067628aa868c41c93ecf1cfe572aa03893cefb18cc6c4eb5c5aba7375cae"
+    },
+    {
+      "path": "tools/test-work-campaign-controller.ts",
+      "sha256": "4f96e7e9f2262f2a93158976bfe446f338eeb1f2d556aae98a798be2420fd4d1"
+    }
+  ],
+  "sourceManifest": {
+    "afterDigests": [
+      "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+      "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+    ],
+    "beforeDigests": [
+      "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+      "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+    ],
+    "sourceWrites": 0
+  },
+  "transitions": {
+    "admittedEvidenceRefs": [
+      "blocker:mission-integration-not-enabled",
+      "evidence:failure-mode",
+      "evidence:item-p1",
+      "evidence:item-p2",
+      "evidence:provider-free",
+      "evidence:redundancy",
+      "evidence:test-gap",
+      "file:inputs/01-block-a.json",
+      "file:inputs/02-block-b.json",
+      "file:inputs/03-item-p1.json",
+      "file:inputs/04-item-p2.json",
+      "file:inputs/05-partition.json",
+      "file:inputs/06-reconcile-p1.json",
+      "file:inputs/07-reconcile-p2.json",
+      "file:inputs/08-report.json",
+      "file:inputs/09-wave.json",
+      "file:inputs/phase.json",
+      "report:faefea91b461eb9d9f2bf6a4dbb23e285624d7edcfab51856a520321ae80ab23",
+      "result:partition-1",
+      "result:reconcile-p1",
+      "result:reconcile-p2",
+      "wave:wave-1"
+    ],
+    "admittedWaveId": "wave-1",
+    "beforeStopCount": 9,
+    "finalCount": 11,
+    "kinds": [
+      "preflight",
+      "phase-start",
+      "phase-complete",
+      "phase-start",
+      "findings-freeze",
+      "phase-start",
+      "report-materialized",
+      "wave-admitted",
+      "pause"
+    ],
+    "missionRef": null,
+    "pauseDisposition": "paused-external"
+  }
+}

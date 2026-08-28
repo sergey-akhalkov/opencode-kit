@@ -1,0 +1,9 @@
+{"at":"2026-08-27T20:21:19.403Z","name":"capture-start","scenario":"continue"}
+{"at":"2026-08-27T20:21:46.567Z","name":"server-ready","pid":14812}
+{"at":"2026-08-27T20:21:47.580Z","name":"arbiter-route-ready","model":"proof/proof-model"}
+{"at":"2026-08-27T20:21:47.580Z","name":"executor-start"}
+{"at":"2026-08-27T20:21:55.445Z","name":"executor-exit","exitCode":0,"signal":null}
+{"at":"2026-08-27T20:21:55.452Z","name":"raw-ready"}
+{"at":"2026-08-27T20:21:55.492Z","name":"sessions-clean"}
+{"at":"2026-08-27T20:21:55.862Z","name":"server-stopped"}
+{"at":"2026-08-27T20:21:57.532Z","name":"fixture-removed"}

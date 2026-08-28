@@ -1,0 +1,841 @@
+{
+  "complexityFactDiffs": [],
+  "complexityPartitionOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "cohesive-small-project",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "retain",
+        "maximumClaim": "cohesive-small-project-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:delta",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:ordinary-delta",
+          "public-surface:greeting",
+          "inventory:not-run",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "ordinary-cohesive-change",
+          "zero-comprehension-pressure"
+        ]
+      },
+      "failures": [],
+      "memberId": "cohesive-small-project",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "cohesive-small-project",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "retain",
+        "maximumClaim": "cohesive-small-project-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:delta",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:ordinary-delta",
+          "public-surface:greeting",
+          "inventory:not-run",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "ordinary-cohesive-change",
+          "zero-comprehension-pressure"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "cohesive-small-project"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "modular-multi-component-project",
+        "contextFacts": [
+          "src/main.ts",
+          "src/catalog.ts",
+          "src/store.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "modular-multi-component-project-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:direct-foraging",
+          "public-surface:catalog+store",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "multi-component-consumer-path"
+        ]
+      },
+      "failures": [],
+      "memberId": "modular-multi-component-project",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "modular-multi-component-project",
+        "contextFacts": [
+          "src/main.ts",
+          "src/catalog.ts",
+          "src/store.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "modular-multi-component-project-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:direct-foraging",
+          "public-surface:catalog+store",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "multi-component-consumer-path"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "modular-multi-component-project"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "noisy-corpus-or-evidence-project",
+        "contextFacts": [
+          "src/main.ts",
+          "docs/corpus:noise",
+          "runs:evidence",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "noisy-corpus-or-evidence-project-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:direct-foraging",
+          "public-surface:maintained-report",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "blocking-search-noise"
+        ]
+      },
+      "failures": [],
+      "memberId": "noisy-corpus-or-evidence-project",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "noisy-corpus-or-evidence-project",
+        "contextFacts": [
+          "src/main.ts",
+          "docs/corpus:noise",
+          "runs:evidence",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "noisy-corpus-or-evidence-project-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:direct-foraging",
+          "public-surface:maintained-report",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "blocking-search-noise"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "noisy-corpus-or-evidence-project"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "mixed-owner-module",
+        "contextFacts": [
+          "src/main.ts:persistence",
+          "src/main.ts:notification",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "mixed-owner-module-only",
+        "ownerFacts": [
+          "owner:main",
+          "practice-owner:openspec-architecture-reviewer",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:architecture-owner-observation",
+          "public-surface:create-account",
+          "inventory:not-run",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "materially-distinct-mixed-owner-seam"
+        ]
+      },
+      "failures": [],
+      "memberId": "mixed-owner-module",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "mixed-owner-module",
+        "contextFacts": [
+          "src/main.ts:persistence",
+          "src/main.ts:notification",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "mixed-owner-module-only",
+        "ownerFacts": [
+          "owner:main",
+          "practice-owner:openspec-architecture-reviewer",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:architecture-owner-observation",
+          "public-surface:create-account",
+          "inventory:not-run",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "materially-distinct-mixed-owner-seam"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "mixed-owner-module"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "useful-current-consumer-facade",
+        "contextFacts": [
+          "src/main.ts",
+          "src/inventory.ts",
+          "src/payments.ts",
+          "src/receipts.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "useful-current-consumer-facade-partition-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:consumer-coordinates-internals",
+          "public-surface:inventory+payments+receipts",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-refactor",
+          "consumer-coordinates-three-stable-internals"
+        ]
+      },
+      "failures": [],
+      "memberId": "useful-current-consumer-facade",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "useful-current-consumer-facade",
+        "contextFacts": [
+          "src/main.ts",
+          "src/inventory.ts",
+          "src/payments.ts",
+          "src/receipts.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "useful-current-consumer-facade-partition-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:consumer-coordinates-internals",
+          "public-surface:inventory+payments+receipts",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-refactor",
+          "consumer-coordinates-three-stable-internals"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "useful-current-consumer-facade"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "frozen-compatibility-and-current-extension",
+        "contextFacts": [
+          "src/legacy.ts",
+          "src/current.ts",
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "frozen-compatibility-and-current-extension-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:competing-paths-unclassified",
+          "public-surface:legacy+current",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "competing-extension-surfaces"
+        ]
+      },
+      "failures": [],
+      "memberId": "frozen-compatibility-and-current-extension",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "frozen-compatibility-and-current-extension",
+        "contextFacts": [
+          "src/legacy.ts",
+          "src/current.ts",
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "frozen-compatibility-and-current-extension-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:competing-paths-unclassified",
+          "public-surface:legacy+current",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "competing-extension-surfaces"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "frozen-compatibility-and-current-extension"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "redundant-wrapper-chain",
+        "contextFacts": [
+          "src/main.ts",
+          "src/middle.ts",
+          "src/core.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "redundant-wrapper-chain-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:wrapper-chain",
+          "public-surface:outer+middle+core",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-refactor",
+          "pass-through-navigation"
+        ]
+      },
+      "failures": [],
+      "memberId": "redundant-wrapper-chain",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "redundant-wrapper-chain",
+        "contextFacts": [
+          "src/main.ts",
+          "src/middle.ts",
+          "src/core.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "redundant-wrapper-chain-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:wrapper-chain",
+          "public-surface:outer+middle+core",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-refactor",
+          "pass-through-navigation"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "redundant-wrapper-chain"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "speculative-generic-abstraction",
+        "contextFacts": [
+          "src/main.ts",
+          "src/factory.ts",
+          "src/current.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "speculative-generic-abstraction-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:single-implementation-factory",
+          "public-surface:create-formatter+current-formatter",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-refactor",
+          "no-current-variation"
+        ]
+      },
+      "failures": [],
+      "memberId": "speculative-generic-abstraction",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "speculative-generic-abstraction",
+        "contextFacts": [
+          "src/main.ts",
+          "src/factory.ts",
+          "src/current.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "speculative-generic-abstraction-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:single-implementation-factory",
+          "public-surface:create-formatter+current-formatter",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-refactor",
+          "no-current-variation"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "speculative-generic-abstraction"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "deferred-debt",
+        "caseId": "explicit-review-only-project-assessment",
+        "contextFacts": [
+          "project:whole-fixture",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "project-review",
+        "maximumClaim": "explicit-review-only-project-assessment-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:project",
+          "skills:codebase-audit-loop+codebase-audit-ledger"
+        ],
+        "pathFacts": [
+          "production:existing-exhaustive-audit",
+          "public-surface:review-only-project",
+          "edit-set:none",
+          "mutation:none",
+          "focused-scenario:none"
+        ],
+        "triggerFacts": [
+          "explicit-whole-project-request",
+          "review-only"
+        ]
+      },
+      "failures": [],
+      "memberId": "explicit-review-only-project-assessment",
+      "observed": {
+        "admissionClass": "deferred-debt",
+        "caseId": "explicit-review-only-project-assessment",
+        "contextFacts": [
+          "project:whole-fixture",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "project-review",
+        "maximumClaim": "explicit-review-only-project-assessment-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:project",
+          "skills:codebase-audit-loop+codebase-audit-ledger"
+        ],
+        "pathFacts": [
+          "production:existing-exhaustive-audit",
+          "public-surface:review-only-project",
+          "edit-set:none",
+          "mutation:none",
+          "focused-scenario:none"
+        ],
+        "triggerFacts": [
+          "explicit-whole-project-request",
+          "review-only"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "explicit-review-only-project-assessment"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "default-core-availability",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "default-core-availability-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:core",
+          "public-surface:core-fixture",
+          "inventory:unavailable",
+          "edit-set:none",
+          "project-mode:unavailable"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "default-core-surface"
+        ]
+      },
+      "failures": [],
+      "memberId": "default-core-availability",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "default-core-availability",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "default-core-availability-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:core",
+          "public-surface:core-fixture",
+          "inventory:unavailable",
+          "edit-set:none",
+          "project-mode:unavailable"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "default-core-surface"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "default-core-availability"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "unreadable-root",
+        "contextFacts": [
+          "case.json:inventoryTarget",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "unreadable-root-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:missing-root",
+          "public-surface:unreadable-control",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "unreadable-inventory-root"
+        ]
+      },
+      "failures": [],
+      "memberId": "unreadable-root",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "unreadable-root",
+        "contextFacts": [
+          "case.json:inventoryTarget",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "unreadable-root-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:missing-root",
+          "public-surface:unreadable-control",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "unreadable-inventory-root"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unreadable-root"
+    },
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "unsupported-ecosystem",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "unsupported-ecosystem-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:readable-unknown-ecosystem",
+          "public-surface:unsupported-control",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "unsupported-ecosystem"
+        ]
+      },
+      "failures": [],
+      "memberId": "unsupported-ecosystem",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "unsupported-ecosystem",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "unsupported-ecosystem-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:readable-unknown-ecosystem",
+          "public-surface:unsupported-control",
+          "inventory:unavailable",
+          "edit-set:none"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "unsupported-ecosystem"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "unsupported-ecosystem"
+    }
+  ],
+  "decisionOracles": [],
+  "digest": "7eecb00b49a0fb2c901a8a65f63691899cb600057ee3f6d1ade8726482f7fcf2",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "3c2afb2422a0a898fe3d7abfad3b68b9e78b3d4c0cb8ceeedff6400108f755b2",
+      "candidate": null
+    },
+    "terminalReplay": "3c2afb2422a0a898fe3d7abfad3b68b9e78b3d4c0cb8ceeedff6400108f755b2"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "cohesive-small-project": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 9
+      },
+      "modular-multi-component-project": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 11
+      },
+      "noisy-corpus-or-evidence-project": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 9
+      },
+      "mixed-owner-module": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 10
+      },
+      "useful-current-consumer-facade": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 13
+      },
+      "frozen-compatibility-and-current-extension": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 11
+      },
+      "redundant-wrapper-chain": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 11
+      },
+      "speculative-generic-abstraction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 11
+      },
+      "explicit-review-only-project-assessment": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 12
+      },
+      "default-core-availability": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 9
+      },
+      "unreadable-root": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 4
+      },
+      "unsupported-ecosystem": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 9
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "5b41257d1d2c556943437824c2c43399a6bb1ee2e61b80f95b5b5c60112469f1",
+    "expectation": "baseline-establishment",
+    "improvedField": null,
+    "reasons": [],
+    "scenarioDigest": "92d410a28d893a3cb5d439f33093971ff34fe21f43e769ed9c05650ca9809f96",
+    "sourceDigest": "5634611b408b56deefc81689ca6447beb5e1d73f56f52246234bed9826b5883d",
+    "status": "baseline-established",
+    "digest": "36aa6e9c57ebf1a78f4b55aeeee9287c3470e24334205f230fa09ab6c7f3537a",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "the twelve reviewed complexity partitions define matched baseline/candidate configured-session inputs and reviewed semantic oracles under one prompt, model-profile, variant, permission, environment, and cleanup contract; no configured observation, semantic outcome, cross-project effectiveness, or consumer mutation is supported until the existing proof runner captures and evaluates both arms"
+}

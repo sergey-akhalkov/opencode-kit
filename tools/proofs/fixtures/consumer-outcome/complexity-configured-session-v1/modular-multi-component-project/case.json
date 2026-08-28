@@ -1,0 +1,24 @@
+{
+  "caseId": "modular-multi-component-project",
+  "acceptedOutcome": "Explain the catalog query across its current narrow component owners without restructuring it.",
+  "requestedAssessment": "explicit focused architecture-comprehension assessment",
+  "facts": ["api consumes catalog", "catalog consumes store", "each component has one responsibility", "proof enters through api"],
+  "nonGoals": ["merge components", "generic framework", "project-wide audit"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when the request requires it.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown"],
+    "dispositions": ["unknown", "retain"],
+    "maximumClaim": "modular-multi-component-project-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts", "src/catalog.ts", "src/store.ts", "proof:node src/main.ts"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:direct-foraging", "public-surface:catalog+store", "inventory:unavailable", "edit-set:none", "production:focused-map-rehearsal", "inventory:complete"],
+      "triggerFacts": ["explicit-focused-assessment", "multi-component-consumer-path"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "modular-multi-component-project", "contextFacts": ["src/main.ts", "src/catalog.ts", "src/store.ts", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "modular-multi-component-project-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:direct-foraging", "public-surface:catalog+store", "inventory:unavailable", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "multi-component-consumer-path"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow is available and was successfully invoked.", "decision": { "admissionClass": "unknown", "caseId": "modular-multi-component-project", "contextFacts": ["src/main.ts", "src/catalog.ts", "src/store.ts", "proof:node src/main.ts"], "disposition": "retain", "maximumClaim": "modular-multi-component-project-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:focused-map-rehearsal", "public-surface:catalog+store", "inventory:complete", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "multi-component-consumer-path"] } }
+    ]
+  }
+}

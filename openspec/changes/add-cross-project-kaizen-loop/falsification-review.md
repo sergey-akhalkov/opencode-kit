@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:original-accepted-request
+- **Reviewed Request Ref**: event:original-accepted-request
+- **Accepted Outcome Ref**: outcome:proposal-outcome
+- **Candidate Ref**: candidate:cross-project-kaizen-loop-planning-r2
+- **Reviewed Candidate Ref**: candidate:cross-project-kaizen-loop-planning-r2
+- **Decision Surface**: unified lifecycle ownership, mandatory compaction plus post-archive coverage, default-on privacy and opt-out behavior, archive/harvest state separation, single-store versus Markdown fallback authority, unknown-owner handling, target-root-contained proposal promotion, and exclusion of scheduler, auto-fix, transcript retention, and cross-project mutation.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fbd449ca1ffeMk42siu4LS4l0s
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: KZN-R1
+- **Main Dispositions**: KZN-R1=confirmed
+- **Correction Ref**: correction:cross-project-kaizen-loop-planning-r2
+- **Invalidated Surfaces**: archive-harvest-state-machine, checkpoint-lifecycle-oracle
+- **Terminal Reason**: corrected-candidate-rereview-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: runtime-behavior, broad-claim-observations

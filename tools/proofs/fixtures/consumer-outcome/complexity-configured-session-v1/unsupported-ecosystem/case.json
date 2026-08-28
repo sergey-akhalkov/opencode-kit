@@ -1,0 +1,24 @@
+{
+  "caseId": "unsupported-ecosystem",
+  "acceptedOutcome": "Report a readable source tree with no supported ecosystem manifest without inventing semantic ownership.",
+  "requestedAssessment": "explicit focused architecture-comprehension assessment",
+  "facts": ["root is readable", "no supported manifest exists", "source facts remain navigation only", "unsupported is not complete"],
+  "nonGoals": ["invent manifest semantics", "generic ecosystem parser", "clean support claim"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when available and preserve its exact unsupported result.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown"],
+    "dispositions": ["unknown"],
+    "maximumClaim": "unsupported-ecosystem-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts", "proof:node src/main.ts", "unknown:ecosystem-ownership"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:readable-unknown-ecosystem", "public-surface:unsupported-control", "inventory:unavailable", "edit-set:none", "inventory:unsupported"],
+      "triggerFacts": ["explicit-focused-assessment", "unsupported-ecosystem"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "unsupported-ecosystem", "contextFacts": ["src/main.ts", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "unsupported-ecosystem-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:readable-unknown-ecosystem", "public-surface:unsupported-control", "inventory:unavailable", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "unsupported-ecosystem"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow is available and its helper was invoked on the readable root, returning unsupported.", "decision": { "admissionClass": "unknown", "caseId": "unsupported-ecosystem", "contextFacts": ["src/main.ts", "proof:node src/main.ts", "unknown:ecosystem-ownership"], "disposition": "unknown", "maximumClaim": "unsupported-ecosystem-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:readable-unknown-ecosystem", "public-surface:unsupported-control", "inventory:unsupported", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "unsupported-ecosystem"] } }
+    ]
+  }
+}

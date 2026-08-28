@@ -1,0 +1,24 @@
+{
+  "candidateId": "task-4-1-semantic-r1",
+  "checks": {
+    "assignmentBound": true,
+    "candidateMatched": true,
+    "cleanupComplete": false,
+    "environmentMatched": true,
+    "exactlyOneModelCall": false,
+    "noChildren": false,
+    "noPermissionOrQuestion": false,
+    "noSourceWrite": false,
+    "outputBound": false,
+    "processExited": false,
+    "resultComplete": false,
+    "routeMatched": false,
+    "serverExplicit": true,
+    "sourceObservation": false
+  },
+  "environmentId": "node-24.18.1-windows-configured-semantic-r1",
+  "liveCalls": 0,
+  "proofKind": "campaign-semantic-root",
+  "schemaVersion": 1,
+  "status": "blocked"
+}

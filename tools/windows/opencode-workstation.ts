@@ -32,10 +32,20 @@ import {
   validateSharedToolsConfigurationObject,
 } from "./opencode-shared-tools.ts"
 import { resolveWorkstationConfigurationPath } from "./opencode-workstation-config.ts"
+import {
+  OPENCODE_OWNER_LOGON_TASK_POLICY,
+  OPENCODE_PROTECTED_CREDENTIAL_ACL,
+  OPENCODE_PROTECTED_ROOT_ACL,
+  OPENCODE_WORKSTATION_PROTECTED_ROOT,
+  OPENCODE_WORKSTATION_SERVER_CREDENTIAL_PATH,
+  OPENCODE_WORKSTATION_SERVER_TASK_NAME,
+  OPENCODE_WORKSTATION_TRAY_TASK_NAME,
+  quoteWindowsArgument,
+} from "./opencode-workstation-layout.ts"
 
-const protectedRoot = String.raw`C:\ProgramData\OpenCodeWorkstation`
-const taskName = "OpenCode Workstation Shared Server"
-const trayTaskName = "OpenCode Workstation Tray"
+const protectedRoot = OPENCODE_WORKSTATION_PROTECTED_ROOT
+const taskName = OPENCODE_WORKSTATION_SERVER_TASK_NAME
+const trayTaskName = OPENCODE_WORKSTATION_TRAY_TASK_NAME
 const OPEN_CODE_PORT = 4096
 const endpoint = `http://127.0.0.1:${OPEN_CODE_PORT}`
 const publicModes = new Set(["install", "preflight", "status", "start", "stop", "restart", "launch", "rollback"])
@@ -45,8 +55,10 @@ const sharedToolsSourcePath = path.join(path.dirname(controllerSourcePath), "ope
 const installedSharedToolsPath = path.join(protectedRoot, "opencode-shared-tools.ts")
 const configurationModuleSourcePath = path.join(path.dirname(controllerSourcePath), "opencode-workstation-config.ts")
 const installedConfigurationModulePath = path.join(protectedRoot, "opencode-workstation-config.ts")
+const layoutModuleSourcePath = path.join(path.dirname(controllerSourcePath), "opencode-workstation-layout.ts")
+const installedLayoutModulePath = path.join(protectedRoot, "opencode-workstation-layout.ts")
 const manifestPath = path.join(protectedRoot, "manifest.json")
-const credentialPath = path.join(protectedRoot, "server-password")
+const credentialPath = OPENCODE_WORKSTATION_SERVER_CREDENTIAL_PATH
 const graphifyCredentialPath = path.join(protectedRoot, "graphify-api-key")
 const statePath = path.join(protectedRoot, "server-state.json")
 const graphifyConfigBackupPath = path.join(protectedRoot, "backup", "opencode-config.before-graphify")
@@ -199,26 +211,6 @@ function loadWorkstationConfiguration(configurationPath = defaultConfigurationPa
   }
 }
 
-function quoteWindowsArgument(value) {
-  if (value.length > 0 && !/[\s"]/u.test(value)) return value
-  let result = '"'
-  let backslashes = 0
-  for (const character of value) {
-    if (character === "\\") {
-      backslashes += 1
-      continue
-    }
-    if (character === '"') {
-      result += "\\".repeat(backslashes * 2 + 1) + '"'
-      backslashes = 0
-      continue
-    }
-    result += "\\".repeat(backslashes) + character
-    backslashes = 0
-  }
-  return result + "\\".repeat(backslashes * 2) + '"'
-}
-
 function encodedPayload(value) {
   return Buffer.from(JSON.stringify(value), "utf8").toString("base64")
 }
@@ -228,9 +220,7 @@ function applyProtectedRootAcl() {
     protectedRoot,
     "/inheritance:r",
     "/grant:r",
-    "*S-1-5-18:(OI)(CI)F",
-    "*S-1-5-32-544:(OI)(CI)F",
-    "*S-1-5-32-545:(OI)(CI)RX",
+    ...OPENCODE_PROTECTED_ROOT_ACL.icacls,
   ])
 }
 
@@ -239,8 +229,7 @@ function applyCredentialAcl(targetPath = credentialPath) {
     targetPath,
     "/inheritance:r",
     "/grant:r",
-    "*S-1-5-18:F",
-    "*S-1-5-32-544:F",
+    ...OPENCODE_PROTECTED_CREDENTIAL_ACL.icacls,
   ])
 }
 
@@ -601,6 +590,7 @@ function registerTrayTask(manifest) {
   const payload = encodedPayload({
     execute: wscriptPath,
     arguments: expectedTrayTaskArguments(),
+    policy: OPENCODE_OWNER_LOGON_TASK_POLICY,
     root: protectedRoot,
     taskName: trayTaskName,
     user: manifest.owner.user,
@@ -609,9 +599,9 @@ function registerTrayTask(manifest) {
 $ErrorActionPreference = 'Stop'
 $payload = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('${payload}')) | ConvertFrom-Json
 $action = New-ScheduledTaskAction -Execute ([string]$payload.execute) -Argument ([string]$payload.arguments) -WorkingDirectory ([string]$payload.root)
-$principal = New-ScheduledTaskPrincipal -UserId ([string]$payload.user) -LogonType Interactive -RunLevel Highest
+$principal = New-ScheduledTaskPrincipal -UserId ([string]$payload.user) -LogonType ([string]$payload.policy.logonType) -RunLevel ([string]$payload.policy.runLevel)
 $trigger = New-ScheduledTaskTrigger -AtLogon -User ([string]$payload.user)
-$settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -ExecutionTimeLimit ([TimeSpan]::Zero) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+$settings = New-ScheduledTaskSettingsSet -MultipleInstances ([string]$payload.policy.multipleInstances) -ExecutionTimeLimit ([TimeSpan]::Zero) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 $task = Register-ScheduledTask -TaskName ([string]$payload.taskName) -Action $action -Principal $principal -Trigger $trigger -Settings $settings -ErrorAction Stop
 $triggers = @($task.Triggers | Where-Object { $null -ne $_.CimClass -and -not [string]::IsNullOrWhiteSpace([string]$_.CimClass.CimClassName) })
 [ordered]@{
@@ -988,10 +978,14 @@ function installationPlan(tools, environment) {
       source: fileIdentity(configurationModuleSourcePath),
       installedPath: installedConfigurationModulePath,
     },
+    layoutModule: {
+      source: fileIdentity(layoutModuleSourcePath),
+      installedPath: installedLayoutModulePath,
+    },
     protectedRoot,
     acl: {
-      root: ["SYSTEM:F", "BUILTIN\\Administrators:F", "BUILTIN\\Users:RX"],
-      credential: ["SYSTEM:F", "BUILTIN\\Administrators:F"],
+      root: [...OPENCODE_PROTECTED_ROOT_ACL.display],
+      credential: [...OPENCODE_PROTECTED_CREDENTIAL_ACL.display],
     },
     manifestPath,
     credentialPath,
@@ -1013,9 +1007,9 @@ function installationPlan(tools, environment) {
       execute: wscriptPath,
       arguments: expectedTrayTaskArguments(),
       workingDirectory: protectedRoot,
-      runLevel: "Highest",
+      runLevel: OPENCODE_OWNER_LOGON_TASK_POLICY.runLevel,
       triggerCount: 1,
-      multipleInstances: "IgnoreNew",
+      multipleInstances: OPENCODE_OWNER_LOGON_TASK_POLICY.multipleInstances,
     },
     startShortcut: {
       path: environment.shortcuts.start.path,
@@ -1052,6 +1046,16 @@ function verifyInstalledConfigurationModule(manifest) {
   const actual = sha256File(installedConfigurationModulePath)
   if (actual !== manifest.configurationModule.sha256) {
     throw new Error(`Installed workstation configuration module hash mismatch: expected ${manifest.configurationModule.sha256}, observed ${actual}.`)
+  }
+  return actual
+}
+
+function verifyInstalledLayoutModule(manifest) {
+  if (manifest.schemaVersion !== 2 || !manifest.layoutModule) throw new Error("Managed workstation layout module is not installed.")
+  if (!existsSync(installedLayoutModulePath)) throw new Error("Installed workstation layout module is missing.")
+  const actual = sha256File(installedLayoutModulePath)
+  if (actual !== manifest.layoutModule.sha256) {
+    throw new Error(`Installed workstation layout module hash mismatch: expected ${manifest.layoutModule.sha256}, observed ${actual}.`)
   }
   return actual
 }
@@ -1250,12 +1254,14 @@ function installedObservation(snapshot) {
   const controllerHash = verifyInstalledController(manifest)
   const sharedToolsHash = manifest.schemaVersion === 2 ? verifyInstalledSharedTools(manifest) : null
   const configurationModuleHash = manifest.schemaVersion === 2 ? verifyInstalledConfigurationModule(manifest) : null
+  const layoutModuleHash = manifest.schemaVersion === 2 && manifest.layoutModule ? verifyInstalledLayoutModule(manifest) : null
   return {
     installed: true,
     integrity: "complete",
     controllerHash,
     sharedToolsHash,
     configurationModuleHash,
+    layoutModuleHash,
     credentialPresent: existsSync(credentialPath),
     graphifyCredentialPresent: existsSync(graphifyCredentialPath),
     statePresent: existsSync(statePath),
@@ -1420,12 +1426,15 @@ async function install(configurationPath) {
     const sourceIdentity = fileIdentity(controllerSourcePath)
     const sharedToolsIdentity = fileIdentity(sharedToolsSourcePath)
     const configurationModuleIdentity = fileIdentity(configurationModuleSourcePath)
+    const layoutModuleIdentity = fileIdentity(layoutModuleSourcePath)
     const temporaryController = `${installedControllerPath}.${process.pid}.new`
     const previousController = `${installedControllerPath}.${process.pid}.previous`
     const temporarySharedTools = `${installedSharedToolsPath}.${process.pid}.new`
     const previousSharedTools = `${installedSharedToolsPath}.${process.pid}.previous`
     const temporaryConfigurationModule = `${installedConfigurationModulePath}.${process.pid}.new`
     const previousConfigurationModule = `${installedConfigurationModulePath}.${process.pid}.previous`
+    const temporaryLayoutModule = `${installedLayoutModulePath}.${process.pid}.new`
+    const previousLayoutModule = `${installedLayoutModulePath}.${process.pid}.previous`
     const originalManifest = readFileSync(manifestPath)
     const previousManifest = JSON.parse(originalManifest.toString("utf8"))
     const ordinaryPath = path.join(process.env.APPDATA ?? "", "alacritty", "alacritty.toml")
@@ -1442,6 +1451,7 @@ async function install(configurationPath) {
     )
     const previousSharedToolsExisted = existsSync(installedSharedToolsPath)
     const previousConfigurationModuleExisted = existsSync(installedConfigurationModulePath)
+    const previousLayoutModuleExisted = existsSync(installedLayoutModulePath)
     const previousGraphifyCredentialExisted = existsSync(graphifyCredentialPath)
     let appliedGraphifyConfig = null
     const graphifyConfigPlan = manifest.schemaVersion === 1
@@ -1460,6 +1470,7 @@ async function install(configurationPath) {
     copyFileSync(controllerSourcePath, temporaryController)
     copyFileSync(sharedToolsSourcePath, temporarySharedTools)
     copyFileSync(configurationModuleSourcePath, temporaryConfigurationModule)
+    copyFileSync(layoutModuleSourcePath, temporaryLayoutModule)
     const copiedIdentity = fileIdentity(temporaryController)
     if (copiedIdentity.sha256 !== sourceIdentity.sha256) {
       rmSync(temporaryController, { force: true })
@@ -1469,13 +1480,22 @@ async function install(configurationPath) {
       rmSync(temporaryController, { force: true })
       rmSync(temporarySharedTools, { force: true })
       rmSync(temporaryConfigurationModule, { force: true })
+      rmSync(temporaryLayoutModule, { force: true })
       throw new Error("Repaired shared-tool module copy hash mismatch.")
     }
     if (fileIdentity(temporaryConfigurationModule).sha256 !== configurationModuleIdentity.sha256) {
       rmSync(temporaryController, { force: true })
       rmSync(temporarySharedTools, { force: true })
       rmSync(temporaryConfigurationModule, { force: true })
+      rmSync(temporaryLayoutModule, { force: true })
       throw new Error("Repaired workstation configuration module copy hash mismatch.")
+    }
+    if (fileIdentity(temporaryLayoutModule).sha256 !== layoutModuleIdentity.sha256) {
+      rmSync(temporaryController, { force: true })
+      rmSync(temporarySharedTools, { force: true })
+      rmSync(temporaryConfigurationModule, { force: true })
+      rmSync(temporaryLayoutModule, { force: true })
+      throw new Error("Repaired workstation layout module copy hash mismatch.")
     }
     try {
       renameSync(installedControllerPath, previousController)
@@ -1484,13 +1504,15 @@ async function install(configurationPath) {
       renameSync(temporarySharedTools, installedSharedToolsPath)
       if (previousConfigurationModuleExisted) renameSync(installedConfigurationModulePath, previousConfigurationModule)
       renameSync(temporaryConfigurationModule, installedConfigurationModulePath)
+      if (previousLayoutModuleExisted) renameSync(installedLayoutModulePath, previousLayoutModule)
+      renameSync(temporaryLayoutModule, installedLayoutModulePath)
       if (!previousGraphifyCredentialExisted) {
         writeFileSync(graphifyCredentialPath, `${randomBytes(32).toString("base64url")}\n`, { encoding: "utf8", flag: "wx" })
         applyCredentialAcl(graphifyCredentialPath)
       }
       if (graphifyConfigPlan) appliedGraphifyConfig = applyGraphifyConfigPlan(graphifyConfigPlan, graphifyConfigBackupPath)
       manifest.schemaVersion = 2
-      manifest.candidate = sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}:${configurationModuleIdentity.sha256}`)
+      manifest.candidate = sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}:${configurationModuleIdentity.sha256}:${layoutModuleIdentity.sha256}`)
       manifest.controller.sourcePath = controllerSourcePath
       manifest.controller.sha256 = sourceIdentity.sha256
       manifest.sharedTools = {
@@ -1502,6 +1524,11 @@ async function install(configurationPath) {
         sourcePath: configurationModuleSourcePath,
         installedPath: installedConfigurationModulePath,
         sha256: configurationModuleIdentity.sha256,
+      }
+      manifest.layoutModule = {
+        sourcePath: layoutModuleSourcePath,
+        installedPath: installedLayoutModulePath,
+        sha256: layoutModuleIdentity.sha256,
       }
       manifest.graphify = {
         configuration: environment.graphify,
@@ -1546,6 +1573,7 @@ async function install(configurationPath) {
       rmSync(previousController, { force: true })
       rmSync(previousSharedTools, { force: true })
       rmSync(previousConfigurationModule, { force: true })
+      rmSync(previousLayoutModule, { force: true })
       return {
         schemaVersion: 1,
         operation: "install",
@@ -1569,6 +1597,9 @@ async function install(configurationPath) {
       if (existsSync(installedConfigurationModulePath)) rmSync(installedConfigurationModulePath, { force: true })
       if (existsSync(previousConfigurationModule)) renameSync(previousConfigurationModule, installedConfigurationModulePath)
       if (existsSync(temporaryConfigurationModule)) rmSync(temporaryConfigurationModule, { force: true })
+      if (existsSync(installedLayoutModulePath)) rmSync(installedLayoutModulePath, { force: true })
+      if (existsSync(previousLayoutModule)) renameSync(previousLayoutModule, installedLayoutModulePath)
+      if (existsSync(temporaryLayoutModule)) rmSync(temporaryLayoutModule, { force: true })
       if (!previousGraphifyCredentialExisted) rmSync(graphifyCredentialPath, { force: true })
       writeFileSync(manifestPath, originalManifest)
       if (ordinaryBytes) writeFileSync(ordinaryPath, ordinaryBytes)
@@ -1626,6 +1657,7 @@ async function install(configurationPath) {
   const sourceIdentity = fileIdentity(controllerSourcePath)
   const sharedToolsIdentity = fileIdentity(sharedToolsSourcePath)
   const configurationModuleIdentity = fileIdentity(configurationModuleSourcePath)
+  const layoutModuleIdentity = fileIdentity(layoutModuleSourcePath)
   const environment = candidate.environment
   const plan = candidate.installationPlan
   try {
@@ -1643,6 +1675,9 @@ async function install(configurationPath) {
     copyFileSync(configurationModuleSourcePath, installedConfigurationModulePath)
     const installedConfigurationModuleIdentity = fileIdentity(installedConfigurationModulePath)
     if (installedConfigurationModuleIdentity.sha256 !== configurationModuleIdentity.sha256) throw new Error("Installed workstation configuration module copy hash mismatch.")
+    copyFileSync(layoutModuleSourcePath, installedLayoutModulePath)
+    const installedLayoutModuleIdentity = fileIdentity(installedLayoutModulePath)
+    if (installedLayoutModuleIdentity.sha256 !== layoutModuleIdentity.sha256) throw new Error("Installed workstation layout module copy hash mismatch.")
 
     const password = randomBytes(32).toString("base64url")
     writeFileSync(credentialPath, `${password}\n`, { encoding: "utf8", flag: "wx" })
@@ -1654,7 +1689,7 @@ async function install(configurationPath) {
 
     const manifest = {
       schemaVersion: 2,
-      candidate: sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}:${configurationModuleIdentity.sha256}`),
+      candidate: sha256Text(`${sourceIdentity.sha256}:${sharedToolsIdentity.sha256}:${configurationModuleIdentity.sha256}:${layoutModuleIdentity.sha256}`),
       installedAt: new Date().toISOString(),
       owner: {
         user: snapshot.user,
@@ -1680,6 +1715,11 @@ async function install(configurationPath) {
         sourcePath: configurationModuleSourcePath,
         installedPath: installedConfigurationModulePath,
         sha256: installedConfigurationModuleIdentity.sha256,
+      },
+      layoutModule: {
+        sourcePath: layoutModuleSourcePath,
+        installedPath: installedLayoutModulePath,
+        sha256: installedLayoutModuleIdentity.sha256,
       },
       graphify: {
         configuration: environment.graphify,
@@ -2551,6 +2591,7 @@ function rollbackDryRun() {
     controllerHash: verifyInstalledController(manifest) === manifest.controller.sha256,
     sharedToolsHash: verifyInstalledSharedTools(manifest) === manifest.sharedTools.sha256,
     configurationModuleHash: verifyInstalledConfigurationModule(manifest) === manifest.configurationModule.sha256,
+    layoutModuleHash: !manifest.layoutModule || verifyInstalledLayoutModule(manifest) === manifest.layoutModule.sha256,
     taskRunLevel: snapshot.task.runLevel === "Highest",
     taskTriggerCount: snapshot.task.triggerCount === 0,
     taskActionCount: snapshot.task.actionCount === 1,

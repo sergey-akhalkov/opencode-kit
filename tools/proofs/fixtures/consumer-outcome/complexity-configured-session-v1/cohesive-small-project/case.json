@@ -1,0 +1,23 @@
+{
+  "caseId": "cohesive-small-project",
+  "acceptedOutcome": "Report one greeting through the existing cohesive owner.",
+  "requestedAssessment": "ordinary cohesive change",
+  "facts": ["one maintained owner", "one direct entrypoint", "no competing extension surface", "no hidden effect or failure"],
+  "nonGoals": ["durable architecture map", "new seam", "reviewer launch"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when the request requires it.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown"],
+    "dispositions": ["retain"],
+    "maximumClaim": "cohesive-small-project-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts", "proof:node src/main.ts"],
+      "ownerFacts": ["owner:main", "mode:delta", "skill:none"],
+      "pathFacts": ["production:ordinary-delta", "public-surface:greeting", "inventory:not-run", "edit-set:none"],
+      "triggerFacts": ["ordinary-cohesive-change", "zero-comprehension-pressure"]
+    },
+    "routeDecisions": [
+      { "id": "direct-delta", "when": "The cohesive delta has zero comprehension pressure, so focused mode stays quiet.", "decision": { "admissionClass": "unknown", "caseId": "cohesive-small-project", "contextFacts": ["src/main.ts", "proof:node src/main.ts"], "disposition": "retain", "maximumClaim": "cohesive-small-project-only", "ownerFacts": ["owner:main", "mode:delta", "skill:none"], "pathFacts": ["production:ordinary-delta", "public-surface:greeting", "inventory:not-run", "edit-set:none"], "triggerFacts": ["ordinary-cohesive-change", "zero-comprehension-pressure"] } }
+    ]
+  }
+}

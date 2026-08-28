@@ -1,0 +1,25 @@
+{
+  "caseId": "unreadable-root",
+  "acceptedOutcome": "Report a missing inventory target without presenting a complete architecture map.",
+  "requestedAssessment": "explicit focused assessment of missing-root",
+  "inventoryTarget": "missing-root",
+  "facts": ["inventory target does not exist", "root identity must be redacted", "original cause code is required", "unknown cannot become complete"],
+  "nonGoals": ["create target", "infer project structure", "continue as complete"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when available and preserve its exact unreadable result.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown"],
+    "dispositions": ["unknown"],
+    "maximumClaim": "unreadable-root-only",
+    "factVocabulary": {
+      "contextFacts": ["case.json:inventoryTarget", "proof:node src/main.ts", "unknown:project-structure"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:missing-root", "public-surface:unreadable-control", "inventory:unavailable", "edit-set:none", "inventory:unreadable"],
+      "triggerFacts": ["explicit-focused-assessment", "unreadable-inventory-root"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "unreadable-root", "contextFacts": ["case.json:inventoryTarget", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "unreadable-root-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:missing-root", "public-surface:unreadable-control", "inventory:unavailable", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "unreadable-inventory-root"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow is available and its helper was invoked on inventoryTarget, returning unreadable.", "decision": { "admissionClass": "unknown", "caseId": "unreadable-root", "contextFacts": ["case.json:inventoryTarget", "proof:node src/main.ts", "unknown:project-structure"], "disposition": "unknown", "maximumClaim": "unreadable-root-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:missing-root", "public-surface:unreadable-control", "inventory:unreadable", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "unreadable-inventory-root"] } }
+    ]
+  }
+}

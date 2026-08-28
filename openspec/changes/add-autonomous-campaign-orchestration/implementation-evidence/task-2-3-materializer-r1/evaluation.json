@@ -1,0 +1,33 @@
+{
+  "candidateId": "autonomous-work-campaign-materializer-r1",
+  "checks": {
+    "candidateMatched": true,
+    "captureExitedZero": true,
+    "cleanupComplete": true,
+    "commandExitsMatched": true,
+    "corruptLedgerBlocked": true,
+    "gitCallsZero": true,
+    "hostEffectsZero": true,
+    "openSpecCallsZero": true,
+    "p1FixedExactlyOnce": true,
+    "p2Retained": true,
+    "processStartsObserved": true,
+    "providerCallsZero": true,
+    "regenerationChangedCurrentFacts": true,
+    "regenerationStable": true,
+    "reportDriftBlocked": true,
+    "sourceCandidateCurrent": true,
+    "sourceEvaluationCurrent": true,
+    "sourceUnchanged": true,
+    "sourceWritesZero": true,
+    "staleP1Removed": true
+  },
+  "hostEffects": 0,
+  "liveCalls": 37,
+  "processStarts": 37,
+  "proofKind": "campaign-ledger-report-materializer",
+  "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+  "schemaVersion": 1,
+  "sourceWrites": 0,
+  "status": "complete"
+}

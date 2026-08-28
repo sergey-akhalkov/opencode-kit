@@ -1,0 +1,12 @@
+{
+  "candidateId": "task-3-2-final-r2",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "eligible": true,
+    "projectClean": true
+  },
+  "liveCalls": 0,
+  "schemaVersion": 1,
+  "status": "complete"
+}

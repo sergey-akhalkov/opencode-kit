@@ -1,0 +1,116 @@
+{
+  "candidateId": "task-4-3-playbook-r5",
+  "context": {
+    "blocks": [
+      {
+        "classification": "maintained",
+        "digest": "38669de65cbf1a563bf4b9632adcf2814f4de5520ba3ec8912407fc432efe19b",
+        "exclusionReason": null,
+        "id": "block-main",
+        "kind": "file",
+        "path": "src/main.ts",
+        "recordType": "inventory-block",
+        "reviewStatus": "pending",
+        "schemaVersion": 1
+      }
+    ],
+    "campaignId": "configured-playbook-proof",
+    "candidateDigest": "7656ce38dfec8a924d8129c996f07263189dcc610e501de2217990f06141aaf9",
+    "definitionDigest": "b434e146d6aaf2138f699b3145c41c313879ffedad783057ae8f025dd3e19b42",
+    "inventoryDigest": "15604ffe0103352568fdc2fbe3901775861d8855943859014d5cbde82e9f1c26",
+    "modelCallBudget": 3
+  },
+  "environmentId": "node-24.18.1-windows-configured-playbook-r5",
+  "liveCalls": 0,
+  "mode": "preflight",
+  "offlineController": {
+    "cause": null,
+    "error": "phase input inventory digest differs",
+    "exitCode": 2,
+    "field": "inventoryDigest",
+    "operation": "run",
+    "schemaVersion": 1,
+    "status": "blocked",
+    "tool": "work-campaign"
+  },
+  "schemaVersion": 1,
+  "setupCommands": [
+    {
+      "argv": [
+        "git",
+        "init",
+        "-b",
+        "main"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Initialized empty Git repository in C:/Users/noilw/AppData/Local/Temp/work-campaign-playbook-preflight-XGthAO/fixture/.git/\n"
+    },
+    {
+      "argv": [
+        "openspec",
+        "init",
+        "--tools",
+        "none",
+        "--no-animation",
+        "."
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "- Creating OpenSpec structure...\n▌ OpenSpec structure created\n\nOpenSpec Setup Complete\n\nConfig: openspec/config.yaml (schema: spec-driven)\n\nGetting started:\n  Start your first change: /opsx:propose \"your idea\"\n\nLearn more: https://github.com/Fission-AI/OpenSpec\nFeedback:   https://github.com/Fission-AI/OpenSpec/issues\n\n"
+    },
+    {
+      "argv": [
+        "git",
+        "add",
+        "--all"
+      ],
+      "exitCode": 0,
+      "stderr": "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'adapter.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'definition.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'openspec/config.yaml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/main.ts', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'validate.mjs', LF will be replaced by CRLF the next time Git touches it\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "user.name=Campaign Proof",
+        "-c",
+        "user.email=campaign-proof@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-m",
+        "configured playbook fixture"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "[main (root-commit) 8499de3] configured playbook fixture\n 6 files changed, 101 insertions(+)\n create mode 100644 .gitignore\n create mode 100644 adapter.json\n create mode 100644 definition.json\n create mode 100644 openspec/config.yaml\n create mode 100644 src/main.ts\n create mode 100644 validate.mjs\n"
+    }
+  ],
+  "worktreeStatuses": [
+    {
+      "exitCode": 0,
+      "id": "fixture-created",
+      "paths": [],
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "id": "ignored-evidence-created",
+      "paths": [],
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "id": "captured-records-materialized",
+      "paths": [],
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "id": "offline-admission-finished",
+      "paths": [],
+      "stderr": ""
+    }
+  ]
+}

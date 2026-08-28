@@ -1,0 +1,23 @@
+{
+  "caseId": "explicit-review-only-project-assessment",
+  "acceptedOutcome": "Review the whole disposable project for complexity without authorizing mutation.",
+  "requestedAssessment": "explicit whole-project exhaustive assessment",
+  "facts": ["request is exhaustive", "existing audit and ledger own coverage", "project mode is review-only", "focused maps require a separately admitted subsystem scenario"],
+  "nonGoals": ["audit-and-fix", "second exhaustive workflow", "map per block"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Use the exhaustive project owners when available and do not substitute focused mode.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["deferred-debt"],
+    "dispositions": ["project-review"],
+    "maximumClaim": "explicit-review-only-project-assessment-only",
+    "factVocabulary": {
+      "contextFacts": ["project:whole-fixture", "proof:node src/main.ts"],
+      "ownerFacts": ["owner:main", "mode:project", "skills:codebase-audit-loop+codebase-audit-ledger"],
+      "pathFacts": ["production:existing-exhaustive-audit", "public-surface:review-only-project", "edit-set:none", "mutation:none", "focused-scenario:none"],
+      "triggerFacts": ["explicit-whole-project-request", "review-only"]
+    },
+    "routeDecisions": [
+      { "id": "project-review", "when": "The request is explicit whole-project exhaustive review and the existing audit and ledger owners are available.", "decision": { "admissionClass": "deferred-debt", "caseId": "explicit-review-only-project-assessment", "contextFacts": ["project:whole-fixture", "proof:node src/main.ts"], "disposition": "project-review", "maximumClaim": "explicit-review-only-project-assessment-only", "ownerFacts": ["owner:main", "mode:project", "skills:codebase-audit-loop+codebase-audit-ledger"], "pathFacts": ["production:existing-exhaustive-audit", "public-surface:review-only-project", "edit-set:none", "mutation:none", "focused-scenario:none"], "triggerFacts": ["explicit-whole-project-request", "review-only"] } }
+    ]
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "complexityFactDiffs": [],
+  "complexityPartitionOracles": [
+    {
+      "arm": "baseline",
+      "expected": {
+        "admissionClass": "unknown",
+        "caseId": "default-core-availability",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "default-core-availability-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:core",
+          "public-surface:core-fixture",
+          "inventory:unavailable",
+          "edit-set:none",
+          "project-mode:unavailable"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "default-core-surface"
+        ]
+      },
+      "failures": [],
+      "memberId": "default-core-availability",
+      "observed": {
+        "admissionClass": "unknown",
+        "caseId": "default-core-availability",
+        "contextFacts": [
+          "src/main.ts",
+          "proof:node src/main.ts"
+        ],
+        "disposition": "unknown",
+        "maximumClaim": "default-core-availability-only",
+        "ownerFacts": [
+          "owner:main",
+          "mode:focused-unavailable",
+          "skill:none"
+        ],
+        "pathFacts": [
+          "production:core",
+          "public-surface:core-fixture",
+          "inventory:unavailable",
+          "edit-set:none",
+          "project-mode:unavailable"
+        ],
+        "triggerFacts": [
+          "explicit-focused-assessment",
+          "default-core-surface"
+        ]
+      },
+      "passed": true,
+      "sampleIndex": 1,
+      "scenarioId": "default-core-availability"
+    }
+  ],
+  "decisionOracles": [],
+  "digest": "299f7dd8f525a995492e157de664b72766219796bae4e109e6fc472ca6cca52b",
+  "evaluatorIdentity": {
+    "capture": {
+      "baseline": "ba3523ea9879a73e9ef7f27333b2f255e24063e5764ce0f94433395cd5677618",
+      "candidate": null
+    },
+    "terminalReplay": "ba3523ea9879a73e9ef7f27333b2f255e24063e5764ce0f94433395cd5677618"
+  },
+  "evaluation": {
+    "baselineMedians": {
+      "default-core-availability": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 0,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 9
+      }
+    },
+    "candidateMedians": null,
+    "environmentDigest": "57d487ed35b1d3072c2651cbfcfb818c9d58bb92dd6879a2ca5fea362bd824f9",
+    "expectation": "baseline-establishment",
+    "improvedField": null,
+    "reasons": [],
+    "scenarioDigest": "a588e0ca6bcb61295b341a66b6e2aeb0fd6700087d24f1b01252d739d7346c38",
+    "sourceDigest": "7cb451857712d295cf71b2e9e1dfce384bb7f51abc2f80cada48c3878ea6c00e",
+    "status": "baseline-established",
+    "digest": "db737feaa07d42418f2edd12e11e62ce4f90e9bf4ae7245599e7179e64d4b2fb",
+    "schemaVersion": 1
+  },
+  "maximumClaim": "the exercised configured model and selected complexity scenarios (default-core-availability) cover only their 1 explicit members under the recorded identities"
+}

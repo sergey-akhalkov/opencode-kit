@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "valid",
+      "target": "definition",
+      "operation": {
+        "kind": "none"
+      },
+      "expectedExit": 0,
+      "expectedField": null
+    },
+    {
+      "id": "definition-extra-field",
+      "target": "definition",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "unexpected"
+        ],
+        "value": true
+      },
+      "expectedExit": 2,
+      "expectedField": "campaign definition"
+    },
+    {
+      "id": "definition-missing-field",
+      "target": "definition",
+      "operation": {
+        "kind": "delete",
+        "path": [
+          "playbook"
+        ]
+      },
+      "expectedExit": 2,
+      "expectedField": "campaign definition"
+    },
+    {
+      "id": "unsupported-playbook",
+      "target": "definition",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "playbook"
+        ],
+        "value": "arbitrary-workflow"
+      },
+      "expectedExit": 2,
+      "expectedField": "playbook"
+    },
+    {
+      "id": "path-escape",
+      "target": "definition",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "reportPath"
+        ],
+        "value": "../outside/report.md"
+      },
+      "expectedExit": 2,
+      "expectedField": "reportPath"
+    },
+    {
+      "id": "zero-budget",
+      "target": "definition",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "budgets",
+          "modelCalls"
+        ],
+        "value": 0
+      },
+      "expectedExit": 2,
+      "expectedField": "budgets.modelCalls"
+    },
+    {
+      "id": "unsupported-effect",
+      "target": "definition",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "allowedEffects"
+        ],
+        "value": [
+          "local-read",
+          "shell"
+        ]
+      },
+      "expectedExit": 2,
+      "expectedField": "allowedEffects"
+    },
+    {
+      "id": "missing-protected-authorization",
+      "target": "definition",
+      "operation": {
+        "kind": "delete",
+        "path": [
+          "authorizationRefs",
+          "local-commit"
+        ]
+      },
+      "expectedExit": 2,
+      "expectedField": "authorizationRefs.local-commit"
+    },
+    {
+      "id": "argv-not-vector",
+      "target": "definition",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "validationArgv"
+        ],
+        "value": "node validate.mjs"
+      },
+      "expectedExit": 2,
+      "expectedField": "validationArgv"
+    },
+    {
+      "id": "adapter-extra-field",
+      "target": "adapter",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "unexpected"
+        ],
+        "value": true
+      },
+      "expectedExit": 2,
+      "expectedField": "campaign adapter"
+    }
+  ]
+}

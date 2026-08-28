@@ -8,6 +8,7 @@ import {
 } from "./contracts.ts";
 import type {
   MissionExecutorResult,
+  MissionParentHandoff,
   RoadmapMissionDefinition,
   RoadmapMissionSlice,
 } from "./contracts.ts";
@@ -25,6 +26,7 @@ import {
 } from "./controller-process.ts";
 import type { ProcessEvidence } from "./controller-process.ts";
 import { expandExecutorArgv, readExecutorResult } from "./controller-result.ts";
+import { buildMissionParentHandoff } from "./parent-correlation.ts";
 import { preflightMission } from "./preflight.ts";
 import {
   readMissionStateProjection,
@@ -56,6 +58,7 @@ export type MissionControllerReport = {
   exitCode: number;
   missionId: string;
   operation: "run" | "resume";
+  parentHandoff?: MissionParentHandoff;
   processEvidence: ProcessEvidence[];
   schemaVersion: 1;
   status: "blocked" | "complete" | "paused" | "paused-unknown";
@@ -833,7 +836,20 @@ async function executeWithSignals(options: RunOptions, operation: "run" | "resum
   process.on("SIGINT", onSignal);
   process.on("SIGTERM", onSignal);
   try {
-    return await execute(options, operation, () => signalRequested);
+    const report = await execute(options, operation, () => signalRequested);
+    const definition = loadMissionDefinition(options.root, options.missionPath);
+    return definition.parent == null
+      ? report
+      : {
+          ...report,
+          parentHandoff: buildMissionParentHandoff(
+            options.root,
+            options.missionPath,
+            definition,
+            report.status,
+            report.processEvidence,
+          ),
+        };
   } finally {
     process.off("SIGINT", onSignal);
     process.off("SIGTERM", onSignal);

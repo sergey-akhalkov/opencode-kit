@@ -53,7 +53,7 @@ function main(): void {
     assert(!fs.existsSync(fixture), "cleanup must remove the fixture root");
   }
 
-  const bundlePath = path.join(root, "openspec", "changes", "improve-change-locality-guidance", "evidence", "task-1-3-baseline-r1", "one-off-local-fix.bundle.json");
+  const bundlePath = path.join(root, "openspec", "changes", "archive", "2026-08-24-improve-change-locality-guidance", "evidence", "task-1-3-baseline-r1", "one-off-local-fix.bundle.json");
   const bundle = JSON.parse(fs.readFileSync(bundlePath, "utf8")) as { candidate: { id: string }; environment: { model: string }; oracle: { pass: boolean } };
   assert(bundle.candidate.id === "improve-change-locality-guidance-planning-r1", "replayed bundle candidate identity");
   assert(bundle.environment.model.length > 0 && bundle.oracle.pass === true, "replayed one-off bundle is inspectable");

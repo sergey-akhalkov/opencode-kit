@@ -9,6 +9,8 @@ import {
   type CandidateRequest,
   type ComplexityFacadeObservation,
   type ComplexityFacadeScenarioExpectation,
+  type ComplexityConfiguredSessionPack,
+  type ComplexityPartitionObservation,
   type DecisionGapPack,
   type EnvironmentIdentity,
   type EvaluationResult,
@@ -46,6 +48,7 @@ import {
   parseCandidateRequest,
   parseBoundedFalsificationObservation,
   parseComplexityFacadeObservation,
+  parseComplexityPartitionObservation,
   parseFoundationIntegrityObservation,
   parseStatusScopeDecisionSet,
   privacyMarkers,
@@ -438,6 +441,23 @@ export type DecisionGapEvaluation = {
     passed: boolean;
     sampleIndex: number;
     scenarioId: string;
+  }>;
+  complexityPartitionOracles?: Array<{
+    arm: Arm;
+    expected: ComplexityPartitionObservation;
+    failures: string[];
+    memberId: string;
+    observed: ComplexityPartitionObservation | null;
+    passed: boolean;
+    sampleIndex: number;
+    scenarioId: string;
+  }>;
+  complexityFactDiffs?: Array<{
+    baseline: string | null;
+    candidate: string | null;
+    dimension: "behavior" | "consumer-context" | "edit-set" | "effects" | "errors" | "proof-set" | "public-surface";
+    scenarioId: string;
+    state: "changed" | "unchanged" | "unknown";
   }>;
 };
 
@@ -888,6 +908,202 @@ function complexityFacadeFailures(
   if (observed == null) return ["malformed-observation"];
   return COMPLEXITY_FACADE_OBSERVATION_KEYS
     .filter((key) => stableJson(observed[key]) !== stableJson(expected[key]));
+}
+
+type ComplexityProofEnvelope = {
+  observation: ComplexityPartitionObservation;
+  representativeProof: { argv: string[]; status: number; stderr: string; stdout: string };
+};
+
+const COMPLEXITY_PARTITION_FIELDS = [
+  "admissionClass",
+  "caseId",
+  "contextFacts",
+  "disposition",
+  "maximumClaim",
+  "ownerFacts",
+  "pathFacts",
+  "triggerFacts",
+] as const;
+
+function observedComplexityPartition(text: string): ComplexityProofEnvelope | null {
+  try {
+    const parsed = JSON.parse(text.trim()) as unknown;
+    if (parsed == null || typeof parsed !== "object" || Array.isArray(parsed)) return null;
+    const record = parsed as Record<string, unknown>;
+    if (Object.keys(record).sort().join(",") !== "observation,representativeProof") return null;
+    const proof = record.representativeProof;
+    if (proof == null || typeof proof !== "object" || Array.isArray(proof)) return null;
+    const proofRecord = proof as Record<string, unknown>;
+    if (Object.keys(proofRecord).sort().join(",") !== "argv,status,stderr,stdout") return null;
+    if (!Array.isArray(proofRecord.argv) || proofRecord.argv.some((value) => typeof value !== "string")) return null;
+    if (!Number.isInteger(proofRecord.status) || typeof proofRecord.stderr !== "string" || typeof proofRecord.stdout !== "string") return null;
+    return {
+      observation: parseComplexityPartitionObservation(record.observation, "complexity partition observation"),
+      representativeProof: {
+        argv: proofRecord.argv as string[],
+        status: proofRecord.status as number,
+        stderr: proofRecord.stderr,
+        stdout: proofRecord.stdout,
+      },
+    };
+  } catch {
+    return null;
+  }
+}
+
+function complexityPartitionFailures(
+  expected: ComplexityPartitionObservation,
+  observed: ComplexityPartitionObservation | null,
+): string[] {
+  if (observed == null) return ["malformed-observation"];
+  return COMPLEXITY_PARTITION_FIELDS.filter((key) => stableJson(observed[key]) !== stableJson(expected[key]));
+}
+
+function complexityFactValue(
+  dimension: NonNullable<DecisionGapEvaluation["complexityFactDiffs"]>[number]["dimension"],
+  sample: SampleEvidence | undefined,
+  envelope: ComplexityProofEnvelope | null,
+): string | null {
+  if (sample == null || envelope == null) return null;
+  const observation = envelope.observation;
+  const values = dimension === "consumer-context"
+    ? observation.contextFacts.filter((value) => !value.startsWith("proof:"))
+    : dimension === "public-surface"
+      ? observation.pathFacts.filter((value) => value.startsWith("public-surface:"))
+      : dimension === "edit-set"
+        ? observation.pathFacts.filter((value) => value.startsWith("edit-set:"))
+        : dimension === "proof-set"
+          ? observation.contextFacts.filter((value) => value.startsWith("proof:"))
+          : dimension === "effects"
+            ? sample.sideEffects
+            : dimension === "errors"
+              ? [
+                  `command:${sample.command.status}:${sample.command.stderr}`,
+                  `validation:${sample.validation.status}:${sample.validation.stderr}`,
+                  `proof:${envelope.representativeProof.status}:${envelope.representativeProof.stderr}`,
+                  ...sample.toolCalls
+                    .filter((tool) => tool.status !== "completed")
+                    .map((tool, index) => `tool:${index}:${tool.name}:${tool.status}`),
+                ]
+              : [
+                  `argv:${envelope.representativeProof.argv.join(" ")}`,
+                  `status:${envelope.representativeProof.status}`,
+                  `stdout:${envelope.representativeProof.stdout}`,
+                ];
+  return values.length === 0 ? null : stableJson(values);
+}
+
+export function evaluateComplexityConfiguredSessionPack(input: {
+  baseline: CaptureBundle;
+  candidate?: CaptureBundle;
+  expectation: Expectation | "baseline-establishment";
+  pack: ComplexityConfiguredSessionPack;
+}): DecisionGapEvaluation {
+  const complexityPartitionOracles: NonNullable<DecisionGapEvaluation["complexityPartitionOracles"]> = [];
+  const complexityFactDiffs: NonNullable<DecisionGapEvaluation["complexityFactDiffs"]> = [];
+  const failures: string[] = [];
+  const expectedScenarioDigest = digestOf(input.pack);
+  const observed = new Map<string, ComplexityProofEnvelope | null>();
+  for (const [arm, bundle] of [["baseline", input.baseline], ["candidate", input.candidate]] as const) {
+    if (bundle == null) continue;
+    if (bundle.scenarioDigest !== expectedScenarioDigest) failures.push(`complexity-partition:${arm}:scenario-digest:${expectedScenarioDigest}:${bundle.scenarioDigest}`);
+    for (const scenario of input.pack.manifest.scenarios) {
+      const expected = input.pack.expectedDecisions[scenario.id]![arm];
+      for (const sample of groupSamples(bundle, arm, scenario.id)) {
+        const envelope = observedComplexityPartition(sample.proof.stdout);
+        observed.set(`${arm}:${scenario.id}:${sample.sampleIndex}`, envelope);
+        const rowFailures = complexityPartitionFailures(expected, envelope?.observation ?? null);
+        complexityPartitionOracles.push({
+          arm,
+          expected,
+          failures: rowFailures,
+          memberId: scenario.id,
+          observed: envelope?.observation ?? null,
+          passed: rowFailures.length === 0,
+          sampleIndex: sample.sampleIndex,
+          scenarioId: scenario.id,
+        });
+      }
+    }
+  }
+  const expectedRows = input.pack.manifest.scenarios.length * input.pack.manifest.sampleCount * (input.candidate == null ? 1 : 2);
+  if (complexityPartitionOracles.length !== expectedRows) failures.push(`complexity-partition:sampleCount:${expectedRows}:${complexityPartitionOracles.length}`);
+  failures.push(...complexityPartitionOracles.flatMap((row) => row.failures.map(
+    (field) => `complexity-partition:${row.arm}:${row.scenarioId}:${row.sampleIndex}:${field}`,
+  )));
+  if (input.candidate != null) {
+    const dimensions: Array<NonNullable<DecisionGapEvaluation["complexityFactDiffs"]>[number]["dimension"]> = [
+      "consumer-context",
+      "public-surface",
+      "edit-set",
+      "proof-set",
+      "effects",
+      "errors",
+      "behavior",
+    ];
+    for (const scenario of input.pack.manifest.scenarios) {
+      const baselineSample = groupSamples(input.baseline, "baseline", scenario.id)[0];
+      const candidateSample = groupSamples(input.candidate, "candidate", scenario.id)[0];
+      const baselineEnvelope = observed.get(`baseline:${scenario.id}:1`) ?? null;
+      const candidateEnvelope = observed.get(`candidate:${scenario.id}:1`) ?? null;
+      for (const dimension of dimensions) {
+        const baseline = complexityFactValue(dimension, baselineSample, baselineEnvelope);
+        const candidate = complexityFactValue(dimension, candidateSample, candidateEnvelope);
+        const state = baseline == null || candidate == null ? "unknown" : baseline === candidate ? "unchanged" : "changed";
+        complexityFactDiffs.push({ baseline, candidate, dimension, scenarioId: scenario.id, state });
+        if (state === "unknown") failures.push(`complexity-fact-diff:${scenario.id}:${dimension}:unknown`);
+      }
+    }
+  }
+  const configuredProviderRequests = [input.baseline, input.candidate]
+    .filter((bundle): bundle is CaptureBundle => bundle != null)
+    .flatMap((bundle) => bundle.samples)
+    .reduce((sum, sample) => sum + sample.friction.configuredProviderRequestCount, 0);
+  if (configuredProviderRequests > input.pack.configuredProviderRequestBound) {
+    failures.push(`complexity-partition:pack-provider-bound:${input.pack.configuredProviderRequestBound}:${configuredProviderRequests}`);
+  }
+  const rawBase = evaluateBundle({ baseline: input.baseline, candidate: input.candidate, expectation: input.expectation, manifest: input.pack.manifest });
+  const baseReasons = rawBase.reasons.filter((reason) => !reason.startsWith("friction-regression:"));
+  const base = rawBase.status === "failed" && baseReasons.length === 0 && input.candidate != null
+    ? result({
+      baselineMedians: rawBase.baselineMedians,
+      candidateMedians: rawBase.candidateMedians,
+      environmentDigest: rawBase.environmentDigest,
+      expectation: rawBase.expectation,
+      improvedField: null,
+      reasons: [],
+      scenarioDigest: rawBase.scenarioDigest,
+      sourceDigest: rawBase.sourceDigest,
+      status: "passed-no-regression",
+    })
+    : rawBase;
+  const identityFailure = failures.some((failure) => failure.includes("digest"));
+  const evaluation = failures.length === 0 ? base : result({
+    baselineMedians: base.baselineMedians,
+    candidateMedians: base.candidateMedians,
+    environmentDigest: base.environmentDigest,
+    expectation: base.expectation,
+    improvedField: base.improvedField,
+    reasons: [...base.reasons, ...failures],
+    scenarioDigest: base.scenarioDigest,
+    sourceDigest: base.sourceDigest,
+    status: base.status === "blocked" || base.status === "stale-evidence" || identityFailure ? "blocked" : "failed",
+  });
+  const value: DecisionGapEvaluation = {
+    complexityFactDiffs,
+    complexityPartitionOracles,
+    decisionOracles: [],
+    digest: "",
+    evaluatorIdentity: {
+      capture: { baseline: input.baseline.evaluatorDigest, candidate: input.candidate?.evaluatorDigest ?? null },
+      terminalReplay: evaluatorDigest(),
+    },
+    evaluation,
+    maximumClaim: input.pack.maximumClaim,
+  };
+  value.digest = digestOf({ ...value, digest: "" });
+  return value;
 }
 
 function evaluateComplexityPack(input: {

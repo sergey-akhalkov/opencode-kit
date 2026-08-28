@@ -1,0 +1,24 @@
+{
+  "caseId": "useful-current-consumer-facade",
+  "acceptedOutcome": "Place one order while preserving inventory, payment, receipt, and declined-payment semantics.",
+  "requestedAssessment": "explicit focused current-scenario refactoring assessment",
+  "facts": ["consumer coordinates three stable internals", "PaymentDeclinedError remains visible", "one narrow order facade can own sequencing", "same scenario is the proof boundary"],
+  "nonGoals": ["multi-implementation framework", "hidden failure", "additional wrapper"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when the request requires it.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown", "accepted-refactor"],
+    "dispositions": ["unknown", "facade"],
+    "maximumClaim": "useful-current-consumer-facade-partition-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts", "src/inventory.ts", "src/payments.ts", "src/receipts.ts", "proof:node src/main.ts", "src/order-service.ts"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:consumer-coordinates-internals", "public-surface:inventory+payments+receipts", "inventory:unavailable", "edit-set:none", "production:narrow-order-service", "public-surface:place-order", "inventory:complete", "edit-set:src/main.ts+src/order-service.ts"],
+      "triggerFacts": ["explicit-focused-refactor", "consumer-coordinates-three-stable-internals"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "useful-current-consumer-facade", "contextFacts": ["src/main.ts", "src/inventory.ts", "src/payments.ts", "src/receipts.ts", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "useful-current-consumer-facade-partition-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:consumer-coordinates-internals", "public-surface:inventory+payments+receipts", "inventory:unavailable", "edit-set:none"], "triggerFacts": ["explicit-focused-refactor", "consumer-coordinates-three-stable-internals"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow is available and was successfully invoked for this current consumer scenario.", "decision": { "admissionClass": "accepted-refactor", "caseId": "useful-current-consumer-facade", "contextFacts": ["src/main.ts", "src/order-service.ts", "proof:node src/main.ts"], "disposition": "facade", "maximumClaim": "useful-current-consumer-facade-partition-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:narrow-order-service", "public-surface:place-order", "inventory:complete", "edit-set:src/main.ts+src/order-service.ts"], "triggerFacts": ["explicit-focused-refactor", "consumer-coordinates-three-stable-internals"] } }
+    ]
+  }
+}

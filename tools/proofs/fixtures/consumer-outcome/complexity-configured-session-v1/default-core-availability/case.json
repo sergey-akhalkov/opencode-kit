@@ -1,0 +1,24 @@
+{
+  "caseId": "default-core-availability",
+  "acceptedOutcome": "Resolve the focused workflow and its fact helper from the default core surface.",
+  "requestedAssessment": "explicit focused architecture-comprehension assessment under core",
+  "facts": ["focused skill availability must be discovered from the loaded core surface", "inventory helper availability must be discovered from the selected skill", "exhaustive owners remain all-only", "missing exhaustive capability must be explicit"],
+  "nonGoals": ["move exhaustive audit into core", "guess parent source", "approximate coverage"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer focused availability from case claims; invoke the selected workflow and helper when available.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown"],
+    "dispositions": ["unknown", "retain"],
+    "maximumClaim": "default-core-availability-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts", "proof:node src/main.ts"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:core", "public-surface:core-fixture", "inventory:unavailable", "edit-set:none", "project-mode:unavailable", "production:core-focused", "inventory:complete", "project-mode:explicitly-unavailable"],
+      "triggerFacts": ["explicit-focused-assessment", "default-core-surface"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is absent from the loaded core surface or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "default-core-availability", "contextFacts": ["src/main.ts", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "default-core-availability-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:core", "public-surface:core-fixture", "inventory:unavailable", "edit-set:none", "project-mode:unavailable"], "triggerFacts": ["explicit-focused-assessment", "default-core-surface"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow and its active-source helper are present in the loaded core surface and were successfully invoked.", "decision": { "admissionClass": "unknown", "caseId": "default-core-availability", "contextFacts": ["src/main.ts", "proof:node src/main.ts"], "disposition": "retain", "maximumClaim": "default-core-availability-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:core-focused", "public-surface:core-fixture", "inventory:complete", "edit-set:none", "project-mode:explicitly-unavailable"], "triggerFacts": ["explicit-focused-assessment", "default-core-surface"] } }
+    ]
+  }
+}

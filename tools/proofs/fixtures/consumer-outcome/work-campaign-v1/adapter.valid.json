@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "adapterId": "fixture-adapter",
+  "inventoryArgv": [
+    "node",
+    "inventory.mjs"
+  ],
+  "realBoundaryProofArgv": [
+    "node",
+    "proof.mjs"
+  ]
+}

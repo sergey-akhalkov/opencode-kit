@@ -42,6 +42,17 @@ export type EffectClass = typeof EFFECT_CLASSES[number];
 export type MissionOperation = "continue" | "propose";
 export type CheckpointMode = "evidence-only" | "external" | "local-commit";
 
+export type MissionParentCorrelation = {
+  campaignDefinitionDigest: string;
+  campaignId: string;
+  campaignTransitionDigest: string;
+  parentEvidencePath: string;
+  schemaVersion: 1;
+  waveDigest: string;
+  waveId: string;
+  workItemRefs: string[];
+};
+
 export type RoadmapMissionSlice = {
   changeId: string;
   dependsOn: string[];
@@ -50,6 +61,7 @@ export type RoadmapMissionSlice = {
   operation: MissionOperation;
   outcome: string;
   ownedPaths: string[];
+  workItemRefs?: string[];
 };
 
 export type RoadmapMissionDefinition = {
@@ -62,6 +74,7 @@ export type RoadmapMissionDefinition = {
   };
   evidencePath: string;
   missionId: string;
+  parent?: MissionParentCorrelation;
   roadmapPath: string;
   schemaVersion: 1;
   slices: RoadmapMissionSlice[];
@@ -74,6 +87,32 @@ export type RoadmapMissionDefinition = {
   workflowOwner: {
     mode: "global-canonical";
   };
+};
+
+export type MissionParentHandoff = {
+  archiveRefs: string[];
+  campaignDefinitionDigest: string;
+  campaignId: string;
+  campaignTransitionDigest: string;
+  checkpoint: {
+    identity: string | null;
+    mode: CheckpointMode;
+  };
+  cleanupClosure: "terminal" | "unknown";
+  definitionDigest: string;
+  disposition: "blocked" | "complete" | "paused" | "paused-unknown";
+  evidenceRefs: string[];
+  missionId: string;
+  ownerCondition: "unknown" | null;
+  processRefs: string[];
+  retryCondition: string | null;
+  schemaVersion: 1;
+  sessionRefs: string[];
+  tool: "roadmap-mission-parent-handoff";
+  waveDigest: string;
+  waveId: string;
+  workItemRefs: string[];
+  writerClosure: "terminal" | "unknown";
 };
 
 export type MissionCheck = {
@@ -237,8 +276,14 @@ function safeRelative(value: unknown, field: string): string {
   return parsed;
 }
 
-function exactKeys(input: Record<string, unknown>, expected: readonly string[], field: string): void {
-  const extras = Object.keys(input).filter((key) => !expected.includes(key)).sort();
+function exactKeys(
+  input: Record<string, unknown>,
+  expected: readonly string[],
+  field: string,
+  optional: readonly string[] = [],
+): void {
+  const supported = [...expected, ...optional];
+  const extras = Object.keys(input).filter((key) => !supported.includes(key)).sort();
   const missing = expected.filter((key) => !(key in input));
   if (missing.length > 0 || extras.length > 0) {
     const details = [
@@ -330,14 +375,52 @@ function parseWorkflowOwner(value: unknown): RoadmapMissionDefinition["workflowO
   return { mode: "global-canonical" };
 }
 
+function parseParentCorrelation(value: unknown): MissionParentCorrelation {
+  const input = record(value);
+  if (input == null) throw new RoadmapMissionError("parent must be an object", 2);
+  exactKeys(input, [
+    "schemaVersion",
+    "campaignId",
+    "campaignDefinitionDigest",
+    "campaignTransitionDigest",
+    "waveId",
+    "waveDigest",
+    "workItemRefs",
+    "parentEvidencePath",
+  ], "parent");
+  if (input.schemaVersion !== 1) throw new RoadmapMissionError("parent.schemaVersion must be 1", 2);
+  return {
+    campaignDefinitionDigest: digestString(input.campaignDefinitionDigest, "parent.campaignDefinitionDigest"),
+    campaignId: safeId(input.campaignId, "parent.campaignId"),
+    campaignTransitionDigest: digestString(input.campaignTransitionDigest, "parent.campaignTransitionDigest"),
+    parentEvidencePath: safeRelative(input.parentEvidencePath, "parent.parentEvidencePath"),
+    schemaVersion: 1,
+    waveDigest: digestString(input.waveDigest, "parent.waveDigest"),
+    waveId: safeId(input.waveId, "parent.waveId"),
+    workItemRefs: unique(stringArray(input.workItemRefs, "parent.workItemRefs", 1_000, false).map(
+      (item, index) => safeId(item, `parent.workItemRefs[${index}]`),
+    ), "parent.workItemRefs"),
+  };
+}
+
 function parseSlice(value: unknown, index: number): RoadmapMissionSlice {
   const input = record(value);
   if (input == null) throw new RoadmapMissionError(`slices[${index}] must be an object`, 2);
-  exactKeys(input, ["id", "changeId", "operation", "dependsOn", "outcome", "effectClasses", "ownedPaths"], `slices[${index}]`);
+  exactKeys(
+    input,
+    ["id", "changeId", "operation", "dependsOn", "outcome", "effectClasses", "ownedPaths"],
+    `slices[${index}]`,
+    ["workItemRefs"],
+  );
   const operation = requiredString(input.operation, `slices[${index}].operation`) as MissionOperation;
   if (operation !== "continue" && operation !== "propose") {
     throw new RoadmapMissionError(`slices[${index}].operation must be continue or propose`, 2);
   }
+  const workItemRefs = "workItemRefs" in input
+    ? unique(stringArray(input.workItemRefs, `slices[${index}].workItemRefs`, 1_000, false).map(
+      (item, workItemIndex) => safeId(item, `slices[${index}].workItemRefs[${workItemIndex}]`),
+    ), `slices[${index}].workItemRefs`)
+    : undefined;
   return {
     changeId: safeId(input.changeId, `slices[${index}].changeId`),
     dependsOn: unique(stringArray(input.dependsOn, `slices[${index}].dependsOn`, 100, true).map(
@@ -350,6 +433,7 @@ function parseSlice(value: unknown, index: number): RoadmapMissionSlice {
     ownedPaths: unique(stringArray(input.ownedPaths, `slices[${index}].ownedPaths`, 1_000, true).map(
       (item, pathIndex) => safeRelative(item, `slices[${index}].ownedPaths[${pathIndex}]`),
     ), `slices[${index}].ownedPaths`).sort(),
+    ...(workItemRefs == null ? {} : { workItemRefs }),
   };
 }
 
@@ -409,7 +493,7 @@ export function parseMissionDefinition(value: unknown): RoadmapMissionDefinition
     "authorizationRefs",
     "stopPolicy",
     "slices",
-  ], "mission definition");
+  ], "mission definition", ["parent"]);
   if (input.schemaVersion !== 1) throw new RoadmapMissionError("mission schemaVersion must be 1", 2);
   const allowedEffects = effectArray(input.allowedEffects, "allowedEffects", false);
   const authorizationRefs = parseAuthorizationRefs(input.authorizationRefs);
@@ -421,6 +505,19 @@ export function parseMissionDefinition(value: unknown): RoadmapMissionDefinition
   const checkpoint = parseCheckpoint(input.checkpoint);
   const slices = Array.isArray(input.slices) ? input.slices.map(parseSlice) : [];
   validateSlices(slices, allowedEffects, authorizationRefs, checkpoint);
+  const parent = "parent" in input ? parseParentCorrelation(input.parent) : undefined;
+  if (parent == null && slices.some((slice) => slice.workItemRefs != null)) {
+    throw new RoadmapMissionError("slice workItemRefs require a parent campaign correlation", 2);
+  }
+  if (parent != null) {
+    if (slices.some((slice) => slice.operation !== "propose" || slice.workItemRefs == null)) {
+      throw new RoadmapMissionError("parent-correlated slices must be propose operations with workItemRefs", 2);
+    }
+    const referenced = slices.flatMap((slice) => slice.workItemRefs ?? []);
+    if (new Set(referenced).size !== referenced.length || JSON.stringify(referenced) !== JSON.stringify(parent.workItemRefs)) {
+      throw new RoadmapMissionError("parent workItemRefs must exactly match ordered slice workItemRefs", 2);
+    }
+  }
   const validationArgv = stringArray(input.validationArgv, "validationArgv", 100, false);
   if (validationArgv.some((item) => /[\r\n\0]/.test(item))) {
     throw new RoadmapMissionError("validationArgv items must not contain control line or null characters", 2);
@@ -431,6 +528,7 @@ export function parseMissionDefinition(value: unknown): RoadmapMissionDefinition
     checkpoint,
     evidencePath: safeRelative(input.evidencePath, "evidencePath"),
     missionId: safeId(input.missionId, "missionId"),
+    ...(parent == null ? {} : { parent }),
     roadmapPath: safeRelative(input.roadmapPath, "roadmapPath"),
     schemaVersion: 1,
     slices,

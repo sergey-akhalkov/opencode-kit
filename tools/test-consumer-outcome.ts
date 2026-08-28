@@ -5,34 +5,40 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../global/bin/portable-process.ts";
-import { FOUNDATION_SERVER_PROMPT_TIMEOUT_MS, captureLane, configuredScenarioTimeoutMs, copyScenarioSeed, createCaptureBundle, createFoundationBundleFromDiagnostic, processTerminationEvidence, sealConfiguredDiagnostic, sealSample } from "./proofs/consumer-outcome/capture.ts";
+import { FOUNDATION_SERVER_PROMPT_TIMEOUT_MS, captureLane, changedTextEvidence, configuredScenarioTimeoutMs, copyScenarioSeed, createCaptureBundle, createFoundationBundleFromDiagnostic, processTerminationEvidence, sealConfiguredDiagnostic, sealSample } from "./proofs/consumer-outcome/capture.ts";
 import {
   type CaptureBundle,
   type BoundedFalsificationScenarioExpectation,
+  type ComplexityFacadeScenarioExpectation,
   type EnvironmentIdentity,
   type FrictionVector,
   type FoundationIntegrityScenarioExpectation,
   type SampleEvidence,
   type SourceIdentity,
   type StatusScopeDecisionSet,
+  COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER,
   ContractError,
   assertPrivacySafe,
   digestOf,
   emptyFriction,
   evaluatorDigest,
   governedSourceIdentity,
+  complexityConfiguredInvocationManifest,
+  loadComplexityConfiguredSessionPack,
   loadDecisionGapPack,
   loadManifest,
   parseCandidateRequest,
+  parseComplexityConfiguredSessionPack,
   parseDecisionGapPack,
   parseManifest,
   posixPath,
   redactPrivacyMarkers,
+  sha256,
   stableJson,
   verifyFixtureSeed,
 } from "./proofs/consumer-outcome/contracts.ts";
-import { evaluateBundle, evaluateDecisionGapPack, gateCurrent, replayEvaluation } from "./proofs/consumer-outcome/evaluate.ts";
-import { projectBundles, selectFoundationPack } from "./proofs/consumer-outcome-regression.ts";
+import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, gateCurrent, replayEvaluation } from "./proofs/consumer-outcome/evaluate.ts";
+import { projectBundles, selectComplexityConfiguredPack, selectFoundationPack } from "./proofs/consumer-outcome-regression.ts";
 import { assertProofRouteAvailable, configuredProofServerEnvironment, proofServerLogs, proofServerStartupFacts, proofServerStartupFailure, runDiagnosticProofSession, runSummarizedProofSession, seedProofModelsCatalog, startProofServer, stopProofServer, waitForProofRoute, type ProofRoute, type ProofServerHandle } from "./proofs/lib/opencode-proof-client.ts";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -46,6 +52,21 @@ function assert(condition: boolean, message: string): asserts condition {
 
 function tempDir(name: string): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), `consumer-outcome-test-${name}-`));
+}
+
+function resolveChangeFile(changeId: string, relative: string): { lifecycle: "active" | "archived"; path: string } {
+  const active = path.join(root, "openspec", "changes", changeId, relative);
+  if (fs.existsSync(active)) return { lifecycle: "active", path: active };
+  const archiveRoot = path.join(root, "openspec", "changes", "archive");
+  const archived = fs.existsSync(archiveRoot)
+    ? fs.readdirSync(archiveRoot, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && entry.name.endsWith(`-${changeId}`))
+      .map((entry) => path.join(archiveRoot, entry.name, relative))
+      .filter((file) => fs.existsSync(file))
+      .sort()
+    : [];
+  if (archived.length !== 1) throw new Error(`Expected one active or archived ${changeId}/${relative}, found ${archived.length}.`);
+  return { lifecycle: "archived", path: archived[0]! };
 }
 
 function env(overrides: Partial<EnvironmentIdentity> = {}): EnvironmentIdentity {
@@ -455,6 +476,24 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "configured diagnostic retains stable changed text evidence",
+    run: () => {
+      const first = changedTextEvidence(
+        { "src/a.ts": "export const a = 1;\n", "src/deleted.ts": "old\n" },
+        { "src/a.ts": "export const a = 2;\n", "src/added.ts": "new\n" },
+      );
+      const second = changedTextEvidence(
+        { "src/deleted.ts": "old\n", "src/a.ts": "export const a = 1;\n" },
+        { "src/added.ts": "new\n", "src/a.ts": "export const a = 2;\n" },
+      );
+      assert(stableJson(first) === stableJson(second), "changed text evidence must have stable ordering");
+      assert(first.map((row) => row.path).join(",") === "src/a.ts,src/added.ts,src/deleted.ts", "changed text paths");
+      assert(first[0]?.before?.sha256 === sha256("export const a = 1;\n") && first[0]?.after?.sha256 === sha256("export const a = 2;\n"), "modified text hashes");
+      assert(first[1]?.before == null && first[1]?.after?.text === "new\n", "added text evidence");
+      assert(first[2]?.before?.text === "old\n" && first[2]?.after == null, "deleted text evidence");
+    },
+  },
+  {
     name: "reviewed scenarios load deterministically",
     run: () => {
       const first = loadManifest(root);
@@ -579,21 +618,9 @@ const tests: TestCase[] = [
       assert(templateConfig.agent.compaction.prompt.includes(promptMarker), "status-scope canonical compaction prompt marker");
       assert(activeConfig.agent.compaction.prompt === templateConfig.agent.compaction.prompt, "status-scope active compaction prompt mirror");
 
-      const activeOwnership = path.join(root, "openspec", "changes", "prevent-cross-layer-status-ambiguity", "ownership.json");
-      const archiveRoot = path.join(root, "openspec", "changes", "archive");
-      const archivedOwnership = fs.existsSync(archiveRoot)
-        ? fs.readdirSync(archiveRoot, { withFileTypes: true })
-          .filter((entry) => entry.isDirectory() && entry.name.endsWith("-prevent-cross-layer-status-ambiguity"))
-          .map((entry) => path.join(archiveRoot, entry.name, "ownership.json"))
-          .filter((file) => fs.existsSync(file))
-          .sort()
-        : [];
-      const ownershipPath = fs.existsSync(activeOwnership)
-        ? activeOwnership
-        : archivedOwnership.length === 1
-          ? archivedOwnership[0]
-          : (() => { throw new Error(`Expected one active or archived status-scope ownership file, found ${archivedOwnership.length}.`); })();
-      const expectedOwnershipLifecycle = ownershipPath === activeOwnership ? "active" : "archived";
+      const ownership = resolveChangeFile("prevent-cross-layer-status-ambiguity", "ownership.json");
+      const ownershipPath = ownership.path;
+      const expectedOwnershipLifecycle = ownership.lifecycle;
 
       const watched = [
         "global/AGENTS.md",
@@ -1099,6 +1126,199 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "configured complexity partition pack preserves twelve matched fixture and invocation identities",
+    run: () => {
+      const loaded = loadComplexityConfiguredSessionPack(root);
+      assert(loaded.pack.id === "complexity-configured-session-r1", "configured complexity pack identity");
+      assert(loaded.pack.configuredProviderRequestBound === 24, "configured complexity pack request bound");
+      assert(loaded.pack.memberOrder.join(",") === COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER.join(","), "configured complexity member order");
+      assert(loaded.pack.manifest.scenarios.map((scenario) => scenario.id).join(",") === loaded.pack.memberOrder.join(","), "configured complexity scenarios must cover member order exactly");
+      const preflight = invokeCli(["--mode", "preflight", "--pack", "complexity-configured", "--source-ref", "working-tree"]);
+      assert(preflight.status === 0, preflight.stderr || preflight.stdout);
+      const gate = JSON.parse(preflight.stdout) as Record<string, any>;
+      assert(gate.modelCalls === 0 && gate.invocationManifest.length === 24, "configured complexity preflight must remain provider-free and complete");
+      assert(gate.configuredCapture.semanticClaimBeforeCapture === "unsupported", "configured complexity preflight must not claim an uncaptured outcome");
+
+      const claimIndexPath = resolveChangeFile("add-continuous-complexity-management", "evidence-index.json").path;
+      const claimIndex = JSON.parse(fs.readFileSync(claimIndexPath, "utf8")) as {
+        claims?: Array<{ claimId?: string; population?: { members?: string[] } }>;
+      };
+      const claimMembers = claimIndex.claims?.find((claim) => claim.claimId === "continuous-complexity-management-v1")?.population?.members ?? [];
+      assert(claimMembers.join(",") === loaded.pack.memberOrder.join(","), "fixture members must use the exact claim population identifiers");
+
+      const diagnostic = loadDecisionGapPack(root, "complexity");
+      assert(diagnostic.pack.manifest.scenarios.length === 1 && diagnostic.pack.manifest.scenarios[0]?.id === "useful-current-consumer-facade", "task-2.4 diagnostic pack must remain independently sealed");
+
+      const invocationRows = complexityConfiguredInvocationManifest(loaded.pack);
+      assert(invocationRows.length === 24, `configured invocation rows=${invocationRows.length}`);
+      const selected = selectComplexityConfiguredPack(loaded.pack, ["default-core-availability"]);
+      assert(selected.pack.memberOrder.join(",") === "default-core-availability" && selected.pack.configuredProviderRequestBound === 2, "configured complexity selection must retain one bounded member");
+      assert(selected.pack.manifest.scenarios[0]?.id === "default-core-availability" && Object.keys(selected.pack.expectedDecisions).join(",") === "default-core-availability", "configured complexity selection must project its scenario and oracle");
+      const selectedPreflight = invokeCli(["--mode", "preflight", "--pack", "complexity-configured", "--scenarios", "default-core-availability", "--source-ref", "working-tree"]);
+      assert(selectedPreflight.status === 0, selectedPreflight.stderr || selectedPreflight.stdout);
+      const selectedGate = JSON.parse(selectedPreflight.stdout) as Record<string, any>;
+      assert(selectedGate.modelCalls === 0 && selectedGate.configuredProviderRequestBound === 2 && selectedGate.invocationManifest.length === 2, "configured complexity selected preflight must remain provider-free and bounded");
+      const baselineSamples: SampleEvidence[] = [];
+      const candidateSamples: SampleEvidence[] = [];
+      for (const scenario of loaded.pack.manifest.scenarios) {
+        const pair = invocationRows.filter((row) => row.scenarioId === scenario.id);
+        assert(pair.length === 2 && pair[0]?.arm === "baseline" && pair[1]?.arm === "candidate", `${scenario.id} arm order`);
+        const [baseline, candidate] = pair;
+        assert(baseline.comparisonIdentity === candidate.comparisonIdentity, `${scenario.id} comparison identity drifted`);
+        assert(baseline.requestIdentity === candidate.requestIdentity, `${scenario.id} prompt drifted`);
+        assert(baseline.modelIdentity === candidate.modelIdentity, `${scenario.id} model route drifted`);
+        assert(baseline.variantIdentity === candidate.variantIdentity, `${scenario.id} variant route drifted`);
+        assert(baseline.permissionIdentity === candidate.permissionIdentity, `${scenario.id} permissions drifted`);
+        assert(baseline.environmentIdentity === candidate.environmentIdentity, `${scenario.id} environment drifted`);
+        assert(baseline.maximumClaim === loaded.pack.expectedDecisions[scenario.id]?.baseline.maximumClaim, `${scenario.id} baseline maximum claim`);
+        assert(candidate.maximumClaim === loaded.pack.expectedDecisions[scenario.id]?.candidate.maximumClaim, `${scenario.id} candidate maximum claim`);
+        for (const arm of ["baseline", "candidate"] as const) {
+          const observation = loaded.pack.expectedDecisions[scenario.id]?.[arm];
+          assert(observation != null, `${scenario.id} ${arm} observation missing`);
+          assert(observation.triggerFacts.length > 0 && observation.ownerFacts.length > 0, `${scenario.id} ${arm} trigger/owner facts missing`);
+          assert(observation.contextFacts.length > 0 && observation.pathFacts.length > 0, `${scenario.id} ${arm} context/path facts missing`);
+          assert(observation.maximumClaim.endsWith("-only"), `${scenario.id} ${arm} claim is not partition-bounded`);
+        }
+
+        const expectedPair = loaded.pack.expectedDecisions[scenario.id]!;
+        const caseRecord = JSON.parse(fs.readFileSync(path.join(root, scenario.fixturePath, "case.json"), "utf8")) as Record<string, any>;
+        const decisionContract = caseRecord.decisionContract as Record<string, any>;
+        const expectedUnion = (field: "contextFacts" | "ownerFacts" | "pathFacts" | "triggerFacts") => [
+          ...new Set([...expectedPair.baseline[field], ...expectedPair.candidate[field]]),
+        ];
+        assert(Array.isArray(decisionContract.instructions) && decisionContract.instructions.length === 4, `${scenario.id} decision contract instructions`);
+        assert(decisionContract.maximumClaim === expectedPair.baseline.maximumClaim && decisionContract.maximumClaim === expectedPair.candidate.maximumClaim, `${scenario.id} decision contract maximum claim`);
+        assert(decisionContract.admissionClasses.join(",") === [...new Set([expectedPair.baseline.admissionClass, expectedPair.candidate.admissionClass])].join(","), `${scenario.id} decision contract admission classes`);
+        assert(decisionContract.dispositions.join(",") === [...new Set([expectedPair.baseline.disposition, expectedPair.candidate.disposition])].join(","), `${scenario.id} decision contract dispositions`);
+        for (const field of ["contextFacts", "ownerFacts", "pathFacts", "triggerFacts"] as const) {
+          assert(decisionContract.factVocabulary[field].join(",") === expectedUnion(field).join(","), `${scenario.id} decision contract ${field}`);
+        }
+        const expectedRoutes = [...new Set([stableJson(expectedPair.baseline), stableJson(expectedPair.candidate)])];
+        const actualRoutes = decisionContract.routeDecisions.map((route: Record<string, any>) => {
+          assert(typeof route.id === "string" && route.id !== "" && typeof route.when === "string" && route.when !== "", `${scenario.id} route decision identity`);
+          return stableJson(route.decision);
+        });
+        assert(actualRoutes.join("\n") === expectedRoutes.join("\n"), `${scenario.id} route decisions must preserve the reviewed oracle records exactly once in arm order`);
+
+        for (const arm of ["baseline", "candidate"] as const) {
+          const fixtureRoot = tempDir(`complexity-${scenario.id}-${arm}`);
+          try {
+            fs.cpSync(path.join(root, scenario.fixturePath), fixtureRoot, { recursive: true });
+            fs.writeFileSync(path.join(fixtureRoot, "decision.json"), stableJson(loaded.pack.expectedDecisions[scenario.id]![arm]));
+            const validation = spawnSync(scenario.validationArgv[0], scenario.validationArgv.slice(1), { cwd: fixtureRoot, encoding: "utf8" });
+            assert(validation.status === 0, `${scenario.id} ${arm} validation: ${validation.stderr || validation.stdout}`);
+            const proof = spawnSync(scenario.proofExpectations.argv[0], scenario.proofExpectations.argv.slice(1), { cwd: fixtureRoot, encoding: "utf8" });
+            assert(proof.status === 0, `${scenario.id} ${arm} proof: ${proof.stderr || proof.stdout}`);
+            assert(scenario.proofExpectations.stdoutIncludes.every((text) => proof.stdout.includes(text)), `${scenario.id} ${arm} proof output drifted`);
+            const captured = sample({
+              arm,
+              command: { argv: ["configured-seed", arm], status: 0, stderr: "", stdout: "" },
+              environmentIdentity: env({ initialFixtureDigest: scenario.id }),
+              files: [...new Set([...scenario.initialManifest.files, ...scenario.expectedOutcome.stateFiles])]
+                .sort()
+                .map((file) => ({ path: file, sha256: sha256(file) })),
+              forbiddenEffects: scenario.forbiddenEffects.map((name) => ({ name, observed: false })),
+              permissions: { ...scenario.permissions, violations: [] },
+              proof: {
+                argv: scenario.proofExpectations.argv,
+                status: proof.status,
+                stderr: proof.stderr,
+                stdout: proof.stdout,
+              },
+              sampleIndex: 1,
+              scenarioId: scenario.id,
+              sideEffects: scenario.allowedEffects,
+              validation: {
+                argv: scenario.validationArgv,
+                status: validation.status,
+                stderr: validation.stderr,
+                stdout: validation.stdout,
+              },
+            });
+            (arm === "baseline" ? baselineSamples : candidateSamples).push(captured);
+          } finally {
+            fs.rmSync(fixtureRoot, { force: true, recursive: true });
+          }
+        }
+        assert(scenario.cleanupOracle.fixtureRemoved && scenario.cleanupOracle.processesRemoved && scenario.cleanupOracle.sessionsRemoved, `${scenario.id} cleanup oracle must fail closed`);
+      }
+
+      const baseline = bundleOf(baselineSamples, "baseline");
+      const candidate = bundleOf(candidateSamples, "candidate");
+      baseline.scenarioDigest = loaded.digest;
+      candidate.scenarioDigest = loaded.digest;
+      const evaluation = evaluateComplexityConfiguredSessionPack({ baseline, candidate, expectation: "no-regression", pack: loaded.pack });
+      assert(evaluation.evaluation.status === "passed-no-regression", JSON.stringify(evaluation.evaluation.reasons));
+      assert(evaluation.complexityPartitionOracles?.length === 24 && evaluation.complexityPartitionOracles.every((row) => row.passed), "all configured complexity observations must match their reviewed oracle");
+      assert(evaluation.complexityFactDiffs?.length === 84 && evaluation.complexityFactDiffs.every((row) => row.state !== "unknown"), "all seven exact fact dimensions must be known for every partition");
+      assert(evaluation.complexityFactDiffs.some((row) => row.scenarioId === "useful-current-consumer-facade" && row.dimension === "consumer-context" && row.state === "changed"), "facade consumer context must remain an explicit fact diff");
+      assert(evaluation.complexityFactDiffs.some((row) => row.scenarioId === "useful-current-consumer-facade" && row.dimension === "effects" && row.state === "unchanged"), "facade effects must remain directly comparable");
+      const replayed = evaluateComplexityConfiguredSessionPack({ baseline, candidate, expectation: "no-regression", pack: loaded.pack });
+      assert(replayed.digest === evaluation.digest, "configured complexity evaluation must replay deterministically");
+
+      const diagnosticCandidate = structuredClone(candidate);
+      const diagnosticFirst = diagnosticCandidate.samples[0]!;
+      const { hashes: _diagnosticHashes, ...diagnosticFields } = diagnosticFirst;
+      diagnosticCandidate.samples[0] = seal({
+        ...diagnosticFields,
+        friction: { ...diagnosticFirst.friction, failedToolCallCount: 1, totalToolCallCount: diagnosticFirst.friction.totalToolCallCount + 1 },
+        toolCalls: [{ argumentDigest: "0".repeat(64), name: "bash", status: "error" }],
+      });
+      diagnosticCandidate.byteLength = diagnosticCandidate.samples.reduce((sum, row) => sum + Buffer.byteLength(stableJson(row), "utf8"), 0);
+      const diagnosticEvaluation = evaluateComplexityConfiguredSessionPack({ baseline, candidate: diagnosticCandidate, expectation: "no-regression", pack: loaded.pack });
+      assert(diagnosticEvaluation.evaluation.status === "passed-no-regression", JSON.stringify(diagnosticEvaluation.evaluation));
+      assert(diagnosticEvaluation.complexityFactDiffs?.some((row) => row.scenarioId === "cohesive-small-project" && row.dimension === "errors" && row.state === "changed" && row.candidate?.includes("tool:0:bash:error")), "configured complexity failed tool calls must remain visible in exact error facts");
+
+      const replayRoot = tempDir("complexity-configured-replay");
+      const baselinePath = path.join(replayRoot, "baseline.json");
+      const candidatePath = path.join(replayRoot, "candidate.json");
+      fs.writeFileSync(baselinePath, stableJson(baseline));
+      fs.writeFileSync(candidatePath, stableJson(candidate));
+      try {
+        const baselineOnly = invokeCli(["--mode", "replay", "--pack", "complexity-configured", "--baseline", baselinePath, "--expectation", "baseline-establishment"]);
+        assert(baselineOnly.status === 0, baselineOnly.stderr || baselineOnly.stdout);
+        const baselinePayload = JSON.parse(baselineOnly.stdout) as Record<string, any>;
+        assert(baselinePayload.liveCalls === 0 && baselinePayload.evaluation.evaluation.status === "baseline-established", JSON.stringify(baselinePayload));
+        const replayArgs = ["--mode", "replay", "--pack", "complexity-configured", "--baseline", baselinePath, "--candidate", candidatePath];
+        const firstReplay = invokeCli(replayArgs);
+        const secondReplay = invokeCli(replayArgs);
+        assert(firstReplay.status === 0 && secondReplay.status === 0, firstReplay.stderr || secondReplay.stderr || firstReplay.stdout || secondReplay.stdout);
+        const firstPayload = JSON.parse(firstReplay.stdout) as Record<string, any>;
+        const secondPayload = JSON.parse(secondReplay.stdout) as Record<string, any>;
+        assert(firstPayload.liveCalls === 0 && secondPayload.liveCalls === 0, "configured complexity replay must make zero provider calls");
+        assert(firstPayload.evaluation.evaluation.status === "passed-no-regression", JSON.stringify(firstPayload));
+        assert(firstPayload.evaluation.digest === secondPayload.evaluation.digest, "configured complexity terminal replay digest must be deterministic");
+      } finally {
+        fs.rmSync(replayRoot, { force: true, recursive: true });
+      }
+
+      const malformedCandidate = structuredClone(candidate);
+      const first = malformedCandidate.samples[0]!;
+      const { hashes: _hashes, ...firstFields } = first;
+      malformedCandidate.samples[0] = seal({ ...firstFields, proof: { ...first.proof, stdout: "{}" } });
+      malformedCandidate.byteLength = malformedCandidate.samples.reduce((sum, row) => sum + Buffer.byteLength(stableJson(row), "utf8"), 0);
+      const malformed = evaluateComplexityConfiguredSessionPack({ baseline, candidate: malformedCandidate, expectation: "no-regression", pack: loaded.pack });
+      assert(malformed.evaluation.status === "failed", JSON.stringify(malformed.evaluation));
+      assert(malformed.evaluation.reasons.includes("complexity-partition:candidate:cohesive-small-project:1:malformed-observation"), JSON.stringify(malformed.evaluation.reasons));
+      assert(malformed.evaluation.reasons.includes("complexity-fact-diff:cohesive-small-project:consumer-context:unknown"), JSON.stringify(malformed.evaluation.reasons));
+
+      const sourcePack = JSON.parse(fs.readFileSync(path.join(root, "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-r1.json"), "utf8")) as Record<string, any>;
+      const semanticAlternative = structuredClone(sourcePack);
+      semanticAlternative.scenarios[4].expectedDecision.candidate.disposition = "retain";
+      parseComplexityConfiguredSessionPack(semanticAlternative);
+
+      const helperScore = structuredClone(sourcePack);
+      helperScore.qualityScore = 9;
+      let rejectedScore = false;
+      try {
+        parseComplexityConfiguredSessionPack(helperScore);
+      } catch (error) {
+        rejectedScore = error instanceof ContractError && error.message.includes("qualityScore");
+      }
+      assert(rejectedScore, "configured complexity pack must reject helper-inferred scores");
+    },
+  },
+  {
     name: "complexity facade pack prepares one bounded member and replays its reviewed refactor provider-free",
     run: async () => {
       const loaded = loadDecisionGapPack(root, "complexity");
@@ -1111,6 +1331,15 @@ const tests: TestCase[] = [
       assert(gate.configuredCapture.liveAttemptGate === "requires-current-explicit-clearance", "complexity live gate must remain explicit");
       assert(gate.scenarioMembers.join(",") === "useful-current-consumer-facade", "complexity member gate");
       assert(gate.effectEnvelope.fixtureWritesOnly === true && gate.cleanupContract.fixtureRemoved === true, "complexity effect and cleanup gate");
+
+      const invalidContextRoot = tempDir("complexity-invalid-context");
+      fs.cpSync(path.join(root, loaded.pack.manifest.scenarios[0].fixturePath), invalidContextRoot, { recursive: true });
+      const invalidDecision = structuredClone((loaded.pack.expectedDecisions["useful-current-consumer-facade"] as ComplexityFacadeScenarioExpectation).candidate);
+      invalidDecision.changeRehearsal.essentialContext.push("src/inventory.ts: should be hidden after the facade");
+      fs.writeFileSync(path.join(invalidContextRoot, "decision.json"), stableJson(invalidDecision));
+      const invalidContext = spawnSync(process.execPath, ["check-decision.ts"], { cwd: invalidContextRoot, encoding: "utf8" });
+      assert(invalidContext.status !== 0 && invalidContext.stderr.includes("retains hidden internal: src/inventory.ts"), invalidContext.stderr || invalidContext.stdout);
+      fs.rmSync(invalidContextRoot, { force: true, recursive: true });
 
       const parent = tempDir("complexity-facade");
       const baselineRoot = path.join(parent, "baseline");

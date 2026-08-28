@@ -1,0 +1,24 @@
+{
+  "caseId": "frozen-compatibility-and-current-extension",
+  "acceptedOutcome": "Identify the current extension path while preserving the frozen compatibility path.",
+  "requestedAssessment": "explicit focused architecture-comprehension assessment",
+  "facts": ["legacy entrypoint is frozen compatibility", "current pipeline owns new semantics", "the paths are not interchangeable", "deletion is not authorized"],
+  "nonGoals": ["remove legacy path", "merge incompatible semantics", "migration"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when the request requires it.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown"],
+    "dispositions": ["unknown", "retain"],
+    "maximumClaim": "frozen-compatibility-and-current-extension-only",
+    "factVocabulary": {
+      "contextFacts": ["src/legacy.ts", "src/current.ts", "src/main.ts", "proof:node src/main.ts", "src/legacy.ts:frozen", "src/current.ts:extension"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:competing-paths-unclassified", "public-surface:legacy+current", "inventory:unavailable", "edit-set:none", "production:current-extension-with-frozen-compatibility", "inventory:complete"],
+      "triggerFacts": ["explicit-focused-assessment", "competing-extension-surfaces"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "frozen-compatibility-and-current-extension", "contextFacts": ["src/legacy.ts", "src/current.ts", "src/main.ts", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "frozen-compatibility-and-current-extension-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:competing-paths-unclassified", "public-surface:legacy+current", "inventory:unavailable", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "competing-extension-surfaces"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow is available and was successfully invoked to map both paths.", "decision": { "admissionClass": "unknown", "caseId": "frozen-compatibility-and-current-extension", "contextFacts": ["src/legacy.ts:frozen", "src/current.ts:extension", "src/main.ts", "proof:node src/main.ts"], "disposition": "retain", "maximumClaim": "frozen-compatibility-and-current-extension-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:current-extension-with-frozen-compatibility", "public-surface:legacy+current", "inventory:complete", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "competing-extension-surfaces"] } }
+    ]
+  }
+}

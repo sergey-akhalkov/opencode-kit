@@ -1,0 +1,78 @@
+{
+  "assignmentDigest": "22e160703e71f6a3c08130638bca3f614583bd66c1f554b3090d73f03600031d",
+  "candidateId": "task-4-1-semantic-r1",
+  "captureError": null,
+  "captureMode": "configured",
+  "command": {
+    "exitCode": 2,
+    "stderr": "",
+    "stdout": "{\n  \"assignmentId\": \"partition-a\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work/evidence/result.json\",\n  \"status\": \"blocked\"\n}\n",
+    "timedOut": false
+  },
+  "environmentId": "node-24.18.1-windows-configured-semantic-r1",
+  "expectedModel": "openai/gpt-5.6-sol",
+  "fixtureRemoved": true,
+  "hiddenServer": false,
+  "installedOpenCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.23"
+  },
+  "loopback": true,
+  "profile": "quality-independent",
+  "result": {
+    "assignmentDigest": "22e160703e71f6a3c08130638bca3f614583bd66c1f554b3090d73f03600031d",
+    "assignmentId": "partition-a",
+    "assignmentType": "discovery",
+    "campaignId": "semantic-proof-campaign",
+    "candidateDigest": "0d3f18fae79f789c931aaa8b3b3fb241b0d7a850f83c22696e97b79de555f655",
+    "cleanup": "complete",
+    "definitionDigest": "43c8459de6bd1ddc579eeaec92a6211f60a4060eb0f0ff24e5b3b0578bd3367a",
+    "environment": {
+      "node": "v24.18.1",
+      "platform": "win32"
+    },
+    "errorClass": "invalid-result",
+    "errorMessage": "semantic root attempted a non-read-only tool",
+    "evidenceRefs": [
+      "file:src/main.ts"
+    ],
+    "model": {
+      "agent": "general",
+      "modelID": "gpt-5.6-sol",
+      "providerID": "openai",
+      "variant": "xhigh"
+    },
+    "modelCalls": 1,
+    "outputBytes": 522,
+    "outputDigest": "080cc2cff3951d0371cef3bbac61cdb333916ae9124c84bcbcbc6c5560f3e4e4",
+    "payload": null,
+    "phase": "discover",
+    "resultType": "semantic-assignment-result",
+    "runtimeRef": "loopback:2f36d4a52f1fd22cc0c1c94b259a3c2a0d6e49ca8927fa4075c2c9065f0509ad",
+    "schemaVersion": 1,
+    "sessionRef": "session:2f6e471754b0c23955129fdc1495fa1cc6b9e41339d6415e9ded6a5fee3201a7",
+    "status": "blocked",
+    "toolCalls": [
+      {
+        "name": "StructuredOutput",
+        "status": "completed"
+      }
+    ],
+    "verification": {
+      "children": null,
+      "fileDiffs": null,
+      "parentless": true,
+      "permissionRequests": null,
+      "questions": null
+    }
+  },
+  "schemaVersion": 1,
+  "serverStartup": {
+    "hostConfigLoaded": false,
+    "isolatedConfigLoaded": true,
+    "ripgrepDownloadRequested": false
+  },
+  "serverTerminal": true,
+  "sourceAfter": "0d3f18fae79f789c931aaa8b3b3fb241b0d7a850f83c22696e97b79de555f655",
+  "sourceBefore": "0d3f18fae79f789c931aaa8b3b3fb241b0d7a850f83c22696e97b79de555f655"
+}

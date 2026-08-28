@@ -1,0 +1,12 @@
+{
+  "recordType": "scope",
+  "schemaVersion": 1,
+  "includes": [
+    {
+      "path": "src",
+      "class": "maintained",
+      "reason": "reviewed maintained source root"
+    }
+  ],
+  "excludes": []
+}

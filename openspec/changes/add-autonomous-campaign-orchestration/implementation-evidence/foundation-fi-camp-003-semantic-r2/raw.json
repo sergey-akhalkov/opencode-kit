@@ -1,0 +1,104 @@
+{
+  "assignmentDigest": "22e160703e71f6a3c08130638bca3f614583bd66c1f554b3090d73f03600031d",
+  "candidateId": "foundation-fi-camp-003-r2",
+  "captureError": null,
+  "captureMode": "configured",
+  "command": {
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n  \"assignmentId\": \"partition-a\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work/evidence/result.json\",\n  \"status\": \"complete\"\n}\n",
+    "timedOut": false
+  },
+  "environmentId": "node-24.18.1-windows-isolated-semantic-r2",
+  "expectedModel": "openai/gpt-5.6-sol",
+  "fixtureRemoved": true,
+  "hiddenServer": false,
+  "installedOpenCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.23"
+  },
+  "loopback": true,
+  "profile": "quality-independent",
+  "result": {
+    "assignmentDigest": "22e160703e71f6a3c08130638bca3f614583bd66c1f554b3090d73f03600031d",
+    "assignmentId": "partition-a",
+    "assignmentType": "discovery",
+    "campaignId": "semantic-proof-campaign",
+    "candidateDigest": "0d3f18fae79f789c931aaa8b3b3fb241b0d7a850f83c22696e97b79de555f655",
+    "cleanup": "complete",
+    "definitionDigest": "43c8459de6bd1ddc579eeaec92a6211f60a4060eb0f0ff24e5b3b0578bd3367a",
+    "environment": {
+      "node": "v24.18.1",
+      "platform": "win32"
+    },
+    "errorClass": "none",
+    "errorMessage": null,
+    "evidenceRefs": [
+      "file:src/main.ts"
+    ],
+    "model": {
+      "agent": "general",
+      "modelID": "gpt-5.6-sol",
+      "providerID": "openai",
+      "variant": "xhigh"
+    },
+    "modelCalls": 1,
+    "outputBytes": 522,
+    "outputDigest": "d6124534d8758b8c9623b3d121f170db5a1e4ce6021582da199fc3c51ed02d8e",
+    "payload": {
+      "partition": {
+        "assignmentId": "partition-a",
+        "blockIds": [
+          "block-a"
+        ],
+        "candidateDigest": "0d3f18fae79f789c931aaa8b3b3fb241b0d7a850f83c22696e97b79de555f655",
+        "evidenceRefs": [
+          "file:src/main.ts"
+        ],
+        "id": "partition-result-a",
+        "inventoryDigest": "9f9ee544d424dead942489763c4dbd292951b5731f7ce7ba07f6c9f697ae8716",
+        "producerSessionRef": "session:3ed0e1036f36ee0f27bbcfb2092989e5d3f59635db07bffc89c74bfa283a3f71",
+        "recordType": "partition-result",
+        "schemaVersion": 1,
+        "status": "complete",
+        "workItemIds": []
+      },
+      "workItems": []
+    },
+    "phase": "discover",
+    "resultType": "semantic-assignment-result",
+    "runtimeRef": "loopback:6c096f62567d344e1cd14d75baa4f59077c0a26fa7e456ca98c8e5f28a207a02",
+    "schemaVersion": 1,
+    "sessionRef": "session:3ed0e1036f36ee0f27bbcfb2092989e5d3f59635db07bffc89c74bfa283a3f71",
+    "status": "complete",
+    "toolCalls": [
+      {
+        "name": "StructuredOutput",
+        "status": "completed"
+      }
+    ],
+    "verification": {
+      "children": 0,
+      "fileDiffs": 0,
+      "parentless": true,
+      "permissionRequests": 0,
+      "questions": 0
+    }
+  },
+  "runtimeSurface": {
+    "configDigest": "fd5fc501987b88f83e98b7d1001fe97d320c5383a392ea8b3b29d3763cb3dfc5",
+    "mcpIds": [],
+    "pluginIds": []
+  },
+  "schemaVersion": 1,
+  "serverStartup": {
+    "hostConfigLoaded": false,
+    "isolatedConfigLoaded": true,
+    "ripgrepDownloadRequested": false
+  },
+  "serverTerminal": true,
+  "sourceAfter": "0d3f18fae79f789c931aaa8b3b3fb241b0d7a850f83c22696e97b79de555f655",
+  "sourceBefore": "0d3f18fae79f789c931aaa8b3b3fb241b0d7a850f83c22696e97b79de555f655",
+  "worktreeAfter": [],
+  "worktreeBefore": []
+}

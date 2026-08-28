@@ -1,0 +1,24 @@
+{
+  "caseId": "mixed-owner-module",
+  "acceptedOutcome": "Assess an account owner that currently mixes persistence and notification responsibilities.",
+  "requestedAssessment": "explicit focused assessment with a materially distinct mixed-owner seam",
+  "facts": ["one module owns persistence", "the same module owns notification", "the seam is decision-changing", "main retains design authority"],
+  "nonGoals": ["automatic extraction", "second practice owner", "reviewer authorization"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke each selected owner or workflow when the request requires it.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown"],
+    "dispositions": ["unknown", "defer"],
+    "maximumClaim": "mixed-owner-module-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts:persistence", "src/main.ts:notification", "proof:node src/main.ts"],
+      "ownerFacts": ["owner:main", "practice-owner:openspec-architecture-reviewer", "skill:none", "skill:complexity-management"],
+      "pathFacts": ["production:architecture-owner-observation", "public-surface:create-account", "inventory:not-run", "edit-set:none", "production:owner-then-focused-map", "inventory:complete"],
+      "triggerFacts": ["explicit-focused-assessment", "materially-distinct-mixed-owner-seam"]
+    },
+    "routeDecisions": [
+      { "id": "owner-only", "when": "The architecture owner was observed but the focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "mixed-owner-module", "contextFacts": ["src/main.ts:persistence", "src/main.ts:notification", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "mixed-owner-module-only", "ownerFacts": ["owner:main", "practice-owner:openspec-architecture-reviewer", "skill:none"], "pathFacts": ["production:architecture-owner-observation", "public-surface:create-account", "inventory:not-run", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "materially-distinct-mixed-owner-seam"] } },
+      { "id": "owner-then-focused", "when": "The architecture owner was observed and the focused complexity-management workflow was then successfully invoked for the distinct focused assessment.", "decision": { "admissionClass": "unknown", "caseId": "mixed-owner-module", "contextFacts": ["src/main.ts:persistence", "src/main.ts:notification", "proof:node src/main.ts"], "disposition": "defer", "maximumClaim": "mixed-owner-module-only", "ownerFacts": ["owner:main", "practice-owner:openspec-architecture-reviewer", "skill:complexity-management"], "pathFacts": ["production:owner-then-focused-map", "public-surface:create-account", "inventory:complete", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "materially-distinct-mixed-owner-seam"] } }
+    ]
+  }
+}

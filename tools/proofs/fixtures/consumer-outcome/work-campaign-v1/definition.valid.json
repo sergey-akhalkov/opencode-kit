@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "fixture-campaign",
+  "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+  "scopeRoots": [
+    "src"
+  ],
+  "exclusions": [
+    ".work-campaign/evidence"
+  ],
+  "playbook": "audit-remediate",
+  "adapterPath": "adapter.valid.json",
+  "statePath": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign",
+  "evidencePath": ".work-campaign/evidence",
+  "reportPath": ".work-campaign/report.md",
+  "validationArgv": [
+    "node",
+    "validate.mjs"
+  ],
+  "checkpoint": {
+    "mode": "local-commit",
+    "workspace": "disposable",
+    "localCommitAuthorized": true
+  },
+  "allowedEffects": [
+    "local-read",
+    "local-write",
+    "local-commit"
+  ],
+  "authorizationRefs": {
+    "local-commit": "authorization:fixture-local-commit"
+  },
+  "budgets": {
+    "modelCalls": 4,
+    "processAttempts": 4,
+    "wallClockSeconds": 300,
+    "evidenceBytes": 1048576,
+    "waves": 2
+  },
+  "hostResume": {
+    "enabled": false,
+    "supervisorRequired": false
+  },
+  "stopPolicy": {
+    "onExplicitStop": true,
+    "onOwnerRequired": true,
+    "onProtected": true,
+    "onUnknown": true,
+    "onBudgetExhausted": true
+  },
+  "protectedDecisionPolicy": "owner-required"
+}

@@ -14,7 +14,12 @@ import {
 } from "./validators/active-authority.ts";
 import { engineeringQualityAuthorityProblem } from "./validators/engineering-quality.ts";
 import { inspectOpenCodeConfigText, sameConfigPath } from "./validators/opencode-config.ts";
-import { PORTABLE_WORKFLOW_RUNTIME_FILES, ROADMAP_MISSION_PLUGIN_FILES } from "./runtime-surface-profile.ts";
+import {
+  PORTABLE_WORKFLOW_RUNTIME_FILES,
+  ROADMAP_MISSION_PLUGIN_FILES,
+  ROADMAP_MISSION_RUNTIME_FILES,
+  WORK_CAMPAIGN_RUNTIME_FILES,
+} from "./runtime-surface-profile.ts";
 import {
   inspectWorkflowContracts,
   workflowContractDiagnostics,
@@ -27,7 +32,7 @@ import {
 } from "./opencode-runtime-sources.ts";
 
 type OutputFormat = "json" | "markdown";
-type AutomationGate = "qualification" | "structural" | "unattended";
+type AutomationGate = "campaign" | "qualification" | "structural" | "unattended";
 
 type Options = {
   format: OutputFormat;
@@ -59,6 +64,8 @@ type RepositoryContract = {
 
 type DoctorReport = {
   blockers: Record<AutomationGate, string[]>;
+  campaignChecks: Check[];
+  campaignStatus: QualificationStatus;
   checks: Check[];
   managedPrompts: ManagedPromptDrift[];
   project: string;
@@ -69,7 +76,7 @@ type DoctorReport = {
   tool: "opencode-dev-kit-doctor";
   unattendedChecks: Check[];
   unattendedMissionStatus: QualificationStatus;
-  version: 2;
+  version: 3;
 };
 
 function defaultProject(): string {
@@ -143,7 +150,7 @@ Options:
   --project <path>          Project directory to inspect. Default: current directory.
   --mission <path>          Optional project-contained mission JSON to validate for unattended use.
   --format <json|markdown>  Output format. Default: markdown.
-  --require <gate>          Require structural, qualification, or unattended readiness.
+  --require <gate>          Require structural, qualification, unattended, or campaign readiness.
   --show-project            Include the absolute project path. Hidden by default for privacy-safe output.
   --help                    Show this help.
 `);
@@ -165,10 +172,10 @@ function parseFormat(value: string): OutputFormat {
 }
 
 function parseAutomationGate(value: string): AutomationGate {
-  if (value === "structural" || value === "qualification" || value === "unattended") {
+  if (value === "structural" || value === "qualification" || value === "unattended" || value === "campaign") {
     return value;
   }
-  throw new Error("--require must be structural, qualification, or unattended.");
+  throw new Error("--require must be structural, qualification, unattended, or campaign.");
 }
 
 function parseArgs(args: string[]): Options {
@@ -650,6 +657,238 @@ function configuredPluginPath(entry: unknown): string | null {
   }
 }
 
+type CampaignPreflightFact = {
+  id: string;
+  status: "blocked" | "passed" | "unknown";
+  summary: string;
+};
+
+type CampaignDefinitionFacts = {
+  allowedEffects: string[];
+  authorizationRefs: Record<string, unknown>;
+  hostResumeEnabled: boolean;
+  modelCalls: number;
+  supervisorRequired: boolean;
+  validationArgv: string[];
+};
+
+const CAMPAIGN_DEFINITION_PATH = path.join("opencode-dev-kit", "work-campaign.json");
+
+function campaignDefinitionFacts(file: string): CampaignDefinitionFacts | null {
+  try {
+    const errors: jsoncParse.ParseError[] = [];
+    const parsed = jsoncParse(fs.readFileSync(file, "utf8"), errors, {
+      allowTrailingComma: false,
+      disallowComments: true,
+    }) as Record<string, unknown> | null;
+    if (errors.length > 0 || parsed == null || Array.isArray(parsed)) return null;
+    const budgets = typeof parsed.budgets === "object" && parsed.budgets != null && !Array.isArray(parsed.budgets)
+      ? parsed.budgets as Record<string, unknown>
+      : null;
+    const hostResume = typeof parsed.hostResume === "object" && parsed.hostResume != null && !Array.isArray(parsed.hostResume)
+      ? parsed.hostResume as Record<string, unknown>
+      : null;
+    const authorizationRefs = typeof parsed.authorizationRefs === "object" && parsed.authorizationRefs != null && !Array.isArray(parsed.authorizationRefs)
+      ? parsed.authorizationRefs as Record<string, unknown>
+      : null;
+    if (
+      budgets == null || !Number.isSafeInteger(budgets.modelCalls) || (budgets.modelCalls as number) < 0
+      || hostResume == null || typeof hostResume.enabled !== "boolean" || typeof hostResume.supervisorRequired !== "boolean"
+      || authorizationRefs == null || !Array.isArray(parsed.allowedEffects) || !parsed.allowedEffects.every((value) => typeof value === "string")
+      || !Array.isArray(parsed.validationArgv) || !parsed.validationArgv.every((value) => typeof value === "string" && value !== "")
+    ) return null;
+    return {
+      allowedEffects: parsed.allowedEffects,
+      authorizationRefs,
+      hostResumeEnabled: hostResume.enabled,
+      modelCalls: budgets.modelCalls as number,
+      supervisorRequired: hostResume.supervisorRequired,
+      validationArgv: parsed.validationArgv,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function campaignPreflightInspection(
+  project: string,
+  globalSource: string,
+): { checks: CampaignPreflightFact[]; error: string | null } {
+  const entrypoint = path.join(globalSource, "bin", "work-campaign.ts");
+  if (!pathIsFile(entrypoint)) return { checks: [], error: "Installed work-campaign entrypoint is missing." };
+  const result = spawnSync(process.execPath, [
+    entrypoint,
+    "preflight",
+    "--root",
+    project,
+    "--definition",
+    CAMPAIGN_DEFINITION_PATH.replaceAll("\\", "/"),
+  ], {
+    cwd: project,
+    encoding: "utf8",
+    env: { ...process.env, OPENCODE_CONFIG_DIR: globalSource },
+    shell: false,
+    timeout: 30_000,
+  });
+  if (result.error != null) return { checks: [], error: result.error.message };
+  const output = result.stdout.trim() || result.stderr.trim();
+  try {
+    const parsed = JSON.parse(output) as Record<string, unknown>;
+    const checks = Array.isArray(parsed.checks)
+      ? parsed.checks.flatMap((value) => {
+          if (typeof value !== "object" || value == null || Array.isArray(value)) return [];
+          const record = value as Record<string, unknown>;
+          return typeof record.id === "string"
+              && (record.status === "blocked" || record.status === "passed" || record.status === "unknown")
+              && typeof record.summary === "string"
+            ? [{ id: record.id, status: record.status, summary: record.summary } as CampaignPreflightFact]
+            : [];
+        })
+      : [];
+    if (checks.length > 0) return { checks, error: null };
+    return {
+      checks: [],
+      error: typeof parsed.error === "string" ? parsed.error : `Campaign preflight exited ${String(result.status)} without checks.`,
+    };
+  } catch {
+    return { checks: [], error: `Campaign preflight exited ${String(result.status)} with unreadable output.` };
+  }
+}
+
+function groupedCampaignCheck(
+  checks: CampaignPreflightFact[],
+  ids: string[],
+  name: string,
+  passedDetail: string,
+  unavailable: string | null,
+): Check {
+  const selected = ids.flatMap((id) => checks.filter((check) => check.id === id));
+  const failures = selected.filter((check) => check.status !== "passed");
+  const missing = ids.filter((id) => !selected.some((check) => check.id === id));
+  const passed = unavailable == null && failures.length === 0 && missing.length === 0;
+  const detail = passed
+    ? passedDetail
+    : unavailable ?? [
+        ...failures.map((check) => `${check.id}: ${check.summary}`),
+        ...missing.map((id) => `${id}: check unavailable`),
+      ].join("; ");
+  return { blocksQualification: false, detail, name, status: passed ? "pass" : "blocked" };
+}
+
+function campaignReadinessChecks(
+  project: string,
+  globalSource: string,
+  canonicalCollisions: RuntimeSourceInventory["collisions"],
+): Check[] {
+  const definitionFile = path.join(project, CAMPAIGN_DEFINITION_PATH);
+  const definitionMissing = !pathIsFile(definitionFile);
+  const facts = definitionMissing ? null : campaignDefinitionFacts(definitionFile);
+  const preflight = definitionMissing
+    ? { checks: [], error: `${CAMPAIGN_DEFINITION_PATH.replaceAll("\\", "/")} is missing.` }
+    : campaignPreflightInspection(project, globalSource);
+  const checks: Check[] = [
+    groupedCampaignCheck(
+      preflight.checks,
+      ["definition:schema", "definition:effects"],
+      "campaign definition and adapter",
+      "Campaign definition, adapter, effects, and protected authority are schema-valid.",
+      preflight.error,
+    ),
+    groupedCampaignCheck(
+      preflight.checks,
+      ["definition:paths"],
+      "campaign contained paths",
+      "Campaign definition, adapter, state, evidence, and report paths are contained and non-overlapping.",
+      preflight.error,
+    ),
+  ];
+
+  const validationReady = facts != null
+    && facts.validationArgv.length > 0
+    && commandExists(facts.validationArgv[0], project);
+  const checkpoint = preflight.checks.find((check) => check.id === "project:checkpoint");
+  addCheck(
+    checks,
+    "campaign validation and checkpoint",
+    validationReady && checkpoint?.status === "passed" ? "pass" : "blocked",
+    validationReady && checkpoint?.status === "passed"
+      ? "Campaign validation argv is executable and the current Git checkpoint is readable."
+      : !validationReady
+        ? "Campaign validationArgv is missing, unresolved, or names an unavailable executable."
+        : checkpoint?.summary ?? "Campaign checkpoint inspection is unavailable.",
+    false,
+  );
+
+  const providerReady = facts != null && (
+    !facts.allowedEffects.includes("provider-inference")
+    || facts.modelCalls > 0
+      && typeof facts.authorizationRefs["provider-inference"] === "string"
+      && String(facts.authorizationRefs["provider-inference"]).trim() !== ""
+      && commandExists("opencode")
+      && pathIsFile(path.join(globalSource, "bin", "work-campaign-semantic-executor.ts"))
+  );
+  addCheck(
+    checks,
+    "campaign provider budget",
+    providerReady ? "pass" : "blocked",
+    providerReady
+      ? !facts?.allowedEffects.includes("provider-inference")
+        ? "Provider inference is excluded by the effect envelope; the finite model-call budget grants no provider authority."
+        : "Provider inference has explicit effect authority, a finite budget, OpenCode, and the installed semantic executor."
+      : "Positive model-call budgets require provider-inference effect authority, an authorization ref, OpenCode, and the installed semantic executor.",
+    false,
+  );
+
+  const requiredRuntime = [...new Set([...ROADMAP_MISSION_RUNTIME_FILES, ...WORK_CAMPAIGN_RUNTIME_FILES])];
+  const missingRuntime = requiredRuntime.filter((relative) => !pathIsFile(path.join(globalSource, ...relative.split("/"))));
+  const runtimeReady = missingRuntime.length === 0 && canonicalCollisions.length === 0;
+  addCheck(
+    checks,
+    "campaign runtime and workflow",
+    runtimeReady ? "pass" : "blocked",
+    runtimeReady
+      ? "Installed campaign and mission runtime files are complete and canonical workflow precedence is unambiguous."
+      : [
+          missingRuntime.length > 0 ? `Missing installed runtime files: ${missingRuntime.join(", ")}.` : null,
+          canonicalCollisions.length > 0 ? "Canonical workflow precedence is unknown." : null,
+        ].filter((value): value is string => value != null).join(" "),
+    false,
+  );
+
+  checks.push(groupedCampaignCheck(
+    preflight.checks,
+    ["candidate:source", "project:active-changes", "project:git-root", "project:openspec-version", "project:worktree"],
+    "campaign project state",
+    "Campaign source, active-change, Git-root, OpenSpec, and worktree prerequisites are current.",
+    preflight.error,
+  ));
+  const ownership = preflight.checks.find((check) => check.id === "campaign:state" || check.id === "campaign:writer");
+  const ownershipReady = ownership?.status === "passed" && missingRuntime.length === 0;
+  addCheck(
+    checks,
+    "campaign writer and mission",
+    ownershipReady ? "pass" : "blocked",
+    ownershipReady
+      ? "Campaign state/writer ownership is current and the mission runtime is installed."
+      : ownership?.summary ?? preflight.error ?? "Campaign state/writer ownership inspection is unavailable.",
+    false,
+  );
+
+  const supervisorReady = facts != null && (!facts.hostResumeEnabled || !facts.supervisorRequired);
+  addCheck(
+    checks,
+    "campaign supervisor",
+    supervisorReady ? "pass" : "blocked",
+    supervisorReady
+      ? "Protected host resume is not selected; no supervisor registration is required."
+      : facts == null
+        ? "Campaign supervisor readiness depends on a schema-valid campaign definition."
+        : "Campaign requests protected host resume, but no checked installed supervisor registration is available.",
+    false,
+  );
+  return checks;
+}
+
 function missionRuntimeConfigProblems(file: string, globalDir: string): string[] {
   if (!pathIsFile(file)) return ["opencode.json is missing"];
   const inspection = inspectOpenCodeConfigText(fs.readFileSync(file, "utf8"));
@@ -1126,7 +1365,7 @@ function buildReport(
     missionRuntimeProblems.length === 0
       ? "Installed config loads exactly one PTY bridge, mission launcher, and completion guard with the pinned mission route and executor certificate issuer."
       : `Installed mission runtime is incomplete: ${missionRuntimeProblems.join("; ")}.`,
-    true,
+    false,
   );
 
   const guardProblems = guardLimitProblems(localPath);
@@ -1245,7 +1484,9 @@ function buildReport(
     addCheck(checks, ownershipCheck.name, ownershipCheck.status, ownershipCheck.detail, ownershipCheck.blocksQualification);
   }
 
+  const campaignChecks = campaignReadinessChecks(project, resolvedGlobalDir, canonicalCollisions);
   const blockers: Record<AutomationGate, string[]> = {
+    campaign: campaignChecks.filter((check) => check.status !== "pass").map((check) => check.name),
     structural: checks.filter((check) => check.status === "blocked").map((check) => check.name),
     qualification: checks.filter((check) => check.blocksQualification).map((check) => check.name),
     unattended: unattendedChecks.filter((check) => check.status !== "pass").map((check) => check.name),
@@ -1262,6 +1503,8 @@ function buildReport(
 
   return {
     blockers,
+    campaignChecks,
+    campaignStatus: blockers.campaign.length > 0 ? "blocked" : "pass",
     checks,
     managedPrompts,
     project: formatProjectForOutput(project, showProject),
@@ -1272,7 +1515,7 @@ function buildReport(
     tool: "opencode-dev-kit-doctor",
     unattendedChecks,
     unattendedMissionStatus: blockers.unattended.length > 0 ? "blocked" : "pass",
-    version: 2,
+    version: 3,
   };
 }
 
@@ -1280,7 +1523,8 @@ function automationGateStatus(report: DoctorReport, gate: AutomationGate): Quali
   if (gate === "structural") {
     return report.status === "blocked" ? "blocked" : "pass";
   }
-  return gate === "qualification" ? report.qualificationStatus : report.unattendedMissionStatus;
+  if (gate === "qualification") return report.qualificationStatus;
+  return gate === "unattended" ? report.unattendedMissionStatus : report.campaignStatus;
 }
 
 function renderMarkdown(report: DoctorReport): string {
@@ -1298,6 +1542,7 @@ function renderMarkdown(report: DoctorReport): string {
     `Status: ${report.status}`,
     `Qualification Status: ${report.qualificationStatus}`,
     `Unattended Mission Status: ${report.unattendedMissionStatus}`,
+    `Campaign Status: ${report.campaignStatus}`,
     ...requiredGateLines,
     "",
     "| Check | Status | Blocks Qualification | Detail |",
@@ -1312,6 +1557,14 @@ function renderMarkdown(report: DoctorReport): string {
     "| Check | Status | Detail |",
     "| --- | --- | --- |",
     ...report.unattendedChecks.map(
+      (check) => `| ${check.name} | ${check.status} | ${check.detail.replace(/\|/g, "\\|")} |`,
+    ),
+    "",
+    "## Autonomous Campaign",
+    "",
+    "| Check | Status | Detail |",
+    "| --- | --- | --- |",
+    ...report.campaignChecks.map(
       (check) => `| ${check.name} | ${check.status} | ${check.detail.replace(/\|/g, "\\|")} |`,
     ),
     "",

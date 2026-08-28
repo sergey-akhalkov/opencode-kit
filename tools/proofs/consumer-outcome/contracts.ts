@@ -17,6 +17,7 @@ export const STATUS_SCOPE_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/st
 export const FOUNDATION_INTEGRITY_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/foundation-integrity-r1.json";
 export const BOUNDED_FALSIFICATION_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/bounded-falsification-r1.json";
 export const COMPLEXITY_MANAGEMENT_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/complexity-management-r1.json";
+export const COMPLEXITY_CONFIGURED_SESSION_PACK_PATH = "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-r1.json";
 export const FRICTION_FIELDS = [
   "ownerQuestionCount",
   "configuredProviderRequestCount",
@@ -205,6 +206,44 @@ export type ComplexityFacadeObservation = {
 export type ComplexityFacadeScenarioExpectation = {
   baseline: ComplexityFacadeObservation;
   candidate: ComplexityFacadeObservation;
+};
+
+export type ComplexityPartitionObservation = {
+  admissionClass: "accepted-refactor" | "current-dependency" | "deferred-debt" | "unknown";
+  caseId: string;
+  contextFacts: string[];
+  disposition: "defer" | "extract" | "facade" | "narrow" | "project-review" | "remove" | "reshape" | "retain" | "reuse" | "unknown";
+  maximumClaim: string;
+  ownerFacts: string[];
+  pathFacts: string[];
+  triggerFacts: string[];
+};
+
+export type ComplexityPartitionExpectation = {
+  baseline: ComplexityPartitionObservation;
+  candidate: ComplexityPartitionObservation;
+};
+
+export type ComplexityConfiguredSessionPack = {
+  configuredProviderRequestBound: number;
+  expectedDecisions: Record<string, ComplexityPartitionExpectation>;
+  id: string;
+  manifest: RegressionManifest;
+  maximumClaim: string;
+  memberOrder: string[];
+};
+
+export type ComplexityInvocationManifestRow = {
+  arm: Arm;
+  comparisonIdentity: string;
+  environmentIdentity: string;
+  expectedFactsDigest: string;
+  maximumClaim: string;
+  modelIdentity: string;
+  permissionIdentity: string;
+  requestIdentity: string;
+  scenarioId: string;
+  variantIdentity: string;
 };
 
 export type ExpectedDecision = BoundedFalsificationScenarioExpectation | ClaimEvidenceDecision | ComplexityFacadeScenarioExpectation | FoundationIntegrityScenarioExpectation | ShiftLeftDecision | StatusScopeDecisionSet;
@@ -487,6 +526,17 @@ const FOUNDATION_INTEGRITY_ARTIFACT_KEYS = ["artifactId", "path", "stateSha256"]
 const FOUNDATION_INTEGRITY_TERMINAL_KEYS = ["memberId", "status"] as const;
 const BOUNDED_FALSIFICATION_EXPECTATION_KEYS = ["baseline", "candidate"] as const;
 const COMPLEXITY_FACADE_EXPECTATION_KEYS = ["baseline", "candidate"] as const;
+const COMPLEXITY_PARTITION_EXPECTATION_KEYS = ["baseline", "candidate"] as const;
+const COMPLEXITY_PARTITION_OBSERVATION_KEYS = [
+  "admissionClass",
+  "caseId",
+  "contextFacts",
+  "disposition",
+  "maximumClaim",
+  "ownerFacts",
+  "pathFacts",
+  "triggerFacts",
+] as const;
 export const COMPLEXITY_FACADE_OBSERVATION_KEYS = [
   "admissionClass",
   "architectureMap",
@@ -574,6 +624,21 @@ export const FOUNDATION_INTEGRITY_MEMBER_ORDER = [
   "unchanged-hypothesis-anti-loop",
 ] as const;
 export const COMPLEXITY_MANAGEMENT_MEMBER_ORDER = ["useful-current-consumer-facade"] as const;
+export const COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER = [
+  "cohesive-small-project",
+  "modular-multi-component-project",
+  "noisy-corpus-or-evidence-project",
+  "mixed-owner-module",
+  "useful-current-consumer-facade",
+  "frozen-compatibility-and-current-extension",
+  "redundant-wrapper-chain",
+  "speculative-generic-abstraction",
+  "explicit-review-only-project-assessment",
+  "default-core-availability",
+  "unreadable-root",
+  "unsupported-ecosystem",
+] as const;
+export const COMPLEXITY_CONFIGURED_SESSION_MAXIMUM_CLAIM = "the twelve reviewed complexity partitions define matched baseline/candidate configured-session inputs and reviewed semantic oracles under one prompt, model-profile, variant, permission, environment, and cleanup contract; no configured observation, semantic outcome, cross-project effectiveness, or consumer mutation is supported until the existing proof runner captures and evaluates both arms";
 const DECISION_PACK_SPECS = {
   "bounded-falsification": {
     id: "bounded-falsification-r1",
@@ -1206,6 +1271,139 @@ export function parseDecisionGapPack(value: unknown, packName: DecisionPackName 
   };
 }
 
+export function parseComplexityPartitionObservation(value: unknown, label: string): ComplexityPartitionObservation {
+  const record = requireExactKeys(value, COMPLEXITY_PARTITION_OBSERVATION_KEYS, label);
+  const admissionClass = requireString(record.admissionClass, `${label}.admissionClass`);
+  if (admissionClass !== "accepted-refactor" && admissionClass !== "current-dependency" && admissionClass !== "deferred-debt" && admissionClass !== "unknown") {
+    throw new ContractError(`${label}.admissionClass`, `${label}.admissionClass is invalid`);
+  }
+  const disposition = requireString(record.disposition, `${label}.disposition`);
+  if (disposition !== "defer" && disposition !== "extract" && disposition !== "facade" && disposition !== "narrow" && disposition !== "project-review" && disposition !== "remove" && disposition !== "reshape" && disposition !== "retain" && disposition !== "reuse" && disposition !== "unknown") {
+    throw new ContractError(`${label}.disposition`, `${label}.disposition is invalid`);
+  }
+  return {
+    admissionClass,
+    caseId: requireString(record.caseId, `${label}.caseId`),
+    contextFacts: requireStringArray(record.contextFacts, `${label}.contextFacts`),
+    disposition,
+    maximumClaim: requireString(record.maximumClaim, `${label}.maximumClaim`),
+    ownerFacts: requireStringArray(record.ownerFacts, `${label}.ownerFacts`),
+    pathFacts: requireStringArray(record.pathFacts, `${label}.pathFacts`),
+    triggerFacts: requireStringArray(record.triggerFacts, `${label}.triggerFacts`),
+  };
+}
+
+function parseComplexityPartitionExpectation(value: unknown, label: string): ComplexityPartitionExpectation {
+  const record = requireExactKeys(value, COMPLEXITY_PARTITION_EXPECTATION_KEYS, label);
+  return {
+    baseline: parseComplexityPartitionObservation(record.baseline, `${label}.baseline`),
+    candidate: parseComplexityPartitionObservation(record.candidate, `${label}.candidate`),
+  };
+}
+
+export function parseComplexityConfiguredSessionPack(value: unknown): ComplexityConfiguredSessionPack {
+  const record = requireExactKeys(value, COMPLEXITY_MANAGEMENT_PACK_KEYS, "complexityConfiguredPack");
+  if (record.schemaVersion !== SCHEMA_VERSION) throw new ContractError("complexityConfiguredPack.schemaVersion", "complexityConfiguredPack.schemaVersion must be 1");
+  if (requireString(record.id, "complexityConfiguredPack.id") !== "complexity-configured-session-r1") {
+    throw new ContractError("complexityConfiguredPack.id", "complexityConfiguredPack.id is invalid");
+  }
+  if (requireString(record.profile, "complexityConfiguredPack.profile") !== PROFILE) {
+    throw new ContractError("complexityConfiguredPack.profile", `complexityConfiguredPack.profile must be ${PROFILE}`);
+  }
+  if (requireString(record.expectation, "complexityConfiguredPack.expectation") !== "no-regression") {
+    throw new ContractError("complexityConfiguredPack.expectation", "complexityConfiguredPack.expectation must be no-regression");
+  }
+  const sampleCount = requireInteger(record.sampleCountPerArm, "complexityConfiguredPack.sampleCountPerArm", 1, 1);
+  const requestBound = requireInteger(record.configuredProviderRequestBound, "complexityConfiguredPack.configuredProviderRequestBound", 24, 24);
+  const pairOrder = requireStringArray(record.pairOrder, "complexityConfiguredPack.pairOrder");
+  if (pairOrder.join(",") !== "B1,C1") throw new ContractError("complexityConfiguredPack.pairOrder", "complexityConfiguredPack.pairOrder must be B1,C1");
+  const memberOrder = requireStringArray(record.memberOrder, "complexityConfiguredPack.memberOrder");
+  if (memberOrder.join(",") !== COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER.join(",")) {
+    throw new ContractError("complexityConfiguredPack.memberOrder", "complexityConfiguredPack.memberOrder must contain every reviewed complexity partition exactly once in order");
+  }
+  const maximumClaim = requireString(record.maximumClaim, "complexityConfiguredPack.maximumClaim");
+  if (maximumClaim !== COMPLEXITY_CONFIGURED_SESSION_MAXIMUM_CLAIM) {
+    throw new ContractError("complexityConfiguredPack.maximumClaim", "complexityConfiguredPack.maximumClaim is invalid");
+  }
+  if (!Array.isArray(record.scenarios) || record.scenarios.length !== memberOrder.length) {
+    throw new ContractError("complexityConfiguredPack.scenarios", `complexityConfiguredPack.scenarios must contain exactly ${memberOrder.length} records`);
+  }
+  const scenarios: ScenarioRecord[] = [];
+  const expectedDecisions: Record<string, ComplexityPartitionExpectation> = {};
+  for (const [index, raw] of record.scenarios.entries()) {
+    const label = `complexityConfiguredPack.scenarios[${index}]`;
+    const row = requireExactKeys(raw, DECISION_SCENARIO_KEYS, label);
+    const scenario = parseScenario(
+      Object.fromEntries(SCENARIO_KEYS.map((key) => [key, row[key]])),
+      index,
+      { configuredProviderRequestBound: 1, sampleCount },
+    );
+    if (scenario.id !== memberOrder[index]) throw new ContractError(`${label}.id`, `expected ${memberOrder[index]}`);
+    const expected = parseComplexityPartitionExpectation(row.expectedDecision, `${label}.expectedDecision`);
+    if (expected.baseline.caseId !== scenario.id || expected.candidate.caseId !== scenario.id) {
+      throw new ContractError(`${label}.expectedDecision.caseId`, "complexity partition observations must match the scenario id");
+    }
+    scenarios.push(scenario);
+    expectedDecisions[scenario.id] = expected;
+  }
+  return {
+    configuredProviderRequestBound: requestBound,
+    expectedDecisions,
+    id: "complexity-configured-session-r1",
+    manifest: {
+      baselinePointerPath: BASELINE_POINTER_PATH,
+      captureByteLimit: CAPTURE_BYTE_LIMIT,
+      defaultExpectation: "no-regression",
+      frictionFields: [...FRICTION_FIELDS],
+      governedSourcePaths: requireStringArray(record.governedSourcePaths, "complexityConfiguredPack.governedSourcePaths"),
+      pairOrder: ["B1,C1"],
+      profile: PROFILE,
+      sampleByteLimit: SAMPLE_BYTE_LIMIT,
+      sampleCount,
+      scenarios,
+      schemaVersion: SCHEMA_VERSION,
+    },
+    maximumClaim,
+    memberOrder,
+  };
+}
+
+export function complexityConfiguredInvocationManifest(pack: ComplexityConfiguredSessionPack): ComplexityInvocationManifestRow[] {
+  return pack.manifest.scenarios.flatMap((scenario) => {
+    const requestIdentity = sha256(scenario.request);
+    const permissionIdentity = digestOf(scenario.permissions);
+    const environmentIdentity = digestOf({
+      cleanupOracle: scenario.cleanupOracle,
+      fixtureId: scenario.fixtureId,
+      fixturePath: scenario.fixturePath,
+      initialManifest: scenario.initialManifest,
+      proofExpectations: scenario.proofExpectations,
+      validationArgv: scenario.validationArgv,
+    });
+    const comparisonIdentity = digestOf({
+      environmentIdentity,
+      modelIdentity: `${pack.manifest.profile}:agent.build.model`,
+      permissionIdentity,
+      requestIdentity,
+      scenarioId: scenario.id,
+      variantIdentity: `${pack.manifest.profile}:agent.build.variant`,
+    });
+    const expected = pack.expectedDecisions[scenario.id]!;
+    return (["baseline", "candidate"] as const).map((arm) => ({
+      arm,
+      comparisonIdentity,
+      environmentIdentity,
+      expectedFactsDigest: digestOf(expected[arm]),
+      maximumClaim: expected[arm].maximumClaim,
+      modelIdentity: `${pack.manifest.profile}:agent.build.model`,
+      permissionIdentity,
+      requestIdentity,
+      scenarioId: scenario.id,
+      variantIdentity: `${pack.manifest.profile}:agent.build.variant`,
+    }));
+  });
+}
+
 export function parseCandidateRequest(value: unknown): CandidateRequest {
   const record = requireExactKeys(value, CANDIDATE_KEYS, "candidateRequest");
   const expectation = requireString(record.expectation, "candidateRequest.expectation");
@@ -1326,6 +1524,20 @@ export function loadDecisionGapPack(repoRoot: string, packName: DecisionPackName
     resolveValidationCommand(scenario.proofExpectations.argv, `${scenario.id}.proofExpectations.argv`);
   }
   if (pack.manifest.governedSourcePaths.length === 0) throw new ContractError("decisionPack.governedSourcePaths", "governed source paths must be explicit");
+  return { digest: digestOf(pack), pack };
+}
+
+export function loadComplexityConfiguredSessionPack(repoRoot: string): { digest: string; pack: ComplexityConfiguredSessionPack } {
+  const packPath = path.join(repoRoot, COMPLEXITY_CONFIGURED_SESSION_PACK_PATH);
+  const pack = parseComplexityConfiguredSessionPack(JSON.parse(fs.readFileSync(packPath, "utf8")));
+  for (const scenario of pack.manifest.scenarios) {
+    verifyFixtureSeed(repoRoot, scenario);
+    resolveValidationCommand(scenario.validationArgv, `${scenario.id}.validationArgv`);
+    resolveValidationCommand(scenario.proofExpectations.argv, `${scenario.id}.proofExpectations.argv`);
+  }
+  if (pack.manifest.governedSourcePaths.length === 0) {
+    throw new ContractError("complexityConfiguredPack.governedSourcePaths", "governed source paths must be explicit");
+  }
   return { digest: digestOf(pack), pack };
 }
 

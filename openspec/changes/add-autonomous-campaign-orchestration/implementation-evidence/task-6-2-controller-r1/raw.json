@@ -1,0 +1,557 @@
+{
+  "candidateId": "task-6-2-portable-supervisor-r1",
+  "cleanup": "complete",
+  "commands": [
+    {
+      "disposition": "blocked",
+      "exitCode": 1,
+      "field": null,
+      "name": "status-before",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": null,
+      "exitCode": 0,
+      "field": null,
+      "name": "preflight",
+      "phase": "inventory",
+      "status": "eligible",
+      "writerClosure": null
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 3,
+      "field": null,
+      "name": "run",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": null,
+      "exitCode": 0,
+      "field": null,
+      "name": "report-readback",
+      "phase": null,
+      "status": "report-current",
+      "writerClosure": null
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 0,
+      "field": null,
+      "name": "status-after",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 0,
+      "field": null,
+      "name": "replay",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-external",
+      "exitCode": 3,
+      "field": null,
+      "name": "idempotent-run",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": null,
+      "exitCode": 2,
+      "field": "playbook",
+      "name": "invalid-definition",
+      "phase": null,
+      "status": "blocked",
+      "writerClosure": null
+    },
+    {
+      "disposition": "blocked",
+      "exitCode": 1,
+      "field": null,
+      "name": "dirty-worktree",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "blocked",
+      "exitCode": 1,
+      "field": null,
+      "name": "active-change",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-unknown",
+      "exitCode": 1,
+      "field": null,
+      "name": "unknown-writer",
+      "phase": "inventory",
+      "status": null,
+      "writerClosure": "unknown"
+    },
+    {
+      "disposition": "paused-stop",
+      "exitCode": 0,
+      "field": null,
+      "name": "stop",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    },
+    {
+      "disposition": "paused-stop",
+      "exitCode": 0,
+      "field": null,
+      "name": "stopped-status",
+      "phase": "paused",
+      "status": null,
+      "writerClosure": "terminal"
+    }
+  ],
+  "controlPartitions": {
+    "investigations": {
+      "confirmed": {
+        "disposition": "paused-external",
+        "exitCode": 3
+      },
+      "stillUnknown": {
+        "error": "work item item-p1 remains still-unknown and blocks findings freeze",
+        "exitCode": 1
+      }
+    },
+    "ownerOnly": {
+      "disposition": "owner-required",
+      "errorClass": "owner-protected",
+      "exitCode": 0,
+      "sourceWriterCount": 0,
+      "transitionCount": 8
+    },
+    "ownerSibling": {
+      "disposition": "paused-external",
+      "exitCode": 3,
+      "sourceWriterCount": 0
+    },
+    "reportOnly": {
+      "disposition": "paused-external",
+      "exitCode": 3,
+      "sourceWriterCount": 0,
+      "transitionCount": 8
+    }
+  },
+  "effects": {
+    "controllerGitMutationCalls": 0,
+    "controllerOpenSpecMutationCalls": 0,
+    "fixtureGitMutationCalls": 11,
+    "fixtureOpenSpecMutationCalls": 2,
+    "hostEffects": 0,
+    "missionCalls": 2,
+    "openCodeCalls": 0,
+    "processStarts": 98,
+    "providerCalls": 0,
+    "sourceWrites": 0
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "openSpec": "1.11.0",
+    "platform": "win32"
+  },
+  "environmentId": "node-24.18.1-windows-task-6-2-r1",
+  "invocation": {
+    "argv": [
+      "node",
+      "tools/test-work-campaign-controller.ts"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "OK: work-campaign provider-free controller suite\n"
+  },
+  "missionIntegration": {
+    "duplicateTransitionCount": 11,
+    "launchKinds": [
+      "preflight",
+      "phase-start",
+      "phase-complete",
+      "phase-start",
+      "findings-freeze",
+      "phase-start",
+      "report-materialized",
+      "wave-admitted",
+      "mission-launch"
+    ],
+    "mismatchExitCode": 2,
+    "missionDisposition": "complete",
+    "reportFixed": true,
+    "reportNeedsRereview": true,
+    "resumeDisposition": "paused-external",
+    "resumePhase": "verify",
+    "stopDisposition": "paused-stop",
+    "stopSource": "campaign",
+    "terminalKinds": [
+      "mission-terminal",
+      "verification"
+    ],
+    "writerLeaseAbsent": true
+  },
+  "negativeControls": {
+    "activeChange": 1,
+    "dirtyWorktree": 1,
+    "invalidDefinition": 2,
+    "unknownWriter": 1
+  },
+  "proofKind": "campaign-provider-free-controller",
+  "report": {
+    "digest": "570ed387cfc3c8d3d6049d0b457fdbd4ca5412e07b16a769878a15d0d70ba234",
+    "p1Present": true,
+    "p2ReportOnly": true
+  },
+  "schemaVersion": 1,
+  "sourceCandidate": [
+    {
+      "path": "global/bin/openspec-archive.ts",
+      "sha256": "b7fcb48d8082afb176733e73cbad5221d6e428d9398c340a601b11081ad5cfe0"
+    },
+    {
+      "path": "global/bin/openspec-change/bounded-falsification.ts",
+      "sha256": "66386c49e7882974687707a4f7b01a91413ce93ef9b1263cc11ec4bb01778467"
+    },
+    {
+      "path": "global/bin/openspec-operation-gate.ts",
+      "sha256": "3319b827dddc6affdff68542d2996268c4ac0459e014f665c019ee81280d4e7f"
+    },
+    {
+      "path": "global/bin/portable-process-supervisor.ts",
+      "sha256": "794c29b93569e96a38c95ae817291da22dedb63051f0bcf4e38077aa711f9099"
+    },
+    {
+      "path": "global/bin/portable-process.ts",
+      "sha256": "53fbe318e14a1b2568f722314e66f473503c02d35d39d1e269c1b512ed50b49f"
+    },
+    {
+      "path": "global/bin/roadmap-mission-session-executor.ts",
+      "sha256": "e5f243d29c247280e3d7be6eb45fddafc502daf70a9658f4748bc4043a783128"
+    },
+    {
+      "path": "global/bin/roadmap-mission.ts",
+      "sha256": "6a57edc26bce42a42597a16d59a5daf9c032aaa0afde453a26f83723bf156cee"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "d1394cddf33c1a9aa7fa3339e3462102b6a25e36410c0250fece5f492c2548c1"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-adapter.ts",
+      "sha256": "78472724f9a10745fb95201f85135330f9a1554e62c0a24c596a5bcff66d6491"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-process.ts",
+      "sha256": "84933f3df214d0856c82117a6b3915a378c6f8a1ed37d4032fb67370f90c416d"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller-result.ts",
+      "sha256": "494c092587a125630e1cb5ee814578c30b9094145109bc287ab911f60ab95781"
+    },
+    {
+      "path": "global/bin/roadmap-mission/controller.ts",
+      "sha256": "dc57d79a13a4addb694939aa80272e5084209dff57a27d7ae728197ff0afe6ee"
+    },
+    {
+      "path": "global/bin/roadmap-mission/parent-correlation.ts",
+      "sha256": "9d7a78dc0e8ab11c290711613f8c50e2016c232b3d2c6e1e606817fcf0f5f612"
+    },
+    {
+      "path": "global/bin/roadmap-mission/preflight.ts",
+      "sha256": "ed706cea7b6235df7e9c9da74cfd5658a0f9e7cb6e792650e98cb017d2c281b1"
+    },
+    {
+      "path": "global/bin/roadmap-mission/session-executor.ts",
+      "sha256": "16d27b3835007eab3a3b545a80a20f0c867aa0949aff6fde1209e4568dd9d5d9"
+    },
+    {
+      "path": "global/bin/roadmap-mission/state.ts",
+      "sha256": "85e68f216d6ec783efe38b6d0d360b6d307eb30d8aa4ad36a16ef689d101c6d2"
+    },
+    {
+      "path": "global/bin/work-campaign-semantic-executor.ts",
+      "sha256": "bebc4102bf0ad5f8e4a80f456006bb8f55e0db201ee3931d4bc93d0e97b5b0fa"
+    },
+    {
+      "path": "global/bin/work-campaign-supervisor.ts",
+      "sha256": "936a592c9f93017fa2cd40b7e80408355cce9d4e11b0acbcdf7359b229c700b2"
+    },
+    {
+      "path": "global/bin/work-campaign.ts",
+      "sha256": "63ea2791185f736b58c2707d0ab43ed1f64c599efb40212238e37acca1525e02"
+    },
+    {
+      "path": "global/bin/work-campaign/contracts.ts",
+      "sha256": "9b5ebaeff142a7bd50b6ab76c9f2d930d7e71d2fa97fc203e8b9c95b0c439461"
+    },
+    {
+      "path": "global/bin/work-campaign/controller.ts",
+      "sha256": "4f1a84bba923d1764368db485fa8340ccb6e2696160f5d6ef190c47f401d6c9f"
+    },
+    {
+      "path": "global/bin/work-campaign/materializer.ts",
+      "sha256": "1f08848ae2921c3c7f239d68cb0e412d6ff1966059275f7d53b04131fd51aba1"
+    },
+    {
+      "path": "global/bin/work-campaign/mission-handoff.ts",
+      "sha256": "aaca69377a98dbb28d9cbf2ec31cff28efca2257cefa0a5e5aff317fbbb93298"
+    },
+    {
+      "path": "global/bin/work-campaign/phase-input.ts",
+      "sha256": "2b093da8343243bac89ef1faed187d3aa82c3494c030f867fabdc7c0b3f78668"
+    },
+    {
+      "path": "global/bin/work-campaign/preflight.ts",
+      "sha256": "72313cc0c34e8823f3a8f5d85ae73dad24960564db64122d06d286910f25824f"
+    },
+    {
+      "path": "global/bin/work-campaign/semantic-executor.ts",
+      "sha256": "6fffe7468f88d8c0f756bb32aa4511bd0fa63b47389698270f85ee46804b8d46"
+    },
+    {
+      "path": "global/bin/work-campaign/semantic-playbook.ts",
+      "sha256": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c"
+    },
+    {
+      "path": "global/bin/work-campaign/semantic-schema.ts",
+      "sha256": "4881a69366a7dedf53ac46448c99b55707ab0e8adfa6cc366a35c945521fb997"
+    },
+    {
+      "path": "global/bin/work-campaign/state.ts",
+      "sha256": "7ba39de1f8d2b508d69d06af8824c265ea13de7bd4d95ff2fd7de4e83889c82f"
+    },
+    {
+      "path": "global/bin/work-campaign/supervisor.ts",
+      "sha256": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047"
+    },
+    {
+      "path": "global/bin/work-campaign/verification-input.ts",
+      "sha256": "e492e2af072c137ff5ed4b183fb0c9b0b962f6020ed5115d2b72d1ec5d319698"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+      "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+    },
+    {
+      "path": "global/model-profiles/quality-independent.json",
+      "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+    },
+    {
+      "path": "global/package-lock.json",
+      "sha256": "02049c8c0444d25c4fab88a06f90814a8086ea6b23658c630a89a759efaf5560"
+    },
+    {
+      "path": "global/package.json",
+      "sha256": "e0e5231f3fa86d1da60773fac127875472bdef139654102bc6456b1986deff87"
+    },
+    {
+      "path": "package.json",
+      "sha256": "f023f1b2784a7d488d5473945b2e5c7de2f2e9dbf7f0806ddcaed7d310da45d2"
+    },
+    {
+      "path": "tools/model-profile.ts",
+      "sha256": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72"
+    },
+    {
+      "path": "tools/proofs/lib/opencode-proof-client.ts",
+      "sha256": "b9ae980817cdc67d3669d0e3b9a1d9bf9167024d6349128fb9d7ed799fdd8b31"
+    },
+    {
+      "path": "tools/proofs/lib/proof-process-cleanup.ts",
+      "sha256": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d"
+    },
+    {
+      "path": "tools/proofs/work-campaign-playbook.ts",
+      "sha256": "92d7b79cb636210bb0918883f10dcaf795c951bd61c032224ed6a24d9c35befc"
+    },
+    {
+      "path": "tools/proofs/work-campaign-semantic.ts",
+      "sha256": "cbb4973280d48bbd94fe5a1debf2bc2a32e0b42b74e9b08fb31505e9b5ca0157"
+    },
+    {
+      "path": "tools/proofs/work-campaign-source-paths.ts",
+      "sha256": "f9a1d00887dc6f49c3057c6bd12a244d0061f356e7535eaa634d8b7f143e5974"
+    },
+    {
+      "path": "tools/proofs/work-campaign.ts",
+      "sha256": "c084a96698559b478aa125e372f6f266c55eade635a053ec8a49d88a055df2e4"
+    },
+    {
+      "path": "tools/test-work-campaign-controller.ts",
+      "sha256": "01eeb5229768e4422fc21afea10fe3c5e73edba1f2b9d080aeab5a9710178fa0"
+    },
+    {
+      "path": "tools/test-work-campaign-semantic-executor.ts",
+      "sha256": "9f9a916c35558c1f8ccb453c76f6ee38f47c76a4750b0106d00a3e88b752cf5f"
+    },
+    {
+      "path": "tools/test-work-campaign-semantic-playbook.ts",
+      "sha256": "f2d2f9e44a71e0cde7d2fdceadc47cb1f0e748cbecf1a990b94f7f5b092d69dd"
+    },
+    {
+      "path": "tools/test-work-campaign-supervisor.ts",
+      "sha256": "2ffe2d53a5fe38542bacaf5b65b567babe9ba1594e591a6e99df3b3a6aa7d5fe"
+    }
+  ],
+  "sourceManifest": {
+    "afterDigests": [
+      "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+      "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+    ],
+    "beforeDigests": [
+      "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+      "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+    ],
+    "sourceWrites": 0
+  },
+  "supervisor": {
+    "advice": {
+      "budget": "budget",
+      "complete": "complete",
+      "drift": "definition-or-project-drift",
+      "externalInput": "external-input-required",
+      "notStarted": "not-started",
+      "ownerProtected": "owner-protected",
+      "restored": "terminal-evidence-restored",
+      "stop": "explicit-stop",
+      "terminalMission": "runtime-interruption-ready",
+      "unknownWriter": "writer-or-cleanup-unknown"
+    },
+    "duplicateSuppressed": true,
+    "logCount": 3,
+    "oldGenerationRemoved": true,
+    "passwordAbsent": true,
+    "resumeDisposition": "paused-external",
+    "resumeReason": "runtime-interruption-ready",
+    "resumeState": "resumed",
+    "retryBackoffObserved": true,
+    "signalStopped": true,
+    "stopDisposition": "paused-stop",
+    "stopSource": "campaign"
+  },
+  "transitions": {
+    "admittedEvidenceRefs": [
+      "blocker:mission-integration-not-enabled",
+      "evidence:failure-mode",
+      "evidence:item-p1",
+      "evidence:item-p2",
+      "evidence:provider-free",
+      "evidence:redundancy",
+      "evidence:test-gap",
+      "file:inputs/01-block-a.json",
+      "file:inputs/02-block-b.json",
+      "file:inputs/03-item-p1.json",
+      "file:inputs/04-item-p2.json",
+      "file:inputs/05-partition.json",
+      "file:inputs/06-reconcile-p1.json",
+      "file:inputs/07-reconcile-p2.json",
+      "file:inputs/08-report.json",
+      "file:inputs/09-wave.json",
+      "file:inputs/phase.json",
+      "report:570ed387cfc3c8d3d6049d0b457fdbd4ca5412e07b16a769878a15d0d70ba234",
+      "result:partition-1",
+      "result:reconcile-p1",
+      "result:reconcile-p2",
+      "wave:wave-1"
+    ],
+    "admittedWaveId": "wave-1",
+    "beforeStopCount": 9,
+    "finalCount": 11,
+    "kinds": [
+      "preflight",
+      "phase-start",
+      "phase-complete",
+      "phase-start",
+      "findings-freeze",
+      "phase-start",
+      "report-materialized",
+      "wave-admitted",
+      "pause"
+    ],
+    "missionRef": null,
+    "pauseDisposition": "paused-external"
+  },
+  "verification": {
+    "commandFailureExitCode": 1,
+    "commandFailureTransitionCount": 11,
+    "criticalFinalDisposition": "paused-external",
+    "criticalRereviewDisposition": "paused-external",
+    "criticalSdetPending": true,
+    "finalChallengeStatus": "complete",
+    "finalClosureReportDigest": "34e00e9f35b00c907f89f247cf29169196808580a7501def38f728c24608ce66",
+    "finalDisposition": "complete",
+    "finalHandoffCandidateDigest": "8a4b6867bbd4853c593196a5302b6c448265de6a2409802e31cafe043a0a858e",
+    "finalHandoffMaximumClaim": "One disposable configured local campaign completed 1 fixed-and-verified P0/P1 item(s) across 1 archived and checkpointed wave(s) through current re-review, aggregate validation, real-boundary proof, and final challenge; population and host claims remain outside this result.",
+    "finalHandoffReportDigest": "34e00e9f35b00c907f89f247cf29169196808580a7501def38f728c24608ce66",
+    "finalTerminalState": "complete",
+    "finalTransitionKinds": [
+      "report-materialized",
+      "terminal-complete"
+    ],
+    "interruptedRecoveredDisposition": "complete",
+    "interruptedRecoveredOperation": "resume",
+    "interruptedRecoveryDisposition": "paused-external",
+    "interruptedRecoveryHandoffAbsent": true,
+    "interruptedRecoveryOperation": "resume",
+    "interruptedRecoveryPausePersisted": true,
+    "interruptedReplayDisposition": "paused-external",
+    "interruptedReplayOperation": "replay",
+    "interruptedStatusDisposition": "paused-external",
+    "interruptedStatusOperation": "status",
+    "p2ReportOnly": true,
+    "producerMismatchExitCode": 2,
+    "rereviewCandidateDigest": "8a4b6867bbd4853c593196a5302b6c448265de6a2409802e31cafe043a0a858e",
+    "rereviewDisposition": "paused-external",
+    "rereviewProofStatus": "complete",
+    "rereviewValidationStatus": "complete",
+    "staleArtifactDisposition": "paused-external",
+    "staleArtifactHandoffAbsent": true,
+    "staleCandidateDisposition": "paused-external",
+    "staleCandidateHandoffAbsent": true,
+    "staleCompletedDisposition": "blocked",
+    "staleCompletedHandoffAbsent": true,
+    "terminalIdempotentCount": 14,
+    "twoWaveArchived": 2,
+    "twoWaveCheckpointed": 2,
+    "twoWaveDisposition": "complete",
+    "twoWaveMissingMissionExitCode": 2,
+    "twoWaveSelfReconciliationExitCode": 2,
+    "twoWaveTransitionKinds": [
+      "preflight",
+      "phase-start",
+      "phase-complete",
+      "phase-start",
+      "findings-freeze",
+      "phase-start",
+      "report-materialized",
+      "wave-admitted",
+      "mission-launch",
+      "mission-terminal",
+      "verification",
+      "rereview",
+      "findings-freeze",
+      "wave-admitted",
+      "mission-launch",
+      "mission-terminal",
+      "verification",
+      "rereview",
+      "report-materialized",
+      "terminal-complete"
+    ],
+    "unauthorizedTerminalExitCode": 2
+  }
+}

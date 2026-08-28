@@ -1,0 +1,343 @@
+{
+  "candidateId": "autonomous-work-campaign-state-r2",
+  "cleanup": "complete",
+  "commands": [
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "preflight",
+      "operation": "state-record",
+      "projectionStatus": null,
+      "sequence": 1,
+      "status": "recorded",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "duplicate-preflight",
+      "operation": "state-record",
+      "projectionStatus": null,
+      "sequence": 1,
+      "status": "recorded",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "phase-start",
+      "operation": "state-record",
+      "projectionStatus": null,
+      "sequence": 2,
+      "status": "recorded",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "before-kill-replay",
+      "operation": "state-replay",
+      "projectionStatus": "current",
+      "sequence": 2,
+      "status": "valid",
+      "stopIntent": "absent",
+      "writerStatus": "clear"
+    },
+    {
+      "exitCode": 1,
+      "field": "writer.lock",
+      "name": "blocked-live-writer",
+      "operation": "state-record",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "blocked",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 1,
+      "field": null,
+      "name": "blocked-dead-writer",
+      "operation": "state-replay",
+      "projectionStatus": "current",
+      "sequence": 2,
+      "status": "blocked",
+      "stopIntent": "absent",
+      "writerStatus": "unknown"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "writer-reconcile",
+      "operation": "state-reconcile-writer",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "writer-reconciled",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "duplicate-writer-reconcile",
+      "operation": "state-reconcile-writer",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "writer-reconciled",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "after-kill-replay",
+      "operation": "state-replay",
+      "projectionStatus": "current",
+      "sequence": 2,
+      "status": "valid",
+      "stopIntent": "absent",
+      "writerStatus": "clear"
+    },
+    {
+      "exitCode": 1,
+      "field": null,
+      "name": "stale-projection-replay",
+      "operation": "state-replay",
+      "projectionStatus": "stale",
+      "sequence": 2,
+      "status": "blocked",
+      "stopIntent": "absent",
+      "writerStatus": "clear"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "state-reconcile",
+      "operation": "state-reconcile",
+      "projectionStatus": null,
+      "sequence": 3,
+      "status": "recorded",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "duplicate-reconcile",
+      "operation": "state-reconcile",
+      "projectionStatus": null,
+      "sequence": 3,
+      "status": "recorded",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "pause",
+      "operation": "state-record",
+      "projectionStatus": null,
+      "sequence": 4,
+      "status": "recorded",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "budget-revision",
+      "operation": "state-record",
+      "projectionStatus": null,
+      "sequence": 5,
+      "status": "recorded",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 2,
+      "field": "budget.consumed",
+      "name": "budget-regression",
+      "operation": "state-record",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "blocked",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "stop",
+      "operation": "state-stop",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "stop-requested",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 2,
+      "field": "stop intent",
+      "name": "conflicting-stop",
+      "operation": "state-stop",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "blocked",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "terminal-replay",
+      "operation": "state-replay",
+      "projectionStatus": "current",
+      "sequence": 5,
+      "status": "valid",
+      "stopIntent": "current",
+      "writerStatus": "clear"
+    },
+    {
+      "exitCode": 2,
+      "field": "transitions",
+      "name": "missing-transition",
+      "operation": "state-replay",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "blocked",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 2,
+      "field": "transitions",
+      "name": "corrupt-transition",
+      "operation": "state-replay",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "blocked",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 2,
+      "field": "transitions",
+      "name": "reordered-transition",
+      "operation": "state-replay",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "blocked",
+      "stopIntent": null,
+      "writerStatus": null
+    },
+    {
+      "exitCode": 2,
+      "field": "transitions",
+      "name": "stale-definition",
+      "operation": "state-replay",
+      "projectionStatus": null,
+      "sequence": null,
+      "status": "blocked",
+      "stopIntent": null,
+      "writerStatus": null
+    }
+  ],
+  "effects": {
+    "gitCalls": 0,
+    "hostEffects": 0,
+    "openSpecCalls": 0,
+    "processStarts": 23,
+    "providerCalls": 0,
+    "sourceWrites": 0
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "invocation": {
+    "argv": [
+      "node",
+      "tools/test-work-campaign.ts"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "OK: work-campaign proof-contract and state-replay suites\n"
+  },
+  "negativeControls": {
+    "budgetRegression": 2,
+    "conflictingStop": 2,
+    "corruptTransition": 2,
+    "missingTransition": 2,
+    "reorderedTransition": 2,
+    "staleDefinition": 2,
+    "staleProjection": 1
+  },
+  "proofKind": "campaign-state-restart",
+  "restart": {
+    "afterKillStateDigest": "1b376d2292484f05cbd35e661aaded1748c01ea9ef47300da89a04dca0b6df8f",
+    "beforeKillStateDigest": "1b376d2292484f05cbd35e661aaded1748c01ea9ef47300da89a04dca0b6df8f",
+    "childExitCode": 1,
+    "childSignal": null,
+    "deadWriterStatus": "unknown",
+    "leaseDigest": "d39d1552de734bef4604cea55876f64022965513adc1acf4e578d6d3ea868b94",
+    "reconciledArchivePath": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign/leases/terminal-5e7674ed2871384f.json",
+    "terminalSequence": 5,
+    "transitionFiles": [
+      {
+        "name": "00000001-0695174eaf35ea14.json",
+        "sha256": "9b9487d897703211e8dce75b64716bfc19af35385f6c5b5635573a478564e73b"
+      },
+      {
+        "name": "00000002-4aa30505c779949d.json",
+        "sha256": "9e1d20b043070628ccd5cbbae568fff541a42cf6ceda6865d9fe8cebce5f4806"
+      },
+      {
+        "name": "00000003-837f9f0c264fb450.json",
+        "sha256": "659133bb038193ad61d208cfbc99b76007578da30e1dab7fddeb199402282e98"
+      },
+      {
+        "name": "00000004-0ec8424a31511423.json",
+        "sha256": "9f3950c625b6c54864f76d883168b35c58bf7bc7fe76cd8013e902322e023ca1"
+      },
+      {
+        "name": "00000005-5aaa28fb8cc5b0bf.json",
+        "sha256": "cdbf552bd6c302362c6a5b662c6c19c997b2c30faddd9195b614dc8fcdc41b74"
+      }
+    ]
+  },
+  "schemaVersion": 1,
+  "sourceCandidate": [
+    {
+      "path": "global/bin/work-campaign.ts",
+      "sha256": "60e75eb5a9d10aa236b5cc820c72ad045f42c72345ad18a8844d537316935609"
+    },
+    {
+      "path": "global/bin/work-campaign/contracts.ts",
+      "sha256": "f9ded02a21c26c2f259081b2fa6fc8041693d1b91eb1b744466980bb342e3351"
+    },
+    {
+      "path": "global/bin/work-campaign/state.ts",
+      "sha256": "3901f7b1f7cb55fd307eda0d2c6df3f4fe3da7a0e6e66c92c06359a2def1a121"
+    },
+    {
+      "path": "tools/test-work-campaign.ts",
+      "sha256": "4c3f4c12af818033e2dbfa107c4b4afb85b0f8dca066f41eb64415b02a6341ef"
+    }
+  ],
+  "sourceManifest": {
+    "afterDigests": [
+      "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+      "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+      "e5a7276e8752f3c1c8e787ebedab1ab6703d5fa62f90f07e10d9abe65eb95d1a"
+    ],
+    "beforeDigests": [
+      "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+      "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+      "e5a7276e8752f3c1c8e787ebedab1ab6703d5fa62f90f07e10d9abe65eb95d1a"
+    ],
+    "sourceWrites": 0
+  }
+}

@@ -9,6 +9,7 @@ import fs from "node:fs";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
+import { stableJson } from "../../../global/bin/roadmap-mission/contracts.ts";
 import { stopProofProcessTree } from "./proof-process-cleanup.ts";
 
 export type ProofRoute = {
@@ -37,6 +38,19 @@ export type ProofServerStartupFacts = {
   isolatedConfigLoaded: boolean;
   ripgrepDownloadRequested: boolean;
 };
+
+export type ProofRuntimeSurface = {
+  configDigest: string;
+  mcpIds: string[];
+  pluginIds: string[];
+};
+
+export function writeIsolatedProofConfig(configDir: string, config: Record<string, unknown>): { configDigest: string } {
+  const contents = stableJson(config);
+  fs.mkdirSync(configDir, { recursive: true });
+  fs.writeFileSync(path.join(configDir, "opencode.json"), contents, { encoding: "utf8", flag: "wx" });
+  return { configDigest: crypto.createHash("sha256").update(contents).digest("hex") };
+}
 
 export type ProofServerHandle = {
   child: ChildProcessWithoutNullStreams;
@@ -312,6 +326,24 @@ export function proofClient(baseUrl: string, directory: string): OpencodeClient 
     ? { Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}` }
     : undefined;
   return createOpencodeClient({ baseUrl, directory, ...(headers == null ? {} : { headers }) });
+}
+
+export async function proofRuntimeSurface(client: OpencodeClient, directory: string): Promise<ProofRuntimeSurface> {
+  const config = await requestData<Record<string, unknown>>(
+    client.config.get({ directory }) as Promise<unknown>,
+    "config.get",
+  );
+  const mcpIds = config.mcp != null && typeof config.mcp === "object" && !Array.isArray(config.mcp)
+    ? Object.keys(config.mcp as Record<string, unknown>).sort()
+    : [];
+  const pluginIds = Array.isArray(config.plugin)
+    ? config.plugin.filter((value): value is string => typeof value === "string").sort()
+    : [];
+  return {
+    configDigest: crypto.createHash("sha256").update(stableJson(config)).digest("hex"),
+    mcpIds,
+    pluginIds,
+  };
 }
 
 function agentRows(payload: unknown): Array<Record<string, unknown>> {

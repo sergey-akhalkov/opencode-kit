@@ -1,0 +1,25 @@
+{
+  "candidateId": "foundation-fi-camp-003-r1",
+  "checks": {
+    "assignmentBound": true,
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "environmentMatched": true,
+    "exactlyOneModelCall": true,
+    "noChildren": false,
+    "noPermissionOrQuestion": false,
+    "noSourceWrite": false,
+    "outputBound": false,
+    "processExited": false,
+    "resultComplete": false,
+    "routeMatched": true,
+    "serverExplicit": true,
+    "structuredOutputObserved": false,
+    "surfaceExtensionFree": true
+  },
+  "environmentId": "node-24.18.1-windows-isolated-semantic-r1",
+  "liveCalls": 1,
+  "proofKind": "campaign-semantic-root",
+  "schemaVersion": 1,
+  "status": "blocked"
+}

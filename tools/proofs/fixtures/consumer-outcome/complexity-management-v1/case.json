@@ -7,6 +7,8 @@
   "materialEffects": ["inventory-reservation", "payment-charge", "receipt-record"],
   "materialFailure": "PaymentDeclinedError: payment declined",
   "proofCommands": ["node test/scenario.test.ts", "node check-decision.ts"],
+  "postRefactorEssentialContext": ["src/run-order.ts", "src/order-service.ts", "test/scenario.test.ts"],
+  "postRefactorContextRule": "After an admitted facade, changeRehearsal.essentialContext contains only the consumer, facade owner, and scenario oracle still essential to use and prove that consumer boundary. Stable internals remain architectureMap.hiddenInternals and must not remain in essentialContext.",
   "requiredDecisionFields": ["admissionClass", "architectureMap", "caseId", "changeRehearsal", "claimCeiling", "facadeDisposition", "inventoryStatus"],
   "fallbackDecision": {
     "admissionClass": "unknown",

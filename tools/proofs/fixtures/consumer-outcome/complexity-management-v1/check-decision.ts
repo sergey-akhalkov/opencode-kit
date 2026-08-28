@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
 const decision = JSON.parse(fs.readFileSync("decision.json", "utf8"));
+const fixtureCase = JSON.parse(fs.readFileSync("case.json", "utf8"));
 const exactKeys = (value: Record<string, unknown>, expected: string[], label: string): void => {
   const actual = Object.keys(value).sort();
   if (actual.join(",") !== [...expected].sort().join(",")) throw new Error(`${label} fields are not exact.`);
@@ -18,5 +19,17 @@ for (const field of ["cohesiveOwners", "effects", "failures", "hiddenInternals",
 exactKeys(decision.changeRehearsal, ["candidateResponse", "essentialContext", "expectedEditSet", "observedPressure", "proofSet", "sameScenarioResult", "scenario"], "changeRehearsal");
 for (const field of ["essentialContext", "expectedEditSet", "proofSet"]) {
   stringArray(decision.changeRehearsal[field], `changeRehearsal.${field}`);
+}
+if (decision.admissionClass === "accepted-refactor") {
+  const context = decision.changeRehearsal.essentialContext as string[];
+  const matchesPath = (item: string, expected: string): boolean => item === expected || item.startsWith(`${expected}:`);
+  for (const internal of fixtureCase.stableInternals as string[]) {
+    if (context.some((item) => matchesPath(item, internal))) throw new Error(`post-refactor essentialContext retains hidden internal: ${internal}`);
+    if (!(decision.architectureMap.hiddenInternals as string[]).includes(internal)) throw new Error(`architectureMap.hiddenInternals omits: ${internal}`);
+  }
+  for (const required of fixtureCase.postRefactorEssentialContext as string[]) {
+    if (!context.some((item) => matchesPath(item, required))) throw new Error(`post-refactor essentialContext omits: ${required}`);
+  }
+  if (decision.changeRehearsal.sameScenarioResult === "not-run") throw new Error("accepted refactor must record the same-scenario result.");
 }
 console.log(JSON.stringify(decision));

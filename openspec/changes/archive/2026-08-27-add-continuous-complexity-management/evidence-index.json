@@ -1,0 +1,1347 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-continuous-complexity-management",
+  "candidateId": "continuous-complexity-management-5634611b",
+  "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": {
+      "maxFiles": 80,
+      "maxBytes": 8388608,
+      "reason": "The configured complexity population retains immutable malformed and oracle-failing historical baselines, the bounded default-core probe, the sealed r4 population pair, a provider-free replay, and final loaded readback; deleting or rewriting those records would erase causal failure and identity evidence.",
+      "cleanupRule": "Retain only files explicitly indexed by this change through archive; add no duplicate replay, raw private prompt, credential, external repository payload, or mutable disposable fixture.",
+      "validation": "Evidence inventory must report at most 80 retained files, at most 8388608 bytes, zero unindexed files, and every schema-v2 lane must resolve with current size and SHA-256 readback."
+    }
+  },
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "6237b5b1b515c42b35c1f0f9746d90fb997287f2bb5b149252ecc0c7a4281130",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-change-inventory",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "npm run openspec:change-inventory -- --root . --mode all",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-1-ownership.md",
+        "ownership.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.1.1",
+      "taskTextDigest": "296a2da3c59c9e6372cfc483426299db026101de129998ec5f9dac0641cc0301",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate-apply",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "openspec-operation-gate-apply",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node global/bin/openspec-operation-gate.ts --root . --operation apply --change add-continuous-complexity-management",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "falsification-review.md",
+        "implementation-evidence/task-1-1-1-falsification.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.2",
+      "taskTextDigest": "48e6c96447867c0330fd6e5061762724350e0cda8331bed021d9c4170066fa2f",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-schema-roundtrip",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-schema-roundtrip",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-complexity-foraging-contract.ts",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-2-schema.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "1.3",
+      "taskTextDigest": "342e8b27033940aebdf9e2fa7be529d2ce95e80c9da8b6cb1d89de8d963ef0e1",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-inventory-cli",
+        "effects": [
+          "read-only",
+          "temporary-files"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-inventory-cli",
+        "effects": [
+          "read-only",
+          "temporary-files"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/test-complexity-foraging-inventory.ts",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-1-3-cli.md",
+        "implementation-evidence/task-1-3-help.txt",
+        "implementation-evidence/task-1-3-cohesive.json",
+        "implementation-evidence/task-1-3-noisy.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.1",
+      "taskTextDigest": "d8b1449f6d126bc06b11d87495189b34f70b7d3ed6ba3585658352adb05cf75a",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-management-skill-contract-readback",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-management-skill-contract-readback",
+        "effects": [
+          "read-only"
+        ]
+      },
+      "invocation": {
+        "command": "node --input-type=module -e <focused complexity-management discovery contract readback>",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-1-skill.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.2",
+      "taskTextDigest": "5d8b793b4e0b1fb46a664969cda8adf021f906facb18094404f0fdc0acf98b05",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-core",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-core",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:runtime-surface-loader -- --candidate-id continuous-complexity-management-profile-r1 --evidence-root openspec/changes/add-continuous-complexity-management/implementation-evidence/task-2-2-runtime-core-r2 --profile core",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-2-profiles.md",
+        "implementation-evidence/task-2-2-runtime-core-r2/raw.json",
+        "implementation-evidence/task-2-2-runtime-core-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.3",
+      "taskTextDigest": "7af6938f03c9f226652e424945366a5d61140ff3333902486dbaea43528ed6aa",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-integrated-routing",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "opencode-runtime-surface-loader-integrated-routing",
+        "effects": [
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "npm run proof:runtime-surface-loader -- --candidate-id continuous-complexity-management-routing-r1 --evidence-root openspec/changes/add-continuous-complexity-management/implementation-evidence/task-2-3-runtime-core-r2 --profile core",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-3-routing.md",
+        "implementation-evidence/task-2-3-runtime-core-r2/raw.json",
+        "implementation-evidence/task-2-3-runtime-core-r2/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "2.4",
+      "taskTextDigest": "673d51f27fe176f87ee3b27823e143bca111c859fe16dbf88185d43be26b5112",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-loaded-useful-current-consumer-facade",
+        "effects": [
+          "configured-provider-request",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-loaded-useful-current-consumer-facade",
+        "effects": [
+          "configured-provider-request",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/proofs/consumer-outcome-regression.ts --mode diagnose --pack complexity --candidate-id complexity-facade-configured-diagnose-r2 --evidence-root <task-2-4-configured-diagnose-r2> --source-ref working-tree --session-mode configured --opencode <installed-opencode>",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-2-4-offline-gate.md",
+        "implementation-evidence/task-2-4-configured-diagnose-r2/diagnostic.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.1",
+      "taskTextDigest": "977f7d68083e2aa119348a9c8e4a1c3dcf4eb10dbb2959fa2a856b2e35862ab9",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-full-cli-contract",
+        "effects": [
+          "read-only",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "complexity-foraging-full-cli-contract",
+        "effects": [
+          "read-only",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:complexity-foraging",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-1-inventory-cli.md",
+        "implementation-evidence/task-3-1-cohesive.json",
+        "implementation-evidence/task-3-1-cohesive.md",
+        "implementation-evidence/task-3-1-max-files.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.2",
+      "taskTextDigest": "76be7bcc170e9c94d2e825ce1de96d8e9117ceab31cae9649399bb2a0e32685e",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "consumer-outcome-configured-complexity-pack-readback",
+        "effects": [
+          "read-only",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "consumer-outcome-configured-complexity-pack-readback",
+        "effects": [
+          "read-only",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:consumer-outcome",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-2-configured-partition-pack.md",
+        "implementation-evidence/task-3-2-invocation-manifest.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.3",
+      "taskTextDigest": "1eb94e9283c371cdeb47f27858b9ae5e598f35dd21e54515e88bcd8e70de5b00",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-partition-fact-diff-evaluator",
+        "effects": [
+          "read-only",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-partition-fact-diff-evaluator",
+        "effects": [
+          "read-only",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "npm run test:focused:consumer-outcome; provider-free replay of the sealed r4 baseline/candidate bundles",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-3-configured-baseline-r4/evaluation.json",
+        "implementation-evidence/task-3-3-configured-candidate-r4/evaluation.json",
+        "implementation-evidence/task-3-3-configured-candidate-r4/replay-1.json"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "3.4",
+      "taskTextDigest": "91cbc7490f594093266fea0055007982a7a7e9af1bdda8518411f95cf1aa51ff",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "integrated-complexity-contract-and-profile-readback",
+        "effects": [
+          "read-only",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "integrated-complexity-contract-and-profile-readback",
+        "effects": [
+          "read-only",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "focused library/contracts/instruction-context/consumer-outcome checks plus core/all runtime-surface loader readback",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-4-runtime-core-r1/raw.json",
+        "implementation-evidence/task-3-4-runtime-core-r1/evaluation.json",
+        "implementation-evidence/task-3-4-runtime-all-r1/raw.json",
+        "implementation-evidence/task-3-4-runtime-all-r1/evaluation.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.1",
+      "taskTextDigest": "65f5ca0c83cdebde634248fd9ec14b2b5fc0453078b3aa9d2fdc0c269b8a7922",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "matched-configured-complexity-population",
+        "effects": [
+          "configured-provider-request",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "matched-configured-complexity-population",
+        "effects": [
+          "configured-provider-request",
+          "temporary-files",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "sealed complexity-configured r4 baseline/candidate captures followed by provider-free no-regression replay",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-3-3-configured-baseline-r4/bundle.json",
+        "implementation-evidence/task-3-3-configured-baseline-r4/evaluation.json",
+        "implementation-evidence/task-3-3-configured-candidate-r4/bundle.json",
+        "implementation-evidence/task-3-3-configured-candidate-r4/evaluation.json",
+        "implementation-evidence/task-3-3-configured-candidate-r4/replay-1.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.2",
+      "taskTextDigest": "f9490a4a31fc8deb586b277de48997df71eaf6b0c4806680b85fb1b8dae5c529",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-read-only-pmac-diagnostic",
+        "effects": [
+          "read-only",
+          "configured-provider-request",
+          "local-processes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "configured-read-only-pmac-diagnostic",
+        "effects": [
+          "read-only",
+          "configured-provider-request",
+          "local-processes"
+        ]
+      },
+      "invocation": {
+        "command": "active-source complexity inventory plus configured read-only PMAC assessment session ses_fbcab4e74ffe2wdM1AUUtj8SqC",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-4-2-pmac-scope.json",
+        "implementation-evidence/task-4-2-pmac-inventory.md",
+        "implementation-evidence/task-4-2-pmac-configured-diagnostic.json"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "4.3",
+      "taskTextDigest": "8a7b48c238821f36dd3b5bb1fbfe5bda6fe280d3849ed4aa0ca60f2fd0f4ebb3",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "partitioned-claim-materialization-and-independent-challenge",
+        "effects": [
+          "local-evidence-writes",
+          "read-only-specialist"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "partitioned-claim-materialization-and-independent-challenge",
+        "effects": [
+          "local-evidence-writes",
+          "read-only-specialist"
+        ]
+      },
+      "invocation": {
+        "command": "node tools/evidence-index.ts --materialize; fresh evidence-sufficiency-reviewer ses_fbc978564ffeQ3qA85lPBYJk2B; apply operation gate",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "evidence-index.json",
+        "implementation-evidence/task-4-3-evidence-sufficiency-review.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.1",
+      "taskTextDigest": "0dedd060b11c495421131c6d51e006350eb75c26063a570d345a3de64c8324c7",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "three-triggered-maintenance-observations",
+        "effects": [
+          "read-only-specialists"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "three-triggered-maintenance-observations",
+        "effects": [
+          "read-only-specialists"
+        ]
+      },
+      "invocation": {
+        "command": "fresh architecture-and-change-locality, simplicity-and-reuse, and instruction-governance Practice Owner observations",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-5-1-maintenance-observations.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.2",
+      "taskTextDigest": "6b445ed7a8dafdd6ca119fb12b8b9a8b8ff3223729cc7323b96000373b2c46e9",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "full-validation-and-loaded-profile-readback",
+        "effects": [
+          "read-only",
+          "temporary-files",
+          "local-evidence-writes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "full-validation-and-loaded-profile-readback",
+        "effects": [
+          "read-only",
+          "temporary-files",
+          "local-evidence-writes"
+        ]
+      },
+      "invocation": {
+        "command": "loaded core runtime proof; focused complexity/locality/context tests; code-quality and instruction inventories; npm test; validate:strict; selected/all OpenSpec strict validation; evidence inventory; apply gate; git diff --check",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-5-2-runtime-core-r1/raw.json",
+        "implementation-evidence/task-5-2-runtime-core-r1/evaluation.json",
+        "implementation-evidence/task-5-2-validation.md"
+      ],
+      "cleanup": "complete",
+      "manualGate": null
+    },
+    {
+      "taskId": "5.3",
+      "taskTextDigest": "8258ea5dae4c41bc5698ebe6ed6f314b47cdb5f10ac36e0726041119fc747f77",
+      "result": "complete",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "requiredBoundary": {
+        "kind": "named-entrypoint",
+        "name": "local-cold-reader-handoff",
+        "effects": [
+          "local-evidence-writes"
+        ]
+      },
+      "boundary": {
+        "kind": "named-entrypoint",
+        "name": "local-cold-reader-handoff",
+        "effects": [
+          "local-evidence-writes"
+        ]
+      },
+      "invocation": {
+        "command": "write final handoff; verify fresh OpenSpec status and archive gate",
+        "status": 0,
+        "recordedAt": "2026-08-27"
+      },
+      "artifacts": [
+        "implementation-evidence/task-5-3-handoff.md"
+      ],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [
+    {
+      "name": "implementation-records",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "planning-review-disposition.md",
+          "bytes": 7880,
+          "digest": "3d7f046ed452a35c28d0916108174aceef46f63c5533ec5359599419c7ab5d75"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-ownership.md",
+          "bytes": 3404,
+          "digest": "5070141ff647fd2a94f013bcc8c523be9a3b7e9f02dbe3d228b216ce7f007524"
+        },
+        {
+          "path": "falsification-review.md",
+          "bytes": 1347,
+          "digest": "6013af1d9ffadb59d0ec647e16e9b9312b1e2f53d9fbc77527a710cc724142e7"
+        },
+        {
+          "path": "implementation-evidence/task-1-1-1-falsification.md",
+          "bytes": 3542,
+          "digest": "5d55fba5081184b44483f19f098479c57c0da09191a8420ba74dd024b7490381"
+        },
+        {
+          "path": "implementation-evidence/task-1-2-schema.md",
+          "bytes": 4849,
+          "digest": "59bf5bc5751c23e8fa1e0e18ecc4d73ca1b76979e0e43a949a54759dd61b8e70"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-cli.md",
+          "bytes": 4676,
+          "digest": "f0ca6241e8272c2b62a76716636f88da79b2a88f07e660d581bfac445d827d20"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-help.txt",
+          "bytes": 1109,
+          "digest": "1029b84145aef48bbc099081bedf7afc46b126d86a9159e0ad35f261643f16b3"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-cohesive.json",
+          "bytes": 2576,
+          "digest": "b24ac70a20f4e7653ac4c5fec17f663b108d0e87748deca93ac214e3ed2f43f3"
+        },
+        {
+          "path": "implementation-evidence/task-1-3-noisy.json",
+          "bytes": 2657,
+          "digest": "133d7eb3342304c79baa55662d56c128d1c89330fc7ddb1eb72af51aa951f802"
+        },
+        {
+          "path": "implementation-evidence/task-2-1-skill.md",
+          "bytes": 3932,
+          "digest": "1c1e34ec3ee3419387654af0c86c8f1062fcc8c296f3b83794be6598b3ce47a9"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-profiles.md",
+          "bytes": 4726,
+          "digest": "5461bc4c23692abd129528a94d4bd6f6c3a2acf6b54c463b9263e66cbc470ce1"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core/raw.json",
+          "bytes": 1804,
+          "digest": "dcf346a0c754853827d3f5de9464b3770f4d1f0ca6fcafebce451f5f4c5972a6"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core/evaluation.json",
+          "bytes": 105,
+          "digest": "64daec9b1d40c22ef9640a62746c9bbe497be574b5c03b1c165ce2d8e033fa9c"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core-r2/raw.json",
+          "bytes": 2068,
+          "digest": "0e0284e652f7773f7cb3886b792f952167c69801b9fde73a04afa7074754228e"
+        },
+        {
+          "path": "implementation-evidence/task-2-2-runtime-core-r2/evaluation.json",
+          "bytes": 105,
+          "digest": "a3981009f2d439529c1faa4d93fc62e289ea7cabcd3c65e759bc9c01a089dcbb"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-routing.md",
+          "bytes": 4755,
+          "digest": "fa6cdab047f961275d5553afb9f50622284e97195f0d1a1767290c48ab9e5a35"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core/raw.json",
+          "bytes": 2108,
+          "digest": "840cb47b6a327d175ffa4173b4fef2fca10e6e3db2d9c87b69419c10633e44cf"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core/evaluation.json",
+          "bytes": 105,
+          "digest": "178501178343498eb5274e8b002a4ec88299be6a0da249056bca9cb13d492f08"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core-r2/raw.json",
+          "bytes": 2108,
+          "digest": "840cb47b6a327d175ffa4173b4fef2fca10e6e3db2d9c87b69419c10633e44cf"
+        },
+        {
+          "path": "implementation-evidence/task-2-3-runtime-core-r2/evaluation.json",
+          "bytes": 105,
+          "digest": "178501178343498eb5274e8b002a4ec88299be6a0da249056bca9cb13d492f08"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-gate.md",
+          "bytes": 11943,
+          "digest": "f6bd3a6b19e4f7107a05973dd2811ea7067e55c7e0cf37957d7790bfb2628ead"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r1/bundle.json",
+          "bytes": 9950,
+          "digest": "86a11007e1d4c668d98910b3560811c924098d115689bfe0cf34bb38d6dd70a9"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r1/evaluation.json",
+          "bytes": 5510,
+          "digest": "cef0292deff8f42123afc0ef5eedb659e00320b9b1e66d6aa790fcb5ff8d32d9"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r2/bundle.json",
+          "bytes": 9950,
+          "digest": "d112cab3e4485d6a566fa714eb45a01e6ef0652420bddab3722399bf98bd0777"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-baseline-r2/evaluation.json",
+          "bytes": 5196,
+          "digest": "544c5c7b5af79813fa6c6d21438a6e51fd7dfd1cb6429cab4073f2fcfdd4d924"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/bundle.json",
+          "bytes": 10033,
+          "digest": "7f8ff216329c1e88baa41fb6c5463a884babfa955cfb431ae46df753976c692e"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/evaluation.json",
+          "bytes": 9309,
+          "digest": "6ab6ba4b08c93a1d63b3805242884838f885002b30e597cad43a7595a5476b18"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/replay-1.json",
+          "bytes": 6545,
+          "digest": "606c0b8a709ad822f5e8ceacc5784918dd3097267b07f17c542a2b4ca7147262"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-offline-candidate-r2/replay-2.json",
+          "bytes": 6545,
+          "digest": "606c0b8a709ad822f5e8ceacc5784918dd3097267b07f17c542a2b4ca7147262"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-configured-diagnose-r1/diagnostic.json",
+          "bytes": 94129,
+          "digest": "91d907d638c395dbf48d8cd30eb0021c1566a691114d1b523609babaa3a6c347"
+        },
+        {
+          "path": "implementation-evidence/task-2-4-configured-diagnose-r2/diagnostic.json",
+          "bytes": 100181,
+          "digest": "e544a935ee1ac434820f924ef04b61305ce98bf702830da272ef264fec901363"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-inventory-cli.md",
+          "bytes": 4449,
+          "digest": "997c42cb5781f7db58e8ff8e180264db33c062b37bdd23693d4b78e3ac52768c"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-cohesive.json",
+          "bytes": 2576,
+          "digest": "b24ac70a20f4e7653ac4c5fec17f663b108d0e87748deca93ac214e3ed2f43f3"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-cohesive.md",
+          "bytes": 1532,
+          "digest": "12148372332a35ff0130b99a755bed530149a198cb34f57c8ecdc947e540dcc4"
+        },
+        {
+          "path": "implementation-evidence/task-3-1-max-files.json",
+          "bytes": 1435,
+          "digest": "05d21c4b0e4f1ff343f154fef80e207b06b24e867388fcf3b977c842f1c2e9c6"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-configured-partition-pack.md",
+          "bytes": 3202,
+          "digest": "561e9e8f7cbdda6f1379880bee2f7f1dccef58db0a000952e02f9aa99f0b8fbc"
+        },
+        {
+          "path": "implementation-evidence/task-3-2-invocation-manifest.json",
+          "bytes": 18797,
+          "digest": "f5b13f48914090f072d693bff4999d2d64f41f5d959d7884e054014f5b2c003a"
+        }
+      ]
+    },
+    {
+      "name": "configured-population-baseline",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-3-configured-baseline-r4/bundle.json",
+          "bytes": 775736,
+          "digest": "09fc4f77d5e94c768cda82035447c23b309392602bb595ced043a4e46ce36101"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-configured-baseline-r4/evaluation.json",
+          "bytes": 25386,
+          "digest": "efb2a889cd47d0ffe6ff0070951493d1a88bc7513ac3bfc5546c58b02a6e3e2c"
+        }
+      ]
+    },
+    {
+      "name": "configured-population-candidate",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-3-configured-candidate-r4/bundle.json",
+          "bytes": 1009733,
+          "digest": "0ad47c1e2a376daf0c7c4e28dfc0ec5c277a0bc28234d84e41ca859e2491b40c"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-configured-candidate-r4/evaluation.json",
+          "bytes": 72464,
+          "digest": "c759593a282339ebf013811a97a05834e292bcd2cffbcfcba88647188f1d0e09"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-configured-candidate-r4/replay-1.json",
+          "bytes": 52473,
+          "digest": "91c8d5c44fc16efb1742fa3f09d4a8bffb507fcd94eb7ce98a26285e87a25af9"
+        }
+      ]
+    },
+    {
+      "name": "profile-readback",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-4-runtime-core-r1/raw.json",
+          "bytes": 2114,
+          "digest": "845838825a938520190027720d58ee7ac2494f4bf5588879c06b72036fe65f24"
+        },
+        {
+          "path": "implementation-evidence/task-3-4-runtime-core-r1/evaluation.json",
+          "bytes": 105,
+          "digest": "84ad7e047b8f60f6b2bac5d07b5fa86bd4bddd43b853c3d720f1e5029e5005df"
+        },
+        {
+          "path": "implementation-evidence/task-3-4-runtime-all-r1/raw.json",
+          "bytes": 824,
+          "digest": "87fc74c7bc4f0570d5d4c4b3ad93515ced819c8d0b69b165c0fae226fb812eab"
+        },
+        {
+          "path": "implementation-evidence/task-3-4-runtime-all-r1/evaluation.json",
+          "bytes": 105,
+          "digest": "7493c685b0a9c2e8104d5dcec17dde9a9118f28df6c08a62f573f731b4e43bf4"
+        }
+      ]
+    },
+    {
+      "name": "pmac-exact-diagnostic",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-2-pmac-scope.json",
+          "bytes": 3384,
+          "digest": "f7a777918cb9c30f6502243cf516e1508f949767f9f8c30de9c38911ad24256a"
+        },
+        {
+          "path": "implementation-evidence/task-4-2-pmac-inventory.md",
+          "bytes": 3030,
+          "digest": "59eb0495f22af934de68d89f5e9dc5d456ca06f9d9a1624d411bc646267169f7"
+        },
+        {
+          "path": "implementation-evidence/task-4-2-pmac-configured-diagnostic.json",
+          "bytes": 6549,
+          "digest": "df7d5fbb08d9b05e5893b699416943b44122cf9771a900cfd311d37939a48185"
+        }
+      ]
+    },
+    {
+      "name": "independent-challenge",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-4-3-evidence-sufficiency-review.md",
+          "bytes": 4786,
+          "digest": "e289ea3f14dab56ea45c3739dee6507802d4671c2769711c5b309b2cb6bc1a90"
+        }
+      ]
+    },
+    {
+      "name": "maintenance-observations",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-5-1-maintenance-observations.md",
+          "bytes": 2562,
+          "digest": "06c795701bab1271d0a07c4c4f6d8a8aadd7094782dba3218d00b69f650c5442"
+        }
+      ]
+    },
+    {
+      "name": "configured-population-failed-attempts",
+      "kind": "raw-bundle",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-3-configured-baseline-r2/bundle.json",
+          "bytes": 828687,
+          "digest": "15b463540ab29e014e61204e99b15af6e208fe4da4a624eb3c7a86016d0b9393"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-configured-baseline-r2/evaluation.json",
+          "bytes": 18296,
+          "digest": "ad96ee90d639a9e35f42c029820d5bed82156716fc2ed80c6eee0631b8562426"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-configured-baseline-r3/bundle.json",
+          "bytes": 733786,
+          "digest": "e299eaba5c6dbcbb46173baceb9fd79a5e3c423958b041143468abd765a83ed4"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-configured-baseline-r3/evaluation.json",
+          "bytes": 27178,
+          "digest": "f96b7ca9029b48e64a817da4c4f6a189b3961d54b6686ec00a10bf7d1a3e05b7"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-configured-baseline-r3/replay-1.json",
+          "bytes": 18850,
+          "digest": "ccb853f3f822eec5383f75b3afa053a32fb6aa9fedaaccf0359e55d6b8f553d8"
+        }
+      ]
+    },
+    {
+      "name": "default-core-probe",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-3-3-default-core-baseline-r1/bundle.json",
+          "bytes": 76828,
+          "digest": "b54c098ec9e408dec4b76f413a583578cfe4857ca2ff53875da84d499b79baa8"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-default-core-baseline-r1/evaluation.json",
+          "bytes": 3107,
+          "digest": "6b865d0e216287888813460a0e90abb81eea8cedbcba53eafcb1037472945500"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-default-core-candidate-r1/bundle.json",
+          "bytes": 99180,
+          "digest": "77f16be1d6b41c3b4d2010b241d3d1be71410a2d8a12ebd586e7ceb45c10e373"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-default-core-candidate-r1/evaluation.json",
+          "bytes": 7039,
+          "digest": "8f31ffd6449e9327c52cdefaec6ab6a606717990668c536f3440ddbecc96d6cf"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-default-core-candidate-r1/replay-1.json",
+          "bytes": 5267,
+          "digest": "07e2db8280abe5db56b17f15976bcdf92f82ca8eef2bd15f8ef754fffd1ff3fb"
+        },
+        {
+          "path": "implementation-evidence/task-3-3-default-core-candidate-r1/replay-2.json",
+          "bytes": 5188,
+          "digest": "133e8edc30bdf5f9fb34cdde4e516f7b8b14cf78fd005d1d41f12da6a661052b"
+        }
+      ]
+    },
+    {
+      "name": "final-runtime-readback",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-5-2-runtime-core-r1/raw.json",
+          "bytes": 2114,
+          "digest": "35df85bacf0cdd5151be01155246c3a1f52e581197d15ea68a63810201e020c4"
+        },
+        {
+          "path": "implementation-evidence/task-5-2-runtime-core-r1/evaluation.json",
+          "bytes": 105,
+          "digest": "cce1c9abde29865c14da0d08ab24f249fc96d9110d7d86f9a5dad5783d4c08fb"
+        }
+      ]
+    },
+    {
+      "name": "final-validation",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-5-2-validation.md",
+          "bytes": 4419,
+          "digest": "c415aa03530c70d39689fffcb6f67236c559e9e8fca3ac145fe7d14bf3547170"
+        }
+      ]
+    },
+    {
+      "name": "final-handoff",
+      "kind": "terminal",
+      "files": [
+        {
+          "path": "implementation-evidence/task-5-3-handoff.md",
+          "bytes": 9020,
+          "digest": "029f9100351379f53276c8fc244c58400153ec816b5acffba690d5dc6c205968"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "continuous-complexity-management-v1",
+      "outcomeRef": "proposal-outcome",
+      "statement": "Under the recorded configured environment, each of the twelve reviewed disposable partitions satisfies only its exact fixture oracle: cohesive stay-quiet delta, modular focused retain, noisy scope narrowing, mixed-owner owner-then-defer, useful-facade admission, frozen/current path classification, redundant-wrapper removal, speculative factory removal, review-only project routing, default-core focused availability with project mode unavailable, unreadable-root unknown, or unsupported-ecosystem unknown. Representative behavior is preserved, and lower consumer context is supported only for members whose exact fact-diffs show it.",
+      "claimClass": "partitioned-domain",
+      "candidateId": "continuous-complexity-management-5634611b",
+      "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+      "coverageBasis": "partitioned-domain",
+      "population": {
+        "id": "continuous-complexity-management-partitions-v1",
+        "members": [
+          "cohesive-small-project",
+          "modular-multi-component-project",
+          "noisy-corpus-or-evidence-project",
+          "mixed-owner-module",
+          "useful-current-consumer-facade",
+          "frozen-compatibility-and-current-extension",
+          "redundant-wrapper-chain",
+          "speculative-generic-abstraction",
+          "explicit-review-only-project-assessment",
+          "default-core-availability",
+          "unreadable-root",
+          "unsupported-ecosystem"
+        ],
+        "partitionRule": "Versioned reviewed disposable fixtures partition one loaded complexity workflow by proportional mode, repository scope/noise, ownership locality, facade value, compatibility path, speculative structure, default-core availability, and evidence support state.",
+        "materialClasses": [
+          "cohesive-small-project",
+          "modular-multi-component-project",
+          "noisy-corpus-or-evidence-project",
+          "mixed-owner-module",
+          "useful-current-consumer-facade",
+          "frozen-compatibility-and-current-extension",
+          "redundant-wrapper-chain",
+          "speculative-generic-abstraction",
+          "explicit-review-only-project-assessment",
+          "default-core-availability",
+          "unreadable-root",
+          "unsupported-ecosystem"
+        ],
+        "residualSpace": "The separate read-only PMAC diagnostic, other models, providers, hosts, repositories, ecosystems, unreviewed change axes, long-term architecture-map drift, defect-rate and productivity effects, and optimal architecture remain outside the claim."
+      },
+      "paths": {
+        "production": "configured-loaded-complexity-workflow-in-disposable-project",
+        "baseline": "current-loaded-locality-workflow-in-disposable-project",
+        "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+      },
+      "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+      "realOracle": {
+        "required": true,
+        "status": "observed",
+        "evidenceRefs": [
+          "configured-population-baseline",
+          "configured-population-candidate"
+        ]
+      },
+      "observations": [
+        {
+          "memberId": "cohesive-small-project",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "modular-multi-component-project",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "noisy-corpus-or-evidence-project",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "mixed-owner-module",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "useful-current-consumer-facade",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "frozen-compatibility-and-current-extension",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "redundant-wrapper-chain",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "speculative-generic-abstraction",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "explicit-review-only-project-assessment",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "default-core-availability",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unreadable-root",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        },
+        {
+          "memberId": "unsupported-ecosystem",
+          "candidateId": "continuous-complexity-management-5634611b",
+          "environmentId": "openai-gpt-5.6-sol-xhigh-opencode-1.18.23-windows-node-24.18.1",
+          "paths": {
+            "production": "configured-loaded-complexity-workflow-in-disposable-project",
+            "baseline": "current-loaded-locality-workflow-in-disposable-project",
+            "candidate": "candidate-loaded-complexity-workflow-in-disposable-project"
+          },
+          "observationBoundary": "matched-configured-disposable-project-workflow-and-readback",
+          "status": "supported",
+          "terminal": true,
+          "evidenceRefs": [
+            "configured-population-baseline",
+            "configured-population-candidate"
+          ],
+          "unresolvedObservations": []
+        }
+      ],
+      "evidenceRefs": [
+        "configured-population-baseline",
+        "configured-population-candidate",
+        "independent-challenge"
+      ],
+      "materialExclusions": [
+        "Universal architecture quality or understandability for every project",
+        "Optimal abstraction or automatic pattern selection",
+        "Long-term productivity, defect-rate, or maintenance-cost improvement",
+        "Mandatory scheduled or every-task architecture review",
+        "Consumer-project production refactoring or migration",
+        "Provider, model, host, or ecosystem generalization beyond captured partitions",
+        "Error-free or lower-friction model tool execution for members with retained denied shell probes",
+        "Remote mutation, deployment, release, credentials, or protected product effects"
+      ],
+      "unknowns": [],
+      "independentChallenge": {
+        "required": true,
+        "status": "complete",
+        "evidenceRefs": [
+          "independent-challenge"
+        ]
+      },
+      "maximumSupportedClaim": "Under the recorded OpenAI gpt-5.6-sol xhigh configured route, Windows, OpenCode 1.18.23, Node 24.18.1, source, scenario, permission, proof, and cleanup identities, the twelve reviewed disposable partitions support only their exact reviewed outcomes: cohesive stay-quiet delta; modular focused retain; noisy scope narrowing; mixed-owner owner-then-defer; useful-facade admission; frozen/current path classification; redundant-wrapper removal; speculative factory removal; review-only project routing; default-core focused availability with project mode unavailable; unreadable-root unknown; and unsupported-ecosystem unknown. Representative behavior is preserved, and lower consumer context is supported only where exact fact-diffs show it. Denied shell probes remain diagnostic facts. PMAC, other providers/models/hosts/repositories/ecosystems, universal architecture quality, optimal abstraction, and long-term productivity or defect effects remain outside the claim.",
+      "narrowingAccepted": false,
+      "disposition": "supported"
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "packId": "work-campaign-provider-free-v1",
+  "baseRecord": {
+    "schemaVersion": 1,
+    "definition": {
+      "schemaVersion": 1,
+      "campaignId": "fixture-campaign",
+      "outcome": "Review the declared local scope and remediate only confirmed P0/P1 work.",
+      "scopeRoots": [
+        "src"
+      ],
+      "exclusions": [
+        ".work-campaign/evidence"
+      ],
+      "playbook": "audit-remediate",
+      "paths": {
+        "state": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign",
+        "evidence": ".work-campaign/evidence",
+        "report": ".work-campaign/report.md"
+      },
+      "validationArgv": [
+        "node",
+        "validate.mjs"
+      ],
+      "checkpointPolicy": "local-git",
+      "allowedEffects": [
+        "local-read",
+        "local-write",
+        "local-commit"
+      ],
+      "authorizationRefs": [
+        "authorization:fixture-local"
+      ],
+      "budgets": {
+        "modelCalls": 4,
+        "wallClockSeconds": 300,
+        "evidenceBytes": 1048576,
+        "waves": 2
+      },
+      "hostResume": "disabled",
+      "stopPolicy": "explicit-or-terminal",
+      "protectedDecisionPolicy": "owner-required"
+    },
+    "definitionDigest": "sha256:543ea359eb381d960ca26d2cccbed37676d679c11aa19e4555fcd2614a5b58bf",
+    "workItems": [
+      {
+        "id": "item-p1",
+        "severity": "P1",
+        "disposition": "confirmed"
+      },
+      {
+        "id": "item-p2",
+        "severity": "P2",
+        "disposition": "report-only"
+      }
+    ],
+    "wave": {
+      "id": "wave-1",
+      "workItemIds": [
+        "item-p1"
+      ]
+    },
+    "reportProjection": {
+      "sourceDigest": "sha256:f0ab69699d940a35c4c7f360b10abea9a693b8069ba1f620e60659ac397f2a8c",
+      "totals": {
+        "all": 2,
+        "p0": 0,
+        "p1": 1,
+        "p2": 1,
+        "p3": 0,
+        "confirmed": 1,
+        "reportOnly": 1,
+        "waveItems": 1
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "id": "valid",
+      "operation": {
+        "kind": "none"
+      },
+      "expected": {
+        "status": "complete",
+        "failedCheck": null
+      }
+    },
+    {
+      "id": "extra-field",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "definition",
+          "unexpected"
+        ],
+        "value": true
+      },
+      "expected": {
+        "status": "blocked",
+        "failedCheck": "definition:exact-fields"
+      }
+    },
+    {
+      "id": "missing-field",
+      "operation": {
+        "kind": "delete",
+        "path": [
+          "definition",
+          "playbook"
+        ]
+      },
+      "expected": {
+        "status": "blocked",
+        "failedCheck": "definition:exact-fields"
+      }
+    },
+    {
+      "id": "path-escape",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "definition",
+          "paths",
+          "report"
+        ],
+        "value": "../outside/report.md"
+      },
+      "expected": {
+        "status": "blocked",
+        "failedCheck": "definition:paths-contained"
+      }
+    },
+    {
+      "id": "stale-digest",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "definitionDigest"
+        ],
+        "value": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": {
+        "status": "blocked",
+        "failedCheck": "definition:digest-current"
+      }
+    },
+    {
+      "id": "p2-in-wave",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "wave",
+          "workItemIds"
+        ],
+        "value": [
+          "item-p2"
+        ]
+      },
+      "expected": {
+        "status": "blocked",
+        "failedCheck": "wave:eligible-items"
+      }
+    },
+    {
+      "id": "report-drift",
+      "operation": {
+        "kind": "set",
+        "path": [
+          "reportProjection",
+          "totals",
+          "p2"
+        ],
+        "value": 0
+      },
+      "expected": {
+        "status": "blocked",
+        "failedCheck": "report:totals-current"
+      }
+    }
+  ]
+}

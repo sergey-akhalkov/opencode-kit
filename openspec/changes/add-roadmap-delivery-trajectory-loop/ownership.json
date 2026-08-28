@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-roadmap-delivery-trajectory-loop",
+  "mutationEnabled": false,
+  "capabilities": [
+    {
+      "capability": "library-roadmap-delivery-trajectory",
+      "requirements": [
+        "Delivery Horizons declare project-level intent explicitly",
+        "Trajectory context tooling reports facts without semantic judgment",
+        "Successful archive receives a cheap non-blocking trajectory signal",
+        "Deep review requires a current material trajectory trigger",
+        "Deep review separates costs and forecasts honestly",
+        "Triggered review produces one bounded current disposition",
+        "Quality and protected semantics remain hard constraints",
+        "Current triggered disposition precedes dependent investment"
+      ]
+    },
+    {
+      "capability": "library-spec-workflow-integrity",
+      "requirements": [
+        "OpenSpec changes link Delivery Horizons explicitly",
+        "Complete archive remains independent of trajectory review",
+        "Horizon-dependent propose and apply consume current trajectory disposition"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Delivery trajectory routing is precise and proportional",
+        "Trajectory reflection does not restore final-retrospective ceremony",
+        "Loaded trajectory behavior is proven at actual entrypoints"
+      ]
+    },
+    {
+      "capability": "library-tools-architecture",
+      "requirements": [
+        "Trajectory context has one portable fact owner",
+        "Deterministic trajectory tooling does not infer effectiveness",
+        "Trajectory behavior reuses the maintained consumer proof family"
+      ]
+    },
+    {
+      "capability": "library-runtime-surface-profiles",
+      "requirements": [
+        "Default profiles include Delivery trajectory capability"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "global/AGENTS.md",
+    "global/bin/delivery-trajectory-context.ts",
+    "global/bin/openspec-change",
+    "global/bin/openspec-operation-gate.ts",
+    "global/opencode.json.template",
+    "global/skills/roadmap-delivery-trajectory",
+    "global/skills/openspec-propose",
+    "global/skills/openspec-apply-change",
+    "global/skills/openspec-archive-change",
+    "instructions/reusable-project-agent-instructions.md",
+    "templates/project",
+    "profiles/core.json",
+    "profiles/all.json",
+    "package.json",
+    "tools/contracts",
+    "tools/proofs/README.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1",
+    "tools/model-profile.ts",
+    "tools/runtime-surface-profile.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-library/runtime-surface-profiles.ts",
+    "tools/test-model-profile.ts",
+    "tools/validate-library.ts",
+    "tools/validators"
+  ],
+  "dependencies": [
+    {
+      "changeId": "add-continuous-complexity-management",
+      "kind": "planning-only",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "package.json" },
+        { "type": "write-root", "path": "tools/contracts" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/model-profile.ts" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" },
+        { "type": "write-root", "path": "tools/test-consumer-outcome.ts" },
+        { "type": "write-root", "path": "tools/test-library/runtime-surface-profiles.ts" },
+        { "type": "write-root", "path": "tools/test-model-profile.ts" },
+        { "type": "write-root", "path": "tools/validate-library.ts" },
+        { "type": "write-root", "path": "tools/validators" }
+      ],
+      "transferCondition": "terminal-or-explicit-path-transfer-serialization-or-narrowing-before-trajectory-mutation"
+    },
+    {
+      "changeId": "add-specialist-team-advisor",
+      "kind": "planning-only",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "tools/contracts" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/model-profile.ts" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" },
+        { "type": "write-root", "path": "tools/test-library/runtime-surface-profiles.ts" },
+        { "type": "write-root", "path": "tools/test-model-profile.ts" },
+        { "type": "write-root", "path": "tools/validators" }
+      ],
+      "transferCondition": "terminal-or-explicit-path-transfer-serialization-or-narrowing-before-trajectory-mutation"
+    },
+    {
+      "changeId": "add-autonomous-campaign-orchestration",
+      "kind": "planning-only",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "package.json" },
+        { "type": "write-root", "path": "tools/contracts" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome-regression.ts" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" }
+      ],
+      "transferCondition": "terminal-or-explicit-path-transfer-serialization-or-narrowing-before-trajectory-mutation"
+    },
+    {
+      "changeId": "add-cross-project-kaizen-loop",
+      "kind": "planning-only",
+      "owners": [
+        { "type": "write-root", "path": "global/skills/openspec-archive-change" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "package.json" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" }
+      ],
+      "transferCondition": "terminal-or-explicit-path-transfer-serialization-or-narrowing-before-trajectory-mutation"
+    }
+  ],
+  "transfers": []
+}

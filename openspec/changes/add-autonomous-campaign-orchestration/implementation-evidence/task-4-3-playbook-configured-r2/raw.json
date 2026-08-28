@@ -1,0 +1,84 @@
+{
+  "assignmentCommands": [
+    {
+      "assignmentId": "discover-main",
+      "exitCode": 2,
+      "stderr": "",
+      "stdout": "{\n  \"assignmentId\": \"discover-main\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work-campaign/evidence/results/discover-main.json\",\n  \"status\": \"blocked\"\n}\n"
+    }
+  ],
+  "assignmentResults": [
+    {
+      "assignmentDigest": "1b64e3ef99529afd7679f5a0ad5dbaa88f92865b52d8b95518aaaf0c37a5540f",
+      "assignmentId": "discover-main",
+      "assignmentType": "discovery",
+      "campaignId": "configured-playbook-proof",
+      "candidateDigest": "7656ce38dfec8a924d8129c996f07263189dcc610e501de2217990f06141aaf9",
+      "cleanup": "complete",
+      "definitionDigest": "b434e146d6aaf2138f699b3145c41c313879ffedad783057ae8f025dd3e19b42",
+      "environment": {
+        "node": "v24.18.1",
+        "platform": "win32"
+      },
+      "errorClass": "invalid-result",
+      "errorMessage": "partition-result has invalid fields: missing=schemaVersion,recordType,assignmentId,candidateDigest,evidenceRefs",
+      "evidenceRefs": [
+        "file:src/main.ts"
+      ],
+      "model": {
+        "agent": "general",
+        "modelID": "gpt-5.6-sol",
+        "providerID": "openai",
+        "variant": "xhigh"
+      },
+      "modelCalls": 1,
+      "outputBytes": 975,
+      "outputDigest": "b3875c6cef1cd50ddf9088b109000b0bc38e2e5f6d4a5e205fe6ffee7dd57ea7",
+      "payload": null,
+      "phase": "discover",
+      "resultType": "semantic-assignment-result",
+      "runtimeRef": "loopback:acd3084e33617ab707ae5d9855eac592cb44a1fd377a44139e5d638fb41549d0",
+      "schemaVersion": 1,
+      "sessionRef": "session:ae9d5d215d0fb984ae638f1533f925d96b2a8c9a7cdf746f85ace0fb226dc8a1",
+      "status": "blocked",
+      "toolCalls": [
+        {
+          "name": "StructuredOutput",
+          "status": "completed"
+        }
+      ],
+      "verification": {
+        "children": null,
+        "fileDiffs": null,
+        "parentless": true,
+        "permissionRequests": null,
+        "questions": null
+      }
+    }
+  ],
+  "candidateId": "task-4-3-playbook-r2",
+  "captureError": "semantic assignment discover-main did not reach terminal read-only completion",
+  "captureMode": "configured",
+  "controller": null,
+  "environmentId": "node-24.18.1-windows-configured-playbook-r2",
+  "expectedModel": "openai/gpt-5.6-sol",
+  "fixtureRemoved": true,
+  "hiddenServer": false,
+  "installedOpenCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.23"
+  },
+  "loopback": true,
+  "playbook": null,
+  "profile": "quality-independent",
+  "schemaVersion": 1,
+  "serverStartup": {
+    "hostConfigLoaded": false,
+    "isolatedConfigLoaded": true,
+    "ripgrepDownloadRequested": false
+  },
+  "serverTerminal": true,
+  "sourceAfter": "38669de65cbf1a563bf4b9632adcf2814f4de5520ba3ec8912407fc432efe19b",
+  "sourceBefore": "38669de65cbf1a563bf4b9632adcf2814f4de5520ba3ec8912407fc432efe19b",
+  "transitionKinds": []
+}

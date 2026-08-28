@@ -38,6 +38,9 @@ export const initTests: TestCase[] = [
       assertOutputContains(write, "created: AGENTS.md", "Write should create AGENTS.md.");
       assertOutputContains(write, "created: docs/feedbacks/README.md", "Write should create feedback ledger README.");
       assertOutputContains(write, "created: opencode-dev-kit/adapter.json", "Write should create the adapter file.");
+      assertOutputContains(write, "created: opencode-dev-kit/work-campaign.json", "Write should create the inactive campaign definition.");
+      assertOutputContains(write, "created: opencode-dev-kit/work-campaign-adapter.json", "Write should create the inactive campaign adapter.");
+      assertOutputContains(write, "created: opencode-dev-kit/campaign.md", "Write should create campaign configuration guidance.");
       const agentsText = fs.readFileSync(path.join(project, "AGENTS.md"), "utf8");
       if (!agentsText.includes("Universal Development Loop")) {
         throw new Error("Project AGENTS.md should install the Universal Development Loop template.");
@@ -48,6 +51,10 @@ export const initTests: TestCase[] = [
         throw new Error("Project bootstrap should install the feedback ledger README.");
       }
       assertEqual(feedbackText, kitFeedbackText, "Project bootstrap should copy the kit-level feedback README byte-for-byte.");
+      const campaign = fs.readFileSync(path.join(project, "opencode-dev-kit", "work-campaign.json"), "utf8");
+      if (!campaign.includes('"hostResume"') || !campaign.includes('"enabled": false') || !campaign.includes('"replace-me"')) {
+        throw new Error("Project bootstrap campaign template must stay inactive and explicitly unresolved.");
+      }
     },
   },
   {

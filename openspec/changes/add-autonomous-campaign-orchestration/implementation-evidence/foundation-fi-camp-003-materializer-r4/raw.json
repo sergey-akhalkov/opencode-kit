@@ -1,0 +1,280 @@
+{
+  "candidateId": "foundation-fi-camp-003-r4",
+  "cleanup": "complete",
+  "commands": [
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "preflight",
+      "operation": "contract-preflight",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": null,
+      "status": "contract-valid"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-block-a",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 1,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-block-b",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 2,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-item-p1",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 3,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-item-p2",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 4,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-reconcile-p1",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 5,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-reconcile-p2",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 6,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-wave-1",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 7,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-report-seed",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 8,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "materialize-initial",
+      "operation": "report-materialize",
+      "reportDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+      "seedEntries": 8,
+      "sequence": null,
+      "status": "report-materialized"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "readback-initial",
+      "operation": "report-readback",
+      "reportDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+      "seedEntries": 8,
+      "sequence": null,
+      "status": "report-current"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "materialize-identical",
+      "operation": "report-materialize",
+      "reportDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+      "seedEntries": 8,
+      "sequence": null,
+      "status": "report-materialized"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-item-p1-fixed",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 9,
+      "status": "seed-appended"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "append-item-p1-fixed-duplicate",
+      "operation": "ledger-append",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": 9,
+      "status": "seed-current"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "materialize-fixed",
+      "operation": "report-materialize",
+      "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+      "seedEntries": 9,
+      "sequence": null,
+      "status": "report-materialized"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "readback-fixed",
+      "operation": "report-readback",
+      "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+      "seedEntries": 9,
+      "sequence": null,
+      "status": "report-current"
+    },
+    {
+      "exitCode": 2,
+      "field": "reportPath",
+      "name": "readback-drifted",
+      "operation": "report-readback",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": null,
+      "status": "blocked"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "materialize-repaired",
+      "operation": "report-materialize",
+      "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+      "seedEntries": 9,
+      "sequence": null,
+      "status": "report-materialized"
+    },
+    {
+      "exitCode": 0,
+      "field": null,
+      "name": "readback-repaired",
+      "operation": "report-readback",
+      "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+      "seedEntries": 9,
+      "sequence": null,
+      "status": "report-current"
+    },
+    {
+      "exitCode": 2,
+      "field": "00000001-94714e9b7183352f2ac3b68713541c44b1860b13a1ef12239f07e41e12197c5f.json",
+      "name": "materialize-corrupt-ledger",
+      "operation": "report-materialize",
+      "reportDigest": null,
+      "seedEntries": null,
+      "sequence": null,
+      "status": "blocked"
+    }
+  ],
+  "effects": {
+    "gitCalls": 0,
+    "hostEffects": 0,
+    "openSpecCalls": 0,
+    "processStarts": 37,
+    "providerCalls": 0,
+    "sourceWrites": 0
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "invocation": {
+    "argv": [
+      "node",
+      "tools/test-work-campaign.ts"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "OK: work-campaign proof-contract and materializer suites\n"
+  },
+  "negativeControls": {
+    "corruptLedger": 2,
+    "reportDrift": 2
+  },
+  "proofKind": "campaign-ledger-report-materializer",
+  "regeneration": {
+    "fixedAndVerified": 1,
+    "fixedDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+    "initialDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+    "p2Retained": true,
+    "repairedDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+    "staleP1Removed": true,
+    "unchangedDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+    "unresolvedP0P1": 0
+  },
+  "schemaVersion": 1,
+  "sourceCandidate": [
+    {
+      "path": "global/bin/work-campaign.ts",
+      "sha256": "0a471752c2d79af1d03d1e1df4b8c0d2d7405ba85d11dcc9b58112397f04d0de"
+    },
+    {
+      "path": "global/bin/work-campaign/contracts.ts",
+      "sha256": "65a135fce10c1d4d4e837903a22a040ed917ed53884377b83f0bf0e3b3d73f71"
+    },
+    {
+      "path": "global/bin/work-campaign/materializer.ts",
+      "sha256": "a45d03e75f441dcacc8027ac1c0bfe8d6b2fb7c5e34bf86d8b0946bfaf76eba5"
+    },
+    {
+      "path": "tools/proofs/work-campaign.ts",
+      "sha256": "61ddacef82d27137f5b0f95adb7706effa39a83bcbd22fd223b926b5f582f300"
+    },
+    {
+      "path": "tools/test-work-campaign.ts",
+      "sha256": "564efd947764206e49ce4f00d69fe8fcc33e6b511ea515b2624a34ddd053a27f"
+    }
+  ],
+  "sourceManifest": {
+    "afterDigests": [
+      "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+      "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+      "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+      "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+    ],
+    "beforeDigests": [
+      "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+      "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+      "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+      "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+    ],
+    "sourceWrites": 0
+  }
+}

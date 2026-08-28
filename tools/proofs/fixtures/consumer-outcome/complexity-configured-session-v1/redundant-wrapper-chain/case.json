@@ -1,0 +1,24 @@
+{
+  "caseId": "redundant-wrapper-chain",
+  "acceptedOutcome": "Assess wrappers that forward the same operation without hiding responsibility or narrowing the contract.",
+  "requestedAssessment": "explicit focused current-scenario refactoring assessment",
+  "facts": ["outer forwards to middle", "middle forwards to core", "types and effects are unchanged", "no variation exists"],
+  "nonGoals": ["preserve pattern names", "add another wrapper", "framework"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when the request requires it.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown", "current-dependency"],
+    "dispositions": ["unknown", "remove"],
+    "maximumClaim": "redundant-wrapper-chain-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts", "src/middle.ts", "src/core.ts", "proof:node src/main.ts"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:wrapper-chain", "public-surface:outer+middle+core", "inventory:unavailable", "edit-set:none", "production:direct-core", "public-surface:core", "inventory:complete", "edit-set:remove-middle-wrapper"],
+      "triggerFacts": ["explicit-focused-refactor", "pass-through-navigation"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "redundant-wrapper-chain", "contextFacts": ["src/main.ts", "src/middle.ts", "src/core.ts", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "redundant-wrapper-chain-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:wrapper-chain", "public-surface:outer+middle+core", "inventory:unavailable", "edit-set:none"], "triggerFacts": ["explicit-focused-refactor", "pass-through-navigation"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow is available and was successfully invoked for the wrapper path.", "decision": { "admissionClass": "current-dependency", "caseId": "redundant-wrapper-chain", "contextFacts": ["src/main.ts", "src/core.ts", "proof:node src/main.ts"], "disposition": "remove", "maximumClaim": "redundant-wrapper-chain-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:direct-core", "public-surface:core", "inventory:complete", "edit-set:remove-middle-wrapper"], "triggerFacts": ["explicit-focused-refactor", "pass-through-navigation"] } }
+    ]
+  }
+}

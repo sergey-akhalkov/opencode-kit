@@ -1,0 +1,19 @@
+{
+  "candidateId": "task-3-1-final-r1",
+  "checks": {
+    "archivesCompleted": true,
+    "candidateMatched": true,
+    "checkpointModesCompleted": true,
+    "controllerCompleted": true,
+    "executorSequence": true,
+    "oneAttemptSuccessor": true,
+    "parentHandoffComplete": true,
+    "pausedUnknownResume": true,
+    "persistedRetryFinite": true,
+    "replayValid": true,
+    "transitionChainCompleted": true
+  },
+  "liveCalls": 0,
+  "schemaVersion": 1,
+  "status": "complete"
+}

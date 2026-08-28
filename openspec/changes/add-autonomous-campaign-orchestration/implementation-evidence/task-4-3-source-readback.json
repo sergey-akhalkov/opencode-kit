@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "task-4-3-configured-r2",
+  "environmentId": "node-24.18.1-windows-task-4-3-r2",
+  "sourceCount": 44,
+  "capturedSourceCount": 44,
+  "mismatchCount": 0,
+  "allMatched": true,
+  "manifestDigest": "e8603aedc61809478c6cb38b03a3bcc55e766977e54db42dc2dc97e472d4165f",
+  "mismatches": []
+}

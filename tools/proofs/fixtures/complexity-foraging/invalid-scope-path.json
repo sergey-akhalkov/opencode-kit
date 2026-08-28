@@ -1,0 +1,12 @@
+{
+  "recordType": "scope",
+  "schemaVersion": 1,
+  "includes": [
+    {
+      "path": "../outside",
+      "class": "maintained",
+      "reason": "invalid parent path"
+    }
+  ],
+  "excludes": []
+}

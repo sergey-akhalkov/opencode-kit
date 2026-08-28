@@ -16,6 +16,7 @@ import type {
   RoadmapMissionPreflight,
   RoadmapMissionSlice,
 } from "./contracts.ts";
+import { parentCorrelationCheck } from "./parent-correlation.ts";
 
 const CANONICAL_SKILLS = [
   "openspec-apply-change",
@@ -36,6 +37,7 @@ export const MISSION_SOURCE_PATHS = [
   "bin/roadmap-mission-session-executor.ts",
   "bin/roadmap-mission/contracts.ts",
   "bin/roadmap-mission/controller.ts",
+  "bin/roadmap-mission/parent-correlation.ts",
   "bin/roadmap-mission/preflight.ts",
   "bin/roadmap-mission/session-executor.ts",
   "bin/roadmap-mission/state.ts",
@@ -421,17 +423,19 @@ export function preflightMissionDefinition(root: string, missionPath: string): R
     passed("definition:effects", "Every slice effect is explicitly allowed and protected effects carry an authority reference."),
     passed("definition:checkpoint", `Checkpoint policy ${definition.checkpoint.mode} is valid for this mission envelope.`),
     passed("definition:contained", "Mission, roadmap, and evidence paths are project-contained."),
+    ...(definition.parent == null ? [] : [parentCorrelationCheck(root, definition)]),
   ].sort((left, right) => left.id.localeCompare(right.id));
   const first = definition.slices[0];
+  const eligible = checks.every((check) => !check.blocking && check.status === "passed");
   return {
     checks,
     definitionDigest: missionDefinitionDigest(definition),
-    eligibleSlice: { changeId: first.changeId, id: first.id, operation: first.operation },
-    exitCode: 0,
+    eligibleSlice: eligible ? { changeId: first.changeId, id: first.id, operation: first.operation } : null,
+    exitCode: eligible ? 0 : 1,
     missionId: definition.missionId,
     operation: "preflight",
     schemaVersion: 1,
-    status: "eligible",
+    status: eligible ? "eligible" : "blocked",
     tool: "roadmap-mission",
   };
 }
@@ -446,12 +450,19 @@ export function preflightMission(
   const definition = loadMissionDefinition(root, missionPath);
   const slice = definition.slices[cursor];
   if (slice == null) throw new RoadmapMissionError(`Mission cursor ${cursor} is outside the definition`, 2);
+  const parentInputPaths = definition.parent == null
+    ? []
+    : [
+        path.relative(root, path.resolve(root, missionPath)).replaceAll("\\", "/"),
+        definition.parent.parentEvidencePath,
+      ];
   const checks = [
     passed("definition:schema", "Mission schema and explicit fields are valid."),
     passed("definition:serial-order", `Mission has ${definition.slices.length} explicitly ordered slice(s).`),
     passed("definition:effects", "Every slice effect is explicitly allowed and protected effects carry an authority reference."),
     passed("definition:checkpoint", `Checkpoint policy ${definition.checkpoint.mode} is valid for this mission envelope.`),
     passed("definition:contained", "Mission, roadmap, and evidence paths are project-contained."),
+    ...(definition.parent == null ? [] : [parentCorrelationCheck(root, definition)]),
     projectAuthorityCheck(root),
     projectAdapterCheck(root, definition.validationArgv),
     canonicalWorkflowCheck(globalSource),
@@ -461,6 +472,7 @@ export function preflightMission(
       ...definition.slices.slice(0, cursor).flatMap((missionSlice) => missionSlice.ownedPaths),
       definition.evidencePath,
       `.opencode-dev-kit/runtime/roadmap-missions/${definition.missionId}`,
+      ...parentInputPaths,
       ...(options.attributedPaths ?? []),
     ]),
     openSpecCheck(root, definition, cursor),

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "adapterId": "project-audit-adapter",
+  "inventoryArgv": [
+    "replace-me"
+  ],
+  "realBoundaryProofArgv": [
+    "replace-me"
+  ]
+}

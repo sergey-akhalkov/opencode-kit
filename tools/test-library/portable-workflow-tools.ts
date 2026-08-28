@@ -19,7 +19,7 @@ import {
   writeText,
   lines,
 } from "../test-helpers/library.ts";
-import { ROADMAP_MISSION_RUNTIME_FILES } from "../runtime-surface-profile.ts";
+import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "../runtime-surface-profile.ts";
 
 const root = libraryRoot;
 const archiveTool = path.join(root, "global", "bin", "openspec-archive.ts");
@@ -102,7 +102,7 @@ function installPortableFixtureSurface(fixture: string): void {
   writeMinimalPortableEntrypoint(path.join(fixture, "global", "bin", "openspec-archive.ts"));
   writeText(path.join(fixture, "global", "bin", "portable-process.ts"), "export function noop(): void {}\n");
   writeMinimalPortableEntrypoint(path.join(fixture, "global", "bin", "validate-staged.ts"));
-  for (const relative of ROADMAP_MISSION_RUNTIME_FILES) {
+  for (const relative of PORTABLE_WORKFLOW_RUNTIME_FILES) {
     const file = path.join(fixture, "global", ...relative.split("/"));
     if (fs.existsSync(file)) continue;
     if (relative === "bin/roadmap-mission.ts" || relative === "bin/roadmap-mission-session-executor.ts") {

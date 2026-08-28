@@ -1,0 +1,14 @@
+{
+  "candidateId": "task-3-1-final-r1",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "scenariosMatched": true,
+    "sourceEvaluationComplete": true,
+    "unavailableRuntimeRetryable": true
+  },
+  "liveCalls": 0,
+  "replaySource": "task-3-1-final-preflight-r1",
+  "schemaVersion": 1,
+  "status": "complete"
+}

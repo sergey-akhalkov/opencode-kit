@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-continuous-complexity-management",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-complexity-management",
+      "requirements": [
+        "Complexity management is proportional to observed pressure",
+        "Project mode records pressure on existing audit rows",
+        "Focused Architecture Comprehension Map exposes the useful system boundary",
+        "Change Rehearsal measures complexity through a real consumer task",
+        "Abstractions must earn a smaller consumer model",
+        "Refactor admission and completion use the same proof boundary",
+        "Existing practice ownership remains authoritative"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Development detects and resolves current complexity pressure proportionally"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Complexity workflow stays discoverable, proportional, and cohesive",
+        "Complexity instruction behavior receives structural and loaded proof"
+      ]
+    },
+    {
+      "capability": "library-runtime-surface-profiles",
+      "requirements": [
+        "Default runtime surfaces contain the common complexity workflow"
+      ]
+    },
+    {
+      "capability": "library-tools-architecture",
+      "requirements": [
+        "Complexity foraging inventory reports facts without scoring",
+        "Complexity inventory is callable from the active kit source"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "global/AGENTS.md",
+    "global/bin/complexity-foraging-inventory.ts",
+    "global/skills/complexity-management",
+    "global/skills/code-quality-audit/SKILL.md",
+    "global/skills/service-architecture-design/SKILL.md",
+    "global/skills/codebase-audit-loop/SKILL.md",
+    "global/skills/codebase-audit-ledger/SKILL.md",
+    "instructions/reusable-project-agent-instructions.md",
+    "templates/project/AGENTS.md",
+    "profiles/core.json",
+    "profiles/all.json",
+    "openspec/specs/library-deduplication-audit/spec.md",
+    "openspec/specs/session-completion-guard/spec.md",
+    "openspec/specs/unattended-roadmap-orchestration/spec.md",
+    "package.json",
+    "tools/contracts",
+    "tools/proofs/README.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/fixtures/consumer-outcome/complexity-management-r1.json",
+    "tools/proofs/fixtures/consumer-outcome/complexity-management-v1",
+    "tools/model-profile.ts",
+    "tools/runtime-surface-profile.ts",
+    "tools/test-change-locality-scenarios.ts",
+    "tools/test-complexity-foraging-inventory.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-contracts.ts",
+    "tools/test-library/inventory.ts",
+    "tools/test-library/runtime-surface-profiles.ts",
+    "tools/test-model-profile.ts",
+    "tools/validate-library.ts",
+    "tools/validators"
+  ],
+  "dependencies": [
+    {
+      "changeId": "replace-instruction-limits-with-context-quality",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "tools/test-library/runtime-surface-profiles.ts" }
+      ],
+      "transferCondition": "archived-2026-08-26"
+    },
+    {
+      "changeId": "add-foundation-integrity-autorecovery",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" }
+      ],
+      "transferCondition": "archived-2026-08-27"
+    },
+    {
+      "changeId": "add-bounded-falsification-review",
+      "kind": "archive-before-acquire",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" }
+      ],
+      "transferCondition": "archived-2026-08-27"
+    }
+  ],
+  "transfers": [
+    {
+      "fromChangeId": "add-continuous-complexity-management",
+      "toChangeId": "add-autonomous-campaign-orchestration",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" }
+      ],
+      "condition": "archived"
+    },
+    {
+      "fromChangeId": "add-continuous-complexity-management",
+      "toChangeId": "add-specialist-team-advisor",
+      "owners": [
+        { "type": "write-root", "path": "README.md" },
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "profiles/core.json" },
+        { "type": "write-root", "path": "profiles/all.json" },
+        { "type": "write-root", "path": "tools/proofs/README.md" },
+        { "type": "write-root", "path": "tools/proofs/consumer-outcome" },
+        { "type": "write-root", "path": "tools/runtime-surface-profile.ts" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "project-audit",
+  "outcome": "Replace with one bounded project outcome.",
+  "playbook": "audit-remediate",
+  "scopeRoots": [
+    "src"
+  ],
+  "exclusions": [
+    ".work-campaign/evidence"
+  ],
+  "adapterPath": "opencode-dev-kit/work-campaign-adapter.json",
+  "statePath": ".opencode-dev-kit/runtime/work-campaigns/project-audit",
+  "evidencePath": ".work-campaign/evidence",
+  "reportPath": ".work-campaign/report.md",
+  "validationArgv": [
+    "replace-me"
+  ],
+  "checkpoint": {
+    "mode": "evidence-only",
+    "workspace": "persistent",
+    "localCommitAuthorized": false
+  },
+  "budgets": {
+    "modelCalls": 1,
+    "processAttempts": 1,
+    "wallClockSeconds": 300,
+    "waves": 1,
+    "evidenceBytes": 1048576
+  },
+  "allowedEffects": [
+    "local-read"
+  ],
+  "authorizationRefs": {},
+  "protectedDecisionPolicy": "owner-required",
+  "stopPolicy": {
+    "onBudgetExhausted": true,
+    "onExplicitStop": true,
+    "onOwnerRequired": true,
+    "onProtected": true,
+    "onUnknown": true
+  },
+  "hostResume": {
+    "enabled": false,
+    "supervisorRequired": false
+  }
+}

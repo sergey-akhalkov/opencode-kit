@@ -1,0 +1,9 @@
+{
+  "assignmentDigest": "22e160703e71f6a3c08130638bca3f614583bd66c1f554b3090d73f03600031d",
+  "candidateId": "foundation-fi-camp-003-r1",
+  "environmentId": "node-24.18.1-windows-isolated-semantic-r1",
+  "fixtureCreated": true,
+  "liveCalls": 0,
+  "mode": "preflight",
+  "schemaVersion": 1
+}

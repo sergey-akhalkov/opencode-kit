@@ -1,7 +1,9 @@
 # session-completion-guard Specification
 
 ## Purpose
-TBD - created by archiving change add-session-completion-guard. Update Purpose after archive.
+Define an opt-in root-session guard that waits for correlated asynchronous work,
+adjudicates completion through bounded structured evidence, continues only within current
+authority, and fails closed without interfering with user-owned work.
 
 ## Requirements
 

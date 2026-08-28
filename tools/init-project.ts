@@ -112,6 +112,9 @@ function plannedFiles(repoRoot: string, targetRoot: string): PlannedFile[] {
     { label: "feedback ledger README", source: path.join(repoRoot, "docs", "feedbacks", "README.md"), destination: path.join(targetRoot, "docs", "feedbacks", "README.md") },
     { label: "project validation guide", source: path.join(templateRoot, "validation.md"), destination: path.join(targetRoot, "opencode-dev-kit", "validation.md") },
     { label: "project adapter", source: path.join(templateRoot, "adapter.json"), destination: path.join(targetRoot, "opencode-dev-kit", "adapter.json") },
+    { label: "campaign guide", source: path.join(templateRoot, "campaign.md"), destination: path.join(targetRoot, "opencode-dev-kit", "campaign.md") },
+    { label: "campaign definition", source: path.join(templateRoot, "work-campaign.json"), destination: path.join(targetRoot, "opencode-dev-kit", "work-campaign.json") },
+    { label: "campaign adapter", source: path.join(templateRoot, "work-campaign-adapter.json"), destination: path.join(targetRoot, "opencode-dev-kit", "work-campaign-adapter.json") },
   ];
 }
 

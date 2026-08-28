@@ -5,7 +5,7 @@ import {
   GLOBAL_AGENTS_PROTECTED_BOUNDARY_CATEGORIES,
 } from "../contracts/skills.ts";
 import { GLOBAL_ENGINEERING_QUALITY_MARKERS } from "../contracts/engineering-quality.ts";
-import { resolveEvidenceLane } from "../evidence-index.ts";
+import { materializeEvidenceIndex, resolveEvidenceLane } from "../evidence-index.ts";
 import { inspectManagedPromptDrift } from "../opencode-runtime-sources.ts";
 import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "../runtime-surface-profile.ts";
 import {
@@ -141,7 +141,7 @@ Report Development-Stage and Runtime Proof.
 function writePortableWorkflowTools(globalDir: string): void {
   for (const entry of PORTABLE_WORKFLOW_RUNTIME_FILES) {
     const relative = path.join(...entry.split("/"));
-    writeText(path.join(globalDir, relative), `// fixture portable tool ${relative}\n`);
+    writeText(path.join(globalDir, relative), fs.readFileSync(path.join(root, "global", relative), "utf8"));
   }
   writeText(path.join(globalDir, "package.json"), "{\n  \"private\": true,\n  \"type\": \"module\"\n}\n");
 }
@@ -245,16 +245,18 @@ function invokeIsolatedDoctorArgs(
 }
 
 function parseDoctorV2(result: { output: string }): {
+  campaignChecks: Array<Record<string, unknown>>;
   checks: Array<Record<string, unknown>>;
   report: Record<string, unknown>;
   unattendedChecks: Array<Record<string, unknown>>;
 } {
   const report = asRecord(parseJsonOutput(result), "Doctor JSON root should be an object.");
   assertEqual(report.tool, "opencode-dev-kit-doctor", "Doctor tool id drifted.");
-  assertEqual(report.version, 2, "Doctor report version must be 2.");
+  assertEqual(report.version, 3, "Doctor report version must be 3.");
   assert(report.status === "pass" || report.status === "warn" || report.status === "blocked", "Doctor structural status is invalid.");
   assert(report.qualificationStatus === "pass" || report.qualificationStatus === "blocked", "Doctor qualificationStatus is invalid.");
   assert(report.unattendedMissionStatus === "pass" || report.unattendedMissionStatus === "blocked", "Doctor unattendedMissionStatus is invalid.");
+  assert(report.campaignStatus === "pass" || report.campaignStatus === "blocked", "Doctor campaignStatus is invalid.");
   const checks = asArray(report.checks, "Doctor checks should be an array.");
   for (const check of checks) {
     assert(typeof check.name === "string", "Every doctor check must have a name.");
@@ -281,6 +283,25 @@ function parseDoctorV2(result: { output: string }): {
   ]) {
     findBucket(unattendedChecks, "name", name);
   }
+  const campaignChecks = asArray(report.campaignChecks, "Doctor campaignChecks should be an array.");
+  for (const check of campaignChecks) {
+    assert(typeof check.name === "string", "Every campaign check must have a name.");
+    assert(typeof check.detail === "string", "Every campaign check must have detail.");
+    assert(check.status === "pass" || check.status === "blocked", "Every campaign check must have a valid status.");
+    assertEqual(check.blocksQualification, false, "Campaign readiness must not block ordinary qualification.");
+  }
+  for (const name of [
+    "campaign definition and adapter",
+    "campaign contained paths",
+    "campaign validation and checkpoint",
+    "campaign provider budget",
+    "campaign runtime and workflow",
+    "campaign project state",
+    "campaign writer and mission",
+    "campaign supervisor",
+  ]) {
+    findBucket(campaignChecks, "name", name);
+  }
   assertEqual(
     report.qualificationStatus,
     checks.some((check) => check.blocksQualification === true) ? "blocked" : "pass",
@@ -292,14 +313,14 @@ function parseDoctorV2(result: { output: string }): {
     "unattendedMissionStatus must derive from unattendedChecks only.",
   );
   assertEqual(
-    report.unattendedMissionStatus,
-    "blocked",
-    "Current doctor fixtures do not claim unattended-ready; unattendedMissionStatus must stay independently blocked.",
+    report.campaignStatus,
+    campaignChecks.some((check) => check.status !== "pass") ? "blocked" : "pass",
+    "campaignStatus must derive from campaignChecks only.",
   );
-  return { checks, report, unattendedChecks };
+  return { campaignChecks, checks, report, unattendedChecks };
 }
 
-function namedBlockers(report: Record<string, unknown>, gate: "qualification" | "structural" | "unattended"): string[] {
+function namedBlockers(report: Record<string, unknown>, gate: "campaign" | "qualification" | "structural" | "unattended"): string[] {
   const blockers = asRecord(report.blockers, "Doctor blockers should be an object.");
   const selected = blockers[gate];
   assert(
@@ -307,6 +328,65 @@ function namedBlockers(report: Record<string, unknown>, gate: "qualification" | 
     `Doctor ${gate} blockers must be a string array.`,
   );
   return selected as string[];
+}
+
+function writeReadyCampaign(project: string, hostResume = false): void {
+  writeText(path.join(project, "src", "index.ts"), "export const ready = true;\n");
+  writeText(path.join(project, "openspec", "config.yaml"), "schema: spec-driven\n");
+  writeText(path.join(project, "opencode-dev-kit", "work-campaign-adapter.json"), `${JSON.stringify({
+    adapterId: "doctor-campaign-adapter",
+    inventoryArgv: [process.execPath, "--version"],
+    realBoundaryProofArgv: [process.execPath, "--version"],
+    schemaVersion: 1,
+  }, null, 2)}\n`);
+  writeText(path.join(project, "opencode-dev-kit", "work-campaign.json"), `${JSON.stringify({
+    adapterPath: "opencode-dev-kit/work-campaign-adapter.json",
+    allowedEffects: ["local-read"],
+    authorizationRefs: {},
+    budgets: {
+      evidenceBytes: 1_048_576,
+      modelCalls: 1,
+      processAttempts: 2,
+      wallClockSeconds: 300,
+      waves: 1,
+    },
+    campaignId: "doctor-campaign",
+    checkpoint: {
+      localCommitAuthorized: false,
+      mode: "evidence-only",
+      workspace: "disposable",
+    },
+    evidencePath: ".work-campaign/evidence",
+    exclusions: [".work-campaign/evidence"],
+    hostResume: { enabled: hostResume, supervisorRequired: hostResume },
+    outcome: "Prove campaign doctor readiness without project mutation.",
+    playbook: "audit-remediate",
+    protectedDecisionPolicy: "owner-required",
+    reportPath: ".work-campaign/report.md",
+    schemaVersion: 1,
+    scopeRoots: ["src/index.ts"],
+    statePath: ".opencode-dev-kit/runtime/work-campaigns/doctor-campaign",
+    stopPolicy: {
+      onBudgetExhausted: true,
+      onExplicitStop: true,
+      onOwnerRequired: true,
+      onProtected: true,
+      onUnknown: true,
+    },
+    validationArgv: [process.execPath, "--version"],
+  }, null, 2)}\n`);
+}
+
+function commitFixture(project: string, message: string): void {
+  const commands = [
+    ["init"],
+    ["add", "--all"],
+    ["-c", "user.name=Doctor Fixture", "-c", "user.email=doctor@example.invalid", "commit", "-m", message],
+  ];
+  for (const args of commands) {
+    const result = invokeProcessCapture("git", args, project);
+    assertSuccess(result, `Git fixture command failed: git ${args.join(" ")}`);
+  }
 }
 
 export const doctorTests: TestCase[] = [
@@ -377,10 +457,11 @@ export const doctorTests: TestCase[] = [
             files: [{
               bytes: 25,
               digest: "a".repeat(64),
-              path: "selected/terminal.json",
+              path: "terminal.json",
             }],
             kind: "terminal",
             name: "selected-lane",
+            pathPrefix: "selected",
           },
           {
             files: [{
@@ -398,6 +479,7 @@ export const doctorTests: TestCase[] = [
       assertEqual(selected.schemaVersion, 2, "Resolver must preserve schema 2.");
       assertEqual(selected.lane, "selected-lane", "Resolver must select the requested hashed lane.");
       assertDeepEqual(selected.references.map((reference) => reference.role), ["indexed-file"], "Resolver must return only selected files.");
+      assertEqual(selected.references[0].path, "selected/terminal.json", "Resolver must expand the lane path prefix.");
       assert(!("terminalStatus" in selected), "Schema 2 lane kind must not infer a terminal status.");
       assert(!JSON.stringify(selected).includes("private terminal evidence"), "Resolver must not print referenced evidence content.");
 
@@ -408,6 +490,29 @@ export const doctorTests: TestCase[] = [
         missingFailed = true;
       }
       assert(missingFailed, "A missing schema 2 reference must fail only the affected selected lane.");
+    },
+  },
+  {
+    name: "evidence index materialization preserves compact bounded schema 2 output",
+    run: () => {
+      const fixture = newTempDir("evidence-index-v2-materialize");
+      writeText(path.join(fixture, "terminal.json"), "terminal evidence");
+      const index = path.join(fixture, "evidence-index.json");
+      writeText(index, JSON.stringify({
+        schemaVersion: 2,
+        lanes: [{
+          files: [{ bytes: 0, digest: "a".repeat(64), path: "terminal.json" }],
+          kind: "terminal",
+          name: "selected-lane",
+        }],
+      }, null, 2));
+
+      const materialized = materializeEvidenceIndex(index);
+      const text = fs.readFileSync(index, "utf8");
+      assertDeepEqual(materialized, { files: 1, lanes: 1 }, "Materializer must report the exact bounded inventory.");
+      assert(!text.includes("\n  "), "Materializer must not expand bounded indexes with pretty-print whitespace.");
+      assert(text.endsWith("\n"), "Materializer must retain one terminal newline.");
+      assertEqual(resolveEvidenceLane(index, "selected-lane").references[0].indexedBytes, 17, "Materialized bytes must match the current file.");
     },
   },
   {
@@ -1345,6 +1450,123 @@ export const doctorTests: TestCase[] = [
       const structural = invokeIsolatedDoctorArgs(fixture, ["--project", fixture.project, "--format", "json", "--require", "structural"]);
       assertEqual(structural.exitCode, 0, "Selected structural gate must still pass advisory-only structural warnings.");
       assertEqual(parseDoctorV2(structural).report.status, "warn", "Advisory qualification blockers must remain structurally visible.");
+    },
+  },
+  {
+    name: "doctor campaign gate uses production preflight and blocks selected host recovery without mutation",
+    run: () => {
+      const fixture = newIsolatedDoctorFixture("campaign-readiness", "{\n  \"permission\": \"ask\"\n}\n");
+      const isolatedHome = path.join(fixture.root, "isolated-home");
+      writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), concreteAdapter);
+      writeReadyCampaign(fixture.project);
+      commitFixture(fixture.project, "campaign ready");
+      const env = { HOME: isolatedHome, USERPROFILE: isolatedHome };
+      const before = invokeProcessCapture("git", ["status", "--porcelain=v1", "--untracked-files=all"], fixture.project);
+      assertSuccess(before, "Campaign fixture status must be readable before doctor.");
+      assertEqual(before.output.trim(), "", "Campaign fixture must start clean.");
+
+      const ready = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", fixture.project, "--format", "json", "--require", "campaign"],
+        env,
+      );
+      assertSuccess(ready, "A complete provider-free campaign fixture should pass the selected campaign gate.");
+      const readyReport = parseDoctorV2(ready);
+      assertEqual(readyReport.report.campaignStatus, "pass", "Complete campaign readiness must pass.");
+      assertDeepEqual(namedBlockers(readyReport.report, "campaign"), [], "Passing campaign readiness must have no campaign blockers.");
+      assertEqual(readyReport.report.unattendedMissionStatus, "blocked", "Campaign readiness must remain independent from unattended readiness.");
+
+      writeReadyCampaign(fixture.project, true);
+      commitFixture(fixture.project, "select protected host recovery");
+      const missingSupervisor = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", fixture.project, "--format", "json", "--require", "campaign"],
+        env,
+      );
+      assertEqual(missingSupervisor.exitCode, 2, "Selected host recovery without an installed supervisor must fail the campaign gate.");
+      const blockedReport = parseDoctorV2(missingSupervisor);
+      assertEqual(blockedReport.report.campaignStatus, "blocked", "Missing supervisor must block campaign readiness.");
+      assertDeepEqual(namedBlockers(blockedReport.report, "campaign"), ["campaign supervisor"], "Only the selected missing supervisor should block the otherwise-ready fixture.");
+      const supervisor = findBucket(blockedReport.campaignChecks, "name", "campaign supervisor");
+      assert(String(supervisor.detail).includes("no checked installed supervisor registration"), "Missing supervisor diagnostics must be actionable.");
+
+      const after = invokeProcessCapture("git", ["status", "--porcelain=v1", "--untracked-files=all"], fixture.project);
+      assertSuccess(after, "Campaign fixture status must be readable after doctor.");
+      assertEqual(after.output.trim(), "", "Doctor must not mutate, register, start, or resume the campaign fixture.");
+    },
+  },
+  {
+    name: "doctor keeps static unattended readiness passing when campaign configuration is absent",
+    run: () => {
+      const fixture = newIsolatedDoctorFixture("unattended-without-campaign", "{\n  \"permission\": \"ask\"\n}\n");
+      const isolatedHome = path.join(fixture.root, "isolated-home");
+      for (const relative of [
+        "skills/openspec-apply-change/SKILL.md",
+        "skills/openspec-archive-change/SKILL.md",
+        "skills/openspec-propose/SKILL.md",
+        "commands/opsx-apply.md",
+        "commands/opsx-archive.md",
+        "commands/opsx-propose.md",
+      ]) {
+        writeText(path.join(fixture.globalDir, ...relative.split("/")), fs.readFileSync(path.join(root, "global", ...relative.split("/")), "utf8"));
+      }
+      writeText(path.join(fixture.project, "opencode-dev-kit", "adapter.json"), `${JSON.stringify({
+        unattended: {
+          checkpointModes: ["evidence-only", "external", "local-commit"],
+          localCommitRequiresAuthorization: true,
+          validationArgv: [process.execPath, "--version"],
+          workflowOwner: "global-canonical",
+        },
+        validation: {
+          build: "node --version",
+          focusedTest: "node --version",
+          lint: "node --version",
+          test: "node --version",
+          typecheck: "node --version",
+        },
+      }, null, 2)}\n`);
+      const plugin = (relative: string) => path.join(fixture.globalDir, ...relative.split("/"));
+      writeText(path.join(fixture.globalDir, "opencode.json"), `${JSON.stringify({
+        $schema: "https://opencode.ai/config.json",
+        model: "openai/gpt-5.6-sol",
+        permission: "ask",
+        plugin: [
+          plugin("extensions/opencode-pty-bridge.ts"),
+          [plugin("extensions/roadmap-mission-launcher.ts"), { scriptRuntime: process.execPath }],
+          [plugin("extensions/session-completion-guard.ts"), {
+            arbiterPromptTimeoutMs: 1,
+            certificateIssuers: ["roadmap-mission-session-executor"],
+            certificateWaitMs: 1,
+            maxCycles: 1,
+            maxRequestBytes: 1,
+            maxRetryAttempts: 1,
+            maxWaitRechecks: 1,
+            retainAuditSessions: 1,
+            waitRecheckMs: 1,
+          }],
+        ],
+      }, null, 2)}\n`);
+      const env = { HOME: isolatedHome, USERPROFILE: isolatedHome };
+
+      const unattended = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", fixture.project, "--format", "json", "--require", "unattended"],
+        env,
+      );
+      assertSuccess(unattended, "Static unattended readiness should pass without campaign configuration.");
+      const unattendedReport = parseDoctorV2(unattended);
+      assertEqual(unattendedReport.report.unattendedMissionStatus, "pass", "Static unattended status must pass independently.");
+      assertEqual(unattendedReport.report.campaignStatus, "blocked", "Absent campaign configuration must remain separately blocked.");
+
+      const campaign = invokeIsolatedDoctorArgs(
+        fixture,
+        ["--project", fixture.project, "--format", "json", "--require", "campaign"],
+        env,
+      );
+      assertEqual(campaign.exitCode, 2, "Absent campaign configuration must fail only the selected campaign gate.");
+      const campaignReport = parseDoctorV2(campaign);
+      assertEqual(campaignReport.report.unattendedMissionStatus, "pass", "Selecting campaign must not alter passing static unattended readiness.");
+      assert(namedBlockers(campaignReport.report, "campaign").includes("campaign definition and adapter"), "Campaign blockers must name the missing definition.");
     },
   },
   {

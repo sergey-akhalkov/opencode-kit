@@ -1,0 +1,117 @@
+{
+  "candidateId": "task-4-3-configured-r2",
+  "context": {
+    "blocks": [
+      {
+        "classification": "maintained",
+        "digest": "219afe2f76c515e75011604c1013d63227cdca1b9f90e6f1f288b7658d2d615f",
+        "exclusionReason": null,
+        "id": "block-format",
+        "kind": "file",
+        "path": "src/format.mjs",
+        "recordType": "inventory-block",
+        "reviewStatus": "reviewed-with-finding",
+        "schemaVersion": 1
+      },
+      {
+        "classification": "maintained",
+        "digest": "e312ed6c2587e82df9958cf30a35a39e4b2bd2ee97fee566d35e83b3de0c1e39",
+        "exclusionReason": null,
+        "id": "block-main",
+        "kind": "file",
+        "path": "src/main.mjs",
+        "recordType": "inventory-block",
+        "reviewStatus": "reviewed-with-finding",
+        "schemaVersion": 1
+      }
+    ],
+    "campaignId": "configured-playbook-proof",
+    "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+    "definitionDigest": "a47f82916f92cd0e4c95f6cbdd8569187cc32935eb7fc5bf2795a469f2a0f881",
+    "inventoryDigest": "00c643c4ad07003291fd3dc6a411aa32795227a57e6a93032e007be67f84efc8",
+    "modelCallBudget": 6
+  },
+  "environmentId": "node-24.18.1-windows-task-4-3-r2",
+  "liveCalls": 0,
+  "mode": "preflight",
+  "offlineController": null,
+  "runtimeSurface": {
+    "configDigest": "fd5fc501987b88f83e98b7d1001fe97d320c5383a392ea8b3b29d3763cb3dfc5",
+    "mcpIds": [],
+    "pluginIds": []
+  },
+  "schemaVersion": 1,
+  "setupCommands": [
+    {
+      "argv": [
+        "git",
+        "init",
+        "-b",
+        "main"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "Initialized empty Git repository in C:/Users/noilw/AppData/Local/Temp/work-campaign-playbook-preflight-IsKBNn/fixture/.git/\n"
+    },
+    {
+      "argv": [
+        "openspec",
+        "init",
+        "--tools",
+        "none",
+        "--no-animation",
+        "."
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "- Creating OpenSpec structure...\n▌ OpenSpec structure created\n\nOpenSpec Setup Complete\n\nConfig: openspec/config.yaml (schema: spec-driven)\n\nGetting started:\n  Start your first change: /opsx:propose \"your idea\"\n\nLearn more: https://github.com/Fission-AI/OpenSpec\nFeedback:   https://github.com/Fission-AI/OpenSpec/issues\n\n"
+    },
+    {
+      "argv": [
+        "git",
+        "add",
+        "--all"
+      ],
+      "exitCode": 0,
+      "stderr": "warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'AGENTS.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'adapter.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'definition.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'mission-adapter.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'mission-executor.mjs', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'opencode-dev-kit/adapter.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'openspec/config.yaml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'src/format.mjs', LF will be replaced by CRLF the next time Git touches it\nwarning: in th",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "user.name=Campaign Proof",
+        "-c",
+        "user.email=campaign-proof@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-m",
+        "configured playbook fixture"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "[main (root-commit) 72f4003] configured playbook fixture\n 11 files changed, 151 insertions(+)\n create mode 100644 .gitignore\n create mode 100644 AGENTS.md\n create mode 100644 adapter.json\n create mode 100644 definition.json\n create mode 100644 mission-adapter.json\n create mode 100644 mission-executor.mjs\n create mode 100644 opencode-dev-kit/adapter.json\n create mode 100644 openspec/config.yaml\n create mode 100644 src/format.mjs\n create mode 100644 src/main.mjs\n create mode 100644 validate.mjs\n"
+    }
+  ],
+  "worktreeStatuses": [
+    {
+      "exitCode": 0,
+      "id": "fixture-created",
+      "paths": [],
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "id": "ignored-evidence-created",
+      "paths": [],
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "id": "server-session-cleaned",
+      "paths": [],
+      "stderr": ""
+    }
+  ]
+}

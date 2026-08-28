@@ -1,0 +1,43 @@
+{
+  "recordType": "scope",
+  "schemaVersion": 1,
+  "includes": [
+    {
+      "path": "package.json",
+      "class": "maintained",
+      "reason": "reviewed project manifest"
+    },
+    {
+      "path": "src",
+      "class": "maintained",
+      "reason": "reviewed maintained source"
+    }
+  ],
+  "excludes": [
+    {
+      "path": "generated",
+      "class": "generated",
+      "reason": "generated output"
+    },
+    {
+      "path": "vendor",
+      "class": "vendor",
+      "reason": "vendored source"
+    },
+    {
+      "path": "evidence",
+      "class": "evidence",
+      "reason": "captured proof evidence"
+    },
+    {
+      "path": "corpus",
+      "class": "corpus",
+      "reason": "reviewed reference corpus"
+    },
+    {
+      "path": "dependencies",
+      "class": "dependency",
+      "reason": "installed dependency snapshot"
+    }
+  ]
+}

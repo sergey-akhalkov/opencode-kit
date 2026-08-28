@@ -303,9 +303,10 @@ totals.
 Add a portable supervisor process that owns campaign-process monitoring and calls only
 campaign preflight/status/resume/stop. It contains no phase, severity, wave, mission,
 or completion semantics. Add a Windows adapter and explicit protected registry under
-the current workstation installation owner. The adapter installs one derived Scheduled
-Task for owner interactive logon and may expose bounded status/stop through existing
-operator surfaces.
+the current workstation lifecycle owner but in an independent protected sibling root,
+not below the existing recursively removed workstation root. The adapter installs one
+derived Scheduled Task for owner interactive logon and may expose bounded status/stop
+through existing operator surfaces.
 
 At logon, the adapter waits for the existing positively identified authenticated
 OpenCode service, then invokes supervisor reconciliation for each enabled registration.
@@ -316,9 +317,16 @@ need not have a Desktop launcher mapping, but its canonical Git root and campaig
 must be explicitly protected and validated; arbitrary invocation paths remain rejected.
 
 The implementation should add cohesive campaign-supervisor modules and the smallest
-integration call rather than expand `tools/windows/opencode-workstation.ts` with
-campaign state logic. The tray may show aggregate health and open status/stop, but has
-no credentials or mutation authority.
+shared workstation-layout contract rather than expand `tools/windows/opencode-workstation.ts`
+with campaign state logic. That contract owns the protected workstation root, credential
+path, ACL, and owner-logon task settings used by both installers. The campaign installer
+copies the complete maintained portable-workflow runtime closure into its sibling root
+while preserving the `global/` layout, binds source and installed digests in its own
+manifest, and leaves the portable task-6.2 registry schema unchanged. The existing
+workstation rollback cannot delete the sibling root or unregister its separately named
+task; campaign rollback verifies and removes only its own attributable artifacts. The
+tray may show aggregate health and open status/stop, but has no credentials or mutation
+authority.
 
 Alternatives rejected:
 
@@ -341,6 +349,8 @@ readiness remains separate.
 Supervisor preview/install/check/repair/rollback is a dedicated explicit Windows
 maintainer operation. Installed binaries/registry/tasks are derived from versioned kit
 source, protected from unelevated mutation, and associated with a rollback manifest.
+The install manifest, rather than an extra field rejected by the portable registry,
+binds the expected kit root, complete source-file inventory, and installed identities.
 Config-time/plugin/tool changes still require a fresh OpenCode process.
 
 Alternative rejected: making project init or doctor register a task turns diagnostics

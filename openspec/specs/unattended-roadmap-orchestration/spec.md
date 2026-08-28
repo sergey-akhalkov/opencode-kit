@@ -1,7 +1,9 @@
 # unattended-roadmap-orchestration Specification
 
 ## Purpose
-TBD - created by archiving change add-unattended-roadmap-orchestration. Update Purpose after archive.
+Define a bounded persisted mission controller that serially executes explicit OpenSpec
+slices through validated local OpenCode sessions, checkpoints each completed slice, and
+fails closed on unknown ownership, protected boundaries, or incomplete cleanup.
 
 ## Requirements
 

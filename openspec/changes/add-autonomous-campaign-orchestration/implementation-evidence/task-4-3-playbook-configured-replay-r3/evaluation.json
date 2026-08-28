@@ -1,0 +1,22 @@
+{
+  "candidateId": "task-4-3-playbook-r3",
+  "checks": {
+    "admissionReached": false,
+    "candidateMatched": true,
+    "environmentMatched": true,
+    "exactConfiguredSequence": true,
+    "exactlyThreeModelCalls": true,
+    "fixtureCleanup": true,
+    "noSourceMutation": true,
+    "playbookComplete": true,
+    "readOnlyRootsTerminal": true,
+    "routeMatched": true,
+    "serverExplicit": true,
+    "transitionOrder": false
+  },
+  "environmentId": "node-24.18.1-windows-configured-playbook-r3",
+  "liveCalls": 0,
+  "proofKind": "campaign-configured-playbook-admission",
+  "schemaVersion": 1,
+  "status": "blocked"
+}

@@ -9,6 +9,7 @@ import { installedOpenCodeIdentity } from "./lib/opencode-proof-client.ts";
 import { captureConfiguredDiagnostic, captureFoundationConfiguredLane, captureLane, createFoundationBundleFromDiagnostic, type CaptureFailureKind, type SessionMode } from "./consumer-outcome/capture.ts";
 import {
   type CaptureBundle,
+  type ComplexityConfiguredSessionPack,
   type ComplexityFacadeScenarioExpectation,
   type DecisionGapPack,
   type DecisionPackName,
@@ -16,8 +17,10 @@ import {
   type SampleEvidence,
   type SourceIdentity,
   ContractError,
+  complexityConfiguredInvocationManifest,
   digestOf,
   governedSourceIdentity,
+  loadComplexityConfiguredSessionPack,
   loadDecisionGapPack,
   loadManifest,
   posixPath,
@@ -25,10 +28,11 @@ import {
   verifyFixtureSeed,
   writeNewFile,
 } from "./consumer-outcome/contracts.ts";
-import { evaluateBundle, evaluateDecisionGapPack, gateCurrent, loadGateInputs, readBundle, replayEvaluation } from "./consumer-outcome/evaluate.ts";
+import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, gateCurrent, loadGateInputs, readBundle, replayEvaluation } from "./consumer-outcome/evaluate.ts";
 import { captureStatusScopeLane, statusScopeConfiguredRoutes } from "./consumer-outcome/status-scope.ts";
 
 type Options = {
+  baselineConfigDir?: string;
   baselinePath?: string;
   candidateConfigDir?: string;
   candidateId: string;
@@ -43,7 +47,7 @@ type Options = {
   help: boolean;
   mode: "help" | "preflight" | "baseline" | "capture" | "convert" | "diagnose" | "replay" | "evaluate" | "gate";
   opencodePath?: string;
-  pack: DecisionPackName | "general";
+  pack: DecisionPackName | "complexity-configured" | "general";
   repoRoot: string;
   resultPath?: string;
   scenarioIds?: string[];
@@ -55,12 +59,12 @@ function usage(): string {
     "Usage:",
     "  node tools/proofs/consumer-outcome-regression.ts --help",
     "  node tools/proofs/consumer-outcome-regression.ts -h",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight [--pack general|bounded-falsification|claim-evidence|complexity|foundation-integrity|shift-left|status-scope] [--root <path>] [--source-ref HEAD|working-tree] [--opencode <absolute-path>]",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode baseline --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|complexity|foundation-integrity|shift-left|status-scope] [--source-ref HEAD|working-tree] [--session-mode configured] [--opencode <absolute-path>]",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode capture --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|claim-evidence|complexity|foundation-integrity|shift-left|status-scope] [--baseline <path>] [--candidate-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--result-path <absolute-new-path>] [--opencode <absolute-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--root <path>] [--source-ref HEAD|working-tree] [--opencode <absolute-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode baseline --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--baseline-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--opencode <absolute-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode capture --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--baseline <path>] [--candidate-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--result-path <absolute-new-path>] [--opencode <absolute-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode diagnose --pack complexity|foundation-integrity [--scenarios <one-foundation-id>] --candidate-id <id> --evidence-root <absolute-new-path> --source-ref working-tree --session-mode configured --opencode <absolute-path>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode convert --pack foundation-integrity --scenarios <one-id> --candidate-id <id> --evidence-root <absolute-new-path> --diagnostic <path> --baseline <path> --source-ref working-tree",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode replay --baseline <path> [--candidate <path>]... [--pack general|bounded-falsification|claim-evidence|complexity|foundation-integrity|shift-left|status-scope] [--scenarios id,...] [--expectation no-regression|improvement|baseline-establishment] [--result-path <absolute-new-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode replay --baseline <path> [--candidate <path>]... [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--scenarios id,...] [--expectation no-regression|improvement|baseline-establishment] [--result-path <absolute-new-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --baseline <path> [--candidate <path>] [--expectation no-regression|improvement|baseline-establishment] [--result-path <absolute-new-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode gate [--source-ref HEAD|working-tree] [--candidate <path>] [--candidate-request <path>]",
     "",
@@ -70,6 +74,7 @@ function usage(): string {
     "Focused packs: claim-evidence uses one matched capture and at most eight configured-provider requests.",
     "               bounded-falsification uses twelve reviewed partitions, one primary request per scenario/arm, and at most twenty-four primary requests total.",
     "               complexity prepares one useful-current-consumer-facade member and permits only one separately cleared configured diagnostic request.",
+    "               complexity-configured captures twelve matched baseline/candidate partitions with at most twenty-four configured-provider requests total.",
     "               foundation-integrity supports reviewed scenario subsets and provider-free composition; the complete baseline/candidate population remains bounded to fourteen primary requests total.",
     "               shift-left uses separate baseline/candidate captures, two scenarios, and at most four requests total.",
     "               status-scope uses one main response, one actual compaction, and one reconstruction call per arm, with six calls total.",
@@ -134,7 +139,7 @@ function parseOptions(args: string[]): Options {
       index += 1;
     } else if (arg === "--pack") {
       const value = required(args, index, arg);
-      if (value !== "general" && value !== "bounded-falsification" && value !== "claim-evidence" && value !== "complexity" && value !== "foundation-integrity" && value !== "shift-left" && value !== "status-scope") throw new Error("Invalid pack");
+      if (value !== "general" && value !== "bounded-falsification" && value !== "claim-evidence" && value !== "complexity" && value !== "complexity-configured" && value !== "foundation-integrity" && value !== "shift-left" && value !== "status-scope") throw new Error("Invalid pack");
       options.pack = value;
       index += 1;
     } else if (arg === "--opencode") {
@@ -151,6 +156,9 @@ function parseOptions(args: string[]): Options {
       index += 1;
     } else if (arg === "--baseline") {
       options.baselinePath = path.resolve(required(args, index, arg));
+      index += 1;
+    } else if (arg === "--baseline-config-dir") {
+      options.baselineConfigDir = path.resolve(required(args, index, arg));
       index += 1;
     } else if (arg === "--candidate") {
       const candidatePath = path.resolve(required(args, index, arg));
@@ -264,6 +272,24 @@ export function selectBoundedFalsificationPack(pack: DecisionGapPack, requestedI
     id: `${pack.id}-selection-${orderedIds.join("+")}`,
     manifest: { ...pack.manifest, scenarios },
     maximumClaim: `the exercised configured model and selected bounded-falsification scenarios (${orderedIds.join(", ")}) cover only their ${orderedIds.length} explicit members under the recorded identities`,
+  };
+  return { digest: digestOf(selected), pack: selected };
+}
+
+export function selectComplexityConfiguredPack(pack: ComplexityConfiguredSessionPack, requestedIds: string[]): { digest: string; pack: ComplexityConfiguredSessionPack } {
+  const requested = new Set(requestedIds);
+  const scenarios = pack.manifest.scenarios.filter((scenario) => requested.has(scenario.id));
+  const missing = requestedIds.filter((id) => !scenarios.some((scenario) => scenario.id === id));
+  if (missing.length > 0) throw new Error(`Unknown complexity-configured scenario(s): ${missing.join(",")}`);
+  const memberOrder = scenarios.map((scenario) => scenario.id);
+  const selected: ComplexityConfiguredSessionPack = {
+    ...pack,
+    configuredProviderRequestBound: scenarios.length * 2,
+    expectedDecisions: Object.fromEntries(memberOrder.map((id) => [id, pack.expectedDecisions[id]])),
+    id: `${pack.id}-selection-${memberOrder.join("+")}`,
+    manifest: { ...pack.manifest, scenarios },
+    maximumClaim: `the exercised configured model and selected complexity scenarios (${memberOrder.join(", ")}) cover only their ${memberOrder.length} explicit members under the recorded identities`,
+    memberOrder,
   };
   return { digest: digestOf(selected), pack: selected };
 }
@@ -516,24 +542,51 @@ function complexityPreflight(options: Options, pack: DecisionGapPack): Record<st
   };
 }
 
+function complexityConfiguredPreflight(pack: ComplexityConfiguredSessionPack): Record<string, unknown> {
+  const invocationManifest = complexityConfiguredInvocationManifest(pack);
+  if (invocationManifest.length !== pack.memberOrder.length * 2) {
+    throw new Error("complexity configured invocation manifest is incomplete");
+  }
+  return {
+    configuredCapture: {
+      liveAttemptGate: "requires-current-green-preflight-and-terminal-proof-owned-writers",
+      mode: "baseline/capture",
+      providerRequestBound: pack.configuredProviderRequestBound,
+      semanticClaimBeforeCapture: "unsupported",
+    },
+    invocationManifest,
+    scenarioMembers: pack.memberOrder,
+  };
+}
+
 async function main(): Promise<void> {
   const options = parseOptions(process.argv.slice(2));
   if (options.help || options.mode === "help") {
     console.log(usage());
     return;
   }
-  const loadedFocused = options.pack === "general" ? null : loadDecisionGapPack(options.repoRoot, options.pack);
-  if (options.scenarioIds != null && loadedFocused?.pack.name !== "foundation-integrity" && loadedFocused?.pack.name !== "bounded-falsification") {
+  const complexityConfiguredSource = options.pack === "complexity-configured"
+    ? loadComplexityConfiguredSessionPack(options.repoRoot)
+    : null;
+  const loadedFocused = options.pack === "general" || options.pack === "complexity-configured"
+    ? null
+    : loadDecisionGapPack(options.repoRoot, options.pack);
+  if (options.scenarioIds != null && complexityConfiguredSource == null && loadedFocused?.pack.name !== "foundation-integrity" && loadedFocused?.pack.name !== "bounded-falsification") {
     throw new Error("--scenarios is supported only for partition packs");
   }
+  const loadedComplexityConfigured = options.scenarioIds == null || complexityConfiguredSource == null
+    ? complexityConfiguredSource
+    : selectComplexityConfiguredPack(complexityConfiguredSource.pack, options.scenarioIds);
   const focused = options.scenarioIds == null || loadedFocused == null
     ? loadedFocused
     : loadedFocused.pack.name === "bounded-falsification"
       ? selectBoundedFalsificationPack(loadedFocused.pack, options.scenarioIds)
       : selectFoundationPack(loadedFocused.pack, options.scenarioIds);
-  const loaded = focused == null
-    ? loadManifest(options.repoRoot)
-    : { digest: focused.digest, manifest: focused.pack.manifest };
+  const loaded = loadedComplexityConfigured != null
+    ? { digest: loadedComplexityConfigured.digest, manifest: loadedComplexityConfigured.pack.manifest }
+    : focused == null
+      ? loadManifest(options.repoRoot)
+      : { digest: focused.digest, manifest: focused.pack.manifest };
   if (focused?.pack.name === "claim-evidence" && (options.mode === "baseline" || options.mode === "gate")) {
     throw new Error("The claim-evidence pack cannot establish, promote, or gate the maintained baseline pointer.");
   }
@@ -543,11 +596,17 @@ async function main(): Promise<void> {
   if (focused?.pack.name === "complexity" && options.mode === "gate") {
     throw new Error("The complexity pack cannot gate or promote the maintained baseline pointer.");
   }
+  if (loadedComplexityConfigured != null && options.mode === "gate") {
+    throw new Error("The complexity-configured pack cannot gate or promote the maintained baseline pointer.");
+  }
   if (focused?.pack.name === "claim-evidence" && options.expectation !== "no-regression") {
     throw new Error("The claim-evidence pack requires the explicit no-regression expectation.");
   }
   if ((focused?.pack.name === "bounded-falsification" || focused?.pack.name === "complexity" || focused?.pack.name === "foundation-integrity" || focused?.pack.name === "shift-left") && options.expectation === "improvement") {
     throw new Error(`The ${focused.pack.name} pack supports baseline-establishment or no-regression only.`);
+  }
+  if (loadedComplexityConfigured != null && options.expectation === "improvement") {
+    throw new Error("The complexity-configured pack supports baseline-establishment or no-regression only.");
   }
   if (options.mode === "preflight") {
     const source = governedSourceIdentity(options.repoRoot, options.gitRef, loaded.manifest.governedSourcePaths);
@@ -555,10 +614,12 @@ async function main(): Promise<void> {
       governedDigest: source.governedDigest,
       mode: "preflight",
       modelCalls: 0,
-      maximumClaim: focused?.pack.maximumClaim ?? "maintained two-scenario consumer no-regression for the recorded environment",
+      maximumClaim: loadedComplexityConfigured?.pack.maximumClaim ?? focused?.pack.maximumClaim ?? "maintained two-scenario consumer no-regression for the recorded environment",
       pack: options.pack,
       captureByteLimit: loaded.manifest.captureByteLimit,
-      configuredProviderRequestBound: focused == null
+      configuredProviderRequestBound: loadedComplexityConfigured != null
+        ? loadedComplexityConfigured.pack.configuredProviderRequestBound
+        : focused == null
         ? Math.max(...loaded.manifest.scenarios.map((scenario) => scenario.configuredProviderRequestBound))
         : focused.pack.configuredProviderRequestBound,
       governedSourcePaths: loaded.manifest.governedSourcePaths,
@@ -571,6 +632,7 @@ async function main(): Promise<void> {
       ...(focused?.pack.name === "foundation-integrity" ? foundationIntegrityPreflight(focused.pack) : {}),
       ...(focused?.pack.name === "bounded-falsification" ? boundedFalsificationPreflight(focused.pack) : {}),
       ...(focused?.pack.name === "complexity" ? complexityPreflight(options, focused.pack) : {}),
+      ...(loadedComplexityConfigured == null ? {} : complexityConfiguredPreflight(loadedComplexityConfigured.pack)),
     });
     return;
   }
@@ -583,7 +645,14 @@ async function main(): Promise<void> {
     const candidate = focused?.pack.name === "foundation-integrity" || focused?.pack.name === "bounded-falsification"
       ? projectedPathBundles(options.candidatePaths, loaded.digest, scenarioIds)
       : options.candidatePath == null ? undefined : readBundle(options.candidatePath);
-    const evaluation = focused == null
+    const evaluation = loadedComplexityConfigured != null
+      ? evaluateComplexityConfiguredSessionPack({
+        baseline,
+        candidate,
+        expectation: candidate == null ? "baseline-establishment" : options.expectation,
+        pack: loadedComplexityConfigured.pack,
+      })
+      : focused == null
       ? replayEvaluation({
         baselinePath: options.baselinePath,
         candidatePath: options.candidatePath,
@@ -666,6 +735,7 @@ async function main(): Promise<void> {
       candidateId: options.candidateId,
       evidenceRoot: options.evidenceRoot,
       executable: options.opencodePath,
+      retainChangedText: focused.pack.name === "complexity",
       repoRoot: options.repoRoot,
       sourceIdentity: source,
     });
@@ -687,6 +757,9 @@ async function main(): Promise<void> {
   if ((focused?.pack.name === "bounded-falsification" || focused?.pack.name === "complexity" || focused?.pack.name === "foundation-integrity" || focused?.pack.name === "shift-left" || focused?.pack.name === "status-scope") && options.mode === "capture" && options.baselinePath == null) {
     throw new Error(`The ${focused.pack.name} candidate capture requires --baseline for matched evaluation.`);
   }
+  if (loadedComplexityConfigured != null && options.mode === "capture" && options.baselinePath == null) {
+    throw new Error("The complexity-configured candidate capture requires --baseline for matched evaluation.");
+  }
   if (focused?.pack.name === "status-scope" && (options.sessionMode !== "configured" || options.opencodePath == null)) {
     throw new Error("The status-scope baseline/capture requires --session-mode configured and --opencode.");
   }
@@ -698,6 +771,9 @@ async function main(): Promise<void> {
   }
   if (focused?.pack.name === "complexity" && options.sessionMode === "configured") {
     throw new Error("The complexity configured lane uses one separately cleared diagnose invocation, not baseline/capture.");
+  }
+  if (loadedComplexityConfigured != null && (options.sessionMode !== "configured" || options.opencodePath == null)) {
+    throw new Error("The complexity-configured baseline/capture requires --session-mode configured and --opencode.");
   }
   const bundle = focused?.pack.name === "status-scope"
     ? await captureStatusScopeLane(focused.pack, loaded.digest, {
@@ -719,6 +795,7 @@ async function main(): Promise<void> {
         sourceIdentity: source,
       })
     : await captureLane(loaded.manifest, loaded.digest, {
+      baselineConfigDir: options.baselineConfigDir,
       candidateConfigDir: options.candidateConfigDir,
       candidateId: options.candidateId,
       evidenceRoot: options.evidenceRoot,
@@ -735,7 +812,14 @@ async function main(): Promise<void> {
       sessionMode: options.sessionMode,
       sourceIdentity: source,
     });
-  const evaluation = focused == null
+  const evaluation = loadedComplexityConfigured != null
+    ? evaluateComplexityConfiguredSessionPack({
+      baseline: options.mode === "baseline" ? bundle : readBundle(options.baselinePath!),
+      candidate: options.mode === "capture" ? bundle : undefined,
+      expectation: options.mode === "baseline" ? "baseline-establishment" : options.expectation,
+      pack: loadedComplexityConfigured.pack,
+    })
+    : focused == null
     ? evaluateBundle({
       baseline: options.mode === "baseline" ? bundle : options.baselinePath != null ? readBundle(options.baselinePath) : bundle,
       candidate: options.mode === "capture" ? bundle : undefined,

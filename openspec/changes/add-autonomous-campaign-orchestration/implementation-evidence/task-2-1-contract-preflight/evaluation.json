@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "autonomous-work-campaign-contracts-r1",
+  "checks": {
+    "actualProductionEntrypoint": true,
+    "adapterSchemaExact": true,
+    "allRecordTypesExact": true,
+    "argvIsExplicitVector": true,
+    "budgetsFinite": true,
+    "causePreserved": true,
+    "definitionSchemaExact": true,
+    "fixtureInputsUnchanged": true,
+    "pathsContained": true,
+    "protectedEffectsAuthorized": true,
+    "providerCallsZero": true,
+    "unsupportedInputsBlocked": true
+  },
+  "status": "complete",
+  "maximumSupportedClaim": "The production contract-only preflight accepts one contained generic audit-remediate definition and adapter, rejects the reviewed malformed schema/path/budget/effect/authorization/argv cases before effects, and parses eight exact campaign record types. No state transition, semantic root, source mutation, mission handoff, report materialization, or host recovery is implemented or claimed."
+}

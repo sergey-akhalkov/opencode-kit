@@ -1,7 +1,10 @@
 # library-deduplication-audit Specification
 
 ## Purpose
-TBD - created by archiving change add-global-deduplication-audit. Update Purpose after archive.
+Define a read-only scoped duplication audit that treats textual clones as candidates,
+proves ownership and behavior before recommending reduction, and preserves unique
+regression or compatibility oracles.
+
 ## Requirements
 ### Requirement: Global scoped deduplication entrypoint
 The kit SHALL expose `/dedup <scope>` through the configured global OpenCode source and SHALL lazy-load `deduplication-audit` only for explicit command or scoped duplication-audit intent. The command SHALL remain read-only and SHALL NOT route automatically into `codebase-audit-loop`.

@@ -32,6 +32,7 @@ import {
   type SourceIdentity,
   type ToolCallFact,
   CAPTURE_BYTE_LIMIT,
+  COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER,
   ContractError,
   SAMPLE_BYTE_LIMIT,
   SCHEMA_VERSION,
@@ -92,6 +93,7 @@ function configuredPermission(scenario: RegressionManifest["scenarios"][number])
 }
 
 export type CaptureOptions = {
+  baselineConfigDir?: string;
   candidateConfigDir?: string;
   candidateId: string;
   evidenceRoot: string;
@@ -110,15 +112,43 @@ export type ConfiguredDiagnosticOptions = {
   evidenceRoot: string;
   executable: string;
   fixtureDecisions?: Record<string, unknown>;
+  retainChangedText?: boolean;
   repoRoot: string;
   sourceIdentity: SourceIdentity;
 };
+
+export type ChangedTextEvidence = {
+  after: { sha256: string; text: string } | null;
+  before: { sha256: string; text: string } | null;
+  path: string;
+};
+
+export function changedTextEvidence(
+  before: Record<string, string>,
+  after: Record<string, string>,
+): ChangedTextEvidence[] {
+  return [...new Set([...Object.keys(before), ...Object.keys(after)])]
+    .sort((left, right) => left.localeCompare(right))
+    .flatMap((relative) => {
+      const beforeText = before[relative];
+      const afterText = after[relative];
+      if (beforeText === afterText) return [];
+      return [{
+        after: afterText == null ? null : { sha256: sha256(afterText), text: afterText },
+        before: beforeText == null ? null : { sha256: sha256(beforeText), text: beforeText },
+        path: relative,
+      }];
+    });
+}
 
 export function configuredScenarioTimeoutMs(
   scenario: RegressionManifest["scenarios"][number],
   failure: CaptureFailureKind,
 ): number {
   if (failure === "timeout") return 50;
+  if (COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER.includes(scenario.id as (typeof COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER)[number])) {
+    return 300_000;
+  }
   if (scenario.id === "material-correction-rereview" || scenario.id === "exact-practice-owner") {
     return FOUNDATION_SERVER_PROMPT_TIMEOUT_MS;
   }
@@ -456,6 +486,9 @@ export async function captureConfiguredDiagnostic(
   copyScenarioSeed(seedRoot, fixtureRoot, scenario, options.fixtureDecisions?.[scenario.id]);
   const initialFiles = initialScenarioFiles(fixtureRoot, scenario);
   const initial = hashFiles(fixtureRoot, initialFiles);
+  const initialText = options.retainChangedText === true
+    ? Object.fromEntries(initialFiles.map((relative) => [relative, fs.readFileSync(path.join(fixtureRoot, relative), "utf8")]))
+    : null;
   const configDir = options.candidateConfigDir ?? path.join(options.repoRoot, "global");
   const profile = loadModelProfile(options.repoRoot, manifest.profile).profile;
   const configuredRoute = profile.agent.build;
@@ -514,6 +547,12 @@ export async function captureConfiguredDiagnostic(
   const proof = commandFact(fixtureRoot, scenario.proofExpectations.argv);
   const tracked = [...new Set([...initialFiles, ...scenario.expectedOutcome.stateFiles])].sort((left, right) => left.localeCompare(right));
   const files = hashFiles(fixtureRoot, tracked.filter((relative) => fs.existsSync(path.join(fixtureRoot, relative))));
+  const changes = initialText == null ? null : changedTextEvidence(
+    initialText,
+    Object.fromEntries(tracked
+      .filter((relative) => fs.existsSync(path.join(fixtureRoot, relative)))
+      .map((relative) => [relative, fs.readFileSync(path.join(fixtureRoot, relative), "utf8")])),
+  );
   const runtimeManifest = diagnosticRuntimeManifest(proofRoot);
   const logs = server == null ? { stderr: "", stdout: "" } : proofServerLogs(server);
   const startupFacts = proofServerStartupFacts(logs.stdout, logs.stderr, configDir, [proofRoot]);
@@ -545,6 +584,7 @@ export async function captureConfiguredDiagnostic(
       processesRemoved,
       sessionsRemoved,
     },
+    ...(changes == null ? {} : { changes }),
     diagnosticOnly: true,
     digest: "",
     elapsedMs: Date.now() - startedAt,
@@ -584,6 +624,9 @@ export async function captureConfiguredDiagnostic(
   };
   const safeDiagnostic = sealConfiguredDiagnostic(diagnostic);
   const serialized = stableJson(safeDiagnostic);
+  if (Buffer.byteLength(serialized, "utf8") > scenario.evidenceByteBound) {
+    throw new ContractError("diagnostic", `configured diagnostic exceeds the reviewed ${scenario.evidenceByteBound}-byte bound`);
+  }
   assertPrivacySafe(serialized, "configured diagnostic");
   writeNewFile(path.join(options.evidenceRoot, "diagnostic.json"), serialized);
   return safeDiagnostic;
@@ -771,9 +814,11 @@ async function captureSample(
           ...loaded.profile,
           permission: configuredPermission(scenario),
         }),
-        OPENCODE_CONFIG_DIR: arm === "candidate" && options.candidateConfigDir != null
-          ? options.candidateConfigDir
-          : path.join(options.repoRoot, "global"),
+        OPENCODE_CONFIG_DIR: arm === "baseline" && options.baselineConfigDir != null
+          ? options.baselineConfigDir
+          : arm === "candidate" && options.candidateConfigDir != null
+            ? options.candidateConfigDir
+            : path.join(options.repoRoot, "global"),
         OPENCODE_PURE: "1",
         XDG_CACHE_HOME: path.join(proofRoot, "xdg-cache"),
         XDG_STATE_HOME: path.join(proofRoot, "xdg-state"),

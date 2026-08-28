@@ -1,0 +1,78 @@
+{
+  "recordType": "output",
+  "schemaVersion": 1,
+  "root": {
+    "kind": "sha256",
+    "digest": "12a69baeda89c99e27dc675442edefb769a3e2ef8434ae47f053bd44e2c014c1"
+  },
+  "scope": {
+    "includes": [],
+    "excludes": []
+  },
+  "support": {
+    "state": "blocked",
+    "unsupportedFields": [],
+    "unknownFields": [
+      "traversal-complete"
+    ]
+  },
+  "candidates": [
+    {
+      "kind": "manifest",
+      "path": "package.json",
+      "evidence": {
+        "detector": "exact-name",
+        "value": "package.json"
+      }
+    },
+    {
+      "kind": "public-surface",
+      "path": "src/index.ts",
+      "evidence": {
+        "detector": "manifest-field",
+        "value": "exports"
+      }
+    }
+  ],
+  "counts": {
+    "files": 1,
+    "directories": 1,
+    "bytes": 114,
+    "lines": 6,
+    "maintained": 1,
+    "generated": 0,
+    "vendor": 0,
+    "evidence": 0,
+    "corpus": 0,
+    "dependency": 0,
+    "unknown": 0,
+    "unsupported": 0,
+    "unreadable": 0
+  },
+  "largestMaintainedFiles": [
+    {
+      "path": "package.json",
+      "bytes": 114,
+      "lines": 6
+    }
+  ],
+  "topLevelConcentration": [
+    {
+      "path": "package.json",
+      "files": 1,
+      "bytes": 114,
+      "lines": 6
+    }
+  ],
+  "diagnostics": [
+    {
+      "stage": "bounds",
+      "path": null,
+      "cause": {
+        "name": "BoundError",
+        "code": "MAX_FILES",
+        "message": "max-files bound reached (1)"
+      }
+    }
+  ]
+}

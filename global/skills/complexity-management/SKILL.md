@@ -27,7 +27,7 @@ Stay quiet when the work is a cohesive ordinary delta, post-change smell/maintai
 
 ## Fact Foraging
 
-Resolve the active global source exactly. Use non-empty `OPENCODE_CONFIG_DIR` only when it contains `bin/complexity-foraging-inventory.ts`; otherwise use supported current runtime-source and collision evidence. Never strip a final `global` segment, guess a repository parent, or require a target-project package script.
+Resolve the active global source exactly. Use non-empty `OPENCODE_CONFIG_DIR` only when it contains `bin/complexity-foraging-inventory.ts`; otherwise use supported current runtime-source and collision evidence. Never strip a final `global` segment, guess a repository parent, or require a target-project package script. Prefer the direct helper invocation below over a separate shell availability probe; a failed direct resolution remains degraded evidence rather than permission to guess another source.
 
 When available, run:
 
@@ -73,7 +73,7 @@ Record:
 - material effects, failures, lifecycle, and cost;
 - observed pressure and owning boundary;
 - candidate response or `none`;
-- after an admitted refactor, the same task/context/edit/proof comparison.
+- after an admitted refactor, label the before and after context/edit/proof sets; when an output schema has one `essentialContext` field, put only the post-refactor consumer essentials there and keep implementation evidence in the map.
 
 ## Abstraction-Value Ladder
 
@@ -108,7 +108,7 @@ Return:
 - `Outcome And Scope`: consumer/change scenario, non-goals, and proof boundary.
 - `Inventory`: active-source identity, invocation or degraded route, support state, exclusions, and privacy-safe diagnostics.
 - `Architecture Comprehension Map`: required fields above with facts/inferences/unknowns separated.
-- `Change Rehearsal`: before state and, when applicable, same-scenario after state.
+- `Change Rehearsal`: labeled before state and, when applicable, same-scenario after state with post-refactor consumer essentials distinct from hidden implementation evidence.
 - `Pressure And Admission`: evidence, owning boundary, abstraction-value step, and `current-dependency | accepted-refactor | deferred-debt | unknown`.
 - `Disposition`: remove | narrow | reuse | reshape | extract | facade | defer | unknown, with main-owned rationale.
 - `Runtime Proof`: exact representative invocation, expected/actual behavior, effects/errors, validation, and cleanup, or `not run` with the exact reason.

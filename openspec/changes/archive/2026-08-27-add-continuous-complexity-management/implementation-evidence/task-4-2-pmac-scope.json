@@ -1,0 +1,133 @@
+{
+  "recordType": "scope",
+  "schemaVersion": 1,
+  "includes": [
+    {
+      "path": ".gitattributes",
+      "class": "maintained",
+      "reason": "reviewed repository text policy"
+    },
+    {
+      "path": ".gitignore",
+      "class": "maintained",
+      "reason": "reviewed repository exclusion policy"
+    },
+    {
+      "path": "AGENTS.md",
+      "class": "maintained",
+      "reason": "reviewed project ownership and architecture navigation"
+    },
+    {
+      "path": "Cargo.lock",
+      "class": "maintained",
+      "reason": "reviewed locked dependency identity"
+    },
+    {
+      "path": "Cargo.toml",
+      "class": "maintained",
+      "reason": "reviewed Rust workspace manifest"
+    },
+    {
+      "path": "README.md",
+      "class": "maintained",
+      "reason": "reviewed onboarding surface"
+    },
+    {
+      "path": "crates",
+      "class": "maintained",
+      "reason": "reviewed maintained Rust owners"
+    },
+    {
+      "path": "docs",
+      "class": "maintained",
+      "reason": "reviewed maintained architecture and navigation"
+    },
+    {
+      "path": "pmac",
+      "class": "maintained",
+      "reason": "reviewed board firmware input surface"
+    },
+    {
+      "path": "opencode.json",
+      "class": "maintained",
+      "reason": "reviewed project development runtime configuration"
+    },
+    {
+      "path": "profiles",
+      "class": "maintained",
+      "reason": "reviewed versioned runtime profiles"
+    },
+    {
+      "path": "tools",
+      "class": "maintained",
+      "reason": "reviewed proof and adapter owners"
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "class": "maintained",
+      "reason": "reviewed Rust toolchain identity"
+    }
+  ],
+  "excludes": [
+    {
+      "path": ".git",
+      "class": "generated",
+      "reason": "repository metadata outside maintained product context"
+    },
+    {
+      "path": ".opencode",
+      "class": "dependency",
+      "reason": "project-local development runtime configuration"
+    },
+    {
+      "path": ".serena",
+      "class": "generated",
+      "reason": "generated code-intelligence state"
+    },
+    {
+      "path": ".vscode",
+      "class": "dependency",
+      "reason": "editor-specific development configuration"
+    },
+    {
+      "path": "data",
+      "class": "corpus",
+      "reason": "legacy and qualification input corpus outside maintained runtime hot path"
+    },
+    {
+      "path": "docs/evidence",
+      "class": "evidence",
+      "reason": "immutable proof records outside maintained comprehension path"
+    },
+    {
+      "path": "docs/feedbacks",
+      "class": "evidence",
+      "reason": "workflow feedback outside maintained product path"
+    },
+    {
+      "path": "docs/raw",
+      "class": "corpus",
+      "reason": "authoritative reference corpus outside maintained hot path"
+    },
+    {
+      "path": "docs/reference",
+      "class": "corpus",
+      "reason": "generated reference corpus outside maintained hot path"
+    },
+    {
+      "path": "openspec",
+      "class": "evidence",
+      "reason": "specification and implementation evidence outside maintained runtime owners"
+    },
+    {
+      "path": "saturn",
+      "class": "corpus",
+      "reason": "legacy machine corpus and static regression evidence, not an entrypoint"
+    },
+    {
+      "path": "target",
+      "class": "generated",
+      "reason": "generated Rust build output"
+    }
+  ]
+}

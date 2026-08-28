@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 2,
+  "changeId": "add-cross-project-kaizen-loop",
+  "candidateId": "cross-project-kaizen-loop-planning-r2",
+  "environmentId": "planning-no-runtime-r1",
+  "retention": {
+    "maxFiles": 64,
+    "maxBytes": 26214400,
+    "exception": null
+  },
+  "tasks": [],
+  "lanes": [],
+  "claims": [
+    {
+      "claimId": "KZN-001",
+      "outcomeRef": "proposal-outcome",
+      "statement": "Within the maintained local event population, installed kit sessions preserve explicit, compaction, archive, and legacy feedback signals in one bounded privacy-safe inbox, expose visible lifecycle and repair state, and allow one contained manual promotion into an ordinary opencode-kit OpenSpec proposal.",
+      "claimClass": "finite-population",
+      "candidateId": "cross-project-kaizen-loop-planning-r2",
+      "environmentId": "planning-no-runtime-r1",
+      "coverageBasis": "finite-population",
+      "population": {
+        "id": "cross-project-kaizen-scenarios-v1",
+        "members": [
+          "enabled-explicit-valid",
+          "enabled-explicit-invalid",
+          "disabled-no-write",
+          "two-project-concurrent-append",
+          "capacity-rejection",
+          "compaction-valid-signal",
+          "compaction-valid-empty",
+          "compaction-missing-envelope",
+          "compaction-malformed-or-duplicate-envelope",
+          "compaction-wrong-root-or-child",
+          "compaction-store-failure",
+          "archive-captured",
+          "archive-no-signal",
+          "archive-repair-gap",
+          "archive-checkpoint-unavailable",
+          "archive-failed",
+          "complain-loaded-inbox",
+          "complain-disabled-fallback",
+          "legacy-import-idempotent",
+          "legacy-open-status-stale",
+          "status-bounded-truncation",
+          "triage-unknown-owner",
+          "consumer-kit-candidate-no-write",
+          "kit-root-contained-proposal",
+          "privacy-redaction-and-output-bounds"
+        ],
+        "partitionRule": null,
+        "materialClasses": [],
+        "residualSpace": "Unemitted human irritations, raw transcripts and arbitrary tool output, unknown secret formats, event populations beyond fixed bounds, automatic scheduling or implementation, cross-machine stores, multi-repository mutation, remote submission, unpinned OpenCode versions, and unrepresented models or prompt histories remain outside the claim."
+      },
+      "paths": {
+        "production": "loaded-session-env-explicit-compaction-archive-complain-triage-and-proposal",
+        "baseline": "markdown-complain-plus-unpersisted-compaction-and-archive-reflection",
+        "candidate": "candidate-machine-local-kaizen-signal-lifecycle"
+      },
+      "observationBoundary": "pinned-opencode-disposable-two-project-compaction-archive-kit-root-proposal-readback-effects-and-cleanup",
+      "realOracle": {
+        "required": true,
+        "status": "unknown",
+        "evidenceRefs": []
+      },
+      "observations": [],
+      "evidenceRefs": [],
+      "materialExclusions": [
+        "Detection of every human irritation or inference from raw transcripts and arbitrary tool payloads",
+        "Automatic semantic scoring, batching, scheduling, campaign execution, code fixing, or project-memory promotion",
+        "Direct mutation of opencode-kit from a consumer-project session or any multi-repository transaction",
+        "Remote issue creation, publication, deployment, release, installation, credentials, or destructive external effects",
+        "Eventual disposition of every pending signal before a scheduler or curator increment exists",
+        "Complete secret detection, cross-machine synchronization, hosted storage, or compatibility with unpinned OpenCode versions"
+      ],
+      "unknowns": [
+        "The pinned OpenCode post-compaction event-to-summary identity has not been exercised.",
+        "No Kaizen store, plugin tools, compaction capture, archive checkpoint, or triage candidate has been implemented or loaded.",
+        "No finite-population member has a current runtime observation.",
+        "Signal quality and omission behavior outside maintained synthetic prompts are unobserved.",
+        "Required privacy/authorization SDET and fresh evidence-sufficiency challenge have not run."
+      ],
+      "independentChallenge": {
+        "required": true,
+        "status": "missing",
+        "evidenceRefs": []
+      },
+      "maximumSupportedClaim": "Planning artifacts define the bounded signal, compaction, archive, fallback, triage, privacy, profile, and proposal-root contract; no loaded capture reliability, privacy, cross-project routing, archive-repair, proposal-promotion, or eventual-resolution behavior is currently supported.",
+      "narrowingAccepted": false,
+      "disposition": "unknown"
+    }
+  ]
+}

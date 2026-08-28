@@ -17,13 +17,14 @@ import {
   type ComplexityScopeEntry,
 } from "./complexity-foraging-contract.ts";
 
-type Options = {
+export type Options = {
   bounds: {
     maxFiles: number;
     maxBytes: number;
     timeoutMs: number;
   };
-  format: "json";
+  cancelPath: string | null;
+  format: "json" | "markdown";
   help: boolean;
   root: string | null;
   scopePath: string | null;
@@ -40,6 +41,18 @@ type ScanState = {
   startedAt: number;
   topLevel: Map<string, { files: number; bytes: number; lines: number }>;
 };
+
+class ScanStopped extends Error {
+  readonly code: string;
+  readonly stage: "bounds" | "cancellation";
+
+  constructor(stage: "bounds" | "cancellation", code: string, message: string) {
+    super(message);
+    this.name = stage === "cancellation" ? "CancellationError" : "BoundError";
+    this.stage = stage;
+    this.code = code;
+  }
+}
 
 const SOURCE_EXTENSIONS = new Set([
   ".c", ".cc", ".cpp", ".cs", ".dart", ".ex", ".exs", ".fs", ".go", ".java", ".js", ".jsx",
@@ -69,19 +82,21 @@ function usage(): string {
     "  node global/bin/complexity-foraging-inventory.ts --root <path> [options]",
     "",
     "Read-only, provider-free project foraging facts. Help performs no scan and creates no files.",
+    "No repository files are modified.",
     "",
     "Options:",
     "  --root <path>       Explicit local project root (required for a scan).",
     "  --scope <path>      Optional versioned reviewed scope JSON; never generated heuristically.",
-    "  --format json       Stable JSON output. Markdown is completed by the later full-contract task.",
+    "  --format <kind>     Stable json or markdown output (default json).",
     `  --max-files <n>     Traversed file bound (default ${COMPLEXITY_FORAGING_DEFAULT_BOUNDS.maxFiles}, hard cap ${COMPLEXITY_FORAGING_HARD_BOUNDS.maxFiles}).`,
     `  --max-bytes <n>     Maintained text-read bound (default ${COMPLEXITY_FORAGING_DEFAULT_BOUNDS.maxBytes}, hard cap ${COMPLEXITY_FORAGING_HARD_BOUNDS.maxBytes}).`,
     `  --timeout-ms <n>    Wall-clock bound (default ${COMPLEXITY_FORAGING_DEFAULT_BOUNDS.timeoutMs}, hard cap ${COMPLEXITY_FORAGING_HARD_BOUNDS.timeoutMs}).`,
+    "  --cancel-file <path> Stop with blocked support when this caller-owned marker exists; the inventory never writes it.",
     "  --help, -h          Show this effect-free help.",
     "",
     "Output uses a SHA-256 root identity, project-relative paths, exact detector evidence, reviewed exclusions,",
-    "and explicit complete/partial/unsupported fallback states. It emits no source payload or semantic score.",
-    "A successful scan exits 0; invalid input, unreadable roots, or exhausted bounds exit non-zero.",
+    "and explicit complete/partial/unknown/unsupported/unreadable/blocked fallback states. It emits no source payload or semantic score.",
+    "Complete, partial, unknown, and unsupported scans exit 0; invalid input, unreadable roots, cancellation, or exhausted bounds exit non-zero.",
   ].join("\n");
 }
 
@@ -102,6 +117,7 @@ function positiveInteger(value: string, option: string, maximum: number): number
 function parseArgs(args: string[]): Options {
   const options: Options = {
     bounds: { ...COMPLEXITY_FORAGING_DEFAULT_BOUNDS },
+    cancelPath: null,
     format: "json",
     help: false,
     root: null,
@@ -118,12 +134,19 @@ function parseArgs(args: string[]): Options {
       options.scopePath = path.resolve(valueAfter(args, index, arg));
       index += 1;
     } else if (arg.startsWith("--scope=")) options.scopePath = path.resolve(arg.slice("--scope=".length));
+    else if (arg === "--cancel-file") {
+      options.cancelPath = path.resolve(valueAfter(args, index, arg));
+      index += 1;
+    } else if (arg.startsWith("--cancel-file=")) options.cancelPath = path.resolve(arg.slice("--cancel-file=".length));
     else if (arg === "--format") {
       const value = valueAfter(args, index, arg);
-      if (value !== "json") throw new Error("--format currently supports json only");
+      if (value !== "json" && value !== "markdown") throw new Error("--format must be json or markdown");
+      options.format = value;
       index += 1;
     } else if (arg.startsWith("--format=")) {
-      if (arg.slice("--format=".length) !== "json") throw new Error("--format currently supports json only");
+      const value = arg.slice("--format=".length);
+      if (value !== "json" && value !== "markdown") throw new Error("--format must be json or markdown");
+      options.format = value;
     } else if (arg === "--max-files") {
       options.bounds.maxFiles = positiveInteger(valueAfter(args, index, arg), arg, COMPLEXITY_FORAGING_HARD_BOUNDS.maxFiles);
       index += 1;
@@ -146,11 +169,24 @@ function rootIdentity(root: string): ComplexityForagingOutput["root"] {
 
 function readScope(scopePath: string | null): ComplexityForagingScopeFile {
   if (scopePath == null) return { recordType: "scope", schemaVersion: 1, includes: [], excludes: [] };
-  const stat = fs.statSync(scopePath);
+  let stat: fs.Stats;
+  try {
+    stat = fs.lstatSync(scopePath);
+  } catch (error) {
+    const details = cause(error, "Scope could not be read");
+    throw new Error(`${details.message} (${details.name}/${details.code})`);
+  }
   if (!stat.isFile() || stat.isSymbolicLink() || stat.size > MAX_SCOPE_BYTES) {
     throw new Error(`Scope must be a regular file no larger than ${MAX_SCOPE_BYTES} bytes`);
   }
-  const parsed = parseComplexityForagingRecord(JSON.parse(fs.readFileSync(scopePath, "utf8")));
+  let value: unknown;
+  try {
+    value = JSON.parse(fs.readFileSync(scopePath, "utf8"));
+  } catch (error) {
+    const details = cause(error, "Scope JSON could not be parsed");
+    throw new Error(`${details.message} (${details.name}/${details.code})`);
+  }
+  const parsed = parseComplexityForagingRecord(value);
   if (parsed.recordType !== "scope") throw new Error("Scope file recordType must be scope");
   return parsed;
 }
@@ -225,10 +261,20 @@ function cause(error: unknown, message = "Path could not be read"): ComplexityFo
   };
 }
 
-function assertBudget(options: Options, state: ScanState): void {
-  if (state.counts.files > options.bounds.maxFiles) throw new Error(`max-files bound reached (${options.bounds.maxFiles})`);
-  if (state.maintainedBytesRead > options.bounds.maxBytes) throw new Error(`max-bytes bound reached (${options.bounds.maxBytes})`);
-  if (Date.now() - state.startedAt > options.bounds.timeoutMs) throw new Error(`timeout bound reached (${options.bounds.timeoutMs}ms)`);
+function assertControl(options: Options, state: ScanState): void {
+  if (options.cancelPath != null && fs.existsSync(options.cancelPath)) {
+    throw new ScanStopped("cancellation", "CANCELLED", "Caller cancellation marker was observed");
+  }
+  if (Date.now() - state.startedAt >= options.bounds.timeoutMs) {
+    throw new ScanStopped("bounds", "TIMEOUT", `timeout bound reached (${options.bounds.timeoutMs}ms)`);
+  }
+}
+
+function assertFileBudget(options: Options, state: ScanState): void {
+  assertControl(options, state);
+  if (state.counts.files >= options.bounds.maxFiles) {
+    throw new ScanStopped("bounds", "MAX_FILES", `max-files bound reached (${options.bounds.maxFiles})`);
+  }
 }
 
 function incrementClass(counts: ComplexityForagingOutput["counts"], scopeClass: ComplexityScopeClass): void {
@@ -293,16 +339,20 @@ function recordMaintainedFile(state: ScanState, relative: string, fullPath: stri
   let lines = 0;
   let text: string | null = null;
   if (textReadable) {
+    if (state.maintainedBytesRead + size > options.bounds.maxBytes) {
+      throw new ScanStopped("bounds", "MAX_BYTES", `max-bytes bound reached (${options.bounds.maxBytes})`);
+    }
     state.maintainedBytesRead += size;
-    assertBudget(options, state);
+    assertControl(options, state);
     try {
       const content = fs.readFileSync(fullPath, "utf8");
       text = content;
       lines = countLines(content);
       state.counts.lines += lines;
+      assertControl(options, state);
     } catch (error) {
       state.counts.unreadable += 1;
-      state.diagnostics.push({ stage: "read", path: relative, cause: cause(error) });
+      state.diagnostics.push({ stage: "read", path: relative, cause: cause(error, "Maintained file could not be read") });
       return;
     }
   }
@@ -317,12 +367,19 @@ function recordMaintainedFile(state: ScanState, relative: string, fullPath: stri
 }
 
 function recordFile(state: ScanState, root: string, fullPath: string, scopeClass: ComplexityScopeClass, options: Options): void {
-  const stat = fs.statSync(fullPath);
   const relative = toRelative(root, fullPath);
+  assertFileBudget(options, state);
+  let stat: fs.Stats;
+  try {
+    stat = fs.statSync(fullPath);
+  } catch (error) {
+    state.counts.unreadable += 1;
+    state.diagnostics.push({ stage: "read", path: relative, cause: cause(error, "File metadata could not be read") });
+    return;
+  }
   state.counts.files += 1;
   state.counts.bytes += stat.size;
   incrementClass(state.counts, scopeClass);
-  assertBudget(options, state);
   if (scopeClass === "maintained") recordMaintainedFile(state, relative, fullPath, stat.size, options);
 }
 
@@ -333,15 +390,17 @@ function countClassifiedTree(
   state: ScanState,
   options: Options,
 ): void {
+  assertControl(options, state);
   let entries: fs.Dirent[];
   try {
     entries = fs.readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name));
   } catch (error) {
     state.counts.unreadable += 1;
-    state.diagnostics.push({ stage: "read", path: toRelative(root, directory), cause: cause(error) });
+    state.diagnostics.push({ stage: "read", path: toRelative(root, directory), cause: cause(error, "Directory could not be read") });
     return;
   }
   for (const entry of entries) {
+    assertControl(options, state);
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
       state.counts.directories += 1;
@@ -356,15 +415,17 @@ function isAncestorOfReviewedEntry(relative: string, scope: ComplexityForagingSc
 }
 
 function walkDirectory(root: string, directory: string, scope: ComplexityForagingScopeFile, state: ScanState, options: Options): void {
+  assertControl(options, state);
   let entries: fs.Dirent[];
   try {
     entries = fs.readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name));
   } catch (error) {
     state.counts.unreadable += 1;
-    state.diagnostics.push({ stage: "read", path: toRelative(root, directory) || null, cause: cause(error) });
+    state.diagnostics.push({ stage: "read", path: toRelative(root, directory) || null, cause: cause(error, "Directory could not be read") });
     return;
   }
   for (const entry of entries) {
+    assertControl(options, state);
     const fullPath = path.join(directory, entry.name);
     const relative = toRelative(root, fullPath);
     const classification = classify(relative, scope);
@@ -395,53 +456,40 @@ function componentCandidates(state: ScanState, scope: ComplexityForagingScopeFil
   }
 }
 
-function supportState(state: ScanState): ComplexityForagingOutput["support"] {
+function supportState(state: ScanState, stopped: ScanStopped | null): ComplexityForagingOutput["support"] {
   const hasManifest = [...state.candidates.values()].some((candidate) => candidate.kind === "manifest");
   const hasDetectorError = state.diagnostics.some((diagnostic) => diagnostic.stage === "detector");
+  const rootUnreadable = state.diagnostics.some((diagnostic) => diagnostic.stage === "read" && diagnostic.path == null);
   const unsupportedFields = hasManifest ? [] : ["ecosystem.detectors"];
   const unknownFields = [
     ...(state.counts.unknown > 0 ? ["unclassified-paths"] : []),
     ...(state.counts.unreadable > 0 ? ["unreadable-paths"] : []),
     ...(hasDetectorError ? ["detector-results"] : []),
+    ...(stopped == null ? [] : ["traversal-complete"]),
   ];
   return {
-    state: state.counts.unreadable > 0 || state.counts.unknown > 0 || hasDetectorError
+    state: stopped != null
+      ? "blocked"
+      : rootUnreadable
+        ? "unreadable"
+      : state.counts.unreadable > 0 || hasDetectorError
       ? "partial"
+      : state.counts.unknown > 0 && state.counts.maintained === 0
+        ? "unknown"
+        : state.counts.unknown > 0
+          ? "partial"
       : hasManifest ? "complete" : "unsupported",
     unsupportedFields,
     unknownFields,
   };
 }
 
-function scan(options: Options): ComplexityForagingOutput {
-  const root = options.root ?? "";
-  const rootStat = fs.statSync(root);
-  if (!rootStat.isDirectory()) throw new Error("Root is not a directory");
-  const scope = readScope(options.scopePath);
-  const state: ScanState = {
-    candidates: new Map(),
-    counts: emptyCounts(),
-    diagnostics: [],
-    effectiveExcludes: new Map(scope.excludes.map((entry) => [`${entry.path}\0${entry.class}`, entry])),
-    largestMaintainedFiles: [],
-    maintainedBytesRead: 0,
-    sourcePaths: new Set(),
-    startedAt: Date.now(),
-    topLevel: new Map(),
-  };
-  walkDirectory(root, root, scope, state, options);
-  componentCandidates(state, scope);
-  for (const entry of state.effectiveExcludes.values()) {
-    state.diagnostics.push({
-      stage: "scope",
-      path: entry.path,
-      cause: {
-        name: "ScopeNotice",
-        code: "EXCLUSION_NOT_ABSENCE",
-        message: "Reviewed exclusion is not proof that no relevant evidence exists",
-      },
-    });
-  }
+function outputRecord(
+  root: string,
+  scope: ComplexityForagingScopeFile,
+  state: ScanState,
+  support: ComplexityForagingOutput["support"],
+): ComplexityForagingOutput {
   return parseComplexityForagingRecord({
     recordType: "output",
     schemaVersion: 1,
@@ -450,7 +498,7 @@ function scan(options: Options): ComplexityForagingOutput {
       includes: scope.includes,
       excludes: [...state.effectiveExcludes.values()],
     },
-    support: supportState(state),
+    support,
     candidates: [...state.candidates.values()],
     counts: state.counts,
     largestMaintainedFiles: state.largestMaintainedFiles
@@ -462,6 +510,127 @@ function scan(options: Options): ComplexityForagingOutput {
       .slice(0, 20),
     diagnostics: state.diagnostics,
   }) as ComplexityForagingOutput;
+}
+
+function emptyState(scope: ComplexityForagingScopeFile): ScanState {
+  return {
+    candidates: new Map(),
+    counts: emptyCounts(),
+    diagnostics: [],
+    effectiveExcludes: new Map(scope.excludes.map((entry) => [`${entry.path}\0${entry.class}`, entry])),
+    largestMaintainedFiles: [],
+    maintainedBytesRead: 0,
+    sourcePaths: new Set(),
+    startedAt: Date.now(),
+    topLevel: new Map(),
+  };
+}
+
+export function scan(options: Options): ComplexityForagingOutput {
+  const root = options.root ?? "";
+  const scope = readScope(options.scopePath);
+  const state = emptyState(scope);
+  let rootStat: fs.Stats;
+  try {
+    rootStat = fs.statSync(root);
+  } catch (error) {
+    state.counts.unreadable = 1;
+    state.diagnostics.push({ stage: "root", path: null, cause: cause(error, "Root could not be read") });
+    return outputRecord(root, scope, state, { state: "unreadable", unsupportedFields: [], unknownFields: ["root"] });
+  }
+  if (!rootStat.isDirectory()) {
+    state.counts.unreadable = 1;
+    state.diagnostics.push({
+      stage: "root",
+      path: null,
+      cause: { name: "Error", code: "ROOT_NOT_DIRECTORY", message: "Root is not a directory" },
+    });
+    return outputRecord(root, scope, state, { state: "unreadable", unsupportedFields: [], unknownFields: ["root"] });
+  }
+  let stopped: ScanStopped | null = null;
+  try {
+    walkDirectory(root, root, scope, state, options);
+    assertControl(options, state);
+    componentCandidates(state, scope);
+  } catch (error) {
+    if (!(error instanceof ScanStopped)) throw error;
+    stopped = error;
+    state.diagnostics.push({
+      stage: error.stage,
+      path: null,
+      cause: { name: error.name, code: error.code, message: error.message },
+    });
+  }
+  for (const entry of state.effectiveExcludes.values()) {
+    state.diagnostics.push({
+      stage: "scope",
+      path: entry.path,
+      cause: {
+        name: "ScopeNotice",
+        code: "EXCLUSION_NOT_ABSENCE",
+        message: "Reviewed exclusion is not proof that no relevant evidence exists",
+      },
+    });
+  }
+  return outputRecord(root, scope, state, supportState(state, stopped));
+}
+
+function markdownCell(value: string): string {
+  return value.replaceAll("\\", "\\\\").replaceAll("|", "\\|");
+}
+
+export function renderMarkdown(value: ComplexityForagingOutput): string {
+  const output = parseComplexityForagingRecord(value) as ComplexityForagingOutput;
+  const scopeRows = [
+    ...output.scope.includes.map((entry) => ["include", entry.path, entry.class, entry.reason]),
+    ...output.scope.excludes.map((entry) => ["exclude", entry.path, entry.class, entry.reason]),
+  ];
+  return [
+    "# Complexity Foraging Inventory",
+    "",
+    `- Schema: ${output.schemaVersion}`,
+    `- Root: ${output.root.kind}:${output.root.digest}`,
+    `- Support: ${output.support.state}`,
+    `- Unsupported fields: ${output.support.unsupportedFields.join(", ") || "none"}`,
+    `- Unknown fields: ${output.support.unknownFields.join(", ") || "none"}`,
+    "",
+    "## Counts",
+    "",
+    "| Class | Count |",
+    "| --- | ---: |",
+    ...Object.entries(output.counts).map(([name, count]) => `| ${name} | ${count} |`),
+    "",
+    "## Reviewed Scope",
+    "",
+    "| Mode | Path | Class | Reason |",
+    "| --- | --- | --- | --- |",
+    ...(scopeRows.length === 0 ? ["| none | none | none | none |"] : scopeRows.map((row) => `| ${row.map(markdownCell).join(" | ")} |`)),
+    "",
+    "## Candidates",
+    "",
+    "| Kind | Path | Detector | Evidence |",
+    "| --- | --- | --- | --- |",
+    ...(output.candidates.length === 0 ? ["| none | none | none | none |"] : output.candidates.map((candidate) => `| ${[candidate.kind, candidate.path, candidate.evidence.detector, candidate.evidence.value].map(markdownCell).join(" | ")} |`)),
+    "",
+    "## Largest Maintained Files",
+    "",
+    "| Path | Bytes | Lines |",
+    "| --- | ---: | ---: |",
+    ...(output.largestMaintainedFiles.length === 0 ? ["| none | 0 | 0 |"] : output.largestMaintainedFiles.map((file) => `| ${markdownCell(file.path)} | ${file.bytes} | ${file.lines} |`)),
+    "",
+    "## Top-Level Concentration",
+    "",
+    "| Path | Files | Bytes | Lines |",
+    "| --- | ---: | ---: | ---: |",
+    ...(output.topLevelConcentration.length === 0 ? ["| none | 0 | 0 | 0 |"] : output.topLevelConcentration.map((entry) => `| ${markdownCell(entry.path)} | ${entry.files} | ${entry.bytes} | ${entry.lines} |`)),
+    "",
+    "## Diagnostics",
+    "",
+    "| Stage | Path | Cause | Message |",
+    "| --- | --- | --- | --- |",
+    ...(output.diagnostics.length === 0 ? ["| none | none | none | none |"] : output.diagnostics.map((entry) => `| ${[entry.stage, entry.path ?? "<root>", `${entry.cause.name}/${entry.cause.code}`, entry.cause.message].map(markdownCell).join(" | ")} |`)),
+    "",
+  ].join("\n");
 }
 
 function redactRoot(message: string, root: string | null): string {
@@ -477,16 +646,21 @@ function main(args: string[]): number {
     process.stdout.write(`${usage()}\n`);
     return 0;
   }
-  process.stdout.write(stableComplexityForagingJson(scan(options)));
-  return 0;
+  const output = scan(options);
+  process.stdout.write(options.format === "json" ? stableComplexityForagingJson(output) : renderMarkdown(output));
+  return output.support.state === "blocked" || output.support.state === "unreadable" ? 1 : 0;
 }
 
 if (process.argv[1] != null && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   let root: string | null = null;
   try {
     const args = process.argv.slice(2);
-    const rootIndex = args.findIndex((arg) => arg === "--root");
-    root = rootIndex >= 0 ? path.resolve(args[rootIndex + 1] ?? "") : null;
+    const rootIndex = args.findIndex((arg) => arg === "--root" || arg.startsWith("--root="));
+    root = rootIndex < 0
+      ? null
+      : args[rootIndex] === "--root"
+        ? path.resolve(args[rootIndex + 1] ?? "")
+        : path.resolve(args[rootIndex]!.slice("--root=".length));
     process.exitCode = main(args);
   } catch (error) {
     const message = error instanceof ComplexityForagingContractError || error instanceof Error ? error.message : String(error);

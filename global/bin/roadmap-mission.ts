@@ -34,6 +34,8 @@ export type {
   MissionExecutorExpectation,
   MissionExecutorResult,
   MissionOperation,
+  MissionParentCorrelation,
+  MissionParentHandoff,
   RoadmapMissionDefinition,
   RoadmapMissionPreflight,
   RoadmapMissionSlice,

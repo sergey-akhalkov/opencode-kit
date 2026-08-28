@@ -1,0 +1,32 @@
+{
+  "candidateId": "task-5-2-configured-r1",
+  "checks": {
+    "admissionReached": true,
+    "campaignCompleted": false,
+    "candidateMatched": true,
+    "environmentMatched": true,
+    "exactConfiguredSequence": false,
+    "exactCurrentAssignmentEvidence": true,
+    "exactlyNineModelCalls": false,
+    "finalClosureCurrent": false,
+    "fixtureCleanup": true,
+    "missionHandoffConsumed": true,
+    "missionOwnedCorrectionObserved": false,
+    "optionalP2SourceUnchanged": false,
+    "p2ExcludedFromWave": true,
+    "playbookComplete": true,
+    "readOnlyRootsTerminal": false,
+    "rereviewVerified": false,
+    "routeMatched": true,
+    "secondWaveMissionConsumed": false,
+    "serverExplicit": true,
+    "surfaceExtensionFree": true,
+    "transitionOrder": false,
+    "wholeWorktreeCleanAtSemanticRoots": false
+  },
+  "environmentId": "node-24.18.1-windows-task-5-2-configured-r1",
+  "liveCalls": 7,
+  "proofKind": "campaign-configured-complete",
+  "schemaVersion": 1,
+  "status": "blocked"
+}

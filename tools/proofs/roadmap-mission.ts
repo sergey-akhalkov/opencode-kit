@@ -11,6 +11,7 @@ import {
   parseMissionDefinition,
   parseMissionExecutorResult,
 } from "../../global/bin/roadmap-mission/contracts.ts";
+import { missionParentWaveDigest } from "../../global/bin/roadmap-mission/parent-correlation.ts";
 import { MISSION_SOURCE_PATHS } from "../../global/bin/roadmap-mission/preflight.ts";
 import { executeMissionSession, inspectRuntime, runtimeUrl } from "../../global/bin/roadmap-mission/session-executor.ts";
 
@@ -121,9 +122,104 @@ function writeNew(file: string, content: string): void {
   fs.writeFileSync(file, content, { encoding: "utf8", flag: "wx" });
 }
 
-type FixtureKind = "ambiguous" | "dirty" | "invalid" | "invalid-checkpoint" | "live-lease" | "missing-active" | "missing-adapter" | "overlay" | "protected" | "queued" | "queued-dirty" | "roadmap-prose" | "too-many" | "unlisted-active" | "unreadable-lease" | "valid";
+type ParentFixtureKind = "parent-digest" | "parent-effect" | "parent-order" | "parent-outcome" | "parent-path" | "parent-ref" | "parent-valid";
+type FixtureKind = "ambiguous" | "dirty" | "invalid" | "invalid-checkpoint" | "live-lease" | "missing-active" | "missing-adapter" | "overlay" | ParentFixtureKind | "protected" | "queued" | "queued-dirty" | "roadmap-prose" | "too-many" | "unlisted-active" | "unreadable-lease" | "valid";
+
+function isParentFixture(kind: FixtureKind): kind is ParentFixtureKind {
+  return kind.startsWith("parent-");
+}
+
+function parentFixture(kind: ParentFixtureKind): { manifest: Record<string, unknown>; wave: Record<string, unknown> } {
+  const wave = {
+    campaignId: "campaign-proof",
+    candidateDigest: "b".repeat(64),
+    definitionDigest: "a".repeat(64),
+    id: "wave-proof",
+    missionDefinitionDigest: "0".repeat(64),
+    recordType: "wave-manifest",
+    schemaVersion: 1,
+    slices: [
+      {
+        changeId: "change-a",
+        dependsOn: [],
+        effectClasses: ["local-read", "local-write"],
+        expectedProof: "Prove the first bounded change.",
+        id: "slice-a",
+        outcome: "Complete the first bounded local change.",
+        ownedPaths: ["openspec/changes/change-a", "src/a.ts"],
+        validationArgv: ["node", "tools/validate.mjs"],
+        workItemIds: ["item-a"],
+      },
+      {
+        changeId: "change-b",
+        dependsOn: [],
+        effectClasses: ["local-read", "local-write"],
+        expectedProof: "Prove the second bounded change.",
+        id: "slice-b",
+        outcome: "Create and complete the dependent bounded local change.",
+        ownedPaths: ["openspec/changes/change-b", "src/b.ts"],
+        validationArgv: ["node", "tools/validate.mjs"],
+        workItemIds: ["item-b"],
+      },
+    ],
+    status: "frozen",
+    workItemIds: ["item-a", "item-b"],
+  };
+  const manifest: Record<string, unknown> = {
+    allowedEffects: ["local-read", "local-write"],
+    authorizationRefs: {},
+    checkpoint: { localCommitAuthorized: false, mode: "evidence-only", workspace: "disposable" },
+    evidencePath: "evidence/mission",
+    missionId: `generic-${kind}`,
+    parent: {
+      campaignDefinitionDigest: wave.definitionDigest,
+      campaignId: wave.campaignId,
+      campaignTransitionDigest: "d".repeat(64),
+      parentEvidencePath: "evidence/campaign/wave.json",
+      schemaVersion: 1,
+      waveDigest: missionParentWaveDigest(wave),
+      waveId: wave.id,
+      workItemRefs: [...wave.workItemIds],
+    },
+    roadmapPath: "docs/roadmap.md",
+    schemaVersion: 1,
+    slices: wave.slices.map((slice) => ({
+      changeId: slice.changeId,
+      dependsOn: [...slice.dependsOn],
+      effectClasses: [...slice.effectClasses],
+      id: slice.id,
+      operation: "propose",
+      outcome: slice.outcome,
+      ownedPaths: [...slice.ownedPaths],
+      workItemRefs: [...slice.workItemIds],
+    })),
+    stopPolicy: { onExternalBlocked: true, onOwnerRequired: true, onUnknown: true },
+    validationArgv: ["node", "tools/validate.mjs"],
+    workflowOwner: { mode: "global-canonical" },
+  };
+  const parent = manifest.parent as Record<string, unknown>;
+  const slices = manifest.slices as Array<Record<string, unknown>>;
+  if (kind === "parent-ref") {
+    slices[0].workItemRefs = ["item-z"];
+    parent.workItemRefs = ["item-z", "item-b"];
+  } else if (kind === "parent-order") {
+    manifest.slices = [slices[1], slices[0]];
+    parent.workItemRefs = ["item-b", "item-a"];
+  } else if (kind === "parent-path") {
+    slices[0].ownedPaths = ["openspec/changes/change-a", "src/other.ts"];
+  } else if (kind === "parent-outcome") {
+    slices[0].outcome = "Complete a different bounded local change.";
+  } else if (kind === "parent-effect") {
+    slices[0].effectClasses = ["local-read"];
+  } else if (kind === "parent-digest") {
+    parent.waveDigest = "e".repeat(64);
+  }
+  wave.missionDefinitionDigest = missionDefinitionDigest(parseMissionDefinition(manifest));
+  return { manifest, wave };
+}
 
 function fixtureManifest(kind: FixtureKind): Record<string, unknown> {
+  if (isParentFixture(kind)) return parentFixture(kind).manifest;
   const protectedEffect = kind === "protected";
   const queued = kind === "queued" || kind === "queued-dirty" || kind === "missing-active";
   const slices = kind === "too-many"
@@ -334,14 +430,14 @@ async function staleRuntimeEvidence(root: string): Promise<Record<string, unknow
     timeoutMs: 1_000,
   });
   if (
-    result.disposition !== "terminal"
-    || result.errorClass !== "terminal"
+    result.disposition !== "transient"
+    || result.errorClass !== "transient"
     || result.rootSessionRef !== null
     || result.writerClosure !== "terminal"
     || result.cleanup !== "not-required"
     || !fs.existsSync(path.join(root, resultPath))
   ) {
-    throw new Error(`Stale runtime URL did not fail before session creation: ${stableJson(result)}`);
+    throw new Error(`Unavailable runtime URL did not remain retryable before session creation: ${stableJson(result)}`);
   }
   return {
     cleanup: result.cleanup,
@@ -455,8 +551,13 @@ function createProject(root: string, kind: FixtureKind): void {
     }));
   }
   writeNew(path.join(root, "mission.json"), stableJson(fixtureManifest(kind)));
+  if (isParentFixture(kind)) {
+    writeNew(path.join(root, "evidence", "campaign", "wave.json"), stableJson(parentFixture(kind).wave));
+  }
   writeNew(path.join(root, ".fixture-openspec-state.json"), stableJson({
-    changes: kind === "ambiguous" || kind === "unlisted-active"
+    changes: isParentFixture(kind)
+      ? []
+      : kind === "ambiguous" || kind === "unlisted-active"
       ? [{ name: "change-a" }, { name: "other-change" }]
       : kind === "queued" || kind === "queued-dirty"
         ? [{ name: "change-a" }, { name: "change-b" }]
@@ -469,7 +570,9 @@ function createProject(root: string, kind: FixtureKind): void {
     );
   }
   git(root, ["init"]);
-  git(root, ["add", "--", "."]);
+  git(root, isParentFixture(kind)
+    ? ["add", "--", ".fixture-openspec-state.json", "AGENTS.md", "docs", "opencode-dev-kit", "tools"]
+    : ["add", "--", "."]);
   git(root, ["commit", "-m", "fixture"]);
   if (kind === "dirty" || kind === "queued-dirty") {
     writeNew(path.join(root, "src", kind === "dirty" ? "a.ts" : "b.ts"), "export const dirty = true;\n");
@@ -572,6 +675,13 @@ function assertEvidence(scenarios: Record<FixtureKind, ScenarioEvidence>): void 
   if (parsed.status !== "eligible" || eligible?.id !== "slice-a") {
     throw new Error(`Valid preflight returned unexpected result: ${valid.stdout}`);
   }
+  const legacyDigest = missionDefinitionDigest(parseMissionDefinition(fixtureManifest("valid")));
+  if (
+    legacyDigest !== "51b2356dd6014779ffa7344f70b837c69fbaeec9ff6c8f128442ad53b5b46804" ||
+    valid.stdout.includes("definition:parent-correlation")
+  ) {
+    throw new Error(`Legacy mission contract changed: digest=${legacyDigest}`);
+  }
   if (queued.exitCode !== 0 || (JSON.parse(queued.stdout) as Record<string, unknown>).status !== "eligible") {
     throw new Error(`Queued active changes were not accepted: ${queued.stdout || queued.stderr}`);
   }
@@ -613,6 +723,19 @@ function assertEvidence(scenarios: Record<FixtureKind, ScenarioEvidence>): void 
   }
   if (scenarios["invalid-checkpoint"].exitCode === 0 || !scenarios["invalid-checkpoint"].stderr.includes("multi-slice evidence-only")) {
     throw new Error(`Invalid checkpoint unexpectedly passed: ${scenarios["invalid-checkpoint"].stderr}`);
+  }
+  const parentValid = scenarios["parent-valid"];
+  if (
+    parentValid.exitCode !== 0 ||
+    !scenarioCheck(parentValid, "definition:parent-correlation", "passed") ||
+    (JSON.parse(parentValid.stdout) as Record<string, unknown>).status !== "eligible"
+  ) {
+    throw new Error(`Exact parent mission did not pass: ${parentValid.stdout || parentValid.stderr}`);
+  }
+  for (const kind of ["parent-ref", "parent-order", "parent-path", "parent-outcome", "parent-effect", "parent-digest"] as const) {
+    if (scenarios[kind].exitCode === 0 || !scenarioCheck(scenarios[kind], "definition:parent-correlation", "blocked")) {
+      throw new Error(`${kind} did not fail parent correlation before execution: ${scenarios[kind].stdout || scenarios[kind].stderr}`);
+    }
   }
   if (scenarios["too-many"].exitCode === 0 || !scenarios["too-many"].stderr.includes("between 1 and 100")) {
     throw new Error(`Over-bound mission unexpectedly passed: ${scenarios["too-many"].stderr}`);
@@ -677,6 +800,13 @@ async function run(options: Options): Promise<void> {
       "missing-active",
       "missing-adapter",
       "overlay",
+      "parent-digest",
+      "parent-effect",
+      "parent-order",
+      "parent-outcome",
+      "parent-path",
+      "parent-ref",
+      "parent-valid",
       "protected",
       "queued",
       "queued-dirty",
@@ -727,13 +857,20 @@ async function run(options: Options): Promise<void> {
         liveWriterLease: "unknown-blocked",
         missingDeclaredActiveChange: "blocked",
         missingAdapter: "blocked",
+        parentDigestMismatch: "blocked",
+        parentEffectMismatch: "blocked",
+        parentOrderMismatch: "blocked",
+        parentOutcomeMismatch: "blocked",
+        parentPathMismatch: "blocked",
+        parentRefMismatch: "blocked",
+        parentValid: "eligible",
         protectedEffect: "blocked",
         pendingQuestion: "unknown-blocked",
         queuedActiveChanges: "eligible",
         queuedDirtyChange: "blocked",
         roadmapProseIgnored: "eligible-definition-owned",
         staleProjectOverlay: "blocked",
-        staleRuntimeUrl: "terminal-before-session",
+        staleRuntimeUrl: "transient-before-session",
         tooManySlices: "blocked",
         unlistedActiveChange: "blocked",
         unreadableWriterLease: "unknown-blocked",
@@ -776,6 +913,13 @@ function replay(options: Options): void {
     "missing-active": "blocked",
     "missing-adapter": "blocked",
     overlay: "blocked",
+    "parent-digest": "blocked",
+    "parent-effect": "blocked",
+    "parent-order": "blocked",
+    "parent-outcome": "blocked",
+    "parent-path": "blocked",
+    "parent-ref": "blocked",
+    "parent-valid": "eligible",
     protected: "blocked",
     queued: "eligible",
     "queued-dirty": "blocked",
@@ -799,7 +943,10 @@ function replay(options: Options): void {
     cleanupComplete: sourceEvaluation.cleanup === "complete",
     scenariosMatched: Object.entries(expectedScenarios).every(([name, status]) => observed.get(name) === status),
     sourceEvaluationComplete: sourceEvaluation.status === "complete",
-    staleRuntimeTerminal: staleRuntime?.disposition === "terminal" && staleRuntime.rootSessionRef === null && staleRuntime.writerClosure === "terminal",
+    unavailableRuntimeRetryable: staleRuntime?.disposition === "transient"
+      && staleRuntime.errorClass === "transient"
+      && staleRuntime.rootSessionRef === null
+      && staleRuntime.writerClosure === "terminal",
   };
   const evaluation = {
     candidateId: options.candidateId,

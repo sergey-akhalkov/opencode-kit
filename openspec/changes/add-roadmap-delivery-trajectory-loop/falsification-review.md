@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:original-accepted-request
+- **Reviewed Request Ref**: event:original-accepted-request
+- **Accepted Outcome Ref**: outcome:proposal-outcome
+- **Candidate Ref**: candidate:roadmap-delivery-trajectory-planning-r2
+- **Reviewed Candidate Ref**: candidate:roadmap-delivery-trajectory-planning-r2
+- **Decision Surface**: explicit horizon ownership, post-archive versus product-completion boundary, semantic trigger sufficiency, forecast honesty, outcome-preserving autonomous replan, and no-retrospective/no-status-database scope.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fbd4cee53ffe002rbge6XNSSFj
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: RT-001
+- **Main Dispositions**: RT-001=confirmed
+- **Correction Ref**: correction:roadmap-delivery-trajectory-planning-r2
+- **Invalidated Surfaces**: receipt-identity, trajectory-retry-routing
+- **Terminal Reason**: corrected-candidate-rereview-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: runtime-behavior, broad-claim-observations

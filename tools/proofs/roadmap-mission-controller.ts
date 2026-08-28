@@ -6,7 +6,12 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
-import { loadMissionDefinition } from "../../global/bin/roadmap-mission/contracts.ts";
+import {
+  loadMissionDefinition,
+  missionDefinitionDigest,
+  parseMissionDefinition,
+} from "../../global/bin/roadmap-mission/contracts.ts";
+import { missionParentWaveDigest } from "../../global/bin/roadmap-mission/parent-correlation.ts";
 import { MISSION_SOURCE_PATHS } from "../../global/bin/roadmap-mission/preflight.ts";
 import { clearMissionStopIntent, readMissionStateProjection, readMissionStopIntent, recordMissionStopIntent, recordMissionUnknownPause } from "../../global/bin/roadmap-mission/state.ts";
 
@@ -89,6 +94,8 @@ function proposal(): string {
     "",
     ...["Outcome", "Operating Envelope", "Non-Goals", "Non-Deferrable Invariants", "Observable Proof", "Material Residual Risks", "Stop Line"]
       .map((field) => `- **${field}**: Disposable fixture value.`),
+    "",
+    "- **Bounded Falsification Review**: exempt - Disposable fixture change is Ordinary Small.",
     "",
   ].join("\n");
 }
@@ -305,6 +312,7 @@ function installGlobalSource(globalSource: string): void {
     "bin/openspec-operation-gate.ts",
     "bin/openspec-archive.ts",
     "bin/openspec-change/automation-dividend.ts",
+    "bin/openspec-change/bounded-falsification.ts",
     "bin/openspec-change/claims.ts",
     "bin/openspec-change/evidence.ts",
     "bin/openspec-change/gate.ts",
@@ -369,6 +377,16 @@ function createProject(root: string): void {
   git(root, ["init"]);
   git(root, ["add", "--", "."]);
   git(root, ["commit", "-m", "fixture"]);
+}
+
+function createParentProject(root: string): void {
+  createProject(root);
+  const fixture = parentMission();
+  fs.rmSync(path.join(root, "openspec", "changes", "change-a"), { recursive: true });
+  git(root, ["add", "-u", "--", "openspec/changes/change-a"]);
+  git(root, ["commit", "-m", "remove pre-existing change before parent mission"]);
+  fs.writeFileSync(path.join(root, "mission.json"), fixture.mission, "utf8");
+  writeNew(path.join(root, "evidence", "campaign", "wave.json"), fixture.wave);
 }
 
 function createCheckpointProject(root: string, mode: "external" | "local-commit", missionId: string): void {
@@ -469,6 +487,39 @@ function run(options: Options): void {
     const replay = runPortableCommand(project, [process.execPath, productionEntrypoint, "state-replay", "--root", project, "--mission", "mission.json"], { capture: true });
     if (replay.status !== 0 || (JSON.parse(replay.stdout) as { status: string }).status !== "valid") {
       throw new Error(`Controller replay failed: ${replay.stderr || replay.stdout}`);
+    }
+
+    const parentProject = path.join(fixture, "parent-project");
+    createParentProject(parentProject);
+    const parentResult = invokeController(parentProject, globalSource, bin, "run");
+    const parentReport = controllerReport(parentResult, "parent-correlated controller") as {
+      parentHandoff?: {
+        archiveRefs: string[];
+        checkpoint: { identity: string | null };
+        cleanupClosure: string;
+        disposition: string;
+        ownerCondition: string | null;
+        retryCondition: string | null;
+        sessionRefs: string[];
+        writerClosure: string;
+      };
+      status: string;
+    };
+    const parentHandoff = parentReport.parentHandoff;
+    if (
+      parentResult.status !== 0 ||
+      parentReport.status !== "complete" ||
+      parentHandoff?.disposition !== "complete" ||
+      parentHandoff.writerClosure !== "terminal" ||
+      parentHandoff.cleanupClosure !== "terminal" ||
+      parentHandoff.checkpoint.identity !== "evidence:parent-controller-proof:slice-a" ||
+      parentHandoff.archiveRefs.length !== 1 ||
+      parentHandoff.sessionRefs.length !== 1 ||
+      parentHandoff.retryCondition != null ||
+      parentHandoff.ownerCondition != null ||
+      fs.existsSync(path.join(parentProject, ".opencode-dev-kit", "runtime", "roadmap-missions", "parent-controller-proof", "writer.lock"))
+    ) {
+      throw new Error(`Parent-correlated controller did not emit a terminal-clear handoff: ${parentResult.stderr || parentResult.stdout}`);
     }
 
     const unknownResumeProject = path.join(fixture, "paused-unknown-resume-project");
@@ -704,6 +755,16 @@ function run(options: Options): void {
       environment: { node: process.version, platform: process.platform },
       executorCounts: counts,
       mode: "campaign",
+      parentHandoff: {
+        archiveCount: parentHandoff.archiveRefs.length,
+        checkpoint: parentHandoff.checkpoint.identity,
+        cleanupClosure: parentHandoff.cleanupClosure,
+        disposition: parentHandoff.disposition,
+        ownerCondition: parentHandoff.ownerCondition,
+        retryCondition: parentHandoff.retryCondition,
+        sessionCount: parentHandoff.sessionRefs.length,
+        writerClosure: parentHandoff.writerClosure,
+      },
       pausedUnknownResume: {
         activeOperation: unknownAfter.activeOperation,
         disposition: unknownAfter.disposition,
@@ -749,6 +810,7 @@ function run(options: Options): void {
       schemaVersion: 1,
       sources: [
         "global/bin/openspec-operation-gate.ts",
+        "global/bin/openspec-change/bounded-falsification.ts",
         "global/bin/openspec-archive.ts",
         "global/bin/portable-process.ts",
         "global/bin/portable-process-supervisor.ts",
@@ -758,6 +820,7 @@ function run(options: Options): void {
         "global/bin/roadmap-mission/controller-process.ts",
         "global/bin/roadmap-mission/controller-result.ts",
         "global/bin/roadmap-mission/controller.ts",
+        "global/bin/roadmap-mission/parent-correlation.ts",
         "global/bin/roadmap-mission/preflight.ts",
         "global/bin/roadmap-mission/session-executor.ts",
         "global/bin/roadmap-mission/state.ts",
@@ -775,6 +838,7 @@ function run(options: Options): void {
       archiveFailure: "terminal-blocked-with-cause",
       oneAttemptSuccessor: "launched-with-fresh-budget",
       pausedUnknownResume: "blocked-before-executor",
+      parentHandoff: "complete-terminal-clear",
       terminalProtectedSlice: "blocked-before-executor",
       persistedRetry: "exhausted-resume-launched-no-executor",
       uncheckedCompletion: "rejected-and-retried",
@@ -796,6 +860,65 @@ function run(options: Options): void {
   evaluation.cleanup = "complete";
   fs.writeFileSync(evaluationPath, json(evaluation), "utf8");
   console.log(json({ candidateId: options.candidateId, evidenceRoot: "<evidence-root>", status: "complete" }).trimEnd());
+}
+
+function parentMission(): { mission: string; wave: string } {
+  const wave = {
+    campaignId: "campaign-controller-proof",
+    candidateDigest: "b".repeat(64),
+    definitionDigest: "a".repeat(64),
+    id: "wave-controller-proof",
+    missionDefinitionDigest: "0".repeat(64),
+    recordType: "wave-manifest",
+    schemaVersion: 1,
+    slices: [{
+      changeId: "change-a",
+      dependsOn: [],
+      effectClasses: ["local-read", "local-write"],
+      expectedProof: "Prove the completed disposable change.",
+      id: "slice-a",
+      outcome: "Complete the parent-correlated disposable change.",
+      ownedPaths: ["openspec/changes/change-a"],
+      validationArgv: ["node", "tools/validate.mjs"],
+      workItemIds: ["item-a"],
+    }],
+    status: "frozen",
+    workItemIds: ["item-a"],
+  };
+  const definition = {
+    allowedEffects: ["local-read", "local-write"],
+    authorizationRefs: {},
+    checkpoint: { localCommitAuthorized: false, mode: "evidence-only", workspace: "disposable" },
+    evidencePath: "evidence/mission",
+    missionId: "parent-controller-proof",
+    parent: {
+      campaignDefinitionDigest: wave.definitionDigest,
+      campaignId: wave.campaignId,
+      campaignTransitionDigest: "d".repeat(64),
+      parentEvidencePath: "evidence/campaign/wave.json",
+      schemaVersion: 1,
+      waveDigest: missionParentWaveDigest(wave),
+      waveId: wave.id,
+      workItemRefs: ["item-a"],
+    },
+    roadmapPath: "docs/roadmap.md",
+    schemaVersion: 1,
+    slices: [{
+      changeId: "change-a",
+      dependsOn: [],
+      effectClasses: ["local-read", "local-write"],
+      id: "slice-a",
+      operation: "propose",
+      outcome: "Complete the parent-correlated disposable change.",
+      ownedPaths: ["openspec/changes/change-a"],
+      workItemRefs: ["item-a"],
+    }],
+    stopPolicy: { onExternalBlocked: true, onOwnerRequired: true, onUnknown: true },
+    validationArgv: ["node", "tools/validate.mjs"],
+    workflowOwner: { mode: "global-canonical" },
+  };
+  wave.missionDefinitionDigest = missionDefinitionDigest(parseMissionDefinition(definition));
+  return { mission: json(definition), wave: json(wave) };
 }
 
 async function waitUntil(predicate: () => boolean, timeoutMs: number, label: string): Promise<void> {
@@ -1185,6 +1308,13 @@ function replay(options: Options): void {
             && record(raw.oneAttemptSuccessor)?.status === "blocked"
             && record(raw.oneAttemptSuccessor)?.transitionAfterActivation === "session-launch"
             && record(record(raw.oneAttemptSuccessor)?.executorCounts)?.["slice-b"] === 1,
+          parentHandoffComplete: record(raw.parentHandoff)?.disposition === "complete"
+            && record(raw.parentHandoff)?.writerClosure === "terminal"
+            && record(raw.parentHandoff)?.cleanupClosure === "terminal"
+            && record(raw.parentHandoff)?.archiveCount === 1
+            && record(raw.parentHandoff)?.sessionCount === 1
+            && record(raw.parentHandoff)?.retryCondition == null
+            && record(raw.parentHandoff)?.ownerCondition == null,
           pausedUnknownResume: record(raw.pausedUnknownResume)?.disposition === "paused-unknown"
             && record(raw.pausedUnknownResume)?.activeOperation == null
             && record(raw.pausedUnknownResume)?.executorStarted === false

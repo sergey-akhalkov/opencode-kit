@@ -98,15 +98,19 @@ function parseHashedLane(value: unknown): HashedEvidenceLane {
   if (!Array.isArray(value.files) || value.files.length === 0 || value.files.length > MAX_LANE_FILES) {
     throw new Error(`Evidence index lane must contain 1..${MAX_LANE_FILES} files.`);
   }
+  const pathPrefix = value.pathPrefix === undefined
+    ? null
+    : safeRelativeFile(value.pathPrefix, "lane pathPrefix");
   const files = value.files.map((file, index) => {
     if (!plainRecord(file)) throw new Error(`Evidence index lane file ${index} must be an object.`);
     if (!Number.isSafeInteger(file.bytes) || (file.bytes as number) < 0) {
       throw new Error(`Evidence index lane file ${index} has invalid bytes.`);
     }
+    const relative = safeRelativeFile(file.path, `lane file ${index} path`);
     return {
       bytes: file.bytes as number,
       digest: boundedString(file.digest, `lane file ${index} digest`, SHA256),
-      path: safeRelativeFile(file.path, `lane file ${index} path`),
+      path: pathPrefix == null ? relative : `${pathPrefix}/${relative}`,
     };
   });
   if (new Set(files.map((file) => file.path)).size !== files.length) {
@@ -215,9 +219,13 @@ export function materializeEvidenceIndex(indexFile: string): { files: number; la
     if (!plainRecord(laneValue) || !Array.isArray(laneValue.files) || laneValue.files.length === 0) {
       throw new Error("Evidence index materialization requires every lane to contain files.");
     }
+    const pathPrefix = laneValue.pathPrefix === undefined
+      ? null
+      : safeRelativeFile(laneValue.pathPrefix, "lane pathPrefix");
     for (const fileValue of laneValue.files) {
       if (!plainRecord(fileValue)) throw new Error("Evidence index lane file must be an object.");
-      const relative = safeRelativeFile(fileValue.path, "lane file path");
+      const fileRelative = safeRelativeFile(fileValue.path, "lane file path");
+      const relative = pathPrefix == null ? fileRelative : `${pathPrefix}/${fileRelative}`;
       const absolute = path.resolve(directory, relative);
       const boundary = `${directory}${path.sep}`;
       if (!absolute.startsWith(boundary)) throw new Error("Evidence index lane file escapes the index directory.");
@@ -229,7 +237,7 @@ export function materializeEvidenceIndex(indexFile: string): { files: number; la
       fileCount += 1;
     }
   }
-  const serialized = `${JSON.stringify(parsed, null, 2)}\n`;
+  const serialized = `${JSON.stringify(parsed)}\n`;
   if (Buffer.byteLength(serialized, "utf8") > MAX_INDEX_BYTES) throw new Error("Materialized evidence index exceeds 65536 bytes.");
   fs.writeFileSync(absoluteIndex, serialized, "utf8");
   readIndex(absoluteIndex);

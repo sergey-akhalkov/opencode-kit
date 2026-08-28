@@ -1,0 +1,5 @@
+{
+  "name": "mixed-owner-module",
+  "private": true,
+  "type": "module"
+}

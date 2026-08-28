@@ -32,6 +32,8 @@ export type PortableStreamingCommandOptions = {
 
 export type PortableStreamingCommandResult = PortableCommandResult & {
   forced: boolean;
+  pid: number | null;
+  startedAt: string;
   stopError?: Error;
   stopped: boolean;
   timedOut: boolean;
@@ -335,6 +337,8 @@ export async function runPortableCommandStreaming(
       signal: null,
       error: new Error(resolution.reason),
       forced: false,
+      pid: null,
+      startedAt: new Date().toISOString(),
       stderr: resolution.reason,
       stdout: "",
       stopped: false,
@@ -359,6 +363,7 @@ export async function runPortableCommandStreaming(
     let stopError: Error | undefined;
     let stopped = false;
     let timedOut = false;
+    const startedAt = new Date().toISOString();
     const child = spawn(command, args, {
       cwd: root,
       env: environment,
@@ -401,7 +406,7 @@ export async function runPortableCommandStreaming(
       if (settled) return;
       settled = true;
       for (const timer of timers) clearTimeout(timer as ReturnType<typeof setTimeout>);
-      resolve({ status, signal, ...(error == null ? {} : { error }), forced, stderr, stdout, ...(stopError == null ? {} : { stopError }), stopped, timedOut });
+      resolve({ status, signal, ...(error == null ? {} : { error }), forced, pid: child.pid ?? null, startedAt, stderr, stdout, ...(stopError == null ? {} : { stopError }), stopped, timedOut });
     });
     if (options.shouldStop != null) {
       timers.push(setInterval(() => {

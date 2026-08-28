@@ -1,0 +1,76 @@
+{
+  "candidateId": "task-3-2-final-r2",
+  "captureEvaluation": null,
+  "certificateIssuerConfigured": true,
+  "cleanup": "complete",
+  "gateStatus": 0,
+  "minimalSchema": null,
+  "missionSessionFacts": [],
+  "missionSessionObservationCanary": false,
+  "mode": "selftest",
+  "observerFacts": {
+    "durableDisposition": "blocked",
+    "ptyStatus": "exited"
+  },
+  "partialCapture": null,
+  "projectFacts": {
+    "marker": "alpha\n",
+    "markers": {
+      "alpha": "alpha\n",
+      "beta": null
+    },
+    "phases": [],
+    "result": {
+      "cleanup": "complete",
+      "disposition": "terminal",
+      "errorClass": "terminal",
+      "errorMessage": "synthetic finalizer probe",
+      "rootSessionRef": "session:c8462315c9a7e5a4",
+      "writerClosure": "terminal"
+    },
+    "results": [
+      {
+        "phases": [],
+        "result": {
+          "cleanup": "complete",
+          "disposition": "terminal",
+          "errorClass": "terminal",
+          "errorMessage": "synthetic finalizer probe",
+          "rootSessionRef": "session:c8462315c9a7e5a4",
+          "writerClosure": "terminal"
+        },
+        "sliceId": "slice-a"
+      }
+    ],
+    "scenario": "one-slice",
+    "state": {
+      "activeOperation": null,
+      "cursor": 0,
+      "disposition": "blocked"
+    },
+    "taskEvidence": {
+      "change-a": "## 1. Alpha Marker\n\n- [x] 1.1 Create and validate `src/alpha.txt`.\n",
+      "change-b": null
+    },
+    "tasks": "## 1. Alpha Marker\n\n- [x] 1.1 Create and validate `src/alpha.txt`.\n",
+    "transitions": [],
+    "worktree": "?? .opencode-dev-kit/\n?? evidence/\n"
+  },
+  "proposalOutcome": null,
+  "ptyFacts": {
+    "mission": {
+      "buffer": "synthetic controller terminal\n",
+      "exitCode": 1,
+      "notifyOnExit": false,
+      "status": "exited"
+    },
+    "totalSessions": 1
+  },
+  "scenario": "one-slice",
+  "schemaVersion": 1,
+  "validationAcrossArchive": {
+    "active": 0,
+    "archived": 0,
+    "checkpoint": 0
+  }
+}

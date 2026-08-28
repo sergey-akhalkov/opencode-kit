@@ -286,6 +286,17 @@ export function parseEvidenceIndex(input: unknown): ParseResult<EvidenceIndex> {
     const name = readString(record.value.name, `lanes.${index}.name`, SAFE_TOKEN);
     const kind = record.value.kind;
     const filesRaw = readArray(record.value.files, `lanes.${index}.files`);
+    const pathPrefixRaw = record.value.pathPrefix;
+    let pathPrefix = "";
+    if (pathPrefixRaw !== undefined) {
+      const parsedPrefix = readString(pathPrefixRaw, `lanes.${index}.pathPrefix`);
+      collect(issues, parsedPrefix);
+      if (parsedPrefix.ok) {
+        const escape = safeRelativePath(parsedPrefix.value, `lanes.${index}.pathPrefix`);
+        if (escape) issues.push(escape);
+        else pathPrefix = parsedPrefix.value.replaceAll("\\", "/");
+      }
+    }
     collect(issues, name);
     collect(issues, filesRaw);
     if (kind !== "product" && kind !== "runner" && kind !== "evaluator" && kind !== "environment" && kind !== "raw-bundle" && kind !== "replay" && kind !== "terminal") {
@@ -311,7 +322,10 @@ export function parseEvidenceIndex(input: unknown): ParseResult<EvidenceIndex> {
           if (escape) issues.push(escape);
         }
         if (digest.ok && !isSha256(digest.value)) issues.push({ code: "invalid", path: `lanes.${index}.files.${fileIndex}.digest`, message: "digest must be sha256 hex." });
-        if (filePath.ok && bytes.ok && digest.ok) files.push({ path: filePath.value, bytes: bytes.value, digest: digest.value });
+        if (filePath.ok && bytes.ok && digest.ok) {
+          const normalized = filePath.value.replaceAll("\\", "/");
+          files.push({ path: pathPrefix === "" ? normalized : `${pathPrefix}/${normalized}`, bytes: bytes.value, digest: digest.value });
+        }
       }
     }
     if (name.ok && (kind === "product" || kind === "runner" || kind === "evaluator" || kind === "environment" || kind === "raw-bundle" || kind === "replay" || kind === "terminal")) {

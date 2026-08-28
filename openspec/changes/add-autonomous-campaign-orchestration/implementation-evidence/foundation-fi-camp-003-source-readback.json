@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "incidentId": "FI-CAMP-003",
+  "candidateId": "foundation-fi-camp-003-r5",
+  "environmentId": "node-24.18.1-windows-isolated-semantic-r5",
+  "sourceCount": 43,
+  "mismatchCount": 0,
+  "allMatched": true,
+  "manifestDigest": "0ac16cb2e300bbbcee80ce8b8b7a9aecd4b595437364347f52d27d8f628c09a6",
+  "mismatches": []
+}

@@ -1,0 +1,842 @@
+{
+  "byteLength": 79880,
+  "comparisonIdentity": "a17c9d90b638001721d85d5494f2a1da64a1d6670390e79c0d46397a4ba74032",
+  "evaluatorDigest": "ba3523ea9879a73e9ef7f27333b2f255e24063e5764ce0f94433395cd5677618",
+  "inventory": [
+    "bundle.json"
+  ],
+  "kind": "candidate",
+  "samples": [
+    {
+      "arm": "candidate",
+      "cleanup": {
+        "complete": true,
+        "error": null,
+        "fixtureRemoved": true,
+        "processesRemoved": true,
+        "sessionsRemoved": true
+      },
+      "command": {
+        "argv": [
+          "opencode",
+          "run",
+          "--pure",
+          "--auto",
+          "--agent",
+          "build",
+          "--model",
+          "openai/gpt-5.6-sol",
+          "--variant",
+          "xhigh",
+          "--format",
+          "json",
+          "--dir",
+          "<proof-root>\\fixture",
+          "--title",
+          "consumer-outcome-candidate-default-core-availability-1",
+          "Read case.json and apply the loaded core-surface routing exactly. Use only this fixture. Resolve the focused skill and active-source helper without guessing a parent; preserve explicit exhaustive-owner unavailability under core. Write decision.json with exactly admissionClass, caseId, contextFacts, disposition, maximumClaim, ownerFacts, pathFacts, and triggerFacts. Keep every array factual, do not approximate exhaustive coverage, do not use a score, and do not read any consumer-outcome pack or oracle outside this fixture. Run the representative proof. Do not ask questions, use unlisted skills or agents, access external directories or credentials, install, commit, or perform remote, destructive, or protected actions."
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"type\":\"step_start\",\"timestamp\":1787832933896,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_043259e02001gioOW4VDUMz06W\",\"messageID\":\"msg_0432572380010rb4iJGVT1KXAk\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787832936025,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04325a3910011E0Lx17qwks2kf\",\"messageID\":\"msg_0432572380010rb4iJGVT1KXAk\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"text\",\"text\":\"I’ll inspect only the fixture’s local case and supporting files, derive the routing decision from those facts, then write `decision.json` and run the fixture’s representative proof.\",\"time\":{\"start\":1787832935313,\"end\":1787832936016},\"metadata\":{\"openai\":{\"itemId\":\"msg_0ae83ccf77db22bf016a902a67b0c087d291544545f25948d1\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832936751,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_IfcagFu7bJyIyVFLpBBLPQJ9\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\"},\"output\":\"<path><proof-root>\\\\fixture</path>\\n<type>directory</type>\\n<entries>\\ncase.json\\ncheck-decision.ts\\npackage.json\\nsrc/\\n\\n(4 entries)\\n</entries>\",\"metadata\":{\"preview\":\"case.json\\ncheck-decision.ts\\npackage.json\\nsrc/\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\fixture\",\"entries\":[\"case.json\",\"check-decision.ts\",\"package.json\",\"src/\"],\"offset\":1,\"totalEntries\":4,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-default-core-availability-hT67Qc\\\\fixture\",\"time\":{\"start\":1787832936735,\"end\":1787832936747}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0ae83ccf77db22bf016a902a686a3887d2ad3e979def1ba169\"}},\"id\":\"prt_04325a655001NdC3aJoB1eSNUb\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_0432572380010rb4iJGVT1KXAk\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787832936838,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04325a9700011ZjmtRe53qUxOc\",\"reason\":\"tool-calls\",\"messageID\":\"msg_0432572380010rb4iJGVT1KXAk\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":16132,\"input\":15977,\"output\":89,\"reasoning\":66,\"cache\":{\"write\":0,\"read\":0}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787832943674,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04325c436001ellJLjIHPqKH6c\",\"messageID\":\"msg_04325a97c001IbjAAnZxCd534V\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832943882,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_M760XXpSAUYQ7JsajpqMPUUt\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\case.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\case.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"caseId\\\": \\\"default-core-availability\\\",\\n3:   \\\"acceptedOutcome\\\": \\\"Resolve the focused workflow and its fact helper from the default core surface.\\\",\\n4:   \\\"requestedAssessment\\\": \\\"explicit focused architecture-comprehension assessment under core\\\",\\n5:   \\\"facts\\\": [\\\"focused skill availability must be discovered from the loaded core surface\\\", \\\"inventory helper availability must be discovered from the selected skill\\\", \\\"exhaustive owners remain all-only\\\", \\\"missing exhaustive capability must be explicit\\\"],\\n6:   \\\"nonGoals\\\": [\\\"move exhaustive audit into core\\\", \\\"guess parent source\\\", \\\"approximate coverage\\\"],\\n7:   \\\"representativeProof\\\": \\\"node src/main.ts\\\",\\n8:   \\\"decisionContract\\\": {\\n9:     \\\"instructions\\\": [\\\"Select exactly one routeDecision from observed loaded routing and workflow availability.\\\", \\\"Do not infer focused availability from case claims; invoke the selected workflow and helper when available.\\\", \\\"Copy the selected decision object verbatim to decision.json.\\\", \\\"Do not combine route decisions or paraphrase canonical tokens.\\\"],\\n10:     \\\"admissionClasses\\\": [\\\"unknown\\\"],\\n11:     \\\"dispositions\\\": [\\\"unknown\\\", \\\"retain\\\"],\\n12:     \\\"maximumClaim\\\": \\\"default-core-availability-only\\\",\\n13:     \\\"factVocabulary\\\": {\\n14:       \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"],\\n15:       \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused-unavailable\\\", \\\"skill:none\\\", \\\"mode:focused\\\", \\\"skill:complexity-management\\\"],\\n16:       \\\"pathFacts\\\": [\\\"production:core\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:unavailable\\\", \\\"edit-set:none\\\", \\\"project-mode:unavailable\\\", \\\"production:core-focused\\\", \\\"inventory:complete\\\", \\\"project-mode:explicitly-unavailable\\\"],\\n17:       \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"]\\n18:     },\\n19:     \\\"routeDecisions\\\": [\\n20:       { \\\"id\\\": \\\"focused-unavailable\\\", \\\"when\\\": \\\"The focused complexity-management workflow is absent from the loaded core surface or cannot be invoked.\\\", \\\"decision\\\": { \\\"admissionClass\\\": \\\"unknown\\\", \\\"caseId\\\": \\\"default-core-availability\\\", \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"], \\\"disposition\\\": \\\"unknown\\\", \\\"maximumClaim\\\": \\\"default-core-availability-only\\\", \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused-unavailable\\\", \\\"skill:none\\\"], \\\"pathFacts\\\": [\\\"production:core\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:unavailable\\\", \\\"edit-set:none\\\", \\\"project-mode:unavailable\\\"], \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"] } },\\n21:       { \\\"id\\\": \\\"focused\\\", \\\"when\\\": \\\"The focused complexity-management workflow and its active-source helper are present in the loaded core surface and were successfully invoked.\\\", \\\"decision\\\": { \\\"admissionClass\\\": \\\"unknown\\\", \\\"caseId\\\": \\\"default-core-availability\\\", \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"], \\\"disposition\\\": \\\"retain\\\", \\\"maximumClaim\\\": \\\"default-core-availability-only\\\", \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused\\\", \\\"skill:complexity-management\\\"], \\\"pathFacts\\\": [\\\"production:core-focused\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:complete\\\", \\\"edit-set:none\\\", \\\"project-mode:explicitly-unavailable\\\"], \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"] } }\\n22:     ]\\n23:   }\\n24: }\\n\\n(End of file - total 24 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"caseId\\\": \\\"default-core-availability\\\",\\n  \\\"acceptedOutcome\\\": \\\"Resolve the focused workflow and its fact helper from the default core surface.\\\",\\n  \\\"requestedAssessment\\\": \\\"explicit focused architecture-comprehension assessment under core\\\",\\n  \\\"facts\\\": [\\\"focused skill availability must be discovered from the loaded core surface\\\", \\\"inventory helper availability must be discovered from the selected skill\\\", \\\"exhaustive owners remain all-only\\\", \\\"missing exhaustive capability must be explicit\\\"],\\n  \\\"nonGoals\\\": [\\\"move exhaustive audit into core\\\", \\\"guess parent source\\\", \\\"approximate coverage\\\"],\\n  \\\"representativeProof\\\": \\\"node src/main.ts\\\",\\n  \\\"decisionContract\\\": {\\n    \\\"instructions\\\": [\\\"Select exactly one routeDecision from observed loaded routing and workflow availability.\\\", \\\"Do not infer focused availability from case claims; invoke the selected workflow and helper when available.\\\", \\\"Copy the selected decision object verbatim to decision.json.\\\", \\\"Do not combine route decisions or paraphrase canonical tokens.\\\"],\\n    \\\"admissionClasses\\\": [\\\"unknown\\\"],\\n    \\\"dispositions\\\": [\\\"unknown\\\", \\\"retain\\\"],\\n    \\\"maximumClaim\\\": \\\"default-core-availability-only\\\",\\n    \\\"factVocabulary\\\": {\\n      \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"],\\n      \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused-unavailable\\\", \\\"skill:none\\\", \\\"mode:focused\\\", \\\"skill:complexity-management\\\"],\\n      \\\"pathFacts\\\": [\\\"production:core\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:unavailable\\\", \\\"edit-set:none\\\", \\\"project-mode:unavailable\\\", \\\"production:core-focused\\\", \\\"inventory:complete\\\", \\\"project-mode:explicitly-unavailable\\\"],\\n      \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"]\\n    },\\n    \\\"routeDecisions\\\": [\\n      { \\\"id\\\": \\\"focused-unavailable\\\", \\\"when\\\": \\\"The focused complexity-management workflow is absent from the loaded core surface or cannot be invoked.\\\", \\\"decision\\\": { \\\"admissionClass\\\": \\\"unknown\\\", \\\"caseId\\\": \\\"default-core-availability\\\", \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"], \\\"disposition\\\": \\\"unknown\\\", \\\"maximumClaim\\\": \\\"default-core-availability-only\\\", \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused-unavailable\\\", \\\"skill:none\\\"], \\\"pathFacts\\\": [\\\"production:core\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:unavailable\\\", \\\"edit-set:none\\\", \\\"project-mode:unavailable\\\"], \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"] } },\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\case.json\",\"text\":\"{\\n  \\\"caseId\\\": \\\"default-core-availability\\\",\\n  \\\"acceptedOutcome\\\": \\\"Resolve the focused workflow and its fact helper from the default core surface.\\\",\\n  \\\"requestedAssessment\\\": \\\"explicit focused architecture-comprehension assessment under core\\\",\\n  \\\"facts\\\": [\\\"focused skill availability must be discovered from the loaded core surface\\\", \\\"inventory helper availability must be discovered from the selected skill\\\", \\\"exhaustive owners remain all-only\\\", \\\"missing exhaustive capability must be explicit\\\"],\\n  \\\"nonGoals\\\": [\\\"move exhaustive audit into core\\\", \\\"guess parent source\\\", \\\"approximate coverage\\\"],\\n  \\\"representativeProof\\\": \\\"node src/main.ts\\\",\\n  \\\"decisionContract\\\": {\\n    \\\"instructions\\\": [\\\"Select exactly one routeDecision from observed loaded routing and workflow availability.\\\", \\\"Do not infer focused availability from case claims; invoke the selected workflow and helper when available.\\\", \\\"Copy the selected decision object verbatim to decision.json.\\\", \\\"Do not combine route decisions or paraphrase canonical tokens.\\\"],\\n    \\\"admissionClasses\\\": [\\\"unknown\\\"],\\n    \\\"dispositions\\\": [\\\"unknown\\\", \\\"retain\\\"],\\n    \\\"maximumClaim\\\": \\\"default-core-availability-only\\\",\\n    \\\"factVocabulary\\\": {\\n      \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"],\\n      \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused-unavailable\\\", \\\"skill:none\\\", \\\"mode:focused\\\", \\\"skill:complexity-management\\\"],\\n      \\\"pathFacts\\\": [\\\"production:core\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:unavailable\\\", \\\"edit-set:none\\\", \\\"project-mode:unavailable\\\", \\\"production:core-focused\\\", \\\"inventory:complete\\\", \\\"project-mode:explicitly-unavailable\\\"],\\n      \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"]\\n    },\\n    \\\"routeDecisions\\\": [\\n      { \\\"id\\\": \\\"focused-unavailable\\\", \\\"when\\\": \\\"The focused complexity-management workflow is absent from the loaded core surface or cannot be invoked.\\\", \\\"decision\\\": { \\\"admissionClass\\\": \\\"unknown\\\", \\\"caseId\\\": \\\"default-core-availability\\\", \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"], \\\"disposition\\\": \\\"unknown\\\", \\\"maximumClaim\\\": \\\"default-core-availability-only\\\", \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused-unavailable\\\", \\\"skill:none\\\"], \\\"pathFacts\\\": [\\\"production:core\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:unavailable\\\", \\\"edit-set:none\\\", \\\"project-mode:unavailable\\\"], \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"] } },\\n      { \\\"id\\\": \\\"focused\\\", \\\"when\\\": \\\"The focused complexity-management workflow and its active-source helper are present in the loaded core surface and were successfully invoked.\\\", \\\"decision\\\": { \\\"admissionClass\\\": \\\"unknown\\\", \\\"caseId\\\": \\\"default-core-availability\\\", \\\"contextFacts\\\": [\\\"src/main.ts\\\", \\\"proof:node src/main.ts\\\"], \\\"disposition\\\": \\\"retain\\\", \\\"maximumClaim\\\": \\\"default-core-availability-only\\\", \\\"ownerFacts\\\": [\\\"owner:main\\\", \\\"mode:focused\\\", \\\"skill:complexity-management\\\"], \\\"pathFacts\\\": [\\\"production:core-focused\\\", \\\"public-surface:core-fixture\\\", \\\"inventory:complete\\\", \\\"edit-set:none\\\", \\\"project-mode:explicitly-unavailable\\\"], \\\"triggerFacts\\\": [\\\"explicit-focused-assessment\\\", \\\"default-core-surface\\\"] } }\\n    ]\\n  }\\n}\",\"lineStart\":1,\"lineEnd\":24,\"totalLines\":24,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-default-core-availability-hT67Qc\\\\fixture\\\\case.json\",\"time\":{\"start\":1787832943864,\"end\":1787832943877}},\"metadata\":{\"openai\":{\"itemId\":\"fc_065fac9f239368fb016a902a6ff58087d29def050e6cec4b69\"}},\"id\":\"prt_04325c439001heXibSfIrE3SO3\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04325a97c001IbjAAnZxCd534V\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832944027,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_gd8cfPRNRzbbA7naZeu2y5zV\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\package.json\"},\"output\":\"<path><proof-root>\\\\fixture\\\\package.json</path>\\n<type>file</type>\\n<content>\\n1: {\\n2:   \\\"name\\\": \\\"default-core-availability\\\",\\n3:   \\\"private\\\": true,\\n4:   \\\"type\\\": \\\"module\\\"\\n5: }\\n\\n(End of file - total 5 lines)\\n</content>\",\"metadata\":{\"preview\":\"{\\n  \\\"name\\\": \\\"default-core-availability\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\package.json\",\"text\":\"{\\n  \\\"name\\\": \\\"default-core-availability\\\",\\n  \\\"private\\\": true,\\n  \\\"type\\\": \\\"module\\\"\\n}\",\"lineStart\":1,\"lineEnd\":5,\"totalLines\":5,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-default-core-availability-hT67Qc\\\\fixture\\\\package.json\",\"time\":{\"start\":1787832943983,\"end\":1787832944023}},\"metadata\":{\"openai\":{\"itemId\":\"fc_065fac9f239368fb016a902a6ff59887d28ecca6f235f63dbd\"}},\"id\":\"prt_04325c514001s3zgLYQX0x5KX0\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04325a97c001IbjAAnZxCd534V\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832944144,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_7T7whbihdbIO8NFP9M4wzWHt\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\check-decision.ts\"},\"output\":\"<path><proof-root>\\\\fixture\\\\check-decision.ts</path>\\n<type>file</type>\\n<content>\\n1: import { spawnSync } from \\\"node:child_process\\\";\\n2: import fs from \\\"node:fs\\\";\\n3: \\n4: const caseRecord = JSON.parse(fs.readFileSync(\\\"case.json\\\", \\\"utf8\\\"));\\n5: const observation = JSON.parse(fs.readFileSync(\\\"decision.json\\\", \\\"utf8\\\"));\\n6: const argv = caseRecord.representativeProof.split(\\\" \\\");\\n7: const proof = spawnSync(argv[0], argv.slice(1), { encoding: \\\"utf8\\\" });\\n8: if (proof.status !== 0) {\\n9:   process.stderr.write(proof.stderr || proof.stdout);\\n10:   process.exit(proof.status ?? 1);\\n11: }\\n12: process.stdout.write(`${JSON.stringify({\\n13:   observation,\\n14:   representativeProof: { argv, status: proof.status, stderr: proof.stderr, stdout: proof.stdout },\\n15: })}\\\\n`);\\n\\n(End of file - total 15 lines)\\n</content>\",\"metadata\":{\"preview\":\"import { spawnSync } from \\\"node:child_process\\\";\\nimport fs from \\\"node:fs\\\";\\n\\nconst caseRecord = JSON.parse(fs.readFileSync(\\\"case.json\\\", \\\"utf8\\\"));\\nconst observation = JSON.parse(fs.readFileSync(\\\"decision.json\\\", \\\"utf8\\\"));\\nconst argv = caseRecord.representativeProof.split(\\\" \\\");\\nconst proof = spawnSync(argv[0], argv.slice(1), { encoding: \\\"utf8\\\" });\\nif (proof.status !== 0) {\\n  process.stderr.write(proof.stderr || proof.stdout);\\n  process.exit(proof.status ?? 1);\\n}\\nprocess.stdout.write(`${JSON.stringify({\\n  observation,\\n  representativeProof: { argv, status: proof.status, stderr: proof.stderr, stdout: proof.stdout },\\n})}\\\\n`);\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\check-decision.ts\",\"text\":\"import { spawnSync } from \\\"node:child_process\\\";\\nimport fs from \\\"node:fs\\\";\\n\\nconst caseRecord = JSON.parse(fs.readFileSync(\\\"case.json\\\", \\\"utf8\\\"));\\nconst observation = JSON.parse(fs.readFileSync(\\\"decision.json\\\", \\\"utf8\\\"));\\nconst argv = caseRecord.representativeProof.split(\\\" \\\");\\nconst proof = spawnSync(argv[0], argv.slice(1), { encoding: \\\"utf8\\\" });\\nif (proof.status !== 0) {\\n  process.stderr.write(proof.stderr || proof.stdout);\\n  process.exit(proof.status ?? 1);\\n}\\nprocess.stdout.write(`${JSON.stringify({\\n  observation,\\n  representativeProof: { argv, status: proof.status, stderr: proof.stderr, stdout: proof.stdout },\\n})}\\\\n`);\",\"lineStart\":1,\"lineEnd\":15,\"totalLines\":15,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-default-core-availability-hT67Qc\\\\fixture\\\\check-decision.ts\",\"time\":{\"start\":1787832944131,\"end\":1787832944141}},\"metadata\":{\"openai\":{\"itemId\":\"fc_065fac9f239368fb016a902a6ff5a487d2baebd969a6dd9b7a\"}},\"id\":\"prt_04325c57c0017gsn1zlJsaMErV\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04325a97c001IbjAAnZxCd534V\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832944335,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_za7e3fRyvFXB5RcVNEufT10J\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\src\"},\"output\":\"<path><proof-root>\\\\fixture\\\\src</path>\\n<type>directory</type>\\n<entries>\\nmain.ts\\n\\n(1 entries)\\n</entries>\",\"metadata\":{\"preview\":\"main.ts\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"directory\",\"path\":\"<proof-root>\\\\fixture\\\\src\",\"entries\":[\"main.ts\"],\"offset\":1,\"totalEntries\":1,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-default-core-availability-hT67Qc\\\\fixture\\\\src\",\"time\":{\"start\":1787832944326,\"end\":1787832944333}},\"metadata\":{\"openai\":{\"itemId\":\"fc_065fac9f239368fb016a902a6ff5ac87d29e5a2e6a4667fad7\"}},\"id\":\"prt_04325c622001dTwAJeSVOHb3Hi\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04325a97c001IbjAAnZxCd534V\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787832944576,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04325c7af001nqAWTIaKLjBmRO\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04325a97c001IbjAAnZxCd534V\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":16401,\"input\":332,\"output\":197,\"reasoning\":0,\"cache\":{\"write\":0,\"read\":15872}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787832946663,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04325cfe3001kNxmh0kRBqlXtb\",\"messageID\":\"msg_04325c7b9001IhegVp4Q2Tk8u5\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832950424,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"skill\",\"callID\":\"call_HXGzjBzSPeQUoRAyplyCCxc2\",\"state\":{\"status\":\"completed\",\"input\":{\"name\":\"complexity-management\"},\"output\":\"<skill_content name=\\\"complexity-management\\\">\\n# Skill: complexity-management\\n\\n# Complexity Management\\n\\nMain uses this focused workflow to understand one current consumer/change scenario, rehearse it, and decide whether the smallest remove, narrow, reuse, reshape, extraction, or facade response earns its cost. It is not an architecture score, exhaustive audit, automatic refactor, or new Practice Owner.\\n\\n## Trigger\\n\\nUse this skill only when either condition holds:\\n\\n- the user explicitly asks for a focused pre-expansion complexity, architecture-comprehension, useful-interface, or current-scenario refactoring assessment of an existing project; or\\n- after targeted foraging and exact Practice Owner routing, the accepted change still cannot reach one understandable owner because of competing extension surfaces, required unrelated context, scattered ownership, hidden material effects/failures, or blocking search noise.\\n\\nStay quiet when the work is a cohesive ordinary delta, post-change smell/maintainability review (`code-quality-audit`), new service design (`service-architecture-design`), a seam-only architecture Practice Owner trigger, or explicit whole-project/exhaustive coverage. Route explicit exhaustive coverage to discovered `codebase-audit-loop` and `codebase-audit-ledger`; when unavailable, report project mode unavailable without approximating coverage.\\n\\n## Authority And Scope\\n\\n- Main owns semantic assessment, design, mutation, runtime proof, and disposition.\\n- A named new seam, mixed responsibility, or evidence-backed change axis routes only to the existing `architecture-and-change-locality` Practice Owner when triggered.\\n- An explicit sibling of a live owner or decision-changing same-versus-new uncertainty routes only to `simplicity-and-reuse` when triggered.\\n- Do not launch both owners for the same question or re-launch an owner for an already reviewed fact.\\n- Admit production work only as `current-dependency` or a separately accepted `accepted-refactor`. Record unrelated valid pressure as `deferred-debt`; discriminate or bound insufficient evidence as `unknown`.\\n\\n## Fact Foraging\\n\\nResolve the active global source exactly. Use non-empty `OPENCODE_CONFIG_DIR` only when it contains `bin/complexity-foraging-inventory.ts`; otherwise use supported current runtime-source and collision evidence. Never strip a final `global` segment, guess a repository parent, or require a target-project package script.\\n\\nWhen available, run:\\n\\n```sh\\nnode \\\"<resolved-global-source>/bin/complexity-foraging-inventory.ts\\\" --root \\\"<target-root>\\\" --format json [--scope \\\"<reviewed-scope.json>\\\"]\\n```\\n\\nTreat the output as navigation facts, not architecture judgment. Preserve reviewed exclusions, detector evidence, support state, and original causes. If the helper cannot be resolved, use bounded Glob/Grep/LSP foraging and label the inventory lane `degraded`; never claim the portable helper ran. Unknown, unreadable, unsupported, partial, or blocked facts cannot become a clean map.\\n\\n## Focused Workflow\\n\\n1. Name the accepted outcome, one realistic consumer/change scenario, affected root or subsystem, non-goals, and representative proof boundary.\\n2. Gather current source, manifest, test, schema, runtime, decision, and project-native architecture evidence. Separate observed facts, inference, and unknowns.\\n3. Build the Architecture Comprehension Map below around the consumer boundary, not the repository folder tree.\\n4. Rehearse the same scenario through the current entrypoint. Include only essential context and explain why each item is necessary.\\n5. Identify exact pressure: unrelated context, competing extension paths, scattered edits, hidden effects/failures, mixed ownership, or search noise. Line/file counts are navigation facts, never findings by themselves.\\n6. Apply the abstraction-value ladder and assign one admission class. Do not mutate automatically.\\n7. If a refactor is admitted and authorized, capture the before state, implement and prove the smallest complete happy path at the representative consumer boundary, and replay the same scenario plus risk-driven focused validation before claiming improvement.\\n\\n## Architecture Comprehension Map\\n\\nRecord:\\n\\n- accepted project/subsystem outcome and assessment scope;\\n- consumers and entrypoints;\\n- cohesive owners plus dependency/effect directions;\\n- intended extension surfaces and hidden internals;\\n- explicit errors, effects, lifecycle, and meaningful cost;\\n- tests and representative proof commands;\\n- compatibility or non-extension paths;\\n- unknown, unreadable, unsupported, or blocked areas;\\n- evidence references and which statements are inference.\\n\\nUse an existing project-native architecture artifact when one exists. Do not require a fixed language, topology, framework, or durable map path.\\n\\n## Change Rehearsal\\n\\nRecord:\\n\\n- representative consumer task and current call/interaction;\\n- essential files, symbols, documents, and concepts, each with its reason;\\n- expected edit set and proof set;\\n- material effects, failures, lifecycle, and cost;\\n- observed pressure and owning boundary;\\n- candidate response or `none`;\\n- after an admitted refactor, label the before and after context/edit/proof sets; when an output schema has one `essentialContext` field, put only the post-refactor consumer essentials there and keep implementation evidence in the map.\\n\\n## Abstraction-Value Ladder\\n\\nPrefer, in order:\\n\\n1. remove unused capability or obsolete surface;\\n2. isolate irrelevant corpus, evidence, generated, or vendor noise;\\n3. narrow public surface or consumer responsibility;\\n4. reuse or reshape the current owner;\\n5. extract one cohesive owner or facade for a current consumer;\\n6. introduce a multi-implementation abstraction only for current variation or a named reachable change axis;\\n7. build a framework only for a stable repeated contract whose centralization removes more concepts and drift than it adds.\\n\\nA facade may earn value with one implementation when it hides several stable internal stages while preserving explicit behavior, failures, effects, lifecycle, and cost. Reject pass-through wrappers, option matrices, factories, plugin points, strategies, or frameworks justified only by pattern names or hypothetical flexibility.\\n\\n## Same-Scenario Recheck\\n\\nAn admitted behavior-preserving refactor is improved only when the same representative invocation shows:\\n\\n- consumer behavior and material effects remain preserved;\\n- original errors/causes and effect/lifecycle semantics remain visible;\\n- essential consumer context, public surface, scattered edits, or ownership is demonstrably smaller or clearer; and\\n- no affected in-envelope consumer receives an unexamined material cost.\\n\\nCompilation, line reduction, file movement, or another wrapper alone is insufficient. A discovered behavior change needs its own accepted requirement and proof.\\n\\n## Output\\n\\nReturn:\\n\\n- `Mode`: focused | project-unavailable.\\n- `Outcome And Scope`: consumer/change scenario, non-goals, and proof boundary.\\n- `Inventory`: active-source identity, invocation or degraded route, support state, exclusions, and privacy-safe diagnostics.\\n- `Architecture Comprehension Map`: required fields above with facts/inferences/unknowns separated.\\n- `Change Rehearsal`: labeled before state and, when applicable, same-scenario after state with post-refactor consumer essentials distinct from hidden implementation evidence.\\n- `Pressure And Admission`: evidence, owning boundary, abstraction-value step, and `current-dependency | accepted-refactor | deferred-debt | unknown`.\\n- `Disposition`: remove | narrow | reuse | reshape | extract | facade | defer | unknown, with main-owned rationale.\\n- `Runtime Proof`: exact representative invocation, expected/actual behavior, effects/errors, validation, and cleanup, or `not run` with the exact reason.\\n- `Claim Ceiling`: what the exercised scenario supports and what remains unexamined.\\n\\nBase directory for this skill: <kit-root>\\\\global\\\\skills\\\\complexity-management\\nRelative paths in this skill (e.g., scripts/, reference/) are relative to this base directory.\\nNote: file list is sampled.\\n\\n<skill_files>\\n\\n</skill_files>\\n</skill_content>\",\"metadata\":{\"name\":\"complexity-management\",\"dir\":\"<kit-root>\\\\global\\\\skills\\\\complexity-management\",\"truncated\":false},\"title\":\"Loaded skill: complexity-management\",\"time\":{\"start\":1787832950372,\"end\":1787832950411}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e9a9c68483157da016a902a7699ac87d2a9893fe56eac80b6\"}},\"id\":\"prt_04325de5f00119ISq0cIUCaroC\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04325c7b9001IhegVp4Q2Tk8u5\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832950428,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"read\",\"callID\":\"call_PDOO0VeInsn5dae2WYk8f3y9\",\"state\":{\"status\":\"completed\",\"input\":{\"filePath\":\"<proof-root>\\\\fixture\\\\src\\\\main.ts\"},\"output\":\"<path><proof-root>\\\\fixture\\\\src\\\\main.ts</path>\\n<type>file</type>\\n<content>\\n1: process.stdout.write(\\\"OK: core fixture\\\\n\\\");\\n\\n(End of file - total 1 lines)\\n</content>\",\"metadata\":{\"preview\":\"process.stdout.write(\\\"OK: core fixture\\\\n\\\");\",\"truncated\":false,\"loaded\":[],\"display\":{\"type\":\"file\",\"path\":\"<proof-root>\\\\fixture\\\\src\\\\main.ts\",\"text\":\"process.stdout.write(\\\"OK: core fixture\\\\n\\\");\",\"lineStart\":1,\"lineEnd\":1,\"totalLines\":1,\"truncated\":false}},\"title\":\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-default-core-availability-hT67Qc\\\\fixture\\\\src\\\\main.ts\",\"time\":{\"start\":1787832950365,\"end\":1787832950426}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0e9a9c68483157da016a902a76999887d2bc40279c3fff5258\"}},\"id\":\"prt_04325de3c001qgGYeP9OxMnvcW\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04325c7b9001IhegVp4Q2Tk8u5\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787832950463,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04325deb30018qDEYctdp5iuBn\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04325c7b9001IhegVp4Q2Tk8u5\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":17834,\"input\":1766,\"output\":83,\"reasoning\":113,\"cache\":{\"write\":0,\"read\":15872}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787832953013,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04325e8b1001kFmS30fcqdHlfu\",\"messageID\":\"msg_04325deba001FRX6SRVFvSoJfW\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787832975460,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_043263d03001rIm09smeFvTPli\",\"messageID\":\"msg_04325deba001FRX6SRVFvSoJfW\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"text\",\"text\":\"The loaded core surface provides `complexity-management`, which is the exact focused workflow. I’m resolving its helper from the active configuration source directly, without deriving or stripping any parent path; exhaustive mode remains explicitly outside this focused route.\",\"time\":{\"start\":1787832974595,\"end\":1787832975455},\"metadata\":{\"openai\":{\"itemId\":\"msg_06e3eebae577f661016a902a8ef67487d2bf1348886ac3106c\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832977904,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_hqwzLXFZPQ9ES33JWP27vBmX\",\"state\":{\"status\":\"error\",\"input\":{\"command\":\"[pscustomobject]@{ configDir = $env:OPENCODE_CONFIG_DIR; helperExists = $(if ([string]::IsNullOrWhiteSpace($env:OPENCODE_CONFIG_DIR)) { $false } else { Test-Path -LiteralPath (Join-Path $env:OPENCODE_CONFIG_DIR 'bin/complexity-foraging-inventory.ts') -PathType Leaf }) } | ConvertTo-Json -Compress\",\"workdir\":\"<proof-root>\\\\fixture\"},\"error\":\"The user has specified a rule which prevents you from using this specific tool call. Here are some of the relevant rules [{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"allow\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"node *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"node.exe *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*;*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*&&*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*|*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*>*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*<*\\\",\\\"action\\\":\\\"deny\\\"}]\",\"time\":{\"start\":1787832977843,\"end\":1787832977896}},\"metadata\":{\"openai\":{\"itemId\":\"fc_06e3eebae577f661016a902a8fd94887d287f8681746c95f8c\"}},\"id\":\"prt_043264062001zTSIGXXj6hA3eh\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04325deba001FRX6SRVFvSoJfW\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787832977988,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_043264a30001rKOkNB8isLyVTe\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04325deba001FRX6SRVFvSoJfW\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":20890,\"input\":2617,\"output\":194,\"reasoning\":1183,\"cache\":{\"write\":0,\"read\":16896}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787832980519,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_043265421001LqOw4hCOv7O7GJ\",\"messageID\":\"msg_043264a3c001SMoPTqHJXz5yWk\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787832988424,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_lfCD29b96QYEw7lJSf0focpM\",\"state\":{\"status\":\"error\",\"input\":{\"command\":\"node -p \\\"JSON.stringify({configDir: process.env.OPENCODE_CONFIG_DIR ?? '', helperExists: Boolean(process.env.OPENCODE_CONFIG_DIR) && require('node:fs').existsSync(require('node:path').join(process.env.OPENCODE_CONFIG_DIR,'bin','complexity-foraging-inventory.ts'))})\\\"\",\"workdir\":\"<proof-root>\\\\fixture\"},\"error\":\"The user has specified a rule which prevents you from using this specific tool call. Here are some of the relevant rules [{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"allow\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\",\\\"pattern\\\":\\\"*\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"node *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"node.exe *\\\",\\\"action\\\":\\\"allow\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*;*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*&&*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*|*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*>*\\\",\\\"action\\\":\\\"deny\\\"},{\\\"permission\\\":\\\"bash\\\",\\\"pattern\\\":\\\"*<*\\\",\\\"action\\\":\\\"deny\\\"}]\",\"time\":{\"start\":1787832988417,\"end\":1787832988421}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0f19da20dc2c7d65016a902a9aed8487d29ac2774619e04338\"}},\"id\":\"prt_043266de5001sBMaFjEeLrsg9c\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_043264a3c001SMoPTqHJXz5yWk\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787832988517,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_043267359001DWPM4e845ehV59\",\"reason\":\"tool-calls\",\"messageID\":\"msg_043264a3c001SMoPTqHJXz5yWk\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":21497,\"input\":2114,\"output\":117,\"reasoning\":322,\"cache\":{\"write\":0,\"read\":18944}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787832991169,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_043267dbe001HNTRakD4rGcQiC\",\"messageID\":\"msg_043267360001L9rZkyAV51erYe\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787833001217,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_EohpQIJ1TsiNeXOGGUh9ycKx\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node \\\"$env:OPENCODE_CONFIG_DIR/bin/complexity-foraging-inventory.ts\\\" --root \\\".\\\" --format json\",\"workdir\":\"<proof-root>\\\\fixture\",\"timeout\":120000},\"output\":\"{\\n  \\\"recordType\\\": \\\"output\\\",\\n  \\\"schemaVersion\\\": 1,\\n  \\\"root\\\": {\\n    \\\"kind\\\": \\\"sha256\\\",\\n    \\\"digest\\\": \\\"9631d6436eb062cc098da29194fd988baa93daa84d59d4a2eaa830cd8d060c7b\\\"\\n  },\\n  \\\"scope\\\": {\\n    \\\"includes\\\": [],\\n    \\\"excludes\\\": []\\n  },\\n  \\\"support\\\": {\\n    \\\"state\\\": \\\"complete\\\",\\n    \\\"unsupportedFields\\\": [],\\n    \\\"unknownFields\\\": []\\n  },\\n  \\\"candidates\\\": [\\n    {\\n      \\\"kind\\\": \\\"component\\\",\\n      \\\"path\\\": \\\"src\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"exact-name\\\",\\n        \\\"value\\\": \\\"src\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"entrypoint\\\",\\n      \\\"path\\\": \\\"src/main.ts\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"exact-name\\\",\\n        \\\"value\\\": \\\"main.ts\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"manifest\\\",\\n      \\\"path\\\": \\\"package.json\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"exact-name\\\",\\n        \\\"value\\\": \\\"package.json\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"source\\\",\\n      \\\"path\\\": \\\"check-decision.ts\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"extension\\\",\\n        \\\"value\\\": \\\".ts\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"source\\\",\\n      \\\"path\\\": \\\"src/main.ts\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"extension\\\",\\n        \\\"value\\\": \\\".ts\\\"\\n      }\\n    }\\n  ],\\n  \\\"counts\\\": {\\n    \\\"files\\\": 4,\\n    \\\"directories\\\": 1,\\n    \\\"bytes\\\": 3817,\\n    \\\"lines\\\": 45,\\n    \\\"maintained\\\": 4,\\n    \\\"generated\\\": 0,\\n    \\\"vendor\\\": 0,\\n    \\\"evidence\\\": 0,\\n    \\\"corpus\\\": 0,\\n    \\\"dependency\\\": 0,\\n    \\\"unknown\\\": 0,\\n    \\\"unsupported\\\": 0,\\n    \\\"unreadable\\\": 0\\n  },\\n  \\\"largestMaintainedFiles\\\": [\\n    {\\n      \\\"path\\\": \\\"case.json\\\",\\n      \\\"bytes\\\": 3066,\\n      \\\"lines\\\": 24\\n    },\\n    {\\n      \\\"path\\\": \\\"check-decision.ts\\\",\\n      \\\"bytes\\\": 626,\\n      \\\"lines\\\": 15\\n    },\\n    {\\n      \\\"path\\\": \\\"package.json\\\",\\n      \\\"bytes\\\": 81,\\n      \\\"lines\\\": 5\\n    },\\n    {\\n      \\\"path\\\": \\\"src/main.ts\\\",\\n      \\\"bytes\\\": 44,\\n      \\\"lines\\\": 1\\n    }\\n  ],\\n  \\\"topLevelConcentration\\\": [\\n    {\\n      \\\"path\\\": \\\"case.json\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 3066,\\n      \\\"lines\\\": 24\\n    },\\n    {\\n      \\\"path\\\": \\\"check-decision.ts\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 626,\\n      \\\"lines\\\": 15\\n    },\\n    {\\n      \\\"path\\\": \\\"package.json\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 81,\\n      \\\"lines\\\": 5\\n    },\\n    {\\n      \\\"path\\\": \\\"src\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 44,\\n      \\\"lines\\\": 1\\n    }\\n  ],\\n  \\\"diagnostics\\\": []\\n}\\n\",\"metadata\":{\"output\":\"{\\n  \\\"recordType\\\": \\\"output\\\",\\n  \\\"schemaVersion\\\": 1,\\n  \\\"root\\\": {\\n    \\\"kind\\\": \\\"sha256\\\",\\n    \\\"digest\\\": \\\"9631d6436eb062cc098da29194fd988baa93daa84d59d4a2eaa830cd8d060c7b\\\"\\n  },\\n  \\\"scope\\\": {\\n    \\\"includes\\\": [],\\n    \\\"excludes\\\": []\\n  },\\n  \\\"support\\\": {\\n    \\\"state\\\": \\\"complete\\\",\\n    \\\"unsupportedFields\\\": [],\\n    \\\"unknownFields\\\": []\\n  },\\n  \\\"candidates\\\": [\\n    {\\n      \\\"kind\\\": \\\"component\\\",\\n      \\\"path\\\": \\\"src\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"exact-name\\\",\\n        \\\"value\\\": \\\"src\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"entrypoint\\\",\\n      \\\"path\\\": \\\"src/main.ts\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"exact-name\\\",\\n        \\\"value\\\": \\\"main.ts\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"manifest\\\",\\n      \\\"path\\\": \\\"package.json\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"exact-name\\\",\\n        \\\"value\\\": \\\"package.json\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"source\\\",\\n      \\\"path\\\": \\\"check-decision.ts\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"extension\\\",\\n        \\\"value\\\": \\\".ts\\\"\\n      }\\n    },\\n    {\\n      \\\"kind\\\": \\\"source\\\",\\n      \\\"path\\\": \\\"src/main.ts\\\",\\n      \\\"evidence\\\": {\\n        \\\"detector\\\": \\\"extension\\\",\\n        \\\"value\\\": \\\".ts\\\"\\n      }\\n    }\\n  ],\\n  \\\"counts\\\": {\\n    \\\"files\\\": 4,\\n    \\\"directories\\\": 1,\\n    \\\"bytes\\\": 3817,\\n    \\\"lines\\\": 45,\\n    \\\"maintained\\\": 4,\\n    \\\"generated\\\": 0,\\n    \\\"vendor\\\": 0,\\n    \\\"evidence\\\": 0,\\n    \\\"corpus\\\": 0,\\n    \\\"dependency\\\": 0,\\n    \\\"unknown\\\": 0,\\n    \\\"unsupported\\\": 0,\\n    \\\"unreadable\\\": 0\\n  },\\n  \\\"largestMaintainedFiles\\\": [\\n    {\\n      \\\"path\\\": \\\"case.json\\\",\\n      \\\"bytes\\\": 3066,\\n      \\\"lines\\\": 24\\n    },\\n    {\\n      \\\"path\\\": \\\"check-decision.ts\\\",\\n      \\\"bytes\\\": 626,\\n      \\\"lines\\\": 15\\n    },\\n    {\\n      \\\"path\\\": \\\"package.json\\\",\\n      \\\"bytes\\\": 81,\\n      \\\"lines\\\": 5\\n    },\\n    {\\n      \\\"path\\\": \\\"src/main.ts\\\",\\n      \\\"bytes\\\": 44,\\n      \\\"lines\\\": 1\\n    }\\n  ],\\n  \\\"topLevelConcentration\\\": [\\n    {\\n      \\\"path\\\": \\\"case.json\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 3066,\\n      \\\"lines\\\": 24\\n    },\\n    {\\n      \\\"path\\\": \\\"check-decision.ts\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 626,\\n      \\\"lines\\\": 15\\n    },\\n    {\\n      \\\"path\\\": \\\"package.json\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 81,\\n      \\\"lines\\\": 5\\n    },\\n    {\\n      \\\"path\\\": \\\"src\\\",\\n      \\\"files\\\": 1,\\n      \\\"bytes\\\": 44,\\n      \\\"lines\\\": 1\\n    }\\n  ],\\n  \\\"diagnostics\\\": []\\n}\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node \\\"$env:OPENCODE_CONFIG_DIR/bin/complexity-foraging-inventory.ts\\\" --root \\\".\\\" --format json\",\"time\":{\"start\":1787833001142,\"end\":1787833001196}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0d6dcf6ff8ddd1d8016a902aa78bb487d296f564ba1737a547\"}},\"id\":\"prt_043269e1b001G5z88TNGub3yNF\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_043267360001L9rZkyAV51erYe\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787833001218,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04326a4ee0011FW1WUTE3NbQ3D\",\"reason\":\"tool-calls\",\"messageID\":\"msg_043267360001L9rZkyAV51erYe\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":22163,\"input\":1697,\"output\":83,\"reasoning\":415,\"cache\":{\"write\":0,\"read\":19968}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787833007617,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04326bdfe001dGQBSEAFDoWdwc\",\"messageID\":\"msg_04326a4f4001pHiCpYImXnbJVN\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787833009790,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04326c2e7001BbA6au7d0BALcW\",\"messageID\":\"msg_04326a4f4001pHiCpYImXnbJVN\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"text\",\"text\":\"Both required core capabilities were successfully invoked: the focused workflow and its active-source inventory helper. The helper reported complete support for this fixture only, so I’ll copy the canonical `focused` route object verbatim while retaining `project-mode:explicitly-unavailable` rather than implying exhaustive coverage.\",\"time\":{\"start\":1787833008871,\"end\":1787833009786},\"metadata\":{\"openai\":{\"itemId\":\"msg_0c035f079e6e8456016a902ab135ac87d285d7b41cfb551004\",\"phase\":\"commentary\"}}}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787833014954,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"apply_patch\",\"callID\":\"call_TujZ6ix7XzLDbEiiKYZm0CVZ\",\"state\":{\"status\":\"completed\",\"input\":{\"patchText\":\"*** Begin Patch\\n*** Add File: <proof-root>\\\\fixture\\\\decision.json\\n+{\\n+  \\\"admissionClass\\\": \\\"unknown\\\",\\n+  \\\"caseId\\\": \\\"default-core-availability\\\",\\n+  \\\"contextFacts\\\": [\\n+    \\\"src/main.ts\\\",\\n+    \\\"proof:node src/main.ts\\\"\\n+  ],\\n+  \\\"disposition\\\": \\\"retain\\\",\\n+  \\\"maximumClaim\\\": \\\"default-core-availability-only\\\",\\n+  \\\"ownerFacts\\\": [\\n+    \\\"owner:main\\\",\\n+    \\\"mode:focused\\\",\\n+    \\\"skill:complexity-management\\\"\\n+  ],\\n+  \\\"pathFacts\\\": [\\n+    \\\"production:core-focused\\\",\\n+    \\\"public-surface:core-fixture\\\",\\n+    \\\"inventory:complete\\\",\\n+    \\\"edit-set:none\\\",\\n+    \\\"project-mode:explicitly-unavailable\\\"\\n+  ],\\n+  \\\"triggerFacts\\\": [\\n+    \\\"explicit-focused-assessment\\\",\\n+    \\\"default-core-surface\\\"\\n+  ]\\n+}\\n*** End Patch\"},\"output\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-default-core-availability-hT67Qc/fixture/decision.json\",\"metadata\":{\"diff\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,26 @@\\n+{\\n+  \\\"admissionClass\\\": \\\"unknown\\\",\\n+  \\\"caseId\\\": \\\"default-core-availability\\\",\\n+  \\\"contextFacts\\\": [\\n+    \\\"src/main.ts\\\",\\n+    \\\"proof:node src/main.ts\\\"\\n+  ],\\n+  \\\"disposition\\\": \\\"retain\\\",\\n+  \\\"maximumClaim\\\": \\\"default-core-availability-only\\\",\\n+  \\\"ownerFacts\\\": [\\n+    \\\"owner:main\\\",\\n+    \\\"mode:focused\\\",\\n+    \\\"skill:complexity-management\\\"\\n+  ],\\n+  \\\"pathFacts\\\": [\\n+    \\\"production:core-focused\\\",\\n+    \\\"public-surface:core-fixture\\\",\\n+    \\\"inventory:complete\\\",\\n+    \\\"edit-set:none\\\",\\n+    \\\"project-mode:explicitly-unavailable\\\"\\n+  ],\\n+  \\\"triggerFacts\\\": [\\n+    \\\"explicit-focused-assessment\\\",\\n+    \\\"default-core-surface\\\"\\n+  ]\\n+}\\n\\n\",\"files\":[{\"filePath\":\"<proof-root>\\\\fixture\\\\decision.json\",\"relativePath\":\"<home>/AppData/Local/Temp/consumer-outcome-default-core-availability-hT67Qc/fixture/decision.json\",\"type\":\"add\",\"patch\":\"Index: <proof-root>\\\\fixture\\\\decision.json\\n===================================================================\\n--- <proof-root>\\\\fixture\\\\decision.json\\n+++ <proof-root>\\\\fixture\\\\decision.json\\n@@ -0,0 +1,26 @@\\n+{\\n+  \\\"admissionClass\\\": \\\"unknown\\\",\\n+  \\\"caseId\\\": \\\"default-core-availability\\\",\\n+  \\\"contextFacts\\\": [\\n+    \\\"src/main.ts\\\",\\n+    \\\"proof:node src/main.ts\\\"\\n+  ],\\n+  \\\"disposition\\\": \\\"retain\\\",\\n+  \\\"maximumClaim\\\": \\\"default-core-availability-only\\\",\\n+  \\\"ownerFacts\\\": [\\n+    \\\"owner:main\\\",\\n+    \\\"mode:focused\\\",\\n+    \\\"skill:complexity-management\\\"\\n+  ],\\n+  \\\"pathFacts\\\": [\\n+    \\\"production:core-focused\\\",\\n+    \\\"public-surface:core-fixture\\\",\\n+    \\\"inventory:complete\\\",\\n+    \\\"edit-set:none\\\",\\n+    \\\"project-mode:explicitly-unavailable\\\"\\n+  ],\\n+  \\\"triggerFacts\\\": [\\n+    \\\"explicit-focused-assessment\\\",\\n+    \\\"default-core-surface\\\"\\n+  ]\\n+}\\n\",\"additions\":26,\"deletions\":0}],\"diagnostics\":{},\"truncated\":false},\"title\":\"Success. Updated the following files:\\nA <home>/AppData/Local/Temp/consumer-outcome-default-core-availability-hT67Qc/fixture/decision.json\",\"time\":{\"start\":1787833014944,\"end\":1787833014950}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0c035f079e6e8456016a902ab22e2087d2aa174b53aa978a8a\"}},\"id\":\"prt_04326c67c001NuZUEHZEX8Drkq\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04326a4f4001pHiCpYImXnbJVN\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787833015025,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04326dae2001QABrKFnrDy59f6\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04326a4f4001pHiCpYImXnbJVN\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":23286,\"input\":1898,\"output\":350,\"reasoning\":46,\"cache\":{\"write\":0,\"read\":20992}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787833017179,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04326e357001qFW6qO88q0foJg\",\"messageID\":\"msg_04326daec001yWAaRfnAtWCrky\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"tool_use\",\"timestamp\":1787833022842,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"type\":\"tool\",\"tool\":\"bash\",\"callID\":\"call_8VjpICy8HGF4SY4xpMD3zzvO\",\"state\":{\"status\":\"completed\",\"input\":{\"command\":\"node check-decision.ts\",\"workdir\":\"<proof-root>\\\\fixture\",\"timeout\":120000},\"output\":\"{\\\"observation\\\":{\\\"admissionClass\\\":\\\"unknown\\\",\\\"caseId\\\":\\\"default-core-availability\\\",\\\"contextFacts\\\":[\\\"src/main.ts\\\",\\\"proof:node src/main.ts\\\"],\\\"disposition\\\":\\\"retain\\\",\\\"maximumClaim\\\":\\\"default-core-availability-only\\\",\\\"ownerFacts\\\":[\\\"owner:main\\\",\\\"mode:focused\\\",\\\"skill:complexity-management\\\"],\\\"pathFacts\\\":[\\\"production:core-focused\\\",\\\"public-surface:core-fixture\\\",\\\"inventory:complete\\\",\\\"edit-set:none\\\",\\\"project-mode:explicitly-unavailable\\\"],\\\"triggerFacts\\\":[\\\"explicit-focused-assessment\\\",\\\"default-core-surface\\\"]},\\\"representativeProof\\\":{\\\"argv\\\":[\\\"node\\\",\\\"src/main.ts\\\"],\\\"status\\\":0,\\\"stderr\\\":\\\"\\\",\\\"stdout\\\":\\\"OK: core fixture\\\\n\\\"}}\\n\",\"metadata\":{\"output\":\"{\\\"observation\\\":{\\\"admissionClass\\\":\\\"unknown\\\",\\\"caseId\\\":\\\"default-core-availability\\\",\\\"contextFacts\\\":[\\\"src/main.ts\\\",\\\"proof:node src/main.ts\\\"],\\\"disposition\\\":\\\"retain\\\",\\\"maximumClaim\\\":\\\"default-core-availability-only\\\",\\\"ownerFacts\\\":[\\\"owner:main\\\",\\\"mode:focused\\\",\\\"skill:complexity-management\\\"],\\\"pathFacts\\\":[\\\"production:core-focused\\\",\\\"public-surface:core-fixture\\\",\\\"inventory:complete\\\",\\\"edit-set:none\\\",\\\"project-mode:explicitly-unavailable\\\"],\\\"triggerFacts\\\":[\\\"explicit-focused-assessment\\\",\\\"default-core-surface\\\"]},\\\"representativeProof\\\":{\\\"argv\\\":[\\\"node\\\",\\\"src/main.ts\\\"],\\\"status\\\":0,\\\"stderr\\\":\\\"\\\",\\\"stdout\\\":\\\"OK: core fixture\\\\n\\\"}}\\n\",\"exit\":0,\"truncated\":false},\"title\":\"node check-decision.ts\",\"time\":{\"start\":1787833022761,\"end\":1787833022814}},\"metadata\":{\"openai\":{\"itemId\":\"fc_0a49f0bcd0a50064016a902abd5ef487d2a2b55907f0f642c3\"}},\"id\":\"prt_04326f477001338mL60ap8IZaR\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"messageID\":\"msg_04326daec001yWAaRfnAtWCrky\"}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787833022842,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04326f9600019qWJKyAN77UWd4\",\"reason\":\"tool-calls\",\"messageID\":\"msg_04326daec001yWAaRfnAtWCrky\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":23566,\"input\":1316,\"output\":61,\"reasoning\":173,\"cache\":{\"write\":0,\"read\":22016}},\"cost\":0}}\r\n{\"type\":\"step_start\",\"timestamp\":1787833024436,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_04326ffb0001vZWGwYEx7eEf8B\",\"messageID\":\"msg_04326f969001rxn42UWFzfofjU\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-start\"}}\r\n{\"type\":\"text\",\"timestamp\":1787833030095,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_0432709a80018o6PRmx3NEEgdg\",\"messageID\":\"msg_04326f969001rxn42UWFzfofjU\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"text\",\"text\":\"Outcome: working\\n\\nCreated `decision.json` with the canonical focused route.\\n\\n- Inventory helper: complete\\n- Exhaustive project mode: explicitly unavailable\\n- Representative proof: `node src/main.ts`\\n- Result: exit `0`, `OK: core fixture`\\n- Validation: `node check-decision.ts` passed\\n- External/protected actions: none\",\"time\":{\"start\":1787833026984,\"end\":1787833030092},\"metadata\":{\"openai\":{\"itemId\":\"msg_0958e70666acb84b016a902ac24eb087d2a789004cd07b6fb8\",\"phase\":\"final_answer\"}}}}\r\n{\"type\":\"step_finish\",\"timestamp\":1787833030192,\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"part\":{\"id\":\"prt_043271621001DLQXGR1136fhZS\",\"reason\":\"stop\",\"messageID\":\"msg_04326f969001rxn42UWFzfofjU\",\"sessionID\":\"ses_fbcda9054ffeKA7Ir3CFwE16uv\",\"type\":\"step-finish\",\"tokens\":{\"total\":23845,\"input\":677,\"output\":78,\"reasoning\":50,\"cache\":{\"write\":0,\"read\":23040}},\"cost\":0}}\r\n",
+        "termination": {
+          "cleanupState": "not-needed",
+          "error": null,
+          "signal": null,
+          "timedOut": false,
+          "timeoutMs": 300000
+        }
+      },
+      "diagnostics": {
+        "elapsedMs": 111074,
+        "tokens": null,
+        "truncatedFields": []
+      },
+      "environmentIdentity": {
+        "dependencyIdentity": "v24.18.1",
+        "initialFixtureDigest": "82494a0d5a7c00d829ea95db72c0dc83bafedd15de0ae8392142c97bae1431f9",
+        "model": "openai/gpt-5.6-sol",
+        "opencodeVersion": "1.18.23",
+        "osClass": "windows",
+        "permissionDigest": "4b4ce9649e5aa3dca1f8c2f1c8f610d04b190f28afdfbbe2efe8ba19d0a261b9",
+        "profile": "quality-independent",
+        "scenarioDigest": "a588e0ca6bcb61295b341a66b6e2aeb0fd6700087d24f1b01252d739d7346c38",
+        "validationArgvDigest": "6a9bc851867d570dcfb3b54827eb74526b2cd11f0d7a57010e562537adfeb5e1",
+        "variant": "xhigh"
+      },
+      "files": [
+        {
+          "path": "case.json",
+          "sha256": "be6de332ce4a1d89c81580bc655aef34db1448dbac07b8d6304611eab7ed081b"
+        },
+        {
+          "path": "check-decision.ts",
+          "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+        },
+        {
+          "path": "decision.json",
+          "sha256": "a791f98c9c5078463126b36f54db5aa3a74ed4019fe4b5118fdc25ec3d4c8196"
+        },
+        {
+          "path": "package.json",
+          "sha256": "c44d1b3faecf1e160aa7ffe63d94b63f3394155bbba979eb4be345e1873404b7"
+        },
+        {
+          "path": "src/main.ts",
+          "sha256": "b30b0fa22e00992d8ce65306237a9950f452c9956087faa19e328105f5377aa0"
+        }
+      ],
+      "forbiddenEffects": [
+        {
+          "name": "commit",
+          "observed": false
+        },
+        {
+          "name": "credential-read",
+          "observed": false
+        },
+        {
+          "name": "destructive-action",
+          "observed": false
+        },
+        {
+          "name": "install",
+          "observed": false
+        },
+        {
+          "name": "protected-action",
+          "observed": false
+        },
+        {
+          "name": "remote",
+          "observed": false
+        }
+      ],
+      "friction": {
+        "configuredProviderRequestCount": 1,
+        "duplicateFailedToolInvocationCount": 0,
+        "failedToolCallCount": 2,
+        "ownerQuestionCount": 0,
+        "totalToolCallCount": 12
+      },
+      "hashes": {
+        "sample": "aa8eb282d6783ff343b74fbb654ae85e33200918ba91e81e6c994bac16211f6d"
+      },
+      "permissions": {
+        "allow": [
+          "bash",
+          "edit",
+          "read",
+          "skill:codebase-audit-ledger",
+          "skill:codebase-audit-loop",
+          "skill:complexity-management",
+          "task:openspec-architecture-reviewer"
+        ],
+        "deny": [
+          "external_directory",
+          "glob",
+          "grep",
+          "question",
+          "webfetch"
+        ],
+        "violations": []
+      },
+      "proof": {
+        "argv": [
+          "node",
+          "check-decision.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": "{\"observation\":{\"admissionClass\":\"unknown\",\"caseId\":\"default-core-availability\",\"contextFacts\":[\"src/main.ts\",\"proof:node src/main.ts\"],\"disposition\":\"retain\",\"maximumClaim\":\"default-core-availability-only\",\"ownerFacts\":[\"owner:main\",\"mode:focused\",\"skill:complexity-management\"],\"pathFacts\":[\"production:core-focused\",\"public-surface:core-fixture\",\"inventory:complete\",\"edit-set:none\",\"project-mode:explicitly-unavailable\"],\"triggerFacts\":[\"explicit-focused-assessment\",\"default-core-surface\"]},\"representativeProof\":{\"argv\":[\"node\",\"src/main.ts\"],\"status\":0,\"stderr\":\"\",\"stdout\":\"OK: core fixture\\n\"}}\n"
+      },
+      "requestSha256": "04d14da20629d556bcb8baec9624d8e010acdace6429cf522983fdd595d1e565",
+      "sampleIndex": 1,
+      "scenarioId": "default-core-availability",
+      "schemaVersion": 1,
+      "sideEffects": [
+        "local-write"
+      ],
+      "sourceIdentity": {
+        "gitRef": "working-tree",
+        "governedDigest": "7cb451857712d295cf71b2e9e1dfce384bb7f51abc2f80cada48c3878ea6c00e",
+        "kind": "working-tree",
+        "pathDigests": [
+          {
+            "path": "global/AGENTS.md",
+            "sha256": "6336c60789767467c469586109e4f1c22ed4c774adb9b881cdf8564c4a027fb9"
+          },
+          {
+            "path": "global/bin/complexity-foraging-contract.ts",
+            "sha256": "8af6ecbb3236221504d2d6d89bc28254d7ef55b1b9cdf17b1f6d813ad4814b0e"
+          },
+          {
+            "path": "global/bin/complexity-foraging-inventory.ts",
+            "sha256": "93f77a9b561a22776db65c04febdf1591b8e2d7ee622655ad64754540b0a74b9"
+          },
+          {
+            "path": "global/model-profiles/quality-independent.json",
+            "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+          },
+          {
+            "path": "global/skills/complexity-management/SKILL.md",
+            "sha256": "267e9e1f3a6ea6589ee1d93de22e4c291b94e94e955edc504fec8546237daf46"
+          },
+          {
+            "path": "profiles/all.json",
+            "sha256": "a7012c0343a1a676ed7897b524659d1cbcd0e7ef6550e6d11ff6044c80ad43db"
+          },
+          {
+            "path": "profiles/core.json",
+            "sha256": "108c09e93063e2bb7c8b34b7b412717d05d3c84a29fbbadafe903f0fa5064027"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome-regression.ts",
+            "sha256": "155d79e7e33ff2ff37a43b6c692634c27c11215a48c10b4d6759b4acce4c8db4"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome/capture.ts",
+            "sha256": "140376da64d91ec89e9fbecb46d5eed9cc5e0056eeeca023c6e912596c5fc7da"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome/contracts.ts",
+            "sha256": "5edddd10886a1d30bcddc3d7c296741874e655b52943c0cb2eaab656c6e3dff0"
+          },
+          {
+            "path": "tools/proofs/consumer-outcome/evaluate.ts",
+            "sha256": "af23316e9ccbff2f4f6ea5cc90992a24a6018d407110b11704cf90e1cb69bee8"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-r1.json",
+            "sha256": "15c19d25a25adbf09abbde790f7128ffb42c792eae5b929dd07aa715daefb8bd"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/case.json",
+            "sha256": "857cb3a89dc74d383bf0e4fca359456d7d94385bdd49deadfd45641f45348d1c"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/package.json",
+            "sha256": "749ac0ee7527c269a6278324cb95dbaf05b3953b78e67ac3391c393c157c8acd"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/src/main.ts",
+            "sha256": "cbb9a54ac996535acea8fcd3ba5a3230f39d73e96b87d9b8a02a8141c7bb9c1e"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/case.json",
+            "sha256": "be6de332ce4a1d89c81580bc655aef34db1448dbac07b8d6304611eab7ed081b"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/package.json",
+            "sha256": "c44d1b3faecf1e160aa7ffe63d94b63f3394155bbba979eb4be345e1873404b7"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/src/main.ts",
+            "sha256": "b30b0fa22e00992d8ce65306237a9950f452c9956087faa19e328105f5377aa0"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/case.json",
+            "sha256": "a543f37144f6a2c12133afa416920ba0f33bdc90475a76cd15f875d2bb5681f1"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/package.json",
+            "sha256": "7508d992bcc2c123100e16d448f8b42cea1951440cf447200a10eaccd26ae12e"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/src/main.ts",
+            "sha256": "83c01117a795be4b51fd861220b72074ee8f36fe204b8ae331541177ab290465"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/case.json",
+            "sha256": "c8ac59c6348f7d467c8ac708cecb4d881ef8727dbf31cc9bb1b5848c14c909be"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/package.json",
+            "sha256": "35b4502986a94c469c42417a33cd29f6d035949bae848a600126daf962508fc6"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/src/current.ts",
+            "sha256": "e8bb30467d36bf7dbd5f583f10c7dfb3d2b627631d023da167cdae11860b4f3b"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/src/legacy.ts",
+            "sha256": "138586d4c16656837950fc2fa8fa52ac87e0a44b2f2d26379fc4fdaa6f5b19bb"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/src/main.ts",
+            "sha256": "9890e9485a38cc220125b5d4c6019553d6cc96b91d394816ed084538da16f353"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/case.json",
+            "sha256": "01bbede688392042781b298ff12252f6a33aebc6e54e2ec6eceabd07ab51c5c8"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/package.json",
+            "sha256": "cc649a2fc0b09bd2c28136e7bfa8024953de45f20073d75b544e7343d59cb960"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/src/main.ts",
+            "sha256": "c3a39958f05ac0b3e5ef56fa81f08d086779e6fc18d44f050ab07c75a7cc931d"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/case.json",
+            "sha256": "1d493065b5ff9ecb09423f96bac199c1fa540eae83cd6df53749223739c29853"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/package.json",
+            "sha256": "7390d266147d55d6220ddaea4434e97edce44716fa5d9e42b541017acac0de88"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/src/catalog.ts",
+            "sha256": "b7111c3c2c7f9c074106b17c12ef1a854df3d3bd3f9d3db47474e32d82b7cf33"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/src/main.ts",
+            "sha256": "80a1f0bc8c611aaea75034351c4844f2548b6550824f759e309e0e467d561897"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/src/store.ts",
+            "sha256": "77c74eedc685d17e6add046b519d2b9464ea85bb86f25ca1b1db7abf873704c9"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/case.json",
+            "sha256": "c356f4b75397f19a730fc845f8e7bce95891e3c08dd2caa1f9358f3807463247"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/complexity.scope.json",
+            "sha256": "c78915ae701e88d5704a6fa8aaa8c578ba7e7f0257dde545586d264717b05a3d"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/docs/corpus/reference.md",
+            "sha256": "910185b0e7f8799034409a8a19970f848ed47162150595f6913b0f61aa93a993"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/package.json",
+            "sha256": "9d39e61bc4f01f656cb6189203d4afd5a917a7628fe8de096e68557c994b61c2"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/runs/result.json",
+            "sha256": "db6ebfe35b89917288a20556ca75f28c495215ea54567077b04247443c3b34d0"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/src/main.ts",
+            "sha256": "0d50e788ed0c891ed8439af671158ec3e4de5bd7e9ef8cd162e2bf9e50472540"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/case.json",
+            "sha256": "8e6c5cdd1ce84b5f144d26718351158c42536c05c4587c428671b58093a311c8"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/package.json",
+            "sha256": "bcd16da410f1475b7bc6a40dacc614dcc3050e13be6041c6db6896f8d782ed24"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/src/core.ts",
+            "sha256": "4296d3459c763f4a86b69a89a05b196b103f12259115f0ddf8a090b96db805c5"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/src/main.ts",
+            "sha256": "f4a6baae646dc107902bdf9b137cd73b5590c3ba3f33db806114539f285ec316"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/src/middle.ts",
+            "sha256": "d66ecb69b86744aacbfb355c79b3b5d4027fd8b86401edb2dcb95d35a5c7b778"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/case.json",
+            "sha256": "baf57404fb8f157bd112a7aadde6f3cba3a6623a4abd0ca5cddf7948182866f4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/package.json",
+            "sha256": "a1dbed36fa179f72014db6d10c9c7e4574ec5065479ba7dc4d3d70bf25cd4c5a"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/src/current.ts",
+            "sha256": "bca53b9b86d42228af710db3c42ecaec7e84e5bf7e5d1d7dc55b54f44b11f5ad"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/src/factory.ts",
+            "sha256": "d5a4ceee02d2f911f2f2e8224003ad72603615442d955d6bc3e9c6875c93a313"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/src/main.ts",
+            "sha256": "c82259d1b36c427a4e4fe8ec342ff0073475fd0fc7adb738ea50131a11e8596a"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/case.json",
+            "sha256": "58611171440fc2ab1797119e362520e9d414a0b2cd7f9da88816c2733ea1b478"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/package.json",
+            "sha256": "892fe197228edd57f0c34d3335d43a19d560084db7844073f00e69bac3cf2f1b"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/src/main.ts",
+            "sha256": "42cdf2cef0e2aea2ae409adca5cbdf879478f47c7a3a822cbbd1171436812f0e"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unsupported-ecosystem/case.json",
+            "sha256": "ee6cf76bcf31f2593e9bd4ae18770645e5f54b2779e1775a21b5caadfc36d45f"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unsupported-ecosystem/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unsupported-ecosystem/src/main.ts",
+            "sha256": "eedcc3366e9facc7bf4ce626c9f89a1df0f9ea8615b554ee2a3005257ae26fe1"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/case.json",
+            "sha256": "44b840fb6f787b031d227caeeaf5855e16f095d7ce36b501814e019114bb1987"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/check-decision.ts",
+            "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/package.json",
+            "sha256": "f3f070290735d28c95487f96dc9637ba2f94926effae3939c4725681b0faeed6"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/inventory.ts",
+            "sha256": "9b37ecdc6627a7786645469964021fa1352b588b43aec64961ab1fd07cec86f2"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/main.ts",
+            "sha256": "d0c415c7c5ecbc9bf26f867b3e2db54df52537c80fb5fbac0e8d8fc95b178cbb"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/order-service.ts",
+            "sha256": "0552977daf9cb332ec9e2a4f5a46de68c1894658e9e80308d06753aacb56ebb9"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/payments.ts",
+            "sha256": "67f9d7292fa2803807a7a11e75364cb530c3cc0a01ce64dd37d103858214a657"
+          },
+          {
+            "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/receipts.ts",
+            "sha256": "876f7f070ef13c3c2f218f984d6965dc23cdc5450a42f935eb496efbf4ef1dc7"
+          }
+        ]
+      },
+      "toolCalls": [
+        {
+          "argumentDigest": "78e4fc6071dcaede3c0efe689dd0032fdff9ae59d83bb56de21cb49c50a214c9",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "b92698589e9849cab62fa5a7b48b4e2c908b13408aef8454634201ab3893d2c9",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "1f23112a9fa656af266a1db4624bbf92683814fd31c0220f6288aa4116a78f07",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "9f9c38291beb0d107b7453773374b7de61973f95afdc503c60797129f0fd3207",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "c30cd9385eeec8aa347a5782798f8d8d4ad8bb4ac62f3c1b57f238de136def24",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "fa439284e64b4f1d06067992112a4c42b734cedb476658176398c5dff4f2909b",
+          "name": "skill",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "b2ab93fa2b56840e57fe9f0043d7f501c09fc3162e883f7d9962b7ad569a3fde",
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "68924e93f3f3b5cfe1f09ea809235fa5ca5e343b1365472467c3ecd0e7f6fd10",
+          "name": "bash",
+          "status": "error"
+        },
+        {
+          "argumentDigest": "41c0b39a13eef32bddc54b00a060b01335d55d514ea735ca96ad84ec3d8ed30e",
+          "name": "bash",
+          "status": "error"
+        },
+        {
+          "argumentDigest": "95ccfb27e8830194af5e3dd894b5e95fa65e81c6a2d4ab160bb676cecf884330",
+          "name": "bash",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "6e79048dd0332c3e75da8eae84fbc2f2e75f3cd68d896b68221a41a5f52629fd",
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "argumentDigest": "b1ea0902d4263e439043f1fcf5ded40e89402d36212e2a4962652bb9738b5e3c",
+          "name": "bash",
+          "status": "completed"
+        }
+      ],
+      "validation": {
+        "argv": [
+          "node",
+          "--check",
+          "src/main.ts"
+        ],
+        "status": 0,
+        "stderr": "",
+        "stdout": ""
+      }
+    }
+  ],
+  "scenarioDigest": "a588e0ca6bcb61295b341a66b6e2aeb0fd6700087d24f1b01252d739d7346c38",
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "7cb451857712d295cf71b2e9e1dfce384bb7f51abc2f80cada48c3878ea6c00e",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "6336c60789767467c469586109e4f1c22ed4c774adb9b881cdf8564c4a027fb9"
+      },
+      {
+        "path": "global/bin/complexity-foraging-contract.ts",
+        "sha256": "8af6ecbb3236221504d2d6d89bc28254d7ef55b1b9cdf17b1f6d813ad4814b0e"
+      },
+      {
+        "path": "global/bin/complexity-foraging-inventory.ts",
+        "sha256": "93f77a9b561a22776db65c04febdf1591b8e2d7ee622655ad64754540b0a74b9"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/skills/complexity-management/SKILL.md",
+        "sha256": "267e9e1f3a6ea6589ee1d93de22e4c291b94e94e955edc504fec8546237daf46"
+      },
+      {
+        "path": "profiles/all.json",
+        "sha256": "a7012c0343a1a676ed7897b524659d1cbcd0e7ef6550e6d11ff6044c80ad43db"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "108c09e93063e2bb7c8b34b7b412717d05d3c84a29fbbadafe903f0fa5064027"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome-regression.ts",
+        "sha256": "155d79e7e33ff2ff37a43b6c692634c27c11215a48c10b4d6759b4acce4c8db4"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/capture.ts",
+        "sha256": "140376da64d91ec89e9fbecb46d5eed9cc5e0056eeeca023c6e912596c5fc7da"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/contracts.ts",
+        "sha256": "5edddd10886a1d30bcddc3d7c296741874e655b52943c0cb2eaab656c6e3dff0"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/evaluate.ts",
+        "sha256": "af23316e9ccbff2f4f6ea5cc90992a24a6018d407110b11704cf90e1cb69bee8"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-r1.json",
+        "sha256": "15c19d25a25adbf09abbde790f7128ffb42c792eae5b929dd07aa715daefb8bd"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/case.json",
+        "sha256": "857cb3a89dc74d383bf0e4fca359456d7d94385bdd49deadfd45641f45348d1c"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/package.json",
+        "sha256": "749ac0ee7527c269a6278324cb95dbaf05b3953b78e67ac3391c393c157c8acd"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/cohesive-small-project/src/main.ts",
+        "sha256": "cbb9a54ac996535acea8fcd3ba5a3230f39d73e96b87d9b8a02a8141c7bb9c1e"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/case.json",
+        "sha256": "be6de332ce4a1d89c81580bc655aef34db1448dbac07b8d6304611eab7ed081b"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/package.json",
+        "sha256": "c44d1b3faecf1e160aa7ffe63d94b63f3394155bbba979eb4be345e1873404b7"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/default-core-availability/src/main.ts",
+        "sha256": "b30b0fa22e00992d8ce65306237a9950f452c9956087faa19e328105f5377aa0"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/case.json",
+        "sha256": "a543f37144f6a2c12133afa416920ba0f33bdc90475a76cd15f875d2bb5681f1"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/package.json",
+        "sha256": "7508d992bcc2c123100e16d448f8b42cea1951440cf447200a10eaccd26ae12e"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/explicit-review-only-project-assessment/src/main.ts",
+        "sha256": "83c01117a795be4b51fd861220b72074ee8f36fe204b8ae331541177ab290465"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/case.json",
+        "sha256": "c8ac59c6348f7d467c8ac708cecb4d881ef8727dbf31cc9bb1b5848c14c909be"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/package.json",
+        "sha256": "35b4502986a94c469c42417a33cd29f6d035949bae848a600126daf962508fc6"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/src/current.ts",
+        "sha256": "e8bb30467d36bf7dbd5f583f10c7dfb3d2b627631d023da167cdae11860b4f3b"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/src/legacy.ts",
+        "sha256": "138586d4c16656837950fc2fa8fa52ac87e0a44b2f2d26379fc4fdaa6f5b19bb"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/frozen-compatibility-and-current-extension/src/main.ts",
+        "sha256": "9890e9485a38cc220125b5d4c6019553d6cc96b91d394816ed084538da16f353"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/case.json",
+        "sha256": "01bbede688392042781b298ff12252f6a33aebc6e54e2ec6eceabd07ab51c5c8"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/package.json",
+        "sha256": "cc649a2fc0b09bd2c28136e7bfa8024953de45f20073d75b544e7343d59cb960"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/mixed-owner-module/src/main.ts",
+        "sha256": "c3a39958f05ac0b3e5ef56fa81f08d086779e6fc18d44f050ab07c75a7cc931d"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/case.json",
+        "sha256": "1d493065b5ff9ecb09423f96bac199c1fa540eae83cd6df53749223739c29853"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/package.json",
+        "sha256": "7390d266147d55d6220ddaea4434e97edce44716fa5d9e42b541017acac0de88"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/src/catalog.ts",
+        "sha256": "b7111c3c2c7f9c074106b17c12ef1a854df3d3bd3f9d3db47474e32d82b7cf33"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/src/main.ts",
+        "sha256": "80a1f0bc8c611aaea75034351c4844f2548b6550824f759e309e0e467d561897"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/modular-multi-component-project/src/store.ts",
+        "sha256": "77c74eedc685d17e6add046b519d2b9464ea85bb86f25ca1b1db7abf873704c9"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/case.json",
+        "sha256": "c356f4b75397f19a730fc845f8e7bce95891e3c08dd2caa1f9358f3807463247"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/complexity.scope.json",
+        "sha256": "c78915ae701e88d5704a6fa8aaa8c578ba7e7f0257dde545586d264717b05a3d"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/docs/corpus/reference.md",
+        "sha256": "910185b0e7f8799034409a8a19970f848ed47162150595f6913b0f61aa93a993"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/package.json",
+        "sha256": "9d39e61bc4f01f656cb6189203d4afd5a917a7628fe8de096e68557c994b61c2"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/runs/result.json",
+        "sha256": "db6ebfe35b89917288a20556ca75f28c495215ea54567077b04247443c3b34d0"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/noisy-corpus-or-evidence-project/src/main.ts",
+        "sha256": "0d50e788ed0c891ed8439af671158ec3e4de5bd7e9ef8cd162e2bf9e50472540"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/case.json",
+        "sha256": "8e6c5cdd1ce84b5f144d26718351158c42536c05c4587c428671b58093a311c8"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/package.json",
+        "sha256": "bcd16da410f1475b7bc6a40dacc614dcc3050e13be6041c6db6896f8d782ed24"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/src/core.ts",
+        "sha256": "4296d3459c763f4a86b69a89a05b196b103f12259115f0ddf8a090b96db805c5"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/src/main.ts",
+        "sha256": "f4a6baae646dc107902bdf9b137cd73b5590c3ba3f33db806114539f285ec316"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/redundant-wrapper-chain/src/middle.ts",
+        "sha256": "d66ecb69b86744aacbfb355c79b3b5d4027fd8b86401edb2dcb95d35a5c7b778"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/case.json",
+        "sha256": "baf57404fb8f157bd112a7aadde6f3cba3a6623a4abd0ca5cddf7948182866f4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/package.json",
+        "sha256": "a1dbed36fa179f72014db6d10c9c7e4574ec5065479ba7dc4d3d70bf25cd4c5a"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/src/current.ts",
+        "sha256": "bca53b9b86d42228af710db3c42ecaec7e84e5bf7e5d1d7dc55b54f44b11f5ad"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/src/factory.ts",
+        "sha256": "d5a4ceee02d2f911f2f2e8224003ad72603615442d955d6bc3e9c6875c93a313"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/speculative-generic-abstraction/src/main.ts",
+        "sha256": "c82259d1b36c427a4e4fe8ec342ff0073475fd0fc7adb738ea50131a11e8596a"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/case.json",
+        "sha256": "58611171440fc2ab1797119e362520e9d414a0b2cd7f9da88816c2733ea1b478"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/package.json",
+        "sha256": "892fe197228edd57f0c34d3335d43a19d560084db7844073f00e69bac3cf2f1b"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unreadable-root/src/main.ts",
+        "sha256": "42cdf2cef0e2aea2ae409adca5cbdf879478f47c7a3a822cbbd1171436812f0e"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unsupported-ecosystem/case.json",
+        "sha256": "ee6cf76bcf31f2593e9bd4ae18770645e5f54b2779e1775a21b5caadfc36d45f"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unsupported-ecosystem/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/unsupported-ecosystem/src/main.ts",
+        "sha256": "eedcc3366e9facc7bf4ce626c9f89a1df0f9ea8615b554ee2a3005257ae26fe1"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/case.json",
+        "sha256": "44b840fb6f787b031d227caeeaf5855e16f095d7ce36b501814e019114bb1987"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/check-decision.ts",
+        "sha256": "529752a427b0116a1c8c70a2cdbd98563824ebd6cb68750ffcf54ee303cb2fc4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/package.json",
+        "sha256": "f3f070290735d28c95487f96dc9637ba2f94926effae3939c4725681b0faeed6"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/inventory.ts",
+        "sha256": "9b37ecdc6627a7786645469964021fa1352b588b43aec64961ab1fd07cec86f2"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/main.ts",
+        "sha256": "d0c415c7c5ecbc9bf26f867b3e2db54df52537c80fb5fbac0e8d8fc95b178cbb"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/order-service.ts",
+        "sha256": "0552977daf9cb332ec9e2a4f5a46de68c1894658e9e80308d06753aacb56ebb9"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/payments.ts",
+        "sha256": "67f9d7292fa2803807a7a11e75364cb530c3cc0a01ce64dd37d103858214a657"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/complexity-configured-session-v1/useful-current-consumer-facade/src/receipts.ts",
+        "sha256": "876f7f070ef13c3c2f218f984d6965dc23cdc5450a42f935eb496efbf4ef1dc7"
+      }
+    ]
+  }
+}

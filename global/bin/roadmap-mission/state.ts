@@ -87,6 +87,18 @@ export type MissionStateProjection = Omit<MissionTransitionDescriptor, "kind"> &
   sequence: number;
 };
 
+export type MissionResultFacts = {
+  archiveRefs: string[];
+  evidenceRefs: string[];
+  executorAttempts: Array<{
+    attempt: number;
+    resultRef: string;
+    sliceId: string;
+  }>;
+  processRefs: string[];
+  projection: MissionStateProjection | null;
+};
+
 export type MissionTransitionRecord = MissionTransitionDescriptor & {
   definitionDigest: string;
   missionId: string;
@@ -113,7 +125,7 @@ export type MissionStopIntent = {
   requestedAt: string;
   rootSessionRef: string | null;
   schemaVersion: 1;
-  source: "signal" | "slash";
+  source: "campaign" | "signal" | "slash";
 };
 
 type Chain = {
@@ -392,7 +404,7 @@ function parseStopIntent(value: unknown, definition: RoadmapMissionDefinition): 
   if (definitionDigest !== missionDefinitionDigest(definition)) {
     throw new RoadmapMissionError("mission stop intent definition digest differs", 2);
   }
-  if (input.source !== "slash" && input.source !== "signal") {
+  if (input.source !== "campaign" && input.source !== "slash" && input.source !== "signal") {
     throw new RoadmapMissionError("mission stop intent source is unsupported", 2);
   }
   return {
@@ -906,6 +918,44 @@ export function readMissionStateProjection(
   if (chain.records.length === 0 && status === "missing") return null;
   if (status !== "current") throw new RoadmapMissionError("state projection is not current", 1);
   return chain.projection;
+}
+
+export function readMissionResultFacts(
+  root: string,
+  definition: RoadmapMissionDefinition,
+): MissionResultFacts {
+  const chain = readChain(root, definition);
+  const directory = stateRoot(root, definition.missionId);
+  const status = projectionStatus(directory, chain.projection);
+  if (chain.records.length > 0 && status !== "current") {
+    throw new RoadmapMissionError("state projection is not current", 1);
+  }
+  if (chain.records.length === 0 && status !== "missing") {
+    throw new RoadmapMissionError("state projection exists without a transition chain", 2);
+  }
+  const archiveRefs = [...new Set(chain.records
+    .filter((transition) => transition.kind === "archive")
+    .flatMap((transition) => transition.evidenceRefs)
+    .filter((reference) => reference.startsWith("openspec/changes/archive/")))].sort();
+  const evidenceRefs = [...new Set(chain.records.flatMap((transition) => transition.evidenceRefs))].sort();
+  const processRefs = [...new Set(chain.records.flatMap((transition) => {
+    const processRef = transition.activeOperation?.processRef;
+    return processRef == null ? [] : [`${transition.sliceId ?? "mission"}:${processRef}`];
+  }))].sort();
+  const executorAttempts = chain.records.flatMap((transition) => {
+    if (transition.kind !== "session-completion" || transition.sliceId == null || transition.recovery.attempts < 1) return [];
+    const resultRef = `${definition.evidencePath}/${transition.sliceId}/attempt-${transition.recovery.attempts}/result.json`;
+    return transition.evidenceRefs.includes(resultRef)
+      ? [{ attempt: transition.recovery.attempts, resultRef, sliceId: transition.sliceId }]
+      : [];
+  });
+  return {
+    archiveRefs,
+    evidenceRefs,
+    executorAttempts,
+    processRefs,
+    projection: chain.projection,
+  };
 }
 
 export function recordMissionUnknownPause(

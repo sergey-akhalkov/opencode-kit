@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "autonomous-work-campaign-contracts-r1",
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "candidateFiles": [
+    {
+      "path": "global/bin/work-campaign.ts",
+      "bytes": 4124,
+      "digest": "f435b8a32203c7504243d9be88000381b1735e01034d079f5918fa4e56e3c249"
+    },
+    {
+      "path": "global/bin/work-campaign/contracts.ts",
+      "bytes": 35421,
+      "digest": "f9ded02a21c26c2f259081b2fa6fc8041693d1b91eb1b744466980bb342e3351"
+    },
+    {
+      "path": "package.json",
+      "bytes": 9023,
+      "digest": "ffbde522d4d9c5ddc6053e688b0aeea2935eec064d9eae15339eff01d0540bae"
+    },
+    {
+      "path": "tools/test-work-campaign.ts",
+      "bytes": 14010,
+      "digest": "000e6ca64fd00324a8b347d5639ba2ce0b87bfe1212855611ddd9ae7e587e1ed"
+    },
+    {
+      "path": "tools/proofs/fixtures/consumer-outcome/work-campaign-v1/definition.valid.json",
+      "bytes": 1240,
+      "digest": "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8"
+    },
+    {
+      "path": "tools/proofs/fixtures/consumer-outcome/work-campaign-v1/adapter.valid.json",
+      "bytes": 179,
+      "digest": "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444"
+    },
+    {
+      "path": "tools/proofs/fixtures/consumer-outcome/work-campaign-v1/contract-cases.json",
+      "bytes": 2774,
+      "digest": "2f340e86215ffbae8de107132e51ecf89e605c025337902eaae9f8b41d44d363"
+    }
+  ],
+  "invocation": {
+    "argv": [
+      "npm",
+      "run",
+      "work:campaign",
+      "--",
+      "preflight",
+      "--root",
+      "<fixture-root>",
+      "--definition",
+      "definition.valid.json"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": {
+      "adapterDigest": "3e3d8fbb0115a39406ce4905010bb662d1a67fa14a2ffd581e44bee78f84f69b",
+      "adapterId": "fixture-adapter",
+      "campaignId": "fixture-campaign",
+      "checks": [
+        "definition:schema",
+        "definition:contained",
+        "adapter:schema",
+        "effects:authorized",
+        "budgets:finite",
+        "argv:explicit"
+      ],
+      "definitionDigest": "d5f2f449327cb17d865f68ed5688475175ac5b148c67af9080d1f9add080e055",
+      "phase": "inventory",
+      "status": "contract-valid"
+    }
+  },
+  "focusedValidation": {
+    "command": "npm run test:focused:work-campaign",
+    "exitCode": 0,
+    "summary": "OK: work-campaign proof-contract tests=60",
+    "contractCases": 10,
+    "recordTypes": 8,
+    "malformedJsonCausePreserved": true
+  },
+  "effects": {
+    "providerCalls": 0,
+    "sessions": 0,
+    "sourceWrites": 0,
+    "openspecMutations": 0,
+    "gitMutations": 0,
+    "processStartsBeyondCli": 0,
+    "hostEffects": 0,
+    "remoteEffects": 0
+  },
+  "cleanup": "not-required"
+}

@@ -1,0 +1,189 @@
+{
+  "assignmentCommands": [
+    {
+      "assignmentId": "discover-main",
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"assignmentId\": \"discover-main\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work-campaign/evidence/results/discover-main.json\",\n  \"status\": \"complete\"\n}\n"
+    },
+    {
+      "assignmentId": "reconcile-item-zero-divisor",
+      "exitCode": 2,
+      "stderr": "",
+      "stdout": "{\n  \"assignmentId\": \"reconcile-item-zero-divisor\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work-campaign/evidence/results/reconcile-item-zero-divisor.json\",\n  \"status\": \"blocked\"\n}\n"
+    }
+  ],
+  "assignmentResults": [
+    {
+      "assignmentDigest": "1b64e3ef99529afd7679f5a0ad5dbaa88f92865b52d8b95518aaaf0c37a5540f",
+      "assignmentId": "discover-main",
+      "assignmentType": "discovery",
+      "campaignId": "configured-playbook-proof",
+      "candidateDigest": "7656ce38dfec8a924d8129c996f07263189dcc610e501de2217990f06141aaf9",
+      "cleanup": "complete",
+      "definitionDigest": "b434e146d6aaf2138f699b3145c41c313879ffedad783057ae8f025dd3e19b42",
+      "environment": {
+        "node": "v24.18.1",
+        "platform": "win32"
+      },
+      "errorClass": "none",
+      "errorMessage": null,
+      "evidenceRefs": [
+        "file:src/main.ts"
+      ],
+      "model": {
+        "agent": "general",
+        "modelID": "gpt-5.6-sol",
+        "providerID": "openai",
+        "variant": "xhigh"
+      },
+      "modelCalls": 1,
+      "outputBytes": 1305,
+      "outputDigest": "0d2ef6e2178956a3f527bd51cad027f3a849aaf648b1f680671000e2d609e95c",
+      "payload": {
+        "partition": {
+          "assignmentId": "discover-main",
+          "blockIds": [
+            "block-main"
+          ],
+          "candidateDigest": "7656ce38dfec8a924d8129c996f07263189dcc610e501de2217990f06141aaf9",
+          "evidenceRefs": [
+            "file:src/main.ts"
+          ],
+          "id": "partition-main",
+          "inventoryDigest": "15604ffe0103352568fdc2fbe3901775861d8855943859014d5cbde82e9f1c26",
+          "producerSessionRef": "session:e323d894d28bdd1a85f7fe02ab09de85d8c7fef6e1f0148488bb9296fe0668b7",
+          "recordType": "partition-result",
+          "schemaVersion": 1,
+          "status": "complete",
+          "workItemIds": [
+            "item-zero-divisor"
+          ]
+        },
+        "workItems": [
+          {
+            "affectedPaths": [
+              "src/main.ts"
+            ],
+            "candidateDigest": "7656ce38dfec8a924d8129c996f07263189dcc610e501de2217990f06141aaf9",
+            "confidence": "high",
+            "effectClasses": [
+              "local-write"
+            ],
+            "evidenceRefs": [
+              "file:src/main.ts"
+            ],
+            "id": "item-zero-divisor",
+            "impact": "The accepted bounded result contract is violated.",
+            "initialSeverity": "P1",
+            "likelyCause": "The zero-divisor guard is absent.",
+            "ownedPaths": [
+              "src/main.ts"
+            ],
+            "principleRef": "principle:first-do-no-harm",
+            "producerSessionRef": "session:e323d894d28bdd1a85f7fe02ab09de85d8c7fef6e1f0148488bb9296fe0668b7",
+            "proposedOutcome": "Return null before division when divisor is zero.",
+            "recordType": "work-item",
+            "scenario": "Calling safeDivide with divisor zero returns a non-finite number instead of null.",
+            "schemaVersion": 1,
+            "sourceBlockIds": [
+              "block-main"
+            ],
+            "status": "candidate"
+          }
+        ]
+      },
+      "phase": "discover",
+      "resultType": "semantic-assignment-result",
+      "runtimeRef": "loopback:dd6855893786a96d636c07e6863dc277ff747cca12f2e084f43c30575d6983be",
+      "schemaVersion": 1,
+      "sessionRef": "session:e323d894d28bdd1a85f7fe02ab09de85d8c7fef6e1f0148488bb9296fe0668b7",
+      "status": "complete",
+      "toolCalls": [
+        {
+          "name": "StructuredOutput",
+          "status": "completed"
+        }
+      ],
+      "verification": {
+        "children": 0,
+        "fileDiffs": 0,
+        "parentless": true,
+        "permissionRequests": 0,
+        "questions": 0
+      }
+    },
+    {
+      "assignmentDigest": "71b8532363c41591c1aa0273fb60720451477fd076166eb250c5ff0a128b1f1e",
+      "assignmentId": "reconcile-item-zero-divisor",
+      "assignmentType": "reconciliation",
+      "campaignId": "configured-playbook-proof",
+      "candidateDigest": "7656ce38dfec8a924d8129c996f07263189dcc610e501de2217990f06141aaf9",
+      "cleanup": "complete",
+      "definitionDigest": "b434e146d6aaf2138f699b3145c41c313879ffedad783057ae8f025dd3e19b42",
+      "environment": {
+        "node": "v24.18.1",
+        "platform": "win32"
+      },
+      "errorClass": "invalid-result",
+      "errorMessage": "reconciliation payload has invalid fields: missing=reconciliation unsupported=candidateDigest,disposition,evidenceRefs,producerSessionRef,reconciliationId,recordType,schemaVersion,severity,sourceDigest,workItemId",
+      "evidenceRefs": [
+        "file:src/main.ts"
+      ],
+      "model": {
+        "agent": "general",
+        "modelID": "gpt-5.6-sol",
+        "providerID": "openai",
+        "variant": "xhigh"
+      },
+      "modelCalls": 1,
+      "outputBytes": 520,
+      "outputDigest": "905797c8062bffcdc585b1becc5236575b296e5023327892da7d938943b16b8e",
+      "payload": null,
+      "phase": "reconcile",
+      "resultType": "semantic-assignment-result",
+      "runtimeRef": "loopback:dd6855893786a96d636c07e6863dc277ff747cca12f2e084f43c30575d6983be",
+      "schemaVersion": 1,
+      "sessionRef": "session:9912eaa19301b3f2c595002d4337ce210f7f5c6852c710a59a7dd1b4886ce9b5",
+      "status": "blocked",
+      "toolCalls": [
+        {
+          "name": "StructuredOutput",
+          "status": "completed"
+        }
+      ],
+      "verification": {
+        "children": null,
+        "fileDiffs": null,
+        "parentless": true,
+        "permissionRequests": null,
+        "questions": null
+      }
+    }
+  ],
+  "candidateId": "task-4-3-playbook-r1",
+  "captureError": "semantic assignment reconcile-item-zero-divisor did not reach terminal read-only completion",
+  "captureMode": "configured",
+  "controller": null,
+  "environmentId": "node-24.18.1-windows-configured-playbook-r1",
+  "expectedModel": "openai/gpt-5.6-sol",
+  "fixtureRemoved": true,
+  "hiddenServer": false,
+  "installedOpenCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.23"
+  },
+  "loopback": true,
+  "playbook": null,
+  "profile": "quality-independent",
+  "schemaVersion": 1,
+  "serverStartup": {
+    "hostConfigLoaded": false,
+    "isolatedConfigLoaded": true,
+    "ripgrepDownloadRequested": false
+  },
+  "serverTerminal": true,
+  "sourceAfter": "38669de65cbf1a563bf4b9632adcf2814f4de5520ba3ec8912407fc432efe19b",
+  "sourceBefore": "38669de65cbf1a563bf4b9632adcf2814f4de5520ba3ec8912407fc432efe19b",
+  "transitionKinds": []
+}

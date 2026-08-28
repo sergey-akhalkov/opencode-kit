@@ -1,0 +1,24 @@
+{
+  "caseId": "noisy-corpus-or-evidence-project",
+  "acceptedOutcome": "Identify the maintained report entrypoint without treating corpus or run evidence as implementation owners.",
+  "requestedAssessment": "explicit focused architecture-comprehension assessment",
+  "facts": ["src is maintained", "docs/corpus is reference evidence", "runs is generated evidence", "reviewed scope is authoritative input"],
+  "nonGoals": ["delete evidence", "infer absence from exclusions", "score file counts"],
+  "representativeProof": "node src/main.ts",
+  "decisionContract": {
+    "instructions": ["Select exactly one routeDecision from observed loaded routing and workflow availability.", "Do not infer workflow availability from case claims; invoke the selected workflow when the request requires it.", "Copy the selected decision object verbatim to decision.json.", "Do not combine route decisions or paraphrase canonical tokens."],
+    "admissionClasses": ["unknown", "current-dependency"],
+    "dispositions": ["unknown", "narrow"],
+    "maximumClaim": "noisy-corpus-or-evidence-project-only",
+    "factVocabulary": {
+      "contextFacts": ["src/main.ts", "docs/corpus:noise", "runs:evidence", "proof:node src/main.ts", "complexity.scope.json"],
+      "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none", "mode:focused", "skill:complexity-management"],
+      "pathFacts": ["production:direct-foraging", "public-surface:maintained-report", "inventory:unavailable", "edit-set:none", "production:focused-map-rehearsal", "inventory:complete-with-reviewed-exclusions", "edit-set:scope-only"],
+      "triggerFacts": ["explicit-focused-assessment", "blocking-search-noise"]
+    },
+    "routeDecisions": [
+      { "id": "focused-unavailable", "when": "The focused complexity-management workflow is unavailable or cannot be invoked.", "decision": { "admissionClass": "unknown", "caseId": "noisy-corpus-or-evidence-project", "contextFacts": ["src/main.ts", "docs/corpus:noise", "runs:evidence", "proof:node src/main.ts"], "disposition": "unknown", "maximumClaim": "noisy-corpus-or-evidence-project-only", "ownerFacts": ["owner:main", "mode:focused-unavailable", "skill:none"], "pathFacts": ["production:direct-foraging", "public-surface:maintained-report", "inventory:unavailable", "edit-set:none"], "triggerFacts": ["explicit-focused-assessment", "blocking-search-noise"] } },
+      { "id": "focused", "when": "The focused complexity-management workflow is available and its scoped inventory helper was successfully invoked.", "decision": { "admissionClass": "current-dependency", "caseId": "noisy-corpus-or-evidence-project", "contextFacts": ["src/main.ts", "complexity.scope.json", "proof:node src/main.ts"], "disposition": "narrow", "maximumClaim": "noisy-corpus-or-evidence-project-only", "ownerFacts": ["owner:main", "mode:focused", "skill:complexity-management"], "pathFacts": ["production:focused-map-rehearsal", "public-surface:maintained-report", "inventory:complete-with-reviewed-exclusions", "edit-set:scope-only"], "triggerFacts": ["explicit-focused-assessment", "blocking-search-noise"] } }
+    ]
+  }
+}

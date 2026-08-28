@@ -5,17 +5,21 @@ The Windows workstation SHALL provide an explicit preview/install/check/repair/
 rollback lifecycle for one campaign supervisor derived from version-controlled kit
 source and a schema-valid machine-local registry. The registry SHALL identify each
 enabled campaign by safe id, canonical Git root, contained definition/adapter paths,
-expected kit source, and resume policy; it SHALL NOT accept arbitrary command argv,
-free-form prompts, secrets, unvalidated directories, or effect authority.
+and resume policy. A separate protected installation manifest SHALL identify the
+expected kit source and exact source/installed runtime closure. Neither record SHALL
+accept arbitrary command argv, free-form prompts, secrets, unvalidated directories,
+or effect authority.
 
 Installed supervisor executables, manifests, registry, state ownership metadata, and
-Scheduled Task actions SHALL live under the protected workstation owner and be
-unmodifiable by unelevated processes. Installation/activation SHALL be a separate
+Scheduled Task actions SHALL live in an independently reversible protected sibling root
+under the workstation lifecycle owner and be unmodifiable by unelevated processes. The
+existing workstation rollback SHALL NOT recursively remove that sibling root or leave
+its separately named task pointing at removed material. Installation/activation SHALL be a separate
 maintainer operation and SHALL NOT occur from campaign definition, model output,
 doctor, OpenCode plugin load, or ordinary project bootstrap.
 
 #### Scenario: Supervisor install preview is safe
-- **WHEN** a maintainer runs preview for a valid registry and kit source
+- **WHEN** a maintainer runs preview for a valid registry, installation manifest input, and kit source
 - **THEN** output identifies the derived protected files, task, campaigns, runtime endpoint, and rollback plan without host mutation
 - **AND** it contains no credential value, arbitrary argv, or unredacted maintainer path outside required local diagnostics.
 

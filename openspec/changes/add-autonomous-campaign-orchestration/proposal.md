@@ -153,6 +153,7 @@ material findings still unresolved.
   ledger/report materializer and extend the existing roadmap proof family with a
   reviewed campaign partition pack; helpers validate explicit facts and stable
   projections only and never infer severity, semantic scope, or completion.
+- **Bounded Falsification Review**: required - challenge the durable campaign envelope, dynamic work admission, mission handoff, writer recovery, aggregate closure, and Windows supervisor semantics before production mutation.
 
 ## Capabilities
 

@@ -19,6 +19,7 @@ This project follows verified-outcome delivery with conditional Development/MVP/
 - Technology choices change commands and constraints, not the development loop.
 - If validation commands are unknown, discover them from project files and report `unknown` rather than guessing.
 - Unattended missions additionally require `unattended.validationArgv` as an argument array, `workflowOwner: global-canonical`, explicit supported checkpoint modes, and per-mission local-commit authorization. Shell command strings in `validation` remain human/ordinary-workflow adapters and do not substitute for aggregate argv.
+- Autonomous campaigns use the explicit `opencode-dev-kit/work-campaign.json` and `opencode-dev-kit/work-campaign-adapter.json` templates. Resolve every placeholder and run `npm run doctor -- --project <root> --require campaign` before explicit supervisor installation; project init and doctor never register, start, or resume a campaign.
 - `unknown`, blank, bare `N/A`, `TBD`/`TODO`, replace-me placeholders, or otherwise unresolved validation procedures must be discovered before qualification. An explicit reasoned `N/A` (`N/A - <reason>`, or validation.md Command `N/A` plus nonempty non-placeholder Notes) is a recorded decision, not unknown. Inside qualification, applicable unresolved or skipped validation leaves the candidate at MVP and blocks RC.
 
 ## Autonomy
