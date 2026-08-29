@@ -111,6 +111,24 @@ function parseBoundary(value: unknown, path: string): ParseResult<EvidenceBounda
   return { ok: true, value: { kind, name: name.value, effects } };
 }
 
+function readTaskRecord(value: unknown, path: string): ParseResult<Record<string, unknown>> {
+  if (!Array.isArray(value)) return readObject(value, path);
+  if (value.length !== 10 || value[0] !== "entrypoint") {
+    return failIssues([{ code: "invalid", path, message: "Compact task evidence must be an exact entrypoint tuple." }]);
+  }
+  return {
+    ok: true,
+    value: {
+      taskId: value[1],
+      taskTextDigest: value[2],
+      result: value[3],
+      boundary: { kind: "named-entrypoint", name: value[4], effects: value[5] },
+      invocation: { command: value[6], status: value[7], recordedAt: value[8] },
+      cleanup: value[9],
+    },
+  };
+}
+
 export function taskTextDigest(text: string): string {
   return digestText(text.trim());
 }
@@ -180,17 +198,27 @@ export function parseEvidenceIndex(input: unknown): ParseResult<EvidenceIndex> {
   const tasks: EvidenceTaskRow[] = [];
   const taskIds = new Set<string>();
   for (const [index, item] of tasksRaw.value.entries()) {
-    const record = readObject(item, `tasks.${index}`);
+    const record = readTaskRecord(item, `tasks.${index}`);
     if (!record.ok) { issues.push(...record.issues); continue; }
     issues.push(...extraKeys(record.value, ["taskId", "taskTextDigest", "result", "candidateId", "environmentId", "requiredBoundary", "boundary", "invocation", "artifacts", "cleanup", "manualGate"], `tasks.${index}`));
     const taskId = readString(record.value.taskId, `tasks.${index}.taskId`, SAFE_TOKEN);
     const taskTextDigestValue = readString(record.value.taskTextDigest, `tasks.${index}.taskTextDigest`);
     const result = record.value.result;
-    const rowCandidate = readString(record.value.candidateId, `tasks.${index}.candidateId`, SAFE_ID);
-    const rowEnvironment = readString(record.value.environmentId, `tasks.${index}.environmentId`, SAFE_ID);
-    const requiredBoundary = parseBoundary(record.value.requiredBoundary, `tasks.${index}.requiredBoundary`);
     const boundary = parseBoundary(record.value.boundary, `tasks.${index}.boundary`);
-    const artifactsRaw = readArray(record.value.artifacts, `tasks.${index}.artifacts`);
+    const rowCandidate = record.value.candidateId === undefined
+      ? { ok: true as const, value: candidateId.value }
+      : readString(record.value.candidateId, `tasks.${index}.candidateId`, SAFE_ID);
+    const rowEnvironment = record.value.environmentId === undefined
+      ? { ok: true as const, value: environmentId.value }
+      : readString(record.value.environmentId, `tasks.${index}.environmentId`, SAFE_ID);
+    const requiredBoundary = record.value.requiredBoundary === undefined
+      ? boundary.ok
+        ? { ok: true as const, value: boundary.value }
+        : failIssues([{ code: "missing", path: `tasks.${index}.requiredBoundary`, message: "Cannot inherit requiredBoundary without an explicit boundary." }])
+      : parseBoundary(record.value.requiredBoundary, `tasks.${index}.requiredBoundary`);
+    const artifactsRaw = record.value.artifacts === undefined
+      ? { ok: true as const, value: [] }
+      : readArray(record.value.artifacts, `tasks.${index}.artifacts`);
     const cleanup = record.value.cleanup;
     collect(issues, taskId);
     collect(issues, taskTextDigestValue);
@@ -309,7 +337,12 @@ export function parseEvidenceIndex(input: unknown): ParseResult<EvidenceIndex> {
     const files: EvidenceLaneFile[] = [];
     if (filesRaw.ok) {
       for (const [fileIndex, file] of filesRaw.value.entries()) {
-        const fileRaw = readObject(file, `lanes.${index}.files.${fileIndex}`);
+        const rowPath = `lanes.${index}.files.${fileIndex}`;
+        const fileRaw = Array.isArray(file)
+          ? file.length === 3
+            ? { ok: true as const, value: { path: file[0], bytes: file[1], digest: file[2] } }
+            : failIssues([{ code: "invalid", path: rowPath, message: "Compact lane file must contain exactly path, bytes, and digest." }])
+          : readObject(file, rowPath);
         if (!fileRaw.ok) { issues.push(...fileRaw.issues); continue; }
         const filePath = readString(fileRaw.value.path, `lanes.${index}.files.${fileIndex}.path`);
         const bytes = readInt(fileRaw.value.bytes, `lanes.${index}.files.${fileIndex}.bytes`);

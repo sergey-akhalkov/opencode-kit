@@ -5,7 +5,7 @@ Main is the Outcome Owner. A Practice Owner is a read-only specialist for one re
 ## Kernel
 
 - Main keeps user outcome, protected authority, secrets, worktree preservation, evidence-not-authority, real-boundary proof, writer liveness, and owner-only questions.
-- A matched material trigger launches only that owner. Zero-trigger work launches no owner.
+- A matched registered practice trigger launches only that Practice Owner; zero-trigger work launches no Practice Owner. The non-owner team advisor follows its separate parentless-root mission trigger and never satisfies or suppresses a matched practice trigger.
 - Owner output is evidence. It cannot mutate, authorize, dispatch, or decide the result.
 - Unavailable owner evidence is `unknown`. Non-deferrable safety blocks only the affected action.
 

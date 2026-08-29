@@ -1,0 +1,57 @@
+## Why
+
+The completion guard currently caps each session-delivery evidence surface but then embeds several overlapping projections in one pretty-printed arbiter request. Long grind-enabled roots have repeatedly produced 214,535-254,691 byte requests, including the observed 233,377 byte failure, so the configured 200,000 byte safety boundary terminates completion adjudication before any arbiter prompt and blocks unattended multi-day continuation.
+
+## Outcome Capsule
+
+- **Outcome**: A grind-enabled root with the reviewed maximum-shape bounded evidence reaches the completion arbiter within the existing 200,000 byte request limit without omitting acceptance-critical human authority, question, descendant-liveness, current todo, validation, or claim-closure facts. Evidence that cannot be represented without losing one of those facts remains a terminal, privacy-safe overflow rather than an inferred completion or unbounded prompt.
+- **Operating Envelope**: The repository-owned completion guard and session-delivery projection on the supported OpenCode runtime; one correlated root revision and one arbiter request; the existing `maxRequestBytes=200000` default; compact deterministic JSON; stable explicit per-surface limits and truncation records; one reviewed long-root fixture matching the observed maximum retained cardinalities with four ordinary bounded claims, separate irreducible critical-evidence controls, privacy-safe offline measurement of the eight observed incident sessions, and one disposable installed-runtime path. No request may exceed the configured finite byte budget.
+- **Non-Goals**: Removing or increasing the configured request limit; allowing unlimited provider input; changing completion verdict, continuation, retry, question, claim-closure, terminal-certificate, model-routing, or campaign scheduling semantics; changing the public `session_delivery_context` result; treating transcript summaries as state authority; retaining private incident payloads; supporting unpinned OpenCode versions; or changing another active OpenSpec change.
+- **Non-Deferrable Invariants**: Root/audit/revision correlation and exact final-byte measurement remain unchanged; human messages and replies remain the only user authority; descendant graph truncation remains fail-closed; required broad-claim identity, class, outcome, population, coverage, path, environment, oracle, unresolved-observation, challenge, disposition, evidence-ref, and maximum-claim fields are never silently dropped; every real omission remains explicit; deduplication preserves one canonical fact plus stable refs/membership rather than replacing evidence with prose; the arbiter remains tool-denied; a truly irreducible critical-evidence overflow creates no child, model call, retry, continuation, or completion verdict.
+- **Observable Proof**: Build the exact production arbiter request from the reviewed synthetic long-root fixture and from privacy-safe read-only projections of all eight recorded overflow sessions; verify each candidate request is at most 200,000 bytes, preserves required field/ref/membership matrices, is byte-stable across two replays, and makes zero model calls. Then compare one low-ambiguity sub-limit baseline/candidate fixture under the same hidden agent/model/variant, request, initial state, and tool-denied environment, followed by one separate installed candidate audit using the reviewed long-root fixture that exceeded the baseline limit; observe the expected correlated verdicts, bounded candidate requests, and exact session/process cleanup. Separate negative fixtures prove required claim and descendant evidence that cannot fit still fail closed instead of being removed.
+- **Material Residual Risks**: A normalized projection can accidentally hide semantic distinctions despite retaining refs; a future evidence field can escape the aggregate budget unless the maximum-shape oracle is maintained; compact input can affect model interpretation; private historical sessions can establish only size/shape compatibility, not universal long-session behavior; and the configured provider or installed OpenCode identity may differ from provider-free fixtures.
+- **Stop Line**: Finish one internal canonical arbiter projection, compact serialization, exact aggregate budget accounting, contribution diagnostics, focused maximum-shape/critical-truncation regressions, privacy-safe incident replay, and one installed disposable happy path. Stop before config-budget changes, general session-delivery schema replacement, provider-context auto-sizing, adaptive model routing, campaign changes, arbitrary transcript compression, or unrelated completion-guard refactoring.
+
+## Claim And Evidence Scope
+
+- **Claim ID**: `completion-arbiter-budget-v1`
+- **Claim Class**: finite-population
+- **Population**: One reviewed production-schema long-root fixture with the observed maximum retained non-claim cardinalities and four ordinary bounded claims; claim-closure and descendant-critical negative controls; compact serialization stability fixture; the eight privacy-safe observed overflow-session projections; and one installed disposable long-root completion path under the configured 200,000 byte limit.
+- **Coverage Basis**: Deterministic field/ref/membership and exact-byte assertions over versioned synthetic fixtures; two provider-free replays; read-only size/shape evaluation of the eight observed incidents without retaining their text; one same-actor matched baseline/candidate sub-limit observation matrix; and one separate installed correlated long-root candidate request/verdict/cleanup capture.
+- **Production Path**: Loaded `session-completion-guard` -> production session-delivery context capture -> internal canonical arbiter projection -> compact request serialization -> exact byte guard -> hidden tool-denied completion arbiter -> correlated verdict application.
+- **Comparison Paths**: Current overlapping pretty-printed request and terminal overflow behavior versus the candidate canonical compact request; ordinary small-root behavior; required-claim and descendant-liveness overflow controls; provider-free replay versus installed disposable runtime.
+- **Environment**: Repository-pinned OpenCode and kit source on the supported local Windows workstation, isolated disposable OpenCode data/project roots for loaded proof, Bun/Node project-native validation, and at most three bounded non-sensitive configured arbiter calls after provider-free preflight: one matched sub-limit baseline/candidate pair and one separate candidate long-root audit.
+- **Real Oracle**: Exact UTF-8 bytes of the request passed to `session.prompt`, schema/ref/membership readback, child and model-call counts, correlated verdict, guard state/diagnostics, OpenCode session/process identity, scoped filesystem effects, and terminal cleanup.
+- **Unresolved Observations**: Other models/providers, unpinned OpenCode versions, sessions whose acceptance-critical claim data alone exceeds the configured budget, populations beyond the reviewed surface maxima, and universal semantic equivalence between overlapping and canonical representations.
+- **Maximum Claim**: The reviewed finite population preserves the declared acceptance-critical completion facts and reaches the hidden arbiter within the existing 200,000 byte limit on the exercised source/runtime identity; irreducible critical overflow remains fail-closed. This does not establish universal model equivalence, unlimited session size, arbitrary-provider compatibility, or safety after removing the finite request boundary.
+
+- **Automation Dividend**: required - extend the existing session-completion-guard focused test and long-run proof owners with one deterministic maximum-shape request materializer, exact byte/contribution evaluator, privacy-safe incident replay mode, and stable two-pass replay instead of adding a second capture framework or manual size checklist.
+- **Bounded Falsification Review**: required - challenge aggregate byte-envelope sufficiency, semantic preservation of normalized evidence, required claim and descendant fail-closed behavior, public projection compatibility, installed request observability, and unnecessary config/schema expansion before production mutation.
+
+## What Changes
+
+- Add an internal completion-arbiter projection that represents repeated todo membership and validation/tool relationships once with stable refs while retaining every acceptance-critical fact required by the current completion contract.
+- Serialize the provider-bound audit request as deterministic compact JSON and enforce the configured byte limit against those exact UTF-8 bytes.
+- Allocate the aggregate budget across required and reducible surfaces, emit bounded per-surface contribution/truncation diagnostics, and preserve terminal no-prompt overflow when required evidence itself cannot fit.
+- Keep the public session-delivery context projection and the 200,000 byte configuration default unchanged.
+- Extend existing focused tests and long-run proof/replay with maximum-shape, historical-incident, critical-truncation, serialization-stability, loaded-runtime, and cleanup oracles.
+
+## Capabilities
+
+### New Capabilities
+
+None.
+
+### Modified Capabilities
+
+- `session-completion-guard`: Require the provider-bound completion evidence representation to fit the configured aggregate request budget for the reviewed bounded population without silently dropping acceptance-critical claim, authority, todo, validation, or liveness facts, while preserving terminal fail-closed behavior for irreducible critical overflow.
+
+## Impact
+
+- Primary production owners: `global/extensions/session-completion-guard/arbiter-evidence.ts`, the smallest supporting completion-guard type/controller surfaces, and an internal projection seam over `global/plugin/session-delivery-context/**` only if the existing full projection cannot be transformed without adding mixed responsibility.
+- Primary proof owners: `tools/test-session-completion-guard.ts`, `tools/proofs/session-completion-guard-long-run.ts`, and the existing focused package scripts/proof inventory; no new provider, process, redaction, database, or evidence framework.
+- Configuration: `global/opencode.json`, `global/opencode.json.template`, and `maxRequestBytes` remain unchanged. Loaded plugin changes require a fresh OpenCode process before installed proof or ordinary use.
+- Compatibility: The public `session_delivery_context` schema remains unchanged; the hidden internal arbiter request representation may be versioned and must be updated atomically with its hidden agent instructions and focused validators if its shape changes.
+- Ownership: Current active-change ownership must be rechecked immediately before implementation. The inspected `add-autonomous-campaign-orchestration` change reuses the completion guard and does not own the production paths above; this proposal does not modify its artifacts or authorize overlapping writers.
+- Reuse disposition: `extend` the existing arbiter evidence builder and long-run proof owners. Cross-project reuse is `not-applicable` because the accepted behavior belongs to this kit's loaded completion boundary and introduces no dependency or general-purpose compression mechanism.
+- **Profile**: `Material` because the change alters loaded completion lifecycle and fail-closed safety behavior. Proposal artifacts authorize no install, restart, provider call, remote action, commit, release, or deployment.

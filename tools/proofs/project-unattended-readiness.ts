@@ -240,6 +240,7 @@ function setupGateChange(project: string): void {
     "- **Observable Proof:** Operation gate returns passed.",
     "- **Material Residual Risks:** None.",
     "- **Stop Line:** Stop after local gate output.",
+    "- **Bounded Falsification Review**: exempt - Disposable fixture change is Ordinary Small.",
     "",
   ].join("\n"));
   writeNew(path.join(project, "openspec", "changes", "helper-proof", "tasks.md"), "- [ ] 1.1 Prove helper invocation.\n");

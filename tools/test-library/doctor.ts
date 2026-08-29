@@ -454,11 +454,7 @@ export const doctorTests: TestCase[] = [
         schemaVersion: 2,
         lanes: [
           {
-            files: [{
-              bytes: 25,
-              digest: "a".repeat(64),
-              path: "terminal.json",
-            }],
+            files: [["terminal.json", 25, "a".repeat(64)]],
             kind: "terminal",
             name: "selected-lane",
             pathPrefix: "selected",
@@ -500,6 +496,31 @@ export const doctorTests: TestCase[] = [
       const index = path.join(fixture, "evidence-index.json");
       writeText(index, JSON.stringify({
         schemaVersion: 2,
+        tasks: [{
+          taskId: "1.1",
+          taskTextDigest: "a".repeat(64),
+          result: "complete",
+          boundary: { kind: "named-entrypoint", name: "proof", effects: ["read-only"] },
+          invocation: { command: "proof", status: 0, recordedAt: "2026-08-28" },
+          cleanup: "none",
+        }],
+        claims: [{
+          candidateId: "candidate-r1",
+          environmentId: "environment-r1",
+          paths: { production: "production", baseline: null, candidate: "candidate" },
+          observationBoundary: "result-state",
+          observations: [{
+            memberId: "item-a",
+            candidateId: "candidate-r1",
+            environmentId: "environment-r1",
+            paths: { production: "production", baseline: null, candidate: "candidate" },
+            observationBoundary: "result-state",
+            status: "supported",
+            terminal: true,
+            evidenceRefs: ["selected-lane"],
+            unresolvedObservations: [],
+          }],
+        }],
         lanes: [{
           files: [{ bytes: 0, digest: "a".repeat(64), path: "terminal.json" }],
           kind: "terminal",
@@ -509,9 +530,13 @@ export const doctorTests: TestCase[] = [
 
       const materialized = materializeEvidenceIndex(index);
       const text = fs.readFileSync(index, "utf8");
+      const parsed = JSON.parse(text) as { tasks: unknown[]; claims: Array<{ observations: unknown[] }>; lanes: Array<{ files: unknown[] }> };
       assertDeepEqual(materialized, { files: 1, lanes: 1 }, "Materializer must report the exact bounded inventory.");
       assert(!text.includes("\n  "), "Materializer must not expand bounded indexes with pretty-print whitespace.");
       assert(text.endsWith("\n"), "Materializer must retain one terminal newline.");
+      assert(Array.isArray(parsed.lanes[0].files[0]) && (parsed.lanes[0].files[0] as unknown[]).length === 3, "Materializer must write exact compact lane file tuples.");
+      assert(Array.isArray(parsed.tasks[0]) && (parsed.tasks[0] as unknown[])[0] === "entrypoint", "Materializer must compact eligible named-entrypoint tasks.");
+      assert(Array.isArray(parsed.claims[0].observations[0]) && (parsed.claims[0].observations[0] as unknown[])[0] === "observation", "Materializer must compact eligible claim observations.");
       assertEqual(resolveEvidenceLane(index, "selected-lane").references[0].indexedBytes, 17, "Materialized bytes must match the current file.");
     },
   },

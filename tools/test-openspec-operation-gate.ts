@@ -63,7 +63,7 @@ function writeText(filePath: string, text: string): void {
 
 function proposalWithCapsule(extra = ""): string {
   const fields = OUTCOME_CAPSULE.map((field) => `- **${field}**: fixture value for ${field}.`).join("\n");
-  return `# Proposal\n\n## Why\n\nNeed change.\n\n### Outcome Capsule\n\n${fields}\n- **Automation Dividend**: exempt - fixture does not introduce repeated automation.\n- **Bounded Falsification Review**: exempt - exact Ordinary Small fixture.\n\n## Claim And Evidence Scope\n\n- **Claim And Evidence Scope**: Exact fixture claim at the fixture-boundary proof.\n${extra}`;
+  return `# Proposal\n\n## Why\n\nNeed change.\n\n### Outcome Capsule\n\n${fields}\n- **Delivery Horizon:** none - fixture is unrelated to a tracked delivery horizon.\n- **Automation Dividend**: exempt - fixture does not introduce repeated automation.\n- **Bounded Falsification Review**: exempt - exact Ordinary Small fixture.\n\n## Claim And Evidence Scope\n\n- **Claim And Evidence Scope**: Exact fixture claim at the fixture-boundary proof.\n${extra}`;
 }
 
 function validFalsificationReview(overrides: Partial<BoundedFalsificationReview> = {}): BoundedFalsificationReview {

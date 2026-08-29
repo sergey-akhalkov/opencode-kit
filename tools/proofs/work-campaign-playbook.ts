@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { runPortableCommand } from "../../global/bin/portable-process.ts";
 import { stableJson } from "../../global/bin/roadmap-mission/contracts.ts";
@@ -45,7 +45,7 @@ import { removeProofFixture } from "./lib/proof-process-cleanup.ts";
 
 type JsonRecord = Record<string, unknown>;
 type Mode = "capture" | "preflight" | "replay";
-type Options = {
+export type ConfiguredPlaybookCaptureOptions = {
   candidateId: string;
   environmentId: string;
   evidenceRoot: string;
@@ -54,8 +54,33 @@ type Options = {
   opencode: string | null;
   profile: string;
 };
+type Options = ConfiguredPlaybookCaptureOptions;
 type PlaybookResult = Awaited<ReturnType<typeof runSemanticPlaybook>>;
 type Fixture = ReturnType<typeof createFixture>;
+
+export type ConfiguredPlaybookRuntime = {
+  environment: NodeJS.ProcessEnv;
+  expectedModel: string;
+  installedOpenCode: JsonRecord;
+  runtimeSurface: ProofRuntimeSurface;
+  serverUrl: string;
+};
+
+export type ConfiguredPlaybookCaptureHooks = {
+  firstMissionResume?: ConfiguredFirstMissionResume;
+  fixtureRoot?: string;
+  hostResume?: boolean;
+  runtime?: ConfiguredPlaybookRuntime;
+  writeEvidence?: boolean;
+};
+
+export type ConfiguredFirstMissionResume = (context: {
+  definitionDigest: string;
+  environment: NodeJS.ProcessEnv;
+  fixtureRoot: string;
+  runtimeEndpoint: string;
+  runtimeVersion: string;
+}) => JsonRecord | Promise<JsonRecord>;
 
 const sourceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -215,7 +240,7 @@ function installMissionBoundary(root: string): string {
   return bin;
 }
 
-function createFixture(root: string): {
+function createFixture(root: string, hostResume = false): {
   blocks: CampaignInventoryBlock[];
   context: SemanticPlaybookContext;
   definitionDigest: string;
@@ -224,8 +249,13 @@ function createFixture(root: string): {
   setupCommands: JsonRecord[];
 } {
   fs.mkdirSync(root, { recursive: true });
+  const gitDirectory = path.join(root, ".git");
+  const gitStat = fs.lstatSync(gitDirectory, { throwIfNoEntry: false });
+  if (gitStat != null && (!gitStat.isDirectory() || gitStat.isSymbolicLink())) throw new Error("Configured playbook Git metadata is unsafe");
   const setupCommands = [
-    command(root, ["git", "init", "-b", "main"]),
+    gitStat == null
+      ? command(root, ["git", "init", "-b", "main"])
+      : command(root, ["git", "rev-parse", "--show-toplevel"]),
     command(root, ["openspec", "init", "--tools", "none", "--no-animation", "."]),
   ];
   fs.mkdirSync(path.join(root, "src"), { recursive: true });
@@ -266,7 +296,7 @@ function createFixture(root: string): {
     checkpoint: { localCommitAuthorized: false, mode: "evidence-only", workspace: "disposable" },
     evidencePath: ".work-campaign/evidence",
     exclusions: [],
-    hostResume: { enabled: false, supervisorRequired: false },
+    hostResume: { enabled: hostResume, supervisorRequired: hostResume },
     outcome: "safeDivide returns null rather than a non-finite number when divisor is zero.",
     playbook: "audit-remediate",
     protectedDecisionPolicy: "owner-required",
@@ -510,7 +540,44 @@ function redact(value: unknown): unknown {
   return value;
 }
 
-function evaluate(raw: JsonRecord, candidateId: string, environmentId: string): JsonRecord {
+export async function consumeConfiguredFirstMissionHandoff(
+  fixtureRoot: string,
+  definitionDigest: string,
+  environment: NodeJS.ProcessEnv,
+  resume?: ConfiguredFirstMissionResume,
+  runtime?: { endpoint: string; version: string },
+): Promise<JsonRecord> {
+  const result = resume == null
+    ? (() => {
+      const commandResult = runPortableCommand(fixtureRoot, [
+        process.execPath, path.join(sourceRoot, "global", "bin", "work-campaign.ts"), "resume",
+        "--root", fixtureRoot, "--definition", "definition.json",
+      ], { capture: true, env: environment, timeoutMs: 120_000 });
+      return { ...(JSON.parse(commandResult.stdout || commandResult.stderr) as JsonRecord), exitCode: commandResult.status };
+    })()
+    : await resume({
+      definitionDigest,
+      environment,
+      fixtureRoot,
+      runtimeEndpoint: runtime?.endpoint ?? "provider-free-test",
+      runtimeVersion: runtime?.version ?? "provider-free-test",
+    });
+  if (result.exitCode !== 3 || result.phase !== "verify" || result.disposition !== "paused-external") {
+    throw new Error("Campaign mission handoff did not reach verification");
+  }
+  return result;
+}
+
+export function configuredMissionEnvironment(environment: NodeJS.ProcessEnv, missionBin: string): NodeJS.ProcessEnv {
+  const inheritedPath = Object.entries(environment).find(([key]) => key.toLocaleUpperCase() === "PATH")?.[1] ?? "";
+  const normalized = { ...environment, PATH: `${missionBin}${path.delimiter}${inheritedPath}` };
+  for (const key of Object.keys(normalized)) {
+    if (key !== "PATH" && key.toLocaleUpperCase() === "PATH") delete normalized[key];
+  }
+  return normalized;
+}
+
+export function evaluateConfiguredPlaybookScenario(raw: JsonRecord, candidateId: string, environmentId: string): JsonRecord {
   const results = Array.isArray(raw.assignmentResults) ? raw.assignmentResults as JsonRecord[] : [];
   const playbook = raw.playbook as JsonRecord | undefined;
   const controller = raw.controller as JsonRecord | undefined;
@@ -524,7 +591,6 @@ function evaluate(raw: JsonRecord, candidateId: string, environmentId: string): 
   const complete = controller?.complete as JsonRecord | undefined;
   const readback = controller?.readback as JsonRecord | undefined;
   const closure = readback?.closure as JsonRecord | undefined;
-  const surface = raw.runtimeSurface as JsonRecord | undefined;
   const statuses = Array.isArray(raw.worktreeStatuses) ? raw.worktreeStatuses as JsonRecord[] : [];
   const items = Array.isArray(playbook?.workItems) ? playbook.workItems as JsonRecord[] : [];
   const wave = playbook?.wave as JsonRecord | undefined;
@@ -552,7 +618,7 @@ function evaluate(raw: JsonRecord, candidateId: string, environmentId: string): 
     "}",
     "",
   ].join("\n");
-  const checks = {
+  const checks: Record<string, boolean> = {
     admissionReached: admission?.exitCode === 3 && admission.disposition === "paused-external" && admission.phase === "mission",
     candidateMatched: raw.candidateId === candidateId,
     campaignCompleted: complete?.exitCode === 0 && complete.disposition === "complete" && complete.phase === "complete",
@@ -570,7 +636,6 @@ function evaluate(raw: JsonRecord, candidateId: string, environmentId: string): 
       && (closure.workItems as JsonRecord | undefined)?.unresolvedP0P1 === 0
       && (closure.waves as JsonRecord | undefined)?.archived === 2
       && (closure.waves as JsonRecord | undefined)?.checkpointed === 2,
-    fixtureCleanup: raw.fixtureRemoved === true && raw.serverTerminal === true,
     missionOwnedCorrectionObserved: raw.sourceBefore !== raw.sourceAfter && raw.sourceAfter === sha256(correctedSource)
       && missionDirtyPaths.includes(" M src/main.mjs") && !missionDirtyPaths.some((value) => String(value).includes("src/format.mjs")),
     optionalP2SourceUnchanged: raw.optionalSourceBefore === raw.optionalSourceAfter,
@@ -594,9 +659,6 @@ function evaluate(raw: JsonRecord, candidateId: string, environmentId: string): 
       && secondLaunch?.exitCode === 3 && secondLaunch.phase === "mission"
       && secondResume?.exitCode === 3 && secondResume.phase === "verify",
     rereviewVerified: rereview?.exitCode === 3 && rereview.phase === "verify" && rereview.disposition === "paused-external",
-    surfaceExtensionFree: typeof surface?.configDigest === "string"
-      && Array.isArray(surface.mcpIds) && surface.mcpIds.length === 0
-      && Array.isArray(surface.pluginIds) && surface.pluginIds.length === 0,
     transitionOrder: JSON.stringify(raw.transitionKinds) === JSON.stringify(["preflight", "phase-start", "phase-complete", "phase-start", "findings-freeze", "phase-start", "report-materialized", "wave-admitted", "mission-launch", "mission-terminal", "verification", "rereview", "findings-freeze", "wave-admitted", "mission-launch", "mission-terminal", "verification", "rereview", "report-materialized", "terminal-complete"]),
     wholeWorktreeCleanAtSemanticRoots: statuses.length >= 21 && statuses.every((status) => Array.isArray(status.paths) && status.paths.length === 0),
   };
@@ -604,9 +666,31 @@ function evaluate(raw: JsonRecord, candidateId: string, environmentId: string): 
     candidateId,
     checks,
     environmentId,
-    liveCalls: raw.captureMode === "configured"
-      ? results.reduce((total, result) => total + Number(result.modelCalls ?? 0), 0)
-      : 0,
+    liveCalls: raw.captureMode === "replay"
+      ? 0
+      : results.reduce((total, result) => total + Number(result.modelCalls ?? 0), 0),
+    proofKind: "campaign-configured-scenario",
+    schemaVersion: 1,
+    status: Object.values(checks).every(Boolean) ? "complete" : "blocked",
+  };
+}
+
+function evaluate(raw: JsonRecord, candidateId: string, environmentId: string): JsonRecord {
+  const scenario = evaluateConfiguredPlaybookScenario(raw, candidateId, environmentId);
+  const scenarioChecks = scenario.checks as Record<string, boolean>;
+  const surface = raw.runtimeSurface as JsonRecord | undefined;
+  const checks: Record<string, boolean> = {
+    ...scenarioChecks,
+    fixtureCleanup: raw.fixtureRemoved === true && raw.serverTerminal === true,
+    surfaceExtensionFree: typeof surface?.configDigest === "string"
+      && Array.isArray(surface.mcpIds) && surface.mcpIds.length === 0
+      && Array.isArray(surface.pluginIds) && surface.pluginIds.length === 0,
+  };
+  return {
+    candidateId,
+    checks,
+    environmentId,
+    liveCalls: scenario.liveCalls,
     proofKind: "campaign-configured-complete",
     schemaVersion: 1,
     status: Object.values(checks).every(Boolean) ? "complete" : "blocked",
@@ -684,17 +768,31 @@ async function preflight(options: Options): Promise<void> {
   console.log(JSON.stringify({ candidateId: options.candidateId, liveCalls: 0, mode: "preflight", status: "complete" }));
 }
 
-async function capture(options: Options): Promise<void> {
-  const proofRoot = fs.mkdtempSync(path.join(os.tmpdir(), "work-campaign-playbook-capture-"));
-  const fixtureRoot = path.join(proofRoot, "fixture");
+export async function captureConfiguredPlaybook(
+  options: ConfiguredPlaybookCaptureOptions,
+  hooks: ConfiguredPlaybookCaptureHooks = {},
+): Promise<JsonRecord> {
+  const ownsFixture = hooks.fixtureRoot == null;
+  const proofRoot = ownsFixture
+    ? fs.mkdtempSync(path.join(os.tmpdir(), "work-campaign-playbook-capture-"))
+    : path.dirname(path.resolve(hooks.fixtureRoot!));
+  const fixtureRoot = hooks.fixtureRoot == null ? path.join(proofRoot, "fixture") : path.resolve(hooks.fixtureRoot);
   const runtimeRoot = path.join(proofRoot, "runtime");
   const profile = loadModelProfile(sourceRoot, options.profile).profile;
   const configured = profile.agent?.general as { model?: string } | undefined;
   if (typeof configured?.model !== "string") throw new Error("Configured general model route is unavailable");
-  for (const relative of ["cache", "config-home", "data/opencode", "state"]) fs.mkdirSync(path.join(runtimeRoot, relative), { recursive: true });
-  seedProofModelsCatalog(runtimeRoot, [configured.model]);
+  if (hooks.runtime != null && hooks.runtime.expectedModel !== configured.model) {
+    throw new Error("Injected configured playbook route differs from selected profile");
+  }
+  if (ownsFixture) {
+    for (const relative of ["cache", "config-home", "data/opencode", "state"]) fs.mkdirSync(path.join(runtimeRoot, relative), { recursive: true });
+    seedProofModelsCatalog(runtimeRoot, [configured.model]);
+  }
   let server: ProofServerHandle | null = null;
+  let serverUrl = hooks.runtime?.serverUrl ?? null;
   let serverTerminal = false;
+  let executionEnvironment = hooks.runtime?.environment ?? process.env;
+  let installedOpenCode: JsonRecord | null = hooks.runtime?.installedOpenCode ?? null;
   let captureError: unknown = null;
   let fixture: ReturnType<typeof createFixture> | null = null;
   let playbook: Awaited<ReturnType<typeof runSemanticPlaybook>> | null = null;
@@ -712,20 +810,27 @@ async function capture(options: Options): Promise<void> {
   const worktreeStatuses: JsonRecord[] = [];
   let transitionKinds: string[] = [];
   try {
-    fixture = createFixture(fixtureRoot);
+    fixture = createFixture(fixtureRoot, hooks.hostResume === true);
     sourceBefore = sourceDigest(fixtureRoot);
     optionalSourceBefore = sourceDigest(fixtureRoot, "src/format.mjs");
     worktreeStatuses.push(worktreeStatus(fixtureRoot, "fixture-created"));
-    const isolatedConfigDir = path.join(runtimeRoot, "config-source");
-    writeIsolatedProofConfig(isolatedConfigDir, profile);
-    const isolatedEnvironment = configuredProofServerEnvironment(process.env, isolatedConfigDir, runtimeRoot, profile);
-    server = await startProofServer(options.opencode!, fixtureRoot, isolatedEnvironment);
-    const client = proofClient(server.url, fixtureRoot);
-    const route = await waitForProofRoute(client, fixtureRoot, "general", 15_000);
-    await assertProofRouteAvailable(client, fixtureRoot, route);
-    if (`${route.model.providerID}/${route.model.modelID}` !== configured.model) throw new Error("Configured playbook route differs from selected profile");
-    runtimeSurface = await proofRuntimeSurface(client, fixtureRoot);
-    if (runtimeSurface.mcpIds.length !== 0 || runtimeSurface.pluginIds.length !== 0) throw new Error("configured playbook proof surface is not extension-free");
+    if (hooks.runtime == null) {
+      const isolatedConfigDir = path.join(runtimeRoot, "config-source");
+      writeIsolatedProofConfig(isolatedConfigDir, profile);
+      executionEnvironment = configuredProofServerEnvironment(process.env, isolatedConfigDir, runtimeRoot, profile);
+      server = await startProofServer(options.opencode!, fixtureRoot, executionEnvironment);
+      serverUrl = server.url;
+      const client = proofClient(server.url, fixtureRoot);
+      const route = await waitForProofRoute(client, fixtureRoot, "general", 15_000);
+      await assertProofRouteAvailable(client, fixtureRoot, route);
+      if (`${route.model.providerID}/${route.model.modelID}` !== configured.model) throw new Error("Configured playbook route differs from selected profile");
+      runtimeSurface = await proofRuntimeSurface(client, fixtureRoot);
+      if (runtimeSurface.mcpIds.length !== 0 || runtimeSurface.pluginIds.length !== 0) throw new Error("configured playbook proof surface is not extension-free");
+      installedOpenCode = installedOpenCodeIdentity(options.opencode!);
+    } else {
+      runtimeSurface = hooks.runtime.runtimeSurface;
+    }
+    if (serverUrl == null) throw new Error("Configured playbook runtime URL is unavailable");
 
     const execute = async (job: SemanticPlaybookJob): Promise<SemanticAssignmentResult> => {
       worktreeStatuses.push(worktreeStatus(fixtureRoot, `assignment-${job.assignment.assignmentId}-before`));
@@ -735,8 +840,8 @@ async function capture(options: Options): Promise<void> {
         process.execPath,
         path.join(sourceRoot, "global", "bin", "work-campaign-semantic-executor.ts"),
         "execute", "--root", fixtureRoot, "--definition", "definition.json", "--assignment", assignmentPath,
-        "--result", job.resultPath, "--server-url", server!.url, "--agent", "general",
-      ], { capture: true, timeoutMs: 300_000 });
+        "--result", job.resultPath, "--server-url", serverUrl, "--agent", "general",
+      ], { capture: true, env: executionEnvironment, timeoutMs: 300_000 });
       assignmentCommands.push({ assignmentId: job.assignment.assignmentId, exitCode: execution.status, stderr: execution.stderr.slice(0, 1_000), stdout: execution.stdout.slice(0, 1_000) });
       const result = JSON.parse(fs.readFileSync(path.join(fixtureRoot, job.resultPath), "utf8")) as SemanticAssignmentResult;
       assignmentResults.push(result);
@@ -757,7 +862,7 @@ async function capture(options: Options): Promise<void> {
       assignmentResults.flatMap((result) => result.evidenceRefs),
     );
     worktreeStatuses.push(worktreeStatus(fixtureRoot, "phase-input-materialized"));
-    const missionEnvironment = { ...process.env, PATH: `${fixture.missionBin}${path.delimiter}${process.env.PATH ?? ""}` };
+    const missionEnvironment = configuredMissionEnvironment(executionEnvironment, fixture.missionBin);
     const admitted = runPortableCommand(fixtureRoot, [
       process.execPath, path.join(sourceRoot, "global", "bin", "work-campaign.ts"), "run",
       "--root", fixtureRoot, "--definition", "definition.json", "--phase-input", phaseInput,
@@ -768,12 +873,6 @@ async function capture(options: Options): Promise<void> {
       exitCode: admitted.status,
     };
     if (admitted.status !== 3) throw new Error(`campaign mission launch failed: ${admitted.stderr || admitted.stdout}`);
-    const resumed = runPortableCommand(fixtureRoot, [
-      process.execPath, path.join(sourceRoot, "global", "bin", "work-campaign.ts"), "resume",
-      "--root", fixtureRoot, "--definition", "definition.json",
-    ], { capture: true, env: missionEnvironment, timeoutMs: 120_000 });
-    controller.resume = { ...(JSON.parse(resumed.stdout || resumed.stderr) as JsonRecord), exitCode: resumed.status };
-    if (resumed.status !== 3) throw new Error(`campaign mission handoff failed: ${resumed.stderr || resumed.stdout}`);
     missionDirtyStatus = worktreeStatus(fixtureRoot, "mission-source-written");
     command(fixtureRoot, ["git", "add", "--all"]);
     command(fixtureRoot, [
@@ -781,6 +880,16 @@ async function capture(options: Options): Promise<void> {
       "-c", "commit.gpgsign=false", "commit", "-m", "checkpoint mission-owned configured correction",
     ]);
     worktreeStatuses.push(worktreeStatus(fixtureRoot, "mission-source-checkpointed"));
+    controller.resume = await consumeConfiguredFirstMissionHandoff(
+      fixtureRoot,
+      fixture.definitionDigest,
+      missionEnvironment,
+      hooks.firstMissionResume,
+      {
+        endpoint: serverUrl,
+        version: typeof installedOpenCode?.version === "string" ? installedOpenCode.version : "unknown",
+      },
+    );
 
     const currentMainDigest = sourceDigest(fixtureRoot);
     const currentFormatDigest = sourceDigest(fixtureRoot, "src/format.mjs");
@@ -935,10 +1044,12 @@ async function capture(options: Options): Promise<void> {
         captureError ??= error;
       }
     }
-    try {
-      removeProofFixture(proofRoot);
-    } catch (error) {
-      captureError ??= error;
+    if (ownsFixture) {
+      try {
+        removeProofFixture(proofRoot);
+      } catch (error) {
+        captureError ??= error;
+      }
     }
   }
   const raw: JsonRecord = {
@@ -946,13 +1057,13 @@ async function capture(options: Options): Promise<void> {
     assignmentResults: redact(assignmentResults),
     candidateId: options.candidateId,
     captureError: captureError == null ? null : safeError(captureError),
-    captureMode: "configured",
+    captureMode: hooks.runtime == null ? "configured" : "configured-managed",
     controller,
     environmentId: options.environmentId,
     expectedModel: configured.model,
-    fixtureRemoved: !fs.existsSync(proofRoot),
+    fixtureRemoved: ownsFixture ? !fs.existsSync(proofRoot) : false,
     hiddenServer: false,
-    installedOpenCode: installedOpenCodeIdentity(options.opencode!),
+    installedOpenCode,
     loopback: true,
     missionDirtyStatus,
     optionalSourceAfter,
@@ -962,18 +1073,21 @@ async function capture(options: Options): Promise<void> {
     runtimeSurface,
     schemaVersion: 1,
     serverStartup: startup,
-    serverTerminal,
+    serverTerminal: ownsFixture ? serverTerminal : null,
     sourceAfter,
     sourceBefore,
     finalClosure,
     transitionKinds,
     worktreeStatuses,
   };
-  const evaluation = evaluate(raw, options.candidateId, options.environmentId);
-  writeNew(path.join(options.evidenceRoot, "raw.json"), raw);
-  writeNew(path.join(options.evidenceRoot, "evaluation.json"), evaluation);
-  console.log(JSON.stringify({ candidateId: options.candidateId, liveCalls: assignmentResults.reduce((total, result) => total + result.modelCalls, 0), mode: "capture", status: evaluation.status }));
-  if (evaluation.status !== "complete") process.exitCode = 1;
+  if (hooks.writeEvidence !== false) {
+    const evaluation = evaluate(raw, options.candidateId, options.environmentId);
+    writeNew(path.join(options.evidenceRoot, "raw.json"), raw);
+    writeNew(path.join(options.evidenceRoot, "evaluation.json"), evaluation);
+    console.log(JSON.stringify({ candidateId: options.candidateId, liveCalls: assignmentResults.reduce((total, result) => total + result.modelCalls, 0), mode: "capture", status: evaluation.status }));
+    if (evaluation.status !== "complete") process.exitCode = 1;
+  }
+  return raw;
 }
 
 function replay(options: Options): void {
@@ -993,11 +1107,18 @@ async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
   if (fs.existsSync(options.evidenceRoot)) throw new Error("--evidence-root must be create-new");
   if (options.mode === "preflight") await preflight(options);
-  else if (options.mode === "capture") await capture(options);
+  else if (options.mode === "capture") await captureConfiguredPlaybook(options);
   else replay(options);
 }
 
-main().catch((error) => {
-  console.error(safeError(error));
-  process.exitCode = 1;
-});
+function isMainModule(): boolean {
+  const entrypoint = process.argv[1];
+  return Boolean(entrypoint && import.meta.url === pathToFileURL(path.resolve(entrypoint)).href);
+}
+
+if (isMainModule()) {
+  main().catch((error) => {
+    console.error(safeError(error));
+    process.exitCode = 1;
+  });
+}

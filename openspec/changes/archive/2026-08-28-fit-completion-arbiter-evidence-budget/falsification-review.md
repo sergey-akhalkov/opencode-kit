@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:original-accepted-request
+- **Reviewed Request Ref**: event:original-accepted-request
+- **Accepted Outcome Ref**: outcome:completion-arbiter-budgeted-long-root
+- **Candidate Ref**: candidate:completion-arbiter-evidence-budget-planning-r2
+- **Reviewed Candidate Ref**: candidate:completion-arbiter-evidence-budget-planning-r2
+- **Decision Surface**: challenge aggregate byte-envelope sufficiency, semantic preservation of normalized evidence, required claim and descendant fail-closed behavior, public projection compatibility, installed request observability, and unnecessary config/schema expansion before production mutation.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fb798261affewMuVRcewWKTRA2
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: CAB-R1
+- **Main Dispositions**: CAB-R1=confirmed
+- **Correction Ref**: correction:completion-arbiter-evidence-budget-planning-r2
+- **Invalidated Surfaces**: installed-overflow-shaped-oracle, configured-call-budget
+- **Terminal Reason**: corrected-candidate-rereview-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: runtime-behavior, finite-population-observations

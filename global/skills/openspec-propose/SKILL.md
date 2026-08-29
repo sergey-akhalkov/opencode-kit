@@ -56,6 +56,8 @@ When ready to implement, run /opsx-apply
 
    Before drafting the first candidate, work from the original accepted request rather than the scaffold: identify the observable success boundary, current envelope/non-goals, strongest coherent-wrong-outcome path, silent owner-decision path, missing-oracle path, likely late implementation invalidation, and strongest unnecessary-scope candidate. Use those hypotheses to improve the artifacts. Persist only decision-relevant outcomes; never persist raw private request text, hidden reasoning, or a reviewer transcript.
 
+   Before writing any artifact, select exactly one proposal declaration: an existing validated project Horizon id, or `none - <concrete reason>`. Never infer membership. For a linked proposal with a prior successful archive in the same Horizon, identify the latest explicitly linked archive and run `node "<global-source>/bin/delivery-trajectory-context.ts" --root "<project-root>" --horizon "<horizon-id>" --archive "<archive-id>" --format json` from the exact active global source. Main, not the helper, evaluates the compact signal from those facts. If it is `review-required`, load `roadmap-delivery-trajectory` once for the current evidence tuple and consume or create its matching terminal receipt before dependent planning or artifact writes. If it is `unknown`, obtain the smallest safe discriminating observation or block only the affected dependent planning; another Horizon, unrelated work, and safe evidence collection remain available.
+
    Loop through artifacts in dependency order (artifacts with no pending dependencies first):
 
    a. **For each artifact that is `ready` (dependencies satisfied)**:
@@ -70,6 +72,7 @@ When ready to implement, run /opsx-apply
       - Read any completed dependency files for context
       - Create the artifact file using `template` as the structure and write it to `resolvedOutputPath`
       - Apply `context` and `rules` as constraints - but do NOT copy them into the file
+      - For each newly authored proposal, include exactly one line in its Outcome Capsule: `- **Delivery Horizon:** <horizon-id>` for an existing validated project Horizon, or `- **Delivery Horizon:** none - <concrete reason>`. Never infer Horizon membership from names, files, dates, capabilities, task text, or semantic similarity. Legacy proposals remain readable without retroactive linkage.
       - Keep one change-level `Claim And Evidence Scope` owner. An Ordinary Small exact case uses one concise line naming the exact claim and proof boundary. A declared broad class uses the explicit fields supplied by the proposal rule; do not infer the class from prose or repeat the complete record in design/spec/tasks.
       - In proposal.md, declare exactly one `Bounded Falsification Review`: `required - <decision surface>` for decision-material work, or `exempt - <Ordinary Small reason>` only after main reviews that exact exemption. Deterministic tooling validates shape, not materiality or task fit.
       - Show brief progress: "Created <artifact-id>"
@@ -136,3 +139,4 @@ Return the change/location, three readiness outcomes, blockers or `none`, and `D
 - Author attempt limits and stop lines as revisable process controls, not immutable owner scope. Their later update needs no owner approval when accepted semantics remain unchanged; authority for the underlying protected action remains separate.
 - Declare exactly one `Automation Dividend`: Material `required - <candidate>`; Ordinary Small may `exempt - <reason>`. Do not infer the mode.
 - Declare exactly one `Bounded Falsification Review`; no empty record for an exemption, raw request persistence, duplicate generic review, or deterministic semantic inference.
+- If the selected runtime surface lacks `roadmap-delivery-trajectory` or its exact `delivery-trajectory-context.ts` helper closure, report trajectory capability unavailable and do not substitute complexity, next-step, audit, campaign, or another source.

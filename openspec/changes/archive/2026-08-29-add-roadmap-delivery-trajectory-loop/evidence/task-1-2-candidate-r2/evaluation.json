@@ -1,0 +1,178 @@
+{
+  "bundleDigests": {
+    "baseline": "5bdc3f1367ac6b4dc98d96570b365fa90241234aa1a04cbbebb0132c319d3c1d",
+    "candidate": "816de5c04f849def4a662494932cfe31c5c177e169224fd46905c108e5b2978d"
+  },
+  "evaluationDigest": "cc5a29af2cb529d58ecfd299a43120cd7b79057bbb160eeabc3b2de6a061355a",
+  "inputDifference": {
+    "baseline": "absent",
+    "candidate": "available",
+    "matchedExceptNamedDifference": true,
+    "name": "candidate-artifact-availability"
+  },
+  "liveCalls": 0,
+  "maximumClaim": "provider-free proof-contract evidence for the 13 reviewed roadmap-delivery-trajectory-v1 members under the recorded seed and governed source identity only; it supports no configured semantic behavior or population-member claim",
+  "modelCalls": 0,
+  "packId": "roadmap-delivery-trajectory-v1",
+  "providerCalls": 0,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "explicit-horizon-within-window",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "legacy-or-unlinked-archive",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "repeated-item-touch-trigger",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "shared-owner-fan-out-trigger",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "forecast-outside-window",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "missing-window-or-measurement",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "external-linear-bottleneck",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "outcome-preserving-successor",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "quality-weakening-owner-boundary",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "unchanged-trigger-no-duplicate",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "signal-failure-after-successful-archive",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "default-core-availability",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "missing-capability",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "explicit-horizon-within-window",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "legacy-or-unlinked-archive",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "repeated-item-touch-trigger",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "shared-owner-fan-out-trigger",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "forecast-outside-window",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "missing-window-or-measurement",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "external-linear-bottleneck",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "outcome-preserving-successor",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "quality-weakening-owner-boundary",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "unchanged-trigger-no-duplicate",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "signal-failure-after-successful-archive",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "default-core-availability",
+      "passed": true
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "memberId": "missing-capability",
+      "passed": true
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "passed"
+}

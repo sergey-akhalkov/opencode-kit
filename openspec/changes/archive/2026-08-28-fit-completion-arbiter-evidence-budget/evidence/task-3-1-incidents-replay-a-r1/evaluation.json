@@ -1,0 +1,17 @@
+{
+  "candidateId": "completion-arbiter-budget-v1",
+  "cleanup": "complete",
+  "incidentCount": 8,
+  "maxCandidateBytes": 187726,
+  "maxRequestBytes": 254691,
+  "minCandidateBytes": 141090,
+  "minRequestBytes": 214535,
+  "mode": "incidents",
+  "privacySafe": true,
+  "queryOnly": true,
+  "rawDigest": "6825490929836827cf2a16e77b6509d8b6e839ba228f2a2e2bf9ec388f86dc41",
+  "replay": true,
+  "schemaVersion": 1,
+  "status": "complete",
+  "zeroChildModelCalls": true
+}

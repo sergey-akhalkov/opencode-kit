@@ -1,0 +1,73 @@
+{
+  "cleanup": "complete",
+  "candidateId": "add-specialist-team-advisor-task-3-1-core-r2",
+  "evaluation": {
+    "extraCoreSkills": [],
+    "hiddenParentHits": [],
+    "missingCoreSkills": [],
+    "skillNames": [
+      "behavioral-substitution-qualification",
+      "change-ready-sdlc",
+      "complain",
+      "complexity-management",
+      "customize-opencode",
+      "foundation-integrity-recovery",
+      "next-step",
+      "openspec-abandon-change",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "reuse-discovery"
+    ],
+    "status": "failed",
+    "agentName": "foundation-integrity-reviewer",
+    "agentListStatus": 0,
+    "agentStatus": 0,
+    "advisorAgentName": "specialist-team-advisor",
+    "advisorStatus": 0,
+    "authorityMarkers": {
+      "compactionTeamAdviceMirror": false,
+      "evidenceBoundsPrinciple": true,
+      "claimRoutingTrigger": true,
+      "complexityRoutingTrigger": true,
+      "foundationRoutingTrigger": true,
+      "practiceOwnerBoundary": true,
+      "teamAdviceRoutingTrigger": true,
+      "teamAdviceStateContract": true
+    },
+    "canonicalOpenSpecSkills": [
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose"
+    ],
+    "catalogPluginCount": 1,
+    "configStatus": 0,
+    "extraCoreAgents": [],
+    "missingCanonicalOpenSpecSkills": [],
+    "permissionFailures": [],
+    "pluginPaths": [
+      "extensions/specialist-catalog.ts"
+    ],
+    "resolvedPaths": {
+      "behavioralSubstitutionSkill": "<generated>/skills/behavioral-substitution-qualification/SKILL.md",
+      "complexityForagingContract": "<generated>/bin/complexity-foraging-contract.ts",
+      "complexityForagingInventory": "<generated>/bin/complexity-foraging-inventory.ts",
+      "complexityManagementSkill": "<generated>/skills/complexity-management/SKILL.md",
+      "evidenceSufficiencyReviewer": "<generated>/agents/evidence-sufficiency-reviewer.md",
+      "foundationIntegrityRecoverySkill": "<generated>/skills/foundation-integrity-recovery/SKILL.md",
+      "foundationIntegrityReviewer": "<generated>/agents/foundation-integrity-reviewer.md",
+      "openspecApplySkill": "<generated>/skills/openspec-apply-change/SKILL.md",
+      "openspecArchiveSkill": "<generated>/skills/openspec-archive-change/SKILL.md",
+      "openspecProposeSkill": "<generated>/skills/openspec-propose/SKILL.md",
+      "specialistCatalogPlugin": "<generated>/extensions/specialist-catalog.ts",
+      "specialistTeamAdvisor": "<generated>/agents/specialist-team-advisor.md"
+    },
+    "unexpectedCorePlugins": []
+  },
+  "profile": "core",
+  "agentStatus": 0,
+  "advisorStatus": 0,
+  "configStatus": 0,
+  "skillStatus": 0,
+  "tool": "opencode-dev-kit-runtime-surface-loader"
+}

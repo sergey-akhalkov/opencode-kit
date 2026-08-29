@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import path from "node:path";
 import { after, test } from "node:test";
 
 import type {
@@ -19,6 +20,9 @@ import {
   type SemanticPlaybookFactory,
   type SemanticPlaybookJob,
 } from "../global/bin/work-campaign/semantic-playbook.ts";
+import { configuredMissionEnvironment, consumeConfiguredFirstMissionHandoff } from "./proofs/work-campaign-playbook.ts";
+import { buildPopulationRows, classifyPopulationConfiguredInput } from "./proofs/work-campaign.ts";
+import { operatorExtensionSurfaceMatches } from "./proofs/work-campaign-windows-installed.ts";
 
 const digest = "a".repeat(64);
 const definitionDigest = "b".repeat(64);
@@ -26,6 +30,97 @@ const inventoryDigest = "c".repeat(64);
 const semanticRawPath = process.env.WORK_CAMPAIGN_SEMANTIC_RAW_PATH;
 const semanticCandidateId = process.env.WORK_CAMPAIGN_SEMANTIC_CANDIDATE_ID ?? "work-campaign-semantic-focused";
 const semanticEvidence: Record<string, unknown> = {};
+
+test("configured proof consumes one injected first-mission handoff and validates its terminal shape", async () => {
+  let calls = 0;
+  const environment = { ...process.env, TASK_7_1_HOOK: "present" };
+  const result = await consumeConfiguredFirstMissionHandoff(
+    path.resolve("fixture-root"),
+    definitionDigest,
+    environment,
+    (context) => {
+      calls++;
+      assert.equal(context.definitionDigest, definitionDigest);
+      assert.equal(context.environment.TASK_7_1_HOOK, "present");
+      return { disposition: "paused-external", exitCode: 3, phase: "verify" };
+    },
+  );
+  assert.equal(calls, 1);
+  assert.equal(result.phase, "verify");
+  await assert.rejects(
+    consumeConfiguredFirstMissionHandoff(path.resolve("fixture-root"), definitionDigest, environment, () => ({
+      disposition: "paused-external",
+      exitCode: 3,
+      phase: "mission",
+    })),
+    /did not reach verification/u,
+  );
+});
+
+test("configured mission environment preserves a Windows-style Path under one canonical key", () => {
+  const environment = configuredMissionEnvironment({ Path: "C:\\tools;C:\\Windows" }, "C:\\mission-bin");
+  assert.equal(environment.Path, undefined);
+  assert.equal(environment.PATH, `C:\\mission-bin${path.delimiter}C:\\tools;C:\\Windows`);
+});
+
+test("population configured and installed-operator inputs remain identity-bound and branch-isolated", () => {
+  const configured = {
+    candidateId: "candidate-r1",
+    checks: { candidateMatched: true, environmentMatched: true },
+    environmentId: "environment-r1",
+    proofKind: "campaign-configured-complete",
+    status: "complete",
+  };
+  const operator = {
+    ...configured,
+    checks: { ...configured.checks, windowsSupervisorReentryObserved: true },
+    hostEffects: 3,
+    proofKind: "campaign-installed-operator",
+  };
+  assert.deepEqual(
+    classifyPopulationConfiguredInput(configured, false, "candidate-r1", "environment-r1"),
+    { configuredCurrent: true, windowsReentryObserved: false },
+  );
+  assert.deepEqual(
+    classifyPopulationConfiguredInput(operator, true, "candidate-r1", "environment-r1"),
+    { configuredCurrent: true, windowsReentryObserved: true },
+  );
+  assert.equal(classifyPopulationConfiguredInput(operator, false, "candidate-r1", "environment-r1").configuredCurrent, false);
+  assert.equal(classifyPopulationConfiguredInput(configured, true, "candidate-r1", "environment-r1").configuredCurrent, false);
+  assert.equal(classifyPopulationConfiguredInput(operator, true, "different-candidate", "environment-r1").configuredCurrent, false);
+  assert.equal(classifyPopulationConfiguredInput(operator, true, "candidate-r1", "different-environment").configuredCurrent, false);
+  assert.equal(classifyPopulationConfiguredInput({ ...operator, hostEffects: 0 }, true, "candidate-r1", "environment-r1").windowsReentryObserved, false);
+});
+
+test("confirmed P0 population support comes only from the critical closure oracle", () => {
+  const semanticP1Only = {
+    configured: {},
+    controller: { verification: {} },
+    semantic: { evidence: { happyPath: { statuses: [["item-p1", "confirmed"]] } } },
+  };
+  const unsupported = buildPopulationRows(semanticP1Only, "candidate-r1", "environment-r1")
+    .find((row) => row.id === "confirmed-p0");
+  assert.equal(unsupported?.observed, false);
+
+  const supported = buildPopulationRows({
+    ...semanticP1Only,
+    controller: { verification: {
+      criticalFinalDisposition: "paused-external",
+      criticalRereviewDisposition: "paused-external",
+      criticalSdetPending: true,
+    } },
+  }, "candidate-r1", "environment-r1").find((row) => row.id === "confirmed-p0");
+  assert.equal(supported?.observed, true);
+  assert.deepEqual(supported?.evidenceRefs, ["proof:controller"]);
+  assert.deepEqual(supported?.scenarios, ["confirmed-p0", "critical-sdet-pending"]);
+});
+
+test("installed-operator preflight binds extension identities without conflating project config digests", () => {
+  const preflight = { configDigest: "a".repeat(64), mcpIds: ["mcp-a"], pluginIds: ["sha256:plugin-a"] };
+  assert.equal(operatorExtensionSurfaceMatches(preflight, { ...preflight, configDigest: "b".repeat(64) }), true);
+  assert.equal(operatorExtensionSurfaceMatches(preflight, { ...preflight, mcpIds: ["mcp-b"] }), false);
+  assert.equal(operatorExtensionSurfaceMatches(preflight, { ...preflight, pluginIds: ["sha256:plugin-b"] }), false);
+});
 
 function block(id: string, sourceDigest: string): CampaignInventoryBlock {
   return {

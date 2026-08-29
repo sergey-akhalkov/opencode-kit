@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "completion-arbiter-budget-v1",
+  "environmentId": "windows-opencode-1.18.25-bun-1.4.0",
+  "commands": [
+    {
+      "command": "npm run test:focused:session-completion-guard",
+      "status": 0,
+      "observed": "OK: session completion guard tests=46"
+    },
+    {
+      "command": "npm run test:focused:session-plugin",
+      "status": 0,
+      "observed": "OK: session env plugin tests=18"
+    },
+    {
+      "command": "npm run proof:permissions",
+      "status": 0,
+      "observed": "OpenCode 1.18.25 resolved session-completion-arbiter with toolsAllFalse=true and disabledToolCount=13"
+    },
+    {
+      "command": "npm run proof:guard-long-run",
+      "status": 0,
+      "observed": "provider-free maintained suite complete"
+    },
+    {
+      "command": "openspec validate fit-completion-arbiter-evidence-budget --strict",
+      "status": 0,
+      "observed": "change valid"
+    }
+  ],
+  "publicCompatibility": {
+    "projectionSourceModified": false,
+    "publicSchemaVersion": 2,
+    "compatibilityAliasRetained": true,
+    "candidateBuilderSourceObjectUnchanged": true,
+    "privateSchemaVersion": 1
+  },
+  "negativeControls": {
+    "canonicalConflict": "terminal exception before child/model call",
+    "irreducibleClaimOverflow": "terminal input-state with content-free contribution rows",
+    "descendantAndTruncationReadback": "retained in candidate matrix",
+    "ordinarySubLimit": "installed matched pair reached allow_stop/passed/cleanup on both arms"
+  },
+  "cleanup": "complete"
+}

@@ -1,0 +1,2147 @@
+{
+  "candidateId": "roadmap-delivery-trajectory-routing-r5",
+  "changes": [
+    {
+      "after": {
+        "sha256": "6a41ddd78d7f126df2917421940e14449d5e949fa40708fd1afec91dce718736",
+        "text": "{\n  \"schemaVersion\": 1,\n  \"status\": \"archived\",\n  \"change\": \"trajectory-current\",\n  \"archivedAs\": \"2026-08-29-trajectory-current\",\n  \"path\": \"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\archive\\\\2026-08-29-trajectory-current\",\n  \"specsUpdated\": true,\n  \"totals\": {\n    \"added\": 1,\n    \"modified\": 0,\n    \"removed\": 0,\n    \"renamed\": 0\n  }\n}\n"
+      },
+      "before": null,
+      "path": "archive-result.json"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "f4a1a5ebcaf832a382f8bba53f7c81d9fa7e1a92b3d01f6b7d8fc34e77619b07",
+        "text": "schema: spec-driven\ncreated: 2026-08-29\n"
+      },
+      "path": "openspec/changes/trajectory-current/.openspec.yaml"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "cf8edb791c7bb4aa6852da9fd608b54160c080d75fce5faf9b56cdbc6bda8630",
+        "text": "## Context\n\nThis exact disposable change exercises canonical archive first and trajectory routing second.\n\n## Decisions\n\n- Preserve the archive result independently from trajectory state.\n- Use only project-contained evidence and the active configured helper closure.\n"
+      },
+      "path": "openspec/changes/trajectory-current/design.md"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "115b3fd615967c6693286c286f160822957b7cbc4d37f9a5e80ec0d0425b55ab",
+        "text": "{\n  \"schemaVersion\": 2,\n  \"changeId\": \"trajectory-current\",\n  \"candidateId\": \"configured-fixture\",\n  \"environmentId\": \"disposable-configured-project\",\n  \"retention\": {\"maxFiles\": 64, \"maxBytes\": 26214400, \"exception\": null},\n  \"tasks\": [\n    {\n      \"taskId\": \"1.1\",\n      \"taskTextDigest\": \"4bc54ab1d71897329fe35fb7b4403cbdd797ccb99c068c525948edeceb892e67\",\n      \"result\": \"complete\",\n      \"candidateId\": \"configured-fixture\",\n      \"environmentId\": \"disposable-configured-project\",\n      \"requiredBoundary\": {\"kind\": \"named-entrypoint\", \"name\": \"configured-fixture-archive\", \"effects\": [\"disposable-local-write\"]},\n      \"boundary\": {\"kind\": \"named-entrypoint\", \"name\": \"configured-fixture-archive\", \"effects\": [\"disposable-local-write\"]},\n      \"invocation\": {\"command\": \"reviewed configured fixture seed\", \"status\": 0, \"recordedAt\": \"2026-08-29T00:00:00.000Z\"},\n      \"artifacts\": [],\n      \"cleanup\": \"none\",\n      \"manualGate\": null\n    }\n  ],\n  \"lanes\": [],\n  \"claims\": []\n}\n"
+      },
+      "path": "openspec/changes/trajectory-current/evidence-index.json"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "f889c014deda252c515e9f36ca96f8a7868d1ba5750fbf23ee3d4946b3bfe481",
+        "text": "# Strategy History\n\nOne direct canonical archive strategy is selected for this disposable fixture.\n"
+      },
+      "path": "openspec/changes/trajectory-current/history.md"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "d086c2f6fbe8fdcbcbe0160af9ea02b3b39a9a31204bedbf5a5d6ae357cb19fd",
+        "text": "{\n  \"schemaVersion\": 1,\n  \"changeId\": \"trajectory-current\",\n  \"mutationEnabled\": true,\n  \"capabilities\": [\n    {\n      \"capability\": \"fixture-capability\",\n      \"requirements\": [\"Current fixture archive marker remains observable\"]\n    }\n  ],\n  \"writeRoots\": [\"openspec/specs/fixture-capability\"],\n  \"dependencies\": [],\n  \"transfers\": []\n}\n"
+      },
+      "path": "openspec/changes/trajectory-current/ownership.json"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "12d2f1ffdd9b60dadc5cf203708017105881a39a3b6be948f945b374f475e153",
+        "text": "## Why\n\nComplete one current linked fixture change through the canonical archive boundary.\n\n## Outcome Capsule\n\n- **Outcome:** Archive the current linked fixture capability without changing accepted behavior.\n- **Operating Envelope:** One disposable local OpenSpec project with no external effects.\n- **Non-Goals:** Deployment, remote mutation, protected decisions, or mutable roadmap state.\n- **Non-Deferrable Invariants:** Preserve archive bytes, proof strength, containment, and owner boundaries.\n- **Observable Proof:** Canonical archive exits zero, strict validation passes, and post-success trajectory routing reports a separate state.\n- **Material Residual Risks:** Configured semantic behavior is bounded to the selected reviewed fixture case.\n- **Stop Line:** Do not weaken proof or perform external effects.\n- **Delivery Horizon:** phase-fixture\n- **Automation Dividend:** exempt - one-off configured fixture.\n- **Bounded Falsification Review:** exempt - exact disposable fixture.\n\n## Claim And Evidence Scope\n\n- **Claim And Evidence Scope:** Exact configured archive and trajectory behavior at this disposable fixture boundary.\n\n## What Changes\n\n- Add one observable current fixture marker.\n"
+      },
+      "path": "openspec/changes/trajectory-current/proposal.md"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "114b28320088fd954a81af14464b751760a38889dcf5140225a0a911a367f579",
+        "text": "## ADDED Requirements\n\n### Requirement: Current fixture archive marker remains observable\n\nThe fixture SHALL preserve a current marker after canonical archive processing.\n\n#### Scenario: Current marker is archived\n\n- **WHEN** the current linked change is archived\n- **THEN** the current marker remains observable in the synchronized specification.\n"
+      },
+      "path": "openspec/changes/trajectory-current/specs/fixture-capability/spec.md"
+    },
+    {
+      "after": null,
+      "before": {
+        "sha256": "e1494c018c1695265ec54cfb5cf7ddebd39c9a604b00cac34a896cf3d746851f",
+        "text": "## Tasks\n\n- [x] 1.1 Complete configured fixture archive.\n"
+      },
+      "path": "openspec/changes/trajectory-current/tasks.md"
+    },
+    {
+      "after": {
+        "sha256": "4b94b221f4c260cddcde5c0c4ecc2031b3a0f80dc0abe57a356fe7ec3399f337",
+        "text": "## Context\n\nThe reviewed evidence identifies repeated item-specific setup around one shared fixture mechanism across the current and prior linked changes. The repeated touch has a named consequence for the `phase-fixture` exit predicate, but per-item execution and proof cannot be collapsed.\n\n## Goals And Non-Goals\n\n- Centralize only the setup common to the accepted fixture items.\n- Preserve the accepted population, behavior, proof strength, invariants, non-goals, and protected semantics.\n- Do not generalize beyond the configured fixture or remove item-specific execution, observation, or cleanup.\n\n## Decisions\n\n- Extend the existing shared fixture mechanism rather than add a second setup owner.\n- Reduce engineering setup to one shared mechanism while retaining automated processing and irreducible proof for every accepted item.\n- Use the first accepted item routed through the shared setup as the earliest falsifiable consumer, then validate every accepted item independently.\n- Keep failures item-attributed so a shared-setup failure or item-specific regression remains visible.\n- Roll back the successor change if centralization changes any accepted result or weakens per-item evidence.\n\n## Authority And Effects\n\nThe successor is limited to outcome-preserving local fixture work. It does not authorize population changes, weaker proof, protected semantic decisions, deployment, network access, or external mutation.\n"
+      },
+      "before": null,
+      "path": "openspec/changes/trajectory-successor/design.md"
+    },
+    {
+      "after": {
+        "sha256": "5635fb6d5d5d206b723bd0bb235d69c52da3124fc912068273352a04d2196f5b",
+        "text": "## Why\n\nThe current and prior linked changes repeat item-specific setup around one shared fixture mechanism. Centralizing the item-independent setup removes that repeated touch while retaining the irreducible per-item work needed by the `phase-fixture` exit predicate.\n\n## Outcome Capsule\n\n- **Outcome:** Centralize fixture setup in the existing shared mechanism while preserving accepted behavior and item-specific proof for the unchanged accepted population.\n- **Operating Envelope:** One disposable local fixture capability and its current accepted item population, with no external effects.\n- **Non-Goals:** Changing fixture behavior, population, per-item proof, proof strength, invariants, protected semantics, or any external system.\n- **Non-Deferrable Invariants:** Every accepted item retains its item-specific execution and proof; accepted behavior, containment, and owner boundaries remain unchanged.\n- **Observable Proof:** Every accepted item uses the centralized setup and independently demonstrates the same accepted behavior and per-item result.\n- **Material Residual Risks:** Evidence and applicability remain bounded to the reviewed configured fixture case; per-item proof remains irreducible.\n- **Stop Line:** Stop if centralization changes accepted semantics, omits an accepted item, weakens per-item proof, or requires a protected or external effect.\n- **Delivery Horizon:** phase-fixture\n- **Automation Dividend:** Replace repeated item-specific setup with one shared setup path while retaining automated per-item processing and proof.\n- **Bounded Falsification Review:** The earliest accepted fixture item must fail visibly if the centralized setup cannot preserve its item-specific behavior and proof.\n\n## Claim And Evidence Scope\n\n- **Claim And Evidence Scope:** The exact configured repeated-touch case and its current accepted fixture population; no broader population, compatibility, or protected-semantics claim.\n\n## What Changes\n\n- Move item-independent fixture setup into the existing shared fixture mechanism.\n- Keep item-specific execution and proof for every accepted item.\n- Validate unchanged behavior, population, proof strength, invariants, non-goals, and protected semantics.\n"
+      },
+      "before": null,
+      "path": "openspec/changes/trajectory-successor/proposal.md"
+    },
+    {
+      "after": {
+        "sha256": "a373720095b4b37c909539f30cb8710c405a4cdb710ba862c62915ea0d7585d8",
+        "text": "## ADDED Requirements\n\n### Requirement: Shared fixture setup preserves per-item outcomes\n\nThe fixture capability SHALL provide item-independent setup through one shared fixture mechanism for every item in the unchanged accepted population while preserving accepted behavior, proof strength, invariants, non-goals, and protected semantics.\n\n#### Scenario: An accepted item uses centralized setup\n\n- **WHEN** an accepted fixture item is prepared for execution\n- **THEN** the shared fixture mechanism provides its item-independent setup\n- **AND** the item's specific behavior and inputs remain unchanged\n\n#### Scenario: The accepted population retains per-item proof\n\n- **WHEN** the fixture capability validates the accepted population\n- **THEN** every accepted item executes and reports its result independently\n- **AND** no item's proof is inferred from another item or from the shared setup\n"
+      },
+      "before": null,
+      "path": "openspec/changes/trajectory-successor/specs/fixture-capability/spec.md"
+    },
+    {
+      "after": {
+        "sha256": "fd1feb2e4968397b7d67c1515e701484b0d0292dd4c917cb54c53cf393208a0f",
+        "text": "## Tasks\n\n- [ ] 1.1 Centralize item-independent setup in the existing shared fixture mechanism without changing accepted behavior, population, invariants, or protected semantics. [automation-dividend]\n- [ ] 1.2 Route every accepted fixture item through the centralized setup while retaining item-specific execution and failure visibility.\n- [ ] 1.3 Prove the earliest accepted item preserves its behavior and item-specific result at the real fixture boundary.\n- [ ] 1.4 Prove every item in the unchanged accepted population independently and confirm proof strength, non-goals, containment, and cleanup remain unchanged.\n"
+      },
+      "before": null,
+      "path": "openspec/changes/trajectory-successor/tasks.md"
+    },
+    {
+      "after": {
+        "sha256": "6ab6062a7736cb3c35c35f656eacafb87d3be76ed6f68453ddcba3380b0e9fef",
+        "text": "# fixture-capability Specification\n\n## Purpose\n\nDefines a stable disposable capability used to prove configured OpenSpec archive and trajectory routing without external effects.\n\n## Requirements\n\n### Requirement: Fixture capability remains observable\n\nThe fixture SHALL preserve one locally observable capability through canonical OpenSpec archive processing.\n\n#### Scenario: Fixture is ready\n\n- **WHEN** the disposable fixture is validated\n- **THEN** its capability remains locally observable.\n\n### Requirement: Current fixture archive marker remains observable\n\nThe fixture SHALL preserve a current marker after canonical archive processing.\n\n#### Scenario: Current marker is archived\n\n- **WHEN** the current linked change is archived\n- **THEN** the current marker remains observable in the synchronized specification.\n"
+      },
+      "before": {
+        "sha256": "0049e80803ca3b2c1dc6144924ea0e4c7704ec0cc317d59834aaca69fa0eff89",
+        "text": "# fixture-capability Specification\n\n## Purpose\n\nDefines a stable disposable capability used to prove configured OpenSpec archive and trajectory routing without external effects.\n\n## Requirements\n\n### Requirement: Fixture capability remains observable\n\nThe fixture SHALL preserve one locally observable capability through canonical OpenSpec archive processing.\n\n#### Scenario: Fixture is ready\n\n- **WHEN** the disposable fixture is validated\n- **THEN** its capability remains locally observable.\n"
+      },
+      "path": "openspec/specs/fixture-capability/spec.md"
+    },
+    {
+      "after": {
+        "sha256": "c07f8ac62e1a1b8e66340d904e89563938af97a681af973dee49009ac5332baa",
+        "text": "{\n  \"relativePath\": \"openspec/delivery-horizons/phase-fixture/reviews/473be24fb1c0a54aaf3f77d93ccc0a5f4a5a46bc9803d74f34b3d8dc825e82ac.json\",\n  \"receipt\": {\n    \"schemaVersion\": 1,\n    \"horizonId\": \"phase-fixture\",\n    \"archiveIdentity\": {\n      \"archiveId\": \"2026-08-29-trajectory-current\",\n      \"archiveRef\": \"openspec/changes/archive/2026-08-29-trajectory-current/proposal.md\",\n      \"contentDigest\": \"12d2f1ffdd9b60dadc5cf203708017105881a39a3b6be948f945b374f475e153\"\n    },\n    \"reviewedAt\": \"2026-08-29T00:00:00.000Z\",\n    \"decisionContext\": [\n      {\n        \"ref\": \"openspec/delivery-horizons/phase-fixture/horizon.json\",\n        \"contentDigest\": \"3cd5daf669f01a482db3e045d11f694e3da48d40123f85dce9a6cb63a8b4dc59\"\n      },\n      {\n        \"ref\": \"docs/outcome.md\",\n        \"contentDigest\": \"5fab8d031ee7225eadb758ef7a3242ef4d7a62f256be24e51f9be4b53bb96464\"\n      },\n      {\n        \"ref\": \"docs/exit.md\",\n        \"contentDigest\": \"13a2a180f950d70263bc3980195035256d5de017c6087dcd4c4682be53d745de\"\n      },\n      {\n        \"ref\": \"docs/invariants.md\",\n        \"contentDigest\": \"f6e992fc82746a7666205f039e653d08fa1b908040a1b25bd166a62c07a7ba9b\"\n      },\n      {\n        \"ref\": \"docs/non-goals.md\",\n        \"contentDigest\": \"802216dd7e3ac99c16b64a889e2e1af3ce4f6e74959fa87d739ffcd83a8fc8d2\"\n      }\n    ],\n    \"triggerEvidence\": [\n      {\n        \"ref\": \"docs/repeated-touch.md\",\n        \"contentDigest\": \"68b4efa0a6269e05e0a64d9fcbb695c0d54fbf43db93aab938387c805fe9e05f\"\n      }\n    ],\n    \"decisionContextDigest\": \"c7d9f6ecdccd0ca2c3dbbc5171546c81e5fd2dc12566727930d06ce26bd25587\",\n    \"triggerEvidenceDigest\": \"7fbd9443491a42016b7120b1c6ce4aaafd24abc2a3243792f529456c03776f5e\",\n    \"receiptKey\": \"473be24fb1c0a54aaf3f77d93ccc0a5f4a5a46bc9803d74f34b3d8dc825e82ac\",\n    \"triggerClass\": \"repeated-item-touch\",\n    \"costObservations\": {\n      \"engineeringSetup\": \"Repeated item-specific setup is available around one shared fixture mechanism.\",\n      \"proofValidation\": \"Per-item proof remains irreducible and unchanged.\",\n      \"externalRuntime\": \"No external runtime work exists in this disposable case.\",\n      \"coordinationRecovery\": \"One same-Horizon successor owns the setup change.\",\n      \"contextComprehension\": \"The shared fixture mechanism is explicitly named in current evidence.\"\n    },\n    \"forecast\": {\n      \"status\": \"at-risk\",\n      \"assumptions\": [\n        \"Repeated setup continues unchanged for the remaining fixture item.\"\n      ],\n      \"uncertainty\": \"This synthetic case does not establish a calendar duration.\"\n    },\n    \"disposition\": \"replan-outcome-preserving\",\n    \"successorRef\": \"openspec/changes/trajectory-successor/proposal.md\",\n    \"uncertainty\": \"Evidence is bounded to one reviewed disposable repeated-touch case.\",\n    \"doNotRepeatCondition\": \"Do not repeat for unchanged decision and trigger evidence.\",\n    \"retryCondition\": \"Retry only after materially changed trigger evidence.\"\n  }\n}\n"
+      },
+      "before": null,
+      "path": "receipt-result.json"
+    },
+    {
+      "after": {
+        "sha256": "9c84c83f16eac7e08472ba6e72575f817d48938c5ebf80342a8b3cf03dab2183",
+        "text": "{\n  \"archiveOrdering\": \"archive-id-lexical-ascending\",\n  \"archives\": [\n    {\n      \"archiveId\": \"2026-08-28-trajectory-prior\",\n      \"archivePath\": \"openspec/changes/archive/2026-08-28-trajectory-prior\",\n      \"current\": false,\n      \"files\": {\n        \"proposal\": {\n          \"bytes\": 841,\n          \"path\": \"openspec/changes/archive/2026-08-28-trajectory-prior/proposal.md\",\n          \"sha256\": \"89bfe58c89ff7f6463b84f72c34f64e32884a1f9e06e775665f39455d60c7ce7\",\n          \"support\": \"present\"\n        },\n        \"tasks\": {\n          \"bytes\": 60,\n          \"path\": \"openspec/changes/archive/2026-08-28-trajectory-prior/tasks.md\",\n          \"sha256\": \"667b38941039bfedc2e0861bc95e912a8b3316558e2e72cd698d391e1cc454d1\",\n          \"support\": \"present\"\n        },\n        \"history\": {\n          \"bytes\": 83,\n          \"path\": \"openspec/changes/archive/2026-08-28-trajectory-prior/history.md\",\n          \"sha256\": \"ed68ef9170eb820e884954e397fad8236b839bf936c5bf88dd751a4200f602e4\",\n          \"support\": \"present\"\n        },\n        \"evidenceIndex\": {\n          \"bytes\": null,\n          \"path\": \"openspec/changes/archive/2026-08-28-trajectory-prior/evidence-index.json\",\n          \"sha256\": null,\n          \"support\": \"missing\"\n        }\n      },\n      \"linkage\": {\n        \"horizonId\": \"phase-fixture\",\n        \"state\": \"linked\"\n      }\n    },\n    {\n      \"archiveId\": \"2026-08-29-trajectory-current\",\n      \"archivePath\": \"openspec/changes/archive/2026-08-29-trajectory-current\",\n      \"current\": true,\n      \"files\": {\n        \"proposal\": {\n          \"bytes\": 1202,\n          \"path\": \"openspec/changes/archive/2026-08-29-trajectory-current/proposal.md\",\n          \"sha256\": \"12d2f1ffdd9b60dadc5cf203708017105881a39a3b6be948f945b374f475e153\",\n          \"support\": \"present\"\n        },\n        \"tasks\": {\n          \"bytes\": 57,\n          \"path\": \"openspec/changes/archive/2026-08-29-trajectory-current/tasks.md\",\n          \"sha256\": \"e1494c018c1695265ec54cfb5cf7ddebd39c9a604b00cac34a896cf3d746851f\",\n          \"support\": \"present\"\n        },\n        \"history\": {\n          \"bytes\": 99,\n          \"path\": \"openspec/changes/archive/2026-08-29-trajectory-current/history.md\",\n          \"sha256\": \"f889c014deda252c515e9f36ca96f8a7868d1ba5750fbf23ee3d4946b3bfe481\",\n          \"support\": \"present\"\n        },\n        \"evidenceIndex\": {\n          \"bytes\": 984,\n          \"path\": \"openspec/changes/archive/2026-08-29-trajectory-current/evidence-index.json\",\n          \"sha256\": \"115b3fd615967c6693286c286f160822957b7cbc4d37f9a5e80ec0d0425b55ab\",\n          \"support\": \"present\"\n        }\n      },\n      \"linkage\": {\n        \"horizonId\": \"phase-fixture\",\n        \"state\": \"linked\"\n      }\n    }\n  ],\n  \"bounds\": {\n    \"byteAccounting\": \"distinct-project-relative-file-bytes-once\",\n    \"hard\": {\n      \"maxArchives\": 64,\n      \"maxBytes\": 8388608,\n      \"timeoutMs\": 120000\n    },\n    \"requested\": {\n      \"maxArchives\": 8,\n      \"maxBytes\": 2097152,\n      \"timeoutMs\": 30000\n    },\n    \"used\": {\n      \"archives\": 2,\n      \"bytes\": 4082,\n      \"filesRead\": 12\n    }\n  },\n  \"effects\": {\n    \"gitOperations\": 0,\n    \"modelCalls\": 0,\n    \"networkCalls\": 0,\n    \"openSpecOperations\": 0,\n    \"processStarts\": 0,\n    \"providerCalls\": 0,\n    \"writes\": 0\n  },\n  \"horizon\": {\n    \"file\": {\n      \"bytes\": 312,\n      \"path\": \"openspec/delivery-horizons/phase-fixture/horizon.json\",\n      \"sha256\": \"3cd5daf669f01a482db3e045d11f694e3da48d40123f85dce9a6cb63a8b4dc59\",\n      \"support\": \"present\"\n    },\n    \"id\": \"phase-fixture\",\n    \"requirements\": [\n      {\n        \"bytes\": 96,\n        \"kind\": \"outcome\",\n        \"order\": 0,\n        \"path\": \"docs/outcome.md\",\n        \"sha256\": \"5fab8d031ee7225eadb758ef7a3242ef4d7a62f256be24e51f9be4b53bb96464\",\n        \"support\": \"present\"\n      },\n      {\n        \"bytes\": 133,\n        \"kind\": \"exit-predicate\",\n        \"order\": 1,\n        \"path\": \"docs/exit.md\",\n        \"sha256\": \"13a2a180f950d70263bc3980195035256d5de017c6087dcd4c4682be53d745de\",\n        \"support\": \"present\"\n      },\n      {\n        \"bytes\": 110,\n        \"kind\": \"non-deferrable-invariant\",\n        \"order\": 2,\n        \"path\": \"docs/invariants.md\",\n        \"sha256\": \"f6e992fc82746a7666205f039e653d08fa1b908040a1b25bd166a62c07a7ba9b\",\n        \"support\": \"present\"\n      },\n      {\n        \"bytes\": 105,\n        \"kind\": \"non-goal\",\n        \"order\": 3,\n        \"path\": \"docs/non-goals.md\",\n        \"sha256\": \"802216dd7e3ac99c16b64a889e2e1af3ce4f6e74959fa87d739ffcd83a8fc8d2\",\n        \"support\": \"present\"\n      }\n    ],\n    \"schemaVersion\": 1,\n    \"window\": {\n      \"start\": \"2026-08-01T00:00:00.000Z\",\n      \"usefulBy\": \"2026-10-01T00:00:00.000Z\"\n    }\n  },\n  \"privacy\": {\n    \"absolutePathsEmitted\": false,\n    \"projectRoot\": \"<project>\",\n    \"rootDigestEmitted\": false,\n    \"sourcePayloadsEmitted\": false,\n    \"untrackedContentsEmitted\": false\n  },\n  \"schemaVersion\": 1,\n  \"semanticInference\": false,\n  \"status\": \"complete\"\n}\n"
+      },
+      "before": null,
+      "path": "trajectory-context.json"
+    },
+    {
+      "after": {
+        "sha256": "10580d439d8c90a47063250a552724b8cc5f85e0033eb8aab63385338b1f8d8e",
+        "text": "{\n  \"archive\": \"archived\",\n  \"archiveId\": \"2026-08-29-trajectory-current\",\n  \"trajectory\": \"review-required\",\n  \"horizonId\": \"phase-fixture\",\n  \"disposition\": \"replan-outcome-preserving\",\n  \"uncertainty\": \"Evidence is bounded to one reviewed disposable repeated-touch case.\",\n  \"externalEffects\": \"none\"\n}\n"
+      },
+      "before": null,
+      "path": "trajectory-result.json"
+    }
+  ],
+  "cleanup": {
+    "complete": true,
+    "fixtureRemoved": true,
+    "processesRemoved": true,
+    "sessionsRemoved": true
+  },
+  "diagnosticOnly": true,
+  "digest": "6369a27348f2fefe2fb6dc42725dd1c9b93840e717b0ec8d82d67452e9fc8236",
+  "elapsedMs": 162263,
+  "environment": {
+    "configuredRoute": "openai/gpt-5.6-sol/xhigh",
+    "modelsCatalogSha256": "56497d83d55d2529dff74b33d3cad47a050df0ca56a5b1fb2b28340c9488f1a0",
+    "openCode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "resolvedRoute": "openai/gpt-5.6-sol/xhigh",
+    "runtimeManifest": [
+      {
+        "bytes": 4425514,
+        "path": "cache/opencode/models.json",
+        "sha256": "56497d83d55d2529dff74b33d3cad47a050df0ca56a5b1fb2b28340c9488f1a0"
+      },
+      {
+        "bytes": 63,
+        "path": "candidate-config/.gitignore",
+        "sha256": "663a068e76d264d0bc6740f5450b6c4193c7b41ecf5e0dc222485b8a17404d95"
+      },
+      {
+        "bytes": 12631,
+        "path": "candidate-config/.runtime-surface.json",
+        "sha256": "5337d5852534f74373fe11cf0049d3c4eda889a23c061dabb33f1e7ee8686a65"
+      },
+      {
+        "bytes": 3250,
+        "path": "candidate-config/agents/code-quality-reviewer.md",
+        "sha256": "8537df992144d32dc542f12a50d9bc38963b334919d34c46acdef6200073b06c"
+      },
+      {
+        "bytes": 5384,
+        "path": "candidate-config/agents/evidence-sufficiency-reviewer.md",
+        "sha256": "84237b7be9802d97ffc5a2c58baf8a71bfd83fec383e5fae701e061ea627414f"
+      },
+      {
+        "bytes": 2369,
+        "path": "candidate-config/agents/execution-safety-reviewer.md",
+        "sha256": "28d546e65f36908a9d573c384974cd2ed8ec034361f17de4b92c15427cb68a0e"
+      },
+      {
+        "bytes": 4673,
+        "path": "candidate-config/agents/foundation-integrity-reviewer.md",
+        "sha256": "8a35e41011f9efb0ded66f2d271bc0aa8f175653978d40979062c074f044d434"
+      },
+      {
+        "bytes": 6855,
+        "path": "candidate-config/agents/implementation-readiness-reviewer.md",
+        "sha256": "88dda78612b59710886924f70785b54cfbad03ea8d8db9cd16f22445177c9dbb"
+      },
+      {
+        "bytes": 8690,
+        "path": "candidate-config/agents/implementation-worker.md",
+        "sha256": "34db3304ab8289d1ddb4f39410ea88eb9038639afd3687512debcec5c01190ca"
+      },
+      {
+        "bytes": 5248,
+        "path": "candidate-config/agents/instruction-artifact-reviewer.md",
+        "sha256": "999571ec5142663f1c27c226ed8d00cc4d741c40a1c2a8fae51ecf1b2721f468"
+      },
+      {
+        "bytes": 3408,
+        "path": "candidate-config/agents/openspec-architecture-reviewer.md",
+        "sha256": "f30148b923ebcac3f4eb3765c999d81317e44706b3deb0cfb0fe7af5334ca77d"
+      },
+      {
+        "bytes": 5493,
+        "path": "candidate-config/agents/sdet-quality-engineer.md",
+        "sha256": "bb946d0c3aa9b1d6830fcff29b757667c2b3617329f7a627dbea77bfb9321afc"
+      },
+      {
+        "bytes": 5583,
+        "path": "candidate-config/agents/specialist-team-advisor.md",
+        "sha256": "74dcda8de3b67f11f07eaa4276e20cd1f97643e9a8bc57c019ae2eb6d9c139cc"
+      },
+      {
+        "bytes": 6708,
+        "path": "candidate-config/agents/test-coverage-reviewer.md",
+        "sha256": "0919b500d95ce0ad33e3bc06de38137b737bc2b7782681a34f5e6bb4b5758dfa"
+      },
+      {
+        "bytes": 8973,
+        "path": "candidate-config/agents/troubleshooter.md",
+        "sha256": "db0b2988e2c4d572aab597661bab6fcfde72a9f452360427a88d4130a8125d30"
+      },
+      {
+        "bytes": 46528,
+        "path": "candidate-config/AGENTS.md",
+        "sha256": "9791de01fc4a36a08c55fb416c22d4a11efad313cf9e9f68bdab305db1c11493"
+      },
+      {
+        "bytes": 17137,
+        "path": "candidate-config/bin/complexity-foraging-contract.ts",
+        "sha256": "8af6ecbb3236221504d2d6d89bc28254d7ef55b1b9cdf17b1f6d813ad4814b0e"
+      },
+      {
+        "bytes": 28777,
+        "path": "candidate-config/bin/complexity-foraging-inventory.ts",
+        "sha256": "93f77a9b561a22776db65c04febdf1591b8e2d7ee622655ad64754540b0a74b9"
+      },
+      {
+        "bytes": 36295,
+        "path": "candidate-config/bin/delivery-trajectory-context.ts",
+        "sha256": "50e0331ffa4253132d6d49a2e46fbc766a90870283efd023e05f59402cfee39a"
+      },
+      {
+        "bytes": 11683,
+        "path": "candidate-config/bin/openspec-archive.ts",
+        "sha256": "b7fcb48d8082afb176733e73cbad5221d6e428d9398c340a601b11081ad5cfe0"
+      },
+      {
+        "bytes": 28127,
+        "path": "candidate-config/bin/openspec-change/claims.ts",
+        "sha256": "9f0c2720fe8617f5aa407eaee7db7bca29f76a1f798f2011a45681261eadbfd4"
+      },
+      {
+        "bytes": 31097,
+        "path": "candidate-config/bin/openspec-change/delivery-horizon.ts",
+        "sha256": "19784cadf302749699e453d1d3b08136cb83ddb7810ed046cfe44f43a9fcd7f5"
+      },
+      {
+        "bytes": 22177,
+        "path": "candidate-config/bin/openspec-change/evidence.ts",
+        "sha256": "f1f9e885ddd9b1bcfbf177269f7b5358b172323fce59c10ae2e01c230369bdff"
+      },
+      {
+        "bytes": 10118,
+        "path": "candidate-config/bin/openspec-change/gate.ts",
+        "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+      },
+      {
+        "bytes": 16901,
+        "path": "candidate-config/bin/openspec-change/inventory.ts",
+        "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+      },
+      {
+        "bytes": 4635,
+        "path": "candidate-config/bin/openspec-change/manifest.ts",
+        "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+      },
+      {
+        "bytes": 16721,
+        "path": "candidate-config/bin/openspec-change/ownership.ts",
+        "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+      },
+      {
+        "bytes": 10120,
+        "path": "candidate-config/bin/openspec-change/state.ts",
+        "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+      },
+      {
+        "bytes": 14836,
+        "path": "candidate-config/bin/portable-process.ts",
+        "sha256": "53fbe318e14a1b2568f722314e66f473503c02d35d39d1e269c1b512ed50b49f"
+      },
+      {
+        "bytes": 361,
+        "path": "candidate-config/commands/opsx-apply.md",
+        "sha256": "0cfda88d6eeba69bd96373cac8530fffdf595c8cc002a952d3d6509ccccaa109"
+      },
+      {
+        "bytes": 393,
+        "path": "candidate-config/commands/opsx-archive.md",
+        "sha256": "c2894eeade36ef1a6fd4e58ca5d4cc32fe34d04666f4fe81738f41d46b650b7b"
+      },
+      {
+        "bytes": 375,
+        "path": "candidate-config/commands/opsx-propose.md",
+        "sha256": "57c5bc28722cd6b7aae7290a1494b6814912f8c8213df514f58cbac1f8bb6e00"
+      },
+      {
+        "bytes": 14484,
+        "path": "candidate-config/extensions/specialist-catalog.ts",
+        "sha256": "34cf5034f681ae0a490c636a76614996ed6ca3a7d870d9551d1dadacbf8dca73"
+      },
+      {
+        "bytes": 433,
+        "path": "candidate-config/node_modules/.bin/download-msgpackr-prebuilds",
+        "sha256": "2a724fd969f81ab4398677c27929b42f47fea3deef75e1ba69da544d06892764"
+      },
+      {
+        "bytes": 347,
+        "path": "candidate-config/node_modules/.bin/download-msgpackr-prebuilds.cmd",
+        "sha256": "6a51303e514b4cd98080d58e56387e83cabb521239b7417152ced91111066f96"
+      },
+      {
+        "bytes": 893,
+        "path": "candidate-config/node_modules/.bin/download-msgpackr-prebuilds.ps1",
+        "sha256": "435f76c83f9c027a05a7432a14d706ae46adc768293c2c1789e89d19819001b4"
+      },
+      {
+        "bytes": 427,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages",
+        "sha256": "370cd1adf49660bf0e7fffbf40d199589e04533d483f67d98aac00cbb4d40885"
+      },
+      {
+        "bytes": 437,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages-optional",
+        "sha256": "b41a0adc2f71a24f6a97618f8f4756194867a2cae3d3b9a3b39bb919ea198d0f"
+      },
+      {
+        "bytes": 349,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages-optional.cmd",
+        "sha256": "625648271b984e25982ff1825af34db1285fe2cf4ab26ce68d9fc24d408dd200"
+      },
+      {
+        "bytes": 901,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages-optional.ps1",
+        "sha256": "12fafb4bcb38df8b44fd7b7261cdf30a633e982c8adf884e7241ba11589f5e02"
+      },
+      {
+        "bytes": 441,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages-test",
+        "sha256": "c63fb3b436078861d787afdacc412617bd0874454b8de32ae1a865ae12ca5a3f"
+      },
+      {
+        "bytes": 351,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages-test.cmd",
+        "sha256": "214c81947b09398897b161b930066f70d8d0ba4e2f4b3469585f823113db9680"
+      },
+      {
+        "bytes": 909,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages-test.ps1",
+        "sha256": "ccb907ca4726e038e7ee37a304dafad1351080fc7acf404d2aca4e396bdc3b26"
+      },
+      {
+        "bytes": 344,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages.cmd",
+        "sha256": "d55766613db490f35ea234a2c34a09af614016e5b22e75d7b4cc0b0ad24c6969"
+      },
+      {
+        "bytes": 881,
+        "path": "candidate-config/node_modules/.bin/node-gyp-build-optional-packages.ps1",
+        "sha256": "a5c686840e32b57fb4faf7d72026451aa3e1f7c6131dee11992cd74247e91422"
+      },
+      {
+        "bytes": 389,
+        "path": "candidate-config/node_modules/.bin/node-which",
+        "sha256": "ae614137ec19cd41eab2f7a85cc508e6a19042b0dda0a2815c07e5fb43a6e059"
+      },
+      {
+        "bytes": 325,
+        "path": "candidate-config/node_modules/.bin/node-which.cmd",
+        "sha256": "818856453703b9e61de47223e7505ad77cb4f40f456e348dae2ca9cd501abad0"
+      },
+      {
+        "bytes": 805,
+        "path": "candidate-config/node_modules/.bin/node-which.ps1",
+        "sha256": "d293014f7b06fffc145f94cd02bd82b53c2dbbc3eba99ff62dedf882adcc1711"
+      },
+      {
+        "bytes": 395,
+        "path": "candidate-config/node_modules/.bin/uuid",
+        "sha256": "09b97b0f6f9bd6a0221ce5aeb55dab7ec6bd57898ac9a1cb73183a14bb79de4f"
+      },
+      {
+        "bytes": 328,
+        "path": "candidate-config/node_modules/.bin/uuid.cmd",
+        "sha256": "7674e1c825a59a95f0b325e5882b96fac1992b68c18d61e24fc74b07778775aa"
+      },
+      {
+        "bytes": 817,
+        "path": "candidate-config/node_modules/.bin/uuid.ps1",
+        "sha256": "4aad1bb01930fe546e42a4ca95fbd71daf2c8274f3e198625e5987e43df2a5f9"
+      },
+      {
+        "bytes": 373,
+        "path": "candidate-config/node_modules/.bin/yaml",
+        "sha256": "16d4e808827daf638b1f0fc3f7f56de0e5f3a5e2950b0b8ef7535cdf4724bce6"
+      },
+      {
+        "bytes": 317,
+        "path": "candidate-config/node_modules/.bin/yaml.cmd",
+        "sha256": "fd3e6538ec1018083ba89d43d80b406fc13ae722b7a5ba512211d70965d3f50a"
+      },
+      {
+        "bytes": 773,
+        "path": "candidate-config/node_modules/.bin/yaml.ps1",
+        "sha256": "33e7d103b962140a5b3a797f1344e2299c31521c4486683c69e09c2310158c70"
+      },
+      {
+        "bytes": 12168,
+        "path": "candidate-config/node_modules/.package-lock.json",
+        "sha256": "261a8d72bb845d76a8a7595ac165a917bc68c0a17a4947bf76d4ab30aef339dc"
+      },
+      {
+        "bytes": 22998,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/CHANGELOG.md",
+        "sha256": "10730ae593d146d02ca483157fc1cab14fef76b331481e04daf2878c31b0322c"
+      },
+      {
+        "bytes": 129727,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/dist/index.d.mts",
+        "sha256": "6ff4c27ce1c30040730481cab949bf344938252c250111642ae5e12c51de8324"
+      },
+      {
+        "bytes": 129727,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/dist/index.d.ts",
+        "sha256": "6ff4c27ce1c30040730481cab949bf344938252c250111642ae5e12c51de8324"
+      },
+      {
+        "bytes": 13933,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/dist/index.js",
+        "sha256": "4f3a232f9f98f225bf0ee3ac5a264e05e975233c8b74c5bdd50b38576e02eef1"
+      },
+      {
+        "bytes": 25245,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/dist/index.js.map",
+        "sha256": "a00de6fbda169b4ff856a70d9c71fadfecfbde6e0ec9931c5e41675d2bfddf41"
+      },
+      {
+        "bytes": 12081,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/dist/index.mjs",
+        "sha256": "7f543e6fe850de4cc0c547d4a0281b65c6b5897d163627c4fa6fccd67e1200ac"
+      },
+      {
+        "bytes": 24441,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/dist/index.mjs.map",
+        "sha256": "8d5aa622dbaccfe1c43a9570fe994f58f1742edeb0ccc2aa2be810ee66672771"
+      },
+      {
+        "bytes": 552,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/LICENSE",
+        "sha256": "b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529"
+      },
+      {
+        "bytes": 1452,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/package.json",
+        "sha256": "dbb3c1855b5dd36804d968b962521bd424511b070ce72233dc83f46ffa30750d"
+      },
+      {
+        "bytes": 49,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/README.md",
+        "sha256": "4fa049bf3e6a3ae7a95e4db42a88d5a983a64b83189b2e4317457353c8814e60"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 189,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v2/embedding-model-v2-embedding.ts",
+        "sha256": "2126b8d80874bf0be5eb8e9efa8580109909060a22cca4b0f7309b4c2bc24cf8"
+      },
+      {
+        "bytes": 3044,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v2/embedding-model-v2.ts",
+        "sha256": "0feef5ca866cadd4eaa2fc080950a9383284297ce2353450369d396722aec65f"
+      },
+      {
+        "bytes": 86,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v2/index.ts",
+        "sha256": "f9b8bfa1bcfc8fe084a6ba96ae82174095fb433cead55af2e5272e01c9c8611f"
+      },
+      {
+        "bytes": 706,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3-call-options.ts",
+        "sha256": "2319516f4354eb385296369b6dadd2f8e9b53414bd423fcab30a472fb999c327"
+      },
+      {
+        "bytes": 189,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3-embedding.ts",
+        "sha256": "1a5f8e385fa8d5bb66197cdc1b157b28439d14c508322a40345484203693f194"
+      },
+      {
+        "bytes": 1098,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3-result.ts",
+        "sha256": "f439ed40f5a18cbdb328992671d65802e3e76365c6163e93071d91729efe0280"
+      },
+      {
+        "bytes": 1537,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v3/embedding-model-v3.ts",
+        "sha256": "e1a7fbaac71640122770b39aa5d847a7998572c7676f441f4eea5b6c595523f2"
+      },
+      {
+        "bytes": 182,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model/v3/index.ts",
+        "sha256": "a04840a21876c0a97a9915ee0e5ec7212f75da29d33ab5bd1c5ad516f984c9c0"
+      },
+      {
+        "bytes": 28,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model-middleware/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 2669,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model-middleware/v3/embedding-model-v3-middleware.ts",
+        "sha256": "40a8f34fa0dfbaf6ec1bd94eda56323861c6560ce8c69a7042e0ec609677e153"
+      },
+      {
+        "bytes": 49,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/embedding-model-middleware/v3/index.ts",
+        "sha256": "981dca53fcb08636c99a3e582deb50cd733d8cf4c18422a5f6ea8739e178ffb8"
+      },
+      {
+        "bytes": 1604,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/ai-sdk-error.ts",
+        "sha256": "d307f5fcfaeb9aba6ebd06dda911a75b0795671d13afd37a618b74e4a4f0b059"
+      },
+      {
+        "bytes": 1519,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/api-call-error.ts",
+        "sha256": "c5797b3db888abff0c9ef1778875dcc2cbca7ffaf6e2ac42d75ce54fb69d387b"
+      },
+      {
+        "bytes": 522,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/empty-response-body-error.ts",
+        "sha256": "5c7eee94765c3e4a7d89e3ff054884d07df1a0a966f28c9067942393b9f2b81f"
+      },
+      {
+        "bytes": 273,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/get-error-message.ts",
+        "sha256": "24f8f9029a8d37f77712e4e3ed598982bd8f2c35adedcd35703f8334c03e26aa"
+      },
+      {
+        "bytes": 1028,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/index.ts",
+        "sha256": "2ccb3b80ed96dc8f1eea1c4617b1576183c26534161ec1aeab39f998d250f517"
+      },
+      {
+        "bytes": 679,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/invalid-argument-error.ts",
+        "sha256": "d809723bb942b9b156ceb5dbb021b57dfbf837dee614f58fb36397842088bb4d"
+      },
+      {
+        "bytes": 763,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/invalid-prompt-error.ts",
+        "sha256": "6ee894e93007769570bd9a2aaa400abe2217e9d8f091957f3d8fee1fa11ffb6d"
+      },
+      {
+        "bytes": 797,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/invalid-response-data-error.ts",
+        "sha256": "f99e803be11fa773934be95b739bca88442dc583f32a2a784d99c8c75de08f4b"
+      },
+      {
+        "bytes": 734,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/json-parse-error.ts",
+        "sha256": "cc5c2e6a1d2973275fc84e4d4e78b77d5c39053e9ba47fdb042dcfbb627dd965"
+      },
+      {
+        "bytes": 471,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/load-<redacted-credential>-error.ts",
+        "sha256": "191dbc1714c09b77e1eda794d39603da76431f0ac1a2d361a151f2190a77192a"
+      },
+      {
+        "bytes": 474,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/load-setting-error.ts",
+        "sha256": "46baa0337cbd2c033961bedd5c8a75f6993cc4c96ae825f3020b5d2b0fadb756"
+      },
+      {
+        "bytes": 604,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/no-content-generated-error.ts",
+        "sha256": "5b49b40818d7b477b0734d4fe0dd55a7940303ade6f2c32d7fbf134318648914"
+      },
+      {
+        "bytes": 1081,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/no-such-model-error.ts",
+        "sha256": "a37504de4182d7a8974db731068f7181400165cd56ea2922be521f6a71e4eaa5"
+      },
+      {
+        "bytes": 1200,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/too-many-embedding-values-for-call-error.ts",
+        "sha256": "29e69aaa78b15993f4ecd498dac21093fb5ecf5e126b675250a933c9c0c126c7"
+      },
+      {
+        "bytes": 2879,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/type-validation-error.ts",
+        "sha256": "b94d1f99f03934e6f43a3efbfe44b6c140152c3d63d4df7acdafb62299271d36"
+      },
+      {
+        "bytes": 701,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/errors/unsupported-functionality-error.ts",
+        "sha256": "b266a4f0a683f5d9642a57656af32cd4320bd7a1e3671b96d080799ca942ce67"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 1404,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v2/image-model-v2-call-options.ts",
+        "sha256": "c0eb1cd04084a9a8ec10c4c9ddcecd10af6766c96d71773699f5d08ef3409b2b"
+      },
+      {
+        "bytes": 455,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v2/image-model-v2-call-warning.ts",
+        "sha256": "883fcf4109f8454f676e66d5e8cddf1cdaa2b2e2c42374fece983fb876b0a191"
+      },
+      {
+        "bytes": 3050,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v2/image-model-v2.ts",
+        "sha256": "b556eb60d0038c9e600216fa5c0d320321f6239e0d91de0292e427d0fd8b2714"
+      },
+      {
+        "bytes": 245,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v2/index.ts",
+        "sha256": "eb17aec505f2a262191cf82e0cd1edf9c4ac4ad70322ec326d6cfb2ab67d3b84"
+      },
+      {
+        "bytes": 1910,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3-call-options.ts",
+        "sha256": "f49002c815aa7ee6960295cd83271360b94b9d146ebb9b6ba1573ebc9008a291"
+      },
+      {
+        "bytes": 1224,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3-file.ts",
+        "sha256": "98d9b86de960ed435aaa62c8c35a81995400501bd436edcb0c4204216a6dca03"
+      },
+      {
+        "bytes": 411,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3-usage.ts",
+        "sha256": "827b4e5c596c1f82c45415ce0756ffcb7e88d6eb4909aace05ea41bb3d5dd307"
+      },
+      {
+        "bytes": 3234,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v3/image-model-v3.ts",
+        "sha256": "1a556e98a667a3f87872a529803e002bdb2548cf3881d0b56abb3818473a20f4"
+      },
+      {
+        "bytes": 295,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model/v3/index.ts",
+        "sha256": "5e5e1a9b1ed66c7367350e81ad263c37cef43272fab2fb4a6e4edf7f8b280a5d"
+      },
+      {
+        "bytes": 28,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model-middleware/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 2270,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model-middleware/v3/image-model-v3-middleware.ts",
+        "sha256": "42c09769706c0df306c4c726f0405aae91d44284d721ad6d0a22b9840f62718a"
+      },
+      {
+        "bytes": 45,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/image-model-middleware/v3/index.ts",
+        "sha256": "eb1910e6c2c0dedc290918305ca9098d95291cccf1ddf464ae0e26be47202d27"
+      },
+      {
+        "bytes": 636,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/index.ts",
+        "sha256": "a58b6c19ceeb60c09cf6a932c5c37c605df52f1040e0de22069a6b52eb5492ad"
+      },
+      {
+        "bytes": 138,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/json-value/index.ts",
+        "sha256": "fe407cdc70a15d9cd3a2b007f5efeff1e59e0d5fb9bb0ec2747d186c1777ac2e"
+      },
+      {
+        "bytes": 967,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/json-value/is-json.ts",
+        "sha256": "87e24cfd920242c2d422ff14c9fc7758dac6550f3ee63e0c6a5cf26f580f2bc8"
+      },
+      {
+        "bytes": 384,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/json-value/json-value.ts",
+        "sha256": "c7bbd280e0dcefbd547f042459880ea0bc78388f8fc3e368cadb95b499dc96ab"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 855,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/index.ts",
+        "sha256": "3903b0ebaf27c27f45c8e700551e66d4792ad59e1c84964f008f874c0f16a520"
+      },
+      {
+        "bytes": 3710,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-call-options.ts",
+        "sha256": "0c210f1a1d0f37e5694f01c812117b5f08262719eb404282660675094e9a83cc"
+      },
+      {
+        "bytes": 806,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-call-warning.ts",
+        "sha256": "15011ce76b5d7963a217374768a351f670574426cf3b186395a1bb69bff421d3"
+      },
+      {
+        "bytes": 620,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-content.ts",
+        "sha256": "a855ade86fc10f618f1983380f4f3c1960b81763242d17835eab18d66b9bba50"
+      },
+      {
+        "bytes": 156,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-data-content.ts",
+        "sha256": "37f7bc7ca1135d6083d0f73cbc8d9674ac1eda60520a01aa169a9d80b5633f8f"
+      },
+      {
+        "bytes": 810,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-file.ts",
+        "sha256": "8abc4d11568fd06903c5fc5b1235ad2235288769d3a5c6f84f861b3b9ce4d92f"
+      },
+      {
+        "bytes": 890,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-finish-reason.ts",
+        "sha256": "2142ccc52ceaea65a6771bf3a697354ff5e2a29dfc10196260f92299b86f2080"
+      },
+      {
+        "bytes": 1012,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-function-tool.ts",
+        "sha256": "e50e0577888a41a9ccdddfbdea0bdb83f733642376c44147c36e8429b5a7efd6"
+      },
+      {
+        "bytes": 5823,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-prompt.ts",
+        "sha256": "246106a29bf8907960152d3d4eec9df5454de6b9b5e113f19300ace49033a18a"
+      },
+      {
+        "bytes": 610,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-provider-defined-tool.ts",
+        "sha256": "e7329d0f0c598a3bc1187b8a826671a3b11c2b760a8040002719ed6ee983b7ce"
+      },
+      {
+        "bytes": 315,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-reasoning.ts",
+        "sha256": "32331c0484ad0b08ef77a1440636407b212130ac5b38dbecdd39ba48fa53f21d"
+      },
+      {
+        "bytes": 393,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-response-metadata.ts",
+        "sha256": "f68ea16b415a5785f5040b82946ebfcf748f25b1774702a17c7bce74217e803a"
+      },
+      {
+        "bytes": 1327,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-source.ts",
+        "sha256": "d8d086ad925ef38366727cf2bd27473b881c4ad105674fe165c3c720305d9bbb"
+      },
+      {
+        "bytes": 2815,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-stream-part.ts",
+        "sha256": "ccc85f18ddddac8f805cae49f3f76785473ba15024738b2e506615b41b89fa0b"
+      },
+      {
+        "bytes": 290,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-text.ts",
+        "sha256": "c2516b3acf09b57226b894e16718f1718c20c8a5a75e36b3d16f7f8302681dbc"
+      },
+      {
+        "bytes": 855,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-tool-call.ts",
+        "sha256": "d7e2128f55e4100fc4804d9749779ea2396b1959996b934ea5632f9a1aea814a"
+      },
+      {
+        "bytes": 311,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-tool-choice.ts",
+        "sha256": "b46ce9b5e843edb00ff3625e8bc06e18822ec4d0173147ab17aabd90b0b2ecfb"
+      },
+      {
+        "bytes": 1007,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-tool-result.ts",
+        "sha256": "c79bf6edb86bce5357d2596ba8625e806bc9518e2f27639e01d96c9aa13db3a2"
+      },
+      {
+        "bytes": 858,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2-usage.ts",
+        "sha256": "615e54f074afce86e86beffd73471b89f24bdedbd058d35327ea3823eefcb54d"
+      },
+      {
+        "bytes": 3915,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v2/language-model-v2.ts",
+        "sha256": "a5f7442fc61464f66ed398e150a60224508f1f43bb54e9a2d9a43315585a307f"
+      },
+      {
+        "bytes": 1009,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/index.ts",
+        "sha256": "2e3099977e8a062e3eecd87212303f414dd48d7b39ae7dcf8ab0e1c12ebdeb0c"
+      },
+      {
+        "bytes": 3680,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-call-options.ts",
+        "sha256": "42b0bd97e5b7b5a4eadb75ac21b7bed76a71286bb3132ebfe24e3d5728b3b687"
+      },
+      {
+        "bytes": 755,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-content.ts",
+        "sha256": "7a252861f0e2221bfc8cd90df9b7916e98b16b69c95f0993d589d78629923306"
+      },
+      {
+        "bytes": 156,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-data-content.ts",
+        "sha256": "65372fbf4f4e161e280069e59683e10b086f364be4188e795506ab02aaa7738a"
+      },
+      {
+        "bytes": 988,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-file.ts",
+        "sha256": "e7882d130b08a14fe2f38ff2963a03bc5f4341d32bd4341925164ae444364d44"
+      },
+      {
+        "bytes": 1115,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-finish-reason.ts",
+        "sha256": "96c33f5a48a57742389ff79f08c6c8b52691de34e7e3b37f951fde07ce78043e"
+      },
+      {
+        "bytes": 1523,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-function-tool.ts",
+        "sha256": "b542c1c85af887eb241dcbe9ac48729531f970adcb11de750f115d2380c04567"
+      },
+      {
+        "bytes": 1662,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-generate-result.ts",
+        "sha256": "0816546e458583e8df1989ccbc0e8a6c30fae4d3c2a1379d255775a4febba127"
+      },
+      {
+        "bytes": 10739,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-prompt.ts",
+        "sha256": "d4c7157dbbae9e025162364bcf15723a940409673b995aadf943a53e88df3e48"
+      },
+      {
+        "bytes": 755,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-provider-tool.ts",
+        "sha256": "5eff91a86be5f857affcec5fa724db9bbb6b3fb862861df0e5ccaa8ec3303c08"
+      },
+      {
+        "bytes": 315,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-reasoning.ts",
+        "sha256": "32b719b03319ad1d797600c790939a6b76fce39c9ee26cb34c953585736fca0a"
+      },
+      {
+        "bytes": 393,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-response-metadata.ts",
+        "sha256": "879347aeed956b70284e14e5c9b01eaa00e6b0ab1400378e6e3f177f2ac6532e"
+      },
+      {
+        "bytes": 1327,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-source.ts",
+        "sha256": "54dd6d1b10ed10ee8c098b14fc27200cb3225a8f0518cfef2bc080a3e8c1e292"
+      },
+      {
+        "bytes": 2976,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-stream-part.ts",
+        "sha256": "c7e3ab61e4f434f27a9f96a1ffc97be043885b5d255aef40f50e21be5fe8a23d"
+      },
+      {
+        "bytes": 646,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-stream-result.ts",
+        "sha256": "88a6e57fb1d3aabac50b48fae346061e6c133aef205de16ce004966dd0b6bb75"
+      },
+      {
+        "bytes": 290,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-text.ts",
+        "sha256": "35971d3c5f923af0153160684e21bb604cd26fafb904cc78b78352032cc48aa0"
+      },
+      {
+        "bytes": 812,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-approval-request.ts",
+        "sha256": "5f0eacb6a5824c910bc27f2c68e961d03f965ffc6f20bbcb7f39202aa76cd85b"
+      },
+      {
+        "bytes": 1036,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-call.ts",
+        "sha256": "93666fe66da088c80d174bb1dd6ff82758a726c71237af3356c3afa9f1282e19"
+      },
+      {
+        "bytes": 311,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-choice.ts",
+        "sha256": "b5516cbd1844fbe4d73f9d1ad676de87d8733d4c0126ed09b01e339069208a32"
+      },
+      {
+        "bytes": 1352,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-tool-result.ts",
+        "sha256": "e20186b5d81c2f40b5268f1400bcc255cffd31d8e8edbbd6602122c58288fe64"
+      },
+      {
+        "bytes": 1272,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3-usage.ts",
+        "sha256": "86914ff4c18bddadd8783dd54c25f59920e9596a63359fa5158caee597164980"
+      },
+      {
+        "bytes": 1882,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model/v3/language-model-v3.ts",
+        "sha256": "6b1565f37415310ad28d31735f476a16ad0bdffef2f758e3f4904538f47c2820"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model-middleware/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 48,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model-middleware/v2/index.ts",
+        "sha256": "2812006362b47947e2dfe4912c84404dbd79e93d55c8d58f34a791bbee883b06"
+      },
+      {
+        "bytes": 3486,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model-middleware/v2/language-model-v2-middleware.ts",
+        "sha256": "760ae29c2dd623b0155dce521562a37e29740c41eb614bc42272613c15f7b2b7"
+      },
+      {
+        "bytes": 48,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model-middleware/v3/index.ts",
+        "sha256": "1e274c7208e555a021fcb1f8290fd5a514f9fff81bf92a09fff26ec0bfdc3bf5"
+      },
+      {
+        "bytes": 3634,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/language-model-middleware/v3/language-model-v3-middleware.ts",
+        "sha256": "2a025df8a45bc4c2dfaff23f33cd51c7584a01cbd40a3cf07e3a696b5e6ad69d"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/provider/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 49,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/provider/v2/index.ts",
+        "sha256": "ca1c9bda6b44ae2262f719b6f769d21d0ace12de9e1c16d3b58fc88b0f253853"
+      },
+      {
+        "bytes": 2320,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/provider/v2/provider-v2.ts",
+        "sha256": "8b3cb66d07d757b2f3c204f16cbe5a81834adc8b5fcbbdb5c74302766b574b8a"
+      },
+      {
+        "bytes": 49,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/provider/v3/index.ts",
+        "sha256": "43b72f54e32e2add5626dcd9666e85630fe1253a24c4434f6db6976ed41824a5"
+      },
+      {
+        "bytes": 3295,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/provider/v3/provider-v3.ts",
+        "sha256": "3a10cfa2a022c3c479e73f6c4381f8d533d053e17db2f1b675e065c10a110780"
+      },
+      {
+        "bytes": 28,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/reranking-model/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 148,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/reranking-model/v3/index.ts",
+        "sha256": "a3b30fbb301344d350c1671fbe88e1dcf39d9a05a59f84c15ce7a8884cd4285b"
+      },
+      {
+        "bytes": 1070,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/reranking-model/v3/reranking-model-v3-call-options.ts",
+        "sha256": "a759ee131a3716fec6df8f28a2d5e36cd0363a812a237aed37bc7b102e471bf3"
+      },
+      {
+        "bytes": 2283,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/reranking-model/v3/reranking-model-v3.ts",
+        "sha256": "c562737c8b626c55916d6a47038cdc411ba4d2e84cd82c957a69bce53b598b54"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/index.ts",
+        "sha256": "68970c8ded28e4ccde5578fe2b6e99f622adcb20a629d5fd56746525c8ee994c"
+      },
+      {
+        "bytes": 130,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v2/index.ts",
+        "sha256": "669f0ed1514b5ada346046d2c55d19c1a271aa242bf4f8d849d3676bf6a534d9"
+      },
+      {
+        "bytes": 54,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v2/shared-v2-headers.ts",
+        "sha256": "3ead479bd20dbc7522c1ada3d4ac443535627416229c9d115eb6ec17169de709"
+      },
+      {
+        "bytes": 743,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v2/shared-v2-provider-metadata.ts",
+        "sha256": "8c863827d95355e1b98ef5e44b73d5ef52e75a757f332a6759dea18183fb4437"
+      },
+      {
+        "bytes": 730,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v2/shared-v2-provider-options.ts",
+        "sha256": "e31136a76c4dd7d073e882d270bc25d72289596f4b207589b1d74650ff00cf7f"
+      },
+      {
+        "bytes": 167,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v3/index.ts",
+        "sha256": "9fe31678b40c1bf037740725b065c2777058a929aaabfecbadc48751fccf1056"
+      },
+      {
+        "bytes": 54,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-headers.ts",
+        "sha256": "7f088bc70641ab1717285ddc553478ee500a45827068b196513cbfa8ce9bf05c"
+      },
+      {
+        "bytes": 723,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-provider-metadata.ts",
+        "sha256": "64c071b4fd680fba43d23645da9cf86c9e691bc2cba26f7309f1f9ea5d915f77"
+      },
+      {
+        "bytes": 716,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-provider-options.ts",
+        "sha256": "0b33abda9dc17e9d71d94e7bacc10ebafbf3e8739a15ab483074c06dfc0fdf73"
+      },
+      {
+        "bytes": 990,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/shared/v3/shared-v3-warning.ts",
+        "sha256": "912f75d7b4503aca020d96928eb65daac9167eaeb9beec0f17a1ceb331e91dd7"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/index.ts",
+        "sha256": "905563f3521e747a2c2d5d4f35609181a2c1f56ac485b01860fd1879bca20d91"
+      },
+      {
+        "bytes": 216,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/v2/index.ts",
+        "sha256": "fd6ca1625ab2e5595fa8b1162592bd0333d217371c223224967e6a682cc21e2f"
+      },
+      {
+        "bytes": 1526,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/v2/speech-model-v2-call-options.ts",
+        "sha256": "4c1b3fa81df82a1b9c3e0497ec0bb6245aeaeb15500964fafce646a8078dff0c"
+      },
+      {
+        "bytes": 459,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/v2/speech-model-v2-call-warning.ts",
+        "sha256": "99b90d2628d9c617e2724b8775b7eb6ad0e8464837b7acfd1ee71e86766a2d42"
+      },
+      {
+        "bytes": 2451,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/v2/speech-model-v2.ts",
+        "sha256": "616bad4192884f4f4dbc1ad0cb7ca07b1a1f286133e642c019774f7eb04e4a03"
+      },
+      {
+        "bytes": 136,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/v3/index.ts",
+        "sha256": "887b452cafdd6c2cb72ccd94f77657eccea33ceb7043fc399b9ed86563856232"
+      },
+      {
+        "bytes": 1512,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/v3/speech-model-v3-call-options.ts",
+        "sha256": "3f8bfcc24abc69e80b08d3a9840895f8fd84c754dfa18725535df851ac20b8ce"
+      },
+      {
+        "bytes": 2422,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/speech-model/v3/speech-model-v3.ts",
+        "sha256": "c0408a0d2bf77ab36ae20a2a6364255281593fd927f5bf238bac472995818d8b"
+      },
+      {
+        "bytes": 56,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/index.ts",
+        "sha256": "905563f3521e747a2c2d5d4f35609181a2c1f56ac485b01860fd1879bca20d91"
+      },
+      {
+        "bytes": 258,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/v2/index.ts",
+        "sha256": "a8f3618eff417ec044672104e3b03abf5c4e55dd1a17bd98bd215dea6bfe9b67"
+      },
+      {
+        "bytes": 1182,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/v2/transcription-model-v2-call-options.ts",
+        "sha256": "7e5f9e8ce4c2a91f5047c785f775e5378c0851fb03d456bddca9ca8d56c1d547"
+      },
+      {
+        "bytes": 487,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/v2/transcription-model-v2-call-warning.ts",
+        "sha256": "66f252666a820d085125784850fd693f4a72b8560d4f7dd6c3d3eaf927e81145"
+      },
+      {
+        "bytes": 3193,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/v2/transcription-model-v2.ts",
+        "sha256": "76619be41c446f5de45114b997d3caa056a1bb76dff0b8d0d4d3ee8f86069979"
+      },
+      {
+        "bytes": 164,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/v3/index.ts",
+        "sha256": "91507cebbfecc00382dd80781d65668949da013d151daffc1c79faa78394ca14"
+      },
+      {
+        "bytes": 1162,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/v3/transcription-model-v3-call-options.ts",
+        "sha256": "0637f368e30289af5f0db3b36d0fcdb62aeb31512232caf98c580ddd963ec0ba"
+      },
+      {
+        "bytes": 3143,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/transcription-model/v3/transcription-model-v3.ts",
+        "sha256": "cc51cd7b6a364cc3b3a20412f301618a6c53470d7fe0720aa703aa8a4b6c0611"
+      },
+      {
+        "bytes": 28,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/video-model/index.ts",
+        "sha256": "e5439f36875ff0cf4850030db7c13c67365fddf8f80a04efaf6912c3f92bf9b0"
+      },
+      {
+        "bytes": 363,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/video-model/v3/index.ts",
+        "sha256": "9fac0810005bd87872bf257593e9cdefcbeeac2d7902171092b2c26ffea03798"
+      },
+      {
+        "bytes": 2076,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/video-model/v3/video-model-v3-call-options.ts",
+        "sha256": "d7ccefe15424becf8cfb77e39aaeed4c7225c2243a1882b4b4b3cf4361939bd8"
+      },
+      {
+        "bytes": 1020,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/video-model/v3/video-model-v3-file.ts",
+        "sha256": "78f52d726fb78978fe7920f0e8f66c6a2eae49d726c199c70be95403ef7e85e8"
+      },
+      {
+        "bytes": 3579,
+        "path": "candidate-config/node_modules/@ai-sdk/provider/src/video-model/v3/video-model-v3.ts",
+        "sha256": "2d955d23f0d76858894ea72fb960974617c47f64eccac67d4f18737555d6cc85"
+      },
+      {
+        "bytes": 0,
+        "path": "candidate-config/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/index.js",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 112640,
+        "path": "candidate-config/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/node.abi115.node",
+        "sha256": "300b188fb8c997214cb65bf1b00729da293176c7d57035e40c2f432ea384dd89"
+      },
+      {
+        "bytes": 112640,
+        "path": "candidate-config/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/node.napi.node",
+        "sha256": "6958541c624784dfcebfc4f3c360c57f71cfeedd0530c2393845061729081a08"
+      },
+      {
+        "bytes": 377,
+        "path": "candidate-config/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/package.json",
+        "sha256": "5ca28cd9343e1d079307257ecc7e57249cb129448385cf797dbf4e69a950f71a"
+      },
+      {
+        "bytes": 79,
+        "path": "candidate-config/node_modules/@msgpackr-extract/msgpackr-extract-win32-x64/README.md",
+        "sha256": "6515d786bbf6a155c368ef74905e3447d3250d096e929f1392c6737d86d8e4d9"
+      },
+      {
+        "bytes": 141,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/example-workspace.d.ts",
+        "sha256": "da51d51412349664a3e2901d2b7ddcb75b3e4a2018b0f19bc692377619613af2"
+      },
+      {
+        "bytes": 938,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/example-workspace.js",
+        "sha256": "57aa0216a504b7264f21b5691ad548e42c44b9b17cf53ae04d57f8bd46d4a68c"
+      },
+      {
+        "bytes": 81,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/example.d.ts",
+        "sha256": "ba1871db5442e49c90630686e08323d6d8303b1749d0752646e69701572560e0"
+      },
+      {
+        "bytes": 440,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/example.js",
+        "sha256": "ab28bdefc32ebe226d115074e1a7f11f24bd321d799b45b5977428f76c1ae509"
+      },
+      {
+        "bytes": 9285,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/index.d.ts",
+        "sha256": "f3ec1a150d1354be3c9d93928fa130edc118c63fb468533ebb01eb3d6ed77f92"
+      },
+      {
+        "bytes": 27,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/index.js",
+        "sha256": "a3d26196e07062e858fc0ee44cfbddeb6143be740f9c93df4286b162a8b3e298"
+      },
+      {
+        "bytes": 3248,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/shell.d.ts",
+        "sha256": "340d8057526217987a3a797d93a03b6e6c9a9e1cd8e7c46a676ea008a710afe1"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/shell.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 1527,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/tool.d.ts",
+        "sha256": "5237b30a9b5a9a814f93327ce446e73b726da139fe2eba8edf88c4a45b4b8b2d"
+      },
+      {
+        "bytes": 92,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/tool.js",
+        "sha256": "a01230d42fa1055ddb4b378e0128f156e2db07f6f6eadbf2da174eb634380b16"
+      },
+      {
+        "bytes": 17573,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/tui.d.ts",
+        "sha256": "2f5b7db88c3659c04d2301d367eb1c7b6e8ee0038e8c6b3a2f53d89c053e445e"
+      },
+      {
+        "bytes": 480,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/tui.js",
+        "sha256": "47fa179cd59c815e42408472ee1ad87aaa33b40f5f8a741034ab0f0ef82897fb"
+      },
+      {
+        "bytes": 429,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.d.ts",
+        "sha256": "4103980b9c2366743c71529ddec86716be7ae8606a0b061e57fee805dc90ee1f"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/agent.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 529,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.d.ts",
+        "sha256": "9b5412f526686a59b852a7d1b7aa8d95330fe613cb35f08a2072e08423b2bcc3"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/aisdk.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 1119,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/catalog.d.ts",
+        "sha256": "2ac691ee45da364a65244b617b5c7c0ba2405297488e06645912b828331e720d"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/catalog.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 408,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/command.d.ts",
+        "sha256": "f62cb41feccecf37efafdbd60b87740bc273a9ce283d11e70ab35754c1e676ff"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/command.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 913,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/context.d.ts",
+        "sha256": "49215f2681483ab2e4af560010d8b87ab678c2c022a90a9baa33ee0356c58408"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/context.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 294,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/event.d.ts",
+        "sha256": "9113e8ed458d3258a6534d1f22fd26c97fea29f84bc331658fbcc50861506e66"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/event.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 718,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.d.ts",
+        "sha256": "411764ced63fd5fec73aacf2ee169008f1bb64889ce5dd37f6b53875e738fcf2"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/filesystem.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 132,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/index.d.ts",
+        "sha256": "9bcafa47a5e09d7a8602a775ea817b873325d9f9a5c95478671b4163a13e7694"
+      },
+      {
+        "bytes": 38,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/index.js",
+        "sha256": "32c069ba55d606f7b0ab14381c81594d925c71b32a188c983f21330106d3b15a"
+      },
+      {
+        "bytes": 2109,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/integration.d.ts",
+        "sha256": "4ba1672c6db7aaa02f8317c3e065dbc475710fae990997586db131869a5798e1"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/integration.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 129,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/location.d.ts",
+        "sha256": "40c80e330b06a9cc8625d976f20ae335bcd2bef7d35bdbf90cabeb79bc496daa"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/location.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 192,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/npm.d.ts",
+        "sha256": "87927ace689cd32e7b2045fcba64d631a2b48fd72f49decb7dc2341c1d6c2981"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/npm.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 192,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/path.d.ts",
+        "sha256": "52c4f54624a777e2bb82511ebcefdcdcadb70bd2418b5eddba895cbc93b1aee0"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/path.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 476,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/plugin.d.ts",
+        "sha256": "2858e232fae74e396f1eba0ea52356bf9bb70de88c8cd0ca40e348282a01fa91"
+      },
+      {
+        "bytes": 54,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/plugin.js",
+        "sha256": "5a9acae3250f1259b79ccd0c42f366fe863c19fea43fabb9eebc1108c349d61b"
+      },
+      {
+        "bytes": 446,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/reference.d.ts",
+        "sha256": "15ec06b9347bd0e826f49ca87c23affe20a1d4d1ef03729fb289a8e61cfd35a2"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/reference.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 378,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.d.ts",
+        "sha256": "0b5b803f64c79dc0c4d0924ad2279327837e6718ce41f5d3a759f428c17d116e"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/registration.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 287,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/skill.d.ts",
+        "sha256": "6bb1574452801c3a917e8103f1d1f6f130725c7cb8689694289b87361097b57b"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/effect/skill.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 59,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/options.d.ts",
+        "sha256": "da083f4e23582702a9df1025ef44123720198cd94b27a54f4c840ad87d6280c6"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/options.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 194,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/promise/agent.d.ts",
+        "sha256": "1df4fa59aeb449337f81af94dc08c649ced96d3ce80afe1eb6940c5418e95e2d"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/promise/agent.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 529,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/promise/aisdk.d.ts",
+        "sha256": "9b5412f526686a59b852a7d1b7aa8d95330fe613cb35f08a2072e08423b2bcc3"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/promise/aisdk.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 250,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/promise/catalog.d.ts",
+        "sha256": "b54d1791f837d9b281b93a277dabc1d8597a99333aaad34c74e442b3a6cf71e4"
+      },
+      {
+        "bytes": 11,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/promise/catalog.js",
+        "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+      },
+      {
+        "bytes": 204,
+        "path": "candidate-config/node_modules/@opencode-ai/plugin/dist/v2/promise/command.d.ts",
+        "sha256": "f8f63184f58bcdc59142950d44a00fa5bf88c3f19e98ea6c2f0a3c05ddcfe66e"
+      }
+    ],
+    "startupFacts": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    }
+  },
+  "files": {
+    "after": [
+      {
+        "path": "archive-result.json",
+        "sha256": "6a41ddd78d7f126df2917421940e14449d5e949fa40708fd1afec91dce718736"
+      },
+      {
+        "path": "cases.json",
+        "sha256": "ad6d1ba6f7957b8ad3887fd0cb8ff5ad68a2cc440f68568d69cb54ad4e3c5190"
+      },
+      {
+        "path": "docs/exit.md",
+        "sha256": "13a2a180f950d70263bc3980195035256d5de017c6087dcd4c4682be53d745de"
+      },
+      {
+        "path": "docs/invariants.md",
+        "sha256": "f6e992fc82746a7666205f039e653d08fa1b908040a1b25bd166a62c07a7ba9b"
+      },
+      {
+        "path": "docs/non-goals.md",
+        "sha256": "802216dd7e3ac99c16b64a889e2e1af3ce4f6e74959fa87d739ffcd83a8fc8d2"
+      },
+      {
+        "path": "docs/outcome.md",
+        "sha256": "5fab8d031ee7225eadb758ef7a3242ef4d7a62f256be24e51f9be4b53bb96464"
+      },
+      {
+        "path": "docs/repeated-touch.md",
+        "sha256": "68b4efa0a6269e05e0a64d9fcbb695c0d54fbf43db93aab938387c805fe9e05f"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/.openspec.yaml",
+        "sha256": "edcef382ab08949f127ff50f90973ac914ee8499f94784a88cb08fb60d05b687"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/history.md",
+        "sha256": "ed68ef9170eb820e884954e397fad8236b839bf936c5bf88dd751a4200f602e4"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/proposal.md",
+        "sha256": "89bfe58c89ff7f6463b84f72c34f64e32884a1f9e06e775665f39455d60c7ce7"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/tasks.md",
+        "sha256": "667b38941039bfedc2e0861bc95e912a8b3316558e2e72cd698d391e1cc454d1"
+      },
+      {
+        "path": "openspec/changes/trajectory-successor/design.md",
+        "sha256": "4b94b221f4c260cddcde5c0c4ecc2031b3a0f80dc0abe57a356fe7ec3399f337"
+      },
+      {
+        "path": "openspec/changes/trajectory-successor/proposal.md",
+        "sha256": "5635fb6d5d5d206b723bd0bb235d69c52da3124fc912068273352a04d2196f5b"
+      },
+      {
+        "path": "openspec/changes/trajectory-successor/specs/fixture-capability/spec.md",
+        "sha256": "a373720095b4b37c909539f30cb8710c405a4cdb710ba862c62915ea0d7585d8"
+      },
+      {
+        "path": "openspec/changes/trajectory-successor/tasks.md",
+        "sha256": "fd1feb2e4968397b7d67c1515e701484b0d0292dd4c917cb54c53cf393208a0f"
+      },
+      {
+        "path": "openspec/config.yaml",
+        "sha256": "85b53dd24fbe7d19c8b0f0ddccf5e82600c5c372c76b57a2a89dc34dfb0fc5b9"
+      },
+      {
+        "path": "openspec/delivery-horizons/phase-fixture/horizon.json",
+        "sha256": "3cd5daf669f01a482db3e045d11f694e3da48d40123f85dce9a6cb63a8b4dc59"
+      },
+      {
+        "path": "openspec/specs/fixture-capability/spec.md",
+        "sha256": "6ab6062a7736cb3c35c35f656eacafb87d3be76ed6f68453ddcba3380b0e9fef"
+      },
+      {
+        "path": "receipt-result.json",
+        "sha256": "c07f8ac62e1a1b8e66340d904e89563938af97a681af973dee49009ac5332baa"
+      },
+      {
+        "path": "scripts/archive-current.ts",
+        "sha256": "33ea08355af1006f2f84ce560f4b5fc761bb92b574eb94d9df0ee58728574834"
+      },
+      {
+        "path": "scripts/check-result.ts",
+        "sha256": "69b3e8fe735ddad3fc0265c98e9a9fd66adac4cf118d2c5ef680c552f08ecee2"
+      },
+      {
+        "path": "scripts/context-current.ts",
+        "sha256": "359c3fb15fc40ba9a6c6cf37f4def066587b19191a38f9766fc55623192721c2"
+      },
+      {
+        "path": "scripts/materialize-review.ts",
+        "sha256": "f22e18a46466427db3c1b94ab12fece3c06b3f8ebe2fe495e4aae8827fbef9d9"
+      },
+      {
+        "path": "trajectory-context.json",
+        "sha256": "9c84c83f16eac7e08472ba6e72575f817d48938c5ebf80342a8b3cf03dab2183"
+      },
+      {
+        "path": "trajectory-result.json",
+        "sha256": "10580d439d8c90a47063250a552724b8cc5f85e0033eb8aab63385338b1f8d8e"
+      }
+    ],
+    "before": [
+      {
+        "path": "cases.json",
+        "sha256": "ad6d1ba6f7957b8ad3887fd0cb8ff5ad68a2cc440f68568d69cb54ad4e3c5190"
+      },
+      {
+        "path": "docs/exit.md",
+        "sha256": "13a2a180f950d70263bc3980195035256d5de017c6087dcd4c4682be53d745de"
+      },
+      {
+        "path": "docs/invariants.md",
+        "sha256": "f6e992fc82746a7666205f039e653d08fa1b908040a1b25bd166a62c07a7ba9b"
+      },
+      {
+        "path": "docs/non-goals.md",
+        "sha256": "802216dd7e3ac99c16b64a889e2e1af3ce4f6e74959fa87d739ffcd83a8fc8d2"
+      },
+      {
+        "path": "docs/outcome.md",
+        "sha256": "5fab8d031ee7225eadb758ef7a3242ef4d7a62f256be24e51f9be4b53bb96464"
+      },
+      {
+        "path": "docs/repeated-touch.md",
+        "sha256": "68b4efa0a6269e05e0a64d9fcbb695c0d54fbf43db93aab938387c805fe9e05f"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/.openspec.yaml",
+        "sha256": "edcef382ab08949f127ff50f90973ac914ee8499f94784a88cb08fb60d05b687"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/history.md",
+        "sha256": "ed68ef9170eb820e884954e397fad8236b839bf936c5bf88dd751a4200f602e4"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/proposal.md",
+        "sha256": "89bfe58c89ff7f6463b84f72c34f64e32884a1f9e06e775665f39455d60c7ce7"
+      },
+      {
+        "path": "openspec/changes/archive/2026-08-28-trajectory-prior/tasks.md",
+        "sha256": "667b38941039bfedc2e0861bc95e912a8b3316558e2e72cd698d391e1cc454d1"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/.openspec.yaml",
+        "sha256": "f4a1a5ebcaf832a382f8bba53f7c81d9fa7e1a92b3d01f6b7d8fc34e77619b07"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/design.md",
+        "sha256": "cf8edb791c7bb4aa6852da9fd608b54160c080d75fce5faf9b56cdbc6bda8630"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/evidence-index.json",
+        "sha256": "115b3fd615967c6693286c286f160822957b7cbc4d37f9a5e80ec0d0425b55ab"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/history.md",
+        "sha256": "f889c014deda252c515e9f36ca96f8a7868d1ba5750fbf23ee3d4946b3bfe481"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/ownership.json",
+        "sha256": "d086c2f6fbe8fdcbcbe0160af9ea02b3b39a9a31204bedbf5a5d6ae357cb19fd"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/proposal.md",
+        "sha256": "12d2f1ffdd9b60dadc5cf203708017105881a39a3b6be948f945b374f475e153"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/specs/fixture-capability/spec.md",
+        "sha256": "114b28320088fd954a81af14464b751760a38889dcf5140225a0a911a367f579"
+      },
+      {
+        "path": "openspec/changes/trajectory-current/tasks.md",
+        "sha256": "e1494c018c1695265ec54cfb5cf7ddebd39c9a604b00cac34a896cf3d746851f"
+      },
+      {
+        "path": "openspec/config.yaml",
+        "sha256": "85b53dd24fbe7d19c8b0f0ddccf5e82600c5c372c76b57a2a89dc34dfb0fc5b9"
+      },
+      {
+        "path": "openspec/delivery-horizons/phase-fixture/horizon.json",
+        "sha256": "3cd5daf669f01a482db3e045d11f694e3da48d40123f85dce9a6cb63a8b4dc59"
+      },
+      {
+        "path": "openspec/specs/fixture-capability/spec.md",
+        "sha256": "0049e80803ca3b2c1dc6144924ea0e4c7704ec0cc317d59834aaca69fa0eff89"
+      },
+      {
+        "path": "scripts/archive-current.ts",
+        "sha256": "33ea08355af1006f2f84ce560f4b5fc761bb92b574eb94d9df0ee58728574834"
+      },
+      {
+        "path": "scripts/check-result.ts",
+        "sha256": "69b3e8fe735ddad3fc0265c98e9a9fd66adac4cf118d2c5ef680c552f08ecee2"
+      },
+      {
+        "path": "scripts/context-current.ts",
+        "sha256": "359c3fb15fc40ba9a6c6cf37f4def066587b19191a38f9766fc55623192721c2"
+      },
+      {
+        "path": "scripts/materialize-review.ts",
+        "sha256": "f22e18a46466427db3c1b94ab12fece3c06b3f8ebe2fe495e4aae8827fbef9d9"
+      }
+    ]
+  },
+  "mode": "configured-diagnostic",
+  "privacyRedactions": {
+    "authorizationHeader": 0,
+    "credentialName": 1,
+    "providerPrefix": 0,
+    "sensitiveAssignment": 0
+  },
+  "proof": {
+    "argv": [
+      "node",
+      "scripts/check-result.ts",
+      "configured-repeated-touch-successor"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"archive\":\"archived\",\"archiveId\":\"2026-08-29-trajectory-current\",\"archiveBytesPreserved\":true,\"caseId\":\"configured-repeated-touch-successor\",\"contextStatus\":\"complete\",\"disposition\":\"replan-outcome-preserving\",\"receiptCount\":1,\"strictStatus\":0,\"successor\":true,\"trajectory\":\"review-required\"}\n"
+  },
+  "providerRequestCount": 1,
+  "requestSha256": "8270cda2e6ac1be0c69b2c986928d2e73c256847f33a07fcf6ee06bba8501ad3",
+  "runtimeErrors": [],
+  "scenarioDigest": "a30329cc2de48980521be316c24a07d68404fc69e248db199d763c32aa7110e8",
+  "scenarioId": "configured-repeated-touch-successor",
+  "schemaVersion": 1,
+  "server": {
+    "signal": null,
+    "status": 1,
+    "stderr": "timestamp=2026-08-29T06:45:15.846Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T06:45:15.859Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T06:45:15.859Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T06:45:18.015Z level=INFO run=972093be message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-29T06:45:18.016Z level=INFO run=972093be message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-29T06:45:18.035Z level=INFO run=972093be message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-29T06:45:18.047Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T06:45:18.048Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T06:45:18.048Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T06:45:18.069Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\candidate-config\\\\opencode.json\"\ntimestamp=2026-08-29T06:45:18.211Z level=INFO run=972093be message=loading path=\"<proof-root>\\\\candidate-config\\\\opencode.jsonc\"\ntimestamp=2026-08-29T06:45:18.517Z level=INFO run=972093be message=\"all LSPs are disabled\"\ntimestamp=2026-08-29T06:45:18.518Z level=INFO run=972093be message=\"all formatters are disabled\"\ntimestamp=2026-08-29T06:45:18.518Z level=INFO run=972093be message=init\ntimestamp=2026-08-29T06:45:18.650Z level=INFO run=972093be message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-29T06:45:18.652Z level=INFO run=972093be message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-29T06:45:18.942Z level=INFO run=972093be message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-29T06:45:20.033Z level=INFO run=972093be message=created id=ses_fb3bbffdeffezhgQOmP2OjA5jJ slug=shiny-knight version=1.18.25 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF/fixture workspaceID=undefined parentID=undefined title=consumer-outcome-diagnostic-configured-repeated-touch-successor agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787985920033 time.updated=1787985920033\ntimestamp=2026-08-29T06:45:20.348Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=0\ntimestamp=2026-08-29T06:45:20.369Z level=INFO run=972093be message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-29T06:45:20.411Z level=INFO run=972093be message=init count=13\ntimestamp=2026-08-29T06:45:20.507Z level=INFO run=972093be message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-29T06:45:20.508Z level=INFO run=972093be message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-29T06:45:20.640Z level=INFO run=972093be message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-29T06:45:20.664Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c44015f001rbYJaQegcY5Cfu\ntimestamp=2026-08-29T06:45:20.666Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:45:20.677Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:45:29.875Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\cases.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:29.876Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\docs\\\\repeated-touch.md\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:29.876Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:29.911Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\cases.json\"\ntimestamp=2026-08-29T06:45:29.926Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=1\ntimestamp=2026-08-29T06:45:29.932Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\docs\\\\repeated-touch.md\"\ntimestamp=2026-08-29T06:45:29.964Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c4426c8001AwO4xuXjwO4YPM\ntimestamp=2026-08-29T06:45:29.965Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:45:29.966Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:45:31.621Z level=INFO run=972093be message=evaluated permission=skill pattern=openspec-archive-change action.permission=skill action.pattern=openspec-archive-change action.action=allow\ntimestamp=2026-08-29T06:45:31.702Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=2\ntimestamp=2026-08-29T06:45:31.722Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c442db7001yXEvxYFcvEDKTO\ntimestamp=2026-08-29T06:45:31.722Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:45:31.724Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:45:37.399Z level=INFO run=972093be message=evaluated permission=glob pattern=openspec/changes/trajectory-current/** action.permission=glob action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:37.657Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\scripts\\\\archive-current.ts\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:37.666Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\scripts\\\\archive-current.ts\"\ntimestamp=2026-08-29T06:45:37.748Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=3\ntimestamp=2026-08-29T06:45:37.768Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c444555001CofqAEx7GgoWwe\ntimestamp=2026-08-29T06:45:37.768Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:45:37.770Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:45:45.833Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\proposal.md\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:45.834Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\design.md\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:45.853Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\tasks.md\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:45.854Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\evidence-index.json\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:45.855Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\specs\\\\fixture-capability\\\\spec.md\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:45:45.880Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\proposal.md\"\ntimestamp=2026-08-29T06:45:45.886Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\design.md\"\ntimestamp=2026-08-29T06:45:45.887Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\tasks.md\"\ntimestamp=2026-08-29T06:45:45.887Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\evidence-index.json\"\ntimestamp=2026-08-29T06:45:45.902Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-current\\\\specs\\\\fixture-capability\\\\spec.md\"\ntimestamp=2026-08-29T06:45:45.921Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=4\ntimestamp=2026-08-29T06:45:45.939Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c446542001g76zSWNwad6Yk5\ntimestamp=2026-08-29T06:45:45.940Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:45:45.941Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:45:55.380Z level=INFO run=972093be message=evaluated permission=bash pattern=\"Test-Path -LiteralPath \\\"<proof-root>\\\\fixture\\\"\" action.permission=bash action.pattern=* action.action=deny\ntimestamp=2026-08-29T06:45:55.405Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=5\ntimestamp=2026-08-29T06:45:55.456Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c448a69001QXcQefloNuzCkN\ntimestamp=2026-08-29T06:45:55.457Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:45:55.458Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:45:59.074Z level=INFO run=972093be message=evaluated permission=bash pattern=\"node scripts/archive-current.ts\" action.permission=bash action.pattern=\"node *\" action.action=allow\ntimestamp=2026-08-29T06:46:03.904Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=6\ntimestamp=2026-08-29T06:46:03.968Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c44ab81001C3nVeYYSLvxMok\ntimestamp=2026-08-29T06:46:03.970Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:46:03.991Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:46:08.632Z level=INFO run=972093be message=evaluated permission=bash pattern=\"node scripts/context-current.ts\" action.permission=bash action.pattern=\"node *\" action.action=allow\ntimestamp=2026-08-29T06:46:09.545Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=7\ntimestamp=2026-08-29T06:46:09.565Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c44c18a001xYLXWIhe2fq5pz\ntimestamp=2026-08-29T06:46:09.566Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:46:09.574Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:46:13.328Z level=INFO run=972093be message=evaluated permission=skill pattern=roadmap-delivery-trajectory action.permission=skill action.pattern=roadmap-delivery-trajectory action.action=allow\ntimestamp=2026-08-29T06:46:13.418Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=8\ntimestamp=2026-08-29T06:46:13.438Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c44d0ad001CcvZxtW2aWQgvW\ntimestamp=2026-08-29T06:46:13.439Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:46:13.441Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:46:23.034Z level=INFO run=972093be message=evaluated permission=bash pattern=\"node scripts/materialize-review.ts configured-repeated-touch-successor\" action.permission=bash action.pattern=\"node *\" action.action=allow\ntimestamp=2026-08-29T06:46:23.910Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=9\ntimestamp=2026-08-29T06:46:23.939Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c44f9a8001O8uo3r7EQvVJKk\ntimestamp=2026-08-29T06:46:23.939Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:46:23.941Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:46:29.560Z level=INFO run=972093be message=evaluated permission=glob pattern=scripts/* action.permission=glob action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:46:29.585Z level=INFO run=972093be message=evaluated permission=glob pattern=openspec/changes/* action.permission=glob action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:46:29.629Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\scripts\\\\check-result.ts\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:46:29.651Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\scripts\\\\check-result.ts\"\ntimestamp=2026-08-29T06:46:29.669Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=10\ntimestamp=2026-08-29T06:46:29.694Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c451027001i3lr9PlbJCS190\ntimestamp=2026-08-29T06:46:29.695Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:46:29.696Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:46:44.369Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\changes\\\\archive\\\\2026-08-29-trajectory-current\\\\.openspec.yaml\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:46:44.381Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\changes\\\\archive\\\\2026-08-28-trajectory-prior\\\\proposal.md\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:46:44.381Z level=INFO run=972093be message=evaluated permission=read pattern=\"<home>\\\\AppData\\\\Local\\\\Temp\\\\consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF\\\\fixture\\\\openspec\\\\config.yaml\" action.permission=read action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:46:44.399Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\config.yaml\"\ntimestamp=2026-08-29T06:46:44.413Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\archive\\\\2026-08-29-trajectory-current\\\\.openspec.yaml\"\ntimestamp=2026-08-29T06:46:44.413Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\archive\\\\2026-08-28-trajectory-prior\\\\proposal.md\"\ntimestamp=2026-08-29T06:46:44.444Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=11\ntimestamp=2026-08-29T06:46:44.464Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c4549de0013uIu21DpWts9Sr\ntimestamp=2026-08-29T06:46:44.464Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:46:44.466Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:47:37.146Z level=INFO run=972093be message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF/fixture/openspec/changes/trajectory-successor/.openspec.yaml action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:47:37.146Z level=INFO run=972093be message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF/fixture/openspec/changes/trajectory-successor/proposal.md action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:47:37.146Z level=INFO run=972093be message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF/fixture/openspec/changes/trajectory-successor/design.md action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:47:37.146Z level=INFO run=972093be message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF/fixture/openspec/changes/trajectory-successor/tasks.md action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:47:37.146Z level=INFO run=972093be message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF/fixture/openspec/changes/trajectory-successor/specs/fixture-capability/spec.md action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:47:37.146Z level=INFO run=972093be message=evaluated permission=edit pattern=<home>/AppData/Local/Temp/consumer-outcome-diagnostic-configured-repeated-touch-successor-D6cFAF/fixture/trajectory-result.json action.permission=edit action.action=allow action.pattern=*\ntimestamp=2026-08-29T06:47:37.161Z level=INFO run=972093be message=formatting file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\.openspec.yaml\"\ntimestamp=2026-08-29T06:47:37.163Z level=INFO run=972093be message=formatting file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\proposal.md\"\ntimestamp=2026-08-29T06:47:37.164Z level=INFO run=972093be message=formatting file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\design.md\"\ntimestamp=2026-08-29T06:47:37.165Z level=INFO run=972093be message=formatting file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\tasks.md\"\ntimestamp=2026-08-29T06:47:37.183Z level=INFO run=972093be message=formatting file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\specs\\\\fixture-capability\\\\spec.md\"\ntimestamp=2026-08-29T06:47:37.184Z level=INFO run=972093be message=formatting file=\"<proof-root>\\\\fixture\\\\trajectory-result.json\"\ntimestamp=2026-08-29T06:47:37.185Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\.openspec.yaml\"\ntimestamp=2026-08-29T06:47:37.185Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\proposal.md\"\ntimestamp=2026-08-29T06:47:37.185Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\design.md\"\ntimestamp=2026-08-29T06:47:37.185Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\tasks.md\"\ntimestamp=2026-08-29T06:47:37.186Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\openspec\\\\changes\\\\trajectory-successor\\\\specs\\\\fixture-capability\\\\spec.md\"\ntimestamp=2026-08-29T06:47:37.186Z level=INFO run=972093be message=\"touching file\" file=\"<proof-root>\\\\fixture\\\\trajectory-result.json\"\ntimestamp=2026-08-29T06:47:37.238Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=12\ntimestamp=2026-08-29T06:47:37.255Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c461818001RQ7Ad5US8xrgpf\ntimestamp=2026-08-29T06:47:37.256Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:47:37.258Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:47:42.458Z level=INFO run=972093be message=evaluated permission=bash pattern=\"node scripts/check-result.ts configured-repeated-touch-successor\" action.permission=bash action.pattern=\"node *\" action.action=allow\ntimestamp=2026-08-29T06:47:44.191Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=13\ntimestamp=2026-08-29T06:47:44.225Z level=INFO run=972093be message=process session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ messageID=msg_04c463341001qUqmOus0a4cOLB\ntimestamp=2026-08-29T06:47:44.226Z level=INFO run=972093be message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ small=false agent=build mode=primary\ntimestamp=2026-08-29T06:47:44.227Z level=INFO run=972093be message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T06:47:49.725Z level=INFO run=972093be message=loop session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ step=14\ntimestamp=2026-08-29T06:47:49.727Z level=INFO run=972093be message=\"exiting loop\" session.id=ses_fb3bbffdeffezhgQOmP2OjA5jJ\ntimestamp=2026-08-29T06:47:49.771Z level=INFO run=972093be message=\"removing share\" sessionID=ses_fb3bbffdeffezhgQOmP2OjA5jJ\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:51441\n"
+  },
+  "session": {
+    "cleanup": {
+      "error": null,
+      "sessionsRemoved": true
+    },
+    "latestAssistant": {
+      "agent": "build",
+      "error": null,
+      "finish": "stop",
+      "modelID": "gpt-5.6-sol",
+      "providerID": "openai",
+      "summary": false,
+      "text": "{\"archive\":\"archived\",\"archiveId\":\"2026-08-29-trajectory-current\",\"archiveBytesPreserved\":true,\"caseId\":\"configured-repeated-touch-successor\",\"contextStatus\":\"complete\",\"disposition\":\"replan-outcome-preserving\",\"receiptCount\":1,\"strictStatus\":0,\"successor\":true,\"trajectory\":\"review-required\"}"
+    },
+    "messages": {
+      "assistant": [
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "I’ll inspect only the fixture’s selected case and reviewed semantic document, then follow the archive skill against `trajectory-current`. I’ll defer trajectory context, trajectory skill loading, and successor authoring until the archive reports terminal success."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "The archive candidate is structurally complete and its evidence index closes the single checked task at the configured local boundary. I’m invoking the fixture’s canonical archive wrapper now; no trajectory operation will occur unless it exits zero with final `status: archived`."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "Archive reached terminal success as `2026-08-29-trajectory-current` with one added specification requirement. The archive dimension is now fixed at `archived`; I’m generating and inspecting the fact-only trajectory context before loading the trajectory skill."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "The fact context confirms two linked `phase-fixture` archives, a complete bounded read with no writes or external calls, and the selected evidence establishes repeated item-specific setup around one shared mechanism with a named exit-predicate consequence. I’m preserving `archive: archived`, selecting `trajectory: review-required` with `replan-outcome-preserving`, and materializing the immutable review receipt before authoring the successor."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": ""
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "The receipt fixes the review identity, repeated-item-touch trigger, unchanged proof boundary, and successor reference `openspec/changes/trajectory-successor/proposal.md`. I’ll now author the smallest spec-driven successor: extend the existing fixture capability, centralize only item-independent setup, retain automated processing and irreducible proof for every accepted item, and leave every implementation task unchecked."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "tool-calls",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "The successor and seven-field result are now persisted, with archive and trajectory kept independent. I’m running the fixture’s required end-to-end checker, which also verifies archived-byte immutability, fact-only context, exactly one receipt, successor linkage/artifacts, and strict OpenSpec validity."
+        },
+        {
+          "agent": "build",
+          "error": null,
+          "finish": "stop",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "summary": false,
+          "text": "{\"archive\":\"archived\",\"archiveId\":\"2026-08-29-trajectory-current\",\"archiveBytesPreserved\":true,\"caseId\":\"configured-repeated-touch-successor\",\"contextStatus\":\"complete\",\"disposition\":\"replan-outcome-preserving\",\"receiptCount\":1,\"strictStatus\":0,\"successor\":true,\"trajectory\":\"review-required\"}"
+        }
+      ],
+      "toolCalls": [
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "skill",
+          "status": "completed"
+        },
+        {
+          "name": "glob",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "bash",
+          "status": "error"
+        },
+        {
+          "name": "bash",
+          "status": "completed"
+        },
+        {
+          "name": "bash",
+          "status": "completed"
+        },
+        {
+          "name": "skill",
+          "status": "completed"
+        },
+        {
+          "name": "bash",
+          "status": "completed"
+        },
+        {
+          "name": "glob",
+          "status": "completed"
+        },
+        {
+          "name": "glob",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "read",
+          "status": "completed"
+        },
+        {
+          "name": "apply_patch",
+          "status": "completed"
+        },
+        {
+          "name": "bash",
+          "status": "completed"
+        }
+      ]
+    },
+    "response": "{\"archive\":\"archived\",\"archiveId\":\"2026-08-29-trajectory-current\",\"archiveBytesPreserved\":true,\"caseId\":\"configured-repeated-touch-successor\",\"contextStatus\":\"complete\",\"disposition\":\"replan-outcome-preserving\",\"receiptCount\":1,\"strictStatus\":0,\"successor\":true,\"trajectory\":\"review-required\"}",
+    "sessionID": "<session>"
+  },
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "c9f70ef8bee97882591e93d8f07b1ed9f079c9af13b8dc9d525884105ce5513c",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "9791de01fc4a36a08c55fb416c22d4a11efad313cf9e9f68bdab305db1c11493"
+      },
+      {
+        "path": "global/bin/delivery-trajectory-context.ts",
+        "sha256": "50e0331ffa4253132d6d49a2e46fbc766a90870283efd023e05f59402cfee39a"
+      },
+      {
+        "path": "global/bin/openspec-archive.ts",
+        "sha256": "b7fcb48d8082afb176733e73cbad5221d6e428d9398c340a601b11081ad5cfe0"
+      },
+      {
+        "path": "global/bin/openspec-change/claims.ts",
+        "sha256": "9f0c2720fe8617f5aa407eaee7db7bca29f76a1f798f2011a45681261eadbfd4"
+      },
+      {
+        "path": "global/bin/openspec-change/delivery-horizon.ts",
+        "sha256": "19784cadf302749699e453d1d3b08136cb83ddb7810ed046cfe44f43a9fcd7f5"
+      },
+      {
+        "path": "global/bin/openspec-change/evidence.ts",
+        "sha256": "f1f9e885ddd9b1bcfbf177269f7b5358b172323fce59c10ae2e01c230369bdff"
+      },
+      {
+        "path": "global/bin/openspec-change/gate.ts",
+        "sha256": "22c3ee08539724a524d81b7496f8de3c4d00d472b76db471e367474ee2acf571"
+      },
+      {
+        "path": "global/bin/openspec-change/inventory.ts",
+        "sha256": "7431924da8f97036202e4f7c841c4db172211807ef20aea6afa197d7dd7fab81"
+      },
+      {
+        "path": "global/bin/openspec-change/manifest.ts",
+        "sha256": "8b5f6ec89d0672c65ccf3311175b2df2639de4cc130569c8624d5f47bfb450e0"
+      },
+      {
+        "path": "global/bin/openspec-change/ownership.ts",
+        "sha256": "f191f77a908645ac6c1ce39d7f31794896fb62e923ffafbdd9bbf92ec79a076d"
+      },
+      {
+        "path": "global/bin/openspec-change/state.ts",
+        "sha256": "14d9202dac7adcf01a2f34ff585c8e99e90994cff0a72a394329f5847b4ad1a3"
+      },
+      {
+        "path": "global/bin/portable-process.ts",
+        "sha256": "53fbe318e14a1b2568f722314e66f473503c02d35d39d1e269c1b512ed50b49f"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/skills/openspec-archive-change/SKILL.md",
+        "sha256": "eb354d0d9f6229d066614ad96f94001998ebbd80e30fbcc0b440cf89f1dbe803"
+      },
+      {
+        "path": "global/skills/roadmap-delivery-trajectory/SKILL.md",
+        "sha256": "1a3c60f3aca6babcd22fdbbcabbccf08702ea56f752721c2fdff4e33b8b2d429"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "88ddfaca23b3c86463d0638e435e1cd767c809d6717b195423aa27970d857471"
+      },
+      {
+        "path": "tools/model-profile.ts",
+        "sha256": "8cda59adb523076cc21c0aa983265aad9841a61b6e86071cc3228d35d8783a6d"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome-regression.ts",
+        "sha256": "eee2bc0e2f9681aab801da04fcf0160a728411f91b615c96d8eed628e6921881"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/capture.ts",
+        "sha256": "ffdda1593f8fe647ed2301d2021748b00922807c9449edf3bb59b1018e5fdbb9"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/contracts.ts",
+        "sha256": "43d13dfa0b1aafcf09b398eda41ad76e7ca8a027c61dbd3e471fe8fa15a2f405"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/delivery-trajectory.ts",
+        "sha256": "1e2b723dc22ac8f83de50adf874ceaad8d925b1733f39e3750b897ea6ad34434"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-configured-r1.json",
+        "sha256": "160b4c8780ec500d38038055dc75bed5473234b81a63e1c54cabfeb143b75d24"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/cases.json",
+        "sha256": "ad6d1ba6f7957b8ad3887fd0cb8ff5ad68a2cc440f68568d69cb54ad4e3c5190"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/docs/exit.md",
+        "sha256": "13a2a180f950d70263bc3980195035256d5de017c6087dcd4c4682be53d745de"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/docs/invariants.md",
+        "sha256": "f6e992fc82746a7666205f039e653d08fa1b908040a1b25bd166a62c07a7ba9b"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/docs/non-goals.md",
+        "sha256": "802216dd7e3ac99c16b64a889e2e1af3ce4f6e74959fa87d739ffcd83a8fc8d2"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/docs/outcome.md",
+        "sha256": "5fab8d031ee7225eadb758ef7a3242ef4d7a62f256be24e51f9be4b53bb96464"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/docs/repeated-touch.md",
+        "sha256": "68b4efa0a6269e05e0a64d9fcbb695c0d54fbf43db93aab938387c805fe9e05f"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/archive/2026-08-28-trajectory-prior/.openspec.yaml",
+        "sha256": "edcef382ab08949f127ff50f90973ac914ee8499f94784a88cb08fb60d05b687"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/archive/2026-08-28-trajectory-prior/history.md",
+        "sha256": "ed68ef9170eb820e884954e397fad8236b839bf936c5bf88dd751a4200f602e4"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/archive/2026-08-28-trajectory-prior/proposal.md",
+        "sha256": "89bfe58c89ff7f6463b84f72c34f64e32884a1f9e06e775665f39455d60c7ce7"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/archive/2026-08-28-trajectory-prior/tasks.md",
+        "sha256": "667b38941039bfedc2e0861bc95e912a8b3316558e2e72cd698d391e1cc454d1"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/.openspec.yaml",
+        "sha256": "f4a1a5ebcaf832a382f8bba53f7c81d9fa7e1a92b3d01f6b7d8fc34e77619b07"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/design.md",
+        "sha256": "cf8edb791c7bb4aa6852da9fd608b54160c080d75fce5faf9b56cdbc6bda8630"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/evidence-index.json",
+        "sha256": "115b3fd615967c6693286c286f160822957b7cbc4d37f9a5e80ec0d0425b55ab"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/history.md",
+        "sha256": "f889c014deda252c515e9f36ca96f8a7868d1ba5750fbf23ee3d4946b3bfe481"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/ownership.json",
+        "sha256": "d086c2f6fbe8fdcbcbe0160af9ea02b3b39a9a31204bedbf5a5d6ae357cb19fd"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/proposal.md",
+        "sha256": "12d2f1ffdd9b60dadc5cf203708017105881a39a3b6be948f945b374f475e153"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/specs/fixture-capability/spec.md",
+        "sha256": "114b28320088fd954a81af14464b751760a38889dcf5140225a0a911a367f579"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/changes/trajectory-current/tasks.md",
+        "sha256": "e1494c018c1695265ec54cfb5cf7ddebd39c9a604b00cac34a896cf3d746851f"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/config.yaml",
+        "sha256": "85b53dd24fbe7d19c8b0f0ddccf5e82600c5c372c76b57a2a89dc34dfb0fc5b9"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/delivery-horizons/phase-fixture/horizon.json",
+        "sha256": "3cd5daf669f01a482db3e045d11f694e3da48d40123f85dce9a6cb63a8b4dc59"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/openspec/specs/fixture-capability/spec.md",
+        "sha256": "0049e80803ca3b2c1dc6144924ea0e4c7704ec0cc317d59834aaca69fa0eff89"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/scripts/archive-current.ts",
+        "sha256": "33ea08355af1006f2f84ce560f4b5fc761bb92b574eb94d9df0ee58728574834"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/scripts/check-result.ts",
+        "sha256": "69b3e8fe735ddad3fc0265c98e9a9fd66adac4cf118d2c5ef680c552f08ecee2"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/scripts/context-current.ts",
+        "sha256": "359c3fb15fc40ba9a6c6cf37f4def066587b19191a38f9766fc55623192721c2"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1/scripts/materialize-review.ts",
+        "sha256": "f22e18a46466427db3c1b94ab12fece3c06b3f8ebe2fe495e4aae8827fbef9d9"
+      },
+      {
+        "path": "tools/proofs/lib/opencode-proof-client.ts",
+        "sha256": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78"
+      },
+      {
+        "path": "tools/proofs/lib/proof-process-cleanup.ts",
+        "sha256": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d"
+      },
+      {
+        "path": "tools/runtime-surface-profile.ts",
+        "sha256": "86343e42a88be27d8d19d7f3e58bbfd23d4ca3bcafae445671f2121ff8a3c613"
+      }
+    ]
+  },
+  "terminalClassification": "completed-observation",
+  "validation": {
+    "argv": [
+      "node",
+      "scripts/check-result.ts",
+      "configured-repeated-touch-successor"
+    ],
+    "status": 0,
+    "stderr": "",
+    "stdout": "{\"archive\":\"archived\",\"archiveId\":\"2026-08-29-trajectory-current\",\"archiveBytesPreserved\":true,\"caseId\":\"configured-repeated-touch-successor\",\"contextStatus\":\"complete\",\"disposition\":\"replan-outcome-preserving\",\"receiptCount\":1,\"strictStatus\":0,\"successor\":true,\"trajectory\":\"review-required\"}\n"
+  }
+}

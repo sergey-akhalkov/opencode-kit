@@ -4,7 +4,8 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "../runtime-surface-profile.ts";
 import { WORK_CAMPAIGN_CONTROLLER_SOURCE_PATHS } from "./work-campaign-source-paths.ts";
 
 type JsonRecord = Record<string, unknown>;
@@ -15,8 +16,9 @@ type Options = {
   evidenceRoot: string;
   fixturePath: string;
   help: boolean;
+  hostInputRoot: string | null;
   inputRoot: string | null;
-  mode: "controller" | "materializer" | "population" | "preflight" | "replay" | "state";
+  mode: "controller" | "materializer" | "population" | "preflight" | "replay" | "state" | "windows";
 };
 
 type ScenarioResult = {
@@ -39,6 +41,19 @@ const defaultFixturePath = path.join(
   "seeds.json",
 );
 const runnerPath = fileURLToPath(import.meta.url);
+const windowsSourcePaths = [
+  ...PORTABLE_WORKFLOW_RUNTIME_FILES.map((relative) => `global/${relative}`),
+  "tools/runtime-surface-profile.ts",
+  "tools/proofs/work-campaign-windows-installed.ts",
+  "tools/test-work-campaign-controller.ts",
+  "tools/windows/opencode-workstation-layout.ts",
+  "tools/windows/opencode-workstation.ts",
+  "tools/windows/work-campaign-supervisor-host.ts",
+  "tools/windows/work-campaign-supervisor-install.ts",
+  "tools/windows/work-campaign-supervisor.ts",
+  "tools/test-work-campaign-windows.ts",
+  "tools/proofs/work-campaign.ts",
+].filter((value, index, rows) => rows.indexOf(value) === index).sort();
 const safeId = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/u;
 const digestPattern = /^sha256:[a-f0-9]{64}$/u;
 const expectedScenarioIds = [
@@ -145,8 +160,9 @@ function usage(): string {
     "  node tools/proofs/work-campaign.ts --mode preflight --candidate-id <id> --evidence-root <absolute-new-path> [--fixture <seed-pack.json>]",
     "  node tools/proofs/work-campaign.ts --mode controller --candidate-id <id> --environment-id <id> --evidence-root <absolute-new-path>",
     "  node tools/proofs/work-campaign.ts --mode materializer --candidate-id <id> --evidence-root <absolute-new-path>",
-    "  node tools/proofs/work-campaign.ts --mode population --candidate-id <id> --environment-id <id> --input-root <configured-capture-path> --evidence-root <absolute-new-path>",
+    "  node tools/proofs/work-campaign.ts --mode population --candidate-id <id> --environment-id <id> (--input-root <configured-capture-path> | --host-input-root <installed-operator-capture-path>) --evidence-root <absolute-new-path>",
     "  node tools/proofs/work-campaign.ts --mode state --candidate-id <id> --evidence-root <absolute-new-path>",
+    "  node tools/proofs/work-campaign.ts --mode windows --candidate-id <id> --environment-id <id> --evidence-root <absolute-new-path>",
     "  node tools/proofs/work-campaign.ts --mode replay --candidate-id <id> [--environment-id <id>] --input-root <preflight-path> --evidence-root <absolute-new-path>",
     "",
     "Effects:",
@@ -156,6 +172,7 @@ function usage(): string {
     "  materializer: starts only proof-owned local processes, exercises the production ledger/report CLI in a disposable project, deletes it, and writes one create-new immutable evidence bundle.",
     "  population: runs provider-free semantic/controller/state/materializer controls, composes one preserved configured capture, deletes disposable fixtures, and writes one create-new 20-member evidence bundle.",
     "  state: starts only proof-owned local processes, exercises the production state CLI in a disposable project, deletes it, and writes one create-new immutable evidence bundle.",
+    "  windows: exercises source-only Windows supervisor preview/check/repair/rollback plans and the protected host boundary over disposable files; host mutation is zero.",
     "  replay: reads one preserved bundle and writes one create-new evaluation; provider, source, OpenSpec, Git, process, host, and remote calls are zero.",
     "",
     "Evidence and cleanup:",
@@ -177,6 +194,7 @@ function parseArgs(args: string[]): Options {
       evidenceRoot: sourceRoot,
       fixturePath: defaultFixturePath,
       help: true,
+      hostInputRoot: null,
       inputRoot: null,
       mode: "preflight",
     };
@@ -185,6 +203,7 @@ function parseArgs(args: string[]): Options {
   let evidenceRoot = "";
   let environmentId: string | null = null;
   let fixturePath = defaultFixturePath;
+  let hostInputRoot: string | null = null;
   let inputRoot: string | null = null;
   let mode = "";
   for (let index = 0; index < args.length; index++) {
@@ -204,6 +223,9 @@ function parseArgs(args: string[]): Options {
     } else if (arg === "--input-root") {
       inputRoot = path.resolve(requiredValue(args, index, arg));
       index++;
+    } else if (arg === "--host-input-root") {
+      hostInputRoot = path.resolve(requiredValue(args, index, arg));
+      index++;
     } else if (arg === "--mode") {
       mode = requiredValue(args, index, arg);
       index++;
@@ -211,20 +233,25 @@ function parseArgs(args: string[]): Options {
       throw new Error(`Unknown option: ${arg}`);
     }
   }
-  if (mode !== "controller" && mode !== "materializer" && mode !== "population" && mode !== "preflight" && mode !== "replay" && mode !== "state") throw new Error("--mode must be preflight, controller, materializer, population, state, or replay");
+  if (mode !== "controller" && mode !== "materializer" && mode !== "population" && mode !== "preflight" && mode !== "replay" && mode !== "state" && mode !== "windows") throw new Error("--mode must be preflight, controller, materializer, population, state, windows, or replay");
   if (!safeId.test(candidateId)) throw new Error("--candidate-id must be a safe identifier");
   if (environmentId != null && !safeId.test(environmentId)) throw new Error("--environment-id must be a safe identifier");
-  if ((mode === "controller" || mode === "population") && environmentId == null) throw new Error(`${mode} mode requires --environment-id`);
-  if (environmentId != null && mode !== "controller" && mode !== "population" && mode !== "replay") throw new Error("--environment-id is supported only for controller, population, and replay");
+  if ((mode === "controller" || mode === "population" || mode === "windows") && environmentId == null) throw new Error(`${mode} mode requires --environment-id`);
+  if (environmentId != null && mode !== "controller" && mode !== "population" && mode !== "windows" && mode !== "replay") throw new Error("--environment-id is supported only for controller, population, windows, and replay");
   if (!path.isAbsolute(evidenceRoot)) throw new Error("--evidence-root must be absolute");
-  if ((mode === "population" || mode === "replay") && inputRoot == null) throw new Error(`--input-root is required for ${mode}`);
+  if (mode === "population" && (inputRoot == null) === (hostInputRoot == null)) {
+    throw new Error("population mode requires exactly one of --input-root or --host-input-root");
+  }
+  if (mode === "replay" && inputRoot == null) throw new Error("--input-root is required for replay");
   if (mode !== "population" && mode !== "replay" && inputRoot != null) throw new Error("--input-root is supported only for population and replay");
+  if (mode !== "population" && hostInputRoot != null) throw new Error("--host-input-root is supported only for population");
   return {
     candidateId,
     environmentId,
     evidenceRoot: path.resolve(evidenceRoot),
     fixturePath,
     help: false,
+    hostInputRoot,
     inputRoot,
     mode,
   };
@@ -771,6 +798,51 @@ function evaluateControllerRaw(raw: JsonRecord, candidateId: string, environment
   };
 }
 
+function evaluateWindowsRaw(raw: JsonRecord, candidateId: string, environmentId: string | null): JsonRecord {
+  const effects = isRecord(raw.effects) ? raw.effects : null;
+  const invocation = isRecord(raw.invocation) ? raw.invocation : null;
+  const sourceManifest = isRecord(raw.sourceManifest) ? raw.sourceManifest : null;
+  const sourceCandidate = Array.isArray(raw.sourceCandidate) ? raw.sourceCandidate.filter(isRecord) : [];
+  const sourcePaths = sourceCandidate.flatMap((row) => typeof row.path === "string" ? [row.path] : []);
+  const completedOracles = Array.isArray(raw.completedOracles) ? raw.completedOracles : [];
+  const expectedOracles = [
+    "credential-private-host",
+    "effect-free-preview",
+    "fail-closed-plans",
+    "identity-separated-check",
+    "source-installed-drift-separation",
+  ];
+  const checks: Record<string, boolean> = {
+    candidateMatched: raw.candidateId === candidateId,
+    captureExitedZero: invocation?.exitCode === 0,
+    cleanupComplete: raw.cleanup === "complete",
+    environmentMatched: environmentId != null && raw.environmentId === environmentId,
+    hostMutationsZero: effects?.hostMutations === 0,
+    openCodeCallsZero: effects?.openCodeCalls === 0,
+    oraclesComplete: stableJson(completedOracles) === stableJson(expectedOracles),
+    privacySafeOutput: !String(invocation?.stdout ?? "").includes("private-host-password-proof")
+      && !String(invocation?.stderr ?? "").includes("private-host-password-proof"),
+    providerCallsZero: effects?.providerCalls === 0,
+    sourceCandidateCurrent: stableJson(sourcePaths) === stableJson(windowsSourcePaths)
+      && sourceCandidate.length === windowsSourcePaths.length
+      && sourceCandidate.every((row) => typeof row.sha256 === "string" && /^[a-f0-9]{64}$/u.test(row.sha256)),
+    sourceEvaluationCurrent: true,
+    sourceUnchanged: stableJson(sourceManifest?.beforeDigests) === stableJson(sourceManifest?.afterDigests),
+    sourceWritesZero: effects?.sourceWrites === 0,
+  };
+  return {
+    candidateId,
+    checks,
+    hostEffects: 0,
+    liveCalls: typeof effects?.processStarts === "number" ? effects.processStarts : 0,
+    processStarts: typeof effects?.processStarts === "number" ? effects.processStarts : 0,
+    proofKind: "campaign-windows-source-plan",
+    schemaVersion: 1,
+    sourceWrites: 0,
+    status: Object.values(checks).every(Boolean) ? "complete" : "blocked",
+  };
+}
+
 type PopulationRow = {
   boundary: string;
   candidateId: string;
@@ -801,7 +873,30 @@ function commandByName(raw: JsonRecord, name: string): JsonRecord | null {
   return raw.commands.filter(isRecord).find((row) => row.name === name) ?? null;
 }
 
-function buildPopulationRows(raw: JsonRecord, candidateId: string, environmentId: string): PopulationRow[] {
+export function classifyPopulationConfiguredInput(
+  configured: JsonRecord,
+  hostInput: boolean,
+  candidateId: string,
+  environmentId: string,
+): { configuredCurrent: boolean; windowsReentryObserved: boolean } {
+  const checks = isRecord(configured.checks) ? configured.checks : {};
+  const configuredCurrent = configured.status === "complete"
+    && configured.proofKind === (hostInput ? "campaign-installed-operator" : "campaign-configured-complete")
+    && configured.candidateId === candidateId
+    && configured.environmentId === environmentId
+    && checks.candidateMatched === true
+    && checks.environmentMatched === true;
+  return {
+    configuredCurrent,
+    windowsReentryObserved: configuredCurrent
+      && hostInput
+      && checks.windowsSupervisorReentryObserved === true
+      && typeof configured.hostEffects === "number"
+      && configured.hostEffects > 0,
+  };
+}
+
+export function buildPopulationRows(raw: JsonRecord, candidateId: string, environmentId: string): PopulationRow[] {
   const controller = isRecord(raw.controller) ? raw.controller : {};
   const semantic = isRecord(raw.semantic) ? raw.semantic : {};
   const configured = isRecord(raw.configured) ? raw.configured : {};
@@ -822,12 +917,12 @@ function buildPopulationRows(raw: JsonRecord, candidateId: string, environmentId
   const materializerNegative = isRecord(materializer.negativeControls) ? materializer.negativeControls : {};
   const stateNegative = isRecord(stateRaw.negativeControls) ? stateRaw.negativeControls : {};
   const configuredChecks = isRecord(configured.checks) ? configured.checks : {};
+  const hostInput = raw.hostInput === true;
   const statuses = Array.isArray(happy.statuses) ? happy.statuses : [];
   const statusMatched = (itemId: string, status: string): boolean => statuses.some((row) => Array.isArray(row) && row[0] === itemId && row[1] === status);
   const investigationComplete = ["confirmed", "falsified", "owner-required", "still-unknown"]
     .every((key) => isRecord(investigations[key]));
-  const configuredCurrent = configured.status === "complete" && configuredChecks.candidateMatched === true
-    && configuredChecks.environmentMatched === true;
+  const { configuredCurrent, windowsReentryObserved } = classifyPopulationConfiguredInput(configured, hostInput, candidateId, environmentId);
   const row = (
     id: PopulationRow["id"],
     boundary: string,
@@ -859,7 +954,11 @@ function buildPopulationRows(raw: JsonRecord, candidateId: string, environmentId
     row("invalid-or-unsafe-definition", "definition-preflight", "blocked", controllerNegative.invalidDefinition === 2, 0, 0, "not-required", ["invalid-definition", "immutable-input"], ["proof:controller"]),
     row("complete-inventory", "phase-input", "complete", reportOnly.transitionCount === 8, 0, 0, "complete", ["terminal-inventory", "no-wave-admission"], ["proof:controller"]),
     row("isolated-read-only-discovery", "semantic-playbook", "complete", happy.status === "complete" && semantic.effects != null, 0, 0, "complete", ["parallel-discovery", "serialized-integration"], ["proof:semantic"]),
-    row("confirmed-p0", "reconciliation-admission", "complete", statusMatched("item-p1", "confirmed"), 0, 0, "complete", ["confirmed-p0", "confirmed-p1"], ["proof:semantic"]),
+    row("confirmed-p0", "critical-reconciliation-closure", "paused-external",
+      controllerVerification.criticalRereviewDisposition === "paused-external"
+        && controllerVerification.criticalSdetPending === true
+        && controllerVerification.criticalFinalDisposition === "paused-external",
+      0, 0, "complete", ["confirmed-p0", "critical-sdet-pending"], ["proof:controller"]),
     row("confirmed-material-quality-p1", "configured-mission", "complete", configuredCurrent && configuredChecks.missionOwnedCorrectionObserved === true, 1, 1, "complete", ["configured-p1", "mission-owned-correction"], ["proof:configured"]),
     row("p2-p3-report-only", "reconciliation-report", "complete", noWave.reportOnly === "complete" && configuredChecks.p2ExcludedFromWave === true, 0, 0, "complete", ["p2-report-only", "p3-report-only"], ["proof:semantic", "proof:configured"]),
     row("credible-unknown-p0-p1-investigation", "semantic-investigation", "complete", investigationComplete, 0, 0, "complete", ["confirmed", "falsified", "still-unknown", "owner-required"], ["proof:semantic"]),
@@ -870,7 +969,9 @@ function buildPopulationRows(raw: JsonRecord, candidateId: string, environmentId
     row("dirty-path-conflict", "campaign-preflight", "blocked", controllerNegative.dirtyWorktree === 1, 0, 0, "not-required", ["dirty-owned-path"], ["proof:controller"]),
     row("protected-effect", "playbook-phase-admission", "owner-required", protectedSplit.status === "owner-required" && ownerOnly.disposition === "owner-required" && ownerSibling.disposition === "paused-external", 0, 0, "complete", ["protected-only", "protected-plus-authorized"], ["proof:semantic", "proof:controller"]),
     row("controller-or-opencode-interruption", "state-semantic-control", "paused-unknown", semanticControls.transientStatus === "paused-transient" && semanticControls.retryAccepted === true && semanticControls.cleanupStatus === "paused-unknown" && controllerNegative.unknownWriter === 1, 0, 0, "unknown", ["transient", "retry-evidence", "cleanup-unknown", "unknown-writer"], ["proof:semantic", "proof:controller", "proof:state"]),
-    row("windows-supervisor-reentry", "windows-host-supervisor", "unknown", true, null, null, "unknown", ["host-not-exercised"], ["gap:windows-supervisor"], "unknown"),
+    windowsReentryObserved
+      ? row("windows-supervisor-reentry", "windows-host-supervisor", "complete", true, 0, configured.hostEffects as number, "complete", ["installed-task-action", "safe-resume"], ["proof:installed-operator"])
+      : row("windows-supervisor-reentry", "windows-host-supervisor", "unknown", true, null, null, "unknown", ["host-not-exercised"], ["gap:windows-supervisor"], "unknown"),
     row("changed-block-rereview", "controller-verification", "complete", configuredCurrent && configuredChecks.rereviewVerified === true && controllerVerification.rereviewValidationStatus === "complete", 0, 0, "complete", ["changed-block-rereview", "current-candidate"], ["proof:configured", "proof:controller"]),
     row("report-drift-prevention", "materializer-readback", "blocked", materializerNegative.reportDrift === 2, 0, 0, "not-required", ["report-drift", "readback"], ["proof:materializer"]),
     row("budget-exhaustion", "semantic-state-budget", "paused-budget", semanticControls.budgetStatus === "paused-budget" && stateNegative.budgetRegression === 2, 0, 0, "complete", ["semantic-budget", "budget-regression"], ["proof:semantic", "proof:state"]),
@@ -888,6 +989,8 @@ function evaluatePopulationRaw(raw: JsonRecord, candidateId: string, environment
   const controller = isRecord(raw.controller) ? raw.controller : {};
   const semantic = isRecord(raw.semantic) ? raw.semantic : {};
   const configured = isRecord(raw.configured) ? raw.configured : {};
+  const hostInput = raw.hostInput === true;
+  const configuredInput = classifyPopulationConfiguredInput(configured, hostInput, candidateId, resolvedEnvironment);
   const stateRaw = isRecord(raw.state) ? raw.state : {};
   const materializer = isRecord(raw.materializer) ? raw.materializer : {};
   const invocationFor = (name: string): JsonRecord => invocations.find((row) => row.name === name) ?? {};
@@ -920,7 +1023,7 @@ function evaluatePopulationRaw(raw: JsonRecord, candidateId: string, environment
     candidateMatched: raw.candidateId === candidateId,
     captureInputsComplete: missingCaptures.length === 0,
     cleanupComplete: raw.cleanup === "complete",
-    configuredBaselineComplete: configured.status === "complete" && configured.proofKind === "campaign-configured-complete",
+    configuredBaselineComplete: configuredInput.configuredCurrent,
     controllerCurrent: controllerEvaluation.status === "complete",
     environmentMatched: raw.environmentId === resolvedEnvironment,
     exactMemberOrder: stableJson(ids) === stableJson(populationMemberIds),
@@ -940,7 +1043,9 @@ function evaluatePopulationRaw(raw: JsonRecord, candidateId: string, environment
     stateCurrent: stateEvaluation.status === "complete",
     terminalRowsUnique: rows.length === populationMemberIds.length && new Set(ids).size === populationMemberIds.length
       && rows.every((row) => row.rowState === "terminal-observation" && row.evidenceRefs.length > 0 && row.scenarios.length > 0),
-    windowsExplicitUnknown: rows.find((row) => row.id === "windows-supervisor-reentry")?.support === "unknown",
+    ...(hostInput
+      ? { windowsObserved: rows.find((row) => row.id === "windows-supervisor-reentry")?.support === "observed" }
+      : { windowsExplicitUnknown: rows.find((row) => row.id === "windows-supervisor-reentry")?.support === "unknown" }),
   };
   return {
     candidateId,
@@ -951,7 +1056,7 @@ function evaluatePopulationRaw(raw: JsonRecord, candidateId: string, environment
     memberCount: rows.length,
     modelCalls: 0,
     processStarts: typeof effects.processStarts === "number" ? effects.processStarts : 0,
-    proofKind: "campaign-provider-free-population",
+    proofKind: hostInput ? "campaign-composed-population" : "campaign-provider-free-population",
     schemaVersion: 1,
     sourceWrites: 0,
     status: Object.values(checks).every(Boolean) ? "complete" : "blocked",
@@ -1196,11 +1301,72 @@ function controller(options: Options): void {
   if (evaluation.status !== "complete") process.exitCode = 1;
 }
 
-function population(options: Options): void {
-  if (options.inputRoot == null || options.environmentId == null) throw new Error("Population inputs are missing");
+function windows(options: Options): void {
+  if (options.environmentId == null) throw new Error("Windows source-plan capture requires --environment-id");
   if (fs.existsSync(options.evidenceRoot)) throw new Error("Evidence root already exists");
-  const configuredEvaluationPath = path.join(options.inputRoot, "evaluation.json");
-  if (!fs.existsSync(configuredEvaluationPath)) throw new Error("Configured input root has no evaluation.json");
+  const captureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "work-campaign-windows-capture-"));
+  const capturedRawPath = path.join(captureRoot, "raw.json");
+  const beforeDigests = windowsSourcePaths.map((relative) => digestBytes(fs.readFileSync(path.join(sourceRoot, relative))));
+  let capture: ReturnType<typeof spawnSync> | null = null;
+  let capturedRaw: JsonRecord | null = null;
+  try {
+    capture = spawnSync(process.execPath, [path.join(sourceRoot, "tools", "test-work-campaign-windows.ts")], {
+      cwd: sourceRoot,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        WORK_CAMPAIGN_WINDOWS_CANDIDATE_ID: options.candidateId,
+        WORK_CAMPAIGN_WINDOWS_ENVIRONMENT_ID: options.environmentId,
+        WORK_CAMPAIGN_WINDOWS_RAW_PATH: capturedRawPath,
+      },
+      shell: false,
+      timeout: 180_000,
+    });
+    if (fs.existsSync(capturedRawPath)) capturedRaw = JSON.parse(fs.readFileSync(capturedRawPath, "utf8")) as JsonRecord;
+  } finally {
+    fs.rmSync(captureRoot, { recursive: true, force: true });
+  }
+  const afterDigests = windowsSourcePaths.map((relative) => digestBytes(fs.readFileSync(path.join(sourceRoot, relative))));
+  const raw: JsonRecord = capturedRaw ?? {
+    candidateId: options.candidateId,
+    cleanup: "unknown",
+    completedOracles: [],
+    effects: { hostMutations: 0, openCodeCalls: 0, processStarts: 0, providerCalls: 0, sourceWrites: 0 },
+    environmentId: options.environmentId,
+    proofKind: "campaign-windows-source-plan",
+    schemaVersion: 1,
+  };
+  const effects = isRecord(raw.effects) ? raw.effects : {};
+  raw.effects = { ...effects, processStarts: 1 };
+  raw.invocation = {
+    argv: ["node", "tools/test-work-campaign-windows.ts"],
+    exitCode: capture?.status ?? null,
+    stderr: (capture?.stderr ?? "capture did not start").slice(0, 5_000),
+    stdout: (capture?.stdout ?? "").slice(0, 5_000),
+  };
+  raw.sourceCandidate = windowsSourcePaths.map((relative) => ({
+    path: relative,
+    sha256: crypto.createHash("sha256").update(fs.readFileSync(path.join(sourceRoot, relative))).digest("hex"),
+  }));
+  raw.sourceManifest = { afterDigests, beforeDigests, sourceWrites: 0 };
+  const evaluation = evaluateWindowsRaw(raw, options.candidateId, options.environmentId);
+  writeBundle(options.evidenceRoot, { "raw.json": stableJson(raw), "evaluation.json": stableJson(evaluation) });
+  console.log(stableJson({
+    candidateId: options.candidateId,
+    evidenceRoot: "<evidence-root>",
+    mode: "windows",
+    processStarts: evaluation.processStarts,
+    status: evaluation.status,
+  }).trimEnd());
+  if (evaluation.status !== "complete") process.exitCode = 1;
+}
+
+function population(options: Options): void {
+  const configuredInputRoot = options.hostInputRoot ?? options.inputRoot;
+  if (configuredInputRoot == null || options.environmentId == null) throw new Error("Population inputs are missing");
+  if (fs.existsSync(options.evidenceRoot)) throw new Error("Evidence root already exists");
+  const configuredEvaluationPath = path.join(configuredInputRoot, "evaluation.json");
+  if (!fs.existsSync(configuredEvaluationPath)) throw new Error("Population input root has no evaluation.json");
   const captureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "work-campaign-population-capture-"));
   const controllerPath = path.join(captureRoot, "controller.json");
   const semanticPath = path.join(captureRoot, "semantic.json");
@@ -1277,17 +1443,18 @@ function population(options: Options): void {
     configured: {
       ...configured,
       evaluationDigest: digestBytes(configuredText),
-      inputBundle: path.basename(options.inputRoot),
+      inputBundle: path.basename(configuredInputRoot),
     },
     controller: controllerRaw,
     effects: { hostEffects: 0, modelCalls: 0, processStarts, providerCalls: 0, sourceWrites: 0 },
     environment: { node: process.version, platform: process.platform },
     environmentId: options.environmentId,
+    hostInput: options.hostInputRoot != null,
     invocations,
     materializer: materializerRaw,
     missingCaptures,
     populationRows: [],
-    proofKind: "campaign-provider-free-population",
+    proofKind: options.hostInputRoot == null ? "campaign-provider-free-population" : "campaign-composed-population",
     runnerDigest: digestBytes(fs.readFileSync(runnerPath)),
     schemaVersion: 1,
     semantic: semanticRaw,
@@ -1315,8 +1482,10 @@ function replay(options: Options): void {
   if (options.inputRoot == null) throw new Error("Replay input root is missing");
   const raw = JSON.parse(fs.readFileSync(path.join(options.inputRoot, "raw.json"), "utf8")) as JsonRecord;
   const sourceEvaluation = JSON.parse(fs.readFileSync(path.join(options.inputRoot, "evaluation.json"), "utf8")) as JsonRecord;
-  const evaluation = raw.proofKind === "campaign-provider-free-population"
+  const evaluation = raw.proofKind === "campaign-provider-free-population" || raw.proofKind === "campaign-composed-population"
     ? evaluatePopulationRaw(raw, options.candidateId, options.environmentId)
+    : raw.proofKind === "campaign-windows-source-plan"
+    ? evaluateWindowsRaw(raw, options.candidateId, options.environmentId)
     : raw.proofKind === "campaign-state-restart"
     ? evaluateStateRaw(raw, options.candidateId)
     : raw.proofKind === "campaign-provider-free-controller"
@@ -1339,19 +1508,27 @@ function replay(options: Options): void {
   if (evaluation.status !== "complete") process.exitCode = 1;
 }
 
-try {
-  const options = parseArgs(process.argv.slice(2));
-  if (options.help) console.log(usage());
-  else if (options.mode === "replay") replay(options);
-  else if (options.mode === "controller") controller(options);
-  else if (options.mode === "materializer") materializer(options);
-  else if (options.mode === "population") population(options);
-  else if (options.mode === "state") state(options);
-  else preflight(options);
-} catch (error) {
-  console.error(stableJson({
-    error: error instanceof Error ? error.message : String(error),
-    status: "blocked",
-  }).trimEnd());
-  process.exitCode = 1;
+function isMainModule(): boolean {
+  const entrypoint = process.argv[1];
+  return entrypoint != null && import.meta.url === pathToFileURL(path.resolve(entrypoint)).href;
+}
+
+if (isMainModule()) {
+  try {
+    const options = parseArgs(process.argv.slice(2));
+    if (options.help) console.log(usage());
+    else if (options.mode === "replay") replay(options);
+    else if (options.mode === "controller") controller(options);
+    else if (options.mode === "materializer") materializer(options);
+    else if (options.mode === "population") population(options);
+    else if (options.mode === "state") state(options);
+    else if (options.mode === "windows") windows(options);
+    else preflight(options);
+  } catch (error) {
+    console.error(stableJson({
+      error: error instanceof Error ? error.message : String(error),
+      status: "blocked",
+    }).trimEnd());
+    process.exitCode = 1;
+  }
 }

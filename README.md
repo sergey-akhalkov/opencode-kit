@@ -71,7 +71,7 @@ Use `npm run setup:global` as the one-command equivalent of `install:mcps` follo
 
 `install:mcps` preserves working installations instead of upgrading them. It installs missing Serena through the official `uv tool install -p 3.13 serena-agent` command, initializes Serena, and installs missing Codebase Memory through the supported `npm install --global codebase-memory-mcp` package. Use `--check`/`--audit` for a read-only availability check or `--dry-run`/`--what-if` to preview missing-package commands. Serena requires `uv`; if `uv` is unavailable, the helper fails before mutation with the official installation URL.
 
-`global/` is the complete kit-owned source for principles, operational routing, skills, agents, plugins, and portable binaries. `npm run install:global` materializes the selected profile under `global/.runtime-profiles/` and points `OPENCODE_CONFIG_DIR` at that generated root. The default `core` profile is minimal; use `--profile all` for the full compatibility surface, including the autonomous roadmap mission runtime. `global/opencode.json.template` remains the committed full-catalog compatibility source (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`). The generated `all` config retains its model and plugin tuples while replacing source/runtime placeholders with absolute installed paths. Personal standing host authorization belongs only in gitignored `opencode.local.instructions.md`. Restart OpenCode after any profile change; use `npm run opencode:sources` to inventory safe source locations and collisions.
+`global/` is the complete kit-owned source for principles, operational routing, skills, agents, plugins, and portable binaries. `npm run install:global` materializes the selected profile under `global/.runtime-profiles/` and points `OPENCODE_CONFIG_DIR` at that generated root. The default `core` profile is minimal and includes the read-only specialist-team advisor plus only its explicit catalog plugin; use `--profile all` for the full compatibility surface, including the autonomous roadmap mission runtime. `global/opencode.json.template` remains the committed full-catalog compatibility source (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`). The generated `all` config retains its model and plugin tuples while replacing source/runtime placeholders with absolute installed paths. Personal standing host authorization belongs only in gitignored `opencode.local.instructions.md`. Restart OpenCode after any profile change; use `npm run opencode:sources` to inventory safe source locations and collisions.
 
 Options:
 
@@ -399,12 +399,14 @@ For broad instruction-artifact audits, use `instructions/instruction-artifact-au
 
 Routing and reviewer maps assume the default `all` install profile.
 
+- New non-trivial parentless-root work that requires selecting or omitting maintained routes -> after enough foraging, obtain one `specialist-team-advisor` map; stay direct only for execution of one already-selected owner-local action with known proof.
 - Explicit planning-only work -> `deep-task-planning`.
 - Existing OpenSpec continuation or "what next" work -> `next-step`; consistency work -> `openspec-consistency-review`.
 - Several session-scoped follow-ups from an audit, reviewer gate, broad discovery, or validation failure -> group them into lightweight OpenSpec changes when OpenSpec exists or is approved; otherwise return grouped continuation candidates.
 - Initial MR/PR title/body preparation -> `merge-request-author`.
 - Ordinary Small clear/bounded/local/reversible work -> main-default implementation, Runtime Proof, accepted-scope completion, focused validation, and `Outcome: working | blocked | unknown`.
 - Behavior roadmaps and feature slices -> use the first safely reachable real boundary sufficient for the accepted effect. Keep a blocked path/gate unclaimed and replan to another sufficient route; ask only when the outcome requires owner action.
+- Explicit roadmap or phase Delivery Horizon with a current post-archive forecast, bottleneck, repeated unit-of-work, shared-owner fan-out, or dominant-cost trigger -> `roadmap-delivery-trajectory`; ordinary retrospectives, cohesive local work, changed-code review, focused complexity, next-step, exhaustive audit, and campaign execution retain their existing owners.
 - Explicit stable/full qualification, project-required qualification, or concrete Material risk -> load `change-ready-sdlc` before the first mutation.
 - Skip/omit/suppress/cache/replay/emulation/replacement/optimized-bypass equivalence -> `behavioral-substitution-qualification`; exact non-substitution work stays on its normal concise route.
 - Credentials, destructive/remote/install action, unrecognized dirty worktree, or unknown writer liveness -> `execution-safety-reviewer`; it cannot authorize the action.
@@ -462,6 +464,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `instruction-artifact-tuning`: review/tune skills, agents, prompts, and `AGENTS.md`.
 - `complexity-management`: focused pre-expansion Architecture Comprehension Map, Change Rehearsal, abstraction-value admission, and same-scenario refactor recheck for an existing project; not changed-code review, new service design, or exhaustive coverage.
 - `reuse-discovery`: bounded reuse-first discovery for new mechanisms across current-repository, platform/dependency, explicitly configured cross-project, and read-only ecosystem evidence.
+- `roadmap-delivery-trajectory`: evidence-bounded post-archive review for an explicit roadmap or phase Delivery Horizon when forecast, bottleneck, repeated-unit, shared-owner, or dominant-cost evidence requires one current disposition.
 - `behavioral-substitution-qualification`: on-demand closure for skip/omit/suppress/cache/replay/emulation/replacement/optimized-bypass equivalence at the owning boundary.
 - `root-cause-analysis`: evidence-backed 5 Whys/causal-chain analysis for symptoms, recurrence paths, unknown-cause investigations, and remediation-ready cause records.
 - `complain`: record current-session workflow friction, instruction conflicts, tooling pain, validation noise, or reusable improvement opportunities in `docs/feedbacks/**`.
@@ -520,6 +523,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 - `execution-safety-reviewer`: read-only execution-safety owner for authority, secrets, worktree, and destructive effects; never authorizes the action.
 - `troubleshooter`: inherited-model diagnosis-only pre-escalation consultant for hard or uncertain technical blockers after safe distinct mechanisms are exhausted; returns one goal-preserving route or proves the exact owner action, while main retains correction/proof and fresh SDET retains test authorship.
 - `qwen-local-worker`: inherited-model first-pass helper for bounded long-context retrieval, JSON extraction, scoped review, test ideas, planning, and tool-call checks.
+- `specialist-team-advisor`: inherited-model read-only advisor that returns the smallest sufficient main/skill/subagent engagement map from current mission evidence and the parent root's active catalog; it never dispatches or authorizes work.
 - `wire-protocol-reviewer`: byte-level protocol/transport review.
 - `legacy-evidence-reviewer`: requirement/design verification against legacy evidence.
 - `legacy-client-compatibility-reviewer`: compatibility with legacy clients/tools/workflows.
@@ -528,6 +532,7 @@ This repository's OpenSpec guide starts at `openspec/project.md`; active changes
 
 Project plugin behavior:
 
+- `global/extensions/specialist-catalog.ts` registers the advisor-only `specialist_catalog` tool when explicitly listed by a materialized profile. It projects privacy-safe parent-root agent/skill availability and is not auto-discovered from source presence.
 - `global/plugin/session-env.ts` registers the `session_delivery_context` custom tool for manual diagnostics and exposes the same redacted projection imported by the automatic completion guard, including `todowrite` history and requirement signals reconstructed from transcript parts. It also injects `OPENCODE_SESSION_ID` into shell commands for manual CLI use. The plugin is loaded explicitly from the kit config; the context implementation lives beside `session-env.ts` and does not need a `tools/` directory at runtime.
 
 ### Opt-In Session Completion Guard

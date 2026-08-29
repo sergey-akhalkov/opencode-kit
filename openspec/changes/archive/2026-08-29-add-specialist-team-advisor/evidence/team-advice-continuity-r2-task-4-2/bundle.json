@@ -1,0 +1,83 @@
+{
+  "candidateId": "add-specialist-team-advisor-task-4-2-continuity-r2",
+  "cleanup": {
+    "complete": false,
+    "error": "Error: Proof agent route did not become ready within 15000ms",
+    "fixtureRemoved": true,
+    "processRemoved": true,
+    "sessionsRemoved": false
+  },
+  "environment": {
+    "installedOpenCode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "model": "openai/gpt-5.6-sol",
+    "node": "v24.18.1",
+    "platform": "win32",
+    "profile": "quality-independent",
+    "runtimeProfile": "core",
+    "variant": "xhigh"
+  },
+  "fixtureDigest": "8508892790df6d4452d7b7e3c3e3d668f20fc0c82be3395db5e3a35c589f41dc",
+  "kind": "team-advice-continuity",
+  "routes": {
+    "compaction": "openai/gpt-5.6-sol/xhigh",
+    "main": "openai/gpt-5.6-sol/xhigh"
+  },
+  "samples": [],
+  "schemaVersion": 1,
+  "server": {
+    "signal": null,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "status": 1,
+    "stderr": "timestamp=2026-08-28T23:59:11.670Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-28T23:59:11.685Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-28T23:59:11.686Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-28T23:59:11.953Z level=INFO run=4d9ec3e4 message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-28T23:59:11.955Z level=INFO run=4d9ec3e4 message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-28T23:59:11.972Z level=INFO run=4d9ec3e4 message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-28T23:59:11.985Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-28T23:59:11.985Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-28T23:59:11.986Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-28T23:59:12.012Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\generated-core\\\\opencode.json\"\ntimestamp=2026-08-28T23:59:12.189Z level=INFO run=4d9ec3e4 message=loading path=\"<proof-root>\\\\generated-core\\\\opencode.jsonc\"\ntimestamp=2026-08-28T23:59:12.276Z level=INFO run=4d9ec3e4 message=\"all LSPs are disabled\"\ntimestamp=2026-08-28T23:59:12.278Z level=INFO run=4d9ec3e4 message=\"all formatters are disabled\"\ntimestamp=2026-08-28T23:59:12.278Z level=INFO run=4d9ec3e4 message=init\ntimestamp=2026-08-28T23:59:12.425Z level=INFO run=4d9ec3e4 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-28T23:59:12.427Z level=INFO run=4d9ec3e4 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-28T23:59:12.765Z level=INFO run=4d9ec3e4 message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:62413\n"
+  },
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "9333455b0eb467ed54eb9704ff76ce04f761f8609bc6b3f2fe76e5f4e50553c0",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "e2a917c6de07531d3b81379008e6ef625b9a0a13f70c3e7f41290f22de0ad33a"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/opencode.json.template",
+        "sha256": "71d2055cdd12825efef3ab2d82a505fd9881b85dd1a55d90b707d722ccacabc8"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "b6524e820a26545530a8117c5780573dcd713381e1c86e3c279c0f4e230dde0f"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome-regression.ts",
+        "sha256": "5bb7036339e13e679a02182a7eda02a107261ff7aac94a71e5f6e76f29efe648"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/team-advice-continuity.ts",
+        "sha256": "a6023aca6f6388709f6ec5be606b7f7e946a0e8a889995e46e6f21853c17a490"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/team-advice-continuity-r1.json",
+        "sha256": "76ab8f218944ee4b7f999b109b87aaa18432c3798048641c345cee945c901066"
+      },
+      {
+        "path": "tools/runtime-surface-profile.ts",
+        "sha256": "4e3e666a1a13a6495ccaca4c3484dd86eb98f843aeca6208230dbacabb8ca46b"
+      }
+    ]
+  },
+  "sourceUnchanged": true,
+  "bundleDigest": "f2831e01a37ed72f109b45d8f94afb902be5e67ee22c01ef600c8e8ae87a3d56",
+  "byteLength": 5016
+}

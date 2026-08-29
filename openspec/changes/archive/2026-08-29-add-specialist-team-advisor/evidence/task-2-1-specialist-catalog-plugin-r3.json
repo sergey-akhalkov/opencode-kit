@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "candidate": "specialist-catalog-plugin-r1",
+  "generatedAt": "2026-08-28T20:44:22.243Z",
+  "environment": {
+    "installedOpenCode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "node": "v24.18.1",
+    "platform": "win32",
+    "pluginPackageVersion": "1.18.15",
+    "sdkPackageVersion": "1.18.15",
+    "sourceIdentities": [
+      {
+        "path": "global/node_modules/@opencode-ai/sdk/dist/v2/gen/sdk.gen.d.ts",
+        "sha256": "19f121825a0e655b19a13243ac294df733ebdbc5cbf3ab65b0389cc71d9de7ac"
+      },
+      {
+        "path": "global/node_modules/@opencode-ai/sdk/dist/v2/gen/types.gen.d.ts",
+        "sha256": "37f5a58fce9ffbfef404ff92d4c5a81226d077309c707939054b38f7e8b537dd"
+      },
+      {
+        "path": "global/node_modules/@opencode-ai/plugin/dist/index.d.ts",
+        "sha256": "f3ec1a150d1354be3c9d93928fa130edc118c63fb468533ebb01eb3d6ed77f92"
+      },
+      {
+        "path": "global/node_modules/@opencode-ai/plugin/dist/tool.d.ts",
+        "sha256": "5237b30a9b5a9a814f93327ce446e73b726da139fe2eba8edf88c4a45b4b8b2d"
+      },
+      {
+        "path": "global/extensions/specialist-catalog.ts",
+        "sha256": "d9b122ed2da261125e5ba40ba0e0d1c7bdf739a4be7c33a85c508c2f4933339c"
+      },
+      {
+        "path": "global/agents/specialist-team-advisor.md",
+        "sha256": "328351c98e458d2a85d33b097fe714300170a830e52e0720dd274d65a87be316"
+      }
+    ]
+  },
+  "apiShapes": {
+    "agentList": "client.app.agents({ directory }) -> Agent[]",
+    "skillList": "client.app.skills({ directory }) -> Skill[]",
+    "toolContext": [
+      "agent",
+      "directory",
+      "sessionID",
+      "worktree"
+    ],
+    "toolIds": "client.tool.ids({ directory }) -> string[]",
+    "rootResolution": "client.session.get({ directory, sessionID }) parentID walk"
+  },
+  "controls": {
+    "rootEffectiveCatalog": {
+      "agentCount": 12,
+      "skillCount": 2,
+      "status": "passed",
+      "testAgentIds": [
+        "proof-hidden",
+        "proof-other",
+        "proof-worker"
+      ],
+      "testSkillIds": [
+        "proof-skill"
+      ],
+      "toolLoaded": true
+    },
+    "customToolPermission": {
+      "advisorExactAllow": true,
+      "advisorWildcardDeny": true,
+      "nonAdvisorExactAllow": false,
+      "status": "passed"
+    },
+    "attribution": {
+      "advisorChildAgent": "specialist-team-advisor",
+      "advisorChildLinkedToRoot": true,
+      "positiveStatus": "ok",
+      "rootParentless": true,
+      "rootRefMatches": true,
+      "status": "passed"
+    },
+    "denial": {
+      "entries": 0,
+      "status": "denied"
+    },
+    "filtering": {
+      "bodyPromptPathAndSessionDisclosure": false,
+      "hiddenControlAndSelfOmitted": true,
+      "stableOrder": true,
+      "status": "passed"
+    },
+    "missingApi": {
+      "executeStatus": "unknown",
+      "initReturnedHooks": true,
+      "reason": "catalog-api-unavailable",
+      "status": "passed"
+    }
+  },
+  "effects": {
+    "activeGlobalConfigChanged": false,
+    "providerRequestCount": 0,
+    "remoteEffects": false,
+    "repositoryCandidateSourceLoaded": true,
+    "temporaryFixtureOnly": true
+  },
+  "cleanup": {
+    "serverSignal": null,
+    "serverStatus": 1,
+    "sessionsRequestedForDeletion": 3,
+    "temporaryFixtureRemoved": true
+  }
+}

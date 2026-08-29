@@ -1,0 +1,220 @@
+{
+  "after": {
+    "campaignRootExists": false,
+    "task": {
+      "exists": false,
+      "state": null
+    },
+    "workstation": {
+      "candidate": "bbb523f552995f20d9c8604f103332792c810e2fe2af905b7033fc0e0a00f59b",
+      "graphifyListeners": 0,
+      "health": false,
+      "installed": true,
+      "integrity": "complete",
+      "listeners": 0,
+      "taskExists": true,
+      "taskState": "Ready",
+      "trayTaskExists": true,
+      "trayTaskState": "Ready"
+    }
+  },
+  "before": {
+    "campaignRootExists": false,
+    "task": {
+      "exists": false,
+      "state": null
+    },
+    "workstation": {
+      "candidate": "bbb523f552995f20d9c8604f103332792c810e2fe2af905b7033fc0e0a00f59b",
+      "graphifyListeners": 0,
+      "health": false,
+      "installed": true,
+      "integrity": "complete",
+      "listeners": 0,
+      "taskExists": true,
+      "taskState": "Ready",
+      "trayTaskExists": true,
+      "trayTaskState": "Ready"
+    }
+  },
+  "candidateId": "task-7-1-installed-operator-r1",
+  "cleanup": "complete",
+  "credential": {
+    "persistedInEvidence": false,
+    "source": "protected-file"
+  },
+  "effects": {
+    "configuredModelCalls": 0,
+    "hostMutations": 0,
+    "sourceWrites": 0
+  },
+  "environmentId": "node-24.18.1-windows-task-7-1-r1",
+  "expectedModel": "openai/gpt-5.6-sol",
+  "failure": null,
+  "fixtureRemoved": true,
+  "installedOpenCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "proofKind": "campaign-installed-operator-preflight",
+  "route": {
+    "agent": "general",
+    "hidden": false,
+    "model": {
+      "modelID": "gpt-5.6-sol",
+      "providerID": "openai"
+    },
+    "variant": "xhigh"
+  },
+  "runtimeSurface": {
+    "configDigest": "662d8172270c56df1780d92db2b5c6c70133f1974729c15787212bef5133934f",
+    "mcpIds": [
+      "codebase-memory-mcp",
+      "graphify-global",
+      "serena"
+    ],
+    "pluginIds": [
+      "sha256:650eab3c5db07ac1f80d81487a893c0251049a5b2972abfb267be4379775edc8",
+      "sha256:aacf4dc7a4e52a3a591ea9e898e890e37eca21fa31d49ef840a20c6d61ef8c02",
+      "sha256:29334fc8ec623ef8c8bed5ae02a0a2c235e29485c9cae933ba5e2ba0f4b17a6b"
+    ]
+  },
+  "schemaVersion": 1,
+  "secretLeakDetected": false,
+  "serverDiagnostics": {
+    "stderrDigest": "bc1e846a1589c14e469013ffe81f2460ab0489e53353e01fbe649d350d09961b",
+    "stderrTail": "timestamp=2026-08-28T12:38:42.964Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:42.968Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:42.989Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:43.809Z level=INFO run=3f9019dc message=\"watcher backend\" directory=\"<absolute-path>\" platform=win32 backend=windows\ntimestamp=2026-08-28T12:38:43.818Z level=INFO run=3f9019dc message=\"project copy refresh started\" projectID=389b4e6387e2357ad6f69f357a0093035d4df15c\ntimestamp=2026-08-28T12:38:43.821Z level=INFO run=3f9019dc message=\"project copy refresh done\" projectID=389b4e6387e2357ad6f69f357a0093035d4df15c updated=[] removed=[]\ntimestamp=2026-08-28T12:38:45.086Z level=INFO run=3f9019dc message=\"booting location services\" directory=\"<absolute-path>\" workspaceID=undefined\ntimestamp=2026-08-28T12:38:45.129Z level=INFO run=3f9019dc message=\"creating instance\" directory=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.131Z level=INFO run=3f9019dc message=fromDirectory directory=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.466Z level=INFO run=3f9019dc message=bootstrapping directory=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.472Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.472Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.473Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.504Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.518Z level=INFO run=3f9019dc message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:38:45.588Z level=INFO run=3f9019dc message=\"all LSPs are disabled\"\ntimestamp=2026-08-28T12:38:45.589Z level=INFO run=3f9019dc message=\"all formatters are disabled\"\ntimestamp=2026-08-28T12:38:45.589Z level=INFO run=3f9019dc message=init\ntimestamp=2026-08-28T12:38:46.901Z level=INFO run=3f9019dc message=\"completion guard permission capability state\" configuredPermission=allow guardCapability=checked-at-operation\ntimestamp=2026-08-28T12:38:46.915Z level=INFO run=3f9019dc message=created id=ses_fb79ec47cffeM6TD01yjpTcb5a slug=calm-engine version=1.18.25 projectID=389b4e6387e2357ad6f69f357a0093035d4df15c directory=\"<absolute-path>\" path=\"\" workspaceID=undefined parentID=undefined title=\"installed operator zero-call preflight\" agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787920726915 time.updated=1787920726915\ntimestamp=2026-08-28T12:38:46.956Z level=INFO run=3f9019dc message=\"removing share\" sessionID=ses_fb79ec47cffeM6TD01yjpTcb5a\n",
+    "stdoutDigest": "e0c71d0db6acec5ece8eb88ca8cc21435e3c79cd81afbcbf029bcc422723560b"
+  },
+  "serverTerminal": true,
+  "session": {
+    "created": true,
+    "deleted": true
+  },
+  "sourceAfter": [
+    {
+      "digest": "25eae37877a509f6fa3f459b77d947d28cd5a0a78006fc344fc2d2576f151d20",
+      "path": "global/bin/work-campaign/semantic-executor.ts"
+    },
+    {
+      "digest": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c",
+      "path": "global/bin/work-campaign/semantic-playbook.ts"
+    },
+    {
+      "digest": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047",
+      "path": "global/bin/work-campaign/supervisor.ts"
+    },
+    {
+      "digest": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72",
+      "path": "tools/model-profile.ts"
+    },
+    {
+      "digest": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78",
+      "path": "tools/proofs/lib/opencode-proof-client.ts"
+    },
+    {
+      "digest": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d",
+      "path": "tools/proofs/lib/proof-process-cleanup.ts"
+    },
+    {
+      "digest": "2dce90e78c18e482d1d03f0c175b08b25a76e8e58eb0a2f753caab087f383609",
+      "path": "tools/proofs/work-campaign-playbook.ts"
+    },
+    {
+      "digest": "2e6274a1338db4445537cef27f649aed8034ecf822b94b331989a02c476fa5ac",
+      "path": "tools/proofs/work-campaign-windows-installed.ts"
+    },
+    {
+      "digest": "3f22fff6924c24636db057c9fb384b404c8ae2dee69c85724ae1856380ac34d4",
+      "path": "tools/test-work-campaign-controller.ts"
+    },
+    {
+      "digest": "cce577236a4abc1a80911392ecabe7692bf86b1ba00c8a95dd06f573a61d8c3d",
+      "path": "tools/windows/opencode-workstation-layout.ts"
+    },
+    {
+      "digest": "8348865362046b3d6ec9b2385d803d1a4e6fc9e26e0e7197925ff770c8eadcec",
+      "path": "tools/windows/work-campaign-supervisor-host.ts"
+    },
+    {
+      "digest": "451f96b599364c591ee848ed8015a26f9d35396ebf94a3a402a6dbfc4f8a0bd0",
+      "path": "tools/windows/work-campaign-supervisor-install.ts"
+    },
+    {
+      "digest": "2f4746439b2d733f9eb68dfdc03a284b4ee3ca286a8aa4e00d8ce77144886bc1",
+      "path": "tools/windows/work-campaign-supervisor.ts"
+    }
+  ],
+  "sourceBefore": [
+    {
+      "digest": "25eae37877a509f6fa3f459b77d947d28cd5a0a78006fc344fc2d2576f151d20",
+      "path": "global/bin/work-campaign/semantic-executor.ts"
+    },
+    {
+      "digest": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c",
+      "path": "global/bin/work-campaign/semantic-playbook.ts"
+    },
+    {
+      "digest": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047",
+      "path": "global/bin/work-campaign/supervisor.ts"
+    },
+    {
+      "digest": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72",
+      "path": "tools/model-profile.ts"
+    },
+    {
+      "digest": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78",
+      "path": "tools/proofs/lib/opencode-proof-client.ts"
+    },
+    {
+      "digest": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d",
+      "path": "tools/proofs/lib/proof-process-cleanup.ts"
+    },
+    {
+      "digest": "2dce90e78c18e482d1d03f0c175b08b25a76e8e58eb0a2f753caab087f383609",
+      "path": "tools/proofs/work-campaign-playbook.ts"
+    },
+    {
+      "digest": "2e6274a1338db4445537cef27f649aed8034ecf822b94b331989a02c476fa5ac",
+      "path": "tools/proofs/work-campaign-windows-installed.ts"
+    },
+    {
+      "digest": "3f22fff6924c24636db057c9fb384b404c8ae2dee69c85724ae1856380ac34d4",
+      "path": "tools/test-work-campaign-controller.ts"
+    },
+    {
+      "digest": "cce577236a4abc1a80911392ecabe7692bf86b1ba00c8a95dd06f573a61d8c3d",
+      "path": "tools/windows/opencode-workstation-layout.ts"
+    },
+    {
+      "digest": "8348865362046b3d6ec9b2385d803d1a4e6fc9e26e0e7197925ff770c8eadcec",
+      "path": "tools/windows/work-campaign-supervisor-host.ts"
+    },
+    {
+      "digest": "451f96b599364c591ee848ed8015a26f9d35396ebf94a3a402a6dbfc4f8a0bd0",
+      "path": "tools/windows/work-campaign-supervisor-install.ts"
+    },
+    {
+      "digest": "2f4746439b2d733f9eb68dfdc03a284b4ee3ca286a8aa4e00d8ce77144886bc1",
+      "path": "tools/windows/work-campaign-supervisor.ts"
+    }
+  ],
+  "worktreeStatuses": [
+    {
+      "paths": [],
+      "stage": "fixture-created"
+    },
+    {
+      "paths": [],
+      "stage": "managed-surface-loaded"
+    },
+    {
+      "paths": [],
+      "stage": "session-cleaned"
+    },
+    {
+      "paths": [],
+      "stage": "server-stopped"
+    }
+  ]
+}

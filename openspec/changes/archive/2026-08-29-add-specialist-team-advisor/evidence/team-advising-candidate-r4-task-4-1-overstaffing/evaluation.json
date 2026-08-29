@@ -1,0 +1,24 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "0eb92dd510f7fe1f75967325dbec2b7578037adf2b27ea405281270ec23be3df"
+  },
+  "evaluationDigest": "d9a9aadba8afc87503180177bbbefec6eec5e4772f41b4914d6dad64415afa61",
+  "maximumClaim": "the selected STA-001 subset (overstaffing-negative-control) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 2,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "overstaffing-negative-control"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "overstaffing-negative-control"
+    }
+  ],
+  "status": "passed"
+}

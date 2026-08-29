@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "id": "team-advice-continuity-r1",
+  "configuredProviderRequestBound": 6,
+  "maximumClaim": "the two reviewed compaction-continuity controls for the recorded candidate/model/profile/environment only; no STA-001 population, universal compaction, cross-model, or deployed-runtime claim is supported",
+  "fields": [
+    "Advisor Task Ref",
+    "Candidate Ref",
+    "Catalog Ref",
+    "Main Disposition",
+    "Active Work Packages",
+    "Terminal Work Packages",
+    "Pending Activation Evidence",
+    "Specialist Liveness",
+    "Integration State",
+    "Unavailable Material Capabilities",
+    "Reconsultation Condition"
+  ],
+  "cases": [
+    {
+      "id": "unchanged-engagement",
+      "initialState": {
+        "Advisor Task Ref": "advisor-task-001",
+        "Candidate Ref": "candidate-a",
+        "Catalog Ref": "catalog-a",
+        "Main Disposition": "team-recommended",
+        "Active Work Packages": "main-integration",
+        "Terminal Work Packages": "architecture-review:terminal",
+        "Pending Activation Evidence": "test-coverage-reviewer:on-failed-runtime-proof",
+        "Specialist Liveness": "none-live",
+        "Integration State": "architecture-review-integrated",
+        "Unavailable Material Capabilities": "none",
+        "Reconsultation Condition": "material-topology-or-catalog-change"
+      },
+      "catalogNoise": ["code-quality-reviewer", "execution-safety-reviewer", "final-candidate-reviewer"],
+      "currentFacts": {
+        "candidateRef": "candidate-a",
+        "catalogRef": "catalog-a",
+        "catalogChanged": false
+      },
+      "expected": {
+        "reconsult": false,
+        "stalePackages": [],
+        "terminalPackages": ["architecture-review:terminal"]
+      }
+    },
+    {
+      "id": "changed-catalog",
+      "initialState": {
+        "Advisor Task Ref": "advisor-task-002",
+        "Candidate Ref": "candidate-a",
+        "Catalog Ref": "catalog-a",
+        "Main Disposition": "team-recommended",
+        "Active Work Packages": "main-integration",
+        "Terminal Work Packages": "architecture-review:terminal",
+        "Pending Activation Evidence": "test-coverage-reviewer:on-failed-runtime-proof",
+        "Specialist Liveness": "none-live",
+        "Integration State": "architecture-review-integrated",
+        "Unavailable Material Capabilities": "none",
+        "Reconsultation Condition": "material-topology-or-catalog-change"
+      },
+      "catalogNoise": ["code-quality-reviewer", "execution-safety-reviewer", "final-candidate-reviewer"],
+      "currentFacts": {
+        "candidateRef": "candidate-a",
+        "catalogRef": "catalog-b",
+        "catalogChanged": true
+      },
+      "expected": {
+        "reconsult": true,
+        "stalePackages": ["test-coverage-reviewer:on-failed-runtime-proof"],
+        "terminalPackages": ["architecture-review:terminal"]
+      }
+    }
+  ]
+}

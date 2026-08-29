@@ -1,0 +1,60 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "6cb0cd7717026c526994e950a29aad3ceae923ed78b16c59cd7f573bc409fa55"
+  },
+  "evaluationDigest": "80ec68823c6a04807614527ea31ab61be23cdbd5dbb079a66e5300a8790d194d",
+  "maximumClaim": "the selected STA-001 subset (multi-domain-bounded-team, procedural-skill-no-fresh-agent, conditional-later-specialist, active-profile-capability-unavailable) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 8,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "active-profile-capability-unavailable"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "active-profile-capability-unavailable"
+    }
+  ],
+  "status": "passed"
+}

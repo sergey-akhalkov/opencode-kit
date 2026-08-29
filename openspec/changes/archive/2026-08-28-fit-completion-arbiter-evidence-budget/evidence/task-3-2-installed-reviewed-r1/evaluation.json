@@ -1,0 +1,12 @@
+{
+  "candidateId": "completion-arbiter-budget-v1",
+  "cleanup": "complete",
+  "exactRequestBytes": 124423,
+  "externalCalls": 0,
+  "mode": "installed-reviewed",
+  "rawDigest": "44cd2dd74f7c25e52ff2fa4859a340ead97de295b2d1d25151a917403bc3a6c8",
+  "requestLimit": 200000,
+  "schemaVersion": 1,
+  "status": "complete",
+  "verdict": "allow_stop"
+}

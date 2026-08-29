@@ -1,0 +1,36 @@
+{
+  "candidateId": "task-6-4-windows-installed-r1",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "environmentMatched": true,
+    "explicitStopSuppressed": false,
+    "gracefulStopObserved": false,
+    "hostInitiallyAbsent": true,
+    "hostRemoved": true,
+    "installCompleted": false,
+    "installedCheckCurrent": false,
+    "preTaskResumeReady": false,
+    "projectEvidencePreserved": true,
+    "rollbackCompleted": false,
+    "secretSafe": true,
+    "sourceCurrent": true,
+    "taskActionResumedOnce": false,
+    "unknownWriterSuppressed": true,
+    "workstationIdentityPreserved": true,
+    "workstationPrestateRestored": true
+  },
+  "environmentId": "node-24.18.1-windows-task-6-4-installed-r1",
+  "failedChecks": [
+    "installCompleted",
+    "installedCheckCurrent",
+    "preTaskResumeReady",
+    "taskActionResumedOnce",
+    "gracefulStopObserved",
+    "explicitStopSuppressed",
+    "rollbackCompleted"
+  ],
+  "proofKind": "campaign-windows-installed-host",
+  "schemaVersion": 1,
+  "status": "blocked"
+}

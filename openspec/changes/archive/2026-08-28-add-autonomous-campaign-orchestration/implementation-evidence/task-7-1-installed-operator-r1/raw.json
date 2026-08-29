@@ -1,0 +1,979 @@
+{
+  "after": {
+    "campaignRootExists": false,
+    "task": {
+      "exists": false,
+      "state": null
+    },
+    "workstation": {
+      "candidate": "bbb523f552995f20d9c8604f103332792c810e2fe2af905b7033fc0e0a00f59b",
+      "graphifyListeners": 0,
+      "health": false,
+      "installed": true,
+      "integrity": "complete",
+      "listeners": 0,
+      "taskExists": true,
+      "taskState": "Ready",
+      "trayTaskExists": true,
+      "trayTaskState": "Ready"
+    }
+  },
+  "before": {
+    "campaignRootExists": false,
+    "task": {
+      "exists": false,
+      "state": null
+    },
+    "workstation": {
+      "candidate": "bbb523f552995f20d9c8604f103332792c810e2fe2af905b7033fc0e0a00f59b",
+      "graphifyListeners": 0,
+      "health": false,
+      "installed": true,
+      "integrity": "complete",
+      "listeners": 0,
+      "taskExists": true,
+      "taskState": "Ready",
+      "trayTaskExists": true,
+      "trayTaskState": "Ready"
+    }
+  },
+  "candidateId": "task-7-1-installed-operator-r1",
+  "cleanup": "complete",
+  "configured": {
+    "assignmentCommands": [
+      {
+        "assignmentId": "discover-source",
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"assignmentId\": \"discover-source\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work-campaign/evidence/results/discover-source.json\",\n  \"status\": \"complete\"\n}\n"
+      },
+      {
+        "assignmentId": "reconcile-item-format-name",
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"assignmentId\": \"reconcile-item-format-name\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work-campaign/evidence/results/reconcile-item-format-name.json\",\n  \"status\": \"complete\"\n}\n"
+      },
+      {
+        "assignmentId": "reconcile-item-zero-divisor",
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"assignmentId\": \"reconcile-item-zero-divisor\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work-campaign/evidence/results/reconcile-item-zero-divisor.json\",\n  \"status\": \"complete\"\n}\n"
+      },
+      {
+        "assignmentId": "synthesize-wave",
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"assignmentId\": \"synthesize-wave\",\n  \"cleanup\": \"complete\",\n  \"modelCalls\": 1,\n  \"resultPath\": \".work-campaign/evidence/results/synthesize-wave.json\",\n  \"status\": \"complete\"\n}\n"
+      }
+    ],
+    "assignmentResults": [
+      {
+        "assignmentDigest": "4d5e4d0682de6f94784fc50057a00c7cfbe8e3eee60802486b4af72d1390e876",
+        "assignmentId": "discover-source",
+        "assignmentType": "discovery",
+        "campaignId": "configured-playbook-proof",
+        "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+        "cleanup": "complete",
+        "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+        "environment": {
+          "node": "v24.18.1",
+          "platform": "win32"
+        },
+        "errorClass": "none",
+        "errorMessage": null,
+        "evidenceRefs": [
+          "file:src/format.mjs",
+          "file:src/main.mjs"
+        ],
+        "model": {
+          "agent": "general",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "variant": "xhigh"
+        },
+        "modelCalls": 1,
+        "outputBytes": 2151,
+        "outputDigest": "ceda5bd5e76704ccbc6ef92f78617a59a325f4b517fc394f0fbc246b4c9b9cc5",
+        "payload": {
+          "partition": {
+            "assignmentId": "discover-source",
+            "blockIds": [
+              "block-format",
+              "block-main"
+            ],
+            "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+            "evidenceRefs": [
+              "file:src/format.mjs",
+              "file:src/main.mjs"
+            ],
+            "id": "partition-source",
+            "inventoryDigest": "00c643c4ad07003291fd3dc6a411aa32795227a57e6a93032e007be67f84efc8",
+            "producerSessionRef": "session:ecb1e6d25f4df15b1228cd082418c5eba053547b9ce638096595f67317f19fe4",
+            "recordType": "partition-result",
+            "schemaVersion": 1,
+            "status": "complete",
+            "workItemIds": [
+              "item-format-name",
+              "item-zero-divisor"
+            ]
+          },
+          "workItems": [
+            {
+              "affectedPaths": [
+                "src/main.mjs"
+              ],
+              "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+              "confidence": "high",
+              "effectClasses": [
+                "local-write"
+              ],
+              "evidenceRefs": [
+                "file:src/main.mjs"
+              ],
+              "id": "item-zero-divisor",
+              "impact": "The accepted bounded result contract is violated.",
+              "initialSeverity": "P1",
+              "likelyCause": "The zero-divisor guard is absent.",
+              "ownedPaths": [
+                "src/main.mjs"
+              ],
+              "principleRef": "principle:first-do-no-harm",
+              "producerSessionRef": "session:ecb1e6d25f4df15b1228cd082418c5eba053547b9ce638096595f67317f19fe4",
+              "proposedOutcome": "Return null before division when divisor is zero.",
+              "recordType": "work-item",
+              "scenario": "Calling safeDivide with divisor zero returns a non-finite number instead of null.",
+              "schemaVersion": 1,
+              "sourceBlockIds": [
+                "block-main"
+              ],
+              "status": "candidate"
+            },
+            {
+              "affectedPaths": [
+                "src/format.mjs"
+              ],
+              "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+              "confidence": "high",
+              "effectClasses": [
+                "local-read"
+              ],
+              "evidenceRefs": [
+                "file:src/format.mjs"
+              ],
+              "id": "item-format-name",
+              "impact": "The accepted bounded result remains correct.",
+              "initialSeverity": "P2",
+              "likelyCause": "The concise name predates the current wording.",
+              "ownedPaths": [
+                "src/format.mjs"
+              ],
+              "principleRef": "principle:yagni",
+              "producerSessionRef": "session:ecb1e6d25f4df15b1228cd082418c5eba053547b9ce638096595f67317f19fe4",
+              "proposedOutcome": "Retain the observation as optional report-only polish.",
+              "recordType": "work-item",
+              "scenario": "The formatter function name could be more explicit but current behavior remains correct.",
+              "schemaVersion": 1,
+              "sourceBlockIds": [
+                "block-format"
+              ],
+              "status": "candidate"
+            }
+          ]
+        },
+        "phase": "discover",
+        "resultType": "semantic-assignment-result",
+        "runtimeRef": "loopback:d73d72759566f04c3bc5f41d33b800b89a9f5bebe7c4b32eef1673032d6cfe7c",
+        "schemaVersion": 1,
+        "sessionRef": "session:ecb1e6d25f4df15b1228cd082418c5eba053547b9ce638096595f67317f19fe4",
+        "status": "complete",
+        "toolCalls": [
+          {
+            "name": "StructuredOutput",
+            "status": "completed"
+          }
+        ],
+        "verification": {
+          "children": 0,
+          "fileDiffs": 0,
+          "parentless": true,
+          "permissionRequests": 0,
+          "questions": 0
+        }
+      },
+      {
+        "assignmentDigest": "bd7ef273a1952a6db34f5114ba4a13d91c8fb77986f793f90fdc8bb21d567f79",
+        "assignmentId": "reconcile-item-format-name",
+        "assignmentType": "reconciliation",
+        "campaignId": "configured-playbook-proof",
+        "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+        "cleanup": "complete",
+        "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+        "environment": {
+          "node": "v24.18.1",
+          "platform": "win32"
+        },
+        "errorClass": "none",
+        "errorMessage": null,
+        "evidenceRefs": [
+          "file:src/format.mjs"
+        ],
+        "model": {
+          "agent": "general",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "variant": "xhigh"
+        },
+        "modelCalls": 1,
+        "outputBytes": 525,
+        "outputDigest": "47f7a026fa49a53a656370fa67d2414cfbc0aed4101b385796d06b8bfbb001ab",
+        "payload": {
+          "reconciliation": {
+            "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+            "disposition": "confirmed",
+            "evidenceRefs": [
+              "file:src/format.mjs"
+            ],
+            "id": "reconcile-item-format-name",
+            "producerSessionRef": "session:c62247df8ef2b1ba7edb6afb7f951ad7d5c294c488b79d20ddc8f194024f5278",
+            "recordType": "reconciliation-result",
+            "schemaVersion": 1,
+            "severity": "P2",
+            "sourceDigest": "219afe2f76c515e75011604c1013d63227cdca1b9f90e6f1f288b7658d2d615f",
+            "workItemId": "item-format-name"
+          }
+        },
+        "phase": "reconcile",
+        "resultType": "semantic-assignment-result",
+        "runtimeRef": "loopback:d73d72759566f04c3bc5f41d33b800b89a9f5bebe7c4b32eef1673032d6cfe7c",
+        "schemaVersion": 1,
+        "sessionRef": "session:c62247df8ef2b1ba7edb6afb7f951ad7d5c294c488b79d20ddc8f194024f5278",
+        "status": "complete",
+        "toolCalls": [
+          {
+            "name": "StructuredOutput",
+            "status": "completed"
+          }
+        ],
+        "verification": {
+          "children": 0,
+          "fileDiffs": 0,
+          "parentless": true,
+          "permissionRequests": 0,
+          "questions": 0
+        }
+      },
+      {
+        "assignmentDigest": "87dcf6ab25ab05ef25f86474382d8d1a65a2995e513bbe084c51faddf81ad39e",
+        "assignmentId": "reconcile-item-zero-divisor",
+        "assignmentType": "reconciliation",
+        "campaignId": "configured-playbook-proof",
+        "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+        "cleanup": "complete",
+        "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+        "environment": {
+          "node": "v24.18.1",
+          "platform": "win32"
+        },
+        "errorClass": "none",
+        "errorMessage": null,
+        "evidenceRefs": [
+          "file:src/main.mjs"
+        ],
+        "model": {
+          "agent": "general",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "variant": "xhigh"
+        },
+        "modelCalls": 1,
+        "outputBytes": 526,
+        "outputDigest": "6cd7b06846719ee4628785ed049c559d80cd155d6edda26e2bee64c3a30be1ba",
+        "payload": {
+          "reconciliation": {
+            "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+            "disposition": "confirmed",
+            "evidenceRefs": [
+              "file:src/main.mjs"
+            ],
+            "id": "reconcile-item-zero-divisor",
+            "producerSessionRef": "session:46121ab6f5d6d7f5f5cec2902303849cc68b559eb4fe8c98b97c4caaa7c018d0",
+            "recordType": "reconciliation-result",
+            "schemaVersion": 1,
+            "severity": "P1",
+            "sourceDigest": "e312ed6c2587e82df9958cf30a35a39e4b2bd2ee97fee566d35e83b3de0c1e39",
+            "workItemId": "item-zero-divisor"
+          }
+        },
+        "phase": "reconcile",
+        "resultType": "semantic-assignment-result",
+        "runtimeRef": "loopback:d73d72759566f04c3bc5f41d33b800b89a9f5bebe7c4b32eef1673032d6cfe7c",
+        "schemaVersion": 1,
+        "sessionRef": "session:46121ab6f5d6d7f5f5cec2902303849cc68b559eb4fe8c98b97c4caaa7c018d0",
+        "status": "complete",
+        "toolCalls": [
+          {
+            "name": "StructuredOutput",
+            "status": "completed"
+          }
+        ],
+        "verification": {
+          "children": 0,
+          "fileDiffs": 0,
+          "parentless": true,
+          "permissionRequests": 0,
+          "questions": 0
+        }
+      },
+      {
+        "assignmentDigest": "877ca3e2293dd9a864515622a0d04cee1b50200de03ac7147745ff82fdf2e937",
+        "assignmentId": "synthesize-wave",
+        "assignmentType": "synthesis",
+        "campaignId": "configured-playbook-proof",
+        "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+        "cleanup": "complete",
+        "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+        "environment": {
+          "node": "v24.18.1",
+          "platform": "win32"
+        },
+        "errorClass": "none",
+        "errorMessage": null,
+        "evidenceRefs": [
+          "file:src/main.mjs"
+        ],
+        "model": {
+          "agent": "general",
+          "modelID": "gpt-5.6-sol",
+          "providerID": "openai",
+          "variant": "xhigh"
+        },
+        "modelCalls": 1,
+        "outputBytes": 826,
+        "outputDigest": "13277c5914e889580574beaa43720cf1dda6dc001f1c21e3ccbc56da931d32b2",
+        "payload": {
+          "wave": {
+            "campaignId": "configured-playbook-proof",
+            "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+            "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+            "id": "wave-zero-divisor",
+            "missionDefinitionDigest": "1de4eccc052e44478e8131574d67c3411dc785d0804ae5ee7526ebde6a98fdcb",
+            "recordType": "wave-manifest",
+            "schemaVersion": 1,
+            "slices": [
+              {
+                "changeId": "fix-zero-divisor",
+                "dependsOn": [],
+                "effectClasses": [
+                  "local-write"
+                ],
+                "expectedProof": "Run the disposable safeDivide proof.",
+                "id": "slice-zero-divisor",
+                "outcome": "Return null for a zero divisor.",
+                "ownedPaths": [
+                  "src/main.mjs"
+                ],
+                "validationArgv": [
+                  "node",
+                  "validate.mjs"
+                ],
+                "workItemIds": [
+                  "item-zero-divisor"
+                ]
+              }
+            ],
+            "status": "frozen",
+            "workItemIds": [
+              "item-zero-divisor"
+            ]
+          }
+        },
+        "phase": "synthesize",
+        "resultType": "semantic-assignment-result",
+        "runtimeRef": "loopback:d73d72759566f04c3bc5f41d33b800b89a9f5bebe7c4b32eef1673032d6cfe7c",
+        "schemaVersion": 1,
+        "sessionRef": "session:8d93b0cff00cb9d373b5e6f2bdeda27d845bc76473ab210dac00d33abb4026d3",
+        "status": "complete",
+        "toolCalls": [
+          {
+            "name": "StructuredOutput",
+            "status": "completed"
+          }
+        ],
+        "verification": {
+          "children": 0,
+          "fileDiffs": 0,
+          "parentless": true,
+          "permissionRequests": 0,
+          "questions": 0
+        }
+      }
+    ],
+    "candidateId": "task-7-1-installed-operator-r1",
+    "captureError": "campaign mission launch failed: {   \"campaignId\": \"configured-playbook-proof\",   \"cleanup\": \"not-required\",   \"definitionDigest\": \"4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb\",   \"disposition\": \"paused-unknown\",   \"errorClass\": \"unknown\",   \"errorMessage\": \"project:git-root: Git root inspection failed: Unable to resolve command \\\"git\\\". Tried: git.exe, git.com, git.EXE, git.COM, git.cmd, git.bat, git.CMD, git.BAT. Searched 1 PATH entries.. project:openspec-version: OpenSpec version inspection failed: openspec exited 1: \\\"node\\\" �� ���� ����७��� ��� ���譥�\\r\\n��������, �ᯮ��塞�� �ணࠬ��� ��� ������ 䠩���..\",   \"evidenceRefs\": [],   \"operation\": \"run\",   \"phase\": \"inventory\",   \"recordType\": \"campaign-result\",   \"schemaVersion\": 1,   \"supervision\": null,   \"terminalHandoff\": null,   \"tool\": \"work-campaign\",   \"writerClosure\": \"unknown\" } ",
+    "captureMode": "configured-managed",
+    "controller": {
+      "admission": {
+        "campaignId": "configured-playbook-proof",
+        "cleanup": "not-required",
+        "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+        "disposition": "paused-unknown",
+        "errorClass": "unknown",
+        "errorMessage": "project:git-root: Git root inspection failed: Unable to resolve command \"git\". Tried: git.exe, git.com, git.EXE, git.COM, git.cmd, git.bat, git.CMD, git.BAT. Searched 1 PATH entries.. project:openspec-version: OpenSpec version inspection failed: openspec exited 1: \"node\" �� ���� ����७��� ��� ���譥�\r\n��������, �ᯮ��塞�� �ணࠬ��� ��� ������ 䠩���..",
+        "evidenceRefs": [],
+        "exitCode": 1,
+        "operation": "run",
+        "phase": "inventory",
+        "recordType": "campaign-result",
+        "schemaVersion": 1,
+        "supervision": null,
+        "terminalHandoff": null,
+        "tool": "work-campaign",
+        "writerClosure": "unknown"
+      }
+    },
+    "environmentId": "node-24.18.1-windows-task-7-1-r1",
+    "expectedModel": "openai/gpt-5.6-sol",
+    "finalClosure": null,
+    "fixtureRemoved": false,
+    "hiddenServer": false,
+    "installedOpenCode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "loopback": true,
+    "missionDirtyStatus": null,
+    "optionalSourceAfter": null,
+    "optionalSourceBefore": "219afe2f76c515e75011604c1013d63227cdca1b9f90e6f1f288b7658d2d615f",
+    "playbook": {
+      "assignments": [
+        {
+          "assignmentId": "discover-source",
+          "assignmentType": "discovery",
+          "budgets": {
+            "modelCalls": 1,
+            "outputBytes": 16384,
+            "wallClockSeconds": 240
+          },
+          "campaignId": "configured-playbook-proof",
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+          "evidenceRefs": [
+            "file:src/format.mjs",
+            "file:src/main.mjs"
+          ],
+          "phase": "discover",
+          "request": "Read src/main.mjs and src/format.mjs and compare them with the accepted outcome in definition.json. The absent zero-divisor branch is one current P1 candidate. The formatRatio name is an optional P2 naming candidate that must remain report-only. Return partition id partition-source, inventoryDigest 00c643c4ad07003291fd3dc6a411aa32795227a57e6a93032e007be67f84efc8, status complete, blockIds [block-format,block-main], workItemIds [item-format-name,item-zero-divisor], and the required producerSessionRef. Return candidate item item-zero-divisor with sourceBlockIds [block-main], principleRef principle:first-do-no-harm, scenario 'Calling safeDivide with divisor zero returns a non-finite number instead of null.', evidenceRefs [file:src/main.mjs], impact 'The accepted bounded result contract is violated.', likelyCause 'The zero-divisor guard is absent.', proposedOutcome 'Return null before division when divisor is zero.', affectedPaths and ownedPaths [src/main.mjs], effectClasses [local-write], confidence high, initialSeverity P1, required producerSessionRef, and status candidate. Return candidate item item-format-name with sourceBlockIds [block-format], principleRef principle:yagni, scenario 'The formatter function name could be more explicit but current behavior remains correct.', evidenceRefs [file:src/format.mjs], impact 'The accepted bounded result remains correct.', likelyCause 'The concise name predates the current wording.', proposedOutcome 'Retain the observation as optional report-only polish.', affectedPaths and ownedPaths [src/format.mjs], effectClasses [local-read], confidence high, initialSeverity P2, required producerSessionRef, and status candidate.",
+          "schemaVersion": 1,
+          "sourceBlockIds": [
+            "block-format",
+            "block-main"
+          ]
+        },
+        {
+          "assignmentId": "reconcile-item-format-name",
+          "assignmentType": "reconciliation",
+          "budgets": {
+            "modelCalls": 1,
+            "outputBytes": 16384,
+            "wallClockSeconds": 240
+          },
+          "campaignId": "configured-playbook-proof",
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+          "evidenceRefs": [
+            "file:src/format.mjs"
+          ],
+          "phase": "reconcile",
+          "request": "Read src/format.mjs and freshly verify item-format-name against the accepted definition outcome. Inside the outer model envelope's payload object, return exactly one property named reconciliation. Its value must have id reconcile-item-format-name, workItemId item-format-name, candidateDigest fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84, sourceDigest 219afe2f76c515e75011604c1013d63227cdca1b9f90e6f1f288b7658d2d615f, required producerSessionRef, evidenceRefs [file:src/format.mjs], disposition confirmed, severity P2, recordType reconciliation-result, and schemaVersion 1. Return no prose and no additional fields.",
+          "schemaVersion": 1,
+          "sourceBlockIds": [
+            "block-format"
+          ]
+        },
+        {
+          "assignmentId": "reconcile-item-zero-divisor",
+          "assignmentType": "reconciliation",
+          "budgets": {
+            "modelCalls": 1,
+            "outputBytes": 16384,
+            "wallClockSeconds": 240
+          },
+          "campaignId": "configured-playbook-proof",
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+          "evidenceRefs": [
+            "file:src/main.mjs"
+          ],
+          "phase": "reconcile",
+          "request": "Read src/main.mjs and freshly verify item-zero-divisor against the accepted definition outcome. Inside the outer model envelope's payload object, return exactly one property named reconciliation. Its value must have id reconcile-item-zero-divisor, workItemId item-zero-divisor, candidateDigest fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84, sourceDigest e312ed6c2587e82df9958cf30a35a39e4b2bd2ee97fee566d35e83b3de0c1e39, required producerSessionRef, evidenceRefs [file:src/main.mjs], disposition confirmed, severity P1, recordType reconciliation-result, and schemaVersion 1. Return no prose and no additional fields.",
+          "schemaVersion": 1,
+          "sourceBlockIds": [
+            "block-main"
+          ]
+        },
+        {
+          "assignmentId": "synthesize-wave",
+          "assignmentType": "synthesis",
+          "budgets": {
+            "modelCalls": 1,
+            "outputBytes": 16384,
+            "wallClockSeconds": 240
+          },
+          "campaignId": "configured-playbook-proof",
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+          "evidenceRefs": [
+            "file:src/main.mjs"
+          ],
+          "phase": "synthesize",
+          "request": "Group only the confirmed item item-zero-divisor into one frozen wave. Inside the outer model envelope's payload object, return exactly one property named wave. Its value must have id wave-zero-divisor, campaignId configured-playbook-proof, definitionDigest 4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb, candidateDigest fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84, missionDefinitionDigest 1de4eccc052e44478e8131574d67c3411dc785d0804ae5ee7526ebde6a98fdcb, recordType wave-manifest, schemaVersion 1, status frozen, and workItemIds [item-zero-divisor]. The wave must contain one slice with id slice-zero-divisor, changeId fix-zero-divisor, no dependencies, outcome 'Return null for a zero divisor.', workItemIds [item-zero-divisor], ownedPaths [src/main.mjs], effectClasses [local-write], expectedProof 'Run the disposable safeDivide proof.', and validationArgv [node,validate.mjs]. Exclude item-format-name from the wave because it is P2 report-only. Return no prose.",
+          "schemaVersion": 1,
+          "sourceBlockIds": [
+            "block-main"
+          ]
+        }
+      ],
+      "blockingWorkItemIds": [],
+      "failure": null,
+      "investigations": [],
+      "partitions": [
+        {
+          "assignmentId": "discover-source",
+          "blockIds": [
+            "block-format",
+            "block-main"
+          ],
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "evidenceRefs": [
+            "file:src/format.mjs",
+            "file:src/main.mjs"
+          ],
+          "id": "partition-source",
+          "inventoryDigest": "00c643c4ad07003291fd3dc6a411aa32795227a57e6a93032e007be67f84efc8",
+          "producerSessionRef": "session:ecb1e6d25f4df15b1228cd082418c5eba053547b9ce638096595f67317f19fe4",
+          "recordType": "partition-result",
+          "schemaVersion": 1,
+          "status": "complete",
+          "workItemIds": [
+            "item-format-name",
+            "item-zero-divisor"
+          ]
+        }
+      ],
+      "reconciliations": [
+        {
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "disposition": "confirmed",
+          "evidenceRefs": [
+            "file:src/format.mjs"
+          ],
+          "id": "reconcile-item-format-name",
+          "producerSessionRef": "session:c62247df8ef2b1ba7edb6afb7f951ad7d5c294c488b79d20ddc8f194024f5278",
+          "recordType": "reconciliation-result",
+          "schemaVersion": 1,
+          "severity": "P2",
+          "sourceDigest": "219afe2f76c515e75011604c1013d63227cdca1b9f90e6f1f288b7658d2d615f",
+          "workItemId": "item-format-name"
+        },
+        {
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "disposition": "confirmed",
+          "evidenceRefs": [
+            "file:src/main.mjs"
+          ],
+          "id": "reconcile-item-zero-divisor",
+          "producerSessionRef": "session:46121ab6f5d6d7f5f5cec2902303849cc68b559eb4fe8c98b97c4caaa7c018d0",
+          "recordType": "reconciliation-result",
+          "schemaVersion": 1,
+          "severity": "P1",
+          "sourceDigest": "e312ed6c2587e82df9958cf30a35a39e4b2bd2ee97fee566d35e83b3de0c1e39",
+          "workItemId": "item-zero-divisor"
+        }
+      ],
+      "status": "complete",
+      "wave": {
+        "campaignId": "configured-playbook-proof",
+        "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+        "definitionDigest": "4de9da4dba8037189cfe52e64b9c4fdd6c617b47734758e30ab7fd294e222ddb",
+        "id": "wave-zero-divisor",
+        "missionDefinitionDigest": "1de4eccc052e44478e8131574d67c3411dc785d0804ae5ee7526ebde6a98fdcb",
+        "recordType": "wave-manifest",
+        "schemaVersion": 1,
+        "slices": [
+          {
+            "changeId": "fix-zero-divisor",
+            "dependsOn": [],
+            "effectClasses": [
+              "local-write"
+            ],
+            "expectedProof": "Run the disposable safeDivide proof.",
+            "id": "slice-zero-divisor",
+            "outcome": "Return null for a zero divisor.",
+            "ownedPaths": [
+              "src/main.mjs"
+            ],
+            "validationArgv": [
+              "node",
+              "validate.mjs"
+            ],
+            "workItemIds": [
+              "item-zero-divisor"
+            ]
+          }
+        ],
+        "status": "frozen",
+        "workItemIds": [
+          "item-zero-divisor"
+        ]
+      },
+      "workItems": [
+        {
+          "affectedPaths": [
+            "src/format.mjs"
+          ],
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "confidence": "high",
+          "effectClasses": [
+            "local-read"
+          ],
+          "evidenceRefs": [
+            "file:src/format.mjs"
+          ],
+          "id": "item-format-name",
+          "impact": "The accepted bounded result remains correct.",
+          "initialSeverity": "P2",
+          "likelyCause": "The concise name predates the current wording.",
+          "ownedPaths": [
+            "src/format.mjs"
+          ],
+          "principleRef": "principle:yagni",
+          "producerSessionRef": "session:ecb1e6d25f4df15b1228cd082418c5eba053547b9ce638096595f67317f19fe4",
+          "proposedOutcome": "Retain the observation as optional report-only polish.",
+          "recordType": "work-item",
+          "scenario": "The formatter function name could be more explicit but current behavior remains correct.",
+          "schemaVersion": 1,
+          "sourceBlockIds": [
+            "block-format"
+          ],
+          "status": "report-only"
+        },
+        {
+          "affectedPaths": [
+            "src/main.mjs"
+          ],
+          "candidateDigest": "fb48b1f8fa95f0ff22b3a38655e722128c242a9fca013181c35c7c67cc82ee84",
+          "confidence": "high",
+          "effectClasses": [
+            "local-write"
+          ],
+          "evidenceRefs": [
+            "file:src/main.mjs"
+          ],
+          "id": "item-zero-divisor",
+          "impact": "The accepted bounded result contract is violated.",
+          "initialSeverity": "P1",
+          "likelyCause": "The zero-divisor guard is absent.",
+          "ownedPaths": [
+            "src/main.mjs"
+          ],
+          "principleRef": "principle:first-do-no-harm",
+          "producerSessionRef": "session:ecb1e6d25f4df15b1228cd082418c5eba053547b9ce638096595f67317f19fe4",
+          "proposedOutcome": "Return null before division when divisor is zero.",
+          "recordType": "work-item",
+          "scenario": "Calling safeDivide with divisor zero returns a non-finite number instead of null.",
+          "schemaVersion": 1,
+          "sourceBlockIds": [
+            "block-main"
+          ],
+          "status": "confirmed"
+        }
+      ]
+    },
+    "profile": "quality-independent",
+    "runtimeSurface": {
+      "configDigest": "662d8172270c56df1780d92db2b5c6c70133f1974729c15787212bef5133934f",
+      "mcpIds": [
+        "codebase-memory-mcp",
+        "graphify-global",
+        "serena"
+      ],
+      "pluginIds": [
+        "sha256:650eab3c5db07ac1f80d81487a893c0251049a5b2972abfb267be4379775edc8",
+        "sha256:aacf4dc7a4e52a3a591ea9e898e890e37eca21fa31d49ef840a20c6d61ef8c02",
+        "sha256:29334fc8ec623ef8c8bed5ae02a0a2c235e29485c9cae933ba5e2ba0f4b17a6b"
+      ]
+    },
+    "schemaVersion": 1,
+    "serverStartup": {},
+    "serverTerminal": null,
+    "sourceAfter": "e312ed6c2587e82df9958cf30a35a39e4b2bd2ee97fee566d35e83b3de0c1e39",
+    "sourceBefore": "e312ed6c2587e82df9958cf30a35a39e4b2bd2ee97fee566d35e83b3de0c1e39",
+    "transitionKinds": [],
+    "worktreeStatuses": [
+      {
+        "exitCode": 0,
+        "id": "fixture-created",
+        "paths": [],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-discover-source-before",
+        "paths": [],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-discover-source-finished",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-reconcile-item-format-name-before",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-reconcile-item-format-name-finished",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-reconcile-item-zero-divisor-before",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-reconcile-item-zero-divisor-finished",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-synthesize-wave-before",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "assignment-synthesize-wave-finished",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "playbook-finished",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      },
+      {
+        "exitCode": 0,
+        "id": "phase-input-materialized",
+        "paths": [
+          "?? .serena/.gitignore",
+          "?? .serena/project.yml"
+        ],
+        "stderr": ""
+      }
+    ]
+  },
+  "credential": {
+    "persistedInEvidence": false,
+    "source": "protected-file"
+  },
+  "effects": {
+    "hostEffects": 0,
+    "remoteEffects": 0,
+    "sourceWrites": 0
+  },
+  "environmentId": "node-24.18.1-windows-task-7-1-r1",
+  "failure": null,
+  "fixtureRemoved": true,
+  "host": {
+    "firstMissionDirectResumes": 0,
+    "firstMissionHookCalls": 0,
+    "operations": {},
+    "preTaskRows": [],
+    "taskRunRows": []
+  },
+  "installedOpenCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "preflight": {
+    "evaluationDigest": "2de7baa4d38e2bda47fe715359614c0081d80edf07173d6058fc557bcfb3b0d0",
+    "inputBundle": "task-7-1-installed-operator-preflight-r4",
+    "rawDigest": "764baf12ac8f37b7f77af8709ea7580806ca6a4affb45aba3a5ba75b40d4c4dd",
+    "runtimeSurface": {
+      "configDigest": "662d8172270c56df1780d92db2b5c6c70133f1974729c15787212bef5133934f",
+      "mcpIds": [
+        "codebase-memory-mcp",
+        "graphify-global",
+        "serena"
+      ],
+      "pluginIds": [
+        "sha256:650eab3c5db07ac1f80d81487a893c0251049a5b2972abfb267be4379775edc8",
+        "sha256:aacf4dc7a4e52a3a591ea9e898e890e37eca21fa31d49ef840a20c6d61ef8c02",
+        "sha256:29334fc8ec623ef8c8bed5ae02a0a2c235e29485c9cae933ba5e2ba0f4b17a6b"
+      ]
+    }
+  },
+  "proofKind": "campaign-installed-operator",
+  "runtimeSurface": {
+    "configDigest": "662d8172270c56df1780d92db2b5c6c70133f1974729c15787212bef5133934f",
+    "mcpIds": [
+      "codebase-memory-mcp",
+      "graphify-global",
+      "serena"
+    ],
+    "pluginIds": [
+      "sha256:650eab3c5db07ac1f80d81487a893c0251049a5b2972abfb267be4379775edc8",
+      "sha256:aacf4dc7a4e52a3a591ea9e898e890e37eca21fa31d49ef840a20c6d61ef8c02",
+      "sha256:29334fc8ec623ef8c8bed5ae02a0a2c235e29485c9cae933ba5e2ba0f4b17a6b"
+    ]
+  },
+  "schemaVersion": 1,
+  "secretLeakDetected": false,
+  "serverDiagnostics": {
+    "stderrDigest": "0f29a2d6c1cadd3a9ad342f49844651c085655ba043eb7393fb49a42de5a9e41",
+    "stderrTail": "timestamp=2026-08-28T12:40:00.343Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:00.359Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:00.360Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:00.805Z level=INFO run=a5663791 message=\"watcher backend\" directory=\"<absolute-path>\" platform=win32 backend=windows\ntimestamp=2026-08-28T12:40:00.813Z level=INFO run=a5663791 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-28T12:40:00.816Z level=INFO run=a5663791 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-28T12:40:01.119Z level=INFO run=a5663791 message=\"booting location services\" directory=\"<absolute-path>\" workspaceID=undefined\ntimestamp=2026-08-28T12:40:01.687Z level=INFO run=a5663791 message=\"creating instance\" directory=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.688Z level=INFO run=a5663791 message=fromDirectory directory=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.710Z level=INFO run=a5663791 message=bootstrapping directory=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.725Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.725Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.726Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.745Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.763Z level=INFO run=a5663791 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T12:40:01.827Z level=INFO run=a5663791 message=\"all LSPs are disabled\"\ntimestamp=2026-08-28T12:40:01.829Z level=INFO run=a5663791 message=\"all formatters are disabled\"\ntimestamp=2026-08-28T12:40:01.829Z level=INFO run=a5663791 message=init\ntimestamp=2026-08-28T12:40:03.017Z level=INFO run=a5663791 message=created id=ses_fb79d9b36ffeSY3yLmRcnYmZLl slug=shiny-sailor version=1.18.25 projectID=global directory=\"<absolute-path>\" path=Users/noilw/AppData/Local/Temp/work-campaign-installed-operator-xiztAQ/fixture workspaceID=undefined parentID=undefined title=\"installed operator live guard\" agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787920803017 time.updated=1787920803017\ntimestamp=2026-08-28T12:40:03.039Z level=INFO run=a5663791 message=\"completion guard permission capability state\" configuredPermission=allow guardCapability=checked-at-operation\ntimestamp=2026-08-28T12:40:03.048Z level=INFO run=a5663791 message=\"removing share\" sessionID=ses_fb79d9b36ffeSY3yLmRcnYmZLl\n",
+    "stdoutDigest": "62e475f8b5d912295ef36d7f3fc3ef1ba1fdd3f337b43815d7453a6b53ab00f7"
+  },
+  "serverTerminal": true,
+  "sourceAfter": [
+    {
+      "digest": "25eae37877a509f6fa3f459b77d947d28cd5a0a78006fc344fc2d2576f151d20",
+      "path": "global/bin/work-campaign/semantic-executor.ts"
+    },
+    {
+      "digest": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c",
+      "path": "global/bin/work-campaign/semantic-playbook.ts"
+    },
+    {
+      "digest": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047",
+      "path": "global/bin/work-campaign/supervisor.ts"
+    },
+    {
+      "digest": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72",
+      "path": "tools/model-profile.ts"
+    },
+    {
+      "digest": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78",
+      "path": "tools/proofs/lib/opencode-proof-client.ts"
+    },
+    {
+      "digest": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d",
+      "path": "tools/proofs/lib/proof-process-cleanup.ts"
+    },
+    {
+      "digest": "2dce90e78c18e482d1d03f0c175b08b25a76e8e58eb0a2f753caab087f383609",
+      "path": "tools/proofs/work-campaign-playbook.ts"
+    },
+    {
+      "digest": "2e6274a1338db4445537cef27f649aed8034ecf822b94b331989a02c476fa5ac",
+      "path": "tools/proofs/work-campaign-windows-installed.ts"
+    },
+    {
+      "digest": "3f22fff6924c24636db057c9fb384b404c8ae2dee69c85724ae1856380ac34d4",
+      "path": "tools/test-work-campaign-controller.ts"
+    },
+    {
+      "digest": "cce577236a4abc1a80911392ecabe7692bf86b1ba00c8a95dd06f573a61d8c3d",
+      "path": "tools/windows/opencode-workstation-layout.ts"
+    },
+    {
+      "digest": "8348865362046b3d6ec9b2385d803d1a4e6fc9e26e0e7197925ff770c8eadcec",
+      "path": "tools/windows/work-campaign-supervisor-host.ts"
+    },
+    {
+      "digest": "451f96b599364c591ee848ed8015a26f9d35396ebf94a3a402a6dbfc4f8a0bd0",
+      "path": "tools/windows/work-campaign-supervisor-install.ts"
+    },
+    {
+      "digest": "2f4746439b2d733f9eb68dfdc03a284b4ee3ca286a8aa4e00d8ce77144886bc1",
+      "path": "tools/windows/work-campaign-supervisor.ts"
+    }
+  ],
+  "sourceBefore": [
+    {
+      "digest": "25eae37877a509f6fa3f459b77d947d28cd5a0a78006fc344fc2d2576f151d20",
+      "path": "global/bin/work-campaign/semantic-executor.ts"
+    },
+    {
+      "digest": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c",
+      "path": "global/bin/work-campaign/semantic-playbook.ts"
+    },
+    {
+      "digest": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047",
+      "path": "global/bin/work-campaign/supervisor.ts"
+    },
+    {
+      "digest": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72",
+      "path": "tools/model-profile.ts"
+    },
+    {
+      "digest": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78",
+      "path": "tools/proofs/lib/opencode-proof-client.ts"
+    },
+    {
+      "digest": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d",
+      "path": "tools/proofs/lib/proof-process-cleanup.ts"
+    },
+    {
+      "digest": "2dce90e78c18e482d1d03f0c175b08b25a76e8e58eb0a2f753caab087f383609",
+      "path": "tools/proofs/work-campaign-playbook.ts"
+    },
+    {
+      "digest": "2e6274a1338db4445537cef27f649aed8034ecf822b94b331989a02c476fa5ac",
+      "path": "tools/proofs/work-campaign-windows-installed.ts"
+    },
+    {
+      "digest": "3f22fff6924c24636db057c9fb384b404c8ae2dee69c85724ae1856380ac34d4",
+      "path": "tools/test-work-campaign-controller.ts"
+    },
+    {
+      "digest": "cce577236a4abc1a80911392ecabe7692bf86b1ba00c8a95dd06f573a61d8c3d",
+      "path": "tools/windows/opencode-workstation-layout.ts"
+    },
+    {
+      "digest": "8348865362046b3d6ec9b2385d803d1a4e6fc9e26e0e7197925ff770c8eadcec",
+      "path": "tools/windows/work-campaign-supervisor-host.ts"
+    },
+    {
+      "digest": "451f96b599364c591ee848ed8015a26f9d35396ebf94a3a402a6dbfc4f8a0bd0",
+      "path": "tools/windows/work-campaign-supervisor-install.ts"
+    },
+    {
+      "digest": "2f4746439b2d733f9eb68dfdc03a284b4ee3ca286a8aa4e00d8ce77144886bc1",
+      "path": "tools/windows/work-campaign-supervisor.ts"
+    }
+  ]
+}

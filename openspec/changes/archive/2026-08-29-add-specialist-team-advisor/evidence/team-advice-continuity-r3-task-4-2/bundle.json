@@ -1,0 +1,113 @@
+{
+  "candidateId": "add-specialist-team-advisor-task-4-2-continuity-r3",
+  "captureErrorFacts": null,
+  "cleanup": {
+    "complete": true,
+    "error": null,
+    "fixtureRemoved": true,
+    "processRemoved": true,
+    "sessionsRemoved": true
+  },
+  "environment": {
+    "installedOpenCode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "model": "openai/gpt-5.6-sol",
+    "node": "v24.18.1",
+    "platform": "win32",
+    "profile": "quality-independent",
+    "runtimeProfile": "core",
+    "variant": "xhigh"
+  },
+  "fixtureDigest": "8508892790df6d4452d7b7e3c3e3d668f20fc0c82be3395db5e3a35c589f41dc",
+  "kind": "team-advice-continuity",
+  "routes": {
+    "compaction": "openai/gpt-5.6-sol/xhigh",
+    "main": "openai/gpt-5.6-sol/xhigh"
+  },
+  "samples": [
+    {
+      "caseId": "unchanged-engagement",
+      "compactionContext": "## Original User Goal\n- Resume the existing bounded integration mission from its current engagement checkpoint after compaction.\n\n## Goal Status\n- Checkpoint recorded; no integration work was continued.\n- Lifecycle state: ready for a resumed session to verify current state before proceeding.\n\n## Constraints and Decisions\n- Treat the supplied team recommendation as authoritative current state.\n- Do not select a new team or reconsult unless `material-topology-or-catalog-change` occurs.\n- No tools were called.\n- No repository work, validation, or live attempt occurred.\n\n## Worktree State\n- Unknown; the worktree was not inspected.\n\n## Changed Files\n- (none)\n\n## Validation Evidence\n- (none)\n\n## Failures\n- (none observed)\n\n## Risks\n- Current repository state, candidate identity, catalog identity, child liveness, and task topology remain unverified.\n- No evidence establishes whether a live attempt is safe or replay-complete.\n\n## Todos\n- Verify current candidate, catalog, specialist liveness, and task-topology identities.\n- Inspect existing repository history and integration state before substantial work.\n- Continue only the bounded `main-integration` package unless activation or reconsultation conditions are met.\n\n## Team Advice State\n- Advisor Task Ref: `advisor-task-001`\n- Candidate Ref: `candidate-a`\n- Catalog Ref: `catalog-a`\n- Main Disposition: `team-recommended`\n- Active Work Packages: `main-integration`\n- Terminal Work Packages: `architecture-review:terminal`\n- Pending Activation Evidence: `test-coverage-reviewer:on-failed-runtime-proof`\n- Specialist Liveness: `none-live`\n- Integration State: `architecture-review-integrated`\n- Unavailable Material Capabilities: `none`\n- Reconsultation Condition: `material-topology-or-catalog-change`\n\n## Stagnation Assessment\n- No stagnation: no materially similar attempts were made.\n\n## Live-Attempt Gate: unknown\n- No live-attempt or replay evidence is available.\n\n## Failure Chain\n- Unobserved: candidate execution → post-run processing → evaluator → terminal verdict → reachable non-side-effecting finalization.\n\n## Preserved Raw Bundles\n- Unknown; none were identified in the conversation.\n\n## Offline Replay Coverage\n- None established.\n\n## Terminal Replay Result\n- Unknown.\n\n## Unlock Condition\n- Inspect repository-local history and preserved artifacts to identify the exact candidate chain and replay evidence; then replay all reachable post-run, evaluator, terminal-verdict, and non-side-effecting finalization stages offline, or identify the exact missing raw observation.\n\n## Next Strategy\n- Inspect repository-local history and preserved artifacts to establish the actual candidate/evaluator chain and available replay bundles before any live attempt.\n\n## Next-Session Action\n- Inspect repository-local history and preserved artifacts to establish the actual candidate/evaluator chain and available replay bundles before any live attempt; also verify `candidate-a`, `catalog-a`, specialist liveness, and task-topology identities.\n\n## Session Reflection\n- Outcome: The authoritative checkpoint was acknowledged without continuing work.\n- Slowest Loop Or Largest Time Sink: None.\n- Concrete Evidence: The only assistant action was recording the checkpoint; no tools or implementation attempts occurred.\n- Likely Cause And Uncertainty: No delay occurred; repository and runtime state remain unknown because inspection was intentionally deferred.\n- Do Not Repeat: Do not choose a new team, reconsult without the stated condition, or launch a live attempt before offline gate evidence is established.",
+      "error": null,
+      "providerRequestCount": 3,
+      "reconstructionResponse": "{\"caseId\":\"unchanged-engagement\",\"candidateRef\":\"candidate-a\",\"catalogRef\":\"catalog-a\",\"reconsult\":false,\"stalePackages\":[],\"terminalPackages\":[\"architecture-review:terminal\"]}",
+      "sessionCleanup": {
+        "error": null,
+        "sessionsRemoved": true
+      },
+      "sessionRef": "e36e3d1e255569cf",
+      "summarizeAccepted": true,
+      "toolCalls": []
+    },
+    {
+      "caseId": "changed-catalog",
+      "compactionContext": "## Original User Goal\n- Resume the existing bounded integration mission from its current engagement checkpoint.\n\n## Goal Status\n- Checkpoint acknowledged; no integration work continued.\n- Overall mission completion is unknown.\n\n## Status Scope\n- Checkpoint recording: complete.\n- `main-integration`: active.\n- `architecture-review`: terminal and integrated.\n- `test-coverage-reviewer`: conditional activation pending failed-runtime-proof evidence.\n\n## Constraints And Decisions\n- Treat the supplied team recommendation as authoritative current state.\n- Do not select a new team or reconsult unless `material-topology-or-catalog-change` occurs.\n- Verify current candidate, catalog, specialist liveness, and task-topology identities when resuming.\n- No tools were called.\n\n## Team Advice State\n- Advisor Task Ref: `advisor-task-002`\n- Candidate Ref: `candidate-a`\n- Catalog Ref: `catalog-a`\n- Main Disposition: `team-recommended`\n- Active Work Packages: `main-integration`\n- Terminal Work Packages: `architecture-review:terminal`\n- Pending Activation Evidence: `test-coverage-reviewer:on-failed-runtime-proof`\n- Specialist Liveness: `none-live`\n- Integration State: `architecture-review-integrated`\n- Unavailable Material Capabilities: `none`\n- Reconsultation Condition: `material-topology-or-catalog-change`\n\n## Worktree State\n- Unknown; no repository inspection occurred.\n\n## Changed Files\n- None observed.\n\n## Validation Evidence\n- None available.\n\n## Failures\n- None observed.\n\n## Risks\n- Runtime-proof and evaluator-chain evidence are unobserved.\n- Current worktree and mission-artifact state remain unknown.\n\n## Todos\n- Verify `candidate-a`, `catalog-a`, child liveness, and task-topology identities.\n- Continue only `main-integration` unless documented activation evidence or reconsultation conditions arise.\n\n## Lifecycle State\n- Engagement checkpoint recorded.\n- Architecture review integrated and terminal.\n- Main integration remains active.\n\n## Live-Attempt Gate: unknown\n\n## Failure Chain\n- No live-attempt or post-run/evaluator-chain evidence was supplied.\n\n## Preserved Raw Bundles\n- Unknown.\n\n## Offline Replay Coverage\n- Unknown.\n\n## Terminal Replay Result\n- Unknown.\n\n## Unlock Condition\n- Identify preserved raw bundles and replay `candidate-a` through its terminal verdict and every reachable non-side-effecting finalization stage, or identify the exact missing raw observation.\n\n## Next Strategy\n- Offline inspect existing mission artifacts to identify preserved raw bundles and map `candidate-a`’s post-run/evaluator chain through terminal verdict and downstream non-side-effecting finalization.\n\n## Next-Session Action\n- Offline inspect existing mission artifacts to identify preserved raw bundles and map `candidate-a`’s post-run/evaluator chain through terminal verdict and downstream non-side-effecting finalization.\n\n## Relevant Files\n- Unknown.\n\n## Session Reflection\n- Outcome: Authoritative checkpoint recorded without continuing work.\n- Slowest Loop Or Largest Time Sink: None.\n- Concrete Evidence: Prior response stated, “Checkpoint recorded. No work should be continued before compaction.”\n- Likely Cause And Uncertainty: No execution was requested; repository and gate state remain unknown.\n- Do Not Repeat: Do not select a new team, reconsult without the stated condition, or launch a high-cost live attempt before offline gate evidence is established.",
+      "error": null,
+      "providerRequestCount": 3,
+      "reconstructionResponse": "{\"caseId\":\"changed-catalog\",\"candidateRef\":\"candidate-a\",\"catalogRef\":\"catalog-b\",\"reconsult\":true,\"stalePackages\":[\"test-coverage-reviewer\"],\"terminalPackages\":[\"architecture-review\"]}",
+      "sessionCleanup": {
+        "error": null,
+        "sessionsRemoved": true
+      },
+      "sessionRef": "a68ac812ee7111b0",
+      "summarizeAccepted": true,
+      "toolCalls": []
+    }
+  ],
+  "schemaVersion": 1,
+  "server": {
+    "signal": null,
+    "startup": {
+      "hostConfigLoaded": false,
+      "isolatedConfigLoaded": true,
+      "ripgrepDownloadRequested": false
+    },
+    "status": 1,
+    "stderr": "timestamp=2026-08-29T00:02:15.068Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T00:02:15.072Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T00:02:15.082Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T00:02:15.300Z level=INFO run=e02918bd message=\"creating instance\" directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-29T00:02:15.301Z level=INFO run=e02918bd message=fromDirectory directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-29T00:02:15.318Z level=INFO run=e02918bd message=bootstrapping directory=\"<proof-root>\\\\fixture\"\ntimestamp=2026-08-29T00:02:15.330Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T00:02:15.331Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T00:02:15.331Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T00:02:15.353Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\generated-core\\\\opencode.json\"\ntimestamp=2026-08-29T00:02:15.504Z level=INFO run=e02918bd message=loading path=\"<proof-root>\\\\generated-core\\\\opencode.jsonc\"\ntimestamp=2026-08-29T00:02:15.603Z level=INFO run=e02918bd message=\"all LSPs are disabled\"\ntimestamp=2026-08-29T00:02:15.605Z level=INFO run=e02918bd message=\"all formatters are disabled\"\ntimestamp=2026-08-29T00:02:15.605Z level=INFO run=e02918bd message=init\ntimestamp=2026-08-29T00:02:17.576Z level=INFO run=e02918bd message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-29T00:02:17.643Z level=INFO run=e02918bd message=created id=ses_fb52cfe55ffeBNn6MedQpFuHux slug=gentle-cactus version=1.18.25 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/team-advice-continuity-v20yqx/fixture workspaceID=undefined parentID=undefined title=team-advice-continuity-unchanged-engagement agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787961737643 time.updated=1787961737643\ntimestamp=2026-08-29T00:02:17.763Z level=INFO run=e02918bd message=loop session.id=ses_fb52cfe55ffeBNn6MedQpFuHux step=0\ntimestamp=2026-08-29T00:02:17.928Z level=INFO run=e02918bd message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-29T00:02:17.929Z level=INFO run=e02918bd message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-29T00:02:18.102Z level=INFO run=e02918bd message=\"booting location services\" directory=\"<proof-root>\\\\fixture\" workspaceID=undefined\ntimestamp=2026-08-29T00:02:18.112Z level=INFO run=e02918bd message=process session.id=ses_fb52cfe55ffeBNn6MedQpFuHux messageID=msg_04ad30226001yq3MLXtOhHjtxa\ntimestamp=2026-08-29T00:02:18.114Z level=INFO run=e02918bd message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb52cfe55ffeBNn6MedQpFuHux small=false agent=build mode=primary\ntimestamp=2026-08-29T00:02:18.129Z level=INFO run=e02918bd message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T00:02:20.226Z level=INFO run=e02918bd message=loop session.id=ses_fb52cfe55ffeBNn6MedQpFuHux step=1\ntimestamp=2026-08-29T00:02:20.228Z level=INFO run=e02918bd message=\"exiting loop\" session.id=ses_fb52cfe55ffeBNn6MedQpFuHux\ntimestamp=2026-08-29T00:02:20.270Z level=INFO run=e02918bd message=loop session.id=ses_fb52cfe55ffeBNn6MedQpFuHux step=0\ntimestamp=2026-08-29T00:02:20.279Z level=INFO run=e02918bd message=process session.id=ses_fb52cfe55ffeBNn6MedQpFuHux messageID=msg_04ad30bf4001etlnsJVmJ6RrMf\ntimestamp=2026-08-29T00:02:20.279Z level=INFO run=e02918bd message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb52cfe55ffeBNn6MedQpFuHux small=false agent=compaction mode=primary\ntimestamp=2026-08-29T00:02:20.294Z level=INFO run=e02918bd message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T00:02:40.115Z level=INFO run=e02918bd message=loop session.id=ses_fb52cfe55ffeBNn6MedQpFuHux step=1\ntimestamp=2026-08-29T00:02:40.117Z level=INFO run=e02918bd message=\"exiting loop\" session.id=ses_fb52cfe55ffeBNn6MedQpFuHux\ntimestamp=2026-08-29T00:02:40.188Z level=INFO run=e02918bd message=loop session.id=ses_fb52cfe55ffeBNn6MedQpFuHux step=0\ntimestamp=2026-08-29T00:02:40.210Z level=INFO run=e02918bd message=process session.id=ses_fb52cfe55ffeBNn6MedQpFuHux messageID=msg_04ad359be001j3bDjDLUFSau6y\ntimestamp=2026-08-29T00:02:40.211Z level=INFO run=e02918bd message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb52cfe55ffeBNn6MedQpFuHux small=false agent=build mode=primary\ntimestamp=2026-08-29T00:02:40.220Z level=INFO run=e02918bd message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T00:02:43.165Z level=INFO run=e02918bd message=loop session.id=ses_fb52cfe55ffeBNn6MedQpFuHux step=1\ntimestamp=2026-08-29T00:02:43.166Z level=INFO run=e02918bd message=\"exiting loop\" session.id=ses_fb52cfe55ffeBNn6MedQpFuHux\ntimestamp=2026-08-29T00:02:43.252Z level=INFO run=e02918bd message=\"removing share\" sessionID=ses_fb52cfe55ffeBNn6MedQpFuHux\ntimestamp=2026-08-29T00:02:43.263Z level=INFO run=e02918bd message=created id=ses_fb52c9a41ffeoV1AazscJyAszw slug=proud-star version=1.18.25 projectID=global directory=\"<proof-root>\\\\fixture\" path=<home>/AppData/Local/Temp/team-advice-continuity-v20yqx/fixture workspaceID=undefined parentID=undefined title=team-advice-continuity-changed-catalog agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787961763263 time.updated=1787961763263\ntimestamp=2026-08-29T00:02:43.308Z level=INFO run=e02918bd message=loop session.id=ses_fb52c9a41ffeoV1AazscJyAszw step=0\ntimestamp=2026-08-29T00:02:43.328Z level=INFO run=e02918bd message=process session.id=ses_fb52c9a41ffeoV1AazscJyAszw messageID=msg_04ad365ee0013bc13vx9vTWGfe\ntimestamp=2026-08-29T00:02:43.329Z level=INFO run=e02918bd message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb52c9a41ffeoV1AazscJyAszw small=false agent=build mode=primary\ntimestamp=2026-08-29T00:02:43.338Z level=INFO run=e02918bd message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T00:02:44.681Z level=INFO run=e02918bd message=loop session.id=ses_fb52c9a41ffeoV1AazscJyAszw step=1\ntimestamp=2026-08-29T00:02:44.682Z level=INFO run=e02918bd message=\"exiting loop\" session.id=ses_fb52c9a41ffeoV1AazscJyAszw\ntimestamp=2026-08-29T00:02:44.719Z level=INFO run=e02918bd message=loop session.id=ses_fb52c9a41ffeoV1AazscJyAszw step=0\ntimestamp=2026-08-29T00:02:44.723Z level=INFO run=e02918bd message=process session.id=ses_fb52c9a41ffeoV1AazscJyAszw messageID=msg_04ad36b72001bREV6e3bxDqk2Y\ntimestamp=2026-08-29T00:02:44.724Z level=INFO run=e02918bd message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb52c9a41ffeoV1AazscJyAszw small=false agent=compaction mode=primary\ntimestamp=2026-08-29T00:02:44.736Z level=INFO run=e02918bd message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T00:03:19.209Z level=INFO run=e02918bd message=loop session.id=ses_fb52c9a41ffeoV1AazscJyAszw step=1\ntimestamp=2026-08-29T00:03:19.210Z level=INFO run=e02918bd message=\"exiting loop\" session.id=ses_fb52c9a41ffeoV1AazscJyAszw\ntimestamp=2026-08-29T00:03:19.272Z level=INFO run=e02918bd message=loop session.id=ses_fb52c9a41ffeoV1AazscJyAszw step=0\ntimestamp=2026-08-29T00:03:19.296Z level=INFO run=e02918bd message=process session.id=ses_fb52c9a41ffeoV1AazscJyAszw messageID=msg_04ad3f26a0018d2bSz7KJm74hZ\ntimestamp=2026-08-29T00:03:19.296Z level=INFO run=e02918bd message=stream providerID=openai modelID=gpt-5.6-sol session.id=ses_fb52c9a41ffeoV1AazscJyAszw small=false agent=build mode=primary\ntimestamp=2026-08-29T00:03:19.298Z level=INFO run=e02918bd message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=openai llm.model=gpt-5.6-sol\ntimestamp=2026-08-29T00:03:22.970Z level=INFO run=e02918bd message=loop session.id=ses_fb52c9a41ffeoV1AazscJyAszw step=1\ntimestamp=2026-08-29T00:03:22.972Z level=INFO run=e02918bd message=\"exiting loop\" session.id=ses_fb52c9a41ffeoV1AazscJyAszw\ntimestamp=2026-08-29T00:03:23.010Z level=INFO run=e02918bd message=\"removing share\" sessionID=ses_fb52c9a41ffeoV1AazscJyAszw\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:62593\n"
+  },
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "3a668ff6bb5a41850b63ef61ef8148c034454d748d3c195356a1a3e4c76d3140",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "global/AGENTS.md",
+        "sha256": "e2a917c6de07531d3b81379008e6ef625b9a0a13f70c3e7f41290f22de0ad33a"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/opencode.json.template",
+        "sha256": "71d2055cdd12825efef3ab2d82a505fd9881b85dd1a55d90b707d722ccacabc8"
+      },
+      {
+        "path": "profiles/core.json",
+        "sha256": "b6524e820a26545530a8117c5780573dcd713381e1c86e3c279c0f4e230dde0f"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome-regression.ts",
+        "sha256": "5bb7036339e13e679a02182a7eda02a107261ff7aac94a71e5f6e76f29efe648"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/team-advice-continuity.ts",
+        "sha256": "61f9381c9fad3fa6540c4ca585f47e424c9c9d6e033e0b1b8b7fc8ae09864db5"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/team-advice-continuity-r1.json",
+        "sha256": "76ab8f218944ee4b7f999b109b87aaa18432c3798048641c345cee945c901066"
+      },
+      {
+        "path": "tools/runtime-surface-profile.ts",
+        "sha256": "4e3e666a1a13a6495ccaca4c3484dd86eb98f843aeca6208230dbacabb8ca46b"
+      }
+    ]
+  },
+  "sourceUnchanged": true,
+  "bundleDigest": "41740760f06f21f388f4d8244ccd138e5e152ec0fcbfcc4ba1ce44f9392094b5",
+  "byteLength": 20127
+}

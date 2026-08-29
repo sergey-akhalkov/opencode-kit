@@ -1,0 +1,17 @@
+{
+  "candidateId": "completion-arbiter-budget-v1",
+  "cleanup": "complete",
+  "exactRequestBytes": 3679,
+  "externalCalls": 0,
+  "mode": "installed",
+  "profile": {
+    "messageChars": 128,
+    "messageCount": 2
+  },
+  "rawDigest": "83fa77bd8ba37b1e897a5450d69e5b3175372e3fe29c13e6f4959f29bce3f86a",
+  "representation": "private-canonical-v1",
+  "requestLimit": 200000,
+  "rootState": "passed",
+  "schemaVersion": 1,
+  "status": "complete"
+}

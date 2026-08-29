@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runPortableCommand } from "../global/bin/portable-process.ts";
-import { FOUNDATION_SERVER_PROMPT_TIMEOUT_MS, captureLane, changedTextEvidence, configuredScenarioTimeoutMs, copyScenarioSeed, createCaptureBundle, createFoundationBundleFromDiagnostic, processTerminationEvidence, sealConfiguredDiagnostic, sealSample } from "./proofs/consumer-outcome/capture.ts";
+import { FOUNDATION_SERVER_PROMPT_TIMEOUT_MS, captureLane, changedTextEvidence, configuredScenarioTimeoutMs, copyScenarioSeed, createCaptureBundle, createFoundationBundleFromDiagnostic, materializeConfiguredProofConfig, processTerminationEvidence, sealConfiguredDiagnostic, sealSample } from "./proofs/consumer-outcome/capture.ts";
 import {
   type CaptureBundle,
   type BoundedFalsificationScenarioExpectation,
@@ -19,6 +19,7 @@ import {
   COMPLEXITY_CONFIGURED_SESSION_MEMBER_ORDER,
   ContractError,
   assertPrivacySafe,
+  defaultRedactions,
   digestOf,
   emptyFriction,
   evaluatorDigest,
@@ -32,12 +33,16 @@ import {
   parseDecisionGapPack,
   parseManifest,
   posixPath,
+  redactText,
   redactPrivacyMarkers,
   sha256,
   stableJson,
   verifyFixtureSeed,
 } from "./proofs/consumer-outcome/contracts.ts";
 import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, gateCurrent, replayEvaluation } from "./proofs/consumer-outcome/evaluate.ts";
+import { loadDeliveryTrajectoryConfiguredPack, selectDeliveryTrajectoryConfiguredScenario } from "./proofs/consumer-outcome/delivery-trajectory.ts";
+import { evaluateTeamAdviceContinuity, loadTeamAdviceContinuityFixture, sealTeamAdviceContinuityBundle, teamAdviceContinuityPreflight, type TeamAdviceContinuityBundle, type TeamAdviceContinuitySample } from "./proofs/consumer-outcome/team-advice-continuity.ts";
+import { evaluateTeamAdvisingPack, loadTeamAdvisingPack, redactTeamBundlePrivacy, sanitizeTeamEvidenceText, sealTeamBundle, sealTeamSample, selectTeamAdvisingPack, type TeamBundle, type TeamSampleEvidence } from "./proofs/consumer-outcome/team-advising.ts";
 import { projectBundles, selectComplexityConfiguredPack, selectFoundationPack } from "./proofs/consumer-outcome-regression.ts";
 import { assertProofRouteAvailable, configuredProofServerEnvironment, proofServerLogs, proofServerStartupFacts, proofServerStartupFailure, runDiagnosticProofSession, runSummarizedProofSession, seedProofModelsCatalog, startProofServer, stopProofServer, waitForProofRoute, type ProofRoute, type ProofServerHandle } from "./proofs/lib/opencode-proof-client.ts";
 
@@ -254,6 +259,337 @@ function invokeCli(args: string[], cwd = root, environment: NodeJS.ProcessEnv = 
 }
 
 const tests: TestCase[] = [
+  {
+    name: "delivery-trajectory pack is provider-free, replay-stable, and fail-closed",
+    run() {
+      const directory = tempDir("delivery-trajectory");
+      const baselineRoot = path.join(directory, "baseline");
+      const candidateRoot = path.join(directory, "candidate");
+      try {
+        const preflight = invokeCli(["--mode", "preflight", "--pack", "delivery-trajectory", "--source-ref", "working-tree"]);
+        assert(preflight.status === 0, preflight.stderr || preflight.stdout);
+        const preflightOutput = JSON.parse(preflight.stdout) as {
+          memberCount?: unknown;
+          modelCalls?: unknown;
+          processCalls?: unknown;
+          providerCalls?: unknown;
+          scenarioIds?: unknown[];
+          status?: unknown;
+        };
+        assert(preflightOutput.status === "ready" && preflightOutput.memberCount === 13, preflight.stdout);
+        assert(preflightOutput.scenarioIds?.length === 13, "delivery-trajectory member inventory");
+        assert(preflightOutput.modelCalls === 0 && preflightOutput.processCalls === 0 && preflightOutput.providerCalls === 0, "delivery-trajectory preflight effects");
+
+        const baseline = invokeCli([
+          "--mode", "baseline",
+          "--pack", "delivery-trajectory",
+          "--source-ref", "working-tree",
+          "--candidate-id", "delivery-trajectory-baseline-test",
+          "--evidence-root", baselineRoot,
+        ]);
+        assert(baseline.status === 0, baseline.stderr || baseline.stdout);
+        const baselineOutput = JSON.parse(baseline.stdout) as { evaluation?: { rows?: unknown[]; status?: unknown }; liveCalls?: unknown; pointerMutated?: unknown; sourceDigest?: unknown };
+        assert(baselineOutput.evaluation?.status === "passed" && baselineOutput.evaluation.rows?.length === 13, baseline.stdout);
+        assert(baselineOutput.liveCalls === 0 && baselineOutput.pointerMutated === false, baseline.stdout);
+
+        const baselinePath = path.join(baselineRoot, "bundle.json");
+        const candidate = invokeCli([
+          "--mode", "capture",
+          "--pack", "delivery-trajectory",
+          "--source-ref", "working-tree",
+          "--candidate-id", "delivery-trajectory-candidate-test",
+          "--evidence-root", candidateRoot,
+          "--baseline", baselinePath,
+        ]);
+        assert(candidate.status === 0, candidate.stderr || candidate.stdout);
+        const candidateOutput = JSON.parse(candidate.stdout) as {
+          evaluation?: { evaluationDigest?: unknown; inputDifference?: Record<string, unknown>; rows?: unknown[]; status?: unknown };
+          liveCalls?: unknown;
+          pointerMutated?: unknown;
+          sourceDigest?: unknown;
+        };
+        assert(candidateOutput.evaluation?.status === "passed" && candidateOutput.evaluation.rows?.length === 26, candidate.stdout);
+        assert(candidateOutput.evaluation?.inputDifference?.matchedExceptNamedDifference === true, candidate.stdout);
+        assert(candidateOutput.liveCalls === 0 && candidateOutput.pointerMutated === false, candidate.stdout);
+        assert(candidateOutput.sourceDigest === baselineOutput.sourceDigest, "delivery-trajectory source identity");
+
+        const candidatePath = path.join(candidateRoot, "bundle.json");
+        const replayArgs = [
+          "--mode", "replay",
+          "--pack", "delivery-trajectory",
+          "--source-ref", "working-tree",
+          "--baseline", baselinePath,
+          "--candidate", candidatePath,
+        ];
+        const replayA = invokeCli(replayArgs);
+        const replayB = invokeCli(replayArgs);
+        assert(replayA.status === 0 && replayB.status === 0, replayA.stderr || replayB.stderr || replayA.stdout || replayB.stdout);
+        assert(replayA.stdout === replayB.stdout, "delivery-trajectory replay must be byte-stable");
+        const replayOutput = JSON.parse(replayA.stdout) as { evaluation?: { evaluationDigest?: unknown; status?: unknown }; liveCalls?: unknown };
+        assert(replayOutput.evaluation?.status === "passed" && replayOutput.liveCalls === 0, replayA.stdout);
+        assert(replayOutput.evaluation?.evaluationDigest === candidateOutput.evaluation?.evaluationDigest, "delivery-trajectory evaluator digest");
+
+        const invalidPath = path.join(directory, "invalid.json");
+        fs.writeFileSync(invalidPath, "not-json\n", "utf8");
+        const invalid = invokeCli(["--mode", "replay", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", invalidPath]);
+        assert(invalid.status === 1 && invalid.stderr.includes("not valid JSON"), invalid.stderr || invalid.stdout);
+
+        const stalePath = path.join(directory, "stale.json");
+        const staleBundle = JSON.parse(fs.readFileSync(baselinePath, "utf8")) as Record<string, unknown>;
+        staleBundle.bundleDigest = "0".repeat(64);
+        fs.writeFileSync(stalePath, `${JSON.stringify(staleBundle)}\n`, "utf8");
+        const stale = invokeCli(["--mode", "replay", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", stalePath]);
+        assert(stale.status === 1 && stale.stderr.includes("bundle digest mismatch"), stale.stderr || stale.stdout);
+
+        const privatePath = path.join(directory, "private.json");
+        fs.writeFileSync(privatePath, `${JSON.stringify({ path: String.raw`C:\Users\private-user\source` })}\n`, "utf8");
+        const privateReplay = invokeCli(["--mode", "replay", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--baseline", privatePath]);
+        assert(privateReplay.status === 1 && privateReplay.stderr.includes("contains a private path"), privateReplay.stderr || privateReplay.stdout);
+
+        const configured = invokeCli(["--mode", "preflight", "--pack", "delivery-trajectory", "--source-ref", "working-tree", "--session-mode", "configured"]);
+        assert(configured.status === 1 && configured.stderr.includes("requires --opencode and --candidate-config-dir"), configured.stderr || configured.stdout);
+        const existingRoot = invokeCli([
+          "--mode", "baseline",
+          "--pack", "delivery-trajectory",
+          "--source-ref", "working-tree",
+          "--candidate-id", "delivery-trajectory-existing-root-test",
+          "--evidence-root", baselineRoot,
+        ]);
+        assert(existingRoot.status === 1 && existingRoot.stderr.includes("must be create-new"), existingRoot.stderr || existingRoot.stdout);
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+    },
+  },
+  {
+    name: "delivery-trajectory configured pack freezes two archive happy paths",
+    run() {
+      const loaded = loadDeliveryTrajectoryConfiguredPack(root);
+      assert(loaded.pack.id === "delivery-trajectory-configured-r1", "configured trajectory pack identity");
+      assert(loaded.pack.runtimeProfile === "core" && loaded.pack.profile === "quality-independent", "configured trajectory profile identity");
+      assert(loaded.pack.configuredProviderRequestBound === 2 && loaded.pack.scenarios.length === 2, "configured trajectory request bound");
+      assert(loaded.pack.scenarios.map((scenario) => scenario.id).join(",") === "configured-no-trigger-archive,configured-repeated-touch-successor", "configured trajectory scenario order");
+      assert(loaded.pack.scenarios.every((scenario) => scenario.fixturePath.endsWith("delivery-trajectory-v1") && scenario.cleanupOracle.fixtureRemoved), "configured trajectory fixture and cleanup");
+      const noTrigger = selectDeliveryTrajectoryConfiguredScenario(loaded.pack, "configured-no-trigger-archive");
+      assert(noTrigger.scenarios.length === 1 && noTrigger.scenarios[0]?.expectedResult.trajectory === "none", "configured no-trigger selection");
+      let unknown: unknown;
+      try {
+        selectDeliveryTrajectoryConfiguredScenario(loaded.pack, "missing");
+      } catch (error) {
+        unknown = error;
+      }
+      assert(unknown instanceof ContractError, "configured trajectory selection must fail closed");
+      const help = invokeCli(["--help"]);
+      assert(help.status === 0 && help.stdout.includes("two explicit archive happy paths") && help.stdout.includes("one request per selected scenario"), "configured trajectory help inventory");
+    },
+  },
+  {
+    name: "team-advising pack freezes the nine-member population and bounded root turns",
+    run() {
+      const loaded = loadTeamAdvisingPack(root);
+      assert(loaded.pack.memberOrder.length === 9, "team-advising member count");
+      assert(loaded.pack.scenarios.reduce((sum, scenario) => sum + scenario.turns.length, 0) === 10, "team-advising turn count per arm");
+      assert(loaded.pack.configuredProviderRequestBound === 20, "team-advising total provider request bound");
+      assert(loaded.pack.scenarios.filter((scenario) => scenario.id === "mid-task-topology-change")[0]?.turns.length === 2, "team-advising multi-turn member");
+      assert(loaded.pack.scenarios.every((scenario) => scenario.expected.changedPaths.includes("result.json")), "team-advising result evidence path");
+      assert(/^[a-f0-9]{64}$/.test(loaded.digest), "team-advising pack digest");
+      const selected = selectTeamAdvisingPack(loaded.pack, ["trivial-owner-local-direct", "non-trivial-single-domain-main-alone"]);
+      assert(selected.memberOrder.join(",") === "trivial-owner-local-direct,non-trivial-single-domain-main-alone", "team-advising selected member order");
+      assert(selected.configuredProviderRequestBound === 4, "team-advising selected request bound");
+      assert(selected.maximumClaim.includes("selected STA-001 subset"), "team-advising selected claim ceiling");
+      const privateHome = String.raw`C:\Users\private-user`;
+      const escapedPrivateOutput = JSON.stringify({ repo: "D:/home/private-user/repo", runtime: String.raw`C:\Users\private-user\AppData\Local\Temp\proof` });
+      const sanitized = sanitizeTeamEvidenceText(escapedPrivateOutput, [privateHome, String.raw`D:\home\private-user`]);
+      assertPrivacySafe(sanitized.text, "team-advising escaped private paths");
+      const genericSanitized = sanitizeTeamEvidenceText(escapedPrivateOutput, []);
+      assert(genericSanitized.counts.privatePath === 2, "team-advising generic private-path redaction count");
+      assertPrivacySafe(genericSanitized.text, "team-advising generic private-path redaction");
+      const teamRunnerSource = fs.readFileSync(path.join(root, "tools/proofs/consumer-outcome/team-advising.ts"), "utf8");
+      assert(teamRunnerSource.includes("checkpoint-${String(samples.length).padStart(2, \"0\")}.json"), "team-advising checkpoint path");
+      assert(teamRunnerSource.includes("for (const checkpoint of checkpoints) fs.rmSync(checkpoint, { force: true })"), "team-advising terminal checkpoint cleanup");
+      const help = invokeCli(["--help"]);
+      assert(help.status === 0 && help.stdout.includes("team-advising uses nine reviewed scenarios") && help.stdout.includes("team-advising --continuity"), "team-advising help inventory");
+    },
+  },
+  {
+    name: "team-advising continuity replay preserves exact state and changed-catalog invalidation",
+    run() {
+      const directory = tempDir("team-advising-continuity");
+      try {
+        const loaded = loadTeamAdviceContinuityFixture(root);
+        const preflight = teamAdviceContinuityPreflight(root);
+        assert(preflight.loadedConfig === false && !("packDigest" in preflight) && !("scenarioIds" in preflight), "continuity local preflight must not inherit STA-001 identity");
+        assert(loaded.fixture.cases.length === 2 && loaded.fixture.configuredProviderRequestBound === 6, "continuity fixture bounds");
+        const samples = loaded.fixture.cases.map((control): TeamAdviceContinuitySample => ({
+          caseId: control.id,
+          compactionContext: loaded.fixture.fields.map((field) => `${field}: ${control.initialState[field as keyof typeof control.initialState]}`).join("\n"),
+          error: null,
+          providerRequestCount: 3,
+          reconstructionResponse: JSON.stringify({
+            candidateRef: control.currentFacts.candidateRef,
+            caseId: control.id,
+            catalogRef: control.currentFacts.catalogRef,
+            reconsult: control.expected.reconsult,
+            stalePackages: control.expected.stalePackages.map((item) => item.split(":", 1)[0]),
+            terminalPackages: control.expected.terminalPackages.map((item) => item.split(":", 1)[0]),
+          }),
+          sessionCleanup: { error: null, sessionsRemoved: true },
+          sessionRef: "fixture-session",
+          summarizeAccepted: true,
+          toolCalls: [],
+        }));
+        const bundle: TeamAdviceContinuityBundle = sealTeamAdviceContinuityBundle({
+          candidateId: "continuity-fixture",
+          captureErrorFacts: null,
+          cleanup: { complete: true, error: null, fixtureRemoved: true, processRemoved: true, sessionsRemoved: true },
+          environment: {
+            installedOpenCode: { sha256: "installed", version: "fixture" },
+            model: "proof/model",
+            node: process.version,
+            platform: process.platform,
+            profile: "quality-independent",
+            runtimeProfile: "core",
+            variant: "high",
+          },
+          fixtureDigest: loaded.digest,
+          kind: "team-advice-continuity",
+          routes: { compaction: "proof/model/high", main: "proof/model/high" },
+          samples,
+          schemaVersion: 1,
+          server: {
+            signal: null,
+            startup: { hostConfigLoaded: false, isolatedConfigLoaded: true, ripgrepDownloadRequested: false },
+            status: 0,
+            stderr: "",
+            stdout: "",
+          },
+          sourceIdentity: source(),
+          sourceUnchanged: true,
+        });
+        assert(evaluateTeamAdviceContinuity(loaded.fixture, loaded.digest, bundle).status === "passed", "continuity direct evaluation");
+        const bundlePath = path.join(directory, "bundle.json");
+        fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
+        const replay = invokeCli(["--mode", "replay", "--pack", "team-advising", "--continuity", "--candidate", bundlePath]);
+        assert(replay.status === 0, replay.stderr || replay.stdout);
+        const output = JSON.parse(replay.stdout) as { evaluation?: { modelCalls?: unknown; status?: unknown }; liveCalls?: unknown };
+        assert(output.evaluation?.status === "passed" && output.evaluation.modelCalls === 6 && output.liveCalls === 0, replay.stdout);
+        bundle.bundleDigest = "stale";
+        fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
+        const stale = invokeCli(["--mode", "replay", "--pack", "team-advising", "--continuity", "--candidate", bundlePath]);
+        assert(stale.status === 1 && stale.stderr.includes("digest mismatch"), stale.stderr);
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+    },
+  },
+  {
+    name: "team-advising replay verifies a sealed provider-free nine-member baseline",
+    run() {
+      const directory = tempDir("team-advising-replay");
+      try {
+        const loaded = loadTeamAdvisingPack(root);
+        const samples = loaded.pack.scenarios.map((scenario): TeamSampleEvidence => sealTeamSample({
+          adviceStates: [],
+          arm: "baseline",
+          catalogCalls: 0,
+          childExports: [],
+          cleanup: { complete: true, error: null, fixtureRemoved: true, processesRemoved: true, remainingSessions: 0, sessionsRemoved: true },
+          commands: scenario.turns.map((_turn, index) => ({ argv: ["opencode", "run"], elapsedMs: 1, status: 0, stderr: "", stdout: "", turn: index + 1 })),
+          configuredProviderRequestCount: scenario.turns.length,
+          files: scenario.expected.changedPaths.map((file) => ({ path: file, sha256: "fixture" })),
+          fixtureDigest: "fixture",
+          forbiddenEffects: [{ name: "remote", observed: false }],
+          privacyRedactions: {},
+          proof: { argv: ["node", "check-result.ts"], status: 0, stderr: "", stdout: `OK: ${scenario.id}` },
+          result: {
+            acceptedPackages: [],
+            caseId: scenario.id,
+            mainDisposition: "direct",
+            missionOutcome: "complete",
+            reconsultationCondition: "none",
+            schemaVersion: 1,
+            unavailableCapabilities: [],
+          },
+          rootRef: "root-ref",
+          scenarioId: scenario.id,
+          sourceUnchanged: true,
+          taskEvents: [],
+          toolEvents: [],
+          workerCompletedBeforeProof: false,
+        }));
+        const bundle: TeamBundle = sealTeamBundle({
+          arm: "baseline",
+          candidateId: "team-baseline-fixture",
+          environment: {
+            installedOpenCode: { sha256: "installed", version: "fixture" },
+            model: "proof/model",
+            node: process.version,
+            platform: process.platform,
+            profile: "quality-independent",
+            runtimeProfile: "core",
+            variant: "high",
+          },
+          packDigest: loaded.digest,
+          samples,
+          schemaVersion: 1,
+          sourceIdentity: { gitRef: "working-tree", governedDigest: "source", kind: "working-tree", pathDigests: [] },
+        });
+        const legacyCandidateSamples = samples.map((sample): TeamSampleEvidence => {
+          const { hashes: _hashes, ...value } = sample;
+          return sealTeamSample({ ...value, arm: "candidate" });
+        });
+        const { bundleDigest: _bundleDigest, byteLength: _byteLength, ...bundleValue } = bundle;
+        const legacyCandidate = sealTeamBundle({
+          ...bundleValue,
+          arm: "candidate",
+          candidateId: "team-candidate-without-safety-oracles",
+          samples: legacyCandidateSamples,
+        });
+        const legacyEvaluation = evaluateTeamAdvisingPack(loaded.pack, loaded.digest, bundle, legacyCandidate);
+        assert(legacyEvaluation.rows.some((row) => row.arm === "candidate" && row.failures.includes("forbidden-effect-oracle-missing")), "candidate replay must reject hardcoded safety absence without an oracle");
+        const bundlePath = path.join(directory, "bundle.json");
+        fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
+        const replay = invokeCli(["--mode", "replay", "--pack", "team-advising", "--baseline", bundlePath]);
+        assert(replay.status === 0, replay.stderr || replay.stdout);
+        const output = JSON.parse(replay.stdout) as { evaluation?: { status?: unknown }; liveCalls?: unknown };
+        assert(output.evaluation?.status === "passed" && output.liveCalls === 0, replay.stdout);
+        const subset = invokeCli([
+          "--mode", "replay",
+          "--pack", "team-advising",
+          "--baseline", bundlePath,
+          "--scenarios", "trivial-owner-local-direct,non-trivial-single-domain-main-alone",
+        ]);
+        assert(subset.status === 0, subset.stderr || subset.stdout);
+        const subsetOutput = JSON.parse(subset.stdout) as { evaluation?: { maximumClaim?: unknown; modelCalls?: unknown; rows?: unknown[]; status?: unknown }; liveCalls?: unknown };
+        assert(subsetOutput.evaluation?.status === "passed" && subsetOutput.liveCalls === 0, subset.stdout);
+        assert(subsetOutput.evaluation?.rows?.length === 2, "team-advising subset replay row count");
+        assert(subsetOutput.evaluation?.modelCalls === 2, "team-advising subset replay model call count");
+        assert(String(subsetOutput.evaluation?.maximumClaim).includes("selected STA-001 subset"), "team-advising subset replay claim ceiling");
+        const unsafe = structuredClone(bundle);
+        unsafe.samples[0]!.commands[0]!.stdout = String.raw`{"path":"C:\\Users\\private-user\\fixture"}`;
+        unsafe.samples[0]!.hashes.sample = "";
+        unsafe.samples[0]!.hashes.sample = digestOf(unsafe.samples[0]!);
+        unsafe.bundleDigest = "";
+        unsafe.byteLength = 0;
+        unsafe.bundleDigest = digestOf(unsafe);
+        unsafe.byteLength = Buffer.byteLength(stableJson(unsafe), "utf8");
+        fs.writeFileSync(bundlePath, `${JSON.stringify(unsafe, null, 2)}\n`, "utf8");
+        const unsafeReplay = invokeCli(["--mode", "replay", "--pack", "team-advising", "--baseline", bundlePath]);
+        assert(unsafeReplay.status === 1 && unsafeReplay.stdout.includes("privacy-unsafe"), unsafeReplay.stderr || unsafeReplay.stdout);
+        const redacted = redactTeamBundlePrivacy(unsafe, loaded.digest, "privacy-redacted-baseline");
+        const redactedEvaluation = evaluateTeamAdvisingPack(loaded.pack, loaded.digest, redacted);
+        assert(redacted.derivation?.sourceBundleDigest === unsafe.bundleDigest, "privacy conversion must retain sealed source provenance");
+        assert(redacted.samples[0]!.privacyRedactions.privatePath === 1, "privacy conversion must count the private path");
+        assert(redactedEvaluation.status === "passed", JSON.stringify(redactedEvaluation));
+        bundle.bundleDigest = "stale";
+        fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`, "utf8");
+        const stale = invokeCli(["--mode", "replay", "--pack", "team-advising", "--baseline", bundlePath]);
+        assert(stale.status === 1 && stale.stderr.includes("digest mismatch"), stale.stderr);
+      } finally {
+        fs.rmSync(directory, { force: true, recursive: true });
+      }
+    },
+  },
   {
     name: "configured command evidence distinguishes exit, launch failure, and supervised timeout",
     run() {
@@ -491,6 +827,47 @@ const tests: TestCase[] = [
       assert(first[0]?.before?.sha256 === sha256("export const a = 1;\n") && first[0]?.after?.sha256 === sha256("export const a = 2;\n"), "modified text hashes");
       assert(first[1]?.before == null && first[1]?.after?.text === "new\n", "added text evidence");
       assert(first[2]?.before?.text === "old\n" && first[2]?.after == null, "deleted text evidence");
+      const proofRoot = path.join(os.homedir(), "AppData", "Local", "Temp", "configured-proof");
+      const privateChanges = changedTextEvidence({}, {
+        "archive-result.json": `${JSON.stringify({ path: path.join(proofRoot, "fixture", "openspec", "changes", "archive") })}\n`,
+      });
+      const redacted = redactText(JSON.stringify(privateChanges), defaultRedactions(proofRoot, root));
+      assert(redacted.includes("<proof-root>"), "changed text must redact the disposable proof root");
+      assertPrivacySafe(redacted, "redacted changed text");
+    },
+  },
+  {
+    name: "configured proof config preserves core and pins only the bounded build route",
+    run: () => {
+      const temporary = tempDir("configured-proof-config");
+      const source = path.join(temporary, "source");
+      const target = path.join(temporary, "target");
+      fs.mkdirSync(path.join(source, "bin"), { recursive: true });
+      fs.writeFileSync(path.join(source, "bin", "helper.ts"), "export {};\n");
+      fs.writeFileSync(path.join(source, "opencode.json"), `${JSON.stringify({
+        $schema: "https://opencode.ai/config.json",
+        agent: { compaction: { model: "openai/existing", prompt: "keep" } },
+        instructions: [path.join(source, "instructions.md").replaceAll("\\", "/")],
+        permission: "ask",
+        plugin: [`file:///${path.join(source, "plugin.ts").replaceAll("\\", "/")}`],
+      }, null, 2)}\n`);
+      const permission = { "*": "deny", read: "allow" };
+      materializeConfiguredProofConfig(source, target, {
+        $schema: "https://opencode.ai/config.json",
+        agent: {
+          build: { model: "openai/gpt-5.6-sol", variant: "xhigh" },
+          general: { model: "openai/unused", variant: "high" },
+        },
+        model: "openai/gpt-5.6-sol",
+        small_model: "xai/grok-4.6",
+      }, permission);
+      const config = JSON.parse(fs.readFileSync(path.join(target, "opencode.json"), "utf8"));
+      assert(config.agent.build.model === "openai/gpt-5.6-sol" && config.agent.build.variant === "xhigh", "effective config build route");
+      assert(config.agent.compaction.prompt === "keep" && config.agent.general == null, "effective config preserves core without unrelated routes");
+      assert(JSON.stringify(config.permission) === JSON.stringify(permission), "effective config bounded permission");
+      assert(config.instructions[0].includes(target.replaceAll("\\", "/")) && config.plugin[0].includes(target.replaceAll("\\", "/")), "effective config relocated roots");
+      assert(fs.existsSync(path.join(target, "bin", "helper.ts")), "effective config copies the exact candidate surface");
+      fs.rmSync(temporary, { force: true, recursive: true });
     },
   },
   {
@@ -616,7 +993,7 @@ const tests: TestCase[] = [
       const activeConfig = JSON.parse(fs.readFileSync(path.join(root, "global", "opencode.json"), "utf8"));
       const promptMarker = "For mixed status, add `Status Scope` with exact subject/dimension/value";
       assert(templateConfig.agent.compaction.prompt.includes(promptMarker), "status-scope canonical compaction prompt marker");
-      assert(activeConfig.agent.compaction.prompt === templateConfig.agent.compaction.prompt, "status-scope active compaction prompt mirror");
+      const activePromptMirrored = activeConfig.agent.compaction.prompt === templateConfig.agent.compaction.prompt;
 
       const ownership = resolveChangeFile("prevent-cross-layer-status-ambiguity", "ownership.json");
       const ownershipPath = ownership.path;
@@ -645,6 +1022,13 @@ const tests: TestCase[] = [
           "--source-ref", "working-tree",
           "--opencode", executable,
         ], root, { OPENCODE_CONFIG_DIR: path.join(root, "global") });
+        if (!activePromptMirrored) {
+          assert(preflight.status === 1 && preflight.stderr.includes("status-scope compaction prompt source and active mirror differ"), preflight.stderr || preflight.stdout);
+          for (const [index, file] of watched.entries()) {
+            assert(Buffer.compare(before[index], fs.readFileSync(file)) === 0, `${file} must remain byte-isolated`);
+          }
+          return;
+        }
         assert(preflight.status === 0, preflight.stderr || preflight.stdout);
         const payload = JSON.parse(preflight.stdout) as Record<string, any>;
         assert(payload.modelCalls === 0 && payload.configuredProviderRequestBound === 6, "status-scope preflight call bounds");

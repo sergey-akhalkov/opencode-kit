@@ -361,6 +361,67 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     }
   }
 
+  const teamAdviceGlobalAgents = path.join(root, "global", "AGENTS.md");
+  const teamAdvicePracticeContract = path.join(root, "instructions", "practice-owner-agent-contract.md");
+  if (fileExists(teamAdviceGlobalAgents) && fileExists(teamAdvicePracticeContract) && fileExists(compactionTemplate)) {
+    const globalAgentsText = readOperativeModelFacingText(ctx, teamAdviceGlobalAgents);
+    const practiceContractText = readOperativeModelFacingText(ctx, teamAdvicePracticeContract);
+    const compactionTemplateText = readText(compactionTemplate);
+    if (globalAgentsText != null) {
+      for (const marker of [
+        "## Team Advice",
+        "trivial owner-local action with known representative proof",
+        "specialist-team-advisor",
+        "Main retains the mission spine",
+        "main-alone",
+        "Reconsult once only after a material topology change",
+        "The non-owner team advisor follows its separate parentless-root mission trigger",
+        "`Team Advice State` section",
+        "Advisor Task Ref",
+        "Candidate Ref",
+        "Catalog Ref",
+        "Main Disposition",
+        "Active Work Packages",
+        "Terminal Work Packages",
+        "Pending Activation Evidence",
+        "Specialist Liveness",
+        "Integration State",
+        "Unavailable Material Capabilities",
+        "Reconsultation Condition",
+      ]) {
+        requireTextContains(ctx, globalAgentsText, marker, "team-advice canonical contract", teamAdviceGlobalAgents);
+      }
+    }
+    if (practiceContractText != null) {
+      requireTextContains(
+        ctx,
+        practiceContractText,
+        "A matched registered practice trigger launches only that Practice Owner; zero-trigger work launches no Practice Owner. The non-owner team advisor follows its separate parentless-root mission trigger and never satisfies or suppresses a matched practice trigger.",
+        "team-advice Practice Owner boundary",
+        teamAdvicePracticeContract,
+      );
+    }
+    for (const marker of [
+      "Team Advice State",
+      "Advisor Task Ref",
+      "Candidate Ref",
+      "Catalog Ref",
+      "Main Disposition",
+      "Active Work Packages",
+      "Terminal Work Packages",
+      "Pending Activation Evidence",
+      "Specialist Liveness",
+      "Integration State",
+      "Unavailable Material Capabilities",
+      "Reconsultation Condition",
+      "otherwise omit the section",
+      "does not infer a new team",
+      "does not reconsult solely because compaction occurred",
+    ]) {
+      requireTextContains(ctx, compactionTemplateText, marker, "team-advice compaction mirror", compactionTemplate);
+    }
+  }
+
   const scripts = readPackageScripts(ctx, root);
   for (const script of [
     "setup:global",

@@ -1,0 +1,36 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "cd54cb4ba294871d4eccb0d03efcaf1d153849934279f1e9af3794769307e260"
+  },
+  "evaluationDigest": "0eb3193772e6ab76754fb0034d2862b3964586e15486af1b5bc4a6c3c8361704",
+  "maximumClaim": "the selected STA-001 subset (trivial-owner-local-direct, non-trivial-single-domain-main-alone) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 4,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "trivial-owner-local-direct"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "trivial-owner-local-direct"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "non-trivial-single-domain-main-alone"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "non-trivial-single-domain-main-alone"
+    }
+  ],
+  "status": "passed"
+}

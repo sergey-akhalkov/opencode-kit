@@ -391,3 +391,158 @@ dependencies shipped in the same selected profile; it SHALL NOT depend on reposi
 - **WHEN** the configured global source is absent, colliding, or lacks the exact helper
 - **THEN** the workflow reports the inventory lane unavailable and falls back to bounded manual foraging with a degraded evidence statement
 - **AND** does not guess a repository parent or claim that the portable helper ran.
+
+### Requirement: Autonomous campaign tooling has a portable deterministic core
+The shipped autonomous campaign core SHALL accept explicit project, global-source,
+campaign-definition, adapter, and operation inputs; emit versioned stable machine-
+readable output; use argument-vector process invocation with finite timeouts; and
+contain no consumer checkout name, absolute maintainer path, package manager, product
+rubric, validation command, provider credential, Windows path, or host installation
+assumption. Project-specific validation, scope, rubric, checkpoint, and authority
+SHALL remain in contained project definitions/adapters. Host lifecycle SHALL remain a
+thin adapter around the same core.
+
+#### Scenario: Unrelated project uses the campaign core
+- **WHEN** a disposable project with a different build system supplies a valid campaign definition and validation argv
+- **THEN** the same core performs provider-free preflight and returns its exact current phase
+- **AND** no opencode-kit package script, project name, or workstation path is required.
+
+### Requirement: Campaign helpers materialize explicit facts without semantic inference
+Deterministic campaign helpers SHALL validate schemas, paths, inventories, digests,
+stable ids/order, state transitions, coverage counts, refs, severity enum values,
+producer identities, effect declarations, DAGs, mission correlation, validation
+results, and report projections. They SHALL report missing, unreadable, unsupported,
+stale, ambiguous, or mismatched facts as explicit non-complete states and SHALL NOT
+infer scope, severity, materiality, reachability, cause, work-item confirmation,
+remediation grouping, proof quality, or campaign completion from prose, file names,
+similarity, scores, aggregate counts, or model output.
+
+Seed records SHALL be the single reviewed source for derived indexes, totals, report
+sections, hashes, and order. Generated projections SHALL receive regeneration and
+drift checks instead of becoming manually maintained independent variants.
+
+#### Scenario: Report is regenerated from current seed records
+- **WHEN** a reviewed work-item seed changes status and the report materializer runs
+- **THEN** every affected index, total, section, and digest is deterministically updated in stable order
+- **AND** helper code does not rewrite the finding narrative or decide its severity.
+
+#### Scenario: Semantic result omits a required evidence ref
+- **WHEN** a discovery or reconciliation result lacks a schema-required candidate, source, producer, or evidence identity
+- **THEN** the helper marks the row non-admissible with the missing field
+- **AND** it does not infer the ref from transcript or nearby files.
+
+### Requirement: Campaign runtime owners are cohesive and non-overlapping
+Portable campaign definition/contracts, append-only state and leases, phase controller,
+semantic-root executor, mission handoff, ledger/report materialization, and controller
+process/adapter responsibilities SHALL have explicit cohesive owners. The campaign
+implementation SHALL reuse existing portable process, OpenSpec gate/archive, roadmap
+mission, session-delivery, and evidence/proof libraries rather than copy their process,
+writer, archive, configured-session, redaction, or cleanup mechanisms.
+
+A host adapter MAY supervise the campaign process and selected OpenCode runtime but
+SHALL NOT contain campaign phase, work-item, severity, wave, mission, or completion
+semantics. If a touched current file already mixes responsibilities, the change SHALL
+extract one campaign/host responsibility or record a current main-owned
+`split-or-justify`; it SHALL NOT add the responsibility to a workstation or mission
+god file for convenience.
+
+#### Scenario: Windows host recovery is added
+- **WHEN** the first host adapter needs logon, process identity, protected material, and restart integration
+- **THEN** it invokes the portable campaign status/resume/stop boundary with explicit campaign refs
+- **AND** campaign policy and mission execution remain outside the workstation lifecycle owner.
+
+### Requirement: Campaign proof tooling is replayable and discoverable
+The repository SHALL maintain one project-neutral campaign proof family under
+`tools/proofs/` that exercises provider-free schema/state/report paths, bounded
+configured semantic partitions, actual OpenSpec mission handoff, Windows supervisor
+re-entry, interruption, protected stop, and cleanup. Its inventory entry SHALL state
+exact invocation, candidate/environment identity, model and host effects, immutable raw
+bundle, evaluator/replay modes, restoration, cleanup, and maximum claim.
+
+After a configured, host, or long-running attempt fails in evaluator/finalization,
+the proof family SHALL replay the complete reachable non-side-effecting chain from the
+preserved bundle before another unchanged live attempt. Provider-free replay SHALL NOT
+claim a required live process, checkpoint, restoration, or host effect occurred.
+
+#### Scenario: Preserved campaign bundle is replayed
+- **WHEN** a configured campaign capture reaches source effects but its report evaluator fails
+- **THEN** the evaluator and every reachable non-side-effecting finalization check can replay the immutable bundle to a terminal result
+- **AND** another live capture remains blocked until replay is green or names the exact missing raw observation.
+
+### Requirement: Trajectory context SHALL have one portable fact owner
+
+The kit SHALL provide one portable trajectory-context core and CLI at the active global
+source. It SHALL accept explicit root, horizon id, current successful archive id,
+output format, archive-count, aggregate-byte, and timeout arguments; read only the
+versioned horizon plus bounded linked archived planning/evidence metadata; and emit one
+stable schema with privacy-safe root identity, exact paths, digests, sizes, support
+states, and cause-preserving diagnostics. The repository command, if any, SHALL remain a
+thin adapter over that core.
+
+The owner SHALL use bounded regular-file reads, path containment, stable ordering, and
+explicit cancellation. It SHALL perform no source, Git, OpenSpec, archive, horizon,
+receipt, or evidence mutation. Help SHALL be effect-free outside a repository.
+
+#### Scenario: Global helper runs in a consumer project
+
+- **WHEN** the exact active global helper receives a valid consumer root, horizon, and
+  successful archive under its limits
+- **THEN** it returns normalized linked facts without requiring a consumer package
+  script or repository-local copy
+- **AND** output contains no absolute private root, source payload, untracked content,
+  credential, provider call, or write effect.
+
+#### Scenario: Archive window exceeds a bound
+
+- **WHEN** linked archive count, input bytes, elapsed collection time, or one required
+  file exceeds the explicit maintained bound
+- **THEN** collection exits blocked with the exact exceeded boundary and original cause
+- **AND** it does not silently truncate acceptance-critical context or emit a complete
+  projection.
+
+### Requirement: Deterministic trajectory tooling SHALL not infer effectiveness
+
+Trajectory schemas, parsers, validators, receipt materializers, and proof evaluators MAY
+validate explicit fields, ids, enums, ordering, bounds, references, digests, candidate
+correlation, and exact reviewed fixture expectations. They SHALL NOT infer semantic
+progress, roadmap membership, trigger class, cost dominance, forecast, strategy value,
+N/K equivalence, quality sufficiency, owner authority, or successor scope from text,
+counts, timestamps, diffs, or model output.
+
+Unsupported or incomplete semantic fields SHALL remain `unknown`, `missing`,
+`unreadable`, `unsupported`, or `blocked`. The reviewed main-owned signal and review
+receipt SHALL remain the semantic source; deterministic readback cannot promote its
+claim or authorize mutation.
+
+#### Scenario: Archive count is high but semantics are absent
+
+- **WHEN** facts show many linked archives but no reviewed outcome delta, repeated-owner
+  relation, forecast conflict, or bottleneck evidence
+- **THEN** deterministic tooling reports the archive facts only
+- **AND** it does not classify the horizon slow, trigger review, or select batching.
+
+#### Scenario: Reviewed receipt is malformed
+
+- **WHEN** a receipt lacks exact horizon/context/trigger correlation, disposition,
+  evidence references, or retry condition
+- **THEN** readback rejects the receipt for current duplicate suppression
+- **AND** it does not repair semantic content or infer which disposition was intended.
+
+### Requirement: Trajectory behavior SHALL reuse the maintained consumer proof family
+
+Configured trajectory behavior SHALL extend the maintained consumer-outcome fixture,
+capture, replay, and evaluator family with one reviewed partition pack. The pack SHALL
+preserve identical baseline/candidate model, profile, permissions, environment,
+accepted outcome, archive state, and fixture inputs and SHALL retain raw samples,
+candidate/source identities, tool/effect records, diagnostics, and cleanup.
+
+The extension SHALL not add a second configured-session runner, evaluator framework,
+or semantic classifier. Deterministic evaluation SHALL check exact reviewed outcome and
+safety oracles before reporting any friction difference.
+
+#### Scenario: Trajectory pack uses existing capture ownership
+
+- **WHEN** provider-free preflight selects the reviewed trajectory partitions
+- **THEN** the existing capture/evaluator path owns configured sessions, immutable
+  bundles, replay, and cleanup
+- **AND** no parallel runner or manually correlated result format is introduced.

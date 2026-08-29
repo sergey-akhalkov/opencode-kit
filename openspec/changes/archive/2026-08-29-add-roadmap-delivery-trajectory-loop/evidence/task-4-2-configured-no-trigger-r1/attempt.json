@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "roadmap-delivery-trajectory-routing-r3",
+  "scenarioId": "configured-no-trigger-archive",
+  "mode": "configured-capture",
+  "invocation": "npm.cmd run proof:consumer-outcome -- --mode capture --pack delivery-trajectory --source-ref working-tree --session-mode configured --scenarios configured-no-trigger-archive --candidate-id roadmap-delivery-trajectory-routing-r3 --evidence-root <kit-root>/openspec/changes/add-roadmap-delivery-trajectory-loop/evidence/task-4-2-configured-no-trigger-r1 --opencode <home>/.bun/bin/opencode.exe --candidate-config-dir <home>/AppData/Local/Temp/opencode/trajectory-configured-core-r2",
+  "exitStatus": 1,
+  "stdout": "",
+  "stderr": "configured diagnostic: configured diagnostic contains a private path",
+  "classification": "proof-runner-privacy-failure",
+  "providerRequestBound": 1,
+  "providerRequestCount": "unknown",
+  "cleanup": {
+    "atDiagnosticWrite": "unknown",
+    "postFailureFixtureCount": 0,
+    "postFailureMatchingProcessCount": 0,
+    "liveness": "closed"
+  },
+  "diagnosticPreserved": false,
+  "nextLiveAttemptAuthorized": false,
+  "offlineDisposition": "Source inspection localized the failure to unredacted changed-text evidence after the runner's server-stop and fixture-removal steps. No diagnostic exists to replay, so the attempt supports no semantic observation. A provider-free regression now proves nested JSON absolute paths become <proof-root> and pass privacy validation. Post-failure probes found no matching fixture or process; liveness is closed, while exact cleanup at diagnostic-write time remains unknown."
+}

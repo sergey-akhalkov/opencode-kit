@@ -1,0 +1,22 @@
+{
+  "bundleDigest": "41740760f06f21f388f4d8244ccd138e5e152ec0fcbfcc4ba1ce44f9392094b5",
+  "evaluationDigest": "e484557c46365a90a684918376d069854720739499453cd36bad2533125fc89f",
+  "maximumClaim": "the two reviewed compaction-continuity controls for the recorded candidate/model/profile/environment only; no STA-001 population, universal compaction, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 6,
+  "rows": [
+    {
+      "caseId": "unchanged-engagement",
+      "failures": [],
+      "passed": true
+    },
+    {
+      "caseId": "changed-catalog",
+      "failures": [
+        "stale-package-mismatch",
+        "terminal-evidence-mismatch"
+      ],
+      "passed": false
+    }
+  ],
+  "status": "failed"
+}

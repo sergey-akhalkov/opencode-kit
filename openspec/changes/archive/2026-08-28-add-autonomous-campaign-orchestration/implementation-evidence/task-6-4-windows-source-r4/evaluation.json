@@ -1,0 +1,25 @@
+{
+  "candidateId": "task-6-4-windows-host-source-r4",
+  "checks": {
+    "candidateMatched": true,
+    "captureExitedZero": true,
+    "cleanupComplete": true,
+    "environmentMatched": true,
+    "hostMutationsZero": true,
+    "openCodeCallsZero": true,
+    "oraclesComplete": true,
+    "privacySafeOutput": true,
+    "providerCallsZero": true,
+    "sourceCandidateCurrent": true,
+    "sourceEvaluationCurrent": true,
+    "sourceUnchanged": true,
+    "sourceWritesZero": true
+  },
+  "hostEffects": 0,
+  "liveCalls": 1,
+  "processStarts": 1,
+  "proofKind": "campaign-windows-source-plan",
+  "schemaVersion": 1,
+  "sourceWrites": 0,
+  "status": "complete"
+}

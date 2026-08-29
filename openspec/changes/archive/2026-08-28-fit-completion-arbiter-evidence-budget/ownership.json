@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "changeId": "fit-completion-arbiter-evidence-budget",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "session-completion-guard",
+      "requirements": [
+        "Provider-bound completion evidence fits the aggregate request budget",
+        "Canonical evidence conflicts and irreducible critical overflow remain fail-closed",
+        "Completion request bytes are deterministic and measured at the provider boundary",
+        "The public session_delivery_context contract remains unchanged"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/agents/session-completion-arbiter.md",
+    "global/extensions/session-completion-guard/arbiter-evidence.ts",
+    "global/extensions/session-completion-guard/controller.ts",
+    "global/extensions/session-completion-guard/types.ts",
+    "tools/proofs/session-completion-guard-long-run.ts",
+    "tools/test-session-completion-guard.ts"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

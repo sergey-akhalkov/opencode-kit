@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "phase-fixture",
+  "windowStart": "2026-08-01T00:00:00.000Z",
+  "usefulBy": "2026-10-01T00:00:00.000Z",
+  "outcomeRefs": ["docs/outcome.md"],
+  "exitPredicateRefs": ["docs/exit.md"],
+  "nonDeferrableInvariantRefs": ["docs/invariants.md"],
+  "nonGoalRefs": ["docs/non-goals.md"]
+}

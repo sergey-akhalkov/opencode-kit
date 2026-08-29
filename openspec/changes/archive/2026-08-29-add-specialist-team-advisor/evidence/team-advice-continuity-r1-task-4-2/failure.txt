@@ -1,0 +1,5 @@
+Attempt: add-specialist-team-advisor-task-4-2-continuity-r1
+Stage: local route setup before proof-server start
+Provider/model calls: 0
+Terminal error: Configured status-scope route is incomplete: build
+Disposition: Proof Runner identity binding defect; preserved for Strategy 20.

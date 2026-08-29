@@ -19,6 +19,7 @@ export const CORE_SKILLS = [
   "openspec-archive-change",
   "openspec-propose",
   "reuse-discovery",
+  "roadmap-delivery-trajectory",
 ] as const;
 
 export const CORE_AGENTS = [
@@ -31,13 +32,31 @@ export const CORE_AGENTS = [
   "instruction-artifact-reviewer",
   "openspec-architecture-reviewer",
   "sdet-quality-engineer",
+  "specialist-team-advisor",
   "test-coverage-reviewer",
   "troubleshooter",
 ] as const;
 
 export const CORE_COMMANDS = ["opsx-apply", "opsx-archive", "opsx-propose"] as const;
 
-export const CORE_FILES = [
+export const DELIVERY_TRAJECTORY_HELPER_FILES = [
+  "global/bin/delivery-trajectory-context.ts",
+  "global/bin/openspec-change/delivery-horizon.ts",
+  "global/bin/openspec-change/manifest.ts",
+] as const;
+
+export const OPENSPEC_ARCHIVE_HELPER_FILES = [
+  "global/bin/openspec-archive.ts",
+  "global/bin/portable-process.ts",
+  "global/bin/openspec-change/claims.ts",
+  "global/bin/openspec-change/evidence.ts",
+  "global/bin/openspec-change/gate.ts",
+  "global/bin/openspec-change/inventory.ts",
+  "global/bin/openspec-change/ownership.ts",
+  "global/bin/openspec-change/state.ts",
+] as const;
+
+export const ALL_COMPATIBILITY_FILES = [
   "global/AGENTS.md",
   "global/bin/complexity-foraging-contract.ts",
   "global/bin/complexity-foraging-inventory.ts",
@@ -45,6 +64,20 @@ export const CORE_FILES = [
   "global/opencode.local.instructions.example.md",
   "global/principles-of-work.md",
 ] as const;
+
+export const SPECIALIST_CATALOG_PLUGIN_FILE = "extensions/specialist-catalog.ts";
+
+export const CORE_FILES = [
+  "global/AGENTS.md",
+  "global/bin/complexity-foraging-contract.ts",
+  "global/bin/complexity-foraging-inventory.ts",
+  ...DELIVERY_TRAJECTORY_HELPER_FILES,
+  ...OPENSPEC_ARCHIVE_HELPER_FILES,
+  `global/${SPECIALIST_CATALOG_PLUGIN_FILE}`,
+  "global/opencode.json.template",
+  "global/opencode.local.instructions.example.md",
+  "global/principles-of-work.md",
+].sort(compareLocale);
 
 export const CORE_DIRECTORIES: readonly string[] = [];
 
@@ -482,7 +515,7 @@ export function inspectRuntimeSurfaceProfiles(
         file,
       );
       if (complete) {
-        reportSetMismatch(errors, "profiles/all.json files must match the full catalog.", loaded.profile.files, CORE_FILES, file);
+        reportSetMismatch(errors, "profiles/all.json files must match the full catalog.", loaded.profile.files, ALL_COMPATIBILITY_FILES, file);
         reportSetMismatch(
           errors,
           "profiles/all.json directories must match the full catalog.",
@@ -816,9 +849,10 @@ export function inspectRuntimeSurfaceInstall(options: {
 
 export type RuntimeSurfaceConfigRenderMode = "all-compatibility" | "ask" | "machine-autonomy";
 
-const TEMPLATE_PLUGIN_PATHS = [
+export const ALL_COMPATIBILITY_PLUGIN_FILES = [
   "plugins/notify.ts",
   "plugin/session-env.ts",
+  SPECIALIST_CATALOG_PLUGIN_FILE,
   ...ROADMAP_MISSION_PLUGIN_FILES,
 ] as const;
 
@@ -832,7 +866,7 @@ export function materializeRuntimeSurfaceTemplate(templateText: string, targetRo
     JSON.stringify("__OPENCODE_CONFIG_DIR__/opencode.local.instructions.md"),
     JSON.stringify(path.join(target, "opencode.local.instructions.md").replaceAll("\\", "/")),
   );
-  for (const pluginPath of TEMPLATE_PLUGIN_PATHS) {
+  for (const pluginPath of ALL_COMPATIBILITY_PLUGIN_FILES) {
     materialized = materialized.replaceAll(
       JSON.stringify(`__OPENCODE_CONFIG_DIR__/${pluginPath}`),
       JSON.stringify(pathToFileURL(path.join(target, ...pluginPath.split("/"))).href),
@@ -860,9 +894,31 @@ export function renderRuntimeSurfaceConfig(
     instructions,
     permission,
   };
+  const templateAgents = materializedTemplate?.agent && typeof materializedTemplate.agent === "object" && !Array.isArray(materializedTemplate.agent)
+    ? materializedTemplate.agent as Record<string, unknown>
+    : {};
+  const templateCompaction = templateAgents.compaction && typeof templateAgents.compaction === "object" && !Array.isArray(templateAgents.compaction)
+    ? templateAgents.compaction as Record<string, unknown>
+    : null;
+  if (templateCompaction != null) {
+    config.agent = { compaction: { ...templateCompaction } };
+  }
+  const templatePlugins = Array.isArray(materializedTemplate?.plugin) ? materializedTemplate.plugin : [];
+  const catalogPlugins = templatePlugins.filter((entry) =>
+    typeof entry === "string" && entry.startsWith("file:") && entry.endsWith(`/${SPECIALIST_CATALOG_PLUGIN_FILE}`)
+  );
+  if (mode === "ask") {
+    if (catalogPlugins.length !== 1) {
+      throw new Error("The core profile requires exactly one materialized specialist catalog plugin entry.");
+    }
+    config.plugin = catalogPlugins;
+  }
   if (mode === "all-compatibility") {
     if (typeof materializedTemplate?.model !== "string" || !Array.isArray(materializedTemplate.plugin)) {
       throw new Error("The all profile requires a materialized template with model and plugin entries.");
+    }
+    if (catalogPlugins.length !== 1) {
+      throw new Error("The all profile requires exactly one materialized specialist catalog plugin entry.");
     }
     config.model = materializedTemplate.model;
     config.plugin = materializedTemplate.plugin;

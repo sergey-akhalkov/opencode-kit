@@ -46,6 +46,14 @@ node "<global-source>/bin/openspec-archive.ts" --root "<project-root>" --change 
 
 The helper checks machine-readable artifact and claim-closure status, requires a non-empty all-checked task file, runs strict and project validation, delegates spec merge and movement to `openspec archive <name> --yes --json`, and validates the archived result. `--yes` cannot waive the independent completion gate.
 
+## Post-Success Trajectory Routing
+
+- Run this route only after the helper exits zero and reports final `status: archived`; a failed archive or post-validation emits no success-based trajectory signal.
+- Read the archived proposal's exact `Delivery Horizon` declaration. Report `trajectory: not-applicable` for legacy-unlinked or `none - <reason>` work without inferring membership.
+- For a linked archive, invoke the exact active `delivery-trajectory-context.ts` helper with the project root, Horizon id, archive id, and bounded JSON output. Main evaluates one compact signal from that output and selected current evidence. Report `trajectory: none` without a durable receipt when no material trigger exists.
+- When the current signal is `review-required`, load `roadmap-delivery-trajectory` once for that evidence tuple. Any resulting receipt or same-Horizon successor is future planning evidence, not archive completion credit. If context, semantic evaluation, or capability resolution fails, report `trajectory: unknown` with the original cause and no adjacent-skill or alternate-source fallback.
+- Preserve independent operation dimensions exactly: `archive: archived` and `trajectory: not-applicable | none | review-required | unknown`. Trajectory processing must not change archive exit status, reopen the change, append tasks, rewrite archived bytes/specs, or block unrelated work.
+
 ## Failure Contract
 
 - Preserve raw stdout, stderr, exit status, and reported side effects.
@@ -56,8 +64,8 @@ The helper checks machine-readable artifact and claim-closure status, requires a
 
 ## Success Contract
 
-Success requires zero exit and final `status: archived`. Report change, archive path, spec-update status/totals, validation argv, and helper identity. Archive does not authorize commit, push, merge, release, installation, or deployment.
+Success requires zero exit and final `status: archived`. Report change, archive path, spec-update status/totals, validation argv, helper identity, and the separate trajectory state. Archive does not authorize commit, push, merge, release, installation, or deployment.
 
 ## Output Contract
 
-Return the change and archive identities, operation totals, spec-update result, exact validation argv/outcomes, helper identity, remaining blocker or `none`, and external operations performed (`none` unless separately authorized).
+Return the change and archive identities, operation totals, spec-update result, exact validation argv/outcomes, helper identity, `archive: archived`, `trajectory: not-applicable | none | review-required | unknown`, remaining blocker or `none`, and external operations performed (`none` unless separately authorized).

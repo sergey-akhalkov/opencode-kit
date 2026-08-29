@@ -1,0 +1,17 @@
+{
+  "candidateId": "completion-arbiter-budget-baseline-head",
+  "cleanup": "complete",
+  "exactRequestBytes": 5409,
+  "externalCalls": 0,
+  "mode": "installed",
+  "profile": {
+    "messageChars": 128,
+    "messageCount": 2
+  },
+  "rawDigest": "95f6776a061d505049f9600f6ccb0beef33eca67b9a394b6da86edfb7d6c91a1",
+  "representation": "legacy-public-v2",
+  "requestLimit": 200000,
+  "rootState": "passed",
+  "schemaVersion": 1,
+  "status": "complete"
+}

@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "id": "team-advising-r1",
+  "profile": "quality-independent",
+  "runtimeProfile": "core",
+  "configuredProviderRequestBound": 20,
+  "maximumClaim": "the nine reviewed STA-001 scenarios define matched unchanged-source baseline and candidate inputs, explicit root/advisor/specialist/skill identity oracles, bounded local effects, and terminal cleanup for one recorded model/profile/environment; no universal routing, unreviewed task, unlisted artifact, cross-model, deployed-runtime, or semantic-quality claim is supported",
+  "memberOrder": [
+    "trivial-owner-local-direct",
+    "non-trivial-single-domain-main-alone",
+    "multi-domain-bounded-team",
+    "procedural-skill-no-fresh-agent",
+    "conditional-later-specialist",
+    "isolated-production-delegation",
+    "mid-task-topology-change",
+    "active-profile-capability-unavailable",
+    "overstaffing-negative-control"
+  ],
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/agents/specialist-team-advisor.md",
+    "global/extensions/specialist-catalog.ts",
+    "global/opencode.json.template",
+    "global/model-profiles/quality-independent.json",
+    "instructions/practice-owner-agent-contract.md",
+    "profiles/core.json",
+    "profiles/all.json",
+    "tools/model-profile.ts",
+    "tools/runtime-surface-profile.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/team-advising.ts",
+    "tools/proofs/fixtures/consumer-outcome/team-advising-r1.json",
+    "tools/proofs/fixtures/consumer-outcome/team-advising-v1"
+  ],
+  "scenarios": [
+    {
+      "id": "trivial-owner-local-direct",
+      "caseFacts": ["one existing note owner", "one exact typo", "known node check-result.ts proof"],
+      "objective": "Replace the sole 'teh' token in note.txt with 'the', write the required result record, and run the representative proof.",
+      "turns": ["Read case.json, note.txt, and check-result.ts. Apply the loaded root mission, team, and Practice Owner routing exactly. Complete only this fixture mission, write result.json using the exact contract in case.json, and run node check-result.ts. Do not read any consumer-outcome pack or oracle outside this fixture. Do not ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": [], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 0, "adviceStates": [], "catalogCalls": 0, "mainDisposition": "direct", "specialistAgents": [], "skillIds": [], "unavailableCapabilities": [] },
+        "changedPaths": ["note.txt", "result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    },
+    {
+      "id": "non-trivial-single-domain-main-alone",
+      "caseFacts": ["three local source facts", "single cohesive diagnostics owner", "no independent challenge or isolated writer value"],
+      "objective": "Produce a bounded diagnostics ownership disposition in result.json and run the representative proof without changing product files.",
+      "turns": ["Read case.json and check-result.ts. Apply the loaded root mission, team, and Practice Owner routing exactly. Determine the smallest sufficient route for this non-trivial single-domain mission, write result.json using the exact contract in case.json, and run node check-result.ts. Do not read any consumer-outcome pack or oracle outside this fixture. Do not ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": ["specialist-team-advisor"], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 1, "adviceStates": ["main-alone"], "catalogCalls": 1, "mainDisposition": "main-alone", "specialistAgents": [], "skillIds": [], "unavailableCapabilities": [] },
+        "changedPaths": ["result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    },
+    {
+      "id": "multi-domain-bounded-team",
+      "caseFacts": ["one mixed architecture ownership question", "one independent authority and worktree-safety question", "both are read-only and independent"],
+      "objective": "Produce one integrated architecture-and-execution-safety disposition in result.json and run the representative proof.",
+      "turns": ["Read case.json and check-result.ts. Apply the loaded root mission, team, and exact Practice Owner routing. Use only distinct available roles that add unique evidence, keep main as integrator, write result.json using the exact contract in case.json, and run node check-result.ts. Do not read any consumer-outcome pack or oracle outside this fixture. Do not ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": ["specialist-team-advisor", "openspec-architecture-reviewer", "execution-safety-reviewer"], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 1, "adviceStates": ["team-recommended"], "catalogCalls": 1, "mainDisposition": "team-recommended", "specialistAgents": ["execution-safety-reviewer", "openspec-architecture-reviewer"], "skillIds": [], "unavailableCapabilities": [] },
+        "changedPaths": ["result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    },
+    {
+      "id": "procedural-skill-no-fresh-agent",
+      "caseFacts": ["local owner exists", "same-versus-new mechanism choice", "procedural repository search is sufficient", "no fresh judgment is required"],
+      "objective": "Record the evidence-backed reuse disposition in result.json and run the representative proof.",
+      "turns": ["Read case.json and check-result.ts. Apply the loaded root mission and team routing. Use loaded procedural guidance when it is sufficient and do not create a fresh specialist solely for procedure. Write result.json using the exact contract in case.json and run node check-result.ts. Do not read any consumer-outcome pack or oracle outside this fixture. Do not ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": ["specialist-team-advisor"], "skills": ["reuse-discovery"] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 1, "adviceStates": ["team-recommended"], "catalogCalls": 1, "mainDisposition": "team-recommended", "specialistAgents": [], "skillIds": ["reuse-discovery"], "unavailableCapabilities": [] },
+        "changedPaths": ["result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    },
+    {
+      "id": "conditional-later-specialist",
+      "caseFacts": ["current local behavior is unmeasured", "test coverage review becomes useful only after a concrete coverage artifact exists", "the artifact is absent"],
+      "objective": "Record the current route and dormant activation condition in result.json, without manufacturing the missing artifact, then run the representative proof.",
+      "turns": ["Read case.json and check-result.ts. Apply the loaded root mission and team routing. Keep any specialist whose value depends on a later artifact dormant until that activation evidence exists. Write result.json using the exact contract in case.json and run node check-result.ts. Do not create a coverage artifact, read any consumer-outcome pack or oracle outside this fixture, ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": ["specialist-team-advisor", "test-coverage-reviewer"], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 1, "adviceStates": ["team-recommended"], "catalogCalls": 1, "mainDisposition": "team-recommended", "specialistAgents": [], "skillIds": [], "unavailableCapabilities": [] },
+        "changedPaths": ["result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    },
+    {
+      "id": "isolated-production-delegation",
+      "caseFacts": ["one isolated worker/output.txt package", "exact content worker-ok", "main owns integration and proof", "worker must be terminal before proof"],
+      "objective": "Create worker/output.txt containing exactly worker-ok, integrate it, write result.json, and have main run the representative proof.",
+      "turns": ["Read case.json and check-result.ts. Apply the loaded root mission and team routing. Use an isolated production worker only if the loaded route establishes unique bounded value; main must retain integration and run node check-result.ts only after terminal writer closure. Write result.json using the exact contract in case.json. Do not let a worker author tests or proof, read any consumer-outcome pack or oracle outside this fixture, ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": ["specialist-team-advisor", "implementation-worker"], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 1, "adviceStates": ["team-recommended"], "catalogCalls": 1, "mainDisposition": "team-recommended", "specialistAgents": ["implementation-worker"], "skillIds": [], "unavailableCapabilities": [] },
+        "changedPaths": ["result.json", "worker/output.txt"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": true
+      }
+    },
+    {
+      "id": "mid-task-topology-change",
+      "caseFacts": ["initial analysis has one owner and no concurrency boundary", "ordinary progress alone does not change topology"],
+      "objective": "Record the initial smallest route, then incorporate the represented ownership and concurrency boundary from the second turn into one updated result and proof.",
+      "turns": [
+        "Read case.json and check-result.ts. Apply the loaded root mission and team routing to the current facts. Write the initial result.json using the exact contract in case.json. Do not invent a later boundary, read any consumer-outcome pack or oracle outside this fixture, ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions.",
+        "A new current fact is now represented: the proposed change crosses a mixed ownership seam and concurrent state transition, so an architecture owner observation is required before proceeding. Apply the loaded material-topology-change rule exactly, update result.json without replaying ordinary progress as a trigger, and run node check-result.ts. Keep prior terminal evidence attributable."
+      ],
+      "permissions": { "taskAgents": ["specialist-team-advisor", "openspec-architecture-reviewer"], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 2, "adviceStates": ["main-alone", "team-recommended"], "catalogCalls": 2, "mainDisposition": "team-recommended", "specialistAgents": ["openspec-architecture-reviewer"], "skillIds": [], "unavailableCapabilities": [] },
+        "changedPaths": ["result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    },
+    {
+      "id": "active-profile-capability-unavailable",
+      "caseFacts": ["the mission needs protocol-specific compatibility judgment", "protocol-api-reviewer is not installed in the active core profile", "copied rosters and checkout fallback are forbidden"],
+      "objective": "Record the unavailable material capability and the narrow current claim in result.json, then run the representative proof without substituting another role.",
+      "turns": ["Read case.json and check-result.ts. Apply the loaded root mission and team routing against the actual active catalog. Preserve a relevant unavailable capability explicitly and do not use a static roster, checkout source, or nearby role as a substitute. Write result.json using the exact contract in case.json and run node check-result.ts. Do not read any consumer-outcome pack or oracle outside this fixture, ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": ["specialist-team-advisor"], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 1, "adviceStates": ["unknown"], "catalogCalls": 1, "mainDisposition": "unknown", "specialistAgents": [], "skillIds": [], "unavailableCapabilities": ["protocol-api-reviewer"] },
+        "changedPaths": ["result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    },
+    {
+      "id": "overstaffing-negative-control",
+      "caseFacts": ["one bounded read-only integration question", "main already has all repository context", "generic final review and broad owner fan-out add no unique evidence"],
+      "objective": "Record the smallest sufficient route in result.json and run the representative proof without broad review fan-out.",
+      "turns": ["Read case.json and check-result.ts. Apply the loaded root mission and team routing. Reject broad review fan-out when no role adds unique evidence, write result.json using the exact contract in case.json, and run node check-result.ts. Do not read any consumer-outcome pack or oracle outside this fixture, ask questions, access external directories or credentials, install, commit, use remote access, or perform destructive or protected actions."],
+      "permissions": { "taskAgents": ["specialist-team-advisor", "code-quality-reviewer", "execution-safety-reviewer", "final-candidate-reviewer", "test-coverage-reviewer"], "skills": [] },
+      "expected": {
+        "baseline": { "advisorCalls": 0, "catalogCalls": 0 },
+        "candidate": { "advisorCalls": 1, "adviceStates": ["main-alone"], "catalogCalls": 1, "mainDisposition": "main-alone", "specialistAgents": [], "skillIds": [], "unavailableCapabilities": [] },
+        "changedPaths": ["result.json"],
+        "rootProofRequired": true,
+        "workerCompletedBeforeProof": false
+      }
+    }
+  ]
+}

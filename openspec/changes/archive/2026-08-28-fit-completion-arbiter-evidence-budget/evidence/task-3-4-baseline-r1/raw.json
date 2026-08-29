@@ -1,0 +1,60 @@
+{
+  "candidateId": "completion-arbiter-budget-baseline-head",
+  "cleanup": "complete",
+  "environment": {
+    "configDigest": "a04f1fdd217b430075b8b60718a0cb0014b774c7ce419b11890b12ce107fccfd",
+    "executableSha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "openCode": "1.18.25",
+    "platform": "win32",
+    "runtimeSourceHashes": [
+      {
+        "path": "global/agents/session-completion-arbiter.md",
+        "sha256": "3c505612013fd1c4fc90adb46f1c5335b48cede80e3af33d48eaa4fd39114bfd"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+        "sha256": "c318c79d796a0790025e97f056191836e0c03a740fedcc89fe4a2626fd5f7350"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/controller.ts",
+        "sha256": "f44c414229940c4c9fe29010082832803c3346c3dd4071d7fc279440d3d37be2"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/projection.ts",
+        "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+      }
+    ]
+  },
+  "mode": "installed",
+  "profile": {
+    "messageChars": 128,
+    "messageCount": 2
+  },
+  "provider": {
+    "arbiterCalls": 1,
+    "externalCalls": 0,
+    "primaryCalls": 3,
+    "result": {
+      "claimRows": 0,
+      "ownerBoundary": null,
+      "questionAnswers": null,
+      "requirementRows": 0,
+      "verdict": "allow_stop"
+    }
+  },
+  "request": {
+    "assistantEvidence": 3,
+    "evidenceSchemaVersion": 2,
+    "humanMessages": 2,
+    "requestBytes": 5409,
+    "requestDigest": "f5a81dd8dd1c2cec77eefaad35c37d52a3ffb891bd20f78cf7f0ce2e490267aa",
+    "requestSchemaVersion": 1,
+    "rootSessionRef": "session_6b80698034f1"
+  },
+  "root": {
+    "childCount": 1,
+    "rootRef": "session_6b80698034f1",
+    "state": "passed"
+  },
+  "schemaVersion": 1
+}

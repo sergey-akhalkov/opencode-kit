@@ -172,6 +172,53 @@ const HELPER_RESOLUTION_MARKERS = [
   "Never strip a final `global` segment",
 ] as const;
 
+const DELIVERY_TRAJECTORY_ROUTING_SURFACES = [
+  {
+    relative: "global/AGENTS.md",
+    markers: [
+      "Every newly authored OpenSpec proposal declares exactly one `Delivery Horizon`",
+      "Only a current material trigger loads `roadmap-delivery-trajectory`",
+      "`archive: archived` independent from `trajectory: not-applicable | none | review-required | unknown`",
+      "no archive rewrite, adjacent-skill fallback, or global project freeze",
+    ],
+  },
+  {
+    relative: "global/skills/openspec-propose/SKILL.md",
+    markers: [
+      "Before writing any artifact",
+      "`delivery-trajectory-context.ts`",
+      "Main, not the helper, evaluates the compact signal",
+      "before dependent planning or artifact writes",
+      "block only the affected dependent planning",
+      "include exactly one line in its Outcome Capsule",
+      "`- **Delivery Horizon:** none - <concrete reason>`",
+    ],
+  },
+  {
+    relative: "global/skills/openspec-apply-change/SKILL.md",
+    markers: [
+      "before substantial dependent implementation",
+      "run the exact active `delivery-trajectory-context.ts` helper",
+      "consume or create the matching terminal receipt before dependent expansion",
+      "A `continue` receipt permits ordinary same-Horizon continuation",
+      "`owner-required` and `unknown` create no successor",
+      "keep only the affected dependent action blocked",
+      "trajectory capability unavailable",
+    ],
+  },
+  {
+    relative: "global/skills/openspec-archive-change/SKILL.md",
+    markers: [
+      "## Post-Success Trajectory Routing",
+      "only after the helper exits zero and reports final `status: archived`",
+      "`trajectory: not-applicable`",
+      "load `roadmap-delivery-trajectory` once for that evidence tuple",
+      "`archive: archived` and `trajectory: not-applicable | none | review-required | unknown`",
+      "Trajectory processing must not change archive exit status",
+    ],
+  },
+] as const;
+
 const COMMAND_SKILL_ROUTES = [
   { relative: "global/commands/opsx-propose.md", skill: "openspec-propose" },
   { relative: "global/commands/opsx-apply.md", skill: "openspec-apply-change" },
@@ -562,6 +609,43 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         !strippedGlobal.includes("Never strip a final `global` segment"),
         "Dropping no-strip-global helper resolution must fail closed.",
       );
+    },
+  },
+  {
+    name: "contracts: OpenSpec trajectory routing is post-success, explicit, and horizon-scoped",
+    run: () => {
+      for (const { relative, markers } of DELIVERY_TRAJECTORY_ROUTING_SURFACES) {
+        const text = operativeInstructionText(fs.readFileSync(path.join(root, relative), "utf8"));
+        assertTokens(text, markers, `${relative} missing delivery-trajectory routing marker`);
+      }
+
+      const archive = operativeInstructionText(
+        fs.readFileSync(path.join(root, "global/skills/openspec-archive-change/SKILL.md"), "utf8"),
+      );
+      assert(
+        archive.indexOf("## Execute One Owner") < archive.indexOf("## Post-Success Trajectory Routing"),
+        "Archive trajectory routing must remain after canonical archive execution and validation.",
+      );
+      assert(
+        !archive.includes("trajectory changes archive exit status"),
+        "Archive trajectory routing must not couple trajectory state to archive exit status.",
+      );
+
+      const propose = operativeInstructionText(
+        fs.readFileSync(path.join(root, "global/skills/openspec-propose/SKILL.md"), "utf8"),
+      );
+      assert(
+        propose.indexOf("Before writing any artifact") < propose.indexOf("Create the artifact file"),
+        "Propose must resolve current same-Horizon trajectory before artifact writes.",
+      );
+
+      for (const { relative } of COMMAND_SKILL_ROUTES) {
+        const command = fs.readFileSync(path.join(root, relative), "utf8");
+        assert(
+          !command.includes("roadmap-delivery-trajectory") && !command.includes("Delivery Horizon"),
+          `${relative} must remain a thin canonical-skill loader rather than duplicate trajectory policy.`,
+        );
+      }
     },
   },
   {

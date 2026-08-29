@@ -143,19 +143,21 @@ function parsePaths(value: unknown, path: string): ParseResult<ClaimPaths> {
   return { ok: true, value: { production: production.value, baseline: baseline.value, candidate: candidate.value } };
 }
 
-function parsePopulation(value: unknown, path: string): ParseResult<ClaimPopulation> {
+function parsePopulation(value: unknown, path: string, inheritMaterialClasses: boolean): ParseResult<ClaimPopulation> {
   const object = readObject(value, path);
   if (!object.ok) return object;
   const issues = extraKeys(object.value, ["id", "members", "partitionRule", "materialClasses", "residualSpace"], path);
   const id = readString(object.value.id, `${path}.id`, SAFE_ID);
   const members = readStringList(object.value.members, `${path}.members`, MAX_MEMBERS, SAFE_TOKEN);
   const partitionRule = readNullableString(object.value.partitionRule, `${path}.partitionRule`);
-  const materialClasses = readStringList(object.value.materialClasses, `${path}.materialClasses`, MAX_MEMBERS, SAFE_TOKEN);
+  const materialClasses = object.value.materialClasses === undefined && inheritMaterialClasses
+    ? members
+    : readStringList(object.value.materialClasses, `${path}.materialClasses`, MAX_MEMBERS, SAFE_TOKEN);
   const residualSpace = readNullableString(object.value.residualSpace, `${path}.residualSpace`);
   collect(issues, id);
   collect(issues, members);
   collect(issues, partitionRule);
-  collect(issues, materialClasses);
+  if (object.value.materialClasses !== undefined || !inheritMaterialClasses) collect(issues, materialClasses);
   collect(issues, residualSpace);
   if (issues.length > 0 || !id.ok || !members.ok || !partitionRule.ok || !materialClasses.ok || !residualSpace.ok) return failIssues(issues);
   return {
@@ -206,8 +208,29 @@ function parseChallenge(value: unknown, path: string): ParseResult<ClaimIndepend
   return { ok: true, value: { required: required.value, status, evidenceRefs: evidenceRefs.value } };
 }
 
-function parseObservation(value: unknown, path: string): ParseResult<ClaimObservation> {
-  const object = readObject(value, path);
+function parseObservation(
+  value: unknown,
+  path: string,
+  inherited: Pick<ClaimObservation, "candidateId" | "environmentId" | "paths" | "observationBoundary"> | null,
+): ParseResult<ClaimObservation> {
+  if (Array.isArray(value) && (value.length !== 5 || value[0] !== "observation")) {
+    return failIssues([{ code: "invalid", path, message: "Compact claim observation must be an exact observation tuple." }]);
+  }
+  if (Array.isArray(value) && inherited == null) {
+    return failIssues([{ code: "missing", path, message: "Compact claim observation cannot inherit invalid claim facts." }]);
+  }
+  const expanded = Array.isArray(value) ? {
+    memberId: value[1],
+    candidateId: inherited!.candidateId,
+    environmentId: inherited!.environmentId,
+    paths: inherited!.paths,
+    observationBoundary: inherited!.observationBoundary,
+    status: value[2],
+    terminal: value[3],
+    evidenceRefs: value[4],
+    unresolvedObservations: [],
+  } : value;
+  const object = readObject(expanded, path);
   if (!object.ok) return object;
   const issues = extraKeys(object.value, [
     "memberId",
@@ -290,7 +313,7 @@ function parseClaim(value: unknown, path: string): ParseResult<ClaimEvidenceReco
   const candidateId = readString(object.value.candidateId, `${path}.candidateId`, SAFE_ID);
   const environmentId = readString(object.value.environmentId, `${path}.environmentId`, SAFE_ID);
   const coverageBasis = object.value.coverageBasis;
-  const population = parsePopulation(object.value.population, `${path}.population`);
+  const population = parsePopulation(object.value.population, `${path}.population`, coverageBasis === "partitioned-domain");
   const paths = parsePaths(object.value.paths, `${path}.paths`);
   const observationBoundary = readString(object.value.observationBoundary, `${path}.observationBoundary`, SAFE_TOKEN);
   const realOracle = parseRealOracle(object.value.realOracle, `${path}.realOracle`);
@@ -336,10 +359,13 @@ function parseClaim(value: unknown, path: string): ParseResult<ClaimEvidenceReco
   }
   const observations: ClaimObservation[] = [];
   const observationMembers = new Set<string>();
+  const inheritedObservation = candidateId.ok && environmentId.ok && paths.ok && observationBoundary.ok
+    ? { candidateId: candidateId.value, environmentId: environmentId.value, paths: paths.value, observationBoundary: observationBoundary.value }
+    : null;
   if (observationsRaw.ok) {
     if (observationsRaw.value.length > MAX_MEMBERS) issues.push({ code: "invalid", path: `${path}.observations`, message: `Array cannot exceed ${MAX_MEMBERS} entries.` });
     for (const [index, item] of observationsRaw.value.entries()) {
-      const observation = parseObservation(item, `${path}.observations.${index}`);
+      const observation = parseObservation(item, `${path}.observations.${index}`, inheritedObservation);
       collect(issues, observation);
       if (!observation.ok) continue;
       if (observationMembers.has(observation.value.memberId)) {

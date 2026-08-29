@@ -227,7 +227,8 @@ Every active change SHALL publish a stable ownership manifest for modified capab
 - **AND** becomes mutation-eligible only after current state confirms the transfer condition
 
 ### Requirement: Checked tasks have candidate-correlated evidence
-Every checked behavior, proof, validation, manual, or external task SHALL have one versioned evidence-index row containing task ID, task text digest, candidate/environment identity, named entrypoint or manual gate, exact invocation/status, bounded artifact refs, cleanup, and result. A task whose evidence uses a weaker entrypoint/effect set than its text, references a stale candidate, is missing, or is red SHALL be reported incomplete regardless of checkbox state.
+
+Every checked behavior, proof, validation, manual, or external task SHALL have one versioned evidence-index row containing task ID, task text digest, candidate/environment identity, named entrypoint or manual gate, exact invocation/status, bounded artifact refs, cleanup, and result. A task whose evidence uses a weaker entrypoint/effect set than its text, references a stale candidate, is missing, or is red SHALL be reported incomplete regardless of checkbox state. Schema-v2 task rows MAY omit `candidateId` and `environmentId` only to inherit the required top-level index identities, MAY omit `requiredBoundary` only to inherit the same row's explicit `boundary`, and MAY omit `artifacts` only to represent an empty reference list. Readers SHALL materialize those inherited values before stale/envelope evaluation; explicit row values remain supported and any explicit mismatch remains stale or mismatched. Compact inheritance SHALL NOT infer task meaning, effects, completion, or identity from prose, filenames, or aggregate counts.
 
 #### Scenario: Desktop Restart task has only helper proof
 - **WHEN** a checked task names Desktop and tray Restart but evidence records only a direct helper invocation
@@ -238,6 +239,14 @@ Every checked behavior, proof, validation, manual, or external task SHALL have o
 - **WHEN** task digest, candidate, environment, named boundary, status, artifacts, and cleanup all match
 - **THEN** the checkbox may contribute to completion
 - **AND** later candidate mutation invalidates only dependent rows
+
+#### Scenario: Redundant task evidence uses compact inheritance
+- **WHEN** a schema-v2 index contains top-level candidate/environment identities and a task row omits its identical row identities and `requiredBoundary`
+- **THEN** the reader resolves the top-level identities and the row's explicit boundary and performs the same digest/currentness/effect checks as the expanded form
+
+#### Scenario: Explicit mismatches remain visible
+- **WHEN** a task row explicitly records a different candidate, environment, or required boundary from the current top-level/observed values
+- **THEN** the reader preserves the explicit value and reports the existing stale or envelope-mismatch result rather than inheriting over it
 
 ### Requirement: Completed and qualification states compose current OpenSpec facts
 A change SHALL NOT report complete, RC, qualification-pass, or archive-ready unless selected strict delta validation passes on the current bytes, required artifacts are current, all tasks are evidence-complete, active ownership is conflict-free, and applicable repository OpenSpec validation has no failure attributable to the candidate. Structural library validation alone SHALL NOT establish this state.
@@ -266,9 +275,10 @@ Every evidence-bearing active change SHALL maintain one stable `evidence-index.j
 - **AND** no duplicate live capture directory is created
 
 ### Requirement: Spec Capsule carries proportional claim-evidence scope
+
 Every behavior-changing proposal SHALL add one `Claim And Evidence Scope` record or accepted project-native equivalent. For an exact-case Ordinary Small increment, the record MAY be one concise statement naming the exact claim and matching proof boundary. When a claim generalizes beyond exercised cases, composes evidence paths, substitutes behavior, depends on a real system, or asserts finite-population, partitioned-domain, compatibility, interchangeability, safety, or phase/milestone scope, the record SHALL identify the claim class, population, coverage basis, production and comparison paths, environment, real oracle, unresolved observations, and maximum claim.
 
-Triggered evidence-bearing changes SHALL store the structured claim records in the existing bounded evidence index and reference existing evidence lanes rather than duplicate hashes, raw facts, or semantic records. OpenSpec artifact instructions SHALL preserve one owner for the complete record and SHALL NOT require each task to repeat unchanged claim fields.
+Triggered evidence-bearing changes SHALL store the structured claim records in the existing bounded evidence index and reference existing evidence lanes rather than duplicate hashes, raw facts, or semantic records. OpenSpec artifact instructions SHALL preserve one owner for the complete record and SHALL NOT require each task to repeat unchanged claim fields. A schema-v2 partition population MAY omit `materialClasses` only to inherit an exact copy of its explicit `members`; readers SHALL materialize that list before claim evaluation, while any explicit mismatch remains visible.
 
 #### Scenario: Ordinary proposal remains concise
 - **WHEN** a behavior change makes one exact-case claim with one matching local real boundary and no broad trigger
@@ -279,6 +289,10 @@ Triggered evidence-bearing changes SHALL store the structured claim records in t
 - **WHEN** a proposal claims a finite population, substitution, compatibility, safety, or phase/milestone result
 - **THEN** its Claim And Evidence Scope names the population, paths, coverage basis, real oracle, unknown handling, and claim ceiling before production mutation
 - **AND** later tasks reference that record rather than inventing completion from validation output.
+
+#### Scenario: Partition member classes use compact inheritance
+- **WHEN** a schema-v2 partition population omits `materialClasses` while retaining its explicit ordered `members`
+- **THEN** the reader resolves material classes to the exact member list before completeness and mismatch evaluation
 
 ### Requirement: Complete archive requires current claim-evidence closure
 The complete-archive path SHALL reject a triggered broad claim when its current structured claim record is absent, stale, references a weaker production path or environment, lacks required population or partition closure, omits the real oracle, has unresolved material observations, lacks the required independent challenge, or has disposition `blocked | unknown`. A `narrowed` disposition MAY support archive only when the accepted outcome itself names that narrower result or a current owner decision has explicitly changed the accepted product scope; archive output SHALL state the narrower ceiling.
@@ -401,3 +415,101 @@ surface SHALL NOT require a duplicate generic post-proof review.
 - **WHEN** apply must change the challenged outcome, envelope, invariant, proof boundary, owner decision, or material-risk surface before implementation can continue
 - **THEN** it marks the affected review state stale and uses only the remaining episode budget or exact owner evidence
 - **AND** it does not reset an exhausted episode on the same accepted outcome.
+
+### Requirement: Schema-v2 evidence records remain exact under compact storage
+
+Schema-v2 evidence readers SHALL accept a lane file as either the existing object with `path`, `bytes`, and `digest` fields or the exact compact tuple `[path, bytes, digest]`. They SHALL accept a named-entrypoint task as either its existing expanded object or `["entrypoint", taskId, taskTextDigest, result, boundaryName, effects, command, status, recordedAt, cleanup]`; the compact form explicitly represents a named-entrypoint boundary, an identical required boundary, top-level candidate/environment identity, empty artifacts, and no manual gate. They SHALL accept a claim observation as either its existing expanded object or `["observation", memberId, status, terminal, evidenceRefs]`; the compact form inherits exact candidate/environment, paths, and observation-boundary copies from its containing claim and represents an empty unresolved-observation list. All forms SHALL resolve to the same internal records before containment, uniqueness, retention, hash, task, lane, or claim evaluation. Existing expanded forms SHALL remain readable and preserve explicit mismatches. The deterministic evidence materializer SHALL refresh each file from disk and write eligible compact records in stable existing order. Compact storage SHALL NOT omit or infer a unique path, byte count, digest, file, lane, identity, boundary, invocation, status, cleanup, evidence reference, or semantic fact, and SHALL NOT weaken the existing 65,536-byte index ceiling.
+
+#### Scenario: Compact and expanded lane files resolve identically
+- **WHEN** one schema-v2 index uses expanded lane file objects and an otherwise identical index uses exact compact tuples
+- **THEN** both readers resolve the same paths, byte counts, digests, lane membership, retention totals, and currentness results
+
+#### Scenario: Malformed compact lane file remains invalid
+- **WHEN** a compact lane file has another length or order, an unsafe path, a non-integer byte count, or a non-SHA-256 digest
+- **THEN** the reader rejects that exact row without inferring or repairing the missing fact
+
+#### Scenario: Compact task and observation rows preserve exact expanded facts
+- **WHEN** a named-entrypoint task or claim observation contains only the facts represented by its exact compact tuple and exact inherited copies
+- **THEN** the reader resolves the same task or observation as the expanded object before currentness and claim evaluation
+
+#### Scenario: Explicit compact-row mismatches stay expanded and visible
+- **WHEN** a task or observation explicitly differs from its top-level or containing-claim identity, boundary, or path facts
+- **THEN** the expanded record remains supported and the existing stale, mismatch, blocked, or unknown result remains visible rather than being compacted away
+
+### Requirement: OpenSpec changes SHALL link delivery horizons explicitly
+
+The proposal workflow SHALL require one exact `Delivery Horizon` declaration for newly
+authored changes: a valid project-contained horizon id, or `none` with a concrete reason.
+Deterministic checks SHALL validate only declaration shape, horizon existence, exact id,
+and contained schema references. They SHALL NOT infer roadmap membership, materiality,
+progress, forecast, or trigger state from proposal prose, tasks, changed files, or
+capability names. Legacy active and archived changes SHALL remain readable without
+retroactive linkage.
+
+#### Scenario: Unrelated ordinary change declares none
+
+- **WHEN** a new change is not an implementation or evidence slice for an explicit
+  project Delivery Horizon
+- **THEN** its proposal declares `Delivery Horizon: none` with the reason
+- **AND** proposal/apply/archive remain proportional without a trajectory signal or
+  invented project-level association.
+
+#### Scenario: Link names an unknown horizon
+
+- **WHEN** a new proposal declares a horizon id absent from the explicit project record
+- **THEN** proposal readiness reports the exact missing horizon before implementation
+- **AND** the gate does not create, select, or infer a replacement horizon.
+
+### Requirement: Complete archive SHALL remain independent of trajectory review
+
+The canonical complete-archive path SHALL finish accepted completion, official spec
+merge/movement, and post-archive validation before any delivery-trajectory signal. A
+successful archive result SHALL remain successful when the later signal is `none`,
+`review-required`, `unknown`, unavailable, or fails. Trajectory work SHALL NOT become an
+unchecked task, claim-closure member, automation-dividend substitute, final-history
+analysis, or additional complete-archive gate for the archived change.
+
+After success, the archive workflow SHALL route a horizon-linked archive to the compact
+signal and SHALL report signal state separately from archive state. An unlinked archive
+SHALL report trajectory `not-applicable` without semantic inference. Failed archive or
+post-validation SHALL retain ordinary archive failure and SHALL NOT emit a success-based
+trajectory signal.
+
+#### Scenario: Archive succeeds and deep review is required
+
+- **WHEN** every product/archive gate succeeds and the post-archive signal later reports
+  `review-required`
+- **THEN** the operation remains `archived` and the review is future-horizon planning
+- **AND** no archived artifact or completion result is rewritten or downgraded.
+
+#### Scenario: Archive itself fails
+
+- **WHEN** completion, official archive, or post-archive validation exits non-zero
+- **THEN** ordinary archive diagnostics and state remain controlling
+- **AND** no trajectory signal represents the change as successfully archived.
+
+### Requirement: Horizon-dependent propose and apply SHALL consume current trajectory disposition
+
+Before substantial work for a horizon-linked proposal, the propose/apply workflow SHALL
+evaluate the latest successful linked archive and consume a matching current review
+receipt when its semantic signal is `review-required`. This check SHALL be scoped to the
+same horizon and dependency path. It SHALL permit unrelated or evidence-only work and
+SHALL NOT infer a no-trigger result from missing evidence.
+
+#### Scenario: Current receipt permits the successor
+
+- **WHEN** the latest context and trigger tuple matches a terminal receipt that names the
+  current outcome-preserving successor
+- **THEN** ordinary propose/apply work may continue for that successor
+- **AND** all existing artifact, proof, safety, validation, and owner-boundary gates still
+  apply independently.
+
+#### Scenario: Decision evidence changed after the receipt
+
+- **WHEN** reviewed horizon intent or decision-material trigger evidence changes the
+  receipt tuple before dependent implementation
+- **THEN** the old receipt remains historical for the changed evidence and main first
+  recomputes the compact signal
+- **AND** main performs another deep review only for a materially distinct current trigger
+  or when the changed evidence satisfies the prior receipt's retry condition; changed
+  archive identity or other non-key operational metadata alone does not invalidate it.

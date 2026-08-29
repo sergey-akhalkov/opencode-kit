@@ -102,14 +102,19 @@ function parseHashedLane(value: unknown): HashedEvidenceLane {
     ? null
     : safeRelativeFile(value.pathPrefix, "lane pathPrefix");
   const files = value.files.map((file, index) => {
-    if (!plainRecord(file)) throw new Error(`Evidence index lane file ${index} must be an object.`);
-    if (!Number.isSafeInteger(file.bytes) || (file.bytes as number) < 0) {
+    if (!plainRecord(file) && (!Array.isArray(file) || file.length !== 3)) {
+      throw new Error(`Evidence index lane file ${index} must be an object or exact compact tuple.`);
+    }
+    const [filePath, fileBytes, fileDigest] = Array.isArray(file)
+      ? file
+      : [file.path, file.bytes, file.digest];
+    if (!Number.isSafeInteger(fileBytes) || (fileBytes as number) < 0) {
       throw new Error(`Evidence index lane file ${index} has invalid bytes.`);
     }
-    const relative = safeRelativeFile(file.path, `lane file ${index} path`);
+    const relative = safeRelativeFile(filePath, `lane file ${index} path`);
     return {
-      bytes: file.bytes as number,
-      digest: boundedString(file.digest, `lane file ${index} digest`, SHA256),
+      bytes: fileBytes as number,
+      digest: boundedString(fileDigest, `lane file ${index} digest`, SHA256),
       path: pathPrefix == null ? relative : `${pathPrefix}/${relative}`,
     };
   });
@@ -222,9 +227,13 @@ export function materializeEvidenceIndex(indexFile: string): { files: number; la
     const pathPrefix = laneValue.pathPrefix === undefined
       ? null
       : safeRelativeFile(laneValue.pathPrefix, "lane pathPrefix");
+    const materializedFiles: Array<[string, number, string]> = [];
     for (const fileValue of laneValue.files) {
-      if (!plainRecord(fileValue)) throw new Error("Evidence index lane file must be an object.");
-      const fileRelative = safeRelativeFile(fileValue.path, "lane file path");
+      if (!plainRecord(fileValue) && (!Array.isArray(fileValue) || fileValue.length !== 3)) {
+        throw new Error("Evidence index lane file must be an object or exact compact tuple.");
+      }
+      const filePath = Array.isArray(fileValue) ? fileValue[0] : fileValue.path;
+      const fileRelative = safeRelativeFile(filePath, "lane file path");
       const relative = pathPrefix == null ? fileRelative : `${pathPrefix}/${fileRelative}`;
       const absolute = path.resolve(directory, relative);
       const boundary = `${directory}${path.sep}`;
@@ -232,9 +241,32 @@ export function materializeEvidenceIndex(indexFile: string): { files: number; la
       const stat = fs.lstatSync(absolute);
       if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`Evidence lane path is not a regular file: ${relative}`);
       const content = fs.readFileSync(absolute);
-      fileValue.bytes = content.byteLength;
-      fileValue.digest = createHash("sha256").update(content).digest("hex");
+      materializedFiles.push([fileRelative, content.byteLength, createHash("sha256").update(content).digest("hex")]);
       fileCount += 1;
+    }
+    laneValue.files = materializedFiles;
+  }
+  if (Array.isArray(parsed.tasks)) {
+    parsed.tasks = parsed.tasks.map((task) => {
+      if (!plainRecord(task) || JSON.stringify(Object.keys(task).sort()) !== JSON.stringify(["boundary", "cleanup", "invocation", "result", "taskId", "taskTextDigest"])) return task;
+      if (!plainRecord(task.boundary) || task.boundary.kind !== "named-entrypoint" || !Array.isArray(task.boundary.effects)
+        || !plainRecord(task.invocation)) return task;
+      return [
+        "entrypoint", task.taskId, task.taskTextDigest, task.result, task.boundary.name, task.boundary.effects,
+        task.invocation.command, task.invocation.status, task.invocation.recordedAt, task.cleanup,
+      ];
+    });
+  }
+  if (Array.isArray(parsed.claims)) {
+    for (const claim of parsed.claims) {
+      if (!plainRecord(claim) || !Array.isArray(claim.observations)) continue;
+      claim.observations = claim.observations.map((observation) => {
+        if (!plainRecord(observation) || observation.candidateId !== claim.candidateId || observation.environmentId !== claim.environmentId
+          || JSON.stringify(observation.paths) !== JSON.stringify(claim.paths)
+          || observation.observationBoundary !== claim.observationBoundary
+          || !Array.isArray(observation.unresolvedObservations) || observation.unresolvedObservations.length !== 0) return observation;
+        return ["observation", observation.memberId, observation.status, observation.terminal, observation.evidenceRefs];
+      });
     }
   }
   const serialized = `${JSON.stringify(parsed)}\n`;

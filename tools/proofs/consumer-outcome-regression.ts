@@ -29,7 +29,17 @@ import {
   writeNewFile,
 } from "./consumer-outcome/contracts.ts";
 import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, gateCurrent, loadGateInputs, readBundle, replayEvaluation } from "./consumer-outcome/evaluate.ts";
+import {
+  captureDeliveryTrajectoryConfigured,
+  deliveryTrajectoryConfiguredPreflight,
+  deliveryTrajectoryPreflight,
+  materializeDeliveryTrajectoryBundle,
+  replayDeliveryTrajectory,
+  replayDeliveryTrajectoryConfigured,
+} from "./consumer-outcome/delivery-trajectory.ts";
 import { captureStatusScopeLane, statusScopeConfiguredRoutes } from "./consumer-outcome/status-scope.ts";
+import { captureTeamAdviceContinuity, evaluateTeamAdviceContinuity, loadTeamAdviceContinuityFixture, readTeamAdviceContinuityBundle, teamAdviceContinuityPreflight } from "./consumer-outcome/team-advice-continuity.ts";
+import { captureTeamAdvisingPack, evaluateTeamAdvisingPack, loadTeamAdvisingPack, readTeamBundle, redactTeamBundlePrivacy, selectTeamAdvisingPack, teamAdvisingPreflight } from "./consumer-outcome/team-advising.ts";
 
 type Options = {
   baselineConfigDir?: string;
@@ -39,6 +49,7 @@ type Options = {
   candidatePath?: string;
   candidatePaths: string[];
   candidateRequestPath?: string;
+  continuity: boolean;
   diagnosticPath?: string;
   evidenceRoot?: string;
   expectation: Expectation | "baseline-establishment";
@@ -47,7 +58,7 @@ type Options = {
   help: boolean;
   mode: "help" | "preflight" | "baseline" | "capture" | "convert" | "diagnose" | "replay" | "evaluate" | "gate";
   opencodePath?: string;
-  pack: DecisionPackName | "complexity-configured" | "general";
+  pack: DecisionPackName | "complexity-configured" | "delivery-trajectory" | "general" | "team-advising";
   repoRoot: string;
   resultPath?: string;
   scenarioIds?: string[];
@@ -59,13 +70,19 @@ function usage(): string {
     "Usage:",
     "  node tools/proofs/consumer-outcome-regression.ts --help",
     "  node tools/proofs/consumer-outcome-regression.ts -h",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--root <path>] [--source-ref HEAD|working-tree] [--opencode <absolute-path>]",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode baseline --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--baseline-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--opencode <absolute-path>]",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode capture --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--baseline <path>] [--candidate-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--result-path <absolute-new-path>] [--opencode <absolute-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|delivery-trajectory|foundation-integrity|shift-left|status-scope|team-advising] [--root <path>] [--source-ref HEAD|working-tree] [--opencode <absolute-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode baseline --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|complexity|complexity-configured|delivery-trajectory|foundation-integrity|shift-left|status-scope|team-advising] [--baseline-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--opencode <absolute-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode capture --candidate-id <id> --evidence-root <absolute-new-path> [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|delivery-trajectory|foundation-integrity|shift-left|status-scope|team-advising] [--baseline <path>] [--candidate-config-dir <path>] [--source-ref HEAD|working-tree] [--session-mode configured] [--scenarios id,...] [--result-path <absolute-new-path>] [--opencode <absolute-path>]",
     "  node tools/proofs/consumer-outcome-regression.ts --mode diagnose --pack complexity|foundation-integrity [--scenarios <one-foundation-id>] --candidate-id <id> --evidence-root <absolute-new-path> --source-ref working-tree --session-mode configured --opencode <absolute-path>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode convert --pack foundation-integrity --scenarios <one-id> --candidate-id <id> --evidence-root <absolute-new-path> --diagnostic <path> --baseline <path> --source-ref working-tree",
-    "  node tools/proofs/consumer-outcome-regression.ts --mode replay --baseline <path> [--candidate <path>]... [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|foundation-integrity|shift-left|status-scope] [--scenarios id,...] [--expectation no-regression|improvement|baseline-establishment] [--result-path <absolute-new-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode replay --baseline <path> [--candidate <path>]... [--pack general|bounded-falsification|claim-evidence|complexity|complexity-configured|delivery-trajectory|foundation-integrity|shift-left|status-scope|team-advising] [--scenarios id,...] [--expectation no-regression|improvement|baseline-establishment] [--result-path <absolute-new-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|capture --pack team-advising --continuity [--source-ref HEAD|working-tree] [--candidate-id <id> --evidence-root <absolute-new-path> --session-mode configured] --opencode <absolute-path>",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode replay --pack team-advising --continuity --candidate <bundle> [--result-path <absolute-new-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode convert --pack team-advising --baseline <sealed-bundle> --candidate-id <id> --evidence-root <absolute-new-path>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode evaluate --baseline <path> [--candidate <path>] [--expectation no-regression|improvement|baseline-establishment] [--result-path <absolute-new-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|baseline|capture|replay|evaluate --pack delivery-trajectory --source-ref working-tree [--candidate-id <id> --evidence-root <absolute-new-path>] [--baseline <bundle>] [--candidate <bundle>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode preflight|capture --pack delivery-trajectory --source-ref working-tree --session-mode configured --scenarios <one-id> --opencode <absolute-path> --candidate-config-dir <generated-core> [--candidate-id <id> --evidence-root <absolute-new-path>]",
+    "  node tools/proofs/consumer-outcome-regression.ts --mode replay|evaluate --pack delivery-trajectory --scenarios <one-id> --candidate <diagnostic.json>",
     "  node tools/proofs/consumer-outcome-regression.ts --mode gate [--source-ref HEAD|working-tree] [--candidate <path>] [--candidate-request <path>]",
     "",
     "Inputs: reviewed config/consumer-outcome-regression.json, fixture seeds, optional candidate-request JSON, optional preserved bundles.",
@@ -75,9 +92,12 @@ function usage(): string {
     "               bounded-falsification uses twelve reviewed partitions, one primary request per scenario/arm, and at most twenty-four primary requests total.",
     "               complexity prepares one useful-current-consumer-facade member and permits only one separately cleared configured diagnostic request.",
     "               complexity-configured captures twelve matched baseline/candidate partitions with at most twenty-four configured-provider requests total.",
+    "               delivery-trajectory freezes 13 reviewed members as provider-free proof contracts and reuses the configured diagnostic owner for two explicit archive happy paths; configured capture is separately authorized and bounded to one request per selected scenario.",
     "               foundation-integrity supports reviewed scenario subsets and provider-free composition; the complete baseline/candidate population remains bounded to fourteen primary requests total.",
     "               shift-left uses separate baseline/candidate captures, two scenarios, and at most four requests total.",
     "               status-scope uses one main response, one actual compaction, and one reconstruction call per arm, with six calls total.",
+    "               team-advising uses nine reviewed scenarios, ten root turns per arm, exact child/catalog/skill identities, and twenty configured requests total.",
+    "               team-advising --continuity uses two candidate-only actual-compaction controls and at most six configured requests; replay is provider-free.",
     "               All focused packs have exact decision oracles, bounded claims, provider-free replay, and cannot promote the maintained baseline pointer.",
     "Evidence: immutable bundle.json plus evaluation JSON on stdout. Sample bound 524288 bytes. Capture bound 8388608 bytes.",
     "Cleanup: capture deletes proof sessions, processes, and fixture roots in finally. Cleanup uncertainty blocks the next sample.",
@@ -102,6 +122,7 @@ function parseOptions(args: string[]): Options {
     return {
       candidateId: "help",
       candidatePaths: [],
+      continuity: false,
       expectation: "no-regression",
       failure: "none",
       gitRef: "HEAD",
@@ -115,6 +136,7 @@ function parseOptions(args: string[]): Options {
   const options: Options = {
     candidateId: "",
     candidatePaths: [],
+    continuity: false,
     expectation: "no-regression",
     failure: "none",
     gitRef: "HEAD",
@@ -127,6 +149,7 @@ function parseOptions(args: string[]): Options {
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === "--help" || arg === "-h") options.help = true;
+    else if (arg === "--continuity") options.continuity = true;
     else if (arg === "--mode") {
       const value = required(args, index, arg);
       if (value !== "preflight" && value !== "baseline" && value !== "capture" && value !== "convert" && value !== "diagnose" && value !== "replay" && value !== "evaluate" && value !== "gate") {
@@ -139,7 +162,7 @@ function parseOptions(args: string[]): Options {
       index += 1;
     } else if (arg === "--pack") {
       const value = required(args, index, arg);
-      if (value !== "general" && value !== "bounded-falsification" && value !== "claim-evidence" && value !== "complexity" && value !== "complexity-configured" && value !== "foundation-integrity" && value !== "shift-left" && value !== "status-scope") throw new Error("Invalid pack");
+      if (value !== "general" && value !== "bounded-falsification" && value !== "claim-evidence" && value !== "complexity" && value !== "complexity-configured" && value !== "delivery-trajectory" && value !== "foundation-integrity" && value !== "shift-left" && value !== "status-scope" && value !== "team-advising") throw new Error("Invalid pack");
       options.pack = value;
       index += 1;
     } else if (arg === "--opencode") {
@@ -563,6 +586,271 @@ async function main(): Promise<void> {
   const options = parseOptions(process.argv.slice(2));
   if (options.help || options.mode === "help") {
     console.log(usage());
+    return;
+  }
+  if (options.pack === "delivery-trajectory") {
+    if (options.mode !== "preflight" && options.mode !== "baseline" && options.mode !== "capture" && options.mode !== "replay" && options.mode !== "evaluate") {
+      throw new Error(`The delivery-trajectory pack does not support ${options.mode} mode.`);
+    }
+    if (options.expectation !== "no-regression") throw new Error("The delivery-trajectory pack uses exact evaluators and does not accept comparison expectations.");
+    if (options.continuity || options.candidateRequestPath != null || options.diagnosticPath != null || options.failure !== "none") {
+      throw new Error("The delivery-trajectory pack does not accept continuity, candidate-request, diagnostic-conversion, or failure-injection inputs.");
+    }
+    if (options.sessionMode === "configured") {
+      if (options.mode === "baseline") throw new Error("Configured delivery-trajectory evidence is candidate-only; the provider-free contract owns the preserved comparison arm.");
+      if (options.baselinePath != null || options.baselineConfigDir != null) throw new Error("Configured delivery-trajectory evidence does not accept baseline inputs.");
+      if (options.mode === "preflight") {
+        if (options.opencodePath == null || options.candidateConfigDir == null) {
+          throw new Error("Configured delivery-trajectory preflight requires --opencode and --candidate-config-dir.");
+        }
+        if (options.evidenceRoot != null || options.candidateId !== "" || options.candidatePaths.length > 0) {
+          throw new Error("Configured delivery-trajectory preflight does not accept capture or replay inputs.");
+        }
+        emit(deliveryTrajectoryConfiguredPreflight({
+          candidateConfigDir: options.candidateConfigDir,
+          executable: options.opencodePath,
+          gitRef: options.gitRef,
+          repoRoot: options.repoRoot,
+          scenarioIds: options.scenarioIds,
+        }));
+        return;
+      }
+      if (options.mode === "replay" || options.mode === "evaluate") {
+        if (options.scenarioIds?.length !== 1 || options.candidatePaths.length !== 1) {
+          throw new Error("Configured delivery-trajectory replay/evaluate requires one --scenarios id and one --candidate diagnostic.json.");
+        }
+        if (options.opencodePath != null || options.candidateConfigDir != null || options.evidenceRoot != null || options.candidateId !== "") {
+          throw new Error("Configured delivery-trajectory replay/evaluate is provider-free and does not accept live capture inputs.");
+        }
+        const evaluation = replayDeliveryTrajectoryConfigured(options.repoRoot, options.candidatePath!, options.scenarioIds[0]!);
+        emit({ evaluation, liveCalls: 0, mode: options.mode }, options.resultPath);
+        if (evaluation.status !== "passed") process.exitCode = 1;
+        return;
+      }
+      if (options.mode !== "capture" || options.scenarioIds?.length !== 1 || options.opencodePath == null || options.candidateConfigDir == null
+        || options.evidenceRoot == null || options.candidateId.trim() === "" || options.candidatePaths.length > 0 || options.resultPath != null) {
+        throw new Error("Configured delivery-trajectory capture requires one --scenarios id, --candidate-id, --evidence-root, --opencode, and --candidate-config-dir without replay/result inputs.");
+      }
+      const captured = await captureDeliveryTrajectoryConfigured({
+        candidateConfigDir: options.candidateConfigDir,
+        candidateId: options.candidateId,
+        evidenceRoot: options.evidenceRoot,
+        executable: options.opencodePath,
+        gitRef: options.gitRef,
+        repoRoot: options.repoRoot,
+        scenarioId: options.scenarioIds[0]!,
+      });
+      emit({
+        diagnosticPath: path.join(options.evidenceRoot, "diagnostic.json"),
+        evaluation: captured.evaluation,
+        liveCalls: captured.evaluation.modelCalls,
+        mode: "capture",
+        pointerMutated: false,
+        sourceDigest: captured.evaluation.sourceDigest,
+      });
+      if (captured.evaluation.status !== "passed") process.exitCode = 1;
+      return;
+    }
+    if (options.scenarioIds != null || options.opencodePath != null || options.baselineConfigDir != null || options.candidateConfigDir != null) {
+      throw new Error("Provider-free delivery-trajectory modes do not accept configured-session inputs.");
+    }
+    if (options.candidatePaths.length > 1) throw new Error("The delivery-trajectory pack accepts at most one --candidate bundle.");
+
+    if (options.mode === "preflight") {
+      if (options.baselinePath != null || options.candidatePath != null || options.evidenceRoot != null || options.candidateId !== "") {
+        throw new Error("Delivery-trajectory preflight accepts only --root and --source-ref working-tree.");
+      }
+      emit(deliveryTrajectoryPreflight(options.repoRoot, options.gitRef));
+      return;
+    }
+    if (options.mode === "replay" || options.mode === "evaluate") {
+      if (options.baselinePath == null) throw new Error("Delivery-trajectory replay/evaluate requires --baseline.");
+      if (options.evidenceRoot != null || options.candidateId !== "") throw new Error("Delivery-trajectory replay/evaluate does not accept capture inputs.");
+      const evaluation = replayDeliveryTrajectory(options.repoRoot, options.baselinePath, options.candidatePath);
+      emit({ evaluation, liveCalls: 0, mode: options.mode }, options.resultPath);
+      return;
+    }
+    if (options.evidenceRoot == null || options.candidateId.trim() === "") {
+      throw new Error("Delivery-trajectory baseline/capture requires --candidate-id and --evidence-root.");
+    }
+    if (options.resultPath != null || options.candidatePath != null) {
+      throw new Error("Delivery-trajectory baseline/capture writes only its create-new evidence root.");
+    }
+    if (options.mode === "baseline" && options.baselinePath != null) {
+      throw new Error("Delivery-trajectory baseline materialization does not accept --baseline.");
+    }
+    if (options.mode === "capture" && options.baselinePath == null) {
+      throw new Error("Delivery-trajectory candidate capture requires --baseline.");
+    }
+    const materialized = materializeDeliveryTrajectoryBundle({
+      arm: options.mode === "baseline" ? "baseline" : "candidate",
+      baselinePath: options.baselinePath,
+      candidateId: options.candidateId,
+      evidenceRoot: options.evidenceRoot,
+      gitRef: options.gitRef,
+      repoRoot: options.repoRoot,
+    });
+    emit({
+      bundleFile: "bundle.json",
+      evaluation: materialized.evaluation,
+      liveCalls: 0,
+      mode: options.mode,
+      pointerMutated: false,
+      sourceDigest: materialized.bundle.sourceIdentity.governedDigest,
+    });
+    return;
+  }
+  if (options.pack === "team-advising") {
+    if (options.mode === "gate") {
+      throw new Error(`The team-advising pack does not support ${options.mode} mode.`);
+    }
+    if (options.continuity) {
+      if (options.scenarioIds != null || options.baselinePath != null || options.mode === "baseline" || options.mode === "diagnose" || options.mode === "evaluate") {
+        throw new Error("Team-advising continuity supports only preflight, capture, or replay without --scenarios/--baseline.");
+      }
+      const loadedContinuity = loadTeamAdviceContinuityFixture(options.repoRoot);
+      if (options.mode === "preflight") {
+        if (options.opencodePath == null) throw new Error("Team-advising continuity preflight requires --opencode.");
+        const continuityPreflight = teamAdviceContinuityPreflight(options.repoRoot, options.opencodePath);
+        emit({
+          ...continuityPreflight,
+          continuityFixtureDigest: loadedContinuity.digest,
+          maximumClaim: loadedContinuity.fixture.maximumClaim,
+          mode: "preflight",
+          modelCalls: 0,
+          pack: "team-advising-continuity",
+          providerRequestBound: loadedContinuity.fixture.configuredProviderRequestBound,
+        });
+        return;
+      }
+      if (options.mode === "replay") {
+        if (options.candidatePath == null) throw new Error("Team-advising continuity replay requires --candidate.");
+        const bundle = readTeamAdviceContinuityBundle(options.candidatePath, loadedContinuity.digest);
+        const evaluation = evaluateTeamAdviceContinuity(loadedContinuity.fixture, loadedContinuity.digest, bundle);
+        emit({ evaluation, liveCalls: 0, mode: "replay" }, options.resultPath);
+        if (evaluation.status !== "passed") process.exitCode = 1;
+        return;
+      }
+      if (options.mode !== "capture" || options.evidenceRoot == null || options.candidateId.trim() === "" || options.opencodePath == null || options.sessionMode !== "configured") {
+        throw new Error("Team-advising continuity capture requires --candidate-id, --evidence-root, --opencode, and --session-mode configured.");
+      }
+      const captured = await captureTeamAdviceContinuity({
+        candidateId: options.candidateId,
+        evidenceRoot: options.evidenceRoot,
+        executable: options.opencodePath,
+        gitRef: options.gitRef,
+        repoRoot: options.repoRoot,
+      });
+      emit({
+        bundlePath: path.join(options.evidenceRoot, "bundle.json"),
+        evaluation: captured.evaluation,
+        liveCalls: captured.evaluation.modelCalls,
+        mode: "capture",
+        pointerMutated: false,
+        sourceDigest: captured.bundle.sourceIdentity.governedDigest,
+      });
+      if (captured.evaluation.status !== "passed") process.exitCode = 1;
+      return;
+    }
+    const loadedTeam = loadTeamAdvisingPack(options.repoRoot);
+    const teamPack = options.scenarioIds == null
+      ? loadedTeam.pack
+      : selectTeamAdvisingPack(loadedTeam.pack, options.scenarioIds);
+    if (options.mode === "convert") {
+      if (options.baselinePath == null || options.evidenceRoot == null || options.candidateId.trim() === "" || options.scenarioIds != null) {
+        throw new Error("Team-advising privacy conversion requires --baseline, --candidate-id, and --evidence-root without --scenarios.");
+      }
+      if (fs.existsSync(options.evidenceRoot)) throw new Error("Team-advising privacy conversion evidence root must be create-new.");
+      const sourceBundle = readTeamBundle(options.baselinePath, loadedTeam.digest);
+      if (sourceBundle.arm !== "baseline") throw new Error("Team-advising privacy conversion accepts only a sealed baseline bundle.");
+      const converted = redactTeamBundlePrivacy(sourceBundle, loadedTeam.digest, options.candidateId);
+      const evaluation = evaluateTeamAdvisingPack(teamPack, loadedTeam.digest, converted);
+      fs.mkdirSync(options.evidenceRoot, { recursive: true });
+      writeNewFile(path.join(options.evidenceRoot, "bundle.json"), `${JSON.stringify(converted, null, 2)}\n`);
+      writeNewFile(path.join(options.evidenceRoot, "evaluation.json"), `${JSON.stringify(evaluation, null, 2)}\n`);
+      emit({
+        bundlePath: path.join(options.evidenceRoot, "bundle.json"),
+        evaluation,
+        liveCalls: 0,
+        mode: "convert",
+        pointerMutated: false,
+        sourceBundleDigest: sourceBundle.bundleDigest,
+      });
+      if (evaluation.status !== "passed") process.exitCode = 1;
+      return;
+    }
+    if (options.mode === "preflight") {
+      if (options.opencodePath == null) throw new Error("The team-advising preflight requires --opencode.");
+      emit({
+        ...teamAdvisingPreflight({
+          executable: options.opencodePath,
+          gitRef: options.gitRef,
+          pack: teamPack,
+          packDigest: loadedTeam.digest,
+          repoRoot: options.repoRoot,
+        }),
+        maximumClaim: teamPack.maximumClaim,
+        mode: "preflight",
+        pack: "team-advising",
+      });
+      return;
+    }
+    if (options.mode === "replay" || options.mode === "evaluate") {
+      if (options.baselinePath == null) throw new Error("Team-advising replay/evaluate requires --baseline.");
+      const baseline = readTeamBundle(options.baselinePath, loadedTeam.digest);
+      const candidate = options.candidatePath == null ? undefined : readTeamBundle(options.candidatePath, loadedTeam.digest);
+      const evaluation = evaluateTeamAdvisingPack(teamPack, loadedTeam.digest, baseline, candidate);
+      emit({ evaluation, liveCalls: 0, mode: options.mode }, options.resultPath);
+      if (evaluation.status !== "passed") process.exitCode = 1;
+      return;
+    }
+    if (options.mode === "diagnose") {
+      if (options.scenarioIds?.length !== 1 || options.evidenceRoot == null || options.candidateId.trim() === "" || options.opencodePath == null || options.sessionMode !== "configured") {
+        throw new Error("Team-advising diagnose requires one --scenarios id plus --candidate-id, --evidence-root, --opencode, and --session-mode configured.");
+      }
+      const diagnostic = await captureTeamAdvisingPack(teamPack, loadedTeam.digest, {
+        arm: "baseline",
+        candidateId: options.candidateId,
+        diagnostic: true,
+        evidenceRoot: options.evidenceRoot,
+        executable: options.opencodePath,
+        gitRef: options.gitRef,
+        repoRoot: options.repoRoot,
+      });
+      emit({
+        bundlePath: path.join(options.evidenceRoot, "bundle.json"),
+        liveCalls: diagnostic.samples.reduce((sum, sample) => sum + sample.configuredProviderRequestCount, 0),
+        mode: "diagnose",
+        scenarioId: options.scenarioIds[0],
+        sourceDigest: diagnostic.sourceIdentity.governedDigest,
+      });
+      if (diagnostic.samples.some((sample) => !sample.cleanup.complete)) process.exitCode = 1;
+      return;
+    }
+    if (options.evidenceRoot == null || options.candidateId.trim() === "" || options.opencodePath == null || options.sessionMode !== "configured") {
+      throw new Error("Team-advising baseline/capture requires --candidate-id, --evidence-root, --opencode, and --session-mode configured.");
+    }
+    if (options.mode === "capture" && options.baselinePath == null) throw new Error("Team-advising candidate capture requires --baseline.");
+    const bundle = await captureTeamAdvisingPack(teamPack, loadedTeam.digest, {
+      arm: options.mode === "baseline" ? "baseline" : "candidate",
+      candidateId: options.candidateId,
+      evidenceRoot: options.evidenceRoot,
+      executable: options.opencodePath,
+      gitRef: options.gitRef,
+      repoRoot: options.repoRoot,
+    });
+    const baseline = options.mode === "baseline" ? bundle : readTeamBundle(options.baselinePath!, loadedTeam.digest);
+    const evaluation = evaluateTeamAdvisingPack(teamPack, loadedTeam.digest, baseline, options.mode === "capture" ? bundle : undefined);
+    writeNewFile(path.join(options.evidenceRoot, "evaluation.json"), `${JSON.stringify(evaluation, null, 2)}\n`);
+    emit({
+      bundlePath: path.join(options.evidenceRoot, "bundle.json"),
+      evaluation,
+      liveCalls: bundle.samples.reduce((sum, sample) => sum + sample.configuredProviderRequestCount, 0),
+      mode: options.mode,
+      pointerMutated: false,
+      sourceDigest: bundle.sourceIdentity.governedDigest,
+    });
+    if (evaluation.status !== "passed") process.exitCode = 1;
     return;
   }
   const complexityConfiguredSource = options.pack === "complexity-configured"

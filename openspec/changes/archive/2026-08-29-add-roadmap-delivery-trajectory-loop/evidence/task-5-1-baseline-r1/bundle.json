@@ -1,0 +1,174 @@
+{
+  "arm": "baseline",
+  "bundleDigest": "bd292e634ea2613aedda962f938cf9f89f68e1885891e7380febd2d21df2151b",
+  "candidateId": "roadmap-delivery-trajectory-routing-r5",
+  "cleanup": {
+    "persistentTemporaryFixtures": 0,
+    "processesRemaining": 0,
+    "sessionsRemaining": 0,
+    "status": "complete",
+    "terminal": true
+  },
+  "effects": {
+    "createNewEvidenceRoot": true,
+    "modelCalls": 0,
+    "networkCalls": 0,
+    "processCalls": 0,
+    "productCalls": 0,
+    "providerCalls": 0,
+    "readClass": "governed-source-and-reviewed-seed-only",
+    "sessionCalls": 0,
+    "writes": [
+      "bundle.json",
+      "evaluation.json"
+    ]
+  },
+  "inputIdentity": {
+    "candidateArtifactAvailability": "absent",
+    "differenceName": "candidate-artifact-availability",
+    "governedSourceDigest": "8c71074871bb6e0fadc58d8b6e141ba220bc32daf1476c57a7342dc01c368700",
+    "reviewedInputDigest": "8ee65bac0a80eb9155283b8f2ea4270e608e64dadb97c064487898ed41e36d7d",
+    "seedByteDigest": "599ce034ddab8b074bf84e5a7fe1d348f5f29a8d5ff0063ffc1f6a85523041a9"
+  },
+  "maximumClaim": "provider-free proof-contract evidence for the 13 reviewed roadmap-delivery-trajectory-v1 members under the recorded seed and governed source identity only; it supports no configured semantic behavior or population-member claim",
+  "observations": [
+    {
+      "memberId": "explicit-horizon-within-window",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "legacy-or-unlinked-archive",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "repeated-item-touch-trigger",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "shared-owner-fan-out-trigger",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "forecast-outside-window",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "missing-window-or-measurement",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "external-linear-bottleneck",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "outcome-preserving-successor",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "quality-weakening-owner-boundary",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "unchanged-trigger-no-duplicate",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "signal-failure-after-successful-archive",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "default-core-availability",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "missing-capability",
+      "observation": {
+        "candidateArtifactAvailability": "absent",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    }
+  ],
+  "packDigest": "0197575858e265a8d76a31df6d4a9e91fe1b577f17a9d3f30ff3ef556483689e",
+  "packId": "roadmap-delivery-trajectory-v1",
+  "privacy": {
+    "absolutePathsEmitted": false,
+    "privatePathsEmitted": false,
+    "sourcePayloadsEmitted": false
+  },
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "8c71074871bb6e0fadc58d8b6e141ba220bc32daf1476c57a7342dc01c368700",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/design.md",
+        "sha256": "75e165b3f419540e2b1978d8436ed9ecc220eb5e1c3e50f75ad408af3c54dbb8"
+      },
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/proposal.md",
+        "sha256": "5c357c1502e01b1741be4b32db8375b8678876372e4f318ccf5354032dedd846"
+      },
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/specs/library-roadmap-delivery-trajectory/spec.md",
+        "sha256": "98f23322cd2873002d3bd0375ff73853a8990156a48cc876985bef67dc7662aa"
+      },
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/tasks.md",
+        "sha256": "b46e7b05c496d508692240284542441f83658035ce255fb8d56e99ce274314f0"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome-regression.ts",
+        "sha256": "eee2bc0e2f9681aab801da04fcf0160a728411f91b615c96d8eed628e6921881"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/contracts.ts",
+        "sha256": "43d13dfa0b1aafcf09b398eda41ad76e7ca8a027c61dbd3e471fe8fa15a2f405"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/delivery-trajectory.ts",
+        "sha256": "1e2b723dc22ac8f83de50adf874ceaad8d925b1733f39e3750b897ea6ad34434"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-r1.json",
+        "sha256": "7b84c46f7b086de5bddb6a169bc030acb1d821856f369a6843598ff6f13e7b89"
+      }
+    ]
+  }
+}

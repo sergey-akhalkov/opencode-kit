@@ -172,6 +172,44 @@ async function execute(root: string, client: JsonRecord, resultName: string) {
   }, { client: client as never });
 }
 
+test("semantic executor authenticates the managed runtime without persisting the credential", async () => {
+  const { root } = fixture();
+  const fake = fakeClient();
+  const password = "private-managed-runtime-password";
+  let clientOptions: JsonRecord | null = null;
+  try {
+    const result = await executeSemanticAssignment({
+      agent: "general",
+      assignmentPath: ".work/evidence/assignment.json",
+      definitionPath: "definition.json",
+      resultPath: ".work/evidence/authenticated.json",
+      root,
+      serverUrl: "http://127.0.0.1:4096",
+    }, {
+      createClient: (options) => {
+        clientOptions = options;
+        return fake.client as never;
+      },
+      environment: {
+        ...process.env,
+        OPENCODE_SERVER_PASSWORD: password,
+        OPENCODE_SERVER_USERNAME: "proof-user",
+      },
+    });
+    assert.equal(result.status, "complete");
+    assert.deepEqual(clientOptions, {
+      baseUrl: "http://127.0.0.1:4096",
+      directory: fs.realpathSync(root),
+      headers: { Authorization: `Basic ${Buffer.from(`proof-user:${password}`).toString("base64")}` },
+    });
+    const retained = fs.readFileSync(path.join(root, ".work", "evidence", "authenticated.json"), "utf8");
+    assert.equal(retained.includes(password), false);
+    assert.equal(retained.includes(Buffer.from(`proof-user:${password}`).toString("base64")), false);
+  } finally {
+    fs.rmSync(root, { force: true, recursive: true });
+  }
+});
+
 test("semantic executor enforces parentless deny-by-default read-only ownership", async () => {
   const { root } = fixture();
   const fake = fakeClient();

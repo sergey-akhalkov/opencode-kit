@@ -1,0 +1,14 @@
+{
+  "candidateId": "completion-arbiter-budget-baseline-r2",
+  "cleanup": "complete",
+  "incidentCount": 8,
+  "maxRequestBytes": 254691,
+  "minRequestBytes": 214535,
+  "mode": "incidents",
+  "privacySafe": true,
+  "queryOnly": true,
+  "rawDigest": "a16faefb4c8c8268da23f564f02870c5f61215f559a65bff98f6f1a55ee0ccc1",
+  "schemaVersion": 1,
+  "status": "complete",
+  "zeroChildModelCalls": true
+}

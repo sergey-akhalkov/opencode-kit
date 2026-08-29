@@ -4,6 +4,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
+import {
+  OPENCODE_WORKSTATION_SERVER_CREDENTIAL_PATH,
+  WORK_CAMPAIGN_SUPERVISOR_PROTECTED_ROOT,
+  WORK_CAMPAIGN_SUPERVISOR_TASK_NAME,
+  quoteWindowsArgument,
+} from "./opencode-workstation-layout.ts";
+
 type JsonRecord = Record<string, unknown>;
 
 export type CampaignSupervisorInstalledFile = {
@@ -55,7 +62,6 @@ type SupervisorModule = {
 
 export type CampaignSupervisorHostDependencies = {
   loadSupervisor?: (modulePath: string) => Promise<SupervisorModule>;
-  readCredential?: (credentialPath: string) => string;
   writeResult?: (resultPath: string, value: unknown) => void;
 };
 
@@ -127,15 +133,11 @@ function installedFile(value: unknown, root: string, label: string): CampaignSup
   };
 }
 
-export function campaignSupervisorManifestPayload(manifest: Omit<CampaignSupervisorInstallManifest, "installId">): string {
-  return stableJson(manifest);
-}
-
 export function campaignSupervisorInstallId(manifest: Omit<CampaignSupervisorInstallManifest, "installId">): string {
-  return sha256(campaignSupervisorManifestPayload(manifest));
+  return sha256(stableJson(manifest));
 }
 
-export function parseCampaignSupervisorInstallManifest(value: unknown, manifestPath: string): CampaignSupervisorInstallManifest {
+function parseCampaignSupervisorInstallManifest(value: unknown, manifestPath: string): CampaignSupervisorInstallManifest {
   const input = record(value, "Campaign supervisor install manifest");
   exactKeys(input, ["credentialPath", "installId", "installedFiles", "kitSource", "node", "protectedRoot", "registry", "resultPath", "runtimeRoot", "schemaVersion", "supervisorModulePath", "task"], "Campaign supervisor install manifest");
   if (input.schemaVersion !== 1) throw new Error("Campaign supervisor install manifest schemaVersion must be 1.");
@@ -183,6 +185,10 @@ export function parseCampaignSupervisorInstallManifest(value: unknown, manifestP
   if (!samePath(manifest.runtimeRoot, path.join(protectedRoot, "runtime"))) throw new Error("runtimeRoot must be the protected runtime directory.");
   if (!samePath(manifest.task.workingDirectory, protectedRoot)) throw new Error("task.workingDirectory must equal protectedRoot.");
   if (!samePath(manifest.task.execute, manifest.node.path)) throw new Error("task.execute must equal the recorded Node path.");
+  const hostPath = path.join(protectedRoot, "tools", "windows", "work-campaign-supervisor-host.ts");
+  if (manifest.task.name !== WORK_CAMPAIGN_SUPERVISOR_TASK_NAME || manifest.task.arguments !== quoteWindowsArgument(hostPath)) {
+    throw new Error("task must invoke the exact installed campaign supervisor host.");
+  }
   if (!samePath(manifest.supervisorModulePath, path.join(protectedRoot, "global", "bin", "work-campaign", "supervisor.ts"))) {
     throw new Error("supervisorModulePath is not the exact installed supervisor module.");
   }
@@ -214,30 +220,33 @@ function writeResultAtomic(resultPath: string, value: unknown): void {
 
 export async function runInstalledCampaignSupervisor(
   manifestPath: string,
-  options: { expectedCredentialPath?: string; signal?: AbortSignal } = {},
+  options: { expectedCredentialPath?: string; expectedProtectedRoot?: string; operation?: "run" | "status" | "stop"; signal?: AbortSignal } = {},
   dependencies: CampaignSupervisorHostDependencies = {},
 ): Promise<unknown> {
   const manifest = loadCampaignSupervisorInstallManifest(manifestPath);
   if (options.expectedCredentialPath != null && !samePath(manifest.credentialPath, options.expectedCredentialPath)) {
     throw new Error("Campaign supervisor credential path differs from the workstation owner.");
   }
+  if (options.expectedProtectedRoot != null && !samePath(manifest.protectedRoot, options.expectedProtectedRoot)) {
+    throw new Error("Campaign supervisor protected root differs from the installed owner.");
+  }
   verifyFile(manifest.node.path, manifest.node.digest);
   verifyFile(manifest.registry.path, manifest.registry.digest);
   for (const file of manifest.installedFiles) verifyFile(file.path, file.digest, file.bytes);
   const credentialStat = fs.lstatSync(manifest.credentialPath, { throwIfNoEntry: false });
   if (credentialStat == null || !credentialStat.isFile() || credentialStat.isSymbolicLink()) throw new Error("Managed OpenCode credential is missing or unsafe.");
-  const password = (dependencies.readCredential ?? ((file: string) => fs.readFileSync(file, "utf8")))(manifest.credentialPath).trim();
+  const password = fs.readFileSync(manifest.credentialPath, "utf8").trim();
   if (password.length < 1) throw new Error("Managed OpenCode credential is empty.");
   const loadSupervisor = dependencies.loadSupervisor ?? (async (modulePath: string) => await import(pathToFileURL(modulePath).href) as SupervisorModule);
   const supervisor = await loadSupervisor(manifest.supervisorModulePath);
   if (typeof supervisor.runCampaignSupervisor !== "function") throw new Error("Installed supervisor module has no runCampaignSupervisor export.");
   const report = await supervisor.runCampaignSupervisor({
     environment: { ...process.env, OPENCODE_SERVER_PASSWORD: password },
-    operation: "run",
+    operation: options.operation ?? "run",
     registryPath: manifest.registry.path,
     signal: options.signal,
   });
-  const result = { installId: manifest.installId, report, schemaVersion: 1, status: "completed", tool: "work-campaign-supervisor-host" };
+  const result = { installId: manifest.installId, operation: options.operation ?? "run", report, schemaVersion: 1, status: "completed", tool: "work-campaign-supervisor-host" };
   (dependencies.writeResult ?? writeResultAtomic)(manifest.resultPath, result);
   return result;
 }
@@ -249,15 +258,22 @@ function isMainModule(): boolean {
 
 if (isMainModule()) {
   const manifestPath = path.join(import.meta.dirname, "..", "..", "manifest.json");
-  if (process.argv.length !== 2) {
-    console.error(stableJson({ error: "This installed host accepts no arguments.", schemaVersion: 1, status: "blocked", tool: "work-campaign-supervisor-host" }).trimEnd());
+  const args = process.argv.slice(2);
+  const operation = args.length === 0 ? "run" : args.length === 1 && (args[0] === "status" || args[0] === "stop") ? args[0] : null;
+  if (operation == null) {
+    console.error(stableJson({ error: "Operation must be omitted, status, or stop.", schemaVersion: 1, status: "blocked", tool: "work-campaign-supervisor-host" }).trimEnd());
     process.exitCode = 2;
   } else {
     const abort = new AbortController();
     const stop = (): void => abort.abort();
     process.once("SIGINT", stop);
     process.once("SIGTERM", stop);
-    void runInstalledCampaignSupervisor(manifestPath, { signal: abort.signal }).then((result) => {
+    void runInstalledCampaignSupervisor(manifestPath, {
+      expectedCredentialPath: OPENCODE_WORKSTATION_SERVER_CREDENTIAL_PATH,
+      expectedProtectedRoot: WORK_CAMPAIGN_SUPERVISOR_PROTECTED_ROOT,
+      operation,
+      signal: abort.signal,
+    }).then((result) => {
       console.log(stableJson(result).trimEnd());
     }).catch((error: unknown) => {
       console.error(stableJson({

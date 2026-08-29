@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseOwnershipManifest, findOwnershipCycles } from "./contracts/openspec-ownership.ts";
-import { evaluateClaimEvidence, inspectEvidenceDocument, parseEvidenceIndex, taskTextDigest } from "./contracts/openspec-evidence.ts";
+import { evaluateClaimEvidence, inspectEvidenceDocument, parseEvidenceIndex, proofEnvelopeState, taskTextDigest } from "./contracts/openspec-evidence.ts";
 import { inventoryOpenSpecChanges, parseInventoryArgs, runOpenSpecChangeInventoryCli } from "./openspec-change-inventory.ts";
 import { changeStateInputFromInventory, decideEvidenceAction, evaluateChangeState } from "./openspec-change-state.ts";
 import { archiveEvidenceBlocker, doctorOwnershipEvidenceChecks, ownershipEvidenceGateChecks } from "./openspec-change-gate.ts";
@@ -167,6 +167,102 @@ const tests: TestCase[] = [
         const serialized = JSON.stringify(result);
         assert(!serialized.includes("score") && !serialized.includes("inferred"), `${scenario.id} output must contain no score or inferred semantic field.`);
       }
+    },
+  },
+  {
+    name: "compact partition claims inherit only the identical material member set",
+    run: () => {
+      const fixture = JSON.parse(fs.readFileSync(claimFixtureFile, "utf8")) as {
+        baseClaim: Record<string, unknown>;
+        cases: Array<{ id: string; replace: Record<string, unknown> }>;
+      };
+      const selected = fixture.cases.find((scenario) => scenario.id === "partition-without-rule");
+      assert(selected != null, "Partition fixture must exist.");
+      if (selected == null) return;
+      const claim = { ...fixture.baseClaim, ...selected.replace };
+      const expanded = parseEvidenceIndex(validEvidence({ claims: [claim] }));
+      const population = { ...(claim.population as Record<string, unknown>) };
+      delete population.materialClasses;
+      const compact = parseEvidenceIndex(validEvidence({ claims: [{ ...claim, population }] }));
+      assert(expanded.ok && compact.ok, "Expanded and compact partition claims must both parse.");
+      if (!expanded.ok || !compact.ok) return;
+      assert(JSON.stringify(expanded.value.claims[0].population) === JSON.stringify(compact.value.claims[0].population), "Compact material classes must resolve to the exact declared member set.");
+
+      const mismatched = parseEvidenceIndex(validEvidence({
+        claims: [{ ...claim, population: { ...population, materialClasses: ["different-member"] } }],
+      }));
+      assert(mismatched.ok, "Explicit material-class mismatch must remain readable for claim evaluation.");
+      if (!mismatched.ok) return;
+      const result = evaluateClaimEvidence(mismatched.value.claims[0], "demo-r1", "demo-env", new Set());
+      assert(result.reasons.some((reason) => reason.code === "partition-class-mismatch"), "Explicit material-class mismatch must remain visible.");
+    },
+  },
+  {
+    name: "compact claim observations inherit only exact containing claim facts",
+    run: () => {
+      const fixture = JSON.parse(fs.readFileSync(claimFixtureFile, "utf8")) as { baseClaim: Record<string, unknown> };
+      const expanded = parseEvidenceIndex(validEvidence({ claims: [fixture.baseClaim] }));
+      const compactClaim = {
+        ...fixture.baseClaim,
+        observations: [["observation", "item-a", "supported", true, ["product"]]],
+      };
+      const compact = parseEvidenceIndex(validEvidence({ claims: [compactClaim] }));
+      assert(expanded.ok && compact.ok, "Expanded and compact observations must both parse.");
+      if (!expanded.ok || !compact.ok) return;
+      assert(JSON.stringify(expanded.value.claims[0].observations) === JSON.stringify(compact.value.claims[0].observations), "Compact observation must resolve to the exact expanded row.");
+
+      const mismatchedObservation = {
+        ...(fixture.baseClaim.observations as Record<string, unknown>[])[0],
+        candidateId: "other-r1",
+      };
+      const mismatched = parseEvidenceIndex(validEvidence({ claims: [{ ...fixture.baseClaim, observations: [mismatchedObservation] }] }));
+      assert(mismatched.ok, "Explicit observation mismatch must remain readable.");
+      if (mismatched.ok) {
+        const result = evaluateClaimEvidence(mismatched.value.claims[0], "demo-r1", "demo-env", new Set(["product"]));
+        assert(result.reasons.some((reason) => reason.code === "stale-row-candidate"), "Explicit observation identity mismatch must remain visible.");
+      }
+      const malformed = parseEvidenceIndex(validEvidence({ claims: [{ ...fixture.baseClaim, observations: [["observation", "item-a"]] }] }));
+      assert(!malformed.ok && malformed.issues.some((issue) => issue.message.includes("exact observation tuple")), "Malformed compact observation must fail closed.");
+    },
+  },
+  {
+    name: "compact task evidence inherits only exact redundant envelope fields",
+    run: () => {
+      const digest = taskTextDigest("1.1 Demo");
+      const boundary = { kind: "named-entrypoint", name: "cli", effects: ["read-only"] };
+      const common = {
+        taskId: "1.1",
+        taskTextDigest: digest,
+        result: "complete",
+        boundary,
+        invocation: { command: "cli", status: 0, recordedAt: "2026-08-28" },
+        artifacts: [],
+        cleanup: "none",
+        manualGate: null,
+      };
+      const expanded = parseEvidenceIndex(validEvidence({
+        tasks: [{ ...common, candidateId: "demo-r1", environmentId: "demo-env", requiredBoundary: boundary }],
+      }));
+      const { artifacts: _artifacts, ...compactCommon } = common;
+      const compact = parseEvidenceIndex(validEvidence({ tasks: [compactCommon] }));
+      const tuple = parseEvidenceIndex(validEvidence({ tasks: [[
+        "entrypoint", "1.1", digest, "complete", "cli", ["read-only"], "cli", 0, "2026-08-28", "none",
+      ]] }));
+      assert(expanded.ok && compact.ok && tuple.ok, "Expanded, inherited, and tuple task evidence must all parse.");
+      if (!expanded.ok || !compact.ok || !tuple.ok) return;
+      assert(JSON.stringify(expanded.value.tasks[0]) === JSON.stringify(compact.value.tasks[0]), "Inherited task evidence must materialize the exact expanded row.");
+      assert(JSON.stringify(expanded.value.tasks[0]) === JSON.stringify(tuple.value.tasks[0]), "Tuple task evidence must materialize the exact expanded row.");
+
+      const explicitIdentity = parseEvidenceIndex(validEvidence({ tasks: [{ ...common, candidateId: "other-r1" }] }));
+      assert(explicitIdentity.ok && proofEnvelopeState(explicitIdentity.value.tasks[0], "demo-r1", "demo-env", digest) === "stale", "Explicit candidate mismatch must remain stale.");
+      const explicitBoundary = parseEvidenceIndex(validEvidence({
+        tasks: [{ ...common, requiredBoundary: { ...boundary, name: "strong-cli" } }],
+      }));
+      assert(explicitBoundary.ok && proofEnvelopeState(explicitBoundary.value.tasks[0], "demo-r1", "demo-env", digest) === "mismatch", "Explicit boundary mismatch must remain visible.");
+      const missingBoundary = parseEvidenceIndex(validEvidence({ tasks: [{ ...common, boundary: undefined }] }));
+      assert(!missingBoundary.ok && missingBoundary.issues.some((issue) => issue.path.includes("requiredBoundary")), "Compact task evidence without an explicit boundary must fail inheritance.");
+      const malformedTuple = parseEvidenceIndex(validEvidence({ tasks: [["entrypoint", "1.1"]] }));
+      assert(!malformedTuple.ok && malformedTuple.issues.some((issue) => issue.message.includes("exact entrypoint tuple")), "Malformed task tuple must fail closed.");
     },
   },
   {

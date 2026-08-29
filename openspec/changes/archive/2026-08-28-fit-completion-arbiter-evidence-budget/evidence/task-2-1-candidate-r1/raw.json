@@ -1,0 +1,150 @@
+{
+  "candidate": {
+    "byteStable": true,
+    "contributions": [
+      {
+        "bytes": 123747,
+        "surface": "completionEvidence"
+      },
+      {
+        "bytes": 177,
+        "surface": "instruction"
+      },
+      {
+        "bytes": 142,
+        "surface": "strategyJournal"
+      },
+      {
+        "bytes": 88,
+        "surface": "inspectedRevision"
+      },
+      {
+        "bytes": 74,
+        "surface": "contextCounts"
+      },
+      {
+        "bytes": 55,
+        "surface": "wrapper"
+      },
+      {
+        "bytes": 44,
+        "surface": "auditID"
+      },
+      {
+        "bytes": 41,
+        "surface": "rootSessionRef"
+      }
+    ],
+    "evidenceSchemaVersion": 1,
+    "exactRequestBytes": 124421,
+    "privateProjectionBytes": 123724,
+    "readbackMatrix": {
+      "authority": true,
+      "claims": true,
+      "liveness": true,
+      "publicSourceUnchanged": true,
+      "todos": true,
+      "truncation": true,
+      "userAliasOmitted": true,
+      "validation": true
+    },
+    "requestDigest": "81e85d8ce6a0e22a4dc3f08b8c2a7ff481a82c5ec4944376bc066e44e2b1e65e",
+    "requestSchemaVersion": 2
+  },
+  "candidateId": "completion-arbiter-budget-v1",
+  "childCreates": 0,
+  "cleanup": "complete",
+  "environment": {
+    "bun": "1.4.0",
+    "platform": "win32"
+  },
+  "fixture": {
+    "claimRecords": 4,
+    "counts": {
+      "assistantEvidence": 16,
+      "background": 32,
+      "descendants": 32,
+      "diffEvidence": 24,
+      "humanMessages": 32,
+      "permissionReplies": 32,
+      "questionReplies": 32,
+      "syntheticMessages": 32,
+      "todoCurrent": 64,
+      "todoEver": 64,
+      "todoOpen": 64,
+      "todoUnresolved": 64,
+      "toolEvidence": 64,
+      "validationEvidence": 24
+    },
+    "projectionBytes": 186438
+  },
+  "mode": "candidate",
+  "modelCalls": 0,
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/agents/session-completion-arbiter.md",
+      "sha256": "050d47d560a89674ec2de950e8a1947e209e6b22cb9e920f7dca83583a2aad48"
+    },
+    {
+      "path": "global/extensions/session-completion-guard.ts",
+      "sha256": "edca19f2328e2a4c821c2c5758eca0d1ba9536b586975bff54ec0bd28bd37579"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-child.ts",
+      "sha256": "824fc56ae22844bc3954451e8cf4c197f45d583b26ec825f3c4d3ae985849c18"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+      "sha256": "55b9f71102b44a8ec5bc2dc1743c478e816194fbcd8cc4367ba2369470e5a4a8"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/controller.ts",
+      "sha256": "f44c414229940c4c9fe29010082832803c3346c3dd4071d7fc279440d3d37be2"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/leases.ts",
+      "sha256": "d201b46dc3d3d933139481037c9c1038ef885dd8e020da5555bddeb7749b6d0f"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/runtime-support.ts",
+      "sha256": "cbd1414e95ba989c5b99ae19880c545a3eff67a28a9e3387c906d2093cd9fefc"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/status.ts",
+      "sha256": "b31bda42c0df8678d8df2d57c757ff1fd1a2d4321852e92dfc510e964f8169c8"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/task-fallback.ts",
+      "sha256": "ab24a44b8d4e97a19a8ac4c923c9961f85e53db00d3c430e2142fab4cf73f433"
+    },
+    {
+      "path": "global/extensions/session-completion-guard/types.ts",
+      "sha256": "5f49255ff84b0a54368209ffa256fe1f926b4cd68910a5b75624137ff2fd6b3d"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/db.ts",
+      "sha256": "ae1597c73f02694357cea6fd159468ebba1bbab24e8a5878a43b2461b443ce6a"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/evidence.ts",
+      "sha256": "43982e9c3759dfcd11f6df4af4346e7379f1cbe6295b5a736a2cdd0848bbeb8f"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/index.ts",
+      "sha256": "4e730da6e3b8c3ac4dcb7bbb5414cc43869fd9c6b20659a6b5a778afdeae47de"
+    },
+    {
+      "path": "global/plugin/session-delivery-context/projection.ts",
+      "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+    },
+    {
+      "path": "global/opencode.json.template",
+      "sha256": "d547f321696720e3aef20a4cf5036fd4a3713659e8cd0af05a11f8042cd74ef6"
+    },
+    {
+      "path": "tools/proofs/session-completion-guard-long-run.ts",
+      "sha256": "e131683d770e7968367b056e0835154d998b9b3ca3f7f9faaf6fd156a91c20a9"
+    }
+  ]
+}

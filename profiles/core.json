@@ -13,6 +13,7 @@
     "instruction-artifact-reviewer",
     "openspec-architecture-reviewer",
     "sdet-quality-engineer",
+    "specialist-team-advisor",
     "test-coverage-reviewer",
     "troubleshooter"
   ],
@@ -26,6 +27,18 @@
     "global/AGENTS.md",
     "global/bin/complexity-foraging-contract.ts",
     "global/bin/complexity-foraging-inventory.ts",
+    "global/bin/delivery-trajectory-context.ts",
+    "global/bin/openspec-archive.ts",
+    "global/bin/openspec-change/claims.ts",
+    "global/bin/openspec-change/delivery-horizon.ts",
+    "global/bin/openspec-change/evidence.ts",
+    "global/bin/openspec-change/gate.ts",
+    "global/bin/openspec-change/inventory.ts",
+    "global/bin/openspec-change/manifest.ts",
+    "global/bin/openspec-change/ownership.ts",
+    "global/bin/openspec-change/state.ts",
+    "global/bin/portable-process.ts",
+    "global/extensions/specialist-catalog.ts",
     "global/opencode.json.template",
     "global/opencode.local.instructions.example.md",
     "global/principles-of-work.md"
@@ -41,6 +54,7 @@
     "openspec-apply-change",
     "openspec-archive-change",
     "openspec-propose",
-    "reuse-discovery"
+    "reuse-discovery",
+    "roadmap-delivery-trajectory"
   ]
 }

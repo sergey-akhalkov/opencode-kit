@@ -27,7 +27,9 @@ import type { RootInspection } from "../global/extensions/session-completion-gua
 import { PtyFallbackScheduler } from "../global/extensions/session-completion-guard/pty-fallback.ts";
 import { ensureArbiterChild } from "../global/extensions/session-completion-guard/arbiter-child.ts";
 import {
+  AuditRequestOverflowError,
   buildArbiterAuditRequest,
+  canonicalArbiterEvidence,
   captureArbiterEvidence,
   requireBoundedRequest,
 } from "../global/extensions/session-completion-guard/arbiter-evidence.ts";
@@ -46,6 +48,7 @@ import {
   parseCompletionVerdictText,
 } from "../global/extensions/session-completion-guard/verdict.ts";
 import type { AuditEpoch, CompletionVerdict, RootState } from "../global/extensions/session-completion-guard/types.ts";
+import type { SessionDeliveryContextResult } from "../global/plugin/session-delivery-context/projection.ts";
 import { hashRef } from "../global/plugin/session-delivery-context/redaction.ts";
 import {
   createTerminalCertificateChallenge,
@@ -471,6 +474,46 @@ function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVer
   };
 }
 
+function completionEvidenceFixture(
+  overrides: Partial<SessionDeliveryContextResult> = {},
+): SessionDeliveryContextResult {
+  const humanMessages = overrides.humanMessages ?? [];
+  return {
+    assistantEvidence: [],
+    auditRefs: [],
+    background: [],
+    claimEvidence: { claims: [], complete: true, omissions: [], selection: "none" },
+    descendants: [],
+    diffEvidence: [],
+    generatedAt: "1970-01-01T00:00:00.000Z",
+    humanMessages,
+    missingSessions: [],
+    permissionReplies: [],
+    questionInterventions: [],
+    questionReplies: [],
+    requirementSignals: [],
+    resolvedFromSessionRef: null,
+    schemaVersion: 2,
+    session: null,
+    strategyRefs: [],
+    syntheticMessages: [],
+    todos: {
+      current: [],
+      ever: [],
+      history: { available: false, source: "current_snapshot_only", toolCalls: 0 },
+      open: [],
+      unresolved: [],
+    },
+    tool: "opencode-session-delivery-context",
+    toolEvidence: [],
+    truncationWarnings: [],
+    userMessages: humanMessages,
+    validationEvidence: [],
+    warnings: [],
+    ...overrides,
+  };
+}
+
 function claimRecord(input: {
   candidateId?: string;
   claimId: string;
@@ -700,6 +743,79 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "critical: private arbiter evidence is lossless and conflicting refs fail closed",
+    run: () => {
+      const todo = {
+        content: "finish the accepted outcome",
+        eventRef: "event_todo_1",
+        firstSeen: null,
+        lastSeen: null,
+        priority: "high",
+        seenCount: 2,
+        source: "todowrite" as const,
+        status: "in_progress",
+        time: null,
+      };
+      const tool = {
+        callRef: "call_validation_1",
+        eventRef: "event_tool_1",
+        output: "45 tests passed",
+        status: "completed",
+        time: null,
+        title: "guard tests",
+        tool: "bash",
+        truncated: false,
+      };
+      const source = completionEvidenceFixture({
+        humanMessages: [{ eventRef: "event_human_1", kind: "message", text: "Keep this authority", time: null }],
+        todos: {
+          current: [todo],
+          ever: [todo],
+          history: { available: true, source: "todowrite_parts", toolCalls: 1 },
+          open: [todo],
+          unresolved: [todo],
+        },
+        toolEvidence: [tool],
+        userMessages: [{ eventRef: "event_human_1", kind: "message", text: "Keep this authority", time: null }],
+        validationEvidence: [{
+          callRef: tool.callRef,
+          command: "bun tools/test-session-completion-guard.ts",
+          eventRef: "event_validation_1",
+          status: "completed",
+          summary: tool.output,
+          time: null,
+          truncated: false,
+        }],
+      });
+      const before = JSON.stringify(source);
+      const candidate = canonicalArbiterEvidence(source);
+      assert(candidate.todos.items.length === 1, "Todo record must be stored once in private evidence.");
+      assert(
+        JSON.stringify(candidate.todos.items[0]?.memberships) === JSON.stringify(["current", "ever", "open", "unresolved"]),
+        "Todo membership must retain every original view.",
+      );
+      assert(candidate.validationEvidence[0]?.toolOutputRef === tool.callRef, "Validation must reference identical retained tool output.");
+      assert(!("summary" in candidate.validationEvidence[0]!), "Identical validation output must not be duplicated.");
+      assert(!("userMessages" in candidate), "Deprecated user-message alias must not be sent privately.");
+      assert(JSON.stringify(source) === before, "Private canonicalization must not mutate the public source object.");
+
+      const conflicting = completionEvidenceFixture({
+        todos: {
+          current: [todo],
+          ever: [{ ...todo, content: "different meaning" }],
+          history: { available: true, source: "todowrite_parts", toolCalls: 1 },
+          open: [],
+          unresolved: [],
+        },
+      });
+      assertThrows(
+        () => canonicalArbiterEvidence(conflicting),
+        "Completion evidence conflict",
+        "Same-ref semantic disagreement must fail closed.",
+      );
+    },
+  },
+  {
     name: "critical: claim projection preserves closure and reports stale malformed oversized and truncated sources",
     run: () => {
       const root = fs.mkdtempSync(path.join(os.tmpdir(), "completion-claim-projection-"));
@@ -742,7 +858,7 @@ const tests: TestCase[] = [
           "Truncated claim projection must report the exact omitted count.",
         );
         const currentEpoch = epoch({
-          completionEvidence: { claimEvidence: truncated, schemaVersion: 2 } as never,
+          completionEvidence: completionEvidenceFixture({ claimEvidence: truncated }),
         });
         const request = buildArbiterAuditRequest(
           currentEpoch,
@@ -757,10 +873,20 @@ const tests: TestCase[] = [
           request.includes('"claimEvidence"') && request.includes('"claim-limit"'),
           "Bounded arbiter request must retain claim records and omission metadata together.",
         );
-        assertThrows(
-          () => requireBoundedRequest(request, 1_024),
-          "exceeds byte limit",
-          "Oversized claim closure must fail before another required field is dropped.",
+        let overflow: unknown = null;
+        try {
+          requireBoundedRequest(request, 1_024);
+        } catch (error) {
+          overflow = error;
+        }
+        assert(overflow instanceof AuditRequestOverflowError, "Irreducible claim overflow must fail before another required field is dropped.");
+        assert(
+          overflow.contributions.some((entry) => entry.surface === "completionEvidence" && entry.bytes > 1_024),
+          "Overflow diagnostics must identify the dominant structural surface.",
+        );
+        assert(
+          overflow.contributions.every((entry) => Object.keys(entry).sort().join(",") === "bytes,surface"),
+          "Overflow diagnostics must remain content-free.",
         );
       } finally {
         fs.rmSync(root, { force: true, recursive: true });
@@ -1742,7 +1868,7 @@ const tests: TestCase[] = [
         attempt: 0,
         childSessionID: null,
         // Pre-seed evidence so captureArbiterEvidence (live delivery context) is skipped.
-        completionEvidence: { schemaVersion: 2, session: { sessionRef: rootRef } } as never,
+        completionEvidence: completionEvidenceFixture(),
         inspected: revision,
         kind: "completion",
         questionRequest: null,
@@ -2253,11 +2379,14 @@ const tests: TestCase[] = [
           auditID: "audit_retry_amplify_1",
           attempt: 0,
           childSessionID: null,
-          completionEvidence: {
-            schemaVersion: 2,
-            session: { sessionRef: rootRef },
-            bulk: evidenceMarker,
-          } as never,
+          completionEvidence: completionEvidenceFixture({
+            humanMessages: [{
+              eventRef: "event_retry_evidence",
+              kind: "message",
+              text: evidenceMarker,
+              time: null,
+            }],
+          }),
           inspected: inspection.revision,
           kind: "completion",
           questionRequest: null,

@@ -1,0 +1,71 @@
+{
+  "candidateId": "completion-arbiter-budget-v1",
+  "childCount": 1,
+  "cleanup": "complete",
+  "environment": {
+    "configDigest": "20fec38199bd4d889ebe972c59d21c2be968a9f7045692e1c265adb33929340c",
+    "executableSha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "openCode": "1.18.25",
+    "platform": "win32",
+    "runtimeSourceHashes": [
+      {
+        "path": "global/agents/session-completion-arbiter.md",
+        "sha256": "050d47d560a89674ec2de950e8a1947e209e6b22cb9e920f7dca83583a2aad48"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/arbiter-evidence.ts",
+        "sha256": "55b9f71102b44a8ec5bc2dc1743c478e816194fbcd8cc4367ba2369470e5a4a8"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/controller.ts",
+        "sha256": "f44c414229940c4c9fe29010082832803c3346c3dd4071d7fc279440d3d37be2"
+      },
+      {
+        "path": "global/plugin/session-delivery-context/projection.ts",
+        "sha256": "7df645593d22f1b4f06f88e0113930f780b7afd4b34e5b36da6f5611aae17f7e"
+      }
+    ]
+  },
+  "fixture": {
+    "claimRecords": 4,
+    "counts": {
+      "assistantEvidence": 16,
+      "background": 32,
+      "descendants": 32,
+      "diffEvidence": 24,
+      "humanMessages": 32,
+      "permissionReplies": 32,
+      "questionReplies": 32,
+      "syntheticMessages": 32,
+      "todoCurrent": 64,
+      "todoEver": 64,
+      "todoOpen": 64,
+      "todoUnresolved": 64,
+      "toolEvidence": 64,
+      "validationEvidence": 24
+    }
+  },
+  "mode": "installed-reviewed",
+  "provider": {
+    "arbiterCalls": 1,
+    "externalCalls": 0,
+    "primaryCalls": 0,
+    "result": {
+      "claimRows": 4,
+      "ownerBoundary": null,
+      "questionAnswers": null,
+      "requirementRows": 0,
+      "verdict": "allow_stop"
+    }
+  },
+  "request": {
+    "assistantEvidence": 16,
+    "evidenceSchemaVersion": 1,
+    "humanMessages": 32,
+    "requestBytes": 124423,
+    "requestDigest": "e4426614bab77f8f9d9ca3a7a578c519d19e40e08254adf6b9051ba3585e43ca",
+    "requestSchemaVersion": 2,
+    "rootSessionRef": "session_52082e64a6ff"
+  },
+  "schemaVersion": 1
+}

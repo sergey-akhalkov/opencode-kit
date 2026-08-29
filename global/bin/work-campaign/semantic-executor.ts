@@ -25,6 +25,11 @@ import type {
 
 type JsonRecord = Record<string, unknown>;
 type SemanticClient = ReturnType<(typeof import("@opencode-ai/sdk/v2"))["createOpencodeClient"]>;
+type SemanticClientOptions = {
+  baseUrl: string;
+  directory: string;
+  headers?: Record<string, string>;
+};
 
 export type SemanticAssignmentType = "discovery" | "final-challenge" | "investigation" | "reconciliation" | "synthesis";
 
@@ -102,6 +107,8 @@ export type SemanticExecutorOptions = {
 
 type SemanticExecutorDependencies = {
   client?: SemanticClient;
+  createClient?: (options: SemanticClientOptions) => SemanticClient;
+  environment?: NodeJS.ProcessEnv;
 };
 
 const digestPattern = /^[a-f0-9]{64}$/u;
@@ -414,7 +421,7 @@ function promptText(assignment: SemanticAssignment, producerSessionRef: string):
   ].join("\n");
 }
 
-function safeError(error: unknown, root: string, runtime: URL): string {
+function safeError(error: unknown, root: string, runtime: URL, secret: string | undefined): string {
   const messages: string[] = [];
   const visit = (value: unknown, depth: number): void => {
     if (value == null || depth > 3) return;
@@ -436,7 +443,12 @@ function safeError(error: unknown, root: string, runtime: URL): string {
   };
   visit(error, 0);
   const message = [...new Set(messages)].join(": ") || "unknown semantic executor failure";
-  return message.replaceAll(root, "<project-root>").replaceAll(runtime.origin, "<loopback-runtime>").replace(/[\r\n\0]+/gu, " ").slice(0, 1_000);
+  const redacted = message
+    .replaceAll(root, "<project-root>")
+    .replaceAll(runtime.origin, "<loopback-runtime>")
+    .replace(/[\r\n\0]+/gu, " ");
+  return (secret == null || secret === "" ? redacted : redacted.replaceAll(secret, "<server-password>"))
+    .slice(0, 1_000);
 }
 
 function timeoutError(error: unknown): boolean {
@@ -469,8 +481,18 @@ export async function executeSemanticAssignment(
   const resultAbsolute = resultFile(root, definition.evidencePath, options.resultPath);
   const runtime = runtimeUrl(options.serverUrl);
   const agent = id(options.agent, "agent");
+  const environment = dependencies.environment ?? process.env;
+  const password = environment.OPENCODE_SERVER_PASSWORD;
+  const username = environment.OPENCODE_SERVER_USERNAME ?? "opencode";
+  const clientOptions: SemanticClientOptions = {
+    baseUrl: runtime.origin,
+    directory: root,
+    ...(password == null || password === "" ? {} : {
+      headers: { Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}` },
+    }),
+  };
   const client = dependencies.client
-    ?? (await import("@opencode-ai/sdk/v2")).createOpencodeClient({ baseUrl: runtime.origin, directory: root });
+    ?? (dependencies.createClient ?? (await import("@opencode-ai/sdk/v2")).createOpencodeClient)(clientOptions);
   const assignmentDigest = crypto.createHash("sha256").update(stableJson(assignment)).digest("hex");
   const result: SemanticAssignmentResult = {
     assignmentDigest,
@@ -594,7 +616,7 @@ export async function executeSemanticAssignment(
     result.status = "complete";
   } catch (error) {
     result.errorClass = timeoutError(error) ? "timeout" : error instanceof SyntaxError || error instanceof WorkCampaignError ? "invalid-result" : "runtime";
-    result.errorMessage = safeError(error, root, runtime);
+    result.errorMessage = safeError(error, root, runtime, password);
     result.status = "blocked";
   } finally {
     if (sessionID != null) {
@@ -604,7 +626,7 @@ export async function executeSemanticAssignment(
       } catch (error) {
         result.cleanup = "unknown";
         result.errorClass = "cleanup-unknown";
-        result.errorMessage = safeError(error, root, runtime);
+        result.errorMessage = safeError(error, root, runtime, password);
         result.status = "unknown";
       }
     }

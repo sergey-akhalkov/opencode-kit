@@ -1,0 +1,79 @@
+{
+  "cleanup": "complete",
+  "candidateId": "roadmap-delivery-trajectory-routing-r5",
+  "evaluation": {
+    "extraCoreSkills": [],
+    "hiddenParentHits": [],
+    "missingCoreSkills": [],
+    "skillNames": [
+      "behavioral-substitution-qualification",
+      "change-ready-sdlc",
+      "complain",
+      "complexity-management",
+      "customize-opencode",
+      "foundation-integrity-recovery",
+      "next-step",
+      "openspec-abandon-change",
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose",
+      "reuse-discovery",
+      "roadmap-delivery-trajectory"
+    ],
+    "status": "passed",
+    "agentName": "foundation-integrity-reviewer",
+    "agentListStatus": 0,
+    "agentStatus": 0,
+    "advisorAgentName": "specialist-team-advisor",
+    "advisorStatus": 0,
+    "authorityMarkers": {
+      "compactionTeamAdviceMirror": true,
+      "debugConfigExposesCompactionPrompt": true,
+      "evidenceBoundsPrinciple": true,
+      "claimRoutingTrigger": true,
+      "complexityRoutingTrigger": true,
+      "foundationRoutingTrigger": true,
+      "practiceOwnerBoundary": true,
+      "teamAdviceRoutingTrigger": true,
+      "teamAdviceStateContract": true
+    },
+    "canonicalOpenSpecSkills": [
+      "openspec-apply-change",
+      "openspec-archive-change",
+      "openspec-propose"
+    ],
+    "catalogPluginCount": 1,
+    "configStatus": 0,
+    "extraCoreAgents": [],
+    "missingCanonicalOpenSpecSkills": [],
+    "permissionFailures": [],
+    "pluginPaths": [
+      "extensions/specialist-catalog.ts"
+    ],
+    "resolvedPaths": {
+      "behavioralSubstitutionSkill": "<generated>/skills/behavioral-substitution-qualification/SKILL.md",
+      "complexityForagingContract": "<generated>/bin/complexity-foraging-contract.ts",
+      "complexityForagingInventory": "<generated>/bin/complexity-foraging-inventory.ts",
+      "complexityManagementSkill": "<generated>/skills/complexity-management/SKILL.md",
+      "deliveryHorizonContract": "<generated>/bin/openspec-change/delivery-horizon.ts",
+      "deliveryHorizonManifest": "<generated>/bin/openspec-change/manifest.ts",
+      "deliveryTrajectoryContext": "<generated>/bin/delivery-trajectory-context.ts",
+      "evidenceSufficiencyReviewer": "<generated>/agents/evidence-sufficiency-reviewer.md",
+      "foundationIntegrityRecoverySkill": "<generated>/skills/foundation-integrity-recovery/SKILL.md",
+      "foundationIntegrityReviewer": "<generated>/agents/foundation-integrity-reviewer.md",
+      "openspecApplySkill": "<generated>/skills/openspec-apply-change/SKILL.md",
+      "openspecArchiveSkill": "<generated>/skills/openspec-archive-change/SKILL.md",
+      "openspecProposeSkill": "<generated>/skills/openspec-propose/SKILL.md",
+      "roadmapDeliveryTrajectorySkill": "<generated>/skills/roadmap-delivery-trajectory/SKILL.md",
+      "specialistCatalogPlugin": "<generated>/extensions/specialist-catalog.ts",
+      "specialistTeamAdvisor": "<generated>/agents/specialist-team-advisor.md"
+    },
+    "unexpectedCorePlugins": []
+  },
+  "profile": "core",
+  "agentStatus": 0,
+  "advisorStatus": 0,
+  "configStatus": 0,
+  "skillStatus": 0,
+  "tool": "opencode-dev-kit-runtime-surface-loader"
+}

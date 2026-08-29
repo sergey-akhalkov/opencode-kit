@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import { automationDividendTasks, parseAutomationDividend } from "./openspec-change/automation-dividend.ts";
 import { inspectBoundedFalsificationReview, parseBoundedFalsificationDeclaration } from "./openspec-change/bounded-falsification.ts";
 import { inspectEvidenceDocument, taskTextDigest } from "./openspec-change/evidence.ts";
+import { loadDeliveryHorizon, parseDeliveryHorizonDeclaration } from "./openspec-change/delivery-horizon.ts";
 import { ownershipEvidenceGateChecks } from "./openspec-change/gate.ts";
 
 export { formatBoundedFalsificationReview, inspectBoundedFalsificationReview } from "./openspec-change/bounded-falsification.ts";
@@ -328,6 +329,47 @@ function falsificationChecks(root: string, operation: string, changeId: string |
   return checks;
 }
 
+function deliveryHorizonChecks(root: string, operation: string, changeId: string | undefined): OpenSpecOperationGateCheck[] {
+  if (changeId == null || !safeChangeId(changeId) || !fs.existsSync(changeRoot(root, changeId))) return [];
+  if (!["propose", "apply", "task-update", "review", "acceptance", "archive"].includes(operation)) return [];
+  const proposalPath = changePath(root, changeId, "proposal.md");
+  const source = `openspec/changes/${changeId}/proposal.md`;
+  if (!fs.existsSync(proposalPath)) {
+    return operation === "propose"
+      ? [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, "proposal.md is missing the required Delivery Horizon declaration.")]
+      : [];
+  }
+  let proposalText: string;
+  try {
+    proposalText = fs.readFileSync(proposalPath, "utf8");
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, `Delivery Horizon declaration is unreadable: ${reason}`)];
+  }
+  const declaration = parseDeliveryHorizonDeclaration(proposalText);
+  if (declaration.status === "legacy-unlinked") {
+    return operation === "propose"
+      ? [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, "New proposals require exactly one Delivery Horizon declaration.")]
+      : [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "passed", false, source, "Proposal has no Delivery Horizon declaration and remains legacy-unlinked.")];
+  }
+  if (declaration.status === "duplicate") {
+    return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, `proposal.md has ${declaration.count} Delivery Horizon declarations.`)];
+  }
+  if (declaration.status === "malformed") {
+    return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, declaration.reason)];
+  }
+  if (declaration.status === "none") {
+    return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "passed", false, source, "Delivery Horizon is none with a non-empty reviewed reason.")];
+  }
+  try {
+    loadDeliveryHorizon(root, declaration.horizonId);
+    return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "passed", false, source, `Delivery Horizon '${declaration.horizonId}' exists and has valid contained references.`)];
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    return [check("artifact:delivery-horizon", "OpenSpec Delivery Horizon declaration", "failed", true, source, `Delivery Horizon '${declaration.horizonId}' is invalid: ${reason}`)];
+  }
+}
+
 function operationChecks(root: string, operation: string, changeId: string | undefined, enforcement?: "advisory" | "blocking"): OpenSpecOperationGateCheck[] {
   if (!knownOperations.has(operation)) {
     return [check("operation:known", "OpenSpec operation registry", "unknown", true, operation, `Unknown OpenSpec operation ${operation}.`)];
@@ -335,6 +377,7 @@ function operationChecks(root: string, operation: string, changeId: string | und
   return [
     ...requiredChangeChecks(root, operation, changeId),
     ...artifactChecks(root, operation, changeId),
+    ...deliveryHorizonChecks(root, operation, changeId),
     ...dividendChecks(root, operation, changeId),
     ...falsificationChecks(root, operation, changeId),
     ...ownershipEvidenceGateChecks({ root, operation, changeId, enforcement }),

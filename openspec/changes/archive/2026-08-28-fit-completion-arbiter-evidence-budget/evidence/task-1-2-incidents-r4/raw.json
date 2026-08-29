@@ -1,0 +1,77 @@
+{
+  "candidateId": "completion-arbiter-budget-baseline-r2",
+  "childCreates": 0,
+  "cleanup": "complete",
+  "mode": "incidents",
+  "modelCalls": 0,
+  "observations": [
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-01",
+      "requestBytes": 214535,
+      "sessionRef": "session_dc5e7fc97abd"
+    },
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-02",
+      "requestBytes": 214672,
+      "sessionRef": "session_3de7af2b2e39"
+    },
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-03",
+      "requestBytes": 220221,
+      "sessionRef": "session_6a2327609b67"
+    },
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-04",
+      "requestBytes": 223486,
+      "sessionRef": "session_fdef15537442"
+    },
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-05",
+      "requestBytes": 233377,
+      "sessionRef": "session_f42c5a3709b7"
+    },
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-06",
+      "requestBytes": 247397,
+      "sessionRef": "session_628a513facd8"
+    },
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-07",
+      "requestBytes": 253538,
+      "sessionRef": "session_29a5650020e3"
+    },
+    {
+      "allowedBytes": 200000,
+      "member": "observed-overflow-08",
+      "requestBytes": 254691,
+      "sessionRef": "session_6f0e2c9ef8e1"
+    }
+  ],
+  "privacyScan": {
+    "databasePathRetained": false,
+    "metadataTextRetained": false,
+    "rawSessionIdsRetained": false
+  },
+  "query": {
+    "closed": true,
+    "queryOnly": true,
+    "writes": 0
+  },
+  "schemaVersion": 1,
+  "sourceDigest": "d99793da5bebf1f55f9c1ea0387c10c7eb5ce120cd5fb8865239978aad6358ba",
+  "summary": {
+    "allowedBytes": [
+      200000
+    ],
+    "incidentCount": 8,
+    "maxRequestBytes": 254691,
+    "minRequestBytes": 214535
+  }
+}

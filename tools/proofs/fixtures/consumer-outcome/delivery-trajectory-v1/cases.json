@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "configured-no-trigger-archive",
+      "facts": [
+        "The current linked change is complete and its archive is authorized inside this disposable fixture.",
+        "The prior linked archive changed a different local mechanism and supplies no current repeated-touch, fan-out, forecast, stalled-exit, or dominant-cost trigger.",
+        "The accepted outcome, proof strength, population, invariants, and protected semantics remain unchanged."
+      ],
+      "expected": {
+        "archive": "archived",
+        "trajectory": "none",
+        "disposition": null,
+        "receipt": false,
+        "successor": false
+      }
+    },
+    {
+      "id": "configured-repeated-touch-successor",
+      "facts": [
+        "The current and prior linked archives both required item-specific setup around the same shared fixture mechanism documented in docs/repeated-touch.md.",
+        "The repeated setup has a current named consequence for the phase-fixture exit predicate, while per-item proof remains irreducible.",
+        "A bounded same-Horizon successor that centralizes setup preserves accepted behavior, population, proof strength, invariants, and protected semantics."
+      ],
+      "expected": {
+        "archive": "archived",
+        "trajectory": "review-required",
+        "disposition": "replan-outcome-preserving",
+        "receipt": true,
+        "successor": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "candidate": "specialist-team-advisor-route-diagnostic-r1",
+  "environment": {
+    "installedOpenCode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "routeComparison": {
+    "configAgentIds": [
+      "proof-hidden",
+      "proof-other",
+      "proof-worker",
+      "session-completion-arbiter",
+      "specialist-team-advisor"
+    ],
+    "configSource": "OPENCODE_CONFIG_DIR-only",
+    "legacy": {
+      "dataIsArray": true,
+      "ids": [
+        "build",
+        "compaction",
+        "explore",
+        "general",
+        "plan",
+        "proof-hidden",
+        "proof-other",
+        "proof-worker",
+        "session-completion-arbiter",
+        "specialist-team-advisor",
+        "summary",
+        "title"
+      ],
+      "status": 200
+    },
+    "location": {
+      "directoryMatches": true,
+      "projectDirectoryMatches": false,
+      "status": 200
+    },
+    "v2": {
+      "dataIsNestedArray": true,
+      "ids": [],
+      "outerKeys": [
+        "data",
+        "location"
+      ],
+      "status": 200
+    }
+  },
+  "effects": {
+    "activeGlobalConfigChanged": false,
+    "providerRequestCount": 0,
+    "remoteEffects": false,
+    "temporaryFixtureOnly": true
+  },
+  "cleanup": {
+    "serverSignal": null,
+    "serverStatus": 1,
+    "sessionsRequestedForDeletion": 1,
+    "temporaryFixtureRemoved": true
+  }
+}

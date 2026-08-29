@@ -1,0 +1,24 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "21d997ae6eab3ca7c3439b86beac24969d9302adac7dcffef571dcb776b18c09"
+  },
+  "evaluationDigest": "9f2228d23d296f226ce692a69825cf6349693fc46e0ca6df4fb347cea0802c6f",
+  "maximumClaim": "the selected STA-001 subset (mid-task-topology-change) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 4,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "mid-task-topology-change"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "mid-task-topology-change"
+    }
+  ],
+  "status": "passed"
+}

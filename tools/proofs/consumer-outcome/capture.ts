@@ -3,7 +3,7 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { type PortableCommandResult, runPortableCommand } from "../../../global/bin/portable-process.ts";
-import { loadModelProfile } from "../../model-profile.ts";
+import { loadModelProfile, type ModelProfile } from "../../model-profile.ts";
 import {
   type DiagnosticProofEvidence,
   type ProofServerHandle,
@@ -55,6 +55,51 @@ import {
 export type CaptureFailureKind = "none" | "model" | "tool" | "validation" | "evidence" | "timeout" | "cleanup";
 export type SessionMode = "harness" | "configured";
 export const FOUNDATION_SERVER_PROMPT_TIMEOUT_MS = 420_000;
+
+function relocateConfiguredRoot(value: unknown, sourceRoot: string, targetRoot: string): unknown {
+  if (typeof value === "string") {
+    return value
+      .replaceAll(sourceRoot, targetRoot)
+      .replaceAll(sourceRoot.replaceAll("\\", "/"), targetRoot.replaceAll("\\", "/"));
+  }
+  if (Array.isArray(value)) return value.map((item) => relocateConfiguredRoot(item, sourceRoot, targetRoot));
+  if (typeof value === "object" && value != null) {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, relocateConfiguredRoot(item, sourceRoot, targetRoot)]));
+  }
+  return value;
+}
+
+export function materializeConfiguredProofConfig(
+  sourceRoot: string,
+  targetRoot: string,
+  profile: ModelProfile,
+  permission: Record<string, unknown>,
+): string {
+  const source = path.resolve(sourceRoot);
+  const target = path.resolve(targetRoot);
+  if (!fs.existsSync(path.join(source, "opencode.json"))) throw new ContractError("candidateConfigDir", "candidate opencode.json is unavailable");
+  if (fs.existsSync(target)) throw new ContractError("candidateConfigDir", "effective candidate config must be create-new");
+  const build = profile.agent.build;
+  if (build == null) throw new ContractError("modelProfile", "configured model profile has no build route");
+  fs.cpSync(source, target, { errorOnExist: true, force: false, recursive: true });
+  const configPath = path.join(target, "opencode.json");
+  const relocated = relocateConfiguredRoot(JSON.parse(fs.readFileSync(configPath, "utf8")), source, target);
+  if (typeof relocated !== "object" || relocated == null || Array.isArray(relocated)) {
+    throw new ContractError("candidateConfigDir", "candidate opencode.json must be an object");
+  }
+  const config = relocated as Record<string, unknown>;
+  const currentAgent = typeof config.agent === "object" && config.agent != null && !Array.isArray(config.agent)
+    ? config.agent as Record<string, unknown>
+    : {};
+  fs.writeFileSync(configPath, stableJson({
+    ...config,
+    agent: { ...currentAgent, build },
+    model: profile.model,
+    permission,
+    small_model: profile.small_model,
+  }));
+  return target;
+}
 
 const CONFIGURED_PERMISSION = {
   "*": "deny",
@@ -431,7 +476,7 @@ function diagnosticRuntimeManifest(proofRoot: string): Array<{ bytes?: number; e
       }
     }
   };
-  for (const relative of ["cache", "config-home", "data", "state"]) visit(path.join(proofRoot, relative));
+  for (const relative of ["cache", "candidate-config", "config-home", "data", "state"]) visit(path.join(proofRoot, relative));
   return rows;
 }
 
@@ -489,23 +534,26 @@ export async function captureConfiguredDiagnostic(
   const initialText = options.retainChangedText === true
     ? Object.fromEntries(initialFiles.map((relative) => [relative, fs.readFileSync(path.join(fixtureRoot, relative), "utf8")]))
     : null;
-  const configDir = options.candidateConfigDir ?? path.join(options.repoRoot, "global");
   const profile = loadModelProfile(options.repoRoot, manifest.profile).profile;
   const configuredRoute = profile.agent.build;
   for (const relative of ["cache", "config-home", "data/opencode", "state"]) {
     fs.mkdirSync(path.join(proofRoot, relative), { recursive: true });
   }
+  const permission = configuredPermission(scenario);
+  const configDir = materializeConfiguredProofConfig(
+    options.candidateConfigDir ?? path.join(options.repoRoot, "global"),
+    path.join(proofRoot, "candidate-config"),
+    profile,
+    permission,
+  );
   const modelsCatalog = seedProofModelsCatalog(proofRoot, [configuredRoute.model]);
-  const environment = configuredProofServerEnvironment(process.env, configDir, proofRoot, {
-    ...profile,
-    permission: configuredPermission(scenario),
-  });
+  const environment = configuredProofServerEnvironment(process.env, configDir, proofRoot, {});
   const redactions = defaultRedactions(proofRoot, options.repoRoot);
   const openCode = installedOpenCodeIdentity(options.executable);
   let server: ProofServerHandle | null = null;
   let serverTerminal: { signal: NodeJS.Signals | null; status: number | null } | null = null;
   let roundtrip = emptyDiagnosticEvidence();
-  let resolvedRoute = `${configuredRoute.model}/${configuredRoute.variant}`;
+  let resolvedRoute: string | null = null;
   let captureError: unknown = null;
   let captureStage = "server-start";
   let cleanupError: unknown = null;
@@ -622,7 +670,7 @@ export async function captureConfiguredDiagnostic(
     terminalClassification,
     validation: redact(validation),
   };
-  const safeDiagnostic = sealConfiguredDiagnostic(diagnostic);
+  const safeDiagnostic = sealConfiguredDiagnostic(redact(diagnostic));
   const serialized = stableJson(safeDiagnostic);
   if (Buffer.byteLength(serialized, "utf8") > scenario.evidenceByteBound) {
     throw new ContractError("diagnostic", `configured diagnostic exceeds the reviewed ${scenario.evidenceByteBound}-byte bound`);

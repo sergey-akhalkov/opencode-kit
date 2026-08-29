@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "delivery-trajectory-configured-r1",
+  "profile": "quality-independent",
+  "runtimeProfile": "core",
+  "configuredProviderRequestBound": 2,
+  "maximumClaim": "the two reviewed configured archive partitions for the exact recorded candidate, model, profile, source, fixture, and environment only; no remaining roadmap-delivery-trajectory-v1 member, universal trigger quality, forecast accuracy, or deployed-runtime behavior is supported",
+  "governedSourcePaths": [
+    "global/AGENTS.md",
+    "global/bin/delivery-trajectory-context.ts",
+    "global/bin/openspec-archive.ts",
+    "global/bin/portable-process.ts",
+    "global/bin/openspec-change/claims.ts",
+    "global/bin/openspec-change/delivery-horizon.ts",
+    "global/bin/openspec-change/evidence.ts",
+    "global/bin/openspec-change/gate.ts",
+    "global/bin/openspec-change/inventory.ts",
+    "global/bin/openspec-change/manifest.ts",
+    "global/bin/openspec-change/ownership.ts",
+    "global/bin/openspec-change/state.ts",
+    "global/model-profiles/quality-independent.json",
+    "global/skills/openspec-archive-change/SKILL.md",
+    "global/skills/roadmap-delivery-trajectory/SKILL.md",
+    "profiles/core.json",
+    "tools/model-profile.ts",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/capture.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/delivery-trajectory.ts",
+    "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-configured-r1.json",
+    "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1",
+    "tools/proofs/lib/opencode-proof-client.ts",
+    "tools/proofs/lib/proof-process-cleanup.ts",
+    "tools/runtime-surface-profile.ts"
+  ],
+  "scenarios": [
+    {
+      "id": "configured-no-trigger-archive",
+      "shape": "openspec-backed",
+      "fixtureId": "configured-no-trigger-archive",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1",
+      "initialManifest": {
+        "files": [
+          "cases.json",
+          "docs/exit.md",
+          "docs/invariants.md",
+          "docs/non-goals.md",
+          "docs/outcome.md",
+          "docs/repeated-touch.md",
+          "openspec/config.yaml",
+          "openspec/delivery-horizons/phase-fixture/horizon.json",
+          "openspec/specs/fixture-capability/spec.md",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/.openspec.yaml",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/history.md",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/proposal.md",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/tasks.md",
+          "openspec/changes/trajectory-current/.openspec.yaml",
+          "openspec/changes/trajectory-current/design.md",
+          "openspec/changes/trajectory-current/evidence-index.json",
+          "openspec/changes/trajectory-current/history.md",
+          "openspec/changes/trajectory-current/ownership.json",
+          "openspec/changes/trajectory-current/proposal.md",
+          "openspec/changes/trajectory-current/tasks.md",
+          "openspec/changes/trajectory-current/specs/fixture-capability/spec.md",
+          "scripts/archive-current.ts",
+          "scripts/check-result.ts",
+          "scripts/context-current.ts",
+          "scripts/materialize-review.ts"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this fixture. Read cases.json and use exactly the configured-no-trigger-archive record as reviewed semantic evidence; do not read any consumer-outcome pack or oracle outside this fixture. Load the OpenSpec archive skill and archive trajectory-current through node scripts/archive-current.ts. Only after terminal archive success, run node scripts/context-current.ts and inspect the fact-only context plus the selected case facts. Preserve archive and trajectory as independent dimensions. The reviewed facts establish no current material trajectory trigger, so do not load the roadmap-delivery-trajectory skill, create a receipt, or create a successor. Write trajectory-result.json containing exactly archive, archiveId, trajectory, horizonId, disposition, uncertainty, and externalEffects with archive=archived, trajectory=none, horizonId=phase-fixture, disposition=null, externalEffects=none, and the actual archive id. Run node scripts/check-result.ts configured-no-trigger-archive and return its exact result. Do not ask questions, dispatch agents, access external directories or credentials, install, commit, use network tools, or perform remote, destructive, protected, or target-worktree effects.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": ["archive-result.json", "trajectory-context.json", "trajectory-result.json"],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "scripts/check-result.ts", "configured-no-trigger-archive"],
+      "proofExpectations": {
+        "argv": ["node", "scripts/check-result.ts", "configured-no-trigger-archive"],
+        "exitCode": 0,
+        "stdoutIncludes": ["\"trajectory\":\"none\"", "\"receiptCount\":0", "\"successor\":false"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read", "skill:openspec-archive-change", "skill:roadmap-delivery-trajectory"],
+        "deny": ["external_directory", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {"archive": "archived", "trajectory": "none", "disposition": null, "receiptCount": 0, "successor": false}
+    },
+    {
+      "id": "configured-repeated-touch-successor",
+      "shape": "openspec-backed",
+      "fixtureId": "configured-repeated-touch-successor",
+      "fixturePath": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-v1",
+      "initialManifest": {
+        "files": [
+          "cases.json",
+          "docs/exit.md",
+          "docs/invariants.md",
+          "docs/non-goals.md",
+          "docs/outcome.md",
+          "docs/repeated-touch.md",
+          "openspec/config.yaml",
+          "openspec/delivery-horizons/phase-fixture/horizon.json",
+          "openspec/specs/fixture-capability/spec.md",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/.openspec.yaml",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/history.md",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/proposal.md",
+          "openspec/changes/archive/2026-08-28-trajectory-prior/tasks.md",
+          "openspec/changes/trajectory-current/.openspec.yaml",
+          "openspec/changes/trajectory-current/design.md",
+          "openspec/changes/trajectory-current/evidence-index.json",
+          "openspec/changes/trajectory-current/history.md",
+          "openspec/changes/trajectory-current/ownership.json",
+          "openspec/changes/trajectory-current/proposal.md",
+          "openspec/changes/trajectory-current/tasks.md",
+          "openspec/changes/trajectory-current/specs/fixture-capability/spec.md",
+          "scripts/archive-current.ts",
+          "scripts/check-result.ts",
+          "scripts/context-current.ts",
+          "scripts/materialize-review.ts"
+        ]
+      },
+      "request": "This is an authorized disposable configured proof with no external effects. Work only in this fixture. Read cases.json and use exactly the configured-repeated-touch-successor record and docs/repeated-touch.md as reviewed semantic evidence; do not read any consumer-outcome pack or oracle outside this fixture. Load the OpenSpec archive skill and archive trajectory-current through node scripts/archive-current.ts. Only after terminal archive success, run node scripts/context-current.ts and inspect the fact-only context. Preserve archive and trajectory as independent dimensions. The selected reviewed facts establish a current repeated-item-touch trigger with a named same-Horizon consequence, so load roadmap-delivery-trajectory exactly once, select replan-outcome-preserving, and run node scripts/materialize-review.ts configured-repeated-touch-successor to persist the production-schema receipt. Then use the canonical OpenSpec propose workflow to author one complete bounded trajectory-successor change linked by exactly - **Delivery Horizon:** phase-fixture. The successor must centralize fixture setup while preserving accepted behavior, population, per-item proof, invariants, non-goals, and protected semantics; create proposal.md, design.md, tasks.md, and specs/fixture-capability/spec.md and keep all tasks unchecked. Write trajectory-result.json containing exactly archive, archiveId, trajectory, horizonId, disposition, uncertainty, and externalEffects with archive=archived, trajectory=review-required, horizonId=phase-fixture, disposition=replan-outcome-preserving, externalEffects=none, and the actual archive id. Run node scripts/check-result.ts configured-repeated-touch-successor and return its exact result. Do not ask questions, dispatch agents, access external directories or credentials, install, commit, use network tools, or perform remote, destructive, protected, or target-worktree effects.",
+      "allowedEffects": ["local-read", "local-write", "configured-model-call"],
+      "forbiddenEffects": ["commit", "credential-read", "destructive-action", "install", "protected-action", "remote", "target-worktree-write"],
+      "expectedOutcome": {
+        "exitCode": 0,
+        "stateFiles": [
+          "archive-result.json",
+          "receipt-result.json",
+          "trajectory-context.json",
+          "trajectory-result.json",
+          "openspec/changes/trajectory-successor/proposal.md",
+          "openspec/changes/trajectory-successor/design.md",
+          "openspec/changes/trajectory-successor/tasks.md",
+          "openspec/changes/trajectory-successor/specs/fixture-capability/spec.md"
+        ],
+        "stdoutIncludes": []
+      },
+      "validationArgv": ["node", "scripts/check-result.ts", "configured-repeated-touch-successor"],
+      "proofExpectations": {
+        "argv": ["node", "scripts/check-result.ts", "configured-repeated-touch-successor"],
+        "exitCode": 0,
+        "stdoutIncludes": ["\"trajectory\":\"review-required\"", "\"receiptCount\":1", "\"successor\":true"]
+      },
+      "sampleCount": 1,
+      "configuredProviderRequestBound": 1,
+      "evidenceByteBound": 524288,
+      "frictionFields": ["ownerQuestionCount", "configuredProviderRequestCount", "failedToolCallCount", "duplicateFailedToolInvocationCount", "totalToolCallCount"],
+      "permissions": {
+        "allow": ["bash", "edit", "glob", "grep", "read", "skill:openspec-archive-change", "skill:roadmap-delivery-trajectory"],
+        "deny": ["external_directory", "question", "task", "webfetch"]
+      },
+      "cleanupOracle": {"fixtureRemoved": true, "processesRemoved": true, "sessionsRemoved": true},
+      "expectedResult": {"archive": "archived", "trajectory": "review-required", "disposition": "replan-outcome-preserving", "receiptCount": 1, "successor": true}
+    }
+  ]
+}

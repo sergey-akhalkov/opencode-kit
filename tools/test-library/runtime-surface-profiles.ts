@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import {
@@ -16,11 +17,16 @@ import {
 import { evaluateLoaderSkills } from "../proofs/runtime-surface-loader.ts";
 import { descriptionSelectsOpenSpecSkill } from "../validators/skills.ts";
 import {
+  ALL_COMPATIBILITY_FILES,
+  ALL_COMPATIBILITY_PLUGIN_FILES,
   CORE_AGENTS,
   CORE_COMMANDS,
   CORE_FILES,
   CORE_SKILLS,
+  DELIVERY_TRAJECTORY_HELPER_FILES,
+  OPENSPEC_ARCHIVE_HELPER_FILES,
   ROADMAP_MISSION_PLUGIN_FILES,
+  SPECIALIST_CATALOG_PLUGIN_FILE,
   inspectRuntimeSurfaceProfiles,
   listCommandNames,
   loadRuntimeSurfaceProfile,
@@ -134,6 +140,7 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
       assert(JSON.stringify(core.agents) === JSON.stringify([...CORE_AGENTS]), "Core agents must match the design catalog.");
       assert(JSON.stringify(core.commands) === JSON.stringify([...CORE_COMMANDS]), "Core commands must match the design catalog.");
       assert(JSON.stringify(core.files) === JSON.stringify([...CORE_FILES]), "Core files must match the design catalog.");
+      assert(JSON.stringify(all.files) === JSON.stringify([...ALL_COMPATIBILITY_FILES]), "All files must retain the compatibility catalog.");
       const resolvedCore = resolveRuntimeSurfaceProfile(
         libraryRoot,
         core,
@@ -162,7 +169,14 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
           profile.skills.filter((name) => name === "foundation-integrity-recovery").length === 1,
           `${profile.name} must resolve the foundation recovery skill exactly once.`,
         );
+        assert(
+          profile.agents.filter((name) => name === "specialist-team-advisor").length === 1,
+          `${profile.name} must resolve the specialist team advisor exactly once.`,
+        );
       }
+      assert(core.files.includes(`global/${SPECIALIST_CATALOG_PLUGIN_FILE}`), "Core must own the exact specialist catalog source file.");
+      assert(!all.files.includes(`global/${SPECIALIST_CATALOG_PLUGIN_FILE}`), "All must retain its existing extension-directory source ownership without a duplicate file entry.");
+      assert(all.directories.includes("global/extensions"), "All must retain the extensions directory.");
     },
   },
   {
@@ -204,6 +218,79 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
       assert(customResolved.errors.length === 0, `Custom omission must remain valid: ${customResolved.errors.join("; ")}`);
       assert(!custom.skills.includes("complexity-management"), "Custom omission must not claim focused availability.");
       assert(custom.files.every((relative) => !helperFiles.includes(relative)), "Custom omission must not retain the helper closure.");
+    },
+  },
+  {
+    name: "delivery trajectory skill and exact helper closure are profile available on demand",
+    run: () => {
+      const core = committedProfile("core");
+      const all = committedProfile("all");
+      const skillName = "roadmap-delivery-trajectory";
+      const helper = DELIVERY_TRAJECTORY_HELPER_FILES[0];
+      const helperClosure = [...DELIVERY_TRAJECTORY_HELPER_FILES];
+      for (const profile of [core, all]) {
+        assert(profile.skills.filter((name) => name === skillName).length === 1, `${profile.name} must expose the trajectory skill exactly once.`);
+      }
+      for (const relative of helperClosure) {
+        assert(core.files.filter((entry) => entry === relative).length === 1, `Core must include exact trajectory closure member ${relative} once.`);
+        assert(!all.files.includes(relative), `All must retain global/bin directory ownership without duplicate file ${relative}.`);
+      }
+      assert(all.directories.includes("global/bin"), "All must include the trajectory helper through global/bin.");
+
+      for (const profileName of ["core", "all"] as const) {
+        const generated = path.join(newTempDir(`trajectory-${profileName}-profile`), profileName);
+        materializeRuntimeSurfaceProfile({ profileName, root: libraryRoot, targetRoot: generated });
+        const skill = fs.readFileSync(path.join(generated, "skills", skillName, "SKILL.md"), "utf8");
+        assert(skill.includes("## Trigger") && skill.includes("## Output"), `${profileName} must materialize the on-demand skill body.`);
+        const generatedHelper = path.join(generated, "bin", "delivery-trajectory-context.ts");
+        assert(fs.existsSync(generatedHelper), `${profileName} must materialize the exact helper.`);
+        const help = spawnSync(process.execPath, [generatedHelper, "--help"], {
+          cwd: newTempDir(`trajectory-${profileName}-help`),
+          encoding: "utf8",
+          shell: false,
+          timeout: 30_000,
+        });
+        assert(help.status === 0, `${profileName} generated helper help must exit zero: ${help.stderr}`);
+        assert(help.stdout.includes("No semantic progress"), `${profileName} helper must retain the semantic boundary.`);
+        const archiveHelper = path.join(generated, "bin", "openspec-archive.ts");
+        const archiveHelp = spawnSync(process.execPath, [archiveHelper, "--help"], {
+          cwd: newTempDir(`archive-${profileName}-help`),
+          encoding: "utf8",
+          shell: false,
+          timeout: 30_000,
+        });
+        assert(archiveHelp.status === 0, `${profileName} generated archive helper help must exit zero: ${archiveHelp.stderr}`);
+        assert(archiveHelp.stdout.includes("--validation-not-applicable"), `${profileName} archive helper must retain its validation boundary.`);
+      }
+
+      const custom: RuntimeSurfaceProfile = {
+        ...structuredClone(core),
+        name: "custom-without-trajectory",
+        skills: core.skills.filter((name) => name !== skillName),
+        files: core.files.filter((relative) => !helperClosure.includes(relative)),
+      };
+      const customResolved = resolveRuntimeSurfaceProfile(libraryRoot, custom, "profiles/custom-without-trajectory.json");
+      assert(customResolved.errors.length === 0, `Custom omission must remain valid: ${customResolved.errors.join("; ")}`);
+      const sourceSkill = fs.readFileSync(path.join(libraryRoot, "global", "skills", skillName, "SKILL.md"), "utf8");
+      assert(sourceSkill.includes("capability unavailable"), "Missing-capability contract must be explicit.");
+      assert(sourceSkill.includes("no adjacent-skill fallback"), "Missing-capability contract must prohibit fallback.");
+      const omitted = evaluateLoaderSkills(
+        CORE_SKILLS.filter((name) => name !== skillName).map((name) => ({ location: path.join("<generated>", "skills", name, "SKILL.md"), name })),
+        "<generated>",
+        "<source>",
+      );
+      assert(omitted.status === "failed" && omitted.missingCoreSkills.includes(skillName), "Loader evaluator must name the exact missing trajectory skill.");
+    },
+  },
+  {
+    name: "core profile includes the exact OpenSpec archive helper closure",
+    run: () => {
+      const core = committedProfile("core");
+      const all = committedProfile("all");
+      for (const relative of OPENSPEC_ARCHIVE_HELPER_FILES) {
+        assert(core.files.filter((entry) => entry === relative).length === 1, `Core must include exact archive closure member ${relative} once.`);
+        assert(!all.files.includes(relative), `All must retain global/bin directory ownership without duplicate file ${relative}.`);
+      }
     },
   },
   {
@@ -335,14 +422,34 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
         assert(readback.length === 0, `${profileName} generated tree mismatches: ${readback.join("; ")}`);
         const config = JSON.parse(fs.readFileSync(path.join(targetRoot, "opencode.json"), "utf8")) as Record<string, unknown>;
         const serializedConfig = JSON.stringify(config).replaceAll("\\", "/");
+        const configAgents = config.agent && typeof config.agent === "object" && !Array.isArray(config.agent)
+          ? config.agent as Record<string, unknown>
+          : {};
+        const compaction = configAgents.compaction && typeof configAgents.compaction === "object" && !Array.isArray(configAgents.compaction)
+          ? configAgents.compaction as Record<string, unknown>
+          : {};
+        const compactionPrompt = typeof compaction.prompt === "string" ? compaction.prompt : "";
         assert(!serializedConfig.includes("__OPENCODE_"), `${profileName} generated config must materialize every placeholder.`);
         assert(!serializedConfig.includes(".staging-"), `${profileName} generated config must not retain staging paths.`);
+        assert(compactionPrompt.includes("Team Advice State"), `${profileName} generated config must retain the compaction team-advice mirror.`);
+        assert(compactionPrompt.includes("Unavailable Material Capabilities"), `${profileName} generated config must retain every canonical Team Advice State field.`);
+        assert(compactionPrompt.includes("does not infer a new team"), `${profileName} generated config must retain the compaction non-inference boundary.`);
         for (const relative of ["principles-of-work.md", "opencode.local.instructions.md"]) {
           const expected = path.join(targetRoot, relative).replaceAll("\\", "/");
           assert(serializedConfig.includes(expected), `${profileName} generated config must reference final ${relative}.`);
         }
+        const plugins = Array.isArray(config.plugin) ? config.plugin : [];
+        const catalogPath = path.join(targetRoot, ...SPECIALIST_CATALOG_PLUGIN_FILE.split("/")).replaceAll("\\", "/");
+        const catalogMatches = plugins.filter((entry) => JSON.stringify(entry).replaceAll("\\", "/").includes(catalogPath));
+        assert(catalogMatches.length === 1, `Generated ${profileName} config must load ${SPECIALIST_CATALOG_PLUGIN_FILE} exactly once.`);
+        if (profileName === "core") {
+          assert(plugins.length === 1, "Generated core config must contain only the specialist catalog plugin.");
+          for (const relative of ALL_COMPATIBILITY_PLUGIN_FILES.filter((entry) => entry !== SPECIALIST_CATALOG_PLUGIN_FILE)) {
+            const expected = path.join(targetRoot, ...relative.split("/")).replaceAll("\\", "/");
+            assert(!serializedConfig.includes(expected), `Generated core config must not load all-only plugin ${relative}.`);
+          }
+        }
         if (profileName === "all") {
-          const plugins = Array.isArray(config.plugin) ? config.plugin : [];
           assert(config.model === "openai/gpt-5.6-sol", "Generated all config must retain the pinned mission model.");
           for (const relative of ROADMAP_MISSION_PLUGIN_FILES) {
             const expected = path.join(targetRoot, ...relative.split("/")).replaceAll("\\", "/");

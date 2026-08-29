@@ -1,0 +1,120 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "268d5bee053112f6ddf74edf69fdf6dbae833033ff579050320a58b602a8c2ed"
+  },
+  "evaluationDigest": "b5a1978c58959b1e6fb30233aefc62e273b7cb1bea29e2a407770546817dd23f",
+  "maximumClaim": "the nine reviewed STA-001 scenarios define matched unchanged-source baseline and candidate inputs, explicit root/advisor/specialist/skill identity oracles, bounded local effects, and terminal cleanup for one recorded model/profile/environment; no universal routing, unreviewed task, unlisted artifact, cross-model, deployed-runtime, or semantic-quality claim is supported",
+  "modelCalls": 20,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "trivial-owner-local-direct"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "trivial-owner-local-direct"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "non-trivial-single-domain-main-alone"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "non-trivial-single-domain-main-alone"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "isolated-production-delegation"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "isolated-production-delegation"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "mid-task-topology-change"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "mid-task-topology-change"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "active-profile-capability-unavailable"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "active-profile-capability-unavailable"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "overstaffing-negative-control"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "overstaffing-negative-control"
+    }
+  ],
+  "status": "passed"
+}

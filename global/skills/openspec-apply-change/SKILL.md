@@ -81,6 +81,10 @@ Use this skill when the user asks to start or continue implementation of one Ope
 
     If that record claims skipped, omitted, suppressed, cached, replayed, emulated, replaced, or optimized-bypass behavior preserves an existing result, load `behavioral-substitution-qualification` for the detailed closure workflow rather than duplicating it here.
 
+    Read the proposal's `Delivery Horizon` declaration before substantial dependent implementation. Legacy-unlinked and `none - <reason>` changes need no trajectory route. For a linked change with a prior successful archive in the same Horizon, run the exact active `delivery-trajectory-context.ts` helper and evaluate the current compact signal. If it is `review-required`, load `roadmap-delivery-trajectory` once for the current evidence tuple and consume or create the matching terminal receipt before dependent expansion. Only a `measure-next-boundary` or `replan-outcome-preserving` receipt admits its named same-Horizon successor. A `continue` receipt permits ordinary same-Horizon continuation; `owner-required` and `unknown` create no successor and block only the exact unresolved dependent action. No receipt waives ordinary proof, safety, validation, or owner-boundary gates.
+
+    If the signal is `unknown`, obtain the smallest safe discriminating observation or keep only the affected dependent action blocked; never guess no trigger or freeze unrelated work. If the selected runtime surface lacks the trajectory skill or exact helper closure, report trajectory capability unavailable without an adjacent-skill, parent-source, or host-default fallback.
+
 6. **Show current progress**
 
    Display current progress:
@@ -198,6 +202,7 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 - Use contextFiles from CLI output, don't assume specific file names
 - Reference claim ids in implementation tasks and evidence; do not duplicate unchanged population/path/oracle fields or infer claim class from prose.
 - Keep structural readiness separate from semantic readiness; deterministic operation gates never decide materiality, task fit, or exemption correctness.
+- Keep trajectory disposition scoped to the same Delivery Horizon and later substantial dependent work; it never reopens or relabels a successful archive.
 
 **Fluid Workflow Integration**
 

@@ -838,6 +838,13 @@ try {
     && (output(missionStatus).supervision as JsonRecord)?.action === "resume"
     && (output(missionStatus).supervision as JsonRecord)?.reason === "runtime-interruption-ready", `campaign status must advise resuming a terminal mission without consuming it: ${missionStatus.stderr || missionStatus.stdout}`);
 
+  const installedWindowsFixtureRoot = process.env.WORK_CAMPAIGN_WINDOWS_INSTALLED_FIXTURE_ROOT;
+  if (installedWindowsFixtureRoot != null) {
+    assert(path.isAbsolute(installedWindowsFixtureRoot), "installed Windows fixture root must be absolute");
+    assert(!fs.existsSync(installedWindowsFixtureRoot), "installed Windows fixture root must not exist");
+    fs.cpSync(integrated, installedWindowsFixtureRoot, { recursive: true, errorOnExist: true });
+  }
+
   const stoppedMission = cloneProject(integrated, "mission-stop");
   const missionStopRoot = path.join(fixtureRoot, "supervisor-stop-runtime");
   fs.mkdirSync(missionStopRoot, { recursive: true });

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "delivery-trajectory-r1",
+  "packId": "roadmap-delivery-trajectory-v1",
+  "maximumClaim": "provider-free proof-contract evidence for the 13 reviewed roadmap-delivery-trajectory-v1 members under the recorded seed and governed source identity only; it supports no configured semantic behavior or population-member claim",
+  "governedSourcePaths": [
+    "openspec/changes/add-roadmap-delivery-trajectory-loop/proposal.md",
+    "openspec/changes/add-roadmap-delivery-trajectory-loop/design.md",
+    "openspec/changes/add-roadmap-delivery-trajectory-loop/tasks.md",
+    "openspec/changes/add-roadmap-delivery-trajectory-loop/specs/library-roadmap-delivery-trajectory/spec.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome/contracts.ts",
+    "tools/proofs/consumer-outcome/delivery-trajectory.ts",
+    "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-r1.json"
+  ],
+  "members": [
+    { "id": "explicit-horizon-within-window" },
+    { "id": "legacy-or-unlinked-archive" },
+    { "id": "repeated-item-touch-trigger" },
+    { "id": "shared-owner-fan-out-trigger" },
+    { "id": "forecast-outside-window" },
+    { "id": "missing-window-or-measurement" },
+    { "id": "external-linear-bottleneck" },
+    { "id": "outcome-preserving-successor" },
+    { "id": "quality-weakening-owner-boundary" },
+    { "id": "unchanged-trigger-no-duplicate" },
+    { "id": "signal-failure-after-successful-archive" },
+    { "id": "default-core-availability" },
+    { "id": "missing-capability" }
+  ]
+}

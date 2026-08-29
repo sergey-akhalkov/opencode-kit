@@ -152,7 +152,7 @@ export function appendReadmeAgentCatalogEntry(fixture: string, entry: string): v
   writeText(readmePath, readmeText.replace(marker, `${marker}\n${entry}`));
 }
 
-function addFixtureProfileAgent(fixture: string, agentName: string): void {
+export function addFixtureProfileAgent(fixture: string, agentName: string): void {
   const profilePath = path.join(fixture, "profiles", "all.json");
   const profile = JSON.parse(fs.readFileSync(profilePath, "utf8")) as { agents: string[] };
   if (!profile.agents.includes(agentName)) {

@@ -1,0 +1,53 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "130c41d4383076ee9acdd95d8a8866e5660ca7e52794853687617e914d10d21b"
+  },
+  "evaluationDigest": "725690ea8859a780035fc3be53b8f4a42c751a7a7afb8f2301fb43c5d38d69cf",
+  "maximumClaim": "the selected STA-001 subset (multi-domain-bounded-team, conditional-later-specialist, overstaffing-negative-control) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 6,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "overstaffing-negative-control"
+    },
+    {
+      "arm": "candidate",
+      "failures": [
+        "advice-state-mismatch",
+        "advisor-call-count-mismatch",
+        "catalog-call-count-mismatch",
+        "main-disposition-mismatch"
+      ],
+      "passed": false,
+      "scenarioId": "overstaffing-negative-control"
+    }
+  ],
+  "status": "failed"
+}

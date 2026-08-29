@@ -1,0 +1,15 @@
+{
+  "byteStable": true,
+  "candidateId": "completion-arbiter-budget-v1",
+  "cleanup": "complete",
+  "exactRequestBytes": 124421,
+  "mode": "candidate",
+  "proofControlLimit": 175000,
+  "rawDigest": "398eb109e1049057bf1b78c7940f7213752b90cd8062f9dbb6ecb9db596505df",
+  "readbackComplete": true,
+  "replay": true,
+  "requestLimit": 200000,
+  "schemaVersion": 1,
+  "status": "complete",
+  "zeroChildModelCalls": true
+}

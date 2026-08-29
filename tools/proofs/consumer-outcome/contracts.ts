@@ -1631,8 +1631,8 @@ export function redactPrivacyMarkers(text: string): {
 }
 
 export function containsPrivatePath(text: string): boolean {
-  return /[A-Za-z]:\\Users\\[^\\\s]+/.test(text)
-    || /Users\\[^\\\s]+\\/.test(text)
+  return /[A-Za-z]:\\+Users\\+[^\\\s]+/.test(text)
+    || /Users\\+[^\\\s]+\\+/.test(text)
     || /\/home\/[^/\s]+/.test(text)
     || /\/Users\/[^/\s]+/.test(text);
 }
@@ -1641,7 +1641,12 @@ export function redactText(text: string, replacements: Array<[string, string]>):
   let result = text;
   for (const [value, label] of replacements) {
     if (value.trim() === "") continue;
-    for (const variant of [value, value.replaceAll("\\", "\\\\"), value.replaceAll("\\", "/")]) {
+    for (const variant of new Set([
+      value,
+      value.replaceAll("\\", "\\\\"),
+      value.replaceAll("\\", "\\\\\\\\"),
+      value.replaceAll("\\", "/"),
+    ])) {
       result = result.split(variant).join(label);
     }
   }

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "changeId": "trajectory-current",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "fixture-capability",
+      "requirements": ["Current fixture archive marker remains observable"]
+    }
+  ],
+  "writeRoots": ["openspec/specs/fixture-capability"],
+  "dependencies": [],
+  "transfers": []
+}

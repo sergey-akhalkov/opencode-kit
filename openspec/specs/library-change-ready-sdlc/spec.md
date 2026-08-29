@@ -339,9 +339,9 @@ Ordinary Small exact-case work SHALL retain its proportional route. A finite-pop
 
 ### Requirement: Outcome accountability and practice responsibility stay separate
 
-Main SHALL retain the accepted outcome, scope, implementation and integration decisions, Runtime Proof, finding disposition, lifecycle state, and owner handoff in Ordinary Small and Material work. A registered Practice Owner SHALL own only its practice semantics, trigger applicability, runtime observation, and maintenance consistency. Production workers, SDET, optional reviewers, and control-plane agents SHALL consume applicable practice constraints without becoming outcome owners or additional orchestrators.
+Main SHALL retain the accepted mission outcome, scope, final implementation and integration decisions, Runtime Proof, finding disposition, lifecycle state, and owner handoff in Ordinary Small and Material work. Main's primary function SHALL be mission success through goal control, decomposition, resource selection, dependency management, evidence-based course correction, integration, and proof rather than maximizing direct task execution. For non-trivial root tasks, main SHALL use bounded team advice to identify work that benefits from procedural skill context, fresh specialist evidence, or isolated production delegation, while retaining the mission spine and every integration decision. Main MAY execute work directly when current evidence shows that direct execution is the shortest trustworthy route or requires inseparable global context. A registered Practice Owner SHALL own only its practice semantics, trigger applicability, runtime observation, and maintenance consistency. Team advisors, production workers, SDET, optional reviewers, and control-plane agents SHALL consume applicable practice constraints without becoming outcome owners or additional orchestrators.
 
-When a practice controls a concrete implementation decision, including direct code versus a design seam, main SHALL make and integrate the decision against the accepted outcome after considering the owner evidence. The owner SHALL evaluate the practice and maintain its rule set but SHALL NOT select or authorize the product decision.
+When a practice controls a concrete implementation decision, including direct code versus a design seam, main SHALL make and integrate the decision against the accepted outcome after considering the owner evidence. The owner SHALL evaluate the practice and maintain its rule set but SHALL NOT select or authorize the product decision. A team recommendation MAY identify the decision and exact owner boundary but SHALL NOT make either decision.
 
 #### Scenario: Change locality is materially triggered
 
@@ -361,11 +361,41 @@ When a practice controls a concrete implementation decision, including direct co
 - **THEN** the brief carries the exact invariant and bounded evidence reference
 - **AND** the worker preserves it or reports a conflict without invoking or impersonating the owner.
 
+#### Scenario: Main retains the mission spine
+
+- **WHEN** team advice identifies several bounded research, implementation, or review packages
+- **THEN** main retains outcome interpretation, mission dependencies, cross-package ownership, integration, representative Runtime Proof inspection, course correction, and final disposition
+- **AND** delegates only packages whose focused context or isolation has evidenced value greater than their handoff and integration cost.
+
+#### Scenario: Direct work is a tactic rather than main's objective
+
+- **WHEN** main can either execute a bounded package directly or delegate it without weakening ownership, safety, proof, or integration
+- **THEN** main selects the route with the lower total mission cost and stronger expected evidence
+- **AND** does not prefer direct execution merely because self-authorship feels more controllable.
+
+#### Scenario: Specialist evidence is verified without wholesale rework
+
+- **WHEN** a specialist returns a terminal attributable result with its assumptions, changed artifacts, evidence, and validation
+- **THEN** main verifies critical facts, integration, candidate identity, and observable behavior at the sufficient boundary
+- **AND** repeats deep work only when contradiction, stale evidence, unexplained failure, or material risk makes the original result insufficient.
+
+#### Scenario: Advisor prepares a production delegation boundary
+
+- **WHEN** a non-trivial task contains one isolated production package with exact write ownership, acceptance, proof input, and forbidden actions
+- **THEN** the engagement map may return a dispatch-ready implementation brief boundary
+- **AND** main verifies that boundary and remains responsible for dispatch liveness, integration, and current proof.
+
 ### Requirement: Practice routing preserves proportional delivery
 
-Practice ownership SHALL not create an all-practice checklist, a mandatory architecture phase, or a fixed reviewer sequence. Main SHALL evaluate compact triggers while foraging task evidence, invoke no owner for zero-trigger Ordinary Small work, and stop owner consultation once the exact applicable practice evidence is sufficient for the next decision. Multiple owner reports SHALL be batched only when independent and supported by the discovered runtime; otherwise they SHALL be serialized without repeating the same practice.
+Team advice and practice ownership SHALL not create an all-artifact checklist, a mandatory architecture phase, or a fixed reviewer sequence. Main SHALL obtain no advice for trivial owner-local work, use one fresh bounded recommendation for a new non-trivial root task, invoke no owner for a zero-trigger concern, and stop consultation once exact task-relevant evidence is sufficient for the next decision. Multiple independent specialist reports SHALL be batched only when supported by the discovered runtime and their scopes are isolated or exact non-overlapping; otherwise they SHALL be serialized without repeating the same concern.
 
-An owner report SHALL be bounded to decision-relevant evidence and SHALL not restate the complete global philosophy, task transcript, or another owner's rules. Main SHALL integrate the report rather than paste it into later briefs or handoffs unless an exact finding or evidence reference remains material.
+Advisor and specialist reports SHALL be bounded to decision-relevant evidence and SHALL not restate the complete global philosophy, task transcript, active catalog, or another role's rules. Main SHALL integrate the result rather than paste it into later briefs or handoffs unless an exact finding, work boundary, or evidence reference remains material.
+
+#### Scenario: One advisor recommendation is sufficient
+
+- **WHEN** one engagement map resolves the current team topology and no material topology change occurs
+- **THEN** main proceeds without repeated team-advisor calls
+- **AND** retains only current work packages, activation conditions, evidence references, and invalidation facts in later context.
 
 #### Scenario: One owner is sufficient
 
@@ -377,7 +407,13 @@ An owner report SHALL be bounded to decision-relevant evidence and SHALL not res
 
 - **WHEN** two owner reports address the same concern despite registered boundary separation
 - **THEN** main uses the registry to identify the primary practice, preserves both evidence sources, and records the overlap as maintenance evidence
-- **AND** does not create a third adjudicator agent.
+- **AND** does not ask the team advisor to adjudicate practice semantics.
+
+#### Scenario: Fixed lifecycle team is rejected
+
+- **WHEN** a proposed engagement map recommends roles only because planning, implementation, testing, review, or completion stages exist
+- **THEN** main rejects those recommendations unless each role has a unique current question, activation evidence, and expected output
+- **AND** preserves the direct or smaller team path.
 
 ### Requirement: Main owns evidence-triggered next-change locality
 

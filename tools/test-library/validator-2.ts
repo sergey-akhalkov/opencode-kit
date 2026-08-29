@@ -697,6 +697,59 @@ export const validatorTests2: TestCase[] = [
       assertOutputExcludes(safeResult, "OpenCode permission config", "Safe permission config should not emit permission warnings.");
     },
   },
+  {
+    name: "validator rejects missing canonical team-advice state field",
+    run: () => {
+      const fixture = newLibraryFixture("team-advice-state-field");
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      writeText(path.join(fixture, "global", "AGENTS.md"), agents.replace("`Unavailable Material Capabilities`, ", ""));
+      writeText(
+        path.join(fixture, "instructions", "practice-owner-agent-contract.md"),
+        fs.readFileSync(path.join(root, "instructions", "practice-owner-agent-contract.md"), "utf8"),
+      );
+      writeText(
+        path.join(fixture, "global", "opencode.json.template"),
+        fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8"),
+      );
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A missing canonical Team Advice State field must fail validation.");
+      assertOutputContains(result, "team-advice canonical contract", "Diagnostic should identify the canonical instruction owner.");
+      assertOutputContains(result, "Unavailable Material Capabilities", "Diagnostic should identify the missing field.");
+    },
+  },
+  {
+    name: "validator rejects team-advice compaction mirror drift",
+    run: () => {
+      const fixture = newLibraryFixture("team-advice-compaction-drift");
+      writeText(path.join(fixture, "global", "AGENTS.md"), fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8"));
+      writeText(
+        path.join(fixture, "instructions", "practice-owner-agent-contract.md"),
+        fs.readFileSync(path.join(root, "instructions", "practice-owner-agent-contract.md"), "utf8"),
+      );
+      const template = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
+      writeText(path.join(fixture, "global", "opencode.json.template"), template.replace("does not infer a new team", "may infer a new team"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A drifted compaction mirror must fail validation.");
+      assertOutputContains(result, "team-advice compaction mirror", "Diagnostic should identify the runtime mirror.");
+      assertOutputContains(result, "does not infer a new team", "Diagnostic should identify the missing prohibition.");
+    },
+  },
+  {
+    name: "validator rejects team-advice Practice Owner boundary drift",
+    run: () => {
+      const fixture = newLibraryFixture("team-advice-practice-owner-boundary");
+      writeText(path.join(fixture, "global", "AGENTS.md"), fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8"));
+      const contract = fs.readFileSync(path.join(root, "instructions", "practice-owner-agent-contract.md"), "utf8");
+      writeText(path.join(fixture, "instructions", "practice-owner-agent-contract.md"), contract.replace("zero-trigger work launches no Practice Owner", "zero-trigger work launches no owner"));
+      writeText(
+        path.join(fixture, "global", "opencode.json.template"),
+        fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8"),
+      );
+      const result = invokeValidator(fixture);
+      assertFailure(result, "A broadened zero-trigger owner sentence must fail validation.");
+      assertOutputContains(result, "team-advice Practice Owner boundary", "Diagnostic should identify the owner boundary.");
+    },
+  },
   ...[
     "opencode.json",
     path.join("nested", "opencode.jsonc"),

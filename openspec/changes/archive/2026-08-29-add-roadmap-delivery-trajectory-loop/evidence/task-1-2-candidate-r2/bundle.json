@@ -1,0 +1,174 @@
+{
+  "arm": "candidate",
+  "bundleDigest": "816de5c04f849def4a662494932cfe31c5c177e169224fd46905c108e5b2978d",
+  "candidateId": "roadmap-delivery-trajectory-routing-r2",
+  "cleanup": {
+    "persistentTemporaryFixtures": 0,
+    "processesRemaining": 0,
+    "sessionsRemaining": 0,
+    "status": "complete",
+    "terminal": true
+  },
+  "effects": {
+    "createNewEvidenceRoot": true,
+    "modelCalls": 0,
+    "networkCalls": 0,
+    "processCalls": 0,
+    "productCalls": 0,
+    "providerCalls": 0,
+    "readClass": "governed-source-and-reviewed-seed-only",
+    "sessionCalls": 0,
+    "writes": [
+      "bundle.json",
+      "evaluation.json"
+    ]
+  },
+  "inputIdentity": {
+    "candidateArtifactAvailability": "available",
+    "differenceName": "candidate-artifact-availability",
+    "governedSourceDigest": "92e619024b11d4565208448438524d6e2a55cb695b923e83f625a7724c4e3d1d",
+    "reviewedInputDigest": "aa826800eb14dce8ac304f85a580e9cd7f2e6ce5213cff11b13109656294c01f",
+    "seedByteDigest": "599ce034ddab8b074bf84e5a7fe1d348f5f29a8d5ff0063ffc1f6a85523041a9"
+  },
+  "maximumClaim": "provider-free proof-contract evidence for the 13 reviewed roadmap-delivery-trajectory-v1 members under the recorded seed and governed source identity only; it supports no configured semantic behavior or population-member claim",
+  "observations": [
+    {
+      "memberId": "explicit-horizon-within-window",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "legacy-or-unlinked-archive",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "repeated-item-touch-trigger",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "shared-owner-fan-out-trigger",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "forecast-outside-window",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "missing-window-or-measurement",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "external-linear-bottleneck",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "outcome-preserving-successor",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "quality-weakening-owner-boundary",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "unchanged-trigger-no-duplicate",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "signal-failure-after-successful-archive",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "default-core-availability",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    },
+    {
+      "memberId": "missing-capability",
+      "observation": {
+        "candidateArtifactAvailability": "available",
+        "evidenceKind": "provider-free-contract-only"
+      }
+    }
+  ],
+  "packDigest": "0197575858e265a8d76a31df6d4a9e91fe1b577f17a9d3f30ff3ef556483689e",
+  "packId": "roadmap-delivery-trajectory-v1",
+  "privacy": {
+    "absolutePathsEmitted": false,
+    "privatePathsEmitted": false,
+    "sourcePayloadsEmitted": false
+  },
+  "schemaVersion": 1,
+  "sourceIdentity": {
+    "gitRef": "working-tree",
+    "governedDigest": "92e619024b11d4565208448438524d6e2a55cb695b923e83f625a7724c4e3d1d",
+    "kind": "working-tree",
+    "pathDigests": [
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/design.md",
+        "sha256": "75e165b3f419540e2b1978d8436ed9ecc220eb5e1c3e50f75ad408af3c54dbb8"
+      },
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/proposal.md",
+        "sha256": "5c357c1502e01b1741be4b32db8375b8678876372e4f318ccf5354032dedd846"
+      },
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/specs/library-roadmap-delivery-trajectory/spec.md",
+        "sha256": "98f23322cd2873002d3bd0375ff73853a8990156a48cc876985bef67dc7662aa"
+      },
+      {
+        "path": "openspec/changes/add-roadmap-delivery-trajectory-loop/tasks.md",
+        "sha256": "23c5c2d02c806b8a9392c6fd24c54d43d3873821eb7a94dfda8076941cfd7833"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome-regression.ts",
+        "sha256": "56d65a06de01a3a2c70606e38eda1398e67a0544f296b05f4229ca36c3e2ce0a"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/contracts.ts",
+        "sha256": "bd741fb51d991a358c83c60ecad3d17ce782151a51bba8ea24da5ecb925becc1"
+      },
+      {
+        "path": "tools/proofs/consumer-outcome/delivery-trajectory.ts",
+        "sha256": "f2bc90e60a0bb68b6a6ecbd0a3ecfff2f4da66109af24c3f4b4f75e50864b57b"
+      },
+      {
+        "path": "tools/proofs/fixtures/consumer-outcome/delivery-trajectory-r1.json",
+        "sha256": "7b84c46f7b086de5bddb6a169bc030acb1d821856f369a6843598ff6f13e7b89"
+      }
+    ]
+  }
+}

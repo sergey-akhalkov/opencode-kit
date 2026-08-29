@@ -1,0 +1,100 @@
+{
+  "bundleDigests": {
+    "baseline": "bd292e634ea2613aedda962f938cf9f89f68e1885891e7380febd2d21df2151b",
+    "candidate": null
+  },
+  "evaluationDigest": "6dd901b233f3941350bd9a99cacc03bea923cb63952b8a447295ffa5458b0f60",
+  "inputDifference": {
+    "baseline": "absent",
+    "candidate": null,
+    "matchedExceptNamedDifference": null,
+    "name": "candidate-artifact-availability"
+  },
+  "liveCalls": 0,
+  "maximumClaim": "provider-free proof-contract evidence for the 13 reviewed roadmap-delivery-trajectory-v1 members under the recorded seed and governed source identity only; it supports no configured semantic behavior or population-member claim",
+  "modelCalls": 0,
+  "packId": "roadmap-delivery-trajectory-v1",
+  "providerCalls": 0,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "explicit-horizon-within-window",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "legacy-or-unlinked-archive",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "repeated-item-touch-trigger",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "shared-owner-fan-out-trigger",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "forecast-outside-window",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "missing-window-or-measurement",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "external-linear-bottleneck",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "outcome-preserving-successor",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "quality-weakening-owner-boundary",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "unchanged-trigger-no-duplicate",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "signal-failure-after-successful-archive",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "default-core-availability",
+      "passed": true
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "memberId": "missing-capability",
+      "passed": true
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "passed"
+}

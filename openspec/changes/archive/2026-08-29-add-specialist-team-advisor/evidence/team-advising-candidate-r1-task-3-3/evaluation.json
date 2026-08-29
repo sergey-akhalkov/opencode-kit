@@ -1,0 +1,24 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "a254efd2f700198c43acc9ddae4367869eee7733eb3bee085adbecaaa625863c"
+  },
+  "evaluationDigest": "b1499ccdb9c244192047dc48f670d56ebba3d29143767202ce24836f64e5ec2e",
+  "maximumClaim": "the selected STA-001 subset (isolated-production-delegation) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 2,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "isolated-production-delegation"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "isolated-production-delegation"
+    }
+  ],
+  "status": "passed"
+}

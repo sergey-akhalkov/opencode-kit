@@ -67,6 +67,7 @@ const EXPECTED_CATALOG = [
   "rust-concurrency-reviewer",
   "sdet-quality-engineer",
   "session-completion-arbiter",
+  "specialist-team-advisor",
   "summary",
   "test-coverage-reviewer",
   "title",

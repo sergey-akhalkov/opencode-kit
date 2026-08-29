@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   addImplementationWorkerFixture,
+  addFixtureProfileAgent,
   addOptionalReviewRoutingFixture,
   addSessionCompletionArbiterFixture,
   appendReadmeAgentCatalogEntry,
@@ -41,7 +42,47 @@ function replaceTroubleshooterText(text: string, original: string, replacement: 
   return updated;
 }
 
+function addSpecialistTeamAdvisorFixture(fixture: string): string {
+  const advisorPath = path.join(fixture, "global", "agents", "specialist-team-advisor.md");
+  writeText(advisorPath, fs.readFileSync(path.join(root, "global", "agents", "specialist-team-advisor.md"), "utf8"));
+  addFixtureProfileAgent(fixture, "specialist-team-advisor");
+  appendReadmeAgentCatalogEntry(fixture, "- `specialist-team-advisor`: Smallest-sufficient-team advisor.");
+  return advisorPath;
+}
+
 export const validatorTests1: TestCase[] = [
+  {
+    name: "validator accepts specialist team advisor as a non-reviewer",
+    run: () => {
+      const fixture = newLibraryFixture("specialist-team-advisor-valid");
+      addSpecialistTeamAdvisorFixture(fixture);
+      assertSuccess(invokeValidator(fixture), "Complete specialist-team-advisor fixture should pass without reviewer privileges.");
+    },
+  },
+  {
+    name: "validator rejects widened specialist team advisor permissions",
+    run: () => {
+      const fixture = newLibraryFixture("specialist-team-advisor-permission");
+      const advisorPath = addSpecialistTeamAdvisorFixture(fixture);
+      const advisor = fs.readFileSync(advisorPath, "utf8");
+      writeText(advisorPath, advisor.replace("  specialist_catalog: allow", "  specialist_catalog: allow\n  task: allow"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Advisor task permission must fail validation.");
+      assertOutputContains(result, "specialist-team-advisor has unsupported allow", "Validation should name the widened advisor permission.");
+    },
+  },
+  {
+    name: "validator rejects incomplete specialist team advisor body",
+    run: () => {
+      const fixture = newLibraryFixture("specialist-team-advisor-contract");
+      const advisorPath = addSpecialistTeamAdvisorFixture(fixture);
+      const advisor = fs.readFileSync(advisorPath, "utf8");
+      writeText(advisorPath, advisor.replace("Call `specialist_catalog` exactly once", "Use the catalog when helpful"));
+      const result = invokeValidator(fixture);
+      assertFailure(result, "Incomplete advisor body must fail validation.");
+      assertOutputContains(result, "specialist-team-advisor non-reviewer contract", "Validation should name the advisor contract.");
+    },
+  },
   {
     name: "validator accepts valid fixture",
     run: () => {

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "changeId": "trajectory-current",
+  "candidateId": "configured-fixture",
+  "environmentId": "disposable-configured-project",
+  "retention": {"maxFiles": 64, "maxBytes": 26214400, "exception": null},
+  "tasks": [
+    {
+      "taskId": "1.1",
+      "taskTextDigest": "4bc54ab1d71897329fe35fb7b4403cbdd797ccb99c068c525948edeceb892e67",
+      "result": "complete",
+      "candidateId": "configured-fixture",
+      "environmentId": "disposable-configured-project",
+      "requiredBoundary": {"kind": "named-entrypoint", "name": "configured-fixture-archive", "effects": ["disposable-local-write"]},
+      "boundary": {"kind": "named-entrypoint", "name": "configured-fixture-archive", "effects": ["disposable-local-write"]},
+      "invocation": {"command": "reviewed configured fixture seed", "status": 0, "recordedAt": "2026-08-29T00:00:00.000Z"},
+      "artifacts": [],
+      "cleanup": "none",
+      "manualGate": null
+    }
+  ],
+  "lanes": [],
+  "claims": []
+}

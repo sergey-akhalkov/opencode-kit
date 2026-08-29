@@ -90,6 +90,29 @@ node C:\ProgramData\OpenCodeWorkstation\opencode-workstation.ts rollback
 
 Rollback safely stops both managed siblings, restores the exact previous OpenCode config bytes/ACL and Alacritty configuration, removes matching tasks/shortcuts/protected runtime, and refuses any drift. Reinstall by repeating repository preflight and install.
 
+## Campaign Supervisor Plans
+
+Campaign auto-resume has a separate explicit lifecycle and independent protected sibling root. It
+does not activate from workstation install, doctor, project init, or OpenCode startup. Before any
+host mutation, inspect the source-derived plan with a schema-valid portable registry:
+
+```powershell
+node tools/windows/work-campaign-supervisor.ts --help
+node tools/windows/work-campaign-supervisor.ts preview --kit-root <absolute-kit-root> --registry <absolute-registry.json> --workstation-manifest C:\ProgramData\OpenCodeWorkstation\manifest.json
+```
+
+Task 6.3 also exposes `check`, `repair-plan`, and `rollback-plan` against an explicit read-only
+observation JSON. These operations create no directory, copy no file, change no ACL, register no
+task, read no credential value, and start no process. The plan derives one owner-logon
+`OpenCode Work Campaign Supervisor` task under
+`C:\ProgramData\OpenCodeWorkCampaignSupervisor`, copies the complete portable workflow runtime
+closure while preserving its `global/` layout, and binds source/installed identities in a protected
+manifest. The portable campaign registry remains command-free and secret-free.
+
+Live install, Scheduled Task action, stop, repair, and rollback remain a separate authorized host
+operation. Campaign rollback must never remove shared workstation files, credentials, server/tray
+tasks, Graphify state, or project/campaign/mission evidence.
+
 ## Repository Validation
 
 ```powershell

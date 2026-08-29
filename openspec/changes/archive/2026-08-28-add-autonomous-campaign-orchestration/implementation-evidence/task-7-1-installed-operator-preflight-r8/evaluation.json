@@ -1,0 +1,30 @@
+{
+  "candidateId": "task-7-1-installed-operator-r1",
+  "checks": {
+    "candidateMatched": true,
+    "cleanupComplete": true,
+    "configuredModelCallsZero": true,
+    "environmentMatched": true,
+    "extensionProvisioningExact": true,
+    "failureAbsent": true,
+    "hostStatePreserved": true,
+    "installedIdentityCaptured": true,
+    "routeMatched": true,
+    "runtimeSurfaceCaptured": true,
+    "secretSafe": true,
+    "sessionLifecycleComplete": true,
+    "sourceCurrent": true,
+    "subsequentExtensionWritesAbsent": true,
+    "workstationIdentityPreserved": true,
+    "workstationPrestateRestored": true
+  },
+  "environmentId": "node-24.18.1-windows-task-7-1-r1",
+  "failedChecks": [],
+  "hostEffects": 0,
+  "liveCalls": 0,
+  "modelCalls": 0,
+  "proofKind": "campaign-installed-operator-preflight",
+  "schemaVersion": 1,
+  "sourceWrites": 0,
+  "status": "complete"
+}

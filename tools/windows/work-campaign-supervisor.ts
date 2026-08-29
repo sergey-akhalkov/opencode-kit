@@ -11,6 +11,8 @@ import {
   OPENCODE_PROTECTED_ROOT_ACL,
   OPENCODE_WORKSTATION_PROTECTED_ROOT,
   OPENCODE_WORKSTATION_SERVER_CREDENTIAL_PATH,
+  WORK_CAMPAIGN_SUPERVISOR_PROTECTED_ROOT,
+  WORK_CAMPAIGN_SUPERVISOR_TASK_NAME,
   quoteWindowsArgument,
 } from "./opencode-workstation-layout.ts";
 import {
@@ -24,12 +26,8 @@ import type {
 
 type JsonRecord = Record<string, unknown>;
 
-export const WORK_CAMPAIGN_SUPERVISOR_PROTECTED_ROOT = String.raw`C:\ProgramData\OpenCodeWorkCampaignSupervisor`;
-export const WORK_CAMPAIGN_SUPERVISOR_TASK_NAME = "OpenCode Work Campaign Supervisor";
-
 export type WorkCampaignSupervisorPreviewOptions = {
   kitRoot: string;
-  nodePath?: string;
   protectedRoot?: string;
   registryPath: string;
   workstationManifestPath?: string;
@@ -71,7 +69,7 @@ export type WorkCampaignSupervisorPreview = {
   effects: "none";
   manifest: CampaignSupervisorInstallManifest;
   operation: "preview";
-  registry: { digest: string; installedPath: string; sourcePath: string };
+  registry: { bytes: number; digest: string; installedPath: string; sourcePath: string };
   rollback: { paths: string[]; preserves: string[]; taskName: string };
   runtime: { endpoint: string; expectedVersion: string; root: string };
   schemaVersion: 1;
@@ -103,8 +101,6 @@ export type WorkCampaignSupervisorActionPlan = {
   operation: "repair-plan" | "rollback-plan";
   schemaVersion: 1;
 };
-
-const SHA256 = /^[a-f0-9]{64}$/u;
 
 function stableValue(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(stableValue);
@@ -143,6 +139,22 @@ function canonicalDirectory(value: string, label: string): string {
   return canonical;
 }
 
+function plannedProtectedRoot(value: string): string {
+  if (!path.isAbsolute(value)) throw new Error("protectedRoot must be absolute.");
+  const selected = path.resolve(value);
+  const stat = fs.lstatSync(selected, { throwIfNoEntry: false });
+  if (stat != null) {
+    if (!stat.isDirectory() || stat.isSymbolicLink() || !samePath(fs.realpathSync(selected), selected)) throw new Error("protectedRoot must be canonical and must not be a symbolic link.");
+    return selected;
+  }
+  const parent = path.dirname(selected);
+  const parentStat = fs.lstatSync(parent, { throwIfNoEntry: false });
+  if (parentStat == null || !parentStat.isDirectory() || parentStat.isSymbolicLink() || !samePath(fs.realpathSync(parent), parent)) {
+    throw new Error("protectedRoot parent must be a canonical regular directory.");
+  }
+  return selected;
+}
+
 function readWorkstationOwner(manifestPath: string, workstationRoot: string): string {
   const absolute = path.resolve(manifestPath);
   if (!samePath(path.dirname(absolute), workstationRoot)) throw new Error("Workstation manifest must be directly below the workstation protected root.");
@@ -166,8 +178,10 @@ function sourceDigest(files: CampaignSupervisorInstalledFile[], root: string): s
 
 export function buildWorkCampaignSupervisorPreview(options: WorkCampaignSupervisorPreviewOptions): WorkCampaignSupervisorPreview {
   const kitRoot = canonicalDirectory(options.kitRoot, "kitRoot");
-  const workstationRoot = path.resolve(options.workstationRoot ?? OPENCODE_WORKSTATION_PROTECTED_ROOT);
-  const protectedRoot = path.resolve(options.protectedRoot ?? WORK_CAMPAIGN_SUPERVISOR_PROTECTED_ROOT);
+  if (!path.isAbsolute(options.registryPath)) throw new Error("registryPath must be absolute.");
+  if (options.workstationManifestPath != null && !path.isAbsolute(options.workstationManifestPath)) throw new Error("workstationManifestPath must be absolute.");
+  const workstationRoot = canonicalDirectory(options.workstationRoot ?? OPENCODE_WORKSTATION_PROTECTED_ROOT, "workstationRoot");
+  const protectedRoot = plannedProtectedRoot(options.protectedRoot ?? WORK_CAMPAIGN_SUPERVISOR_PROTECTED_ROOT);
   const relativeToWorkstation = path.relative(workstationRoot, protectedRoot);
   if (relativeToWorkstation === "" || (!relativeToWorkstation.startsWith("..") && !path.isAbsolute(relativeToWorkstation))) {
     throw new Error("Campaign supervisor protected root must be independent from the workstation protected root.");
@@ -176,9 +190,14 @@ export function buildWorkCampaignSupervisorPreview(options: WorkCampaignSupervis
   const owner = readWorkstationOwner(workstationManifestPath, workstationRoot);
   const registryPath = path.resolve(options.registryPath);
   const loadedRegistry = loadCampaignSupervisorRegistry(registryPath);
-  const node = identity(path.resolve(options.nodePath ?? process.execPath));
+  if (loadedRegistry.registry.registrations.some((registration) => {
+    const relative = path.relative(registration.root, protectedRoot);
+    return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+  })) throw new Error("Campaign supervisor protected root must not be inside a registered project.");
+  const node = identity(process.execPath);
   const relativeSources = [
     ...PORTABLE_WORKFLOW_RUNTIME_FILES.map((relative) => `global/${relative}`),
+    "tools/windows/opencode-workstation-layout.ts",
     "tools/windows/work-campaign-supervisor-host.ts",
   ];
   const sourceFiles = relativeSources.map((relative) => {
@@ -225,7 +244,7 @@ export function buildWorkCampaignSupervisorPreview(options: WorkCampaignSupervis
     effects: "none",
     manifest,
     operation: "preview",
-    registry: { digest: registryIdentity.digest, installedPath: installedRegistryPath, sourcePath: registryIdentity.path },
+    registry: { bytes: registryIdentity.bytes, digest: registryIdentity.digest, installedPath: installedRegistryPath, sourcePath: registryIdentity.path },
     rollback: {
       paths: [manifest.resultPath, manifest.runtimeRoot, manifest.registry.path, ...manifest.installedFiles.map((file) => file.path), path.join(protectedRoot, "manifest.json"), protectedRoot],
       preserves: [workstationRoot, manifest.credentialPath, ...loadedRegistry.registry.registrations.map((registration) => registration.root)],
@@ -278,7 +297,11 @@ export function checkWorkCampaignSupervisorInstallation(
   observation: WorkCampaignSupervisorObservation,
 ): WorkCampaignSupervisorCheck {
   if (observation.schemaVersion !== 1) throw new Error("Observation schemaVersion must be 1.");
-  const sourceFiles = preview.manifest.kitSource.files.map((file) => ({ path: file.path, status: fileStatus(file) }));
+  const sourceFiles = [
+    ...preview.manifest.kitSource.files.map((file) => ({ path: file.path, status: fileStatus(file) })),
+    { path: preview.registry.sourcePath, status: fileStatus({ bytes: preview.registry.bytes, digest: preview.registry.digest, path: preview.registry.sourcePath }) },
+    { path: preview.manifest.node.path, status: fileStatus({ bytes: fs.lstatSync(preview.manifest.node.path).size, digest: preview.manifest.node.digest, path: preview.manifest.node.path }) },
+  ];
   const sourceStatus = sourceFiles.every((file) => file.status === "current") ? "current" : "drifted";
   const manifestPath = path.join(preview.manifest.protectedRoot, "manifest.json");
   let manifestStatus: Exclude<IdentityStatus, "unknown"> = "missing";
@@ -291,7 +314,7 @@ export function checkWorkCampaignSupervisorInstallation(
     }
   }
   const installedFiles = preview.manifest.installedFiles.map((file) => ({ path: file.path, status: fileStatus(file) }));
-  const registryStatus = fileStatus({ bytes: fs.lstatSync(preview.registry.sourcePath).size, digest: preview.registry.digest, path: preview.registry.installedPath });
+  const registryStatus = fileStatus({ bytes: preview.registry.bytes, digest: preview.registry.digest, path: preview.registry.installedPath });
   const installedStatus = manifestStatus === "missing" && installedFiles.every((file) => file.status === "missing") && registryStatus === "missing"
     ? "missing"
     : manifestStatus === "current" && installedFiles.every((file) => file.status === "current") && registryStatus === "current"

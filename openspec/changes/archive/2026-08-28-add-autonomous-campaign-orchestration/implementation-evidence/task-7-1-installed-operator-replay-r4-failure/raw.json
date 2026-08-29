@@ -1,0 +1,243 @@
+{
+  "after": {
+    "campaignRootExists": false,
+    "task": {
+      "exists": false,
+      "state": null
+    },
+    "workstation": {
+      "candidate": "bbb523f552995f20d9c8604f103332792c810e2fe2af905b7033fc0e0a00f59b",
+      "graphifyListeners": 0,
+      "health": false,
+      "installed": true,
+      "integrity": "complete",
+      "listeners": 0,
+      "taskExists": true,
+      "taskState": "Ready",
+      "trayTaskExists": true,
+      "trayTaskState": "Ready"
+    }
+  },
+  "before": {
+    "campaignRootExists": false,
+    "task": {
+      "exists": false,
+      "state": null
+    },
+    "workstation": {
+      "candidate": "bbb523f552995f20d9c8604f103332792c810e2fe2af905b7033fc0e0a00f59b",
+      "graphifyListeners": 0,
+      "health": false,
+      "installed": true,
+      "integrity": "complete",
+      "listeners": 0,
+      "taskExists": true,
+      "taskState": "Ready",
+      "trayTaskExists": true,
+      "trayTaskState": "Ready"
+    }
+  },
+  "candidateId": "task-7-1-installed-operator-r1",
+  "cleanup": "complete",
+  "configured": {},
+  "credential": {
+    "persistedInEvidence": false,
+    "source": "protected-file"
+  },
+  "derivation": {
+    "kind": "privacy-safe-projection",
+    "liveCalls": 0,
+    "sourceRawDigest": "ca27209f43de19fd0245a0f3710a1b5e183cbed467a5f7c9ee8c5dd21b1162bc"
+  },
+  "effects": {
+    "hostEffects": 0,
+    "remoteEffects": 0,
+    "sourceWrites": 0
+  },
+  "environmentId": "node-24.18.1-windows-task-7-1-r1",
+  "extensionProvisioning": null,
+  "failure": {
+    "facts": [
+      {
+        "depth": 0,
+        "message": "Managed extension fixture files were not materialized.",
+        "name": "Error"
+      }
+    ],
+    "message": "Managed extension fixture files were not materialized.",
+    "type": "Error"
+  },
+  "fixtureRemoved": true,
+  "host": {
+    "firstMissionDirectResumes": 0,
+    "firstMissionHookCalls": 0,
+    "operations": {},
+    "preTaskRows": [],
+    "taskRunRows": []
+  },
+  "installedOpenCode": {
+    "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+    "version": "1.18.25"
+  },
+  "operations": {},
+  "preflight": {
+    "evaluationDigest": "b200ebaa32c792a4f8105c3f3dc293f39b6115804e2cc93575de438f19e2fbc7",
+    "extensionProvisioning": [
+      {
+        "bytes": 28,
+        "digest": "441f89b8bba2252c9f7797ebc2fca741b760712e1c8261a7ad5c282175dd52f2",
+        "path": ".serena/.gitignore"
+      },
+      {
+        "bytes": 9943,
+        "digest": "3674c3a0a42b068f3d6a8551f657ead912abb0c4848dfe36ac01aadf453bb62f",
+        "path": ".serena/project.yml"
+      }
+    ],
+    "inputBundle": "task-7-1-installed-operator-preflight-r7",
+    "rawDigest": "046691cad8cf24f2475b66251d9f335e9f86824091350d2c508f2b931d017d77",
+    "runtimeSurface": {
+      "configDigest": "8cbb8b710ea64c279fd83d6f80f4fdb56f531d16ee18774ae4ea4a3aca7421d3",
+      "mcpIds": [
+        "codebase-memory-mcp",
+        "graphify-global",
+        "serena"
+      ],
+      "pluginIds": [
+        "sha256:650eab3c5db07ac1f80d81487a893c0251049a5b2972abfb267be4379775edc8",
+        "sha256:aacf4dc7a4e52a3a591ea9e898e890e37eca21fa31d49ef840a20c6d61ef8c02",
+        "sha256:29334fc8ec623ef8c8bed5ae02a0a2c235e29485c9cae933ba5e2ba0f4b17a6b"
+      ]
+    }
+  },
+  "proofKind": "campaign-installed-operator",
+  "runtimeSurface": {
+    "configDigest": "8cbb8b710ea64c279fd83d6f80f4fdb56f531d16ee18774ae4ea4a3aca7421d3",
+    "mcpIds": [
+      "codebase-memory-mcp",
+      "graphify-global",
+      "serena"
+    ],
+    "pluginIds": [
+      "sha256:650eab3c5db07ac1f80d81487a893c0251049a5b2972abfb267be4379775edc8",
+      "sha256:aacf4dc7a4e52a3a591ea9e898e890e37eca21fa31d49ef840a20c6d61ef8c02",
+      "sha256:29334fc8ec623ef8c8bed5ae02a0a2c235e29485c9cae933ba5e2ba0f4b17a6b"
+    ]
+  },
+  "schemaVersion": 1,
+  "secretLeakDetected": false,
+  "serverDiagnostics": {
+    "stderrDigest": "eca4250ef6779c46e12244d0f3e431a0343fcc9a69d0820d35658fddf6e696cb",
+    "stderrTail": "timestamp=2026-08-28T13:04:14.767Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:14.771Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:14.781Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:15.245Z level=INFO run=0b7b4e84 message=\"watcher backend\" directory=\"<absolute-path>\" platform=win32 backend=windows\ntimestamp=2026-08-28T13:04:15.253Z level=INFO run=0b7b4e84 message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-28T13:04:15.257Z level=INFO run=0b7b4e84 message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-28T13:04:15.580Z level=INFO run=0b7b4e84 message=\"booting location services\" directory=\"<absolute-path>\" workspaceID=undefined\ntimestamp=2026-08-28T13:04:16.076Z level=INFO run=0b7b4e84 message=\"creating instance\" directory=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.077Z level=INFO run=0b7b4e84 message=fromDirectory directory=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.102Z level=INFO run=0b7b4e84 message=bootstrapping directory=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.113Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.114Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.114Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.134Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.140Z level=INFO run=0b7b4e84 message=loading path=\"<absolute-path>\"\ntimestamp=2026-08-28T13:04:16.206Z level=INFO run=0b7b4e84 message=\"all LSPs are disabled\"\ntimestamp=2026-08-28T13:04:16.208Z level=INFO run=0b7b4e84 message=\"all formatters are disabled\"\ntimestamp=2026-08-28T13:04:16.209Z level=INFO run=0b7b4e84 message=init\ntimestamp=2026-08-28T13:04:17.253Z level=WARN run=0b7b4e84 message=\"server unavailable\" key=graphify-global type=remote status=failed\n",
+    "stdoutDigest": "fdddbc47c42b330a92b89f34a0a80157656c3604c7a07c6ec618b3574c78f00c"
+  },
+  "serverTerminal": true,
+  "sourceAfter": [
+    {
+      "digest": "25eae37877a509f6fa3f459b77d947d28cd5a0a78006fc344fc2d2576f151d20",
+      "path": "global/bin/work-campaign/semantic-executor.ts"
+    },
+    {
+      "digest": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c",
+      "path": "global/bin/work-campaign/semantic-playbook.ts"
+    },
+    {
+      "digest": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047",
+      "path": "global/bin/work-campaign/supervisor.ts"
+    },
+    {
+      "digest": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72",
+      "path": "tools/model-profile.ts"
+    },
+    {
+      "digest": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78",
+      "path": "tools/proofs/lib/opencode-proof-client.ts"
+    },
+    {
+      "digest": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d",
+      "path": "tools/proofs/lib/proof-process-cleanup.ts"
+    },
+    {
+      "digest": "0e7c2fbad543fa5b25792083f6df18f3961be0cb9d874575d294f5512d24ef9a",
+      "path": "tools/proofs/work-campaign-playbook.ts"
+    },
+    {
+      "digest": "01f99853787d4fa115e226a76c57ac5a7ec50f0d0deec28bcc0c51d8fd30fa4a",
+      "path": "tools/proofs/work-campaign-windows-installed.ts"
+    },
+    {
+      "digest": "3f22fff6924c24636db057c9fb384b404c8ae2dee69c85724ae1856380ac34d4",
+      "path": "tools/test-work-campaign-controller.ts"
+    },
+    {
+      "digest": "cce577236a4abc1a80911392ecabe7692bf86b1ba00c8a95dd06f573a61d8c3d",
+      "path": "tools/windows/opencode-workstation-layout.ts"
+    },
+    {
+      "digest": "8348865362046b3d6ec9b2385d803d1a4e6fc9e26e0e7197925ff770c8eadcec",
+      "path": "tools/windows/work-campaign-supervisor-host.ts"
+    },
+    {
+      "digest": "451f96b599364c591ee848ed8015a26f9d35396ebf94a3a402a6dbfc4f8a0bd0",
+      "path": "tools/windows/work-campaign-supervisor-install.ts"
+    },
+    {
+      "digest": "2f4746439b2d733f9eb68dfdc03a284b4ee3ca286a8aa4e00d8ce77144886bc1",
+      "path": "tools/windows/work-campaign-supervisor.ts"
+    }
+  ],
+  "sourceBefore": [
+    {
+      "digest": "25eae37877a509f6fa3f459b77d947d28cd5a0a78006fc344fc2d2576f151d20",
+      "path": "global/bin/work-campaign/semantic-executor.ts"
+    },
+    {
+      "digest": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c",
+      "path": "global/bin/work-campaign/semantic-playbook.ts"
+    },
+    {
+      "digest": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047",
+      "path": "global/bin/work-campaign/supervisor.ts"
+    },
+    {
+      "digest": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72",
+      "path": "tools/model-profile.ts"
+    },
+    {
+      "digest": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78",
+      "path": "tools/proofs/lib/opencode-proof-client.ts"
+    },
+    {
+      "digest": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d",
+      "path": "tools/proofs/lib/proof-process-cleanup.ts"
+    },
+    {
+      "digest": "0e7c2fbad543fa5b25792083f6df18f3961be0cb9d874575d294f5512d24ef9a",
+      "path": "tools/proofs/work-campaign-playbook.ts"
+    },
+    {
+      "digest": "01f99853787d4fa115e226a76c57ac5a7ec50f0d0deec28bcc0c51d8fd30fa4a",
+      "path": "tools/proofs/work-campaign-windows-installed.ts"
+    },
+    {
+      "digest": "3f22fff6924c24636db057c9fb384b404c8ae2dee69c85724ae1856380ac34d4",
+      "path": "tools/test-work-campaign-controller.ts"
+    },
+    {
+      "digest": "cce577236a4abc1a80911392ecabe7692bf86b1ba00c8a95dd06f573a61d8c3d",
+      "path": "tools/windows/opencode-workstation-layout.ts"
+    },
+    {
+      "digest": "8348865362046b3d6ec9b2385d803d1a4e6fc9e26e0e7197925ff770c8eadcec",
+      "path": "tools/windows/work-campaign-supervisor-host.ts"
+    },
+    {
+      "digest": "451f96b599364c591ee848ed8015a26f9d35396ebf94a3a402a6dbfc4f8a0bd0",
+      "path": "tools/windows/work-campaign-supervisor-install.ts"
+    },
+    {
+      "digest": "2f4746439b2d733f9eb68dfdc03a284b4ee3ca286a8aa4e00d8ce77144886bc1",
+      "path": "tools/windows/work-campaign-supervisor.ts"
+    }
+  ]
+}

@@ -319,9 +319,9 @@ export async function requestData<T>(request: Promise<unknown>, label: string): 
   return response.data as T;
 }
 
-export function proofClient(baseUrl: string, directory: string): OpencodeClient {
-  const password = process.env.OPENCODE_SERVER_PASSWORD;
-  const username = process.env.OPENCODE_SERVER_USERNAME ?? "opencode";
+export function proofClient(baseUrl: string, directory: string, environment: NodeJS.ProcessEnv = process.env): OpencodeClient {
+  const password = environment.OPENCODE_SERVER_PASSWORD;
+  const username = environment.OPENCODE_SERVER_USERNAME ?? "opencode";
   const headers = password
     ? { Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}` }
     : undefined;

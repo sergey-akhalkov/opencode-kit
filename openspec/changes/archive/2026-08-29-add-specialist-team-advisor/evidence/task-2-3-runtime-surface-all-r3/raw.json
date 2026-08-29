@@ -1,0 +1,37 @@
+{
+  "cleanup": "complete",
+  "candidateId": "add-specialist-team-advisor-task-2-3-all-r3",
+  "evaluation": {
+    "advisorAgentName": "specialist-team-advisor",
+    "advisorStatus": 0,
+    "catalogPluginCount": 1,
+    "commandNames": [
+      "mission-resume",
+      "mission-run",
+      "mission-status",
+      "mission-stop"
+    ],
+    "configStatus": 0,
+    "missingCommands": [],
+    "missingPlugins": [],
+    "model": "openai/gpt-5.6-sol",
+    "pluginPaths": [
+      "extensions/specialist-catalog.ts",
+      "extensions/opencode-pty-bridge.ts",
+      "extensions/roadmap-mission-launcher.ts",
+      "extensions/session-completion-guard.ts",
+      "plugin/session-env.ts",
+      "plugin/graphify-project-context.ts",
+      "plugins/notify.ts"
+    ],
+    "stagingPathCount": 0,
+    "status": "passed",
+    "unresolvedPlaceholderCount": 0
+  },
+  "profile": "all",
+  "agentStatus": null,
+  "advisorStatus": null,
+  "configStatus": 0,
+  "skillStatus": null,
+  "tool": "opencode-dev-kit-runtime-surface-loader"
+}

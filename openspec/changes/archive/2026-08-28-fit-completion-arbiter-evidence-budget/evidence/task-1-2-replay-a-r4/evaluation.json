@@ -1,0 +1,14 @@
+{
+  "baselineOverflow": true,
+  "candidateId": "completion-arbiter-budget-baseline-r2",
+  "cleanup": "complete",
+  "exactRequestBytes": 254687,
+  "mode": "fixture",
+  "rawDigest": "b1be17257597df2dad8f8387be879a8f4ad138935e92ee4fcb03fd3d9b637f62",
+  "replay": true,
+  "requestLimit": 200000,
+  "reviewedCounts": true,
+  "schemaVersion": 1,
+  "status": "complete",
+  "zeroChildModelCalls": true
+}

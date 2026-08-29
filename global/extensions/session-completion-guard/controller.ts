@@ -1013,6 +1013,7 @@ export class SessionCompletionController {
         elapsedMs: Math.max(0, state.auditDiagnostics.endedAt - (state.auditDiagnostics.startedAt ?? state.auditDiagnostics.endedAt)),
         error: details,
         errorClass,
+        requestContributions: error instanceof AuditRequestOverflowError ? error.contributions : [],
         requestBytes: state.auditDiagnostics.requestBytes,
         rootRef: epoch.rootRef,
       });

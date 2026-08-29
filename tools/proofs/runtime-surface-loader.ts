@@ -5,7 +5,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { CORE_SKILLS, ROADMAP_MISSION_PLUGIN_FILES, materializeRuntimeSurfaceProfile } from "../runtime-surface-profile.ts";
+import {
+  CORE_SKILLS,
+  DELIVERY_TRAJECTORY_HELPER_FILES,
+  ROADMAP_MISSION_PLUGIN_FILES,
+  SPECIALIST_CATALOG_PLUGIN_FILE,
+  loadRuntimeSurfaceProfile,
+  materializeRuntimeSurfaceProfile,
+} from "../runtime-surface-profile.ts";
 
 export type LoaderSkill = { location: string; name: string };
 
@@ -26,26 +33,48 @@ export type LoaderAgent = {
 
 export type LoaderSurfaceEvaluation = LoaderEvaluation & {
   agentName: string;
+  agentListStatus: number | null;
   agentStatus: number | null;
+  advisorAgentName: string;
+  advisorStatus: number | null;
   authorityMarkers: {
+    compactionTeamAdviceMirror: boolean;
+    debugConfigExposesCompactionPrompt: boolean;
     evidenceBoundsPrinciple: boolean;
     claimRoutingTrigger: boolean;
     complexityRoutingTrigger: boolean;
     foundationRoutingTrigger: boolean;
+    practiceOwnerBoundary: boolean;
+    teamAdviceRoutingTrigger: boolean;
+    teamAdviceStateContract: boolean;
   };
   canonicalOpenSpecSkills: string[];
+  catalogPluginCount: number;
+  configStatus: number | null;
+  extraCoreAgents: string[];
   missingCanonicalOpenSpecSkills: string[];
   permissionFailures: string[];
+  pluginPaths: string[];
   resolvedPaths: Record<string, string>;
+  unexpectedCorePlugins: string[];
 };
 
 export type MissionLoaderEvaluation = {
+  advisorAgentName: string;
+  advisorStatus: number | null;
+  agentListStatus: number | null;
+  catalogPluginCount: number;
   commandNames: string[];
   configStatus: number | null;
   missingCommands: string[];
   missingPlugins: string[];
+  missingSelectedAgents: string[];
+  missingSelectedSkills: string[];
+  missingTrajectoryClosure: string[];
   model: unknown;
   pluginPaths: string[];
+  selectedAgentNames: string[];
+  skillNames: string[];
   stagingPathCount: number;
   status: "failed" | "passed";
   unresolvedPlaceholderCount: number;
@@ -56,6 +85,16 @@ const DOMAIN_SKILLS = [
   "rust-workspace-bootstrap",
   "windows-service-packaging",
   "wire-protocol-golden-tests",
+] as const;
+
+const DOMAIN_AGENTS = [
+  "deployment-config-reviewer",
+  "legacy-client-compatibility-reviewer",
+  "legacy-evidence-reviewer",
+  "performance-reliability-reviewer",
+  "protocol-api-reviewer",
+  "rust-concurrency-reviewer",
+  "wire-protocol-reviewer",
 ] as const;
 
 function usage(): string {
@@ -147,6 +186,12 @@ export function parseLoaderAgent(value: unknown): LoaderAgent {
   return { mode: row.mode, name: row.name, permission, prompt: row.prompt };
 }
 
+export function parseAgentListNames(text: string): string[] {
+  return [...text.matchAll(/^([A-Za-z0-9][A-Za-z0-9._-]*) \((?:all|primary|subagent)\)\s*$/gm)]
+    .map((match) => match[1]!)
+    .sort((left, right) => left.localeCompare(right));
+}
+
 export function evaluateLoaderSkills(
   skills: LoaderSkill[],
   generatedRoot: string,
@@ -200,6 +245,13 @@ function finalExactPermission(agent: LoaderAgent, permission: string, pattern: s
   return matches.at(-1)?.action ?? null;
 }
 
+function finalPermission(agent: LoaderAgent, permission: string, pattern: string): string | null {
+  const matches = agent.permission.filter((rule) =>
+    (rule.permission === "*" || rule.permission === permission) && rule.pattern === pattern
+  );
+  return matches.at(-1)?.action ?? null;
+}
+
 function generatedLocation(skills: LoaderSkill[], name: string, generatedRoot: string): string {
   const matches = skills.filter((skill) => skill.name === name);
   if (matches.length !== 1) return `<invalid:${matches.length}>`;
@@ -211,9 +263,16 @@ function generatedLocation(skills: LoaderSkill[], name: string, generatedRoot: s
 export function evaluateLoaderSurface(
   skills: LoaderSkill[],
   agent: LoaderAgent,
+  advisor: LoaderAgent,
+  config: Record<string, unknown>,
+  generatedConfig: Record<string, unknown>,
+  listedAgentNames: string[],
   generatedRoot: string,
   sourceGlobal: string,
   agentStatus: number | null,
+  advisorStatus: number | null,
+  configStatus: number | null,
+  agentListStatus: number | null,
 ): LoaderSurfaceEvaluation {
   const skillEvaluation = evaluateLoaderSkills(skills, generatedRoot, sourceGlobal);
   const canonicalOpenSpecSkills = ["openspec-apply-change", "openspec-archive-change", "openspec-propose"];
@@ -245,8 +304,68 @@ export function evaluateLoaderSurface(
   if (!agent.prompt.includes("Foundation Relation Matrix") || !agent.prompt.includes("Do not return an acceptance/rejection verdict")) {
     permissionFailures.push("agent-prompt-markers-missing");
   }
+  const advisorPermissions: Array<[string, string, string]> = [
+    ["read", "*", "allow"],
+    ["glob", "*", "allow"],
+    ["grep", "*", "allow"],
+    ["specialist_catalog", "*", "allow"],
+    ["bash", "*", "deny"],
+    ["edit", "*", "deny"],
+    ["task", "*", "deny"],
+    ["question", "*", "deny"],
+    ["skill", "*", "deny"],
+    ["webfetch", "*", "deny"],
+    ["websearch", "*", "deny"],
+    ["todowrite", "*", "deny"],
+    ["external_directory", "*", "deny"],
+    ["lsp", "*", "deny"],
+    ["doom_loop", "*", "deny"],
+  ];
+  if (finalExactPermission(advisor, "*", "*") !== "deny") {
+    permissionFailures.push("advisor wildcard deny missing");
+  }
+  for (const [permission, pattern, expected] of advisorPermissions) {
+    const actual = finalPermission(advisor, permission, pattern);
+    if (actual !== expected) permissionFailures.push(`advisor:${permission}:${pattern} expected=${expected} observed=${actual ?? "missing"}`);
+  }
+  if (advisor.name !== "specialist-team-advisor") permissionFailures.push(`advisor-name=${advisor.name}`);
+  if (advisor.mode !== "subagent") permissionFailures.push(`advisor-mode=${advisor.mode}`);
+  if (!advisor.prompt.includes("Call `specialist_catalog` exactly once") || !advisor.prompt.includes("You never dispatch")) {
+    permissionFailures.push("advisor-prompt-markers-missing");
+  }
+  const pluginPaths = missionPluginPaths(config, generatedRoot);
+  const catalogPluginCount = pluginPaths.filter((entry) => entry === SPECIALIST_CATALOG_PLUGIN_FILE).length;
+  const unexpectedCorePlugins = pluginPaths.filter((entry) => entry !== SPECIALIST_CATALOG_PLUGIN_FILE);
+  const extraCoreAgents = DOMAIN_AGENTS.filter((name) => listedAgentNames.includes(name));
   const principles = fs.readFileSync(path.join(generatedRoot, "principles-of-work.md"), "utf8");
   const routing = fs.readFileSync(path.join(generatedRoot, "AGENTS.md"), "utf8");
+  const practiceOwnerContract = fs.readFileSync(path.join(path.dirname(sourceGlobal), "instructions", "practice-owner-agent-contract.md"), "utf8");
+  const configAgents = generatedConfig.agent && typeof generatedConfig.agent === "object" && !Array.isArray(generatedConfig.agent)
+    ? generatedConfig.agent as Record<string, unknown>
+    : {};
+  const debugConfigAgents = config.agent && typeof config.agent === "object" && !Array.isArray(config.agent)
+    ? config.agent as Record<string, unknown>
+    : {};
+  const compactionAgent = configAgents.compaction && typeof configAgents.compaction === "object" && !Array.isArray(configAgents.compaction)
+    ? configAgents.compaction as Record<string, unknown>
+    : {};
+  const compactionPrompt = typeof compactionAgent.prompt === "string" ? compactionAgent.prompt : "";
+  const debugCompactionAgent = debugConfigAgents.compaction && typeof debugConfigAgents.compaction === "object" && !Array.isArray(debugConfigAgents.compaction)
+    ? debugConfigAgents.compaction as Record<string, unknown>
+    : {};
+  const teamAdviceStateFields = [
+    "Advisor Task Ref",
+    "Candidate Ref",
+    "Catalog Ref",
+    "Main Disposition",
+    "Active Work Packages",
+    "Terminal Work Packages",
+    "Pending Activation Evidence",
+    "Specialist Liveness",
+    "Integration State",
+    "Unavailable Material Capabilities",
+    "Reconsultation Condition",
+  ];
   const resolvedPaths = {
     behavioralSubstitutionSkill: generatedLocation(skills, "behavioral-substitution-qualification", generatedRoot),
     complexityForagingContract: fs.existsSync(path.join(generatedRoot, "bin", "complexity-foraging-contract.ts"))
@@ -256,6 +375,15 @@ export function evaluateLoaderSurface(
       ? "<generated>/bin/complexity-foraging-inventory.ts"
       : "<missing>",
     complexityManagementSkill: generatedLocation(skills, "complexity-management", generatedRoot),
+    deliveryHorizonContract: fs.existsSync(path.join(generatedRoot, "bin", "openspec-change", "delivery-horizon.ts"))
+      ? "<generated>/bin/openspec-change/delivery-horizon.ts"
+      : "<missing>",
+    deliveryHorizonManifest: fs.existsSync(path.join(generatedRoot, "bin", "openspec-change", "manifest.ts"))
+      ? "<generated>/bin/openspec-change/manifest.ts"
+      : "<missing>",
+    deliveryTrajectoryContext: fs.existsSync(path.join(generatedRoot, "bin", "delivery-trajectory-context.ts"))
+      ? "<generated>/bin/delivery-trajectory-context.ts"
+      : "<missing>",
     evidenceSufficiencyReviewer: fs.existsSync(path.join(generatedRoot, "agents", "evidence-sufficiency-reviewer.md"))
       ? "<generated>/agents/evidence-sufficiency-reviewer.md"
       : "<missing>",
@@ -266,8 +394,20 @@ export function evaluateLoaderSurface(
     openspecApplySkill: generatedLocation(skills, "openspec-apply-change", generatedRoot),
     openspecArchiveSkill: generatedLocation(skills, "openspec-archive-change", generatedRoot),
     openspecProposeSkill: generatedLocation(skills, "openspec-propose", generatedRoot),
+    roadmapDeliveryTrajectorySkill: generatedLocation(skills, "roadmap-delivery-trajectory", generatedRoot),
+    specialistCatalogPlugin: fs.existsSync(path.join(generatedRoot, ...SPECIALIST_CATALOG_PLUGIN_FILE.split("/")))
+      ? `<generated>/${SPECIALIST_CATALOG_PLUGIN_FILE}`
+      : "<missing>",
+    specialistTeamAdvisor: fs.existsSync(path.join(generatedRoot, "agents", "specialist-team-advisor.md"))
+      ? "<generated>/agents/specialist-team-advisor.md"
+      : "<missing>",
   };
   const authorityMarkers = {
+    compactionTeamAdviceMirror: compactionPrompt.includes("Team Advice State")
+      && teamAdviceStateFields.every((field) => compactionPrompt.includes(field))
+      && compactionPrompt.includes("does not infer a new team")
+      && compactionPrompt.includes("does not reconsult solely because compaction occurred"),
+    debugConfigExposesCompactionPrompt: typeof debugCompactionAgent.prompt === "string",
     evidenceBoundsPrinciple: principles.includes("**Evidence Bounds Claims:**"),
     claimRoutingTrigger: routing.includes("behavioral-substitution-qualification") && routing.includes("evidence-sufficiency-reviewer"),
     complexityRoutingTrigger: routing.includes("Proportional context-efficient architecture")
@@ -275,27 +415,58 @@ export function evaluateLoaderSurface(
       && routing.includes("`codebase-audit-loop`")
       && routing.includes("project mode unavailable without approximating coverage"),
     foundationRoutingTrigger: routing.includes("foundation-integrity-reviewer") && routing.includes("foundation-integrity-recovery"),
+    practiceOwnerBoundary: practiceOwnerContract.includes("zero-trigger work launches no Practice Owner")
+      && practiceOwnerContract.includes("The non-owner team advisor follows its separate parentless-root mission trigger")
+      && practiceOwnerContract.includes("never satisfies or suppresses a matched practice trigger"),
+    teamAdviceRoutingTrigger: routing.includes("## Team Advice")
+      && routing.includes("trivial owner-local action with known representative proof")
+      && routing.includes("obtain one fresh `specialist-team-advisor` map")
+      && routing.includes("Main retains the mission spine")
+      && routing.includes("`main-alone` is a successful advisory result")
+      && routing.includes("Reconsult once only after a material topology change"),
+    teamAdviceStateContract: routing.includes("`Team Advice State` section")
+      && teamAdviceStateFields.every((field) => routing.includes(field))
+      && routing.includes("Compaction never verifies runtime availability")
+      && routing.includes("a mismatch invalidates only dependent recommendations"),
   };
   const pathFailures = Object.values(resolvedPaths).filter((value) => !value.startsWith("<generated>/"));
   const passed = skillEvaluation.status === "passed"
     && agentStatus === 0
+    && advisorStatus === 0
+    && configStatus === 0
+    && agentListStatus === 0
+    && catalogPluginCount === 1
+    && extraCoreAgents.length === 0
+    && unexpectedCorePlugins.length === 0
     && missingCanonicalOpenSpecSkills.length === 0
     && permissionFailures.length === 0
     && pathFailures.length === 0
     && authorityMarkers.evidenceBoundsPrinciple
     && authorityMarkers.claimRoutingTrigger
     && authorityMarkers.complexityRoutingTrigger
-    && authorityMarkers.foundationRoutingTrigger;
+    && authorityMarkers.foundationRoutingTrigger
+    && authorityMarkers.compactionTeamAdviceMirror
+    && authorityMarkers.practiceOwnerBoundary
+    && authorityMarkers.teamAdviceRoutingTrigger
+    && authorityMarkers.teamAdviceStateContract;
   return {
     ...skillEvaluation,
     agentName: agent.name,
+    agentListStatus,
     agentStatus,
+    advisorAgentName: advisor.name,
+    advisorStatus,
     authorityMarkers,
     canonicalOpenSpecSkills,
+    catalogPluginCount,
+    configStatus,
+    extraCoreAgents: [...extraCoreAgents],
     missingCanonicalOpenSpecSkills,
     permissionFailures,
+    pluginPaths,
     resolvedPaths,
     status: passed ? "passed" : "failed",
+    unexpectedCorePlugins,
   };
 }
 
@@ -317,7 +488,10 @@ function runOpenCode(cwd: string, args: string[], env: NodeJS.ProcessEnv): { sta
 
 export function captureCoreLoaderSurface(root: string): {
   cleanup: () => void;
+  agentListStatus: number | null;
   agentStatus: number | null;
+  advisorStatus: number | null;
+  configStatus: number | null;
   evaluation: LoaderSurfaceEvaluation;
   generatedRoot: string;
   projectRoot: string;
@@ -330,11 +504,22 @@ export function captureCoreLoaderSurface(root: string): {
   fs.mkdirSync(projectRoot, { recursive: true });
   fs.writeFileSync(path.join(projectRoot, "README.md"), "# Unrelated fixture\n");
   materializeRuntimeSurfaceProfile({ profileName: "core", root, targetRoot: generatedRoot });
-  fs.writeFileSync(path.join(generatedRoot, "opencode.json"), `${JSON.stringify({
-    $schema: "https://opencode.ai/config.json",
-    permission: "ask",
-  }, null, 2)}\n`);
-  const env = isolatedEnv(generatedRoot, runtimeRoot);
+  fs.copyFileSync(
+    path.join(generatedRoot, "opencode.local.instructions.example.md"),
+    path.join(generatedRoot, "opencode.local.instructions.md"),
+  );
+  const env = isolatedEnv(generatedRoot, runtimeRoot, true);
+  const config = runOpenCode(projectRoot, ["debug", "config"], env);
+  if (config.status !== 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    throw new Error(`opencode debug config exited ${config.status ?? "unknown"}: ${config.stderr || config.stdout}`);
+  }
+  const generatedConfig = JSON.parse(fs.readFileSync(path.join(generatedRoot, "opencode.json"), "utf8")) as Record<string, unknown>;
+  const agentList = runOpenCode(projectRoot, ["agent", "list"], env);
+  if (agentList.status !== 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    throw new Error(`opencode agent list exited ${agentList.status ?? "unknown"}: ${agentList.stderr || agentList.stdout}`);
+  }
   const skill = runOpenCode(projectRoot, ["debug", "skill"], env);
   if (skill.status !== 0) {
     fs.rmSync(work, { recursive: true, force: true });
@@ -346,15 +531,29 @@ export function captureCoreLoaderSurface(root: string): {
     fs.rmSync(work, { recursive: true, force: true });
     throw new Error(`opencode debug agent exited ${agent.status ?? "unknown"}: ${agent.stderr || agent.stdout}`);
   }
+  const advisor = runOpenCode(projectRoot, ["debug", "agent", "specialist-team-advisor"], env);
+  if (advisor.status !== 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    throw new Error(`opencode debug advisor exited ${advisor.status ?? "unknown"}: ${advisor.stderr || advisor.stdout}`);
+  }
   const evaluation = evaluateLoaderSurface(
     skills,
     parseLoaderAgent(extractJson(agent.stdout)),
+    parseLoaderAgent(extractJson(advisor.stdout)),
+    extractJson(config.stdout) as Record<string, unknown>,
+    generatedConfig,
+    parseAgentListNames(agentList.stdout),
     generatedRoot,
     path.join(root, "global"),
     agent.status,
+    advisor.status,
+    config.status,
+    agentList.status,
   );
   return {
+    agentListStatus: agentList.status,
     agentStatus: agent.status,
+    advisorStatus: advisor.status,
     cleanup: () => {
       fs.rmSync(work, { recursive: true, force: true });
       if (fs.existsSync(work)) throw new Error("Disposable loader root still exists after cleanup.");
@@ -362,6 +561,7 @@ export function captureCoreLoaderSurface(root: string): {
     evaluation,
     generatedRoot,
     projectRoot,
+    configStatus: config.status,
     skillStatus: skill.status,
   };
 }
@@ -381,6 +581,7 @@ export function captureMissionLoaderSurface(root: string): {
   evaluation: MissionLoaderEvaluation;
   generatedRoot: string;
   projectRoot: string;
+  skillStatus: number | null;
 } {
   const work = fs.mkdtempSync(path.join(os.tmpdir(), "runtime-surface-loader-all-"));
   const generatedRoot = path.join(root, "global", ".runtime-profiles", `proof-loader-${process.pid}-${crypto.randomBytes(4).toString("hex")}`);
@@ -393,7 +594,8 @@ export function captureMissionLoaderSurface(root: string): {
     path.join(generatedRoot, "opencode.local.instructions.example.md"),
     path.join(generatedRoot, "opencode.local.instructions.md"),
   );
-  const configResult = runOpenCode(projectRoot, ["debug", "config"], isolatedEnv(generatedRoot, runtimeRoot, true));
+  const env = isolatedEnv(generatedRoot, runtimeRoot, true);
+  const configResult = runOpenCode(projectRoot, ["debug", "config"], env);
   if (configResult.status !== 0) {
     fs.rmSync(work, { recursive: true, force: true });
     fs.rmSync(generatedRoot, { recursive: true, force: true });
@@ -401,7 +603,42 @@ export function captureMissionLoaderSurface(root: string): {
   }
   const config = extractJson(configResult.stdout) as Record<string, unknown>;
   const pluginPaths = missionPluginPaths(config, generatedRoot);
-  const requiredPlugins = ROADMAP_MISSION_PLUGIN_FILES;
+  const requiredPlugins = [...ROADMAP_MISSION_PLUGIN_FILES, SPECIALIST_CATALOG_PLUGIN_FILE];
+  const catalogPluginCount = pluginPaths.filter((entry) => entry === SPECIALIST_CATALOG_PLUGIN_FILE).length;
+  const advisor = runOpenCode(projectRoot, ["debug", "agent", "specialist-team-advisor"], env);
+  if (advisor.status !== 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    fs.rmSync(generatedRoot, { recursive: true, force: true });
+    throw new Error(`opencode debug advisor exited ${advisor.status ?? "unknown"}: ${advisor.stderr || advisor.stdout}`);
+  }
+  const advisorAgent = parseLoaderAgent(extractJson(advisor.stdout));
+  const skill = runOpenCode(projectRoot, ["debug", "skill"], env);
+  if (skill.status !== 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    fs.rmSync(generatedRoot, { recursive: true, force: true });
+    throw new Error(`opencode debug skill exited ${skill.status ?? "unknown"}: ${skill.stderr || skill.stdout}`);
+  }
+  const skills = parseLoaderSkills(extractJson(skill.stdout));
+  const skillNames = [...new Set(skills.map((entry) => entry.name))].sort((left, right) => left.localeCompare(right));
+  const agentList = runOpenCode(projectRoot, ["agent", "list"], env);
+  if (agentList.status !== 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    fs.rmSync(generatedRoot, { recursive: true, force: true });
+    throw new Error(`opencode agent list exited ${agentList.status ?? "unknown"}: ${agentList.stderr || agentList.stdout}`);
+  }
+  const selectedAgentNames = parseAgentListNames(agentList.stdout);
+  const selectedProfile = loadRuntimeSurfaceProfile(root, "all");
+  if (selectedProfile.profile == null || selectedProfile.errors.length > 0) {
+    fs.rmSync(work, { recursive: true, force: true });
+    fs.rmSync(generatedRoot, { recursive: true, force: true });
+    throw new Error(selectedProfile.errors.join("\n") || "Unable to load all profile for agent readback.");
+  }
+  const missingSelectedAgents = selectedProfile.profile.agents.filter((name) => !selectedAgentNames.includes(name));
+  const missingSelectedSkills = selectedProfile.profile.skills.filter((name) => !skillNames.includes(name));
+  const missingTrajectoryClosure = DELIVERY_TRAJECTORY_HELPER_FILES.filter((relative) => {
+    const generatedRelative = relative.slice("global/".length);
+    return !fs.existsSync(path.join(generatedRoot, ...generatedRelative.split("/")));
+  });
   const command = config.command != null && typeof config.command === "object" && !Array.isArray(config.command)
     ? config.command as Record<string, unknown>
     : {};
@@ -413,16 +650,32 @@ export function captureMissionLoaderSurface(root: string): {
   const stagingPathCount = serializedConfig.split(".staging-").length - 1;
   const unresolvedPlaceholderCount = serializedConfig.split("__OPENCODE_").length - 1;
   const evaluation: MissionLoaderEvaluation = {
+    advisorAgentName: advisorAgent.name,
+    advisorStatus: advisor.status,
+    agentListStatus: agentList.status,
+    catalogPluginCount,
     commandNames,
     configStatus: configResult.status,
     missingCommands,
     missingPlugins,
+    missingSelectedAgents,
+    missingSelectedSkills,
+    missingTrajectoryClosure: [...missingTrajectoryClosure],
     model: config.model,
     pluginPaths,
+    selectedAgentNames,
+    skillNames,
     stagingPathCount,
     status: configResult.status === 0
+        && advisor.status === 0
+        && advisorAgent.name === "specialist-team-advisor"
+        && agentList.status === 0
+        && catalogPluginCount === 1
         && config.model === "openai/gpt-5.6-sol"
         && missingPlugins.length === 0
+        && missingSelectedAgents.length === 0
+        && missingSelectedSkills.length === 0
+        && missingTrajectoryClosure.length === 0
         && missingCommands.length === 0
         && stagingPathCount === 0
         && unresolvedPlaceholderCount === 0
@@ -439,6 +692,7 @@ export function captureMissionLoaderSurface(root: string): {
     evaluation,
     generatedRoot,
     projectRoot,
+    skillStatus: skill.status,
   };
 }
 
@@ -469,6 +723,8 @@ if (isMainModule()) {
         evaluation: captured.evaluation,
         profile: options.profile,
         agentStatus: "agentStatus" in captured ? captured.agentStatus : null,
+        advisorStatus: "advisorStatus" in captured ? captured.advisorStatus : null,
+        configStatus: "configStatus" in captured ? captured.configStatus : captured.evaluation.configStatus,
         skillStatus: "skillStatus" in captured ? captured.skillStatus : null,
         tool: "opencode-dev-kit-runtime-surface-loader",
       };

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "changeId": "add-specialist-team-advisor",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-specialist-team-advising",
+      "requirements": [
+        "Non-trivial root tasks receive proportional team advice",
+        "Advice uses current task evidence and the active artifact catalog",
+        "Advice returns the smallest sufficient engagement map",
+        "Main retains orchestration and result authority",
+        "Advice is refreshed only for material task-topology change",
+        "Advisor unavailability is visible and proportional"
+      ]
+    },
+    {
+      "capability": "library-practice-ownership",
+      "requirements": [
+        "Main owns results and Practice Owners own practices",
+        "Practice routing is trigger-based and proportional"
+      ]
+    },
+    {
+      "capability": "library-change-ready-sdlc",
+      "requirements": [
+        "Outcome accountability and practice responsibility stay separate",
+        "Practice routing preserves proportional delivery"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Team-advice artifacts are cohesive, discoverable, and least privilege",
+        "Active catalog projection and semantic routing evidence remain separate",
+        "Compaction preserves current engagement state without replaying the catalog"
+      ]
+    },
+    {
+      "capability": "library-runtime-surface-profiles",
+      "requirements": [
+        "Default profiles expose one current team-advice surface"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "README.md",
+    "global/AGENTS.md",
+    "global/agents/specialist-team-advisor.md",
+    "global/opencode.json.template",
+    "global/extensions/specialist-catalog.ts",
+    "instructions/practice-owner-agent-contract.md",
+    "profiles/all.json",
+    "profiles/core.json",
+    "tools/contracts",
+    "tools/proofs/README.md",
+    "tools/proofs/consumer-outcome-regression.ts",
+    "tools/proofs/consumer-outcome",
+    "tools/proofs/fixtures/consumer-outcome/team-advising-v1",
+    "tools/proofs/runtime-surface-loader.ts",
+    "tools/model-profile.ts",
+    "tools/practice-owners.ts",
+    "tools/runtime-surface-profile.ts",
+    "tools/test-consumer-outcome.ts",
+    "tools/test-helpers/library.ts",
+    "tools/test-library/runtime-surface-profiles.ts",
+    "tools/test-model-profile.ts",
+    "tools/validators/agents.ts",
+    "tools/test-specialist-catalog.ts",
+    "tools/test-specialist-catalog-plugin.ts"
+  ],
+  "dependencies": [],
+  "transfers": []
+}

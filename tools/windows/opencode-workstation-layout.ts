@@ -4,6 +4,8 @@ export const OPENCODE_WORKSTATION_PROTECTED_ROOT = String.raw`C:\ProgramData\Ope
 export const OPENCODE_WORKSTATION_SERVER_TASK_NAME = "OpenCode Workstation Shared Server";
 export const OPENCODE_WORKSTATION_TRAY_TASK_NAME = "OpenCode Workstation Tray";
 export const OPENCODE_WORKSTATION_SERVER_CREDENTIAL_PATH = path.join(OPENCODE_WORKSTATION_PROTECTED_ROOT, "server-password");
+export const WORK_CAMPAIGN_SUPERVISOR_PROTECTED_ROOT = String.raw`C:\ProgramData\OpenCodeWorkCampaignSupervisor`;
+export const WORK_CAMPAIGN_SUPERVISOR_TASK_NAME = "OpenCode Work Campaign Supervisor";
 
 export const OPENCODE_PROTECTED_ROOT_ACL = {
   display: ["SYSTEM:F", "BUILTIN\\Administrators:F", "BUILTIN\\Users:RX"],

@@ -65,6 +65,8 @@ const EXACT_REPORT_MARKDOWN_OPEN = "```markdown";
 /** Byte-exact top-level closer for intentional role report envelopes. */
 const EXACT_REPORT_MARKDOWN_CLOSE = "```";
 const SESSION_COMPLETION_ARBITER_FILE = "session-completion-arbiter.md";
+const SPECIALIST_TEAM_ADVISOR_FILE = "specialist-team-advisor.md";
+const SPECIALIST_TEAM_ADVISOR_DESCRIPTION = "Use before deciding to select or omit maintained routes in a new non-trivial parentless root mission; returns the smallest sufficient team. Stay quiet only for one already-selected existing-owner action with known proof.";
 
 /**
  * Markers that may be certified only from the intentional ## Output report
@@ -374,6 +376,69 @@ function validateSessionCompletionArbiter(
       surfaces.rawBody,
       required,
       "session-completion-arbiter machine verdict contract",
+      file,
+    );
+  }
+}
+
+function validateSpecialistTeamAdvisor(
+  ctx: ValidationContext,
+  frontmatter: FrontmatterMap,
+  surfaces: AgentModelFacingSurfaces,
+  file: string,
+): void {
+  if (frontmatter.get("description") !== SPECIALIST_TEAM_ADVISOR_DESCRIPTION) {
+    ctx.addError(`specialist-team-advisor must use the exact discovery description: ${file}`);
+  }
+  const allowed = new Map<string, string>([
+    ["permission.*", "deny"],
+    ["permission.glob", "allow"],
+    ["permission.grep", "allow"],
+    ["permission.read", "allow"],
+    ["permission.specialist_catalog", "allow"],
+  ]);
+  for (const [key, expected] of allowed) {
+    if (frontmatter.get(key) !== expected) {
+      ctx.addError(`specialist-team-advisor must set ${key}: ${expected}: ${file}`);
+    }
+  }
+  for (const [key, value] of frontmatter) {
+    if (key.startsWith("permission.") && value === "allow" && allowed.get(key) !== "allow") {
+      ctx.addError(`specialist-team-advisor has unsupported allow '${key}': ${file}`);
+    }
+  }
+  if (frontmatter.has("hidden")) {
+    ctx.addError(`specialist-team-advisor must remain discoverable: ${file}`);
+  }
+  for (const required of [
+    "read-only specialist team advisor",
+    "Call `specialist_catalog` exactly once",
+    "You never dispatch",
+    "Do not embed a static roster",
+    "does not satisfy or suppress a matched Practice Owner trigger",
+  ]) {
+    requireTextContains(
+      ctx,
+      surfaces.operativeBody,
+      required,
+      "specialist-team-advisor non-reviewer contract",
+      file,
+    );
+  }
+  for (const required of [
+    "Team Advice: main-alone | team-recommended | unknown",
+    "Effective Model",
+    "Mission Spine Retained By Main",
+    "Work Packages",
+    "Considered Omissions",
+    "Evidence Gaps",
+    "Reconsultation Condition",
+  ]) {
+    requireTextContains(
+      ctx,
+      surfaces.rawBody,
+      required,
+      "specialist-team-advisor output contract",
       file,
     );
   }
@@ -822,6 +887,12 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
     if (agentFileName === SESSION_COMPLETION_ARBITER_FILE) {
       if (surfaces != null) {
         validateSessionCompletionArbiter(ctx, frontmatter, surfaces, file);
+      }
+      continue;
+    }
+    if (agentFileName === SPECIALIST_TEAM_ADVISOR_FILE) {
+      if (surfaces != null) {
+        validateSpecialistTeamAdvisor(ctx, frontmatter, surfaces, file);
       }
       continue;
     }

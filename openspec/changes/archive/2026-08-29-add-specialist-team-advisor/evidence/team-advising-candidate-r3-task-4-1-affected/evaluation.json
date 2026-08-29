@@ -1,0 +1,36 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "cdbfcbd8fe3ce8057f805eeaaf72cc3511acc92b3cdf07432b1924c6061fa450"
+  },
+  "evaluationDigest": "1b48d8b0ed3fbce8278ad83696110ef68d81f77b43f34bb2769a8d360b297692",
+  "maximumClaim": "the selected STA-001 subset (procedural-skill-no-fresh-agent, active-profile-capability-unavailable) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 4,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "active-profile-capability-unavailable"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "active-profile-capability-unavailable"
+    }
+  ],
+  "status": "passed"
+}

@@ -1,0 +1,80 @@
+{
+  "bundleDigests": {
+    "baseline": "154cf9e49b72ca18e835e8a3b6c34ecf654c9276244b57fc87f082d1bc4c0665",
+    "candidate": "2965b280b3a1e6bd126ffb809a472785186b1dd9e33327ededb1ec4b5e910282"
+  },
+  "evaluationDigest": "641e4ec3f1d56fff5239674230d396d40926a295adef507e8462820e9548dde1",
+  "maximumClaim": "the selected STA-001 subset (multi-domain-bounded-team, procedural-skill-no-fresh-agent, conditional-later-specialist, active-profile-capability-unavailable, overstaffing-negative-control) for the recorded model/profile/source/environment only; no complete-population, universal routing, unreviewed task, unlisted artifact, cross-model, or deployed-runtime claim is supported",
+  "modelCalls": 10,
+  "rows": [
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "multi-domain-bounded-team"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "candidate",
+      "failures": [
+        "advice-state-mismatch",
+        "advisor-call-count-mismatch",
+        "catalog-call-count-mismatch",
+        "main-disposition-mismatch"
+      ],
+      "passed": false,
+      "scenarioId": "procedural-skill-no-fresh-agent"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "conditional-later-specialist"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "active-profile-capability-unavailable"
+    },
+    {
+      "arm": "candidate",
+      "failures": [
+        "main-disposition-mismatch",
+        "unavailable-capability-mismatch"
+      ],
+      "passed": false,
+      "scenarioId": "active-profile-capability-unavailable"
+    },
+    {
+      "arm": "baseline",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "overstaffing-negative-control"
+    },
+    {
+      "arm": "candidate",
+      "failures": [],
+      "passed": true,
+      "scenarioId": "overstaffing-negative-control"
+    }
+  ],
+  "status": "failed"
+}

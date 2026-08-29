@@ -1,0 +1,1773 @@
+{
+  "candidateId": "task-7-1-installed-operator-r1",
+  "cleanup": "complete",
+  "configured": {
+    "candidateId": "task-7-1-installed-operator-r1",
+    "checks": {
+      "admissionReached": true,
+      "campaignCompleted": true,
+      "candidateMatched": true,
+      "cleanupComplete": true,
+      "configuredScenarioComplete": true,
+      "environmentMatched": true,
+      "exactConfiguredSequence": true,
+      "exactCurrentAssignmentEvidence": true,
+      "exactlyNineModelCalls": true,
+      "extensionMaterialContained": true,
+      "failureAbsent": true,
+      "finalClosureCurrent": true,
+      "firstMissionRoutedOnce": true,
+      "fixtureRemoved": true,
+      "hostInitiallyAbsent": true,
+      "hostRemoved": true,
+      "installCompleted": true,
+      "installedCheckCurrent": true,
+      "missionHandoffConsumed": true,
+      "missionOwnedCorrectionObserved": true,
+      "optionalP2SourceUnchanged": true,
+      "p2ExcludedFromWave": true,
+      "playbookComplete": true,
+      "preTaskResumeReady": true,
+      "preflightBound": true,
+      "readOnlyRootsTerminal": true,
+      "rereviewVerified": true,
+      "rollbackCompleted": true,
+      "routeMatched": true,
+      "scheduledTaskResumedFirstMission": true,
+      "secondWaveMissionConsumed": true,
+      "secretSafe": true,
+      "serverExplicit": true,
+      "serverTerminal": true,
+      "sourceCurrent": true,
+      "surfaceCurrent": true,
+      "transitionOrder": true,
+      "wholeWorktreeCleanAtSemanticRoots": true,
+      "windowsSupervisorReentryObserved": true,
+      "workstationIdentityPreserved": true,
+      "workstationPrestateRestored": true
+    },
+    "environmentId": "node-24.18.1-windows-task-7-1-r1",
+    "evaluationDigest": "sha256:d44e6e39174662fc1307f9446ff6029c5e1d574f0ef2861d60ad46f22b2cb298",
+    "failedChecks": [],
+    "hostEffects": 3,
+    "inputBundle": "task-7-1-installed-operator-r7",
+    "liveCalls": 9,
+    "modelCalls": 9,
+    "proofKind": "campaign-installed-operator",
+    "schemaVersion": 1,
+    "sourceWrites": 0,
+    "status": "complete"
+  },
+  "controller": {
+    "candidateId": "task-7-1-installed-operator-r1",
+    "cleanup": "complete",
+    "commands": [
+      {
+        "disposition": "blocked",
+        "exitCode": 1,
+        "field": null,
+        "name": "status-before",
+        "phase": "inventory",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": null,
+        "exitCode": 0,
+        "field": null,
+        "name": "preflight",
+        "phase": "inventory",
+        "status": "eligible",
+        "writerClosure": null
+      },
+      {
+        "disposition": "paused-external",
+        "exitCode": 3,
+        "field": null,
+        "name": "run",
+        "phase": "paused",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": null,
+        "exitCode": 0,
+        "field": null,
+        "name": "report-readback",
+        "phase": null,
+        "status": "report-current",
+        "writerClosure": null
+      },
+      {
+        "disposition": "paused-external",
+        "exitCode": 0,
+        "field": null,
+        "name": "status-after",
+        "phase": "paused",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": "paused-external",
+        "exitCode": 0,
+        "field": null,
+        "name": "replay",
+        "phase": "paused",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": "paused-external",
+        "exitCode": 3,
+        "field": null,
+        "name": "idempotent-run",
+        "phase": "paused",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": null,
+        "exitCode": 2,
+        "field": "playbook",
+        "name": "invalid-definition",
+        "phase": null,
+        "status": "blocked",
+        "writerClosure": null
+      },
+      {
+        "disposition": "blocked",
+        "exitCode": 1,
+        "field": null,
+        "name": "dirty-worktree",
+        "phase": "inventory",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": "blocked",
+        "exitCode": 1,
+        "field": null,
+        "name": "active-change",
+        "phase": "inventory",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": "paused-unknown",
+        "exitCode": 1,
+        "field": null,
+        "name": "unknown-writer",
+        "phase": "inventory",
+        "status": null,
+        "writerClosure": "unknown"
+      },
+      {
+        "disposition": "paused-stop",
+        "exitCode": 0,
+        "field": null,
+        "name": "stop",
+        "phase": "paused",
+        "status": null,
+        "writerClosure": "terminal"
+      },
+      {
+        "disposition": "paused-stop",
+        "exitCode": 0,
+        "field": null,
+        "name": "stopped-status",
+        "phase": "paused",
+        "status": null,
+        "writerClosure": "terminal"
+      }
+    ],
+    "controlPartitions": {
+      "investigations": {
+        "confirmed": {
+          "disposition": "paused-external",
+          "exitCode": 3
+        },
+        "stillUnknown": {
+          "error": "work item item-p1 remains still-unknown and blocks findings freeze",
+          "exitCode": 1
+        }
+      },
+      "ownerOnly": {
+        "disposition": "owner-required",
+        "errorClass": "owner-protected",
+        "exitCode": 0,
+        "sourceWriterCount": 0,
+        "transitionCount": 8
+      },
+      "ownerSibling": {
+        "disposition": "paused-external",
+        "exitCode": 3,
+        "sourceWriterCount": 0
+      },
+      "reportOnly": {
+        "disposition": "paused-external",
+        "exitCode": 3,
+        "sourceWriterCount": 0,
+        "transitionCount": 8
+      }
+    },
+    "effects": {
+      "controllerGitMutationCalls": 0,
+      "controllerOpenSpecMutationCalls": 0,
+      "fixtureGitMutationCalls": 11,
+      "fixtureOpenSpecMutationCalls": 2,
+      "hostEffects": 0,
+      "missionCalls": 2,
+      "openCodeCalls": 0,
+      "processStarts": 98,
+      "providerCalls": 0,
+      "sourceWrites": 0
+    },
+    "environment": {
+      "node": "v24.18.1",
+      "openSpec": "1.11.0",
+      "platform": "win32"
+    },
+    "environmentId": "node-24.18.1-windows-task-7-1-r1",
+    "missionIntegration": {
+      "duplicateTransitionCount": 11,
+      "launchKinds": [
+        "preflight",
+        "phase-start",
+        "phase-complete",
+        "phase-start",
+        "findings-freeze",
+        "phase-start",
+        "report-materialized",
+        "wave-admitted",
+        "mission-launch"
+      ],
+      "mismatchExitCode": 2,
+      "missionDisposition": "complete",
+      "reportFixed": true,
+      "reportNeedsRereview": true,
+      "resumeDisposition": "paused-external",
+      "resumePhase": "verify",
+      "stopDisposition": "paused-stop",
+      "stopSource": "campaign",
+      "terminalKinds": [
+        "mission-terminal",
+        "verification"
+      ],
+      "writerLeaseAbsent": true
+    },
+    "negativeControls": {
+      "activeChange": 1,
+      "dirtyWorktree": 1,
+      "invalidDefinition": 2,
+      "unknownWriter": 1
+    },
+    "proofKind": "campaign-provider-free-controller",
+    "report": {
+      "digest": "570ed387cfc3c8d3d6049d0b457fdbd4ca5412e07b16a769878a15d0d70ba234",
+      "p1Present": true,
+      "p2ReportOnly": true
+    },
+    "schemaVersion": 1,
+    "sourceCandidate": [
+      {
+        "path": "global/bin/openspec-archive.ts",
+        "sha256": "b7fcb48d8082afb176733e73cbad5221d6e428d9398c340a601b11081ad5cfe0"
+      },
+      {
+        "path": "global/bin/openspec-change/bounded-falsification.ts",
+        "sha256": "66386c49e7882974687707a4f7b01a91413ce93ef9b1263cc11ec4bb01778467"
+      },
+      {
+        "path": "global/bin/openspec-operation-gate.ts",
+        "sha256": "3319b827dddc6affdff68542d2996268c4ac0459e014f665c019ee81280d4e7f"
+      },
+      {
+        "path": "global/bin/portable-process-supervisor.ts",
+        "sha256": "794c29b93569e96a38c95ae817291da22dedb63051f0bcf4e38077aa711f9099"
+      },
+      {
+        "path": "global/bin/portable-process.ts",
+        "sha256": "53fbe318e14a1b2568f722314e66f473503c02d35d39d1e269c1b512ed50b49f"
+      },
+      {
+        "path": "global/bin/roadmap-mission-session-executor.ts",
+        "sha256": "e5f243d29c247280e3d7be6eb45fddafc502daf70a9658f4748bc4043a783128"
+      },
+      {
+        "path": "global/bin/roadmap-mission.ts",
+        "sha256": "6a57edc26bce42a42597a16d59a5daf9c032aaa0afde453a26f83723bf156cee"
+      },
+      {
+        "path": "global/bin/roadmap-mission/contracts.ts",
+        "sha256": "d1394cddf33c1a9aa7fa3339e3462102b6a25e36410c0250fece5f492c2548c1"
+      },
+      {
+        "path": "global/bin/roadmap-mission/controller-adapter.ts",
+        "sha256": "78472724f9a10745fb95201f85135330f9a1554e62c0a24c596a5bcff66d6491"
+      },
+      {
+        "path": "global/bin/roadmap-mission/controller-process.ts",
+        "sha256": "84933f3df214d0856c82117a6b3915a378c6f8a1ed37d4032fb67370f90c416d"
+      },
+      {
+        "path": "global/bin/roadmap-mission/controller-result.ts",
+        "sha256": "494c092587a125630e1cb5ee814578c30b9094145109bc287ab911f60ab95781"
+      },
+      {
+        "path": "global/bin/roadmap-mission/controller.ts",
+        "sha256": "dc57d79a13a4addb694939aa80272e5084209dff57a27d7ae728197ff0afe6ee"
+      },
+      {
+        "path": "global/bin/roadmap-mission/parent-correlation.ts",
+        "sha256": "9d7a78dc0e8ab11c290711613f8c50e2016c232b3d2c6e1e606817fcf0f5f612"
+      },
+      {
+        "path": "global/bin/roadmap-mission/preflight.ts",
+        "sha256": "ed706cea7b6235df7e9c9da74cfd5658a0f9e7cb6e792650e98cb017d2c281b1"
+      },
+      {
+        "path": "global/bin/roadmap-mission/session-executor.ts",
+        "sha256": "16d27b3835007eab3a3b545a80a20f0c867aa0949aff6fde1209e4568dd9d5d9"
+      },
+      {
+        "path": "global/bin/roadmap-mission/state.ts",
+        "sha256": "85e68f216d6ec783efe38b6d0d360b6d307eb30d8aa4ad36a16ef689d101c6d2"
+      },
+      {
+        "path": "global/bin/work-campaign-semantic-executor.ts",
+        "sha256": "bebc4102bf0ad5f8e4a80f456006bb8f55e0db201ee3931d4bc93d0e97b5b0fa"
+      },
+      {
+        "path": "global/bin/work-campaign-supervisor.ts",
+        "sha256": "936a592c9f93017fa2cd40b7e80408355cce9d4e11b0acbcdf7359b229c700b2"
+      },
+      {
+        "path": "global/bin/work-campaign.ts",
+        "sha256": "63ea2791185f736b58c2707d0ab43ed1f64c599efb40212238e37acca1525e02"
+      },
+      {
+        "path": "global/bin/work-campaign/contracts.ts",
+        "sha256": "9b5ebaeff142a7bd50b6ab76c9f2d930d7e71d2fa97fc203e8b9c95b0c439461"
+      },
+      {
+        "path": "global/bin/work-campaign/controller.ts",
+        "sha256": "4f1a84bba923d1764368db485fa8340ccb6e2696160f5d6ef190c47f401d6c9f"
+      },
+      {
+        "path": "global/bin/work-campaign/materializer.ts",
+        "sha256": "1f08848ae2921c3c7f239d68cb0e412d6ff1966059275f7d53b04131fd51aba1"
+      },
+      {
+        "path": "global/bin/work-campaign/mission-handoff.ts",
+        "sha256": "aaca69377a98dbb28d9cbf2ec31cff28efca2257cefa0a5e5aff317fbbb93298"
+      },
+      {
+        "path": "global/bin/work-campaign/phase-input.ts",
+        "sha256": "2b093da8343243bac89ef1faed187d3aa82c3494c030f867fabdc7c0b3f78668"
+      },
+      {
+        "path": "global/bin/work-campaign/preflight.ts",
+        "sha256": "72313cc0c34e8823f3a8f5d85ae73dad24960564db64122d06d286910f25824f"
+      },
+      {
+        "path": "global/bin/work-campaign/semantic-executor.ts",
+        "sha256": "25eae37877a509f6fa3f459b77d947d28cd5a0a78006fc344fc2d2576f151d20"
+      },
+      {
+        "path": "global/bin/work-campaign/semantic-playbook.ts",
+        "sha256": "6c944839bc4a58f240393d16c2526d67f4a380d94a2c665dc5233b37a90eaa7c"
+      },
+      {
+        "path": "global/bin/work-campaign/semantic-schema.ts",
+        "sha256": "4881a69366a7dedf53ac46448c99b55707ab0e8adfa6cc366a35c945521fb997"
+      },
+      {
+        "path": "global/bin/work-campaign/state.ts",
+        "sha256": "7ba39de1f8d2b508d69d06af8824c265ea13de7bd4d95ff2fd7de4e83889c82f"
+      },
+      {
+        "path": "global/bin/work-campaign/supervisor.ts",
+        "sha256": "5be28ff467daf10db71ff2bbcff09a8ca0f0610ff5b8663df8dc598268617047"
+      },
+      {
+        "path": "global/bin/work-campaign/verification-input.ts",
+        "sha256": "e492e2af072c137ff5ed4b183fb0c9b0b962f6020ed5115d2b72d1ec5d319698"
+      },
+      {
+        "path": "global/extensions/session-completion-guard/terminal-certificate.ts",
+        "sha256": "09af15ff1cd1dc08f91b3f6b940a511b33a4e32ca8bf5e38eb035c13178fa968"
+      },
+      {
+        "path": "global/model-profiles/quality-independent.json",
+        "sha256": "009edcc4ebe02400e595d599649bdcc7fb942d0f09aced10c14b70243ee9a2ff"
+      },
+      {
+        "path": "global/package-lock.json",
+        "sha256": "02049c8c0444d25c4fab88a06f90814a8086ea6b23658c630a89a759efaf5560"
+      },
+      {
+        "path": "global/package.json",
+        "sha256": "e0e5231f3fa86d1da60773fac127875472bdef139654102bc6456b1986deff87"
+      },
+      {
+        "path": "package.json",
+        "sha256": "7a38a4561195c749922ea60d5a5e54b3c2813ff4b74f7ceb8860981499da3eeb"
+      },
+      {
+        "path": "tools/model-profile.ts",
+        "sha256": "e0904553ca3aa7af16f36c18b7e22a5ed9ba9e9d7a52a3d5307539789f971b72"
+      },
+      {
+        "path": "tools/proofs/lib/opencode-proof-client.ts",
+        "sha256": "879550bdd9c33024d27756a586d93764a38481505e9060cb0e09da2d4dbb4e78"
+      },
+      {
+        "path": "tools/proofs/lib/proof-process-cleanup.ts",
+        "sha256": "a0ce91845d59614f10565839ec5bea52e1592264b594d6eac727bd1cd05a521d"
+      },
+      {
+        "path": "tools/proofs/work-campaign-playbook.ts",
+        "sha256": "d8c4906b0d30ffa510b3894425d0078df5b251a81de77d272de66f8a4636e74b"
+      },
+      {
+        "path": "tools/proofs/work-campaign-semantic.ts",
+        "sha256": "cbb4973280d48bbd94fe5a1debf2bc2a32e0b42b74e9b08fb31505e9b5ca0157"
+      },
+      {
+        "path": "tools/proofs/work-campaign-source-paths.ts",
+        "sha256": "f9a1d00887dc6f49c3057c6bd12a244d0061f356e7535eaa634d8b7f143e5974"
+      },
+      {
+        "path": "tools/proofs/work-campaign.ts",
+        "sha256": "566f7164f95ee7f6e126bba3a59344eb8ed61a65982b3b3e8784ff9759f3df3e"
+      },
+      {
+        "path": "tools/test-work-campaign-controller.ts",
+        "sha256": "3f22fff6924c24636db057c9fb384b404c8ae2dee69c85724ae1856380ac34d4"
+      },
+      {
+        "path": "tools/test-work-campaign-semantic-executor.ts",
+        "sha256": "dc3fb146b7aa9bcccd51f357f6dbb66a5802f030656736e31acf8d168ef83c73"
+      },
+      {
+        "path": "tools/test-work-campaign-semantic-playbook.ts",
+        "sha256": "6dac5c87a9dd75c67ef8ee9c8735d578fa27fa1f60ce9d6dad29858544a48e89"
+      },
+      {
+        "path": "tools/test-work-campaign-supervisor.ts",
+        "sha256": "2ffe2d53a5fe38542bacaf5b65b567babe9ba1594e591a6e99df3b3a6aa7d5fe"
+      }
+    ],
+    "sourceManifest": {
+      "afterDigests": [
+        "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+        "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+      ],
+      "beforeDigests": [
+        "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+        "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+      ],
+      "sourceWrites": 0
+    },
+    "supervisor": {
+      "advice": {
+        "budget": "budget",
+        "complete": "complete",
+        "drift": "definition-or-project-drift",
+        "externalInput": "external-input-required",
+        "notStarted": "not-started",
+        "ownerProtected": "owner-protected",
+        "restored": "terminal-evidence-restored",
+        "stop": "explicit-stop",
+        "terminalMission": "runtime-interruption-ready",
+        "unknownWriter": "writer-or-cleanup-unknown"
+      },
+      "duplicateSuppressed": true,
+      "logCount": 3,
+      "oldGenerationRemoved": true,
+      "passwordAbsent": true,
+      "resumeDisposition": "paused-external",
+      "resumeReason": "runtime-interruption-ready",
+      "resumeState": "resumed",
+      "retryBackoffObserved": true,
+      "signalStopped": true,
+      "stopDisposition": "paused-stop",
+      "stopSource": "campaign"
+    },
+    "transitions": {
+      "admittedEvidenceRefs": [
+        "blocker:mission-integration-not-enabled",
+        "evidence:failure-mode",
+        "evidence:item-p1",
+        "evidence:item-p2",
+        "evidence:provider-free",
+        "evidence:redundancy",
+        "evidence:test-gap",
+        "file:inputs/01-block-a.json",
+        "file:inputs/02-block-b.json",
+        "file:inputs/03-item-p1.json",
+        "file:inputs/04-item-p2.json",
+        "file:inputs/05-partition.json",
+        "file:inputs/06-reconcile-p1.json",
+        "file:inputs/07-reconcile-p2.json",
+        "file:inputs/08-report.json",
+        "file:inputs/09-wave.json",
+        "file:inputs/phase.json",
+        "report:570ed387cfc3c8d3d6049d0b457fdbd4ca5412e07b16a769878a15d0d70ba234",
+        "result:partition-1",
+        "result:reconcile-p1",
+        "result:reconcile-p2",
+        "wave:wave-1"
+      ],
+      "admittedWaveId": "wave-1",
+      "beforeStopCount": 9,
+      "finalCount": 11,
+      "kinds": [
+        "preflight",
+        "phase-start",
+        "phase-complete",
+        "phase-start",
+        "findings-freeze",
+        "phase-start",
+        "report-materialized",
+        "wave-admitted",
+        "pause"
+      ],
+      "missionRef": null,
+      "pauseDisposition": "paused-external"
+    },
+    "verification": {
+      "commandFailureExitCode": 1,
+      "commandFailureTransitionCount": 11,
+      "criticalFinalDisposition": "paused-external",
+      "criticalRereviewDisposition": "paused-external",
+      "criticalSdetPending": true,
+      "finalChallengeStatus": "complete",
+      "finalClosureReportDigest": "58f09c50d394a09d63bd163d64ee03a6c8381f16d23e156369f6cfa257dc3e52",
+      "finalDisposition": "complete",
+      "finalHandoffCandidateDigest": "8a4b6867bbd4853c593196a5302b6c448265de6a2409802e31cafe043a0a858e",
+      "finalHandoffMaximumClaim": "One disposable configured local campaign completed 1 fixed-and-verified P0/P1 item(s) across 1 archived and checkpointed wave(s) through current re-review, aggregate validation, real-boundary proof, and final challenge; population and host claims remain outside this result.",
+      "finalHandoffReportDigest": "58f09c50d394a09d63bd163d64ee03a6c8381f16d23e156369f6cfa257dc3e52",
+      "finalTerminalState": "complete",
+      "finalTransitionKinds": [
+        "report-materialized",
+        "terminal-complete"
+      ],
+      "interruptedRecoveredDisposition": "complete",
+      "interruptedRecoveredOperation": "resume",
+      "interruptedRecoveryDisposition": "paused-external",
+      "interruptedRecoveryHandoffAbsent": true,
+      "interruptedRecoveryOperation": "resume",
+      "interruptedRecoveryPausePersisted": true,
+      "interruptedReplayDisposition": "paused-external",
+      "interruptedReplayOperation": "replay",
+      "interruptedStatusDisposition": "paused-external",
+      "interruptedStatusOperation": "status",
+      "p2ReportOnly": true,
+      "producerMismatchExitCode": 2,
+      "rereviewCandidateDigest": "8a4b6867bbd4853c593196a5302b6c448265de6a2409802e31cafe043a0a858e",
+      "rereviewDisposition": "paused-external",
+      "rereviewProofStatus": "complete",
+      "rereviewValidationStatus": "complete",
+      "staleArtifactDisposition": "paused-external",
+      "staleArtifactHandoffAbsent": true,
+      "staleCandidateDisposition": "paused-external",
+      "staleCandidateHandoffAbsent": true,
+      "staleCompletedDisposition": "blocked",
+      "staleCompletedHandoffAbsent": true,
+      "terminalIdempotentCount": 14,
+      "twoWaveArchived": 2,
+      "twoWaveCheckpointed": 2,
+      "twoWaveDisposition": "complete",
+      "twoWaveMissingMissionExitCode": 2,
+      "twoWaveSelfReconciliationExitCode": 2,
+      "twoWaveTransitionKinds": [
+        "preflight",
+        "phase-start",
+        "phase-complete",
+        "phase-start",
+        "findings-freeze",
+        "phase-start",
+        "report-materialized",
+        "wave-admitted",
+        "mission-launch",
+        "mission-terminal",
+        "verification",
+        "rereview",
+        "findings-freeze",
+        "wave-admitted",
+        "mission-launch",
+        "mission-terminal",
+        "verification",
+        "rereview",
+        "report-materialized",
+        "terminal-complete"
+      ],
+      "unauthorizedTerminalExitCode": 2
+    }
+  },
+  "effects": {
+    "hostEffects": 0,
+    "modelCalls": 0,
+    "processStarts": 162,
+    "providerCalls": 0,
+    "sourceWrites": 0
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "environmentId": "node-24.18.1-windows-task-7-1-r1",
+  "hostInput": true,
+  "invocations": [
+    {
+      "exitCode": 0,
+      "name": "controller",
+      "stderr": "",
+      "stdout": "OK: work-campaign provider-free controller suite\n"
+    },
+    {
+      "exitCode": 0,
+      "name": "semantic",
+      "stderr": "",
+      "stdout": "✔ configured proof consumes one injected first-mission handoff and validates its terminal shape (1.4916ms)\n✔ configured mission environment preserves a Windows-style Path under one canonical key (0.1732ms)\n✔ population configured and installed-operator inputs remain identity-bound and branch-isolated (0.6829ms)\n✔ confirmed P0 population support comes only from the critical closure oracle (0.4945ms)\n✔ installed-operator preflight binds extension identities without conflating project config digests (0.2026ms)\n✔ semantic playbook fans out discovery, serializes integration, investigates unknowns, and excludes P2/P3 (104.6332ms)\n✔ still-unknown consumes one investigation and blocks synthesis without downgrade (94.5099ms)\n✔ discovery rejects overlapping source blocks and shared result paths before execution (0.5663ms)\n✔ concurrent discovery waits for every launched root to settle before reporting failure (30.9589ms)\n✔ report-only, duplicate, and falsified work finish without synthesis or mutation wave (142.7363ms)\n✔ investigation preserves confirmed, falsified, still-unknown, and owner-required outcomes (269.2383ms)\n✔ protected work remains owner-required while an authorized sibling freezes separately (93.1598ms)\n✔ budget, transient, cleanup, and retry controls fail closed without automatic retry (1.1747ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 747.4927\n"
+    },
+    {
+      "exitCode": 0,
+      "name": "state",
+      "stderr": "",
+      "stdout": "OK: work-campaign proof-contract, materializer, and state-replay suites\n"
+    },
+    {
+      "exitCode": 0,
+      "name": "materializer",
+      "stderr": "",
+      "stdout": "OK: work-campaign proof-contract and materializer suites\n"
+    }
+  ],
+  "materializer": {
+    "candidateId": "task-7-1-installed-operator-r1",
+    "cleanup": "complete",
+    "commands": [
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "preflight",
+        "operation": "contract-preflight",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": null,
+        "status": "contract-valid"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-block-a",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 1,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-block-b",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 2,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-item-p1",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 3,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-item-p2",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 4,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-reconcile-p1",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 5,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-reconcile-p2",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 6,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-wave-1",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 7,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-report-seed",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 8,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "materialize-initial",
+        "operation": "report-materialize",
+        "reportDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+        "seedEntries": 8,
+        "sequence": null,
+        "status": "report-materialized"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "readback-initial",
+        "operation": "report-readback",
+        "reportDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+        "seedEntries": 8,
+        "sequence": null,
+        "status": "report-current"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "materialize-identical",
+        "operation": "report-materialize",
+        "reportDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+        "seedEntries": 8,
+        "sequence": null,
+        "status": "report-materialized"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-item-p1-fixed",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 9,
+        "status": "seed-appended"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "append-item-p1-fixed-duplicate",
+        "operation": "ledger-append",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": 9,
+        "status": "seed-current"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "materialize-fixed",
+        "operation": "report-materialize",
+        "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+        "seedEntries": 9,
+        "sequence": null,
+        "status": "report-materialized"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "readback-fixed",
+        "operation": "report-readback",
+        "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+        "seedEntries": 9,
+        "sequence": null,
+        "status": "report-current"
+      },
+      {
+        "exitCode": 2,
+        "field": "reportPath",
+        "name": "readback-drifted",
+        "operation": "report-readback",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": null,
+        "status": "blocked"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "materialize-repaired",
+        "operation": "report-materialize",
+        "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+        "seedEntries": 9,
+        "sequence": null,
+        "status": "report-materialized"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "readback-repaired",
+        "operation": "report-readback",
+        "reportDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+        "seedEntries": 9,
+        "sequence": null,
+        "status": "report-current"
+      },
+      {
+        "exitCode": 2,
+        "field": "00000001-94714e9b7183352f2ac3b68713541c44b1860b13a1ef12239f07e41e12197c5f.json",
+        "name": "materialize-corrupt-ledger",
+        "operation": "report-materialize",
+        "reportDigest": null,
+        "seedEntries": null,
+        "sequence": null,
+        "status": "blocked"
+      }
+    ],
+    "effects": {
+      "gitCalls": 0,
+      "hostEffects": 0,
+      "openSpecCalls": 0,
+      "processStarts": 37,
+      "providerCalls": 0,
+      "sourceWrites": 0
+    },
+    "environment": {
+      "node": "v24.18.1",
+      "platform": "win32"
+    },
+    "negativeControls": {
+      "corruptLedger": 2,
+      "reportDrift": 2
+    },
+    "proofKind": "campaign-ledger-report-materializer",
+    "regeneration": {
+      "fixedAndVerified": 1,
+      "fixedDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+      "initialDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+      "p2Retained": true,
+      "repairedDigest": "910e2b031c926a5aa9a900d625cd8348f2b40f087e851ede5c4b59f7db07bc10",
+      "staleP1Removed": true,
+      "unchangedDigest": "d2d25ee3ea2f956166593bb5fce166cc367ffc1897ad0c7aea96ac270680725f",
+      "unresolvedP0P1": 0
+    },
+    "schemaVersion": 1,
+    "sourceCandidate": [
+      {
+        "path": "global/bin/work-campaign.ts",
+        "sha256": "63ea2791185f736b58c2707d0ab43ed1f64c599efb40212238e37acca1525e02"
+      },
+      {
+        "path": "global/bin/work-campaign/contracts.ts",
+        "sha256": "9b5ebaeff142a7bd50b6ab76c9f2d930d7e71d2fa97fc203e8b9c95b0c439461"
+      },
+      {
+        "path": "global/bin/work-campaign/materializer.ts",
+        "sha256": "1f08848ae2921c3c7f239d68cb0e412d6ff1966059275f7d53b04131fd51aba1"
+      },
+      {
+        "path": "tools/proofs/work-campaign.ts",
+        "sha256": "566f7164f95ee7f6e126bba3a59344eb8ed61a65982b3b3e8784ff9759f3df3e"
+      },
+      {
+        "path": "tools/test-work-campaign.ts",
+        "sha256": "df122e1e68bbe10edc6dcc068a84dc2db26dd7bff5b8e333a9452bc40a19536b"
+      }
+    ],
+    "sourceManifest": {
+      "afterDigests": [
+        "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+        "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+        "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+        "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+      ],
+      "beforeDigests": [
+        "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+        "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+        "037ecd1db38c230c248787e60fd7bfc0cb0101b187b59535b6e7483be762d350",
+        "b5d546753d33709dff508a6f2c2e547f432267fbb05b68d3da74fa5f7bda9f7a"
+      ],
+      "sourceWrites": 0
+    }
+  },
+  "missingCaptures": [],
+  "populationRows": [
+    {
+      "boundary": "definition-preflight",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "not-required",
+      "disposition": "complete",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:controller"
+      ],
+      "id": "valid-campaign-definition",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "valid-definition"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "definition-preflight",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "not-required",
+      "disposition": "blocked",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:controller"
+      ],
+      "id": "invalid-or-unsafe-definition",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "invalid-definition",
+        "immutable-input"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "phase-input",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:controller"
+      ],
+      "id": "complete-inventory",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "terminal-inventory",
+        "no-wave-admission"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "semantic-playbook",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:semantic"
+      ],
+      "id": "isolated-read-only-discovery",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "parallel-discovery",
+        "serialized-integration"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "critical-reconciliation-closure",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "paused-external",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:controller"
+      ],
+      "id": "confirmed-p0",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "confirmed-p0",
+        "critical-sdet-pending"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "configured-mission",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 1,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:configured"
+      ],
+      "id": "confirmed-material-quality-p1",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "configured-p1",
+        "mission-owned-correction"
+      ],
+      "sourceWriterCount": 1,
+      "support": "observed"
+    },
+    {
+      "boundary": "reconciliation-report",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:semantic",
+        "proof:configured"
+      ],
+      "id": "p2-p3-report-only",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "p2-report-only",
+        "p3-report-only"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "semantic-investigation",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:semantic"
+      ],
+      "id": "credible-unknown-p0-p1-investigation",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "confirmed",
+        "falsified",
+        "still-unknown",
+        "owner-required"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "reconciliation-report",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:semantic",
+        "proof:configured"
+      ],
+      "id": "optional-polish-exclusion",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "optional-polish",
+        "duplicate",
+        "falsified"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "configured-controller",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 2,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:configured"
+      ],
+      "id": "two-frozen-remediation-waves",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "two-waves",
+        "serialized-writers"
+      ],
+      "sourceWriterCount": 2,
+      "support": "observed"
+    },
+    {
+      "boundary": "mission-observation",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "blocked",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:controller"
+      ],
+      "id": "incomplete-or-failed-mission",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "failed-command",
+        "missing-mission",
+        "parent-mismatch"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "campaign-preflight",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "not-required",
+      "disposition": "blocked",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:controller"
+      ],
+      "id": "active-change-conflict",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "unlisted-active-change"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "campaign-preflight",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "not-required",
+      "disposition": "blocked",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:controller"
+      ],
+      "id": "dirty-path-conflict",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "dirty-owned-path"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "playbook-phase-admission",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "owner-required",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:semantic",
+        "proof:controller"
+      ],
+      "id": "protected-effect",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "protected-only",
+        "protected-plus-authorized"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "state-semantic-control",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "unknown",
+      "disposition": "paused-unknown",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:semantic",
+        "proof:controller",
+        "proof:state"
+      ],
+      "id": "controller-or-opencode-interruption",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "transient",
+        "retry-evidence",
+        "cleanup-unknown",
+        "unknown-writer"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "windows-host-supervisor",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 3,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:installed-operator"
+      ],
+      "id": "windows-supervisor-reentry",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "installed-task-action",
+        "safe-resume"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "controller-verification",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:configured",
+        "proof:controller"
+      ],
+      "id": "changed-block-rereview",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "changed-block-rereview",
+        "current-candidate"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "materializer-readback",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "not-required",
+      "disposition": "blocked",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:materializer"
+      ],
+      "id": "report-drift-prevention",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "report-drift",
+        "readback"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "semantic-state-budget",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "paused-budget",
+      "effectCount": 0,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:semantic",
+        "proof:state"
+      ],
+      "id": "budget-exhaustion",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "semantic-budget",
+        "budget-regression"
+      ],
+      "sourceWriterCount": 0,
+      "support": "observed"
+    },
+    {
+      "boundary": "final-challenge-controller",
+      "candidateId": "task-7-1-installed-operator-r1",
+      "cleanup": "complete",
+      "disposition": "complete",
+      "effectCount": 2,
+      "environmentId": "node-24.18.1-windows-task-7-1-r1",
+      "evidenceRefs": [
+        "proof:configured",
+        "proof:controller"
+      ],
+      "id": "terminal-completion",
+      "observed": true,
+      "rowState": "terminal-observation",
+      "scenarios": [
+        "current-final-challenge",
+        "overbroad-challenge-blocked"
+      ],
+      "sourceWriterCount": 2,
+      "support": "observed"
+    }
+  ],
+  "proofKind": "campaign-composed-population",
+  "runnerDigest": "sha256:566f7164f95ee7f6e126bba3a59344eb8ed61a65982b3b3e8784ff9759f3df3e",
+  "schemaVersion": 1,
+  "semantic": {
+    "candidateId": "task-7-1-installed-operator-r1",
+    "effects": {
+      "hostEffects": 0,
+      "modelCalls": 0,
+      "providerCalls": 0,
+      "sourceWrites": 0
+    },
+    "evidence": {
+      "controls": {
+        "budgetStatus": "paused-budget",
+        "cleanupRetryAllowed": false,
+        "cleanupStatus": "paused-unknown",
+        "retryAccepted": true,
+        "retryRejectedOnUnknownCleanup": true,
+        "transientCalls": 2,
+        "transientRetryAllowed": true,
+        "transientStatus": "paused-transient"
+      },
+      "executorRejection": {
+        "failure": {
+          "assignmentId": null,
+          "cleanup": "unknown",
+          "errorClass": "unknown",
+          "evidenceRefs": [],
+          "retryAllowed": false
+        },
+        "settled": 2,
+        "status": "paused-unknown"
+      },
+      "happyPath": {
+        "assignments": 7,
+        "status": "complete",
+        "statuses": [
+          [
+            "item-p1",
+            "confirmed"
+          ],
+          [
+            "item-p3",
+            "report-only"
+          ],
+          [
+            "item-unknown",
+            "confirmed"
+          ]
+        ],
+        "waveItems": [
+          "item-p1",
+          "item-unknown"
+        ]
+      },
+      "investigations": {
+        "confirmed": {
+          "item": "confirmed",
+          "status": "complete",
+          "wave": true
+        },
+        "falsified": {
+          "item": "falsified",
+          "status": "complete",
+          "wave": false
+        },
+        "owner-required": {
+          "item": "owner-required",
+          "status": "owner-required",
+          "wave": false
+        },
+        "still-unknown": {
+          "item": "unknown-material",
+          "status": "blocked",
+          "wave": false
+        }
+      },
+      "noWave": {
+        "duplicate": "complete",
+        "falsified": "complete",
+        "reportOnly": "complete",
+        "synthesisCalls": 0
+      },
+      "protectedSplit": {
+        "blockerIds": [
+          "item-unknown"
+        ],
+        "status": "owner-required",
+        "waveItems": [
+          "item-p1"
+        ]
+      },
+      "stillUnknown": {
+        "blockingWorkItemIds": [
+          "item-unknown"
+        ],
+        "status": "blocked",
+        "synthesisCalls": 0
+      }
+    },
+    "schemaVersion": 1
+  },
+  "state": {
+    "candidateId": "task-7-1-installed-operator-r1",
+    "cleanup": "complete",
+    "commands": [
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "preflight",
+        "operation": "state-record",
+        "projectionStatus": null,
+        "sequence": 1,
+        "status": "recorded",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "duplicate-preflight",
+        "operation": "state-record",
+        "projectionStatus": null,
+        "sequence": 1,
+        "status": "recorded",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "phase-start",
+        "operation": "state-record",
+        "projectionStatus": null,
+        "sequence": 2,
+        "status": "recorded",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "before-kill-replay",
+        "operation": "state-replay",
+        "projectionStatus": "current",
+        "sequence": 2,
+        "status": "valid",
+        "stopIntent": "absent",
+        "writerStatus": "clear"
+      },
+      {
+        "exitCode": 1,
+        "field": "writer.lock",
+        "name": "blocked-live-writer",
+        "operation": "state-record",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "blocked",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 1,
+        "field": null,
+        "name": "blocked-dead-writer",
+        "operation": "state-replay",
+        "projectionStatus": "current",
+        "sequence": 2,
+        "status": "blocked",
+        "stopIntent": "absent",
+        "writerStatus": "unknown"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "writer-reconcile",
+        "operation": "state-reconcile-writer",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "writer-reconciled",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "duplicate-writer-reconcile",
+        "operation": "state-reconcile-writer",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "writer-reconciled",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "after-kill-replay",
+        "operation": "state-replay",
+        "projectionStatus": "current",
+        "sequence": 2,
+        "status": "valid",
+        "stopIntent": "absent",
+        "writerStatus": "clear"
+      },
+      {
+        "exitCode": 1,
+        "field": null,
+        "name": "stale-projection-replay",
+        "operation": "state-replay",
+        "projectionStatus": "stale",
+        "sequence": 2,
+        "status": "blocked",
+        "stopIntent": "absent",
+        "writerStatus": "clear"
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "state-reconcile",
+        "operation": "state-reconcile",
+        "projectionStatus": null,
+        "sequence": 3,
+        "status": "recorded",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "duplicate-reconcile",
+        "operation": "state-reconcile",
+        "projectionStatus": null,
+        "sequence": 3,
+        "status": "recorded",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "pause",
+        "operation": "state-record",
+        "projectionStatus": null,
+        "sequence": 4,
+        "status": "recorded",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "budget-revision",
+        "operation": "state-record",
+        "projectionStatus": null,
+        "sequence": 5,
+        "status": "recorded",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 2,
+        "field": "budget.consumed",
+        "name": "budget-regression",
+        "operation": "state-record",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "blocked",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "stop",
+        "operation": "state-stop",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "stop-requested",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 2,
+        "field": "stop intent",
+        "name": "conflicting-stop",
+        "operation": "state-stop",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "blocked",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 0,
+        "field": null,
+        "name": "terminal-replay",
+        "operation": "state-replay",
+        "projectionStatus": "current",
+        "sequence": 5,
+        "status": "valid",
+        "stopIntent": "current",
+        "writerStatus": "clear"
+      },
+      {
+        "exitCode": 2,
+        "field": "transitions",
+        "name": "missing-transition",
+        "operation": "state-replay",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "blocked",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 2,
+        "field": "transitions",
+        "name": "corrupt-transition",
+        "operation": "state-replay",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "blocked",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 2,
+        "field": "transitions",
+        "name": "reordered-transition",
+        "operation": "state-replay",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "blocked",
+        "stopIntent": null,
+        "writerStatus": null
+      },
+      {
+        "exitCode": 2,
+        "field": "transitions",
+        "name": "stale-definition",
+        "operation": "state-replay",
+        "projectionStatus": null,
+        "sequence": null,
+        "status": "blocked",
+        "stopIntent": null,
+        "writerStatus": null
+      }
+    ],
+    "effects": {
+      "gitCalls": 0,
+      "hostEffects": 0,
+      "openSpecCalls": 0,
+      "processStarts": 23,
+      "providerCalls": 0,
+      "sourceWrites": 0
+    },
+    "environment": {
+      "node": "v24.18.1",
+      "platform": "win32"
+    },
+    "negativeControls": {
+      "budgetRegression": 2,
+      "conflictingStop": 2,
+      "corruptTransition": 2,
+      "missingTransition": 2,
+      "reorderedTransition": 2,
+      "staleDefinition": 2,
+      "staleProjection": 1
+    },
+    "proofKind": "campaign-state-restart",
+    "restart": {
+      "afterKillStateDigest": "9c0265ec9cc760beb8044e809444139b001699c04266035b03479c13719f940d",
+      "beforeKillStateDigest": "9c0265ec9cc760beb8044e809444139b001699c04266035b03479c13719f940d",
+      "childExitCode": 1,
+      "childSignal": null,
+      "deadWriterStatus": "unknown",
+      "leaseDigest": "1496bddf378fa89f661e312ecd423b13c02af3e358ad236fc965358d14840a41",
+      "reconciledArchivePath": ".opencode-dev-kit/runtime/work-campaigns/fixture-campaign/leases/terminal-2fcde2b348e335de.json",
+      "terminalSequence": 5,
+      "transitionFiles": [
+        {
+          "name": "00000001-0695174eaf35ea14.json",
+          "sha256": "9b9487d897703211e8dce75b64716bfc19af35385f6c5b5635573a478564e73b"
+        },
+        {
+          "name": "00000002-60db1ae3c608d2f8.json",
+          "sha256": "26389119a76ca51d7c85e5bed45e246e84c4275e362012f18e033f6b6c0517d2"
+        },
+        {
+          "name": "00000003-11f61d6e4fe0ae36.json",
+          "sha256": "cc49f0e570dbcc13e055833eec18f6d9e42af793f34ea7c27349587bd1ce6a6c"
+        },
+        {
+          "name": "00000004-7f8e3c5ea1e54cb5.json",
+          "sha256": "aaee25475243e2985bc8ae7b3736ab5e2d4f5c218add163d699800b789f0035f"
+        },
+        {
+          "name": "00000005-2b1bf77119123619.json",
+          "sha256": "808beb166488730bc44e048d2265e64da19a1363f09c3859e045cd67d6a77d90"
+        }
+      ]
+    },
+    "schemaVersion": 1,
+    "sourceCandidate": [
+      {
+        "path": "global/bin/work-campaign.ts",
+        "sha256": "63ea2791185f736b58c2707d0ab43ed1f64c599efb40212238e37acca1525e02"
+      },
+      {
+        "path": "global/bin/work-campaign/contracts.ts",
+        "sha256": "9b5ebaeff142a7bd50b6ab76c9f2d930d7e71d2fa97fc203e8b9c95b0c439461"
+      },
+      {
+        "path": "global/bin/work-campaign/materializer.ts",
+        "sha256": "1f08848ae2921c3c7f239d68cb0e412d6ff1966059275f7d53b04131fd51aba1"
+      },
+      {
+        "path": "global/bin/work-campaign/state.ts",
+        "sha256": "7ba39de1f8d2b508d69d06af8824c265ea13de7bd4d95ff2fd7de4e83889c82f"
+      },
+      {
+        "path": "tools/test-work-campaign.ts",
+        "sha256": "df122e1e68bbe10edc6dcc068a84dc2db26dd7bff5b8e333a9452bc40a19536b"
+      }
+    ],
+    "sourceManifest": {
+      "afterDigests": [
+        "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+        "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+        "e5a7276e8752f3c1c8e787ebedab1ab6703d5fa62f90f07e10d9abe65eb95d1a"
+      ],
+      "beforeDigests": [
+        "8b4d5b4aa1eed92cb5e96d04d0e1ac5c123e83427e5225ebdb14fc827ac4d9a8",
+        "190f90564f07b17fb446bb03d5ef61107c11e2b5fb18c2d4785cbcb50623a444",
+        "e5a7276e8752f3c1c8e787ebedab1ab6703d5fa62f90f07e10d9abe65eb95d1a"
+      ],
+      "sourceWrites": 0
+    }
+  }
+}
