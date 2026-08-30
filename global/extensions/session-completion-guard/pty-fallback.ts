@@ -56,7 +56,6 @@ export class PtyFallbackScheduler {
       ...(context.agent == null ? {} : { agent: context.agent }),
       ...(context.model == null ? {} : { model: context.model }),
       ...(context.variant == null ? {} : { variant: context.variant }),
-      ...(context.tools == null ? {} : { tools: context.tools }),
       parts: [{
         type: "text",
         synthetic: true,

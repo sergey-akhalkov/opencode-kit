@@ -1,0 +1,147 @@
+{
+  "candidate": "cross-project-kaizen-loop-loaded-tools-preflight-r1",
+  "checks": {
+    "activeConfigUnchanged": true,
+    "cleanWorktree": true,
+    "copiedPluginMatched": true,
+    "phasesComplete": true,
+    "providerFree": true,
+    "zeroEgress": true
+  },
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "fixtureRemoved": true,
+    "providerClosed": true
+  },
+  "copiedPlugin": {
+    "copied": {
+      "files": 17,
+      "sha256": "f7934475486e7e9d1e82b970a10af4702d20094a78f707d05049ec1f670bb78d"
+    },
+    "source": {
+      "files": 17,
+      "sha256": "f7934475486e7e9d1e82b970a10af4702d20094a78f707d05049ec1f670bb78d"
+    }
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "opencode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "pluginVersion": "1.18.15",
+    "sdkVersion": "1.18.15",
+    "sourceAssertions": {
+      "legacyCompactedSessionOnly": true,
+      "legacySummaryIdentity": true,
+      "v2CompactedSessionOnly": true,
+      "v2MessagesBeforeCursor": true
+    }
+  },
+  "error": null,
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode loaded-tools-preflight --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/loaded-tools-preflight-r1",
+  "pluginRuntime": {
+    "configDir": {
+      "lockSha256": "02049c8c0444d25c4fab88a06f90814a8086ea6b23658c630a89a759efaf5560",
+      "packageSha256": "e0e5231f3fa86d1da60773fac127875472bdef139654102bc6456b1986deff87",
+      "pluginPackageSha256": "b7413c562b05edebd85b804f69b2e14cdb6aef856dc7fe28f8926ec617bff0e3",
+      "pluginVersion": "1.18.15",
+      "sdkPackageSha256": "1419dc029b79954972e3ba9474d8bef56f07613f419e4a94bcdb69da50a492b2",
+      "sdkVersion": "1.18.15"
+    },
+    "configHome": {
+      "lockSha256": "02049c8c0444d25c4fab88a06f90814a8086ea6b23658c630a89a759efaf5560",
+      "packageSha256": "e0e5231f3fa86d1da60773fac127875472bdef139654102bc6456b1986deff87",
+      "pluginPackageSha256": "b7413c562b05edebd85b804f69b2e14cdb6aef856dc7fe28f8926ec617bff0e3",
+      "pluginVersion": "1.18.15",
+      "sdkPackageSha256": "1419dc029b79954972e3ba9474d8bef56f07613f419e4a94bcdb69da50a492b2",
+      "sdkVersion": "1.18.15"
+    }
+  },
+  "preflights": [
+    {
+      "phase": "plugin-only",
+      "providerRequestCount": 0,
+      "status": 0,
+      "stderr": "",
+      "stdoutBytes": 769,
+      "stdoutSha256": "a42ef6af5d3971cd1e174018a5b01389efbde20f4e2a3adc63a8d5beb171eaad",
+      "timedOut": false,
+      "trace": [
+        {
+          "phase": "wrapper-module-enter"
+        },
+        {
+          "phase": "factory-enter"
+        },
+        {
+          "phase": "source-import-enter"
+        },
+        {
+          "phase": "source-import-exit"
+        },
+        {
+          "phase": "source-factory-enter"
+        },
+        {
+          "kaizenTools": [
+            "kaizen_checkpoint",
+            "kaizen_decision",
+            "kaizen_report",
+            "kaizen_status"
+          ],
+          "phase": "source-factory-exit"
+        },
+        {
+          "phase": "factory-exit"
+        }
+      ],
+      "trappedEgress": 0
+    },
+    {
+      "phase": "provider-added",
+      "providerRequestCount": 0,
+      "status": 0,
+      "stderr": "",
+      "stdoutBytes": 1326,
+      "stdoutSha256": "f97ae746acf8859fc32ae49c99b3a3694bb9443684aab526f78aacea0cb61f7b",
+      "timedOut": false,
+      "trace": [
+        {
+          "phase": "wrapper-module-enter"
+        },
+        {
+          "phase": "factory-enter"
+        },
+        {
+          "phase": "source-import-enter"
+        },
+        {
+          "phase": "source-import-exit"
+        },
+        {
+          "phase": "source-factory-enter"
+        },
+        {
+          "kaizenTools": [
+            "kaizen_checkpoint",
+            "kaizen_decision",
+            "kaizen_report",
+            "kaizen_status"
+          ],
+          "phase": "source-factory-exit"
+        },
+        {
+          "phase": "factory-exit"
+        }
+      ],
+      "trappedEgress": 0
+    }
+  ],
+  "provider": {
+    "requests": [],
+    "trapped": 0
+  },
+  "schemaVersion": 1,
+  "status": "passed"
+}

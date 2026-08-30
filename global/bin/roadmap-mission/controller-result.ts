@@ -6,7 +6,7 @@ import {
   RoadmapMissionError,
 } from "./contracts.ts";
 import type {
-  MissionExecutorResult,
+  PersistedMissionExecutorResult,
   RoadmapMissionDefinition,
   RoadmapMissionSlice,
 } from "./contracts.ts";
@@ -45,7 +45,7 @@ export function readExecutorResult(
   slice: RoadmapMissionSlice,
   attempt: number,
   resultPath: string,
-): MissionExecutorResult {
+): PersistedMissionExecutorResult {
   const file = path.resolve(root, resultPath);
   let parsed: unknown;
   try {

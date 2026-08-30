@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-triage-r1",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-triage-r1",
+  "components": [
+    {
+      "role": "prior-cumulative-candidate",
+      "candidateId": "cross-project-kaizen-loop-complain-r1",
+      "artifact": "evidence/candidate-composition-r8.json",
+      "ceiling": "Historical component evidence retained below its recorded ceilings; later status/decision source changes make prior current-source identities non-current."
+    },
+    {
+      "role": "status-and-triage-boundary",
+      "candidateId": "cross-project-kaizen-loop-triage-r1",
+      "artifact": "evidence/task-2-4-triage-r1.md",
+      "sourceIdentity": "ordered-git-blob-table",
+      "ceiling": "Current provider-free bounded oldest-first status, exact truncation, local derived repair-gap, unknown-owner guard, copied-plugin readback, and focused quality evidence."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-complain-r1"
+  ],
+  "excluded": [
+    "production compaction prompt and loaded long-session capture",
+    "cold-model complain or triage command routing",
+    "current-source complete archive integration",
+    "proposal-owner-root containment and proposal creation",
+    "complete finite-population behavior and critical qualification"
+  ]
+}

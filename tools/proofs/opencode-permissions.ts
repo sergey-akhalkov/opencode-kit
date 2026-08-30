@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { removeMessageToolRestrictions } from "../../global/extensions/unrestricted-agent-tools.ts";
 
 const PERMISSION_KINDS = [
   "bash",
@@ -165,16 +166,16 @@ if (!allowsEverything(config.permission)) {
 }
 
 const configuredMainPrecedence = Object.fromEntries(
-  (["allow", "ask", "deny"] as const).map((expected) => {
+  (["allow", "ask", "deny"] as const).map((requested) => {
     const resolved = runJson(["debug", "config"], {
       ...proofEnv,
-      OPENCODE_CONFIG_CONTENT: JSON.stringify({ permission: expected }),
+      OPENCODE_CONFIG_CONTENT: JSON.stringify({ permission: requested }),
     });
     const actual = configuredAction(resolved.permission, "*");
-    if (actual !== expected) {
-      throw new Error(`Completion guard changed configured main permission precedence: expected=${expected} actual=${actual}`);
+    if (actual !== "allow") {
+      throw new Error(`Unrestricted-agent-tools did not override main permission: requested=${requested} actual=${actual}`);
     }
-    return [expected, actual];
+    return [requested, actual];
   }),
 );
 
@@ -184,43 +185,49 @@ if (agents == null || Object.keys(agents).length === 0) {
 }
 
 const agentNames = Object.keys(agents).sort();
-let explicitDeniedPermissions = 0;
-const specialistDeniedPermissions: Array<{ agent: string; permissions: string[] }> = [];
-let arbiterToolsAllFalse = false;
-let arbiterDisabledToolCount = 0;
-let sdetEditPermission: string | null = null;
+const agentToolCounts: Array<{ agent: string; enabled: number }> = [];
 for (const name of agentNames) {
   const configured = record(agents[name]);
   if (configured == null) throw new Error(`Resolved agent config is invalid: ${name}`);
 
   const effective = runJson(["debug", "agent", name]);
-  const deniedPermissions: string[] = [];
   for (const permission of PERMISSION_KINDS) {
     const expected = configuredAction(configured.permission, permission);
     const action = effectiveAction(effective.permission, permission);
-    if (name === "sdet-quality-engineer" && permission === "edit") sdetEditPermission = action;
-    if (expected === "deny") {
-      explicitDeniedPermissions += 1;
-      deniedPermissions.push(permission);
+    if (expected !== "allow") {
+      throw new Error(`Resolved agent permission is not allow-all: agent=${name} permission=${permission} configured=${expected}`);
     }
     if (action !== expected) {
       throw new Error(`Effective agent permission differs from configured policy: agent=${name} permission=${permission} expected=${expected} action=${action ?? "missing"}`);
     }
   }
-  if (deniedPermissions.length > 0) specialistDeniedPermissions.push({ agent: name, permissions: deniedPermissions });
-  if (name === "session-completion-arbiter") {
-    const tools = record(effective.tools);
-    if (tools == null || Object.keys(tools).length === 0 || Object.values(tools).some((value) => value !== false)) {
-      throw new Error("Effective hidden arbiter tool map is not all-false");
-    }
-    arbiterToolsAllFalse = true;
-    arbiterDisabledToolCount = Object.keys(tools).length;
+  const tools = record(effective.tools);
+  if (tools == null || Object.keys(tools).length === 0) {
+    throw new Error(`Effective agent tool map is empty: agent=${name}`);
   }
+  const disabled = Object.entries(tools).filter(([, enabled]) => enabled !== true).map(([tool]) => tool);
+  if (disabled.length > 0) throw new Error(`Effective agent tools are disabled: agent=${name} tools=${disabled.join(",")}`);
+  if (tools.bash !== true) throw new Error(`Effective agent has no bash tool: agent=${name}`);
+  agentToolCounts.push({ agent: name, enabled: Object.keys(tools).length });
 }
-if (explicitDeniedPermissions === 0) throw new Error("Resolved agents contain no explicit denied specialist permissions");
-if (!arbiterToolsAllFalse) throw new Error("Resolved agents contain no hidden completion arbiter");
-if (sdetEditPermission !== "allow") {
-  throw new Error(`Resolved SDET edit permission is not unattended: ${sdetEditPermission ?? "missing"}`);
+
+const restrictedMessage = { tools: { bash: false, edit: false } };
+removeMessageToolRestrictions(restrictedMessage);
+if ("tools" in restrictedMessage) throw new Error("Message-level tool restrictions were not removed");
+
+const promptRouteSources = (fs.readdirSync(path.join(sourceRoot, "global"), {
+  encoding: "utf8",
+  recursive: true,
+}) as string[])
+  .filter((relative) => relative.endsWith(".ts"))
+  .map((relative) => `global/${relative.replaceAll("\\", "/")}`)
+  .sort((left, right) => left.localeCompare(right));
+const promptToolFilters = promptRouteSources.filter((relative) => {
+  const source = fs.readFileSync(path.join(sourceRoot, relative), "utf8");
+  return /\.session\.prompt(?:Async)?\s*\(/.test(source) && /\btools\s*:/.test(source);
+});
+if (promptToolFilters.length > 0) {
+  throw new Error(`Completion-guard prompt routes still filter tools: ${promptToolFilters.join(",")}`);
 }
 
 const options = parseArgs(process.argv.slice(2));
@@ -230,16 +237,10 @@ const summary = {
   opencodeVersion: versionResult.stdout.trim(),
   agentCount: agentNames.length,
   agents: agentNames,
-  explicitDeniedPermissions,
-  specialistDeniedPermissions,
-  arbiter: {
-    disabledToolCount: arbiterDisabledToolCount,
-    toolsAllFalse: arbiterToolsAllFalse,
-  },
-  sdet: {
-    editPermission: sdetEditPermission,
-  },
+  agentToolCounts,
   configuredMainPrecedence,
+  messageToolRestrictions: "removed",
+  promptToolRestrictions: "absent",
   permissionKinds: PERMISSION_KINDS,
   outcome: "pass",
 };
@@ -253,6 +254,7 @@ if (options.evidenceRoot != null && options.candidateId != null) {
     environment: { node: process.version, platform: process.platform },
     invocation: ["npm", "run", "proof:permissions", "--", "--evidence-root", "<evidence-root>", "--candidate-id", options.candidateId],
     productionSources: [
+      "global/extensions/unrestricted-agent-tools.ts",
       "global/extensions/session-completion-guard/controller.ts",
       "global/extensions/session-completion-guard/runtime-support.ts",
       "global/extensions/session-completion-guard/arbiter-route.ts",
@@ -266,11 +268,12 @@ if (options.evidenceRoot != null && options.candidateId != null) {
   });
   writeNew(path.join(options.evidenceRoot, "evaluation.json"), {
     candidateId: options.candidateId,
-    hiddenArbiterTools: "all-false",
+    allResolvedAgentTools: "enabled",
     configuredMainPrecedence,
-    mainDefault: "permissive-when-configured",
+    mainDefault: "allow-all",
+    messageToolRestrictions: "removed",
+    promptToolRestrictions: "absent",
     schemaVersion: 1,
-    specialistRestrictions: "preserved",
     status: "complete",
   });
 }

@@ -4,25 +4,7 @@ mode: subagent
 temperature: 0.1
 top_p: 0.95
 steps: 6
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only helper using the model inherited from the invoking primary agent. Your job is to reduce main-session work by handling bounded first-pass tasks that are safe to delegate.

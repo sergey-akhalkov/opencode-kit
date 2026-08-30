@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-store-boundary-r2",
+  "environmentId": "windows-node-24.18.1-kaizen-store-r2",
+  "components": [
+    {
+      "role": "runtime-api-gate",
+      "candidateId": "cross-project-kaizen-loop-runtime-api-gate-r1",
+      "artifact": "evidence/compaction-identity-r1/bundle.json",
+      "sha256": "f1f65d365ec379fd519c6e2b5fe8666615a49c88c9613cb9dc04a98fb2bc17d6",
+      "ceiling": "Pinned OpenCode 1.18.25 root session.compacted event to newest generated summary identity only."
+    },
+    {
+      "role": "store-boundary",
+      "candidateId": "cross-project-kaizen-loop-store-boundary-r2",
+      "artifact": "evidence/store-boundary-r2/bundle.json",
+      "sha256": "7ec2bc5c1cbef536ead285001166559d6ab4e7e64af184edd6bcc2379470e597",
+      "sourceDigests": {
+        "global/plugin/kaizen/store.ts": "b65e901c0e4092cc2fef1b4750480b8400331345ef97eb193ba7fabd64be6d43",
+        "global/plugin/kaizen/index.ts": "566d8abddeac111c2c2d224aba0be7d9b439ae55a5fe055474cde9b98b2ccb43",
+        "global/plugin/session-env.ts": "b9875b1c854fbcb7a041dec86361a714860cd90807144f7fda57a2c4dc53dd44",
+        "global/plugin/project-memory/store.ts": "d752313ce29c98d0981c9611b432285ec97473418b8dbbe853edd9f8979f5298",
+        "tools/test-cross-project-kaizen.ts": "f2c5bd3c9632f2ffa6b8f87b3c96ffe6a4da560ae7d59d8f8fcc6e159bd3babf",
+        "tools/proofs/cross-project-kaizen.ts": "b9364257726a2ca1e1495497fd3db483937498120f81c131fdd51bb6cdd66a39"
+      },
+      "ceiling": "Accepted 2,000-signal/8,000-lifecycle constants, focused capacity rejection, and one provider-free two-root direct-module boundary with two signal records."
+    }
+  ],
+  "excluded": [
+    "loaded copied-plugin behavior",
+    "complete finite-population behavior",
+    "archive harvest",
+    "proposal promotion"
+  ]
+}

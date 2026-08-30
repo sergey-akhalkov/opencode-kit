@@ -4,10 +4,11 @@ import path from "node:path";
 import {
   loadMissionDefinition,
   missionDefinitionDigest,
+  parseMissionBlocker,
   RoadmapMissionError,
   stableJson,
 } from "./contracts.ts";
-import type { CheckpointMode, RoadmapMissionDefinition } from "./contracts.ts";
+import type { CheckpointMode, MissionBlocker, RoadmapMissionDefinition } from "./contracts.ts";
 
 const TRANSITION_KINDS = [
   "archive",
@@ -16,9 +17,12 @@ const TRANSITION_KINDS = [
   "pause",
   "preflight",
   "proof-validation",
+  "frontier-stop",
   "restart-reconciliation",
   "session-completion",
   "session-launch",
+  "slice-blocked",
+  "slice-resume",
   "successor-activation",
   "terminal-stop",
 ] as const;
@@ -29,8 +33,10 @@ const DISPOSITIONS = [
   "complete",
   "paused",
   "paused-unknown",
+  "product-decision-required",
   "ready",
   "running",
+  "waiting",
 ] as const;
 
 const OPERATION_KINDS = [
@@ -61,6 +67,7 @@ export type MissionActiveOperation = {
 
 export type MissionTransitionDescriptor = {
   activeOperation: MissionActiveOperation | null;
+  blocker?: MissionBlocker;
   checkpoint: {
     identity: string | null;
     mode: CheckpointMode;
@@ -97,6 +104,18 @@ export type MissionResultFacts = {
   }>;
   processRefs: string[];
   projection: MissionStateProjection | null;
+};
+
+export type MissionParkedSlice = {
+  blocker: MissionBlocker;
+  cursor: number;
+  recovery: MissionTransitionDescriptor["recovery"];
+  transitionDigest: string;
+};
+
+export type MissionSchedulingFacts = {
+  completedSliceIds: string[];
+  parkedSlices: MissionParkedSlice[];
 };
 
 export type MissionTransitionRecord = MissionTransitionDescriptor & {
@@ -155,9 +174,9 @@ function record(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
-function exactKeys(input: Record<string, unknown>, expected: readonly string[], field: string): void {
+function exactKeys(input: Record<string, unknown>, expected: readonly string[], field: string, optional: readonly string[] = []): void {
   const missing = expected.filter((key) => !(key in input));
-  const extras = Object.keys(input).filter((key) => !expected.includes(key)).sort();
+  const extras = Object.keys(input).filter((key) => !expected.includes(key) && !optional.includes(key)).sort();
   if (missing.length > 0 || extras.length > 0) {
     const detail = [
       missing.length > 0 ? `missing=${missing.join(",")}` : null,
@@ -265,7 +284,7 @@ export function parseTransitionDescriptor(
     "evidenceRefs",
     "identities",
     "recovery",
-  ], "transition descriptor");
+  ], "transition descriptor", ["blocker"]);
   if (input.schemaVersion !== 1) throw new RoadmapMissionError("transition schemaVersion must be 1", 2);
   const kind = requiredString(input.kind, "kind") as MissionTransitionKind;
   if (!(TRANSITION_KINDS as readonly string[]).includes(kind)) {
@@ -291,6 +310,9 @@ export function parseTransitionDescriptor(
   }
   const descriptor: MissionTransitionDescriptor = {
     activeOperation: parseActiveOperation(input.activeOperation),
+    ...("blocker" in input && input.blocker != null
+      ? { blocker: parseMissionBlocker(input.blocker, "transition blocker") }
+      : {}),
     checkpoint: parseCheckpoint(input.checkpoint, definition),
     createdAt: parseTimestamp(input.createdAt, "createdAt"),
     cursor: input.cursor as number,
@@ -313,6 +335,21 @@ export function parseTransitionDescriptor(
   }
   if (kind === "terminal-stop" && !["blocked", "complete", "paused", "paused-unknown"].includes(disposition)) {
     throw new RoadmapMissionError("terminal-stop disposition must be blocked, complete, paused, or paused-unknown", 2);
+  }
+  const blockingSessionCompletion = kind === "session-completion"
+    && (disposition === "product-decision-required" || disposition === "waiting");
+  if (["frontier-stop", "slice-blocked", "slice-resume"].includes(kind) || blockingSessionCompletion) {
+    if (descriptor.blocker == null || (kind !== "slice-resume" && descriptor.blocker.disposition !== disposition)) {
+      throw new RoadmapMissionError(`${kind} transition requires its exact blocker`, 2);
+    }
+    if (blockingSessionCompletion && descriptor.activeOperation != null) {
+      throw new RoadmapMissionError("blocking session-completion transition must close active operation ownership", 2);
+    }
+  } else if (descriptor.blocker != null && kind !== "restart-reconciliation") {
+    throw new RoadmapMissionError(`${kind} transition must not carry blocker facts`, 2);
+  }
+  if (kind === "slice-resume" && disposition !== "ready") {
+    throw new RoadmapMissionError("slice-resume transition must be ready", 2);
   }
   return descriptor;
 }
@@ -555,6 +592,7 @@ function transitionUnsigned(recordValue: MissionTransitionRecord): Omit<MissionT
 function projectionFromRecord(recordValue: MissionTransitionRecord): MissionStateProjection {
   return {
     activeOperation: recordValue.activeOperation,
+    ...(recordValue.blocker == null ? {} : { blocker: recordValue.blocker }),
     checkpoint: recordValue.checkpoint,
     createdAt: recordValue.createdAt,
     cursor: recordValue.cursor,
@@ -584,6 +622,7 @@ function parseTransitionRecord(value: unknown): MissionTransitionRecord {
   } as RoadmapMissionDefinition;
   const descriptor = parseTransitionDescriptor({
     activeOperation: input.activeOperation,
+    ...(input.blocker == null ? {} : { blocker: input.blocker }),
     checkpoint: input.checkpoint,
     createdAt: input.createdAt,
     cursor: 0,
@@ -615,7 +654,7 @@ function parseTransitionRecord(value: unknown): MissionTransitionRecord {
     "transitionDigest",
     "resultingStateDigest",
   ];
-  exactKeys(input, fields, "transition record");
+  exactKeys(input, fields, "transition record", ["blocker"]);
   if (!Number.isSafeInteger(input.sequence) || (input.sequence as number) <= 0) {
     throw new RoadmapMissionError("transition sequence must be a positive integer", 2);
   }
@@ -630,6 +669,137 @@ function parseTransitionRecord(value: unknown): MissionTransitionRecord {
     sequence: input.sequence as number,
     transitionDigest: requiredString(input.transitionDigest, "transitionDigest", 64),
   };
+}
+
+function schedulingFactsFromRecords(records: MissionTransitionRecord[]): MissionSchedulingFacts {
+  const completed = new Set<string>();
+  const parked = new Map<string, MissionParkedSlice>();
+  for (const transition of records) {
+    if (transition.kind === "checkpoint" && transition.sliceId != null) {
+      completed.add(transition.sliceId);
+      parked.delete(transition.sliceId);
+    } else if (
+      (transition.kind === "slice-blocked" || transition.kind === "session-completion") &&
+      transition.sliceId != null &&
+      transition.blocker != null
+    ) {
+      parked.set(transition.sliceId, {
+        blocker: transition.blocker,
+        cursor: transition.cursor,
+        recovery: transition.recovery,
+        transitionDigest: transition.transitionDigest,
+      });
+    } else if (transition.kind === "slice-resume" && transition.sliceId != null) {
+      parked.delete(transition.sliceId);
+    }
+  }
+  return {
+    completedSliceIds: [...completed].sort(),
+    parkedSlices: [...parked.values()].sort((left, right) => left.cursor - right.cursor),
+  };
+}
+
+export function ownedPathsOverlap(left: string[], right: string[]): boolean {
+  return left.some((leftPath) => right.some((rightPath) =>
+    leftPath === rightPath || leftPath.startsWith(`${rightPath}/`) || rightPath.startsWith(`${leftPath}/`)
+  ));
+}
+
+function validateTransitionProgression(
+  definition: RoadmapMissionDefinition,
+  records: MissionTransitionRecord[],
+  previous: MissionStateProjection | null,
+  descriptor: MissionTransitionDescriptor,
+  location: string,
+): void {
+  if (previous == null) {
+    if (descriptor.kind !== "preflight") throw new RoadmapMissionError("first mission transition must be preflight", 2);
+    return;
+  }
+  const facts = schedulingFactsFromRecords(records);
+  const completed = new Set(facts.completedSliceIds);
+  const parked = new Map(facts.parkedSlices.map((entry) => [definition.slices[entry.cursor].id, entry]));
+  const slice = definition.slices[descriptor.cursor];
+  const moved = descriptor.cursor !== previous.cursor;
+  if (moved && descriptor.kind !== "successor-activation" && descriptor.kind !== "slice-resume" && descriptor.kind !== "frontier-stop") {
+    throw new RoadmapMissionError(`transition cursor changed without explicit activation at ${location}`, 2);
+  }
+  if (!moved && descriptor.kind === "successor-activation") {
+    throw new RoadmapMissionError("successor activation must select another slice", 2);
+  }
+  if (descriptor.kind === "successor-activation") {
+    const previousEffectiveRecord = [...records]
+      .reverse()
+      .find((recordValue) => recordValue.kind !== "restart-reconciliation" && recordValue.kind !== "pause" && recordValue.kind !== "frontier-stop") ?? null;
+    if (
+      previousEffectiveRecord?.kind !== "checkpoint" &&
+      previousEffectiveRecord?.kind !== "slice-blocked" &&
+      !(previousEffectiveRecord?.kind === "session-completion" && previousEffectiveRecord.blocker != null)
+    ) {
+      throw new RoadmapMissionError("successor activation requires a checkpoint or parked slice", 2);
+    }
+    if (completed.has(slice.id) || parked.has(slice.id) || !slice.dependsOn.every((dependency) => completed.has(dependency))) {
+      throw new RoadmapMissionError("successor activation selected a dependency-ineligible slice", 2);
+    }
+    if (facts.parkedSlices.some((entry) => ownedPathsOverlap(slice.ownedPaths, definition.slices[entry.cursor].ownedPaths))) {
+      throw new RoadmapMissionError("successor activation overlaps a parked slice", 2);
+    }
+    if (descriptor.recovery.attempts !== 0 || descriptor.recovery.sliceStartedAt != null) {
+      throw new RoadmapMissionError("successor activation must reset recovery", 2);
+    }
+  } else if (descriptor.kind === "slice-resume") {
+    const prior = parked.get(slice.id);
+    if (
+      prior == null ||
+      descriptor.blocker == null ||
+      stableJson(descriptor.blocker) !== stableJson(prior.blocker) ||
+      descriptor.recovery.attempts !== prior.recovery.attempts ||
+      !slice.dependsOn.every((dependency) => completed.has(dependency)) ||
+      facts.parkedSlices.some((entry) => entry.cursor !== descriptor.cursor && ownedPathsOverlap(slice.ownedPaths, definition.slices[entry.cursor].ownedPaths))
+    ) {
+      throw new RoadmapMissionError("slice resume does not consume one eligible parked transition", 2);
+    }
+  } else if (descriptor.kind === "frontier-stop") {
+    const prior = parked.get(slice.id);
+    if (
+      prior == null ||
+      descriptor.blocker == null ||
+      stableJson(descriptor.blocker) !== stableJson(prior.blocker) ||
+      stableJson(descriptor.recovery) !== stableJson(prior.recovery)
+    ) {
+      throw new RoadmapMissionError("frontier stop does not identify an active parked slice", 2);
+    }
+  } else if (moved) {
+    throw new RoadmapMissionError(`transition cursor is invalid at ${location}`, 2);
+  } else if (
+    descriptor.recovery.attempts < previous.recovery.attempts ||
+    (previous.recovery.sliceStartedAt != null && descriptor.recovery.sliceStartedAt !== previous.recovery.sliceStartedAt)
+  ) {
+    throw new RoadmapMissionError(`transition recovery regressed at ${location}`, 2);
+  }
+  if (descriptor.kind === "slice-blocked" || (descriptor.kind === "session-completion" && descriptor.blocker != null)) {
+    if (completed.has(slice.id) || parked.has(slice.id) || descriptor.activeOperation != null) {
+      throw new RoadmapMissionError("slice-blocked transition must park one incomplete unparked slice", 2);
+    }
+  }
+  if (descriptor.kind === "checkpoint" && parked.has(slice.id)) {
+    throw new RoadmapMissionError("checkpoint cannot clear a parked slice without explicit resume", 2);
+  }
+  if (descriptor.kind === "restart-reconciliation" && (
+    previous.activeOperation != null ||
+    descriptor.activeOperation != null ||
+    descriptor.disposition !== previous.disposition ||
+    stableJson(descriptor.blocker ?? null) !== stableJson(previous.blocker ?? null) ||
+    stableJson(descriptor.checkpoint) !== stableJson(previous.checkpoint) ||
+    stableJson(descriptor.recovery) !== stableJson(previous.recovery)
+  )) {
+    throw new RoadmapMissionError("restart reconciliation changed prior state facts", 2);
+  }
+  if (descriptor.kind === "terminal-stop" && descriptor.disposition === "complete") {
+    if (completed.size !== definition.slices.length) {
+      throw new RoadmapMissionError("complete terminal stop requires every slice checkpoint", 2);
+    }
+  }
 }
 
 function readChain(root: string, definition: RoadmapMissionDefinition): Chain {
@@ -686,25 +856,7 @@ function readChain(root: string, definition: RoadmapMissionDefinition): Chain {
     if (transition.resultingStateDigest !== digest(projection)) {
       throw new RoadmapMissionError(`transition resulting state differs at sequence ${expectedSequence}`, 2);
     }
-    if (previousProjection != null) {
-      if (transition.cursor < previousProjection.cursor || transition.cursor > previousProjection.cursor + 1) {
-        throw new RoadmapMissionError(`transition cursor is non-serial at sequence ${expectedSequence}`, 2);
-      }
-      if (transition.kind === "successor-activation" && transition.cursor !== previousProjection.cursor + 1) {
-        throw new RoadmapMissionError("successor activation must advance exactly one cursor", 2);
-      }
-      if (transition.cursor === previousProjection.cursor) {
-        if (
-          transition.recovery.attempts < previousProjection.recovery.attempts ||
-          (previousProjection.recovery.sliceStartedAt != null &&
-            transition.recovery.sliceStartedAt !== previousProjection.recovery.sliceStartedAt)
-        ) {
-          throw new RoadmapMissionError(`transition recovery regressed at sequence ${expectedSequence}`, 2);
-        }
-      } else if (transition.recovery.attempts !== 0 || transition.recovery.sliceStartedAt != null) {
-        throw new RoadmapMissionError(`successor recovery did not reset at sequence ${expectedSequence}`, 2);
-      }
-    }
+    validateTransitionProgression(definition, records, previousProjection, transition, `sequence ${expectedSequence}`);
     records.push(transition);
     previousProjection = projection;
   }
@@ -750,31 +902,13 @@ function appendTransition(
     throw new RoadmapMissionError("state projection exists without a transition chain", 2);
   }
   const previous = chain.projection;
+  validateTransitionProgression(definition, chain.records, previous, descriptor, "append");
   if (previous != null) {
     const previousEffectiveKind = [...chain.records]
       .reverse()
-      .find((recordValue) => recordValue.kind !== "restart-reconciliation" && recordValue.kind !== "pause")?.kind ?? null;
-    if (descriptor.cursor < previous.cursor || descriptor.cursor > previous.cursor + 1) {
-      throw new RoadmapMissionError("transition cursor must remain serial", 2);
-    }
-    if (descriptor.kind === "successor-activation" && descriptor.cursor !== previous.cursor + 1) {
-      throw new RoadmapMissionError("successor activation must advance exactly one cursor", 2);
-    }
-    if (descriptor.cursor === previous.cursor) {
-      if (
-        descriptor.recovery.attempts < previous.recovery.attempts ||
-        (previous.recovery.sliceStartedAt != null && descriptor.recovery.sliceStartedAt !== previous.recovery.sliceStartedAt)
-      ) {
-        throw new RoadmapMissionError("transition recovery must not regress within a slice", 2);
-      }
-    } else if (descriptor.recovery.attempts !== 0 || descriptor.recovery.sliceStartedAt != null) {
-      throw new RoadmapMissionError("successor activation must reset recovery", 2);
-    }
+      .find((recordValue) => recordValue.kind !== "restart-reconciliation" && recordValue.kind !== "pause" && recordValue.kind !== "frontier-stop")?.kind ?? null;
     if (descriptor.kind === "checkpoint" && previousEffectiveKind !== "archive") {
       throw new RoadmapMissionError("checkpoint transition requires the immediately prior archive transition", 2);
-    }
-    if (descriptor.kind === "successor-activation" && previousEffectiveKind !== "checkpoint") {
-      throw new RoadmapMissionError("successor activation requires the immediately prior checkpoint transition", 2);
     }
     if (
       descriptor.kind === "archive" &&
@@ -791,14 +925,13 @@ function appendTransition(
         descriptor.sliceId !== previous.sliceId ||
         descriptor.disposition !== previous.disposition ||
         descriptor.activeOperation != null ||
+        stableJson(descriptor.blocker ?? null) !== stableJson(previous.blocker ?? null) ||
         stableJson(descriptor.checkpoint) !== stableJson(previous.checkpoint) ||
         stableJson(descriptor.recovery) !== stableJson(previous.recovery)
       ) {
         throw new RoadmapMissionError("restart reconciliation must preserve prior state facts", 2);
       }
     }
-  } else if (descriptor.kind !== "preflight") {
-    throw new RoadmapMissionError("first mission transition must be preflight", 2);
   }
   const sequence = chain.records.length + 1;
   const unsigned = {
@@ -812,6 +945,7 @@ function appendTransition(
   const transitionDigest = digest(unsigned);
   const projection: MissionStateProjection = {
     activeOperation: descriptor.activeOperation,
+    ...(descriptor.blocker == null ? {} : { blocker: descriptor.blocker }),
     checkpoint: descriptor.checkpoint,
     createdAt: descriptor.createdAt,
     cursor: descriptor.cursor,
@@ -920,6 +1054,28 @@ export function readMissionStateProjection(
   return chain.projection;
 }
 
+export function readMissionSchedulingFacts(
+  root: string,
+  definition: RoadmapMissionDefinition,
+): MissionSchedulingFacts {
+  const chain = readChain(root, definition);
+  const directory = stateRoot(root, definition.missionId);
+  const status = projectionStatus(directory, chain.projection);
+  if (chain.records.length > 0 && status !== "current") {
+    throw new RoadmapMissionError("state projection is not current", 1);
+  }
+  if (chain.records.length === 0 && status !== "missing") {
+    throw new RoadmapMissionError("state projection exists without a transition chain", 2);
+  }
+  return schedulingFactsFromRecords(chain.records);
+}
+
+export function selectMissionFrontierStop(facts: MissionSchedulingFacts): MissionParkedSlice | null {
+  return facts.parkedSlices.find((entry) => entry.blocker.disposition === "product-decision-required")
+    ?? facts.parkedSlices[0]
+    ?? null;
+}
+
 export function readMissionResultFacts(
   root: string,
   definition: RoadmapMissionDefinition,
@@ -996,7 +1152,10 @@ export function reconcileMissionState(
     if (projectionStatus(directory, chain.projection) !== "current") {
       writeProjectionAtomic(directory, chain.projection);
     }
-    return appendTransition(root, definition, descriptor, lease);
+    const reconciledDescriptor = descriptor.blocker == null && chain.projection.blocker != null
+      ? { ...descriptor, blocker: chain.projection.blocker }
+      : descriptor;
+    return appendTransition(root, definition, reconciledDescriptor, lease);
   });
 }
 

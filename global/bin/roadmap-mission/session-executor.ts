@@ -15,11 +15,13 @@ import { ROADMAP_COMMAND_TIMEOUT_MS } from "./controller-adapter.ts";
 import {
   loadMissionDefinition,
   missionDefinitionDigest,
+  parseMissionBlocker,
   parseMissionExecutorResult,
   RoadmapMissionError,
   stableJson,
 } from "./contracts.ts";
 import type {
+  MissionBlocker,
   MissionExecutorResult,
   RoadmapMissionDefinition,
   RoadmapMissionSlice,
@@ -254,6 +256,94 @@ function guardMetadata(root: Record<string, unknown>): Record<string, unknown> {
   return record(record(root.metadata)?.completionGuard) ?? {};
 }
 
+function completionGuardBlocker(
+  guard: Record<string, unknown>,
+  guardState: "frontier-reconciling" | "product-decision-required" | "waiting",
+  slice: RoadmapMissionSlice,
+  rootSessionRef: string,
+): MissionBlocker {
+  const frontier = record(guard.workFrontier);
+  const projection = record(guard.workFrontierProjection);
+  const frontierState = typeof projection?.frontierState === "string" ? projection.frontierState : null;
+  const openGateRefs = Array.isArray(projection?.openGateRefs)
+    ? projection.openGateRefs.filter((value): value is string => typeof value === "string")
+    : [];
+  const rawGates = Array.isArray(frontier?.gates) ? frontier.gates.map(record).filter((value): value is Record<string, unknown> => value != null) : [];
+  const relevantGates = rawGates.filter((gate) => {
+    if (gate.status !== "open" || typeof gate.kind !== "string") return false;
+    if (openGateRefs.length > 0 && (typeof gate.id !== "string" || !openGateRefs.includes(gate.id))) return false;
+    return guardState === "product-decision-required" ? gate.kind === "product-decision" : gate.kind !== "product-decision";
+  });
+  const gates = relevantGates.map((gate) => ({
+    affectedItemRefs: Array.isArray(gate.affectedItemRefs) ? gate.affectedItemRefs : [],
+    evidenceRefs: Array.isArray(gate.evidenceRefs) ? gate.evidenceRefs : [],
+    id: gate.id,
+    kind: gate.kind,
+    resumeCondition: gate.resumeCondition,
+  }));
+  const rawDecisions = guardState === "product-decision-required" && Array.isArray(frontier?.parkedDecisions)
+    ? frontier.parkedDecisions.map(record).filter((value): value is Record<string, unknown> => value != null)
+    : [];
+  const decisions = rawDecisions.map((decision) => ({
+    affectedItemRefs: Array.isArray(decision.affectedItemRefs) ? decision.affectedItemRefs : [],
+    decisionPoint: decision.decisionPoint,
+    evidenceRefs: Array.isArray(decision.evidenceRefs) ? decision.evidenceRefs : [],
+    id: decision.id,
+    optionInvariantItemRefs: Array.isArray(decision.optionInvariantItemRefs) ? decision.optionInvariantItemRefs : [],
+    questionRef: decision.questionRef,
+  }));
+  if (guardState === "product-decision-required" && frontierState !== "product-decision") {
+    throw new RoadmapMissionError("completion guard product decision has no matching persisted frontier projection", 1);
+  }
+  const waitKinds = new Set(["budget", "capability", "external", "live-attempt", "process", "safety", "technical", "writer-liveness"]);
+  const waitReason = typeof guard.waitReason === "string" && guard.waitReason.trim() !== "" ? guard.waitReason.trim() : null;
+  const reasonKind = waitReason?.split(":", 1)[0] ?? null;
+  const gateKind = relevantGates.find((gate) => typeof gate.kind === "string")?.kind;
+  const waitKind = guardState === "product-decision-required"
+    ? null
+    : waitKinds.has(String(reasonKind))
+      ? reasonKind
+      : waitKinds.has(String(gateKind))
+        ? gateKind
+        : "technical";
+  const resumeCondition = relevantGates.find((gate) => typeof gate.resumeCondition === "string")?.resumeCondition
+    ?? waitReason
+    ?? (guardState === "frontier-reconciling"
+      ? `completion-guard frontier reconciliation ${String(guard.frontierReconciliationRef ?? guard.frontierError ?? "required")}`
+      : null);
+  if (typeof resumeCondition !== "string" || resumeCondition.trim() === "") {
+    throw new RoadmapMissionError("completion guard blocker has no resume condition", 1);
+  }
+  const affectedItemRefs = [...new Set([
+    ...gates.flatMap((gate) => Array.isArray(gate.affectedItemRefs) ? gate.affectedItemRefs.filter((value): value is string => typeof value === "string") : []),
+    ...decisions.flatMap((decision) => Array.isArray(decision.affectedItemRefs) ? decision.affectedItemRefs.filter((value): value is string => typeof value === "string") : []),
+  ])];
+  const evidenceRefs = [...new Set([
+    ...gates.flatMap((gate) => Array.isArray(gate.evidenceRefs) ? gate.evidenceRefs.filter((value): value is string => typeof value === "string") : []),
+    ...decisions.flatMap((decision) => Array.isArray(decision.evidenceRefs) ? decision.evidenceRefs.filter((value): value is string => typeof value === "string") : []),
+    ...(typeof guard.frontierReconciliationRef === "string" ? [guard.frontierReconciliationRef] : []),
+  ])];
+  const frontierFacts = frontier == null ? null : {
+    acceptedOutcomeRef: frontier.acceptedOutcomeRef,
+    basisHumanRef: frontier.basisHumanRef,
+    frontierGeneration: frontier.frontierGeneration,
+    progressFingerprint: frontier.progressFingerprint,
+    taskStateDigest: frontier.taskStateDigest,
+  };
+  return parseMissionBlocker({
+    affectedItemRefs: affectedItemRefs.length === 0 ? slice.workItemRefs ?? [slice.id] : affectedItemRefs,
+    decisions,
+    disposition: guardState === "product-decision-required" ? "product-decision-required" : "waiting",
+    evidenceRefs,
+    frontier: guardState === "frontier-reconciling" ? null : frontierFacts,
+    gates,
+    resumeCondition,
+    rootSessionRef,
+    source: "completion-guard",
+    waitKind,
+  }, "completion guard blocker");
+}
+
 async function waitForTerminalGuard(
   client: ReturnType<typeof createOpencodeClient>,
   root: string,
@@ -276,7 +366,7 @@ async function waitForTerminalGuard(
     certificateStatus = String(certificate?.status ?? "unknown");
     certificateReason = String(certificate?.reason ?? "none").slice(0, 200);
     const revision = typeof guard.lastAuditedRevision === "string" ? guard.lastAuditedRevision : null;
-    if (["error", "owner-required", "paused"].includes(lastState)) return { guard, session };
+    if (["error", "frontier-reconciling", "owner-required", "paused", "product-decision-required", "waiting"].includes(lastState)) return { guard, session };
     if (lastState === "passed" && revision != null && revision !== previousRevision) return { guard, session };
     await new Promise((resolve) => setTimeout(resolve, 250));
   }
@@ -556,6 +646,7 @@ export async function executeMissionSession(options: SessionExecutorOptions): Pr
   const client = createOpencodeClient({ baseUrl: server.origin, directory: root });
   const evidenceRefs: string[] = [];
   const phases: MissionExecutorResult["phases"] = [];
+  let blocker: MissionBlocker | null = null;
   let rootSessionRef: string | null = null;
   let guardState: MissionExecutorResult["guardState"] = "unknown";
   let questionDisposition: MissionExecutorResult["questionDisposition"] = "none";
@@ -692,24 +783,34 @@ export async function executeMissionSession(options: SessionExecutorOptions): Pr
     }
     if (terminal == null) throw new RoadmapMissionError("executor command phases produced no terminal guard evidence", 1);
     guardState = String(terminal.guard.state ?? "unknown") as MissionExecutorResult["guardState"];
-    if (guardState === "owner-required") {
-      questionDisposition = "owner-required";
+    if (guardState === "product-decision-required" || guardState === "waiting" || guardState === "frontier-reconciling") {
+      blocker = completionGuardBlocker(terminal.guard, guardState, slice, rootSessionRef);
+      questionDisposition = guardState === "product-decision-required" ? "product-decision-required" : "none";
       writerClosure = await closeOwnership(client, root, rootSessionRef);
       cleanup = writerClosure === "unknown" ? "unknown" : "complete";
-      disposition = "owner-required";
-      errorClass = "owner-required";
-      failureMessage = "Owner response is required before this mission can continue";
+      if (writerClosure === "unknown") {
+        blocker = null;
+        disposition = "paused";
+        errorClass = "unknown";
+        failureMessage = "Mission blocker was observed but executor ownership closure is unknown";
+      } else {
+        disposition = blocker.disposition;
+        errorClass = blocker.disposition;
+        failureMessage = blocker.resumeCondition;
+      }
     } else if (guardState === "passed") {
       writerClosure = "terminal";
       cleanup = "complete";
       disposition = "completed";
       errorClass = "none";
-    } else if (guardState === "paused") {
+    } else if (guardState === "paused" || guardState === "owner-required") {
       writerClosure = await closeOwnership(client, root, rootSessionRef);
       cleanup = writerClosure === "unknown" ? "unknown" : "complete";
       disposition = "paused";
       errorClass = writerClosure === "unknown" ? "unknown" : "paused";
-      failureMessage = "Mission root paused before terminal completion";
+      failureMessage = guardState === "owner-required"
+        ? "Legacy owner-required guard state remains paused and was not reinterpreted as a product decision"
+        : "Mission root paused before terminal completion";
     } else {
       throw new RoadmapMissionError(`completion guard ended in ${guardState}`, 1);
     }
@@ -727,6 +828,7 @@ export async function executeMissionSession(options: SessionExecutorOptions): Pr
   }
   const result = parseMissionExecutorResult({
     attempt: options.attempt,
+    blocker,
     changeId: slice.changeId,
     cleanup,
     definitionDigest: digest,
@@ -751,6 +853,9 @@ export async function executeMissionSession(options: SessionExecutorOptions): Pr
     missionId: definition.missionId,
     slice,
   });
+  if (result.disposition === "owner-required") {
+    throw new RoadmapMissionError("executor attempted to emit a legacy owner-required disposition", 1);
+  }
   writeNew(root, resultRelative, result);
   return result;
 }

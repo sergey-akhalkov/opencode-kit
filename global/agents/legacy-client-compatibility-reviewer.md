@@ -1,25 +1,7 @@
 ---
 description: "Reviews compatibility with legacy clients/tools: public API shape, lifecycle, activation, polling, concurrency, error behavior, timing assumptions, and migration gaps."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only legacy client compatibility reviewer. Find mismatches between a new system and existing clients, tools, scripts, or operator workflows.

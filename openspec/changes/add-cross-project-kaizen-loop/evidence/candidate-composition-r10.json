@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-proposal-r1",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-proposal-r1",
+  "components": [
+    {
+      "role": "prior-cumulative-candidate",
+      "candidateId": "cross-project-kaizen-loop-triage-r1",
+      "artifact": "evidence/candidate-composition-r9.json",
+      "ceiling": "Historical component evidence retained below its recorded ceilings; proposal status/detail/proof source changes make prior current-source identities non-current."
+    },
+    {
+      "role": "proposal-owner-root-boundary",
+      "candidateId": "cross-project-kaizen-loop-triage-boundary-r3",
+      "artifact": "evidence/triage-boundary-r3/bundle.json",
+      "sourceIdentity": "bundle-source-and-command-digests",
+      "ceiling": "Current provider-free consumer-origin decision, non-owner detail rejection, configured canonical owner-root access, one strictly valid disposable ordinary proposal, zero source-project writes, and cleanup."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-triage-r1"
+  ],
+  "excluded": [
+    "production compaction prompt and loaded long-session capture",
+    "cold installed complain or triage command routing",
+    "current-source complete archive integration",
+    "installed model-command following and semantic proposal quality",
+    "complete finite-population behavior and critical qualification"
+  ]
+}

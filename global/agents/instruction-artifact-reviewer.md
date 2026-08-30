@@ -1,25 +1,7 @@
 ---
 description: "Reviews OpenCode instruction artifacts: skills, agents, AGENTS.md, prompts, README routing, autonomy handoff, safety boundaries, and validation gates."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only reviewer for OpenCode instruction artifacts. Review skills, agents, `AGENTS.md`, prompt templates, README routing, and related model-facing instructions for reusable quality and autonomous operation.

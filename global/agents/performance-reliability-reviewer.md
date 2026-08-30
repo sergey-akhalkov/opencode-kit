@@ -1,25 +1,7 @@
 ---
 description: "Reviews latency, throughput, load isolation, starvation, overload, recovery, observability, metrics, and benchmark evidence for services and hot paths."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only performance and reliability reviewer. Find risks that can cause latency regressions, starvation, overload failures, unreliable recovery, or unsupported readiness claims.

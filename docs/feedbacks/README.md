@@ -1,8 +1,8 @@
 # Feedback Ledger
 
-This directory stores agent and skill complaints, suggestions, and workflow-friction notes.
+This directory stores degraded-mode fallback and historical agent/skill feedback. The machine-local Kaizen inbox is the lifecycle owner when its loaded tools are available.
 
-Use the `complain` skill when current-session process/tooling/instruction friction appears. Do not wait for proof that the issue is recurring; use `Recurrence: unknown` when unsure.
+Use the `complain` skill when current-session process/tooling/instruction friction appears. It calls `kaizen_report` when advertised and writes here only when inbox capture is unavailable before persistence. Do not wait for proof that the issue is recurring; use `Recurrence: unknown` when unsure.
 
 ## Files
 
@@ -14,6 +14,8 @@ Use the `complain` skill when current-session process/tooling/instruction fricti
 ## Rules
 
 - Keep entries privacy-safe: no secrets, tokens, raw private prompts, large logs, or log dumps.
+- Treat written `Status` as historical input for explicit idempotent import, not current disposition or promotion authority.
+- Do not add a Markdown entry after successful or ambiguously failed inbox capture.
 - Focus on workflow, tooling, instruction, validation, autonomy, or handoff friction.
 - Blunt complaints are allowed; personal blame is not.
 - Prefer compact evidence from the current session over speculation.

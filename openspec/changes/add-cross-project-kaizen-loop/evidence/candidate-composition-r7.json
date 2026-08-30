@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-archive-r4",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-archive-r4",
+  "components": [
+    {
+      "role": "runtime-api-gate",
+      "candidateId": "cross-project-kaizen-loop-runtime-api-gate-r1",
+      "artifact": "evidence/compaction-identity-r1/bundle.json",
+      "sha256": "f1f65d365ec379fd519c6e2b5fe8666615a49c88c9613cb9dc04a98fb2bc17d6",
+      "ceiling": "Historical pinned OpenCode 1.18.25 root session.compacted event to newest generated summary identity only; production compaction capture remains incomplete."
+    },
+    {
+      "role": "store-boundary",
+      "candidateId": "cross-project-kaizen-loop-store-boundary-r6",
+      "artifact": "evidence/store-boundary-r6/bundle.json",
+      "sha256": "e90acc3169cc647b3216c67e03d446800934af4fa1e5bc6297a6e7b687b88f4c",
+      "ceiling": "Historical direct store proof retained below its original ceiling; later compaction and archive extensions make its recorded source digests non-current."
+    },
+    {
+      "role": "loaded-tools-boundary",
+      "candidateId": "cross-project-kaizen-loop-loaded-tools-r5",
+      "artifact": "evidence/loaded-tools-r5/bundle.json",
+      "sha256": "a69002f3f6d62fdb33c7d155a2929ece032f64ee9a8be93a6d6b93df9fb837b8",
+      "ceiling": "Historical loaded explicit report/status proof retained below its original ceiling; later plugin extensions make its recorded source digests non-current."
+    },
+    {
+      "role": "archive-boundary",
+      "candidateId": "cross-project-kaizen-loop-archive-boundary-r4",
+      "artifact": "evidence/archive-boundary-r4/bundle.json",
+      "sha256": "ee5daba81f017cdce5eae76e0248a94ef3eb415ee558e8efb05262118a0cef93",
+      "sourceDigests": {
+        "global/bin/openspec-archive.ts": "b7fcb48d8082afb176733e73cbad5221d6e428d9398c340a601b11081ad5cfe0",
+        "global/plugin/kaizen/index.ts": "9390042fc31c0aecbab76d938be80c7785ba2a6e929f8627023aaafba0a8ec0b",
+        "global/plugin/kaizen/store.ts": "a4d5d00f025ad620e67470a2ea75a038a6f9665c270b2b723ed8555a5bf102d9",
+        "global/skills/openspec-archive-change/SKILL.md": "ce564278693526318fe9127c9c3dca99a10e033e8caedffc65b46be8c04f7de2",
+        "tools/proofs/cross-project-kaizen.ts": "1bce6ff86f42b73e35255e0211aee088fe3fdf85432ed39288c5abcf4fd9f091",
+        "tools/test-contracts-change-ready-delivery.ts": "9667c540e5dc3ca45589f9edba526dd9df5bd2cee11a5d454c1ac1607de97e4f",
+        "tools/test-cross-project-kaizen.ts": "6b46a2c5d055788f50927fb94ba315cdb1810a8164ebad0efeb6e3cc92f9f6d3",
+        "tools/validators/devkit-contract.ts": "f6884475f88c2ae734864bf8c658679e637dda705e933b09e274c8a2c418863c"
+      },
+      "ceiling": "Current provider-free canonical-helper proof for captured, no-signal, repair-gap, unavailable, and archive-failed checkpoint behavior with one archive movement and complete cleanup."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-loaded-r5-store-r6"
+  ],
+  "excluded": [
+    "production compaction capture and managed prompt contract",
+    "current-source pinned loaded report, status, decision, or checkpoint execution",
+    "complete finite-population behavior",
+    "complaint fallback or import",
+    "triage and proposal promotion"
+  ]
+}

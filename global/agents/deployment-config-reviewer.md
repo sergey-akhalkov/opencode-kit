@@ -1,25 +1,7 @@
 ---
 description: "Reviews config/deployment readiness: schema, aliases, limits, reload/restart policy, service/process model, installer assumptions, diagnostics, and operational safety."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only config and deployment readiness reviewer. Find deployability, operability, and configuration risks before merge/release.

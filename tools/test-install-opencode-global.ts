@@ -11,7 +11,7 @@ import {
   isExportLineFor,
   removeExportLine,
 } from "./install-opencode-global.ts";
-import { PORTABLE_WORKFLOW_RUNTIME_FILES } from "./runtime-surface-profile.ts";
+import { CORE_PLUGIN_FILES, PORTABLE_WORKFLOW_RUNTIME_FILES } from "./runtime-surface-profile.ts";
 import { runPortableCommand } from "../global/bin/portable-process.ts";
 type ProcessResult = {
   exitCode: number;
@@ -165,11 +165,11 @@ function writeFixtureRuntimeProfiles(repoDir: string): void {
     directories: [],
     files: [
       "global/AGENTS.md",
-      "global/extensions/specialist-catalog.ts",
+      ...CORE_PLUGIN_FILES.map((relative) => `global/${relative}`),
       "global/opencode.json.template",
       "global/opencode.local.instructions.example.md",
       "global/principles-of-work.md",
-    ],
+    ].sort((left, right) => left.localeCompare(right)),
     skills: [],
   };
   fs.writeFileSync(path.join(profilesDir, "core.json"), `${JSON.stringify(core, null, 2)}\n`);
@@ -184,7 +184,7 @@ function writeFixtureRuntimeProfiles(repoDir: string): void {
 
 function writeFixtureGlobalSkeleton(
   fixtureGlobal: string,
-  templateText = '{"plugin":["__OPENCODE_CONFIG_DIR__/extensions/specialist-catalog.ts"]}\n',
+  templateText = `${JSON.stringify({ plugin: CORE_PLUGIN_FILES.map((relative) => `__OPENCODE_CONFIG_DIR__/${relative}`) })}\n`,
 ): void {
   fs.mkdirSync(path.join(fixtureGlobal, "skills"), { recursive: true });
   fs.mkdirSync(path.join(fixtureGlobal, "agents"), { recursive: true });
@@ -195,7 +195,9 @@ function writeFixtureGlobalSkeleton(
   fs.writeFileSync(path.join(fixtureGlobal, "principles-of-work.md"), "# Fixture Principles\n", "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.json.template"), templateText, "utf8");
   fs.writeFileSync(path.join(fixtureGlobal, "opencode.local.instructions.example.md"), LOCAL_INSTRUCTIONS_EXAMPLE, "utf8");
-  fs.writeFileSync(path.join(fixtureGlobal, "extensions", "specialist-catalog.ts"), "// fixture specialist catalog\n", "utf8");
+  for (const relative of CORE_PLUGIN_FILES) {
+    fs.writeFileSync(path.join(fixtureGlobal, ...relative.split("/")), `// fixture ${relative}\n`, "utf8");
+  }
   writeFixturePortableTools(fixtureGlobal);
   writeFixtureRuntimeProfiles(path.dirname(fixtureGlobal));
 }
@@ -890,7 +892,7 @@ const tests: { name: string; run: () => void }[] = [
           assert(fs.readFileSync(template).equals(item.bytes) && !fs.existsSync(local), `Invalid ${item.label} template must preserve source bytes and not create local config.`);
           assert(replacementTemps(local).length === 0 && readFakeProcessCalls(fixture.log).length === 0, `Invalid ${item.label} template must leave no temp or process call.`);
         }
-        fs.writeFileSync(template, '{"plugin":["__OPENCODE_CONFIG_DIR__/extensions/specialist-catalog.ts"]}\n'); fs.rmSync(local, { force: true }); fs.rmSync(fixture.log, { force: true });
+        fs.writeFileSync(template, `${JSON.stringify({ plugin: CORE_PLUGIN_FILES.map((relative) => `__OPENCODE_CONFIG_DIR__/${relative}`) })}\n`); fs.rmSync(local, { force: true }); fs.rmSync(fixture.log, { force: true });
         const valid = invokeCopiedInstaller(fixture.copiedInstaller, fixture.dir, [], { FAKE_PROCESS_LOG: fixture.log, FAKE_PROCESS_STATUS: "0" });
         assertSuccess(valid, "A valid source template must allow a fresh generated-core install.");
         assert(!fs.existsSync(local), "Fresh core install must not create source global/opencode.json.");

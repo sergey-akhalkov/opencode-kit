@@ -1,6 +1,7 @@
 import type { OpencodeClient, Session } from "@opencode-ai/sdk/v2";
 import { hashRef } from "../../plugin/session-delivery-context/redaction.ts";
-import { dataOf, ensureNoError, safeError, stableDigest } from "./runtime-support.ts";
+import { parsePersistedWorkFrontier } from "./frontier.ts";
+import { dataOf, ensureNoError, record, safeError, stableDigest } from "./runtime-support.ts";
 import type { RootState } from "./types.ts";
 
 export const STATUS_CONVERGENCE_PASSES = 8;
@@ -14,15 +15,19 @@ type StatusDependencies = {
 };
 
 function provenanceSnapshot(state: RootState) {
+  const deferrals = (value: RootState["deferredQuestionProvenance"]): Array<Record<string, unknown>> =>
+    [...value.values()].sort((left, right) => left.requestRef.localeCompare(right.requestRef)).map((entry) => ({ ...entry }));
   return {
     autonomousQuestionCalls: [...state.autonomousQuestionCalls].sort(([left], [right]) => left.localeCompare(right)).map(
       ([requestRef, callRef]) => ({ requestRef, callRef }),
     ),
     autonomousQuestionRefs: [...state.autonomousQuestionRefs].sort(),
+    deferredQuestionProvenance: deferrals(state.deferredQuestionProvenance),
     pendingAutonomousQuestionCalls: [...state.pendingAutonomousQuestionCalls].sort(
       ([left], [right]) => left.localeCompare(right),
     ).map(([requestRef, callRef]) => ({ requestRef, callRef })),
     pendingAutonomousQuestionRefs: [...state.pendingAutonomousQuestionRefs].sort(),
+    pendingQuestionDeferralProvenance: deferrals(state.pendingQuestionDeferralProvenance),
   };
 }
 
@@ -67,17 +72,31 @@ export class GuardStatusReporter {
         reason: null,
         status: "not-configured" as const,
       };
+      const currentGuard = record(state.root.metadata?.completionGuard);
+      const preserveInvalidFrontier = state.frontierStatus === "invalid";
+      const persistedWorkFrontier = preserveInvalidFrontier ? currentGuard?.workFrontier : state.workFrontier;
+      const workFrontierProjection = preserveInvalidFrontier
+        ? currentGuard?.workFrontierProjection ?? null
+        : state.workFrontier == null
+          ? null
+          : { ...parsePersistedWorkFrontier(state.workFrontier), frontier: state.workFrontier };
       const guard = {
-        schemaVersion: 1,
+        schemaVersion: 2,
         state: state.state,
         grindEnabled: state.grindEnabled,
         paused: state.paused,
         continuationCycles: state.continuationCycles,
+        frontierError: state.frontierError,
+        frontierReconciliationRef: state.frontierReconciliationRef,
+        frontierStatus: state.frontierStatus,
+        workFrontier: persistedWorkFrontier,
+        workFrontierProjection,
         auditDiagnostics: { ...state.auditDiagnostics },
         restartRecoveryAction: state.restartRecoveryAction,
         waitReason: state.waitReason,
         waitRecheckCount: state.waitRecheckCount,
         lastAuditedRevision: state.lastAuditedRevision,
+        lastProgressFingerprint: state.lastProgressFingerprint,
         lastStrategyFingerprint: state.lastStrategyFingerprint,
         ...provenanceSnapshot(state),
         rootRef: hashRef("session", state.root.id),
@@ -112,7 +131,12 @@ export class GuardStatusReporter {
         guard.grindEnabled === state.grindEnabled &&
         guard.paused === state.paused &&
         guard.continuationCycles === state.continuationCycles &&
+        guard.frontierError === state.frontierError &&
+        guard.frontierReconciliationRef === state.frontierReconciliationRef &&
+        guard.frontierStatus === state.frontierStatus &&
+        (preserveInvalidFrontier || JSON.stringify(guard.workFrontier) === JSON.stringify(state.workFrontier)) &&
         guard.lastAuditedRevision === state.lastAuditedRevision &&
+        guard.lastProgressFingerprint === state.lastProgressFingerprint &&
         guard.lastStrategyFingerprint === state.lastStrategyFingerprint &&
         JSON.stringify(guard.auditDiagnostics) === JSON.stringify(state.auditDiagnostics) &&
         guard.restartRecoveryAction === state.restartRecoveryAction &&
@@ -121,15 +145,20 @@ export class GuardStatusReporter {
         JSON.stringify(guard.terminalCertificate) === JSON.stringify(state.terminalCertificate ?? terminalCertificate) &&
         JSON.stringify(guard.autonomousQuestionCalls) === JSON.stringify(currentProvenance.autonomousQuestionCalls) &&
         JSON.stringify(guard.autonomousQuestionRefs) === JSON.stringify(currentProvenance.autonomousQuestionRefs) &&
+        JSON.stringify(guard.deferredQuestionProvenance) === JSON.stringify(currentProvenance.deferredQuestionProvenance) &&
         JSON.stringify(guard.pendingAutonomousQuestionCalls) === JSON.stringify(currentProvenance.pendingAutonomousQuestionCalls) &&
         JSON.stringify(guard.pendingAutonomousQuestionRefs) === JSON.stringify(currentProvenance.pendingAutonomousQuestionRefs) &&
+        JSON.stringify(guard.pendingQuestionDeferralProvenance) === JSON.stringify(currentProvenance.pendingQuestionDeferralProvenance) &&
         (guard.message ?? null) === (state.statusMessage?.slice(0, 500) ?? null)
       ) return true;
       lastDigest = stableDigest({
         state: state.state,
         grindEnabled: state.grindEnabled,
         paused: state.paused,
+        frontierGeneration: state.workFrontier?.frontierGeneration ?? 0,
+        frontierStatus: state.frontierStatus,
         lastAuditedRevision: state.lastAuditedRevision,
+        lastProgressFingerprint: state.lastProgressFingerprint,
         waitReason: state.waitReason,
         waitRecheckCount: state.waitRecheckCount,
       });

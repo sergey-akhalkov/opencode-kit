@@ -1,0 +1,63 @@
+{
+  "candidate": "cross-project-kaizen-loop-loaded-tools-r1",
+  "checks": null,
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "fixtureRemoved": true,
+    "providerClosed": true,
+    "serverStopped": true,
+    "serverTerminal": {
+      "signal": null,
+      "status": 1
+    },
+    "sessionDeleted": false
+  },
+  "copiedPlugin": {
+    "copied": {
+      "files": 17,
+      "sha256": "f7934475486e7e9d1e82b970a10af4702d20094a78f707d05049ec1f670bb78d"
+    },
+    "source": {
+      "files": 17,
+      "sha256": "f7934475486e7e9d1e82b970a10af4702d20094a78f707d05049ec1f670bb78d"
+    }
+  },
+  "diagnostics": {
+    "stderr": "timestamp=2026-08-29T09:51:17.084Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T09:51:17.098Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T09:51:17.099Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T09:51:17.340Z level=INFO run=3603efb5 message=\"creating instance\" directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T09:51:17.342Z level=INFO run=3603efb5 message=fromDirectory directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T09:51:17.656Z level=INFO run=3603efb5 message=bootstrapping directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T09:51:17.669Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T09:51:17.669Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T09:51:17.670Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T09:51:17.693Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\config\\\\opencode.json\"\ntimestamp=2026-08-29T09:51:17.859Z level=INFO run=3603efb5 message=loading path=\"<root-1>\\\\config\\\\opencode.jsonc\"\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:54809\n"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "opencode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "pluginVersion": "1.18.15",
+    "sdkVersion": "1.18.15",
+    "sourceAssertions": {
+      "legacyCompactedSessionOnly": true,
+      "legacySummaryIdentity": true,
+      "v2CompactedSessionOnly": true,
+      "v2MessagesBeforeCursor": true
+    }
+  },
+  "error": [
+    {
+      "depth": 0,
+      "message": "Pinned OpenCode proof server startup failed",
+      "name": "Error"
+    },
+    {
+      "depth": 1,
+      "message": "Pinned OpenCode proof server did not become ready within 180000ms",
+      "name": "Error"
+    }
+  ],
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/loaded-tools-r1",
+  "provider": null,
+  "schemaVersion": 1,
+  "stage": "terminal",
+  "status": "failed",
+  "store": null,
+  "tools": null
+}

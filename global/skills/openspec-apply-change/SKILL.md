@@ -190,6 +190,7 @@ Do not emit an RC or stable claim from this command. If current runtime proof su
 - If the proposal declares a required Automation Dividend, keep exactly one `N.N [automation-dividend]` task and inspect Git state with `node global/bin/repo-candidate-snapshot.ts`.
 - Consume the current bounded-falsification declaration and record before production mutation; do not launch a duplicate for an unchanged terminal episode or create an empty record for an exemption.
 - Choose smallest dependency-valid pending slice to the earliest real boundary; continue until done unless the user bounded this request, interrupts, or an exact owner boundary stops it
+- For explicit grind, reconcile the task-scoped frontier and drain every dependency-valid accepted item outside a blocked cone before `product_decision_required` or non-product waiting; protected action authority remains separate
 - Always read context files before starting (from the apply instructions output)
 - If a task's accepted behavior or protected semantics are materially ambiguous and lack a safe reversible interpretation, pause and ask one exact question
 - If implementation reveals an artifact or design mismatch with already resolved semantics, update the affected artifact and continue

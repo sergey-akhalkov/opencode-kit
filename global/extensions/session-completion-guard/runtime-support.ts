@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import type { Session } from "@opencode-ai/sdk/v2";
 import { hashRef, sanitizeText } from "../../plugin/session-delivery-context/redaction.ts";
-import type { AuditWindowOptions, GuardOptions, RootPromptContext, RootState } from "./types.ts";
+import { projectPersistedWorkFrontier } from "./frontier.ts";
+import type { AuditWindowOptions, GuardOptions, QuestionDeferralProvenance, RootPromptContext, RootState } from "./types.ts";
 
 export type ArbiterRoute = {
   model: { providerID: string; modelID: string };
@@ -235,7 +236,6 @@ export function restoredPromptContext(root: Session, context: RootPromptContext)
   return {
     agent: root.agent ?? null,
     model: root.model == null ? null : { providerID: root.model.providerID, modelID: root.model.id },
-    tools: null,
     variant: root.model?.variant ?? null,
   };
 }
@@ -245,6 +245,13 @@ export function initialRootState(root: Session): RootState {
   const auditDiagnostics = record(metadata?.auditDiagnostics);
   const grindEnabled = metadata?.grindEnabled === true;
   const paused = metadata?.paused === true;
+  const persistedFrontier = projectPersistedWorkFrontier(root.metadata);
+  const workFrontier = persistedFrontier.assessment?.frontier ?? null;
+  const frontierStatus = persistedFrontier.status === "invalid"
+    ? "invalid" as const
+    : persistedFrontier.status === "present"
+      ? "unverified" as const
+      : "absent" as const;
   const questionRefs = (value: unknown): Set<string> => new Set(
     Array.isArray(value)
       ? value.filter((item): item is string => typeof item === "string" && /^question_[A-Za-z0-9_-]+$/.test(item)).slice(0, 1_024)
@@ -261,6 +268,31 @@ export function initialRootState(root: Session): RootState {
         }).slice(0, 1_024)
       : [],
   );
+  const questionDeferrals = (value: unknown): Map<string, QuestionDeferralProvenance> => new Map(
+    Array.isArray(value)
+      ? value.flatMap((item) => {
+          const entry = record(item);
+          const requestRef = stringValue(entry?.requestRef);
+          const blockerRef = stringValue(entry?.blockerRef);
+          const blockerKind = entry?.blockerKind === "gate" || entry?.blockerKind === "parked-decision"
+            ? entry.blockerKind
+            : null;
+          const disposition = entry?.disposition === "continue" || entry?.disposition === "waiting"
+            ? entry.disposition
+            : null;
+          const callRef = entry?.callRef === null ? null : stringValue(entry?.callRef);
+          const selectedItemRef = entry?.selectedItemRef === null ? null : stringValue(entry?.selectedItemRef);
+          return requestRef != null && /^question_[A-Za-z0-9_-]+$/.test(requestRef) &&
+              blockerRef != null && blockerRef.length <= 128 && blockerKind != null && disposition != null &&
+              (callRef == null || /^call_[A-Za-z0-9_-]+$/.test(callRef)) &&
+              (selectedItemRef == null || selectedItemRef.length <= 128)
+            ? [[requestRef, { blockerKind, blockerRef, callRef, disposition, requestRef, selectedItemRef }] as const]
+            : [];
+        }).slice(0, 1_024)
+      : [],
+  );
+  const deferredQuestionProvenance = questionDeferrals(metadata?.deferredQuestionProvenance);
+  const pendingQuestionDeferralProvenance = questionDeferrals(metadata?.pendingQuestionDeferralProvenance);
   return {
     activeAudit: null,
     auditDiagnostics: {
@@ -282,24 +314,42 @@ export function initialRootState(root: Session): RootState {
     compacting: false,
     continuationCycles: typeof metadata?.continuationCycles === "number" ? metadata.continuationCycles : 0,
     controlTurnPending: false,
+    deferredQuestionProvenance,
     grindEnabled,
     guardTurnPending: false,
+    frontierError: persistedFrontier.errorCode,
+    frontierReconciliationRef: stringValue(metadata?.frontierReconciliationRef),
+    frontierStatus,
     lastAssistantID: null,
     lastAuditedRevision: stringValue(metadata?.lastAuditedRevision),
     lastHumanID: null,
+    lastProgressFingerprint: stringValue(metadata?.lastProgressFingerprint) ?? workFrontier?.progressFingerprint ?? null,
     lastStatusKey: null,
     lastStrategyFingerprint: stringValue(metadata?.lastStrategyFingerprint),
     paused,
     pendingAutonomousQuestionCalls: questionCalls(metadata?.pendingAutonomousQuestionCalls),
     pendingAutonomousQuestionRefs: questionRefs(metadata?.pendingAutonomousQuestionRefs),
-    promptContext: restoredPromptContext(root, { agent: null, model: null, tools: null, variant: null }),
+    pendingQuestionDeferralProvenance,
+    promptContext: restoredPromptContext(root, { agent: null, model: null, variant: null }),
     questions: new Map(),
     recoveryAudit: null,
-    restartRecoveryAction: stringValue(metadata?.restartRecoveryAction),
+    restartRecoveryAction: pendingQuestionDeferralProvenance.size > 0
+      ? "question-deferral-resolution-unknown"
+      : frontierStatus === "invalid"
+      ? `frontier-invalid:${persistedFrontier.errorCode ?? "unknown"}`
+      : grindEnabled && frontierStatus === "absent"
+        ? "frontier-missing"
+        : stringValue(metadata?.restartRecoveryAction),
     retryTimer: null,
     root,
     settleTimer: null,
-    state: grindEnabled ? (paused ? "paused" : "running") : "disabled",
+    state: grindEnabled
+      ? paused
+        ? "paused"
+        : pendingQuestionDeferralProvenance.size > 0 || frontierStatus === "invalid"
+          ? "error"
+          : "frontier-reconciling"
+      : "disabled",
     statusMessage: null,
     terminalCertificate: {
       challenge: null,
@@ -313,6 +363,7 @@ export function initialRootState(root: Session): RootState {
     waitReason: stringValue(metadata?.waitReason),
     waitRecheckCount: boundedInteger(metadata?.waitRecheckCount, 0, 0),
     waitRecheckTimer: null,
+    workFrontier,
   };
 }
 

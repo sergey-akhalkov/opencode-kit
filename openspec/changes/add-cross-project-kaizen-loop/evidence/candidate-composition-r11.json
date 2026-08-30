@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-population-r1",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-population-r1",
+  "components": [
+    {
+      "role": "prior-cumulative-candidate",
+      "candidateId": "cross-project-kaizen-loop-proposal-r1",
+      "artifact": "evidence/candidate-composition-r10.json",
+      "ceiling": "Historical component evidence retained below its recorded ceilings; population fixture, focused-test, and proof-runner source changes make prior current-source identities non-current."
+    },
+    {
+      "role": "provider-free-finite-population",
+      "candidateId": "cross-project-kaizen-loop-population-r1",
+      "artifact": "evidence/population-r1/bundle.json",
+      "sourceIdentity": "bundle-seed-and-source-digests",
+      "ceiling": "Current provider-free 25-member fixture/readback, focused production tests, canonical archive matrix, contained proposal boundary, side-effect checks, and cleanup."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-proposal-r1"
+  ],
+  "excluded": [
+    "production compaction prompt and loaded long-session capture",
+    "cold installed complain or triage command routing",
+    "installed current-source complete archive and proposal path",
+    "privacy and authorization critical SDET",
+    "independent broad-claim evidence challenge"
+  ]
+}

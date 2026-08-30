@@ -142,6 +142,8 @@ function resultFromProjection(
 ): WorkCampaignResult {
   const disposition: WorkCampaignResult["disposition"] = projection.disposition === "complete" ? "complete"
     : projection.disposition === "owner-required" ? "owner-required"
+      : projection.disposition === "product-decision-required" ? "product-decision-required"
+        : projection.disposition === "waiting" ? "waiting"
       : projection.disposition === "paused-budget" ? "paused-budget"
         : projection.disposition === "paused-external" ? "paused-external"
           : projection.disposition === "paused-stop" ? "paused-stop"
@@ -181,12 +183,18 @@ function resultFromProjection(
   return result(definition, definitionDigest, operation, {
     cleanup: projection.activeOperation == null ? "complete" : "unknown",
     disposition,
-    errorClass: disposition === "paused-external" ? "locally-correctable"
+    errorClass: disposition === "product-decision-required" ? "owner-protected"
+      : disposition === "waiting" ? "locally-correctable"
+      : disposition === "paused-external" ? "locally-correctable"
       : disposition === "paused-stop" ? "none"
         : disposition === "paused-unknown" ? "unknown"
           : disposition === "owner-required" ? "owner-protected"
           : disposition === "blocked" ? "immutable-input" : "none",
-    errorMessage: disposition === "paused-external" && projection.lastTransitionKind === "rereview" && projection.phase === "synthesize"
+    errorMessage: disposition === "product-decision-required"
+      ? "Campaign drained the dependency-valid authorized wave frontier and preserves a material product decision."
+      : disposition === "waiting"
+        ? "Campaign drained the dependency-valid authorized wave frontier and preserves a resumable non-product gate."
+      : disposition === "paused-external" && projection.lastTransitionKind === "rereview" && projection.phase === "synthesize"
       ? "Changed-block re-review found candidate work; a fresh non-self reconciliation is required."
       : disposition === "paused-external" && projection.lastTransitionKind === "rereview" && projection.evidenceRefs.includes("blocker:critical-sdet-required")
         ? "Current confirmed P0 work is fixed and proven; fresh test-only critical SDET evidence is required before terminal completion."
@@ -217,13 +225,14 @@ function missionObservationResult(
   handoff: ReturnType<typeof observeCampaignMission>,
 ): WorkCampaignResult {
   const unknown = handoff.writerClosure === "unknown" || handoff.cleanupClosure === "unknown";
+  const terminalScopedStop = handoff.disposition === "product-decision-required" || handoff.disposition === "waiting";
   return result(definition, definitionDigest, operation, {
     cleanup: unknown ? "unknown" : "complete",
     disposition: unknown ? "paused-unknown" : "paused-external",
     errorClass: unknown ? "unknown" : "locally-correctable",
     errorMessage: unknown
       ? "Mission ownership or cleanup is not terminal."
-      : handoff.disposition === "complete"
+      : handoff.disposition === "complete" || terminalScopedStop
         ? "Mission is terminal; resume the campaign to consume its correlated handoff."
         : `Mission is terminal with disposition ${handoff.disposition}; campaign verification cannot start.`,
     evidenceRefs: handoffEvidenceRefs(handoff),
@@ -392,18 +401,20 @@ export function runProviderFreeCampaign(
       waveId: null,
     }, createdAt(6)));
     if (validated.wave == null) {
-      const ownerRequired = validated.reportSeed.terminalState === "owner-required";
+      const waiting = validated.reportSeed.terminalState === "owner-required" || validated.reportSeed.terminalState === "waiting";
+      const productDecisionRequired = validated.reportSeed.terminalState === "product-decision-required";
       record(descriptor({
         activeOperation: null,
         budget: budget(definition, validated.evidenceBytes, 3, 0, validated.modelCalls),
-        disposition: ownerRequired ? "owner-required" : "paused-external",
-        eventId: ownerRequired ? "owner-required" : "final-challenge-pause",
+        disposition: productDecisionRequired ? "product-decision-required" : waiting ? "waiting" : "paused-external",
+        eventId: productDecisionRequired ? "product-decision-required" : waiting ? "waiting" : "final-challenge-pause",
         evidenceRefs: [...new Set([
           ...finalEvidenceRefs,
-          ownerRequired ? "blocker:owner-required" : "blocker:final-challenge-not-enabled",
+          productDecisionRequired ? "blocker:product-decision-required"
+            : waiting ? "blocker:non-product-wait" : "blocker:final-challenge-not-enabled",
         ])].sort(),
         identities: preflight.identities,
-        kind: ownerRequired ? "owner-required" : "pause",
+        kind: productDecisionRequired ? "product-decision-required" : waiting ? "waiting" : "pause",
         missionRef: null,
         phase: "paused",
         stopRequested: false,
@@ -506,7 +517,9 @@ function consumeCompletedMission(
   try {
     let current = readCampaignStateProjection(root, definition);
     if (current == null) throw new WorkCampaignError("campaign projection disappeared before handoff consumption", 1, { field: "statePath" });
-    if (current.lastTransitionKind === "mission-launch") {
+    if (current.lastTransitionKind === "mission-launch"
+      || current.lastTransitionKind === "product-decision-required"
+      || current.lastTransitionKind === "waiting") {
       recordCampaignTransitionWithLease(root, definition, descriptor({
         activeOperation: null,
         budget: current.budget,
@@ -554,6 +567,7 @@ function consumeCompletedMission(
           }),
        maximumClaim: "One disposable local wave completed through the existing mission controller; campaign aggregate verification and changed-block re-review remain pending.",
        proofStatus: "unknown",
+       terminalState: "unknown",
        validationRows: reportSeed.validationRows.map((row) => ({
          ...row,
          evidenceRefs: [...new Set([...row.evidenceRefs, ...refs])].sort(),
@@ -601,6 +615,130 @@ function consumeCompletedMission(
   }
   const projection = readCampaignStateProjection(root, definition);
   if (projection == null) throw new WorkCampaignError("campaign projection is missing after mission consumption", 1, { field: "statePath" });
+  return resultFromProjection(root, definition, definitionDigest, "resume", projection);
+}
+
+function consumeScopedMissionStop(
+  root: string,
+  definition: WorkCampaignDefinition,
+  definitionDigest: string,
+  handoff: ReturnType<typeof observeCampaignMission>,
+): WorkCampaignResult {
+  if (handoff.disposition !== "product-decision-required" && handoff.disposition !== "waiting") {
+    throw new WorkCampaignError("scoped mission stop requires a product-decision or waiting handoff", 2, { field: "mission" });
+  }
+  if (handoff.writerClosure !== "terminal" || handoff.cleanupClosure !== "terminal" || handoff.blocker == null) {
+    throw new WorkCampaignError("scoped mission stop is not terminal-clear", 1, { field: "mission" });
+  }
+  const replay = replayCampaignState(root, definition);
+  if (replay.status !== "valid" || replay.writerStatus !== "clear") {
+    throw new WorkCampaignError("campaign state or writer is not current before scoped mission handoff consumption", 1, { field: "campaign state" });
+  }
+  const before = readCampaignStateProjection(root, definition);
+  if (before == null || before.waveId !== handoff.waveId || before.missionRef !== `mission:${handoff.missionId}`) {
+    throw new WorkCampaignError("scoped mission handoff does not match the active campaign wave", 2, { field: "missionRef" });
+  }
+  if (before.lastTransitionKind === handoff.disposition && before.disposition === handoff.disposition) {
+    return resultFromProjection(root, definition, definitionDigest, "resume", before);
+  }
+  if (!( ["mission-launch", "product-decision-required", "waiting"] as string[]).includes(before.lastTransitionKind)) {
+    throw new WorkCampaignError("scoped mission handoff is not consumable at the current campaign boundary", 2, { field: "missionRef" });
+  }
+  const rows = currentCampaignRows(root, definition);
+  const wave = rows.waves.find((entry) => entry.id === handoff.waveId);
+  if (wave == null) throw new WorkCampaignError("scoped mission handoff has no current frozen wave", 2, { field: "waveId" });
+  const waveItemIds = new Set(wave.workItemIds);
+  const completedIds = new Set(handoff.completedWorkItemRefs);
+  const blockedIds = new Set(handoff.blockedWorkItemRefs);
+  if (blockedIds.size === 0
+    || [...completedIds, ...blockedIds].some((id) => !waveItemIds.has(id))) {
+    throw new WorkCampaignError("scoped mission handoff does not project completed and blocked frozen-wave items", 2, { field: "workItemRefs" });
+  }
+  const waveItems = rows.items.filter((item) => waveItemIds.has(item.id));
+  if (waveItems.length !== waveItemIds.size
+    || waveItems.some((item) => item.status !== "confirmed" && item.status !== "fixed-and-verified")) {
+    throw new WorkCampaignError("scoped mission handoff work items are not current campaign items", 2, { field: "workItemRefs" });
+  }
+  const refs = handoffEvidenceRefs(handoff);
+  const archiveRefs = refs.filter((ref) => ref.startsWith("archive:"));
+  const checkpointRef = refs.find((ref) => ref.startsWith("checkpoint:")) ?? null;
+  const completionLimitation = completedIds.size === 0
+    ? "No authorized sibling completed; blocked and dependent work remains unresolved."
+    : "Dependency-valid authorized siblings completed; blocked and dependent work remains unresolved.";
+  const waveSummary = completedIds.size === 0
+    ? "No authorized sibling completed or checkpointed; scoped blocked and dependent work remains unresolved."
+    : checkpointRef == null
+      ? "Authorized siblings completed without checkpoint evidence; scoped blocked work remains unresolved."
+      : "Authorized siblings completed and checkpointed; scoped blocked work remains unresolved.";
+  const lease = acquireCampaignWriterLease(root, definition, {
+    createdAt: nextCreatedAt(before),
+    executableDigest: executableDigest(),
+    pid: process.pid,
+    processRef: `process:work-campaign-${process.pid}`,
+  });
+  try {
+    for (const item of waveItems.filter((entry) => completedIds.has(entry.id) && entry.status !== "fixed-and-verified")) {
+      appendCampaignLedgerRecord(root, definition, {
+        ...item,
+        evidenceRefs: [...new Set([...item.evidenceRefs, ...refs])].sort(),
+        status: "fixed-and-verified",
+      });
+    }
+    const reportSeed: CampaignReportSeed = {
+      ...rows.reportSeed,
+      blockers: [{
+        evidenceRefs: refs,
+        id: `mission-${handoff.disposition}`,
+        status: handoff.disposition,
+        summary: `The frozen wave retains a ${handoff.disposition} blocker until: ${handoff.blocker.resumeCondition}`,
+      }],
+      challengeStatus: "unknown",
+      limitations: [{
+        evidenceRefs: refs,
+        id: "scoped-mission-stop",
+        summary: completionLimitation,
+      }],
+      maximumClaim: `The disposable campaign consumed one ${handoff.disposition} mission handoff after completing ${completedIds.size} authorized sibling item(s); blocked work remains unresolved.`,
+      ownershipStatus: "terminal",
+      proofStatus: "unknown",
+      terminalState: handoff.disposition,
+      validationStatus: "unknown",
+      waveRows: rows.reportSeed.waveRows.map((row) => row.waveId === handoff.waveId
+        ? {
+            ...row,
+            archiveRefs,
+            checkpointRef,
+            evidenceRefs: [...new Set([...row.evidenceRefs, ...refs])].sort(),
+            status: "blocked" as const,
+            summary: waveSummary,
+          }
+        : row),
+    };
+    appendCampaignLedgerRecord(root, definition, reportSeed);
+    const materialized = materializeCampaignReport(root, definition);
+    readCampaignReport(root, definition);
+    const current = readCampaignStateProjection(root, definition);
+    if (current == null || current.lastTransitionKind !== before.lastTransitionKind) {
+      throw new WorkCampaignError("campaign state changed during scoped mission handoff consumption", 1, { field: "statePath" });
+    }
+    recordCampaignTransitionWithLease(root, definition, descriptor({
+      activeOperation: null,
+      budget: current.budget,
+      disposition: handoff.disposition,
+      eventId: `${handoff.disposition}-${handoff.waveId}-${current.sequence}`,
+      evidenceRefs: [...new Set([...current.evidenceRefs, ...refs, `report:${materialized.reportDigest}`])].sort(),
+      identities: current.identities,
+      kind: handoff.disposition,
+      missionRef: current.missionRef,
+      phase: "paused",
+      stopRequested: current.stopRequested,
+      waveId: current.waveId,
+    }, nextCreatedAt(current)), lease);
+  } finally {
+    releaseCampaignWriterLease(root, definition, lease);
+  }
+  const projection = readCampaignStateProjection(root, definition);
+  if (projection == null) throw new WorkCampaignError("campaign projection is missing after scoped mission stop", 1, { field: "statePath" });
   return resultFromProjection(root, definition, definitionDigest, "resume", projection);
 }
 
@@ -1205,6 +1343,8 @@ function closureReadyForCompletion(closure: CampaignClosureMatrix, reportSeed: C
     && closure.workItems.unresolvedP0P1 === 0
     && closure.workItems.unknownMaterial === 0
     && closure.workItems.ownerRequired === 0
+    && closure.workItems.productDecisionRequired === 0
+    && closure.workItems.waiting === 0
     && closure.workItems.resolved === closure.workItems.total
     && closure.waves.archived === closure.waves.total
     && closure.waves.checkpointed === closure.waves.total
@@ -1428,11 +1568,15 @@ export function resumeCampaign(
     || current.lastTransitionKind === "pause" && current.evidenceRefs.includes("blocker:terminal-evidence-currentness-required")) {
     return appendTerminalTransitions(root, definition, definitionDigest, current, current.budget, current.evidenceRefs, "resume");
   }
-  if (current.lastTransitionKind !== "mission-launch" && current.lastTransitionKind !== "mission-terminal") {
+  if (current.lastTransitionKind !== "mission-launch" && current.lastTransitionKind !== "mission-terminal"
+    && current.lastTransitionKind !== "product-decision-required" && current.lastTransitionKind !== "waiting") {
     return resultFromProjection(root, definition, definitionDigest, "resume", current);
   }
   if (current.missionRef == null || current.waveId == null) return resultFromProjection(root, definition, definitionDigest, "resume", current);
   const handoff = observeCampaignMission(root, definition, current.waveId);
+  if (handoff.disposition === "product-decision-required" || handoff.disposition === "waiting") {
+    return consumeScopedMissionStop(root, definition, definitionDigest, handoff);
+  }
   if (handoff.disposition !== "complete") return missionObservationResult(definition, definitionDigest, "resume", handoff);
   return consumeCompletedMission(root, definition, definitionDigest, handoff);
 }
@@ -1477,7 +1621,10 @@ export function statusCampaign(root: string, definition: WorkCampaignDefinition,
     supervision = reported.errorMessage === "Campaign has not started."
       ? { action: "suppress", reason: "not-started" }
       : { action: "suppress", reason: "definition-or-project-drift" };
-  } else if (missionHandoff?.disposition === "complete" && missionHandoff.writerClosure === "terminal" && missionHandoff.cleanupClosure === "terminal") {
+  } else if (missionHandoff != null
+    && (missionHandoff.disposition === "complete" || missionHandoff.disposition === "product-decision-required" || missionHandoff.disposition === "waiting")
+    && missionHandoff.writerClosure === "terminal" && missionHandoff.cleanupClosure === "terminal"
+    && projection?.lastTransitionKind === "mission-launch") {
     supervision = { action: "resume", reason: "runtime-interruption-ready" };
   } else if (projection.activeOperation != null) {
     supervision = { action: "suppress", reason: "active-operation" };
@@ -1487,6 +1634,10 @@ export function statusCampaign(root: string, definition: WorkCampaignDefinition,
     supervision = { action: "suppress", reason: "budget" };
   } else if (reported.disposition === "owner-required") {
     supervision = { action: "suppress", reason: "owner-protected" };
+  } else if (reported.disposition === "product-decision-required") {
+    supervision = { action: "suppress", reason: "product-decision" };
+  } else if (reported.disposition === "waiting") {
+    supervision = { action: "suppress", reason: "non-product-wait" };
   } else if (reported.disposition === "complete") {
     supervision = { action: "suppress", reason: "complete" };
   } else if (projection.lastTransitionKind === "pause" && projection.evidenceRefs.includes("blocker:terminal-evidence-currentness-required")) {

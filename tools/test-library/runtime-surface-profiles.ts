@@ -21,7 +21,9 @@ import {
   ALL_COMPATIBILITY_PLUGIN_FILES,
   CORE_AGENTS,
   CORE_COMMANDS,
+  CORE_DIRECTORIES,
   CORE_FILES,
+  CORE_PLUGIN_FILES,
   CORE_SKILLS,
   DELIVERY_TRAJECTORY_HELPER_FILES,
   OPENSPEC_ARCHIVE_HELPER_FILES,
@@ -74,6 +76,9 @@ function copyMinimalKit(root: string): void {
   ]) {
     const source = path.join(libraryRoot, ...relative.split("/"));
     writeText(path.join(root, ...relative.split("/")), fs.readFileSync(source, "utf8"));
+  }
+  for (const relative of CORE_DIRECTORIES) {
+    fs.cpSync(path.join(libraryRoot, ...relative.split("/")), path.join(root, ...relative.split("/")), { recursive: true });
   }
 }
 
@@ -443,10 +448,21 @@ export const runtimeSurfaceProfileTests: TestCase[] = [
         const catalogMatches = plugins.filter((entry) => JSON.stringify(entry).replaceAll("\\", "/").includes(catalogPath));
         assert(catalogMatches.length === 1, `Generated ${profileName} config must load ${SPECIALIST_CATALOG_PLUGIN_FILE} exactly once.`);
         if (profileName === "core") {
-          assert(plugins.length === 1, "Generated core config must contain only the specialist catalog plugin.");
-          for (const relative of ALL_COMPATIBILITY_PLUGIN_FILES.filter((entry) => entry !== SPECIALIST_CATALOG_PLUGIN_FILE)) {
+          assert(plugins.length === CORE_PLUGIN_FILES.length, "Generated core config must contain only the required core plugins.");
+          for (const relative of CORE_PLUGIN_FILES) {
+            const expected = path.join(targetRoot, ...relative.split("/")).replaceAll("\\", "/");
+            const matching = plugins.filter((entry) => JSON.stringify(entry).replaceAll("\\", "/").includes(expected));
+            assert(matching.length === 1, `Generated core config must load ${relative} exactly once.`);
+          }
+          for (const relative of ALL_COMPATIBILITY_PLUGIN_FILES.filter((entry) => !CORE_PLUGIN_FILES.includes(entry as typeof CORE_PLUGIN_FILES[number]))) {
             const expected = path.join(targetRoot, ...relative.split("/")).replaceAll("\\", "/");
             assert(!serializedConfig.includes(expected), `Generated core config must not load all-only plugin ${relative}.`);
+          }
+          for (const command of ["kaizen-status", "kaizen-triage"]) {
+            assert(fs.existsSync(path.join(targetRoot, "commands", `${command}.md`)), `Generated core must contain ${command}.`);
+          }
+          for (const relative of ["plugin/session-env.ts", "plugin/kaizen/index.ts", "plugin/kaizen/store.ts", "plugin/project-memory/store.ts", "plugin/session-delivery-context/index.ts"]) {
+            assert(fs.existsSync(path.join(targetRoot, ...relative.split("/"))), `Generated core must contain transitive plugin file ${relative}.`);
           }
         }
         if (profileName === "all") {

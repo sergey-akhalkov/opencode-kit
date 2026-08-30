@@ -1,25 +1,7 @@
 ---
 description: "Reviews wire-format and transport behavior: request codes, byte order, payload limits, binary safety, exact-size boundaries, concurrency ownership, and recovery handling."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only wire protocol reviewer. Find byte-level protocol and transport errors before they reach specs, codecs, tests, or production.

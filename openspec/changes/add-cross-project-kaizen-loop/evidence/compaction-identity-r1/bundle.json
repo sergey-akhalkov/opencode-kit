@@ -1,0 +1,106 @@
+{
+  "candidate": "cross-project-kaizen-loop-runtime-api-gate-r1",
+  "checks": {
+    "activeConfigUnchanged": true,
+    "eventHasSessionOnlyIdentity": true,
+    "exactlyOneNewSummary": true,
+    "exactlyOneProviderCall": true,
+    "noProviderCallBeforeSummarize": true,
+    "noTranscriptRetained": true,
+    "noWrongRootEvent": true,
+    "rootEventObserved": true,
+    "rootSessionVerified": true,
+    "summaryAccepted": true,
+    "summaryBelongsToRoot": true,
+    "summaryHasIdentity": true,
+    "summaryTextMatchesProvider": true,
+    "zeroEgressTraps": true
+  },
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "eventStreamClosed": true,
+    "fixtureRemoved": true,
+    "providerClosed": true,
+    "serverStopped": true,
+    "serverTerminal": {
+      "signal": null,
+      "status": 1
+    },
+    "sessionDeleted": true
+  },
+  "diagnostics": {
+    "stderr": "timestamp=2026-08-29T08:31:30.533Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T08:31:30.549Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T08:31:30.549Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T08:31:30.766Z level=INFO run=adcc7b61 message=\"creating instance\" directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T08:31:30.767Z level=INFO run=adcc7b61 message=fromDirectory directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T08:31:31.047Z level=INFO run=adcc7b61 message=bootstrapping directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T08:31:31.058Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T08:31:31.059Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T08:31:31.059Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T08:31:31.091Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\config\\\\opencode.json\"\ntimestamp=2026-08-29T08:31:31.092Z level=INFO run=adcc7b61 message=loading path=\"<root-1>\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-29T08:31:31.298Z level=INFO run=adcc7b61 message=\"all LSPs are disabled\"\ntimestamp=2026-08-29T08:31:31.299Z level=INFO run=adcc7b61 message=\"all formatters are disabled\"\ntimestamp=2026-08-29T08:31:31.299Z level=INFO run=adcc7b61 message=init\ntimestamp=2026-08-29T08:31:31.342Z level=INFO run=adcc7b61 message=created id=ses_fb35ac7f1ffeAdNiOGtuuH035I slug=calm-sailor version=1.18.25 projectID=global directory=\"<root-1>\\\\project\" path=\"\" workspaceID=undefined parentID=undefined title=kaizen-compaction-identity-r1 agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787992291342 time.updated=1787992291342\ntimestamp=2026-08-29T08:31:32.005Z level=INFO run=adcc7b61 message=\"event connected\"\ntimestamp=2026-08-29T08:31:32.031Z level=INFO run=adcc7b61 message=loop session.id=ses_fb35ac7f1ffeAdNiOGtuuH035I step=0\ntimestamp=2026-08-29T08:31:32.642Z level=INFO run=adcc7b61 message=initialized\ntimestamp=2026-08-29T08:31:32.838Z level=INFO run=adcc7b61 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\23cda7ccad82a0e89d553f99d9e978201da8eb12\"\ntimestamp=2026-08-29T08:31:32.839Z level=INFO run=adcc7b61 message=process session.id=ses_fb35ac7f1ffeAdNiOGtuuH035I messageID=msg_04ca53ac5001ux6J9lzkvk75Pd\ntimestamp=2026-08-29T08:31:32.842Z level=INFO run=adcc7b61 message=stream providerID=proof modelID=proof-model session.id=ses_fb35ac7f1ffeAdNiOGtuuH035I small=false agent=compaction mode=primary\ntimestamp=2026-08-29T08:31:32.861Z level=INFO run=adcc7b61 message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=proof llm.model=proof-model\ntimestamp=2026-08-29T08:31:33.079Z level=INFO run=adcc7b61 message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\23cda7ccad82a0e89d553f99d9e978201da8eb12\"\ntimestamp=2026-08-29T08:31:33.267Z level=INFO run=adcc7b61 message=loop session.id=ses_fb35ac7f1ffeAdNiOGtuuH035I step=1\ntimestamp=2026-08-29T08:31:33.269Z level=INFO run=adcc7b61 message=\"exiting loop\" session.id=ses_fb35ac7f1ffeAdNiOGtuuH035I\ntimestamp=2026-08-29T08:31:33.602Z level=INFO run=adcc7b61 message=\"removing share\" sessionID=ses_fb35ac7f1ffeAdNiOGtuuH035I\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:61479\n"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "opencode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "pluginVersion": "1.18.15",
+    "sdkVersion": "1.18.15",
+    "sourceAssertions": {
+      "legacyCompactedSessionOnly": true,
+      "legacySummaryIdentity": true,
+      "v2CompactedSessionOnly": true,
+      "v2MessagesBeforeCursor": true
+    }
+  },
+  "error": null,
+  "event": {
+    "compacted": [
+      {
+        "id": "evt_04ca53f93001czt7pb10y9h2YI",
+        "properties": {
+          "sessionID": "ses_fb35ac7f1ffeAdNiOGtuuH035I"
+        },
+        "type": "session.compacted"
+      }
+    ],
+    "wrongRootCount": 0
+  },
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode capture-compaction-identity --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/compaction-identity-r1",
+  "messages": {
+    "afterCount": 3,
+    "beforeCount": 1,
+    "newSummaries": [
+      {
+        "completed": 1787992293264,
+        "created": 1787992292037,
+        "id": "msg_04ca53ac5001ux6J9lzkvk75Pd",
+        "parentID": "msg_04ca53aad001X5pJlSAAWgRCAk",
+        "sessionID": "ses_fb35ac7f1ffeAdNiOGtuuH035I",
+        "summary": true,
+        "textBytes": 352,
+        "textSha256": "0075209b59a486908f432aa7869f16eed35a398af089cf61735dc4f4efc1efea"
+      }
+    ],
+    "summariesAfter": [
+      {
+        "completed": 1787992293264,
+        "created": 1787992292037,
+        "id": "msg_04ca53ac5001ux6J9lzkvk75Pd",
+        "parentID": "msg_04ca53aad001X5pJlSAAWgRCAk",
+        "sessionID": "ses_fb35ac7f1ffeAdNiOGtuuH035I",
+        "summary": true,
+        "textBytes": 352,
+        "textSha256": "0075209b59a486908f432aa7869f16eed35a398af089cf61735dc4f4efc1efea"
+      }
+    ],
+    "summariesBefore": []
+  },
+  "provider": {
+    "requests": [
+      {
+        "bytes": 2210,
+        "sha256": "5a86eccd400910a113a62d26ff788ee6848fdfb99694d8e30bac70d2df4eb621",
+        "stream": true
+      }
+    ],
+    "trapped": 0
+  },
+  "schemaVersion": 1,
+  "stage": "terminal",
+  "status": "passed"
+}

@@ -10,6 +10,7 @@ import {
   campaignDigest,
   loadWorkCampaignDefinition,
 } from "../global/bin/work-campaign/contracts.ts";
+import type { CampaignWaveManifest } from "../global/bin/work-campaign/contracts.ts";
 import {
   acquireCampaignWriterLease,
 } from "../global/bin/work-campaign/state.ts";
@@ -294,13 +295,24 @@ function installMissionBoundary(project: string, bin: string): void {
     "const [operation, change, slice, attempt, resultPath, definitionDigest, missionId] = process.argv.slice(2);",
     "const campaignLease = path.join('.opencode-dev-kit', 'runtime', 'work-campaigns', 'fixture-campaign', 'writer.lock');",
     "if (fs.existsSync(campaignLease)) { console.error('campaign lease held during mission execution'); process.exit(97); }",
+    "const blockerMode = fs.existsSync('.fixture-blocker-mode') ? fs.readFileSync('.fixture-blocker-mode', 'utf8').trim() : null;",
+    "if (slice === 'slice-p1' && (blockerMode === 'product-decision-required' || blockerMode === 'waiting')) {",
+    "  const evidenceRoot = path.dirname(resultPath); fs.mkdirSync(evidenceRoot, { recursive: true });",
+    "  const evidenceRef = path.join(evidenceRoot, 'scoped-blocker.json').replaceAll('\\\\', '/'); fs.writeFileSync(evidenceRef, JSON.stringify({ blockerMode, schemaVersion: 1 }) + '\\n');",
+    "  const product = blockerMode === 'product-decision-required'; const resumeCondition = product ? 'Owner selects the accepted product behavior.' : 'The protected local prerequisite becomes available.';",
+    "  const gate = { affectedItemRefs: ['item-p1'], evidenceRefs: [evidenceRef], id: product ? 'decision-item-p1' : 'safety-item-p1', kind: product ? 'product-decision' : 'safety', resumeCondition };",
+    "  const decisions = product ? [{ affectedItemRefs: ['item-p1'], decisionPoint: 'Select the accepted fixture behavior.', evidenceRefs: [evidenceRef], id: 'decision-item-p1', optionInvariantItemRefs: ['item-p2'], questionRef: 'question:item-p1' }] : [];",
+    "  const blocker = { affectedItemRefs: ['item-p1'], decisions, disposition: blockerMode, evidenceRefs: [evidenceRef], frontier: null, gates: [gate], resumeCondition, rootSessionRef: 'session-campaign-mission-blocked', source: 'mission-preflight', waitKind: product ? null : 'safety' };",
+    "  fs.writeFileSync(resultPath, JSON.stringify({ attempt: Number(attempt), blocker, changeId: change, cleanup: 'complete', definitionDigest, disposition: blockerMode, errorClass: blockerMode, errorMessage: resumeCondition, evidenceRefs: [evidenceRef], guardState: blockerMode, missionId, phases: [], questionDisposition: product ? 'product-decision-required' : 'none', rootSessionRef: 'session-campaign-mission-blocked', runtimeRef: '0'.repeat(64), schemaVersion: 1, sliceId: slice, terminalCertificate: null, tool: 'roadmap-mission-session-executor', writerClosure: 'terminal' }, null, 2) + '\\n');",
+    "  process.exit(1);",
+    "}",
     "const changeRoot = path.join('openspec', 'changes', change);",
     "fs.mkdirSync(path.join(changeRoot, 'specs', 'demo'), { recursive: true });",
     `fs.writeFileSync(path.join(changeRoot, 'proposal.md'), ${JSON.stringify(proposal)});`,
     "fs.writeFileSync(path.join(changeRoot, 'history.md'), '# Strategy History\\n');",
     "fs.writeFileSync(path.join(changeRoot, 'tasks.md'), '# Tasks\\n\\n- [x] Complete disposable task.\\n');",
     "fs.writeFileSync(path.join(changeRoot, 'specs', 'demo', 'spec.md'), '# Demo\\n');",
-    "fs.appendFileSync(path.join('src', 'a.ts'), '// fixed by mission\\n');",
+    "fs.appendFileSync(path.join('src', slice === 'slice-p2' ? 'b.ts' : 'a.ts'), '// fixed by mission\\n');",
     "const evidenceRoot = path.dirname(resultPath);",
     "fs.mkdirSync(evidenceRoot, { recursive: true });",
     "const commands = operation === 'propose' ? ['opsx-propose', 'opsx-apply'] : ['opsx-apply'];",
@@ -592,10 +604,10 @@ function configureNoWaveScenario(project: string, ownerRequired: boolean): void 
   const reportPath = path.join(project, "inputs", "08-report.json");
   const report = JSON.parse(fs.readFileSync(reportPath, "utf8")) as JsonRecord;
   report.blockers = ownerRequired
-    ? [{ evidenceRefs: ["blocker:owner-required"], id: "owner-required", status: "owner-required", summary: "The protected item requires owner authority." }]
+    ? [{ evidenceRefs: ["blocker:non-product-wait"], id: "non-product-wait", status: "waiting", summary: "The protected item remains in a resumable non-product wait." }]
     : [{ evidenceRefs: ["blocker:final-challenge-not-enabled"], id: "final-challenge", status: "blocked", summary: "The no-wave report requires a final challenge." }];
   report.ownershipStatus = ownerRequired ? "blocked" : "terminal";
-  report.terminalState = ownerRequired ? "owner-required" : "unknown";
+  report.terminalState = ownerRequired ? "waiting" : "unknown";
   report.matrixRows = (report.matrixRows as JsonRecord[])
     .filter((row) => Array.isArray(row.workItemIds) && !(row.workItemIds as string[]).includes("item-p1"));
   report.waveRows = [];
@@ -626,12 +638,54 @@ function configureOwnerRequiredSibling(project: string): void {
   const report = JSON.parse(fs.readFileSync(reportPath, "utf8")) as JsonRecord;
   report.blockers = [
     ...(report.blockers as JsonRecord[]),
-    { evidenceRefs: ["blocker:owner-required"], id: "owner-required", status: "owner-required", summary: "The protected sibling remains owner-required." },
+    { evidenceRefs: ["blocker:non-product-wait"], id: "non-product-wait", status: "waiting", summary: "The protected sibling remains in a resumable non-product wait." },
   ];
   report.ownershipStatus = "blocked";
-  report.terminalState = "owner-required";
+  report.terminalState = "waiting";
   fs.writeFileSync(reportPath, stableJson(report), "utf8");
   commitAll(project, "owner-required authorized-sibling fixture");
+}
+
+function configureScopedBlockerSibling(
+  project: string,
+  disposition: "product-decision-required" | "waiting",
+  dependentSibling = false,
+): void {
+  const itemPath = path.join(project, "inputs", "04-item-p2.json");
+  const item = JSON.parse(fs.readFileSync(itemPath, "utf8")) as JsonRecord;
+  item.effectClasses = ["local-write"];
+  item.initialSeverity = "P1";
+  item.status = "confirmed";
+  fs.writeFileSync(itemPath, stableJson(item), "utf8");
+  const reconciliationPath = path.join(project, "inputs", "07-reconcile-p2.json");
+  const reconciliation = JSON.parse(fs.readFileSync(reconciliationPath, "utf8")) as JsonRecord;
+  reconciliation.severity = "P1";
+  fs.writeFileSync(reconciliationPath, stableJson(reconciliation), "utf8");
+  const wavePath = path.join(project, "inputs", "09-wave.json");
+  const wave = JSON.parse(fs.readFileSync(wavePath, "utf8")) as JsonRecord;
+  wave.slices = [
+    ...(wave.slices as JsonRecord[]),
+    {
+      changeId: "change-p2",
+      dependsOn: dependentSibling ? ["slice-p1"] : [],
+      effectClasses: ["local-commit", "local-write"],
+      expectedProof: "Run the disposable local proof for the independent sibling.",
+      id: "slice-p2",
+      outcome: "Fix the independent confirmed P1.",
+      ownedPaths: ["src/b.ts"],
+      validationArgv: ["node", "validate.mjs"],
+      workItemIds: ["item-p2"],
+    },
+  ];
+  wave.workItemIds = ["item-p1", "item-p2"];
+  wave.missionDefinitionDigest = buildCampaignMissionDefinition(
+    loadWorkCampaignDefinition(project, "campaign.json").definition,
+    String(wave.definitionDigest),
+    wave as unknown as CampaignWaveManifest,
+  ).definitionDigest;
+  fs.writeFileSync(wavePath, stableJson(wave), "utf8");
+  fs.writeFileSync(path.join(project, ".fixture-blocker-mode"), `${disposition}\n`, "utf8");
+  commitAll(project, `${disposition} ${dependentSibling ? "dependent" : "authorized"}-sibling fixture`);
 }
 
 try {
@@ -641,6 +695,15 @@ try {
   const missionBin = path.join(fixtureRoot, "mission-bin");
   installMissionBoundary(integrated, missionBin);
   const missionEnv = { PATH: `${missionBin}${path.delimiter}${process.env.PATH ?? ""}` };
+  const productSibling = cloneProject(project, "product-decision-sibling");
+  configureScopedBlockerSibling(productSibling, "product-decision-required");
+  installMissionBoundary(productSibling, missionBin);
+  const waitingSibling = cloneProject(project, "waiting-sibling");
+  configureScopedBlockerSibling(waitingSibling, "waiting");
+  installMissionBoundary(waitingSibling, missionBin);
+  const dependentProductSibling = cloneProject(project, "product-decision-dependent-sibling");
+  configureScopedBlockerSibling(dependentProductSibling, "product-decision-required", true);
+  installMissionBoundary(dependentProductSibling, missionBin);
   const invalid = cloneProject(project, "invalid-definition");
   const dirty = cloneProject(project, "dirty-worktree");
   const active = cloneProject(project, "active-change");
@@ -733,15 +796,98 @@ try {
   assert(reportOnlyTransitions.length === 8, "report-only no-wave input must omit wave admission and mission transitions");
 
   const ownerOnlyRun = production(ownerOnly, "run", ["--phase-input", "inputs/phase.json"]);
-  assert(ownerOnlyRun.status === 0 && output(ownerOnlyRun).disposition === "owner-required" && output(ownerOnlyRun).errorClass === "owner-protected", "owner-only input must preserve the protected blocker without a wave");
+  assert(ownerOnlyRun.status === 0 && output(ownerOnlyRun).disposition === "waiting" && output(ownerOnlyRun).errorClass === "locally-correctable", "protected-only input must preserve a resumable non-product wait without a wave");
   const ownerOnlyStatus = production(ownerOnly, "status");
   assert((output(ownerOnlyStatus).supervision as JsonRecord)?.action === "suppress"
-    && (output(ownerOnlyStatus).supervision as JsonRecord)?.reason === "owner-protected", "status must suppress owner/protected work");
+    && (output(ownerOnlyStatus).supervision as JsonRecord)?.reason === "non-product-wait", "status must suppress protected work as a non-product wait");
   const ownerOnlyTransitions = fs.readdirSync(path.join(ownerOnly, ".opencode-dev-kit", "runtime", "work-campaigns", "fixture-campaign", "transitions")).sort();
   assert(ownerOnlyTransitions.length === 8, "owner-only input must omit wave admission and mission transitions");
 
   const ownerSiblingRun = production(ownerSibling, "run", ["--phase-input", "inputs/phase.json"]);
-  assert(ownerSiblingRun.status === 3 && output(ownerSiblingRun).disposition === "paused-external", "an authorized sibling wave may freeze while the protected item remains owner-required");
+  assert(ownerSiblingRun.status === 3 && output(ownerSiblingRun).disposition === "paused-external", "an authorized sibling wave may freeze while the protected item remains waiting");
+
+  const scopedCampaignControls: JsonRecord[] = [];
+  for (const [fixture, expectedDisposition, expectedReason, siblingCompletes] of [
+    [productSibling, "product-decision-required", "product-decision", true],
+    [waitingSibling, "waiting", "non-product-wait", true],
+    [dependentProductSibling, "product-decision-required", "product-decision", false],
+  ] as const) {
+    const scopedRun = production(fixture, "run", [
+      "--phase-input", "inputs/phase.json",
+      "--global-source", path.join(root, "global"),
+      "--mission-adapter", "mission-adapter.json",
+    ], missionEnv);
+    assert(scopedRun.status === 3 && output(scopedRun).disposition === "paused-external", `${expectedDisposition} fixture must stop before parent handoff consumption`);
+    const campaignTransitions = path.join(fixture, ".opencode-dev-kit", "runtime", "work-campaigns", "fixture-campaign", "transitions");
+    const missionTransitions = path.join(fixture, ".opencode-dev-kit", "runtime", "roadmap-missions", "fixture-campaign-wave-1", "transitions");
+    const missionState = JSON.parse(fs.readFileSync(path.join(path.dirname(missionTransitions), "state.json"), "utf8")) as JsonRecord;
+    const missionKinds = fs.readdirSync(missionTransitions).sort()
+      .map((name) => (JSON.parse(fs.readFileSync(path.join(missionTransitions, name), "utf8")) as JsonRecord).kind);
+    const siblingFacts = {
+      archiveTransitions: missionKinds.filter((kind) => kind === "archive").length,
+      disposition: missionState.disposition,
+      frontierStops: missionKinds.filter((kind) => kind === "frontier-stop").length,
+      p1Active: fs.existsSync(path.join(fixture, "openspec", "changes", "change-p1")),
+      p2Archived: fs.existsSync(path.join(fixture, "openspec", "changes", "archive", "change-p2")),
+      sessionCompletions: missionKinds.filter((kind) => kind === "session-completion").length,
+      sourceAMarker: fs.readFileSync(path.join(fixture, "src", "a.ts"), "utf8").includes("fixed by mission"),
+      sourceBMarkers: (fs.readFileSync(path.join(fixture, "src", "b.ts"), "utf8").match(/fixed by mission/gu) ?? []).length,
+    };
+    assert(siblingFacts.disposition === expectedDisposition
+      && siblingFacts.archiveTransitions === (siblingCompletes ? 1 : 0)
+      && siblingFacts.frontierStops === 1
+      && siblingFacts.sessionCompletions === (siblingCompletes ? 2 : 1)
+      && siblingFacts.p2Archived === siblingCompletes
+      && !siblingFacts.p1Active
+      && siblingFacts.sourceBMarkers === (siblingCompletes ? 1 : 0)
+      && !siblingFacts.sourceAMarker,
+    `${expectedDisposition} mission must park the blocked slice and execute only an independent sibling: ${stableJson(siblingFacts)} kinds=${stableJson(missionKinds)}`);
+    const scopedStatus = production(fixture, "status");
+    assert((output(scopedStatus).supervision as JsonRecord)?.action === "resume"
+      && (output(scopedStatus).supervision as JsonRecord)?.reason === "runtime-interruption-ready", `${expectedDisposition} terminal child handoff must request one campaign resume`);
+    const scopedResume = production(fixture, "resume");
+    const scopedResumeOutput = output(scopedResume);
+    assert(scopedResume.status === 0
+      && scopedResumeOutput.disposition === expectedDisposition
+      && scopedResumeOutput.phase === "paused"
+      && fs.readdirSync(campaignTransitions).length === 10,
+    `${expectedDisposition} campaign handoff must persist as one scoped terminal transition: status=${String(scopedResume.status)} stdout=${scopedResume.stdout} stderr=${scopedResume.stderr}`);
+    const currentRecords = readCurrentCampaignSeedRecords(fixture, loadWorkCampaignDefinition(fixture, "campaign.json").definition);
+    const currentItems = currentRecords.filter((record) => record.recordType === "work-item") as JsonRecord[];
+    const currentReport = currentRecords.find((record) => record.recordType === "report-seed") as JsonRecord;
+    const currentWave = (currentReport.waveRows as JsonRecord[]).find((row) => row.waveId === "wave-1");
+    const currentLimitation = (currentReport.limitations as JsonRecord[]).find((row) => row.id === "scoped-mission-stop");
+    const claimMatchesEffects = siblingCompletes
+      ? currentWave?.summary === "Authorized siblings completed and checkpointed; scoped blocked work remains unresolved."
+        && currentLimitation?.summary === "Dependency-valid authorized siblings completed; blocked and dependent work remains unresolved."
+      : currentWave?.summary === "No authorized sibling completed or checkpointed; scoped blocked and dependent work remains unresolved."
+        && currentLimitation?.summary === "No authorized sibling completed; blocked and dependent work remains unresolved.";
+    assert(currentItems.find((item) => item.id === "item-p1")?.status === "confirmed"
+      && currentItems.find((item) => item.id === "item-p2")?.status === (siblingCompletes ? "fixed-and-verified" : "confirmed")
+      && claimMatchesEffects,
+    `${expectedDisposition} campaign projection and report must preserve blocked work and claim only completed siblings`);
+    const postScopedStatus = production(fixture, "status");
+    assert((output(postScopedStatus).supervision as JsonRecord)?.action === "suppress"
+      && (output(postScopedStatus).supervision as JsonRecord)?.reason === expectedReason,
+    `${expectedDisposition} campaign status must preserve its exact terminal reason`);
+    const campaignTransitionCount = fs.readdirSync(campaignTransitions).length;
+    const missionTransitionCount = fs.readdirSync(missionTransitions).length;
+    const scopedSecondResume = production(fixture, "resume");
+    assert(scopedSecondResume.status === 0
+      && output(scopedSecondResume).disposition === expectedDisposition
+      && fs.readdirSync(campaignTransitions).length === campaignTransitionCount
+      && fs.readdirSync(missionTransitions).length === missionTransitionCount,
+    `${expectedDisposition} restart must not replay the completed sibling, checkpoint, or campaign handoff`);
+    scopedCampaignControls.push({
+      campaignTransitionCount,
+      claimMatchesEffects,
+      disposition: expectedDisposition,
+      missionTransitionCount,
+      siblingCompletes,
+      siblingMarkerCount: siblingCompletes ? 1 : 0,
+      statusReason: expectedReason,
+    });
+  }
 
   const run = production(project, "run", ["--phase-input", "inputs/phase.json"]);
   assert(run.status === 3, `provider-free run must pause at mission boundary: ${run.stderr}`);
@@ -1507,6 +1653,7 @@ try {
         exitCode: ownerSiblingRun.status,
         sourceWriterCount: 0,
       },
+      scopedBlockers: scopedCampaignControls,
       reportOnly: {
         disposition: output(reportOnlyRun).disposition,
         exitCode: reportOnlyRun.status,
@@ -1520,7 +1667,7 @@ try {
       fixtureGitMutationCalls,
       fixtureOpenSpecMutationCalls,
       hostEffects: 0,
-      missionCalls: 2,
+      missionCalls: 5,
       openCodeCalls: 0,
       processStarts,
       providerCalls: 0,

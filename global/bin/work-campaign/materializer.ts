@@ -514,7 +514,9 @@ function closureFacts(
   const fixedAndVerified = workItems.filter((row) => row.record.status === "fixed-and-verified").length;
   const reportOnly = workItems.filter((row) => row.record.status === "report-only").length;
   const ownerRequired = workItems.filter((row) => row.record.status === "owner-required").length;
+  const productDecisionRequired = workItems.filter((row) => row.record.status === "product-decision-required").length;
   const unknownMaterial = workItems.filter((row) => row.record.status === "unknown-material").length;
+  const waiting = workItems.filter((row) => row.record.status === "waiting").length;
   const resolved = workItems.filter((row) => ["duplicate", "falsified", "fixed-and-verified", "report-only"].includes(row.record.status)).length;
   const unresolvedP0P1 = workItems.filter((row) => {
     const severity = reconciliations.get(row.record.id)?.record.severity ?? row.record.initialSeverity;
@@ -545,6 +547,8 @@ function closureFacts(
       && unresolvedP0P1 === 0
       && unknownMaterial === 0
       && ownerRequired === 0
+      && productDecisionRequired === 0
+      && waiting === 0
       && resolved === workItems.length
       && waves.length === archived
       && waves.length === checkpointed
@@ -567,7 +571,7 @@ function closureFacts(
     terminalState: reportSeed.record.terminalState,
     validationStatus: reportSeed.record.validationStatus,
     waves: { archived, checkpointed, total: waves.length },
-    workItems: { fixedAndVerified, ownerRequired, reportOnly, resolved, total: workItems.length, unknownMaterial, unresolvedP0P1 },
+    workItems: { fixedAndVerified, ownerRequired, productDecisionRequired, reportOnly, resolved, total: workItems.length, unknownMaterial, unresolvedP0P1, waiting },
   };
 }
 
@@ -661,7 +665,7 @@ function renderReport(
     "",
     table(["ID", "Severity", "Disposition", "Scenario", "Impact", "Evidence", "Seed"], workRows),
     "",
-    `Work-item totals: total=${closure.workItems.total}, resolved=${closure.workItems.resolved}, fixed-and-verified=${closure.workItems.fixedAndVerified}, report-only=${closure.workItems.reportOnly}, unresolved-P0-P1=${closure.workItems.unresolvedP0P1}, unknown-material=${closure.workItems.unknownMaterial}, owner-required=${closure.workItems.ownerRequired}.`,
+    `Work-item totals: total=${closure.workItems.total}, resolved=${closure.workItems.resolved}, fixed-and-verified=${closure.workItems.fixedAndVerified}, report-only=${closure.workItems.reportOnly}, unresolved-P0-P1=${closure.workItems.unresolvedP0P1}, unknown-material=${closure.workItems.unknownMaterial}, product-decision-required=${closure.workItems.productDecisionRequired}, waiting=${closure.workItems.waiting}, legacy-owner-required=${closure.workItems.ownerRequired}.`,
     "",
     "## Remediation Traceability",
     "",

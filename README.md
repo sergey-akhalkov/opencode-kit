@@ -26,10 +26,11 @@ Ordinary Small routing lives in the kit's global `AGENTS.md` and reports verifie
 ## Contents
 
 - `global/`: kit-owned custom OpenCode config directory pointed to by `OPENCODE_CONFIG_DIR`. Holds the canonical `principles-of-work.md`, operational `AGENTS.md`, `skills/`, `agents/`, `plugin/`, and machine-local `opencode.json`; it does not prove that host-default or managed sources are absent.
-- `docs/feedbacks/`: shared feedback ledger for agent and skill complaints, suggestions, and workflow-friction notes.
+- `docs/kaizen.md`: operator guide for the machine-local cross-project Kaizen inbox, lifecycle, privacy bounds, rollback, cleanup, and maintained proof.
+- `docs/feedbacks/`: degraded Markdown transport and historical feedback ledger used when the loaded Kaizen inbox is unavailable before persistence.
 - `instructions/`: copyable instruction templates for global/project `AGENTS.md`, reviewer contracts, evidence discipline, and porting.
 - `templates/`: project bootstrap and CI templates for applying the Universal Development Loop to another repository.
-- `profiles/`: single `all` install manifest covering every reusable skill and agent in the repository.
+- `profiles/`: maintained `core` and `all` install manifests for bounded or full runtime surfaces.
 - `tools/`: TypeScript maintenance validation, install, project bootstrap, doctor, inventory, code-quality, OpenSpec gates, and session-delivery tooling for the documented kit schema.
 - `global/bin/`: explicit project-neutral workflow cores available with the resolved global kit source, including deterministic OpenSpec archive and exact staged-candidate validation. The directory is outside OpenCode custom-tool discovery; project package managers and validation commands remain thin adapter argv.
 
@@ -71,7 +72,7 @@ Use `npm run setup:global` as the one-command equivalent of `install:mcps` follo
 
 `install:mcps` preserves working installations instead of upgrading them. It installs missing Serena through the official `uv tool install -p 3.13 serena-agent` command, initializes Serena, and installs missing Codebase Memory through the supported `npm install --global codebase-memory-mcp` package. Use `--check`/`--audit` for a read-only availability check or `--dry-run`/`--what-if` to preview missing-package commands. Serena requires `uv`; if `uv` is unavailable, the helper fails before mutation with the official installation URL.
 
-`global/` is the complete kit-owned source for principles, operational routing, skills, agents, plugins, and portable binaries. `npm run install:global` materializes the selected profile under `global/.runtime-profiles/` and points `OPENCODE_CONFIG_DIR` at that generated root. The default `core` profile is minimal and includes the read-only specialist-team advisor plus only its explicit catalog plugin; use `--profile all` for the full compatibility surface, including the autonomous roadmap mission runtime. `global/opencode.json.template` remains the committed full-catalog compatibility source (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`). The generated `all` config retains its model and plugin tuples while replacing source/runtime placeholders with absolute installed paths. Personal standing host authorization belongs only in gitignored `opencode.local.instructions.md`. Restart OpenCode after any profile change; use `npm run opencode:sources` to inventory safe source locations and collisions.
+`global/` is the complete kit-owned source for principles, operational routing, skills, agents, plugins, and portable binaries. `npm run install:global` materializes the selected profile under `global/.runtime-profiles/` and points `OPENCODE_CONFIG_DIR` at that generated root. The default `core` profile is minimal and includes the read-only specialist-team advisor, its explicit catalog plugin, and the composed `session-env` plugin with Kaizen commands; use `--profile all` for the full compatibility surface, including the autonomous roadmap mission runtime. `global/opencode.json.template` remains the committed full-catalog compatibility source (GPT-5.6 Sol main model, Serena and Codebase Memory MCPs, compaction, watcher, tool output, `permission: allow`). The generated `all` config retains its model and plugin tuples while replacing source/runtime placeholders with absolute installed paths. Personal standing host authorization belongs only in gitignored `opencode.local.instructions.md`. Restart OpenCode after any profile change; use `npm run opencode:sources` to inventory safe source locations and collisions. Kaizen operation and rollback are documented in `docs/kaizen.md`.
 
 Options:
 
@@ -281,13 +282,13 @@ OpenCode agents are loaded from project or global agent folders. Copy selected f
 
 Copy only useful agents. They are read-only validators/workers by default with scoped `docs/feedbacks/**` writes through `complain`; `implementation-worker` and `sdet-quality-engineer` are validated production-only and test-only writers, `troubleshooter` has all OpenCode tool permissions while its role contract remains diagnosis-only with no production/test authorship, and `final-candidate-reviewer` is an optional read-only risk reviewer.
 
-The `docs/feedbacks/**` path boundary is a model contract, not runtime permission enforcement; `complain` remains the required contract for entry shape and privacy checks. Use a semantic plugin/tool later if hard append-only or skill-mediated enforcement is required.
+The `docs/feedbacks/**` path boundary is a model contract, not runtime permission enforcement; `complain` remains the required contract for inbox routing, fallback entry shape, and privacy checks. The loaded Kaizen tool provides append-only inbox semantics, while direct Markdown remains a degraded path rather than hard filesystem enforcement.
 
-Global install is enough for fresh projects: when `docs/feedbacks` is missing, agents use the scoped edit/add-file path to create `docs/feedbacks/<agent-or-skill-name>.md` on first feedback write. Project bootstrap only pre-creates a README for discoverability.
+Global install is enough for fresh projects. When Markdown fallback is required and `docs/feedbacks` is missing, agents use the scoped edit/add-file path to create `docs/feedbacks/<agent-or-skill-name>.md`; successful inbox capture creates no fallback file. Project bootstrap only pre-creates a README for discoverability.
 
 ### Manual Commands
 
-OpenCode prompt commands are configured through `opencode.json` under `command`. The standard `opsx-propose`, `opsx-apply`, and `opsx-archive` commands are globally owned by this kit and must not be copied into a project under the same names. Project-specific commands remain differently named domain helpers.
+OpenCode prompt commands are configured through `opencode.json` under `command`. The standard `opsx-propose`, `opsx-apply`, `opsx-archive`, `kaizen-status`, and `kaizen-triage` commands are globally owned by this kit and must not be copied into a project under the same names. Project-specific commands remain differently named domain helpers.
 
 `opsx-propose` reports structural artifact readiness separately from semantic implementation readiness. Decision-material planning uses one bounded original-request-grounded `implementation-readiness-reviewer` episode before semantic readiness is represented; an exact Ordinary Small change may use a reviewed exemption. Deterministic OpenSpec gates validate explicit structure only, and `final-candidate-reviewer` remains optional and post-proof.
 
@@ -324,7 +325,7 @@ For instruction-artifact context-cost reviews in this kit, gather deterministic 
 npm run instruction:inventory -- --format markdown
 ```
 
-Use `complain` for lightweight feedback that should be captured. Entries append to `docs/feedbacks/<agent-or-skill-name>.md` and can later be grouped into OpenSpec follow-up analysis when patterns accumulate.
+Use `complain` for lightweight feedback that should be captured. When `kaizen_report` is advertised, the machine-local inbox is authoritative and successful capture writes no Markdown. `docs/feedbacks/<agent-or-skill-name>.md` is used only as bounded degraded transport when inbox capture is unavailable before persistence; see `docs/kaizen.md`.
 
 Validate all OpenSpec changes with the first-class package gate:
 

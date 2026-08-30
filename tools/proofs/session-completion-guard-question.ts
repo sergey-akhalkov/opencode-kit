@@ -762,7 +762,7 @@ const continuationVerdict = parseCompletionVerdict({
 }, continuationEpoch);
 const continuation = buildContinuation(
   continuationVerdict,
-  { agent: "build", model: null, tools: { question: true }, variant: null },
+  { agent: "build", model: null, variant: null },
   "docs/session-strategy-history/root.md",
   false,
 );

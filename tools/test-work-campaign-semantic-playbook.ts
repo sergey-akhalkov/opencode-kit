@@ -316,10 +316,41 @@ function fixtureExecutor(options: {
       return completeResult(assignment, session, { reconciliation });
     }
     if (assignment.assignmentType === "investigation") {
+      const workItemId = assignment.assignmentId.replace("investigate-", "");
+      const scoped = investigationResult === "product-decision-required" || investigationResult === "waiting";
+      const evidenceRef = `result:${assignment.assignmentId}`;
+      const resumeCondition = investigationResult === "product-decision-required"
+        ? "Owner selects the accepted product behavior."
+        : "The bounded technical prerequisite becomes available.";
       const investigation: CampaignInvestigationResult = {
         allowedObservations: ["read assigned current source"],
+        blocker: scoped ? {
+          affectedItemRefs: [workItemId],
+          decisions: investigationResult === "product-decision-required" ? [{
+            affectedItemRefs: [workItemId],
+            decisionPoint: "Select the accepted fixture behavior.",
+            evidenceRefs: [evidenceRef],
+            id: `decision-${workItemId}`,
+            optionInvariantItemRefs: [],
+            questionRef: `question:${workItemId}`,
+          }] : [],
+          disposition: investigationResult,
+          evidenceRefs: [evidenceRef],
+          frontier: null,
+          gates: [{
+            affectedItemRefs: [workItemId],
+            evidenceRefs: [evidenceRef],
+            id: `${investigationResult === "product-decision-required" ? "decision" : "technical"}-${workItemId}`,
+            kind: investigationResult === "product-decision-required" ? "product-decision" : "technical",
+            resumeCondition,
+          }],
+          resumeCondition,
+          rootSessionRef: session,
+          source: "mission-preflight",
+          waitKind: investigationResult === "waiting" ? "technical" : null,
+        } : null,
         budgets: { modelCalls: 1, wallClockSeconds: 60 },
-        evidenceRefs: [`result:${assignment.assignmentId}`],
+        evidenceRefs: [evidenceRef],
         id: assignment.assignmentId,
         producerSessionRef: session,
         question: "Does current source confirm or falsify the exact branch omission?",
@@ -327,7 +358,7 @@ function fixtureExecutor(options: {
         result: investigationResult,
         schemaVersion: 1,
         sourceBlockIds: assignment.sourceBlockIds,
-        workItemId: assignment.assignmentId.replace("investigate-", ""),
+        workItemId,
       };
       return completeResult(assignment, session, { investigation });
     }
@@ -455,12 +486,14 @@ test("report-only, duplicate, and falsified work finish without synthesis or mut
   semanticEvidence.noWave = { duplicate: "complete", falsified: "complete", reportOnly: reportOnlyResult.status, synthesisCalls: 0 };
 });
 
-test("investigation preserves confirmed, falsified, still-unknown, and owner-required outcomes", async () => {
+test("investigation preserves confirmed, falsified, still-unknown, product-decision, and wait outcomes", async () => {
   const expected = {
     confirmed: { status: "complete", item: "confirmed", wave: true },
     falsified: { status: "complete", item: "falsified", wave: false },
-    "owner-required": { status: "owner-required", item: "owner-required", wave: false },
+    "owner-required": { status: "waiting", item: "waiting", wave: false },
+    "product-decision-required": { status: "product-decision-required", item: "product-decision-required", wave: false },
     "still-unknown": { status: "blocked", item: "unknown-material", wave: false },
+    waiting: { status: "waiting", item: "waiting", wave: false },
   } as const;
   for (const investigationResult of Object.keys(expected) as CampaignInvestigationResult["result"][]) {
     const fixture = fixtureExecutor({ includeP1: false, includeP3: false, investigationResult });
@@ -472,14 +505,14 @@ test("investigation preserves confirmed, falsified, still-unknown, and owner-req
   semanticEvidence.investigations = expected;
 });
 
-test("protected work remains owner-required while an authorized sibling freezes separately", async () => {
+test("protected work remains waiting while an authorized sibling freezes separately", async () => {
   const fixture = fixtureExecutor({ includeP3: false, investigationResult: "confirmed", unknownEffects: ["external"] });
   const result = await runSemanticPlaybook(context, factory(), fixture.execute);
-  assert.equal(result.status, "owner-required");
+  assert.equal(result.status, "waiting");
   assert.deepEqual(result.blockingWorkItemIds, ["item-unknown"]);
   assert.deepEqual(result.workItems.map((item) => [item.id, item.status]), [
     ["item-p1", "confirmed"],
-    ["item-unknown", "owner-required"],
+    ["item-unknown", "waiting"],
   ]);
   assert.deepEqual(result.wave?.workItemIds, ["item-p1"]);
   semanticEvidence.protectedSplit = {
@@ -487,6 +520,18 @@ test("protected work remains owner-required while an authorized sibling freezes 
     status: result.status,
     waveItems: result.wave?.workItemIds ?? [],
   };
+});
+
+test("investigation product decision remains scoped while an authorized sibling freezes", async () => {
+  const fixture = fixtureExecutor({ includeP3: false, investigationResult: "product-decision-required" });
+  const result = await runSemanticPlaybook(context, factory(), fixture.execute);
+  assert.equal(result.status, "product-decision-required");
+  assert.deepEqual(result.blockingWorkItemIds, ["item-unknown"]);
+  assert.deepEqual(result.workItems.map((item) => [item.id, item.status]), [
+    ["item-p1", "confirmed"],
+    ["item-unknown", "product-decision-required"],
+  ]);
+  assert.deepEqual(result.wave?.workItemIds, ["item-p1"]);
 });
 
 test("budget, transient, cleanup, and retry controls fail closed without automatic retry", async () => {

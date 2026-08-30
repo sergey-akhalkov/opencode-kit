@@ -72,6 +72,8 @@ export function discoverStrategyJournal(
 
 export function strategyFingerprint(verdict: CompletionVerdict): string {
   const material = {
+    frontierGeneration: verdict.frontierGeneration,
+    selectedItemRef: verdict.selectedItemRef,
     supplied: verdict.strategyAssessment.fingerprint,
     unresolved: verdict.unresolved.map((item) => ({
       requirementRef: item.requirementRef,
@@ -90,6 +92,15 @@ export function hasVerifiedTroubleshooter(context: StrategyContext, failureChain
       item.status === "completed" &&
       item.failureChain === failureChain,
   );
+}
+
+export function executionEpochDisposition(input: {
+  continuationCycles: number;
+  maxCycles: number;
+  repeated: boolean;
+}): "continue" | "rollover" | "wait-budget" {
+  if (input.maxCycles < 0 || input.continuationCycles < input.maxCycles) return "continue";
+  return input.repeated ? "wait-budget" : "rollover";
 }
 
 export function isJournalOnlyPath(file: string): boolean {

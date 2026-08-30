@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-loaded-r5-store-r6",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-loaded-r5-store-r6",
+  "components": [
+    {
+      "role": "runtime-api-gate",
+      "candidateId": "cross-project-kaizen-loop-runtime-api-gate-r1",
+      "artifact": "evidence/compaction-identity-r1/bundle.json",
+      "sha256": "f1f65d365ec379fd519c6e2b5fe8666615a49c88c9613cb9dc04a98fb2bc17d6",
+      "ceiling": "Pinned OpenCode 1.18.25 root session.compacted event to newest generated summary identity only."
+    },
+    {
+      "role": "store-boundary",
+      "candidateId": "cross-project-kaizen-loop-store-boundary-r6",
+      "artifact": "evidence/store-boundary-r6/bundle.json",
+      "sha256": "e90acc3169cc647b3216c67e03d446800934af4fa1e5bc6297a6e7b687b88f4c",
+      "sourceDigests": {
+        "global/plugin/kaizen/store.ts": "a6d6be0f4faa6b45a1ba91ba928d23530ee849c4a3a59d9e40cb337e025643cf",
+        "global/plugin/kaizen/index.ts": "0a83237f4deec5a03d36ab184641cf5e110d86796462d342d6d08618e85db4fc",
+        "global/plugin/session-env.ts": "b9875b1c854fbcb7a041dec86361a714860cd90807144f7fda57a2c4dc53dd44",
+        "global/plugin/project-memory/store.ts": "d752313ce29c98d0981c9611b432285ec97473418b8dbbe853edd9f8979f5298",
+        "tools/test-cross-project-kaizen.ts": "716854b8b993ea6dd4baa5c01928dbea38a9665ac5cb40da921001ac8cab6e4b",
+        "tools/proofs/cross-project-kaizen.ts": "0c47d1e54801da07de6c7acb6b6941946a13023e22b1bcb4f67cbec3c12aa58f"
+      },
+      "ceiling": "Current closed signal schema, separate 2,000-signal/8,000-lifecycle capacity enforcement, and one provider-free two-root direct-module boundary."
+    },
+    {
+      "role": "loaded-tools-boundary",
+      "candidateId": "cross-project-kaizen-loop-loaded-tools-r5",
+      "artifact": "evidence/loaded-tools-r5/bundle.json",
+      "sha256": "a69002f3f6d62fdb33c7d155a2929ece032f64ee9a8be93a6d6b93df9fb837b8",
+      "sourceDigests": {
+        "global/plugin/kaizen/store.ts": "a6d6be0f4faa6b45a1ba91ba928d23530ee849c4a3a59d9e40cb337e025643cf",
+        "global/plugin/kaizen/index.ts": "0a83237f4deec5a03d36ab184641cf5e110d86796462d342d6d08618e85db4fc",
+        "global/plugin/session-env.ts": "b9875b1c854fbcb7a041dec86361a714860cd90807144f7fda57a2c4dc53dd44",
+        "global/plugin/project-memory/store.ts": "d752313ce29c98d0981c9611b432285ec97473418b8dbbe853edd9f8979f5298"
+      },
+      "ceiling": "Pinned OpenCode 1.18.25 copied-plugin advertisement of all four tools plus loaded explicit report/status execution, bounded readback, privacy-safe projection, zero unapproved egress, and complete cleanup."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-store-boundary-r4",
+    "cross-project-kaizen-loop-loaded-tools-r4"
+  ],
+  "excluded": [
+    "production compaction capture",
+    "loaded decision or checkpoint execution",
+    "complete finite-population behavior",
+    "archive harvest",
+    "complaint fallback or import",
+    "triage and proposal promotion"
+  ]
+}

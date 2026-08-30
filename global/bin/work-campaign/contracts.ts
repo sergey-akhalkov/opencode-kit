@@ -4,10 +4,11 @@ import path from "node:path";
 
 import {
   PROTECTED_EFFECTS,
+  parseMissionBlocker,
   safeId as missionSafeId,
   stableJson,
 } from "../roadmap-mission/contracts.ts";
-import type { CheckpointMode, EffectClass } from "../roadmap-mission/contracts.ts";
+import type { CheckpointMode, EffectClass, MissionBlocker } from "../roadmap-mission/contracts.ts";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -105,7 +106,7 @@ export type CampaignWorkItem = {
   scenario: string;
   schemaVersion: 1;
   sourceBlockIds: string[];
-  status: "candidate" | "confirmed" | "duplicate" | "falsified" | "fixed-and-verified" | "owner-required" | "report-only" | "unknown-material";
+  status: "candidate" | "confirmed" | "duplicate" | "falsified" | "fixed-and-verified" | "owner-required" | "product-decision-required" | "report-only" | "unknown-material" | "waiting";
 };
 
 export type CampaignReconciliationResult = {
@@ -123,6 +124,7 @@ export type CampaignReconciliationResult = {
 
 export type CampaignInvestigationResult = {
   allowedObservations: string[];
+  blocker: MissionBlocker | null;
   budgets: {
     modelCalls: number;
     wallClockSeconds: number;
@@ -132,7 +134,7 @@ export type CampaignInvestigationResult = {
   producerSessionRef: string;
   question: string;
   recordType: "investigation-result";
-  result: "confirmed" | "falsified" | "owner-required" | "still-unknown";
+  result: "confirmed" | "falsified" | "owner-required" | "product-decision-required" | "still-unknown" | "waiting";
   schemaVersion: 1;
   sourceBlockIds: string[];
   workItemId: string;
@@ -178,7 +180,7 @@ export type CampaignClosureMatrix = {
   recordType: "closure-matrix";
   reportDigest: string;
   schemaVersion: 1;
-  terminalState: "blocked" | "complete" | "owner-required" | "unknown";
+  terminalState: "blocked" | "complete" | "owner-required" | "product-decision-required" | "unknown" | "waiting";
   validationStatus: "blocked" | "complete" | "unknown";
   waves: {
     archived: number;
@@ -188,11 +190,13 @@ export type CampaignClosureMatrix = {
   workItems: {
     fixedAndVerified: number;
     ownerRequired: number;
+    productDecisionRequired: number;
     reportOnly: number;
     resolved: number;
     total: number;
     unknownMaterial: number;
     unresolvedP0P1: number;
+    waiting: number;
   };
 };
 
@@ -204,7 +208,7 @@ export type CampaignReportFact = {
 
 export type CampaignReportSeed = {
   blockers: Array<CampaignReportFact & {
-    status: "blocked" | "owner-required" | "unknown";
+    status: "blocked" | "owner-required" | "product-decision-required" | "unknown" | "waiting";
   }>;
   candidateDigest: string;
   challengeStatus: "blocked" | "complete" | "unknown";
@@ -221,7 +225,7 @@ export type CampaignReportSeed = {
   proofStatus: "blocked" | "complete" | "unknown";
   recordType: "report-seed";
   schemaVersion: 1;
-  terminalState: "blocked" | "complete" | "owner-required" | "unknown";
+  terminalState: "blocked" | "complete" | "owner-required" | "product-decision-required" | "unknown" | "waiting";
   validationRows: Array<CampaignReportFact & {
     argv: string[];
     kind: "proof" | "validation";
@@ -250,14 +254,14 @@ export type CampaignTerminalHandoff = {
 
 export type CampaignSupervisionAdvice = {
   action: "resume" | "suppress" | "unknown";
-  reason: "active-operation" | "budget" | "complete" | "definition-or-project-drift" | "explicit-stop" | "external-input-required" | "not-started" | "owner-protected" | "runtime-interruption-ready" | "terminal-evidence-restored" | "writer-or-cleanup-unknown";
+  reason: "active-operation" | "budget" | "complete" | "definition-or-project-drift" | "explicit-stop" | "external-input-required" | "non-product-wait" | "not-started" | "owner-protected" | "product-decision" | "runtime-interruption-ready" | "terminal-evidence-restored" | "writer-or-cleanup-unknown";
 };
 
 export type WorkCampaignResult = {
   campaignId: string;
   cleanup: "complete" | "not-required" | "unknown";
   definitionDigest: string;
-  disposition: "blocked" | "complete" | "owner-required" | "paused-budget" | "paused-external" | "paused-stop" | "paused-unknown";
+  disposition: "blocked" | "complete" | "owner-required" | "paused-budget" | "paused-external" | "paused-stop" | "paused-unknown" | "product-decision-required" | "waiting";
   errorClass: "budget" | "immutable-input" | "locally-correctable" | "none" | "owner-protected" | "transient" | "unknown";
   errorMessage: string | null;
   evidenceRefs: string[];
@@ -624,7 +628,7 @@ export function parseCampaignWorkItem(value: unknown): CampaignWorkItem {
     scenario: requiredString(input.scenario, "scenario", 4_000),
     schemaVersion: 1,
     sourceBlockIds: strings(input.sourceBlockIds, "sourceBlockIds", { ids: true }),
-    status: enumValue(input.status, "status", ["candidate", "confirmed", "duplicate", "falsified", "fixed-and-verified", "owner-required", "report-only", "unknown-material"] as const),
+    status: enumValue(input.status, "status", ["candidate", "confirmed", "duplicate", "falsified", "fixed-and-verified", "owner-required", "product-decision-required", "report-only", "unknown-material", "waiting"] as const),
   };
 }
 
@@ -647,24 +651,41 @@ export function parseCampaignReconciliationResult(value: unknown): CampaignRecon
 
 export function parseCampaignInvestigationResult(value: unknown): CampaignInvestigationResult {
   const input = record(value, "investigation-result");
-  requireSchemaAndType(input, "investigation-result", ["allowedObservations", "budgets", "evidenceRefs", "id", "producerSessionRef", "question", "result", "sourceBlockIds", "workItemId"]);
+  if (!("blocker" in input)) input.blocker = null;
+  requireSchemaAndType(input, "investigation-result", ["allowedObservations", "blocker", "budgets", "evidenceRefs", "id", "producerSessionRef", "question", "result", "sourceBlockIds", "workItemId"]);
   const budgetInput = record(input.budgets, "budgets");
   exactKeys(budgetInput, ["modelCalls", "wallClockSeconds"], "budgets");
+  const result = enumValue(input.result, "result", ["confirmed", "falsified", "owner-required", "product-decision-required", "still-unknown", "waiting"] as const);
+  const workItemId = safeId(input.workItemId, "workItemId");
+  const evidenceRefs = strings(input.evidenceRefs, "evidenceRefs", { refs: true });
+  const blocker = input.blocker == null ? null : parseMissionBlocker(input.blocker, "investigation-result.blocker");
+  const blockerEvidenceRefs = blocker == null ? [] : [
+    ...blocker.evidenceRefs,
+    ...blocker.gates.flatMap((gate) => gate.evidenceRefs),
+    ...blocker.decisions.flatMap((decision) => decision.evidenceRefs),
+  ];
+  if ((result === "product-decision-required" || result === "waiting")
+    ? blocker?.disposition !== result || !blocker.affectedItemRefs.includes(workItemId)
+      || blockerEvidenceRefs.some((reference) => !evidenceRefs.includes(reference))
+    : blocker != null) {
+    throw new WorkCampaignError("investigation blocker must exactly match a scoped product-decision or waiting result", 2, { field: "blocker" });
+  }
   return {
     allowedObservations: strings(input.allowedObservations, "allowedObservations"),
+    blocker,
     budgets: {
       modelCalls: integer(budgetInput.modelCalls, "budgets.modelCalls", 1, 100),
       wallClockSeconds: integer(budgetInput.wallClockSeconds, "budgets.wallClockSeconds", 1, 86_400),
     },
-    evidenceRefs: strings(input.evidenceRefs, "evidenceRefs", { refs: true }),
+    evidenceRefs,
     id: safeId(input.id, "id"),
     producerSessionRef: reference(input.producerSessionRef, "producerSessionRef"),
     question: requiredString(input.question, "question", 4_000),
     recordType: "investigation-result",
-    result: enumValue(input.result, "result", ["confirmed", "falsified", "owner-required", "still-unknown"] as const),
+    result,
     schemaVersion: 1,
     sourceBlockIds: strings(input.sourceBlockIds, "sourceBlockIds", { ids: true }),
-    workItemId: safeId(input.workItemId, "workItemId"),
+    workItemId,
   };
 }
 
@@ -734,7 +755,10 @@ export function parseCampaignClosureMatrix(value: unknown): CampaignClosureMatri
   requireSchemaAndType(input, "closure-matrix", ["candidateDigest", "challengeStatus", "definitionDigest", "inventory", "ownershipStatus", "proofStatus", "reportDigest", "terminalState", "validationStatus", "waves", "workItems"]);
   const inventory = totals(input.inventory, "inventory", ["blocked", "currentTerminal", "needsRereview", "total"]);
   const waves = totals(input.waves, "waves", ["archived", "checkpointed", "total"]);
-  const workItems = totals(input.workItems, "workItems", ["fixedAndVerified", "ownerRequired", "reportOnly", "resolved", "total", "unknownMaterial", "unresolvedP0P1"]);
+  const workItemInput = record(input.workItems, "workItems");
+  if (!("productDecisionRequired" in workItemInput)) workItemInput.productDecisionRequired = 0;
+  if (!("waiting" in workItemInput)) workItemInput.waiting = 0;
+  const workItems = totals(workItemInput, "workItems", ["fixedAndVerified", "ownerRequired", "productDecisionRequired", "reportOnly", "resolved", "total", "unknownMaterial", "unresolvedP0P1", "waiting"]);
   return {
     candidateDigest: digest(input.candidateDigest, "candidateDigest"),
     challengeStatus: enumValue(input.challengeStatus, "challengeStatus", ["blocked", "complete", "unknown"] as const),
@@ -745,7 +769,7 @@ export function parseCampaignClosureMatrix(value: unknown): CampaignClosureMatri
     recordType: "closure-matrix",
     reportDigest: digest(input.reportDigest, "reportDigest"),
     schemaVersion: 1,
-    terminalState: enumValue(input.terminalState, "terminalState", ["blocked", "complete", "owner-required", "unknown"] as const),
+    terminalState: enumValue(input.terminalState, "terminalState", ["blocked", "complete", "owner-required", "product-decision-required", "unknown", "waiting"] as const),
     validationStatus: enumValue(input.validationStatus, "validationStatus", ["blocked", "complete", "unknown"] as const),
     waves: waves as CampaignClosureMatrix["waves"],
     workItems: workItems as CampaignClosureMatrix["workItems"],
@@ -783,7 +807,7 @@ export function parseCampaignReportSeed(value: unknown): CampaignReportSeed {
     exactKeys(row, ["evidenceRefs", "id", "status", "summary"], `blockers[${index}]`);
     return {
       ...reportFact({ evidenceRefs: row.evidenceRefs, id: row.id, summary: row.summary }, `blockers[${index}]`),
-      status: enumValue(row.status, `blockers[${index}].status`, ["blocked", "owner-required", "unknown"] as const),
+      status: enumValue(row.status, `blockers[${index}].status`, ["blocked", "owner-required", "product-decision-required", "unknown", "waiting"] as const),
     };
   }), "blockers");
   const limitations = uniqueReportRows(input.limitations.map((value, index) => reportFact(value, `limitations[${index}]`)), "limitations");
@@ -831,7 +855,7 @@ export function parseCampaignReportSeed(value: unknown): CampaignReportSeed {
     proofStatus: enumValue(input.proofStatus, "proofStatus", ["blocked", "complete", "unknown"] as const),
     recordType: "report-seed",
     schemaVersion: 1,
-    terminalState: enumValue(input.terminalState, "terminalState", ["blocked", "complete", "owner-required", "unknown"] as const),
+    terminalState: enumValue(input.terminalState, "terminalState", ["blocked", "complete", "owner-required", "product-decision-required", "unknown", "waiting"] as const),
     validationRows,
     validationStatus: enumValue(input.validationStatus, "validationStatus", ["blocked", "complete", "unknown"] as const),
     waveRows,
@@ -842,7 +866,7 @@ export function parseWorkCampaignResult(value: unknown): WorkCampaignResult {
   const input = record(value, "campaign-result");
   requireSchemaAndType(input, "campaign-result", ["campaignId", "cleanup", "definitionDigest", "disposition", "errorClass", "errorMessage", "evidenceRefs", "operation", "phase", "supervision", "terminalHandoff", "tool", "writerClosure"]);
   const definitionDigest = digest(input.definitionDigest, "definitionDigest");
-  const disposition = enumValue(input.disposition, "disposition", ["blocked", "complete", "owner-required", "paused-budget", "paused-external", "paused-stop", "paused-unknown"] as const);
+  const disposition = enumValue(input.disposition, "disposition", ["blocked", "complete", "owner-required", "paused-budget", "paused-external", "paused-stop", "paused-unknown", "product-decision-required", "waiting"] as const);
   let terminalHandoff: CampaignTerminalHandoff | null = null;
   if (input.terminalHandoff != null) {
     const handoff = record(input.terminalHandoff, "terminalHandoff");
@@ -876,7 +900,7 @@ export function parseWorkCampaignResult(value: unknown): WorkCampaignResult {
     exactKeys(advice, ["action", "reason"], "supervision");
     supervision = {
       action: enumValue(advice.action, "supervision.action", ["resume", "suppress", "unknown"] as const),
-      reason: enumValue(advice.reason, "supervision.reason", ["active-operation", "budget", "complete", "definition-or-project-drift", "explicit-stop", "external-input-required", "not-started", "owner-protected", "runtime-interruption-ready", "terminal-evidence-restored", "writer-or-cleanup-unknown"] as const),
+      reason: enumValue(advice.reason, "supervision.reason", ["active-operation", "budget", "complete", "definition-or-project-drift", "explicit-stop", "external-input-required", "non-product-wait", "not-started", "owner-protected", "product-decision", "runtime-interruption-ready", "terminal-evidence-restored", "writer-or-cleanup-unknown"] as const),
     };
     if (input.operation !== "status") throw new WorkCampaignError("supervision advice is valid only for status", 2, { field: "supervision" });
   }

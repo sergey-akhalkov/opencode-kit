@@ -1,0 +1,25 @@
+# Bounded Falsification Review
+
+- **Original Request Ref**: event:message_b6aba1f1fce2
+- **Reviewed Request Ref**: event:message_b6aba1f1fce2
+- **Accepted Outcome Ref**: outcome:proposal-outcome
+- **Candidate Ref**: candidate:grind-task-scoped-planning-r2
+- **Reviewed Candidate Ref**: candidate:grind-task-scoped-planning-r2
+- **Decision Surface**: task-frontier ownership, product-decision threshold, deterministic versus model-owned classification, question-deferral safety, process-budget rollover, ordinary-root persistence, roadmap/campaign alignment, failure visibility, and protection against infinite or unsafe continuation.
+- **Reviewer Agent**: implementation-readiness-reviewer
+- **Reviewer Session Ref**: session:ses_fb35936e5ffe4rnUTIBLzzUz8T
+- **Effective Model**: xai/grok-4.6
+- **Challenge Count**: 2
+- **Attack Class coherent-wrong-outcome**: attempted
+- **Attack Class silent-owner-decision**: attempted
+- **Attack Class missing-observable-oracle**: attempted
+- **Attack Class late-implementation-invalidation**: attempted
+- **Attack Class internal-contradiction**: attempted
+- **Attack Class unnecessary-scope**: attempted
+- **Material Findings**: GRIND-R1, GRIND-R2, GRIND-R4
+- **Main Dispositions**: GRIND-R1=confirmed, GRIND-R2=confirmed, GRIND-R4=confirmed
+- **Correction Ref**: correction:grind-task-scoped-planning-r2
+- **Invalidated Surfaces**: question-audit-effects, stale-frontier-reconciliation, live-owner-handoff-replacements, frontier-write-ingress
+- **Terminal Reason**: corrected-candidate-rereview-closed
+- **Terminal State**: closed
+- **Unresolved Evidence**: runtime-behavior, broad-claim-observations

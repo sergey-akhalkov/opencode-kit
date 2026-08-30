@@ -6,10 +6,12 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
+  CORE_PLUGIN_FILES,
   CORE_SKILLS,
   DELIVERY_TRAJECTORY_HELPER_FILES,
   ROADMAP_MISSION_PLUGIN_FILES,
   SPECIALIST_CATALOG_PLUGIN_FILE,
+  UNRESTRICTED_AGENT_TOOLS_PLUGIN_FILE,
   loadRuntimeSurfaceProfile,
   materializeRuntimeSurfaceProfile,
 } from "../runtime-surface-profile.ts";
@@ -96,6 +98,8 @@ const DOMAIN_AGENTS = [
   "rust-concurrency-reviewer",
   "wire-protocol-reviewer",
 ] as const;
+
+const AUTO_DISCOVERED_CORE_PLUGIN_FILES = ["plugin/graphify-project-context.ts"] as const;
 
 function usage(): string {
   return [
@@ -281,22 +285,20 @@ export function evaluateLoaderSurface(
     ["read", "*", "allow"],
     ["glob", "*", "allow"],
     ["grep", "*", "allow"],
-    ["bash", "*", "deny"],
-    ["edit", "*", "deny"],
-    ["edit", "docs/feedbacks/**", "allow"],
-    ["task", "*", "deny"],
-    ["question", "*", "deny"],
-    ["skill", "*", "deny"],
-    ["skill", "complain", "allow"],
-    ["webfetch", "*", "deny"],
-    ["websearch", "*", "deny"],
-    ["todowrite", "*", "deny"],
-    ["external_directory", "*", "deny"],
-    ["lsp", "*", "deny"],
-    ["doom_loop", "*", "deny"],
+    ["bash", "*", "allow"],
+    ["edit", "*", "allow"],
+    ["task", "*", "allow"],
+    ["question", "*", "allow"],
+    ["skill", "*", "allow"],
+    ["webfetch", "*", "allow"],
+    ["websearch", "*", "allow"],
+    ["todowrite", "*", "allow"],
+    ["external_directory", "*", "allow"],
+    ["lsp", "*", "allow"],
+    ["doom_loop", "*", "allow"],
   ];
   const permissionFailures = expectedPermissions.flatMap(([permission, pattern, expected]) => {
-    const actual = finalExactPermission(agent, permission, pattern);
+    const actual = finalPermission(agent, permission, pattern);
     return actual === expected ? [] : [`${permission}:${pattern} expected=${expected} observed=${actual ?? "missing"}`];
   });
   if (agent.name !== "foundation-integrity-reviewer") permissionFailures.push(`agent-name=${agent.name}`);
@@ -309,20 +311,20 @@ export function evaluateLoaderSurface(
     ["glob", "*", "allow"],
     ["grep", "*", "allow"],
     ["specialist_catalog", "*", "allow"],
-    ["bash", "*", "deny"],
-    ["edit", "*", "deny"],
-    ["task", "*", "deny"],
-    ["question", "*", "deny"],
-    ["skill", "*", "deny"],
-    ["webfetch", "*", "deny"],
-    ["websearch", "*", "deny"],
-    ["todowrite", "*", "deny"],
-    ["external_directory", "*", "deny"],
-    ["lsp", "*", "deny"],
-    ["doom_loop", "*", "deny"],
+    ["bash", "*", "allow"],
+    ["edit", "*", "allow"],
+    ["task", "*", "allow"],
+    ["question", "*", "allow"],
+    ["skill", "*", "allow"],
+    ["webfetch", "*", "allow"],
+    ["websearch", "*", "allow"],
+    ["todowrite", "*", "allow"],
+    ["external_directory", "*", "allow"],
+    ["lsp", "*", "allow"],
+    ["doom_loop", "*", "allow"],
   ];
-  if (finalExactPermission(advisor, "*", "*") !== "deny") {
-    permissionFailures.push("advisor wildcard deny missing");
+  if (finalExactPermission(advisor, "*", "*") !== "allow") {
+    permissionFailures.push("advisor wildcard allow missing");
   }
   for (const [permission, pattern, expected] of advisorPermissions) {
     const actual = finalPermission(advisor, permission, pattern);
@@ -335,7 +337,8 @@ export function evaluateLoaderSurface(
   }
   const pluginPaths = missionPluginPaths(config, generatedRoot);
   const catalogPluginCount = pluginPaths.filter((entry) => entry === SPECIALIST_CATALOG_PLUGIN_FILE).length;
-  const unexpectedCorePlugins = pluginPaths.filter((entry) => entry !== SPECIALIST_CATALOG_PLUGIN_FILE);
+  const expectedCorePlugins = new Set<string>([...CORE_PLUGIN_FILES, ...AUTO_DISCOVERED_CORE_PLUGIN_FILES]);
+  const unexpectedCorePlugins = pluginPaths.filter((entry) => !expectedCorePlugins.has(entry));
   const extraCoreAgents = DOMAIN_AGENTS.filter((name) => listedAgentNames.includes(name));
   const principles = fs.readFileSync(path.join(generatedRoot, "principles-of-work.md"), "utf8");
   const routing = fs.readFileSync(path.join(generatedRoot, "AGENTS.md"), "utf8");
@@ -477,7 +480,8 @@ function runOpenCode(cwd: string, args: string[], env: NodeJS.ProcessEnv): { sta
     env,
     maxBuffer: 32 * 1024 * 1024,
     shell: false,
-    timeout: 60_000,
+    // A pristine isolated config may install plugin dependencies on first load.
+    timeout: 180_000,
   });
   return {
     status: result.status,
@@ -603,7 +607,11 @@ export function captureMissionLoaderSurface(root: string): {
   }
   const config = extractJson(configResult.stdout) as Record<string, unknown>;
   const pluginPaths = missionPluginPaths(config, generatedRoot);
-  const requiredPlugins = [...ROADMAP_MISSION_PLUGIN_FILES, SPECIALIST_CATALOG_PLUGIN_FILE];
+  const requiredPlugins = [
+    ...ROADMAP_MISSION_PLUGIN_FILES,
+    SPECIALIST_CATALOG_PLUGIN_FILE,
+    UNRESTRICTED_AGENT_TOOLS_PLUGIN_FILE,
+  ];
   const catalogPluginCount = pluginPaths.filter((entry) => entry === SPECIALIST_CATALOG_PLUGIN_FILE).length;
   const advisor = runOpenCode(projectRoot, ["debug", "agent", "specialist-team-advisor"], env);
   if (advisor.status !== 0) {

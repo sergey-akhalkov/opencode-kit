@@ -1,0 +1,78 @@
+{
+  "candidate": "cross-project-kaizen-loop-triage-boundary-r2",
+  "checks": {
+    "activeConfigUnchanged": true,
+    "consumerOrigin": true,
+    "consumerRootUnchanged": true,
+    "decisionRecorded": true,
+    "detailedOwnerRead": true,
+    "exactlyOneProposal": true,
+    "nonOwnerRejected": true,
+    "ownerRootOnly": true,
+    "providerFree": true,
+    "strictValidation": false
+  },
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "fixtureRemoved": true
+  },
+  "effects": {
+    "commandDigests": {
+      "global/commands/kaizen-status.md": "461d9ab0eee12a85967d81e3dd8f79c7afcbbe87975f24ce8bce79c4e687293d",
+      "global/commands/kaizen-triage.md": "3d5223be8ae6edc64d801ef326424c7ca8ba50439399eb533bce580371d1790f"
+    },
+    "decisionRef": "decision_a9b02b72894cd32eb8b9af02611379b2",
+    "proposalArtifactCount": 4,
+    "proposalChangeCount": 1,
+    "proposalOwnerState": "current-root",
+    "signalRef": "signal_ba6d2d45b7f64ff6f263a9de0912b149",
+    "sourceDigests": [
+      {
+        "path": "global/plugin/kaizen/store.ts",
+        "sha256": "a9173d6659206c5a128eb1b384cff6fb4362b9e8782f7276748d9207df5a50b5"
+      },
+      {
+        "path": "global/plugin/kaizen/index.ts",
+        "sha256": "a0e0e5cbd8c21443f443541a6856dbdcc168a99f83c6443995799898de06f62c"
+      },
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "b9875b1c854fbcb7a041dec86361a714860cd90807144f7fda57a2c4dc53dd44"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "d752313ce29c98d0981c9611b432285ec97473418b8dbbe853edd9f8979f5298"
+      },
+      {
+        "path": "tools/test-cross-project-kaizen.ts",
+        "sha256": "2fe78020ccef25867ee902bbbfaac693f9fc469f35b0c5308930165fa42716cb"
+      },
+      {
+        "path": "tools/proofs/cross-project-kaizen.ts",
+        "sha256": "e7b33ad8f879e67012373c1ea1765d1c99d431711f155348193b067001eb0238"
+      }
+    ],
+    "sourceProjectWrites": 0,
+    "validation": {
+      "status": 1,
+      "stderr": "\"\"\\\"<root-3>\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\openspec.cmd\\\"\"\" �� ���� ����७��� ��� ���譥�\r\n��������, �ᯮ��塞�� �ணࠬ��� ��� ������ 䠩���.\r\n",
+      "stdout": ""
+    }
+  },
+  "environment": {
+    "networkRequests": 0,
+    "node": "v24.18.1",
+    "platform": "win32",
+    "providerCalls": 0
+  },
+  "error": [
+    {
+      "depth": 0,
+      "message": "Kaizen triage-boundary checks failed: {\"activeConfigUnchanged\":true,\"consumerOrigin\":true,\"consumerRootUnchanged\":true,\"decisionRecorded\":true,\"detailedOwnerRead\":true,\"exactlyOneProposal\":true,\"nonOwnerRejected\":true,\"ownerRootOnly\":true,\"providerFree\":true,\"strictValidation\":false}",
+      "name": "Error"
+    }
+  ],
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode triage-boundary --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/triage-boundary-r2",
+  "schemaVersion": 1,
+  "status": "failed"
+}

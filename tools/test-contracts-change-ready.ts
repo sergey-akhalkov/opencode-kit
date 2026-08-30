@@ -82,7 +82,7 @@ const CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS = [
   "`one attempt`, `no successor`, or checked-task rule is not human scope by itself",
   "Classify questions asking whether to update those controls",
   "as `continue`",
-  "underlying protected action, not its planning update",
+  "underlying protected action remains a scoped non-product gate",
 ] as const;
 
 /** Baseline pre-candidate wording lacks process-control autonomy and protected-action separation. */
@@ -166,7 +166,7 @@ const CRITICAL_SELF_DIAGNOSTIC_ARBITER_MARKERS = [
   "smallest remaining safe causally distinct probe",
   "return `continue`",
   "Never turn incomplete diagnosis",
-  "into `allow_stop` or `owner_required`",
+  "into `allow_stop`, `product_decision_required`, or `waiting`",
 ] as const;
 
 const SUPERSEDED_PATH_VS_OUTCOME_OPERATORS = [
@@ -613,20 +613,20 @@ export const changeReadyContractTests: TestCase[] = [
       );
 
       const arbiterWithoutPlanningBoundary = arbiter.replaceAll(
-        "underlying protected action, not its planning update",
-        "underlying protected action including its planning update",
+        "underlying protected action remains a scoped non-product gate",
+        "underlying protected action inherits planning authority",
       );
       assert(
         missingTokens(arbiterWithoutPlanningBoundary, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes(
-          "underlying protected action, not its planning update",
+          "underlying protected action remains a scoped non-product gate",
         ),
-        "Arbiter must keep planning-update vs protected-action owner boundary.",
+        "Arbiter must keep planning-update vs protected-action authority separation.",
       );
 
-      const arbiterWithoutContinue = arbiter.replaceAll("as `continue`", "as `owner_required`");
+      const arbiterWithoutContinue = arbiter.replaceAll("as `continue`", "as `product_decision_required`");
       assert(
         missingTokens(arbiterWithoutContinue, CRITICAL_PROCESS_CONTROL_ARBITER_MARKERS).includes("as `continue`"),
-        "Arbiter process-only questions must remain classified as continue, not owner_required.",
+        "Arbiter process-only questions must remain classified as continue, not product decisions.",
       );
     },
   },
@@ -663,7 +663,7 @@ export const changeReadyContractTests: TestCase[] = [
         "",
         `session-completion-arbiter missing technical continuation markers: ${missingTokens(arbiter, CRITICAL_SELF_DIAGNOSTIC_ARBITER_MARKERS).join(", ")}`,
       );
-      assert(verdictTypes.includes("schemaVersion: 1;"), "CompletionVerdict must retain schema version 1.");
+      assert(verdictTypes.includes("schemaVersion: 2;"), "CompletionVerdict must retain schema version 2.");
       assert(!verdictTypes.includes("diagnosticAssessment"), "Self-diagnosis must not add a new verdict schema object.");
 
       const unqualifiedAbsence = agents.replaceAll("qualify absence sources", "accept absence sources");

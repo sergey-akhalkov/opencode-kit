@@ -1,0 +1,228 @@
+{
+  "candidateId": "grind-roadmap-worker-r16",
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-record",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json",
+        "--event",
+        "events/preflight.json"
+      ],
+      "exitCode": 0,
+      "name": "preflight",
+      "status": "recorded"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-record",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json",
+        "--event",
+        "events/archive.json"
+      ],
+      "exitCode": 0,
+      "name": "archive",
+      "status": "recorded"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-record",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json",
+        "--event",
+        "events/archive.json"
+      ],
+      "exitCode": 2,
+      "name": "duplicate-archive",
+      "status": "blocked"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-reconcile",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json",
+        "--event",
+        "events/reconcile.json"
+      ],
+      "exitCode": 0,
+      "name": "restart-reconciliation",
+      "status": "recorded"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-record",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json",
+        "--event",
+        "events/checkpoint.json"
+      ],
+      "exitCode": 0,
+      "name": "checkpoint",
+      "status": "recorded"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-record",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json",
+        "--event",
+        "events/successor.json"
+      ],
+      "exitCode": 0,
+      "name": "successor",
+      "status": "recorded"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-replay",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json"
+      ],
+      "exitCode": 0,
+      "name": "replay",
+      "status": "valid"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-replay",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json"
+      ],
+      "exitCode": 2,
+      "name": "missing-transition-replay",
+      "status": "blocked"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-replay",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json"
+      ],
+      "exitCode": 1,
+      "name": "unknown-writer-replay",
+      "status": "blocked"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-record",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json",
+        "--event",
+        "events/terminal-stop.json"
+      ],
+      "exitCode": 0,
+      "name": "terminal-stop",
+      "status": "recorded"
+    },
+    {
+      "argv": [
+        "node",
+        "<production-entrypoint>",
+        "state-replay",
+        "--root",
+        "<fixture>",
+        "--mission",
+        "mission.json"
+      ],
+      "exitCode": 0,
+      "name": "stop-replay",
+      "status": "valid"
+    }
+  ],
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32"
+  },
+  "restart": {
+    "kinds": [
+      "preflight",
+      "archive",
+      "restart-reconciliation",
+      "checkpoint",
+      "successor-activation"
+    ],
+    "leaseProcessExitCode": null,
+    "leaseSha256": "73ee2070c490ac409fd8efe1d838bc8f1d4e3686c8d48733c7bf96cc0b907f97",
+    "replay": {
+      "definitionDigest": "c4fdfb45098100bd836cffcfa751bee365f101fa0b18cf381c225dd36f806431",
+      "exitCode": 0,
+      "lastTransitionDigest": "f71f42038a0e859991223a9c8afe1d154db335925b96d140f8f80e0b56ae3afc",
+      "missionId": "restart-proof",
+      "operation": "state-replay",
+      "projectionStatus": "current",
+      "schemaVersion": 1,
+      "sequence": 5,
+      "stateDigest": "756b24926d82e402c9d951803c65f51bfd41d0d667433d9ba3aec894075b24cd",
+      "status": "valid",
+      "tool": "roadmap-mission",
+      "transitionCount": 5,
+      "writerStatus": "clear"
+    },
+    "staleLeaseArchiveCount": 1
+  },
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "path": "global/bin/roadmap-mission.ts",
+      "sha256": "e91b0fa8c214e28c026d48a837c790906b58023d21d383e0eeb33093a97a4a2d"
+    },
+    {
+      "path": "global/bin/roadmap-mission/contracts.ts",
+      "sha256": "93aa11562d41a7f8c7eac5dff3f6f32832108bf637a37fc7a9846d79517f428f"
+    },
+    {
+      "path": "global/bin/roadmap-mission/preflight.ts",
+      "sha256": "1f71801dd71fd6c98560f7442d0c90c390eb9ebecfb4b57263791d9c01143243"
+    },
+    {
+      "path": "global/bin/roadmap-mission/state.ts",
+      "sha256": "6300a311776fa0f2cf8b52b13f61dbf27d3c70d0cf58db067a8f513ab6d47501"
+    }
+  ],
+  "stopIntent": {
+    "disposition": "valid",
+    "source": "slash",
+    "state": "cleared-after-terminal-stop"
+  }
+}

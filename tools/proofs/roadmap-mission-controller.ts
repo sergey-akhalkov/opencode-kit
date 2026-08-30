@@ -13,7 +13,7 @@ import {
 } from "../../global/bin/roadmap-mission/contracts.ts";
 import { missionParentWaveDigest } from "../../global/bin/roadmap-mission/parent-correlation.ts";
 import { MISSION_SOURCE_PATHS } from "../../global/bin/roadmap-mission/preflight.ts";
-import { clearMissionStopIntent, readMissionStateProjection, readMissionStopIntent, recordMissionStopIntent, recordMissionUnknownPause } from "../../global/bin/roadmap-mission/state.ts";
+import { clearMissionStopIntent, readMissionSchedulingFacts, readMissionStateProjection, readMissionStopIntent, recordMissionStopIntent, recordMissionUnknownPause } from "../../global/bin/roadmap-mission/state.ts";
 
 type Options = { candidateId: string; evidenceRoot: string; help: boolean; inputRoot: string | null; mode: "campaign" | "diagnose" | "hard-kill" | "replay" | "stop" };
 
@@ -153,6 +153,64 @@ function mission(): string {
   });
 }
 
+function scopedSchedulingMission(
+  missionId: string,
+  firstSliceProductDecision: boolean,
+  checkpointMode: "evidence-only" | "external" | "local-commit" = "evidence-only",
+): string {
+  const localCommit = checkpointMode === "local-commit";
+  return json({
+    allowedEffects: ["hardware", ...(localCommit ? ["local-commit"] : []), "local-read", "local-write"],
+    authorizationRefs: { hardware: "owner-reference-fixture", ...(localCommit ? { "local-commit": "disposable-proof-authorization" } : {}) },
+    checkpoint: { localCommitAuthorized: localCommit, mode: checkpointMode, workspace: checkpointMode === "evidence-only" ? "disposable" : "persistent" },
+    evidencePath: "evidence/mission",
+    missionId,
+    roadmapPath: "docs/roadmap.md",
+    schemaVersion: 1,
+    slices: [
+      {
+        changeId: "change-a",
+        dependsOn: [],
+        effectClasses: firstSliceProductDecision ? ["local-read", "local-write"] : ["hardware"],
+        id: "slice-a",
+        operation: "continue",
+        outcome: firstSliceProductDecision ? "Park one material product decision." : "Wait for one unavailable protected effect.",
+        ownedPaths: ["openspec/changes/change-a"],
+      },
+      {
+        changeId: "change-b",
+        dependsOn: [],
+        effectClasses: ["local-read", "local-write"],
+        id: "slice-b",
+        operation: "propose",
+        outcome: "Complete the independent sibling.",
+        ownedPaths: ["openspec/changes/change-b"],
+      },
+      {
+        changeId: "change-c",
+        dependsOn: ["slice-a"],
+        effectClasses: ["local-read", "local-write"],
+        id: "slice-c",
+        operation: "propose",
+        outcome: "Remain blocked by the first slice.",
+        ownedPaths: ["openspec/changes/change-c"],
+      },
+      {
+        changeId: "change-d",
+        dependsOn: [],
+        effectClasses: ["local-read", "local-write"],
+        id: "slice-d",
+        operation: "propose",
+        outcome: "Remain blocked by overlapping ownership.",
+        ownedPaths: ["openspec/changes/change-a/overlap"],
+      },
+    ],
+    stopPolicy: { onExternalBlocked: true, onOwnerRequired: true, onUnknown: true },
+    validationArgv: ["node", "tools/validate.mjs"],
+    workflowOwner: { mode: "global-canonical" },
+  });
+}
+
 function checkpointMission(mode: "external" | "local-commit", missionId: string): string {
   const localCommit = mode === "local-commit";
   return json({
@@ -262,7 +320,31 @@ function installExecutor(root: string): void {
     "const counts = fs.existsSync(countFile) ? JSON.parse(fs.readFileSync(countFile, 'utf8')) : {};",
     "counts[slice] = (counts[slice] ?? 0) + 1;",
     "fs.writeFileSync(countFile, JSON.stringify(counts, null, 2) + '\\n');",
+    "const evidenceRoot = path.dirname(resultPath);",
+    "fs.mkdirSync(evidenceRoot, { recursive: true });",
+    "const commands = operation === 'propose' ? ['opsx-propose', 'opsx-apply'] : ['opsx-apply'];",
     "const changeRoot = path.join('openspec', 'changes', change);",
+    "if (fs.existsSync(path.join('tools', 'block-' + slice + '-product'))) {",
+    "  fs.mkdirSync(changeRoot, { recursive: true });",
+    "  fs.writeFileSync(path.join(changeRoot, 'partial.txt'), 'parked partial\\n');",
+    "  const phaseCommand = operation === 'propose' ? 'opsx-propose' : 'opsx-apply';",
+    "  const evidenceRef = path.join(evidenceRoot, phaseCommand + '.json').replaceAll('\\\\', '/');",
+    "  fs.writeFileSync(evidenceRef, JSON.stringify({ command: phaseCommand, schemaVersion: 1, status: 'failed' }) + '\\n');",
+    "  const blocker = {",
+    "    affectedItemRefs: [slice],",
+    "    decisions: [{ affectedItemRefs: [slice], decisionPoint: 'Select the accepted product behavior.', evidenceRefs: [evidenceRef], id: 'decision-' + slice, optionInvariantItemRefs: slice === 'slice-a' ? ['slice-b'] : [], questionRef: 'question-' + slice }],",
+    "    disposition: 'product-decision-required', evidenceRefs: [evidenceRef], frontier: null,",
+    "    gates: [{ affectedItemRefs: [slice], evidenceRefs: [evidenceRef], id: 'product-decision-' + slice, kind: 'product-decision', resumeCondition: 'Owner selects the accepted product behavior.' }],",
+    "    resumeCondition: 'Owner selects the accepted product behavior.', rootSessionRef: 'proof-session-a', source: 'completion-guard', waitKind: null,",
+    "  };",
+    "  fs.writeFileSync(resultPath, JSON.stringify({",
+    "    attempt: Number(attempt), blocker, changeId: change, cleanup: 'complete', definitionDigest, disposition: 'product-decision-required',",
+    "    errorClass: 'product-decision-required', errorMessage: blocker.resumeCondition, evidenceRefs: [evidenceRef], guardState: 'product-decision-required', missionId,",
+    "    phases: [{ command: phaseCommand, evidenceRef, status: 'failed' }], questionDisposition: 'product-decision-required', rootSessionRef: 'proof-session-a',",
+    "    runtimeRef: '0'.repeat(64), schemaVersion: 1, sliceId: slice, tool: 'roadmap-mission-session-executor', writerClosure: 'terminal',",
+    "  }, null, 2) + '\\n');",
+    "  process.exit(1);",
+    "}",
     "const skipMutation = slice === 'slice-a' && counts[slice] === 1;",
     "if (!skipMutation && operation === 'propose') {",
     "  fs.mkdirSync(path.join(changeRoot, 'specs', 'demo'), { recursive: true });",
@@ -271,9 +353,6 @@ function installExecutor(root: string): void {
     "  fs.writeFileSync(path.join(changeRoot, 'specs', 'demo', 'spec.md'), '# Demo\\n');",
     "}",
     "if (!skipMutation) fs.writeFileSync(path.join(changeRoot, 'tasks.md'), '# Tasks\\n\\n- [x] Complete ' + change + '.\\n');",
-    "const evidenceRoot = path.dirname(resultPath);",
-    "fs.mkdirSync(evidenceRoot, { recursive: true });",
-    "const commands = operation === 'propose' ? ['opsx-propose', 'opsx-apply'] : ['opsx-apply'];",
     "const evidenceRefs = commands.map((command) => {",
     "  const file = path.join(evidenceRoot, command + '.json').replaceAll('\\\\', '/');",
     "  fs.writeFileSync(file, JSON.stringify({ command, schemaVersion: 1, status: 'completed' }) + '\\n');",
@@ -314,6 +393,7 @@ function installGlobalSource(globalSource: string): void {
     "bin/openspec-change/automation-dividend.ts",
     "bin/openspec-change/bounded-falsification.ts",
     "bin/openspec-change/claims.ts",
+    "bin/openspec-change/delivery-horizon.ts",
     "bin/openspec-change/evidence.ts",
     "bin/openspec-change/gate.ts",
     "bin/openspec-change/inventory.ts",
@@ -397,6 +477,25 @@ function createCheckpointProject(root: string, mode: "external" | "local-commit"
   git(root, ["commit", "-m", `configure ${mode} checkpoint fixture`]);
 }
 
+function createScopedSchedulingProject(
+  root: string,
+  productSlice: "slice-a" | "slice-b" | null,
+  checkpointMode: "evidence-only" | "external" | "local-commit" = "evidence-only",
+): void {
+  createProject(root);
+  const missionId = `${productSlice ?? "protected"}-${checkpointMode}-sibling-proof`;
+  fs.writeFileSync(
+    path.join(root, "mission.json"),
+    scopedSchedulingMission(missionId, productSlice === "slice-a", checkpointMode),
+    "utf8",
+  );
+  if (productSlice != null) {
+    fs.writeFileSync(path.join(root, "tools", `block-${productSlice}-product`), "fixture\n", "utf8");
+  }
+  git(root, ["add", "--", "."]);
+  git(root, ["commit", "-m", `configure ${productSlice == null ? "protected" : productSlice} sibling fixture`]);
+}
+
 function invokeController(
   project: string,
   globalSource: string,
@@ -452,8 +551,8 @@ function controllerReport(result: { status: number | null; stdout: string; stder
   }
 }
 
-function transitionKinds(root: string): string[] {
-  const directory = path.join(root, ".opencode-dev-kit", "runtime", "roadmap-missions", "controller-proof", "transitions");
+function transitionKinds(root: string, missionId = "controller-proof"): string[] {
+  const directory = path.join(root, ".opencode-dev-kit", "runtime", "roadmap-missions", missionId, "transitions");
   return fs.readdirSync(directory).sort().map((file) =>
     (JSON.parse(fs.readFileSync(path.join(directory, file), "utf8")) as { kind: string }).kind
   );
@@ -473,7 +572,7 @@ function run(options: Options): void {
     const result = invokeController(project, globalSource, bin, "run");
     if (result.status !== 1) throw new Error(`Expected terminal protected blocker exit 1, got ${String(result.status)}: ${result.stderr || result.stdout}`);
     const report = controllerReport(result, "serial controller") as { cursor: number; status: string };
-    if (report.status !== "blocked" || report.cursor !== 2) throw new Error(`Controller terminal result differed: ${result.stdout}`);
+    if (report.status !== "waiting" || report.cursor !== 2) throw new Error(`Controller terminal result differed: ${result.stdout}`);
     const counts = JSON.parse(fs.readFileSync(path.join(project, "evidence", "mission", "executor-counts.json"), "utf8")) as Record<string, number>;
     if (counts["slice-a"] !== 2 || counts["slice-b"] !== 1 || counts["slice-c"] != null) {
       throw new Error(`Executor counts differed: ${json(counts)}`);
@@ -481,12 +580,187 @@ function run(options: Options): void {
     const archives = fs.readFileSync(path.join(project, "evidence", "mission", "archive-calls.txt"), "utf8").trim().split(/\r?\n/);
     if (archives.join(",") !== "change-a,change-b") throw new Error(`Archive calls differed: ${archives.join(",")}`);
     const kinds = transitionKinds(project);
-    if (kinds.filter((kind) => kind === "archive").length !== 2 || kinds.at(-1) !== "terminal-stop") {
+    if (
+      kinds.filter((kind) => kind === "archive").length !== 2 ||
+      !kinds.includes("slice-blocked") ||
+      kinds.at(-1) !== "frontier-stop"
+    ) {
       throw new Error(`Controller transition chain differed: ${kinds.join(",")}`);
     }
     const replay = runPortableCommand(project, [process.execPath, productionEntrypoint, "state-replay", "--root", project, "--mission", "mission.json"], { capture: true });
     if (replay.status !== 0 || (JSON.parse(replay.stdout) as { status: string }).status !== "valid") {
       throw new Error(`Controller replay failed: ${replay.stderr || replay.stdout}`);
+    }
+
+    const productSiblingProject = path.join(fixture, "product-sibling-project");
+    createScopedSchedulingProject(productSiblingProject, "slice-a");
+    const productSiblingFirst = invokeController(productSiblingProject, globalSource, bin, "run");
+    const productSiblingFirstReport = controllerReport(productSiblingFirst, "product sibling controller") as {
+      blocker?: { disposition: string };
+      cursor: number;
+      status: string;
+    };
+    const productSiblingCountsPath = path.join(productSiblingProject, "evidence", "mission", "executor-counts.json");
+    const productSiblingArchivesPath = path.join(productSiblingProject, "evidence", "mission", "archive-calls.txt");
+    const productSiblingCountsFirst = JSON.parse(fs.readFileSync(productSiblingCountsPath, "utf8")) as Record<string, number>;
+    const productSiblingArchivesFirst = fs.readFileSync(productSiblingArchivesPath, "utf8").trim().split(/\r?\n/);
+    const productSiblingKindsFirst = transitionKinds(productSiblingProject, "slice-a-evidence-only-sibling-proof");
+    if (
+      productSiblingFirst.status !== 1 ||
+      productSiblingFirstReport.status !== "product-decision-required" ||
+      productSiblingFirstReport.blocker?.disposition !== "product-decision-required" ||
+      productSiblingFirstReport.cursor !== 0 ||
+      productSiblingCountsFirst["slice-a"] !== 1 ||
+      productSiblingCountsFirst["slice-b"] !== 1 ||
+      productSiblingCountsFirst["slice-c"] != null ||
+      productSiblingCountsFirst["slice-d"] != null ||
+      productSiblingArchivesFirst.join(",") !== "change-b" ||
+      productSiblingKindsFirst.includes("slice-blocked") ||
+      productSiblingKindsFirst.indexOf("session-completion") >= productSiblingKindsFirst.indexOf("archive") ||
+      productSiblingKindsFirst.at(-1) !== "frontier-stop"
+    ) {
+      throw new Error(`Product-blocked mission did not drain only its independent sibling: ${productSiblingFirst.stderr || productSiblingFirst.stdout}`);
+    }
+    const productSiblingResume = invokeController(productSiblingProject, globalSource, bin, "resume");
+    const productSiblingResumeReport = controllerReport(productSiblingResume, "product sibling resume") as { cursor: number; status: string };
+    const productSiblingCountsAfter = JSON.parse(fs.readFileSync(productSiblingCountsPath, "utf8")) as Record<string, number>;
+    const productSiblingArchivesAfter = fs.readFileSync(productSiblingArchivesPath, "utf8").trim().split(/\r?\n/);
+    const productSiblingKindsAfter = transitionKinds(productSiblingProject, "slice-a-evidence-only-sibling-proof");
+    if (
+      productSiblingResume.status !== 1 ||
+      productSiblingResumeReport.status !== "product-decision-required" ||
+      productSiblingResumeReport.cursor !== 0 ||
+      productSiblingCountsAfter["slice-a"] !== 2 ||
+      productSiblingCountsAfter["slice-b"] !== 1 ||
+      productSiblingCountsAfter["slice-c"] != null ||
+      productSiblingCountsAfter["slice-d"] != null ||
+      productSiblingArchivesAfter.join(",") !== "change-b" ||
+      productSiblingKindsAfter.slice(productSiblingKindsFirst.length).some((kind) => kind === "checkpoint" || kind === "slice-blocked")
+    ) {
+      throw new Error(`Product-blocked resume repeated a completed sibling checkpoint: ${productSiblingResume.stderr || productSiblingResume.stdout}`);
+    }
+
+    const protectedSiblingProject = path.join(fixture, "protected-sibling-project");
+    createScopedSchedulingProject(protectedSiblingProject, null);
+    const protectedSiblingFirst = invokeController(protectedSiblingProject, globalSource, bin, "run");
+    const protectedSiblingFirstReport = controllerReport(protectedSiblingFirst, "protected sibling controller") as {
+      blocker?: { disposition: string; waitKind: string | null };
+      cursor: number;
+      status: string;
+    };
+    const protectedSiblingCountsPath = path.join(protectedSiblingProject, "evidence", "mission", "executor-counts.json");
+    const protectedSiblingArchivesPath = path.join(protectedSiblingProject, "evidence", "mission", "archive-calls.txt");
+    const protectedSiblingCountsFirst = JSON.parse(fs.readFileSync(protectedSiblingCountsPath, "utf8")) as Record<string, number>;
+    const protectedSiblingArchivesFirst = fs.readFileSync(protectedSiblingArchivesPath, "utf8").trim().split(/\r?\n/);
+    const protectedSiblingKindsFirst = transitionKinds(protectedSiblingProject, "protected-evidence-only-sibling-proof");
+    if (
+      protectedSiblingFirst.status !== 1 ||
+      protectedSiblingFirstReport.status !== "waiting" ||
+      protectedSiblingFirstReport.blocker?.disposition !== "waiting" ||
+      protectedSiblingFirstReport.blocker.waitKind == null ||
+      protectedSiblingFirstReport.cursor !== 0 ||
+      protectedSiblingCountsFirst["slice-a"] != null ||
+      protectedSiblingCountsFirst["slice-b"] !== 1 ||
+      protectedSiblingCountsFirst["slice-c"] != null ||
+      protectedSiblingCountsFirst["slice-d"] != null ||
+      protectedSiblingArchivesFirst.join(",") !== "change-b" ||
+      protectedSiblingKindsFirst.indexOf("slice-blocked") >= protectedSiblingKindsFirst.indexOf("archive") ||
+      protectedSiblingKindsFirst.at(-1) !== "frontier-stop"
+    ) {
+      throw new Error(`Protected mission did not drain only its independent sibling: ${protectedSiblingFirst.stderr || protectedSiblingFirst.stdout}`);
+    }
+    const protectedSiblingResume = invokeController(protectedSiblingProject, globalSource, bin, "resume");
+    const protectedSiblingResumeReport = controllerReport(protectedSiblingResume, "protected sibling resume") as { cursor: number; status: string };
+    const protectedSiblingCountsAfter = JSON.parse(fs.readFileSync(protectedSiblingCountsPath, "utf8")) as Record<string, number>;
+    const protectedSiblingArchivesAfter = fs.readFileSync(protectedSiblingArchivesPath, "utf8").trim().split(/\r?\n/);
+    const protectedSiblingKindsAfter = transitionKinds(protectedSiblingProject, "protected-evidence-only-sibling-proof");
+    if (
+      protectedSiblingResume.status !== 1 ||
+      protectedSiblingResumeReport.status !== "waiting" ||
+      protectedSiblingResumeReport.cursor !== 0 ||
+      protectedSiblingCountsAfter["slice-a"] != null ||
+      protectedSiblingCountsAfter["slice-b"] !== 1 ||
+      protectedSiblingCountsAfter["slice-c"] != null ||
+      protectedSiblingCountsAfter["slice-d"] != null ||
+      protectedSiblingArchivesAfter.join(",") !== "change-b" ||
+      protectedSiblingKindsAfter.slice(protectedSiblingKindsFirst.length).filter((kind) => kind === "checkpoint").length !== 0
+    ) {
+      throw new Error(`Protected resume repeated a completed sibling checkpoint: ${protectedSiblingResume.stderr || protectedSiblingResume.stdout}`);
+    }
+
+    const mixedBlockerProject = path.join(fixture, "mixed-blocker-project");
+    createScopedSchedulingProject(mixedBlockerProject, "slice-b");
+    const mixedBlockerResult = invokeController(mixedBlockerProject, globalSource, bin, "run");
+    const mixedBlockerReport = controllerReport(mixedBlockerResult, "mixed blocker controller") as {
+      blocker?: { disposition: string };
+      cursor: number;
+      status: string;
+    };
+    const mixedBlockerDefinition = loadMissionDefinition(mixedBlockerProject, "mission.json");
+    const mixedBlockerFacts = readMissionSchedulingFacts(mixedBlockerProject, mixedBlockerDefinition);
+    const mixedBlockerCounts = JSON.parse(fs.readFileSync(path.join(mixedBlockerProject, "evidence", "mission", "executor-counts.json"), "utf8")) as Record<string, number>;
+    const mixedBlockerKinds = transitionKinds(mixedBlockerProject, "slice-b-evidence-only-sibling-proof");
+    if (
+      mixedBlockerResult.status !== 1 ||
+      mixedBlockerReport.status !== "product-decision-required" ||
+      mixedBlockerReport.blocker?.disposition !== "product-decision-required" ||
+      mixedBlockerReport.cursor !== 1 ||
+      mixedBlockerCounts["slice-a"] != null ||
+      mixedBlockerCounts["slice-b"] !== 1 ||
+      mixedBlockerCounts["slice-c"] != null ||
+      mixedBlockerCounts["slice-d"] != null ||
+      mixedBlockerFacts.parkedSlices.map((entry) => entry.blocker.disposition).sort().join(",") !== "product-decision-required,waiting" ||
+      mixedBlockerKinds.at(-1) !== "frontier-stop"
+    ) {
+      throw new Error(`Mixed parked blockers did not prioritize the product decision after frontier drain: ${mixedBlockerResult.stderr || mixedBlockerResult.stdout}`);
+    }
+
+    const localSiblingProject = path.join(fixture, "local-sibling-project");
+    createScopedSchedulingProject(localSiblingProject, "slice-a", "local-commit");
+    const localSiblingResult = invokeController(localSiblingProject, globalSource, bin, "run");
+    const localSiblingReport = controllerReport(localSiblingResult, "local checkpoint sibling controller") as { cursor: number; status: string };
+    const localSiblingHead = gitText(localSiblingProject, ["rev-parse", "HEAD"]);
+    const localSiblingCommittedPaths = gitText(localSiblingProject, ["diff-tree", "--no-commit-id", "--name-only", "-r", localSiblingHead])
+      .split(/\r?\n/).filter(Boolean).sort();
+    const localSiblingDirty = gitText(localSiblingProject, ["status", "--short"]);
+    const localSiblingCounts = JSON.parse(fs.readFileSync(path.join(localSiblingProject, "evidence", "mission", "executor-counts.json"), "utf8")) as Record<string, number>;
+    if (
+      localSiblingResult.status !== 1 ||
+      localSiblingReport.status !== "product-decision-required" ||
+      localSiblingReport.cursor !== 0 ||
+      localSiblingCounts["slice-a"] !== 1 ||
+      localSiblingCounts["slice-b"] !== 1 ||
+      localSiblingCommittedPaths.some((file) => file === "openspec/changes/change-a" || file.startsWith("openspec/changes/change-a/")) ||
+      !localSiblingDirty.includes("openspec/changes/change-a/partial.txt")
+    ) {
+      throw new Error(`Local checkpoint absorbed or lost parked slice paths: ${localSiblingResult.stderr || localSiblingResult.stdout}`);
+    }
+
+    const externalSiblingProject = path.join(fixture, "external-sibling-project");
+    createScopedSchedulingProject(externalSiblingProject, "slice-a", "external");
+    const externalSiblingFirst = invokeController(externalSiblingProject, globalSource, bin, "run");
+    const externalSiblingFirstReport = controllerReport(externalSiblingFirst, "external checkpoint sibling controller") as { cursor: number; status: string };
+    if (externalSiblingFirst.status !== 1 || externalSiblingFirstReport.status !== "paused" || externalSiblingFirstReport.cursor !== 1) {
+      throw new Error(`External sibling checkpoint did not pause for identity: ${externalSiblingFirst.stderr || externalSiblingFirst.stdout}`);
+    }
+    git(externalSiblingProject, ["add", "-A", "--", "evidence/mission", "openspec/changes/archive/change-b"]);
+    git(externalSiblingProject, ["commit", "-m", "external sibling checkpoint"]);
+    const externalSiblingIdentity = gitText(externalSiblingProject, ["rev-parse", "HEAD"]);
+    const externalSiblingResume = invokeController(externalSiblingProject, globalSource, bin, "resume", externalSiblingIdentity);
+    const externalSiblingResumeReport = controllerReport(externalSiblingResume, "external checkpoint sibling resume") as { cursor: number; status: string };
+    const externalSiblingCounts = JSON.parse(fs.readFileSync(path.join(externalSiblingProject, "evidence", "mission", "executor-counts.json"), "utf8")) as Record<string, number>;
+    const externalSiblingArchives = fs.readFileSync(path.join(externalSiblingProject, "evidence", "mission", "archive-calls.txt"), "utf8").trim().split(/\r?\n/);
+    const externalSiblingKinds = transitionKinds(externalSiblingProject, "slice-a-external-sibling-proof");
+    if (
+      externalSiblingResume.status !== 1 ||
+      externalSiblingResumeReport.status !== "product-decision-required" ||
+      externalSiblingResumeReport.cursor !== 0 ||
+      externalSiblingCounts["slice-a"] !== 2 ||
+      externalSiblingCounts["slice-b"] !== 1 ||
+      externalSiblingArchives.join(",") !== "change-b" ||
+      externalSiblingKinds.filter((kind) => kind === "checkpoint").length !== 1
+    ) {
+      throw new Error(`External checkpoint did not resume around parked slice paths exactly once: ${externalSiblingResume.stderr || externalSiblingResume.stdout}`);
     }
 
     const parentProject = path.join(fixture, "parent-project");
@@ -581,7 +855,7 @@ function run(options: Options): void {
     const successorIndex = oneAttemptKinds.indexOf("successor-activation");
     if (
       oneAttemptResult.status !== 1 ||
-      oneAttemptReport.status !== "blocked" ||
+      oneAttemptReport.status !== "waiting" ||
       oneAttemptReport.cursor !== 2 ||
       oneAttemptCounts["slice-a"] !== 2 ||
       oneAttemptCounts["slice-b"] !== 1 ||
@@ -649,20 +923,22 @@ function run(options: Options): void {
     git(retryProject, ["commit", "-m", "configure bounded retry fixture"]);
     const retryFirst = invokeController(retryProject, globalSource, bin, "run");
     const retryFirstReport = controllerReport(retryFirst, "bounded retry controller") as { attempts: number; status: string };
-    if (retryFirst.status !== 1 || retryFirstReport.status !== "paused" || retryFirstReport.attempts !== 2) {
+    if (retryFirst.status !== 1 || retryFirstReport.status !== "waiting" || retryFirstReport.attempts !== 2) {
       throw new Error(`Bounded retry controller result differed: ${retryFirst.stderr || retryFirst.stdout}`);
     }
     const retryTransitionsRoot = path.join(retryProject, ".opencode-dev-kit", "runtime", "roadmap-missions", "controller-proof", "transitions");
-    const retryTransitionCount = fs.readdirSync(retryTransitionsRoot).length;
+    const retryTransitionKindsBefore = transitionKinds(retryProject);
     const retryResume = invokeController(retryProject, globalSource, bin, "resume");
     const retryResumeReport = controllerReport(retryResume, "bounded retry resume") as { attempts: number; status: string };
     const retryCounts = JSON.parse(fs.readFileSync(path.join(retryProject, "evidence", "mission", "executor-counts.json"), "utf8")) as Record<string, number>;
+    const retryTransitionKindsAfter = transitionKinds(retryProject);
     if (
       retryResume.status !== 1 ||
-      retryResumeReport.status !== "paused" ||
+      retryResumeReport.status !== "waiting" ||
       retryResumeReport.attempts !== 2 ||
       retryCounts["slice-a"] !== 2 ||
-      fs.readdirSync(retryTransitionsRoot).length !== retryTransitionCount
+      retryTransitionKindsAfter.length !== retryTransitionKindsBefore.length + 3 ||
+      retryTransitionKindsAfter.slice(-3).join(",") !== "slice-resume,slice-blocked,frontier-stop"
     ) {
       throw new Error(`Persisted retry limit was not enforced across resume: ${retryResume.stderr || retryResume.stdout}`);
     }
@@ -682,7 +958,7 @@ function run(options: Options): void {
     const localHeadBefore = gitText(localCommitProject, ["rev-parse", "HEAD"]);
     const localResult = invokeController(localCommitProject, globalSource, bin, "run");
     const localReport = controllerReport(localResult, "local-commit controller") as { status: string };
-    if (localResult.status !== 1 || localReport.status !== "blocked") {
+    if (localResult.status !== 1 || localReport.status !== "waiting") {
       throw new Error(`Local-commit controller result differed: ${localResult.stderr || localResult.stdout}`);
     }
     const localHeadAfter = gitText(localCommitProject, ["rev-parse", "HEAD"]);
@@ -737,7 +1013,7 @@ function run(options: Options): void {
     const secondExternalIdentity = gitText(externalProject, ["rev-parse", "HEAD"]);
     const externalSecondResume = invokeController(externalProject, globalSource, bin, "resume", secondExternalIdentity);
     const externalSecondResumeReport = controllerReport(externalSecondResume, "second external checkpoint resume") as { cursor: number; status: string };
-    if (externalSecondResume.status !== 1 || externalSecondResumeReport.status !== "blocked" || externalSecondResumeReport.cursor !== 2) {
+    if (externalSecondResume.status !== 1 || externalSecondResumeReport.status !== "waiting" || externalSecondResumeReport.cursor !== 2) {
       throw new Error(`Second verified external checkpoint did not reach protected successor: ${externalSecondResume.stderr || externalSecondResume.stdout}`);
     }
     if (
@@ -788,8 +1064,49 @@ function run(options: Options): void {
       persistedRetry: {
         attemptsAfterResume: retryResumeReport.attempts,
         executorCalls: retryCounts["slice-a"],
-        transitionsAfterResume: fs.readdirSync(retryTransitionsRoot).length,
-        transitionsBeforeResume: retryTransitionCount,
+        resumeTransitions: retryTransitionKindsAfter.slice(retryTransitionKindsBefore.length),
+        transitionsAfterResume: retryTransitionKindsAfter.length,
+        transitionsBeforeResume: retryTransitionKindsBefore.length,
+      },
+      scopedScheduling: {
+        checkpointIsolation: {
+          external: {
+            archiveCalls: externalSiblingArchives,
+            cursor: externalSiblingResumeReport.cursor,
+            executorCounts: externalSiblingCounts,
+            checkpointTransitions: externalSiblingKinds.filter((kind) => kind === "checkpoint").length,
+            status: externalSiblingResumeReport.status,
+          },
+          localCommit: {
+            committedPaths: localSiblingCommittedPaths,
+            cursor: localSiblingReport.cursor,
+            parkedPathRemainsDirty: localSiblingDirty.includes("openspec/changes/change-a/partial.txt"),
+            status: localSiblingReport.status,
+          },
+        },
+        mixedBlockers: {
+          cursor: mixedBlockerReport.cursor,
+          executorCounts: mixedBlockerCounts,
+          parkedDispositions: mixedBlockerFacts.parkedSlices.map((entry) => entry.blocker.disposition).sort(),
+          status: mixedBlockerReport.status,
+          transitionKinds: mixedBlockerKinds,
+        },
+        productDecision: {
+          archiveCalls: productSiblingArchivesAfter,
+          cursor: productSiblingResumeReport.cursor,
+          executorCounts: productSiblingCountsAfter,
+          firstTransitionKinds: productSiblingKindsFirst,
+          resumeTransitionKinds: productSiblingKindsAfter.slice(productSiblingKindsFirst.length),
+          status: productSiblingResumeReport.status,
+        },
+        protectedWait: {
+          archiveCalls: protectedSiblingArchivesAfter,
+          cursor: protectedSiblingResumeReport.cursor,
+          executorCounts: protectedSiblingCountsAfter,
+          firstTransitionKinds: protectedSiblingKindsFirst,
+          resumeTransitionKinds: protectedSiblingKindsAfter.slice(protectedSiblingKindsFirst.length),
+          status: protectedSiblingResumeReport.status,
+        },
       },
       checkpoints: {
         external: {
@@ -811,6 +1128,7 @@ function run(options: Options): void {
       sources: [
         "global/bin/openspec-operation-gate.ts",
         "global/bin/openspec-change/bounded-falsification.ts",
+        "global/bin/openspec-change/delivery-horizon.ts",
         "global/bin/openspec-archive.ts",
         "global/bin/portable-process.ts",
         "global/bin/portable-process-supervisor.ts",
@@ -839,7 +1157,8 @@ function run(options: Options): void {
       oneAttemptSuccessor: "launched-with-fresh-budget",
       pausedUnknownResume: "blocked-before-executor",
       parentHandoff: "complete-terminal-clear",
-      terminalProtectedSlice: "blocked-before-executor",
+      scopedScheduling: "atomic-park-independent-drain-product-priority-and-checkpoint-isolation",
+      terminalProtectedSlice: "waiting-before-executor",
       persistedRetry: "exhausted-resume-launched-no-executor",
       uncheckedCompletion: "rejected-and-retried",
       checkpointModes: {
@@ -1298,14 +1617,14 @@ function replay(options: Options): void {
       ? {
           archivesCompleted: Array.isArray(raw.archiveCalls) && raw.archiveCalls.length === 2,
           candidateMatched: raw.candidateId === options.candidateId,
-          checkpointModesCompleted: record(record(raw.checkpoints)?.external)?.status === "blocked"
+          checkpointModesCompleted: record(record(raw.checkpoints)?.external)?.status === "waiting"
             && record(record(raw.checkpoints)?.localCommit)?.remoteRefsChanged === false,
-          controllerCompleted: record(raw.controller)?.cursor === 2 && record(raw.controller)?.status === "blocked",
+          controllerCompleted: record(raw.controller)?.cursor === 2 && record(raw.controller)?.status === "waiting",
           executorSequence: record(raw.executorCounts)?.["slice-a"] === 2
             && record(raw.executorCounts)?.["slice-b"] === 1
             && record(raw.executorCounts)?.["slice-c"] == null,
           oneAttemptSuccessor: record(raw.oneAttemptSuccessor)?.cursor === 2
-            && record(raw.oneAttemptSuccessor)?.status === "blocked"
+            && record(raw.oneAttemptSuccessor)?.status === "waiting"
             && record(raw.oneAttemptSuccessor)?.transitionAfterActivation === "session-launch"
             && record(record(raw.oneAttemptSuccessor)?.executorCounts)?.["slice-b"] === 1,
           parentHandoffComplete: record(raw.parentHandoff)?.disposition === "complete"
@@ -1321,9 +1640,28 @@ function replay(options: Options): void {
             && record(raw.pausedUnknownResume)?.stateUnchanged === true,
           persistedRetryFinite: record(raw.persistedRetry)?.executorCalls === 2,
           replayValid: record(raw.replay)?.status === "valid",
+          scopedScheduling: record(record(raw.scopedScheduling)?.productDecision)?.status === "product-decision-required"
+            && record(record(raw.scopedScheduling)?.protectedWait)?.status === "waiting"
+            && record(record(record(raw.scopedScheduling)?.productDecision)?.executorCounts)?.["slice-b"] === 1
+            && record(record(record(raw.scopedScheduling)?.protectedWait)?.executorCounts)?.["slice-b"] === 1
+            && record(record(record(raw.scopedScheduling)?.productDecision)?.executorCounts)?.["slice-c"] == null
+            && record(record(record(raw.scopedScheduling)?.protectedWait)?.executorCounts)?.["slice-d"] == null
+            && Array.isArray(record(record(raw.scopedScheduling)?.productDecision)?.firstTransitionKinds)
+            && !(record(record(raw.scopedScheduling)?.productDecision)?.firstTransitionKinds as unknown[]).includes("slice-blocked")
+            && record(record(raw.scopedScheduling)?.mixedBlockers)?.status === "product-decision-required"
+            && Array.isArray(record(record(raw.scopedScheduling)?.mixedBlockers)?.parkedDispositions)
+            && (record(record(raw.scopedScheduling)?.mixedBlockers)?.parkedDispositions as unknown[]).join(",") === "product-decision-required,waiting"
+            && record(record(record(raw.scopedScheduling)?.checkpointIsolation)?.localCommit)?.parkedPathRemainsDirty === true
+            && Array.isArray(record(record(record(raw.scopedScheduling)?.checkpointIsolation)?.localCommit)?.committedPaths)
+            && !(record(record(record(raw.scopedScheduling)?.checkpointIsolation)?.localCommit)?.committedPaths as unknown[])
+              .some((file) => typeof file === "string" && (file === "openspec/changes/change-a" || file.startsWith("openspec/changes/change-a/")))
+            && record(record(record(raw.scopedScheduling)?.checkpointIsolation)?.external)?.status === "product-decision-required"
+            && record(record(record(raw.scopedScheduling)?.checkpointIsolation)?.external)?.checkpointTransitions === 1
+            && record(record(record(record(raw.scopedScheduling)?.checkpointIsolation)?.external)?.executorCounts)?.["slice-b"] === 1,
           transitionChainCompleted: Array.isArray(raw.transitionKinds)
             && raw.transitionKinds.filter((kind) => kind === "archive").length === 2
-            && raw.transitionKinds.at(-1) === "terminal-stop",
+            && raw.transitionKinds.includes("slice-blocked")
+            && raw.transitionKinds.at(-1) === "frontier-stop",
         }
       : mode === "hard-kill"
       ? {

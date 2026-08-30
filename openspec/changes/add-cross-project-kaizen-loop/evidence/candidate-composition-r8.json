@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-complain-r1",
+  "environmentId": "windows-node-24.18.1-opencode-1.18.25-complain-r1",
+  "components": [
+    {
+      "role": "prior-cumulative-candidate",
+      "candidateId": "cross-project-kaizen-loop-archive-r4",
+      "artifact": "evidence/candidate-composition-r7.json",
+      "ceiling": "Historical component evidence retained below its recorded ceilings; later complain/import source extensions make prior current-source digests non-current."
+    },
+    {
+      "role": "complain-and-legacy-import-boundary",
+      "candidateId": "cross-project-kaizen-loop-complain-r1",
+      "artifact": "evidence/task-2-3-complain-r1.md",
+      "sourceIdentity": "ordered-git-blob-table",
+      "ceiling": "Current provider-free copied-plugin report/import execution, strict FB-* parse and idempotency, stale-status containment, no inbox-path Markdown write, disabled control, instruction-contract validation, and corrected scoped instruction review."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-archive-r4"
+  ],
+  "excluded": [
+    "production compaction prompt and loaded long-session capture",
+    "cold-model complain routing and installed skill restart",
+    "current-source complete archive integration",
+    "bounded triage and proposal promotion",
+    "complete finite-population behavior and critical qualification"
+  ]
+}

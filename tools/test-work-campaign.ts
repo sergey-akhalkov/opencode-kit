@@ -312,7 +312,7 @@ try {
       candidateDigest: hash,
       definitionDigest: hash,
       inventory: { total: 1, currentTerminal: 1, blocked: 0, needsRereview: 0 },
-      workItems: { total: 1, resolved: 1, fixedAndVerified: 1, reportOnly: 0, unresolvedP0P1: 0, unknownMaterial: 0, ownerRequired: 0 },
+      workItems: { total: 1, resolved: 1, fixedAndVerified: 1, reportOnly: 0, unresolvedP0P1: 0, unknownMaterial: 0, ownerRequired: 0, productDecisionRequired: 0, waiting: 0 },
       waves: { total: 1, archived: 1, checkpointed: 1 },
       validationStatus: "complete",
       proofStatus: "complete",

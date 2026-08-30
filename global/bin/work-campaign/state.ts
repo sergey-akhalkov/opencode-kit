@@ -22,16 +22,18 @@ const transitionKinds = [
   "phase-complete",
   "phase-start",
   "preflight",
+  "product-decision-required",
   "report-materialized",
   "restart-reconciliation",
   "rereview",
   "stop-requested",
   "terminal-complete",
   "verification",
+  "waiting",
   "wave-admitted",
 ] as const;
 const phases = ["complete", "discover", "inventory", "mission", "paused", "synthesize", "verify"] as const;
-const dispositions = ["blocked", "complete", "owner-required", "paused-budget", "paused-external", "paused-stop", "paused-unknown", "ready", "running"] as const;
+const dispositions = ["blocked", "complete", "owner-required", "paused-budget", "paused-external", "paused-stop", "paused-unknown", "product-decision-required", "ready", "running", "waiting"] as const;
 const operationKinds = ["discover", "inventory", "investigation", "mission", "reconcile", "report", "synthesize", "verify"] as const;
 
 export type CampaignTransitionKind = typeof transitionKinds[number];
@@ -701,6 +703,10 @@ function validateEvolution(definition: WorkCampaignDefinition, previous: Campaig
   }
   if (descriptor.kind === "pause" && (descriptor.phase !== "paused" || !descriptor.disposition.startsWith("paused-"))) {
     throw new WorkCampaignError("pause requires paused phase and disposition", 2, { field: "pause" });
+  }
+  if ((descriptor.kind === "product-decision-required" || descriptor.kind === "waiting")
+    && (descriptor.phase !== "paused" || descriptor.disposition !== descriptor.kind || descriptor.activeOperation != null)) {
+    throw new WorkCampaignError(`${descriptor.kind} requires matching paused disposition and no active operation`, 2, { field: descriptor.kind });
   }
   if (descriptor.kind === "stop-requested" && !descriptor.stopRequested) {
     throw new WorkCampaignError("stop-requested requires stopRequested=true", 2, { field: "stopRequested" });

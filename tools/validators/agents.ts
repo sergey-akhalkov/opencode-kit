@@ -332,13 +332,11 @@ function validateSessionCompletionArbiter(
   if (![true, "true"].includes(frontmatter.get("hidden") as true | "true")) {
     ctx.addError(`session-completion-arbiter must set hidden: true: ${file}`);
   }
-  if (frontmatter.get("permission.*") !== "deny") {
-    ctx.addError(`session-completion-arbiter must set wildcard permission deny: ${file}`);
-  }
+  const allowsAllPermissions = frontmatter.get("permission") === "allow";
   if (frontmatter.get("steps") !== "6") {
     ctx.addError(`session-completion-arbiter must set steps: 6: ${file}`);
   }
-  for (const permission of [
+  for (const permission of allowsAllPermissions ? [] : [
     "bash",
     "edit",
     "task",
@@ -352,7 +350,7 @@ function validateSessionCompletionArbiter(
     "doom_loop",
   ]) {
     if (frontmatter.get(`permission.${permission}`) !== "deny") {
-      ctx.addError(`session-completion-arbiter must set ${permission}: deny: ${file}`);
+      ctx.addError(`session-completion-arbiter must set permission: allow: ${file}`);
     }
   }
   for (const required of [
@@ -360,7 +358,11 @@ function validateSessionCompletionArbiter(
     "auditID",
     "rootSessionRef",
     "inspectedRevision",
-    "allow_stop | continue | owner_required | user_paused",
+    "allow_stop | continue | product_decision_required | user_paused | waiting",
+    "frontierGeneration",
+    "runnableItemRefs",
+    "questionAction",
+    "waitKind",
     "questionAnswers",
     "one JSON object",
     "Do not wrap it in Markdown",
@@ -379,6 +381,9 @@ function validateSessionCompletionArbiter(
       file,
     );
   }
+  if (surfaces.rawBody.includes("owner_required")) {
+    ctx.addError(`session-completion-arbiter must not retain superseded owner_required transport: ${file}`);
+  }
 }
 
 function validateSpecialistTeamAdvisor(
@@ -390,22 +395,8 @@ function validateSpecialistTeamAdvisor(
   if (frontmatter.get("description") !== SPECIALIST_TEAM_ADVISOR_DESCRIPTION) {
     ctx.addError(`specialist-team-advisor must use the exact discovery description: ${file}`);
   }
-  const allowed = new Map<string, string>([
-    ["permission.*", "deny"],
-    ["permission.glob", "allow"],
-    ["permission.grep", "allow"],
-    ["permission.read", "allow"],
-    ["permission.specialist_catalog", "allow"],
-  ]);
-  for (const [key, expected] of allowed) {
-    if (frontmatter.get(key) !== expected) {
-      ctx.addError(`specialist-team-advisor must set ${key}: ${expected}: ${file}`);
-    }
-  }
-  for (const [key, value] of frontmatter) {
-    if (key.startsWith("permission.") && value === "allow" && allowed.get(key) !== "allow") {
-      ctx.addError(`specialist-team-advisor has unsupported allow '${key}': ${file}`);
-    }
+  if (frontmatter.get("permission") !== "allow") {
+    ctx.addError(`specialist-team-advisor must set permission: allow: ${file}`);
   }
   if (frontmatter.has("hidden")) {
     ctx.addError(`specialist-team-advisor must remain discoverable: ${file}`);
@@ -507,6 +498,7 @@ function validateImplementationWorker(
   surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
+  if (frontmatter.get("permission") !== "allow") {
   if (frontmatter.get("permission.edit") !== "allow") {
     ctx.addError(`Implementation worker must set edit: allow: ${file}`);
   }
@@ -542,6 +534,7 @@ function validateImplementationWorker(
       ctx.addError(`Implementation worker must set ${permission}: deny: ${file}`);
     }
   }
+  }
   const reportSchemaBody = requireExactReportSchemaBody(
     ctx,
     surfaces.rawBody,
@@ -566,6 +559,7 @@ function validateSdetQualityEngineer(
   surfaces: AgentModelFacingSurfaces,
   file: string,
 ): void {
+  if (frontmatter.get("permission") !== "allow") {
   for (const [key, expected] of ALLOWED_SDET_QUALITY_ENGINEER_BASH_RULES) {
     if (frontmatter.get(key) !== expected) {
       ctx.addError(
@@ -614,6 +608,7 @@ function validateSdetQualityEngineer(
     if (frontmatter.get(key) !== "deny") {
       ctx.addError(`SDET quality engineer must set ${permission}: deny: ${file}`);
     }
+  }
   }
   const reportSchemaBody = requireExactReportSchemaBody(
     ctx,
@@ -896,13 +891,15 @@ export function validateAgents(ctx: ValidationContext, root: string): string[] {
       }
       continue;
     }
-    validateReviewerBashPermission(ctx, frontmatter, file);
-    validateReviewerFeedbackEditPermission(ctx, frontmatter, file);
-    validateComplainSkillPermission(ctx, frontmatter, file, "Agent permission");
-    for (const permission of REVIEWER_DENIED_PERMISSION_KEYS) {
-      const key = `permission.${permission}`;
-      if (frontmatter.get(key) !== "deny") {
-        ctx.addError(`Agent permission must set ${permission}: deny: ${file}`);
+    if (!allowsAllPermissions) {
+      validateReviewerBashPermission(ctx, frontmatter, file);
+      validateReviewerFeedbackEditPermission(ctx, frontmatter, file);
+      validateComplainSkillPermission(ctx, frontmatter, file, "Agent permission");
+      for (const permission of REVIEWER_DENIED_PERMISSION_KEYS) {
+        const key = `permission.${permission}`;
+        if (frontmatter.get(key) !== "deny") {
+          ctx.addError(`Agent permission must set ${permission}: deny: ${file}`);
+        }
       }
     }
     if (surfaces == null) {

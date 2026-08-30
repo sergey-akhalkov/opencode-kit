@@ -1,0 +1,131 @@
+{
+  "candidate": "cross-project-kaizen-loop-archive-boundary-r1",
+  "checks": {
+    "activeConfigUnchanged": true,
+    "archiveFailedClosed": true,
+    "capturedClosed": true,
+    "noSignalClosed": false,
+    "officialMovementOnce": true,
+    "repairGapDerivedOnly": true,
+    "unavailableNotPersisted": true
+  },
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "fixtureRemoved": true
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32",
+    "providerCalls": 0
+  },
+  "error": [
+    {
+      "depth": 0,
+      "message": "Kaizen archive-boundary checks failed: {\"activeConfigUnchanged\":true,\"archiveFailedClosed\":true,\"capturedClosed\":true,\"noSignalClosed\":false,\"repairGapDerivedOnly\":true,\"unavailableNotPersisted\":true,\"officialMovementOnce\":true}",
+      "name": "Error"
+    }
+  ],
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode archive-boundary --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/archive-boundary-r1",
+  "scenarios": [
+    {
+      "activeChangePresent": false,
+      "archive": "archived",
+      "archivePathPresent": true,
+      "archiveSignalCount": 1,
+      "archiveSignalSources": [
+        "archive"
+      ],
+      "archiveUnchangedAfterRepair": null,
+      "checkpointRef": "checkpoint_00c909fa65fe366a69ed9d2ecd497387",
+      "checkpointStatus": "captured",
+      "harvest": "captured",
+      "helper": {
+        "status": 0,
+        "stderr": "==> OpenSpec status: openspec status --change kaizen-captured --json\n==> Completion gate: artifacts=4 tasks=1/1\n==> Strict change validation: openspec validate kaizen-captured --strict\n==> Project validation before archive: not-applicable - disposable archive proof has no product runtime\n==> Official OpenSpec archive: openspec archive kaizen-captured --yes --json\n==> Post-archive OpenSpec validation: openspec validate --all\n==> Project validation after archive: not-applicable - disposable archive proof has no product runtime\n",
+        "stdoutBytes": 398,
+        "stdoutSha256": "2f31da865aa0665596743e67e0eed78f01fcc9e44b9f0d34b21788b4d3df2589"
+      },
+      "scenario": "captured"
+    },
+    {
+      "activeChangePresent": false,
+      "archive": "archived",
+      "archivePathPresent": true,
+      "archiveSignalCount": 1,
+      "archiveSignalSources": [
+        "archive"
+      ],
+      "archiveUnchangedAfterRepair": null,
+      "checkpointRef": "checkpoint_290cf005b028c4ac9e02ba70cb4d4b0f",
+      "checkpointStatus": "no-signal",
+      "harvest": "no-signal",
+      "helper": {
+        "status": 0,
+        "stderr": "==> OpenSpec status: openspec status --change kaizen-no-signal --json\n==> Completion gate: artifacts=4 tasks=1/1\n==> Strict change validation: openspec validate kaizen-no-signal --strict\n==> Project validation before archive: not-applicable - disposable archive proof has no product runtime\n==> Official OpenSpec archive: openspec archive kaizen-no-signal --yes --json\n==> Post-archive OpenSpec validation: openspec validate --all\n==> Project validation after archive: not-applicable - disposable archive proof has no product runtime\n",
+        "stdoutBytes": 402,
+        "stdoutSha256": "bba60c210378f4208dcb127dc734587857428a29bfedac6b3cbeff727eb8ce5b"
+      },
+      "scenario": "no-signal"
+    },
+    {
+      "activeChangePresent": false,
+      "archive": "archived",
+      "archivePathPresent": true,
+      "archiveSignalCount": 1,
+      "archiveSignalSources": [
+        "archive"
+      ],
+      "archiveUnchangedAfterRepair": true,
+      "checkpointRef": "checkpoint_5721624450bbb558dff43827f6a30bee",
+      "checkpointStatus": "no-signal",
+      "harvest": "repair-gap",
+      "helper": {
+        "status": 0,
+        "stderr": "==> OpenSpec status: openspec status --change kaizen-repair-gap --json\n==> Completion gate: artifacts=4 tasks=1/1\n==> Strict change validation: openspec validate kaizen-repair-gap --strict\n==> Project validation before archive: not-applicable - disposable archive proof has no product runtime\n==> Official OpenSpec archive: openspec archive kaizen-repair-gap --yes --json\n==> Post-archive OpenSpec validation: openspec validate --all\n==> Project validation after archive: not-applicable - disposable archive proof has no product runtime\n",
+        "stdoutBytes": 406,
+        "stdoutSha256": "c15301bf0dcde54619121537ebc0ef82494cc1f5138c9309190f344d43509f62"
+      },
+      "scenario": "repair-gap"
+    },
+    {
+      "activeChangePresent": false,
+      "archive": "archived",
+      "archivePathPresent": true,
+      "archiveSignalCount": 0,
+      "archiveSignalSources": [],
+      "archiveUnchangedAfterRepair": null,
+      "checkpointRef": null,
+      "checkpointStatus": null,
+      "harvest": "unavailable",
+      "helper": {
+        "status": 0,
+        "stderr": "==> OpenSpec status: openspec status --change kaizen-unavailable --json\n==> Completion gate: artifacts=4 tasks=1/1\n==> Strict change validation: openspec validate kaizen-unavailable --strict\n==> Project validation before archive: not-applicable - disposable archive proof has no product runtime\n==> Official OpenSpec archive: openspec archive kaizen-unavailable --yes --json\n==> Post-archive OpenSpec validation: openspec validate --all\n==> Project validation after archive: not-applicable - disposable archive proof has no product runtime\n",
+        "stdoutBytes": 410,
+        "stdoutSha256": "7d0543ab60cda2ce4f2906497185d890c1971b04b66d2dc5a52d218ab3b4b7d4"
+      },
+      "scenario": "unavailable"
+    },
+    {
+      "activeChangePresent": true,
+      "archive": "failed",
+      "archivePathPresent": false,
+      "archiveSignalCount": 1,
+      "archiveSignalSources": [
+        "archive"
+      ],
+      "archiveUnchangedAfterRepair": null,
+      "checkpointRef": "checkpoint_6b59f15d603a4f35a191bc342f6e74b7",
+      "checkpointStatus": "archive-failed",
+      "harvest": "archive-failed",
+      "helper": {
+        "status": 7,
+        "stderr": "==> OpenSpec status: openspec status --change kaizen-archive-failed --json\n==> Completion gate: artifacts=4 tasks=1/1\n==> Strict change validation: openspec validate kaizen-archive-failed --strict\n==> Project validation before archive: <root-3>\\AppData\\Local\\Microsoft\\WinGet\\Packages\\OpenJS.NodeJS.LTS_Microsoft.Winget.Source_8wekyb3d8bbwe\\node-v24.18.1-win-x64\\node.exe -e \"process.exit(7)\"\nArchive failed: Project validation before archive failed with exit 7.\n",
+        "stdoutBytes": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "scenario": "archive-failed"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "failed"
+}

@@ -9,9 +9,11 @@ const TERMINAL_AUDIT_STATUSES = new Set([
   "error",
   "owner-required",
   "passed",
+  "product-decision-required",
   "question-answered",
   "stale",
   "user-paused",
+  "waiting",
 ]);
 
 async function session(client: OpencodeClient, directory: string, sessionID: string): Promise<Session> {
@@ -163,7 +165,7 @@ export async function ensureArbiterChild(
         ...(retained.metadata ?? {}),
         completionGuard: {
           ...(record(retained.metadata?.completionGuard) ?? {}),
-          schemaVersion: 1,
+          schemaVersion: 2,
           auditID: epoch.auditID,
           rootSessionRef: epoch.rootRef,
           inspectedRevision: epoch.inspected.revisionDigest,
@@ -198,7 +200,7 @@ export async function ensureArbiterChild(
     },
     metadata: {
       completionGuard: {
-        schemaVersion: 1,
+        schemaVersion: 2,
         auditID: epoch.auditID,
         rootSessionRef: epoch.rootRef,
         inspectedRevision: epoch.inspected.revisionDigest,

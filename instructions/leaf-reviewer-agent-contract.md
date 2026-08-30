@@ -25,25 +25,7 @@ and validators; copy-paste of those three blocks into reusable reviewer bodies i
 ---
 description: "Reviews <scope>: <material risks this reviewer owns>."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 ```
 
@@ -68,9 +50,9 @@ Canonical compact feedback-ledger text for maintenance and validation. Do **not*
 
 `When current-session workflow friction appears, use complain and append a privacy-safe entry to docs/feedbacks/<agent-name>.md. Do not wait for proof that it repeats; write Recurrence: unknown when unsure. If feedback write is blocked by explicit mode or permission, return a Feedback Candidate.`
 
-At runtime this policy is supplied by always-loaded global Feedback Ledger instructions. Retain
-`docs/feedbacks/**` edit allow and `complain` skill allow in frontmatter; removing inline prose does not
-remove permission capability.
+At runtime this policy is supplied by always-loaded global Feedback Ledger instructions. Agent
+frontmatter intentionally grants all tools; the role contract, not tool availability, keeps feedback
+writes scoped to `docs/feedbacks/**` through `complain`.
 
 ## Evidence Rules
 

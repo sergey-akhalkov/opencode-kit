@@ -20,7 +20,16 @@ export const COMPLAIN_SHARED_REQUIRED_TEXT: readonly string[] = [
 ];
 
 export const COMPLAIN_DIRECT_WRITE_CONTRACT_TEXT: readonly string[] = [
-  "## Direct Write Contract",
+  "## Capture Routing",
+  "kaizen_report",
+  "do not create or edit `docs/feedbacks/**`",
+  "absent or definitively unavailable before persistence",
+  "kaizen-capture-unknown",
+  "Advertised tools are the current session truth",
+  "do not create a second record or return a Markdown candidate",
+  "On the Markdown fallback path only, avoid exact duplicate entries",
+  "let inbox idempotency handle recurrence without consulting Markdown status",
+  "## Markdown Fallback Contract",
   "docs/feedbacks/<source>.md",
   "docs/feedbacks/**",
   "parent directories",
@@ -28,4 +37,6 @@ export const COMPLAIN_DIRECT_WRITE_CONTRACT_TEXT: readonly string[] = [
   "Feedback Candidate",
   "Do not edit source, config, instructions, specs, code, or task artifacts",
   "Secrets, credentials, tokens, raw private prompts, or unnecessary private paths",
+  "Markdown is degraded-mode transport",
+  "Feedback`: inbox | written-fallback | fallback-candidate | capture-unknown",
 ];

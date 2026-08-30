@@ -1,25 +1,7 @@
 ---
 description: "Reviews Rust concurrency: async boundaries, actor/worker model, shared state, cancellation, backpressure, shutdown, ownership, Send/Sync risks, and testability."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only Rust concurrency reviewer. Find correctness, isolation, performance, and shutdown risks in Rust async or threaded code.

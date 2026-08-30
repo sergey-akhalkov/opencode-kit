@@ -18,11 +18,15 @@
     "troubleshooter"
   ],
   "commands": [
+    "kaizen-status",
+    "kaizen-triage",
     "opsx-apply",
     "opsx-archive",
     "opsx-propose"
   ],
-  "directories": [],
+  "directories": [
+    "global/plugin"
+  ],
   "files": [
     "global/AGENTS.md",
     "global/bin/complexity-foraging-contract.ts",
@@ -39,6 +43,7 @@
     "global/bin/openspec-change/state.ts",
     "global/bin/portable-process.ts",
     "global/extensions/specialist-catalog.ts",
+    "global/extensions/unrestricted-agent-tools.ts",
     "global/opencode.json.template",
     "global/opencode.local.instructions.example.md",
     "global/principles-of-work.md"

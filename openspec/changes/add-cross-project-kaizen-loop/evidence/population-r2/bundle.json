@@ -1,0 +1,307 @@
+{
+  "candidate": "cross-project-kaizen-loop-population-r2",
+  "checks": {
+    "activeConfigUnchanged": true,
+    "allMembersSupported": true,
+    "archiveBoundaryPassed": true,
+    "claimPopulationMatched": true,
+    "focusedTestsPassed": true,
+    "loadedModesExposed": true,
+    "providerFree": true,
+    "seedReadbackStable": true,
+    "sourceUnchanged": true,
+    "triageBoundaryPassed": true
+  },
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "archiveFixtureRemoved": true,
+    "fixtureRemoved": true,
+    "triageFixtureRemoved": true
+  },
+  "drivers": {
+    "archive": {
+      "elapsedMs": 19852,
+      "scenarios": [
+        "captured",
+        "no-signal",
+        "repair-gap",
+        "unavailable",
+        "archive-failed"
+      ],
+      "status": "passed"
+    },
+    "focusedTests": {
+      "count": 26,
+      "elapsedMs": 29274,
+      "status": "passed"
+    },
+    "triage": {
+      "elapsedMs": 1236,
+      "status": "passed"
+    }
+  },
+  "environment": {
+    "networkRequests": 0,
+    "node": "v24.18.1",
+    "platform": "win32",
+    "providerCalls": 0
+  },
+  "error": null,
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode population --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/population-r2",
+  "observations": [
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:explicit capture redacts the project root and folds lifecycle state"
+      ],
+      "memberId": "enabled-explicit-valid",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:strict input bounds reject unsafe references, extras, and overlong summaries"
+      ],
+      "memberId": "enabled-explicit-invalid",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:disabled mode exposes no feature, hooks, or writes"
+      ],
+      "memberId": "disabled-no-write",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:cross-project concurrent append deduplicates by normalized fingerprint",
+        "focused-test:multi-process append preserves every fixed-slot event"
+      ],
+      "memberId": "two-project-concurrent-append",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:fixed 2,000-signal capacity rejects another signal without overwrite",
+        "focused-test:fixed 8,000-lifecycle capacity rejects another event without overwrite"
+      ],
+      "memberId": "capacity-rejection",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:plugin report, status, decision, checkpoint, and compaction share one bounded store"
+      ],
+      "memberId": "compaction-valid-signal",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"
+      ],
+      "memberId": "compaction-valid-empty",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"
+      ],
+      "memberId": "compaction-missing-envelope",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:compaction envelope accepts exactly zero to three signals",
+        "focused-test:plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"
+      ],
+      "memberId": "compaction-malformed-or-duplicate-envelope",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"
+      ],
+      "memberId": "compaction-wrong-root-or-child",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:automatic compaction store failure stays non-blocking and preserves one warning chain"
+      ],
+      "memberId": "compaction-store-failure",
+      "status": "supported"
+    },
+    {
+      "driver": "archive-boundary",
+      "facts": [
+        "archive-scenario:captured",
+        "harvest:captured"
+      ],
+      "memberId": "archive-captured",
+      "status": "supported"
+    },
+    {
+      "driver": "archive-boundary",
+      "facts": [
+        "archive-scenario:no-signal",
+        "harvest:no-signal"
+      ],
+      "memberId": "archive-no-signal",
+      "status": "supported"
+    },
+    {
+      "driver": "archive-boundary",
+      "facts": [
+        "archive-scenario:repair-gap",
+        "harvest:repair-gap"
+      ],
+      "memberId": "archive-repair-gap",
+      "status": "supported"
+    },
+    {
+      "driver": "archive-boundary",
+      "facts": [
+        "archive-scenario:unavailable",
+        "harvest:unavailable"
+      ],
+      "memberId": "archive-checkpoint-unavailable",
+      "status": "supported"
+    },
+    {
+      "driver": "archive-boundary",
+      "facts": [
+        "archive-scenario:archive-failed",
+        "harvest:archive-failed"
+      ],
+      "memberId": "archive-failed",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:copied session-env composes and executes Kaizen report and status",
+        "focused-test:complain keeps the loaded inbox authoritative and Markdown as unavailable fallback only"
+      ],
+      "memberId": "complain-loaded-inbox",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:complain keeps the loaded inbox authoritative and Markdown as unavailable fallback only"
+      ],
+      "memberId": "complain-disabled-fallback",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:legacy feedback import is idempotent and written status never resolves the signal"
+      ],
+      "memberId": "legacy-feedback-idempotent",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:legacy feedback parser accepts only the maintained bounded entry format",
+        "focused-test:legacy feedback import is idempotent and written status never resolves the signal"
+      ],
+      "memberId": "legacy-open-status-stale",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:status ordering and truncation are deterministic"
+      ],
+      "memberId": "status-bounded-truncation",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:plugin report, status, decision, checkpoint, and compaction share one bounded store"
+      ],
+      "memberId": "triage-unknown-owner",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:detailed triage is contained to the configured proposal-owner root or the current signal origin",
+        "focused-test:global Kaizen commands preserve bounded manual triage and owner-root proposal containment"
+      ],
+      "memberId": "consumer-kit-candidate-no-write",
+      "status": "supported"
+    },
+    {
+      "driver": "triage-boundary",
+      "facts": [
+        "triage-scenario:owner-root-proposal",
+        "proposal-count:1"
+      ],
+      "memberId": "kit-root-contained-proposal",
+      "status": "supported"
+    },
+    {
+      "driver": "focused-tests",
+      "facts": [
+        "focused-test:explicit capture redacts the project root and folds lifecycle state",
+        "focused-test:synthetic credentials and private paths are absent from bounded status output",
+        "focused-test:explicit store failure exposes the original filesystem cause without a partial record"
+      ],
+      "memberId": "privacy-redaction-and-output-bounds",
+      "status": "supported"
+    }
+  ],
+  "resources": {
+    "lifecycleBytes": 4096,
+    "lifecycleLimit": 8000,
+    "retainedChildBundles": 2,
+    "signalBytes": 16384,
+    "signalLimit": 2000
+  },
+  "schemaVersion": 1,
+  "seed": {
+    "populationId": "cross-project-kaizen-scenarios-v1",
+    "scenarios": [
+      "enabled-explicit-valid",
+      "enabled-explicit-invalid",
+      "disabled-no-write",
+      "two-project-concurrent-append",
+      "capacity-rejection",
+      "compaction-valid-signal",
+      "compaction-valid-empty",
+      "compaction-missing-envelope",
+      "compaction-malformed-or-duplicate-envelope",
+      "compaction-wrong-root-or-child",
+      "compaction-store-failure",
+      "archive-captured",
+      "archive-no-signal",
+      "archive-repair-gap",
+      "archive-checkpoint-unavailable",
+      "archive-failed",
+      "complain-loaded-inbox",
+      "complain-disabled-fallback",
+      "legacy-feedback-idempotent",
+      "legacy-open-status-stale",
+      "status-bounded-truncation",
+      "triage-unknown-owner",
+      "consumer-kit-candidate-no-write",
+      "kit-root-contained-proposal",
+      "privacy-redaction-and-output-bounds"
+    ],
+    "sha256": "063290e669e07b711beb5465f30177c5256ed27012611fbcafd6376c68c9602a"
+  },
+  "status": "passed"
+}

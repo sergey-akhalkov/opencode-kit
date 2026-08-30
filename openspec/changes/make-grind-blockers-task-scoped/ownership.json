@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "changeId": "make-grind-blockers-task-scoped",
+  "mutationEnabled": true,
+  "capabilities": [
+    {
+      "capability": "library-session-completion-guard",
+      "requirements": [
+        "A versioned task-scoped work frontier is the continuation source of truth",
+        "Verdicts distinguish runnable work, product decisions, waits, and completion",
+        "Pending questions are answered or deferred without racing human replies",
+        "Finite execution epochs do not manufacture owner scope",
+        "Persisted frontier state is bounded and reconciles conservatively",
+        "Completion remains fail closed on missing or invalid evidence"
+      ]
+    },
+    {
+      "capability": "library-instruction-artifacts",
+      "requirements": [
+        "Main and arbiter use the same task-scoped frontier contract",
+        "OpenSpec apply drains dependency-valid work before a product question",
+        "Installed configuration retains finite execution bounds"
+      ]
+    },
+    {
+      "capability": "unattended-roadmap-orchestration",
+      "requirements": [
+        "Independent mission work remains schedulable around localized waits",
+        "Mission ledgers remain authoritative for mission state"
+      ]
+    },
+    {
+      "capability": "autonomous-work-campaign",
+      "requirements": [
+        "Independent campaign work remains schedulable around localized waits",
+        "Campaign ledgers remain authoritative for campaign state"
+      ]
+    }
+  ],
+  "writeRoots": [
+    "global/AGENTS.md",
+    "global/agents/session-completion-arbiter.md",
+    "global/bin/roadmap-mission",
+    "global/bin/work-campaign",
+    "global/commands/opsx-apply.md",
+    "global/extensions/session-completion-guard.ts",
+    "global/extensions/session-completion-guard",
+    "global/opencode.json.template",
+    "global/plugin/session-delivery-context",
+    "global/skills/change-ready-sdlc",
+    "global/skills/openspec-apply-change",
+    "instructions/reusable-project-agent-instructions.md",
+    "package.json",
+    "templates/project/AGENTS.md",
+    "tools/proofs/README.md",
+    "tools/proofs/fixtures/session-completion-guard",
+    "tools/proofs/pre-escalation-recovery.ts",
+    "tools/proofs/roadmap-mission-controller.ts",
+    "tools/proofs/roadmap-mission-runtime.ts",
+    "tools/proofs/session-completion-guard-autonomous.ts",
+    "tools/proofs/session-completion-guard-frontier.ts",
+    "tools/proofs/session-completion-guard-long-run.ts",
+    "tools/proofs/session-completion-guard-question.ts",
+    "tools/proofs/session-completion-guard-restart.ts",
+    "tools/proofs/work-campaign-source-paths.ts",
+    "tools/proofs/work-campaign.ts",
+    "tools/test-contracts-change-ready.ts",
+    "tools/test-contracts-change-ready-delivery.ts",
+    "tools/test-session-completion-guard.ts",
+    "tools/test-work-campaign-controller.ts",
+    "tools/test-work-campaign-semantic-playbook.ts",
+    "tools/test-work-campaign.ts",
+    "tools/validators/agents.ts"
+  ],
+  "dependencies": [],
+  "transfers": [
+    {
+      "fromChangeId": "make-grind-blockers-task-scoped",
+      "toChangeId": "add-cross-project-kaizen-loop",
+      "owners": [
+        { "type": "write-root", "path": "global/AGENTS.md" },
+        { "type": "write-root", "path": "global/opencode.json.template" },
+        { "type": "write-root", "path": "package.json" },
+        { "type": "write-root", "path": "tools/proofs/README.md" }
+      ],
+      "condition": "archived"
+    }
+  ]
+}

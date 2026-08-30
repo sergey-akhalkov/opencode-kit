@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-docs-r1",
+  "environmentId": "windows-node-24.18.1-docs-r1",
+  "components": [
+    {
+      "role": "prior-cumulative-candidate",
+      "candidateId": "cross-project-kaizen-loop-portability-r1",
+      "artifact": "evidence/candidate-composition-r13.json",
+      "ceiling": "Current provider-free product and profile-portability behavior retained because task 3.4 changed documentation and evidence only; installed real-oracle evidence remains unknown."
+    },
+    {
+      "role": "operator-documentation",
+      "candidateId": "cross-project-kaizen-loop-docs-r1",
+      "artifact": "evidence/task-3-4-docs-r1.md",
+      "sourceIdentity": "recorded-readme-guide-source-command-skill-proof-and-ledger-git-blobs",
+      "ceiling": "Current source-verified operator map with complete block readback, effect-free help/status evidence, strict validation, and explicit installed/compaction/SDET/challenge exclusions."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-portability-r1"
+  ],
+  "excluded": [
+    "production compaction prompt and loaded long-session capture",
+    "cold installed complain or triage command routing",
+    "installation, activation, or OpenCode restart",
+    "privacy and authorization critical SDET",
+    "independent broad-claim evidence challenge"
+  ]
+}

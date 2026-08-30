@@ -59,7 +59,9 @@ const START_STATES = new Set<GuardStateName>([
   "error",
   "owner-required",
   "passed",
+  "product-decision-required",
   "question-auditing",
+  "waiting",
   "waiting-async",
 ]);
 

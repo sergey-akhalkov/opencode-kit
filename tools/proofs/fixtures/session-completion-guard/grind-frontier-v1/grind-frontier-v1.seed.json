@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "claimId": "GRIND-TSB-001",
+  "limits": {
+    "maxFrontierBytes": 32768,
+    "maxItems": 16,
+    "maxDependencies": 64,
+    "maxGates": 16,
+    "maxDecisions": 8,
+    "maxRefsPerField": 4,
+    "maxStringBytes": 256
+  },
+  "scenarios": [
+    {
+      "id": "all-product-blocked",
+      "context": {
+        "rootSessionRef": "session_all_product",
+        "latestHumanRef": "human_all_product",
+        "taskStateDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "currentGeneration": 4
+      },
+      "input": {
+        "expectedGeneration": 4,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_product",
+            "requirementRefs": ["requirement_product"],
+            "status": "blocked",
+            "dependsOn": [],
+            "gateRefs": ["gate_product"],
+            "evidenceRefs": ["evidence_product_pending"]
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_product",
+            "kind": "product-decision",
+            "status": "open",
+            "affectedItemRefs": ["item_product"],
+            "resumeCondition": "The owner selects one product outcome.",
+            "evidenceRefs": ["evidence_product_options"]
+          }
+        ],
+        "parkedDecisions": [
+          {
+            "id": "decision_product",
+            "questionRef": "question_product",
+            "affectedItemRefs": ["item_product"],
+            "optionInvariantItemRefs": [],
+            "decisionPoint": "Select the accepted product outcome.",
+            "evidenceRefs": ["evidence_product_options"]
+          }
+        ],
+        "progressFingerprint": "progress_all_product"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "product-decision",
+        "serverGeneration": 5,
+        "runnableItemRefs": [],
+        "openGateRefs": ["gate_product"],
+        "parkedDecisionRefs": ["decision_product"]
+      }
+    },
+    {
+      "id": "bounded-field-bytes",
+      "context": {
+        "rootSessionRef": "session_bound_bytes",
+        "latestHumanRef": "human_bound_bytes",
+        "taskStateDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "currentGeneration": 0
+      },
+      "input": {
+        "expectedGeneration": 0,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_bound_bytes",
+            "requirementRefs": ["requirement_bound_bytes"],
+            "status": "blocked",
+            "dependsOn": [],
+            "gateRefs": ["gate_bound_bytes"],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_bound_bytes",
+            "kind": "technical",
+            "status": "open",
+            "affectedItemRefs": ["item_bound_bytes"],
+            "resumeCondition": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "evidenceRefs": []
+          }
+        ],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_bound_bytes"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "rejected",
+        "reason": "limit-resumeCondition",
+        "frontierState": "rejected",
+        "serverGeneration": null,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "bounded-reference-count",
+      "context": {
+        "rootSessionRef": "session_bound_refs",
+        "latestHumanRef": "human_bound_refs",
+        "taskStateDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "currentGeneration": 0
+      },
+      "input": {
+        "expectedGeneration": 0,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_bound_refs",
+            "requirementRefs": ["requirement_1", "requirement_2", "requirement_3", "requirement_4", "requirement_5"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_bound_refs"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "rejected",
+        "reason": "limit-requirementRefs",
+        "frontierState": "rejected",
+        "serverGeneration": null,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "complete",
+      "context": {
+        "rootSessionRef": "session_complete",
+        "latestHumanRef": "human_complete",
+        "taskStateDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "currentGeneration": 8
+      },
+      "input": {
+        "expectedGeneration": 8,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_complete",
+            "requirementRefs": ["requirement_complete"],
+            "status": "complete",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_complete"]
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_complete"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "complete",
+        "serverGeneration": 9,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "cyclic",
+      "context": {
+        "rootSessionRef": "session_cycle",
+        "latestHumanRef": "human_cycle",
+        "taskStateDigest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "currentGeneration": 0
+      },
+      "input": {
+        "expectedGeneration": 0,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_cycle_a",
+            "requirementRefs": ["requirement_cycle_a"],
+            "status": "pending",
+            "dependsOn": ["item_cycle_b"],
+            "gateRefs": [],
+            "evidenceRefs": []
+          },
+          {
+            "id": "item_cycle_b",
+            "requirementRefs": ["requirement_cycle_b"],
+            "status": "pending",
+            "dependsOn": ["item_cycle_a"],
+            "gateRefs": [],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_cycle"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "rejected",
+        "reason": "dependency-cycle",
+        "frontierState": "rejected",
+        "serverGeneration": null,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "malformed",
+      "context": {
+        "rootSessionRef": "session_malformed",
+        "latestHumanRef": "human_malformed",
+        "taskStateDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+        "currentGeneration": 0
+      },
+      "input": {
+        "expectedGeneration": 0,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_malformed",
+            "requirementRefs": ["requirement_malformed"],
+            "status": "queued",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_malformed"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "rejected",
+        "reason": "invalid-item-status",
+        "frontierState": "rejected",
+        "serverGeneration": null,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "migration",
+      "context": null,
+      "input": null,
+      "persisted": {
+        "metadataSchemaVersion": 1,
+        "workFrontier": null
+      },
+      "expected": {
+        "status": "reconcile",
+        "reason": "missing-frontier",
+        "frontierState": "frontier-reconciling",
+        "serverGeneration": null,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "non-product-waiting",
+      "context": {
+        "rootSessionRef": "session_waiting",
+        "latestHumanRef": "human_waiting",
+        "taskStateDigest": "2222222222222222222222222222222222222222222222222222222222222222",
+        "currentGeneration": 5
+      },
+      "input": {
+        "expectedGeneration": 5,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_waiting",
+            "requirementRefs": ["requirement_waiting"],
+            "status": "blocked",
+            "dependsOn": [],
+            "gateRefs": ["gate_technical"],
+            "evidenceRefs": ["evidence_technical_failure"]
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_technical",
+            "kind": "technical",
+            "status": "open",
+            "affectedItemRefs": ["item_waiting"],
+            "resumeCondition": "A causally distinct technical recovery becomes available.",
+            "evidenceRefs": ["evidence_technical_failure"]
+          }
+        ],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_waiting"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "waiting",
+        "serverGeneration": 6,
+        "runnableItemRefs": [],
+        "openGateRefs": ["gate_technical"],
+        "parkedDecisionRefs": []
+      }
+    },
+    {
+      "id": "partial-product-block",
+      "context": {
+        "rootSessionRef": "session_partial",
+        "latestHumanRef": "human_partial",
+        "taskStateDigest": "3333333333333333333333333333333333333333333333333333333333333333",
+        "currentGeneration": 2
+      },
+      "input": {
+        "expectedGeneration": 2,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_after_decision",
+            "requirementRefs": ["requirement_after_decision"],
+            "status": "pending",
+            "dependsOn": ["item_blocked"],
+            "gateRefs": [],
+            "evidenceRefs": []
+          },
+          {
+            "id": "item_blocked",
+            "requirementRefs": ["requirement_product"],
+            "status": "blocked",
+            "dependsOn": [],
+            "gateRefs": ["gate_product"],
+            "evidenceRefs": ["evidence_product_pending"]
+          },
+          {
+            "id": "item_independent",
+            "requirementRefs": ["requirement_independent"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": ["evidence_independent_ready"]
+          }
+        ],
+        "gates": [
+          {
+            "id": "gate_product",
+            "kind": "product-decision",
+            "status": "open",
+            "affectedItemRefs": ["item_blocked"],
+            "resumeCondition": "The owner selects the product behavior.",
+            "evidenceRefs": ["evidence_product_options"]
+          }
+        ],
+        "parkedDecisions": [
+          {
+            "id": "decision_product",
+            "questionRef": "question_product",
+            "affectedItemRefs": ["item_blocked"],
+            "optionInvariantItemRefs": ["item_independent"],
+            "decisionPoint": "Select the product behavior after independent work drains.",
+            "evidenceRefs": ["evidence_product_options"]
+          }
+        ],
+        "progressFingerprint": "progress_partial"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "accepted",
+        "reason": "ok",
+        "frontierState": "runnable",
+        "serverGeneration": 3,
+        "runnableItemRefs": ["item_independent"],
+        "openGateRefs": ["gate_product"],
+        "parkedDecisionRefs": ["decision_product"]
+      }
+    },
+    {
+      "id": "stale-generation",
+      "context": {
+        "rootSessionRef": "session_stale",
+        "latestHumanRef": "human_stale",
+        "taskStateDigest": "4444444444444444444444444444444444444444444444444444444444444444",
+        "currentGeneration": 7
+      },
+      "input": {
+        "expectedGeneration": 6,
+        "acceptedOutcomeRef": "outcome_grind",
+        "items": [
+          {
+            "id": "item_stale",
+            "requirementRefs": ["requirement_stale"],
+            "status": "pending",
+            "dependsOn": [],
+            "gateRefs": [],
+            "evidenceRefs": []
+          }
+        ],
+        "gates": [],
+        "parkedDecisions": [],
+        "progressFingerprint": "progress_stale"
+      },
+      "persisted": null,
+      "expected": {
+        "status": "rejected",
+        "reason": "stale-generation",
+        "frontierState": "rejected",
+        "serverGeneration": null,
+        "runnableItemRefs": [],
+        "openGateRefs": [],
+        "parkedDecisionRefs": []
+      }
+    }
+  ]
+}

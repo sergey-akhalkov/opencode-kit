@@ -37,7 +37,7 @@ export const CORE_AGENTS = [
   "troubleshooter",
 ] as const;
 
-export const CORE_COMMANDS = ["opsx-apply", "opsx-archive", "opsx-propose"] as const;
+export const CORE_COMMANDS = ["kaizen-status", "kaizen-triage", "opsx-apply", "opsx-archive", "opsx-propose"] as const;
 
 export const DELIVERY_TRAJECTORY_HELPER_FILES = [
   "global/bin/delivery-trajectory-context.ts",
@@ -66,6 +66,7 @@ export const ALL_COMPATIBILITY_FILES = [
 ] as const;
 
 export const SPECIALIST_CATALOG_PLUGIN_FILE = "extensions/specialist-catalog.ts";
+export const UNRESTRICTED_AGENT_TOOLS_PLUGIN_FILE = "extensions/unrestricted-agent-tools.ts";
 
 export const CORE_FILES = [
   "global/AGENTS.md",
@@ -74,12 +75,13 @@ export const CORE_FILES = [
   ...DELIVERY_TRAJECTORY_HELPER_FILES,
   ...OPENSPEC_ARCHIVE_HELPER_FILES,
   `global/${SPECIALIST_CATALOG_PLUGIN_FILE}`,
+  `global/${UNRESTRICTED_AGENT_TOOLS_PLUGIN_FILE}`,
   "global/opencode.json.template",
   "global/opencode.local.instructions.example.md",
   "global/principles-of-work.md",
 ].sort(compareLocale);
 
-export const CORE_DIRECTORIES: readonly string[] = [];
+export const CORE_DIRECTORIES = ["global/plugin"] as const;
 
 export const ALL_COMPATIBILITY_DIRECTORIES = [
   "global/bin",
@@ -852,8 +854,14 @@ export type RuntimeSurfaceConfigRenderMode = "all-compatibility" | "ask" | "mach
 export const ALL_COMPATIBILITY_PLUGIN_FILES = [
   "plugins/notify.ts",
   "plugin/session-env.ts",
+  UNRESTRICTED_AGENT_TOOLS_PLUGIN_FILE,
   SPECIALIST_CATALOG_PLUGIN_FILE,
   ...ROADMAP_MISSION_PLUGIN_FILES,
+] as const;
+export const CORE_PLUGIN_FILES = [
+  "plugin/session-env.ts",
+  UNRESTRICTED_AGENT_TOOLS_PLUGIN_FILE,
+  SPECIALIST_CATALOG_PLUGIN_FILE,
 ] as const;
 
 export function materializeRuntimeSurfaceTemplate(templateText: string, targetRoot: string): string {
@@ -908,10 +916,11 @@ export function renderRuntimeSurfaceConfig(
     typeof entry === "string" && entry.startsWith("file:") && entry.endsWith(`/${SPECIALIST_CATALOG_PLUGIN_FILE}`)
   );
   if (mode === "ask") {
-    if (catalogPlugins.length !== 1) {
-      throw new Error("The core profile requires exactly one materialized specialist catalog plugin entry.");
+    const corePlugins = templatePlugins.filter((entry) => typeof entry === "string" && CORE_PLUGIN_FILES.some((relative) => entry.startsWith("file:") && entry.endsWith(`/${relative}`)));
+    if (corePlugins.length !== CORE_PLUGIN_FILES.length || catalogPlugins.length !== 1) {
+      throw new Error("The core profile requires exactly one materialized entry for every core plugin.");
     }
-    config.plugin = catalogPlugins;
+    config.plugin = corePlugins;
   }
   if (mode === "all-compatibility") {
     if (typeof materializedTemplate?.model !== "string" || !Array.isArray(materializedTemplate.plugin)) {

@@ -29,6 +29,8 @@
   ],
   "commands": [
     "dedup",
+    "kaizen-status",
+    "kaizen-triage",
     "opsx-apply",
     "opsx-archive",
     "opsx-propose"

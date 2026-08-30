@@ -166,6 +166,18 @@ const HELPER_RESOLUTION_SURFACES = [
   { helper: "bin/openspec-archive.ts", relative: "global/skills/openspec-archive-change/SKILL.md" },
 ] as const;
 
+const ARCHIVE_KAIZEN_HARVEST_MARKERS = [
+  "## Open Harvest Checkpoint",
+  "`kaizen_checkpoint`",
+  "non-persisted `unavailable`",
+  "## Close Or Preserve Harvest",
+  "`status: archive-failed`",
+  "derived harvest `repair-gap`",
+  "Never write `repair-gap` as a checkpoint status",
+  "must not invoke the archive helper or repeat movement",
+  "`harvest: captured | no-signal | archive-failed | repair-gap | unavailable`",
+] as const;
+
 const HELPER_RESOLUTION_MARKERS = [
   "OPENCODE_CONFIG_DIR",
   "privacy-safe runtime-source/collision evidence",
@@ -281,9 +293,9 @@ function missingTokens(text: string, tokens: readonly string[]): string[] {
 }
 
 const ARBITER_CHECKPOINT_CONTINUE_MARKERS = [
-  "classify a question asking whether to continue in that state as autonomous",
-  "progress checkpoint, completed or long work cycle, green validation pass, still-open task, locally resolvable failure, or blocked live/external gate is not an owner boundary",
-  "use `owner_required` only when the question crosses an exact owner boundary",
+  "every controller-derived runnable accepted item is mandatory before a product decision or waiting state",
+  "return `continue` while another item is runnable",
+  "Never convert a non-product gate into a product question",
 ] as const;
 
 /** Strip fenced examples so sequencing/owner-stop oracles inspect operative instructions only. */
@@ -311,13 +323,13 @@ const TASK_SEQUENCING_APPLY_MARKERS = [
 
 const TASK_SEQUENCING_ARBITER_MARKERS = [
   "unbounded task-range/batch/review/cycle question is autonomous",
-  "every advancing option",
-  "Use `owner_required` only for an exact protected decision/action",
+  "smallest dependency-valid runnable item",
+  "underlying protected action remains a scoped non-product gate",
 ] as const;
 
-/** Current compressed arbiter rule: mixed protected+review menus stay autonomous. */
-const WEAK_ARBITER_EVERY_OPTION_FRAGMENT =
-  "An unbounded task-range/batch/review/cycle question is autonomous: choose the smallest dependency-valid slice unless every option is `owner_required`. Use `owner_required` only for an exact protected decision/action";
+/** Superseded v1 rule: a global owner stop could still suppress an independent runnable item. */
+const WEAK_ARBITER_GLOBAL_STOP_FRAGMENT =
+  "An unbounded task-range/batch/review/cycle question is autonomous: choose the smallest dependency-valid slice unless every advancing option crosses an owner boundary.";
 
 /** Pre-candidate wording: generic `scope` ask plus apply-until-done without an explicit user task limit. */
 const BASELINE_TASK_SEQUENCING_FRAGMENT = [
@@ -374,8 +386,8 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "session-completion-arbiter missing checkpoint continue-as-autonomous rule",
       );
       assert(
-        arbiter.includes("Use `owner_required` only for an exact protected decision/action"),
-        "session-completion-arbiter must retain owner_required for exact protected boundaries",
+        arbiter.includes("product_decision_required") && !arbiter.includes("owner_required"),
+        "session-completion-arbiter must use the verdict-v2 product-decision contract",
       );
     },
   },
@@ -468,12 +480,16 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
       assertTokens(arbiter, [
         "hidden: true",
-        "\"*\": deny",
+        "permission: allow",
         "schemaVersion",
         "auditID",
         "rootSessionRef",
         "inspectedRevision",
-        "allow_stop | continue | owner_required | user_paused",
+        "allow_stop | continue | product_decision_required | user_paused | waiting",
+        "frontierGeneration",
+        "runnableItemRefs",
+        "questionAction",
+        "waitKind",
         "one JSON object",
         "Do not wrap it in Markdown",
         "never run as an optional reviewer",
@@ -481,6 +497,53 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         "Never convert synthetic text or guard rejection into a human requirement or answer",
       ], "Completion arbiter missing machine-verdict safeguard");
       assert(!arbiter.includes("session_delivery_context:"), "Completion arbiter must not register session_delivery_context tool permission.");
+    },
+  },
+  {
+    name: "contracts: grind frontier instructions stay task-scoped across loaded surfaces",
+    run: () => {
+      const agents = fs.readFileSync(path.join(root, "global", "AGENTS.md"), "utf8");
+      const arbiter = fs.readFileSync(path.join(root, "global", "agents", "session-completion-arbiter.md"), "utf8");
+      const qualification = fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8");
+      const apply = fs.readFileSync(path.join(root, "global", "skills", "openspec-apply-change", "SKILL.md"), "utf8");
+      const projectTemplate = fs.readFileSync(path.join(root, "templates", "project", "AGENTS.md"), "utf8");
+      const reusable = fs.readFileSync(path.join(root, "instructions", "reusable-project-agent-instructions.md"), "utf8");
+      const runtimeTemplate = fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8");
+
+      assertTokens(agents, [
+        "controller-derived task-scoped frontier governs blocking",
+        "every runnable accepted item is mandatory before any product question or waiting state",
+        "product_decision_required",
+        "question-free waiting with the exact resume condition",
+        "none of this authorizes the underlying action",
+      ], "global/AGENTS.md missing canonical grind frontier contract");
+      assertTokens(arbiter, [
+        "schema version `2`",
+        "controller-derived `runnableItemRefs`",
+        "product_decision_required",
+        "exact `waiting` with a resume condition",
+        "present-product-decision",
+      ], "session-completion-arbiter missing verdict-v2 frontier contract");
+      assert(!arbiter.includes("owner_required"), "Arbiter must not retain the superseded global owner_required transport.");
+      assertTokens(qualification, ["canonical task-scoped frontier contract", "question-free waiting after frontier drain"], "Change-Ready missing grind delta");
+      assertTokens(apply, ["reconcile the task-scoped frontier", "outside a blocked cone"], "OpenSpec apply missing grind delta");
+      assert(projectTemplate.includes("complete task-scoped frontier contract in active global authority"), "Project template must point to global grind authority.");
+      assert(reusable.includes("active global task-scoped frontier contract"), "Reusable instructions must point to global grind authority.");
+      for (const [surface, text] of [
+        ["global authority", agents],
+        ["arbiter", arbiter],
+        ["Change-Ready", qualification],
+        ["OpenSpec apply", apply],
+      ] as const) {
+        assert(!text.includes("MAY continue"), `${surface} must not make independent grind work optional.`);
+      }
+      assertTokens(runtimeTemplate, [
+        "For an explicitly grind-enabled root",
+        "`frontierGeneration`",
+        "present an exact product decision only after the runnable set is empty",
+        "question-free non-product waiting with its resume condition",
+        '"maxCycles": 100',
+      ], "Runtime template missing grind compaction delta or finite bounds");
     },
   },
   {
@@ -586,6 +649,7 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       );
 
       const archive = fs.readFileSync(path.join(root, "global", "skills", "openspec-archive-change", "SKILL.md"), "utf8");
+      assertTokens(archive, ARCHIVE_KAIZEN_HARVEST_MARKERS, "OpenSpec archive skill missing Kaizen harvest state separation");
       const withoutOutcomeGate = archive.replaceAll("all-checked tasks", "checked tasks as completion");
       assert(
         missingTokens(withoutOutcomeGate, ARCHIVE_OUTCOME_RECONCILIATION_MARKERS).includes("all-checked tasks"),
@@ -623,8 +687,10 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
         fs.readFileSync(path.join(root, "global/skills/openspec-archive-change/SKILL.md"), "utf8"),
       );
       assert(
-        archive.indexOf("## Execute One Owner") < archive.indexOf("## Post-Success Trajectory Routing"),
-        "Archive trajectory routing must remain after canonical archive execution and validation.",
+        archive.indexOf("## Open Harvest Checkpoint") < archive.indexOf("## Execute One Owner")
+          && archive.indexOf("## Execute One Owner") < archive.indexOf("## Close Or Preserve Harvest")
+          && archive.indexOf("## Close Or Preserve Harvest") < archive.indexOf("## Post-Success Trajectory Routing"),
+        "Archive harvest must wrap canonical execution while trajectory remains post-success.",
       );
       assert(
         !archive.includes("trajectory changes archive exit status"),
@@ -744,20 +810,20 @@ export const changeReadyDeliveryContractTests: TestCase[] = [
       );
 
       assert(
-        missingTokens(WEAK_ARBITER_EVERY_OPTION_FRAGMENT, TASK_SEQUENCING_ARBITER_MARKERS).includes(
-          "every advancing option",
+        missingTokens(WEAK_ARBITER_GLOBAL_STOP_FRAGMENT, TASK_SEQUENCING_ARBITER_MARKERS).includes(
+          "smallest dependency-valid runnable item",
         ),
-        "Arbiter wording that treats mixed protected+non-advancing menus as autonomous must fail closed",
+        "Superseded global-stop wording must fail the task-scoped frontier oracle",
       );
-      const arbiterWithoutAdvancingStop = arbiter.replaceAll(
-        "every advancing option",
-        "every option",
+      const arbiterWithoutRunnableSelection = arbiter.replaceAll(
+        "smallest dependency-valid runnable item",
+        "smallest available slice",
       );
       assert(
-        missingTokens(arbiterWithoutAdvancingStop, TASK_SEQUENCING_ARBITER_MARKERS).includes(
-          "every advancing option",
+        missingTokens(arbiterWithoutRunnableSelection, TASK_SEQUENCING_ARBITER_MARKERS).includes(
+          "smallest dependency-valid runnable item",
         ),
-        "Dropping advancing-option owner_required retention for mixed protected menus must fail closed",
+        "Dropping runnable-item selection from the arbiter must fail closed",
       );
     },
   },

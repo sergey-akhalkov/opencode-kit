@@ -1,4 +1,4 @@
-import type { Hooks, PluginInput } from "@opencode-ai/plugin";
+import type { Hooks, PluginInput, ToolContext } from "@opencode-ai/plugin";
 import {
   type OpencodeClient,
   type Session,
@@ -26,6 +26,13 @@ import {
   grindControlAction,
   grindControlPart,
 } from "./grind-control.ts";
+import {
+  GRIND_FRONTIER_INPUT_SCHEMA,
+  GRIND_FRONTIER_TOOL,
+  materializeWorkFrontier,
+  projectPersistedWorkFrontier,
+  workFrontierBasisStatus,
+} from "./frontier.ts";
 import { inspectRootEvidence, type RootInspection } from "./inspection.ts";
 import { AsyncLeaseRegistry } from "./leases.ts";
 import { PtyFallbackScheduler } from "./pty-fallback.ts";
@@ -43,11 +50,13 @@ import {
   resolveRootSession,
   restoredPromptContext,
   safeError,
+  stableDigest,
   stringValue,
 } from "./runtime-support.ts";
 import { GuardStatusReporter } from "./status.ts";
 import { sendTaskFallback } from "./task-fallback.ts";
 import {
+  executionEpochDisposition,
   hasVerifiedTroubleshooter,
   strategyFingerprint,
 } from "./strategy.ts";
@@ -61,15 +70,20 @@ import type {
   CompletionVerdict,
   GuardOptions,
   NormalizedQuestionRequest,
+  QuestionDeferralProvenance,
+  QuestionState,
   RootState,
 } from "./types.ts";
 import { buildContinuation, parseCompletionVerdictText } from "./verdict.ts";
 type LogLevel = "debug" | "error" | "info" | "warn";
 const MAX_AUTONOMOUS_QUESTION_REFS = 1_024;
 class ArbiterPromptTimeoutError extends Error {
-  constructor(readonly timeoutMs: number) {
+  readonly timeoutMs: number;
+
+  constructor(timeoutMs: number) {
     super(`Completion arbiter prompt timed out after ${timeoutMs}ms`);
     this.name = "ArbiterPromptTimeoutError";
+    this.timeoutMs = timeoutMs;
   }
 }
 
@@ -133,6 +147,7 @@ export class SessionCompletionController {
   private readonly roots = new Map<string, RootState>();
   private readonly ptyFallback: PtyFallbackScheduler;
   private readonly status: GuardStatusReporter;
+  private readonly frontierWrites = new Set<string>();
   private configuredPermission: ReturnType<typeof configuredPermissionClass> = "unspecified";
   private disposed = false;
   private permissionDiagnosticLogged = false;
@@ -210,20 +225,103 @@ export class SessionCompletionController {
           }
         }
       },
+      tool: {
+        [GRIND_FRONTIER_TOOL]: {
+          args: { input: GRIND_FRONTIER_INPUT_SCHEMA as never },
+          description: "Atomically replace the current root's bounded task-scoped work frontier under an expected server generation. Root, latest-human, task-state, and runnable identities are controller-derived.",
+          execute: async (args: unknown, context: ToolContext) => this.updateWorkFrontier(args, context),
+        },
+      },
       event: async ({ event }) => this.onEvent(event as unknown as Record<string, unknown>),
       dispose: async () => this.dispose(),
     };
   }
 
+  private async updateWorkFrontier(args: unknown, context: ToolContext) {
+    const state = await this.tryRoot(context.sessionID);
+    if (state == null || !state.grindEnabled) throw new Error("grind_frontier requires an enabled grind root");
+    if (state.root.id !== context.sessionID) throw new Error("grind_frontier may only be called from its parentless main root");
+    if (state.paused) throw new Error("grind_frontier cannot update a paused root");
+    if (state.frontierStatus === "invalid") throw new Error(`grind_frontier cannot replace invalid persisted state: ${state.frontierError ?? "unknown"}`);
+    if (this.frontierWrites.has(state.root.id)) throw new Error("grind_frontier update already in progress for this root");
+    this.frontierWrites.add(state.root.id);
+    try {
+      const inspection = await this.inspectRoot(state);
+      const persisted = projectPersistedWorkFrontier(state.root.metadata);
+      if (persisted.status === "invalid") {
+        throw new Error(`grind_frontier cannot replace invalid persisted state: ${persisted.errorCode ?? "unknown"}`);
+      }
+      state.workFrontier = persisted.assessment?.frontier ?? null;
+      const input = record(args)?.input;
+      const assessment = materializeWorkFrontier(input, {
+        basisHumanRef: inspection.revision.humanRef,
+        currentGeneration: persisted.assessment?.frontier.frontierGeneration ?? 0,
+        taskStateDigest: inspection.revision.todoDigest,
+      });
+      const previous = {
+        continuationCycles: state.continuationCycles,
+        frontierError: state.frontierError,
+        frontierReconciliationRef: state.frontierReconciliationRef,
+        frontierStatus: state.frontierStatus,
+        lastAuditedRevision: state.lastAuditedRevision,
+        lastProgressFingerprint: state.lastProgressFingerprint,
+        restartRecoveryAction: state.restartRecoveryAction,
+        waitReason: state.waitReason,
+        workFrontier: state.workFrontier,
+      };
+      if (state.lastProgressFingerprint !== assessment.frontier.progressFingerprint) {
+        state.continuationCycles = 0;
+      }
+      state.workFrontier = assessment.frontier;
+      state.frontierStatus = "current";
+      state.frontierError = null;
+      state.frontierReconciliationRef = null;
+      state.lastAuditedRevision = null;
+      state.lastProgressFingerprint = assessment.frontier.progressFingerprint;
+      state.restartRecoveryAction = "frontier-updated";
+      state.waitReason = null;
+      this.cancelAudit(state, "running");
+      if (!await this.status.persist(state)) {
+        Object.assign(state, previous);
+        await this.status.persist(state);
+        throw new Error("grind_frontier persistence did not converge");
+      }
+      const metadata = {
+        frontierState: assessment.frontierState,
+        openGateRefs: assessment.openGateRefs,
+        parkedDecisionRefs: assessment.parkedDecisionRefs,
+        rootRef: hashRef("session", state.root.id),
+        runnableItemRefs: assessment.runnableItemRefs,
+        serverGeneration: assessment.frontier.frontierGeneration,
+      };
+      context.metadata({ title: "Grind work frontier", metadata });
+      return { title: "Grind work frontier", metadata, output: `${JSON.stringify(metadata, null, 2)}\n` };
+    } finally {
+      this.frontierWrites.delete(state.root.id);
+    }
+  }
+
   private async reconcileRoots(): Promise<void> {
     const roots = sessionRows(await dataOf<unknown>(
-      this.client.v2.session.list({ directory: this.input.directory, roots: true, limit: 500 }) as Promise<unknown>,
+      this.client.v2.session.list({ directory: this.input.directory, roots: true, limit: 500 } as never) as Promise<unknown>,
       "session.list grind recovery",
     ));
     for (const candidate of roots.filter((row) => row.parentID == null)) {
       const root = await this.session(candidate.id);
       if (record(root.metadata?.completionGuard)?.grindEnabled !== true) continue;
       const state = this.stateFor(root);
+      if (state.frontierStatus === "invalid") {
+        await this.status.set(state, "error", `Persisted work frontier is invalid: ${state.frontierError ?? "unknown"}`, "error");
+        continue;
+      }
+      if (state.frontierStatus === "absent") {
+        state.recoveryAudit = null;
+        state.lastAuditedRevision = null;
+        state.restartRecoveryAction = "frontier-missing";
+        await this.status.persist(state);
+        this.scheduleIdle(state);
+        continue;
+      }
       const listedChildren = await dataOf<Session[]>(
         this.client.session.children({ sessionID: root.id, directory: this.input.directory }) as Promise<unknown>,
         "session.children grind recovery",
@@ -241,6 +339,26 @@ export class SessionCompletionController {
       if (retrying.length === 1) {
         const child = retrying[0];
         const metadata = record(child.metadata?.completionGuard) ?? {};
+        if (metadata.schemaVersion !== 2) {
+          await dataOf<Session>(this.client.session.update({
+            sessionID: child.id,
+            directory: this.input.directory,
+            metadata: {
+              ...(child.metadata ?? {}),
+              completionGuard: {
+                ...metadata,
+                staleReason: "unsupported-verdict-schema-after-restart",
+                status: "stale",
+              },
+            },
+          }) as Promise<unknown>, "session.update legacy audit stale");
+          state.recoveryAudit = null;
+          state.lastAuditedRevision = null;
+          state.restartRecoveryAction = "reconcile-legacy-verdict";
+          await this.status.persist(state);
+          this.scheduleIdle(state);
+          continue;
+        }
         const attempt = typeof metadata.attempt === "number" && Number.isInteger(metadata.attempt) ? metadata.attempt : -1;
         const kind = metadata.kind === "completion" || metadata.kind === "question" ? metadata.kind : null;
         const auditID = stringValue(metadata.auditID);
@@ -378,7 +496,6 @@ export class SessionCompletionController {
         providerID: String(record(message.model)?.providerID ?? ""),
         modelID: String(record(message.model)?.modelID ?? ""),
       }),
-      tools: record(message.tools) as Record<string, boolean> | null,
       variant: input.variant ?? stringValue(record(message.model)?.variant),
     };
     state.controlTurnPending = false;
@@ -389,6 +506,11 @@ export class SessionCompletionController {
       state.paused = false;
       state.state = "disabled";
       return;
+    }
+    if (state.frontierStatus !== "invalid") {
+      state.frontierStatus = state.workFrontier == null ? "absent" : "stale";
+      state.frontierError = null;
+      state.lastAuditedRevision = null;
     }
     if (isExplicitHumanStop(text)) {
       state.paused = true;
@@ -414,7 +536,14 @@ export class SessionCompletionController {
     this.cancelAudit(state, action === "enable" ? "running" : "disabled");
     if (action === "enable") {
       state.grindEnabled = true;
-      await this.status.set(state, "running", "Grind enabled for this session", "success");
+      if (state.frontierStatus === "invalid") {
+        await this.status.set(state, "error", `Persisted work frontier is invalid: ${state.frontierError ?? "unknown"}`, "error");
+        return;
+      }
+      state.frontierError = null;
+      state.frontierStatus = state.workFrontier == null ? "absent" : "unverified";
+      state.frontierReconciliationRef = null;
+      await this.status.set(state, "frontier-reconciling", "Grind enabled; work frontier reconciliation required", "success");
       return;
     }
     state.grindEnabled = false;
@@ -443,6 +572,10 @@ export class SessionCompletionController {
     if (sessionID == null) return;
     if ((type === "question.replied" || type === "question.v2.replied")) {
       await this.onQuestionReplied(sessionID, stringValue(properties.requestID));
+      return;
+    }
+    if (type === "question.rejected" || type === "question.v2.rejected") {
+      await this.onQuestionRejected(sessionID, stringValue(properties.requestID));
       return;
     }
     if (type === "question.asked" || type === "question.v2.asked") {
@@ -494,7 +627,11 @@ export class SessionCompletionController {
     }
     if (type === "session.idle" || (type === "session.status" && record(properties.status)?.type === "idle")) {
       const state = await this.tryRoot(sessionID);
-      if (state != null && state.root.id === sessionID) this.scheduleIdle(state);
+      if (state != null && state.root.id === sessionID) {
+        const deferred = [...state.questions.entries()].find(([, question]) => question.state === "guard-deferred");
+        if (deferred != null) await this.finishQuestionDeferral(state, deferred[0]);
+        else this.scheduleIdle(state);
+      }
     }
   }
 
@@ -529,6 +666,47 @@ export class SessionCompletionController {
       }
       void this.handleSettledIdle(state, generation).catch((error) => this.owningFailure(state, "idle preflight", error));
     }, this.options.settleMs);
+  }
+
+  private async reconcileWorkFrontier(state: RootState, inspection: RootInspection, reason: "missing" | "stale"): Promise<void> {
+    const reconciliationRef = stableDigest({
+      humanRef: inspection.revision.humanRef,
+      taskStateDigest: inspection.revision.todoDigest,
+    });
+    state.frontierStatus = reason === "missing" ? "absent" : "stale";
+    state.frontierError = null;
+    state.lastAuditedRevision = null;
+    if (state.frontierReconciliationRef === reconciliationRef) {
+      await this.status.set(state, "frontier-reconciling", `Work frontier ${reason}; awaiting the bounded reconciliation turn`, "warning");
+      return;
+    }
+    state.frontierReconciliationRef = reconciliationRef;
+    state.restartRecoveryAction = `frontier-${reason}`;
+    await this.status.set(state, "frontier-reconciling", `Work frontier ${reason}; starting one bounded reconciliation turn`, "warning");
+    const context = restoredPromptContext(state.root, state.promptContext);
+    const payload = {
+      schemaVersion: 1,
+      provenance: "completion-guard",
+      reason,
+      basisHumanRef: inspection.revision.humanRef,
+      taskStateDigest: inspection.revision.todoDigest,
+      expectedGeneration: state.workFrontier?.frontierGeneration ?? 0,
+      instruction: "Reconcile the current accepted work into one complete bounded grind_frontier input. Use only explicit current requirements, task state, decisions, and evidence. Call grind_frontier exactly once; do not ask a question, dispatch work, infer protected authority, or claim completion.",
+    };
+    state.guardTurnPending = true;
+    await ensureNoError(this.client.session.promptAsync({
+      sessionID: state.root.id,
+      directory: state.root.directory,
+      ...(context.agent == null ? {} : { agent: context.agent }),
+      ...(context.model == null ? {} : { model: context.model }),
+      ...(context.variant == null ? {} : { variant: context.variant }),
+      parts: [{
+        type: "text",
+        synthetic: true,
+        text: `<grind_frontier_reconciliation>\n${JSON.stringify(payload, null, 2)}\n</grind_frontier_reconciliation>`,
+        metadata: { provenance: "completion-guard", reconciliationRef },
+      }],
+    }) as Promise<unknown>, "session.promptAsync frontier reconciliation");
   }
 
   private clearWaitRecheck(state: RootState): void {
@@ -593,6 +771,10 @@ export class SessionCompletionController {
       !state.grindEnabled ||
       state.paused
     ) return;
+    if (state.frontierStatus === "invalid") {
+      await this.status.set(state, "error", `Persisted work frontier is invalid: ${state.frontierError ?? "unknown"}`, "error");
+      return;
+    }
     if (state.terminalCertificate.status === "waiting") {
       this.traceTerminalStage(state, "settle-entered", { expectedGeneration });
     }
@@ -664,6 +846,21 @@ export class SessionCompletionController {
     if (inspection.revision.leaseGeneration !== expectedGeneration) {
       if (issuedCertificate) this.scheduleIdle(state, true);
       return;
+    }
+    const frontierBasis = workFrontierBasisStatus(state.workFrontier, {
+      humanRef: inspection.revision.humanRef,
+      taskStateDigest: inspection.revision.todoDigest,
+    });
+    if (frontierBasis !== "current") {
+      await this.reconcileWorkFrontier(state, inspection, frontierBasis === "absent" ? "missing" : "stale");
+      return;
+    }
+    if (state.frontierStatus !== "current") {
+      state.frontierStatus = "current";
+      state.frontierError = null;
+      state.frontierReconciliationRef = null;
+      state.restartRecoveryAction = "frontier-verified";
+      await this.status.persist(state);
     }
     if (state.lastAuditedRevision === inspection.revision.revisionDigest && state.state === "passed") return;
     const certificate = await this.tryTerminalCertificate(state, inspection);
@@ -966,7 +1163,6 @@ export class SessionCompletionController {
           agent: this.options.arbiterAgent,
           model: route.model,
           ...(route.variant == null ? {} : { variant: route.variant }),
-          tools: route.tools,
           parts: [{
             type: "text",
             text: promptText,
@@ -1145,6 +1341,7 @@ export class SessionCompletionController {
       return;
     }
     if (verdict.verdict === "allow_stop") {
+      state.waitReason = null;
       state.lastAuditedRevision = epoch.inspected.revisionDigest;
       await this.updateAuditMetadata(epoch, "passed", undefined, verdict);
       if (!this.isCurrentAudit(state, epoch)) return;
@@ -1153,18 +1350,40 @@ export class SessionCompletionController {
       this.cancelAudit(state, "passed");
       return;
     }
-    if (verdict.verdict === "owner_required") {
-      await this.updateAuditMetadata(epoch, "owner-required", undefined, verdict);
+    if (verdict.verdict === "product_decision_required") {
+      await this.updateAuditMetadata(epoch, "product-decision-required", undefined, verdict);
       if (!this.isCurrentAudit(state, epoch)) return;
-      await this.injectOwnerRequired(state, epoch, verdict);
+      await this.injectProductDecision(state, epoch, verdict);
       return;
     }
+    if (verdict.verdict === "waiting") {
+      await this.enterWaiting(state, epoch, verdict);
+      return;
+    }
+    await this.continueFromVerdict(state, epoch, verdict, current);
+  }
+
+  private async continueFromVerdict(
+    state: RootState,
+    epoch: AuditEpoch,
+    verdict: CompletionVerdict,
+    current: RootInspection,
+  ): Promise<void> {
     const fingerprint = strategyFingerprint(verdict);
     const repeated = verdict.strategyAssessment.repeated || state.lastStrategyFingerprint === fingerprint;
     const requireTroubleshooter = repeated && !hasVerifiedTroubleshooter(current.context, fingerprint);
-    if (this.options.maxCycles >= 0 && state.continuationCycles >= this.options.maxCycles) {
-      await this.injectCycleBudgetHandoff(state, epoch);
+    const epochDisposition = executionEpochDisposition({
+      continuationCycles: state.continuationCycles,
+      maxCycles: this.options.maxCycles,
+      repeated,
+    });
+    if (epochDisposition === "wait-budget") {
+      await this.enterBudgetWaiting(state, epoch, verdict);
       return;
+    }
+    if (epochDisposition === "rollover") {
+      state.continuationCycles = 0;
+      state.restartRecoveryAction = "execution-epoch-rolled-over";
     }
     const continuation = buildContinuation(
       verdict,
@@ -1183,7 +1402,6 @@ export class SessionCompletionController {
       ...(continuation.context.agent == null ? {} : { agent: continuation.context.agent }),
       ...(continuation.context.model == null ? {} : { model: continuation.context.model }),
       ...(continuation.context.variant == null ? {} : { variant: continuation.context.variant }),
-      ...(continuation.context.tools == null ? {} : { tools: continuation.context.tools }),
       parts: [continuation.part],
     }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "session.promptAsync root continuation");
     if (!this.isCurrentAudit(state, epoch)) return;
@@ -1193,6 +1411,15 @@ export class SessionCompletionController {
     await this.updateAuditMetadata(epoch, "continued", undefined, verdict);
     this.cancelAudit(state, "running");
     await this.status.persist(state);
+  }
+
+  private async enterWaiting(state: RootState, epoch: AuditEpoch, verdict: CompletionVerdict): Promise<void> {
+    state.waitReason = `${verdict.waitKind ?? "unknown"}: ${verdict.resumeCondition ?? "resume condition unavailable"}`;
+    state.restartRecoveryAction = `waiting:${verdict.waitKind ?? "unknown"}`;
+    await this.updateAuditMetadata(epoch, "waiting", undefined, verdict);
+    if (!this.isCurrentAudit(state, epoch)) return;
+    this.cancelAudit(state, "waiting");
+    await this.status.set(state, "waiting", `Mission incomplete; waiting for ${state.waitReason}`, "warning");
   }
 
   private async applyQuestionVerdict(
@@ -1214,19 +1441,23 @@ export class SessionCompletionController {
       await this.pause(state.root.id, "question audit found current pause evidence");
       return;
     }
-    if (verdict.verdict === "owner_required") {
-      question.state = "owner-required";
-      await this.updateAuditMetadata(epoch, "owner-required", undefined, verdict);
+    if (verdict.verdict === "product_decision_required" && verdict.questionAction === "present-product-decision") {
+      question.state = "product-decision-required";
+      await this.updateAuditMetadata(epoch, "product-decision-required", undefined, verdict);
       if (!this.isCurrentAudit(state, epoch)) return;
-      await this.status.set(state, "owner-required", "Owner response required", "warning");
+      await this.status.set(state, "product-decision-required", "Product decision required", "warning");
       if (!this.isCurrentAudit(state, epoch)) return;
-      this.cancelAudit(state, "owner-required");
+      this.cancelAudit(state, "product-decision-required");
+      return;
+    }
+    if (verdict.questionAction === "defer") {
+      await this.deferQuestion(state, epoch, verdict, requestID, question);
       return;
     }
     if (verdict.verdict !== "continue" && verdict.verdict !== "allow_stop") {
-      throw new Error("Pending question audit requires autonomous, owner_required, or user_paused verdict");
+      throw new Error("Pending question audit requires answer, deferral, product decision, or user pause");
     }
-    if (verdict.questionAnswers == null) {
+    if (verdict.questionAction !== "answer" || verdict.questionAnswers == null) {
       throw new Error("Autonomous pending question verdict requires validated questionAnswers");
     }
     const requestRef = hashRef("question", requestID);
@@ -1309,6 +1540,152 @@ export class SessionCompletionController {
     await this.status.persist(state);
   }
 
+  private async deferQuestion(
+    state: RootState,
+    epoch: AuditEpoch,
+    verdict: CompletionVerdict,
+    requestID: string,
+    question: QuestionState,
+  ): Promise<void> {
+    if (verdict.verdict !== "continue" && verdict.verdict !== "waiting") {
+      throw new Error("Deferred question verdict must continue or wait");
+    }
+    const requestRef = hashRef("question", requestID);
+    const callRef = question.request.toolCallID == null ? null : hashRef("call", question.request.toolCallID);
+    const parkedDecisionRef = verdict.parkedDecisionRefs[0] ?? null;
+    const deferredGateRef = verdict.deferredGateRefs[0] ?? null;
+    if ((parkedDecisionRef == null) === (deferredGateRef == null)) {
+      throw new Error("Deferred question requires exactly one blocker provenance ref");
+    }
+    if (
+      !state.deferredQuestionProvenance.has(requestRef) &&
+      !state.pendingQuestionDeferralProvenance.has(requestRef) &&
+      state.deferredQuestionProvenance.size + state.pendingQuestionDeferralProvenance.size >= MAX_AUTONOMOUS_QUESTION_REFS
+    ) {
+      throw new Error("Deferred question provenance capacity is exhausted");
+    }
+    const provenance: QuestionDeferralProvenance = {
+      blockerKind: parkedDecisionRef == null ? "gate" : "parked-decision",
+      blockerRef: parkedDecisionRef ?? deferredGateRef!,
+      callRef,
+      disposition: verdict.verdict,
+      requestRef,
+      selectedItemRef: verdict.selectedItemRef,
+    };
+    question.state = "guard-deferring";
+    question.deferredVerdict = verdict;
+    state.pendingQuestionDeferralProvenance.set(requestRef, provenance);
+    state.restartRecoveryAction = "question-deferral-pending";
+    await this.status.set(state, "question-deferring", "Persisting question deferral before rejection", "info");
+    if (!this.isCurrentAudit(state, epoch)) return;
+    if (!await this.status.persist(state)) {
+      state.pendingQuestionDeferralProvenance.delete(requestRef);
+      question.state = "open";
+      question.deferredVerdict = null;
+      state.restartRecoveryAction = null;
+      throw new Error("Question deferral provenance persistence failed");
+    }
+    if (!this.isCurrentAudit(state, epoch) || question.state !== "guard-deferring" || question.replyObserved) {
+      state.pendingQuestionDeferralProvenance.delete(requestRef);
+      if (question.replyObserved) {
+        this.markDeferredQuestionHumanResolved(state, requestID, question);
+      }
+      await this.status.persist(state);
+      return;
+    }
+    try {
+      await ensureNoError(this.client.question.reject({
+        requestID,
+        directory: state.root.directory,
+      }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "question.reject");
+    } catch (error) {
+      if (!this.isCurrentAudit(state, epoch)) return;
+      if (question.replyObserved) {
+        this.markDeferredQuestionHumanResolved(state, requestID, question);
+        await this.status.persist(state);
+        return;
+      }
+      question.state = "resolution-unknown";
+      state.restartRecoveryAction = "question-deferral-resolution-unknown";
+      this.cancelAudit(state, "error");
+      await this.status.persist(state);
+      await this.log("error", "question rejection resolution is unknown", {
+        error: safeError(error, state.root.id),
+        requestRef,
+        rootRef: hashRef("session", state.root.id),
+      });
+      return;
+    }
+    if (!this.isCurrentAudit(state, epoch)) return;
+    if (question.replyObserved) {
+      this.markDeferredQuestionHumanResolved(state, requestID, question);
+      await this.status.persist(state);
+      return;
+    }
+    state.pendingQuestionDeferralProvenance.delete(requestRef);
+    state.deferredQuestionProvenance.set(requestRef, provenance);
+    question.state = "guard-deferred";
+    question.deferredVerdict = verdict;
+    state.restartRecoveryAction = "question-deferral-confirmed-awaiting-idle";
+    await this.updateAuditMetadata(epoch, "question-deferred", undefined, verdict);
+    if (!this.isCurrentAudit(state, epoch)) return;
+    await this.status.set(state, "question-deferring", "Question rejected; awaiting post-rejection idle", "info");
+    if (!this.isCurrentAudit(state, epoch)) return;
+    if (!await this.status.persist(state)) {
+      state.deferredQuestionProvenance.delete(requestRef);
+      state.pendingQuestionDeferralProvenance.set(requestRef, provenance);
+      question.state = "resolution-unknown";
+      question.deferredVerdict = null;
+      state.restartRecoveryAction = "question-deferral-resolution-unknown";
+      this.cancelAudit(state, "error");
+      await this.status.persist(state);
+      return;
+    }
+    const statuses = await this.sessionStatuses();
+    if (statuses[state.root.id]?.type === "idle" || statuses[state.root.id] == null) {
+      await this.finishQuestionDeferral(state, requestID);
+    }
+  }
+
+  private async finishQuestionDeferral(state: RootState, requestID: string): Promise<void> {
+    const question = state.questions.get(requestID);
+    const epoch = state.activeAudit;
+    const verdict = question?.deferredVerdict;
+    if (
+      question == null || question.state !== "guard-deferred" || question.replyObserved ||
+      epoch == null || epoch.questionRequest?.requestID !== requestID || verdict == null ||
+      !this.isCurrentAudit(state, epoch)
+    ) return;
+    const current = await this.currentInspection(state, epoch);
+    if (current == null || !this.isCurrentAudit(state, epoch)) return;
+    question.deferredVerdict = null;
+    state.restartRecoveryAction = "question-deferral-confirmed";
+    if (verdict.verdict === "waiting") {
+      await this.enterWaiting(state, epoch, verdict);
+      return;
+    }
+    if (verdict.verdict !== "continue") {
+      throw new Error("Confirmed question deferral has an invalid disposition");
+    }
+    await this.continueFromVerdict(state, epoch, verdict, current);
+  }
+
+  private markDeferredQuestionHumanResolved(state: RootState, requestID: string, question: QuestionState): void {
+    const requestRef = hashRef("question", requestID);
+    state.pendingQuestionDeferralProvenance.delete(requestRef);
+    state.deferredQuestionProvenance.delete(requestRef);
+    question.deferredVerdict = null;
+    question.state = "human-replied";
+    state.paused = false;
+    state.restartRecoveryAction = null;
+    state.waitReason = null;
+    if (state.frontierStatus !== "invalid") {
+      state.frontierStatus = state.workFrontier == null ? "absent" : "stale";
+      state.lastAuditedRevision = null;
+    }
+    this.cancelAudit(state, "running");
+  }
+
   private async onQuestionAsked(sessionID: string, properties: Record<string, unknown>): Promise<void> {
     const state = await this.tryRoot(sessionID);
     if (state == null || state.root.id !== sessionID || !state.grindEnabled || state.paused) return;
@@ -1323,6 +1700,7 @@ export class SessionCompletionController {
     this.cancelAudit(state, "question-pending");
     state.questions.set(requestID, {
       auditID: null,
+      deferredVerdict: null,
       replyObserved: false,
       request,
       state: "open",
@@ -1338,26 +1716,60 @@ export class SessionCompletionController {
     const state = await this.tryRoot(sessionID);
     const question = state?.questions.get(requestID);
     if (state == null || !state.grindEnabled || question == null) return;
-    if (question.state === "open") {
+    if (question.state === "open" || question.state === "product-decision-required") {
       question.state = "human-replied";
+      state.paused = false;
+      state.waitReason = null;
+      if (state.frontierStatus !== "invalid") {
+        state.frontierStatus = state.workFrontier == null ? "absent" : "stale";
+        state.lastAuditedRevision = null;
+      }
       if (state.activeAudit?.questionRequest?.requestID === requestID) this.cancelAudit(state, "running");
+      await this.status.persist(state);
       return;
     }
-    if (question.state === "guard-answering") question.replyObserved = true;
+    if (question.state === "guard-answering" || question.state === "guard-deferring") question.replyObserved = true;
+    if (question.state === "guard-deferred") {
+      question.replyObserved = true;
+      this.markDeferredQuestionHumanResolved(state, requestID, question);
+      await this.status.persist(state);
+    }
   }
 
-  private async injectOwnerRequired(state: RootState, epoch: AuditEpoch, verdict: CompletionVerdict): Promise<void> {
+  private async onQuestionRejected(sessionID: string, requestID: string | null): Promise<void> {
+    if (requestID == null) return;
+    const state = await this.tryRoot(sessionID);
+    const question = state?.questions.get(requestID);
+    if (state == null || !state.grindEnabled || question == null) return;
+    if (question.state === "guard-deferring" || question.state === "guard-deferred") {
+      return;
+    }
+    if (question.state === "open" || question.state === "product-decision-required") {
+      question.state = "human-replied";
+      state.paused = false;
+      state.waitReason = null;
+      if (state.frontierStatus !== "invalid") {
+        state.frontierStatus = state.workFrontier == null ? "absent" : "stale";
+        state.lastAuditedRevision = null;
+      }
+      if (state.activeAudit?.questionRequest?.requestID === requestID) this.cancelAudit(state, "running");
+      await this.status.persist(state);
+    }
+  }
+
+  private async injectProductDecision(state: RootState, epoch: AuditEpoch, verdict: CompletionVerdict): Promise<void> {
     const context = restoredPromptContext(state.root, state.promptContext);
     const payload = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       provenance: "completion-guard",
-      verdict: "owner_required",
+      verdict: "product_decision_required",
       auditID: epoch.auditID,
       ownerBoundary: verdict.ownerBoundary,
+      parkedDecisionRefs: verdict.parkedDecisionRefs,
       unresolved: verdict.unresolved,
       evidenceRefs: verdict.evidenceRefs,
       evidenceGaps: verdict.evidenceGaps,
-      instruction: "Render the repository self-contained owner handoff. Do not answer or weaken the protected boundary.",
+      instruction: "Present only this exact material product decision. Do not answer it, weaken its consequences, or request a non-product action.",
     };
     const current = await this.currentInspection(state, epoch);
     if (current == null) return;
@@ -1368,43 +1780,28 @@ export class SessionCompletionController {
       ...(context.agent == null ? {} : { agent: context.agent }),
       ...(context.model == null ? {} : { model: context.model }),
       ...(context.variant == null ? {} : { variant: context.variant }),
-      ...(context.tools == null ? {} : { tools: context.tools }),
       parts: [{
         type: "text",
         synthetic: true,
-        text: `<completion_guard_owner_required>\n${JSON.stringify(payload, null, 2).slice(0, 8_000)}\n</completion_guard_owner_required>`,
+        text: `<completion_guard_product_decision>\n${JSON.stringify(payload, null, 2).slice(0, 8_000)}\n</completion_guard_product_decision>`,
         metadata: { provenance: "completion-guard", auditID: epoch.auditID },
       }],
-    }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "session.promptAsync owner handoff");
+    }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "session.promptAsync product decision");
     if (!this.isCurrentAudit(state, epoch)) return;
     state.paused = true;
     state.guardTurnPending = true;
-    this.cancelAudit(state, "owner-required");
-    await this.status.set(state, "owner-required", "Owner response required", "warning");
+    state.waitReason = null;
+    this.cancelAudit(state, "product-decision-required");
+    await this.status.set(state, "product-decision-required", "Product decision required", "warning");
   }
 
-  private async injectCycleBudgetHandoff(state: RootState, epoch: AuditEpoch): Promise<void> {
-    const context = restoredPromptContext(state.root, state.promptContext);
-    state.guardTurnPending = true;
-    await ensureNoError(this.client.session.promptAsync({
-      sessionID: state.root.id,
-      directory: state.root.directory,
-      ...(context.agent == null ? {} : { agent: context.agent }),
-      ...(context.model == null ? {} : { model: context.model }),
-      ...(context.variant == null ? {} : { variant: context.variant }),
-      ...(context.tools == null ? {} : { tools: context.tools }),
-      parts: [{
-        type: "text",
-        synthetic: true,
-        text: `<completion_guard_owner_required audit_id="${epoch.auditID}">The configured finite continuation-cycle budget is exhausted. Render an exact owner handoff without claiming completion.</completion_guard_owner_required>`,
-        metadata: { provenance: "completion-guard", auditID: epoch.auditID },
-      }],
-    }, { signal: state.auditAbort?.signal }) as Promise<unknown>, "session.promptAsync cycle budget handoff");
+  private async enterBudgetWaiting(state: RootState, epoch: AuditEpoch, verdict: CompletionVerdict): Promise<void> {
+    state.waitReason = "budget: execution epoch exhausted without a causally distinct strategy";
+    state.restartRecoveryAction = "execution-epoch-budget-wait";
+    await this.updateAuditMetadata(epoch, "waiting", undefined, verdict);
     if (!this.isCurrentAudit(state, epoch)) return;
-    state.paused = true;
-    state.guardTurnPending = true;
-    this.cancelAudit(state, "owner-required");
-    await this.status.set(state, "owner-required", "Owner response required", "warning");
+    this.cancelAudit(state, "waiting");
+    await this.status.set(state, "waiting", `Mission incomplete; waiting for ${state.waitReason}`, "warning");
   }
 
   private async owningFailure(state: RootState, boundary: string, error: unknown): Promise<void> {

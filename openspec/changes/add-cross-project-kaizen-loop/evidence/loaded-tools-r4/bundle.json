@@ -1,0 +1,337 @@
+{
+  "candidate": "cross-project-kaizen-loop-loaded-tools-r4",
+  "checks": {
+    "activeConfigUnchanged": true,
+    "allToolsAdvertised": true,
+    "configPreflightsPassed": true,
+    "copiedPluginMatched": true,
+    "loadedReportCompleted": true,
+    "loadedStatusCompleted": true,
+    "matchingImmutableRecord": true,
+    "networkContained": true,
+    "pluginFactoryCompleted": true,
+    "privacySafe": false,
+    "providerCallsBounded": true,
+    "recordBounded": true,
+    "statusPayloadFree": false,
+    "worktreeClean": true
+  },
+  "cleanup": {
+    "activeConfigUnchanged": true,
+    "fixtureRemoved": true,
+    "providerClosed": true,
+    "serverStopped": true,
+    "serverTerminal": {
+      "signal": null,
+      "status": 1
+    },
+    "sessionDeleted": true
+  },
+  "copiedPlugin": {
+    "copied": {
+      "files": 17,
+      "sha256": "f7934475486e7e9d1e82b970a10af4702d20094a78f707d05049ec1f670bb78d"
+    },
+    "source": {
+      "files": 17,
+      "sha256": "f7934475486e7e9d1e82b970a10af4702d20094a78f707d05049ec1f670bb78d"
+    }
+  },
+  "diagnostics": {
+    "stderr": "timestamp=2026-08-29T10:13:59.165Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T10:13:59.171Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T10:13:59.184Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T10:13:59.430Z level=INFO run=d6653f2e message=\"creating instance\" directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T10:13:59.431Z level=INFO run=d6653f2e message=fromDirectory directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T10:13:59.773Z level=INFO run=d6653f2e message=bootstrapping directory=\"<root-1>\\\\project\"\ntimestamp=2026-08-29T10:13:59.784Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\config.json\"\ntimestamp=2026-08-29T10:13:59.785Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.json\"\ntimestamp=2026-08-29T10:13:59.786Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\runtime\\\\config-home\\\\opencode\\\\opencode.jsonc\"\ntimestamp=2026-08-29T10:13:59.808Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\config\\\\opencode.json\"\ntimestamp=2026-08-29T10:13:59.821Z level=INFO run=d6653f2e message=loading path=\"<root-1>\\\\config\\\\opencode.jsonc\"\ntimestamp=2026-08-29T10:13:59.882Z level=INFO run=d6653f2e message=\"all LSPs are disabled\"\ntimestamp=2026-08-29T10:13:59.883Z level=INFO run=d6653f2e message=\"all formatters are disabled\"\ntimestamp=2026-08-29T10:13:59.884Z level=INFO run=d6653f2e message=init\ntimestamp=2026-08-29T10:13:59.930Z level=INFO run=d6653f2e message=created id=ses_fb2fcf605ffe3nPWjnvtZyrHyf slug=witty-tiger version=1.18.25 projectID=global directory=\"<root-1>\\\\project\" path=\"\" workspaceID=undefined parentID=undefined title=kaizen-loaded-tools-r4 agent=undefined model=undefined metadata=undefined permission=undefined cost=0 tokens.input=0 tokens.output=0 tokens.reasoning=0 tokens.cache.read=0 tokens.cache.write=0 time.created=1787998439930 time.updated=1787998439930\ntimestamp=2026-08-29T10:14:00.802Z level=INFO run=d6653f2e message=loop session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf step=0\ntimestamp=2026-08-29T10:14:01.625Z level=INFO run=d6653f2e message=initialized\ntimestamp=2026-08-29T10:14:01.858Z level=INFO run=d6653f2e message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\494add547dcd91c9b417f01fddc21751061cbe1c\"\ntimestamp=2026-08-29T10:14:01.875Z level=INFO run=d6653f2e message=\"shell tool using shell\" shell=\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShell_7.6.5.0_x64__8wekyb3d8bbwe\\\\pwsh.EXE\"\ntimestamp=2026-08-29T10:14:02.271Z level=INFO run=d6653f2e message=\"project copy refresh started\" projectID=global\ntimestamp=2026-08-29T10:14:02.274Z level=INFO run=d6653f2e message=\"project copy refresh done\" projectID=global updated=[] removed=[]\ntimestamp=2026-08-29T10:14:02.756Z level=INFO run=d6653f2e message=\"booting location services\" directory=\"<root-1>\\\\project\" workspaceID=undefined\ntimestamp=2026-08-29T10:14:02.769Z level=INFO run=d6653f2e message=process session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf messageID=msg_04d030d66001r5wHdjOVT2oCM4\ntimestamp=2026-08-29T10:14:02.771Z level=INFO run=d6653f2e message=stream providerID=proof modelID=proof-model session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf small=false agent=build mode=primary\ntimestamp=2026-08-29T10:14:02.790Z level=INFO run=d6653f2e message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=proof llm.model=proof-model\ntimestamp=2026-08-29T10:14:03.076Z level=INFO run=d6653f2e message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\494add547dcd91c9b417f01fddc21751061cbe1c\"\ntimestamp=2026-08-29T10:14:03.266Z level=INFO run=d6653f2e message=loop session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf step=1\ntimestamp=2026-08-29T10:14:03.427Z level=INFO run=d6653f2e message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\494add547dcd91c9b417f01fddc21751061cbe1c\"\ntimestamp=2026-08-29T10:14:03.441Z level=INFO run=d6653f2e message=process session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf messageID=msg_04d0317030015P1cj1YURybLeh\ntimestamp=2026-08-29T10:14:03.442Z level=INFO run=d6653f2e message=stream providerID=proof modelID=proof-model session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf small=false agent=build mode=primary\ntimestamp=2026-08-29T10:14:03.443Z level=INFO run=d6653f2e message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=proof llm.model=proof-model\ntimestamp=2026-08-29T10:14:03.713Z level=INFO run=d6653f2e message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\494add547dcd91c9b417f01fddc21751061cbe1c\"\ntimestamp=2026-08-29T10:14:03.907Z level=INFO run=d6653f2e message=loop session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf step=2\ntimestamp=2026-08-29T10:14:04.078Z level=INFO run=d6653f2e message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\494add547dcd91c9b417f01fddc21751061cbe1c\"\ntimestamp=2026-08-29T10:14:04.087Z level=INFO run=d6653f2e message=process session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf messageID=msg_04d0319840014kSdOY2VQc2OfX\ntimestamp=2026-08-29T10:14:04.088Z level=INFO run=d6653f2e message=stream providerID=proof modelID=proof-model session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf small=false agent=build mode=primary\ntimestamp=2026-08-29T10:14:04.090Z level=INFO run=d6653f2e message=\"llm runtime selected\" llm.runtime=ai-sdk llm.provider=proof llm.model=proof-model\ntimestamp=2026-08-29T10:14:04.351Z level=INFO run=d6653f2e message=tracking hash=4b825dc642cb6eb9a060e54bf8d69288fbee4904 cwd=\"<root-1>\\\\project\" git=\"<root-1>\\\\runtime\\\\data\\\\opencode\\\\snapshot\\\\global\\\\494add547dcd91c9b417f01fddc21751061cbe1c\"\ntimestamp=2026-08-29T10:14:04.541Z level=INFO run=d6653f2e message=loop session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf step=3\ntimestamp=2026-08-29T10:14:04.542Z level=INFO run=d6653f2e message=\"exiting loop\" session.id=ses_fb2fcf605ffe3nPWjnvtZyrHyf\ntimestamp=2026-08-29T10:14:04.693Z level=INFO run=d6653f2e message=\"removing share\" sessionID=ses_fb2fcf605ffe3nPWjnvtZyrHyf\n",
+    "stdout": "Warning: OPENCODE_SERVER_PASSWORD is not set; server is unsecured.\nopencode server listening on http://127.0.0.1:61410\n"
+  },
+  "environment": {
+    "node": "v24.18.1",
+    "opencode": {
+      "sha256": "59b379b53354da72d2c5262119fe70c44b4e473826ebbaa94d47a2d58a359b1a",
+      "version": "1.18.25"
+    },
+    "pluginVersion": "1.18.15",
+    "sdkVersion": "1.18.15",
+    "sourceAssertions": {
+      "legacyCompactedSessionOnly": true,
+      "legacySummaryIdentity": true,
+      "v2CompactedSessionOnly": true,
+      "v2MessagesBeforeCursor": true
+    }
+  },
+  "error": [
+    {
+      "depth": 0,
+      "message": "Kaizen loaded-tools checks failed: {\"activeConfigUnchanged\":true,\"allToolsAdvertised\":true,\"copiedPluginMatched\":true,\"configPreflightsPassed\":true,\"pluginFactoryCompleted\":true,\"loadedReportCompleted\":true,\"loadedStatusCompleted\":true,\"matchingImmutableRecord\":true,\"networkContained\":true,\"privacySafe\":false,\"providerCallsBounded\":true,\"recordBounded\":true,\"statusPayloadFree\":false,\"worktreeClean\":true}",
+      "name": "Error"
+    }
+  ],
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode loaded-tools --opencode <installed-opencode> --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/loaded-tools-r4",
+  "pluginRuntime": {
+    "configDir": {
+      "lockSha256": "02049c8c0444d25c4fab88a06f90814a8086ea6b23658c630a89a759efaf5560",
+      "packageSha256": "e0e5231f3fa86d1da60773fac127875472bdef139654102bc6456b1986deff87",
+      "pluginPackageSha256": "b7413c562b05edebd85b804f69b2e14cdb6aef856dc7fe28f8926ec617bff0e3",
+      "pluginVersion": "1.18.15",
+      "sdkPackageSha256": "1419dc029b79954972e3ba9474d8bef56f07613f419e4a94bcdb69da50a492b2",
+      "sdkVersion": "1.18.15"
+    },
+    "configHome": {
+      "lockSha256": "02049c8c0444d25c4fab88a06f90814a8086ea6b23658c630a89a759efaf5560",
+      "packageSha256": "e0e5231f3fa86d1da60773fac127875472bdef139654102bc6456b1986deff87",
+      "pluginPackageSha256": "b7413c562b05edebd85b804f69b2e14cdb6aef856dc7fe28f8926ec617bff0e3",
+      "pluginVersion": "1.18.15",
+      "sdkPackageSha256": "1419dc029b79954972e3ba9474d8bef56f07613f419e4a94bcdb69da50a492b2",
+      "sdkVersion": "1.18.15"
+    }
+  },
+  "pluginTrace": [
+    {
+      "phase": "wrapper-module-enter"
+    },
+    {
+      "phase": "factory-enter"
+    },
+    {
+      "phase": "source-import-enter"
+    },
+    {
+      "phase": "source-import-exit"
+    },
+    {
+      "phase": "source-factory-enter"
+    },
+    {
+      "kaizenTools": [
+        "kaizen_checkpoint",
+        "kaizen_decision",
+        "kaizen_report",
+        "kaizen_status"
+      ],
+      "phase": "source-factory-exit"
+    },
+    {
+      "phase": "factory-exit"
+    }
+  ],
+  "preflights": [
+    {
+      "phase": "plugin-only",
+      "providerRequestCount": 0,
+      "status": 0,
+      "stderr": "",
+      "stdoutBytes": 757,
+      "stdoutSha256": "2c8ea464d335104304e3a6bd79b23d9a61142adddbdcb71e7c308bacf2011764",
+      "timedOut": false,
+      "trace": [
+        {
+          "phase": "wrapper-module-enter"
+        },
+        {
+          "phase": "factory-enter"
+        },
+        {
+          "phase": "source-import-enter"
+        },
+        {
+          "phase": "source-import-exit"
+        },
+        {
+          "phase": "source-factory-enter"
+        },
+        {
+          "kaizenTools": [
+            "kaizen_checkpoint",
+            "kaizen_decision",
+            "kaizen_report",
+            "kaizen_status"
+          ],
+          "phase": "source-factory-exit"
+        },
+        {
+          "phase": "factory-exit"
+        }
+      ],
+      "trappedEgress": 0
+    },
+    {
+      "phase": "provider-added",
+      "providerRequestCount": 0,
+      "status": 0,
+      "stderr": "",
+      "stdoutBytes": 1314,
+      "stdoutSha256": "0dfb86810d016b5925707a72a51e43391de32d5807c038e02459486bf2111da8",
+      "timedOut": false,
+      "trace": [
+        {
+          "phase": "wrapper-module-enter"
+        },
+        {
+          "phase": "factory-enter"
+        },
+        {
+          "phase": "source-import-enter"
+        },
+        {
+          "phase": "source-import-exit"
+        },
+        {
+          "phase": "source-factory-enter"
+        },
+        {
+          "kaizenTools": [
+            "kaizen_checkpoint",
+            "kaizen_decision",
+            "kaizen_report",
+            "kaizen_status"
+          ],
+          "phase": "source-factory-exit"
+        },
+        {
+          "phase": "factory-exit"
+        }
+      ],
+      "trappedEgress": 0
+    }
+  ],
+  "provider": {
+    "requests": [
+      {
+        "bytes": 12045,
+        "sha256": "a39fce5fc1f716b6a92180c0484e484eb68c1b49379c82739b3b2b0426df9b7d",
+        "stream": true,
+        "toolNames": [
+          "kaizen_checkpoint",
+          "kaizen_decision",
+          "kaizen_report",
+          "kaizen_status"
+        ]
+      },
+      {
+        "bytes": 13147,
+        "sha256": "3a6f8511f9a1561df19111cd7c86629a42155f01802c94411d64e01cec1b9b0c",
+        "stream": true,
+        "toolNames": [
+          "kaizen_checkpoint",
+          "kaizen_decision",
+          "kaizen_report",
+          "kaizen_status"
+        ]
+      },
+      {
+        "bytes": 14514,
+        "sha256": "33c9ac90edfa5352bd3ae19f8950699e506bd26fa1e48aa5c8f9206c32f15e97",
+        "stream": true,
+        "toolNames": [
+          "kaizen_checkpoint",
+          "kaizen_decision",
+          "kaizen_report",
+          "kaizen_status"
+        ]
+      }
+    ],
+    "trapped": 0
+  },
+  "schemaVersion": 1,
+  "stage": "terminal",
+  "status": "failed",
+  "store": {
+    "candidateSources": [
+      {
+        "path": "global/plugin/kaizen/store.ts",
+        "sha256": "a6d6be0f4faa6b45a1ba91ba928d23530ee849c4a3a59d9e40cb337e025643cf"
+      },
+      {
+        "path": "global/plugin/kaizen/index.ts",
+        "sha256": "0a83237f4deec5a03d36ab184641cf5e110d86796462d342d6d08618e85db4fc"
+      },
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "b9875b1c854fbcb7a041dec86361a714860cd90807144f7fda57a2c4dc53dd44"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "d752313ce29c98d0981c9611b432285ec97473418b8dbbe853edd9f8979f5298"
+      },
+      {
+        "path": "tools/test-cross-project-kaizen.ts",
+        "sha256": "94dd408fdbce8e6bc515cd96b266c8828287027e13c3d18037f7d11b690bcc38"
+      },
+      {
+        "path": "tools/proofs/cross-project-kaizen.ts",
+        "sha256": "a04df7775cd660a78a664ee4b0243e81f09edcf1211d3d6590f886e78787b1c6"
+      }
+    ],
+    "counts": {
+      "checkpoints": 0,
+      "decisions": 0,
+      "diagnostics": 0,
+      "events": 1,
+      "lifecycleEvents": 0,
+      "pending": 1,
+      "promoted": 0,
+      "resolved": 0,
+      "signalRecords": 1,
+      "signals": 1,
+      "triaged": 0,
+      "wont-fix": 0
+    },
+    "fileFacts": [
+      {
+        "bytes": 1058,
+        "name": "signals/signal-0000.json",
+        "population": "signal",
+        "privacySafe": true,
+        "sha256": "b09356827192a75b9c65a93a1c2ce3ea4543bf0b6ce9ab7d04ed11bcf0fe7060"
+      }
+    ],
+    "projectRefs": [
+      "project_004eefe8ef914702235c4f6f72c68ae8"
+    ],
+    "sessionRefs": [
+      "session_3fc07262b706"
+    ],
+    "signalRefs": [
+      "signal_14fec4558b599195365bdb64b83622a0"
+    ],
+    "worktreeWrites": 0
+  },
+  "tools": [
+    {
+      "name": "kaizen_report",
+      "outputBytes": 278,
+      "outputSha256": "92f762e6dde18947e7c97d91054b7e1cc162b4e4ef7e4b5203b44972bcb09725",
+      "privacySafe": true,
+      "result": {
+        "action": "captured",
+        "projectRef": "project_004eefe8ef914702235c4f6f72c68ae8",
+        "sessionRef": "session_3fc07262b706",
+        "signalRef": "signal_14fec4558b599195365bdb64b83622a0",
+        "source": "explicit",
+        "status": "pending"
+      },
+      "status": "completed"
+    },
+    {
+      "name": "kaizen_status",
+      "outputBytes": 1003,
+      "outputSha256": "b31c159e0f8535f58b9ed614244b5b1e8080e1d8fef69082330989c8b8c64dc3",
+      "privacySafe": false,
+      "result": {
+        "activation": "enabled",
+        "capacity": {
+          "lifecycleBytes": 4096,
+          "lifecycleLimit": 8000,
+          "lifecycleUsed": 0,
+          "signalBytes": 16384,
+          "signalLimit": 2000,
+          "signalUsed": 1
+        },
+        "projectRef": "project_004eefe8ef914702235c4f6f72c68ae8",
+        "signalRefs": [
+          "signal_14fec4558b599195365bdb64b83622a0"
+        ],
+        "signals": 1,
+        "truncated": false
+      },
+      "status": "completed"
+    }
+  ]
+}

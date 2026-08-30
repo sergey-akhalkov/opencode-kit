@@ -14,7 +14,6 @@ import type {
   MissionCheck,
   RoadmapMissionDefinition,
   RoadmapMissionPreflight,
-  RoadmapMissionSlice,
 } from "./contracts.ts";
 import { parentCorrelationCheck } from "./parent-correlation.ts";
 
@@ -354,6 +353,8 @@ function openSpecCheck(
   root: string,
   definition: RoadmapMissionDefinition,
   cursor: number,
+  completedSliceIds: string[],
+  attributedSliceIds: string[],
 ): MissionCheck {
   const slice = definition.slices[cursor];
   const version = runCaptured(root, ["openspec", "--version"], ROADMAP_COMMAND_TIMEOUT_MS.openSpec);
@@ -368,14 +369,21 @@ function openSpecCheck(
     const output = record(parseJsonOutput(listed.stdout, "OpenSpec list"));
     const changes = Array.isArray(output?.changes) ? output.changes.map(record).filter((value): value is Record<string, unknown> => value != null) : [];
     const names = changes.map((change) => change.name).filter((name): name is string => typeof name === "string").sort();
-    const expected = definition.slices.slice(cursor)
-      .filter((remaining) => remaining.operation === "continue")
+    const completed = new Set(completedSliceIds);
+    const attributed = new Set(attributedSliceIds);
+    const expected = definition.slices
+      .filter((remaining) => !completed.has(remaining.id) && remaining.operation === "continue")
       .map((remaining) => remaining.changeId)
       .sort();
-    if (names.length !== expected.length || names.some((name, index) => name !== expected[index])) {
+    const optional = definition.slices
+      .filter((remaining) => !completed.has(remaining.id) && attributed.has(remaining.id) && remaining.operation === "propose")
+      .map((remaining) => remaining.changeId)
+      .sort();
+    const allowed = new Set([...expected, ...optional]);
+    if (expected.some((name) => !names.includes(name)) || names.some((name) => !allowed.has(name))) {
       return blocked(
         "project:openspec-state",
-        `Active changes must exactly match remaining continue slices: expected ${expected.join(", ") || "none"}; found ${names.join(", ") || "none"}.`,
+        `Active changes must contain every incomplete continue slice and only attributed parked proposals: required ${expected.join(", ") || "none"}; optional ${optional.join(", ") || "none"}; found ${names.join(", ") || "none"}.`,
       );
     }
     for (const changeId of expected) {
@@ -445,7 +453,13 @@ export function preflightMission(
   globalSource: string,
   missionPath: string,
   cursor = 0,
-  options: { allowCurrentSliceDirty?: boolean; attributedPaths?: string[]; writerLeaseOwned?: boolean } = {},
+  options: {
+    allowCurrentSliceDirty?: boolean;
+    attributedPaths?: string[];
+    attributedSliceIds?: string[];
+    completedSliceIds?: string[];
+    writerLeaseOwned?: boolean;
+  } = {},
 ): RoadmapMissionPreflight {
   const definition = loadMissionDefinition(root, missionPath);
   const slice = definition.slices[cursor];
@@ -469,13 +483,15 @@ export function preflightMission(
     projectOverlayCheck(root),
     gitCheck(root, options.allowCurrentSliceDirty === true ? [] : slice.ownedPaths, [
       ...(options.allowCurrentSliceDirty === true ? slice.ownedPaths : []),
-      ...definition.slices.slice(0, cursor).flatMap((missionSlice) => missionSlice.ownedPaths),
+      ...(options.attributedSliceIds == null
+        ? definition.slices.slice(0, cursor).flatMap((missionSlice) => missionSlice.ownedPaths)
+        : definition.slices.filter((missionSlice) => options.attributedSliceIds?.includes(missionSlice.id)).flatMap((missionSlice) => missionSlice.ownedPaths)),
       definition.evidencePath,
       `.opencode-dev-kit/runtime/roadmap-missions/${definition.missionId}`,
       ...parentInputPaths,
       ...(options.attributedPaths ?? []),
     ]),
-    openSpecCheck(root, definition, cursor),
+    openSpecCheck(root, definition, cursor, options.completedSliceIds ?? definition.slices.slice(0, cursor).map((entry) => entry.id), options.attributedSliceIds ?? []),
     writerLeaseCheck(root, definition.missionId, options.writerLeaseOwned === true),
     nextEffectCheck(definition, cursor),
   ];

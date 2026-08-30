@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "candidateId": "cross-project-kaizen-loop-portability-r1",
+  "environmentId": "windows-node-24.18.1-profile-preview-r1",
+  "components": [
+    {
+      "role": "prior-cumulative-candidate",
+      "candidateId": "cross-project-kaizen-loop-population-r2",
+      "artifact": "evidence/candidate-composition-r12.json",
+      "ceiling": "Current provider-free product behavior retained because task 3.3 changed only profile catalogs, profile rendering/tests, and proof inventory; installed real-oracle evidence remains non-current."
+    },
+    {
+      "role": "profile-portability",
+      "candidateId": "cross-project-kaizen-loop-portability-r1",
+      "artifact": "evidence/task-3-3-portability-r1.md",
+      "sourceIdentity": "recorded-profile-command-plugin-test-and-proof-inventory-git-blobs",
+      "ceiling": "Current effect-free core/all preview, disposable byte-matched materialization, exact core plugin composition, copied-plugin closure, active managed-prompt drift classification, disabled no-write regression, and machine-config byte preservation."
+    }
+  ],
+  "supersedes": [
+    "cross-project-kaizen-loop-population-r2"
+  ],
+  "excluded": [
+    "production compaction prompt and loaded long-session capture",
+    "cold installed complain or triage command routing",
+    "installation, activation, or OpenCode restart",
+    "operator documentation",
+    "privacy and authorization critical SDET",
+    "independent broad-claim evidence challenge"
+  ]
+}

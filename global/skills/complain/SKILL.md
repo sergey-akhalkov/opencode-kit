@@ -1,6 +1,6 @@
 ---
 name: complain
-description: Use this skill when current-session workflow friction, instruction conflict, tooling pain, missing automation, or reusable process feedback should be recorded in docs/feedbacks.
+description: Use when current-session workflow friction, instruction conflict, tooling pain, missing automation, or reusable process feedback should enter the Kaizen inbox or its Markdown fallback.
 ---
 
 # Complain
@@ -9,12 +9,21 @@ Use this skill when current-session workflow friction, instruction conflict, too
 
 Do not wait for proof that the issue is recurring. If recurrence is unknown, write `Recurrence: unknown`. Prefer capturing a compact useful signal over suppressing it.
 
-## Direct Write Contract
+## Capture Routing
 
-- If edit permission allows `docs/feedbacks/**`, append the entry yourself to `docs/feedbacks/<source>.md`.
+- When `kaizen_report` is available, call it once with one closed-schema signal derived from the entry fields below. A successful tool result is authoritative: do not create or edit `docs/feedbacks/**` for that complaint.
+- Map `Type: complaint` to `kind: friction`; `tooling-friction` or `automation-candidate` to `tooling-gap`; and the remaining types to `process-gap`. Use the complaint as `summary`, current evidence as `observedEvidence`, impact as `impact`, `unknown` when likely cause is unknown, desired future plus proposed direction as `doNotRepeat`, the narrowest supported `scopeHint`, and one to eight repository-relative `evidenceRefs`.
+- Advertised tools are the current session truth. `OPENCODE_KAIZEN=0` applies only after OpenCode restart; do not infer disabled capture from an environment change while `kaizen_report` remains advertised.
+- Use Markdown fallback only when `kaizen_report` is absent or definitively unavailable before persistence. If a tool call may have persisted before failing, do not create a second record or return a Markdown candidate; return only `Feedback: capture-unknown`, `Signal Ref: none`, `Target File: none`, and `Reason: kaizen-capture-unknown`.
+- Kaizen capture is non-authorizing and must not block the main task. After capture, resume or return the assigned report.
+
+## Markdown Fallback Contract
+
+- If fallback is required and edit permission allows `docs/feedbacks/**`, append the entry yourself to `docs/feedbacks/<source>.md`.
 - If the feedback directory, parent directories, or source file do not exist, create them through the edit/add-file path under `docs/feedbacks/**`; no shell command or project bootstrap is required.
 - If feedback write is denied by explicit read-only/no-edit mode, missing permission, or missing write surface, return a `Feedback Candidate` block instead.
-- Feedback write must stay small and must not block the main task. Capture the signal, then resume or return the assigned report.
+- Identify the result as `written-fallback`; Markdown is degraded-mode transport for later idempotent `FB-*` import, not a second lifecycle authority.
+- Feedback write must stay small and must not block the main task. Capture the fallback, then resume or return the assigned report.
 - Do not edit source, config, instructions, specs, code, or task artifacts through this skill unless the user separately approved that work.
 
 ## Source File Naming
@@ -43,11 +52,11 @@ Capture any current-session signal about process, tooling, instruction, or auton
 - Secrets, credentials, tokens, raw private prompts, or unnecessary private paths.
 - large logs, transcript dumps, or raw user data.
 - personal blame toward the user or other agents. Describe workflow and artifact friction.
-- Exact duplicates when an existing entry is clearly the same; add an occurrence note when cheap, otherwise create a new entry.
+- On the Markdown fallback path only, avoid exact duplicate entries; add an occurrence note when cheap, otherwise create a new fallback entry. When `kaizen_report` is advertised, call it once and let inbox idempotency handle recurrence without consulting Markdown status.
 
 ## Entry Template
 
-Append entries newest last:
+For Markdown fallback, append entries newest last:
 
 ```md
 ## FB-YYYY-MM-DD-short-title
@@ -86,7 +95,7 @@ yes | no | maybe
 
 ## Feedback Candidate Fallback
 
-Return this only when direct ledger write is blocked:
+Return this only when Markdown fallback is required but its direct ledger write is blocked. Never use this block for an inbox call with unknown persistence:
 
 ```md
 Feedback Candidate:
@@ -98,8 +107,9 @@ Reason Direct Write Blocked: <mode|permission|missing-path|other>
 
 ## Output
 
-After writing, return compact evidence:
+After the capture or fallback attempt, return compact evidence:
 
-- `Feedback`: written | candidate-only | skipped.
-- `Target File`: path or `none`.
-- `Reason`: short reason when skipped or candidate-only.
+- `Feedback`: inbox | written-fallback | fallback-candidate | capture-unknown.
+- `Signal Ref`: privacy-safe Kaizen ref or `none`.
+- `Target File`: fallback path or `none`.
+- `Reason`: short reason for `fallback-candidate` or `capture-unknown`; otherwise `none`.

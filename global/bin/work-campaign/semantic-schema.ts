@@ -54,7 +54,7 @@ function workItem(assignment: SemanticAssignment): JsonSchema {
     scenario: string,
     schemaVersion: { const: 1, type: "integer" },
     sourceBlockIds: stringArray,
-    status: enumeration(["candidate", "confirmed", "duplicate", "falsified", "fixed-and-verified", "owner-required", "report-only", "unknown-material"]),
+    status: enumeration(["candidate", "confirmed", "duplicate", "falsified", "fixed-and-verified", "owner-required", "product-decision-required", "report-only", "unknown-material", "waiting"]),
   });
 }
 
@@ -73,16 +73,64 @@ function reconciliation(assignment: SemanticAssignment): JsonSchema {
   });
 }
 
+function missionBlocker(): JsonSchema {
+  const nullableString: JsonSchema = { type: ["string", "null"] };
+  const waitKinds = ["budget", "capability", "external", "live-attempt", "process", "safety", "technical", "writer-liveness"];
+  return object({
+    affectedItemRefs: stringArray,
+    decisions: {
+      items: object({
+        affectedItemRefs: stringArray,
+        decisionPoint: string,
+        evidenceRefs: stringArray,
+        id: string,
+        optionInvariantItemRefs: stringArray,
+        questionRef: string,
+      }),
+      type: "array",
+    },
+    disposition: enumeration(["product-decision-required", "waiting"]),
+    evidenceRefs: stringArray,
+    frontier: {
+      anyOf: [
+        { type: "null" },
+        object({
+          acceptedOutcomeRef: string,
+          basisHumanRef: string,
+          frontierGeneration: integer,
+          progressFingerprint: string,
+          taskStateDigest: string,
+        }),
+      ],
+    },
+    gates: {
+      items: object({
+        affectedItemRefs: stringArray,
+        evidenceRefs: stringArray,
+        id: string,
+        kind: enumeration(["product-decision", ...waitKinds]),
+        resumeCondition: string,
+      }),
+      type: "array",
+    },
+    resumeCondition: string,
+    rootSessionRef: nullableString,
+    source: enumeration(["completion-guard", "mission-preflight"]),
+    waitKind: { enum: [null, ...waitKinds] },
+  });
+}
+
 function investigation(): JsonSchema {
   return object({
     allowedObservations: stringArray,
+    blocker: { anyOf: [{ type: "null" }, missionBlocker()] },
     budgets: object({ modelCalls: integer, wallClockSeconds: integer }),
     evidenceRefs: stringArray,
     id: string,
     producerSessionRef: string,
     question: string,
     recordType: { const: "investigation-result", type: "string" },
-    result: enumeration(["confirmed", "falsified", "owner-required", "still-unknown"]),
+    result: enumeration(["confirmed", "falsified", "owner-required", "product-decision-required", "still-unknown", "waiting"]),
     schemaVersion: { const: 1, type: "integer" },
     sourceBlockIds: stringArray,
     workItemId: string,
@@ -128,17 +176,19 @@ function closure(assignment: SemanticAssignment): JsonSchema {
     recordType: { const: "closure-matrix", type: "string" },
     reportDigest: string,
     schemaVersion: { const: 1, type: "integer" },
-    terminalState: enumeration(["blocked", "complete", "owner-required", "unknown"]),
+    terminalState: enumeration(["blocked", "complete", "owner-required", "product-decision-required", "unknown", "waiting"]),
     validationStatus: enumeration(["blocked", "complete", "unknown"]),
     waves: object({ archived: integer, checkpointed: integer, total: integer }),
     workItems: object({
       fixedAndVerified: integer,
       ownerRequired: integer,
+      productDecisionRequired: integer,
       reportOnly: integer,
       resolved: integer,
       total: integer,
       unknownMaterial: integer,
       unresolvedP0P1: integer,
+      waiting: integer,
     }),
   });
 }

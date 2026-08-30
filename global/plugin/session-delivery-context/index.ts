@@ -26,6 +26,7 @@ import { boundedText, capEdges, readCompletionEvidence } from "./evidence.ts";
 import { openReadOnlyDatabase, type SqliteDatabase } from "./sqlite.ts";
 import type {
   DeliveryContextQuestionIntervention,
+  DeliveryContextWorkFrontierProjection,
   DeliveryContextSyntheticMessage,
   ReadSessionDeliveryContextOptions,
   SessionDeliveryContextResult,
@@ -56,6 +57,77 @@ const STRATEGY_LIMIT = 32;
 const TODO_LIMIT = 64;
 const TODO_TEXT_LIMIT = 2_000;
 const WARNING_LIMIT = 32;
+const FRONTIER_REF_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+const FRONTIER_DIGEST_PATTERN = /^[a-f0-9]{64}$/;
+
+function parsedRecord(value: unknown): Record<string, unknown> | null {
+  if (value != null && typeof value === "object" && !Array.isArray(value)) return value as Record<string, unknown>;
+  if (typeof value !== "string") return null;
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    return parsed != null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed as Record<string, unknown>
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function workFrontierProjection(row: Record<string, unknown>): DeliveryContextWorkFrontierProjection {
+  const metadata = parsedRecord(row.metadata);
+  const guard = parsedRecord(metadata?.completionGuard) ?? parsedRecord(metadata?.completion_guard);
+  if (guard == null || guard.workFrontier == null) {
+    return { assessment: null, errorCode: "missing-frontier", status: "absent" };
+  }
+  if (guard.frontierStatus === "invalid") {
+    return {
+      assessment: null,
+      errorCode: typeof guard.frontierError === "string" ? guard.frontierError : "invalid-persisted-frontier",
+      status: "invalid",
+    };
+  }
+  const assessment = parsedRecord(guard.workFrontierProjection);
+  const frontier = parsedRecord(assessment?.frontier);
+  const refs = (value: unknown): value is string[] => Array.isArray(value)
+    && value.length <= 16
+    && value.every((item) => typeof item === "string" && FRONTIER_REF_PATTERN.test(item));
+  const frontierState = assessment?.frontierState;
+  const valid = assessment != null
+    && frontier != null
+    && JSON.stringify(frontier) === JSON.stringify(guard.workFrontier)
+    && frontier.schemaVersion === 1
+    && typeof frontier.frontierGeneration === "number"
+    && Number.isInteger(frontier.frontierGeneration)
+    && frontier.frontierGeneration >= 1
+    && typeof frontier.basisHumanRef === "string"
+    && FRONTIER_REF_PATTERN.test(frontier.basisHumanRef)
+    && typeof frontier.taskStateDigest === "string"
+    && FRONTIER_DIGEST_PATTERN.test(frontier.taskStateDigest)
+    && typeof frontier.acceptedOutcomeRef === "string"
+    && FRONTIER_REF_PATTERN.test(frontier.acceptedOutcomeRef)
+    && typeof frontier.progressFingerprint === "string"
+    && new TextEncoder().encode(frontier.progressFingerprint).byteLength > 0
+    && new TextEncoder().encode(frontier.progressFingerprint).byteLength <= 256
+    && Array.isArray(frontier.items)
+    && frontier.items.length <= 16
+    && Array.isArray(frontier.gates)
+    && frontier.gates.length <= 16
+    && Array.isArray(frontier.parkedDecisions)
+    && frontier.parkedDecisions.length <= 8
+    && new TextEncoder().encode(JSON.stringify(assessment)).byteLength <= 32_768
+    && (frontierState === "complete" || frontierState === "product-decision" || frontierState === "runnable" || frontierState === "waiting")
+    && refs(assessment.runnableItemRefs)
+    && refs(assessment.openGateRefs)
+    && refs(assessment.parkedDecisionRefs);
+  if (!valid) {
+    return {
+      assessment: null,
+      errorCode: typeof guard.frontierError === "string" ? guard.frontierError : "invalid-frontier-projection",
+      status: "invalid",
+    };
+  }
+  return { assessment: assessment as DeliveryContextWorkFrontierProjection["assessment"], errorCode: null, status: "present" };
+}
 
 function boundedStrings(
   values: string[],
@@ -123,24 +195,12 @@ function questionProvenance(row: Record<string, unknown>): {
   pending: Set<string>;
   pendingCalls: Map<string, string>;
 } {
-  const parse = (value: unknown): Record<string, unknown> | null => {
-    if (value != null && typeof value === "object" && !Array.isArray(value)) return value as Record<string, unknown>;
-    if (typeof value !== "string") return null;
-    try {
-      const parsed = JSON.parse(value) as unknown;
-      return parsed != null && typeof parsed === "object" && !Array.isArray(parsed)
-        ? parsed as Record<string, unknown>
-        : null;
-    } catch {
-      return null;
-    }
-  };
-  const metadata = parse(row.metadata);
-  const guard = parse(metadata?.completionGuard) ?? parse(metadata?.completion_guard);
+  const metadata = parsedRecord(row.metadata);
+  const guard = parsedRecord(metadata?.completionGuard) ?? parsedRecord(metadata?.completion_guard);
   const callMap = (value: unknown): Map<string, string> => new Map(
     Array.isArray(value)
       ? value.flatMap((item) => {
-          const entry = parse(item);
+          const entry = parsedRecord(item);
           return typeof entry?.requestRef === "string" && typeof entry.callRef === "string"
             ? [[entry.requestRef, entry.callRef] as const]
             : [];
@@ -281,6 +341,7 @@ function contextForRow(
   const userMessages = completion.humanMessages;
   const requirementSignals = detectRequirementSignals(completion.humanMessages);
   const provenance = questionProvenance(row);
+  const workFrontier = workFrontierProjection(row);
   const events = readQuestionAndPermissionEvents(
     db,
     schema,
@@ -440,6 +501,7 @@ function contextForRow(
     userMessages: boundedHumanMessages,
     validationEvidence: completion.validationEvidence,
     warnings: boundedWarnings,
+    workFrontier,
   };
 }
 

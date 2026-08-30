@@ -630,6 +630,10 @@ function evaluateMaterializerRaw(raw: JsonRecord, candidateId: string): JsonReco
 
 function evaluateControllerRaw(raw: JsonRecord, candidateId: string, environmentId: string | null): JsonRecord {
   const commands = Array.isArray(raw.commands) ? raw.commands.filter(isRecord) : [];
+  const controlPartitions = isRecord(raw.controlPartitions) ? raw.controlPartitions : null;
+  const scopedBlockers = Array.isArray(controlPartitions?.scopedBlockers)
+    ? controlPartitions.scopedBlockers.filter(isRecord)
+    : [];
   const effects = isRecord(raw.effects) ? raw.effects : null;
   const invocation = isRecord(raw.invocation) ? raw.invocation : null;
   const negativeControls = isRecord(raw.negativeControls) ? raw.negativeControls : null;
@@ -687,7 +691,7 @@ function evaluateControllerRaw(raw: JsonRecord, candidateId: string, environment
       && typeof effects?.fixtureOpenSpecMutationCalls === "number" && effects.fixtureOpenSpecMutationCalls > 0,
     hostEffectsZero: effects?.hostEffects === 0,
     invalidDefinitionBlocked: negativeControls?.invalidDefinition === 2,
-    missionCallObserved: effects?.missionCalls === 2,
+    missionCallObserved: effects?.missionCalls === 5,
     providerFreeMissionCallsZero: transitions?.missionRef === null,
     openCodeCallsZero: effects?.openCodeCalls === 0,
     p1AdmittedAndP2ReportOnly: report?.p1Present === true && report?.p2ReportOnly === true,
@@ -706,6 +710,12 @@ function evaluateControllerRaw(raw: JsonRecord, candidateId: string, environment
       && missionIntegration?.resumePhase === "verify"
       && stableJson(missionIntegration?.terminalKinds) === stableJson(["mission-terminal", "verification"]),
     missionWriterSeparated: missionIntegration?.writerLeaseAbsent === true,
+    scopedMissionStopsProjected: scopedBlockers.length === 3
+      && scopedBlockers.some((row) => row.disposition === "product-decision-required" && row.statusReason === "product-decision" && row.siblingCompletes === true)
+      && scopedBlockers.some((row) => row.disposition === "waiting" && row.statusReason === "non-product-wait" && row.siblingCompletes === true)
+      && scopedBlockers.some((row) => row.disposition === "product-decision-required" && row.statusReason === "product-decision" && row.siblingCompletes === false && row.siblingMarkerCount === 0)
+      && scopedBlockers.every((row) => row.campaignTransitionCount === 10 && row.claimMatchesEffects === true
+        && typeof row.missionTransitionCount === "number" && row.missionTransitionCount > 0),
     campaignVerificationCommandFailureClosed: verification?.commandFailureExitCode === 1
       && verification?.commandFailureTransitionCount === 11,
     campaignRereviewCurrent: verification?.rereviewDisposition === "paused-external"
@@ -763,7 +773,7 @@ function evaluateControllerRaw(raw: JsonRecord, candidateId: string, environment
       && supervisorAdvice?.drift === "definition-or-project-drift"
       && supervisorAdvice?.externalInput === "external-input-required"
       && supervisorAdvice?.notStarted === "not-started"
-      && supervisorAdvice?.ownerProtected === "owner-protected"
+      && supervisorAdvice?.ownerProtected === "non-product-wait"
       && supervisorAdvice?.restored === "terminal-evidence-restored"
       && supervisorAdvice?.stop === "explicit-stop"
       && supervisorAdvice?.terminalMission === "runtime-interruption-ready"
@@ -920,7 +930,7 @@ export function buildPopulationRows(raw: JsonRecord, candidateId: string, enviro
   const hostInput = raw.hostInput === true;
   const statuses = Array.isArray(happy.statuses) ? happy.statuses : [];
   const statusMatched = (itemId: string, status: string): boolean => statuses.some((row) => Array.isArray(row) && row[0] === itemId && row[1] === status);
-  const investigationComplete = ["confirmed", "falsified", "owner-required", "still-unknown"]
+  const investigationComplete = ["confirmed", "falsified", "owner-required", "product-decision-required", "still-unknown", "waiting"]
     .every((key) => isRecord(investigations[key]));
   const { configuredCurrent, windowsReentryObserved } = classifyPopulationConfiguredInput(configured, hostInput, candidateId, environmentId);
   const row = (
@@ -967,7 +977,7 @@ export function buildPopulationRows(raw: JsonRecord, candidateId: string, enviro
     row("incomplete-or-failed-mission", "mission-observation", "blocked", controllerVerification.commandFailureExitCode === 1 && controllerVerification.twoWaveMissingMissionExitCode === 2, 0, 0, "complete", ["failed-command", "missing-mission", "parent-mismatch"], ["proof:controller"]),
     row("active-change-conflict", "campaign-preflight", "blocked", controllerNegative.activeChange === 1, 0, 0, "not-required", ["unlisted-active-change"], ["proof:controller"]),
     row("dirty-path-conflict", "campaign-preflight", "blocked", controllerNegative.dirtyWorktree === 1, 0, 0, "not-required", ["dirty-owned-path"], ["proof:controller"]),
-    row("protected-effect", "playbook-phase-admission", "owner-required", protectedSplit.status === "owner-required" && ownerOnly.disposition === "owner-required" && ownerSibling.disposition === "paused-external", 0, 0, "complete", ["protected-only", "protected-plus-authorized"], ["proof:semantic", "proof:controller"]),
+    row("protected-effect", "playbook-phase-admission", "waiting", protectedSplit.status === "waiting" && ownerOnly.disposition === "waiting" && ownerSibling.disposition === "paused-external", 0, 0, "complete", ["protected-only", "protected-plus-authorized"], ["proof:semantic", "proof:controller"]),
     row("controller-or-opencode-interruption", "state-semantic-control", "paused-unknown", semanticControls.transientStatus === "paused-transient" && semanticControls.retryAccepted === true && semanticControls.cleanupStatus === "paused-unknown" && controllerNegative.unknownWriter === 1, 0, 0, "unknown", ["transient", "retry-evidence", "cleanup-unknown", "unknown-writer"], ["proof:semantic", "proof:controller", "proof:state"]),
     windowsReentryObserved
       ? row("windows-supervisor-reentry", "windows-host-supervisor", "complete", true, 0, configured.hostEffects as number, "complete", ["installed-task-action", "safe-resume"], ["proof:installed-operator"])
@@ -1260,7 +1270,7 @@ function controller(options: Options): void {
         WORK_CAMPAIGN_CONTROLLER_RAW_PATH: capturedRawPath,
       },
       shell: false,
-      timeout: 180_000,
+      timeout: 300_000,
     });
     if (fs.existsSync(capturedRawPath)) capturedRaw = JSON.parse(fs.readFileSync(capturedRawPath, "utf8")) as JsonRecord;
   } finally {
@@ -1283,7 +1293,7 @@ function controller(options: Options): void {
   raw.invocation = {
     argv: ["node", "tools/test-work-campaign-controller.ts"],
     exitCode: capture?.status ?? null,
-    stderr: (capture?.stderr ?? "capture did not start").slice(0, 5_000),
+    stderr: (capture?.stderr || capture?.error?.message || "capture did not start").slice(0, 5_000),
     stdout: (capture?.stdout ?? "").slice(0, 5_000),
   };
   const evaluation = evaluateControllerRaw(raw, options.candidateId, options.environmentId);

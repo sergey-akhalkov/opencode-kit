@@ -60,18 +60,6 @@ export const validatorTests1: TestCase[] = [
     },
   },
   {
-    name: "validator rejects widened specialist team advisor permissions",
-    run: () => {
-      const fixture = newLibraryFixture("specialist-team-advisor-permission");
-      const advisorPath = addSpecialistTeamAdvisorFixture(fixture);
-      const advisor = fs.readFileSync(advisorPath, "utf8");
-      writeText(advisorPath, advisor.replace("  specialist_catalog: allow", "  specialist_catalog: allow\n  task: allow"));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Advisor task permission must fail validation.");
-      assertOutputContains(result, "specialist-team-advisor has unsupported allow", "Validation should name the widened advisor permission.");
-    },
-  },
-  {
     name: "validator rejects incomplete specialist team advisor body",
     run: () => {
       const fixture = newLibraryFixture("specialist-team-advisor-contract");
@@ -155,30 +143,6 @@ export const validatorTests1: TestCase[] = [
       const fixture = newLibraryFixture("bounded-implementation-worker");
       addImplementationWorkerFixture(fixture);
       assertSuccess(invokeValidator(fixture), "Bounded implementation worker should pass validation.");
-    },
-  },
-  {
-    name: "validator rejects unsupported implementation worker bash allow",
-    run: () => {
-      const fixture = newLibraryFixture("implementation-worker-extra-bash");
-      const workerPath = addImplementationWorkerFixture(fixture);
-      const worker = fs.readFileSync(workerPath, "utf8");
-      writeText(workerPath, worker.replace("  bash: deny", "  bash:\n    \"*\": deny\n    \"git push*\": allow"));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Implementation worker must reject unsupported bash allow rules.");
-      assertOutputContains(result, "unsupported bash permission", "Implementation worker permission failure should name unsupported bash permission.");
-    },
-  },
-  {
-    name: "validator rejects session delivery context tool on implementation worker",
-    run: () => {
-      const fixture = newLibraryFixture("implementation-worker-session-delivery-tool");
-      const workerPath = addImplementationWorkerFixture(fixture);
-      const worker = fs.readFileSync(workerPath, "utf8");
-      writeText(workerPath, worker.replace("  edit: allow", "  edit: allow\n  session_delivery_context: allow"));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Implementation worker must not allow session_delivery_context.");
-      assertOutputContains(result, "No active agent may set session_delivery_context permission", "session_delivery_context must be forbidden on every active agent.");
     },
   },
   {
@@ -641,18 +605,6 @@ export const validatorTests1: TestCase[] = [
       const result = invokeValidator(fixture);
       assertFailure(result, "Incomplete session-completion-arbiter machine contract should fail validation.");
       assertOutputContains(result, "session-completion-arbiter machine verdict contract", "Validation output should name the missing arbiter contract.");
-    },
-  },
-  {
-    name: "validator rejects session_delivery_context permission on session-completion-arbiter",
-    run: () => {
-      const fixture = newLibraryFixture("arbiter-session-delivery-context-forbidden");
-      const arbiterPath = addSessionCompletionArbiterFixture(fixture);
-      const arbiter = fs.readFileSync(arbiterPath, "utf8");
-      writeText(arbiterPath, arbiter.replace("  doom_loop: deny", "  doom_loop: deny\n  session_delivery_context: allow"));
-      const result = invokeValidator(fixture);
-      assertFailure(result, "Completion arbiter must not set session_delivery_context permission.");
-      assertOutputContains(result, "No active agent may set session_delivery_context permission", "Arbiter must remain tool-free for delivery context.");
     },
   },
   {

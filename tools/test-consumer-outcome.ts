@@ -40,7 +40,7 @@ import {
   verifyFixtureSeed,
 } from "./proofs/consumer-outcome/contracts.ts";
 import { evaluateBundle, evaluateComplexityConfiguredSessionPack, evaluateDecisionGapPack, gateCurrent, replayEvaluation } from "./proofs/consumer-outcome/evaluate.ts";
-import { loadDeliveryTrajectoryConfiguredPack, selectDeliveryTrajectoryConfiguredScenario } from "./proofs/consumer-outcome/delivery-trajectory.ts";
+import { loadDeliveryTrajectoryConfiguredPack, loadDeliveryTrajectoryPack, selectDeliveryTrajectoryConfiguredScenario } from "./proofs/consumer-outcome/delivery-trajectory.ts";
 import { evaluateTeamAdviceContinuity, loadTeamAdviceContinuityFixture, sealTeamAdviceContinuityBundle, teamAdviceContinuityPreflight, type TeamAdviceContinuityBundle, type TeamAdviceContinuitySample } from "./proofs/consumer-outcome/team-advice-continuity.ts";
 import { evaluateTeamAdvisingPack, loadTeamAdvisingPack, redactTeamBundlePrivacy, sanitizeTeamEvidenceText, sealTeamBundle, sealTeamSample, selectTeamAdvisingPack, type TeamBundle, type TeamSampleEvidence } from "./proofs/consumer-outcome/team-advising.ts";
 import { projectBundles, selectComplexityConfiguredPack, selectFoundationPack } from "./proofs/consumer-outcome-regression.ts";
@@ -266,6 +266,9 @@ const tests: TestCase[] = [
       const baselineRoot = path.join(directory, "baseline");
       const candidateRoot = path.join(directory, "candidate");
       try {
+        const pack = loadDeliveryTrajectoryPack(root).pack;
+        assert(pack.governedSourcePaths.includes("openspec/specs/library-roadmap-delivery-trajectory/spec.md"), "delivery-trajectory pack must govern the canonical archived spec");
+        assert(pack.governedSourcePaths.every((sourcePath) => !sourcePath.startsWith("openspec/changes/")), "delivery-trajectory governed sources must survive change archive");
         const preflight = invokeCli(["--mode", "preflight", "--pack", "delivery-trajectory", "--source-ref", "working-tree"]);
         assert(preflight.status === 0, preflight.stderr || preflight.stdout);
         const preflightOutput = JSON.parse(preflight.stdout) as {

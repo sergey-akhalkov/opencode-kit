@@ -318,6 +318,9 @@ export function validateDevKitContract(ctx: ValidationContext, root: string): vo
     for (const marker of ["Reconcile Accepted Outcome", "all-checked tasks", "smallest ordinary task", "incomplete/abandoned preservation flow"]) {
       requireTextContains(ctx, text, marker, "OpenSpec archive outcome reconciliation", candidate);
     }
+    for (const marker of ["Open Harvest Checkpoint", "kaizen_checkpoint", "non-persisted `unavailable`", "Close Or Preserve Harvest", "status: archive-failed", "derived harvest `repair-gap`", "Never write `repair-gap` as a checkpoint status", "harvest: captured | no-signal | archive-failed | repair-gap | unavailable"]) {
+      requireTextContains(ctx, text, marker, "OpenSpec archive Kaizen harvest", candidate);
+    }
   }
 
   const helperSurfaces: Array<{ helper: string; relative: string }> = [

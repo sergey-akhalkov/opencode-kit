@@ -59,7 +59,7 @@ export type SemanticPlaybookResult = {
   investigations: CampaignInvestigationResult[];
   partitions: CampaignPartitionResult[];
   reconciliations: CampaignReconciliationResult[];
-  status: "blocked" | "complete" | "owner-required" | "paused-budget" | "paused-transient" | "paused-unknown";
+  status: "blocked" | "complete" | "paused-budget" | "paused-transient" | "paused-unknown" | "product-decision-required" | "waiting";
   wave: CampaignWaveManifest | null;
   workItems: CampaignWorkItem[];
 };
@@ -238,7 +238,8 @@ function finalizedItem(
     return { ...item, status: "confirmed" };
   }
   if (investigation.result === "falsified") return { ...item, status: "falsified" };
-  if (investigation.result === "owner-required") return { ...item, status: "owner-required" };
+  if (investigation.result === "product-decision-required") return { ...item, status: "product-decision-required" };
+  if (investigation.result === "owner-required" || investigation.result === "waiting") return { ...item, status: "waiting" };
   return { ...item, status: "unknown-material" };
 }
 
@@ -316,7 +317,7 @@ export async function runSemanticPlaybook(
       const finalized = finalizedItem(item, reconciliation, investigation);
       workItems.push(finalized.status === "confirmed"
         && finalized.effectClasses.some((effect) => !context.allowedEffects.includes(effect))
-        ? { ...finalized, status: "owner-required" }
+        ? { ...finalized, status: "waiting" }
         : finalized);
     }
 
@@ -328,7 +329,18 @@ export async function runSemanticPlaybook(
       .filter((item) => item.status === "owner-required")
       .map((item) => item.id)
       .sort();
-    const blockingWorkItemIds = [...unknownWorkItemIds, ...ownerRequiredIds].sort();
+    const productDecisionIds = workItems
+      .filter((item) => item.status === "product-decision-required")
+      .map((item) => item.id)
+      .sort();
+    const waitingIds = workItems
+      .filter((item) => item.status === "waiting")
+      .map((item) => item.id)
+      .sort();
+    const blockingWorkItemIds = [...unknownWorkItemIds, ...ownerRequiredIds, ...productDecisionIds, ...waitingIds].sort();
+    const completionStatus = productDecisionIds.length > 0
+      ? "product-decision-required"
+      : ownerRequiredIds.length > 0 || waitingIds.length > 0 ? "waiting" : "complete";
     if (unknownWorkItemIds.length > 0) {
       return { assignments, blockingWorkItemIds, failure: null, investigations, partitions, reconciliations, status: "blocked", wave: null, workItems };
     }
@@ -342,7 +354,7 @@ export async function runSemanticPlaybook(
         investigations,
         partitions,
         reconciliations,
-        status: ownerRequiredIds.length > 0 ? "owner-required" : "complete",
+        status: completionStatus,
         wave: null,
         workItems,
       };
@@ -362,7 +374,7 @@ export async function runSemanticPlaybook(
       investigations,
       partitions,
       reconciliations,
-      status: ownerRequiredIds.length > 0 ? "owner-required" : "complete",
+      status: completionStatus,
       wave,
       workItems,
     };

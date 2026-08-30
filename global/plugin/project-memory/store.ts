@@ -218,7 +218,7 @@ export function canonicalProjectRoot(input: ProjectMemoryRootInput): string | nu
   }
 }
 
-export function resolveProjectMemoryDataRoot(input: ProjectMemoryRootInput): string {
+export function resolveOpenCodeDataRoot(input: ProjectMemoryRootInput): string {
   const environment = input.environment ?? process.env;
   const startupDirectory = path.resolve(input.startupDirectory ?? process.cwd());
   const platform = input.platform ?? process.platform;
@@ -242,7 +242,11 @@ export function resolveProjectMemoryDataRoot(input: ProjectMemoryRootInput): str
       base = path.join(homeDirectory, ".local", "share", "opencode");
     }
   }
-  return path.join(base, "project-memory", "v1");
+  return base;
+}
+
+export function resolveProjectMemoryDataRoot(input: ProjectMemoryRootInput): string {
+  return path.join(resolveOpenCodeDataRoot(input), "project-memory", "v1");
 }
 
 export function resolveProjectMemoryStore(input: ProjectMemoryRootInput): ProjectMemoryStore | null {

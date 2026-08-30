@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "populationId": "cross-project-kaizen-scenarios-v1",
+  "scenarios": [
+    { "id": "enabled-explicit-valid", "driver": { "kind": "focused-tests", "names": ["explicit capture redacts the project root and folds lifecycle state"] } },
+    { "id": "enabled-explicit-invalid", "driver": { "kind": "focused-tests", "names": ["strict input bounds reject unsafe references, extras, and overlong summaries"] } },
+    { "id": "disabled-no-write", "driver": { "kind": "focused-tests", "names": ["disabled mode exposes no feature, hooks, or writes"] } },
+    { "id": "two-project-concurrent-append", "driver": { "kind": "focused-tests", "names": ["cross-project concurrent append deduplicates by normalized fingerprint", "multi-process append preserves every fixed-slot event"] } },
+    { "id": "capacity-rejection", "driver": { "kind": "focused-tests", "names": ["fixed 2,000-signal capacity rejects another signal without overwrite", "fixed 8,000-lifecycle capacity rejects another event without overwrite"] } },
+    { "id": "compaction-valid-signal", "driver": { "kind": "focused-tests", "names": ["plugin report, status, decision, checkpoint, and compaction share one bounded store"] } },
+    { "id": "compaction-valid-empty", "driver": { "kind": "focused-tests", "names": ["plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"] } },
+    { "id": "compaction-missing-envelope", "driver": { "kind": "focused-tests", "names": ["plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"] } },
+    { "id": "compaction-malformed-or-duplicate-envelope", "driver": { "kind": "focused-tests", "names": ["compaction envelope accepts exactly zero to three signals", "plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"] } },
+    { "id": "compaction-wrong-root-or-child", "driver": { "kind": "focused-tests", "names": ["plugin empty summary records no-signal while invalid roots, output, and timeout emit diagnostics"] } },
+    { "id": "compaction-store-failure", "driver": { "kind": "focused-tests", "names": ["automatic compaction store failure stays non-blocking and preserves one warning chain"] } },
+    { "id": "archive-captured", "driver": { "kind": "archive-boundary", "scenario": "captured" } },
+    { "id": "archive-no-signal", "driver": { "kind": "archive-boundary", "scenario": "no-signal" } },
+    { "id": "archive-repair-gap", "driver": { "kind": "archive-boundary", "scenario": "repair-gap" } },
+    { "id": "archive-checkpoint-unavailable", "driver": { "kind": "archive-boundary", "scenario": "unavailable" } },
+    { "id": "archive-failed", "driver": { "kind": "archive-boundary", "scenario": "archive-failed" } },
+    { "id": "complain-loaded-inbox", "driver": { "kind": "focused-tests", "names": ["copied session-env composes and executes Kaizen report and status", "complain keeps the loaded inbox authoritative and Markdown as unavailable fallback only"] } },
+    { "id": "complain-disabled-fallback", "driver": { "kind": "focused-tests", "names": ["complain keeps the loaded inbox authoritative and Markdown as unavailable fallback only"] } },
+    { "id": "legacy-feedback-idempotent", "driver": { "kind": "focused-tests", "names": ["legacy feedback import is idempotent and written status never resolves the signal"] } },
+    { "id": "legacy-open-status-stale", "driver": { "kind": "focused-tests", "names": ["legacy feedback parser accepts only the maintained bounded entry format", "legacy feedback import is idempotent and written status never resolves the signal"] } },
+    { "id": "status-bounded-truncation", "driver": { "kind": "focused-tests", "names": ["status ordering and truncation are deterministic"] } },
+    { "id": "triage-unknown-owner", "driver": { "kind": "focused-tests", "names": ["plugin report, status, decision, checkpoint, and compaction share one bounded store"] } },
+    { "id": "consumer-kit-candidate-no-write", "driver": { "kind": "focused-tests", "names": ["detailed triage is contained to the configured proposal-owner root or the current signal origin", "global Kaizen commands preserve bounded manual triage and owner-root proposal containment"] } },
+    { "id": "kit-root-contained-proposal", "driver": { "kind": "triage-boundary", "scenario": "owner-root-proposal" } },
+    { "id": "privacy-redaction-and-output-bounds", "driver": { "kind": "focused-tests", "names": ["explicit capture redacts the project root and folds lifecycle state", "synthetic credentials and private paths are absent from bounded status output", "explicit store failure exposes the original filesystem cause without a partial record"] } }
+  ]
+}

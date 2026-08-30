@@ -1,0 +1,104 @@
+{
+  "candidate": "cross-project-kaizen-loop-store-boundary-r3",
+  "checks": {
+    "acceptedEnvelopeConstants": true,
+    "activeConfigUnchanged": true,
+    "boundedRecords": true,
+    "canonicalProjectIsolation": true,
+    "disabledNoWrite": true,
+    "durableReadback": true,
+    "networkFree": true,
+    "privacySafe": true,
+    "providerFree": true,
+    "stableRefs": true,
+    "worktreesClean": true
+  },
+  "cleanup": {
+    "fixtureRemoved": true
+  },
+  "effects": {
+    "acceptedStoreEnvelope": {
+      "lifecycleBytes": 4096,
+      "lifecycleLimit": 8000,
+      "signalBytes": 16384,
+      "signalLimit": 2000
+    },
+    "candidateSources": [
+      {
+        "path": "global/plugin/kaizen/store.ts",
+        "sha256": "db4facb34798d596eca8fddbdc2f28ceef5fbbbf46150dc073ca1fdb01abf268"
+      },
+      {
+        "path": "global/plugin/kaizen/index.ts",
+        "sha256": "f4641741d98acff930ec9d89d25df1c4a2cf854a48fad0578b3494f3dba2ea40"
+      },
+      {
+        "path": "global/plugin/session-env.ts",
+        "sha256": "b9875b1c854fbcb7a041dec86361a714860cd90807144f7fda57a2c4dc53dd44"
+      },
+      {
+        "path": "global/plugin/project-memory/store.ts",
+        "sha256": "d752313ce29c98d0981c9611b432285ec97473418b8dbbe853edd9f8979f5298"
+      },
+      {
+        "path": "tools/test-cross-project-kaizen.ts",
+        "sha256": "ae8b9a684da38813fb288e9e27c9a43c4242db3e87e461de09547aea136b453c"
+      },
+      {
+        "path": "tools/proofs/cross-project-kaizen.ts",
+        "sha256": "b5b934f3bf37ddb9d631be8b229d169e9cbf0ca2fe2ecb9eca2457ab2518e76e"
+      }
+    ],
+    "projectRefs": [
+      "project_d89ddf0209148733c016beb5062e3834",
+      "project_fcf15af391334447ce0b94663e2deab4"
+    ],
+    "recordFiles": [
+      {
+        "bytes": 956,
+        "name": "signals/signal-0000.json",
+        "population": "signal",
+        "privacySafe": true,
+        "sha256": "5b4dbf9d3a8351d03db63e385dbca9ec5de0907f7e2a4591eee5edfb2665bd08"
+      },
+      {
+        "bytes": 991,
+        "name": "signals/signal-0001.json",
+        "population": "signal",
+        "privacySafe": true,
+        "sha256": "4a308feba973b58edb19028dd284e11b66881ce55a36a4dadd0681672b2b2bb1"
+      }
+    ],
+    "signalRefs": [
+      "signal_11ec7eba37c3a1c0a9db365bc5a01ea1",
+      "signal_7dfb2083825869eb6b67db527c771a12"
+    ],
+    "status": {
+      "counts": {
+        "diagnostics": 0,
+        "events": 2,
+        "lifecycleEvents": 0,
+        "pending": 2,
+        "promoted": 0,
+        "resolved": 0,
+        "signalRecords": 2,
+        "signals": 2,
+        "triaged": 0,
+        "wont-fix": 0
+      },
+      "totalSignals": 2,
+      "truncated": false
+    },
+    "worktreeWrites": 0
+  },
+  "environment": {
+    "networkRequests": 0,
+    "node": "v24.18.1",
+    "platform": "win32",
+    "providerCalls": 0
+  },
+  "error": null,
+  "invocation": "node tools/proofs/cross-project-kaizen.ts --mode store-boundary --evidence-dir openspec/changes/add-cross-project-kaizen-loop/evidence/store-boundary-r3",
+  "schemaVersion": 1,
+  "status": "passed"
+}

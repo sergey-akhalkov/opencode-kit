@@ -192,7 +192,7 @@ function validateItemReconciliation(
     const authorized = item.effectClasses.every((effect) => definition.allowedEffects.includes(effect));
     const expected = item.status === "confirmed"
       ? materialConfirmed && authorized
-      : item.status === "owner-required"
+      : item.status === "owner-required" || item.status === "waiting"
         ? materialConfirmed && !authorized
       : item.status === "report-only"
         ? reconciliation.disposition === "confirmed" && (reconciliation.severity === "P2" || reconciliation.severity === "P3")
@@ -214,8 +214,12 @@ function validateItemReconciliation(
     ? item.status === "confirmed" && (reconciliation.severity === "P0" || reconciliation.severity === "P1")
     : investigation.result === "falsified"
       ? item.status === "falsified"
+      : investigation.result === "product-decision-required"
+        ? item.status === "product-decision-required"
+        : investigation.result === "waiting"
+          ? item.status === "waiting"
       : investigation.result === "owner-required"
-        ? item.status === "owner-required"
+        ? item.status === "owner-required" || item.status === "waiting"
         : item.status === "unknown-material";
   if (!expected) throw new WorkCampaignError(`work item ${item.id} differs from its investigation result`, 2, { field: "recordPaths" });
   if (investigation.result === "still-unknown") {
@@ -303,7 +307,7 @@ function validatePhaseRecords(
   const wave = waves[0] ?? null;
   if (eligible.length === 0) {
     if (wave != null || input.waveId != null) {
-      throw new WorkCampaignError("report-only or owner-required input must not invent a mutation wave", 2, { field: "recordPaths" });
+      throw new WorkCampaignError("report-only or waiting input must not invent a mutation wave", 2, { field: "recordPaths" });
     }
   } else {
     if (wave == null || input.waveId == null || wave.id !== input.waveId
@@ -326,15 +330,21 @@ function validatePhaseRecords(
   }
   const reportSeed = reportSeeds[0];
   const ownerRequired = items.some((item) => item.status === "owner-required");
-  const expectedTerminal = ownerRequired ? "owner-required" : "unknown";
+  const productDecisionRequired = items.some((item) => item.status === "product-decision-required");
+  const waiting = items.some((item) => item.status === "waiting") || ownerRequired;
+  const expectedTerminal = productDecisionRequired ? "product-decision-required" : waiting ? "waiting" : "unknown";
+  const terminalMatches = reportSeed.terminalState === expectedTerminal
+    || ownerRequired && reportSeed.terminalState === "owner-required";
   const invalidReport = reportSeed.candidateDigest !== input.candidateDigest
     || reportSeed.definitionDigest !== input.definitionDigest
-    || reportSeed.terminalState !== expectedTerminal
-    || ownerRequired && !reportSeed.blockers.some((row) => row.status === "owner-required")
-    || !ownerRequired && reportSeed.blockers.some((row) => row.status === "owner-required");
+    || !terminalMatches
+    || productDecisionRequired && !reportSeed.blockers.some((row) => row.status === "product-decision-required")
+    || waiting && !reportSeed.blockers.some((row) => row.status === "owner-required" || row.status === "waiting")
+    || !productDecisionRequired && reportSeed.blockers.some((row) => row.status === "product-decision-required")
+    || !waiting && reportSeed.blockers.some((row) => row.status === "owner-required" || row.status === "waiting");
   if (wave == null) {
     if (invalidReport || reportSeed.waveRows.length !== 0) {
-      throw new WorkCampaignError("no-wave report seed must preserve report-only or owner-required state for verification", 2, { field: "recordPaths" });
+      throw new WorkCampaignError("no-wave report seed must preserve report-only or waiting state for verification", 2, { field: "recordPaths" });
     }
   } else {
     const waveRows = reportSeed.waveRows.filter((row) => row.waveId === wave.id);

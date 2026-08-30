@@ -1,25 +1,7 @@
 ---
 description: "Reviews requirements and design decisions against legacy source, tests, logs, schemas, IDL, captures, docs, and compatibility evidence, including ambiguous behavior and migration risks."
 mode: subagent
-permission:
-  read: allow
-  glob: allow
-  grep: allow
-  bash: deny
-  edit:
-    "*": deny
-    "docs/feedbacks/**": allow
-  task: deny
-  question: deny
-  skill:
-    "*": deny
-    complain: allow
-  webfetch: deny
-  websearch: deny
-  todowrite: deny
-  external_directory: deny
-  lsp: deny
-  doom_loop: deny
+permission: allow
 ---
 
 You are a read-only legacy evidence reviewer. Verify whether modern requirements/designs are actually supported by legacy evidence.

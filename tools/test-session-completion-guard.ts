@@ -37,7 +37,13 @@ import {
   configuredPermissionClass,
   initialRootState,
   parseGuardOptions,
+  stableDigest,
 } from "../global/extensions/session-completion-guard/runtime-support.ts";
+import {
+  GRIND_FRONTIER_TOOL,
+  materializeWorkFrontier,
+  projectPersistedWorkFrontier,
+} from "../global/extensions/session-completion-guard/frontier.ts";
 import { GuardAuditMonitorLauncher } from "../global/extensions/session-completion-guard/audit-monitor.ts";
 import { GuardStatusReporter, STATUS_CONVERGENCE_PASSES } from "../global/extensions/session-completion-guard/status.ts";
 import { ArbiterScheduler } from "../global/extensions/session-completion-guard/arbiter-scheduler.ts";
@@ -59,11 +65,16 @@ import {
   readClaimEvidence,
   terminalClaimBindings,
 } from "../global/extensions/session-completion-guard/claim-evidence.ts";
+import { executionEpochDisposition } from "../global/extensions/session-completion-guard/strategy.ts";
 
 const RUNAUDIT_DISABLE_ORACLE_FLAG = "--oracle-runaudit-disable-race";
 const QUESTION_REPLY_DISABLE_ORACLE_FLAG = "--oracle-question-reply-disable-race";
+const QUESTION_DEFER_ORACLE_FLAG = "--oracle-question-defer";
 const RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG = "--oracle-retry-prompt-amplification";
 const TERMINAL_CERTIFICATE_RECHECK_ORACLE_FLAG = "--oracle-terminal-certificate-recheck";
+const FRONTIER_TOOL_ORACLE_FLAG = "--oracle-frontier-tool";
+const FRONTIER_RESTART_ORACLE_FLAG = "--oracle-frontier-restart";
+const FRONTIER_VERDICT_ORACLE_FLAG = "--oracle-frontier-verdict";
 const isBunRuntime = typeof (globalThis as { Bun?: unknown }).Bun !== "undefined";
 
 function sleep(ms: number): Promise<void> {
@@ -176,21 +187,114 @@ function ptyInfo(partial: Partial<PTYSessionInfo> & Pick<PTYSessionInfo, "id" | 
   };
 }
 
+function frontierProjectionFixture(
+  state: "complete" | "product-decision" | "runnable" | "waiting" = "runnable",
+  basis: { humanRef: string; todoDigest: string } = { humanRef: "human_1", todoDigest: "a".repeat(64) },
+): SessionDeliveryContextResult["workFrontier"] {
+  const itemStatus = state === "complete" ? "complete" as const : state === "runnable" ? "pending" as const : "blocked" as const;
+  const itemID = state === "runnable" ? "item_runnable" : `item_${state.replace("-", "_")}`;
+  const gate = state === "product-decision"
+    ? {
+        affectedItemRefs: [itemID], evidenceRefs: ["evidence_product"], id: "gate_product",
+        kind: "product-decision" as const, resumeCondition: "The owner selects the product outcome.", status: "open" as const,
+      }
+    : state === "waiting"
+      ? {
+          affectedItemRefs: [itemID], evidenceRefs: ["evidence_technical"], id: "gate_technical",
+          kind: "technical" as const, resumeCondition: "A causally distinct recovery becomes available.", status: "open" as const,
+        }
+      : null;
+  const assessment = materializeWorkFrontier({
+    acceptedOutcomeRef: "outcome_fixture",
+    expectedGeneration: 0,
+    gates: gate == null ? [] : [gate],
+    items: [{
+      dependsOn: [],
+      evidenceRefs: state === "complete" ? ["evidence_complete"] : [],
+      gateRefs: gate == null ? [] : [gate.id],
+      id: itemID,
+      requirementRefs: ["requirement_fixture"],
+      status: itemStatus,
+    }],
+    parkedDecisions: state === "product-decision"
+      ? [{
+          affectedItemRefs: [itemID],
+          decisionPoint: "Select the product outcome.",
+          evidenceRefs: ["evidence_product"],
+          id: "decision_product",
+          optionInvariantItemRefs: [],
+          questionRef: "question_product",
+        }]
+      : [],
+    progressFingerprint: `progress_${state.replace("-", "_")}`,
+  }, {
+    basisHumanRef: basis.humanRef,
+    currentGeneration: 0,
+    taskStateDigest: basis.todoDigest,
+  });
+  return { assessment, errorCode: null, status: "present" };
+}
+
+function partialProductFrontierFixture(
+  basis: { humanRef: string; todoDigest: string } = { humanRef: "human_1", todoDigest: "a".repeat(64) },
+): SessionDeliveryContextResult["workFrontier"] {
+  const assessment = materializeWorkFrontier({
+    acceptedOutcomeRef: "outcome_fixture",
+    expectedGeneration: 0,
+    gates: [{
+      affectedItemRefs: ["item_product_blocked"],
+      evidenceRefs: ["evidence_product"],
+      id: "gate_product",
+      kind: "product-decision",
+      resumeCondition: "The owner selects the product outcome.",
+      status: "open",
+    }],
+    items: [
+      {
+        dependsOn: [], evidenceRefs: [], gateRefs: [], id: "item_runnable",
+        requirementRefs: ["requirement_runnable"], status: "pending",
+      },
+      {
+        dependsOn: [], evidenceRefs: [], gateRefs: ["gate_product"], id: "item_product_blocked",
+        requirementRefs: ["requirement_product"], status: "blocked",
+      },
+    ],
+    parkedDecisions: [{
+      affectedItemRefs: ["item_product_blocked"],
+      decisionPoint: "Select the product outcome.",
+      evidenceRefs: ["evidence_product"],
+      id: "decision_product",
+      optionInvariantItemRefs: [],
+      questionRef: "question_product",
+    }],
+    progressFingerprint: "progress_partial_product",
+  }, {
+    basisHumanRef: basis.humanRef,
+    currentGeneration: 0,
+    taskStateDigest: basis.todoDigest,
+  });
+  return { assessment, errorCode: null, status: "present" };
+}
+
 function epoch(overrides: Partial<AuditEpoch> = {}): AuditEpoch {
+  const inspected = {
+    assistantRef: "assistant_1",
+    diffDigest: "diff_1",
+    humanRef: "human_1",
+    journalDigest: "journal_1",
+    leaseGeneration: 1,
+    revisionDigest: "revision_1",
+    todoDigest: "a".repeat(64),
+    ...overrides.inspected,
+  };
   return {
     auditID: "audit_fixture_1",
     attempt: 0,
     childSessionID: null,
-    completionEvidence: null,
-    inspected: {
-      assistantRef: "assistant_1",
-      diffDigest: "diff_1",
-      humanRef: "human_1",
-      journalDigest: "journal_1",
-      leaseGeneration: 1,
-      revisionDigest: "revision_1",
-      todoDigest: "todo_1",
-    },
+    completionEvidence: completionEvidenceFixture({
+      workFrontier: frontierProjectionFixture("runnable", inspected),
+    }),
+    inspected,
     kind: "completion",
     questionRequest: null,
     rootRef: "session_abcdef123456",
@@ -352,7 +456,7 @@ async function runRouteSettle(options: {
   elapsedMs: number;
   error: Error | null;
   lookups: number;
-  tools: Record<string, boolean> | null;
+  routeHasTools: boolean;
 }> {
   const rootID = "session_root_route_settle";
   const abort = new AbortController();
@@ -389,18 +493,13 @@ async function runRouteSettle(options: {
       status: async () => ({ data: {} }),
       update: async () => ({ error: { name: "NotFoundError" } }),
     },
-    tool: {
-      ids: async () => {
-        lookups += 1;
-        await heldLookups;
-        return { data: ["read", "edit", "bash"] };
-      },
-    },
     v2: {
       agent: {
-        list: async () => ({
-          data: { data: lookups >= options.readyAfterLookups ? [readyAgent] : [] },
-        }),
+        list: async () => {
+          lookups += 1;
+          await heldLookups;
+          return { data: { data: lookups >= options.readyAfterLookups ? [readyAgent] : [] } };
+        },
       },
     },
   };
@@ -412,7 +511,7 @@ async function runRouteSettle(options: {
   }
   if (options.abortMs != null) setTimeout(() => abort.abort(), options.abortMs);
   let error: Error | null = null;
-  let tools: Record<string, boolean> | null = null;
+  let routeHasTools = false;
   try {
     const result = await ensureArbiterChild(
       client as never,
@@ -427,7 +526,7 @@ async function runRouteSettle(options: {
       }),
       2,
     );
-    tools = result.route.tools;
+    routeHasTools = "tools" in result.route;
   } catch (cause) {
     error = cause instanceof Error ? cause : new Error(String(cause));
   }
@@ -435,7 +534,7 @@ async function runRouteSettle(options: {
     releaseHeldLookups();
     await sleep(30);
   }
-  return { created, elapsedMs: Date.now() - started, error, lookups, tools };
+  return { created, elapsedMs: Date.now() - started, error, lookups, routeHasTools };
 }
 
 function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVerdict {
@@ -443,19 +542,26 @@ function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVer
     auditID: "audit_fixture_1",
     claimMatrix: [],
     confidence: "high",
+    deferredGateRefs: [],
     evidenceGaps: [],
     evidenceRefs: ["evidence_1"],
+    frontierGeneration: 1,
     goalSummary: "Complete the accepted task",
     inspectedRevision: "revision_1",
     ownerBoundary: null,
+    parkedDecisionRefs: [],
+    questionAction: null,
     questionAnswers: null,
     requirementMatrix: [{
       evidenceRefs: ["evidence_1"],
       requirementRef: "req_1",
       status: "unresolved",
     }],
+    resumeCondition: null,
     rootSessionRef: "session_abcdef123456",
-    schemaVersion: 1,
+    runnableItemRefs: ["item_runnable"],
+    schemaVersion: 2,
+    selectedItemRef: "item_runnable",
     strategyAssessment: {
       fingerprint: "fp_1",
       prohibitedStrategies: [],
@@ -470,6 +576,7 @@ function validVerdict(overrides: Partial<CompletionVerdict> = {}): CompletionVer
       stopCondition: "proof green",
     }],
     verdict: "continue",
+    waitKind: null,
     ...overrides,
   };
 }
@@ -510,6 +617,7 @@ function completionEvidenceFixture(
     userMessages: humanMessages,
     validationEvidence: [],
     warnings: [],
+    workFrontier: { assessment: null, errorCode: "missing-frontier", status: "absent" },
     ...overrides,
   };
 }
@@ -906,7 +1014,10 @@ const tests: TestCase[] = [
         writeClaimIndex(root, "supported", [claimRecord({ claimId: "CLAIM-EXACT" })]);
         const blockedProjection = readClaimEvidence(root, ["blocked"]);
         const blockedEpoch = epoch({
-          completionEvidence: { claimEvidence: blockedProjection, schemaVersion: 2 } as never,
+          completionEvidence: completionEvidenceFixture({
+            claimEvidence: blockedProjection,
+            workFrontier: frontierProjectionFixture(),
+          }),
         });
         const blockedRow = claimMatrixRow(blockedProjection.claims[0]);
         assert(
@@ -918,10 +1029,17 @@ const tests: TestCase[] = [
         assertThrows(
           () => parseCompletionVerdict(validVerdict({
             claimMatrix: [blockedRow],
+            runnableItemRefs: [],
+            selectedItemRef: null,
             requirementMatrix: [{ evidenceRefs: [], requirementRef: "req_1", status: "complete" }],
             unresolved: [],
             verdict: "allow_stop",
-          }), blockedEpoch),
+          }), epoch({
+            completionEvidence: completionEvidenceFixture({
+              claimEvidence: blockedProjection,
+              workFrontier: frontierProjectionFixture("complete"),
+            }),
+          })),
           "unsupported claim closure",
           "Blocked broad claim must not become allow_stop.",
         );
@@ -935,7 +1053,10 @@ const tests: TestCase[] = [
 
         const supportedProjection = readClaimEvidence(root, ["supported"]);
         const supportedEpoch = epoch({
-          completionEvidence: { claimEvidence: supportedProjection, schemaVersion: 2 } as never,
+          completionEvidence: completionEvidenceFixture({
+            claimEvidence: supportedProjection,
+            workFrontier: frontierProjectionFixture("complete"),
+          }),
         });
         const supportedBindings = terminalClaimBindings(supportedProjection);
         assert(
@@ -945,6 +1066,8 @@ const tests: TestCase[] = [
         const stopped = parseCompletionVerdict(validVerdict({
           claimMatrix: [claimMatrixRow(supportedProjection.claims[0])],
           requirementMatrix: [{ evidenceRefs: ["product"], requirementRef: "req_1", status: "complete" }],
+          runnableItemRefs: [],
+          selectedItemRef: null,
           unresolved: [],
           verdict: "allow_stop",
         }), supportedEpoch);
@@ -952,18 +1075,20 @@ const tests: TestCase[] = [
 
         const incompleteEpoch = epoch({
           completionEvidence: {
+            ...completionEvidenceFixture({ workFrontier: frontierProjectionFixture("complete") }),
             claimEvidence: {
               ...supportedProjection,
               complete: false,
               omissions: [{ changeRef: null, code: "claim-limit", detail: "truncated", omitted: 1 }],
             },
-            schemaVersion: 2,
-          } as never,
+          },
         });
         assertThrows(
           () => parseCompletionVerdict(validVerdict({
             claimMatrix: [claimMatrixRow(supportedProjection.claims[0])],
             requirementMatrix: [{ evidenceRefs: ["product"], requirementRef: "req_1", status: "complete" }],
+            runnableItemRefs: [],
+            selectedItemRef: null,
             unresolved: [],
             verdict: "allow_stop",
           }), incompleteEpoch),
@@ -1014,7 +1139,7 @@ const tests: TestCase[] = [
       const verdict = parseCompletionVerdict(validVerdict(), epoch());
       const continuation = buildContinuation(
         verdict,
-        { agent: "build", model: { providerID: "xai", modelID: "grok-4.6" }, tools: null, variant: "high" },
+        { agent: "build", model: { providerID: "xai", modelID: "grok-4.6" }, variant: "high" },
         "docs/session-strategy-history/session_abcdef123456.md",
         false,
       );
@@ -1031,104 +1156,226 @@ const tests: TestCase[] = [
     run: () => {
       assertThrows(
         () => parseCompletionVerdict(validVerdict({ unresolved: [], requirementMatrix: [{ evidenceRefs: [], requirementRef: "r", status: "complete" }], verdict: "continue" }), epoch()),
-        "continue verdict requires at least one unresolved",
+        "continue verdict requires a non-empty runnable frontier and unresolved requirement",
         "Empty continue payload must fail closed.",
       );
     },
   },
   {
-    name: "critical: owner_required without ownerBoundary is invalid",
+    name: "critical: schema-v1 and product decision without an exact boundary are invalid",
     run: () => {
       assertThrows(
+        () => parseCompletionVerdict({ ...validVerdict(), schemaVersion: 1 } as never, epoch()),
+        "schemaVersion",
+        "Retained schema-v1 verdicts must be stale for new effects.",
+      );
+      assertThrows(
         () => parseCompletionVerdict(validVerdict({
-          verdict: "owner_required",
+          verdict: "product_decision_required",
           ownerBoundary: null,
-          unresolved: [],
-          requirementMatrix: [{ evidenceRefs: [], requirementRef: "r", status: "owner_required" }],
-        }), epoch()),
-        "ownerBoundary",
-        "owner_required must carry an exact boundary.",
+          parkedDecisionRefs: ["decision_product"],
+          questionAction: "present-product-decision",
+          requirementMatrix: [{ evidenceRefs: [], requirementRef: "r", status: "product_decision_required" }],
+          runnableItemRefs: [],
+          selectedItemRef: null,
+        }), epoch({ completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("product-decision") }) })),
+        "exact empty-frontier product decision",
+        "A product decision must carry its exact structured boundary.",
       );
     },
   },
   {
-    name: "critical: structured ownerBoundary object is canonical; string/legacy shapes fail closed",
+    name: "critical: structured product ownerBoundary is canonical and correlated to its parked decision",
     run: () => {
-      // Live incident: arbiter returned schema-valid {decision,reason,evidenceRefs[]} while the
-      // prior parser required a string, so owner_required retried with the question still open.
       const structured = {
-        decision: "Owner must choose the protected action",
-        reason: "The action requires owner authority",
-        evidenceRefs: ["event_ref_1"],
+        affectedItemRefs: ["item_product_decision"],
+        consequences: ["The selected product behavior changes."],
+        decision: "Select the accepted product behavior.",
+        evidenceRefs: ["evidence_product"],
+        resumeCondition: "The owner selects one product outcome.",
       };
+      const productEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("product-decision") }),
+      });
+      const productVerdict = validVerdict({
+        verdict: "product_decision_required",
+        ownerBoundary: structured,
+        parkedDecisionRefs: ["decision_product"],
+        questionAction: "present-product-decision",
+        requirementMatrix: [{ evidenceRefs: ["evidence_product"], requirementRef: "r", status: "product_decision_required" }],
+        runnableItemRefs: [],
+        selectedItemRef: null,
+      });
       const parsed = parseCompletionVerdict(validVerdict({
-        verdict: "owner_required",
-        ownerBoundary: structured as never,
-        unresolved: [],
-        requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
-      }), epoch());
-      assert(parsed.verdict === "owner_required", "Structured owner_required must parse.");
+        ...productVerdict,
+      }), productEpoch);
+      assert(parsed.verdict === "product_decision_required", "Structured product decision must parse.");
       assert(parsed.ownerBoundary?.decision === structured.decision, "decision must be preserved.");
-      assert(parsed.ownerBoundary?.reason === structured.reason, "reason must be preserved.");
       assert(
         JSON.stringify(parsed.ownerBoundary?.evidenceRefs) === JSON.stringify(structured.evidenceRefs),
         "evidenceRefs must be preserved.",
       );
 
-      // Text path must accept the same structured JSON the hidden arbiter emits.
       const fromText = parseCompletionVerdictText(
-        [{ type: "text", text: JSON.stringify(validVerdict({
-          verdict: "owner_required",
-          ownerBoundary: structured as never,
-          unresolved: [],
-          requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
-        })) }],
-        epoch(),
+        [{ type: "text", text: JSON.stringify(productVerdict) }],
+        productEpoch,
       );
       assert(
         fromText.ownerBoundary?.decision === structured.decision,
         "JSON text path must accept structured ownerBoundary.",
       );
 
-      // Prior string-only contract would accept this; current contract must reject it.
       assertThrows(
         () => parseCompletionVerdict(validVerdict({
-          verdict: "owner_required",
+          ...productVerdict,
           ownerBoundary: "Owner must choose the protected action" as never,
-          unresolved: [],
-          requirementMatrix: [{ evidenceRefs: [], requirementRef: "r", status: "owner_required" }],
-        }), epoch()),
+        }), productEpoch),
         "ownerBoundary",
         "String ownerBoundary must fail closed (no legacy string acceptance).",
       );
       assertThrows(
         () => parseCompletionVerdict(validVerdict({
-          verdict: "owner_required",
-          ownerBoundary: { decision: "x", reason: "", evidenceRefs: [] } as never,
-          unresolved: [],
-          requirementMatrix: [{ evidenceRefs: [], requirementRef: "r", status: "owner_required" }],
-        }), epoch()),
-        "ownerBoundary.reason",
-        "Empty reason must fail validation.",
+          ...productVerdict,
+          ownerBoundary: { ...structured, affectedItemRefs: ["item_other"] },
+        }), productEpoch),
+        "does not match the parked decision",
+        "Affected items must match the parked product decision.",
       );
       assertThrows(
         () => parseCompletionVerdict(validVerdict({
           verdict: "continue",
-          ownerBoundary: structured as never,
+          ownerBoundary: structured,
         }), epoch()),
         "ownerBoundary",
-        "Non-owner verdict must not carry ownerBoundary.",
+        "A continue verdict must not carry ownerBoundary.",
       );
       assertThrows(
         () => parseCompletionVerdict(validVerdict({
           verdict: "allow_stop",
+          runnableItemRefs: [],
+          selectedItemRef: null,
           unresolved: [],
           requirementMatrix: [{ evidenceRefs: ["e"], requirementRef: "r", status: "complete" }],
-          ownerBoundary: structured as never,
-        }), epoch()),
-        "ownerBoundary",
+          ownerBoundary: structured,
+        }), epoch({ completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("complete") }) })),
+        "allow_stop",
         "allow_stop must require null ownerBoundary.",
       );
+    },
+  },
+  {
+    name: "critical: frontier verdict cross-fields enforce runnable, waiting, question, and epoch controls",
+    run: () => {
+      const partialEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: partialProductFrontierFixture() }),
+      });
+      const productBoundary = {
+        affectedItemRefs: ["item_product_blocked"],
+        consequences: ["The selected product behavior changes."],
+        decision: "Select the accepted product behavior.",
+        evidenceRefs: ["evidence_product"],
+        resumeCondition: "The owner selects one product outcome.",
+      };
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          ownerBoundary: productBoundary,
+          parkedDecisionRefs: ["decision_product"],
+          questionAction: "present-product-decision",
+          requirementMatrix: [{ evidenceRefs: ["evidence_product"], requirementRef: "r", status: "product_decision_required" }],
+          selectedItemRef: null,
+          verdict: "product_decision_required",
+        }), partialEpoch),
+        "exact empty-frontier product decision",
+        "Runnable work must reject a premature product decision.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          deferredGateRefs: ["gate_product"],
+          resumeCondition: "Wait for a technical recovery.",
+          selectedItemRef: null,
+          verdict: "waiting",
+          waitKind: "technical",
+        }), partialEpoch),
+        "exact empty-frontier non-product gates",
+        "Runnable work must reject a waiting verdict.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          requirementMatrix: [{ evidenceRefs: ["evidence_complete"], requirementRef: "r", status: "complete" }],
+          selectedItemRef: null,
+          unresolved: [],
+          verdict: "allow_stop",
+        }), partialEpoch),
+        "complete frontier closure",
+        "Runnable work must reject allow_stop.",
+      );
+
+      const request = normalizeQuestionRequest({
+        id: "question_frontier_defer",
+        questions: [{ custom: false, header: "Blocker", multiple: false, options: [
+          { label: "A", description: "First product option" },
+          { label: "B", description: "Second product option" },
+        ], question: "Which product outcome should apply?" }],
+      });
+      const questionEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: partialProductFrontierFixture() }),
+        kind: "question",
+        questionRequest: request,
+      });
+      const deferred = parseCompletionVerdict(validVerdict({
+        parkedDecisionRefs: ["decision_product"],
+        questionAction: "defer",
+      }), questionEpoch);
+      assert(
+        deferred.verdict === "continue" && deferred.selectedItemRef === "item_runnable",
+        "A question audit may defer exactly one blocker class while selecting runnable work.",
+      );
+      assertThrows(
+        () => parseCompletionVerdict(validVerdict({
+          deferredGateRefs: ["gate_product"],
+          parkedDecisionRefs: ["decision_product"],
+          questionAction: "defer",
+        }), questionEpoch),
+        "exactly one blocker-ref class",
+        "Question deferral must not mix parked-decision and gate classifications.",
+      );
+
+      const waitingEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("waiting") }),
+      });
+      const waiting = parseCompletionVerdict(validVerdict({
+        deferredGateRefs: ["gate_technical"],
+        resumeCondition: "A causally distinct recovery becomes available.",
+        runnableItemRefs: [],
+        selectedItemRef: null,
+        verdict: "waiting",
+        waitKind: "technical",
+      }), waitingEpoch);
+      assert(waiting.verdict === "waiting" && waiting.waitKind === "technical", "Exact non-product gates must enter matching waiting.");
+      const waitingQuestionEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("waiting") }),
+        kind: "question",
+        questionRequest: request,
+      });
+      const deferredWaiting = parseCompletionVerdict(validVerdict({
+        deferredGateRefs: ["gate_technical"],
+        questionAction: "defer",
+        resumeCondition: "A causally distinct recovery becomes available.",
+        runnableItemRefs: [],
+        selectedItemRef: null,
+        verdict: "waiting",
+        waitKind: "technical",
+      }), waitingQuestionEpoch);
+      assert(deferredWaiting.questionAction === "defer", "An empty non-product question frontier must accept exact deferral controls.");
+      const paused = parseCompletionVerdict(validVerdict({
+        selectedItemRef: null,
+        verdict: "user_paused",
+      }), epoch());
+      assert(paused.verdict === "user_paused" && paused.ownerBoundary == null, "Explicit pause evidence must remain owner-scope-free.");
+
+      assert(executionEpochDisposition({ continuationCycles: 1, maxCycles: 2, repeated: false }) === "continue", "An available epoch budget must continue.");
+      assert(executionEpochDisposition({ continuationCycles: 2, maxCycles: 2, repeated: false }) === "rollover", "New progress at exhaustion must roll over the execution epoch.");
+      assert(executionEpochDisposition({ continuationCycles: 2, maxCycles: 2, repeated: true }) === "wait-budget", "Repeated exhausted work must wait without inventing owner scope.");
     },
   },
   {
@@ -1407,14 +1654,19 @@ const tests: TestCase[] = [
   {
     name: "critical: allow_stop verdict parses without unresolved work",
     run: () => {
+      const completeEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("complete") }),
+      });
       const verdict = parseCompletionVerdict(validVerdict({
         verdict: "allow_stop",
+        runnableItemRefs: [],
+        selectedItemRef: null,
         unresolved: [],
         requirementMatrix: [{ evidenceRefs: ["e1"], requirementRef: "r1", status: "complete" }],
-      }), epoch());
+      }), completeEpoch);
       assert(verdict.verdict === "allow_stop", "allow_stop must parse.");
       const text = JSON.stringify(verdict);
-      const fromText = parseCompletionVerdictText([{ type: "text", text }], epoch());
+      const fromText = parseCompletionVerdictText([{ type: "text", text }], completeEpoch);
       assert(fromText.verdict === "allow_stop", "Whole-text JSON transport must accept allow_stop.");
     },
   },
@@ -1448,12 +1700,16 @@ const tests: TestCase[] = [
         }],
       });
       const questionEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("complete") }),
         kind: "question",
         questionRequest: request,
       });
       const autonomous = parseCompletionVerdict(validVerdict({
+        questionAction: "answer",
         questionAnswers: [["Recommended"]],
         requirementMatrix: [{ evidenceRefs: ["e1"], requirementRef: "r1", status: "complete" }],
+        runnableItemRefs: [],
+        selectedItemRef: null,
         unresolved: [],
         verdict: "allow_stop",
       }), questionEpoch);
@@ -1465,8 +1721,11 @@ const tests: TestCase[] = [
 
       assertThrows(
         () => parseCompletionVerdict(validVerdict({
+          questionAction: "answer",
           questionAnswers: [["Invented"]],
           requirementMatrix: [{ evidenceRefs: ["e1"], requirementRef: "r1", status: "complete" }],
+          runnableItemRefs: [],
+          selectedItemRef: null,
           unresolved: [],
           verdict: "allow_stop",
         }), questionEpoch),
@@ -1474,34 +1733,49 @@ const tests: TestCase[] = [
         "Unoffered label must fail closed.",
       );
 
-      const owner = parseCompletionVerdict(validVerdict({
+      const productEpoch = epoch({
+        completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("product-decision") }),
+        kind: "question",
+        questionRequest: request,
+      });
+      const product = parseCompletionVerdict(validVerdict({
         ownerBoundary: {
-          decision: "Owner must choose the protected action",
-          evidenceRefs: ["event_ref_1"],
-          reason: "The action requires owner authority",
+          affectedItemRefs: ["item_product_decision"],
+          consequences: ["The selected product behavior changes."],
+          decision: "Select the accepted product behavior.",
+          evidenceRefs: ["evidence_product"],
+          resumeCondition: "The owner selects one product outcome.",
         },
+        parkedDecisionRefs: ["decision_product"],
+        questionAction: "present-product-decision",
         questionAnswers: null,
-        requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
-        unresolved: [],
-        verdict: "owner_required",
-      }), questionEpoch);
-      assert(owner.verdict === "owner_required", "Owner-required question verdict must parse.");
-      assert(owner.questionAnswers === null, "Owner-required question verdict must carry null answers.");
+        requirementMatrix: [{ evidenceRefs: ["evidence_product"], requirementRef: "r", status: "product_decision_required" }],
+        runnableItemRefs: [],
+        selectedItemRef: null,
+        verdict: "product_decision_required",
+      }), productEpoch);
+      assert(product.verdict === "product_decision_required", "Product decision question verdict must parse.");
+      assert(product.questionAnswers === null, "Product decision question verdict must carry null answers.");
 
       assertThrows(
         () => parseCompletionVerdict(validVerdict({
           ownerBoundary: {
-            decision: "Owner must choose the protected action",
-            evidenceRefs: ["event_ref_1"],
-            reason: "The action requires owner authority",
+            affectedItemRefs: ["item_product_decision"],
+            consequences: ["The selected product behavior changes."],
+            decision: "Select the accepted product behavior.",
+            evidenceRefs: ["evidence_product"],
+            resumeCondition: "The owner selects one product outcome.",
           },
+          parkedDecisionRefs: ["decision_product"],
+          questionAction: "present-product-decision",
           questionAnswers: [["Recommended"]],
-          requirementMatrix: [{ evidenceRefs: ["event_ref_1"], requirementRef: "r", status: "owner_required" }],
-          unresolved: [],
-          verdict: "owner_required",
-        }), questionEpoch),
+          requirementMatrix: [{ evidenceRefs: ["evidence_product"], requirementRef: "r", status: "product_decision_required" }],
+          runnableItemRefs: [],
+          selectedItemRef: null,
+          verdict: "product_decision_required",
+        }), productEpoch),
         "questionAnswers",
-        "Owner-required question verdict must not carry answers.",
+        "Product decision question verdict must not carry answers.",
       );
     },
   },
@@ -1519,7 +1793,8 @@ const tests: TestCase[] = [
         metadata: { completionGuard: { grindEnabled: true } },
       }));
       assert(enabled.grindEnabled === true, "Explicit boolean true must enable grind.");
-      assert(enabled.state === "running", "Explicitly enabled unpaused root must start running.");
+      assert(enabled.state === "frontier-reconciling", "A legacy enabled unpaused root must reconcile before ordinary effects.");
+      assert(enabled.frontierStatus === "absent" && enabled.frontierError === "missing-frontier", "Legacy metadata must expose the missing frontier without inferring work.");
     },
   },
   {
@@ -1650,7 +1925,7 @@ const tests: TestCase[] = [
         paused: false,
         grindEnabled: true,
         guardTurnPending: false,
-        promptContext: { agent: null, model: null, tools: null, variant: null },
+        promptContext: { agent: null, model: null, variant: null },
         root: sessionFixture({ id: root, directory: "." }),
       } as unknown as RootState;
 
@@ -1851,7 +2126,7 @@ const tests: TestCase[] = [
         journalDigest: "journal_runaudit",
         leaseGeneration: 0,
         revisionDigest: "revision_runaudit",
-        todoDigest: "todo_runaudit",
+        todoDigest: "b".repeat(64),
       };
       const inspection: RootInspection = {
         context: { assistantEvidence: [], background: [], humanMessages: [] },
@@ -2037,10 +2312,13 @@ const tests: TestCase[] = [
         journalDigest: "journal_qreply",
         leaseGeneration: 0,
         revisionDigest: "revision_qreply",
-        todoDigest: "todo_qreply",
+        todoDigest: "c".repeat(64),
       };
       const questionEpoch = epoch({
         auditID: "audit_qreply_disable_1",
+        completionEvidence: completionEvidenceFixture({
+          workFrontier: frontierProjectionFixture("complete", revision),
+        }),
         inspected: revision,
         kind: "question",
         questionRequest: request,
@@ -2050,9 +2328,12 @@ const tests: TestCase[] = [
       const verdict = parseCompletionVerdict(validVerdict({
         auditID: questionEpoch.auditID,
         inspectedRevision: revision.revisionDigest,
+        questionAction: "answer",
         questionAnswers: [["Recommended"]],
         requirementMatrix: [{ evidenceRefs: ["e1"], requirementRef: "r1", status: "complete" }],
         rootSessionRef: rootRef,
+        runnableItemRefs: [],
+        selectedItemRef: null,
         unresolved: [],
         verdict: "allow_stop",
       }), questionEpoch);
@@ -2066,6 +2347,7 @@ const tests: TestCase[] = [
       };
       state.questions.set(requestID, {
         auditID: questionEpoch.auditID,
+        deferredVerdict: null,
         replyObserved: false,
         request,
         state: "open",
@@ -2103,6 +2385,240 @@ const tests: TestCase[] = [
         `Disable during reply must retain fail-closed pending provenance; pending=${state.pendingAutonomousQuestionRefs.size}`,
       );
       assert(state.activeAudit == null, "Disable must clear the active question audit epoch.");
+    },
+  },
+  {
+    name: "critical: deferred questions persist before rejection and continue only after idle",
+    run: async () => {
+      if (!isBunRuntime) {
+        const self = fileURLToPath(import.meta.url);
+        const result = spawnSync("bun", [self, QUESTION_DEFER_ORACLE_FLAG], {
+          cwd: path.resolve(path.dirname(self), ".."),
+          encoding: "utf8",
+          shell: false,
+        });
+        const combined = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+        assert(result.status === 0, `Bun question-deferral oracle failed (status=${result.status}):\n${combined}`);
+        assert(
+          combined.includes("PASS critical: deferred questions persist before rejection and continue only after idle"),
+          `Bun question-deferral oracle did not report PASS:\n${combined}`,
+        );
+        return;
+      }
+
+      const { SessionCompletionController } = await import(
+        "../global/extensions/session-completion-guard/controller.ts"
+      );
+      const roots = new Map<string, Session>();
+      const statuses = new Map<string, "busy" | "idle">();
+      const rejectSnapshots = new Map<string, Record<string, unknown>>();
+      const rejectEntered = new Set<string>();
+      const promptCalls: string[] = [];
+      let releaseRaceReject!: () => void;
+      const raceRejectGate = new Promise<void>((resolve) => {
+        releaseRaceReject = resolve;
+      });
+      const client = {
+        question: {
+          reject: async ({ requestID }: { requestID: string }) => {
+            const rootID = requestID.replace("question_", "session_");
+            const guard = roots.get(rootID)?.metadata?.completionGuard as Record<string, unknown> | undefined;
+            rejectSnapshots.set(requestID, guard ?? {});
+            rejectEntered.add(requestID);
+            if (requestID === "question_race") await raceRejectGate;
+            if (requestID === "question_unknown") throw new Error("transport outcome unavailable");
+            return { data: true };
+          },
+          reply: async () => ({ data: true }),
+        },
+        session: {
+          get: async ({ sessionID }: { sessionID: string }) => ({ data: roots.get(sessionID) }),
+          promptAsync: async ({ sessionID }: { sessionID: string }) => {
+            promptCalls.push(sessionID);
+            return { data: true };
+          },
+          status: async () => ({
+            data: Object.fromEntries([...statuses].map(([sessionID, type]) => [sessionID, { type }])),
+          }),
+          update: async ({ sessionID, metadata }: { sessionID: string; metadata?: Session["metadata"] }) => {
+            const current = roots.get(sessionID);
+            if (current == null) return { error: { name: "NotFoundError" } };
+            const updated = { ...current, metadata };
+            roots.set(sessionID, updated);
+            return { data: updated };
+          },
+        },
+        tui: { showToast: async () => ({ data: true }) },
+      };
+      const controller = new SessionCompletionController(
+        { client: { app: { log: async () => ({ data: true }) } }, directory: "." } as never,
+        { auditWindow: { enabled: false }, statusToasts: false },
+        client as never,
+      );
+      type ControllerProbe = {
+        applyQuestionVerdict(state: RootState, auditEpoch: AuditEpoch, verdict: CompletionVerdict): Promise<void>;
+        currentInspection(state: RootState, auditEpoch: AuditEpoch): Promise<RootInspection | null>;
+        onEvent(event: Record<string, unknown>): Promise<void>;
+        roots: Map<string, RootState>;
+      };
+      const probe = controller as unknown as ControllerProbe;
+      probe.currentInspection = async () => ({
+        context: { background: [] },
+        journal: { relativePath: "history.md" },
+      } as RootInspection);
+      const makeDeferral = (suffix: string, disposition: "continue" | "waiting" = "continue"): {
+        auditEpoch: AuditEpoch;
+        requestID: string;
+        state: RootState;
+        verdict: CompletionVerdict;
+      } => {
+        const rootID = `session_${suffix}`;
+        const requestID = `question_${suffix}`;
+        const rootRef = hashRef("session", rootID);
+        const request = normalizeQuestionRequest({
+          id: requestID,
+          tool: { callID: `call_${suffix}` },
+          questions: [{
+            custom: false,
+            header: "Decision",
+            multiple: false,
+            options: [
+              { label: "A", description: "First product option" },
+              { label: "B", description: "Second product option" },
+            ],
+            question: "Which product outcome should apply?",
+          }],
+        });
+        const revision = {
+          assistantRef: `assistant_${suffix}`,
+          diffDigest: `diff_${suffix}`,
+          humanRef: "human_1",
+          journalDigest: `journal_${suffix}`,
+          leaseGeneration: 0,
+          revisionDigest: `revision_${suffix}`,
+          todoDigest: "a".repeat(64),
+        };
+        const auditEpoch = epoch({
+          auditID: `audit_${suffix}`,
+          completionEvidence: completionEvidenceFixture({
+            workFrontier: disposition === "waiting"
+              ? frontierProjectionFixture("waiting", revision)
+              : partialProductFrontierFixture(revision),
+          }),
+          inspected: revision,
+          kind: "question",
+          questionRequest: request,
+          rootRef,
+          rootSessionID: rootID,
+        });
+        const verdict = parseCompletionVerdict(validVerdict({
+          auditID: auditEpoch.auditID,
+          ...(disposition === "waiting" ? {
+            deferredGateRefs: ["gate_technical"],
+            resumeCondition: "A causally distinct recovery becomes available.",
+            runnableItemRefs: [],
+            selectedItemRef: null,
+            verdict: "waiting" as const,
+            waitKind: "technical" as const,
+          } : { parkedDecisionRefs: ["decision_product"] }),
+          inspectedRevision: revision.revisionDigest,
+          questionAction: "defer",
+          rootSessionRef: rootRef,
+        }), auditEpoch);
+        const frontier = auditEpoch.completionEvidence?.workFrontier?.assessment?.frontier;
+        const root = sessionFixture({
+          id: rootID,
+          metadata: { completionGuard: { grindEnabled: true, schemaVersion: 2, workFrontier: frontier } },
+        });
+        roots.set(rootID, root);
+        statuses.set(rootID, "busy");
+        const state = initialRootState(root);
+        state.activeAudit = auditEpoch;
+        state.auditAbort = new AbortController();
+        state.frontierStatus = "current";
+        state.state = "question-auditing";
+        state.questions.set(requestID, {
+          auditID: auditEpoch.auditID,
+          deferredVerdict: null,
+          replyObserved: false,
+          request,
+          state: "open",
+        });
+        probe.roots.set(rootID, state);
+        return { auditEpoch, requestID, state, verdict };
+      };
+
+      const continued = makeDeferral("continue");
+      await probe.applyQuestionVerdict(continued.state, continued.auditEpoch, continued.verdict);
+      const pendingAtReject = rejectSnapshots.get(continued.requestID)?.pendingQuestionDeferralProvenance;
+      assert(Array.isArray(pendingAtReject) && pendingAtReject.length === 1, "Deferral provenance must persist before question.reject.");
+      assert(continued.state.questions.get(continued.requestID)?.state === "guard-deferred", "Successful rejection must confirm the deferral.");
+      assert(promptCalls.length === 0, "Successful rejection must not continue before post-rejection idle.");
+      await probe.onEvent({
+        properties: { requestID: continued.requestID, sessionID: "session_continue" },
+        type: "question.rejected",
+      });
+      assert(continued.state.questions.get(continued.requestID)?.state === "guard-deferred", "Official rejection event must not misclassify a guard-deferred question as human-resolved.");
+      statuses.set("session_continue", "idle");
+      await probe.onEvent({ properties: { sessionID: "session_continue" }, type: "session.idle" });
+      assert(promptCalls.join(",") === "session_continue", "Only post-rejection idle may inject the selected continuation.");
+      assert(continued.state.pendingQuestionDeferralProvenance.size === 0, "Confirmed deferral must clear pending provenance.");
+      assert(continued.state.deferredQuestionProvenance.size === 1, "Confirmed deferral provenance must remain persisted.");
+
+      const waiting = makeDeferral("waiting", "waiting");
+      await probe.applyQuestionVerdict(waiting.state, waiting.auditEpoch, waiting.verdict);
+      assert(waiting.state.state === "question-deferring", "Deferred waiting must remain pending until post-rejection idle.");
+      statuses.set("session_waiting", "idle");
+      await probe.onEvent({ properties: { sessionID: "session_waiting" }, type: "session.idle" });
+      assert(waiting.state.state === "waiting" && waiting.state.waitReason?.startsWith("technical:"), "Post-rejection idle must enter resumable waiting.");
+      assert(promptCalls.join(",") === "session_continue", "Deferred waiting must not inject a root continuation.");
+
+      const raced = makeDeferral("race");
+      const racedRun = probe.applyQuestionVerdict(raced.state, raced.auditEpoch, raced.verdict);
+      while (!rejectEntered.has(raced.requestID)) await sleep(5);
+      await probe.onEvent({
+        properties: { requestID: raced.requestID, sessionID: "session_race" },
+        type: "question.replied",
+      });
+      releaseRaceReject();
+      await racedRun;
+      assert(raced.state.questions.get(raced.requestID)?.state === "human-replied", "A human reply racing rejection must take precedence.");
+      assert(raced.state.deferredQuestionProvenance.size === 0, "Human precedence must not confirm synthetic deferral authority.");
+      assert(raced.state.pendingQuestionDeferralProvenance.size === 0, "Observed human reply must safely clear pending deferral provenance.");
+      assert(raced.state.frontierStatus === "stale", "Human precedence must invalidate the pre-reply frontier basis.");
+      assert(!promptCalls.includes("session_race"), "Human precedence must suppress synthetic continuation.");
+
+      const unknown = makeDeferral("unknown");
+      await probe.applyQuestionVerdict(unknown.state, unknown.auditEpoch, unknown.verdict);
+      assert(unknown.state.questions.get(unknown.requestID)?.state === "resolution-unknown", "Uncertain rejection must fail closed.");
+      assert(unknown.state.restartRecoveryAction === "question-deferral-resolution-unknown", "Uncertain rejection must expose explicit recovery state.");
+      assert(unknown.state.pendingQuestionDeferralProvenance.size === 1, "Uncertain rejection must preserve pending provenance.");
+      assert(!promptCalls.includes("session_unknown"), "Uncertain rejection must not continue.");
+    },
+  },
+  {
+    name: "critical: restart preserves unresolved question deferral as unknown",
+    run: () => {
+      const root = sessionFixture({
+        metadata: {
+          completionGuard: {
+            grindEnabled: true,
+            pendingQuestionDeferralProvenance: [{
+              blockerKind: "gate",
+              blockerRef: "gate_technical",
+              callRef: "call_abcdef123456",
+              disposition: "waiting",
+              requestRef: "question_abcdef123456",
+              selectedItemRef: null,
+            }],
+            schemaVersion: 2,
+          },
+        },
+      });
+      const state = initialRootState(root);
+      assert(state.state === "error", "Restart must not infer completion for a pending question rejection.");
+      assert(state.restartRecoveryAction === "question-deferral-resolution-unknown", "Restart must expose unresolved rejection recovery.");
+      assert(state.pendingQuestionDeferralProvenance.size === 1, "Restart must preserve valid pending deferral provenance.");
     },
   },
   {
@@ -2223,46 +2739,25 @@ const tests: TestCase[] = [
               promptBodies.push({ sessionID: args.sessionID, text });
               promptOrdinal += 1;
               if (promptOrdinal === 1) {
-                // Malformed owner_required mirrors the live incident parser failure.
-                const invalid = {
-                  schemaVersion: 1,
-                  auditID: "audit_retry_amplify_1",
-                  claimMatrix: [],
-                  rootSessionRef: rootRef,
-                  inspectedRevision: "will-be-rewritten",
-                  verdict: "owner_required",
-                  confidence: "high",
-                  goalSummary: "Need owner decision",
-                  evidenceGaps: [],
-                  evidenceRefs: [],
-                  ownerBoundary: null,
-                  questionAnswers: null,
-                  requirementMatrix: [{
-                    evidenceRefs: [],
-                    requirementRef: "req_1",
-                    status: "owner_required",
-                  }],
-                  unresolved: [],
-                  strategyAssessment: {
-                    fingerprint: "fp_retry",
-                    prohibitedStrategies: [],
-                    repeated: false,
-                    requiredRetryEvidence: [],
-                  },
-                };
-                // inspectedRevision is filled after inspection is known (below via closure rewrite).
                 return {
                   data: {
-                    info: {},
-                    parts: [{ type: "text", text: JSON.stringify(invalid) }],
+                    info: {
+                      error: {
+                        name: "ProviderUnavailableError",
+                        message: "Provider temporarily unavailable",
+                      },
+                    },
+                    parts: [],
                   },
                 };
               }
               const allowStop = {
-                schemaVersion: 1,
+                schemaVersion: 2,
                 auditID: "audit_retry_amplify_1",
                 claimMatrix: [],
+                deferredGateRefs: [],
                 rootSessionRef: rootRef,
+                frontierGeneration: 1,
                 inspectedRevision: "will-be-rewritten",
                 verdict: "allow_stop",
                 confidence: "high",
@@ -2270,12 +2765,17 @@ const tests: TestCase[] = [
                 evidenceGaps: [],
                 evidenceRefs: ["evidence_1"],
                 ownerBoundary: null,
+                parkedDecisionRefs: [],
+                questionAction: null,
                 questionAnswers: null,
                 requirementMatrix: [{
                   evidenceRefs: ["evidence_1"],
                   requirementRef: "req_1",
                   status: "complete",
                 }],
+                resumeCondition: null,
+                runnableItemRefs: [],
+                selectedItemRef: null,
                 unresolved: [],
                 strategyAssessment: {
                   fingerprint: "fp_retry",
@@ -2283,6 +2783,7 @@ const tests: TestCase[] = [
                   repeated: false,
                   requiredRetryEvidence: [],
                 },
+                waitKind: null,
               };
               return {
                 data: {
@@ -2386,6 +2887,7 @@ const tests: TestCase[] = [
               text: evidenceMarker,
               time: null,
             }],
+            workFrontier: frontierProjectionFixture("complete", inspection.revision),
           }),
           inspected: inspection.revision,
           kind: "completion",
@@ -2434,8 +2936,8 @@ const tests: TestCase[] = [
           "Retry prompt must carry bounded schema feedback, not a silent re-prompt.",
         );
         assert(
-          /ownerBoundary/i.test(retry.text),
-          `Retry feedback must surface the parser failure cause; retry=${retry.text.slice(0, 400)}`,
+          retry.text.includes("Completion arbiter returned an assistant error"),
+          `Retry feedback must surface the transient arbiter failure cause; retry=${retry.text.slice(0, 400)}`,
         );
         assert(
           retry.text.length < 2_000 && retry.text.length < first.text.length / 2,
@@ -2443,7 +2945,7 @@ const tests: TestCase[] = [
         );
         assert(
           promptAsyncCalls === 0,
-          `Invalid first response and allow_stop must not inject root continuation; promptAsyncCalls=${promptAsyncCalls}`,
+          `Transient first response and allow_stop must not inject root continuation; promptAsyncCalls=${promptAsyncCalls}`,
         );
         assert(epoch.attempt === 2, `Expected two attempts on the same epoch, got attempt=${epoch.attempt}`);
         assert(
@@ -2678,11 +3180,7 @@ const tests: TestCase[] = [
       assert(result.error == null, `ready-during-settle must not fail: ${result.error?.message ?? "unknown"}`);
       assert(result.lookups >= 2, `must retry provider-free lookup until ready, lookups=${result.lookups}`);
       assert(result.created === 1, `must create exactly one child after readiness, created=${result.created}`);
-      assert(result.tools != null, "ready route must return a tool map");
-      assert(
-        Object.values(result.tools ?? {}).every((enabled) => enabled === false),
-        `hidden route must disable every tool before child creation, tools=${JSON.stringify(result.tools)}`,
-      );
+      assert(!result.routeHasTools, "Ready hidden route must not filter the child tool surface.");
     },
   },
   {
@@ -2799,8 +3297,25 @@ const tests: TestCase[] = [
         "../global/extensions/session-completion-guard/controller.ts"
       );
       const root = sessionFixture({ id: "session_root_certificate_recheck", directory: "." });
+      const frontierTaskDigest = stableDigest([]);
+      const workFrontier = materializeWorkFrontier({
+        acceptedOutcomeRef: "outcome_certificate_recheck",
+        expectedGeneration: 0,
+        gates: [],
+        items: [{
+          dependsOn: [],
+          evidenceRefs: ["evidence_certificate"],
+          gateRefs: [],
+          id: "item_certificate",
+          requirementRefs: ["requirement_certificate"],
+          status: "complete",
+        }],
+        parkedDecisions: [],
+        progressFingerprint: "progress_certificate",
+      }, { basisHumanRef: "none", currentGeneration: 0, taskStateDigest: frontierTaskDigest }).frontier;
       const state = {
         ...initialRootState(root),
+        frontierStatus: "current",
         grindEnabled: true,
         guardTurnPending: true,
         state: "settling-idle",
@@ -2812,6 +3327,7 @@ const tests: TestCase[] = [
           reason: null,
           status: "waiting",
         },
+        workFrontier,
       } as RootState;
       const controller = new SessionCompletionController(
         { client: { app: { log: async () => ({}) } }, directory: "." } as never,
@@ -2854,7 +3370,7 @@ const tests: TestCase[] = [
       });
       probe.childStatuses = async () => [];
       probe.inspectRoot = async () => ({
-        revision: { leaseGeneration: 0, revisionDigest: "revision_certificate_recheck" },
+        revision: { humanRef: "none", leaseGeneration: 0, revisionDigest: "revision_certificate_recheck", todoDigest: frontierTaskDigest },
       } as RootInspection);
       probe.tryTerminalCertificate = async () => {
         validatorCalls += 1;
@@ -2885,7 +3401,7 @@ const tests: TestCase[] = [
       leaseProbe.preflight = originalPreflight;
 
       probe.inspectRoot = async () => ({
-        revision: { leaseGeneration: 1, revisionDigest: "revision_certificate_drift" },
+        revision: { humanRef: "none", leaseGeneration: 1, revisionDigest: "revision_certificate_drift", todoDigest: frontierTaskDigest },
       } as RootInspection);
       await probe.handleSettledIdle(state, 0);
       if (state.settleTimer == null) {
@@ -2895,7 +3411,7 @@ const tests: TestCase[] = [
       state.settleTimer = null;
 
       probe.inspectRoot = async () => ({
-        revision: { leaseGeneration: 0, revisionDigest: "revision_certificate_recheck" },
+        revision: { humanRef: "none", leaseGeneration: 0, revisionDigest: "revision_certificate_recheck", todoDigest: frontierTaskDigest },
       } as RootInspection);
       await probe.handleSettledIdle(state, 0);
       assert(validatorCalls === 1, "Stable generation must reach terminal certificate validation exactly once.");
@@ -3110,6 +3626,514 @@ const tests: TestCase[] = [
     },
   },
   {
+    name: "critical: grind frontier tool derives root basis and atomically preserves the last valid generation",
+    run: async () => {
+      if (!isBunRuntime) {
+        const self = fileURLToPath(import.meta.url);
+        const result = spawnSync("bun", [self, FRONTIER_TOOL_ORACLE_FLAG], {
+          cwd: path.resolve(path.dirname(self), ".."),
+          encoding: "utf8",
+          shell: false,
+        });
+        const combined = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+        assert(result.status === 0, `Bun frontier-tool oracle failed (status=${result.status}):\n${combined}`);
+        assert(combined.includes("PASS critical: grind frontier tool derives root basis"), `Bun frontier-tool oracle did not report PASS:\n${combined}`);
+        return;
+      }
+      const { SessionCompletionController } = await import(
+        "../global/extensions/session-completion-guard/controller.ts"
+      );
+      const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+      const seedPath = path.join(repositoryRoot, "tools", "proofs", "fixtures", "session-completion-guard", "grind-frontier-v1", "grind-frontier-v1.seed.json");
+      const seed = JSON.parse(fs.readFileSync(seedPath, "utf8")) as { scenarios: Array<Record<string, unknown>> };
+      const scenarios = new Map(seed.scenarios.map((scenario) => [String(scenario.id), scenario]));
+      const rootID = "session_frontier_tool_root";
+      const childID = "session_frontier_tool_child";
+      const humanMessageID = "message_frontier_tool_human";
+      const todos = [{ content: "Complete the independent item", priority: "high", status: "pending" }];
+      const expectedHumanRef = hashRef("message", humanMessageID);
+      const expectedTaskDigest = stableDigest(todos);
+      let root = sessionFixture({
+        id: rootID,
+        metadata: { completionGuard: { grindEnabled: true, schemaVersion: 1 } },
+      });
+      const child = sessionFixture({ id: childID, parentID: rootID });
+      let updateCalls = 0;
+      const promptCalls: Array<Record<string, unknown>> = [];
+      const client = {
+        session: {
+          diff: async () => ({ data: [] }),
+          get: async ({ sessionID }: { sessionID: string }) => ({ data: sessionID === childID ? child : root }),
+          messages: async () => ({
+            data: [{
+              info: { id: humanMessageID, role: "user" },
+              parts: [{ type: "text", text: "Complete the accepted frontier work." }],
+            }],
+          }),
+          promptAsync: async (input: Record<string, unknown>) => {
+            promptCalls.push(input);
+            return { data: true };
+          },
+          todo: async () => ({ data: todos }),
+          update: async ({ sessionID, metadata }: { sessionID: string; metadata?: Session["metadata"] }) => {
+            assert(sessionID === rootID, "Frontier persistence must target the derived parentless root.");
+            updateCalls += 1;
+            root = { ...root, metadata };
+            return { data: root };
+          },
+        },
+        tool: { ids: async () => ({ data: ["read", "question", "task", GRIND_FRONTIER_TOOL] }) },
+        tui: { showToast: async () => ({ data: true }) },
+        v2: { session: { list: async () => ({ data: [] }) } },
+      };
+      const controller = new SessionCompletionController(
+        { client: { app: { log: async () => ({ data: true }) } }, directory: "." } as never,
+        { auditWindow: { enabled: false }, statusToasts: false },
+        client as never,
+      );
+      const hooks = await controller.start();
+      const frontierTool = (hooks.tool as unknown as Record<string, {
+        execute(args: unknown, context: unknown): Promise<{ metadata: Record<string, unknown>; output: string }>;
+      }>)[GRIND_FRONTIER_TOOL];
+      assert(frontierTool != null, "Controller start must register the plugin-owned grind_frontier tool.");
+      let toolMetadata: unknown = null;
+      const context = {
+        sessionID: rootID,
+        directory: ".",
+        worktree: ".",
+        metadata(value: unknown) { toolMetadata = value; },
+      };
+      try {
+        let childError = "";
+        try {
+          await frontierTool.execute(
+            { input: structuredClone(scenarios.get("all-product-blocked")?.input) },
+            { ...context, sessionID: childID },
+          );
+        } catch (error) {
+          childError = error instanceof Error ? error.message : String(error);
+        }
+        assert(childError.includes("parentless main root") && updateCalls === 0, "A child or specialist context must not mutate the root frontier.");
+        const cycleState = (controller as unknown as { roots: Map<string, RootState> }).roots.get(rootID);
+        assert(cycleState != null, "Frontier tool setup must retain the parentless root state.");
+        let expectedGeneration = 0;
+        for (const id of ["all-product-blocked", "complete", "non-product-waiting", "partial-product-block"]) {
+          const scenario = scenarios.get(id);
+          const candidate = structuredClone(scenario?.input) as Record<string, unknown>;
+          candidate.expectedGeneration = expectedGeneration;
+          if (id === "complete") cycleState!.continuationCycles = 3;
+          const result = await frontierTool.execute({ input: candidate }, context);
+          expectedGeneration += 1;
+          assert(result.metadata.serverGeneration === expectedGeneration, `${id} must return the next server generation.`);
+          assert(!result.output.includes(rootID) && result.metadata.rootRef === hashRef("session", rootID), "Tool output must expose only the controller-derived redacted root ref.");
+          const projection = projectPersistedWorkFrontier(root.metadata);
+          assert(projection.status === "present", `${id} must persist a readable production frontier.`);
+          assert(projection.assessment?.frontier.frontierGeneration === expectedGeneration, `${id} persisted generation mismatch.`);
+          assert(projection.assessment?.frontier.basisHumanRef === expectedHumanRef, `${id} must derive the latest human ref from root messages.`);
+          assert(projection.assessment?.frontier.taskStateDigest === expectedTaskDigest, `${id} must derive the task digest from current root todos.`);
+          const guard = root.metadata?.completionGuard as Record<string, unknown>;
+          assert(guard.schemaVersion === 2 && guard.frontierStatus === "current", `${id} must read back current schema-v2 guard metadata.`);
+          if (id === "complete") assert(cycleState!.continuationCycles === 0, "A changed progress fingerprint must reset the execution epoch.");
+        }
+        assert(toolMetadata != null, "Tool execution must publish bounded metadata through ToolContext.");
+
+        const projectionRoot = fs.mkdtempSync(path.join(os.tmpdir(), "guard-frontier-projection-"));
+        try {
+          const projectionDb = path.join(projectionRoot, "opencode.db");
+          const { Database } = await import("bun:sqlite");
+          const db = new Database(projectionDb, { create: true });
+          try {
+            db.exec("create table session (id text primary key, parent_id text, time_created integer, time_updated integer, metadata text);");
+            db.run("insert into session values (?, null, ?, ?, ?)", [rootID, 1, 2, JSON.stringify(root.metadata)]);
+          } finally {
+            db.close();
+          }
+          const projectionRunner = path.join(repositoryRoot, "tools", "proofs", "session-completion-guard-long-run.ts");
+          const projectionRun = spawnSync(process.execPath, [projectionRunner, "--internal-project", projectionDb, rootID], {
+            cwd: repositoryRoot,
+            encoding: "utf8",
+            shell: false,
+          });
+          assert(projectionRun.status === 0, `Session-delivery projection child failed: ${projectionRun.stderr}`);
+          const delivery = JSON.parse(projectionRun.stdout) as SessionDeliveryContextResult;
+          assert(delivery.workFrontier.status === "present", "Session delivery must project the persisted production frontier.");
+          assert(delivery.workFrontier.assessment?.frontier.frontierGeneration === 4, "Session delivery frontier generation mismatch.");
+          const arbiterEvidence = canonicalArbiterEvidence(delivery);
+          assert(arbiterEvidence.workFrontier.assessment?.runnableItemRefs.join(",") === "item_independent", "Canonical arbiter evidence must retain controller-derived runnable refs.");
+        } finally {
+          fs.rmSync(projectionRoot, { force: true, maxRetries: 5, recursive: true, retryDelay: 20 });
+        }
+
+        const persistedBeforeRejects = JSON.stringify((root.metadata?.completionGuard as Record<string, unknown>).workFrontier);
+        const writesBeforeRejects = updateCalls;
+        const rejected = async (id: string, expectedCode: string, expectedGenerationOverride = 4) => {
+          const scenario = scenarios.get(id);
+          const candidate = structuredClone(scenario?.input) as Record<string, unknown>;
+          if (id !== "stale-generation") candidate.expectedGeneration = expectedGenerationOverride;
+          let message = "";
+          try {
+            await frontierTool.execute({ input: candidate }, context);
+          } catch (error) {
+            message = error instanceof Error ? error.message : String(error);
+          }
+          assert(message.includes(expectedCode), `${id} must preserve validation code ${expectedCode}, got ${message || "no error"}.`);
+          assert(updateCalls === writesBeforeRejects, `${id} must not persist a partial candidate.`);
+          assert(JSON.stringify((root.metadata?.completionGuard as Record<string, unknown>).workFrontier) === persistedBeforeRejects, `${id} must preserve the last valid frontier.`);
+        };
+        await rejected("stale-generation", "stale-generation");
+        await rejected("cyclic", "dependency-cycle");
+        await rejected("malformed", "invalid-item-status");
+        await rejected("bounded-field-bytes", "limit-resumeCondition");
+        const injectedIdentity = structuredClone(scenarios.get("partial-product-block")?.input) as Record<string, unknown>;
+        injectedIdentity.expectedGeneration = 4;
+        injectedIdentity.rootSessionRef = rootID;
+        let identityError = "";
+        try {
+          await frontierTool.execute({ input: injectedIdentity }, context);
+        } catch (error) {
+          identityError = error instanceof Error ? error.message : String(error);
+        }
+        assert(identityError.includes("invalid-frontier-input"), "Caller-supplied root/human/audit identity must fail exact tool input validation.");
+        assert(updateCalls === writesBeforeRejects, "Caller-supplied identity must have no persistence effect.");
+
+        const probe = controller as unknown as {
+          reconcileWorkFrontier(state: RootState, inspection: RootInspection, reason: "missing" | "stale"): Promise<void>;
+          roots: Map<string, RootState>;
+        };
+        const state = probe.roots.get(rootID);
+        assert(state != null, "Tool execution must retain one root-correlated state.");
+        const staleTaskDigest = "a".repeat(64);
+        const staleInspection = {
+          revision: { humanRef: "human_reconciled", todoDigest: staleTaskDigest },
+        } as RootInspection;
+        await probe.reconcileWorkFrontier(state!, staleInspection, "stale");
+        await probe.reconcileWorkFrontier(state!, staleInspection, "stale");
+        assert(promptCalls.length === 1, "One stale human/task basis may inject at most one reconciliation turn.");
+        assert(!("tools" in promptCalls[0]), "Reconciliation must preserve the root's unrestricted tool surface.");
+        assert(state?.frontierStatus === "stale" && state.state === "frontier-reconciling", "Stale basis must suppress ordinary controller application.");
+      } finally {
+        await controller.dispose();
+      }
+    },
+  },
+  {
+    name: "critical: malformed persisted frontier remains visible and byte-preserved",
+    run: async () => {
+      const malformedFrontier = { schemaVersion: 99, opaque: "preserve-for-diagnosis" };
+      const root = sessionFixture({
+        id: "session_frontier_invalid_root",
+        metadata: {
+          completionGuard: {
+            frontierStatus: "invalid",
+            grindEnabled: true,
+            schemaVersion: 2,
+            workFrontier: malformedFrontier,
+          },
+        },
+      });
+      const state = initialRootState(root);
+      assert(state.state === "error" && state.frontierStatus === "invalid", "Malformed persisted state must initialize fail-closed.");
+      assert(state.frontierError === "invalid-persisted-frontier", `Malformed frontier diagnostic mismatch: ${state.frontierError ?? "none"}.`);
+      let persisted = root;
+      const reporter = new GuardStatusReporter({
+        client: {
+          session: {
+            get: async () => ({ data: persisted }),
+            update: async ({ metadata }: { metadata?: Session["metadata"] }) => {
+              persisted = { ...persisted, metadata };
+              return { data: persisted };
+            },
+          },
+          tui: { showToast: async () => ({ data: true }) },
+        } as never,
+        log: async () => { /* ignore */ },
+        statusToasts: false,
+      });
+      assert(await reporter.persist(state), "Invalid-frontier diagnostics must persist without requiring a semantic rewrite.");
+      const guard = persisted.metadata?.completionGuard as Record<string, unknown>;
+      assert(JSON.stringify(guard.workFrontier) === JSON.stringify(malformedFrontier), "Status persistence must not overwrite unreadable frontier evidence.");
+      assert(guard.frontierStatus === "invalid" && guard.frontierError === "invalid-persisted-frontier", "Persisted diagnostics must remain explicit.");
+    },
+  },
+  {
+    name: "critical: frontier verdicts drive waiting product-decision and budget-wait controller states",
+    run: async () => {
+      if (!isBunRuntime) {
+        const self = fileURLToPath(import.meta.url);
+        const result = spawnSync("bun", [self, FRONTIER_VERDICT_ORACLE_FLAG], {
+          cwd: path.resolve(path.dirname(self), ".."),
+          encoding: "utf8",
+          shell: false,
+        });
+        const combined = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+        assert(result.status === 0, `Bun frontier-verdict oracle failed (status=${result.status}):\n${combined}`);
+        assert(combined.includes("PASS critical: frontier verdicts drive waiting product-decision and budget-wait controller states"), `Bun frontier-verdict oracle did not report PASS:\n${combined}`);
+        return;
+      }
+      const { SessionCompletionController } = await import(
+        "../global/extensions/session-completion-guard/controller.ts"
+      );
+      const roots = new Map<string, Session>();
+      const promptCalls: Array<Record<string, unknown>> = [];
+      const client = {
+        session: {
+          get: async ({ sessionID }: { sessionID: string }) => ({ data: roots.get(sessionID) }),
+          promptAsync: async (input: Record<string, unknown>) => {
+            promptCalls.push(input);
+            return { data: true };
+          },
+          update: async ({ sessionID, metadata }: { sessionID: string; metadata?: Session["metadata"] }) => {
+            const current = roots.get(sessionID);
+            if (current == null) throw new Error(`Missing fixture root ${sessionID}`);
+            const updated = { ...current, metadata };
+            roots.set(sessionID, updated);
+            return { data: updated };
+          },
+        },
+        tui: { showToast: async () => ({ data: true }) },
+      };
+      const controller = new SessionCompletionController(
+        { client: { app: { log: async () => ({ data: true }) } }, directory: "." } as never,
+        { auditWindow: { enabled: false }, maxCycles: 1, statusToasts: false },
+        client as never,
+      );
+      type ControllerProbe = {
+        applyVerdict(state: RootState, auditEpoch: AuditEpoch, verdict: CompletionVerdict): Promise<void>;
+        currentInspection(state: RootState, auditEpoch: AuditEpoch): Promise<RootInspection | null>;
+        roots: Map<string, RootState>;
+      };
+      const probe = controller as unknown as ControllerProbe;
+      probe.currentInspection = async () => ({
+        context: { background: [] },
+        journal: { relativePath: "history.md" },
+      } as RootInspection);
+      const makeState = (rootID: string, auditEpoch: AuditEpoch): RootState => {
+        const projected = auditEpoch.completionEvidence?.workFrontier?.assessment;
+        if (projected == null) throw new Error("Fixture frontier projection is required");
+        const root = sessionFixture({
+          id: rootID,
+          metadata: { completionGuard: { grindEnabled: true, schemaVersion: 2, workFrontier: projected.frontier } },
+        });
+        roots.set(rootID, root);
+        const state = initialRootState(root);
+        state.activeAudit = auditEpoch;
+        state.auditAbort = new AbortController();
+        state.frontierStatus = "current";
+        state.state = "auditing";
+        probe.roots.set(rootID, state);
+        return state;
+      };
+      try {
+        const waitingRootID = "session_frontier_waiting";
+        const waitingEpoch = epoch({
+          auditID: "audit_frontier_waiting",
+          completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("waiting") }),
+          rootRef: hashRef("session", waitingRootID),
+          rootSessionID: waitingRootID,
+        });
+        const waitingState = makeState(waitingRootID, waitingEpoch);
+        const waitingVerdict = parseCompletionVerdict(validVerdict({
+          auditID: waitingEpoch.auditID,
+          deferredGateRefs: ["gate_technical"],
+          resumeCondition: "A causally distinct recovery becomes available.",
+          rootSessionRef: waitingEpoch.rootRef,
+          runnableItemRefs: [],
+          selectedItemRef: null,
+          verdict: "waiting",
+          waitKind: "technical",
+        }), waitingEpoch);
+        await probe.applyVerdict(waitingState, waitingEpoch, waitingVerdict);
+        assert(waitingState.state === "waiting" && waitingState.waitReason?.startsWith("technical:"), "A non-product gate must reach a resumable waiting state.");
+
+        const productRootID = "session_frontier_product";
+        const productEpoch = epoch({
+          auditID: "audit_frontier_product",
+          completionEvidence: completionEvidenceFixture({ workFrontier: frontierProjectionFixture("product-decision") }),
+          rootRef: hashRef("session", productRootID),
+          rootSessionID: productRootID,
+        });
+        const productState = makeState(productRootID, productEpoch);
+        const productVerdict = parseCompletionVerdict(validVerdict({
+          auditID: productEpoch.auditID,
+          ownerBoundary: {
+            affectedItemRefs: ["item_product_decision"],
+            consequences: ["The selected product behavior changes."],
+            decision: "Select the accepted product behavior.",
+            evidenceRefs: ["evidence_product"],
+            resumeCondition: "The owner selects one product outcome.",
+          },
+          parkedDecisionRefs: ["decision_product"],
+          questionAction: "present-product-decision",
+          requirementMatrix: [{ evidenceRefs: ["evidence_product"], requirementRef: "r", status: "product_decision_required" }],
+          rootSessionRef: productEpoch.rootRef,
+          runnableItemRefs: [],
+          selectedItemRef: null,
+          verdict: "product_decision_required",
+        }), productEpoch);
+        await probe.applyVerdict(productState, productEpoch, productVerdict);
+        assert(productState.state === "product-decision-required" && productState.paused, "An exact empty product frontier must pause at the product-decision state.");
+        assert(JSON.stringify(promptCalls[0]).includes("<completion_guard_product_decision>"), "Product transition must inject the bounded product-decision envelope.");
+
+        const budgetRootID = "session_frontier_budget";
+        const budgetEpoch = epoch({
+          auditID: "audit_frontier_budget",
+          rootRef: hashRef("session", budgetRootID),
+          rootSessionID: budgetRootID,
+        });
+        const budgetState = makeState(budgetRootID, budgetEpoch);
+        budgetState.continuationCycles = 1;
+        const budgetVerdict = parseCompletionVerdict(validVerdict({
+          auditID: budgetEpoch.auditID,
+          rootSessionRef: budgetEpoch.rootRef,
+          strategyAssessment: {
+            fingerprint: "fp_budget",
+            prohibitedStrategies: [],
+            repeated: true,
+            requiredRetryEvidence: ["causally-distinct-strategy"],
+          },
+        }), budgetEpoch);
+        await probe.applyVerdict(budgetState, budgetEpoch, budgetVerdict);
+        assert(
+          budgetState.state === "waiting" && budgetState.restartRecoveryAction === "execution-epoch-budget-wait",
+          "Repeated exhausted work must wait without becoming an owner handoff.",
+        );
+        assert(promptCalls.length === 1, "Waiting and budget-wait transitions must not inject blind continuation or owner prompts.");
+      } finally {
+        await controller.dispose();
+      }
+    },
+  },
+  {
+    name: "critical: restart marks retained schema-v1 audit state stale before any new effect",
+    run: async () => {
+      if (!isBunRuntime) {
+        const self = fileURLToPath(import.meta.url);
+        const result = spawnSync("bun", [self, FRONTIER_RESTART_ORACLE_FLAG], {
+          cwd: path.resolve(path.dirname(self), ".."),
+          encoding: "utf8",
+          shell: false,
+        });
+        const combined = `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
+        assert(result.status === 0, `Bun frontier-restart oracle failed (status=${result.status}):\n${combined}`);
+        assert(combined.includes("PASS critical: restart marks retained schema-v1 audit state stale"), `Bun frontier-restart oracle did not report PASS:\n${combined}`);
+        return;
+      }
+      const { SessionCompletionController } = await import(
+        "../global/extensions/session-completion-guard/controller.ts"
+      );
+      const rootID = "session_frontier_restart_root";
+      const childID = "session_frontier_restart_child";
+      const taskStateDigest = stableDigest([]);
+      const workFrontier = materializeWorkFrontier({
+        acceptedOutcomeRef: "outcome_restart",
+        expectedGeneration: 0,
+        gates: [],
+        items: [{ dependsOn: [], evidenceRefs: [], gateRefs: [], id: "item_restart", requirementRefs: ["requirement_restart"], status: "pending" }],
+        parkedDecisions: [],
+        progressFingerprint: "progress_restart",
+      }, { basisHumanRef: "none", currentGeneration: 0, taskStateDigest }).frontier;
+      let root = sessionFixture({
+        id: rootID,
+        metadata: { completionGuard: { grindEnabled: true, schemaVersion: 2, workFrontier } },
+      });
+      let child = sessionFixture({
+        id: childID,
+        parentID: rootID,
+        metadata: {
+          completionGuard: {
+            attempt: 0,
+            auditID: "audit_legacy_restart",
+            inspectedRevision: "revision_legacy_restart",
+            kind: "completion",
+            rootSessionRef: hashRef("session", rootID),
+            schemaVersion: 1,
+            status: "retrying",
+          },
+        },
+      });
+      const client = {
+        session: {
+          children: async () => ({ data: [child] }),
+          get: async ({ sessionID }: { sessionID: string }) => ({ data: sessionID === rootID ? root : child }),
+          update: async ({ sessionID, metadata }: { sessionID: string; metadata?: Session["metadata"] }) => {
+            if (sessionID === rootID) root = { ...root, metadata };
+            else child = { ...child, metadata };
+            return { data: sessionID === rootID ? root : child };
+          },
+        },
+        tui: { showToast: async () => ({ data: true }) },
+        v2: { session: { list: async () => ({ data: [root] }) } },
+      };
+      const controller = new SessionCompletionController(
+        { client: { app: { log: async () => ({ data: true }) } }, directory: "." } as never,
+        { auditWindow: { enabled: false }, statusToasts: false },
+        client as never,
+      );
+      const probe = controller as unknown as { reconcileRoots(): Promise<void> };
+      try {
+        await probe.reconcileRoots();
+        const metadata = child.metadata?.completionGuard as Record<string, unknown>;
+        assert(metadata.status === "stale", "A retained schema-v1 audit must not resume after restart.");
+        assert(metadata.staleReason === "unsupported-verdict-schema-after-restart", "Legacy audit quarantine must preserve its exact stale reason.");
+        const guard = root.metadata?.completionGuard as Record<string, unknown>;
+        assert(guard.restartRecoveryAction === "reconcile-legacy-verdict", "Root metadata must expose conservative legacy reconciliation.");
+      } finally {
+        await controller.dispose();
+      }
+    },
+  },
+  {
+    name: "frontier fixture materialization and replay are stable and provider-free",
+    run: () => {
+      const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+      const cli = path.join(repositoryRoot, "tools", "proofs", "session-completion-guard-frontier.ts");
+      const fixture = path.join(repositoryRoot, "tools", "proofs", "fixtures", "session-completion-guard", "grind-frontier-v1", "grind-frontier-v1.seed.json");
+      const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "guard-frontier-test-"));
+      const runnerBefore = fs.readFileSync(cli);
+      const fixtureBefore = fs.readFileSync(fixture);
+      try {
+        const help = spawnSync(process.execPath, [cli, "--help"], { cwd: repositoryRoot, encoding: "utf8", shell: false });
+        assert(help.status === 0, `Frontier help failed: ${help.stderr}`);
+        assert(help.stdout.includes("--mode materialize") && help.stdout.includes("--mode replay"), "Frontier help must expose materialize and replay.");
+        assert(fs.readdirSync(tempRoot).length === 0, "Frontier help must not create evidence.");
+
+        const materialized = path.join(tempRoot, "materialized");
+        const materialize = spawnSync(process.execPath, [
+          cli,
+          "--mode", "materialize",
+          "--candidate-id", "guard-frontier-fixture-r1",
+          "--environment-id", "provider-free-node-fixture-r1",
+          "--fixture", path.relative(repositoryRoot, fixture),
+          "--evidence-root", materialized,
+        ], { cwd: repositoryRoot, encoding: "utf8", shell: false });
+        assert(materialize.status === 0, `Frontier materialization failed: ${materialize.stderr}`);
+        const materialEvaluation = JSON.parse(fs.readFileSync(path.join(materialized, "evaluation.json"), "utf8")) as Record<string, unknown>;
+        const materialRaw = JSON.parse(fs.readFileSync(path.join(materialized, "raw.json"), "utf8")) as Record<string, unknown>;
+        assert(materialEvaluation.status === "passed", "Frontier materialization must pass.");
+        assert(materialEvaluation.scenarioCount === 10, "Frontier seed must exercise ten reviewed scenarios.");
+        assert((materialRaw.effects as Record<string, unknown>).providerCalls === 0 && (materialRaw.effects as Record<string, unknown>).networkRequests === 0, "Frontier materialization must remain provider and network free.");
+
+        const replayed = path.join(tempRoot, "replayed");
+        const replay = spawnSync(process.execPath, [
+          cli,
+          "--mode", "replay",
+          "--candidate-id", "guard-frontier-fixture-r1",
+          "--environment-id", "provider-free-node-fixture-r1",
+          "--input-root", materialized,
+          "--evidence-root", replayed,
+        ], { cwd: repositoryRoot, encoding: "utf8", shell: false });
+        assert(replay.status === 0, `Frontier replay failed: ${replay.stderr}`);
+        const replayEvaluation = JSON.parse(fs.readFileSync(path.join(replayed, "evaluation.json"), "utf8")) as Record<string, unknown>;
+        assert(replayEvaluation.status === "passed", "Frontier replay must pass.");
+        assert(JSON.stringify(replayEvaluation.observations) === JSON.stringify(materialEvaluation.observations), "Frontier replay must preserve exact ordered observations.");
+        assert(fs.readFileSync(cli).equals(runnerBefore) && fs.readFileSync(fixture).equals(fixtureBefore), "Frontier proof must not mutate its runner or reviewed fixture.");
+      } finally {
+        fs.rmSync(tempRoot, { recursive: true, force: true });
+      }
+      assert(!fs.existsSync(tempRoot), "Frontier focused-test fixture must be removed.");
+    },
+  },
+  {
     name: "critical: arbiter scheduler enforces two active, 32 queued, overflow, and revision cancel",
     run: async () => {
       const scheduler = new ArbiterScheduler(2, 32);
@@ -3138,17 +4162,29 @@ const tests: TestCase[] = [
 
 const onlyRunauditOracle = process.argv.includes(RUNAUDIT_DISABLE_ORACLE_FLAG);
 const onlyQuestionReplyOracle = process.argv.includes(QUESTION_REPLY_DISABLE_ORACLE_FLAG);
+const onlyQuestionDeferOracle = process.argv.includes(QUESTION_DEFER_ORACLE_FLAG);
 const onlyRetryAmplificationOracle = process.argv.includes(RETRY_PROMPT_AMPLIFICATION_ORACLE_FLAG);
 const onlyTerminalCertificateRecheckOracle = process.argv.includes(TERMINAL_CERTIFICATE_RECHECK_ORACLE_FLAG);
+const onlyFrontierToolOracle = process.argv.includes(FRONTIER_TOOL_ORACLE_FLAG);
+const onlyFrontierRestartOracle = process.argv.includes(FRONTIER_RESTART_ORACLE_FLAG);
+const onlyFrontierVerdictOracle = process.argv.includes(FRONTIER_VERDICT_ORACLE_FLAG);
 const selectedTests = onlyRunauditOracle
   ? tests.filter((test) => test.name.includes("in-flight runAudit must not call arbiter prompt"))
   : onlyQuestionReplyOracle
     ? tests.filter((test) => test.name.includes("in-flight official question reply must not apply"))
-    : onlyRetryAmplificationOracle
-      ? tests.filter((test) => test.name.includes("same-epoch arbiter retry must not re-embed completionEvidence"))
+    : onlyQuestionDeferOracle
+      ? tests.filter((test) => test.name.includes("deferred questions persist before rejection"))
+      : onlyRetryAmplificationOracle
+        ? tests.filter((test) => test.name.includes("same-epoch arbiter retry must not re-embed completionEvidence"))
       : onlyTerminalCertificateRecheckOracle
         ? tests.filter((test) => test.name.includes("waiting terminal certificate rechecks and validates issued evidence"))
-        : tests;
+        : onlyFrontierToolOracle
+          ? tests.filter((test) => test.name.includes("grind frontier tool derives root basis"))
+          : onlyFrontierRestartOracle
+            ? tests.filter((test) => test.name.includes("restart marks retained schema-v1 audit state stale"))
+            : onlyFrontierVerdictOracle
+              ? tests.filter((test) => test.name.includes("frontier verdicts drive waiting product-decision and budget-wait controller states"))
+              : tests;
 
 let failed = 0;
 for (const test of selectedTests) {

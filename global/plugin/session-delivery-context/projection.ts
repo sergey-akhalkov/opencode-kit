@@ -3,6 +3,28 @@ type DeliveryContextEventKind = "message" | "session_input";
 type DeliveryContextQuestionStatus = "replied" | "rejected";
 type DeliveryContextTodoSource = "current" | "todowrite";
 
+export type DeliveryContextWorkFrontierProjection = {
+  assessment: {
+    frontier: {
+      acceptedOutcomeRef: string;
+      basisHumanRef: string;
+      frontierGeneration: number;
+      gates: unknown[];
+      items: unknown[];
+      parkedDecisions: unknown[];
+      progressFingerprint: string;
+      schemaVersion: 1;
+      taskStateDigest: string;
+    };
+    frontierState: "complete" | "product-decision" | "runnable" | "waiting";
+    openGateRefs: string[];
+    parkedDecisionRefs: string[];
+    runnableItemRefs: string[];
+  } | null;
+  errorCode: string | null;
+  status: "absent" | "invalid" | "present";
+};
+
 export type DeliveryContextTodo = {
   content?: string;
   eventRef: string;
@@ -256,6 +278,7 @@ export type SessionDeliveryContextResult = {
   userMessages: DeliveryContextUserMessage[];
   validationEvidence: DeliveryContextValidationEvidence[];
   warnings: string[];
+  workFrontier: DeliveryContextWorkFrontierProjection;
 };
 
 export type ReadSessionDeliveryContextOptions = {
@@ -324,5 +347,6 @@ export function emptyResult(
     userMessages: [],
     validationEvidence: [],
     warnings,
+    workFrontier: { assessment: null, errorCode: "missing-frontier", status: "absent" },
   };
 }

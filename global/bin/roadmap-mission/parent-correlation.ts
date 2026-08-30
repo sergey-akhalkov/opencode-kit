@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   missionDefinitionDigest,
+  parseMissionBlocker,
   RoadmapMissionError,
   stableJson,
 } from "./contracts.ts";
@@ -14,7 +15,7 @@ import type {
 } from "./contracts.ts";
 import type { ProcessEvidence } from "./controller-process.ts";
 import { readExecutorResult } from "./controller-result.ts";
-import { readMissionResultFacts, replayMissionState } from "./state.ts";
+import { readMissionResultFacts, readMissionSchedulingFacts, replayMissionState, selectMissionFrontierStop } from "./state.ts";
 
 type FrozenWaveSlice = {
   changeId: string;
@@ -202,13 +203,25 @@ export function parseMissionParentHandoff(
 ): MissionParentHandoff {
   const input = record(value, "parent handoff");
   if (definition.parent == null) throw new RoadmapMissionError("parent handoff requires a parent-correlated mission", 2);
+  if (!("blocker" in input)) input.blocker = null;
+  if (!("blockedWorkItemRefs" in input)) {
+    input.blockedWorkItemRefs = input.blocker == null
+      ? []
+      : record(input.blocker, "parent handoff blocker").affectedItemRefs;
+  }
+  if (!("completedWorkItemRefs" in input)) {
+    input.completedWorkItemRefs = input.disposition === "complete" ? definition.parent.workItemRefs : [];
+  }
   exactKeys(input, [
     "archiveRefs",
+    "blocker",
+    "blockedWorkItemRefs",
     "campaignDefinitionDigest",
     "campaignId",
     "campaignTransitionDigest",
     "checkpoint",
     "cleanupClosure",
+    "completedWorkItemRefs",
     "definitionDigest",
     "disposition",
     "evidenceRefs",
@@ -234,7 +247,7 @@ export function parseMissionParentHandoff(
     throw new RoadmapMissionError("parent handoff checkpoint mode does not match the mission", 2);
   }
   const disposition = singleLine(input.disposition, "parent handoff disposition") as MissionParentHandoff["disposition"];
-  if (!( ["blocked", "complete", "paused", "paused-unknown"] as readonly string[]).includes(disposition)) {
+  if (!( ["blocked", "complete", "paused", "paused-unknown", "product-decision-required", "waiting"] as readonly string[]).includes(disposition)) {
     throw new RoadmapMissionError("parent handoff disposition is unsupported", 2);
   }
   const writerClosure = singleLine(input.writerClosure, "parent handoff writerClosure") as MissionParentHandoff["writerClosure"];
@@ -256,9 +269,14 @@ export function parseMissionParentHandoff(
   const processRefs = stringRefs("processRefs");
   const sessionRefs = stringRefs("sessionRefs");
   const workItemRefs = strings(input.workItemRefs, "parent handoff workItemRefs", { ids: true, preserveOrder: true });
+  const blockedWorkItemRefs = strings(input.blockedWorkItemRefs, "parent handoff blockedWorkItemRefs", { allowEmpty: true, ids: true, preserveOrder: true });
+  const completedWorkItemRefs = strings(input.completedWorkItemRefs, "parent handoff completedWorkItemRefs", { allowEmpty: true, ids: true, preserveOrder: true });
   const ownerCondition = nullableSingleLine(input.ownerCondition, "parent handoff ownerCondition");
+  const blocker = input.blocker == null ? null : parseMissionBlocker(input.blocker, "parent handoff blocker");
   const handoff: MissionParentHandoff = {
     archiveRefs,
+    blocker,
+    blockedWorkItemRefs,
     campaignDefinitionDigest: digest(input.campaignDefinitionDigest, "parent handoff campaignDefinitionDigest"),
     campaignId: safeId(input.campaignId, "parent handoff campaignId"),
     campaignTransitionDigest: digest(input.campaignTransitionDigest, "parent handoff campaignTransitionDigest"),
@@ -267,6 +285,7 @@ export function parseMissionParentHandoff(
       mode,
     },
     cleanupClosure,
+    completedWorkItemRefs,
     definitionDigest: digest(input.definitionDigest, "parent handoff definitionDigest"),
     disposition,
     evidenceRefs,
@@ -295,7 +314,18 @@ export function parseMissionParentHandoff(
   ) {
     throw new RoadmapMissionError("parent handoff correlation does not match the mission definition", 2);
   }
-  if (handoff.ownerCondition !== null && handoff.ownerCondition !== "unknown") {
+  const parentWorkItems = new Set(parent.workItemRefs);
+  if (
+    handoff.blockedWorkItemRefs.some((ref) => !parentWorkItems.has(ref)) ||
+    handoff.completedWorkItemRefs.some((ref) => !parentWorkItems.has(ref)) ||
+    handoff.blockedWorkItemRefs.some((ref) => handoff.completedWorkItemRefs.includes(ref))
+  ) {
+    throw new RoadmapMissionError("parent handoff work-item projections are not disjoint subsets of the frozen wave", 2);
+  }
+  if (handoff.blocker != null && handoff.blocker.affectedItemRefs.some((ref) => !handoff.blockedWorkItemRefs.includes(ref))) {
+    throw new RoadmapMissionError("parent handoff selected blocker is absent from blockedWorkItemRefs", 2);
+  }
+  if (handoff.ownerCondition !== null && handoff.ownerCondition !== "product-decision" && handoff.ownerCondition !== "unknown") {
     throw new RoadmapMissionError("parent handoff ownerCondition is unsupported", 2);
   }
   if (handoff.disposition === "complete") {
@@ -308,12 +338,35 @@ export function parseMissionParentHandoff(
       handoff.processRefs.length < definition.slices.length ||
       handoff.sessionRefs.length < definition.slices.length ||
       handoff.retryCondition != null ||
-      handoff.ownerCondition != null
+      handoff.ownerCondition != null ||
+      handoff.blocker != null ||
+      !same(handoff.completedWorkItemRefs, parent.workItemRefs) ||
+      handoff.blockedWorkItemRefs.length !== 0
     ) {
       throw new RoadmapMissionError("completed parent handoff is not terminal-clear", 2);
     }
-  } else if (handoff.retryCondition == null || handoff.ownerCondition !== "unknown") {
-    throw new RoadmapMissionError("non-complete parent handoff must expose retry and unknown owner conditions", 2);
+  } else if (handoff.disposition === "product-decision-required") {
+    if (
+      handoff.blocker?.disposition !== "product-decision-required" ||
+      handoff.retryCondition !== handoff.blocker.resumeCondition ||
+      handoff.ownerCondition !== "product-decision"
+    ) {
+      throw new RoadmapMissionError("product-decision parent handoff is incomplete", 2);
+    }
+  } else if (handoff.disposition === "waiting") {
+    if (
+      handoff.blocker?.disposition !== "waiting" ||
+      handoff.retryCondition !== handoff.blocker.resumeCondition ||
+      handoff.ownerCondition != null
+    ) {
+      throw new RoadmapMissionError("waiting parent handoff is incomplete", 2);
+    }
+  } else if (
+    handoff.retryCondition == null ||
+    handoff.ownerCondition !== "unknown" ||
+    (handoff.blocker != null && handoff.retryCondition !== handoff.blocker.resumeCondition)
+  ) {
+    throw new RoadmapMissionError("non-complete parent handoff must expose its retry and owner conditions", 2);
   }
   return handoff;
 }
@@ -411,6 +464,9 @@ export function buildMissionParentHandoff(
   });
   const sessionRefs = [...new Set(results.flatMap((result) => result.rootSessionRef == null ? [] : [result.rootSessionRef]))].sort();
   const completedSlices = new Set(results.filter((result) => result.disposition === "completed").map((result) => result.sliceId));
+  const completedWorkItemRefs = [...new Set(definition.slices
+    .filter((slice) => completedSlices.has(slice.id))
+    .flatMap((slice) => slice.workItemRefs))].sort();
   const executorCleanupClear = results.every((result) => result.writerClosure !== "unknown" && result.cleanup !== "unknown");
   const currentProcessCleanupClear = processEvidence.every((evidence) =>
     evidence.cleanupState !== "unknown" && (evidence.cleanupState != null || evidence.executorResultPath != null)
@@ -418,20 +474,33 @@ export function buildMissionParentHandoff(
   const writerClear = replay.status === "valid" && replay.writerStatus === "clear" && facts.projection?.activeOperation == null;
   const completedEvidenceClear = disposition !== "complete" || definition.slices.every((slice) => completedSlices.has(slice.id));
   const cleanupClear = writerClear && executorCleanupClear && currentProcessCleanupClear && completedEvidenceClear;
+  const schedulingFacts = readMissionSchedulingFacts(root, definition);
+  const blocker = facts.projection?.blocker
+    ?? selectMissionFrontierStop(schedulingFacts)?.blocker
+    ?? null;
+  const blockedWorkItemRefs = [...new Set(schedulingFacts.parkedSlices
+    .flatMap((entry) => entry.blocker.affectedItemRefs))].sort();
   return parseMissionParentHandoff({
     archiveRefs: facts.archiveRefs,
+    blocker,
+    blockedWorkItemRefs,
     campaignDefinitionDigest: parent.campaignDefinitionDigest,
     campaignId: parent.campaignId,
     campaignTransitionDigest: parent.campaignTransitionDigest,
     checkpoint: facts.projection?.checkpoint ?? { identity: null, mode: definition.checkpoint.mode },
     cleanupClosure: cleanupClear ? "terminal" : "unknown",
+    completedWorkItemRefs,
     definitionDigest: missionDefinitionDigest(definition),
     disposition,
     evidenceRefs: [...new Set([...facts.evidenceRefs, parent.parentEvidencePath])].sort(),
     missionId: definition.missionId,
-    ownerCondition: disposition === "complete" ? null : "unknown",
+    ownerCondition: disposition === "product-decision-required"
+      ? "product-decision"
+      : disposition === "complete" || disposition === "waiting"
+        ? null
+        : "unknown",
     processRefs: facts.processRefs,
-    retryCondition: disposition === "complete" ? null : `mission-status:${disposition}`,
+    retryCondition: disposition === "complete" ? null : blocker?.resumeCondition ?? `mission-status:${disposition}`,
     schemaVersion: 1,
     sessionRefs,
     tool: "roadmap-mission-parent-handoff",

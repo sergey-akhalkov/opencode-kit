@@ -45,10 +45,10 @@ const CONFIGURED_SCENARIO_ORDER = [
   "configured-repeated-touch-successor",
 ] as const;
 const GOVERNED_SOURCE_PATHS = [
-  "openspec/changes/add-roadmap-delivery-trajectory-loop/proposal.md",
-  "openspec/changes/add-roadmap-delivery-trajectory-loop/design.md",
-  "openspec/changes/add-roadmap-delivery-trajectory-loop/tasks.md",
-  "openspec/changes/add-roadmap-delivery-trajectory-loop/specs/library-roadmap-delivery-trajectory/spec.md",
+  "global/bin/delivery-trajectory-context.ts",
+  "global/bin/openspec-change/delivery-horizon.ts",
+  "global/skills/roadmap-delivery-trajectory/SKILL.md",
+  "openspec/specs/library-roadmap-delivery-trajectory/spec.md",
   "tools/proofs/consumer-outcome-regression.ts",
   "tools/proofs/consumer-outcome/contracts.ts",
   "tools/proofs/consumer-outcome/delivery-trajectory.ts",

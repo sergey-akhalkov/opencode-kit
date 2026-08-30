@@ -1,5 +1,6 @@
 import type { Session, TextPartInput } from "@opencode-ai/sdk/v2";
 import type { SessionDeliveryContextResult } from "../../plugin/session-delivery-context/index.ts";
+import type { WorkFrontier } from "./frontier.ts";
 import type { TerminalCertificateState } from "./terminal-certificate.ts";
 
 export type AuditWindowOptions = {
@@ -59,21 +60,24 @@ export type GuardStateName =
   | "continuation-pending"
   | "disabled"
   | "error"
+  | "frontier-reconciling"
   | "owner-required"
   | "passed"
   | "paused"
+  | "product-decision-required"
   | "question-auditing"
   | "question-answering"
+  | "question-deferring"
   | "question-pending"
   | "running"
   | "settling-idle"
   | "stale"
+  | "waiting"
   | "waiting-async";
 
 export type RootPromptContext = {
   agent: string | null;
   model: { providerID: string; modelID: string } | null;
-  tools: Record<string, boolean> | null;
   variant: string | null;
 };
 
@@ -123,7 +127,7 @@ export type AuditEpoch = {
 export type RequirementVerdict = {
   evidenceRefs: string[];
   requirementRef: string;
-  status: "complete" | "deferred" | "owner_required" | "unresolved";
+  status: "complete" | "deferred" | "product_decision_required" | "unresolved";
 };
 
 export type UnresolvedVerdict = {
@@ -142,9 +146,11 @@ export type StrategyAssessment = {
 };
 
 export type OwnerBoundaryVerdict = {
+  affectedItemRefs: string[];
+  consequences: string[];
   decision: string;
   evidenceRefs: string[];
-  reason: string;
+  resumeCondition: string;
 };
 
 export type ClaimClosureVerdict = {
@@ -159,25 +165,43 @@ export type CompletionVerdict = {
   auditID: string;
   claimMatrix?: ClaimClosureVerdict[];
   confidence: "high" | "low" | "medium";
+  deferredGateRefs: string[];
   evidenceGaps: string[];
   evidenceRefs: string[];
+  frontierGeneration: number;
   goalSummary: string;
   inspectedRevision: string;
   ownerBoundary: OwnerBoundaryVerdict | null;
+  parkedDecisionRefs: string[];
+  questionAction: "answer" | "defer" | "present-product-decision" | null;
   questionAnswers: string[][] | null;
   requirementMatrix: RequirementVerdict[];
+  resumeCondition: string | null;
   rootSessionRef: string;
-  schemaVersion: 1;
+  runnableItemRefs: string[];
+  schemaVersion: 2;
+  selectedItemRef: string | null;
   strategyAssessment: StrategyAssessment;
   unresolved: UnresolvedVerdict[];
-  verdict: "allow_stop" | "continue" | "owner_required" | "user_paused";
+  verdict: "allow_stop" | "continue" | "product_decision_required" | "user_paused" | "waiting";
+  waitKind: "budget" | "capability" | "external" | "live-attempt" | "process" | "safety" | "technical" | "writer-liveness" | null;
+};
+
+export type QuestionDeferralProvenance = {
+  blockerKind: "gate" | "parked-decision";
+  blockerRef: string;
+  callRef: string | null;
+  disposition: "continue" | "waiting";
+  requestRef: string;
+  selectedItemRef: string | null;
 };
 
 export type QuestionState = {
   auditID: string | null;
+  deferredVerdict: CompletionVerdict | null;
   replyObserved: boolean;
   request: NormalizedQuestionRequest;
-  state: "guard-answered" | "guard-answering" | "human-replied" | "open" | "owner-required" | "resolution-unknown";
+  state: "guard-answered" | "guard-answering" | "guard-deferred" | "guard-deferring" | "human-replied" | "open" | "owner-required" | "product-decision-required" | "resolution-unknown";
 };
 
 export type RootState = {
@@ -190,16 +214,22 @@ export type RootState = {
   compacting: boolean;
   continuationCycles: number;
   controlTurnPending: boolean;
+  deferredQuestionProvenance: Map<string, QuestionDeferralProvenance>;
   grindEnabled: boolean;
   guardTurnPending: boolean;
+  frontierError: string | null;
+  frontierReconciliationRef: string | null;
+  frontierStatus: "absent" | "current" | "invalid" | "stale" | "unverified";
   lastAssistantID: string | null;
   lastAuditedRevision: string | null;
   lastHumanID: string | null;
+  lastProgressFingerprint: string | null;
   lastStatusKey: string | null;
   lastStrategyFingerprint: string | null;
   paused: boolean;
   pendingAutonomousQuestionCalls: Map<string, string>;
   pendingAutonomousQuestionRefs: Set<string>;
+  pendingQuestionDeferralProvenance: Map<string, QuestionDeferralProvenance>;
   promptContext: RootPromptContext;
   questions: Map<string, QuestionState>;
   recoveryAudit: RecoveryAudit | null;
@@ -214,6 +244,7 @@ export type RootState = {
   waitReason: string | null;
   waitRecheckCount: number;
   waitRecheckTimer: ReturnType<typeof setTimeout> | null;
+  workFrontier: WorkFrontier | null;
 };
 
 export type GuardContinuation = {
