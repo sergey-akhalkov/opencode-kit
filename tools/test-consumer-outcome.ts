@@ -1332,7 +1332,7 @@ const tests: TestCase[] = [
       assert(fs.readFileSync(path.join(root, "global", "skills", "change-ready-sdlc", "SKILL.md"), "utf8").includes("It never clears or waives safety"), "status-scope Change-Ready marker");
       const templateConfig = JSON.parse(fs.readFileSync(path.join(root, "global", "opencode.json.template"), "utf8"));
       const activeConfig = JSON.parse(fs.readFileSync(path.join(root, "global", "opencode.json"), "utf8"));
-      const promptMarker = "For mixed status, add `Status Scope` with exact subject/dimension/value";
+      const promptMarker = "Preserve accepted scope, constraints, decisions, worktree state";
       assert(templateConfig.agent.compaction.prompt.includes(promptMarker), "status-scope canonical compaction prompt marker");
       const activePromptMirrored = activeConfig.agent.compaction.prompt === templateConfig.agent.compaction.prompt;
 

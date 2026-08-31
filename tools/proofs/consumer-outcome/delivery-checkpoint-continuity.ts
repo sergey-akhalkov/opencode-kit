@@ -53,8 +53,6 @@ const SOURCE_PATHS = [
   FIXTURE_ROOT,
 ] as const;
 const CHECKPOINT_FIELDS = [
-  "Checkpoint Ref",
-  "Evidence Refs",
   "Selected Route",
   "Preserved Outcome/Oracle/Population",
   "Next Action",
@@ -235,8 +233,6 @@ function configuredProofRoute(agent: string, route: { model: string; variant: st
 function checkpointState(checkpoint: Checkpoint, nextAction: string): string {
   return [
     "Delivery Checkpoint State",
-    `Checkpoint Ref: ${checkpoint.checkpointRef}`,
-    `Evidence Refs: ${checkpoint.evidenceRefs.join(", ")}`,
     `Selected Route: ${checkpoint.selectedRoute}`,
     `Preserved Outcome/Oracle/Population: ${checkpoint.preservedOutcomeOraclePopulation}`,
     `Next Action: ${nextAction}`,
@@ -340,8 +336,6 @@ export function evaluateDeliveryCheckpointContinuity(
   const resumeToken = markerAction.startsWith(fixture.checkpoint.nextActionPrefix) ? markerAction.slice(fixture.checkpoint.nextActionPrefix.length) : "";
   if (!/^[a-f0-9]{24}$/.test(resumeToken)) failures.push("precompaction-resume-token-missing");
   const fieldValues: Record<(typeof CHECKPOINT_FIELDS)[number], string> = {
-    "Checkpoint Ref": fixture.checkpoint.checkpointRef,
-    "Evidence Refs": fixture.checkpoint.evidenceRefs.join(", "),
     "Selected Route": fixture.checkpoint.selectedRoute,
     "Preserved Outcome/Oracle/Population": fixture.checkpoint.preservedOutcomeOraclePopulation,
     "Next Action": markerAction,
@@ -554,7 +548,6 @@ export async function captureDeliveryCheckpointContinuity(input: {
       directory: fixtureRoot,
       mainResponseMustInclude: [
         "Delivery Checkpoint State",
-        `Checkpoint Ref: ${loaded.fixture.checkpoint.checkpointRef}`,
         `Next Action: ${loaded.fixture.checkpoint.nextActionPrefix}`,
         `Next Oracle: ${loaded.fixture.checkpoint.nextOracle}`,
       ],
